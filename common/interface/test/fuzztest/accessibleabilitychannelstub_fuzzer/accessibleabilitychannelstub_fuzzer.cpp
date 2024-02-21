@@ -15,21 +15,15 @@
 
 #include "accessibleabilitychannelstub_fuzzer.h"
 #include "accessible_ability_channel_stub.h"
+#include "accessibility_ipc_interface_code.h"
 #include "securec.h"
 
 namespace OHOS {
 namespace Accessibility {
 namespace {
-constexpr size_t FOO_MAX_LEN = 1024;
-constexpr size_t U32_AT_SIZE = 4;
-constexpr size_t BASE_CODE = 400;
-constexpr size_t MESSAGE_SIZE = 13;
-constexpr size_t TEM_NUM_1 = 1;
-constexpr size_t TEM_NUM_2 = 2;
-constexpr size_t TEM_NUM_3 = 3;
-constexpr size_t TEM_NUM_8 = 8;
-constexpr size_t TEM_NUM_16 = 16;
-constexpr size_t TEM_NUM_24 = 24;
+    constexpr size_t DATA_MIN_SIZE = 200;
+    constexpr char END_CHAR = '\0';
+    constexpr size_t LEN = 10;
 }
 
 class AbilityChannelImplFuzzTest : public AccessibleAbilityChannelStub {
@@ -89,24 +83,257 @@ public:
     }
 };
 
-uint32_t GetU32Data(const char *ptr)
+template<class T>
+size_t GetObject(T &object, const uint8_t *data, size_t size)
 {
-    return (ptr[0] << TEM_NUM_24) | (ptr[TEM_NUM_1] << TEM_NUM_16) |
-     (ptr[TEM_NUM_2] << TEM_NUM_8) | (ptr[TEM_NUM_3]);
+    size_t objectSize = sizeof(object);
+    if (objectSize > size) {
+        return 0;
+    }
+    return memcpy_s(&object, objectSize, data, objectSize) == EOK ? objectSize : 0;
 }
 
-bool AbilityChannelOnRemoteRequestFuzzTest(const char *data, size_t size)
+bool FuzzHandleSearchElementInfoByAccessibilityId(const uint8_t *data, size_t size)
 {
-    uint32_t code = (GetU32Data(data) % MESSAGE_SIZE) + BASE_CODE;
-    MessageParcel datas;
-    std::u16string descriptor = AccessibleAbilityChannelStub::GetDescriptor();
-    datas.WriteInterfaceToken(descriptor);
-    datas.WriteBuffer(data, size);
-    datas.RewindRead(0);
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    int32_t accessibilityWindowId = 0;
+    int64_t elementId = 0;
+    int32_t requestId = 0;
+    MessageParcel mdata;
     MessageParcel reply;
-    MessageOption option;
-    AbilityChannelImplFuzzTest channelImp;
-    channelImp.OnRemoteRequest(code, datas, reply, option);
+    MessageOption option(MessageOption::TF_SYNC);
+
+    position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
+    position += GetObject<int64_t>(elementId, &data[position], size - position);
+    position += GetObject<int32_t>(requestId, &data[position], size - position);
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    mdata.WriteInt32(accessibilityWindowId);
+    mdata.WriteInt64(elementId);
+    mdata.WriteInt32(requestId);
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID),
+        mdata, reply, option);
+    return true;
+}
+
+bool FuzzHandleSearchElementInfosByText(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    int32_t accessibilityWindowId = 0;
+    int64_t elementId = 0;
+    int32_t requestId = 0;
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
+    position += GetObject<int64_t>(elementId, &data[position], size - position);
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], data + position, size - position);
+    }
+    std::string text(name);
+    position += GetObject<int32_t>(requestId, &data[position], size - position);
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    mdata.WriteInt32(accessibilityWindowId);
+    mdata.WriteInt64(elementId);
+    mdata.WriteString(text);
+    mdata.WriteInt32(requestId);
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT),
+        mdata, reply, option);
+    return true;
+}
+
+bool FuzzHandleFindFocusedElementInfo(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    int32_t accessibilityWindowId = 0;
+    int64_t elementId = 0;
+    int32_t focusType = 0;
+    int32_t requestId = 0;
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
+    position += GetObject<int64_t>(elementId, &data[position], size - position);
+    position += GetObject<int32_t>(focusType, &data[position], size - position);
+    position += GetObject<int32_t>(requestId, &data[position], size - position);
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    mdata.WriteInt32(accessibilityWindowId);
+    mdata.WriteInt64(elementId);
+    mdata.WriteInt32(focusType);
+    mdata.WriteInt32(requestId);
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO),
+        mdata, reply, option);
+    return true;
+}
+
+bool FuzzHandleFocusMoveSearch(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    int32_t accessibilityWindowId = 0;
+    int64_t elementId = 0;
+    int32_t direction = 0;
+    int32_t requestId = 0;
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
+    position += GetObject<int64_t>(elementId, &data[position], size - position);
+    position += GetObject<int32_t>(direction, &data[position], size - position);
+    position += GetObject<int32_t>(requestId, &data[position], size - position);
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    mdata.WriteInt32(accessibilityWindowId);
+    mdata.WriteInt64(elementId);
+    mdata.WriteInt32(direction);
+    mdata.WriteInt32(requestId);
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH),
+        mdata, reply, option);
+    return true;
+}
+
+bool FuzzHandleExecuteAction(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    int32_t accessibilityWindowId = 0;
+    int64_t elementId = 0;
+    int32_t action = 0;
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
+    position += GetObject<int64_t>(elementId, &data[position], size - position);
+    position += GetObject<int32_t>(action, &data[position], size - position);
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    mdata.WriteInt32(accessibilityWindowId);
+    mdata.WriteInt64(elementId);
+    mdata.WriteInt32(action);
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::PERFORM_ACTION),
+        mdata, reply, option);
+    return true;
+}
+
+bool FuzzHandleGetWindow(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    int32_t windowId = 0;
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    position += GetObject<int32_t>(windowId, &data[position], size - position);
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    mdata.WriteInt32(windowId);
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOW),
+        mdata, reply, option);
+    return true;
+}
+
+bool FuzzHandleGetWindows(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOWS),
+        mdata, reply, option);
+    return true;
+}
+
+bool FuzzHandleGetWindowsByDisplayId(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    uint64_t displayId = 0;
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    position += GetObject<uint64_t>(displayId, &data[position], size - position);
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    mdata.WriteUint64(displayId);
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOWS_BY_DISPLAY_ID),
+        mdata, reply, option);
+    return true;
+}
+
+bool FuzzHandleSendSimulateGesturePath(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::SEND_SIMULATE_GESTURE_PATH),
+        mdata, reply, option);
+    return true;
+}
+
+bool FuzzHandleSetTargetBundleName(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    int32_t bundleNamesSize = 0;
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    mdata.WriteInt32(bundleNamesSize);
+    mdata.WriteString("test");
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME),
+        mdata, reply, option);
     return true;
 }
 } // namespace Accessibility
@@ -116,32 +343,15 @@ bool AbilityChannelOnRemoteRequestFuzzTest(const char *data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 {
     /* Run your code on data */
-    if (data == nullptr) {
-        return 0;
-    }
-
-    if (size < OHOS::Accessibility::U32_AT_SIZE) {
-        return 0;
-    }
-
-    /* Validate the length of size */
-    if (size > OHOS::Accessibility::FOO_MAX_LEN) {
-        return 0;
-    }
-
-    char *ch = (char *)malloc(size + 1);
-    if (ch == nullptr) {
-        return 0;
-    }
-
-    (void)memset_s(ch, size + 1, 0x00, size + 1);
-    if (memcpy_s(ch, size, data, size) != EOK) {
-        free(ch);
-        ch = nullptr;
-        return 0;
-    }
-    OHOS::Accessibility::AbilityChannelOnRemoteRequestFuzzTest(ch, size);
-    free(ch);
-    ch = nullptr;
+    OHOS::Accessibility::FuzzHandleSearchElementInfoByAccessibilityId(data, size);
+    OHOS::Accessibility::FuzzHandleSearchElementInfosByText(data, size);
+    OHOS::Accessibility::FuzzHandleFindFocusedElementInfo(data, size);
+    OHOS::Accessibility::FuzzHandleFocusMoveSearch(data, size);
+    OHOS::Accessibility::FuzzHandleExecuteAction(data, size);
+    OHOS::Accessibility::FuzzHandleGetWindow(data, size);
+    OHOS::Accessibility::FuzzHandleGetWindows(data, size);
+    OHOS::Accessibility::FuzzHandleGetWindowsByDisplayId(data, size);
+    OHOS::Accessibility::FuzzHandleSendSimulateGesturePath(data, size);
+    OHOS::Accessibility::FuzzHandleSetTargetBundleName(data, size);
     return 0;
 }
