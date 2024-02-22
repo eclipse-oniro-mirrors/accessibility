@@ -14,7 +14,8 @@
  */
 
 #include <gtest/gtest.h>
-#include "../../include/parcel/accessibility_event_info_parcel.h"
+#include "accessibility_event_info_parcel.h"
+#include "accessibility_element_info_parcel.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -40,6 +41,8 @@ public:
         GTEST_LOG_(INFO) << "AccessibilityEventInfoParcelTest SetUp() Start";
         AccessibilityEventInfo eventInfo;
         eventInfoParcel_ = std::make_shared<AccessibilityEventInfoParcel>(eventInfo);
+        AccessibilityElementInfo elementInfo;
+        elementInfoParcel_ = std::make_shared<AccessibilityElementInfoParcel>(elementInfo);
         GTEST_LOG_(INFO) << "AccessibilityEventInfoParcelTest SetUp() End";
     };
     void TearDown()
@@ -49,6 +52,7 @@ public:
     }
 
     std::shared_ptr<AccessibilityEventInfoParcel> eventInfoParcel_ = nullptr;
+    std::shared_ptr<AccessibilityElementInfoParcel> elementInfoParcel_ = nullptr;
 };
 
 /**
@@ -87,6 +91,25 @@ HWTEST_F(AccessibilityEventInfoParcelTest, Event_Info_Unmarshalling_001, TestSiz
     sptr<AccessibilityEventInfoParcel> eventInfoParcel = eventInfoParcel_->Unmarshalling(parcel);
     EXPECT_EQ(true, eventInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Event_Info_Unmarshalling_001 end";
+}
+
+/**
+ * @tc.number: Element_Info_Unmarshalling_001
+ * @tc.name: Element_Info_Unmarshalling
+ * @tc.desc: Test function Unmarshalling
+ */
+HWTEST_F(AccessibilityEventInfoParcelTest, Element_Info_Unmarshalling_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Element_Info_Unmarshalling_001 start";
+    if (!elementInfoParcel_) {
+        GTEST_LOG_(INFO) << "elementInfoParcel_ is null";
+        return;
+    }
+
+    Parcel parcel;
+    sptr<AccessibilityElementInfoParcel> elementInfoParcel = elementInfoParcel_->Unmarshalling(parcel);
+    EXPECT_EQ(true, elementInfoParcel == nullptr);
+    GTEST_LOG_(INFO) << "Element_Info_Unmarshalling_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
