@@ -162,6 +162,7 @@ struct AccessibilityEventInfoCallbackInfo : public ExtensionCallbackInfo {
     int64_t timeStamp_ = 0;
     std::shared_ptr<AccessibilityElement> element_ = nullptr;
 };
+napi_handle_scope OpenScope(napi_env env);
 } // namespace Accessibility
 } // namespace OHOS
 
