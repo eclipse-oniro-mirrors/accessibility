@@ -34,7 +34,6 @@ using namespace OHOS::AccessibilityNapi;
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    constexpr int64_t VIRTUAL_COMPONENT_ID = -1;
 }
 NAccessibilityExtension* NAccessibilityExtension::Create(const std::unique_ptr<AbilityRuntime::Runtime>& runtime)
 {
@@ -255,7 +254,7 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
     std::shared_ptr<AccessibilityElement> element = nullptr;
     if (componentId > 0) {
         std::shared_ptr<AccessibilityElementInfo> elementInfo = 
-		std::make_shared<AccessibilityElementInfo>(eventInfo.GetElementInfo());
+                std::make_shared<AccessibilityElementInfo>(eventInfo.GetElementInfo());
         element = std::make_shared<AccessibilityElement>(elementInfo);
     } else if (windowId > 0) {
         std::shared_ptr<AccessibilityWindowInfo> windowInfo = std::make_shared<AccessibilityWindowInfo>();
@@ -277,7 +276,7 @@ void NAccessibilityExtension::CreateElementInfoByEventInfo(const AccessibilityEv
     if (!elementInfo) {
         return;
     }
-    elementInfo->SetComponentId(VIRTUAL_COMPONENT_ID);
+    elementInfo->SetComponentId(eventInfo.GetAccessibilityId());
     elementInfo->SetBundleName(eventInfo.GetBundleName());
     elementInfo->SetComponentType(eventInfo.GetComponentType());
     elementInfo->SetPageId(eventInfo.GetPageId());
@@ -327,6 +326,16 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "target", nTargetObject));
 }
 
+napi_status SetNapiEventInfoIntProperty(napi_env env, const char* property, int64_t value, napi_value &napiEventInfo)
+{
+    napi_value nValue;
+    napi_status status = napi_create_int64(env, value, &nValue);
+    if (status != napi_ok) {
+        return status;
+    }
+    return napi_set_named_property(env, napiEventInfo, property, nValue);
+}
+
 int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t *loop)
 {
     int ret = uv_queue_work_with_qos(
@@ -354,13 +363,13 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
                     break;
                 }
                 HILOG_DEBUG("eventType[%{public}s]", data->eventType_.c_str());
-
-                napi_value nTimeStamp;
-                if (napi_create_int64(data->env_, data->timeStamp_, &nTimeStamp) != napi_ok) {
+                
+                if (SetNapiEventInfoIntProperty(data->env_, "timeStamp", data->timeStamp_, napiEventInfo) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
-                if (napi_set_named_property(data->env_, napiEventInfo, "timeStamp", nTimeStamp) != napi_ok) {
+
+                if (SetNapiEventInfoIntProperty(data->env_, "elementId", data->elementId_, napiEventInfo) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
@@ -403,6 +412,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
     callbackInfo->eventType_ = strType;
     callbackInfo->timeStamp_ = eventInfo.GetTimeStamp();
     callbackInfo->element_ = GetElement(eventInfo);
+    callbackInfo->elementId_ = eventInfo.GetAccessibilityId();
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {
         HILOG_ERROR("Failed to create data.");
