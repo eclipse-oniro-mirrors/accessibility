@@ -282,7 +282,6 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
             return;
         }
         callback->AsObject()->AddDeathRecipient(stateCallbackDeathRecipient_);
-        auto iter = std::find(stateCallbacks_.begin(), stateCallbacks_.end(), callback);
         {
             std::lock_guard<std::mutex> lock(mutex_);
             auto iter = std::find(stateCallbacks_.begin(), stateCallbacks_.end(), callback);
