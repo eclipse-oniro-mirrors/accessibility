@@ -155,6 +155,7 @@ declare interface AccessibilityEvent {
   eventType: accessibility.EventType | accessibility.WindowUpdateType | TouchGuideType | GestureType | PageUpdateType;
   target?: AccessibilityElement;
   timeStamp?: number;
+  elementId?: number;
 }
 
 /**

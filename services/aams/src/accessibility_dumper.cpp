@@ -181,7 +181,8 @@ void ConvertEventTypes(const uint32_t value, std::string &eventTypes)
         {EventType::TYPE_TOUCH_END, "touchEnd"},
         {EventType::TYPE_WINDOW_UPDATE, "windowUpdate"},
         {EventType::TYPE_INTERRUPT_EVENT, "interrupt"},
-        {EventType::TYPE_GESTURE_EVENT, "gesture"}};
+        {EventType::TYPE_GESTURE_EVENT, "gesture"},
+        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility"}};
 
     for (auto itr = accessibilityEventTable.begin(); itr != accessibilityEventTable.end(); ++itr) {
         if (value & itr->first) {
