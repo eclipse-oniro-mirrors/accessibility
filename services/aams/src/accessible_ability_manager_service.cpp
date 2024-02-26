@@ -258,7 +258,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
     const sptr<IAccessibleAbilityManagerStateObserver> &callback)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    
     if (!callback || !handler_) {
         HILOG_ERROR("Parameters check failed!");
         return 0;
@@ -282,10 +282,13 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
             return;
         }
         callback->AsObject()->AddDeathRecipient(stateCallbackDeathRecipient_);
-        auto iter = std::find(stateCallbacks_.begin(), stateCallbacks_.end(), callback);
-        if (iter == stateCallbacks_.end()) {
-            stateCallbacks_.push_back(callback);
-            HILOG_INFO("RegisterStateObserver successfully");
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            auto iter = std::find(stateCallbacks_.begin(), stateCallbacks_.end(), callback);
+            if (iter == stateCallbacks_.end()) {
+                stateCallbacks_.push_back(callback);
+                HILOG_INFO("RegisterStateObserver successfully");
+            }
         }
 
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1197,7 +1200,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
 void AccessibleAbilityManagerService::UpdateAccessibilityState()
 {
     HILOG_DEBUG("start.");
-    std::lock_guard<std::mutex> lock(mutex_);
+    
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -1207,9 +1210,12 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
     if (!(state & STATE_ACCESSIBILITY_ENABLED)) {
         Singleton<AccessibilityWindowManager>::GetInstance().ClearAccessibilityFocused();
     }
-    for (auto &callback : stateCallbacks_) {
-        if (callback) {
-            callback->OnStateChanged(state);
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        for (auto &callback : stateCallbacks_) {
+            if (callback) {
+                callback->OnStateChanged(state);
+            }
         }
     }
 }
@@ -2126,7 +2132,7 @@ void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
     const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote)
 {
     HILOG_INFO("remove callback[%{public}d]", callback);
-    std::lock_guard<std::mutex> lock(mutex_);
+    
     if (!handler_) {
         HILOG_ERROR("handler is nullptr");
         return;
@@ -2146,12 +2152,15 @@ void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
         switch (callback) {
             case STATE_CALLBACK:
                 {
-                    auto iter = std::find_if(stateCallbacks_.begin(), stateCallbacks_.end(),
-                        [remote](const sptr<IAccessibleAbilityManagerStateObserver> &stateCallback) {
-                            return stateCallback->AsObject() == remote;
-                        });
-                    if (iter != stateCallbacks_.end()) {
-                        stateCallbacks_.erase(iter);
+                    {
+                        std::lock_guard<std::mutex> lock(mutex_);
+                        auto iter = std::find_if(stateCallbacks_.begin(), stateCallbacks_.end(),
+                            [remote](const sptr<IAccessibleAbilityManagerStateObserver> &stateCallback) {
+                                return stateCallback->AsObject() == remote;
+                            });
+                        if (iter != stateCallbacks_.end()) {
+                            stateCallbacks_.erase(iter);
+                        }
                     }
                 }
                 break;
