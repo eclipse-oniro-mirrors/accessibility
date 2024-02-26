@@ -55,7 +55,7 @@ bool StateObserverOnRemoteRequestFuzzTest(const uint8_t* databuffer, size_t size
     MessageParcel stateObserverReply;
     MessageOption option(MessageOption::TF_SYNC);
 
-    position += GetData<uint32_t>(code, &databuffer[position], size - position);
+    GetData<uint32_t>(code, &databuffer[position], size - position);
     ManagerStateObserverImplFuzzTest callBack;
     stateObserverData.WriteInterfaceToken(ManagerStateObserverImplFuzzTest::GetDescriptor());
     callBack.OnRemoteRequest(code, stateObserverData, stateObserverReply, option);

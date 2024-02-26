@@ -109,7 +109,7 @@ bool FuzzHandleSearchElementInfoByAccessibilityId(const uint8_t *data, size_t si
 
     position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
     position += GetObject<int64_t>(elementId, &data[position], size - position);
-    position += GetObject<int32_t>(requestId, &data[position], size - position);
+    GetObject<int32_t>(requestId, &data[position], size - position);
     std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
     mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
     mdata.WriteInt32(accessibilityWindowId);
@@ -142,7 +142,7 @@ bool FuzzHandleSearchElementInfosByText(const uint8_t *data, size_t size)
         position += GetObject<char>(name[i], data + position, size - position);
     }
     std::string text(name);
-    position += GetObject<int32_t>(requestId, &data[position], size - position);
+    GetObject<int32_t>(requestId, &data[position], size - position);
     std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
     mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
     mdata.WriteInt32(accessibilityWindowId);
@@ -172,7 +172,7 @@ bool FuzzHandleFindFocusedElementInfo(const uint8_t *data, size_t size)
     position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
     position += GetObject<int64_t>(elementId, &data[position], size - position);
     position += GetObject<int32_t>(focusType, &data[position], size - position);
-    position += GetObject<int32_t>(requestId, &data[position], size - position);
+    GetObject<int32_t>(requestId, &data[position], size - position);
     std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
     mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
     mdata.WriteInt32(accessibilityWindowId);
@@ -202,7 +202,7 @@ bool FuzzHandleFocusMoveSearch(const uint8_t *data, size_t size)
     position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
     position += GetObject<int64_t>(elementId, &data[position], size - position);
     position += GetObject<int32_t>(direction, &data[position], size - position);
-    position += GetObject<int32_t>(requestId, &data[position], size - position);
+    GetObject<int32_t>(requestId, &data[position], size - position);
     std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
     mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
     mdata.WriteInt32(accessibilityWindowId);
@@ -230,7 +230,7 @@ bool FuzzHandleExecuteAction(const uint8_t *data, size_t size)
 
     position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
     position += GetObject<int64_t>(elementId, &data[position], size - position);
-    position += GetObject<int32_t>(action, &data[position], size - position);
+    GetObject<int32_t>(action, &data[position], size - position);
     std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
     mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
     mdata.WriteInt32(accessibilityWindowId);

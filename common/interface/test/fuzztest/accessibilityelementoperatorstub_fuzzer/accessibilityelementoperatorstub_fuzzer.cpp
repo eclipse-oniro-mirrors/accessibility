@@ -67,7 +67,7 @@ bool EleOperatorOnRemoteRequestFuzzTest(const uint8_t* databuffer, size_t size)
     MessageParcel eleOperatorReply;
     MessageOption option(MessageOption::TF_SYNC);
 
-    position += GetData<uint32_t>(code, &databuffer[position], size - position);
+    GetData<uint32_t>(code, &databuffer[position], size - position);
     ElementOperatorImplFuzzTest callBack;
     eleOperatorData.WriteInterfaceToken(ElementOperatorImplFuzzTest::GetDescriptor());
     callBack.OnRemoteRequest(code, eleOperatorData, eleOperatorReply, option);

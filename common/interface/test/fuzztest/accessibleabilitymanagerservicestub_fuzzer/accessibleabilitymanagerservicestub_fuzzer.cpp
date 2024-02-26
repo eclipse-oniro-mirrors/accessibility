@@ -117,13 +117,13 @@ public:
     uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override {return 0;}
 };
 
-uint32_t GetU32Data(const char* ptr)
+uint32_t GetU32Data(const uint8_t* ptr)
 {
     return (ptr[0] << FUZZ_NUM24) | (ptr[FUZZ_NUM1] << FUZZ_NUM16) |
         (ptr[FUZZ_NUM2] << FUZZ_NUM8) | (ptr[FUZZ_NUM3]);
 }
 
-bool OnRemoteRequestSvcFuzzTest(const char* data, size_t size)
+bool OnRemoteRequestSvcFuzzTest(const uint8_t* data, size_t size)
 {
     uint32_t code = (GetU32Data(data) % MESSAGE_SIZE) + BASE_CODE;
     MessageParcel datas;
@@ -144,33 +144,6 @@ bool OnRemoteRequestSvcFuzzTest(const char* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    if (data == nullptr) {
-        return 0;
-    }
-
-    if (size < OHOS::Accessibility::U32_AT_SIZE) {
-        return 0;
-    }
-
-    /* Validate the length of size */
-    if (size > OHOS::Accessibility::FOO_MAX_LEN) {
-        return 0;
-    }
-
-    char* ch = (char *)malloc(size + 1);
-    if (ch == nullptr) {
-        return 0;
-    }
-
-    (void)memset_s(ch, size + 1, 0x00, size + 1);
-    if (memcpy_s(ch, size, data, size) != EOK) {
-        free(ch);
-        ch = nullptr;
-        return 0;
-    }
-    /* Run your code on data */
-    OHOS::Accessibility::OnRemoteRequestSvcFuzzTest(ch, size);
-    free(ch);
-    ch = nullptr;
+    OHOS::Accessibility::OnRemoteRequestSvcFuzzTest(data, size);
     return 0;
 }

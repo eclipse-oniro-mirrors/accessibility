@@ -63,7 +63,7 @@ bool OnRemoteRequestFuzzTest(const uint8_t* data, size_t size)
     MessageParcel configReply;
     MessageOption option(MessageOption::TF_SYNC);
 
-    position += GetObject<uint32_t>(configCode, &data[position], size - position);
+    GetObject<uint32_t>(configCode, &data[position], size - position);
     ConfigObserverImplFuzzTest callBackImp;
     configData.WriteInterfaceToken(ConfigObserverImplFuzzTest::GetDescriptor());
     callBackImp.OnRemoteRequest(configCode, configData, configReply, option);
