@@ -67,6 +67,7 @@ constexpr int32_t NUMBER_1 = 1;
 constexpr int32_t NUMBER_2 = 2;
 
 constexpr int32_t START_ANGLE = -90; // start angle
+constexpr int32_t INVALID_NODE_ID = -1;
 
 std::shared_ptr<AccessibilityCircleDrawingManager> AccessibilityCircleDrawingManager::pointDrawMgr_ = nullptr;
 
@@ -120,6 +121,12 @@ AccessibilityCircleDrawingManager::~AccessibilityCircleDrawingManager()
     surfaceNode_->DetachToDisplay(screenId_);
     surfaceNode_ = nullptr;
     canvasNode_ = nullptr;
+    if (rsUiDirector_ != nullptr) {
+        rsUiDirector_->SetRoot(INVALID_NODE_ID);
+    }
+
+    rootNode_ = nullptr;
+    rsUiDirector_ = nullptr;
     Rosen::RSTransaction::FlushImplicitTransaction();
 }
 
@@ -137,7 +144,11 @@ void AccessibilityCircleDrawingManager::UpdatePointerVisible(bool state)
 
 void AccessibilityCircleDrawingManager::CreatePointerWindow(int32_t physicalX, int32_t physicalY, uint64_t screenId)
 {
-    HILOG_DEBUG();
+    rsUiDirector_ = Rosen::RSUIDirector::Create();
+    if (rsUiDirector_ == nullptr) {
+        return;
+    }
+
     Rosen::RSSurfaceNodeConfig surfaceNodeConfig;
     surfaceNodeConfig.SurfaceNodeName = "screen touch progress";
     Rosen::RSSurfaceNodeType surfaceNodeType = Rosen::RSSurfaceNodeType::SELF_DRAWING_WINDOW_NODE;
@@ -147,6 +158,7 @@ void AccessibilityCircleDrawingManager::CreatePointerWindow(int32_t physicalX, i
         return;
     }
 
+    rsUiDirector_->Init();
     surfaceNode_->SetFrameGravity(Rosen::Gravity::RESIZE_ASPECT_FILL);
     surfaceNode_->SetPositionZ(Rosen::RSSurfaceNode::POINTER_WINDOW_POSITION_Z);
     surfaceNode_->SetBounds(physicalX - half_, physicalY - half_, imageWidth_, imageHeight_);
@@ -154,6 +166,21 @@ void AccessibilityCircleDrawingManager::CreatePointerWindow(int32_t physicalX, i
     screenId_ = screenId;
     surfaceNode_->AttachToDisplay(screenId);
     surfaceNode_->SetRotation(0);
+    std::shared_ptr<Rosen::RectF> drawRect = std::make_shared<Rosen::RectF>(physicalX - half_, physicalY - half_,
+        imageWidth_, imageHeight_);
+    surfaceNode_->SetDrawRegion(drawRect);
+
+    rootNode_ = Rosen::RSRootNode::Create();
+    if (rootNode_ == nullptr) {
+        return;
+    }
+
+    rootNode_->SetBounds(0, 0, imageWidth_, imageHeight_);
+    rootNode_->SetFrame(0, 0, imageWidth_, imageHeight_);
+    rootNode_->SetBackgroundColor(SK_ColorTRANSPARENT); // USE_ROSEN_DRAWING
+    rootNode_->SetCornerRadius(1);
+    rootNode_->SetPositionZ(Rosen::RSSurfaceNode::POINTER_WINDOW_POSITION_Z);
+    rootNode_->SetRotation(0);
 
     canvasNode_ = Rosen::RSCanvasNode::Create();
     if (canvasNode_ == nullptr) {
@@ -161,13 +188,16 @@ void AccessibilityCircleDrawingManager::CreatePointerWindow(int32_t physicalX, i
         return;
     }
 
-    surfaceNode_->AddChild(canvasNode_, DEFAULT_VALUE);
+    rootNode_->AddChild(canvasNode_, DEFAULT_VALUE);
     canvasNode_->SetBounds(0, 0, imageWidth_, imageHeight_);
     canvasNode_->SetFrame(0, 0, imageWidth_, imageHeight_);
     canvasNode_->SetBackgroundColor(SK_ColorTRANSPARENT); // USE_ROSEN_DRAWING
     canvasNode_->SetCornerRadius(1);
     canvasNode_->SetPositionZ(Rosen::RSSurfaceNode::POINTER_WINDOW_POSITION_Z);
     canvasNode_->SetRotation(0);
+
+    rsUiDirector_->SetRSSurfaceNode(surfaceNode_);
+    rsUiDirector_->SetRoot(rootNode_->GetId());
     Rosen::RSTransaction::FlushImplicitTransaction();
 }
 
@@ -313,18 +343,6 @@ void AccessibilityCircleDrawingManager::SetPointerLocation(int32_t physicalX, in
             surfaceNode_->GetStagingProperties().GetBounds().w_);
         screenId_ = screenId;
         surfaceNode_->AttachToDisplay(screenId);
-        Rosen::RSTransaction::FlushImplicitTransaction();
-    }
-
-    if (canvasNode_ != nullptr) {
-        canvasNode_->SetBounds(0,
-            0,
-            canvasNode_->GetStagingProperties().GetBounds().z_,
-            canvasNode_->GetStagingProperties().GetBounds().w_);
-        canvasNode_->SetFrame(0,
-            0,
-            canvasNode_->GetStagingProperties().GetBounds().z_,
-            canvasNode_->GetStagingProperties().GetBounds().w_);
         Rosen::RSTransaction::FlushImplicitTransaction();
     }
 }
