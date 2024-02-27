@@ -708,6 +708,13 @@ type ElementAttributeValues = {
    * @since 9
    */
   'windowId': number;
+  /**
+   * Indicates the accessibility text.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 12
+   */
+  'accessibilityText': string;
 };
 
 /**

@@ -40,6 +40,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelFirstPart(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, componentType_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, text_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, hintText_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, accessibilityText_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, contentDescription_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, resourceName_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64Vector, parcel, &childNodeIds_);
@@ -151,6 +152,7 @@ bool AccessibilityElementInfoParcel::MarshallingFirstPart(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, componentType_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, text_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, hintText_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, accessibilityText_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, contentDescription_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, resourceName_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64Vector, parcel, childNodeIds_);
