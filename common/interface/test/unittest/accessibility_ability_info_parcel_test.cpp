@@ -14,7 +14,7 @@
  */
 
 #include <gtest/gtest.h>
-#include "../../include/parcel/accessibility_ability_info_parcel.h"
+#include "accessibility_ability_info_parcel.h"
 
 using namespace testing;
 using namespace testing::ext;

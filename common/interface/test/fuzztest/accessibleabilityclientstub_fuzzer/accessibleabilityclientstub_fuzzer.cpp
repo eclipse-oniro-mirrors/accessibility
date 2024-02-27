@@ -57,7 +57,7 @@ bool OnRemoteRequestFuzzTest(const uint8_t* data, size_t size)
     MessageParcel clientReply;
     MessageOption option(MessageOption::TF_SYNC);
 
-    position += GetObject<uint32_t>(cilentCode, &data[position], size - position);
+    GetObject<uint32_t>(cilentCode, &data[position], size - position);
     AccessibleAbilityClientTmplFuzzTest callBackImp;
     clientData.WriteInterfaceToken(AccessibleAbilityClientTmplFuzzTest::GetDescriptor());
     callBackImp.OnRemoteRequest(cilentCode, clientData, clientReply, option);
