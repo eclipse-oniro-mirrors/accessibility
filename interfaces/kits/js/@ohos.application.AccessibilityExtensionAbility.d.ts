@@ -156,6 +156,7 @@ declare interface AccessibilityEvent {
   target?: AccessibilityElement;
   timeStamp?: number;
   elementId?: number;
+  textAnnouncedForAccessibility?: string;
 }
 
 /**
