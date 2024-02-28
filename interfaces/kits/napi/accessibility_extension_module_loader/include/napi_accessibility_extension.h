@@ -166,6 +166,7 @@ struct AccessibilityEventInfoCallbackInfo : public ExtensionCallbackInfo {
     int64_t timeStamp_ = 0;
     std::shared_ptr<AccessibilityElement> element_ = nullptr;
     int64_t elementId_ = 0;
+    std::string textAnnouncedForAccessibility_ = "";
 };
 
 napi_handle_scope OpenScope(napi_env env);

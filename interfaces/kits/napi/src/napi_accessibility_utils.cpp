@@ -275,7 +275,8 @@ static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
         {EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT, "textSelectionUpdate"},
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT, "accessibilityFocus"},
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT, "accessibilityFocusClear"},
-        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility"}};
+        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility"},
+        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibilty"}};
 
     for (std::map<EventType, std::string>::iterator itr = accessibilityEventTable.begin();
          itr != accessibilityEventTable.end(); ++itr) {
@@ -498,7 +499,8 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_PAGE_STATE_UPDATE, "pageStateUpdate"},
         {EventType::TYPE_TOUCH_BEGIN, "touchBegin"},
         {EventType::TYPE_TOUCH_END, "touchEnd"},
-        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility"}};
+        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility"},
+        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibilty"}};
 
     if (a11yEvtTypeTable.find(type) == a11yEvtTypeTable.end()) {
         return "";
@@ -661,7 +663,8 @@ static EventType ConvertStringToEventInfoTypes(std::string type)
         {"textSelectionUpdate", EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT},
         {"accessibilityFocus", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT},
         {"accessibilityFocusClear", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT},
-        {"requestFocusForAccessibility", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY}};
+        {"requestFocusForAccessibility", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY},
+        {"announceForAccessibilty", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
@@ -1086,6 +1089,13 @@ bool ConvertEventInfoJSToNAPIPart3(
     dataValue = ConvertIntJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
         eventInfo.SetSource(dataValue);
+    }
+
+    napi_create_string_utf8(env, "textAnnouncedForAccessibility", NAPI_AUTO_LENGTH, &propertyNameValue);
+    std::string announceText = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        // use eventInfo.description to save announceText
+        eventInfo.SetDescription(announceText);
     }
     return true;
 }

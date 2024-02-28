@@ -336,6 +336,17 @@ napi_status SetNapiEventInfoIntProperty(napi_env env, const char* property, int6
     return napi_set_named_property(env, napiEventInfo, property, nValue);
 }
 
+napi_status SetEventInfoStringProperty(napi_env env, const char* property, std::string value, napi_value &napiEventInfo)
+{
+    napi_value nValue;
+    napi_status status = napi_create_string_utf8(env, value.c_str(), NAPI_AUTO_LENGTH, &nValue);
+    if (status != napi_ok) {
+        HILOG_ERROR();
+        return status;
+    }
+    return napi_set_named_property(env, napiEventInfo, property, nValue);
+}
+
 int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t *loop)
 {
     int ret = uv_queue_work_with_qos(
@@ -351,14 +362,8 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
             napi_value napiEventInfo = nullptr;
             napi_create_object(data->env_, &napiEventInfo);
 
-            napi_value nType;
             do {
-                if (napi_create_string_utf8(data->env_, data->eventType_.c_str(),
-                    NAPI_AUTO_LENGTH, &nType) != napi_ok) {
-                    GET_AND_THROW_LAST_ERROR((data->env_));
-                    break;
-                }
-                if (napi_set_named_property(data->env_, napiEventInfo, "eventType", nType) != napi_ok) {
+                if (SetEventInfoStringProperty(data->env_, "eventType", data->eventType_, napiEventInfo) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
@@ -370,6 +375,12 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
                 }
 
                 if (SetNapiEventInfoIntProperty(data->env_, "elementId", data->elementId_, napiEventInfo) != napi_ok) {
+                    GET_AND_THROW_LAST_ERROR((data->env_));
+                    break;
+                }
+
+                if (SetEventInfoStringProperty(data->env_, "textAnnouncedForAccessibility",
+                    data->textAnnouncedForAccessibility_, napiEventInfo) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
@@ -413,6 +424,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
     callbackInfo->timeStamp_ = eventInfo.GetTimeStamp();
     callbackInfo->element_ = GetElement(eventInfo);
     callbackInfo->elementId_ = eventInfo.GetAccessibilityId();
+    callbackInfo->textAnnouncedForAccessibility_ = eventInfo.GetDescription();
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {
         HILOG_ERROR("Failed to create data.");

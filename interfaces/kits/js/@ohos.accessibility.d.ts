@@ -59,7 +59,7 @@ declare namespace accessibility {
    */
   type EventType = 'accessibilityFocus' | 'accessibilityFocusClear' |
     'click' | 'longClick' | 'focus' | 'select' | 'hoverEnter' | 'hoverExit' |
-    'textUpdate' | 'textSelectionUpdate' | 'scroll' | 'requestFocusForAccessibility';
+    'textUpdate' | 'textSelectionUpdate' | 'scroll' | 'requestFocusForAccessibility' | 'announceForAccessibilty';
 
   /**
    * The change type of the windowsChange event.
@@ -651,6 +651,22 @@ declare namespace accessibility {
      * @since 7
      */
     itemCount?: number;
+
+    /**
+     * The id of element.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @since 12
+     */
+    elementId?: number;
+
+    /**
+     * The context of announce accessibility text.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @since 12
+     */
+    textAnnouncedForAccessibility?: string;
   }
 }
 export default accessibility;
