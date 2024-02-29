@@ -59,7 +59,7 @@ declare namespace accessibility {
    */
   type EventType = 'accessibilityFocus' | 'accessibilityFocusClear' |
     'click' | 'longClick' | 'focus' | 'select' | 'hoverEnter' | 'hoverExit' |
-    'textUpdate' | 'textSelectionUpdate' | 'scroll' | 'requestFocusForAccessibility' | 'announceForAccessibilty';
+    'textUpdate' | 'textSelectionUpdate' | 'scroll' | 'requestFocusForAccessibility' | 'announceForAccessibility';
 
   /**
    * The change type of the windowsChange event.
