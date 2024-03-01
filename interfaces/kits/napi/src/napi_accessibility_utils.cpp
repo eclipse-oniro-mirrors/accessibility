@@ -276,7 +276,7 @@ static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT, "accessibilityFocus"},
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT, "accessibilityFocusClear"},
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility"},
-        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibilty"}};
+        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility"}};
 
     for (std::map<EventType, std::string>::iterator itr = accessibilityEventTable.begin();
          itr != accessibilityEventTable.end(); ++itr) {
@@ -500,7 +500,7 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_TOUCH_BEGIN, "touchBegin"},
         {EventType::TYPE_TOUCH_END, "touchEnd"},
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility"},
-        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibilty"}};
+        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility"}};
 
     if (a11yEvtTypeTable.find(type) == a11yEvtTypeTable.end()) {
         return "";
@@ -664,7 +664,7 @@ static EventType ConvertStringToEventInfoTypes(std::string type)
         {"accessibilityFocus", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT},
         {"accessibilityFocusClear", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT},
         {"requestFocusForAccessibility", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY},
-        {"announceForAccessibilty", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY}};
+        {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
