@@ -326,8 +326,12 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "target", nTargetObject));
 }
 
-napi_status SetNapiEventInfoIntProperty(napi_env env, const char* property, int64_t value, napi_value &napiEventInfo)
+napi_status SetNapiEventInfoIntProperty(napi_env env, const char *property, int64_t value, napi_value &napiEventInfo)
 {
+    if (property == nullptr) {
+        HILOG_ERROR("property is null");
+        return napi_invalid_arg;
+    }
     napi_value nValue;
     napi_status status = napi_create_int64(env, value, &nValue);
     if (status != napi_ok) {
@@ -336,8 +340,12 @@ napi_status SetNapiEventInfoIntProperty(napi_env env, const char* property, int6
     return napi_set_named_property(env, napiEventInfo, property, nValue);
 }
 
-napi_status SetEventInfoStringProperty(napi_env env, const char* property, std::string value, napi_value &napiEventInfo)
+napi_status SetEventInfoStrProperty(napi_env env, const char *property, std::string &value, napi_value &napiEventInfo)
 {
+    if (property == nullptr) {
+        HILOG_ERROR("property is null");
+        return napi_invalid_arg;
+    }
     napi_value nValue;
     napi_status status = napi_create_string_utf8(env, value.c_str(), NAPI_AUTO_LENGTH, &nValue);
     if (status != napi_ok) {
@@ -363,7 +371,7 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
             napi_create_object(data->env_, &napiEventInfo);
 
             do {
-                if (SetEventInfoStringProperty(data->env_, "eventType", data->eventType_, napiEventInfo) != napi_ok) {
+                if (SetEventInfoStrProperty(data->env_, "eventType", data->eventType_, napiEventInfo) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
@@ -379,7 +387,7 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
                     break;
                 }
 
-                if (SetEventInfoStringProperty(data->env_, "textAnnouncedForAccessibility",
+                if (SetEventInfoStrProperty(data->env_, "textAnnouncedForAccessibility",
                     data->textAnnouncedForAccessibility_, napiEventInfo) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
