@@ -69,6 +69,8 @@ public:
     // Feature flag for screen touch.
     static constexpr uint32_t FEATURE_SCREEN_TOUCH = 0x00000080;
 
+    static constexpr uint32_t PRIORITY_EVENT = 500;
+
     static sptr<AccessibilityInputInterceptor> GetInstance();
     ~AccessibilityInputInterceptor();
     void ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const;
