@@ -206,14 +206,14 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
     auto iter = elementOperators_.find(windowId);
     if (iter != elementOperators_.end()) {
         HILOG_ERROR("windowID[%{public}d] is exited", windowId);
-        return RET_OK;
+        return RET_ERR_CONNECTION_EXIST;
     }
 
     sptr<AccessibilityElementOperatorImpl> aamsInteractionOperator =
         new(std::nothrow) AccessibilityElementOperatorImpl(windowId, operation, *this);
     if (!aamsInteractionOperator) {
         HILOG_ERROR("Failed to create aamsInteractionOperator.");
-        return RET_OK;
+        return RET_ERR_NULLPTR;
     }
     elementOperators_[windowId] = aamsInteractionOperator;
     return serviceProxy_->RegisterElementOperator(windowId, aamsInteractionOperator);
