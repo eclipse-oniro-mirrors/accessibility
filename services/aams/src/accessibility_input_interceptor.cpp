@@ -240,6 +240,11 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
         return;
     }
 
+    if (interceptorId_ >= 0) {
+        inputManager_->RemoveInterceptor(interceptorId_);
+        interceptorId_ = -1;
+    }
+
     HILOG_INFO("interceptorId:%{public}d", interceptorId_);
     if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
@@ -248,16 +253,12 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
         (availableFunctions_ & FEATURE_MOUSE_KEY) ||
         (availableFunctions_ & FEATURE_SHORT_KEY) ||
         (availableFunctions_ & FEATURE_SCREEN_TOUCH)) {
-        if (interceptorId_ < 0) {
             inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
             interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
-            HILOG_DEBUG("interceptorId:%{public}d.", interceptorId_);
-        }
-    } else {
-        if (interceptorId_ >= 0) {
-            inputManager_->RemoveInterceptor(interceptorId_);
-        }
-        interceptorId_ = -1;
+    } else if ((availableFunctions_ & FEATURE_FILTER_KEY_EVENTS) || (availableFunctions_ & FEATURE_SHORT_KEY)) {
+            inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
+            interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_, PRIORITY_EVENT,
+                MMI::CapabilityToTags(MMI::INPUT_DEV_CAP_KEYBOARD));
     }
 }
 
