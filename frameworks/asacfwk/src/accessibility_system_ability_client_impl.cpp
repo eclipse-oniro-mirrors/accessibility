@@ -206,7 +206,7 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
     auto iter = elementOperators_.find(windowId);
     if (iter != elementOperators_.end()) {
         HILOG_ERROR("windowID[%{public}d] is exited", windowId);
-        return RET_ERR_CONNECTION_EXIST;
+        return RET_OK;
     }
 
     sptr<AccessibilityElementOperatorImpl> aamsInteractionOperator =
