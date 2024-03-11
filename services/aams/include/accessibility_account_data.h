@@ -249,6 +249,7 @@ public:
     void Init();
 
     void UpdateEnableAbilityListsState();
+    void UpdateInstallAbilityListsState();
 
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);

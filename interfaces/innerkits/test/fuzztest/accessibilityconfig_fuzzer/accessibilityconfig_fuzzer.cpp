@@ -42,6 +42,9 @@ public:
     void OnEnableAbilityListsStateChanged() override
     {
     }
+    void OnInstallAbilityListsStateChanged() override
+    {
+    }
 };
 
 template<class T>

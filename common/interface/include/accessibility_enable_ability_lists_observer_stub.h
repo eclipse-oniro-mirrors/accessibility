@@ -52,6 +52,14 @@ private:
      * @return NO_ERROR: successful; otherwise is failed.
      */
     ErrCode HandleOnAccessibilityEnableAbilityListsChanged(MessageParcel &data, MessageParcel &reply);
+
+    /**
+     * @brief Handle the IPC request for the function:HandleOnInstallStateChanged.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleOnAccessibilityInstallAbilityListsChanged(MessageParcel &data, MessageParcel &reply);
 };
 } // namespace Accessibility
 } // namespace OHOS

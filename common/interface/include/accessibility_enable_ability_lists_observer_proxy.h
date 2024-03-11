@@ -38,6 +38,11 @@ public:
      * @brief Receive the state notify from AAMS and send it to the observer registered.
      */
     virtual void OnAccessibilityEnableAbilityListsChanged() override;
+
+    /**
+     * @brief Receive the install state notify from AAMS and send it to the observer registered.
+     */
+    virtual void OnAccessibilityInstallAbilityListsChanged() override;
 private:
     /**
      * @brief Write the descriptor of IPC.

@@ -1346,6 +1346,23 @@ void AccessibilityConfig::Impl::OnAccessibilityEnableAbilityListsChanged()
     }
 }
 
+void AccessibilityConfig::Impl::OnAccessibilityInstallAbilityListsChanged()
+{
+    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
+    std::vector<std::shared_ptr<AccessibilityEnableAbilityListsObserver>> observers;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        observers = enableAbilityListsObservers_;
+    }
+    for (auto &enableAbilityListsObserver : observers) {
+        if (enableAbilityListsObserver != nullptr) {
+            enableAbilityListsObserver->OnInstallAbilityListsStateChanged();
+        } else {
+            HILOG_ERROR("enableAbilityListsObserver is null");
+        }
+    }
+}
+
 void AccessibilityConfig::Impl::OnIgnoreRepeatClickStateChanged(const uint32_t stateType)
 {
     if (stateType & Accessibility::STATE_IGNORE_REPEAT_CLICK_ENABLED) {
