@@ -1,10 +1,11 @@
 # Accessibility
 
--   [Introduction](#intro)
--   [Architecture](#architecture)
--   [Directory Structure](#files)
--   [Usage](#usage)
--   [Repositories Involved](#relevant)
+- [Accessibility](#accessibility)
+  - [Introduction](#introduction)
+  - [Architecture](#architecture)
+  - [Directory Structure](#directory-structure)
+  - [Usage](#usage)
+  - [Repositories Involved](#repositories-involved)
 
 ## Introduction<a name="intro"></a>
 
@@ -62,11 +63,17 @@ The accessibility framework provides a standard mechanism for exchanging informa
 
 ## Usage<a name="usage"></a>
 
-[1. accessibility configuration](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility-config.md)
+[1. accessibility configuration](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-accessibility-config-sys.md)
 
-[2. accessibility extension](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility-extension-context.md)
+[2. accessibility extension](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-inner-application-accessibilityExtensionContext.md)
 
-[3. accessibility](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility.md)
+[3. accessibility](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-accessibility.md)
+
+[4. accessibility extension ability](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-application-accessibilityExtensionAbility.md)
+
+[5. accessibility gesturePath](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-accessibility-GesturePath.md)
+
+[6. accessibility gesturePoint](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-accessibility-GesturePoint.md)
 
 ## Repositories Involved<a name="relevant"></a>
 

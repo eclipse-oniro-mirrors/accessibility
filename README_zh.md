@@ -1,10 +1,11 @@
 # 无障碍子系统
 
--   [简介](#intro)
--   [架构图](#architecture)
--   [目录](#files)
--   [使用说明](#usage)
--   [相关仓](#relevant)
+- [无障碍子系统](#无障碍子系统)
+  - [简介](#简介)
+  - [架构图](#架构图)
+  - [目录](#目录)
+  - [使用说明](#使用说明)
+  - [相关仓](#相关仓)
 ## 简介<a name="intro"></a>
 
 **无障碍子系统**提供在应用程序和辅助应用之间交换信息的标准机制，支持开发辅助应用增强无障碍功能体验。典型的应用场景包含两方面：
@@ -64,17 +65,17 @@
 
 ## 使用说明<a name="usage"></a>
 
-[1. 系统辅助功能配置](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility-config.md)
+[1. 系统辅助功能配置](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-accessibility-config-sys.md)
 
-[2. 辅助扩展扩展上下文](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility-extension-context.md)
+[2. 辅助扩展扩展上下文](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-inner-application-accessibilityExtensionContext.md)
 
-[3. 辅助功能](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility.md)
+[3. 辅助功能](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-accessibility.md)
 
-[4. 辅助功能扩展能力](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-application-AccessibilityExtensionAbility.md)
+[4. 辅助功能扩展能力](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-application-accessibilityExtensionAbility.md)
 
-[5. 手势路径](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility-GesturePath.md)
+[5. 手势路径](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-accessibility-GesturePath.md)
 
-[6. 手势触摸点](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility-GesturePoint.md)
+[6. 手势触摸点](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-accessibility-kit/js-apis-accessibility-GesturePoint.md)
 
 ## 相关仓<a name="relevant"></a>
 
