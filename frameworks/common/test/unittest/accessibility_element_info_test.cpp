@@ -1161,5 +1161,20 @@ HWTEST_F(AccessibilityElementInfoTest, Rect_001, TestSize.Level1)
     EXPECT_EQ(rect.GetRightBottomYScreenPostion(), 1);
     GTEST_LOG_(INFO) << "Rect_001 end";
 }
+
+/**
+ * @tc.number: SetAccessibilityText_001
+ * @tc.name: SetAccessibilityText
+ * @tc.desc: Test function SetAccessibilityText, GetAccessibilityText
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityText_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityText_001 start";
+    elementInfo_->SetAccessibilityText("test");
+    EXPECT_STREQ(elementInfo_->GetAccessibilityText().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetAccessibilityText_001 end";
+}
+
+
 } // namespace Accessibility
 } // namespace OHOS

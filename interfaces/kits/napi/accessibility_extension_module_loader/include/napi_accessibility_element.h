@@ -119,6 +119,7 @@ public:
     static void GetElementInfoValueMax(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoValueMin(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoValueNow(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoAccessibilityText(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);

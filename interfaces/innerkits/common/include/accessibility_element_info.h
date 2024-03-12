@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -1312,6 +1312,20 @@ public:
      */
     const std::string &GetLatestContent() const;
 
+    /**
+     * @brief Set accessibility text
+     * @param accessibilityText The accessibility text of node
+     * @sysCap Accessibility
+     */
+    void SetAccessibilityText(const std::string &accessibilityText);
+
+    /**
+     * @brief Get accessibility text
+     * @return The accessibility text of node
+     * @sysCap Accessibility
+     */
+    const std::string &GetAccessibilityText() const;
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1321,6 +1335,7 @@ protected:
     std::string componentType_ = "";
     std::string text_ = "";
     std::string hintText_ = "";
+    std::string accessibilityText_ = "";
     std::string contentDescription_ = "";
     std::string resourceName_ = "";
     std::string inspectorKey_ = "";
