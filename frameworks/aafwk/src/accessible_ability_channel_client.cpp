@@ -194,6 +194,10 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
         return ret;
     }
 
+    if (elementId == AccessibilityElementInfo::ROOT_PARENT_ID) {
+        elementOperator->SetSearchElementInfoByAccessibilityIdResult(elementInfos, requestId);
+        return RET_OK;
+    }
     std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to wait result");
