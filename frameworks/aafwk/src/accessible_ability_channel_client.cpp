@@ -194,7 +194,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
         return ret;
     }
 
-    if (elementId == AccessibilityElementInfo::ROOR_PARENT_ID) {
+    if (elementId == AccessibilityElementInfo::ROOT_PARENT_ID) {
         elementOperator->SetSearchElementInfoByAccessibilityIdResult(elementInfos, requestId);
         return RET_OK;
     }
