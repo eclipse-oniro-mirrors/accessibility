@@ -408,6 +408,7 @@ class AccessibilityElementInfo {
 public:
     static constexpr int64_t UNDEFINED_ACCESSIBILITY_ID = -1;
     static constexpr int32_t MAX_SIZE = 50;
+    static constexpr int64_t ROOT_PARENT_ID = -2100000;
 
     /**
      * @brief Construct
