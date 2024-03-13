@@ -84,6 +84,8 @@ enum ChangeAction : int32_t {
     POINTER_DOWN,
     POINTER_UP,
     POINTER_MOVE,
+    HOVER_ENTER,
+    HOVER_EXIT,
 };
 
 class TGEventHandler : public AppExecFwk::EventHandler {
