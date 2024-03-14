@@ -62,5 +62,32 @@ void AccessibilityEnableAbilityListsObserverProxy::OnAccessibilityEnableAbilityL
         HILOG_ERROR("OnAccessibilityEnableAbilityListsChanged fail, error: %{public}d", result);
     }
 }
+
+void AccessibilityEnableAbilityListsObserverProxy::OnAccessibilityInstallAbilityListsChanged()
+{
+    HILOG_DEBUG();
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("write interface token failed");
+        return;
+    }
+
+    sptr<IRemoteObject> remote = Remote();
+    if (!remote) {
+        HILOG_ERROR("fail to send transact cmd due to remote object");
+        return;
+    }
+
+    int32_t result = remote->SendRequest(static_cast<uint32_t>(
+        AccessibilityInterfaceCode::ON_ACCESSIBILITY_INSTALL_ABILITY_LISTS_CHANGED),
+        data, reply, option);
+    if (result != NO_ERROR) {
+        HILOG_ERROR("OnAccessibilityInstallAbilityListsChanged fail, error: %{public}d", result);
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

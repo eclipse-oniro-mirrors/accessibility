@@ -57,6 +57,7 @@ public:
 
     MOCK_METHOD4(OnRemoteRequest, int(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option));
     MOCK_METHOD0(OnAccessibilityEnableAbilityListsChanged, void());
+    MOCK_METHOD0(OnAccessibilityInstallAbilityListsChanged, void());
 };
 
 

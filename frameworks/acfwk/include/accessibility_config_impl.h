@@ -101,6 +101,7 @@ public:
     void OnAccessibleAbilityManagerClickResponseTimeChanged(const uint32_t clickResponseTime);
     void OnAccessibleAbilityManagerIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime);
     void OnAccessibilityEnableAbilityListsChanged();
+    void OnAccessibilityInstallAbilityListsChanged();
 
 private:
     class AccessibilityEnableAbilityListsObserverImpl :
@@ -113,6 +114,11 @@ private:
         virtual void OnAccessibilityEnableAbilityListsChanged() override
         {
             client_.OnAccessibilityEnableAbilityListsChanged();
+        }
+
+        virtual void OnAccessibilityInstallAbilityListsChanged() override
+        {
+            client_.OnAccessibilityInstallAbilityListsChanged();
         }
     private:
         Impl &client_;

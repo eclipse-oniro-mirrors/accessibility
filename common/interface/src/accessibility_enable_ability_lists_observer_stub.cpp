@@ -49,5 +49,13 @@ ErrCode AccessibilityEnableAbilityListsObserverStub::HandleOnAccessibilityEnable
     OnAccessibilityEnableAbilityListsChanged();
     return NO_ERROR;
 }
+
+ErrCode AccessibilityEnableAbilityListsObserverStub::HandleOnAccessibilityInstallAbilityListsChanged(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    OnAccessibilityInstallAbilityListsChanged();
+    return NO_ERROR;
+}
 } // namespace Accessibility
 } // namespace OHOS

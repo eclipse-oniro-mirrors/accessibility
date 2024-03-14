@@ -240,13 +240,14 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
         errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
 
+    std::string observerType = "";
     if (errCode == OHOS::Accessibility::RET_OK) {
-        std::string observerType = "";
         if (!ParseString(env, observerType, args[PARAM0])) {
             HILOG_ERROR("observer type parse failed");
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         } else {
-            if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") != 0) {
+            if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") != 0 ||
+                std::strcmp(observerType.c_str(), "installedAccessibilityListChange") != 0) {
                 HILOG_ERROR("args[PARAM0] is wrong[%{public}s", observerType.c_str());
                 errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
             }
@@ -268,8 +269,16 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
         napi_throw(env, err);
         return nullptr;
     }
-
-    enableAbilityListsObservers_->SubscribeObserver(env, args[PARAM1]);
+    if (enableAbilityListsObservers_ == nullptr) {
+        HILOG_ERROR("enableAbilityListsObservers_ is null");
+        return nullptr;
+    }
+    if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") == 0) {
+        enableAbilityListsObservers_->SubscribeObserver(env, args[PARAM1]);
+    }
+    if (std::strcmp(observerType.c_str(), "installedAccessibilityListChange") == 0) {
+        enableAbilityListsObservers_->SubscribeInstallObserver(env, args[PARAM1]);
+    }
     return nullptr;
 }
 
@@ -288,14 +297,14 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
         HILOG_ERROR("argc is invalid: %{public}zu", argc);
         errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
-
+    std::string observerType = "";
     if (errCode == OHOS::Accessibility::RET_OK) {
-        std::string observerType = "";
         if (!ParseString(env, observerType, args[PARAM0])) {
             HILOG_ERROR("observer type parse failed");
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         } else {
-            if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") != 0) {
+            if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") != 0 ||
+                std::strcmp(observerType.c_str(), "installedAccessibilityListChange") != 0) {
                 HILOG_ERROR("args[PARAM0] is wrong[%{public}s", observerType.c_str());
                 errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
             }
@@ -308,11 +317,22 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
         napi_throw(env, err);
         return nullptr;
     }
-
+    if (enableAbilityListsObservers_ == nullptr) {
+        HILOG_ERROR("enableAbilityListsObservers_ is null");
+        return nullptr;
+    }
     if (argc > ARGS_SIZE_TWO - 1 && CheckJsFunction(env, args[PARAM1])) {
-        enableAbilityListsObservers_->UnsubscribeObserver(env, args[PARAM1]);
+        if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") == 0) {
+            enableAbilityListsObservers_->UnsubscribeObserver(env, args[PARAM1]);
+        } else {
+            enableAbilityListsObservers_->UnsubscribeInstallObserver(env, args[PARAM1]);
+        }
     } else {
-        enableAbilityListsObservers_->UnsubscribeObservers();
+        if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") == 0) {
+            enableAbilityListsObservers_->UnsubscribeObservers();
+        } else {
+            enableAbilityListsObservers_->UnsubscribeInstallObservers();
+        }
     }
     return nullptr;
 }
@@ -933,6 +953,19 @@ void EnableAbilityListsObserverImpl::OnEnableAbilityListsStateChanged()
     }
 }
 
+void EnableAbilityListsObserverImpl::OnInstallAbilityListsStateChanged()
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto &observer : installAbilityListsObservers_) {
+        if (observer) {
+            observer->OnEnableAbilityListsStateChanged();
+        } else {
+            HILOG_ERROR("observer is null");
+        }
+    }
+}
+
 void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_DEBUG();
@@ -955,6 +988,28 @@ void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value 
     HILOG_DEBUG("observer size%{public}zu", enableAbilityListsObservers_.size());
 }
 
+void EnableAbilityListsObserverImpl::SubscribeInstallObserver(napi_env env, napi_value observer)
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto iter = installAbilityListsObservers_.begin(); iter != installAbilityListsObservers_.end();) {
+        if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
+            HILOG_DEBUG("Observer exist");
+            return;
+        } else {
+            iter++;
+        }
+    }
+
+    napi_ref callback = nullptr;
+    napi_create_reference(env, observer, 1, &callback);
+    std::shared_ptr<EnableAbilityListsObserver> observerPtr =
+        std::make_shared<EnableAbilityListsObserver>(env, callback);
+
+    installAbilityListsObservers_.emplace_back(observerPtr);
+    HILOG_DEBUG("observer size%{public}zu", installAbilityListsObservers_.size());
+}
+
 void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_DEBUG();
@@ -974,4 +1029,25 @@ void EnableAbilityListsObserverImpl::UnsubscribeObservers()
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     enableAbilityListsObservers_.clear();
+}
+
+void EnableAbilityListsObserverImpl::UnsubscribeInstallObserver(napi_env env, napi_value observer)
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto iter = installAbilityListsObservers_.begin(); iter != installAbilityListsObservers_.end();) {
+        if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
+            installAbilityListsObservers_.erase(iter);
+            return;
+        } else {
+            iter++;
+        }
+    }
+}
+
+void EnableAbilityListsObserverImpl::UnsubscribeInstallObservers()
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    installAbilityListsObservers_.clear();
 }

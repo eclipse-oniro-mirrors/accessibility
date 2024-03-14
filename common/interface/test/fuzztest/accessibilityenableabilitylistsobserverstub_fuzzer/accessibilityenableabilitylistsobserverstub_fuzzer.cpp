@@ -31,6 +31,7 @@ public:
     ~EnableAbilityListsObserverTmplFuzzTest() = default;
 
     void OnAccessibilityEnableAbilityListsChanged() override {};
+    void OnAccessibilityInstallAbilityListsChanged() override {};
 };
 
 template<class T>

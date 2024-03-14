@@ -185,6 +185,16 @@ void AccessibilityAccountData::UpdateEnableAbilityListsState()
     }
 }
 
+void AccessibilityAccountData::UpdateInstallAbilityListsState()
+{
+    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
+    for (auto &observer : enableAbilityListsObservers_) {
+        if (observer) {
+            observer->OnAccessibilityInstallAbilityListsChanged();
+        }
+    }
+}
+
 void AccessibilityAccountData::AddAccessibilityWindowConnection(
     const int32_t windowId, const sptr<AccessibilityWindowConnection>& interactionConnection)
 {
@@ -253,6 +263,7 @@ void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abi
         }
     }
     installedAbilities_.push_back(abilityInfo);
+    UpdateInstallAbilityListsState();
     HILOG_DEBUG("push back installed ability successfully and installedAbilities_'s size is %{public}zu",
         installedAbilities_.size());
 }
@@ -265,9 +276,11 @@ void AccessibilityAccountData::RemoveInstalledAbility(const std::string &bundleN
             HILOG_DEBUG("Removed %{public}s from InstalledAbility: ", bundleName.c_str());
             if (!config_) {
                 it = installedAbilities_.erase(it);
+                UpdateInstallAbilityListsState();
                 continue;
             }
             it = installedAbilities_.erase(it);
+            UpdateInstallAbilityListsState();
         } else {
             ++it;
         }

@@ -67,6 +67,8 @@ public:
     MockAccessibilityEnableAbilityListsObserverImpl() = default;
     void OnEnableAbilityListsStateChanged() override
     {}
+    void OnInstallAbilityListsStateChanged() override
+    {}
 };
 
 /**

@@ -37,14 +37,19 @@ class EnableAbilityListsObserverImpl : public OHOS::AccessibilityConfig::Accessi
 public:
     EnableAbilityListsObserverImpl() = default;
     void OnEnableAbilityListsStateChanged() override;
+    void OnInstallAbilityListsStateChanged() override;
     void SubscribeToFramework();
     void SubscribeObserver(napi_env env, napi_value observer);
+    void SubscribeInstallObserver(napi_env env, napi_value observer);
     void UnsubscribeObserver(napi_env env, napi_value observer);
     void UnsubscribeObservers();
+    void UnsubscribeInstallObserver(napi_env env, napi_value observer);
+    void UnsubscribeInstallObservers();
 
 private:
     std::mutex mutex_;
     std::vector<std::shared_ptr<EnableAbilityListsObserver>> enableAbilityListsObservers_ = {};
+    std::vector<std::shared_ptr<EnableAbilityListsObserver>> installAbilityListsObservers_ = {};
 };
 
 struct NAccessibilityConfigData {

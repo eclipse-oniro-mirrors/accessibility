@@ -96,6 +96,11 @@ public:
      * @brief Called when the enable ability lists changed.
      */
     virtual void OnEnableAbilityListsStateChanged() = 0;
+
+    /**
+     * @brief Called when the enable ability lists changed.
+     */
+    virtual void OnInstallAbilityListsStateChanged() = 0;
 };
 
 class AccessibilityConfig {
