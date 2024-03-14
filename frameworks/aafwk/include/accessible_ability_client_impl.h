@@ -227,6 +227,14 @@ public:
         AccessibilityElementInfo &parent) override;
 
     /**
+     * @brief Get node information based on element id in active window.
+     * @param elementId The target element id.
+     * @param targetElementInfo The element info of specified content.
+     * @return Return RET_OK if gets info successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetByElementId(const int64_t elementId, AccessibilityElementInfo &targetElementInfo) override;
+
+    /**
      * @brief Executes a specified action.
      * @param elementInfo The source info to execute action.
      * @param action: the action type

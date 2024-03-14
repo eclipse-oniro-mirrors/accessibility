@@ -754,6 +754,36 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     return SearchElementInfoFromAce(windowId, elementId, cacheMode_, parent);
 }
 
+RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId,
+    AccessibilityElementInfo &targetElementInfo)
+{
+    HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("failed to connect to aams");
+        return RET_ERR_SAMGR;
+    }
+
+    if (!channelClient_) {
+        HILOG_ERROR("channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    int32_t activeWindow = serviceProxy_->GetActiveWindow();
+    HILOG_DEBUG("activeWindow[%{public}d]", activeWindow);
+    if (GetCacheElementInfo(activeWindow, elementId, targetElementInfo)) {
+        HILOG_DEBUG("get element info from cache");
+        return RET_OK;
+    }
+
+    return SearchElementInfoFromAce(activeWindow, elementId, cacheMode_, targetElementInfo);
+}
+
 RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &elementInfo,
     const ActionType action, const std::map<std::string, std::string> &actionArguments)
 {
