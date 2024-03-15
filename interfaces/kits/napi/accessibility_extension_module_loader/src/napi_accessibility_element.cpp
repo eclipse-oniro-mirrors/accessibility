@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <map>
 #include <vector>
+#include <cinttypes>
 #include "accessible_ability_client.h"
 #include "hilog_wrapper.h"
 #include "accessibility_utils.h"
@@ -1359,7 +1360,8 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
             HILOG_DEBUG("conditionType = %{public}s", conditionType.c_str());
             if (std::strcmp(conditionType.c_str(), "content") != 0 &&
                 std::strcmp(conditionType.c_str(), "focusType") != 0 &&
-                std::strcmp(conditionType.c_str(), "focusDirection") != 0) {
+                std::strcmp(conditionType.c_str(), "focusDirection") != 0 &&
+                std::strcmp(conditionType.c_str(), "elementId") != 0) {
                 HILOG_ERROR("argv[PARAM0] is wrong[%{public}s", conditionType.c_str());
                 errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
             } else {
@@ -1371,7 +1373,12 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
 
         // Parse queryData name
         std::string queryData = "";
+        int64_t elementId;
         if (ParseString(env, queryData, argv[PARAM1])) {
+            HILOG_DEBUG("queryData = %{public}s", queryData.c_str());
+            callbackInfo->condition_ = queryData;
+        } else if (ParseInt64(env, elementId, argv[PARAM1])) {
+            queryData = std::to_string(elementId);
             HILOG_DEBUG("queryData = %{public}s", queryData.c_str());
             callbackInfo->condition_ = queryData;
         } else {
@@ -1424,6 +1431,14 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
                 callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetNext(
                     *(callbackInfo->accessibilityElement_.elementInfo_), direction,
                     callbackInfo->nodeInfo_);
+            }
+            break;
+        case FindElementCondition::FIND_ELEMENT_CONDITION_ELEMENT_ID:
+            {
+                int64_t elementId = std::stoll(callbackInfo->condition_);
+                HILOG_DEBUG("elementId is %{public}" PRId64 "", elementId);
+                callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetByElementId(
+                    elementId, callbackInfo->nodeInfo_);
             }
             break;
         default:
@@ -1500,6 +1515,14 @@ void NAccessibilityElement::GetElement(NAccessibilityElementData *callbackInfo, 
                 ConvertElementInfoToJS(env, value, callbackInfo->nodeInfo_);
             }
             break;
+        case FindElementCondition::FIND_ELEMENT_CONDITION_ELEMENT_ID:
+            {
+                napi_value constructor = nullptr;
+                napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
+                napi_new_instance(env, constructor, 0, nullptr, &value);
+                ConvertElementInfoToJS(env, value, callbackInfo->nodeInfo_);
+            }
+            break;
         default:
             break;
     }
@@ -1564,7 +1587,8 @@ FindElementCondition NAccessibilityElement::ConvertStringToCondition(const std::
     static const std::map<std::string, FindElementCondition> findElementConditionTable = {
         {"content", FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT},
         {"focusType", FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE},
-        {"focusDirection", FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_DIRECTION}
+        {"focusDirection", FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_DIRECTION},
+        {"elementId", FindElementCondition::FIND_ELEMENT_CONDITION_ELEMENT_ID}
     };
 
     if (findElementConditionTable.find(str) == findElementConditionTable.end()) {

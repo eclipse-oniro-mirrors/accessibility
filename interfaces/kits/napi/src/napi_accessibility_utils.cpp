@@ -137,6 +137,16 @@ bool ParseInt32(napi_env env, int32_t& param, napi_value args)
     return true;
 }
 
+bool ParseInt64(napi_env env, int64_t& param, napi_value args)
+{
+    if (!ParseNumber(env, args)) {
+        return false;
+    }
+
+    napi_get_value_int64(env, args, &param);
+    return true;
+}
+
 bool ParseDouble(napi_env env, double& param, napi_value args)
 {
     if (!ParseNumber(env, args)) {
