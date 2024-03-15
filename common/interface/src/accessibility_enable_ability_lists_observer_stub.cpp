@@ -39,6 +39,10 @@ int AccessibilityEnableAbilityListsObserverStub::OnRemoteRequest(uint32_t code, 
         AccessibilityInterfaceCode::ON_ACCESSIBILITY_ENABLE_ABILITY_LISTS_CHANGED)) {
         return HandleOnAccessibilityEnableAbilityListsChanged(data, reply);
     }
+    if (code == static_cast<uint32_t>(
+        AccessibilityInterfaceCode::ON_ACCESSIBILITY_INSTALL_ABILITY_LISTS_CHANGED)) {
+        return HandleOnAccessibilityInstallAbilityListsChanged(data, reply);
+    }
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
