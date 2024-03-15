@@ -112,8 +112,9 @@ int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            auto closeScope = [callbackInfo](napi_handle_scope scope) {
-                napi_close_handle_scope(callbackInfo->env_, scope);
+            napi_env env = callbackInfo->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
@@ -146,8 +147,9 @@ int NAccessibilityConfigObserver::NotifyPropertyChanged(uv_work_t *work)
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             CaptionCallbackInfo *callbackInfo = static_cast<CaptionCallbackInfo*>(work->data);
-            auto closeScope = [callbackInfo](napi_handle_scope scope) {
-                napi_close_handle_scope(callbackInfo->env_, scope);
+            napi_env env = callbackInfo->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
@@ -180,8 +182,9 @@ int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            auto closeScope = [callbackInfo](napi_handle_scope scope) {
-                napi_close_handle_scope(callbackInfo->env_, scope);
+            napi_env env = callbackInfo->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
@@ -215,8 +218,9 @@ int NAccessibilityConfigObserver::NotifyStringVectorChanged(uv_work_t *work)
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            auto closeScope = [callbackInfo](napi_handle_scope scope) {
-                napi_close_handle_scope(callbackInfo->env_, scope);
+            napi_env env = callbackInfo->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
@@ -254,8 +258,9 @@ int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            auto closeScope = [callbackInfo](napi_handle_scope scope) {
-                napi_close_handle_scope(callbackInfo->env_, scope);
+            napi_env env = callbackInfo->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
@@ -290,8 +295,9 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            auto closeScope = [callbackInfo](napi_handle_scope scope) {
-                napi_close_handle_scope(callbackInfo->env_, scope);
+            napi_env env = callbackInfo->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
@@ -326,8 +332,9 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            auto closeScope = [callbackInfo](napi_handle_scope scope) {
-                napi_close_handle_scope(callbackInfo->env_, scope);
+            napi_env env = callbackInfo->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
