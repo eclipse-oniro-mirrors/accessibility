@@ -246,7 +246,7 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
             HILOG_ERROR("observer type parse failed");
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         } else {
-            if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") != 0 ||
+            if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") != 0 &&
                 std::strcmp(observerType.c_str(), "installedAccessibilityListChange") != 0) {
                 HILOG_ERROR("args[PARAM0] is wrong[%{public}s", observerType.c_str());
                 errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
@@ -303,7 +303,7 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
             HILOG_ERROR("observer type parse failed");
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         } else {
-            if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") != 0 ||
+            if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") != 0 &&
                 std::strcmp(observerType.c_str(), "installedAccessibilityListChange") != 0) {
                 HILOG_ERROR("args[PARAM0] is wrong[%{public}s", observerType.c_str());
                 errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
