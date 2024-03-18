@@ -1274,8 +1274,7 @@ void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName)
         return;
     }
     for (auto &abilityId : removedAutoStartAbilities_) {
-        std::string strKey = abilityId + "/" + std::to_string(packageAccount->GetAccountId());
-        if (packageAccount->GetAbilityAutoStartState(strKey)) {
+        if (packageAccount->GetAbilityAutoStartState(abilityId)) {
             packageAccount->SetAbilityAutoStartState(abilityId, false);
         }
     }
@@ -1521,8 +1520,7 @@ void AccessibleAbilityManagerService::UpdateAutoStartAbilities()
             return;
         }
         for (auto &abilityId : removedAutoStartAbilities_) {
-            std::string strKey = abilityId + "/" + std::to_string(accountData->GetAccountId());
-            if (accountData->GetAbilityAutoStartState(strKey)) {
+            if (accountData->GetAbilityAutoStartState(abilityId)) {
                 accountData->SetAbilityAutoStartState(abilityId, false);
             }
         }
