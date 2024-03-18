@@ -253,7 +253,7 @@ bool FuzzHandleGetWindow(const uint8_t *data, size_t size)
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
 
-    position += GetObject<int32_t>(windowId, &data[position], size - position);
+    GetObject<int32_t>(windowId, &data[position], size - position);
     std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
     mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
     mdata.WriteInt32(windowId);
@@ -291,7 +291,7 @@ bool FuzzHandleGetWindowsByDisplayId(const uint8_t *data, size_t size)
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
 
-    position += GetObject<uint64_t>(displayId, &data[position], size - position);
+    GetObject<uint64_t>(displayId, &data[position], size - position);
     std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
     mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
     mdata.WriteUint64(displayId);
