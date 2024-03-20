@@ -120,6 +120,7 @@ public:
     int32_t GetActiveWindow() override;
     void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
     void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
+    bool FindFocusedElement(AccessibilityElementInfo &elementInfo);
     bool ExecuteActionOnAccessibilityFocused(const ActionType &action);
     RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
 
@@ -263,6 +264,9 @@ public:
     void UpdateInputFilter();
 
 private:
+    sptr<AccessibilityWindowConnection> GetRealIdConnection();
+    bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
+        AccessibilityElementInfo &elementInfo);
     bool SetTargetAbility(const int32_t targetAbilityValue);
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:

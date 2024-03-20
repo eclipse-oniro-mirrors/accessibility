@@ -15,6 +15,7 @@
 
 #include "accessibility_touch_guider.h"
 #include "accessibility_window_manager.h"
+#include "accessibility_event_info.h"
 #include "hilog_wrapper.h"
 #include "securec.h"
 #include "utils.h"
@@ -160,9 +161,47 @@ void TouchGuider::SendGestureEventToAA(GestureType gestureId)
     Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
 }
 
+void TouchGuider::OffsetEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG("OffsetEvent");
+    MMI::PointerEvent::PointerItem pointer = {};
+    event.GetPointerItem(event.GetPointerId(), pointer);
+
+    // add offset
+    int32_t newDisplayX = pointer.GetDisplayX() + static_cast<int>(longPressOffsetX_);
+    int32_t newDisplayY = pointer.GetDisplayY() + static_cast<int>(longPressOffsetY_);
+
+    // set move range
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_MOVE) {
+        if (newDisplayX > rightBottomX_) {
+            newDisplayX = rightBottomX_;
+        } else if (newDisplayX < leftTopX_) {
+            newDisplayX = leftTopX_;
+        }
+        if (newDisplayY > rightBottomY_) {
+            newDisplayY = rightBottomY_;
+        } else if (newDisplayY < leftTopY_) {
+            newDisplayY = leftTopY_;
+        }
+    }
+    HILOG_DEBUG("newDisplayX: %{public}d, newDisplayY: %{public}d", newDisplayX, newDisplayY);
+    pointer.SetDisplayX(newDisplayX);
+    pointer.SetDisplayY(newDisplayY);
+    event.RemovePointerItem(event.GetPointerId());
+    event.AddPointerItem(pointer);
+}
+
 void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action)
 {
     HILOG_DEBUG("action:%{public}d, SourceType:%{public}d.", action, event.GetSourceType());
+
+    if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
+        if (!focusedElementExist_) {
+            HILOG_DEBUG("send longclick event to multimodal, but no focused element.");
+            return;
+        }
+        OffsetEvent(event);
+    }
 
     switch (action) {
         case HOVER_MOVE:
@@ -378,7 +417,7 @@ void TouchGuider::ElementOperatorCallbackImpl::SetExecuteActionResult(const bool
 
 void TouchGuider::HandleTouchGuidingState(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("action: %{public}d", event.GetPointerAction());
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
@@ -395,6 +434,12 @@ void TouchGuider::HandleTouchGuidingState(MMI::PointerEvent &event)
         case MMI::PointerEvent::POINTER_ACTION_UP:
             if (event.GetPointerIds().size() == POINTER_COUNT_1 && !IsTouchInteractionEnd() &&
                 !multiFingerGestureRecognizer_.IsMultiFingerRecognize()) {
+                if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
+                    HILOG_DEBUG();
+                    SendEventToMultimodal(event, NO_CHANGE);
+                    Clear(event);
+                    break;
+                }
                 OnTouchInteractionEnd();
                 if (HasEventPending(SEND_HOVER_ENTER_MOVE_MSG)) {
                     PostHoverExit();
@@ -406,6 +451,12 @@ void TouchGuider::HandleTouchGuidingState(MMI::PointerEvent &event)
                     PostAccessibilityEvent(SEND_TOUCH_INTERACTION_END_MSG);
                 }
             }
+            break;
+        case MMI::PointerEvent::POINTER_ACTION_PULL_MOVE:
+            SendEventToMultimodal(event, NO_CHANGE);
+            break;
+        case MMI::PointerEvent::POINTER_ACTION_PULL_UP:
+            SendEventToMultimodal(event, NO_CHANGE);
             break;
         default:
             break;
@@ -505,6 +556,11 @@ void TouchGuider::Clear(MMI::PointerEvent &event)
     longPressPointId_ = INIT_POINT_ID;
     longPressOffsetX_ = INIT_MMIPOINT;
     longPressOffsetY_ = INIT_MMIPOINT;
+    leftTopX_ = INIT_POINT_DISPLAY;
+    leftTopY_ = INIT_POINT_DISPLAY;
+    rightBottomX_ = INIT_POINT_DISPLAY;
+    rightBottomY_ = INIT_POINT_DISPLAY;
+    focusedElementExist_ = false;
     OnTouchInteractionEnd();
 }
 
@@ -548,6 +604,32 @@ void TouchGuider::HandleTouchGuidingStateInnerDown(MMI::PointerEvent &event)
                 pointerEvents_.push_back(event);
             }
         }
+    } else if (gestureRecognizer_.GetIsDoubleTap() && !multiFingerGestureRecognizer_.IsMultiFingerGestureStarted()) {
+        pointerEvents_.clear();
+
+        AccessibilityElementInfo focusedElementInfo = {};
+        if (!FindFocusedElement(focusedElementInfo)) {
+            HILOG_ERROR("FindFocusedElement failed.");
+            return;
+        }
+        HILOG_DEBUG("FindFocusedElement success");
+        MMI::PointerEvent::PointerItem pointerIterm = {};
+        if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
+            HILOG_ERROR("event.GetPointerItem failed");
+            return;
+        }
+        HILOG_DEBUG("GetPointerItem success");
+        focusedElementExist_ = true;
+
+        // set point x,y range and offset
+        leftTopX_ = focusedElementInfo.GetRectInScreen().GetLeftTopXScreenPostion();
+        leftTopY_ = focusedElementInfo.GetRectInScreen().GetLeftTopYScreenPostion();
+        rightBottomX_ = focusedElementInfo.GetRectInScreen().GetRightBottomXScreenPostion();
+        rightBottomY_ = focusedElementInfo.GetRectInScreen().GetRightBottomYScreenPostion();
+        longPressOffsetX_ = static_cast<float>(DIVIDE_2(leftTopX_ + rightBottomX_) - pointerIterm.GetDisplayX());
+        longPressOffsetY_ = static_cast<float>(DIVIDE_2(leftTopY_ + rightBottomY_) - pointerIterm.GetDisplayY());
+
+        pointerEvents_.push_back(event);
     } else {
         CancelPostEvent(SEND_TOUCH_INTERACTION_END_MSG);
     }
@@ -588,6 +670,16 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event)
                 pointerEvents_.push_back(event);
             } else if (isTouchGuiding_) {
                 SendEventToMultimodal(event, HOVER_MOVE);
+            } else if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
+                HILOG_DEBUG();
+                if (!pointerEvents_.empty()) {
+                    HILOG_DEBUG("pointerEvents_ is not empty");
+                    SendEventToMultimodal(pointerEvents_.front(), NO_CHANGE);
+                    pointerEvents_.clear();
+                }
+                SendEventToMultimodal(event, NO_CHANGE);
+            } else {
+                HILOG_DEBUG("other case");
             }
             break;
         case POINTER_COUNT_2:
@@ -989,6 +1081,12 @@ bool TouchGuider::ExecuteActionOnAccessibilityFocused(const ActionType &action)
         return true;
     }
     return Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(action);
+}
+
+bool TouchGuider::FindFocusedElement(AccessibilityElementInfo &elementInfo)
+{
+    HILOG_DEBUG();
+    return Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(elementInfo);
 }
 
 void TGEventHandler::HoverEnterAndMoveRunner()

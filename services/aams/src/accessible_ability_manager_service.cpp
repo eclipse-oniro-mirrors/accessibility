@@ -347,9 +347,9 @@ void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, 
     return syncFuture.get();
 }
 
-bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
+sptr<AccessibilityWindowConnection> AccessibleAbilityManagerService::GetRealIdConnection()
 {
-    int64_t elementId = -1;
+    HILOG_DEBUG();
     int32_t windowId = ANY_WINDOW_ID;
     int32_t focusType = FOCUS_TYPE_ACCESSIBILITY;
     int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, focusType);
@@ -357,10 +357,17 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("GetCurrentAccountData failed");
-        return false;
+        return sptr<AccessibilityWindowConnection>();
     }
+    return accountData->GetAccessibilityWindowConnection(realId);
+}
 
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
+bool AccessibleAbilityManagerService::FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
+    AccessibilityElementInfo &elementInfo)
+{
+    HILOG_DEBUG();
+    int64_t elementId = -1;
+    int32_t focusType = FOCUS_TYPE_ACCESSIBILITY;
     if (!connection || !connection->GetProxy()) {
         HILOG_ERROR("GetAccessibilityWindowConnection failed");
         return false;
@@ -379,7 +386,29 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         HILOG_ERROR("FindFocusedElementInfo Failed to wait result");
         return false;
     }
-    elementId = focusCallback->accessibilityInfoResult_.GetAccessibilityId();
+    elementInfo = focusCallback->accessibilityInfoResult_;
+    return true;
+}
+
+bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInfo &elementInfo)
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityWindowConnection> connection = GetRealIdConnection();
+    return FindFocusedElementByConnection(connection, elementInfo);
+}
+
+bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityWindowConnection> connection = GetRealIdConnection();
+    AccessibilityElementInfo elementInfo = {};
+    if (!FindFocusedElementByConnection(connection, elementInfo)) {
+        HILOG_ERROR("FindFocusedElementByConnection failed");
+        return false;
+    }
+
+    int64_t elementId = elementInfo.GetAccessibilityId();
+    uint32_t timeOut = 5000;
 
     std::map<std::string, std::string> actionArguments {};
     sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl();
