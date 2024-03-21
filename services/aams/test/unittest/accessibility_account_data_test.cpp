@@ -1395,5 +1395,20 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddAcce
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddAccessibilityAbility_001 end";
 }
 
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_SetAbilityAutoStartState_001
+ * @tc.name: SetAbilityAutoStartState
+ * @tc.desc: Check set and get AbilityAutoStartState.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetAbilityAutoStartState, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetAbilityAutoStartState_001 start";
+    const int32_t accountId = 1;
+    const std::string abilityName = "test";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->SetAbilityAutoStartState(abilityName, false);
+    EXPECT_EQ(accountData->GetAbilityAutoStartState(abilityName), false);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetAbilityAutoStartState_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

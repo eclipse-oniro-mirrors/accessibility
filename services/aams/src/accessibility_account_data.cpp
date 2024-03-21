@@ -25,6 +25,7 @@
 #include "hilog_wrapper.h"
 #include "utils.h"
 #include "system_ability_definition.h"
+#include "os_account_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -39,6 +40,7 @@ namespace {
     constexpr int DISPLAY_DALTONIZER_GREEN = 12;
     constexpr int DISPLAY_DALTONIZER_RED = 11;
     constexpr int DISPLAY_DALTONIZER_BLUE = 13;
+    constexpr int DEFAULT_ACCOUNT_ID = 100;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
@@ -49,6 +51,7 @@ namespace {
     const std::string IGNORE_REPEAT_CLICK_SWITCH = "ignore_repeat_click_switch";
     const std::string IGNORE_REPEAT_CLICK_TIME = "ignore_repeat_click_time";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER = "accessibility_display_daltonizer";
+    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -432,6 +435,9 @@ void AccessibilityAccountData::SetAbilityAutoStartState(const std::string &name,
     AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     std::string strState = state ? "on" : "off";
     std::string abilityAutoStartKey = name + "/" + std::to_string(id_);
+    if (name == SCREEN_READER_BUNDLE_ABILITY_NAME && GetAccountType() == AccountSA::OsAccountType::PRIVATE) {
+        abilityAutoStartKey = name + "/" + std::to_string(DEFAULT_ACCOUNT_ID);
+    }
     ErrCode ret = provider.PutStringValue(abilityAutoStartKey, strState, false);
     if (ret != ERR_OK) {
         HILOG_ERROR("set failed, ret=%{public}d", ret);
@@ -456,23 +462,27 @@ void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string 
     }
 }
 
-bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &key)
+bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &name)
 {
     HILOG_DEBUG();
     AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     std::string strValue;
-    ErrCode ret = provider.GetStringValue(key, strValue);
+    std::string strAutoStartStateKey = name + "/" + std::to_string(id_);
+    if (name == SCREEN_READER_BUNDLE_ABILITY_NAME && GetAccountType() == AccountSA::OsAccountType::PRIVATE) {
+        strAutoStartStateKey = name + "/" + std::to_string(DEFAULT_ACCOUNT_ID);
+    }
+    ErrCode ret = provider.GetStringValue(strAutoStartStateKey, strValue);
     if (ret == ERR_NO_INIT) {
         HILOG_INFO("helper is null, retry.");
         std::this_thread::sleep_for(std::chrono::milliseconds(INIT_DATASHARE_HELPER_SLEEP_TIME));
-        ret = provider.GetStringValue(key, strValue);
+        ret = provider.GetStringValue(strAutoStartStateKey, strValue);
     }
     if (ret != ERR_OK) {
-        HILOG_ERROR("get failed, key = %{public}s, ret=%{public}d", key.c_str(), ret);
+        HILOG_ERROR("get failed, key = %{public}s, ret=%{public}d", strAutoStartStateKey.c_str(), ret);
         provider.DeleteInstance();
         return false;
     }
-    HILOG_DEBUG("provider GetString = %{public}s, key = %{public}s.", strValue.c_str(), key.c_str());
+    HILOG_DEBUG("provider GetString = %{public}s, key = %{public}s.", strValue.c_str(), strAutoStartStateKey.c_str());
     if (!std::strcmp(strValue.c_str(), "on")) {
         provider.DeleteInstance();
         return true;
@@ -721,8 +731,8 @@ void AccessibilityAccountData::UpdateAutoStartEnabledAbilities()
     for (auto &installAbility : installedAbilities_) {
         std::string bundleName = installAbility.GetPackageName();
         std::string abilityName = installAbility.GetName();
-        std::string strAutoStartStateKey = Utils::GetAbilityAutoStartStateKey(bundleName, abilityName, id_);
-        if (GetAbilityAutoStartState(strAutoStartStateKey)) {
+        std::string abilityId = bundleName + "/" + abilityName;
+        if (GetAbilityAutoStartState(abilityId)) {
             HILOG_INFO("auto start packageName is %{public}s.", bundleName.c_str());
             uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
                 CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
@@ -863,9 +873,8 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
             std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
                 std::make_shared<AccessibilityAbilityInfo>(initParams);
 
-            std::string tmpAbilityName = accessibilityInfo->GetName();
-            std::string strAutoStartStateKey = Utils::GetAbilityAutoStartStateKey(bundleName, tmpAbilityName, id_);
-            if (GetAbilityAutoStartState(strAutoStartStateKey)) {
+            std::string abilityId = accessibilityInfo->GetId();
+            if (GetAbilityAutoStartState(abilityId)) {
                 HILOG_DEBUG("auto start packageName is %{public}s.", bundleName.c_str());
                 uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
                     CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
@@ -873,7 +882,7 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
                 accessibilityInfo->SetCapabilityValues(resultCapabilities);
                 AddInstalledAbility(*accessibilityInfo);
                 hasNewExtensionAbility = true;
-                std::string uri = Utils::GetUri(bundleName, tmpAbilityName);
+                std::string uri = Utils::GetUri(bundleName, accessibilityInfo->GetName());
                 AddEnabledAbility(uri);
                 RemoveConnectingA11yAbility(uri);
                 continue;
@@ -903,8 +912,7 @@ void AccessibilityAccountData::ChangeAbility(const std::string &bundleName)
         if (ability.GetPackageName() != bundleName) {
             continue;
         }
-        std::string strKey = ability.GetId() + "/" + std::to_string(id_);
-        if (GetAbilityAutoStartState(strKey)) {
+        if (GetAbilityAutoStartState(ability.GetId())) {
             autoStartAbilities.push_back(ability.GetId());
         }
     }
@@ -966,6 +974,17 @@ void AccessibilityAccountData::RemoveUITestClient(sptr<AccessibleAbilityConnecti
     RemoveInstalledAbility(bundleName);
     RemoveConnectedAbility(connection->GetElementName());
     connection->OnAbilityDisconnectDoneSync(connection->GetElementName());
+}
+
+AccountSA::OsAccountType AccessibilityAccountData::GetAccountType()
+{
+    if (accountType_ == AccountSA::OsAccountType::END) {
+        ErrCode rtn = AccountSA::OsAccountManager::GetOsAccountType(id_, accountType_);
+        if (rtn != ERR_OK) {
+            HILOG_ERROR("get account type failed for accountId [%{public}d]", id_);
+        }
+    }
+    return accountType_;
 }
 
 void AccessibilityAccountData::AccessibilityAbility::AddAccessibilityAbility(const std::string& uri,

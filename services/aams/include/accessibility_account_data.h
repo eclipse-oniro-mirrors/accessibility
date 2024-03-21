@@ -30,6 +30,7 @@
 #include "i_accessible_ability_manager_state_observer.h"
 #include "element_name.h"
 #include "accessibility_setting_provider.h"
+#include "os_account_info.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -271,7 +272,7 @@ public:
     void RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection, const std::string &bundleName);
     void SetAbilityAutoStartState(const std::string &name, const bool state);
     void DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName);
-    bool GetAbilityAutoStartState(const std::string &key);
+    bool GetAbilityAutoStartState(const std::string &name);
     void GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value);
 
 private:
@@ -303,6 +304,8 @@ private:
      */
     void UpdateMagnificationCapability();
 
+    AccountSA::OsAccountType GetAccountType();
+
     class AccessibilityAbility {
     public:
         AccessibilityAbility() = default;
@@ -326,6 +329,7 @@ private:
     };
 
     int32_t id_;
+    AccountSA::OsAccountType accountType_ = AccountSA::OsAccountType::END;
     bool isEventTouchGuideState_ = false;
     bool isScreenMagnification_ = false;
     bool isFilteringKeyEvents_ = false;
