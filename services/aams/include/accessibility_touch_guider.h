@@ -36,6 +36,7 @@ const int32_t INDEX_0 = 0;
 const int32_t INDEX_1 = 1;
 const int32_t INIT_POINT_ID = -1;
 const float INIT_MMIPOINT = 0.0f;
+const int32_t INIT_POINT_DISPLAY = 0;
 #define DIVIDE_2(num) ((num) / 2)
 #define EPSINON 0.01
 
@@ -471,6 +472,19 @@ private:
      */
     bool IgnoreRepeatExecuteAction();
 
+    /**
+     * @brief Calculate Offset.
+     * @param event event the touch event from Multimodal
+     */
+    void OffsetEvent(MMI::PointerEvent &event);
+
+    /**
+     * @brief Find Focused Element.
+     * @param elementInfo the focused element.
+     * @return Returns true if find focused flement successfully; returns false code otherwise.
+     */
+    bool FindFocusedElement(AccessibilityElementInfo &elementInfo);
+
     int32_t currentState_ = -1;
     int32_t longPressPointId_ = INIT_POINT_ID;
     float longPressOffsetX_ = INIT_MMIPOINT;
@@ -485,6 +499,11 @@ private:
     std::unique_ptr<TouchGuideListener> touchGuideListener_ = nullptr;
     std::shared_ptr<TGEventHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
+    bool focusedElementExist_ = false;
+    int32_t leftTopX_ = INIT_POINT_DISPLAY;
+    int32_t leftTopY_ = INIT_POINT_DISPLAY;
+    int32_t rightBottomX_ = INIT_POINT_DISPLAY;
+    int32_t rightBottomY_ = INIT_POINT_DISPLAY;
 };
 } // namespace Accessibility
 } // namespace OHOS

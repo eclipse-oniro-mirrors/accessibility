@@ -123,6 +123,10 @@ bool AccessibilityGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_MOVE:
+            if (isDoubleTap_ && isLongpress_) {
+                HILOG_DEBUG("isDoubleTap and isLongpress, send move event to Multimodel.");
+                return false;
+            }
             return HandleTouchMoveEvent(event);
         case MMI::PointerEvent::POINTER_ACTION_UP:
             if (event.GetPointerIds().size() == POINTER_COUNT_1) {
@@ -237,7 +241,13 @@ bool AccessibilityGestureRecognizer::HandleTouchUpEvent(MMI::PointerEvent &event
     }
 
     if (isDoubleTap_) {
-        return DoubleTapRecognized(event);
+        if (isLongpress_) {
+            HILOG_DEBUG("up event, isDoubleTap and longpress.");
+            return false;
+        } else {
+            HILOG_DEBUG();
+            return DoubleTapRecognized(event);
+        }
     }
     if (isGestureStarted_) {
         if ((abs(pointerIterm.GetDisplayX() - prePointer_.GetDisplayX())) >= xMinPixels_ ||
@@ -321,11 +331,6 @@ void AccessibilityGestureRecognizer::SingleTapDetected()
 void AccessibilityGestureRecognizer::MaybeRecognizeLongPress(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-
-    if (!isDoubleTap_) {
-        return;
-    }
-    Clear();
 }
 
 bool AccessibilityGestureRecognizer::DoubleTapRecognized(MMI::PointerEvent &event)

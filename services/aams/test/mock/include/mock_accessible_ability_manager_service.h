@@ -18,6 +18,7 @@
 
 #include <gmock/gmock.h>
 #include "accessible_ability_manager_service.h"
+#include "accessibility_element_info.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -97,6 +98,7 @@ public:
     MOCK_METHOD2(GetRealWindowAndElementId, void(int32_t& windowId, int64_t& elementId));
     MOCK_METHOD3(GetSceneBoardInnerWinId, void(int32_t windowId, int64_t elementId, int32_t& innerWid));
     MOCK_METHOD1(ExecuteActionOnAccessibilityFocused, bool(const ActionType &action));
+    MOCK_METHOD1(FindFocusedElement, bool(AccessibilityElementInfo &elementInfo));
     MOCK_METHOD1(GetFocusedWindowId, RetError(int32_t &focusedWindowId));
 };
 } // namespace Accessibility

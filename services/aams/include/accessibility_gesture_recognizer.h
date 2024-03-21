@@ -154,6 +154,24 @@ public:
     }
 
     /**
+     * @brief Determine whether a double tap has occurred.
+     * @return true if a double tap has occurred, else false.
+     */
+    bool GetIsDoubleTap()
+    {
+        return isDoubleTap_;
+    }
+
+    /**
+     * @brief Determine whether a longpress has occurred.
+     * @return true if longpress has occurred, else false.
+     */
+    bool GetIsLongpress()
+    {
+        return isLongpress_;
+    }
+
+    /**
      * @brief Handle a touch event. If an action is completed, the appropriate callback is called.
      *
      * @param event  the touch event to be handled.

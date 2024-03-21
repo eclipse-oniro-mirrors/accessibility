@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 #include "ability_info.h"
+#include "accessibility_element_info.h"
 #include "accessibility_display_manager.h"
 #include "accessibility_event_info.h"
 #include "accessibility_ut_helper.h"
@@ -539,6 +540,11 @@ void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, 
 }
 
 bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
+{
+    return true;
+}
+
+bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInfo &elementInfo)
 {
     return true;
 }
