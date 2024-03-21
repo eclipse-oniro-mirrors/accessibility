@@ -10,7 +10,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License.
+* limitations under the License.
  */
 
 #include <gtest/gtest.h>
@@ -230,6 +230,17 @@ int32_t SystemAbilityManagerProxy::SendStrategy(int32_t type, std::vector<int32_
 }
 
 int32_t SystemAbilityManagerProxy::UnloadAllIdleSystemAbility()
+{
+    return -1;
+}
+
+int32_t SystemAbilityManagerProxy::GetExtensionSaIds(const std::string& extension, std::vector<int32_t> &saIds)
+{
+    return -1;
+}
+
+int32_t SystemAbilityManagerProxy::GetExtensionRunningSaList(const std::string& extension,
+    std::vector<sptr<IRemoteObject>>& saList)
 {
     return -1;
 }
