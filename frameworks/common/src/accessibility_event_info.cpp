@@ -231,6 +231,18 @@ void AccessibilityEventInfo::SetNotificationContent(const std::string &notificat
     HILOG_DEBUG("notificationContent_[%{public}s]", notificationContent_.c_str());
 }
 
+const std::string &AccessibilityEventInfo::GetTextAnnouncedForAccessibility() const
+{
+    HILOG_DEBUG("textAnnouncedForAccessibility_[%{public}s]", textAnnouncedForAccessibility_.c_str());
+    return textAnnouncedForAccessibility_;
+}
+
+void AccessibilityEventInfo::SetTextAnnouncedForAccessibility(const std::string &textAnnouncedForAccessibility)
+{
+    textAnnouncedForAccessibility_ = textAnnouncedForAccessibility;
+    HILOG_DEBUG("textAnnouncedForAccessibility_[%{public}s]", textAnnouncedForAccessibility_.c_str());
+}
+
 void AccessibilityEventInfo::SetTextMovementStep(const TextMoveUnit granularity)
 {
     textMoveStep_ = granularity;

@@ -81,6 +81,14 @@ private:
      * @sysCap Accessibility
      */
     bool ReadFromParcelSecondPart(Parcel &parcel);
+
+    /**
+     * @brief Used for IPC communication third part
+     * @param parcel
+     * @return true: Read parcel data successfully; otherwise is not.
+     * @sysCap Accessibility
+     */
+    bool ReadFromParcelThirdPart(Parcel &parcel);
 };
 } // namespace Accessibility
 } // namespace OHOS
