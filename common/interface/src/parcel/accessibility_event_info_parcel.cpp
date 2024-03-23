@@ -108,12 +108,23 @@ bool AccessibilityEventInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
     return true;
 }
 
+bool AccessibilityEventInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
+{
+    std::string textAnnouncedForAccessibility;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, textAnnouncedForAccessibility);
+    SetTextAnnouncedForAccessibility(textAnnouncedForAccessibility);
+    return true;
+}
+
 bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
 {
     if (!ReadFromParcelFirstPart(parcel)) {
         return false;
     }
     if (!ReadFromParcelSecondPart(parcel)) {
+        return false;
+    }
+    if (!ReadFromParcelThirdPart(parcel)) {
         return false;
     }
     return true;
@@ -150,6 +161,7 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetItemCounts());
     AccessibilityElementInfoParcel elementInfoParcel(elementInfo_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &elementInfoParcel);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetTextAnnouncedForAccessibility());
     return true;
 }
 

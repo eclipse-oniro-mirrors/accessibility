@@ -432,7 +432,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
     callbackInfo->timeStamp_ = eventInfo.GetTimeStamp();
     callbackInfo->element_ = GetElement(eventInfo);
     callbackInfo->elementId_ = eventInfo.GetAccessibilityId();
-    callbackInfo->textAnnouncedForAccessibility_ = eventInfo.GetDescription();
+    callbackInfo->textAnnouncedForAccessibility_ = eventInfo.GetTextAnnouncedForAccessibility();
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {
         HILOG_ERROR("Failed to create data.");

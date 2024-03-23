@@ -1104,8 +1104,7 @@ bool ConvertEventInfoJSToNAPIPart3(
     napi_create_string_utf8(env, "textAnnouncedForAccessibility", NAPI_AUTO_LENGTH, &propertyNameValue);
     std::string announceText = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
-        // use eventInfo.description to save announceText
-        eventInfo.SetDescription(announceText);
+        eventInfo.SetTextAnnouncedForAccessibility(announceText);
     }
     return true;
 }

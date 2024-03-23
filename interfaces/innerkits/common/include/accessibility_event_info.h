@@ -463,6 +463,22 @@ public:
      */
     const AccessibilityElementInfo &GetElementInfo() const;
 
+    /**
+     * @brief Get the text to announce.
+     * @return Return the text to announce.
+     * @since 12
+     * @sysCap Accessibility
+     */
+    const std::string &GetTextAnnouncedForAccessibility() const;
+
+    /**
+     * @brief Set the text to announce of the event.
+     * @param textAnnouncedForAccessibility The text to announce.
+     * @since 12
+     * @sysCap Accessibility
+     */
+    void SetTextAnnouncedForAccessibility(const std::string &textAnnouncedForAccessibility);
+
 protected:
     EventType eventType_ = TYPE_VIEW_INVALID;
     std::string bundleName_ = "";
@@ -476,6 +492,7 @@ protected:
     int32_t pageId_ = 0;
     std::string notificationContent_ = "";
     AccessibilityElementInfo elementInfo_ {};
+    std::string textAnnouncedForAccessibility_ = "";
 };
 } // namespace Accessibility
 } // namespace OHOS
