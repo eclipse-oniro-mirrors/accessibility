@@ -56,16 +56,6 @@ bool AccessibilityShortKey::OnKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
 
-    int32_t keycode = event.GetKeyCode();
-    size_t pressedKeyCount = event.GetPressedKeys().size();
-    if ((keycode != MMI::KeyEvent::KEYCODE_POWER) ||
-        (pressedKeyCount > KEY_ITEM_COUNT_1)) {
-        HILOG_DEBUG("key[%{public}d] is not power key, or the number[%{public}zu]\
-            of keys pressed is greater than 1.", keycode, pressedKeyCount);
-        EventTransmission::OnKeyEvent(event);
-        return false;
-    }
-
     RecognizeShortKey(event);
     return true;
 }
