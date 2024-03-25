@@ -416,6 +416,24 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetDescription_001, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetTextAnnouncedForAccessibility_001
+ * @tc.name: SetTextAnnouncedForAccessibility
+ * @tc.desc: Test function SetTextAnnouncedForAccessibility
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, SetTextAnnouncedForAccessibility_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetTextAnnouncedForAccessibility_001 start";
+    if (!eventInfo_) {
+        GTEST_LOG_(INFO) << "eventInfo_ is null";
+        return;
+    }
+    std::string textAnnouncedForAccessibility = "textAnnouncedForAccessibility";
+    eventInfo_->SetTextAnnouncedForAccessibility(textAnnouncedForAccessibility);
+    EXPECT_EQ(eventInfo_->GetTextAnnouncedForAccessibility(), textAnnouncedForAccessibility);
+    GTEST_LOG_(INFO) << "SetTextAnnouncedForAccessibility_001 end";
+}
+
+/**
  * @tc.number: AddContent_001
  * @tc.name: AddContent
  * @tc.desc: Test function AddContent
