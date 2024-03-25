@@ -24,6 +24,17 @@ using namespace OHOS;
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityNapi;
 
+namespace OHOS {
+namespace Accessibility {
+napi_handle_scope TmpOpenScope(napi_env env)
+{
+    napi_handle_scope scope = nullptr;
+    NAPI_CALL(env, napi_open_handle_scope(env, &scope));
+    return scope;
+}
+} // namespace Accessibility
+} // namespace OHOS
+
 std::shared_ptr<StateListenerImpl> NAccessibilityClient::accessibilityStateListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED);
 std::shared_ptr<StateListenerImpl> NAccessibilityClient::touchGuideStateListeners_ =
@@ -721,6 +732,18 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
     }
     work->data = static_cast<void*>(callbackInfo);
 
+    int ret = NotifyJSWork(env, work);
+    if (ret != 0) {
+        HILOG_ERROR("Failed to execute NotifyJS work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
+}
+
+int StateListener::NotifyJSWork(napi_env env, uv_work_t *work)
+{
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env, &loop);
     int ret = uv_queue_work_with_qos(
@@ -729,6 +752,12 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
+            napi_env tmpEnv = callbackInfo->env_;
+            auto closeScope = [tmpEnv](napi_handle_scope scope) {
+                napi_close_handle_scope(tmpEnv, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value handler = nullptr;
             napi_value callResult = nullptr;
             napi_value jsEvent = nullptr;
@@ -744,13 +773,7 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
             work = nullptr;
         },
         uv_qos_default);
-    if (ret != 0) {
-        HILOG_ERROR("Failed to execute NotifyJS work queue");
-        delete callbackInfo;
-        callbackInfo = nullptr;
-        delete work;
-        work = nullptr;
-    }
+    return ret;
 }
 
 void StateListener::OnStateChanged(const bool state)

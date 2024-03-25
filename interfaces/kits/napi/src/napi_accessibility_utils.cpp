@@ -1145,6 +1145,25 @@ bool ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
     std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG();
+    if (!gesturePath) {
+        HILOG_ERROR("gesturePath is null.");
+        return false;
+    }
+
+    bool tmpResult = ConvertGesturePathJSToNAPIPart1(env, object, gesturePath);
+    if (!tmpResult) {
+        return false;
+    }
+    tmpResult = ConvertGesturePathJSToNAPIPart2(env, object, gesturePath);
+    if (!tmpResult) {
+        return false;
+    }
+    return true;
+}
+
+bool ConvertGesturePathJSToNAPIPart1(napi_env env, napi_value object,
+    std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
+{
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
 
@@ -1183,6 +1202,14 @@ bool ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
         HILOG_ERROR("No points property.");
         return false;
     }
+    return true;
+}
+
+bool ConvertGesturePathJSToNAPIPart2(napi_env env, napi_value object,
+    std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
+{
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
 
     napi_create_string_utf8(env, "durationTime", NAPI_AUTO_LENGTH, &propertyNameValue);
     int64_t durationTime = ConvertIntJSToNAPI(env, object, propertyNameValue, hasProperty);
@@ -1247,6 +1274,10 @@ void SetInputEventProperty(napi_env env, napi_value result, const std::shared_pt
 {
     HILOG_DEBUG();
 
+    if (!keyEvent) {
+        HILOG_ERROR("keyEvent is null.");
+        return;
+    }
     // set id
     napi_value idValue = nullptr;
     int32_t id = keyEvent->GetId();
@@ -1318,6 +1349,10 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<
 void SetKeyPropertyPart1(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
 {
     HILOG_DEBUG();
+    if (!keyEvent) {
+        HILOG_ERROR("keyEvent is nullptr.");
+        return;
+    }
     // set keys
     napi_value keysAarry = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &keysAarry));
@@ -1560,6 +1595,25 @@ uint32_t GetColorValue(napi_env env, napi_value value)
 bool ConvertObjToCaptionProperty(
     napi_env env, napi_value object, OHOS::AccessibilityConfig::CaptionProperty* ptrCaptionProperty)
 {
+    if (!ptrCaptionProperty) {
+        HILOG_ERROR("ptrCaptionProperty is null.");
+        return false;
+    }
+
+    bool tmpResult = ConvertObjToCaptionPropertyPart1(env, object, ptrCaptionProperty);
+    if (!tmpResult) {
+        return false;
+    }
+    tmpResult = ConvertObjToCaptionPropertyPart2(env, object, ptrCaptionProperty);
+    if (!tmpResult) {
+        return false;
+    }
+    return true;
+}
+
+bool ConvertObjToCaptionPropertyPart1(
+    napi_env env, napi_value object, OHOS::AccessibilityConfig::CaptionProperty* ptrCaptionProperty)
+{
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     int32_t num = 100;
@@ -1587,6 +1641,14 @@ bool ConvertObjToCaptionProperty(
     } else {
         return false;
     }
+    return true;
+}
+
+bool ConvertObjToCaptionPropertyPart2(
+    napi_env env, napi_value object, OHOS::AccessibilityConfig::CaptionProperty* ptrCaptionProperty)
+{
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
 
     napi_create_string_utf8(env, "fontEdgeType", NAPI_AUTO_LENGTH, &propertyNameValue);
     std::string fontEdgeType = ConvertCaptionPropertyJSToNAPI(env, object, propertyNameValue, hasProperty);
@@ -1611,7 +1673,6 @@ bool ConvertObjToCaptionProperty(
     } else {
         return false;
     }
-
     return true;
 }
 

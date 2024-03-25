@@ -27,10 +27,17 @@
 #include "accessibility_utils.h"
 #include "accessibility_config_observer.h"
 
+namespace OHOS {
+namespace Accessibility {
+napi_handle_scope TmpOpenScope(napi_env env);
+} // namespace Accessibility
+} // namespace OHOS
+
 const uint32_t START_WORK_ARGS_SIZE = 2;
 struct StateListener {
     StateListener(napi_env env, napi_ref ref) : handlerRef_(ref), env_(env) {};
     static void NotifyJS(napi_env env, bool state, napi_ref handlerRef);
+    static int NotifyJSWork(napi_env env, uv_work_t *work);
     void OnStateChanged(const bool state);
 
     napi_ref handlerRef_ = nullptr;

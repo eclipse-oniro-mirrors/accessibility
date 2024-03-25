@@ -98,7 +98,7 @@ bool AccessibilityEventInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
     int32_t itemCounts = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts);
     SetItemCounts(itemCounts);
-    sptr<AccessibilityElementInfoParcel> elementInfoParcel = 
+    sptr<AccessibilityElementInfoParcel> elementInfoParcel =
 	    parcel.ReadStrongParcelable<AccessibilityElementInfoParcel>();
     if (elementInfoParcel == nullptr) {
         HILOG_ERROR("ReadStrongParcelable elementInfo failed.");

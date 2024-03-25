@@ -274,7 +274,16 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback(
     HILOG_DEBUG();
 
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
+    if (!obj) {
+        HILOG_ERROR("obj is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+
     sptr<IAccessibleAbilityManagerStateObserver> client = iface_cast<IAccessibleAbilityManagerStateObserver>(obj);
+    if (!client) {
+        HILOG_ERROR("client is nullptr");
+        return ERR_INVALID_VALUE;
+    }
     uint64_t result = RegisterStateObserver(client);
     reply.WriteUint64(result);
 
@@ -1249,7 +1258,16 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback(
     HILOG_DEBUG();
 
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
+    if (!obj) {
+        HILOG_ERROR("obj is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+
     sptr<IAccessibleAbilityManagerConfigObserver> config = iface_cast<IAccessibleAbilityManagerConfigObserver>(obj);
+    if (!config) {
+        HILOG_ERROR("config is nullptr");
+        return ERR_INVALID_VALUE;
+    }
     uint64_t result = RegisterConfigObserver(config);
     reply.WriteUint64(result);
 
