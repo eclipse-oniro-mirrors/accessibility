@@ -258,7 +258,7 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
     accWindowInfo.SetInnerWid(windowInfo->innerWid_);
     if (accWindowInfo.GetWindowId() == SCENE_BOARD_WINDOW_ID) {
         accWindowInfo.SetWindowId(windowInfo->innerWid_);
-        HILOG_INFO("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
+        HILOG_DEBUG("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
     }
 }
 
@@ -490,7 +490,7 @@ void AccessibilityWindowManager::WindowUpdateFocused(const std::vector<sptr<Rose
 
         int32_t realWidId = GetRealWindowId(windowInfo);
         if (!a11yWindows_.count(realWidId)) {
-            HILOG_WARN("window not created");
+            HILOG_DEBUG("window not created");
             auto a11yWindowInfoFocused = CreateAccessibilityWindowInfo(windowInfo);
             a11yWindows_.emplace(realWidId, a11yWindowInfoFocused);
         }

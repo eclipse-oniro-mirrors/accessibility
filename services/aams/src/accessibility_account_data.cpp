@@ -70,7 +70,7 @@ int32_t AccessibilityAccountData::GetAccountId()
 
 uint32_t AccessibilityAccountData::GetAccessibilityState()
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     uint32_t state = 0;
     if (connectedA11yAbilities_.GetSize() != 0 || connectingA11yAbilities_.GetSize() != 0) {
         HILOG_DEBUG("connectingA11yAbilities %{public}zu connectedA11yAbilities %{public}zu",
@@ -136,13 +136,13 @@ void AccessibilityAccountData::RemoveConnectedAbility(const AppExecFwk::ElementN
 void AccessibilityAccountData::AddCaptionPropertyCallback(
     const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     captionPropertyCallbacks_.push_back(callback);
 }
 
 void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteObject>& callback)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     for (auto itr = captionPropertyCallbacks_.begin(); itr != captionPropertyCallbacks_.end(); itr++) {
         if ((*itr)->AsObject() == callback) {
             captionPropertyCallbacks_.erase(itr);
@@ -154,7 +154,7 @@ void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteO
 void AccessibilityAccountData::AddEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver>& observer)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     if (std::any_of(enableAbilityListsObservers_.begin(), enableAbilityListsObservers_.end(),
         [observer](const sptr<IAccessibilityEnableAbilityListsObserver> &listObserver) {
             return listObserver == observer;
