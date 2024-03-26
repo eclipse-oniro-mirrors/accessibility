@@ -113,6 +113,7 @@ void AccessibilityAccountData::OnAccountSwitched()
 
     connectedA11yAbilities_.Clear();
     enabledAbilities_.clear();
+    std::lock_guard lock(asacConnectionsMutex_);
     asacConnections_.clear();
 }
 
@@ -202,12 +203,14 @@ void AccessibilityAccountData::AddAccessibilityWindowConnection(
     const int32_t windowId, const sptr<AccessibilityWindowConnection>& interactionConnection)
 {
     HILOG_DEBUG("windowId(%{public}d)", windowId);
+    std::lock_guard lock(asacConnectionsMutex_);
     asacConnections_[windowId] = interactionConnection;
 }
 
 void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int32_t windowId)
 {
     HILOG_DEBUG("windowId(%{public}d)", windowId);
+    std::lock_guard lock(asacConnectionsMutex_);
     std::map<int32_t, sptr<AccessibilityWindowConnection>>::iterator it = asacConnections_.find(windowId);
     if (it != asacConnections_.end()) {
         asacConnections_.erase(it);
@@ -305,6 +308,7 @@ const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleA
 const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibilityWindowConnection(
     const int32_t windowId)
 {
+    std::lock_guard lock(asacConnectionsMutex_);
     HILOG_DEBUG("window id[%{public}d] interactionOperators's size[%{public}zu]", windowId, asacConnections_.size());
     for (auto &asacConnection : asacConnections_) {
         HILOG_DEBUG("window id of asacConnection is %{public}d", asacConnection.first);
