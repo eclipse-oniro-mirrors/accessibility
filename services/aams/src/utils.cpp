@@ -174,6 +174,10 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
         return;
     }
 
+    if (!nlohmann::json::accept(profileInfos[0])) {
+        HILOG_ERROR("profileInfos is not json format.");
+        return;
+    }
     nlohmann::json sourceJson = nlohmann::json::parse(profileInfos[0]);
 
     // accessibilityCapabilities

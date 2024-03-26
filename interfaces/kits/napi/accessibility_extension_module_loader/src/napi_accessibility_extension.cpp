@@ -253,8 +253,8 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
     int32_t windowId = eventInfo.GetWindowId();
     std::shared_ptr<AccessibilityElement> element = nullptr;
     if (componentId > 0) {
-        std::shared_ptr<AccessibilityElementInfo> elementInfo = 
-                std::make_shared<AccessibilityElementInfo>(eventInfo.GetElementInfo());
+        std::shared_ptr<AccessibilityElementInfo> elementInfo =
+            std::make_shared<AccessibilityElementInfo>(eventInfo.GetElementInfo());
         element = std::make_shared<AccessibilityElement>(elementInfo);
     } else if (windowId > 0) {
         std::shared_ptr<AccessibilityWindowInfo> windowInfo = std::make_shared<AccessibilityWindowInfo>();
@@ -488,8 +488,9 @@ int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loo
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
-            auto closeScope = [data](napi_handle_scope scope) {
-                napi_close_handle_scope(data->env_, scope);
+            napi_env env = data->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OpenScope(data->env_), closeScope);

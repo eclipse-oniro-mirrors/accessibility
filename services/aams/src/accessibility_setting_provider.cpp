@@ -147,6 +147,10 @@ sptr<AccessibilitySettingObserver> AccessibilitySettingProvider::CreateObserver(
 
 ErrCode AccessibilitySettingProvider::RegisterObserver(const sptr<AccessibilitySettingObserver>& observer)
 {
+    if (!observer) {
+        HILOG_ERROR("observer is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
     std::string callingIdentity = IPCSkeleton::ResetCallingIdentity();
     auto uri = AssembleUri(observer->GetKey());
     auto helper = CreateDataShareHelper();
@@ -163,6 +167,10 @@ ErrCode AccessibilitySettingProvider::RegisterObserver(const sptr<AccessibilityS
 
 ErrCode AccessibilitySettingProvider::UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer)
 {
+    if (!observer) {
+        HILOG_ERROR("observer is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
     std::string callingIdentity = IPCSkeleton::ResetCallingIdentity();
     auto uri = AssembleUri(observer->GetKey());
     auto helper = CreateDataShareHelper();

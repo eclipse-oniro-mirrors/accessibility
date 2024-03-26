@@ -13,7 +13,11 @@
  * limitations under the License.
  */
 
+#define private public
+#define protected public
 #include "ability_manager_client.h"
+#undef private
+#undef protected
 
 namespace OHOS {
 namespace AAFwk {
@@ -28,7 +32,7 @@ AbilityManagerClient::~AbilityManagerClient()
 std::shared_ptr<AbilityManagerClient> AbilityManagerClient::GetInstance()
 {
     std::call_once(singletonFlag_, [] () {
-        instance_ = std::shared_ptr<AbilityManagerClient>(new AbilityManagerClient());
+        instance_ = std::make_shared<AbilityManagerClient>();
     });
     return instance_;
 }

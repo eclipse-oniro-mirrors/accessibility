@@ -213,7 +213,13 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
 
     int32_t requestId = data.ReadInt32();
 
-    auto callback = iface_cast<IAccessibilityElementOperatorCallback>(data.ReadRemoteObject());
+    sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (!remote) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+
+    auto callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
     if (!callback) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
