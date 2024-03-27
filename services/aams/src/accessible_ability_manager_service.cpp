@@ -2086,7 +2086,7 @@ void AccessibleAbilityManagerService::StateObservers::AddStateObserver(
     auto iter = std::find(observersList_.begin(), observersList_.end(), stateObserver);
     if (iter == observersList_.end()) {
         observersList_.push_back(stateObserver);
-        HILOG_INFO("register state observer successfully");
+        HILOG_DEBUG("register state observer successfully");
         return;
     }
 

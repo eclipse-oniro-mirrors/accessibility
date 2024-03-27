@@ -318,7 +318,7 @@ void AccessibilityConfig::Impl::NotifyCaptionChanged(
 Accessibility::RetError AccessibilityConfig::Impl::SubscribeConfigObserver(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer, const bool retFlag)
 {
-    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(id));
+    HILOG_DEBUG("id = [%{public}d]", static_cast<int32_t>(id));
     std::lock_guard<std::mutex> lock(mutex_);
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
         configObservers_.find(id);
