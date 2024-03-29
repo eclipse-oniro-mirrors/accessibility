@@ -42,6 +42,7 @@ public:
         AccessibilityAbilityInitParams params;
         params.bundleName = "bundleName";
         params.description = "description";
+        params.label = "label";
         params.moduleName = "moduleName";
         params.name = "name";
         params.rationale = "rationale";
@@ -49,6 +50,7 @@ public:
         params.staticCapabilities = 1;
         params.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_SPOKEN;
         params.isImportant = true;
+        params.needHide = false;
         abilityInfo_ = std::make_shared<AccessibilityAbilityInfo>(params);
         GTEST_LOG_(INFO) << "AccessibilityAbilityInfoUnitTest SetUp() End";
     };
@@ -157,6 +159,38 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, IsImportant_001, TestSize.Level1)
     }
     EXPECT_TRUE(!(abilityInfo_->IsImportant()));
     GTEST_LOG_(INFO) << "IsImportant_001 end";
+}
+
+/**
+ * @tc.number: NeedHide_001
+ * @tc.name: NeedHide
+ * @tc.desc: Test function NeedHide
+ */
+HWTEST_F(AccessibilityAbilityInfoUnitTest, NeedHide_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "NeedHide_001 start";
+    if (!abilityInfo_) {
+        GTEST_LOG_(INFO) << "abilityInfo_ is null";
+        return;
+    }
+    EXPECT_TRUE(!(abilityInfo_->NeedHide()));
+    GTEST_LOG_(INFO) << "NeedHide_001 end";
+}
+
+/**
+ * @tc.number: GetLabel_001
+ * @tc.name: GetLabel
+ * @tc.desc: Test function GetLabel
+ */
+HWTEST_F(AccessibilityAbilityInfoUnitTest, GetLabel_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetLabel_001 start";
+    if (!abilityInfo_) {
+        GTEST_LOG_(INFO) << "abilityInfo_ is null";
+        return;
+    }
+    EXPECT_STREQ(abilityInfo_->GetLabel().c_str(), "label");
+    GTEST_LOG_(INFO) << "GetLabel_001 end";
 }
 
 /**

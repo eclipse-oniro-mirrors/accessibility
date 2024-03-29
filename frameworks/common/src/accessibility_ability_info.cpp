@@ -27,16 +27,18 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AccessibilityAbilityIni
     bundleName_ = initParams.bundleName;
     moduleName_ = initParams.moduleName;
     description_ = initParams.description;
+    label_ = initParams.label;
     staticCapabilities_ = initParams.staticCapabilities;
     settingsAbility_ = initParams.settingsAbility;
     abilityTypes_ = initParams.abilityTypes;
     isImportant_ = initParams.isImportant;
+    needHide_ = initParams.needHide;
 
     HILOG_DEBUG("ability name:[%{public}s], bundle name:[%{public}s], module name:[%{public}s],"
         "capabilities:[%{public}d], rationale:[%{public}s], settingsAbility:[%{public}s],"
-        "abilityTypes:[%{public}d], isImportant:[%{public}d]",
+        "abilityTypes:[%{public}d], isImportant:[%{public}d], needHide:[%{public}d]",
         name_.c_str(), bundleName_.c_str(), moduleName_.c_str(), capabilities_,
-        rationale_.c_str(), settingsAbility_.c_str(), abilityTypes_, isImportant_);
+        rationale_.c_str(), settingsAbility_.c_str(), abilityTypes_, isImportant_, needHide_);
 }
 
 uint32_t AccessibilityAbilityInfo::GetAccessibilityAbilityType()
@@ -115,6 +117,18 @@ bool AccessibilityAbilityInfo::IsImportant() const
 {
     HILOG_DEBUG();
     return false;
+}
+
+bool AccessibilityAbilityInfo::NeedHide() const
+{
+    HILOG_DEBUG();
+    return needHide_;
+}
+
+const std::string &AccessibilityAbilityInfo::GetLabel() const
+{
+    HILOG_DEBUG();
+    return label_;
 }
 } // namespace Accessibility
 } // namespace OHOS

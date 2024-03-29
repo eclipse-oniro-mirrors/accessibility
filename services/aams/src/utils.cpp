@@ -29,6 +29,7 @@ namespace {
     const std::string KEY_SETTINGS_ABILITY = "settingsAbility";
     const std::string KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE = "accessibilityCapabilityRationale";
     const std::string KEY_IS_IMPORTANT = "isImportant";
+    const std::string KEY_NEED_HIDE = "needHide";
 
     // The json value of accessibilityAbility type
     const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_SPOKEN = "spoken";
@@ -164,6 +165,7 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
     initParams.bundleName = abilityInfo.bundleName;
     initParams.moduleName = abilityInfo.moduleName;
     initParams.description = abilityInfo.description;
+    initParams.label = abilityInfo.label;
 
     std::vector<std::string> profileInfos;
     std::string metadataName = "ohos.accessibleability";
@@ -211,6 +213,12 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
     // isImportant
     if (!JsonUtils::GetBoolFromJson(sourceJson, KEY_IS_IMPORTANT, initParams.isImportant)) {
         HILOG_ERROR("Get isImportant from json failed.");
+        return;
+    }
+
+    // needHide
+    if (!JsonUtils::GetBoolFromJson(sourceJson, KEY_NEED_HIDE, initParams.needHide)) {
+        HILOG_ERROR("Get needHide from json failed.");
         return;
     }
 }

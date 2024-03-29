@@ -28,9 +28,11 @@ struct AccessibilityAbilityInitParams {
     std::string name = "";
     std::string rationale = "";
     std::string settingsAbility = "";
+    std::string label = "";
     uint32_t staticCapabilities = 0;
     uint32_t abilityTypes = ACCESSIBILITY_ABILITY_TYPE_INVALID;
     bool isImportant = false;
+    bool needHide = false;
 };
 
 class AccessibilityAbilityInfo {
@@ -165,11 +167,24 @@ public:
      */
     uint32_t GetStaticCapabilityValues() const;
 
+    /**
+     * @brief Obtains if the ability is need to hide.
+     * @return Return true means hide the ability, return false means show the ability.
+     */
+    bool NeedHide() const;
+
+    /**
+     * @brief Obtains the label of the accessible ability.
+     * @return Return the label of the accessible ability.
+     */
+    const std::string &GetLabel() const;
+
 protected:
     std::string bundleName_;
     std::string moduleName_;
     std::string name_;
     std::string description_;
+    std::string label_;
 
     uint32_t staticCapabilities_ = 0;
     uint32_t capabilities_ = 0;
@@ -181,6 +196,7 @@ protected:
 
     std::vector<std::string> targetBundleNames_;
     bool isImportant_ = false;
+    bool needHide_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS
