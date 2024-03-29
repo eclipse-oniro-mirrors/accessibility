@@ -144,6 +144,14 @@ bool OnRemoteRequestSvcFuzzTest(const uint8_t* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
+    if (data == nullptr) {
+        return 0;
+    }
+
+    if (size < OHOS::Accessibility::U32_AT_SIZE) {
+        return 0;
+    }
+
     OHOS::Accessibility::OnRemoteRequestSvcFuzzTest(data, size);
     return 0;
 }
