@@ -34,6 +34,7 @@ using namespace OHOS::AccessibilityNapi;
 namespace OHOS {
 namespace Accessibility {
 namespace {
+    constexpr int64_t VIRTUAL_COMPONENT_ID = -1;
 }
 NAccessibilityExtension* NAccessibilityExtension::Create(const std::unique_ptr<AbilityRuntime::Runtime>& runtime)
 {
@@ -263,6 +264,13 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
         }
     } else {
         std::shared_ptr<AccessibilityElementInfo> elementInfo = std::make_shared<AccessibilityElementInfo>();
+        std::string inspectorKey = eventInfo.GetInspectorKey();
+        if (eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY && inspectorKey != "") {
+            AccessibilityElementInfo accessibilityElementInfo;
+            if (aaClient->SearchElementInfoByInspectorKey(inspectorKey, accessibilityElementInfo) == RET_OK) {
+                elementInfo = std::make_shared<AccessibilityElementInfo>(accessibilityElementInfo);
+            }
+        }
         CreateElementInfoByEventInfo(eventInfo, elementInfo);
         element = std::make_shared<AccessibilityElement>(elementInfo);
     }
@@ -276,7 +284,9 @@ void NAccessibilityExtension::CreateElementInfoByEventInfo(const AccessibilityEv
     if (!elementInfo) {
         return;
     }
-    elementInfo->SetComponentId(eventInfo.GetAccessibilityId());
+    if (elementInfo->GetAccessibilityId() < 0) {
+        elementInfo->SetComponentId(VIRTUAL_COMPONENT_ID);
+    }
     elementInfo->SetBundleName(eventInfo.GetBundleName());
     elementInfo->SetComponentType(eventInfo.GetComponentType());
     elementInfo->SetPageId(eventInfo.GetPageId());
@@ -426,12 +436,17 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
+    std::shared_ptr<AccessibilityElement> element = GetElement(eventInfo);
+    int64_t elementId = VIRTUAL_COMPONENT_ID;
+    if (element && element->isElementInfo_ && element->elementInfo_) {
+        elementId = element->elementInfo_->GetAccessibilityId();
+    }
     callbackInfo->env_ = env_;
     callbackInfo->extension_ = this;
     callbackInfo->eventType_ = strType;
     callbackInfo->timeStamp_ = eventInfo.GetTimeStamp();
-    callbackInfo->element_ = GetElement(eventInfo);
-    callbackInfo->elementId_ = eventInfo.GetAccessibilityId();
+    callbackInfo->element_ = element;
+    callbackInfo->elementId_ = elementId;
     callbackInfo->textAnnouncedForAccessibility_ = eventInfo.GetTextAnnouncedForAccessibility();
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {

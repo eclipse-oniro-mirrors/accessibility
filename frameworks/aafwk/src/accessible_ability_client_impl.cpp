@@ -953,6 +953,52 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t win
     return RET_OK;
 }
 
+RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std::string &inspectorKey,
+    AccessibilityElementInfo &elementInfo)
+{
+    HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to connect to aams");
+        return RET_ERR_SAMGR;
+    }
+
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    int32_t windowId = serviceProxy_->GetActiveWindow();
+    HILOG_DEBUG("windowId[%{public}d]", windowId);
+    std::vector<AccessibilityElementInfo> elementInfos {};
+
+    RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, ROOT_NONE_ID,
+        static_cast<int32_t>(GET_SOURCE_MODE), elementInfos);
+    if (ret != RET_OK) {
+        HILOG_ERROR("search element info failed.");
+        return ret;
+    }
+
+    if (elementInfos.empty()) {
+        HILOG_ERROR("elementInfos from ace is empty");
+        return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
+    }
+    SortElementInfosIfNecessary(elementInfos);
+    for (auto &info : elementInfos) {
+        if (info.GetInspectorKey() == inspectorKey) {
+            HILOG_DEBUG();
+            elementInfo = info;
+            return RET_OK;
+        }
+    }
+    return RET_ERR_FAILED;
+}
+
 RetError AccessibleAbilityClientImpl::Connect()
 {
     HILOG_DEBUG();
