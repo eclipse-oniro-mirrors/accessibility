@@ -243,6 +243,18 @@ void AccessibilityEventInfo::SetTextAnnouncedForAccessibility(const std::string 
     HILOG_DEBUG("textAnnouncedForAccessibility_[%{public}s]", textAnnouncedForAccessibility_.c_str());
 }
 
+const std::string &AccessibilityEventInfo::GetInspectorKey() const
+{
+    HILOG_DEBUG("inspectorKey_[%{public}s]", inspectorKey_.c_str());
+    return inspectorKey_;
+}
+
+void AccessibilityEventInfo::SetInspectorKey(const std::string &inspectorKey)
+{
+    inspectorKey_ = inspectorKey;
+    HILOG_DEBUG("inspectorKey_[%{public}s]", inspectorKey_.c_str());
+}
+
 void AccessibilityEventInfo::SetTextMovementStep(const TextMoveUnit granularity)
 {
     textMoveStep_ = granularity;

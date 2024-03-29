@@ -223,6 +223,15 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId,
     return RET_OK;
 }
 
+RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std::string &inspectorKey,
+    AccessibilityElementInfo &elementInfo)
+{
+    HILOG_DEBUG();
+    (void)inspectorKey;
+    (void)elementInfo;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &elementInfo,
     const ActionType action, const std::map<std::string, std::string> &actionArguments)
 {

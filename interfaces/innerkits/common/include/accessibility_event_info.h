@@ -479,6 +479,22 @@ public:
      */
     void SetTextAnnouncedForAccessibility(const std::string &textAnnouncedForAccessibility);
 
+    /**
+     * @brief Get the inspectorKey.
+     * @return Return the inspectorKey.
+     * @since 12
+     * @sysCap Accessibility
+     */
+    const std::string &GetInspectorKey() const;
+
+    /**
+     * @brief Set the inspectorKey of the event.
+     * @param inspectorKey The inspectorKey.
+     * @since 12
+     * @sysCap Accessibility
+     */
+    void SetInspectorKey(const std::string &inspectorKey);
+
 protected:
     EventType eventType_ = TYPE_VIEW_INVALID;
     std::string bundleName_ = "";
@@ -493,6 +509,7 @@ protected:
     std::string notificationContent_ = "";
     AccessibilityElementInfo elementInfo_ {};
     std::string textAnnouncedForAccessibility_ = "";
+    std::string inspectorKey_ = "";
 };
 } // namespace Accessibility
 } // namespace OHOS

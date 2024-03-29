@@ -1095,10 +1095,10 @@ bool ConvertEventInfoJSToNAPIPart3(
         eventInfo.SetItemCounts(dataValue);
     }
 
-    napi_create_string_utf8(env, "elementId", NAPI_AUTO_LENGTH, &propertyNameValue);
-    dataValue = ConvertIntJSToNAPI(env, object, propertyNameValue, hasProperty);
+    napi_create_string_utf8(env, "id", NAPI_AUTO_LENGTH, &propertyNameValue);
+    std::string inspectorKey = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
-        eventInfo.SetSource(dataValue);
+        eventInfo.SetInspectorKey(inspectorKey);
     }
 
     napi_create_string_utf8(env, "textAnnouncedForAccessibility", NAPI_AUTO_LENGTH, &propertyNameValue);
