@@ -29,7 +29,10 @@ ohos_fuzztest("AccessibilitySystemAbilityClientFuzzTest") {
     "../../../../../resources/config/build:coverage_flags",
   ]
   sources = [ "accessibilitysystemabilityclient_fuzzer.cpp" ]
-  deps = [ "../../../asacfwk:accessibilityclient" ]
+  deps = [
+    "../../../asacfwk:accessibilityclient",
+    "../../../common:accessibility_common",
+  ]
   external_deps = [ "c_utils:utils" ]
 }
 

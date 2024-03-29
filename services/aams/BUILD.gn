@@ -29,7 +29,6 @@ config("aams_service_config") {
   include_dirs = [
     "include",
     "../../common/log/include",
-    "../../../foundation/graphic/graphic_2d/rosen/modules/2d_graphics/include",
   ]
 
   defines = [

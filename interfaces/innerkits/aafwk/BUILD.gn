@@ -60,7 +60,10 @@ ohos_shared_library("accessibleability") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [ "../../../common/interface:accessibility_interface" ]
+  deps = [
+    "../../../common/interface:accessibility_interface",
+    "../common:accessibility_common",
+  ]
 
   external_deps = [
     "c_utils:utils",
@@ -73,7 +76,6 @@ ohos_shared_library("accessibleability") {
     "samgr:samgr_proxy",
   ]
 
-  public_deps = [ "../common:accessibility_common" ]
   install_enable = true
 
   subsystem_name = "barrierfree"
