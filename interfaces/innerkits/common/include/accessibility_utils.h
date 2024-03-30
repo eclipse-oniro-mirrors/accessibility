@@ -63,6 +63,8 @@ void ConvertAccessibleAbilityInfoToJSPart1(
     napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info);
 void ConvertAccessibleAbilityInfoToJSPart2(
     napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info);
+void ConvertAccessibleAbilityInfoToJSPart3(
+    napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info);
 bool ConvertEventInfoJSToNAPI(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
 bool ConvertEventInfoJSToNAPIPart1(

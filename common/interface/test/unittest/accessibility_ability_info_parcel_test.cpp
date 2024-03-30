@@ -49,6 +49,7 @@ public:
         params.staticCapabilities = 1;
         params.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_SPOKEN;
         params.isImportant = true;
+        params.needHide = false;
         abilityInfo_ = std::make_shared<AccessibilityAbilityInfo>(params);
         abilityInfoParcel_ = std::make_shared<AccessibilityAbilityInfoParcel>(*abilityInfo_);
         GTEST_LOG_(INFO) << "AccessibilityAbilityInfoParcelTest SetUp() End";

@@ -32,6 +32,7 @@ bool AccessibilityAbilityInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, moduleName_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, name_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, description_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, label_);
 
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, capabilities_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, staticCapabilities_);
@@ -40,6 +41,7 @@ bool AccessibilityAbilityInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, eventTypes_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, settingsAbility_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(StringVector, parcel, &targetBundleNames_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, needHide_);
 
     return true;
 }
@@ -50,6 +52,7 @@ bool AccessibilityAbilityInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, moduleName_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, name_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, description_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, label_);
 
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, capabilities_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, staticCapabilities_);
@@ -58,6 +61,7 @@ bool AccessibilityAbilityInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, eventTypes_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, settingsAbility_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(StringVector, parcel, targetBundleNames_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, needHide_);
 
     return true;
 }

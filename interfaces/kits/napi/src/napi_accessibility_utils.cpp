@@ -395,6 +395,7 @@ void ConvertAccessibleAbilityInfoToJS(
     HILOG_DEBUG();
     ConvertAccessibleAbilityInfoToJSPart1(env, result, info);
     ConvertAccessibleAbilityInfoToJSPart2(env, result, info);
+    ConvertAccessibleAbilityInfoToJSPart3(env, result, info);
 }
 
 void ConvertAccessibleAbilityInfoToJSPart1(
@@ -471,6 +472,15 @@ void ConvertAccessibleAbilityInfoToJSPart2(
         idx++;
     }
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "targetBundleNames", filterBundleNames));
+}
+
+void ConvertAccessibleAbilityInfoToJSPart3(
+    napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info)
+{
+    HILOG_DEBUG();
+    napi_value nNeedHide;
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, info.NeedHide(), &nNeedHide));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "needHide", nNeedHide));
 }
 
 void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
