@@ -79,7 +79,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
     int32_t leftSize = static_cast<int32_t>(infos.size());
     int32_t time = 0;
     int32_t index = 0;
-    while (leftSize >= 0) {
+    while (leftSize > 0) {
         MessageParcel data;
         MessageParcel reply;
         MessageOption type = MessageOption::TF_SYNC;
