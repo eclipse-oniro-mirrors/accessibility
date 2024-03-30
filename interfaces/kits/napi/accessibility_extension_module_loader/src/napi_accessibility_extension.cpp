@@ -373,8 +373,9 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
-            auto closeScope = [data](napi_handle_scope scope) {
-                napi_close_handle_scope(data->env_, scope);
+            napi_env env = data->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(data->env_), closeScope);
             napi_value napiEventInfo = nullptr;
@@ -469,8 +470,9 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
 void NAccessibilityExtension::OnAccessibilityEventCompleteCallback(uv_work_t* work, int status)
 {
     AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
-    auto closeScope = [data](napi_handle_scope scope) {
-        napi_close_handle_scope(data->env_, scope);
+    napi_env env = data->env_;
+    auto closeScope = [env](napi_handle_scope scope) {
+        napi_close_handle_scope(env, scope);
     };
     std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(data->env_), closeScope);
     napi_value napiEventInfo = nullptr;
@@ -584,8 +586,9 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
 void NAccessibilityExtension::OnKeyPressEventCompleteCallback(uv_work_t* work, int status)
 {
     KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
-    auto closeScope = [data](napi_handle_scope scope) {
-        napi_close_handle_scope(data->env_, scope);
+    napi_env env = data->env_;
+    auto closeScope = [env](napi_handle_scope scope) {
+        napi_close_handle_scope(env, scope);
     };
     std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(data->env_), closeScope);
     napi_value napiEventInfo = nullptr;
