@@ -22,7 +22,10 @@ ohos_benchmarktest("BenchmarkTestForAccessibleAbilityClient") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
 
-  deps = [ "../../../aafwk:accessibleability" ]
+  deps = [
+    "../../../aafwk:accessibleability",
+    "../../../common:accessibility_common",
+  ]
 }
 
 group("benchmarktest") {

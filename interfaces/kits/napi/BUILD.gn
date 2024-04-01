@@ -14,7 +14,7 @@
 import("//build/ohos.gni")
 import("../../../accessibility_aafwk.gni")
 
-ohos_shared_library("accessibility") {
+ohos_shared_library("accessibility_napi") {
   branch_protector_ret = "pac_ret"
   sanitize = {
     integer_overflow = true
@@ -27,7 +27,6 @@ ohos_shared_library("accessibility") {
 
   include_dirs = [
     "../../../common/log/include",
-    "../../../../../multimodalinput/input/interfaces/native/innerkits/event/include",
     "./include",
   ]
 
@@ -47,6 +46,7 @@ ohos_shared_library("accessibility") {
   deps = [
     "../../innerkits/acfwk:accessibilityconfig",
     "../../innerkits/asacfwk:accessibilityclient",
+    "../../innerkits/common:accessibility_common",
   ]
 
   external_deps = [
@@ -62,7 +62,7 @@ ohos_shared_library("accessibility") {
 
 group("napi_packages") {
   deps = [
-    ":accessibility",
+    ":accessibility_napi",
     "accessibility_config:config_napi",
     "accessibility_extension:accessibilityextensionability_napi",
     "accessibility_extension_context:accessibilityextensioncontext_napi",

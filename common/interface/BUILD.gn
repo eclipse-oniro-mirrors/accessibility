@@ -32,10 +32,7 @@ config("accessibility_interface_private_config") {
 }
 
 config("accessibility_interface_public_config") {
-  include_dirs = [
-    "include",
-    "../../../../multimodalinput/input/interfaces/native/innerkits/event/include",
-  ]
+  include_dirs = [ "include" ]
 }
 
 accessibility_interface_src = [

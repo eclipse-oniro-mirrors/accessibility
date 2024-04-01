@@ -15,6 +15,7 @@ group("benchmarktest") {
   testonly = true
 
   deps = [
+    "../../common:accessibility_common",
     "accessibility_config_test:benchmarktest",
     "accessibility_system_ability_client_test:benchmarktest",
     "accessible_ability_client_test:benchmarktest",

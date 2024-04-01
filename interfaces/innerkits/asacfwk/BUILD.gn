@@ -57,9 +57,10 @@ ohos_shared_library("accessibilityclient") {
 
   public_configs = [ ":accessibilityclient_public_config" ]
 
-  deps = [ "../../../common/interface:accessibility_interface" ]
-
-  public_deps = [ "../common:accessibility_common" ]
+  deps = [
+    "../../../common/interface:accessibility_interface",
+    "../common:accessibility_common",
+  ]
 
   external_deps = [
     "c_utils:utils",
