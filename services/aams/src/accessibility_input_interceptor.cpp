@@ -249,9 +249,7 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
     if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
         (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) ||
-        (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS) ||
         (availableFunctions_ & FEATURE_MOUSE_KEY) ||
-        (availableFunctions_ & FEATURE_SHORT_KEY) ||
         (availableFunctions_ & FEATURE_SCREEN_TOUCH)) {
             inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
             interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
