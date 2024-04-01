@@ -463,6 +463,25 @@ HWTEST_F(AccessibilityEventInfoUnitTest, AddContent_001, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetElementInfo_001
+ * @tc.name: SetElementInfo
+ * @tc.desc: Test function SetElement&GetElement
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, SetElementInfo_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetElementInfo_001 start";
+    int accessibilityId = 1;
+    AccessibilityElementInfo elementInfo;
+    std::shared_ptr<AccessibilityEventInfo> eventInfo =
+        std::make_shared<AccessibilityEventInfo>(1, WINDOW_UPDATE_FOCUSED);
+    elementInfo.SetAccessibilityId(accessibilityId);
+    ASSERT_TRUE(eventInfo);
+    eventInfo->SetElementInfo(elementInfo);
+    EXPECT_EQ(eventInfo->GetElementInfo().GetAccessibilityId(), accessibilityId);
+    GTEST_LOG_(INFO) << "SetElementInfo_001 end";
+}
+
+/**
  * @tc.number: AccessibilityEventInfo_001
  * @tc.name: AccessibilityEventInfo
  * @tc.desc: Test function AccessibilityEventInfo
