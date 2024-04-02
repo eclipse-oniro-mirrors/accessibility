@@ -117,6 +117,10 @@ bool AccessibilityEventInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
     std::string inspectorKey;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, inspectorKey);
     SetInspectorKey(inspectorKey);
+
+    int32_t requestFocusElementId = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, requestFocusElementId);
+    SetRequestFocusElementId(requestFocusElementId);
     return true;
 }
 
@@ -167,6 +171,7 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &elementInfoParcel);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetTextAnnouncedForAccessibility());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetInspectorKey());
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetRequestFocusElementId());
     return true;
 }
 

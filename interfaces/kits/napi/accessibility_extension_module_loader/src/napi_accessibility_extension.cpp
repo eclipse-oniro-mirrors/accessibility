@@ -438,16 +438,12 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         return;
     }
     std::shared_ptr<AccessibilityElement> element = GetElement(eventInfo);
-    int64_t elementId = VIRTUAL_COMPONENT_ID;
-    if (element && element->isElementInfo_ && element->elementInfo_) {
-        elementId = element->elementInfo_->GetAccessibilityId();
-    }
     callbackInfo->env_ = env_;
     callbackInfo->extension_ = this;
     callbackInfo->eventType_ = strType;
     callbackInfo->timeStamp_ = eventInfo.GetTimeStamp();
     callbackInfo->element_ = element;
-    callbackInfo->elementId_ = elementId;
+    callbackInfo->elementId_ = eventInfo.GetRequestFocusElementId();
     callbackInfo->textAnnouncedForAccessibility_ = eventInfo.GetTextAnnouncedForAccessibility();
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {

@@ -634,6 +634,7 @@ std::string ConvertOperationTypeToString(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_PASTE, "paste"},
         {ActionType::ACCESSIBILITY_ACTION_CUT, "cut"},
         {ActionType::ACCESSIBILITY_ACTION_SET_SELECTION, "setSelection"},
+        {ActionType::ACCESSIBILITY_ACTION_COMMON, "common"},
         {ActionType::ACCESSIBILITY_ACTION_SET_TEXT, "setText"},
         {ActionType::ACCESSIBILITY_ACTION_DELETED, "delete"},
     };
@@ -729,6 +730,7 @@ ActionType ConvertStringToAccessibleOperationType(const std::string &type)
         {"paste", ActionType::ACCESSIBILITY_ACTION_PASTE},
         {"cut", ActionType::ACCESSIBILITY_ACTION_CUT},
         {"setSelection", ActionType::ACCESSIBILITY_ACTION_SET_SELECTION},
+        {"common", ActionType::ACCESSIBILITY_ACTION_COMMON},
         {"setText", ActionType::ACCESSIBILITY_ACTION_SET_TEXT},
         {"delete", ActionType::ACCESSIBILITY_ACTION_DELETED}};
 
@@ -1057,6 +1059,12 @@ bool ConvertEventInfoJSToNAPIPart2(
     if (hasProperty) {
         eventInfo.SetTextMovementStep(ConvertStringToTextMoveUnit(str));
     }
+
+    napi_create_string_utf8(env, "elementId", NAPI_AUTO_LENGTH, &propertyNameValue);
+    dataValue = ConvertIntJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        eventInfo.SetRequestFocusElementId(dataValue);
+    }
     return true;
 }
 
@@ -1105,7 +1113,7 @@ bool ConvertEventInfoJSToNAPIPart3(
         eventInfo.SetItemCounts(dataValue);
     }
 
-    napi_create_string_utf8(env, "id", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_create_string_utf8(env, "customId", NAPI_AUTO_LENGTH, &propertyNameValue);
     std::string inspectorKey = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
         eventInfo.SetInspectorKey(inspectorKey);
