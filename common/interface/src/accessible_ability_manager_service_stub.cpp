@@ -543,6 +543,11 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleEnableUITestAbility(
     MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
+    if (!IsSystemApp()) {
+        HILOG_WARN("HandleEnableUITestAbility Permission denied");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     int32_t result = EnableUITestAbility(obj);
     if (!reply.WriteInt32(result)) {
@@ -566,6 +571,11 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility(
     MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
+    if (!IsSystemApp()) {
+        HILOG_WARN("HandleDisableUITestAbility Permission denied");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
     int32_t result = DisableUITestAbility();
     if (!reply.WriteInt32(result)) {
         HILOG_ERROR("WriteBool failed");

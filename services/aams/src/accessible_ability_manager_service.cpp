@@ -947,6 +947,11 @@ RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemote
         return RET_ERR_NULLPTR;
     }
 
+    if (!obj) {
+        HILOG_ERROR("obj is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     handler_->PostTask(std::bind([this, &syncPromise, obj]() -> void {
