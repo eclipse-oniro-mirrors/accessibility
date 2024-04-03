@@ -495,6 +495,22 @@ public:
      */
     void SetInspectorKey(const std::string &inspectorKey);
 
+    /**
+     * @brief Set the request focus elementId.
+     * @param requestFocusElementId The elementId to focus.
+     * @since 12
+     * @sysCap Accessibility
+     */
+    void SetRequestFocusElementId(const int32_t requestFocusElementId);
+
+    /**
+     * @brief Gets the request focus elementId.
+     * @return The elementId to focus.
+     * @since 12
+     * @sysCap Accessibility
+     */
+    int32_t GetRequestFocusElementId() const;
+
 protected:
     EventType eventType_ = TYPE_VIEW_INVALID;
     std::string bundleName_ = "";
@@ -510,6 +526,7 @@ protected:
     AccessibilityElementInfo elementInfo_ {};
     std::string textAnnouncedForAccessibility_ = "";
     std::string inspectorKey_ = "";
+    int32_t requestFocusElementId_ = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -338,5 +338,17 @@ const AccessibilityElementInfo &AccessibilityEventInfo::GetElementInfo() const
     HILOG_DEBUG("get elementInfo");
     return elementInfo_;
 }
+
+void AccessibilityEventInfo::SetRequestFocusElementId(const int32_t requestFocusElementId)
+{
+    HILOG_DEBUG("requestFocusElementId[%{public}d]", requestFocusElementId);
+    requestFocusElementId_ = requestFocusElementId;
+}
+
+int32_t AccessibilityEventInfo::GetRequestFocusElementId() const
+{
+    HILOG_DEBUG("requestFocusElementId_[%{public}d]", requestFocusElementId_);
+    return requestFocusElementId_;
+}
 } // namespace Accessibility
 } // namespace OHOS

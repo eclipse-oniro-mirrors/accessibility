@@ -434,6 +434,42 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetTextAnnouncedForAccessibility_001, T
 }
 
 /**
+ * @tc.number: SetInspectorKey_001
+ * @tc.name: SetInspectorKey
+ * @tc.desc: Test function SetInspectorKey
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, SetInspectorKey_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetInspectorKey_001 start";
+    if (!eventInfo_) {
+        GTEST_LOG_(INFO) << "eventInfo_ is null";
+        return;
+    }
+    std::string inspectorKey = "inspectorKey";
+    eventInfo_->SetInspectorKey(inspectorKey);
+    EXPECT_EQ(eventInfo_->GetInspectorKey(), inspectorKey);
+    GTEST_LOG_(INFO) << "SetInspectorKey_001 end";
+}
+
+/**
+ * @tc.number: SetRequestFocusElementId_001
+ * @tc.name: SetRequestFocusElementId
+ * @tc.desc: Test function SetRequestFocusElementId
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, SetRequestFocusElementId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetRequestFocusElementId_001 start";
+    if (!eventInfo_) {
+        GTEST_LOG_(INFO) << "eventInfo_ is null";
+        return;
+    }
+    int32_t requestFocusElementId = 1;
+    eventInfo_->SetRequestFocusElementId(requestFocusElementId);
+    EXPECT_EQ(eventInfo_->GetRequestFocusElementId(), requestFocusElementId);
+    GTEST_LOG_(INFO) << "SetRequestFocusElementId_001 end";
+}
+
+/**
  * @tc.number: AddContent_001
  * @tc.name: AddContent
  * @tc.desc: Test function AddContent
