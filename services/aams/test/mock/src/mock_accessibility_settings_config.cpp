@@ -24,34 +24,33 @@ AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
     accountId_ = id;
 }
 
-bool AccessibilitySettingsConfig::SetEnabled(const bool state)
+RetError AccessibilitySettingsConfig::SetEnabled(const bool state)
 {
     HILOG_DEBUG("start.");
     enabled_ = state;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibilitySettingsConfig::SetTouchGuideState(const bool state)
+RetError AccessibilitySettingsConfig::SetTouchGuideState(const bool state)
 {
     HILOG_DEBUG("start.");
     eventTouchGuideState_ = state;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibilitySettingsConfig::SetGestureState(const bool state)
+RetError AccessibilitySettingsConfig::SetGestureState(const bool state)
 {
     HILOG_DEBUG("start.");
     gesturesSimulation_ = state;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibilitySettingsConfig::SetKeyEventObserverState(const bool state)
+RetError AccessibilitySettingsConfig::SetKeyEventObserverState(const bool state)
 {
     HILOG_DEBUG("start.");
     filteringKeyEvents_ = state;
-    return true;
+    return RET_OK;
 }
-
 
 RetError AccessibilitySettingsConfig::SetCaptionState(const bool state)
 {
@@ -190,20 +189,6 @@ RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConf
     HILOG_DEBUG("start.");
     captionProperty_ = caption;
     return RET_OK;
-}
-
-bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
-{
-    HILOG_DEBUG("start.");
-    (void)type;
-    return true;
-}
-
-std::string AccessibilitySettingsConfig::StateChange(bool state)
-{
-    HILOG_DEBUG("start.");
-    std::string STATE_TRUE = "on";
-        return STATE_TRUE;
 }
 
 bool AccessibilitySettingsConfig::GetCaptionState() const
@@ -383,16 +368,6 @@ void AccessibilitySettingsConfig::InitEnabledList()
 }
 
 void AccessibilitySettingsConfig::Init()
-{
-    HILOG_DEBUG("start.");
-}
-
-void AccessibilitySettingsConfig::VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut)
-{
-    HILOG_DEBUG("start.");
-}
-
-void AccessibilitySettingsConfig::StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult)
 {
     HILOG_DEBUG("start.");
 }
