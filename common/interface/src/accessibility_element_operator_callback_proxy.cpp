@@ -88,7 +88,11 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
         }
         MessageOption option(type);
         data.SetMaxCapacity(IPC_MEMORY_SIZE);
-
+        
+        // when infos size is a multi of 800, do not send the last empty reply
+        if (leftSize == 0 && time > 0) {
+            return;
+        }
         if (!WriteInterfaceToken(data)) {
             return;
         }
