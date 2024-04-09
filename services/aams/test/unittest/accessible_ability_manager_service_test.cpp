@@ -820,7 +820,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_001, TestS
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_EnableUITestAbility_001 start";
     sptr<IRemoteObject> obj;
-    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj));
+    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj));
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_EnableUITestAbility_001 end";
 }
 
