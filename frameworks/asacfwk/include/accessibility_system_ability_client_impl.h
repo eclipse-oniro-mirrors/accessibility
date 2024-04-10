@@ -249,7 +249,7 @@ private:
     static void OnParameterChanged(const char *key, const char *value, void *context);
     void ReregisterElementOperator();
 
-    uint32_t state_;
+    uint32_t state_{0};
     std::mutex mutex_;
     StateArray stateArray_;
     StateObserversArray stateObserversArray_;

@@ -109,6 +109,10 @@ int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
+    if (loop == nullptr || work == nullptr) {
+        HILOG_ERROR("loop or work is nullptr.");
+        return RET_ERR_FAILED;
+    }
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
@@ -144,6 +148,10 @@ int NAccessibilityConfigObserver::NotifyPropertyChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
+    if (loop == nullptr || work == nullptr) {
+        HILOG_ERROR("loop or work is nullptr.");
+        return RET_ERR_FAILED;
+    }
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             CaptionCallbackInfo *callbackInfo = static_cast<CaptionCallbackInfo*>(work->data);
@@ -179,6 +187,10 @@ int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
+    if (loop == nullptr || work == nullptr) {
+        HILOG_ERROR("loop or work is nullptr.");
+        return RET_ERR_FAILED;
+    }
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
@@ -215,6 +227,10 @@ int NAccessibilityConfigObserver::NotifyStringVectorChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
+    if (loop == nullptr || work == nullptr) {
+        HILOG_ERROR("loop or work is nullptr.");
+        return RET_ERR_FAILED;
+    }
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
@@ -252,6 +268,10 @@ int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
+    if (loop == nullptr || work == nullptr) {
+        HILOG_ERROR("loop or work is nullptr.");
+        return RET_ERR_FAILED;
+    }
     int ret = uv_queue_work_with_qos(
         loop,
         work,
@@ -289,6 +309,10 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
+    if (loop == nullptr || work == nullptr) {
+        HILOG_ERROR("loop or work is nullptr.");
+        return RET_ERR_FAILED;
+    }
     int ret = uv_queue_work_with_qos(
         loop,
         work,
@@ -326,6 +350,10 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
+    if (loop == nullptr || work == nullptr) {
+        HILOG_ERROR("loop or work is nullptr.");
+        return RET_ERR_FAILED;
+    }
     int ret = uv_queue_work_with_qos(
         loop,
         work,

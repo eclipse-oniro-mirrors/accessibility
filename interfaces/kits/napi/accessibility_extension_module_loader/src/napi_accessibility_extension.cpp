@@ -157,6 +157,10 @@ void NAccessibilityExtension::OnAbilityConnected()
     HILOG_INFO();
     uv_loop_s* loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
+    if (loop == nullptr) {
+        HILOG_ERROR("loop is nullptr.");
+        return;
+    }
     ExtensionCallbackInfo *callbackInfo = new(std::nothrow) ExtensionCallbackInfo();
     if (!callbackInfo) {
         HILOG_ERROR("Failed to create callbackInfo.");
@@ -200,6 +204,10 @@ void NAccessibilityExtension::OnAbilityDisconnected()
     HILOG_INFO();
     uv_loop_s* loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
+    if (loop == nullptr) {
+        HILOG_ERROR("loop is nullptr.");
+        return;
+    }
     ExtensionCallbackInfo *callbackInfo = new(std::nothrow) ExtensionCallbackInfo();
     if (!callbackInfo) {
         HILOG_ERROR("Failed to create callbackInfo.");
@@ -367,6 +375,9 @@ napi_status SetEventInfoStrProperty(napi_env env, const char *property, std::str
 
 int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t *loop)
 {
+    if (loop == nullptr || work == nullptr) {
+        return RET_ERR_FAILED;
+    }
     int ret = uv_queue_work_with_qos(
         loop,
         work,
@@ -386,18 +397,14 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
-                HILOG_DEBUG("eventType[%{public}s]", data->eventType_.c_str());
-                
                 if (SetNapiEventInfoIntProperty(data->env_, "timeStamp", data->timeStamp_, napiEventInfo) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
-
                 if (SetNapiEventInfoIntProperty(data->env_, "elementId", data->elementId_, napiEventInfo) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
-
                 if (SetEventInfoStrProperty(data->env_, "textAnnouncedForAccessibility",
                     data->textAnnouncedForAccessibility_, napiEventInfo) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
@@ -495,6 +502,10 @@ void NAccessibilityExtension::OnAccessibilityEventCompleteCallback(uv_work_t* wo
 
 int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loop)
 {
+    if (loop == nullptr || work == nullptr) {
+        HILOG_ERROR("loop or work is nullptr.");
+        return RET_ERR_FAILED;
+    }
     int ret = uv_queue_work_with_qos(
         loop,
         work,

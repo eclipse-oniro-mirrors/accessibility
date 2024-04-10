@@ -220,7 +220,7 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
     }
 
     auto callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
