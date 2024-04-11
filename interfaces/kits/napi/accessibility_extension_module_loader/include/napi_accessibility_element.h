@@ -39,6 +39,7 @@ struct AccessibilityElement {
 enum FindElementCondition {
     FIND_ELEMENT_CONDITION_CONTENT,
     FIND_ELEMENT_CONDITION_FOCUS_TYPE,
+    FIND_ELEMENT_CONDITION_TEXT_TYPE,
     FIND_ELEMENT_CONDITION_FOCUS_DIRECTION,
     FIND_ELEMENT_CONDITION_ELEMENT_ID,
     FIND_ELEMENT_CONDITION_INVALID
@@ -121,6 +122,7 @@ public:
     static void GetElementInfoValueMin(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoValueNow(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityText(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoTextType(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);
@@ -143,6 +145,7 @@ private:
         NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement);
     static void FindElementExecute(napi_env env, void* data);
     static void FindElementComplete(napi_env env, napi_status status, void* data);
+    static void FindElementByText(NAccessibilityElementData *callbackInfo);
     static void GetElement(NAccessibilityElementData *callbackInfo, napi_value &value);
     static napi_value PerformActionAsync(napi_env env, size_t argc, napi_value* argv,
         std::string actionName, AccessibilityElement* accessibilityElement);

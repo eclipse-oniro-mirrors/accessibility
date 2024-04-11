@@ -21,6 +21,7 @@
 #include "accessible_ability_client.h"
 #include "hilog_wrapper.h"
 #include "accessibility_utils.h"
+#include "nlohmann/json.hpp"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
@@ -32,7 +33,8 @@ namespace {
         "resourceName", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible",
         "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable",
         "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
-        "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText"};
+        "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
+        "textType"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId"};
 
@@ -81,6 +83,7 @@ namespace {
         {"valueNow", &NAccessibilityElement::GetElementInfoValueNow},
         {"windowId", &NAccessibilityElement::GetElementInfoWindowId},
         {"accessibilityText", &NAccessibilityElement::GetElementInfoAccessibilityText},
+        {"textType", &NAccessibilityElement::GetElementInfoTextType},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
         {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
@@ -891,6 +894,15 @@ void NAccessibilityElement::GetElementInfoAccessibilityText(NAccessibilityElemen
         callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityText().c_str(), NAPI_AUTO_LENGTH, &value));
 }
 
+void NAccessibilityElement::GetElementInfoTextType(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetTextType().c_str(), NAPI_AUTO_LENGTH, &value));
+}
+
 bool NAccessibilityElement::CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!callbackInfo) {
@@ -1361,6 +1373,7 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
             if (std::strcmp(conditionType.c_str(), "content") != 0 &&
                 std::strcmp(conditionType.c_str(), "focusType") != 0 &&
                 std::strcmp(conditionType.c_str(), "focusDirection") != 0 &&
+                std::strcmp(conditionType.c_str(), "textType") != 0 &&
                 std::strcmp(conditionType.c_str(), "elementId") != 0) {
                 HILOG_ERROR("argv[PARAM0] is wrong[%{public}s", conditionType.c_str());
                 errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
@@ -1397,6 +1410,18 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
     }
 }
 
+void NAccessibilityElement::FindElementByText(NAccessibilityElementData *callbackInfo)
+{
+    nlohmann::json jsonStr = nullptr;
+    jsonStr["type"] = (callbackInfo->conditionId_ ==
+        FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT) ? "content" : "textType";
+    jsonStr["value"] = callbackInfo->condition_;
+    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetByContent(
+        *(callbackInfo->accessibilityElement_.elementInfo_),
+        jsonStr.dump().c_str(), callbackInfo->nodeInfos_);
+    return;
+}
+
 void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
 {
     NAccessibilityElementData *callbackInfo = static_cast<NAccessibilityElementData*>(data);
@@ -1411,9 +1436,8 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
             callbackInfo->ret_ = RET_ERR_INVALID_PARAM;
             return;
         case FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT:
-            callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetByContent(
-                *(callbackInfo->accessibilityElement_.elementInfo_), callbackInfo->condition_,
-                callbackInfo->nodeInfos_);
+        case FindElementCondition::FIND_ELEMENT_CONDITION_TEXT_TYPE:
+            FindElementByText(callbackInfo);
             break;
         case FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE:
             {
@@ -1496,6 +1520,10 @@ void NAccessibilityElement::GetElement(NAccessibilityElementData *callbackInfo, 
             callbackInfo->ret_ = RET_ERR_INVALID_PARAM;
             return;
         case FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT:
+            napi_create_array(env, &value);
+            ConvertElementInfosToJS(env, value, callbackInfo->nodeInfos_);
+            break;
+        case FindElementCondition::FIND_ELEMENT_CONDITION_TEXT_TYPE:
             napi_create_array(env, &value);
             ConvertElementInfosToJS(env, value, callbackInfo->nodeInfos_);
             break;
@@ -1588,7 +1616,8 @@ FindElementCondition NAccessibilityElement::ConvertStringToCondition(const std::
         {"content", FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT},
         {"focusType", FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE},
         {"focusDirection", FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_DIRECTION},
-        {"elementId", FindElementCondition::FIND_ELEMENT_CONDITION_ELEMENT_ID}
+        {"elementId", FindElementCondition::FIND_ELEMENT_CONDITION_ELEMENT_ID},
+        {"textType", FindElementCondition::FIND_ELEMENT_CONDITION_TEXT_TYPE}
     };
 
     if (findElementConditionTable.find(str) == findElementConditionTable.end()) {
