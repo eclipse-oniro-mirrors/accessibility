@@ -20,6 +20,7 @@
 #include "accessible_ability_channel_stub.h"
 #include "event_handler.h"
 #include "i_accessibility_element_operator.h"
+#include "key_event.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -64,6 +65,10 @@ private:
     static RetError GetElementOperator(int32_t accountId, int32_t windowId, int32_t focusType,
         const std::string &clientName, sptr<IAccessibilityElementOperator> &elementOperator);
     RetError GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const;
+    RetError TransmitActionToMmi(const int32_t action);
+    static void SetKeyCodeMulti(std::shared_ptr<MMI::KeyEvent>& keyEvent,
+        const int32_t keyCodePre, const int32_t keyCodeNext);
+    static void SetKeyCodeSingle(std::shared_ptr<MMI::KeyEvent>& keyEvent, const int32_t keyCode);
 
     std::string clientName_ = "";
     int32_t accountId_ = -1;

@@ -24,6 +24,18 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr uint32_t TIME_OUT_OPERATOR = 5000;
+    MMI::InputManager* inputManager_ = MMI::InputManager::GetInstance();
+    std::map<int32_t, std::pair<bool, std::pair<int32_t, int32_t>>> accessibleKeyCodeTable = {
+        {ActionType::ACCESSIBILITY_ACTION_HOME,
+            {false, {MMI::KeyEvent::KEYCODE_META_LEFT, MMI::KeyEvent::KEYCODE_D}}},
+        {ActionType::ACCESSIBILITY_ACTION_RECENTTASK,
+            {false, {MMI::KeyEvent::KEYCODE_META_LEFT, MMI::KeyEvent::KEYCODE_TAB}}},
+        {ActionType::ACCESSIBILITY_ACTION_BACK,
+            {true, {MMI::KeyEvent::KEYCODE_BACK, MMI::KeyEvent::KEYCODE_BACK}}},
+        {ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER,
+            {true, {MMI::KeyEvent::KEYCODE_NOTIFICATION, MMI::KeyEvent::KEYCODE_NOTIFICATION}}},
+        {ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER,
+            {true, {MMI::KeyEvent::KEYCODE_CONTROLPANEL, MMI::KeyEvent::KEYCODE_CONTROLPANEL}}}};
 } // namespace
 
 AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName)
@@ -185,6 +197,74 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
     return syncFuture.get();
 }
 
+void AccessibleAbilityChannel::SetKeyCodeSingle(std::shared_ptr<MMI::KeyEvent>& keyEvent, const int32_t keyCode)
+{
+    HILOG_DEBUG();
+    if (!keyEvent) {
+        HILOG_ERROR("KeyEvent is nullptr");
+        return;
+    }
+
+    keyEvent->SetKeyCode(keyCode);
+    keyEvent->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+
+    MMI::KeyEvent::KeyItem item;
+    item.SetKeyCode(keyCode);
+    item.SetPressed(true);
+
+    keyEvent->AddKeyItem(item);
+}
+
+void AccessibleAbilityChannel::SetKeyCodeMulti(std::shared_ptr<MMI::KeyEvent>& keyEvent, const int32_t keyCodePre,
+    const int32_t keyCodeNext)
+{
+    HILOG_DEBUG();
+    if (!keyEvent) {
+        HILOG_ERROR("KeyEvent is nullptr");
+        return;
+    }
+
+    keyEvent->SetKeyCode(keyCodeNext);
+    keyEvent->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+
+    MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(keyCodePre);
+    item1.SetPressed(true);
+    keyEvent->AddKeyItem(item1);
+
+    MMI::KeyEvent::KeyItem item2;
+    item2.SetKeyCode(keyCodeNext);
+    item2.SetPressed(true);
+    keyEvent->AddKeyItem(item2);
+}
+
+RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
+{
+    HILOG_DEBUG("The action is %{public}d", action);
+    std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
+    if (!keyEvent) {
+        HILOG_ERROR("KeyEvent is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+
+    if (!inputManager_) {
+        HILOG_ERROR("inputManager_ is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    
+    HILOG_DEBUG("Transmit keycode to MMI");
+
+    if (accessibleKeyCodeTable.at(action).first) {
+        SetKeyCodeSingle(keyEvent, accessibleKeyCodeTable.at(action).second.first);
+    } else {
+        SetKeyCodeMulti(keyEvent, accessibleKeyCodeTable.at(action).second.first,
+            accessibleKeyCodeTable.at(action).second.second);
+    }
+
+    inputManager_->SimulateInputEvent(keyEvent);
+    return RET_OK;
+}
+
 RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
@@ -196,6 +276,15 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         return RET_ERR_NULLPTR;
     }
 
+    if (accessibleKeyCodeTable.find(action) != accessibleKeyCodeTable.end()) {
+        RetError ret = TransmitActionToMmi(action);
+        if (ret != RET_OK) {
+            HILOG_ERROR("Transmit Action To Mmi failed!");
+            return RET_ERR_FAILED;
+        }
+        return RET_OK;
+    }
+    
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, action,
