@@ -345,12 +345,14 @@ std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilit
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
     std::vector<AccessibilityWindowInfo> windows;
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
+    HILOG_DEBUG("windowInfos size[%{public}zu]", windowInfos.size());
     if (err != Rosen::WMError::WM_OK) {
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
         return windows;
     }
     for (auto &info : windowInfos) {
         if (info == nullptr) {
+            HILOG_DEBUG("info is nullptr");
             continue;
         }
 
