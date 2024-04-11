@@ -167,7 +167,7 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
 }
 
 RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId,
-    int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos)
+    int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter)
 {
     int32_t requestId = GenerateRequestId();
     HILOG_DEBUG("channelId:%{public}d, elementId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
@@ -188,7 +188,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     std::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     RetError ret = proxy_->SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId,
-        elementOperator, mode);
+        elementOperator, mode, isFilter);
     if (ret != RET_OK) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId failed. ret[%{public}d]", ret);
         return ret;

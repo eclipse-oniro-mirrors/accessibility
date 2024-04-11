@@ -114,8 +114,9 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
     if (mode == GET_SOURCE_MODE) {
         mode = PREFETCH_RECURSIVE_CHILDREN;
     }
-
-    RetError result = SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId, callback, mode);
+    bool isFilter = data.ReadBool();
+    RetError result = SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId, callback, mode,
+    isFilter);
     HILOG_DEBUG("SearchElementInfoByAccessibilityId ret = %{public}d", result);
     reply.WriteInt32(result);
 

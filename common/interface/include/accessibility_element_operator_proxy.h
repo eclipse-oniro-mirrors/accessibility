@@ -51,7 +51,8 @@ public:
      * @sysCap Accessibility
      */
     virtual void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+        bool isFilter = false) override;
 
     /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.
@@ -121,7 +122,20 @@ public:
      * Example: PopupWindow receive the OUTSIDE_EVENT to close itself.
      */
     virtual void OutsideTouch() override;
+
+    /**
+     * @brief Set isFilter.
+     * @param enableFilter True : Perform filtering ;otherwise is false.
+     */
+    void SetIsFilter(bool enableFilter);
+
+    /**
+     * @brief Get isFilter.
+     */
+    bool GetFilter();
 private:
+    bool isFilter = false;
+
     /**
      * @brief Write the descriptor of IPC.
      * @param data It is include the descriptor of IPC.

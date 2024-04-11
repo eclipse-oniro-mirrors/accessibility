@@ -43,7 +43,7 @@ AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, cons
 
 RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
     const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
-    const int32_t mode)
+    const int32_t mode, bool isFilter)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SearchElementInfoByAccessibilityId";
     (void)accessibilityWindowId;
@@ -51,6 +51,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
     (void)requestId;
     (void)callback;
     (void)mode;
+    (void)isFilter;
     return RET_OK;
 }
 

@@ -106,7 +106,7 @@ public:
      * @return Return RET_OK if search element info successfully, otherwise refer to the RetError for the failure.
      */
     RetError SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId, int64_t elementId,
-        int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos);
+        int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false);
 
     /**
      * @brief Get the window information related with the event

@@ -45,7 +45,7 @@ public:
      */
     virtual RetError SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
         const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-        const int32_t mode) = 0;
+        const int32_t mode, bool isFilter = false) = 0;
 
     /**
      * @brief Make the child element information by accessibility ID and filtered by text and

@@ -40,12 +40,14 @@ bool AccessibilityElementOperatorProxy::SendTransactCmd(AccessibilityInterfaceCo
 }
 
 void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int64_t elementId,
-    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode)
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+    bool isFilter)
 {
     AccessibilityAbilityHelper::GetInstance().SetTestChannelElementId(elementId);
     (void)requestId;
     (void)callback;
     (void)mode;
+    (void)isFilter;
 }
 
 void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int64_t elementId,

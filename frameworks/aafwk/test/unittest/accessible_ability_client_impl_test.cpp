@@ -917,7 +917,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootByWindowBatch_001, TestSize.Lev
     Connect();
     std::vector<AccessibilityElementInfo> info;
     AccessibilityWindowInfo windowInfo {};
-    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, info), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, info, true), RET_ERR_TIME_OUT);
     GTEST_LOG_(INFO) << "GetRootByWindowBatch_001 end";
 }
 

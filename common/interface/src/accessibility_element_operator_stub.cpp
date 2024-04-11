@@ -84,7 +84,8 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibility
         return ERR_INVALID_VALUE;
     }
     int32_t mode = data.ReadInt32();
-    SearchElementInfoByAccessibilityId(elementId, requestId, callback, mode);
+    bool isFilter = data.ReadBool();
+    SearchElementInfoByAccessibilityId(elementId, requestId, callback, mode, isFilter);
     return NO_ERROR;
 }
 

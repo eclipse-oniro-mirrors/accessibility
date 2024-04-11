@@ -109,7 +109,7 @@ public:
      * @return Return RET_OK if obtains elementInfos successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetRootByWindowBatch(const AccessibilityWindowInfo &windowInfo,
-        std::vector<AccessibilityElementInfo>& elementInfos) override;
+        std::vector<AccessibilityElementInfo>& elementInfos, bool isFilter) override;
 
     /**
      * @brief Get the window information related with the event

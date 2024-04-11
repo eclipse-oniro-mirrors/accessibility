@@ -55,7 +55,7 @@ public:
      *              otherwise: Make the node information by elementId only.
      */
     void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode) override;
+        const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode, bool isFilter) override;
 
     /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.

@@ -45,7 +45,8 @@ public:
      * @sysCap Accessibility
      */
     virtual void SearchElementInfoByAccessibilityId(const int64_t elementId,
-        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode) = 0;
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+        bool isFliter = false) = 0;
 
     /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.
