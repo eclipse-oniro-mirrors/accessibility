@@ -301,7 +301,7 @@ bool RangeInfoParcel::Marshalling(Parcel &parcel) const
 sptr<RangeInfoParcel> RangeInfoParcel::Unmarshalling(Parcel& parcel)
 {
     sptr<RangeInfoParcel> rangeInfo = new(std::nothrow) RangeInfoParcel();
-    if (!rangeInfo) {
+    if (rangeInfo == nullptr) {
         HILOG_ERROR("Failed to create rangeInfo.");
         return nullptr;
     }

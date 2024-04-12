@@ -79,7 +79,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibility
     }
 
     sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
@@ -103,7 +103,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfosByText(Message
     }
 
     sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
@@ -126,7 +126,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFindFocusedElementInfo(MessagePa
     }
 
     sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
@@ -148,7 +148,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFocusFind(MessageParcel &data, M
     }
 
     sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
@@ -184,7 +184,7 @@ ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &dat
     }
 
     sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }

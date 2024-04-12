@@ -933,6 +933,10 @@ int EnableAbilityListsObserver::OnEnableAbilityListsStateChangedWork(uv_work_t *
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
+    if (loop == nullptr || work == nullptr) {
+        HILOG_ERROR("loop or work is nullptr.");
+        return RET_ERR_FAILED;
+    }
     int ret = uv_queue_work_with_qos(
         loop,
         work,

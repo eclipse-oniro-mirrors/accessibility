@@ -280,7 +280,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback(
     }
 
     sptr<IAccessibleAbilityManagerStateObserver> client = iface_cast<IAccessibleAbilityManagerStateObserver>(obj);
-    if (!client) {
+    if (client == nullptr) {
         HILOG_ERROR("client is nullptr");
         return ERR_INVALID_VALUE;
     }
@@ -1274,7 +1274,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback(
     }
 
     sptr<IAccessibleAbilityManagerConfigObserver> config = iface_cast<IAccessibleAbilityManagerConfigObserver>(obj);
-    if (!config) {
+    if (config == nullptr) {
         HILOG_ERROR("config is nullptr");
         return ERR_INVALID_VALUE;
     }

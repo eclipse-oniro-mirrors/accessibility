@@ -720,6 +720,9 @@ void AccessibilityMultiTapGestureRecognizer::StoreUpPointInPointerRoute(MMI::Poi
 bool AccessibilityMultiTapGestureRecognizer::recognizeGesturePath(const std::vector<Pointer> &path)
 {
     HILOG_DEBUG();
+    if (path.size() < MIN_MOVE_POINTER_NUM) {
+        return false;
+    }
 
     int pathSize = static_cast<int>(path.size() - 1);
     for (int routerIndex = 0; routerIndex < pathSize; routerIndex++) {
