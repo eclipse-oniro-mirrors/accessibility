@@ -51,7 +51,7 @@ public:
      * @sysCap Accessibility
      */
     void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode) override;
+        const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode, bool isFilter) override;
 
     /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.
@@ -134,6 +134,8 @@ public:
     int32_t testDirection_ = 0;
     int32_t testAction_ = 0;
     std::map<std::string, std::string> testActionArguments_;
+
+    bool isFilter_ = false;
 
 private:
     /**

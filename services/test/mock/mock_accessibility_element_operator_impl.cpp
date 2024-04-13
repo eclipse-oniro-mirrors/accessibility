@@ -44,7 +44,8 @@ MockAccessibilityElementOperatorImpl::~MockAccessibilityElementOperatorImpl()
 {}
 
 void MockAccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int64_t elementId,
-    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode)
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode,
+    bool isFilter)
 {
     int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {

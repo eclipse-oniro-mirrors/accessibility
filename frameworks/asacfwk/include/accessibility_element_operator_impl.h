@@ -57,7 +57,8 @@ public:
      *              otherwise: Make the node information by elementId only.
      */
     virtual void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+        bool isFilter = false) override;
 
     /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.
@@ -142,6 +143,11 @@ public:
      */
     void SetSearchElementInfoByAccessibilityIdResult(const std::list<AccessibilityElementInfo> &infos,
         const int32_t requestId);
+
+    /**
+     * @brief Set whether to perform filtering.
+     */
+    void SetFiltering(std::vector<AccessibilityElementInfo> &filterInfos);
 
     /**
      * @brief Set the element information matched with text to AA.

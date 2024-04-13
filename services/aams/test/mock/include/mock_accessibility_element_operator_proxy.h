@@ -27,9 +27,9 @@ public:
     {}
     virtual ~MockAccessibilityElementOperatorProxy() override
     {}
-    MOCK_METHOD4(SearchElementInfoByAccessibilityId,
+    MOCK_METHOD5(SearchElementInfoByAccessibilityId,
         void(const int64_t elementId, const int32_t requestId,
-            const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode));
+            const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode, bool isFilter));
     MOCK_METHOD4(
         SearchElementInfosByText, void(const int64_t elementId, const std::string& text, const int32_t requestId,
                                       const sptr<IAccessibilityElementOperatorCallback>& callback));

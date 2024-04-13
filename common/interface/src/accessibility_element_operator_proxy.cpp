@@ -51,7 +51,8 @@ bool AccessibilityElementOperatorProxy::SendTransactCmd(AccessibilityInterfaceCo
 }
 
 void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int64_t elementId,
-    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode)
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+    bool isFilter)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -84,6 +85,11 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
 
     if (!data.WriteInt32(mode)) {
         HILOG_ERROR("connection write parcelable mode failed");
+        return;
+    }
+
+    if (!data.WriteBool(isFilter)) {
+        HILOG_ERROR("connection write parcelable isFilter failed");
         return;
     }
 

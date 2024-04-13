@@ -40,11 +40,13 @@ AccessibilityElementOperatorImpl::~AccessibilityElementOperatorImpl()
 }
 
 void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int64_t elementId,
-    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode)
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+    bool isFilter)
 {
     int32_t mRequestId = AddRequest(requestId, callback);
     HILOG_DEBUG("search element add requestId[%{public}d], elementId[%{public}" PRId64 "], requestId[%{public}d]",
         mRequestId, elementId, requestId);
+    callback->SetIsFilter(isFilter);
     if (operator_) {
         operator_->SearchElementInfoByAccessibilityId(elementId, mRequestId, operatorCallback_, mode);
     } else {
@@ -156,15 +158,31 @@ void AccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResu
 {
     HILOG_DEBUG("requestId is %{public}d", requestId);
     std::lock_guard<std::mutex> lock(mutex_);
-    std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
+    std::vector<AccessibilityElementInfo> filterInfos = TranslateListToVector(infos);
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {
-            iter->second->SetSearchElementInfoByAccessibilityIdResult(myInfos, requestId);
+            HILOG_DEBUG("isFilter %{public}d", iter->second->GetFilter());
+            if (iter->second->GetFilter()) {
+                SetFiltering(filterInfos);
+            }
+            iter->second->SetSearchElementInfoByAccessibilityIdResult(filterInfos, requestId);
         }
         requests_.erase(iter);
     } else {
         HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
+    }
+}
+
+void AccessibilityElementOperatorImpl::SetFiltering(std::vector<AccessibilityElementInfo> &filterInfos)
+{
+    for (auto &info : filterInfos) {
+        info.SetAccessibilityText("");
+        info.SetComponentResourceId("");
+        info.SetPagePath("");
+        info.SetError("");
+        info.SetLatestContent("");
+        info.SetContentList({});
     }
 }
 

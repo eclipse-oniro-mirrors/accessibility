@@ -67,6 +67,25 @@ public:
      * @param requestId The request id from AA, it is used to match with request and response.
      */
     virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) = 0;
+
+    /**
+     * @brief Set isFilter.
+     * @param enableFilter True : Perform filtering ;otherwise is false.
+     */
+    void SetIsFilter(bool enableFilter)
+    {
+        isFilter = enableFilter;
+    }
+
+    /**
+     * @brief Get isFilter.
+     */
+    bool GetFilter()
+    {
+        return isFilter;
+    }
+private:
+   bool isFilter = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

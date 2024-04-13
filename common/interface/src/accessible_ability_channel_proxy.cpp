@@ -61,7 +61,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(AccessibilityInterfaceCode c
 
 RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
     const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-    const int32_t mode)
+    const int32_t mode, bool isFilter)
 {
     HILOG_DEBUG();
     if (!callback) {
@@ -96,7 +96,10 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
         HILOG_ERROR("mode write error: %{public}d, ", mode);
         return RET_ERR_IPC_FAILED;
     }
-
+    if (!data.WriteBool(isFilter)) {
+        HILOG_ERROR("isFilter write error: %{public}d, ", isFilter);
+        return RET_ERR_IPC_FAILED;
+    }
     if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID,
         data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by elementId");
