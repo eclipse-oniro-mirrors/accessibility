@@ -39,7 +39,7 @@ public:
     static AccessibilityWindowInfo CreateAccessibilityWindowInfo(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     static void UpdateAccessibilityWindowInfo(AccessibilityWindowInfo &accWindowInfo,
         const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
-    static bool CheckIntegerOverflow(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
+    static bool CheckIntegerOverflow(const Rosen::Rect& rect);
     int32_t ConvertToRealWindowId(int32_t windowId, int32_t focusType);
     void RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void DeregisterWindowListener();
@@ -66,6 +66,8 @@ public:
 
     void OnWindowUpdate(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos, Rosen::WindowUpdateType type);
 
+    bool IsInnerWindowRootElement(int64_t elementId);
+
     std::map<int32_t, AccessibilityWindowInfo> a11yWindows_ {};
     int32_t activeWindowId_ = INVALID_WINDOW_ID;
     int32_t a11yFocusedWindowId_ = INVALID_WINDOW_ID;
@@ -78,6 +80,7 @@ public:
         ~SceneBoardElementIdMap() = default;
         void InsertPair(const int32_t windowId, const int64_t elementId);
         void RemovePair(const int32_t windowId);
+        bool CheckWindowIdPair(const int32_t windowId);
         std::map<int32_t, int64_t> GetAllPairs();
         void Clear();
     private:
@@ -109,7 +112,7 @@ private:
     void WindowUpdateActive(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateFocused(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
-    void WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos) ;
+    void WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void ClearOldActiveWindow();
 
     sptr<AccessibilityWindowListener> windowListener_ = nullptr;

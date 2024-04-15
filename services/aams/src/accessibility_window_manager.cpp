@@ -137,8 +137,9 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
                 break;
             case Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY: // 6
                 WindowUpdateProperty(infos);
+                break;
             case Rosen::WindowUpdateType::WINDOW_UPDATE_ALL:
-                WindowUpdateALL(infos);
+                WindowUpdateAll(infos);
                 break;
             default:
                 break;
@@ -188,44 +189,43 @@ AccessibilityWindowType ConvertWindowType(Rosen::WindowType type)
     return winType;
 }
 
-bool AccessibilityWindowManager::CheckIntegerOverflow(const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
+bool AccessibilityWindowManager::CheckIntegerOverflow(const Rosen::Rect& rect)
 {
-    if ((windowInfo->windowRect_.posX_ > 0) && (static_cast<int32_t>(windowInfo->windowRect_.width_) > 0)) {
-        int32_t leftX = INT32_MAX - windowInfo->windowRect_.posX_;
-        if (leftX < static_cast<int32_t>(windowInfo->windowRect_.width_)) {
-            HILOG_ERROR("input parameter invalid posX %{public}d, width_ %{public}u", windowInfo->windowRect_.posX_,
-                windowInfo->windowRect_.width_);
+    if ((rect.posX_ > 0) && (static_cast<int32_t>(rect.width_) > 0)) {
+        int32_t leftX = INT32_MAX - rect.posX_;
+        if (leftX < static_cast<int32_t>(rect.width_)) {
+            HILOG_ERROR("input parameter invalid posX %{public}d, width_ %{public}u", rect.posX_,
+                rect.width_);
             return false;
         }
     }
 
-    if ((windowInfo->windowRect_.posX_ < 0) && (static_cast<int32_t>(windowInfo->windowRect_.width_) < 0)) {
-        int32_t leftX = INT32_MIN - windowInfo->windowRect_.posX_;
-        if (leftX > static_cast<int32_t>(windowInfo->windowRect_.width_)) {
-            HILOG_ERROR("input parameter invalid posX %{public}d, width_ %{public}u", windowInfo->windowRect_.posX_,
-                windowInfo->windowRect_.width_);
+    if ((rect.posX_ < 0) && (static_cast<int32_t>(rect.width_) < 0)) {
+        int32_t leftX = INT32_MIN - rect.posX_;
+        if (leftX > static_cast<int32_t>(rect.width_)) {
+            HILOG_ERROR("input parameter invalid posX %{public}d, width_ %{public}u", rect.posX_,
+                rect.width_);
             return false;
         }
     }
 
-    if ((windowInfo->windowRect_.posY_ > 0) && (static_cast<int32_t>(windowInfo->windowRect_.height_) > 0)) {
-        int32_t leftY = INT32_MAX - windowInfo->windowRect_.posY_;
-        if (leftY < static_cast<int32_t>(windowInfo->windowRect_.height_)) {
-            HILOG_ERROR("input parameter invalid posX %{public}d, height_ %{public}u", windowInfo->windowRect_.posY_,
-                windowInfo->windowRect_.height_);
+    if ((rect.posY_ > 0) && (static_cast<int32_t>(rect.height_) > 0)) {
+        int32_t leftY = INT32_MAX - rect.posY_;
+        if (leftY < static_cast<int32_t>(rect.height_)) {
+            HILOG_ERROR("input parameter invalid posX %{public}d, height_ %{public}u", rect.posY_,
+                rect.height_);
             return false;
         }
     }
 
-    if ((windowInfo->windowRect_.posY_ < 0) && (static_cast<int32_t>(windowInfo->windowRect_.height_) < 0)) {
-        int32_t leftY = INT32_MIN - windowInfo->windowRect_.posY_;
-        if (leftY > static_cast<int32_t>(windowInfo->windowRect_.height_)) {
-            HILOG_ERROR("input parameter invalid posX %{public}d, height_ %{public}u", windowInfo->windowRect_.posY_,
-                windowInfo->windowRect_.height_);
+    if ((rect.posY_ < 0) && (static_cast<int32_t>(rect.height_) < 0)) {
+        int32_t leftY = INT32_MIN - rect.posY_;
+        if (leftY > static_cast<int32_t>(rect.height_)) {
+            HILOG_ERROR("input parameter invalid posX %{public}d, height_ %{public}u", rect.posY_,
+                rect.height_);
             return false;
         }
     }
-
     return true;
 }
 
@@ -245,7 +245,7 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
     } else {
         Rect bound;
         bound.SetLeftTopScreenPostion(windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_);
-        if (!CheckIntegerOverflow(windowInfo)) {
+        if (!CheckIntegerOverflow(windowInfo->windowRect_)) {
             bound.SetRightBottomScreenPostion(windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_);
         } else {
             bound.SetRightBottomScreenPostion(
@@ -262,13 +262,32 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
         accWindowInfo.SetWindowId(windowInfo->innerWid_);
         HILOG_DEBUG("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
     }
-        accWindowInfo.SetBundleName(windowInfo->bundleName_);
-    std::vector<Rect> temp = {};
-    for(auto &rect:windowInfo->touchHotAreas_)
-    {
-        temp.push_back(Rect(rect.posX_,rect.posY_,rect.posX_+rect.width_,rect.posY_+rect.height_));
+    HILOG_DEBUG("bundle name is [%{public}s] , touchHotAreas size(%{public}u)",
+        windowInfo->bundleName_.c_str(), windowInfo->touchHotAreas_.size());
+    accWindowInfo.SetBundleName(windowInfo->bundleName_);
+    HILOG_DEBUG("UpdateAccessibilityWindowInfo is set bundlename is [%{public}s]",
+        accWindowInfo.GetBundleName().c_str());
+    std::vector<Rect> tempTouchHotAreas = {};
+    for (auto &rect : windowInfo->touchHotAreas_) {
+        HILOG_DEBUG("Rosen::windowinfo x:[%{public}d], y:[%{public}d]; width:[%{public}d], height:[%{public}d]",
+            rect.posX_, rect.posY_, rect.width_, rect.height_);
+        Rect rectTemp;
+        rectTemp.SetLeftTopScreenPostion(rect.posX_, rect.posY_);
+        if (!CheckIntegerOverflow(rect)) {
+            rectTemp.SetRightBottomScreenPostion(rect.posX_, rect.posY_);
+        } else {
+            rectTemp.SetRightBottomScreenPostion(
+                rect.posX_ + static_cast<int32_t>(rect.width_),
+                rect.posY_ + static_cast<int32_t>(rect.height_));
+        }
+        tempTouchHotAreas.push_back(rectTemp);
     }
-    accWindowInfo.SetTouchHotAreas(temp);
+    accWindowInfo.SetTouchHotAreas(tempTouchHotAreas);
+    for (auto &outRect : accWindowInfo.GetTouchHotAreas()) {
+        HILOG_DEBUG("left_x:[%{public}d], left_y:[%{public}d]; right_x:[%{public}d], right_y:[%{public}d]",
+            outRect.GetLeftTopXScreenPostion(), outRect.GetLeftTopYScreenPostion(),
+            outRect.GetRightBottomXScreenPostion(), outRect.GetRightBottomYScreenPostion());
+    }
 }
 
 int32_t AccessibilityWindowManager::GetRealWindowId(const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
@@ -321,7 +340,16 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
         a11yWindows_[activeWindowId_].SetActive(true);
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
         AccessibilityEventInfo evtInf(activeWindowId_, WINDOW_UPDATE_ACTIVE);
-        aams.SendEvent(evtInf);
+        int32_t winId = windowId;
+        if (sceneBoardElementIdMap_.CheckWindowIdPair(windowId)) {
+            winId = SCENE_BOARD_WINDOW_ID;
+        }
+        if (aams.CheckWindowRegister(winId)) {
+            aams.SendEvent(evtInf);
+        } else {
+            HILOG_DEBUG("wait for window register to process event");
+            aams.InsertWindowIdEventPair(winId, evtInf);
+        }
     }
     HILOG_DEBUG("activeWindowId is %{public}d", activeWindowId_);
 }
@@ -580,11 +608,11 @@ void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Ros
 
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
+    HILOG_DEBUG("WindowUpdateAll info size(%{public}u)", infos.size());
     DeInit();
-    for(auto &window : infos)
-    {
-        if(!window)
-        {
+    HILOG_DEBUG("WindowUpdateAll a11yWindowInfo_ size(%{public}u)", a11yWindows_.size());
+    for (auto &window : infos) {
+        if (!window) {
             HILOG_ERROR("window is nullptr");
             continue;
         }
@@ -592,8 +620,8 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         if (!a11yWindows_.count(realWid)) {
             auto a11yWindowInfo = CreateAccessibilityWindowInfo(window);
             a11yWindows_.emplace(realWid, a11yWindowInfo);
+            HILOG_DEBUG("WindowUpdateAll a11yWindowInfo size(%{public}s)", a11yWindowInfo.GetBundleName().c_str());
         }
-
         if (IsSceneBoard(window)) {
             subWindows_.insert(realWid);
             sceneBoardElementIdMap_.InsertPair(realWid, window->uiNodeId_);
@@ -603,6 +631,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             SetActiveWindow(realWid);
         }
     }
+    HILOG_DEBUG("WindowUpdateAll a11yWindowInfo_ size(%{public}u)", a11yWindows_.size());
 }
 
 void AccessibilityWindowManager::ClearOldActiveWindow()
@@ -729,6 +758,12 @@ void AccessibilityWindowManager::SceneBoardElementIdMap::RemovePair(const int32_
     windowElementMap_.erase(windowId);
 }
 
+bool AccessibilityWindowManager::SceneBoardElementIdMap::CheckWindowIdPair(const int32_t windowId)
+{
+    std::lock_guard<std::mutex> lock(mapMutex_);
+    return windowElementMap_.count(windowId);
+}
+
 void AccessibilityWindowManager::SceneBoardElementIdMap::Clear()
 {
     std::lock_guard<std::mutex> lock(mapMutex_);
@@ -752,6 +787,18 @@ RetError AccessibilityWindowManager::GetFocusedWindowId(int32_t &focusedWindowId
     }
     focusedWindowId = focusedWindowInfo.windowId_;
     return RET_OK;
+}
+
+bool AccessibilityWindowManager::IsInnerWindowRootElement(int64_t elementId)
+{
+    HILOG_DEBUG("IsInnerWindowRootElement elementId: %{public}" PRId64 "", elementId);
+    auto mapTable = sceneBoardElementIdMap_.GetAllPairs();
+    for (auto iter = mapTable.begin(); iter != mapTable.end(); iter++) {
+        if (elementId == iter->second) {
+            return true;
+        }
+    }
+    return false;
 }
 } // namespace Accessibility
 } // namespace OHOS
