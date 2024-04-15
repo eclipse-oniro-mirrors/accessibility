@@ -123,6 +123,7 @@ public:
     static void GetElementInfoValueNow(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityText(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoTextType(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoOffset(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);
