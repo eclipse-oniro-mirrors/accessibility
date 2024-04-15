@@ -194,8 +194,8 @@ std::string AccessibilityWindowInfo::GetBundleName()
     return bundleName_;
 }
 
-void AccessibilityWindowInfo::SetTouchHotAreas(const std::vector<Rect>& touchHotAreas)
-{      
+void AccessibilityWindowInfo::SetTouchHotAreas(const std::vector<Rect> &touchHotAreas)
+{
     touchHotAreas_ = touchHotAreas;
     HILOG_DEBUG("set touchHotAreas_");
 }

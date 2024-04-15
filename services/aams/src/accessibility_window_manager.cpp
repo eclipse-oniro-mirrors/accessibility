@@ -138,7 +138,7 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
             case Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY: // 6
                 WindowUpdateProperty(infos);
             case Rosen::WindowUpdateType::WINDOW_UPDATE_ALL:
-                WindowUpdateALL(infos);
+                WindowUpdateAll(infos);
                 break;
             default:
                 break;
@@ -262,13 +262,23 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
         accWindowInfo.SetWindowId(windowInfo->innerWid_);
         HILOG_DEBUG("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
     }
-        accWindowInfo.SetBundleName(windowInfo->bundleName_);
+    accWindowInfo.SetBundleName(windowInfo->bundleName_);
+    HILOG_DEBUG("UpdateAccessibilityWindowInfo is set bundlename is [%{public}s]",
+        accWindowInfo.GetBundleName().c_str());
+    
     std::vector<Rect> temp = {};
-    for(auto &rect:windowInfo->touchHotAreas_)
-    {
-        temp.push_back(Rect(rect.posX_,rect.posY_,rect.posX_+rect.width_,rect.posY_+rect.height_));
+    for (auto &rect : windowInfo->touchHotAreas_) {
+        HILOG_DEBUG("Rosen -> window info x:[%{public}d], y:[%{public}d]; width:[%{public}d], height:[%{public}d]",
+            rect.posX_, rect.posY_, rect.width_, rect.height_);
+        temp.push_back(Rect(rect.posX_, rect.posY_, rect.posX_ + rect.width_, rect.posY_ + rect.height_));
     }
     accWindowInfo.SetTouchHotAreas(temp);
+    for (auto &outRect : accWindowInfo.GetTouchHotAreas()) {
+        HILOG_DEBUG("accessibility -> window info : left_x:[%{public}d], left_y:[%{public}d];"
+            " right_x:[%{public}d], right_y:[%{public}d]", outRect.GetLeftTopXScreenPostion(),
+            outRect.GetLeftTopYScreenPostion(), outRect.GetRightBottomXScreenPostion(),
+            outRect.GetRightBottomYScreenPostion());
+    }
 }
 
 int32_t AccessibilityWindowManager::GetRealWindowId(const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
@@ -580,11 +590,11 @@ void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Ros
 
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
+    HILOG_DEBUG("WindowUpdateAll info size(%{public}d)", infos.size());
     DeInit();
-    for(auto &window : infos)
-    {
-        if(!window)
-        {
+    HILOG_DEBUG("WindowUpdateAll a11yWindowInfo_ size(%{public}d)", a11yWindows_.size());
+    for (auto &window : infos) {
+        if (!window) {
             HILOG_ERROR("window is nullptr");
             continue;
         }
@@ -592,8 +602,8 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         if (!a11yWindows_.count(realWid)) {
             auto a11yWindowInfo = CreateAccessibilityWindowInfo(window);
             a11yWindows_.emplace(realWid, a11yWindowInfo);
+            HILOG_DEBUG("WindowUpdateAll a11yWindowInfo size(%{public}s)", a11yWindowInfo.GetBundleName().c_str());
         }
-
         if (IsSceneBoard(window)) {
             subWindows_.insert(realWid);
             sceneBoardElementIdMap_.InsertPair(realWid, window->uiNodeId_);
@@ -603,6 +613,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             SetActiveWindow(realWid);
         }
     }
+    HILOG_DEBUG("WindowUpdateAll a11yWindowInfo_ size(%{public}d)", a11yWindows_.size());
 }
 
 void AccessibilityWindowManager::ClearOldActiveWindow()

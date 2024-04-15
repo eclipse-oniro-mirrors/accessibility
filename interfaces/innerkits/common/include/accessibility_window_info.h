@@ -226,10 +226,32 @@ public:
      */
     int64_t GetUiNodeId() const;
 
-    
+    /**
+     * @brief Set window bundle name
+     * @param bundleName_ WMS bundle name
+     * @sysCap Accessibility
+    */
     void SetBundleName(const std::string bundleName);
+    
+    /**
+     * @brief Get window bundle name
+     * @return window bundle name
+     * @sysCap Accessibility
+    */
     std::string GetBundleName();
-    void SetTouchHotAreas(const std::vector<Rect>& touchHotAreas);
+    
+    /**
+     * @brief Set window touch hot areas
+     * @param touchHotAreas_ WMS touch hot areas
+     * @sysCap Accessibility
+    */
+    void SetTouchHotAreas(const std::vector<Rect> &touchHotAreas);
+    
+    /**
+     * @brief Get window touch hot areas
+     * @return window touch hot areas
+     * @sysCap Accessibility
+    */
     std::vector<Rect> GetTouchHotAreas();
 
 protected:
