@@ -226,6 +226,12 @@ public:
      */
     int64_t GetUiNodeId() const;
 
+    
+    void SetBundleName(const std::string bundleName);
+    std::string GetBundleName();
+    void SetTouchHotAreas(const std::vector<Rect>& touchHotAreas);
+    std::vector<Rect> GetTouchHotAreas();
+
 protected:
     uint64_t displayId_ = 0;
     uint32_t windowMode_ = 0;
@@ -240,6 +246,8 @@ protected:
     bool isDecorEnable_ = false;
     int32_t innerWid_ = 0; // used for window id 1, scene board
     int64_t uiNodeId_ = 0; // used for window id 1, scene board
+    std::string bundleName_ = "";
+    std::vector<Rect> touchHotAreas_ = {};
 };
 } // namespace Accessibility
 } // namespace OHOS

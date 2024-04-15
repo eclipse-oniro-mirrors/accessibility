@@ -182,5 +182,29 @@ int64_t AccessibilityWindowInfo::GetUiNodeId() const
     return uiNodeId_;
 }
 
+void AccessibilityWindowInfo::SetBundleName(const std::string bundleName)
+{
+    bundleName_ = bundleName;
+    HILOG_DEBUG("set bundleName_");
+}
+
+std::string AccessibilityWindowInfo::GetBundleName()
+{
+    HILOG_DEBUG("get bundleName_");
+    return bundleName_;
+}
+
+void AccessibilityWindowInfo::SetTouchHotAreas(const std::vector<Rect>& touchHotAreas)
+{      
+    touchHotAreas_ = touchHotAreas;
+    HILOG_DEBUG("set touchHotAreas_");
+}
+
+std::vector<Rect> AccessibilityWindowInfo::GetTouchHotAreas()
+{
+    HILOG_DEBUG("get touchHotAreas_");
+    return touchHotAreas_;
+}
+
 } // namespace Accessibility
 } // namespace OHOS

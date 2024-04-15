@@ -137,6 +137,8 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
                 break;
             case Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY: // 6
                 WindowUpdateProperty(infos);
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_ALL:
+                WindowUpdateALL(infos);
                 break;
             default:
                 break;
@@ -260,6 +262,13 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
         accWindowInfo.SetWindowId(windowInfo->innerWid_);
         HILOG_DEBUG("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
     }
+        accWindowInfo.SetBundleName(windowInfo->bundleName_);
+    std::vector<Rect> temp = {};
+    for(auto &rect:windowInfo->touchHotAreas_)
+    {
+        temp.push_back(Rect(rect.posX_,rect.posY_,rect.posX_+rect.width_,rect.posY_+rect.height_));
+    }
+    accWindowInfo.SetTouchHotAreas(temp);
 }
 
 int32_t AccessibilityWindowManager::GetRealWindowId(const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
@@ -566,6 +575,33 @@ void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Ros
         }
         AccessibilityEventInfo evtInfProperty(realWidId, WINDOW_UPDATE_PROPERTY);
         aams.SendEvent(evtInfProperty);
+    }
+}
+
+void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
+{
+    DeInit();
+    for(auto &window : infos)
+    {
+        if(!window)
+        {
+            HILOG_ERROR("window is nullptr");
+            continue;
+        }
+        int32_t realWid = GetRealWindowId(window);
+        if (!a11yWindows_.count(realWid)) {
+            auto a11yWindowInfo = CreateAccessibilityWindowInfo(window);
+            a11yWindows_.emplace(realWid, a11yWindowInfo);
+        }
+
+        if (IsSceneBoard(window)) {
+            subWindows_.insert(realWid);
+            sceneBoardElementIdMap_.InsertPair(realWid, window->uiNodeId_);
+        }
+
+        if (a11yWindows_[realWid].IsFocused()) {
+            SetActiveWindow(realWid);
+        }
     }
 }
 
