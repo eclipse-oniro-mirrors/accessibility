@@ -60,6 +60,11 @@ public:
     {
         return RET_OK;
     }
+    RetError GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override
+    {
+        return RET_OK;
+    }
     RetError GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override
     {
         return RET_OK;

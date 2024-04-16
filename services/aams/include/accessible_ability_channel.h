@@ -60,6 +60,9 @@ public:
 
     RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 
+    RetError GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
 private:
     static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);
     static RetError GetElementOperator(int32_t accountId, int32_t windowId, int32_t focusType,

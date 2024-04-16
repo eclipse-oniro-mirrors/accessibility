@@ -99,6 +99,16 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
     return RET_OK;
 }
 
+RetError AccessibleAbilityChannelProxy::GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
+{
+    (void)accessibilityWindowId;
+    (void)elementId;
+    (void)requestId;
+    (void)callback;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     (void)windowId;

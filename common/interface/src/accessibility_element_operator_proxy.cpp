@@ -292,6 +292,45 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int64_t elementId, c
     }
 }
 
+
+void AccessibilityElementOperatorProxy::GetCursorPosition(const int64_t elementId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+
+    if (!data.WriteInt64(elementId)) {
+        HILOG_ERROR("connection write elementId failed");
+        return;
+    }
+
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write requestId failed");
+        return;
+    }
+
+    if (!callback) {
+        HILOG_ERROR("callback is nullptr");
+        return;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("connection write callback failed");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::CURSOR_POSITION, data, reply, option)) {
+        HILOG_ERROR("find cursor position info failed");
+        return;
+    }
+}
+
 void AccessibilityElementOperatorProxy::ClearFocus()
 {
     HILOG_DEBUG();

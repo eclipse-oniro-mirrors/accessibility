@@ -117,6 +117,15 @@ public:
         int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     /**
+     * @brief To return the result of cursor position.
+     * @param elementId: The unique id of the component ID.
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the node info to ASAC and it defined by ASAC.
+     */
+    virtual void GetCursorPosition(const int64_t elementId, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
+    /**
      * @brief The function is called while accessibility System check the id of window is not equal
      * to the id of active window when sendAccessibility.
      */
@@ -177,6 +186,13 @@ public:
      * @param requestId The request id from AA, it is used to match with request and response.
      */
     void SetExecuteActionResult(const bool succeeded, const int32_t requestId);
+
+    /**
+     * @brief Set the result of cursor position to AA.
+     * @param cursorPosition The cursorPosition to be returned.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId);
 
 private:
     int32_t AddRequest(int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);

@@ -81,6 +81,13 @@ ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel& dat
     return NO_ERROR;
 }
 
+ErrCode AccessibilityElementOperatorStub::HandleGetCursorPosition(MessageParcel& data, MessageParcel& reply)
+{
+    (void)data;
+    (void)reply;
+    return NO_ERROR;
+}
+
 ErrCode AccessibilityElementOperatorStub::HandleClearFocus(MessageParcel& data, MessageParcel& reply)
 {
     (void)data;

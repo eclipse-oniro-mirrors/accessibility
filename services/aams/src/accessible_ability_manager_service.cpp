@@ -1400,6 +1400,16 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetExecuteAct
     promise_.set_value();
 }
 
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetCursorPositionResult(const int32_t cursorPosition,
+    const int32_t requestId)
+{
+    HILOG_INFO("ElementOperatorCallbackImpl::SetCursorPositionResult [result:%{public}d]",
+        cursorPosition);
+    HILOG_DEBUG("cursorPosition [result:%{public}d, requestId:%{public}d]", cursorPosition, requestId);
+    callCursorPosition_ = cursorPosition;
+    promise_.set_value();
+}
+
 bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t windowId, int64_t elementId,
     std::vector<AccessibilityElementInfo>& infos)
 {

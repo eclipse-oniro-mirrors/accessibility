@@ -31,6 +31,7 @@ public:
     MOCK_METHOD2(SetFindFocusedElementInfoResult, void(const AccessibilityElementInfo &info, const int32_t requestId));
     MOCK_METHOD2(SetFocusMoveSearchResult, void(const AccessibilityElementInfo &info, const int32_t requestId));
     MOCK_METHOD2(SetExecuteActionResult, void(const bool succeeded, const int32_t requestId));
+    MOCK_METHOD2(SetCursorPositionResult, void(const int32_t cursorPosition, const int32_t requestId));
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -103,6 +103,17 @@ public:
         const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
     /**
+     * @brief Get the result of Cursor Position through the proxy object.
+     * @param accessibilityWindowId The target winid.
+     * @param elementId The element Id.
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the node info to ASAC and it defined by ASAC.
+     * @return Return RET_OK if Cursor Position successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+
+    /**
      * @brief Get the window information related with the event
      * @param windowId The window id.
      * @param windowInfo The window information.

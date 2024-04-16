@@ -92,6 +92,16 @@ void MockAccessibilityElementOperatorProxy::ExecuteAction(const int64_t elementI
     return;
 }
 
+void MockAccessibilityElementOperatorProxy::GetCursorPosition(const int64_t elementId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback>& callback)
+{
+    GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy GetCursorPosition";
+    testElementId_ = elementId;
+    testChannelElementId_ = elementId;
+    testChannelRequestId_ = requestId;
+    return;
+}
+
 void MockAccessibilityElementOperatorProxy::ClearFocus()
 {
     GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy ClearFocus";
