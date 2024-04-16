@@ -13,6 +13,11 @@
  * limitations under the License.
  */
 
+#define private public
+#define protected public
+#include "pointer_event.h"
+#undef private
+#undef protected
 #include "mock_pointer_event.h"
 
 namespace OHOS {
@@ -158,7 +163,7 @@ PointerEvent::~PointerEvent()
 
 std::shared_ptr<PointerEvent> PointerEvent::Create()
 {
-    return std::shared_ptr<PointerEvent>(new PointerEvent(InputEvent::EVENT_TYPE_POINTER));
+    return std::make_shared<PointerEvent>(InputEvent::EVENT_TYPE_POINTER);
 }
 
 int32_t PointerEvent::GetSourceType() const

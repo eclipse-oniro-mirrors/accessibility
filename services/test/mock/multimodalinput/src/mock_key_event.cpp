@@ -13,6 +13,11 @@
  * limitations under the License.
  */
 
+#define private public
+#define protected public
+#include "key_event.h"
+#undef private
+#undef protected
 #include "mock_key_event.h"
 
 namespace OHOS {
@@ -101,7 +106,7 @@ KeyEvent::~KeyEvent()
 
 std::shared_ptr<KeyEvent> KeyEvent::Create()
 {
-    return std::shared_ptr<KeyEvent>(new KeyEvent(InputEvent::EVENT_TYPE_KEY));
+    return std::make_shared<KeyEvent>(InputEvent::EVENT_TYPE_KEY);
 }
 
 void KeyEvent::AddKeyItem(const KeyItem& keyItem)
