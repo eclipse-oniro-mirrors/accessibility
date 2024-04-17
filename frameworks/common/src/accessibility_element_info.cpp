@@ -578,6 +578,16 @@ const std::string &AccessibilityElementInfo::GetTextType() const
     return textType_;
 }
 
+void AccessibilityElementInfo::SetOffset(const float offset)
+{
+    offset_ = offset;
+}
+
+float AccessibilityElementInfo::GetOffset() const
+{
+    return offset_;
+}
+
 AccessibilityElementInfo::AccessibilityElementInfo()
 {
 }

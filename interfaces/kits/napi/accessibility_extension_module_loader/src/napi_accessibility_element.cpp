@@ -34,7 +34,7 @@ namespace {
         "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable",
         "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
-        "textType"};
+        "textType", "offset"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId"};
 
@@ -84,6 +84,7 @@ namespace {
         {"windowId", &NAccessibilityElement::GetElementInfoWindowId},
         {"accessibilityText", &NAccessibilityElement::GetElementInfoAccessibilityText},
         {"textType", &NAccessibilityElement::GetElementInfoTextType},
+        {"offset", &NAccessibilityElement::GetElementInfoOffset},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
         {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
@@ -905,6 +906,15 @@ void NAccessibilityElement::GetElementInfoTextType(NAccessibilityElementData *ca
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetTextType().c_str(), NAPI_AUTO_LENGTH, &value));
+}
+
+void NAccessibilityElement::GetElementInfoOffset(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_double(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetOffset(), &value));
 }
 
 bool NAccessibilityElement::CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
