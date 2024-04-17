@@ -925,6 +925,10 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
         HILOG_ERROR("accountData is nullptr");
         return RET_ERR_NULLPTR;
     }
+    if (accountData->GetConnectingA11yAbility(name) != nullptr) {
+        HILOG_WARN("refuse to disconnect ability %{public}s when connecting", name.c_str());
+        return RET_OK;
+    }
     if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
         ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
     }
