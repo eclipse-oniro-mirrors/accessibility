@@ -171,19 +171,6 @@ void TouchGuider::OffsetEvent(MMI::PointerEvent &event)
     int32_t newDisplayX = pointer.GetDisplayX() + static_cast<int>(longPressOffsetX_);
     int32_t newDisplayY = pointer.GetDisplayY() + static_cast<int>(longPressOffsetY_);
 
-    // set move range
-    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_MOVE) {
-        if (newDisplayX > rightBottomX_) {
-            newDisplayX = rightBottomX_;
-        } else if (newDisplayX < leftTopX_) {
-            newDisplayX = leftTopX_;
-        }
-        if (newDisplayY > rightBottomY_) {
-            newDisplayY = rightBottomY_;
-        } else if (newDisplayY < leftTopY_) {
-            newDisplayY = leftTopY_;
-        }
-    }
     HILOG_DEBUG("newDisplayX: %{public}d, newDisplayY: %{public}d", newDisplayX, newDisplayY);
     pointer.SetDisplayX(newDisplayX);
     pointer.SetDisplayY(newDisplayY);
