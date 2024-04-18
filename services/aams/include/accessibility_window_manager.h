@@ -66,6 +66,8 @@ public:
 
     void OnWindowUpdate(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos, Rosen::WindowUpdateType type);
 
+    bool IsInnerWindowRootElement(int64_t elementId);
+
     std::map<int32_t, AccessibilityWindowInfo> a11yWindows_ {};
     int32_t activeWindowId_ = INVALID_WINDOW_ID;
     int32_t a11yFocusedWindowId_ = INVALID_WINDOW_ID;

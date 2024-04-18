@@ -70,9 +70,15 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
         }
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
-        int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
-        elementOperator->SearchElementInfoByAccessibilityId(realElementId, requestId, callback, mode, isFilter);
-        HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
+        if (awm.IsInnerWindowRootElement(elementId)) {
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
+            HILOG_DEBUG("IsInnerWindowRootElement elementId: %{public}" PRId64 "", elementId);
+        } else {
+            int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+            elementOperator->SearchElementInfoByAccessibilityId(realElementId, requestId, callback, mode, isFilter);
+            HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
+        }
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "SearchElementInfoByAccessibilityId");
     

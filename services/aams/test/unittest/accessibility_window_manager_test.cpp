@@ -1654,5 +1654,27 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Get
 
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetFocusedWindowId001 end";
 }
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_IsInnerWindowRootElement001
+ * @tc.name: IsInnerWindowRootElement
+ * @tc.desc: Test function IsInnerWindowRootElement
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_IsInnerWindowRootElement001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_IsInnerWindowRootElement001 start";
+    int32_t windowId = INNER_WINDOW_ID;
+    int64_t elementId = INVALID_ELEMENT_ID;
+    AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
+    mgr.sceneBoardElementIdMap_.Clear();
+
+    EXPECT_FALSE(mgr.IsInnerWindowRootElement(elementId));
+    mgr.sceneBoardElementIdMap_.InsertPair(windowId, elementId);
+
+    EXPECT_TRUE(mgr.IsInnerWindowRootElement(elementId));
+    mgr.sceneBoardElementIdMap_.Clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_IsInnerWindowRootElement001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
