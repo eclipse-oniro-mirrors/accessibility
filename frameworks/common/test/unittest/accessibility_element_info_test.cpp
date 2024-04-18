@@ -1183,8 +1183,8 @@ HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityText_001, TestSize.Level1
 HWTEST_F(AccessibilityElementInfoTest, SetTextType_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetTextType_001 start";
-    elementInfo_->SetAccessibilityText("test");
-    EXPECT_STREQ(elementInfo_->GetAccessibilityText().c_str(), "test");
+    elementInfo_->SetTextType("test");
+    EXPECT_STREQ(elementInfo_->GetTextType().c_str(), "test");
     GTEST_LOG_(INFO) << "SetTextType_001 end";
 }
 
