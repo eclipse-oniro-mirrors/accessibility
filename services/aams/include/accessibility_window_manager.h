@@ -109,6 +109,7 @@ private:
     void WindowUpdateActive(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateFocused(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
+    void WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void ClearOldActiveWindow();
 
     sptr<AccessibilityWindowListener> windowListener_ = nullptr;

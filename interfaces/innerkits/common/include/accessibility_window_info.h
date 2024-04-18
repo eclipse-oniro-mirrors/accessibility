@@ -226,6 +226,34 @@ public:
      */
     int64_t GetUiNodeId() const;
 
+    /**
+     * @brief Set window bundle name
+     * @param bundleName_ WMS bundle name
+     * @sysCap Accessibility
+    */
+    void SetBundleName(const std::string bundleName);
+    
+    /**
+     * @brief Get window bundle name
+     * @return window bundle name
+     * @sysCap Accessibility
+    */
+    std::string GetBundleName();
+    
+    /**
+     * @brief Set window touch hot areas
+     * @param touchHotAreas_ WMS touch hot areas
+     * @sysCap Accessibility
+    */
+    void SetTouchHotAreas(const std::vector<Rect> &touchHotAreas);
+    
+    /**
+     * @brief Get window touch hot areas
+     * @return window touch hot areas
+     * @sysCap Accessibility
+    */
+    std::vector<Rect> GetTouchHotAreas();
+
 protected:
     uint64_t displayId_ = 0;
     uint32_t windowMode_ = 0;
@@ -240,6 +268,8 @@ protected:
     bool isDecorEnable_ = false;
     int32_t innerWid_ = 0; // used for window id 1, scene board
     int64_t uiNodeId_ = 0; // used for window id 1, scene board
+    std::string bundleName_ = "";
+    std::vector<Rect> touchHotAreas_ = {};
 };
 } // namespace Accessibility
 } // namespace OHOS

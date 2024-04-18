@@ -901,6 +901,38 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
 }
 
 /**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange019
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateAll success)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange019, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange019 start";
+    sptr<Rosen::AccessibilityWindowInfo> rosen_winInfo_first = GetRosenWindowInfo(Rosen::WindowType::APP_WINDOW_BASE);
+    rosen_winInfo_first->bundleName_ = "rosen_winInfo_first";
+    rosen_winInfo_first->touchHotAreas_ = {Rosen::Rect{0, 0, 2, 2}, Rosen::Rect{2, 2, 4, 4}};
+
+    sptr<Rosen::AccessibilityWindowInfo> rosen_winInfo_second = GetRosenWindowInfo(Rosen::WindowType::APP_WINDOW_BASE);
+    rosen_winInfo_second->bundleName_ = "rosen_winInfo_second";
+    rosen_winInfo_second->touchHotAreas_ = {Rosen::Rect{0, 0, 3, 3}, Rosen::Rect{3, 3, 6, 6}};
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    infos.emplace_back(rosen_winInfo_first);
+    infos.emplace_back(rosen_winInfo_second);
+
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.a11yWindows_.clear();
+    EXPECT_TRUE(!windowInfoManager.a11yWindows_.size());
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_ALL);
+    EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 2);
+    for (auto& info : windowInfoManager.a11yWindows_) {
+        bool cmpFirstBundleName = info.second.GetBundleName() == "rosen_winInfo_first";
+        bool cmpSecondBundleName = info.second.GetBundleName() == "rosen_winInfo_second";
+        EXPECT_TRUE(cmpFirstBundleName || cmpSecondBundleName);
+    }
+    windowInfoManager.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange019 end";
+}
+/**
  * @tc.number: AccessibilityWindowManager_Unittest_SetActiveWindow001
  * @tc.name: SetActiveWindow
  * @tc.desc: Test function SetActiveWindow
