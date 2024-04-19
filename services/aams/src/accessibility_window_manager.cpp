@@ -764,5 +764,17 @@ RetError AccessibilityWindowManager::GetFocusedWindowId(int32_t &focusedWindowId
     focusedWindowId = focusedWindowInfo.windowId_;
     return RET_OK;
 }
+
+bool AccessibilityWindowManager::IsInnerWindowRootElement(int64_t elementId)
+{
+    HILOG_DEBUG("IsInnerWindowRootElement elementId: %{public}" PRId64 "", elementId);
+    auto mapTable = sceneBoardElementIdMap_.GetAllPairs();
+    for (auto iter = mapTable.begin(); iter != mapTable.end(); iter++) {
+        if (elementId == iter->second) {
+            return true;
+        }
+    }
+    return false;
+}
 } // namespace Accessibility
 } // namespace OHOS
