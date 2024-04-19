@@ -359,6 +359,9 @@ private:
     void OnBundleManagerDied(const wptr<IRemoteObject> &remote);
     void DeleteConnectionAndDeathRecipient(
         const int32_t windowId, const sptr<AccessibilityWindowConnection> &connection);
+    
+    void OnDeviceProvisioned();
+    void RegisterShortKeyEvent();
 
     bool isReady_ = false;
     bool isPublished_ = false;

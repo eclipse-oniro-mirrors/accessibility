@@ -135,6 +135,21 @@ ErrCode AccessibilitySettingProvider::UnregisterObserver(const sptr<Accessibilit
     return ERR_OK;
 }
 
+ErrCode AccessibilitySettingProvider::RegisterObserver(const std::string& key, AccessibilitySettingObserver::UpdateFunc& func)
+{
+    HILOG_DEBUG("start.");
+    (void)key;
+    (void)func;
+    return ERR_OK;
+}
+
+ErrCode AccessibilitySettingProvider::UnregisterObserver(const std::string& key)
+{
+    HILOG_DEBUG("start.");
+    (void)key;
+    return ERR_OK;
+}
+
 void AccessibilitySettingProvider::Initialize(int32_t systemAbilityId)
 {
     HILOG_DEBUG("start.");
