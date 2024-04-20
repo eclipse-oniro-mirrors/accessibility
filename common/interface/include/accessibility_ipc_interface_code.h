@@ -43,6 +43,7 @@ namespace Accessibility {
         FIND_FOCUSED_ELEMENTINFO,
         FOCUS_MOVE_SEARCH,
         PERFORM_ACTION,
+        SET_CURTAIN_SCREEN,
         GET_WINDOW,
         GET_WINDOWS,
         GET_WINDOWS_BY_DISPLAY_ID,

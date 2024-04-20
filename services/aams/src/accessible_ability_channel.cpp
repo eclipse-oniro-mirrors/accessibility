@@ -19,6 +19,7 @@
 #include "accessibility_window_manager.h"
 #include "accessible_ability_connection.h"
 #include "hilog_wrapper.h"
+#include "transaction/rs_interfaces.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -268,6 +269,27 @@ RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
     }
 
     inputManager_->SimulateInputEvent(keyEvent);
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannel::EnableScreenCurtain(bool isEnable)
+{
+    HILOG_DEBUG();
+    HILOG_INFO("enter AccessibleAbilityChannel::EnableScreenCurtain isEnable = %{public}d", isEnable);
+
+    if (!eventHandler_) {
+        HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    HILOG_DEBUG("Run RSInterfaces -> SetCurtainScreenUsingStatus");
+    auto rsInterfaces = &(Rosen::RSInterfaces::GetInstance());
+    if (rsInterfaces == nullptr) {
+        HILOG_ERROR("rsInterfaces is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    HILOG_INFO("EnableScreenCurtain : rsInterfaces->SetCurtainScreenUsingStatus(isEnable) %{public}d", isEnable);
+    rsInterfaces->SetCurtainScreenUsingStatus(isEnable);
     return RET_OK;
 }
 

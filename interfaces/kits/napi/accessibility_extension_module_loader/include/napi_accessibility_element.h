@@ -76,6 +76,7 @@ public:
     static napi_value AttributeValue(napi_env env, napi_callback_info info);
     static napi_value ActionNames(napi_env env, napi_callback_info info);
     static napi_value PerformAction(napi_env env, napi_callback_info info);
+    static napi_value EnableScreenCurtain(napi_env env, napi_callback_info info);
     static napi_value FindElement(napi_env env, napi_callback_info info);
     static napi_value ErrorOperation(NAccessibilityElementData *callbackInfo);
     static napi_value GetCursorPosition(napi_env env, napi_callback_info info);
