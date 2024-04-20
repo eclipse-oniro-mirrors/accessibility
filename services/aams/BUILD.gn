@@ -68,6 +68,7 @@ accessibleabilityms_files = [
   "${services_path}/src/accessibility_setting_observer.cpp",
   "${services_path}/src/accessibility_setting_provider.cpp",
   "${services_path}/src/accessibility_short_key_dialog.cpp",
+  "${services_path}/src/accessibility_datashare_helper.cpp",
 ]
 
 ohos_shared_library("accessibleabilityms") {

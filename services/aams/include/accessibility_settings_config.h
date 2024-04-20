@@ -21,36 +21,20 @@
 #include <vector>
 
 #include "accessibility_caption.h"
-#include "preferences_helper.h"
+#include "accessibility_datashare_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
-enum STATE : int32_t {
-    ACCESSIBILITY,
-    TOUCHGUIDE,
-    GESTURE,
-    KEYEVENT,
-    CAPTION,
-    SCREENMAGNIFIER,
-    SHORTKEY,
-    MOUSEKEY,
-    HIGHCONTRASTTEXT,
-    DALTONIZATIONSTATE,
-    INVERTCOLORSTATE,
-    ANIMATIONOFF,
-    AUDIOMONO,
-    IGNOREREPEATCLICKSTATE
-};
 
 class AccessibilitySettingsConfig final {
 public:
     explicit AccessibilitySettingsConfig(int id);
     ~AccessibilitySettingsConfig() = default;
 
-    bool SetEnabled(const bool state);
-    bool SetTouchGuideState(const bool state);
-    bool SetGestureState(const bool state);
-    bool SetKeyEventObserverState(const bool state);
+    RetError SetEnabled(const bool state);
+    RetError SetTouchGuideState(const bool state);
+    RetError SetGestureState(const bool state);
+    RetError SetKeyEventObserverState(const bool state);
     RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption);
     RetError SetCaptionState(const bool state);
     RetError SetScreenMagnificationState(const bool state);
@@ -111,11 +95,7 @@ private:
     void InitSetting();
     void InitCapability();
     void InitEnabledList();
-    bool SetStatePref(int32_t type);
-    std::string StateChange(bool state);
-    void StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult);
-    void VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut);
-    bool SetStatePrefExec(int32_t type);
+    RetError SetConfigState(const std::string& key, bool value);
 
     int32_t accountId_;
     bool enabled_ = false;
@@ -145,7 +125,7 @@ private:
     std::vector<std::string> shortkeyMultiTarget_ {};
     std::vector<std::string> enabledAbilityInfos_; // bundleName/abilityName/capabilities
 
-    std::shared_ptr<NativePreferences::Preferences> pref_ = nullptr;
+    std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

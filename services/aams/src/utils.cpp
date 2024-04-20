@@ -350,5 +350,63 @@ void Utils::RecordStartingA11yEvent(const std::string &name)
         HILOG_ERROR("Write HiSysEvent error, ret:%{public}d", ret);
     }
 }
+
+void Utils::VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut)
+{
+    HILOG_DEBUG();
+    int32_t i = 0;
+    for (auto& var : vectorVal) {
+        if (i > 0) {
+            stringOut = stringOut + ',';
+        }
+        stringOut = stringOut + var.c_str();
+        i++;
+    }
+    HILOG_DEBUG("stringOUT = %{public}s .", stringOut.c_str());
+}
+
+void Utils::StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult)
+{
+    HILOG_DEBUG();
+    int32_t strLength = static_cast<int32_t>(stringIn.size());
+    std::vector<int32_t> position;
+
+    if (strLength == 0) {
+        return;
+    }
+
+    for (int32_t j = 0; j < strLength; j++) {
+        if (stringIn[j] == ',') {
+            position.push_back(j);
+        }
+    }
+
+    int32_t wrodCount = static_cast<int32_t>(position.size());
+    if ((wrodCount == 0) && (strLength > 0)) {
+        vectorResult.push_back(stringIn);
+    } else {
+        int32_t startWrod = 0;
+        int32_t length = 0;
+        for (int32_t i = 0; i <= wrodCount; i++) {
+            if (i == 0) {
+                length = position[i];
+                vectorResult.push_back(stringIn.substr(startWrod, length)); // First string
+            } else if (i < wrodCount) {
+                startWrod = position[i - 1] + 1;
+                length = position[i] - position[i - 1] - 1;
+                vectorResult.push_back(stringIn.substr(startWrod, length)); // Second string to last-1 string
+            } else {
+                startWrod = position[i - 1] + 1;
+                length = strLength - position[i - 1] - 1;
+                vectorResult.push_back(stringIn.substr(startWrod, length)); // Last string
+            }
+        }
+    }
+    HILOG_DEBUG("strLength = %{public}d, wrodCount = %{public}d, stringIn : %{public}s",
+        strLength, wrodCount, stringIn.c_str());
+    for (auto& var : vectorResult) {
+        HILOG_DEBUG("vectorResult = %{public}s ", var.c_str());
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

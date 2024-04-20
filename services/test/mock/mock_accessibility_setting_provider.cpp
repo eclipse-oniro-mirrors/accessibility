@@ -14,21 +14,25 @@
  */
 
 #include "accessibility_setting_provider.h"
+#include "accessibility_datashare_helper.h"
 #include <gtest/gtest.h>
 
 namespace OHOS {
 namespace Accessibility {
 AccessibilitySettingProvider* AccessibilitySettingProvider::instance_;
 std::mutex AccessibilitySettingProvider::mutex_;
-sptr<IRemoteObject> AccessibilitySettingProvider::remoteObj_;
 namespace {
-const std::string SETTING_URI_PROXY = "datashare:///com.ohos.settingsdata/entry/settingsdata/SETTINGSDATA?Proxy=true";
+    constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
 } // namespace
+
+AccessibilitySettingProvider::AccessibilitySettingProvider()
+    : AccessibilityDatashareHelper(DATASHARE_TYPE::GLOBAL, DEFAULT_ACCOUNT_ID)
+{
+}
 
 AccessibilitySettingProvider::~AccessibilitySettingProvider()
 {
     instance_ = nullptr;
-    remoteObj_ = nullptr;
 }
 
 AccessibilitySettingProvider& AccessibilitySettingProvider::GetInstance(int32_t systemAbilityId)
@@ -43,62 +47,56 @@ void AccessibilitySettingProvider::DeleteInstance()
 {
 }
 
-ErrCode AccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value)
+RetError AccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value)
 {
     (void)key;
     (void)value;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::GetLongValue(const std::string& key, int64_t& value)
+RetError AccessibilitySettingProvider::GetLongValue(const std::string& key, int64_t& value)
 {
     (void)key;
     (void)value;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool& value)
+RetError AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool& value)
 {
     (void)key;
     (void)value;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value)
+RetError AccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value)
 {
     (void)key;
     (void)value;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::PutIntValue(const std::string& key, int32_t value, bool needNotify)
-{
-    (void)key;
-    (void)value;
-    (void)needNotify;
-    return ERR_OK;
-}
-
-ErrCode AccessibilitySettingProvider::PutLongValue(const std::string& key, int64_t value, bool needNotify)
+RetError AccessibilitySettingProvider::PutIntValue(const std::string& key, int32_t value, bool needNotify)
 {
     (void)key;
     (void)value;
     (void)needNotify;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::PutBoolValue(const std::string& key, bool value, bool needNotify)
+RetError AccessibilitySettingProvider::PutLongValue(const std::string& key, int64_t value, bool needNotify)
 {
     (void)key;
     (void)value;
     (void)needNotify;
-    return ERR_OK;
+    return RET_OK;
 }
 
-bool AccessibilitySettingProvider::IsValidKey(const std::string& key)
+RetError AccessibilitySettingProvider::PutBoolValue(const std::string& key, bool value, bool needNotify)
 {
     (void)key;
-    return true;
+    (void)value;
+    (void)needNotify;
+    return RET_OK;
 }
 
 sptr<AccessibilitySettingObserver> AccessibilitySettingProvider::CreateObserver(const std::string& key,
@@ -109,68 +107,46 @@ sptr<AccessibilitySettingObserver> AccessibilitySettingProvider::CreateObserver(
     return nullptr;
 }
 
-ErrCode AccessibilitySettingProvider::RegisterObserver(const sptr<AccessibilitySettingObserver>& observer)
+RetError AccessibilitySettingProvider::RegisterObserver(const sptr<AccessibilitySettingObserver>& observer)
 {
     (void)observer;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer)
+RetError AccessibilitySettingProvider::UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer)
 {
     (void)observer;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::RegisterObserver(const std::string& key, AccessibilitySettingObserver::UpdateFunc& func)
+RetError AccessibilitySettingProvider::RegisterObserver(const std::string& key,
+    AccessibilitySettingObserver::UpdateFunc& func)
 {
     (void)key;
     (void)func;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::UnregisterObserver(const std::string& key)
+RetError AccessibilitySettingProvider::UnregisterObserver(const std::string& key)
 {
     (void)key;
-    return ERR_OK;
-} 
-
-void AccessibilitySettingProvider::Initialize(int32_t systemAbilityId)
-{
-    (void)systemAbilityId;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::GetStringValue(const std::string& key, std::string& value)
+RetError AccessibilitySettingProvider::GetStringValue(const std::string& key, std::string& value)
 {
     (void)key;
     (void)value;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::PutStringValue
+RetError AccessibilitySettingProvider::PutStringValue
     (const std::string& key, const std::string& value, bool needNotify)
 {
     (void)key;
     (void)value;
     (void)needNotify;
-    return ERR_OK;
-}
-
-std::shared_ptr<DataShare::DataShareHelper> AccessibilitySettingProvider::CreateDataShareHelper()
-{
-    return nullptr;
-}
-
-bool AccessibilitySettingProvider::ReleaseDataShareHelper(std::shared_ptr<DataShare::DataShareHelper>& helper)
-{
-    (void)helper;
-    return true;
-}
-
-Uri AccessibilitySettingProvider::AssembleUri(const std::string& key)
-{
-    (void)key;
-    Uri uri(SETTING_URI_PROXY + "&key=" + "ok");
-    return uri;
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS
