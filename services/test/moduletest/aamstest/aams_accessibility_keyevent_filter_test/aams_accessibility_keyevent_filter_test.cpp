@@ -119,7 +119,7 @@ void AamsKeyEventFilterTest::TearDown()
 
 void AamsKeyEventFilterTest::WritefileAll(const char* fname, const char* data) const
 {
-    FILE* fp;
+    FILE* fp = nullptr;
     if (!(fp = fopen(fname, "w"))) {
         printf("open file %s fail \n", fname);
         return;

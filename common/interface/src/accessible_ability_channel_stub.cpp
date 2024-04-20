@@ -50,6 +50,8 @@ AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
         &AccessibleAbilityChannelStub::HandleSendSimulateGesturePath;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME)] =
         &AccessibleAbilityChannelStub::HandleSetTargetBundleName;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CURSOR_POSITION)] =
+        &AccessibleAbilityChannelStub::HandleGetCursorPosition;
 }
 
 AccessibleAbilityChannelStub::~AccessibleAbilityChannelStub()
@@ -114,8 +116,9 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
     if (mode == GET_SOURCE_MODE) {
         mode = PREFETCH_RECURSIVE_CHILDREN;
     }
-
-    RetError result = SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId, callback, mode);
+    bool isFilter = data.ReadBool();
+    RetError result = SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId, callback, mode,
+    isFilter);
     HILOG_DEBUG("SearchElementInfoByAccessibilityId ret = %{public}d", result);
     reply.WriteInt32(result);
 
@@ -220,13 +223,39 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
     }
 
     auto callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
 
     RetError result = ExecuteAction(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
     HILOG_DEBUG("ExecuteAction ret = %{public}d", result);
+    reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleGetCursorPosition(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    int32_t accessibilityWindowId = data.ReadInt32();
+    int64_t elementId = data.ReadInt64();
+    int32_t requestId = data.ReadInt32();
+    HILOG_INFO("AccessibleAbilityChannelStub::HandleGetCursorPosition   The execution was successful");
+    sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (!remote) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+
+    auto callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
+    if (!callback) {
+        HILOG_ERROR("callback is nullptr");
+        return ERR_INVALID_VALUE;
+    }
+
+    RetError result = GetCursorPosition(accessibilityWindowId, elementId, requestId, callback);
+    HILOG_DEBUG("GetCursorPosition ret = %{public}d", result);
     reply.WriteInt32(result);
     return NO_ERROR;
 }

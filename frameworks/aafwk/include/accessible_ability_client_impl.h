@@ -144,7 +144,7 @@ public:
      * @return Return RET_OK if obtains elementInfos successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetRootByWindowBatch(const AccessibilityWindowInfo &windowInfo,
-        std::vector<AccessibilityElementInfo>& elementInfos) override;
+        std::vector<AccessibilityElementInfo>& elementInfos, bool isFilter) override;
 
     /**
      * @brief Get the window information related with the event
@@ -267,6 +267,14 @@ public:
         const std::map<std::string, std::string> &actionArguments) override;
 
     /**
+     * @brief To return the result of cursor position.
+     * @param elementInfo The source info to cursor position.
+     * @param position: The position of the cursor to get.
+     * @return Return RET_OK if performs action succeed, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetCursorPosition(const AccessibilityElementInfo &elementInfo, int32_t &position) override;
+
+    /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
      * @return Return RET_OK if sets target bundle names successfully, otherwise refer to the RetError for the failure.
@@ -323,7 +331,7 @@ public:
     RetError GetElementInfoFromCache(int32_t windowId, int64_t elementId,
         std::vector<AccessibilityElementInfo> &elementInfos);
     RetError SearchElementInfoRecursive(int32_t windowId, int64_t elementId, int mode,
-        std::vector<AccessibilityElementInfo> &elementInfos);
+        std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false);
     void RemoveCacheData(const AccessibilityEventInfo &eventInfo);
     void AddCacheByWMS(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
     void AddCacheByAce(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);

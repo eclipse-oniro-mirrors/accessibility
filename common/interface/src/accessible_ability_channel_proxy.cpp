@@ -61,7 +61,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(AccessibilityInterfaceCode c
 
 RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
     const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-    const int32_t mode)
+    const int32_t mode, bool isFilter)
 {
     HILOG_DEBUG();
     if (!callback) {
@@ -96,7 +96,10 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
         HILOG_ERROR("mode write error: %{public}d, ", mode);
         return RET_ERR_IPC_FAILED;
     }
-
+    if (!data.WriteBool(isFilter)) {
+        HILOG_ERROR("isFilter write error: %{public}d, ", isFilter);
+        return RET_ERR_IPC_FAILED;
+    }
     if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID,
         data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by elementId");
@@ -419,6 +422,50 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
         data, reply, option)) {
         HILOG_ERROR("fail to set onKeyPressEvent result");
     }
+}
+
+RetError AccessibleAbilityChannelProxy::GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG();
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+    if (!WriteInterfaceToken(data)) {
+        return RET_ERR_FAILED;
+    }
+    if (!data.WriteInt32(accessibilityWindowId)) {
+        HILOG_ERROR("accessibilityWindowId write error: %{public}d, ", accessibilityWindowId);
+        return RET_ERR_FAILED;
+    }
+    if (!data.WriteInt64(elementId)) {
+        HILOG_ERROR("elementId write error");
+        return RET_ERR_FAILED;
+    }
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("requestId write error: %{public}d, ", requestId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!callback) {
+        HILOG_ERROR("callback is null");
+        return RET_ERR_FAILED;
+    }
+    if (callback->AsObject() == nullptr) {
+        HILOG_ERROR("callback->AsObject() is null");
+        return RET_ERR_FAILED;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("callback write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_CURSOR_POSITION,
+        data, reply, option)) {
+        HILOG_ERROR("fail to set onKeyPressEvent result");
+        return RET_ERR_FAILED;
+    }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
 RetError AccessibleAbilityChannelProxy::SendSimulateGesture(

@@ -51,7 +51,7 @@ public:
      * @sysCap Accessibility
      */
     void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode) override;
+        const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode, bool isFilter) override;
 
     /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.
@@ -110,6 +110,15 @@ public:
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
 
     /**
+     * @brief To return the result of cursor position.
+     * @param elementId: The unique id of the component ID.
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the node info to ASAC and it defined by ASAC.
+     **/
+    void GetCursorPosition(const int64_t elementId, int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback>& callback) override;
+
+    /**
      * @brief The function is called while accessibility System check the id of window is not equal
      * to the id of active window when sendAccessibility.
      */
@@ -134,6 +143,8 @@ public:
     int32_t testDirection_ = 0;
     int32_t testAction_ = 0;
     std::map<std::string, std::string> testActionArguments_;
+
+    bool isFilter_ = false;
 
 private:
     /**

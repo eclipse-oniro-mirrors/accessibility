@@ -56,5 +56,13 @@ void AccessibilityElementOperatorCallbackImpl::SetExecuteActionResult(const bool
     executeActionResult_ = succeeded;
     promise_.set_value();
 }
+
+void AccessibilityElementOperatorCallbackImpl::SetCursorPositionResult(const int32_t cursorPosition,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d] cursorPosition[%{public}d]", requestId, cursorPosition);
+    CursorPosition_ = cursorPosition;
+    promise_.set_value();
+}
 } // namespace Accessibility
 } // namespace OHOS

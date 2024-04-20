@@ -200,12 +200,14 @@ public:
             const int32_t requestId) override;
         virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) override;
         virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
+        virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
 
     private:
         std::promise<void> promise_;
         bool executeActionResult_ = false;
         AccessibilityElementInfo accessibilityInfoResult_ = {};
         std::vector<AccessibilityElementInfo> elementInfosResult_;
+        int32_t callCursorPosition_ = 0;
 
         friend class AccessibleAbilityManagerService;
     };
@@ -359,6 +361,9 @@ private:
     void OnBundleManagerDied(const wptr<IRemoteObject> &remote);
     void DeleteConnectionAndDeathRecipient(
         const int32_t windowId, const sptr<AccessibilityWindowConnection> &connection);
+    
+    void OnDeviceProvisioned();
+    void RegisterShortKeyEvent();
 
     bool isReady_ = false;
     bool isPublished_ = false;

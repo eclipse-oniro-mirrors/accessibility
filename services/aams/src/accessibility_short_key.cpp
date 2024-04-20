@@ -133,9 +133,11 @@ bool AccessibilityShortKey::IsTriplePress()
 
     uint32_t upEventCount = 0;
     int32_t action = MMI::KeyEvent::KEY_ACTION_UNKNOWN;
+    int32_t keyCode = MMI::KeyEvent::KEYCODE_UNKNOWN;
     for (auto &keyEvent : cachedKeyEvents_) {
         action = keyEvent->GetKeyAction();
-        if (action == MMI::KeyEvent::KEY_ACTION_UP) {
+        keyCode = keyEvent->GetKeyCode();
+        if (action == MMI::KeyEvent::KEY_ACTION_UP && keyCode == MMI::KeyEvent::KEYCODE_POWER) {
             upEventCount++;
         }
     }

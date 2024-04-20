@@ -31,7 +31,8 @@ public:
     ~ElementOperatorImplFuzzTest() = default;
 
     void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode) override {}
+        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+        bool isFilter) override {}
     void SearchElementInfosByText(const int64_t elementId, const std::string &text,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
     void FindFocusedElementInfo(const int64_t elementId, const int32_t focusType, const int32_t requestId,
@@ -41,6 +42,8 @@ public:
     void ExecuteAction(const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
+    void GetCursorPosition(const int64_t elementId, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
     void ClearFocus() override {}
     void OutsideTouch() override {}
 };

@@ -637,6 +637,45 @@ HWTEST_F(AccessibleAbilityClientImplTest, ExecuteAction_003, TestSize.Level1)
 }
 
 /**
+ * @tc.number: ExecuteAction_004
+ * @tc.name: ExecuteAction
+ * @tc.desc: Test function ExecuteAction
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, ExecuteAction_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ExecuteAction_004 start";
+    Connect();
+    AccessibilityElementInfo elementInfo {};
+    std::vector<ActionType> actions;
+    actions.push_back(ACCESSIBILITY_ACTION_HOME);
+    actions.push_back(ACCESSIBILITY_ACTION_BACK);
+    actions.push_back(ACCESSIBILITY_ACTION_RECENTTASK);
+    actions.push_back(ACCESSIBILITY_ACTION_NOTIFICATIONCENTER);
+    actions.push_back(ACCESSIBILITY_ACTION_CONTROLCENTER);
+    for (int32_t i = 0; i < actions.size(); i++) {
+        std::map<std::string, std::string> actionArguments {};
+        EXPECT_EQ(instance_->ExecuteAction(elementInfo, actions[i], actionArguments), RET_ERR_TIME_OUT);
+        GTEST_LOG_(INFO) << "ExecuteAction_004 action=" << actions[i];
+    }
+    GTEST_LOG_(INFO) << "ExecuteAction_004 end";
+}
+
+/**
+ * @tc.number: GetCursorPosition_001
+ * @tc.name: GetCursorPosition
+ * @tc.desc: Test function GetCursorPosition
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetCursorPosition_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetCursorPosition_001 start";
+    Connect();
+    AccessibilityElementInfo elementInfo {};
+    int32_t position;
+    EXPECT_EQ(instance_->GetCursorPosition(elementInfo, position), RET_ERR_TIME_OUT);
+    GTEST_LOG_(INFO) << "GetCursorPosition_001 end";
+}
+
+/**
  * @tc.number: ResetAAClient_001
  * @tc.name: ResetAAClient
  * @tc.desc: Test function ResetAAClient
@@ -917,7 +956,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootByWindowBatch_001, TestSize.Lev
     Connect();
     std::vector<AccessibilityElementInfo> info;
     AccessibilityWindowInfo windowInfo {};
-    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, info), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, info, true), RET_ERR_TIME_OUT);
     GTEST_LOG_(INFO) << "GetRootByWindowBatch_001 end";
 }
 

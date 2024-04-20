@@ -101,7 +101,7 @@ public:
      * @return Return RET_OK if obtains elementInfos successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetRootByWindowBatch(const AccessibilityWindowInfo &windowInfo,
-        std::vector<AccessibilityElementInfo>& elementInfos) = 0;
+        std::vector<AccessibilityElementInfo>& elementInfos, bool isFilter = false) = 0;
 
     /**
      * @brief Get the window information related with the event
@@ -221,6 +221,12 @@ public:
     virtual RetError ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
         const std::map<std::string, std::string> &actionArguments) = 0;
 
+    /**
+    * @brief To return the result of cursor position.
+    * @param elementInfo The source info to cursor position.
+    * @param position: The position of the cursor to get.
+    */
+    virtual RetError GetCursorPosition(const AccessibilityElementInfo &elementInfo, int32_t &position) = 0;
     /**
      * @brief Register ability listener.
      * @param listener The listener to add.

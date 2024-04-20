@@ -31,6 +31,8 @@ AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
         &AccessibilityElementOperatorStub::HandleFocusFind;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::PERFORM_ACTION_ELEMENT)] =
         &AccessibilityElementOperatorStub::HandleExecuteAction;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::CURSOR_POSITION)] =
+        &AccessibilityElementOperatorStub::HandleGetCursorPosition;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::CLEAR_FOCUS)] =
         &AccessibilityElementOperatorStub::HandleClearFocus;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::OUTSIDE_TOUCH)] =
@@ -79,12 +81,13 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibility
     }
 
     sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
     int32_t mode = data.ReadInt32();
-    SearchElementInfoByAccessibilityId(elementId, requestId, callback, mode);
+    bool isFilter = data.ReadBool();
+    SearchElementInfoByAccessibilityId(elementId, requestId, callback, mode, isFilter);
     return NO_ERROR;
 }
 
@@ -103,7 +106,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfosByText(Message
     }
 
     sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
@@ -126,7 +129,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFindFocusedElementInfo(MessagePa
     }
 
     sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
@@ -148,7 +151,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFocusFind(MessageParcel &data, M
     }
 
     sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
@@ -184,11 +187,31 @@ ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &dat
     }
 
     sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
     ExecuteAction(elementId, action, arguments, requestId, callback);
+    return NO_ERROR;
+}
+
+ErrCode AccessibilityElementOperatorStub::HandleGetCursorPosition(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int64_t elementId = data.ReadInt64();
+    int32_t requestId = data.ReadInt32();
+    sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (!remote) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+
+    sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr");
+        return ERR_INVALID_VALUE;
+    }
+    GetCursorPosition(elementId, requestId, callback);
     return NO_ERROR;
 }
 

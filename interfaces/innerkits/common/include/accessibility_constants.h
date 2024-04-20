@@ -32,6 +32,8 @@ extern const std::string MOVE_UNIT_PARAGRAPH;
 extern const std::string ACTION_ARGU_INVALID;
 extern const std::string ACTION_ARGU_SELECT_TEXT_START;
 extern const std::string ACTION_ARGU_SELECT_TEXT_END;
+extern const std::string ACTION_ARGU_SELECT_TEXT_INFORWARD;
+extern const std::string ACTION_ARGU_SET_OFFSET;
 extern const std::string ACTION_ARGU_HTML_ELEMENT;
 extern const std::string ACTION_ARGU_SET_TEXT;
 extern const std::string ACTION_ARGU_MOVE_UNIT;

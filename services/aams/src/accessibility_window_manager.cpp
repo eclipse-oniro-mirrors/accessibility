@@ -137,6 +137,8 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
                 break;
             case Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY: // 6
                 WindowUpdateProperty(infos);
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_ALL:
+                WindowUpdateAll(infos);
                 break;
             default:
                 break;
@@ -260,6 +262,23 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
         accWindowInfo.SetWindowId(windowInfo->innerWid_);
         HILOG_DEBUG("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
     }
+    accWindowInfo.SetBundleName(windowInfo->bundleName_);
+    HILOG_DEBUG("UpdateAccessibilityWindowInfo is set bundlename is [%{public}s]",
+        accWindowInfo.GetBundleName().c_str());
+    
+    std::vector<Rect> temp = {};
+    for (auto &rect : windowInfo->touchHotAreas_) {
+        HILOG_DEBUG("Rosen -> window info x:[%{public}d], y:[%{public}d]; width:[%{public}d], height:[%{public}d]",
+            rect.posX_, rect.posY_, rect.width_, rect.height_);
+        temp.push_back(Rect(rect.posX_, rect.posY_, rect.posX_ + rect.width_, rect.posY_ + rect.height_));
+    }
+    accWindowInfo.SetTouchHotAreas(temp);
+    for (auto &outRect : accWindowInfo.GetTouchHotAreas()) {
+        HILOG_DEBUG("accessibility -> window info : left_x:[%{public}d], left_y:[%{public}d];"
+            " right_x:[%{public}d], right_y:[%{public}d]", outRect.GetLeftTopXScreenPostion(),
+            outRect.GetLeftTopYScreenPostion(), outRect.GetRightBottomXScreenPostion(),
+            outRect.GetRightBottomYScreenPostion());
+    }
 }
 
 int32_t AccessibilityWindowManager::GetRealWindowId(const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
@@ -345,12 +364,14 @@ std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilit
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
     std::vector<AccessibilityWindowInfo> windows;
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
+    HILOG_DEBUG("windowInfos size[%{public}zu]", windowInfos.size());
     if (err != Rosen::WMError::WM_OK) {
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
         return windows;
     }
     for (auto &info : windowInfos) {
         if (info == nullptr) {
+            HILOG_DEBUG("info is nullptr");
             continue;
         }
 
@@ -567,6 +588,34 @@ void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Ros
     }
 }
 
+void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
+{
+    HILOG_DEBUG("WindowUpdateAll info size(%{public}d)", infos.size());
+    DeInit();
+    HILOG_DEBUG("WindowUpdateAll a11yWindowInfo_ size(%{public}d)", a11yWindows_.size());
+    for (auto &window : infos) {
+        if (!window) {
+            HILOG_ERROR("window is nullptr");
+            continue;
+        }
+        int32_t realWid = GetRealWindowId(window);
+        if (!a11yWindows_.count(realWid)) {
+            auto a11yWindowInfo = CreateAccessibilityWindowInfo(window);
+            a11yWindows_.emplace(realWid, a11yWindowInfo);
+            HILOG_DEBUG("WindowUpdateAll a11yWindowInfo size(%{public}s)", a11yWindowInfo.GetBundleName().c_str());
+        }
+        if (IsSceneBoard(window)) {
+            subWindows_.insert(realWid);
+            sceneBoardElementIdMap_.InsertPair(realWid, window->uiNodeId_);
+        }
+
+        if (a11yWindows_[realWid].IsFocused()) {
+            SetActiveWindow(realWid);
+        }
+    }
+    HILOG_DEBUG("WindowUpdateAll a11yWindowInfo_ size(%{public}d)", a11yWindows_.size());
+}
+
 void AccessibilityWindowManager::ClearOldActiveWindow()
 {
     HILOG_DEBUG("active window id is %{public}d", activeWindowId_);
@@ -714,6 +763,18 @@ RetError AccessibilityWindowManager::GetFocusedWindowId(int32_t &focusedWindowId
     }
     focusedWindowId = focusedWindowInfo.windowId_;
     return RET_OK;
+}
+
+bool AccessibilityWindowManager::IsInnerWindowRootElement(int64_t elementId)
+{
+    HILOG_DEBUG("IsInnerWindowRootElement elementId: %{public}" PRId64 "", elementId);
+    auto mapTable = sceneBoardElementIdMap_.GetAllPairs();
+    for (auto iter = mapTable.begin(); iter != mapTable.end(); iter++) {
+        if (elementId == iter->second) {
+            return true;
+        }
+    }
+    return false;
 }
 } // namespace Accessibility
 } // namespace OHOS

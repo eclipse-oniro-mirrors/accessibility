@@ -43,7 +43,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(
 
 RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
     const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
-    const int32_t mode)
+    const int32_t mode, bool isFilter)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy SearchElementInfoByAccessibilityId";
     (void)accessibilityWindowId;
@@ -51,6 +51,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
     (void)requestId;
     (void)callback;
     (void)mode;
+    (void)isFilter;
     return RET_OK;
 }
 
@@ -101,6 +102,17 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
     (void)elementId;
     (void)action;
     (void)actionArguments;
+    (void)requestId;
+    (void)callback;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannelProxy::GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
+{
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy GetCursorPosition";
+    (void)accessibilityWindowId;
+    (void)elementId;
     (void)requestId;
     (void)callback;
     return RET_OK;

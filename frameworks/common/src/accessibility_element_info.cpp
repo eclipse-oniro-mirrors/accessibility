@@ -568,6 +568,26 @@ void AccessibilityElementInfo::SetAccessibilityText(const std::string &accessibi
     accessibilityText_ = accessibilityText;
 }
 
+void AccessibilityElementInfo::SetTextType(const std::string &textType)
+{
+    textType_ = textType;
+}
+
+const std::string &AccessibilityElementInfo::GetTextType() const
+{
+    return textType_;
+}
+
+void AccessibilityElementInfo::SetOffset(const float offset)
+{
+    offset_ = offset;
+}
+
+float AccessibilityElementInfo::GetOffset() const
+{
+    return offset_;
+}
+
 AccessibilityElementInfo::AccessibilityElementInfo()
 {
 }

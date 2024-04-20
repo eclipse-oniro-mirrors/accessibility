@@ -13,6 +13,11 @@
  * limitations under the License.
  */
 
+#define private public
+#define protected public
+#include "input_event.h"
+#undef private
+#undef protected
 #include "mock_input_event.h"
 
 namespace OHOS {
@@ -44,7 +49,7 @@ void InputEvent::Reset()
 
 std::shared_ptr<InputEvent> InputEvent::Create()
 {
-    return std::shared_ptr<InputEvent>(new InputEvent(InputEvent::EVENT_TYPE_BASE));
+    return std::make_shared<InputEvent>(InputEvent::EVENT_TYPE_BASE);
 }
 
 int32_t InputEvent::GetId() const

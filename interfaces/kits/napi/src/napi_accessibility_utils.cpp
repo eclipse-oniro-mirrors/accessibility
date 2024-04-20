@@ -634,6 +634,7 @@ std::string ConvertOperationTypeToString(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_PASTE, "paste"},
         {ActionType::ACCESSIBILITY_ACTION_CUT, "cut"},
         {ActionType::ACCESSIBILITY_ACTION_SET_SELECTION, "setSelection"},
+        {ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION, "setCursorPosition"},
         {ActionType::ACCESSIBILITY_ACTION_COMMON, "common"},
         {ActionType::ACCESSIBILITY_ACTION_SET_TEXT, "setText"},
         {ActionType::ACCESSIBILITY_ACTION_DELETED, "delete"},
@@ -730,9 +731,15 @@ ActionType ConvertStringToAccessibleOperationType(const std::string &type)
         {"paste", ActionType::ACCESSIBILITY_ACTION_PASTE},
         {"cut", ActionType::ACCESSIBILITY_ACTION_CUT},
         {"setSelection", ActionType::ACCESSIBILITY_ACTION_SET_SELECTION},
+        {"setCursorPosition", ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION},
         {"common", ActionType::ACCESSIBILITY_ACTION_COMMON},
         {"setText", ActionType::ACCESSIBILITY_ACTION_SET_TEXT},
-        {"delete", ActionType::ACCESSIBILITY_ACTION_DELETED}};
+        {"delete", ActionType::ACCESSIBILITY_ACTION_DELETED},
+        {"home", ActionType::ACCESSIBILITY_ACTION_HOME},
+        {"back", ActionType::ACCESSIBILITY_ACTION_BACK},
+        {"recentTask", ActionType::ACCESSIBILITY_ACTION_RECENTTASK},
+        {"notificationCenter", ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER},
+        {"controlCenter", ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER}};
 
     if (accessibleOperationTypeTable.find(type) == accessibleOperationTypeTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
@@ -865,6 +872,7 @@ void ConvertActionArgsJSToNAPI(
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     std::string str = "";
+    bool seleFlag = false;
     switch (action) {
         case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
         case ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM:
@@ -893,6 +901,19 @@ void ConvertActionArgsJSToNAPI(
             if (hasProperty) {
                 args.insert(std::pair<std::string, std::string>("selectTextEnd", str.c_str()));
             }
+            napi_create_string_utf8(env, "selectTextInForWard", NAPI_AUTO_LENGTH, &propertyNameValue);
+            seleFlag = ConvertBoolJSToNAPI(env, object, propertyNameValue, hasProperty);
+            if (hasProperty) {
+                std::string value = seleFlag ? "forWard" : "backWard";
+                args.insert(std::pair<std::string, std::string>("selectTextInForWard", value.c_str()));
+            }
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION:
+            napi_create_string_utf8(env, "offset", NAPI_AUTO_LENGTH, &propertyNameValue);
+            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+            if (hasProperty) {
+                args.insert(std::pair<std::string, std::string>("offset", str.c_str()));
+            }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SET_TEXT:
             napi_create_string_utf8(env, "setText", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -916,6 +937,18 @@ int32_t ConvertIntJSToNAPI(napi_env env, napi_value object, napi_value propertyN
         napi_get_value_int32(env, itemValue, &dataValue);
     }
     return dataValue;
+}
+
+bool ConvertBoolJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty)
+{
+    bool isBool = false;
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value itemValue = nullptr;
+        napi_get_property(env, object, propertyNameValue, &itemValue);
+        napi_get_value_bool(env, itemValue, &isBool);
+    }
+    return isBool;
 }
 
 std::string ConvertStringJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty)

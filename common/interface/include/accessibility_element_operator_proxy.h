@@ -51,7 +51,8 @@ public:
      * @sysCap Accessibility
      */
     virtual void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+        bool isFilter = false) override;
 
     /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.
@@ -110,6 +111,15 @@ public:
         int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     /**
+     * @brief To return the result of cursor position.
+     * @param elementId: The unique id of the component ID.
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the node info to ASAC and it defined by ASAC.
+     */
+    virtual void GetCursorPosition(const int64_t elementId,
+        int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
+    /**
      * @brief The function is called while accessibility System check the id of window is not equal
      * to the id of active window when sendAccessibility.
      */
@@ -121,7 +131,20 @@ public:
      * Example: PopupWindow receive the OUTSIDE_EVENT to close itself.
      */
     virtual void OutsideTouch() override;
+
+    /**
+     * @brief Set isFilter.
+     * @param enableFilter True : Perform filtering ;otherwise is false.
+     */
+    void SetIsFilter(bool enableFilter);
+
+    /**
+     * @brief Get isFilter.
+     */
+    bool GetFilter();
 private:
+    bool isFilter = false;
+
     /**
      * @brief Write the descriptor of IPC.
      * @param data It is include the descriptor of IPC.

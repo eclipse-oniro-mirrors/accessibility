@@ -373,6 +373,9 @@ int32_t AccessibilityCircleDrawingManager::ParseStringToInteger(const std::strin
 {
     int32_t val = 0;
     int32_t base = 1;
+    if (color.size() < 1) {
+        return val;
+    }
     for (int32_t index = static_cast<int32_t>(color.size() - 1); index >= 0; index--) {
         if (color[index] >= CHAR_0 && color[index] <= CHAR_9) {
             val += base * static_cast<int32_t>(color[index] - CHAR_0);

@@ -49,7 +49,7 @@ public:
      */
     virtual RetError SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
         const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-        const int32_t mode) override;
+        const int32_t mode, bool isFilter) override;
 
     /**
      * @brief Make the child element information by accessibility ID and filtered by text and
@@ -106,6 +106,17 @@ public:
     virtual RetError ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
+    /**
+     * @brief Get the result of Cursor Position through the proxy object.
+     * @param accessibilityWindowId The target winid.
+     * @param elementId The element Id.
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the node info to ASAC and it defined by ASAC.
+     * @return Return RET_OK if Cursor Position successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     /**
      * @brief Get the window information related with the event

@@ -44,7 +44,8 @@ MockAccessibilityElementOperatorImpl::~MockAccessibilityElementOperatorImpl()
 {}
 
 void MockAccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int64_t elementId,
-    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode)
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode,
+    bool isFilter)
 {
     int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {
@@ -98,6 +99,18 @@ void MockAccessibilityElementOperatorImpl::ExecuteAction(const int64_t elementId
     int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {
         operator_->ExecuteAction(elementId, action, actionArguments, mRequestId, operatorCallback_);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
+    return;
+}
+
+void MockAccessibilityElementOperatorImpl::GetCursorPosition(const int64_t elementId, int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback>& callback)
+{
+    int32_t mRequestId = AddRequest(requestId, callback);
+    if (operator_) {
+        operator_->GetCursorPosition(elementId, mRequestId, operatorCallback_);
     } else {
         HILOG_DEBUG("Can not find interaction object");
     }

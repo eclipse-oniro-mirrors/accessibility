@@ -529,6 +529,21 @@ void AccessibilitySystemAbilityClientImpl::SetExecuteActionResult(
     }
 }
 
+void AccessibilitySystemAbilityClientImpl::SetCursorPositionResult(
+    const int32_t cursorPosition, const int32_t requestId)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    HILOG_DEBUG("requestId[%{public}d]  cursorPosition[%{public}d]", requestId, cursorPosition);
+    if (requestId >= 0) {
+        auto iter = elementOperators_.find(static_cast<uint32_t>(requestId) >> REQUEST_WINDOW_ID_MASK_BIT);
+        if (iter != elementOperators_.end()) {
+            if (iter->second) {
+                iter->second->SetCursorPositionResult(cursorPosition, requestId);
+            }
+        }
+    }
+}
+
 void AccessibilitySystemAbilityClientImpl::SetAccessibilityState(const uint32_t stateType)
 {
     HILOG_DEBUG();

@@ -20,6 +20,7 @@
 #include "accessible_ability_channel_stub.h"
 #include "event_handler.h"
 #include "i_accessibility_element_operator.h"
+#include "key_event.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -30,7 +31,7 @@ public:
     ~AccessibleAbilityChannel() = default;
     RetError SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-        const int32_t mode) override;
+        const int32_t mode, bool isFilter = false) override;
 
     RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int64_t elementId,
         const std::string &text, const int32_t requestId,
@@ -59,11 +60,18 @@ public:
 
     RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 
+    RetError GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
 private:
     static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);
     static RetError GetElementOperator(int32_t accountId, int32_t windowId, int32_t focusType,
         const std::string &clientName, sptr<IAccessibilityElementOperator> &elementOperator);
     RetError GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const;
+    RetError TransmitActionToMmi(const int32_t action);
+    static void SetKeyCodeMulti(std::shared_ptr<MMI::KeyEvent>& keyEvent,
+        const int32_t keyCodePre, const int32_t keyCodeNext);
+    static void SetKeyCodeSingle(std::shared_ptr<MMI::KeyEvent>& keyEvent, const int32_t keyCode);
 
     std::string clientName_ = "";
     int32_t accountId_ = -1;

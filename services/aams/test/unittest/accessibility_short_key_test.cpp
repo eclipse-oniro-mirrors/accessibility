@@ -111,9 +111,8 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
     MMI::KeyEvent::KeyItem item;
     item.SetPressed(true);
     event->AddKeyItem(item);
-    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
     shortKey_->OnKeyEvent(*event);
-    int32_t keyCode = AccessibilityAbilityHelper::GetInstance().GetKeyCode();
+    int32_t keyCode = event->GetKeyCode();
     EXPECT_EQ(keyCode, MMI::KeyEvent::KEYCODE_NUMPAD_5);
 
     GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_001 end";

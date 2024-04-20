@@ -1327,6 +1327,34 @@ public:
      */
     const std::string &GetAccessibilityText() const;
 
+    /**
+     * @brief Set text type
+     * @param textType The text type of node
+     * @sysCap Accessibility
+     */
+    void SetTextType(const std::string &textType);
+
+    /**
+     * @brief Get text type
+     * @return The text type of node
+     * @sysCap Accessibility
+     */
+    const std::string &GetTextType() const;
+    
+    /**
+     * @brief Set offset
+     * @param offset The offset of scroll
+     * @sysCap Accessibility
+     */
+    void SetOffset(const float offset);
+
+    /**
+     * @brief Get offset
+     * @return The offset of scroll
+     * @sysCap Accessibility
+     */
+    float GetOffset() const;
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1383,6 +1411,8 @@ protected:
     ActionType triggerAction_ = ACCESSIBILITY_ACTION_INVALID;
     std::vector<std::string> contentList_ {};
     std::string latestContent_ = "";
+    std::string textType_ = "";
+    float offset_ = 0.0f;
 };
 } // namespace Accessibility
 } // namespace OHOS

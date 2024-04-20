@@ -55,7 +55,7 @@ public:
      *              otherwise: Make the node information by elementId only.
      */
     void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode) override;
+        const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode, bool isFilter) override;
 
     /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.
@@ -111,6 +111,15 @@ public:
      */
     void ExecuteAction(const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback>& callback) override;
+
+    /**
+     * @brief To return the result of cursor position.
+     * @param elementId: The unique id of the component ID.
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the node info to ASAC and it defined by ASAC.
+     */
+    void GetCursorPosition(const int64_t elementId, int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
 
     /**

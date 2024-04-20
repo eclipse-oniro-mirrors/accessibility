@@ -28,9 +28,9 @@ public:
 
     MOCK_METHOD4(OnRemoteRequest, int(uint32_t code, MessageParcel& data,
         MessageParcel& reply, MessageOption& option));
-    MOCK_METHOD5(SearchElementInfoByAccessibilityId,
+    MOCK_METHOD6(SearchElementInfoByAccessibilityId,
         RetError(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t requestId,
-            const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode));
+            const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode, bool isFilter));
     MOCK_METHOD5(SearchElementInfosByText,
         RetError(const int32_t accessibilityWindowId, const int64_t elementId, const std::string& text,
             const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
@@ -43,6 +43,8 @@ public:
     MOCK_METHOD6(ExecuteAction, RetError(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t action, const std::map<std::string, std::string>& actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback));
+    MOCK_METHOD4(GetCursorPosition, RetError(const int32_t accessibilityWindowId, const int64_t elementId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD2(GetWindow, RetError(const int32_t windowId, AccessibilityWindowInfo &windowInfo));
     MOCK_METHOD1(GetWindows, RetError(std::vector<AccessibilityWindowInfo> &windows));
     MOCK_METHOD2(GetWindowsByDisplayId, RetError(const uint64_t displayId,

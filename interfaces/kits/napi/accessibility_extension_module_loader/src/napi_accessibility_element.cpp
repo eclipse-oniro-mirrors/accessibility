@@ -21,6 +21,7 @@
 #include "accessible_ability_client.h"
 #include "hilog_wrapper.h"
 #include "accessibility_utils.h"
+#include "nlohmann/json.hpp"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
@@ -32,7 +33,8 @@ namespace {
         "resourceName", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible",
         "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable",
         "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
-        "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText"};
+        "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
+        "textType", "offset"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId"};
 
@@ -81,6 +83,8 @@ namespace {
         {"valueNow", &NAccessibilityElement::GetElementInfoValueNow},
         {"windowId", &NAccessibilityElement::GetElementInfoWindowId},
         {"accessibilityText", &NAccessibilityElement::GetElementInfoAccessibilityText},
+        {"textType", &NAccessibilityElement::GetElementInfoTextType},
+        {"offset", &NAccessibilityElement::GetElementInfoOffset},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
         {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
@@ -102,6 +106,7 @@ void NAccessibilityElement::DefineJSAccessibilityElement(napi_env env)
         DECLARE_NAPI_FUNCTION("attributeValue", NAccessibilityElement::AttributeValue),
         DECLARE_NAPI_FUNCTION("actionNames", NAccessibilityElement::ActionNames),
         DECLARE_NAPI_FUNCTION("performAction", NAccessibilityElement::PerformAction),
+        DECLARE_NAPI_FUNCTION("getCursorPosition", NAccessibilityElement::GetCursorPosition),
         DECLARE_NAPI_FUNCTION("findElement", NAccessibilityElement::FindElement),
     };
 
@@ -211,6 +216,10 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
 
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "AttributeNames", NAPI_AUTO_LENGTH, &resource);
+    if (resource == nullptr) {
+        HILOG_ERROR("resource is nullptr.");
+        return nullptr;
+    }
     napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
         // Execute the complete function
         AttributeNamesComplete,
@@ -891,6 +900,24 @@ void NAccessibilityElement::GetElementInfoAccessibilityText(NAccessibilityElemen
         callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityText().c_str(), NAPI_AUTO_LENGTH, &value));
 }
 
+void NAccessibilityElement::GetElementInfoTextType(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetTextType().c_str(), NAPI_AUTO_LENGTH, &value));
+}
+
+void NAccessibilityElement::GetElementInfoOffset(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_double(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetOffset(), &value));
+}
+
 bool NAccessibilityElement::CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!callbackInfo) {
@@ -990,7 +1017,6 @@ void NAccessibilityElement::GetWindowInfoWindowId(NAccessibilityElementData *cal
 
 napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info info)
 {
-    HILOG_DEBUG();
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
     napi_value thisVar = nullptr;
@@ -1033,6 +1059,10 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
 
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "ActionNames", NAPI_AUTO_LENGTH, &resource);
+    if (resource == nullptr) {
+        HILOG_ERROR("resource is nullptr.");
+        return nullptr;
+    }
 
     napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
         // Execute the complete function
@@ -1317,6 +1347,37 @@ napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info i
     return FindElementAsync(env, argc, argv, callbackInfo, accessibilityElement);
 }
 
+napi_value NAccessibilityElement::GetCursorPositionAsync(napi_env env, size_t argc, napi_value* argv,
+    NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement)
+{
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
+    napi_value promise = nullptr;
+    if (argc > ARGS_SIZE_ONE - 1) {
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, argv[PARAM2], &valueType);
+        if (valueType == napi_function) {
+            napi_create_reference(env, argv[PARAM2], 1, &callbackInfo->callback_);
+            napi_get_undefined(env, &promise);
+        } else {
+            napi_create_promise(env, &callbackInfo->deferred_, &promise);
+        }
+    } else {
+        napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    }
+
+    callbackInfo->accessibilityElement_ = *accessibilityElement;
+
+    napi_value resource = nullptr;
+    napi_create_string_utf8(callbackInfo->env_, "GetCursorPosition", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(callbackInfo->env_, nullptr, resource, GetCursorPositionExecute,
+        GetCursorPositionComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    napi_queue_async_work_with_qos(callbackInfo->env_, callbackInfo->work_, napi_qos_user_initiated);
+    return promise;
+}
+
 napi_value NAccessibilityElement::FindElementAsync(napi_env env, size_t argc, napi_value* argv,
     NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement)
 {
@@ -1361,6 +1422,7 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
             if (std::strcmp(conditionType.c_str(), "content") != 0 &&
                 std::strcmp(conditionType.c_str(), "focusType") != 0 &&
                 std::strcmp(conditionType.c_str(), "focusDirection") != 0 &&
+                std::strcmp(conditionType.c_str(), "textType") != 0 &&
                 std::strcmp(conditionType.c_str(), "elementId") != 0) {
                 HILOG_ERROR("argv[PARAM0] is wrong[%{public}s", conditionType.c_str());
                 errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
@@ -1397,6 +1459,31 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
     }
 }
 
+void NAccessibilityElement::FindElementByText(NAccessibilityElementData *callbackInfo)
+{
+    nlohmann::json jsonStr = nullptr;
+    jsonStr["type"] = (callbackInfo->conditionId_ ==
+        FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT) ? "content" : "textType";
+    jsonStr["value"] = callbackInfo->condition_;
+    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetByContent(
+        *(callbackInfo->accessibilityElement_.elementInfo_),
+        jsonStr.dump().c_str(), callbackInfo->nodeInfos_);
+    return;
+}
+
+void NAccessibilityElement::GetCursorPositionExecute(napi_env env, void* data)
+{
+    HILOG_DEBUG("GetCursorPositionExecute");
+    NAccessibilityElementData *callbackInfo = static_cast<NAccessibilityElementData*>(data);
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
+
+    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetCursorPosition(
+        *callbackInfo->accessibilityElement_.elementInfo_, callbackInfo->cursorPosition_);
+}
+
 void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
 {
     NAccessibilityElementData *callbackInfo = static_cast<NAccessibilityElementData*>(data);
@@ -1411,9 +1498,8 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
             callbackInfo->ret_ = RET_ERR_INVALID_PARAM;
             return;
         case FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT:
-            callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetByContent(
-                *(callbackInfo->accessibilityElement_.elementInfo_), callbackInfo->condition_,
-                callbackInfo->nodeInfos_);
+        case FindElementCondition::FIND_ELEMENT_CONDITION_TEXT_TYPE:
+            FindElementByText(callbackInfo);
             break;
         case FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE:
             {
@@ -1445,6 +1531,43 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
             break;
     }
     HILOG_DEBUG("condition id[%{public}d], result[%{public}d]", callbackInfo->conditionId_, callbackInfo->ret_);
+}
+
+
+void NAccessibilityElement::GetCursorPositionComplete(napi_env env, napi_status status, void* data)
+{
+    HILOG_DEBUG("GetCursorPositionComplete execute back");
+    NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
+    napi_value result[ARGS_SIZE_TWO] = {0};
+    napi_value callback = 0;
+    napi_value undefined = 0;
+    napi_get_undefined(env, &undefined);
+    napi_create_int32(env, callbackInfo->cursorPosition_, &result[PARAM1]);
+    HILOG_INFO("Response [requestId:%{public}d]", callbackInfo->cursorPosition_);
+    result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
+    if (callbackInfo->callback_) {
+        // Callback mode
+        napi_get_reference_value(env, callbackInfo->callback_, &callback);
+        napi_value returnVal;
+        napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
+        HILOG_INFO("NAccessibilityElement::GetCursorPositionComplete   in CallbackMode");
+        napi_delete_reference(env, callbackInfo->callback_);
+    } else {
+        // Promise mode
+        if (callbackInfo->ret_ == RET_OK) {
+            napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
+        } else {
+            napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM0]);
+        }
+    }
+
+    napi_delete_async_work(env, callbackInfo->work_);
+    delete callbackInfo;
+    callbackInfo = nullptr;
 }
 
 void NAccessibilityElement::FindElementComplete(napi_env env, napi_status status, void* data)
@@ -1499,6 +1622,10 @@ void NAccessibilityElement::GetElement(NAccessibilityElementData *callbackInfo, 
             napi_create_array(env, &value);
             ConvertElementInfosToJS(env, value, callbackInfo->nodeInfos_);
             break;
+        case FindElementCondition::FIND_ELEMENT_CONDITION_TEXT_TYPE:
+            napi_create_array(env, &value);
+            ConvertElementInfosToJS(env, value, callbackInfo->nodeInfos_);
+            break;
         case FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE:
             {
                 napi_value constructor = nullptr;
@@ -1541,12 +1668,15 @@ napi_value NAccessibilityElement::ErrorOperation(NAccessibilityElementData *call
         HILOG_DEBUG("callback mode");
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
 
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "ErrorOperation", NAPI_AUTO_LENGTH, &resource);
+    if (resource == nullptr) {
+        HILOG_ERROR("resource is nullptr.");
+        return nullptr;
+    }
     napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
@@ -1582,13 +1712,48 @@ napi_value NAccessibilityElement::ErrorOperation(NAccessibilityElementData *call
     return promise;
 }
 
+napi_value NAccessibilityElement::GetCursorPosition(napi_env env, napi_callback_info info)
+{
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv[ARGS_SIZE_ONE] = {0};
+    napi_value thisVar;
+    void* data = nullptr;
+    napi_status status = napi_get_cb_info(env, info, &argc, argv, &thisVar, &data);
+    if (status != napi_ok) {
+        HILOG_ERROR("Failed to get cb info");
+        return nullptr;
+    }
+    HILOG_DEBUG("argc = %{public}d", (int)argc);
+
+    // Unwrap AccessibilityElement
+    AccessibilityElement* accessibilityElement = nullptr;
+    status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
+    if (!accessibilityElement || status != napi_ok) {
+        HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
+        return nullptr;
+    }
+    if (!accessibilityElement->isElementInfo_) {
+        HILOG_ERROR("Type of AccessibilityElement is not right");
+        return nullptr;
+    }
+
+    NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
+    callbackInfo->env_ = env;
+    return GetCursorPositionAsync(env, argc, argv, callbackInfo, accessibilityElement);
+}
+
 FindElementCondition NAccessibilityElement::ConvertStringToCondition(const std::string &str)
 {
     static const std::map<std::string, FindElementCondition> findElementConditionTable = {
         {"content", FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT},
         {"focusType", FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE},
         {"focusDirection", FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_DIRECTION},
-        {"elementId", FindElementCondition::FIND_ELEMENT_CONDITION_ELEMENT_ID}
+        {"elementId", FindElementCondition::FIND_ELEMENT_CONDITION_ELEMENT_ID},
+        {"textType", FindElementCondition::FIND_ELEMENT_CONDITION_TEXT_TYPE}
     };
 
     if (findElementConditionTable.find(str) == findElementConditionTable.end()) {

@@ -51,7 +51,8 @@ bool AccessibilityElementOperatorProxy::SendTransactCmd(AccessibilityInterfaceCo
 }
 
 void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int64_t elementId,
-    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode)
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+    bool isFilter)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -84,6 +85,11 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
 
     if (!data.WriteInt32(mode)) {
         HILOG_ERROR("connection write parcelable mode failed");
+        return;
+    }
+
+    if (!data.WriteBool(isFilter)) {
+        HILOG_ERROR("connection write parcelable isFilter failed");
         return;
     }
 
@@ -282,6 +288,45 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int64_t elementId, c
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::PERFORM_ACTION_ELEMENT, data, reply, option)) {
         HILOG_ERROR("execute action failed");
+        return;
+    }
+}
+
+
+void AccessibilityElementOperatorProxy::GetCursorPosition(const int64_t elementId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+
+    if (!data.WriteInt64(elementId)) {
+        HILOG_ERROR("connection write elementId failed");
+        return;
+    }
+
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write requestId failed");
+        return;
+    }
+
+    if (!callback) {
+        HILOG_ERROR("callback is nullptr");
+        return;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("connection write callback failed");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::CURSOR_POSITION, data, reply, option)) {
+        HILOG_ERROR("find cursor position info failed");
         return;
     }
 }

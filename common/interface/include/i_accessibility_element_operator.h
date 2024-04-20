@@ -45,7 +45,8 @@ public:
      * @sysCap Accessibility
      */
     virtual void SearchElementInfoByAccessibilityId(const int64_t elementId,
-        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode) = 0;
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+        bool isFliter = false) = 0;
 
     /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.
@@ -101,6 +102,15 @@ public:
      */
     virtual void ExecuteAction(const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+
+    /**
+     * @brief To return the result of cursor position.
+     * @param elementId: The unique id of the component ID.
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the node info to ASAC and it defined by ASAC.
+     */
+    virtual void GetCursorPosition(const int64_t elementId,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
     /**
