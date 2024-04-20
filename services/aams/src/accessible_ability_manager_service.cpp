@@ -49,6 +49,7 @@ namespace {
     const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const std::string DEVICE_PROVISIONED = "device_provisioned";
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
     constexpr uint32_t TIME_OUT_OPERATOR = 5000;
@@ -197,6 +198,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         isReady_ = true;
         SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "true");
         HILOG_DEBUG("AAMS is ready!");
+        RegisterShortKeyEvent();
         }), "OnAddSystemAbility");
 }
 
@@ -2134,6 +2136,59 @@ RetError AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWin
 {
     HILOG_DEBUG();
     return Singleton<AccessibilityWindowManager>::GetInstance().GetFocusedWindowId(focusedWindowId);
+}
+
+void AccessibleAbilityManagerService::OnDeviceProvisioned()
+{
+    HILOG_DEBUG();
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    provider.UnregisterObserver(DEVICE_PROVISIONED);
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+    if (accountData->GetScreenReaderState() == false) {
+        HILOG_DEBUG();
+        accountData->GetConfig()->SetShortKeyState(false);
+        std::vector<std::string> tmpVec { "" };
+        accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
+        UpdateConfigState();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
+    }
+}
+
+void AccessibleAbilityManagerService::RegisterShortKeyEvent()
+{
+    HILOG_DEBUG();
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask(std::bind([=]() -> void {
+        HILOG_DEBUG();
+        AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+        bool oobeState = false;
+        provider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+        if (oobeState == false) {
+            HILOG_DEBUG();
+            accountData->GetConfig()->SetShortKeyState(true);
+            std::vector<std::string> tmpVec { SCREEN_READER_BUNDLE_ABILITY_NAME };
+            accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
+            UpdateConfigState();
+            Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
+            AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state)
+            {
+                Singleton<AccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
+            };
+            provider.RegisterObserver(DEVICE_PROVISIONED, func);
+        }
+    }), "REGISTER_SHORTKEY_OBSERVER");
 }
 } // namespace Accessibility
 } // namespace OHOS

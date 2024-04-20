@@ -43,13 +43,18 @@ public:
     ErrCode RegisterObserver(const sptr<AccessibilitySettingObserver>& observer);
     ErrCode UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer);
 
+    ErrCode RegisterObserver(const std::string& key, AccessibilitySettingObserver::UpdateFunc& func);
+    ErrCode UnregisterObserver(const std::string& key);
+
 protected:
     ~AccessibilitySettingProvider() override;
 
 private:
     static AccessibilitySettingProvider* instance_;
     static std::mutex mutex_;
+    static std::mutex observerMutex_;
     static sptr<IRemoteObject> remoteObj_;
+    std::map<std::string, sptr<AccessibilitySettingObserver>> settingObserverMap_;
 
     static void Initialize(int32_t systemAbilityId);
     static std::shared_ptr<DataShare::DataShareHelper> CreateDataShareHelper();

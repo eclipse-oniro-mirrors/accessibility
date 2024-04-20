@@ -270,6 +270,19 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     return true;
 }
 
+void AccessibilityAccountData::SetScreenReaderState(const std::string &name, const std::string &state)
+{
+    HILOG_DEBUG("start.");
+    (void)name;
+    (void)state;
+}
+
+bool AccessibilityAccountData::GetScreenReaderState()
+{
+    HILOG_DEBUG("start.");
+    return true;
+}
+
 void AccessibilityAccountData::Init()
 {
     HILOG_DEBUG("start.");

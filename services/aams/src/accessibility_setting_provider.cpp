@@ -31,6 +31,7 @@ namespace Accessibility {
 AccessibilitySettingProvider* AccessibilitySettingProvider::instance_;
 std::mutex AccessibilitySettingProvider::mutex_;
 sptr<IRemoteObject> AccessibilitySettingProvider::remoteObj_;
+std::mutex AccessibilitySettingProvider::observerMutex_;
 namespace {
 const std::string SETTING_COLUMN_KEYWORD = "KEYWORD";
 const std::string SETTING_COLUMN_VALUE = "VALUE";
@@ -165,6 +166,21 @@ ErrCode AccessibilitySettingProvider::RegisterObserver(const sptr<AccessibilityS
     return ERR_OK;
 }
 
+ErrCode AccessibilitySettingProvider::RegisterObserver(const std::string& key,
+    AccessibilitySettingObserver::UpdateFunc& func)
+{
+    sptr<AccessibilitySettingObserver> observer = CreateObserver(key, func);
+    if (observer == nullptr) {
+        return ERR_NO_MEMORY;
+    }
+    if (RegisterObserver(observer) != ERR_OK) {
+        return ERR_INVALID_OPERATION;
+    }
+    std::lock_guard<std::mutex> lock(observerMutex_);
+    settingObserverMap_.insert(std::make_pair(key, observer));
+    return RET_OK;
+}
+
 ErrCode AccessibilitySettingProvider::UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer)
 {
     if (!observer) {
@@ -183,6 +199,23 @@ ErrCode AccessibilitySettingProvider::UnregisterObserver(const sptr<Accessibilit
     IPCSkeleton::SetCallingIdentity(callingIdentity);
     HILOG_DEBUG("succeed to unregister observer of uri=%{public}s", uri.ToString().c_str());
     return ERR_OK;
+}
+
+ErrCode AccessibilitySettingProvider::UnregisterObserver(const std::string& key)
+{
+    auto iter = settingObserverMap_.find(key);
+    if (iter != settingObserverMap_.end() && iter->second != nullptr) {
+        if (UnregisterObserver(iter->second) == ERR_OK) {
+            std::lock_guard<std::mutex> lock(observerMutex_);
+            settingObserverMap_.erase(iter);
+            return RET_OK;
+        } else {
+            HILOG_WARN("succeed to unregister observer of key %{public}s", key.c_str());
+            return ERR_INVALID_OPERATION;
+        }
+    }
+    HILOG_WARN("failed to find the key %{public}s", key.c_str());
+    return ERR_NAME_NOT_FOUND;
 }
 
 void AccessibilitySettingProvider::Initialize(int32_t systemAbilityId)
