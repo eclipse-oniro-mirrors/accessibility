@@ -1043,6 +1043,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "data_share:datashare_common",
     "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
+    "graphic_2d:librender_service_client",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",

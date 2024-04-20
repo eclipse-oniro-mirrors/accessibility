@@ -38,6 +38,8 @@ AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
         &AccessibleAbilityChannelStub::HandleFocusMoveSearch;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::PERFORM_ACTION)] =
         &AccessibleAbilityChannelStub::HandleExecuteAction;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CURTAIN_SCREEN)] =
+        &AccessibleAbilityChannelStub::HandleEnableScreenCurtain;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOW)] =
         &AccessibleAbilityChannelStub::HandleGetWindow;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOWS)] =
@@ -230,6 +232,22 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
 
     RetError result = ExecuteAction(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
     HILOG_DEBUG("ExecuteAction ret = %{public}d", result);
+    reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleEnableScreenCurtain(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    if (!Permission::IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
+
+    bool isEnable = data.ReadBool();
+    RetError result = EnableScreenCurtain(isEnable);
     reply.WriteInt32(result);
     return NO_ERROR;
 }

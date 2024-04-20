@@ -134,6 +134,13 @@ public:
     virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
 
     /**
+     * @brief Package and transfer isenable to the data table
+     * @param isEnable The information of status.
+     * @return Return RET_OK if obtains screen curtain status successfully.
+     */
+    virtual RetError EnableScreenCurtain(bool isEnable) override;
+
+    /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
      * @param windows The information of windows.

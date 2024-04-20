@@ -242,6 +242,13 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
     return RET_OK;
 }
 
+RetError AccessibleAbilityClientImpl::EnableScreenCurtain(bool isEnable)
+{
+    HILOG_DEBUG();
+    (void)isEnable;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityClientImpl::GetCursorPosition(const AccessibilityElementInfo &elementInfo,
     int32_t &cursorPosition)
 {

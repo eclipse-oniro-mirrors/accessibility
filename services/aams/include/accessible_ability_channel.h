@@ -44,6 +44,8 @@ public:
     RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t direction,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
+    RetError EnableScreenCurtain(bool isEnable) override;
+
     RetError ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;

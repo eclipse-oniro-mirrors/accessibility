@@ -267,6 +267,12 @@ public:
         const std::map<std::string, std::string> &actionArguments) override;
 
     /**
+     * @brief Curtain screen ability.
+     * @param isEnable Flag bits for opening or closing.
+     */
+    virtual RetError EnableScreenCurtain(bool isEnable) override;
+
+    /**
      * @brief To return the result of cursor position.
      * @param elementInfo The source info to cursor position.
      * @param position: The position of the cursor to get.

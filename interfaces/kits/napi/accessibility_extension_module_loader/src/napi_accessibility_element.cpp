@@ -105,6 +105,7 @@ void NAccessibilityElement::DefineJSAccessibilityElement(napi_env env)
         DECLARE_NAPI_FUNCTION("attributeNames", NAccessibilityElement::AttributeNames),
         DECLARE_NAPI_FUNCTION("attributeValue", NAccessibilityElement::AttributeValue),
         DECLARE_NAPI_FUNCTION("actionNames", NAccessibilityElement::ActionNames),
+        DECLARE_NAPI_FUNCTION("enableScreenCurtain", NAccessibilityElement::EnableScreenCurtain),
         DECLARE_NAPI_FUNCTION("performAction", NAccessibilityElement::PerformAction),
         DECLARE_NAPI_FUNCTION("getCursorPosition", NAccessibilityElement::GetCursorPosition),
         DECLARE_NAPI_FUNCTION("findElement", NAccessibilityElement::FindElement),
@@ -1123,6 +1124,32 @@ void NAccessibilityElement::ActionNamesComplete(napi_env env, napi_status status
     napi_delete_async_work(env, callbackInfo->work_);
     delete callbackInfo;
     callbackInfo = nullptr;
+}
+
+napi_value NAccessibilityElement::EnableScreenCurtain(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO("enter NAccessibilityElement::EnableScreenCurtain");
+
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv[ARGS_SIZE_ONE] = { 0 };
+    napi_value thisVar = nullptr;
+    void* data = nullptr;
+    napi_status status = napi_get_cb_info(env, info, &argc, argv, &thisVar, &data);
+    if (status != napi_ok) {
+        HILOG_ERROR("Failed to get cb info");
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_FAILED);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    //get value from ui
+    bool isEnable = true;
+    napi_get_value_bool(env, argv[0], &isEnable);
+    HILOG_INFO("ui argv[0] isEnable = %{public}d", isEnable);
+
+    //pass valule to server
+    AccessibleAbilityClient::GetInstance()->EnableScreenCurtain(isEnable);
+    return thisVar;
 }
 
 napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info info)

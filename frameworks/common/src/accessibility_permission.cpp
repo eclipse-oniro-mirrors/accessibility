@@ -17,6 +17,7 @@
 #include <accesstoken_kit.h>
 #include <ipc_skeleton.h>
 #include "hilog_wrapper.h"
+#include "tokenid_kit.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -50,5 +51,22 @@ bool Permission::IsStartByHdcd()
 
     return false;
 }
+
+bool Permission::IsSystemApp()
+{
+    HILOG_DEBUG();
+
+    Security::AccessToken::AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
+    Security::AccessToken::ATokenTypeEnum tokenType =
+        Security::AccessToken::AccessTokenKit::GetTokenTypeFlag(callerToken);
+    if (tokenType !=  Security::AccessToken::TOKEN_HAP) {
+        HILOG_INFO("Caller is not a application.");
+        return true;
+    }
+    uint64_t accessTokenId = IPCSkeleton::GetCallingFullTokenID();
+    bool isSystemApplication = Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(accessTokenId);
+    return isSystemApplication;
+}
+
 } // namespace Accessibility
 } // namespace OHOS

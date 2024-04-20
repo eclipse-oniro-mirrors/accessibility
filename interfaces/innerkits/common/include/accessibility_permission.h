@@ -25,6 +25,7 @@ class Permission {
 public:
     static bool CheckCallingPermission(const std::string& permission);
     static bool IsStartByHdcd();
+    static bool IsSystemApp();
 };
 } // namespace Accessibility
 } // namespace OHOS

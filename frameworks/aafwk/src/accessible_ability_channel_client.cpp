@@ -202,6 +202,16 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
     return elementOperator->executeActionResult_ ? RET_OK : RET_ERR_PERFORM_ACTION_FAILED_BY_ACE;
 }
 
+RetError AccessibleAbilityChannelClient::EnableScreenCurtain(bool isEnable)
+{
+    HILOG_INFO("[channelId:%{public}d]", channelId_);
+    if (!proxy_) {
+        HILOG_ERROR("EnableScreenCurtain Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return RET_ERR_SAMGR;
+    }
+    return  proxy_->EnableScreenCurtain(isEnable) ? RET_OK : RET_ERR_PERFORM_ACTION_FAILED_BY_ACE;
+}
+
 RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId,
     int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter)
 {

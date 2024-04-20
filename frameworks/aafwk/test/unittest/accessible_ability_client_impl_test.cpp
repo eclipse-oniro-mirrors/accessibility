@@ -561,6 +561,19 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetParentElementInfo_002, TestSize.Lev
 }
 
 /**
+ * @tc.number: EnableScreenCurtain_001
+ * @tc.name: EnableScreenCurtain
+ * @tc.desc: Test function EnableScreenCurtain
+*/
+HWTEST_F(AccessibleAbilityClientImplTest, EnableScreenCurtain_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "EnableScreenCurtain_001 start";
+    Connect();
+    EXPECT_EQ(instance_->EnableScreenCurtain(true), RET_ERR_TIME_OUT);
+    GTEST_LOG_(INFO) << "EnableScreenCurtain_001 end";
+}
+
+/**
  * @tc.number: GetByElementId_001
  * @tc.name: GetByElementId
  * @tc.desc: Test function GetByElementId

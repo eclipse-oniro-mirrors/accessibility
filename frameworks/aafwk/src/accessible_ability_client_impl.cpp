@@ -828,6 +828,16 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
         const_cast<std::map<std::string, std::string> &>(actionArguments));
 }
 
+RetError AccessibleAbilityClientImpl::EnableScreenCurtain(bool isEnable)
+{
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    return channelClient_->EnableScreenCurtain(isEnable);
+}
+
 RetError AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG("targetBundleNames size[%{public}zu]", targetBundleNames.size());

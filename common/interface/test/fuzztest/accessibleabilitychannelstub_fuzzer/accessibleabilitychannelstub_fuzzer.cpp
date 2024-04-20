@@ -60,6 +60,10 @@ public:
     {
         return RET_OK;
     }
+    RetError EnableScreenCurtain(bool isEnable) override
+    {
+        return RET_OK;
+    }
     RetError GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override
     {

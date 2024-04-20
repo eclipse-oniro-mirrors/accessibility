@@ -299,6 +299,18 @@ declare interface AccessibilityElement {
    */
   performAction(actionName: string, callback: AsyncCallback<void>): void;
 
+  /**
+   * Set the screen curtain enable or disable.
+   *
+   * @param { boolean } isEnable Indicates whether the screen curtain is enabled.
+   * @throws { BusinessError } 401 - Input parameter error.
+   * @throws { BusinessError } 9300003 -  Do not have accessibility right for this operation.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 12
+   */
+  enableScreenCurtain(isEnable: boolean): void;
+
    /**
    * Get the position of cursor in TextInput.
    *

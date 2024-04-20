@@ -122,6 +122,13 @@ public:
     virtual RetError GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) = 0;
 
     /**
+     * @brief Send switch information.
+     * @param isEnable The switch info.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError EnableScreenCurtain(bool isEnable) = 0;
+
+    /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param windows The information of windows.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
