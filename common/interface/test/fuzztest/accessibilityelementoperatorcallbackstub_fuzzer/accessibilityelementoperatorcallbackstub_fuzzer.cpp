@@ -38,6 +38,7 @@ public:
         const int32_t requestId) override {}
     void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) override {}
     void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override {}
+    void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override {}
 };
 
 template<class T>

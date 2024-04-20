@@ -48,7 +48,7 @@ declare namespace accessibility {
    */
   type Action = 'accessibilityFocus' | 'clearAccessibilityFocus' | 'focus' | 'clearFocus' | 'clearSelection' |
     'click' | 'longClick' | 'cut' | 'copy' | 'paste' | 'select' | 'setText' | 'delete' |
-    'scrollForward' | 'scrollBackward' | 'setSelection' | 'common';
+    'scrollForward' | 'scrollBackward' | 'setSelection' | 'setCursorPosition' | 'common';
 
   /**
    * The type of the accessibility event.

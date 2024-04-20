@@ -222,6 +222,12 @@ public:
         const std::map<std::string, std::string> &actionArguments) = 0;
 
     /**
+    * @brief To return the result of cursor position.
+    * @param elementInfo The source info to cursor position.
+    * @param position: The position of the cursor to get.
+    */
+    virtual RetError GetCursorPosition(const AccessibilityElementInfo &elementInfo, int32_t &position) = 0;
+    /**
      * @brief Register ability listener.
      * @param listener The listener to add.
      * @return Return RET_OK if registers listener successfully, otherwise refer to the RetError for the failure.

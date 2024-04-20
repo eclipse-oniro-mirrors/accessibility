@@ -187,6 +187,13 @@ public:
      */
     virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
 
+    /**
+     * @brief Set the result of cursor position to AA.
+     * @param cursorPosition The cursorPosition to be returned.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
+
     virtual uint32_t GetAccessibilityState() override;
     virtual void SetFindAccessibilityNodeInfoResult(const AccessibilityElementInfo elementInfo,
         const int32_t requestId, const int32_t requestCode) override;

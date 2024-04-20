@@ -106,6 +106,7 @@ void NAccessibilityElement::DefineJSAccessibilityElement(napi_env env)
         DECLARE_NAPI_FUNCTION("attributeValue", NAccessibilityElement::AttributeValue),
         DECLARE_NAPI_FUNCTION("actionNames", NAccessibilityElement::ActionNames),
         DECLARE_NAPI_FUNCTION("performAction", NAccessibilityElement::PerformAction),
+        DECLARE_NAPI_FUNCTION("getCursorPosition", NAccessibilityElement::GetCursorPosition),
         DECLARE_NAPI_FUNCTION("findElement", NAccessibilityElement::FindElement),
     };
 
@@ -1346,6 +1347,37 @@ napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info i
     return FindElementAsync(env, argc, argv, callbackInfo, accessibilityElement);
 }
 
+napi_value NAccessibilityElement::GetCursorPositionAsync(napi_env env, size_t argc, napi_value* argv,
+    NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement)
+{
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
+    napi_value promise = nullptr;
+    if (argc > ARGS_SIZE_ONE - 1) {
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, argv[PARAM2], &valueType);
+        if (valueType == napi_function) {
+            napi_create_reference(env, argv[PARAM2], 1, &callbackInfo->callback_);
+            napi_get_undefined(env, &promise);
+        } else {
+            napi_create_promise(env, &callbackInfo->deferred_, &promise);
+        }
+    } else {
+        napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    }
+
+    callbackInfo->accessibilityElement_ = *accessibilityElement;
+
+    napi_value resource = nullptr;
+    napi_create_string_utf8(callbackInfo->env_, "GetCursorPosition", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(callbackInfo->env_, nullptr, resource, GetCursorPositionExecute,
+        GetCursorPositionComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    napi_queue_async_work_with_qos(callbackInfo->env_, callbackInfo->work_, napi_qos_user_initiated);
+    return promise;
+}
+
 napi_value NAccessibilityElement::FindElementAsync(napi_env env, size_t argc, napi_value* argv,
     NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement)
 {
@@ -1439,6 +1471,19 @@ void NAccessibilityElement::FindElementByText(NAccessibilityElementData *callbac
     return;
 }
 
+void NAccessibilityElement::GetCursorPositionExecute(napi_env env, void* data)
+{
+    HILOG_DEBUG("GetCursorPositionExecute");
+    NAccessibilityElementData *callbackInfo = static_cast<NAccessibilityElementData*>(data);
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
+
+    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetCursorPosition(
+        *callbackInfo->accessibilityElement_.elementInfo_, callbackInfo->cursorPosition_);
+}
+
 void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
 {
     NAccessibilityElementData *callbackInfo = static_cast<NAccessibilityElementData*>(data);
@@ -1486,6 +1531,43 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
             break;
     }
     HILOG_DEBUG("condition id[%{public}d], result[%{public}d]", callbackInfo->conditionId_, callbackInfo->ret_);
+}
+
+
+void NAccessibilityElement::GetCursorPositionComplete(napi_env env, napi_status status, void* data)
+{
+    HILOG_DEBUG("GetCursorPositionComplete execute back");
+    NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
+    napi_value result[ARGS_SIZE_TWO] = {0};
+    napi_value callback = 0;
+    napi_value undefined = 0;
+    napi_get_undefined(env, &undefined);
+    napi_create_int32(env, callbackInfo->cursorPosition_, &result[PARAM1]);
+    HILOG_INFO("Response [requestId:%{public}d]", callbackInfo->cursorPosition_);
+    result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
+    if (callbackInfo->callback_) {
+        // Callback mode
+        napi_get_reference_value(env, callbackInfo->callback_, &callback);
+        napi_value returnVal;
+        napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
+        HILOG_INFO("NAccessibilityElement::GetCursorPositionComplete   in CallbackMode");
+        napi_delete_reference(env, callbackInfo->callback_);
+    } else {
+        // Promise mode
+        if (callbackInfo->ret_ == RET_OK) {
+            napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
+        } else {
+            napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM0]);
+        }
+    }
+
+    napi_delete_async_work(env, callbackInfo->work_);
+    delete callbackInfo;
+    callbackInfo = nullptr;
 }
 
 void NAccessibilityElement::FindElementComplete(napi_env env, napi_status status, void* data)
@@ -1628,6 +1710,40 @@ napi_value NAccessibilityElement::ErrorOperation(NAccessibilityElementData *call
         &callbackInfo->work_);
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
+}
+
+napi_value NAccessibilityElement::GetCursorPosition(napi_env env, napi_callback_info info)
+{
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv[ARGS_SIZE_ONE] = {0};
+    napi_value thisVar;
+    void* data = nullptr;
+    napi_status status = napi_get_cb_info(env, info, &argc, argv, &thisVar, &data);
+    if (status != napi_ok) {
+        HILOG_ERROR("Failed to get cb info");
+        return nullptr;
+    }
+    HILOG_DEBUG("argc = %{public}d", (int)argc);
+
+    // Unwrap AccessibilityElement
+    AccessibilityElement* accessibilityElement = nullptr;
+    status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
+    if (!accessibilityElement || status != napi_ok) {
+        HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
+        return nullptr;
+    }
+    if (!accessibilityElement->isElementInfo_) {
+        HILOG_ERROR("Type of AccessibilityElement is not right");
+        return nullptr;
+    }
+
+    NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
+    callbackInfo->env_ = env;
+    return GetCursorPositionAsync(env, argc, argv, callbackInfo, accessibilityElement);
 }
 
 FindElementCondition NAccessibilityElement::ConvertStringToCondition(const std::string &str)

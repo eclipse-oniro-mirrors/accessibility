@@ -242,6 +242,15 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
     return RET_OK;
 }
 
+RetError AccessibleAbilityClientImpl::GetCursorPosition(const AccessibilityElementInfo &elementInfo,
+    int32_t &cursorPosition)
+{
+    HILOG_DEBUG();
+    (void)elementInfo;
+    (void)cursorPosition;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG();

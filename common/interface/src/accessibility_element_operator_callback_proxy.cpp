@@ -260,5 +260,36 @@ void AccessibilityElementOperatorCallbackProxy::SetExecuteActionResult(const boo
         return;
     }
 }
+
+void AccessibilityElementOperatorCallbackProxy::SetCursorPositionResult(const int32_t cursorPosition,
+    const int32_t requestId)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+    HILOG_INFO(" [cursorPosition:%{public}d]", cursorPosition);
+    if (!data.WriteInt32(cursorPosition)) {
+        HILOG_ERROR("connection write failed");
+        return;
+    }
+
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_CURSOR_RESULT,
+        data, reply, option)) {
+        HILOG_ERROR("set cursor position result failed");
+        return;
+    }
+}
+
 } // namespace Accessibility
 } // namespace OHOS

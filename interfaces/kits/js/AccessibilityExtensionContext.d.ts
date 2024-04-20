@@ -299,6 +299,24 @@ declare interface AccessibilityElement {
    */
   performAction(actionName: string, callback: AsyncCallback<void>): void;
 
+   /**
+   * Get the position of cursor in TextInput.
+   *
+   * @param { AsyncCallback<number> } callback Indicates the listener.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 12
+   */
+   getCursorPosition(callback: AsyncCallback<number>): void;
+
+   /**
+    * Get the position of cursor in TextInput.
+    *
+    * @returns { Promise<number> }
+    * @syscap SystemCapability.BarrierFree.Accessibility.Core
+    * @since 12
+    */
+   getCursorPosition(): Promise<number>;
+
   /**
    * Find elements that match the condition.
    *

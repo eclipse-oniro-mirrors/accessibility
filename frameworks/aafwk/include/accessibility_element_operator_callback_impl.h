@@ -78,12 +78,19 @@ public:
      */
     virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
 
+   /**
+     * @brief Set the result of cursor position to AA.
+     * @param cursorPosition The cursorPosition to be returned.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
+
 private:
     std::promise<void> promise_;
     bool executeActionResult_ = false;
     AccessibilityElementInfo accessibilityInfoResult_ = {};
     std::vector<AccessibilityElementInfo> elementInfosResult_;
-
+    int32_t CursorPosition_ = 0 ;
     friend class AccessibleAbilityChannelClient;
 };
 } // namespace Accessibility

@@ -267,6 +267,14 @@ public:
         const std::map<std::string, std::string> &actionArguments) override;
 
     /**
+     * @brief To return the result of cursor position.
+     * @param elementInfo The source info to cursor position.
+     * @param position: The position of the cursor to get.
+     * @return Return RET_OK if performs action succeed, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetCursorPosition(const AccessibilityElementInfo &elementInfo, int32_t &position) override;
+
+    /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
      * @return Return RET_OK if sets target bundle names successfully, otherwise refer to the RetError for the failure.

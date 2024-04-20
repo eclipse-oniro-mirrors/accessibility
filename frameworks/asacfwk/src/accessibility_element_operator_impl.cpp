@@ -107,6 +107,19 @@ void AccessibilityElementOperatorImpl::ExecuteAction(const int64_t elementId,
     }
 }
 
+void AccessibilityElementOperatorImpl::GetCursorPosition(const int64_t elementId,
+    int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG();
+    int32_t mRequestId = AddRequest(requestId, callback);
+    HILOG_DEBUG("add requestId[%{public}d]", mRequestId);
+    if (operator_) {
+        operator_->GetCursorPosition(elementId, mRequestId, operatorCallback_);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
+}
+
 void AccessibilityElementOperatorImpl::ClearFocus()
 {
     HILOG_DEBUG();
@@ -244,6 +257,22 @@ void AccessibilityElementOperatorImpl::SetExecuteActionResult(
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {
             iter->second->SetExecuteActionResult(succeeded, requestId);
+        }
+        requests_.erase(iter);
+    } else {
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
+    }
+}
+
+
+void AccessibilityElementOperatorImpl::SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId)
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto iter = requests_.find(requestId);
+    if (iter != requests_.end()) {
+        if (iter->second != nullptr) {
+            iter->second->SetCursorPositionResult(cursorPosition, requestId);
         }
         requests_.erase(iter);
     } else {

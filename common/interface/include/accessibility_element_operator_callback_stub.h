@@ -105,6 +105,14 @@ private:
      */
     ErrCode HandleSetExecuteActionResult(MessageParcel &data, MessageParcel &reply);
 
+    /**
+     * @brief Handle the IPC request for the function:SetCursorPositionResult.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleSetCursorPositionResult(MessageParcel &data, MessageParcel &reply);
+
     using AccessibilityElementOperatorCallbackFunc =
         ErrCode (AccessibilityElementOperatorCallbackStub::*)(MessageParcel &data, MessageParcel &reply);
     std::map<uint32_t, AccessibilityElementOperatorCallbackFunc> memberFuncMap_;

@@ -661,6 +661,21 @@ HWTEST_F(AccessibleAbilityClientImplTest, ExecuteAction_004, TestSize.Level1)
 }
 
 /**
+ * @tc.number: GetCursorPosition_001
+ * @tc.name: GetCursorPosition
+ * @tc.desc: Test function GetCursorPosition
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetCursorPosition_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetCursorPosition_001 start";
+    Connect();
+    AccessibilityElementInfo elementInfo {};
+    int32_t position;
+    EXPECT_EQ(instance_->GetCursorPosition(elementInfo, position), RET_ERR_TIME_OUT);
+    GTEST_LOG_(INFO) << "GetCursorPosition_001 end";
+}
+
+/**
  * @tc.number: ResetAAClient_001
  * @tc.name: ResetAAClient
  * @tc.desc: Test function ResetAAClient
