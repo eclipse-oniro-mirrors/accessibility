@@ -51,9 +51,6 @@ public:
 private:
     std::string GetConfigKey(int32_t state);
 
-    ErrCode RegisterObserver(const std::string& key, AccessibilitySettingObserver::UpdateFunc& func);
-    ErrCode UnregisterObserver(const std::string& key);
-
 protected:
     ~AccessibilitySettingProvider();
 

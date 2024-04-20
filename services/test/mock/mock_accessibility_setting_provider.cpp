@@ -119,7 +119,8 @@ RetError AccessibilitySettingProvider::UnregisterObserver(const sptr<Accessibili
     return RET_OK;
 }
 
-RetError AccessibilitySettingProvider::RegisterObserver(const std::string& key, AccessibilitySettingObserver::UpdateFunc& func)
+RetError AccessibilitySettingProvider::RegisterObserver(const std::string& key,
+    AccessibilitySettingObserver::UpdateFunc& func)
 {
     (void)key;
     (void)func;
