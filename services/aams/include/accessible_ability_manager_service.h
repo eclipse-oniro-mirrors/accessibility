@@ -180,6 +180,9 @@ public:
     void PackageAdd(const std::string &bundleName);
 
     void UpdateAccessibilityManagerService();
+    void InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event);
+    bool CheckWindowIdEventExist(int32_t windowId);
+    bool CheckWindowRegister(int32_t windowId);
 
     // used for arkui windowId 1 map to WMS windowId
     void FindInnerWindowId(const AccessibilityEventInfo &event, int32_t& windowId);
@@ -393,6 +396,7 @@ private:
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;
     std::shared_ptr<AccessibilitySettings> accessibilitySettings_ = nullptr;
     std::vector<std::string> removedAutoStartAbilities_ {};
+    std::map<int32_t, AccessibilityEventInfo> windowFocusEventMap_ {};
 };
 } // namespace Accessibility
 } // namespace OHOS

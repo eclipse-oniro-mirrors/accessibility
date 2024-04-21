@@ -80,6 +80,7 @@ public:
         ~SceneBoardElementIdMap() = default;
         void InsertPair(const int32_t windowId, const int64_t elementId);
         void RemovePair(const int32_t windowId);
+        bool CheckWindowIdPair(const int32_t windowId);
         std::map<int32_t, int64_t> GetAllPairs();
         void Clear();
     private:
