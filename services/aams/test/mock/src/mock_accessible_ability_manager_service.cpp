@@ -560,5 +560,17 @@ void AccessibleAbilityManagerService::SetTouchEventInjector(const sptr<TouchEven
     HILOG_DEBUG();
     touchEventInjector_ = touchEventInjector;
 }
+
+void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
+{
+    (void)windowId;
+    (void)event;
+}
+
+bool AccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)
+{
+    (void)windowId;
+    return true;
+}
 } // namespace Accessibility
 } // namespace OHOS

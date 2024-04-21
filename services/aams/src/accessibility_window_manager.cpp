@@ -331,7 +331,16 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
         a11yWindows_[activeWindowId_].SetActive(true);
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
         AccessibilityEventInfo evtInf(activeWindowId_, WINDOW_UPDATE_ACTIVE);
-        aams.SendEvent(evtInf);
+        int32_t winId = windowId;
+        if (sceneBoardElementIdMap_.CheckWindowIdPair(windowId)) {
+            winId = SCENE_BOARD_WINDOW_ID;
+        }
+        if (aams.CheckWindowRegister(winId)) {
+            aams.SendEvent(evtInf);
+        } else {
+            HILOG_DEBUG("wait for window register to process event");
+            aams.InsertWindowIdEventPair(winId, evtInf);
+        }
     }
     HILOG_DEBUG("activeWindowId is %{public}d", activeWindowId_);
 }
@@ -738,6 +747,12 @@ void AccessibilityWindowManager::SceneBoardElementIdMap::RemovePair(const int32_
 {
     std::lock_guard<std::mutex> lock(mapMutex_);
     windowElementMap_.erase(windowId);
+}
+
+bool AccessibilityWindowManager::SceneBoardElementIdMap::CheckWindowIdPair(const int32_t windowId)
+{
+    std::lock_guard<std::mutex> lock(mapMutex_);
+    return windowElementMap_.count(windowId);
 }
 
 void AccessibilityWindowManager::SceneBoardElementIdMap::Clear()

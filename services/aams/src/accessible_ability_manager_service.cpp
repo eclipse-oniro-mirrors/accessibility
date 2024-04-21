@@ -591,6 +591,11 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
         }
         accountData->AddAccessibilityWindowConnection(windowId, connection);
 
+        if (CheckWindowIdEventExist(windowId)) {
+            SendEvent(windowFocusEventMap_[windowId]);
+            windowFocusEventMap_.erase(windowId);
+        }
+
         if (operation && operation->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
                 new(std::nothrow) InteractionOperationDeathRecipient(windowId);
@@ -2199,6 +2204,27 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
             provider.RegisterObserver(DEVICE_PROVISIONED, func);
         }
     }), "REGISTER_SHORTKEY_OBSERVER");
+}
+
+void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
+{
+    HILOG_DEBUG("insert event, windowId: %{public}d", windowId);
+    windowFocusEventMap_[windowId] = event;
+}
+
+bool AccessibleAbilityManagerService::CheckWindowIdEventExist(int32_t windowId)
+{
+    return windowFocusEventMap_.count(windowId);
+}
+
+bool AccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return false;
+    }
+    return accountData->GetAccessibilityWindowConnection(windowId) != nullptr;
 }
 } // namespace Accessibility
 } // namespace OHOS
