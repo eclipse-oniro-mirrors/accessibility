@@ -245,6 +245,11 @@ int32_t SystemAbilityManagerProxy::GetExtensionRunningSaList(const std::string& 
     return -1;
 }
 
+int32_t SystemAbilityManagerProxy::GetRunningSaExtensionInfoList(const std::string& extension,
+    std::vector<SaExtensionInfo>& infoList)
+{
+    return -1;
+};
 sptr<IRemoteObject> SystemAbilityManagerProxy::Recompute(int32_t systemAbilityId, int32_t code)
 {
     return nullptr;
