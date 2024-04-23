@@ -44,6 +44,8 @@ public:
     RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t direction,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
+    RetError EnableScreenCurtain(bool isEnable) override;
+
     RetError ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
@@ -59,6 +61,9 @@ public:
     RetError SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
 
     RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
+
+    RetError GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
 private:
     static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);

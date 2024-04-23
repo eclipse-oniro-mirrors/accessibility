@@ -14,22 +14,26 @@
  */
 
 #include "accessibility_setting_provider.h"
+#include "accessibility_datashare_helper.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
 AccessibilitySettingProvider* AccessibilitySettingProvider::instance_;
 std::mutex AccessibilitySettingProvider::mutex_;
-sptr<IRemoteObject> AccessibilitySettingProvider::remoteObj_;
 namespace {
-const std::string SETTING_URI_PROXY = "datashare:///com.ohos.settingsdata/entry/settingsdata/SETTINGSDATA?Proxy=true";
+    constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
 } // namespace
+
+AccessibilitySettingProvider::AccessibilitySettingProvider()
+    : AccessibilityDatashareHelper(DATASHARE_TYPE::GLOBAL, DEFAULT_ACCOUNT_ID)
+{
+}
 
 AccessibilitySettingProvider::~AccessibilitySettingProvider()
 {
     HILOG_DEBUG("start.");
     instance_ = nullptr;
-    remoteObj_ = nullptr;
 }
 
 AccessibilitySettingProvider& AccessibilitySettingProvider::GetInstance(int32_t systemAbilityId)
@@ -46,70 +50,63 @@ void AccessibilitySettingProvider::DeleteInstance()
     HILOG_DEBUG("start.");
 }
 
-ErrCode AccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value)
+RetError AccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value)
 {
     HILOG_DEBUG("start.");
     (void)key;
     (void)value;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::GetLongValue(const std::string& key, int64_t& value)
+RetError AccessibilitySettingProvider::GetLongValue(const std::string& key, int64_t& value)
 {
     HILOG_DEBUG("start.");
     (void)key;
     (void)value;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool& value)
+RetError AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool& value)
 {
     HILOG_DEBUG("start.");
     (void)key;
     (void)value;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value)
+RetError AccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value)
 {
     HILOG_DEBUG("start.");
     (void)key;
     (void)value;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::PutIntValue(const std::string& key, int32_t value, bool needNotify)
-{
-    HILOG_DEBUG("start.");
-    (void)key;
-    (void)value;
-    (void)needNotify;
-    return ERR_OK;
-}
-
-ErrCode AccessibilitySettingProvider::PutLongValue(const std::string& key, int64_t value, bool needNotify)
+RetError AccessibilitySettingProvider::PutIntValue(const std::string& key, int32_t value, bool needNotify)
 {
     HILOG_DEBUG("start.");
     (void)key;
     (void)value;
     (void)needNotify;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::PutBoolValue(const std::string& key, bool value, bool needNotify)
+RetError AccessibilitySettingProvider::PutLongValue(const std::string& key, int64_t value, bool needNotify)
 {
     HILOG_DEBUG("start.");
     (void)key;
     (void)value;
     (void)needNotify;
-    return ERR_OK;
+    return RET_OK;
 }
 
-bool AccessibilitySettingProvider::IsValidKey(const std::string& key)
+RetError AccessibilitySettingProvider::PutBoolValue(const std::string& key, bool value, bool needNotify)
 {
     HILOG_DEBUG("start.");
     (void)key;
-    return true;
+    (void)value;
+    (void)needNotify;
+    return RET_OK;
 }
 
 sptr<AccessibilitySettingObserver> AccessibilitySettingProvider::CreateObserver(const std::string& key,
@@ -121,63 +118,50 @@ sptr<AccessibilitySettingObserver> AccessibilitySettingProvider::CreateObserver(
     return nullptr;
 }
 
-ErrCode AccessibilitySettingProvider::RegisterObserver(const sptr<AccessibilitySettingObserver>& observer)
+RetError AccessibilitySettingProvider::RegisterObserver(const sptr<AccessibilitySettingObserver>& observer)
 {
     HILOG_DEBUG("start.");
     (void)observer;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer)
+RetError AccessibilitySettingProvider::UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer)
 {
     HILOG_DEBUG("start.");
     (void)observer;
-    return ERR_OK;
+    return RET_OK;
 }
 
-void AccessibilitySettingProvider::Initialize(int32_t systemAbilityId)
+RetError AccessibilitySettingProvider::RegisterObserver(const std::string& key,
+    AccessibilitySettingObserver::UpdateFunc& func)
 {
-    HILOG_DEBUG("start.");
-    (void)systemAbilityId;
+    (void)key;
+    (void)func;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::GetStringValue(const std::string& key, std::string& value)
+RetError AccessibilitySettingProvider::UnregisterObserver(const std::string& key)
+{
+    (void)key;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingProvider::GetStringValue(const std::string& key, std::string& value)
 {
     HILOG_DEBUG("start.");
     (void)key;
     (void)value;
-    return ERR_OK;
+    return RET_OK;
 }
 
-ErrCode AccessibilitySettingProvider::PutStringValue
+RetError AccessibilitySettingProvider::PutStringValue
     (const std::string& key, const std::string& value, bool needNotify)
 {
     HILOG_DEBUG("start.");
     (void)key;
     (void)value;
     (void)needNotify;
-    return ERR_OK;
-}
-
-std::shared_ptr<DataShare::DataShareHelper> AccessibilitySettingProvider::CreateDataShareHelper()
-{
-    HILOG_DEBUG("start.");
-    return nullptr;
-}
-
-bool AccessibilitySettingProvider::ReleaseDataShareHelper(std::shared_ptr<DataShare::DataShareHelper>& helper)
-{
-    HILOG_DEBUG("start.");
-    (void)helper;
-    return true;
-}
-
-Uri AccessibilitySettingProvider::AssembleUri(const std::string& key)
-{
-    HILOG_DEBUG("start.");
-    (void)key;
-    Uri uri(SETTING_URI_PROXY + "&key=" + "ok");
-    return uri;
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS

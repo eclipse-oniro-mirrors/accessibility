@@ -115,6 +115,42 @@ RetError AccessibleAbilityChannelClient::SendSimulateGesture(
     }
 }
 
+RetError AccessibleAbilityChannelClient::GetCursorPosition(
+    int32_t accessibilityWindowId, int64_t elementId, int32_t &position)
+{
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "GetCursorPosition");
+    if (!proxy_) {
+        HILOG_ERROR("GetCursorPosition Failed to connect to aams [channelId:%{public}d]",
+            channelId_);
+        return RET_ERR_SAMGR;
+    }
+
+    int32_t requestId = GenerateRequestId();
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (!elementOperator) {
+        HILOG_ERROR("GetCursorPosition Failed to create elementOperator.");
+        return RET_ERR_NULLPTR;
+    }
+    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+
+    RetError ret = proxy_->GetCursorPosition(accessibilityWindowId, elementId, requestId, elementOperator);
+    if (ret != RET_OK) {
+        HILOG_ERROR("ExecuteAction failed. ret[%{public}d]", ret);
+        return ret;
+    }
+
+    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("GetCursorPosition Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
+
+    position = elementOperator->CursorPosition_;
+    HILOG_INFO("position%{public}d", position);
+    return RET_OK;
+}
+
 RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId,
     int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments)
 {
@@ -164,6 +200,16 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
         }
     }
     return elementOperator->executeActionResult_ ? RET_OK : RET_ERR_PERFORM_ACTION_FAILED_BY_ACE;
+}
+
+RetError AccessibleAbilityChannelClient::EnableScreenCurtain(bool isEnable)
+{
+    HILOG_INFO("[channelId:%{public}d]", channelId_);
+    if (!proxy_) {
+        HILOG_ERROR("EnableScreenCurtain Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return RET_ERR_SAMGR;
+    }
+    return  proxy_->EnableScreenCurtain(isEnable) ? RET_OK : RET_ERR_PERFORM_ACTION_FAILED_BY_ACE;
 }
 
 RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId,

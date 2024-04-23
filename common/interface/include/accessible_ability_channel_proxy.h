@@ -108,6 +108,17 @@ public:
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     /**
+     * @brief Get the result of Cursor Position through the proxy object.
+     * @param accessibilityWindowId The target winid.
+     * @param elementId The element Id.
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the node info to ASAC and it defined by ASAC.
+     * @return Return RET_OK if Cursor Position successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
+    /**
      * @brief Get the window information related with the event
      * @param windowId The window id.
      * @param windowInfo The window information.
@@ -121,6 +132,13 @@ public:
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
+
+    /**
+     * @brief Package and transfer isenable to the data table
+     * @param isEnable The information of status.
+     * @return Return RET_OK if obtains screen curtain status successfully.
+     */
+    virtual RetError EnableScreenCurtain(bool isEnable) override;
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.

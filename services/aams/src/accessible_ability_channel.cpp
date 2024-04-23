@@ -19,6 +19,7 @@
 #include "accessibility_window_manager.h"
 #include "accessible_ability_connection.h"
 #include "hilog_wrapper.h"
+#include "transaction/rs_interfaces.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -70,9 +71,15 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
         }
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
-        int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
-        elementOperator->SearchElementInfoByAccessibilityId(realElementId, requestId, callback, mode, isFilter);
-        HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
+        if (awm.IsInnerWindowRootElement(elementId)) {
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
+            HILOG_DEBUG("IsInnerWindowRootElement elementId: %{public}" PRId64 "", elementId);
+        } else {
+            int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+            elementOperator->SearchElementInfoByAccessibilityId(realElementId, requestId, callback, mode, isFilter);
+            HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
+        }
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "SearchElementInfoByAccessibilityId");
     
@@ -265,6 +272,27 @@ RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
     return RET_OK;
 }
 
+RetError AccessibleAbilityChannel::EnableScreenCurtain(bool isEnable)
+{
+    HILOG_DEBUG();
+    HILOG_INFO("enter AccessibleAbilityChannel::EnableScreenCurtain isEnable = %{public}d", isEnable);
+
+    if (!eventHandler_) {
+        HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    HILOG_DEBUG("Run RSInterfaces -> SetCurtainScreenUsingStatus");
+    auto rsInterfaces = &(Rosen::RSInterfaces::GetInstance());
+    if (rsInterfaces == nullptr) {
+        HILOG_ERROR("rsInterfaces is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    HILOG_INFO("EnableScreenCurtain : rsInterfaces->SetCurtainScreenUsingStatus(isEnable) %{public}d", isEnable);
+    rsInterfaces->SetCurtainScreenUsingStatus(isEnable);
+    return RET_OK;
+}
+
 RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
@@ -451,6 +479,41 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
         }
         keyEventFilter->SetServiceOnKeyEventResult(*clientConnection, handled, sequence);
         }, accountId_, clientName_), "SetOnKeyPressEventResult");
+}
+
+RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG();
+    if (!eventHandler_) {
+        HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
+    std::future syncFuture = syncPromise->get_future();
+    eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId,
+        requestId, callback](int32_t accountId, const std::string &name) -> void {
+        HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
+        sptr<IAccessibilityElementOperator> elementOperator = nullptr;
+        RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name, elementOperator);
+        if (ret != RET_OK) {
+            HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
+            syncPromise->set_value(ret);
+            return;
+        }
+
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        elementOperator->GetCursorPosition(realElementId, requestId, callback);
+        syncPromise->set_value(RET_OK);
+        }, accountId_, clientName_), "GetCursorPosition");
+    
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait GetCursorPosition result");
+        return RET_ERR_TIME_OUT;
+    }
+    return syncFuture.get();
 }
 
 RetError AccessibleAbilityChannel::SendSimulateGesture(

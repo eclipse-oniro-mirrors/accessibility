@@ -104,7 +104,7 @@ void AamsAccessibleAbilityChannelTest::TearDown()
 
 void AamsAccessibleAbilityChannelTest::WritefileAll(const char* fname, const char* data)
 {
-    FILE* fp;
+    FILE* fp = nullptr;
     if (!(fp = fopen(fname, "w"))) {
         printf("open file %s fail \n", fname);
         return;

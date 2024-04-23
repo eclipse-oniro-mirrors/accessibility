@@ -87,6 +87,12 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibil
     return RET_OK;
 }
 
+RetError AccessibleAbilityChannelProxy::EnableScreenCurtain(bool isEnable)
+{
+    (void)isEnable;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
@@ -96,6 +102,16 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
     (void)requestId;
     (void)callback;
     (void)actionArguments;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannelProxy::GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
+{
+    (void)accessibilityWindowId;
+    (void)elementId;
+    (void)requestId;
+    (void)callback;
     return RET_OK;
 }
 

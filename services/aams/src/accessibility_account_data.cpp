@@ -52,6 +52,7 @@ namespace {
     const std::string IGNORE_REPEAT_CLICK_TIME = "ignore_repeat_click_time";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER = "accessibility_display_daltonizer";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const std::string DEVICE_PROVISIONED = "device_provisioned";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -447,6 +448,25 @@ void AccessibilityAccountData::SetAbilityAutoStartState(const std::string &name,
         HILOG_ERROR("set failed, ret=%{public}d", ret);
     }
     provider.DeleteInstance();
+}
+
+void AccessibilityAccountData::SetScreenReaderState(const std::string &name, const std::string &state)
+{
+    HILOG_DEBUG("set screen reader key [%{public}s], state = [%{public}s].", name.c_str(), state.c_str());
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    ErrCode ret = provider.PutStringValue(name, state, true);
+    if (ret != ERR_OK) {
+        HILOG_ERROR("set failed, ret=%{public}d", ret);
+    }
+}
+
+bool AccessibilityAccountData::GetScreenReaderState()
+{
+    HILOG_DEBUG();
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    bool state = false;
+    provider.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, state);
+    return state;
 }
 
 void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)

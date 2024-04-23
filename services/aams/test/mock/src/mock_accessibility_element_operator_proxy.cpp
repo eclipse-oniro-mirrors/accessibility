@@ -92,6 +92,15 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int64_t elementId, c
     }
 }
 
+void AccessibilityElementOperatorProxy::GetCursorPosition(const int64_t elementId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    AccessibilityAbilityHelper::GetInstance().SetTestChannelElementId(elementId);
+    if (callback) {
+        callback->SetCursorPositionResult(1, requestId);
+    }
+}
+
 void AccessibilityElementOperatorProxy::ClearFocus()
 {
 }

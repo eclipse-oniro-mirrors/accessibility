@@ -39,6 +39,7 @@ aams_mock_include_dirs = [
   "//foundation/arkui/napi/native_engine",
   "//foundation/distributeddatamgr/preferences/interfaces/inner_api/include",
   "//foundation/multimodalinput/input/interfaces/native/innerkits/proxy/include",
+  "//foundation/distributeddatamgr/data_share/interfaces/inner_api/common/include",
   "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
   "//base/powermgr/power_manager/interfaces/inner_api/native/include",
   "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_base/include",

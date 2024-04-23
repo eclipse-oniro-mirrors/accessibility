@@ -561,6 +561,19 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetParentElementInfo_002, TestSize.Lev
 }
 
 /**
+ * @tc.number: EnableScreenCurtain_001
+ * @tc.name: EnableScreenCurtain
+ * @tc.desc: Test function EnableScreenCurtain
+*/
+HWTEST_F(AccessibleAbilityClientImplTest, EnableScreenCurtain_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "EnableScreenCurtain_001 start";
+    Connect();
+    EXPECT_EQ(instance_->EnableScreenCurtain(true), RET_ERR_TIME_OUT);
+    GTEST_LOG_(INFO) << "EnableScreenCurtain_001 end";
+}
+
+/**
  * @tc.number: GetByElementId_001
  * @tc.name: GetByElementId
  * @tc.desc: Test function GetByElementId
@@ -658,6 +671,21 @@ HWTEST_F(AccessibleAbilityClientImplTest, ExecuteAction_004, TestSize.Level1)
         GTEST_LOG_(INFO) << "ExecuteAction_004 action=" << actions[i];
     }
     GTEST_LOG_(INFO) << "ExecuteAction_004 end";
+}
+
+/**
+ * @tc.number: GetCursorPosition_001
+ * @tc.name: GetCursorPosition
+ * @tc.desc: Test function GetCursorPosition
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetCursorPosition_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetCursorPosition_001 start";
+    Connect();
+    AccessibilityElementInfo elementInfo {};
+    int32_t position;
+    EXPECT_EQ(instance_->GetCursorPosition(elementInfo, position), RET_ERR_TIME_OUT);
+    GTEST_LOG_(INFO) << "GetCursorPosition_001 end";
 }
 
 /**

@@ -58,6 +58,8 @@ public:
         const std::string &bundleName = "", const std::string &abilityName = "");
     static void RecordStartingA11yEvent(uint32_t flag);
     static void RecordStartingA11yEvent(const std::string &name);
+    static void VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut);
+    static void StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult);
 
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);

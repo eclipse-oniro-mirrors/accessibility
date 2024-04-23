@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,53 +13,55 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_SETTING_PROVIDER_H
-#define ACCESSIBILITY_SETTING_PROVIDER_H
+#ifndef ACCESSIBILITY_DATASHARE_HELPER
+#define ACCESSIBILITY_DATASHARE_HELPER
 
-#include "datashare_helper.h"
-#include "errors.h"
-#include "mutex"
 #include "accessibility_setting_observer.h"
-#include "accessibility_datashare_helper.h"
-#include "accessibility_caption.h"
+#include "accessibility_def.h"
+#include "datashare_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilitySettingProvider : public AccessibilityDatashareHelper {
+
+enum DATASHARE_TYPE : int32_t {
+    GLOBAL,
+    SYSTEM,
+    SECURE,
+};
+
+class AccessibilityDatashareHelper {
 public:
-    static AccessibilitySettingProvider& GetInstance(int32_t systemAbilityId);
-    AccessibilitySettingProvider();
-    void DeleteInstance();
-    RetError GetStringValue(const std::string& key, std::string& value);
-    RetError GetIntValue(const std::string& key, int32_t& value);
-    RetError GetLongValue(const std::string& key, int64_t& value);
-    RetError GetBoolValue(const std::string& key, bool& value);
-    RetError GetFloatValue(const std::string& key, float& value);
+    AccessibilityDatashareHelper(DATASHARE_TYPE type, int32_t accountID);
+    std::string GetStringValue(const std::string& key, const std::string& defaultValue);
+    int32_t GetIntValue(const std::string& key, const int32_t& defaultValue);
+    int64_t GetLongValue(const std::string& key, const int64_t& defaultValue);
+    bool GetBoolValue(const std::string& key, const bool& defaultValue);
+    float GetFloatValue(const std::string& key, const float& defaultValue);
+
     RetError PutStringValue(const std::string& key, const std::string& value, bool needNotify = true);
     RetError PutIntValue(const std::string& key, int32_t value, bool needNotify = true);
     RetError PutLongValue(const std::string& key, int64_t value, bool needNotify = true);
     RetError PutBoolValue(const std::string& key, bool value, bool needNotify = true);
-    bool IsValidKey(const std::string& key);
+    RetError PutFloatValue(const std::string& key, float value, bool needNotify = true);
+
+    void Initialize(int32_t systemAbilityId);
+
     sptr<AccessibilitySettingObserver> CreateObserver(const std::string& key,
         AccessibilitySettingObserver::UpdateFunc& func);
     RetError RegisterObserver(const sptr<AccessibilitySettingObserver>& observer);
     RetError UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer);
 
-    RetError RegisterObserver(const std::string& key, AccessibilitySettingObserver::UpdateFunc& func);
-    RetError UnregisterObserver(const std::string& key);
+private:
+    std::shared_ptr<DataShare::DataShareHelper> CreateDatashareHelper();
+    bool DestoryDatashareHelper(std::shared_ptr<DataShare::DataShareHelper>& helper);
+    Uri AssembleUri(const std::string& key);
 
 private:
-    std::string GetConfigKey(int32_t state);
-
-protected:
-    ~AccessibilitySettingProvider();
-
-private:
-    static AccessibilitySettingProvider* instance_;
-    static std::mutex mutex_;
-    static std::mutex observerMutex_;
-    std::map<std::string, sptr<AccessibilitySettingObserver>> settingObserverMap_;
+    DATASHARE_TYPE type_;
+    int32_t accountId_;
+    std::string uriProxyStr_;
+    sptr<IRemoteObject> remoteObj_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_SETTING_PROVIDER_H
+#endif // ACCESSIBILITY_DATASHARE_HELPER

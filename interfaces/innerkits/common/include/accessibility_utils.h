@@ -107,6 +107,7 @@ bool ColorRegexMatch(std::string colorStr, uint32_t &color);
 std::string ConvertColorToString(uint32_t color);
 std::string ConvertStringJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
 int32_t ConvertIntJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
+bool ConvertBoolJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
 void ConvertStringArrayJSToNAPI(napi_env env, napi_value object,
     napi_value propertyNameValue, bool &hasProperty, std::vector<std::string> &stringArray);
 void ConvertStringArrayJSToNAPICommon(napi_env env, napi_value object, std::vector<std::string> &stringArray);

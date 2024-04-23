@@ -68,6 +68,9 @@ AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackSt
     memberFuncMap_[static_cast<uint32_t>(
         AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION)] =
         &AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult;
+    memberFuncMap_[static_cast<uint32_t>(
+        AccessibilityInterfaceCode::SET_RESULT_CURSOR_RESULT)] =
+        &AccessibilityElementOperatorCallbackStub::HandleSetCursorPositionResult;
 }
 
 StoreElementData AccessibilityElementOperatorCallbackStub::storeElementData;
@@ -207,5 +210,18 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult(M
 
     return NO_ERROR;
 }
+
+ErrCode AccessibilityElementOperatorCallbackStub::HandleSetCursorPositionResult(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int32_t cursorPosition = data.ReadInt32();
+    int32_t requestId = data.ReadInt32();
+    HILOG_INFO("[cursorPosition:%{public}d]", cursorPosition);
+    SetCursorPositionResult(cursorPosition, requestId);
+
+    return NO_ERROR;
+}
+
 } // namespace Accessibility
 } // namespace OHOS

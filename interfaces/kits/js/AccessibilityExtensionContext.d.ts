@@ -300,6 +300,36 @@ declare interface AccessibilityElement {
   performAction(actionName: string, callback: AsyncCallback<void>): void;
 
   /**
+   * Set the screen curtain enable or disable.
+   *
+   * @param { boolean } isEnable Indicates whether the screen curtain is enabled.
+   * @throws { BusinessError } 401 - Input parameter error.
+   * @throws { BusinessError } 9300003 -  Do not have accessibility right for this operation.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 12
+   */
+  enableScreenCurtain(isEnable: boolean): void;
+
+   /**
+   * Get the position of cursor in TextInput.
+   *
+   * @param { AsyncCallback<number> } callback Indicates the listener.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 12
+   */
+   getCursorPosition(callback: AsyncCallback<number>): void;
+
+   /**
+    * Get the position of cursor in TextInput.
+    *
+    * @returns { Promise<number> }
+    * @syscap SystemCapability.BarrierFree.Accessibility.Core
+    * @since 12
+    */
+   getCursorPosition(): Promise<number>;
+
+  /**
    * Find elements that match the condition.
    *
    * @param { 'content' } type The type of query condition is content.

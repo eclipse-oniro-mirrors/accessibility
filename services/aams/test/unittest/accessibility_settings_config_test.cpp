@@ -16,6 +16,7 @@
 #include <gtest/gtest.h>
 #include "accessibility_settings_config.h"
 #include "mock_preferences.h"
+#include "system_ability_definition.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -27,6 +28,20 @@ namespace {
     constexpr int32_t MOUSE_AUTO_CLICK_VALUE = 2;
     constexpr float BRIGHTNESS_DISCOUNT_VALUE = 0.3f;
     constexpr float AUDIO_BALANCE_VALUE = 0.1f;
+    const std::string CONFIG_ACCESSIBILITY = "accessible";
+    const std::string CONFIG_TOUCHGUIDE = "touchGuide";
+    const std::string CONFIG_GESTURE = "gesture";
+    const std::string CONFIG_CAPTION = "CaptionState";
+    const std::string CONFIG_KEYEVENT = "keyEventObserver";
+    const std::string CONFIG_SCREENMAGNIFIER = "ScreenMagnification";
+    const std::string CONFIG_SHORTKEY = "ShortKey";
+    const std::string CONFIG_MOUSEKEY = "MouseKey";
+    const std::string CONFIG_HIGHCONTRASTTEXT = "highContrastText";
+    const std::string CONFIG_DALTONIZATIONSTATE = "daltonizationState";
+    const std::string CONFIG_INVERTCOLOR = "invertColor";
+    const std::string CONFIG_ANIMATIONOFF = "animationOff";
+    const std::string CONFIG_AUDIOMONO = "audioMono";
+    const std::string CONFIG_IGNOREREPEATCLICKSTATE = "ignoreRepeatClickState";
 } // namespace
 
 class AccessibilitySettingsConfigTest : public testing::Test {
@@ -37,6 +52,7 @@ public:
     {}
 
     std::shared_ptr<AccessibilitySettingsConfig> settingConfig_ = nullptr;
+    std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
 
     static void SetUpTestCase();
     static void TearDownTestCase();

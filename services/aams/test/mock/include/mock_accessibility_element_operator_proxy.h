@@ -40,6 +40,8 @@ public:
     MOCK_METHOD5(ExecuteAction, void(const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments,
         int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
+    MOCK_METHOD3(GetCursorPosition, void(const int64_t elementId,
+        int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD0(ClearFocus, void());
     MOCK_METHOD0(OutsideTouch, void());
 };

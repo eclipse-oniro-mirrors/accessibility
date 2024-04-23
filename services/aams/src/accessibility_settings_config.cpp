@@ -15,13 +15,41 @@
 
 #include "accessibility_settings_config.h"
 #include "hilog_wrapper.h"
+#include "system_ability_definition.h"
 #include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    const std::string PREF_PATH = "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
     constexpr uint32_t DEFAULT_COLOR = 0xff000000;
+    const int32_t DEFAULT_SCALE = 100;
+    const std::string ACCESSIBILITY = "accessibility";
+    const std::string TOUCH_GUIDE_STATE = "touch_guide_state";
+    const std::string GESTURE_KEY = "gesture_state";
+    const std::string CAPTION_KEY = "caption_state";
+    const std::string KEYEVENT_OBSERVER = "keyevent_observer";
+    const std::string SCREEN_MAGNIFICATION_KEY = "screen_magnification";
+    const std::string MOUSEKEY = "mousekey";
+    const std::string HIGH_CONTRAST_TEXT_KEY = "high_text_constrast_enabled";
+    const std::string DALTONIZATION_STATE = "accessibility_display_daltonizer_enabled";
+    const std::string INVERT_COLOR_KEY = "accessibility_display_inversion_enabled";
+    const std::string ANIMATION_OFF_KEY = "animation_off";
+    const std::string AUDIO_MONO_KEY = "master_nono";
+    const std::string IGNORE_REPEAT_CLICK_SWITCH = "ignore_repeat_click_switch";
+    const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
+    const std::string SHORTCUT_SERVICE = "accessibility_shortcut_target_service";
+    const std::string CLICK_RESPONCE_TIME = "click_response_time";
+    const std::string IGNORE_REPEAT_CLICK_TIME = "ignore_repeat_click_time";
+    const std::string DALTONIZATION_COLOR_FILTER_KEY = "accessibility_display_daltonizer";
+    const std::string CONTENT_TIMEOUT_KEY = "accessibility_content_timeout";
+    const std::string BRIGHTNESS_DISCOUNT_KEY = "accessibility_brightness_discount";
+    const std::string AUDIO_BALANCE_KEY = "master_balance";
+    const std::string FONT_FAMILY = "accessibility_font_family";
+    const std::string FONT_COLOR = "accessibility_font_color";
+    const std::string FONT_EDGE_TYPE = "accessibility_font_edge_type";
+    const std::string BACKGROUND_COLOR = "accessibility_background_color";
+    const std::string WINDOW_COLOR = "accessibility_window_color";
+    const std::string FONT_SCALE = "accessibility_font_scale";
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -29,364 +57,248 @@ AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
     accountId_ = id;
 }
 
-bool AccessibilitySettingsConfig::SetEnabled(const bool state)
+RetError AccessibilitySettingsConfig::SetEnabled(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     enabled_ = state;
-    return SetStatePref(STATE::ACCESSIBILITY);
+    return SetConfigState(ACCESSIBILITY, state);
 }
 
-bool AccessibilitySettingsConfig::SetTouchGuideState(const bool state)
+RetError AccessibilitySettingsConfig::SetTouchGuideState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     eventTouchGuideState_ = state;
-    return SetStatePref(STATE::TOUCHGUIDE);
+    return SetConfigState(TOUCH_GUIDE_STATE, state);
 }
 
-bool AccessibilitySettingsConfig::SetGestureState(const bool state)
+RetError AccessibilitySettingsConfig::SetGestureState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     gesturesSimulation_ = state;
-    return SetStatePref(STATE::GESTURE);
+    return SetConfigState(GESTURE_KEY, state);
 }
 
-bool AccessibilitySettingsConfig::SetKeyEventObserverState(const bool state)
+RetError AccessibilitySettingsConfig::SetKeyEventObserverState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     filteringKeyEvents_ = state;
-    return SetStatePref(STATE::KEYEVENT);
+    return SetConfigState(KEYEVENT_OBSERVER, state);
 }
-
 
 RetError AccessibilitySettingsConfig::SetCaptionState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isCaptionState_ = state;
-    return SetStatePref(STATE::CAPTION) ? RET_OK : RET_ERR_FAILED;
+    return SetConfigState(CAPTION_KEY, state);
 }
 
 RetError AccessibilitySettingsConfig::SetScreenMagnificationState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isScreenMagnificationState_ = state;
-    return SetStatePref(STATE::SCREENMAGNIFIER) ? RET_OK : RET_ERR_FAILED;
+    return SetConfigState(SCREEN_MAGNIFICATION_KEY, state);
 }
 
 RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isShortKeyState_ = state;
-    return SetStatePref(STATE::SHORTKEY) ? RET_OK : RET_ERR_FAILED;
+    return SetConfigState(SHORTCUT_ENABLED, state);
 }
+
 
 RetError AccessibilitySettingsConfig::SetStartFromAtoHosState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
-    std::string strState = state ? "on" : "off";
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
-
-    pref_->PutString("AccessibilityStartFromAtoHos", strState);
-    pref_->Flush();
-    return RET_OK;
+    return datashare_->PutBoolValue("AccessibilityStartFromAtoHos", state);
 }
 
 RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isMouseKeyState_ = state;
-    return SetStatePref(STATE::MOUSEKEY) ? RET_OK : RET_ERR_FAILED;
+    return SetConfigState(MOUSEKEY, state);
 }
 
 RetError AccessibilitySettingsConfig::SetMouseAutoClick(const int32_t time)
 {
     HILOG_DEBUG("time = [%{public}d]", time);
-    mouseAutoClick_ = time;
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
-
-    pref_->PutInt("MouseAutoClick", mouseAutoClick_);
-    pref_->Flush();
-    return RET_OK;
+    mouseAutoClick_ = time;
+    return datashare_->PutIntValue("MouseAutoClick", time);
 }
 
 RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 {
     HILOG_DEBUG("name = [%{public}s]", name.c_str());
-    shortkeyTarget_ = name;
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
-    pref_->PutString("ShortkeyTarget", shortkeyTarget_);
-    pref_->Flush();
-    return RET_OK;
+    return datashare_->PutStringValue("ShortkeyTarget", name);
 }
 
 RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<std::string> &name)
 {
     HILOG_DEBUG();
     shortkeyMultiTarget_ = name;
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
     std::string stringOut = "";
-    VectorToString(name, stringOut);
-    pref_->PutString("ShortkeyMultiTarget", stringOut);
-    pref_->Flush();
-    return RET_OK;
+    Utils::VectorToString(name, stringOut);
+    return datashare_->PutStringValue(SHORTCUT_SERVICE, stringOut);
 }
 
 RetError AccessibilitySettingsConfig::SetShortkeyMultiTargetInPkgRemove(const std::string &name)
 {
     HILOG_DEBUG();
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
+    RetError rtn = RET_OK;
+
     for (auto iter = shortkeyMultiTarget_.begin(); iter != shortkeyMultiTarget_.end(); ++iter) {
         if (*iter == name) {
             shortkeyMultiTarget_.erase(iter);
             std::string stringOut = "";
-            VectorToString(shortkeyMultiTarget_, stringOut);
-            pref_->PutString("ShortkeyMultiTarget", stringOut);
-            pref_->Flush();
+            Utils::VectorToString(shortkeyMultiTarget_, stringOut);
+            rtn = datashare_->PutStringValue(SHORTCUT_SERVICE, stringOut);
             break;
         }
     }
-    return RET_OK;
+    return rtn;
 }
 
 RetError AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     highContrastTextState_ = state;
-    return SetStatePref(STATE::HIGHCONTRASTTEXT) ? RET_OK : RET_ERR_FAILED;
+    return SetConfigState(HIGH_CONTRAST_TEXT_KEY, state);
 }
 
 RetError AccessibilitySettingsConfig::SetInvertColorState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     invertColorState_ = state;
-    return SetStatePref(STATE::INVERTCOLORSTATE) ? RET_OK : RET_ERR_FAILED;
+    return SetConfigState(INVERT_COLOR_KEY, state);
 }
 
 RetError AccessibilitySettingsConfig::SetAnimationOffState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     animationOffState_ = state;
-    return SetStatePref(STATE::ANIMATIONOFF) ? RET_OK : RET_ERR_FAILED;
+    return SetConfigState(ANIMATION_OFF_KEY, state);
 }
 
 RetError AccessibilitySettingsConfig::SetAudioMonoState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     audioMonoState_ = state;
-    return SetStatePref(STATE::AUDIOMONO) ? RET_OK : RET_ERR_FAILED;
+    return SetConfigState(AUDIO_MONO_KEY, state);
 }
 
 RetError AccessibilitySettingsConfig::SetDaltonizationState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     daltonizationState_ = state;
-    return SetStatePref(STATE::DALTONIZATIONSTATE) ? RET_OK : RET_ERR_FAILED;
+    return SetConfigState(DALTONIZATION_STATE, state);
 }
 
 RetError AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t filter)
 {
     HILOG_DEBUG("filter = [%{public}u]", filter);
     daltonizationColorFilter_ = filter;
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
-    pref_->PutInt("daltonizationColorFilter", static_cast<int32_t>(daltonizationColorFilter_));
-    pref_->Flush();
-    return RET_OK;
+    return datashare_->PutIntValue(DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(filter));
 }
+
 
 RetError AccessibilitySettingsConfig::SetContentTimeout(const uint32_t time)
 {
     HILOG_DEBUG("time = [%{public}u]", time);
     contentTimeout_ = time;
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
-    pref_->PutInt("contentTimeout", static_cast<int32_t>(contentTimeout_));
-    pref_->Flush();
-    return RET_OK;
+    return datashare_->PutIntValue(CONTENT_TIMEOUT_KEY, static_cast<int32_t>(time));
 }
 
 RetError AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount)
 {
     HILOG_DEBUG("discount = [%{public}f]", discount);
     brightnessDiscount_ = discount;
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
-    pref_->PutFloat("brightnessDiscount", brightnessDiscount_);
-    pref_->Flush();
-    return RET_OK;
+    return datashare_->PutFloatValue(BRIGHTNESS_DISCOUNT_KEY, discount);
 }
 
 RetError AccessibilitySettingsConfig::SetAudioBalance(const float balance)
 {
     HILOG_DEBUG("balance = [%{public}f]", balance);
     audioBalance_ = balance;
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
-    pref_->PutFloat("audioBalance", audioBalance_);
-    pref_->Flush();
-    return RET_OK;
+    return datashare_->PutFloatValue(AUDIO_BALANCE_KEY, balance);
 }
 
 RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
 {
     HILOG_DEBUG("clickResponseTime = [%{public}u]", time);
     clickResponseTime_ = time;
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
-    pref_->PutInt("clickResponseTime", clickResponseTime_);
-    pref_->Flush();
-    return RET_OK;
+    return datashare_->PutIntValue(CLICK_RESPONCE_TIME, time);
 }
 
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     ignoreRepeatClickState_ = state;
-    return SetStatePref(STATE::IGNOREREPEATCLICKSTATE) ? RET_OK : RET_ERR_FAILED;
+    return SetConfigState(IGNORE_REPEAT_CLICK_TIME, state);
 }
 
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t time)
 {
     HILOG_DEBUG("ignoreRepeatClickTime = [%{public}u]", time);
     ignoreRepeatClickTime_ = time;
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
-
-    pref_->PutInt("ignoreRepeatClickTime", time);
-    pref_->Flush();
-    return RET_OK;
+    return datashare_->PutIntValue("ignoreRepeatClickTime", time);
 }
 
 RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
 {
     HILOG_DEBUG();
     captionProperty_ = caption;
-
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
-    const std::string& FONTFAMILY = captionProperty_.GetFontFamily();
-    int32_t FONTSCALE = captionProperty_.GetFontScale();
-    uint32_t FONTCOLOR = captionProperty_.GetFontColor();
-    const std::string& FONTEDGETYPE = captionProperty_.GetFontEdgeType();
-    uint32_t BACKGROUNDCOLOR = captionProperty_.GetBackgroundColor();
-    uint32_t WINDOWCOLOR = captionProperty_.GetWindowColor();
 
-    pref_->PutString("fontFamily", FONTFAMILY);
-    pref_->PutInt("fontColor", static_cast<int32_t>(FONTCOLOR));
-    pref_->PutString("fontEdgeType", FONTEDGETYPE);
-    pref_->PutInt("backgroundColor", static_cast<int32_t>(BACKGROUNDCOLOR));
-    pref_->PutInt("windowColor", static_cast<int32_t>(WINDOWCOLOR));
-    pref_->PutInt("fontScale", FONTSCALE);
-    pref_->Flush();
+    datashare_->PutStringValue(FONT_FAMILY, captionProperty_.GetFontFamily());
+    datashare_->PutIntValue(FONT_COLOR, static_cast<int32_t>(captionProperty_.GetFontColor()));
+    datashare_->PutStringValue(FONT_EDGE_TYPE, captionProperty_.GetFontEdgeType());
+    datashare_->PutIntValue(BACKGROUND_COLOR, static_cast<int32_t>(captionProperty_.GetBackgroundColor()));
+    datashare_->PutIntValue(WINDOW_COLOR, static_cast<int32_t>(captionProperty_.GetWindowColor()));
+    datashare_->PutIntValue(FONT_SCALE, captionProperty_.GetFontScale());
     return RET_OK;
-}
-
-bool AccessibilitySettingsConfig::SetStatePrefExec(int32_t type)
-{
-    bool ret = true;
-    std::string strValue;
-    if (type == STATE::ACCESSIBILITY) {
-        strValue = StateChange(enabled_);
-        pref_->PutString("accessible", strValue);
-    } else if (type == STATE::TOUCHGUIDE) {
-        strValue = StateChange(eventTouchGuideState_);
-        pref_->PutString("touchGuide", strValue);
-    } else if (type == STATE::GESTURE) {
-        strValue = StateChange(gesturesSimulation_);
-        pref_->PutString("gesture", strValue);
-    } else if (type == STATE::KEYEVENT) {
-        strValue = StateChange(filteringKeyEvents_);
-        pref_->PutString("keyEventObserver", strValue);
-    } else if (type == STATE::CAPTION) {
-        strValue = StateChange(isCaptionState_);
-        pref_->PutString("CaptionState", strValue);
-    } else if (type == STATE::SCREENMAGNIFIER) {
-        strValue = StateChange(isScreenMagnificationState_);
-        pref_->PutString("ScreenMagnification", strValue);
-    } else if (type == STATE::SHORTKEY) {
-        strValue = StateChange(isShortKeyState_);
-        pref_->PutString("ShortKey", strValue);
-    } else if (type == STATE::MOUSEKEY) {
-        strValue = StateChange(isMouseKeyState_);
-        pref_->PutString("MouseKey", strValue);
-    } else if (type == STATE::HIGHCONTRASTTEXT) {
-        strValue = StateChange(highContrastTextState_);
-        pref_->PutString("highContrastText", strValue);
-    } else if (type == STATE::DALTONIZATIONSTATE) {
-        strValue = StateChange(daltonizationState_);
-        pref_->PutString("daltonizationState", strValue);
-    } else if (type == STATE::INVERTCOLORSTATE) {
-        strValue = StateChange(invertColorState_);
-        pref_->PutString("invertColor", strValue);
-    } else if (type == STATE::ANIMATIONOFF) {
-        strValue = StateChange(animationOffState_);
-        pref_->PutString("animationOff", strValue);
-    } else if (type == STATE::AUDIOMONO) {
-        strValue = StateChange(audioMonoState_);
-        pref_->PutString("audioMono", strValue);
-    } else if (type == STATE::IGNOREREPEATCLICKSTATE) {
-        pref_->PutString("ignoreRepeatClickState", StateChange(ignoreRepeatClickState_));
-    } else {
-        ret = false;
-        HILOG_ERROR("invalid parameter type = [%{public}d]", type);
-    }
-    return ret;
-}
-
-bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
-{
-    HILOG_DEBUG("type = [%{public}d]", type);
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
-        return false;
-    }
-
-    bool ret = SetStatePrefExec(type);
-    if (ret) {
-        pref_->Flush();
-    }
-    return ret;
-}
-
-std::string AccessibilitySettingsConfig::StateChange(bool state)
-{
-    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
-    return state ? "on" : "off";
 }
 
 bool AccessibilitySettingsConfig::GetCaptionState() const
@@ -512,13 +424,13 @@ uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
 bool AccessibilitySettingsConfig::GetStartFromAtoHosState()
 {
     HILOG_DEBUG();
-    if (!pref_) {
-        HILOG_ERROR("Input Parameter is nullptr");
-        return false;
+    if (!datashare_) {
+        return RET_ERR_NULLPTR;
     }
 
-    std::string strValue = pref_->GetString("AccessibilityStartFromAtoHos", "");
-    return (strValue == "off") ? false : true;
+    bool value = false;
+    datashare_->GetBoolValue("AccessibilityStartFromAtoHos", value);
+    return value;
 }
 
 uint32_t AccessibilitySettingsConfig::GetConfigState()
@@ -570,12 +482,11 @@ uint32_t AccessibilitySettingsConfig::GetConfigState()
 void AccessibilitySettingsConfig::InitCaption()
 {
     HILOG_DEBUG();
-    if (!pref_) {
-        HILOG_ERROR("Input Parameter is nullptr");
+    if (datashare_ == nullptr) {
         return;
     }
 
-    std::string strValue = pref_->GetString("CaptionState", "");
+    std::string strValue = datashare_->GetStringValue(CAPTION_KEY, "");
     HILOG_DEBUG(" pref_->GetString() = %{public}s.", strValue.c_str());
     if (!std::strcmp(strValue.c_str(), "on")) {
         isCaptionState_ = true;
@@ -583,209 +494,106 @@ void AccessibilitySettingsConfig::InitCaption()
         isCaptionState_ = false;
     }
 
-    std::string FONTFAMILY = pref_->GetString("fontFamily", "default");
-    HILOG_DEBUG("fontFamily = %{public}s.", FONTFAMILY.c_str());
+    std::string fontFamliy = datashare_->GetStringValue(FONT_FAMILY, "default");
+    HILOG_DEBUG("fontFamily = %{public}s.", fontFamliy.c_str());
 
-    int32_t FONTSCALE =  static_cast<int32_t>(pref_->GetInt("fontScale", 100));
-    HILOG_DEBUG("fontScale = %{public}d.", FONTSCALE);
+    int32_t fontScale =  static_cast<int32_t>(datashare_->GetIntValue(FONT_SCALE, DEFAULT_SCALE));
+    HILOG_DEBUG("fontScale = %{public}d.", fontScale);
 
-    uint32_t FONTCOLOR = static_cast<uint32_t>(pref_->GetInt("fontColor", DEFAULT_COLOR));
-    HILOG_DEBUG("fontColor = 0x%{public}x.", FONTCOLOR);
+    uint32_t fontColor = static_cast<uint32_t>(datashare_->GetIntValue(FONT_COLOR, DEFAULT_COLOR));
+    HILOG_DEBUG("fontColor = 0x%{public}x.", fontColor);
 
-    std::string FONTEDGETYPE = pref_->GetString("fontEdgeType", "none");
-    HILOG_DEBUG("FONTEDGETYPE = 0x%{public}s.", FONTEDGETYPE.c_str());
+    std::string fontEdgeType = datashare_->GetStringValue(FONT_EDGE_TYPE, "none");
+    HILOG_DEBUG("fontEdgeType = 0x%{public}s.", fontEdgeType.c_str());
 
-    uint32_t BACKGROUNDCOLOR = static_cast<uint32_t>(pref_->GetInt("backgroundColor", DEFAULT_COLOR));
-    HILOG_DEBUG("BACKGROUNDCOLOR = 0x%{public}x.", BACKGROUNDCOLOR);
+    uint32_t backgroundColor = static_cast<uint32_t>(datashare_->GetIntValue(BACKGROUND_COLOR, DEFAULT_COLOR));
+    HILOG_DEBUG("backgroundColor = 0x%{public}x.", backgroundColor);
 
-    uint32_t WINDOWCOLOR = static_cast<uint32_t>(pref_->GetInt("windowColor", DEFAULT_COLOR));
-    HILOG_DEBUG("WINDOWCOLOR = 0x%{public}x.", WINDOWCOLOR);
+    uint32_t windowColor = static_cast<uint32_t>(datashare_->GetIntValue(WINDOW_COLOR, DEFAULT_COLOR));
+    HILOG_DEBUG("windowColor = 0x%{public}x.", windowColor);
 
-    captionProperty_.SetFontFamily(FONTFAMILY);
-    captionProperty_.SetFontScale(FONTSCALE);
-    captionProperty_.SetFontColor(FONTCOLOR);
-    captionProperty_.SetFontEdgeType(FONTEDGETYPE);
-    captionProperty_.SetBackgroundColor(BACKGROUNDCOLOR);
-    captionProperty_.SetWindowColor(WINDOWCOLOR);
+    captionProperty_.SetFontFamily(fontFamliy);
+    captionProperty_.SetFontScale(fontScale);
+    captionProperty_.SetFontColor(fontColor);
+    captionProperty_.SetFontEdgeType(fontEdgeType);
+    captionProperty_.SetBackgroundColor(backgroundColor);
+    captionProperty_.SetWindowColor(windowColor);
 }
 
 void AccessibilitySettingsConfig::InitSetting()
 {
     HILOG_DEBUG();
-    if (!pref_) {
-        HILOG_ERROR("Input Parameter is nullptr");
+    if (datashare_ == nullptr) {
         return;
     }
 
-    std::string strValue = pref_->GetString("ScreenMagnification", "");
-    isScreenMagnificationState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
+    isScreenMagnificationState_ = datashare_->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
+    isMouseKeyState_= datashare_->GetBoolValue(MOUSEKEY, false);
+    isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, false);
+    animationOffState_ = datashare_->GetBoolValue(ANIMATION_OFF_KEY, false);
+    invertColorState_ = datashare_->GetBoolValue(INVERT_COLOR_KEY, false);
+    highContrastTextState_ = datashare_->GetBoolValue(HIGH_CONTRAST_TEXT_KEY, false);
+    daltonizationState_ = datashare_->GetBoolValue(DALTONIZATION_STATE, false);
+    audioMonoState_ = datashare_->GetBoolValue(AUDIO_MONO_KEY, false);
+    ignoreRepeatClickState_ = datashare_->GetBoolValue(IGNORE_REPEAT_CLICK_TIME, false);
 
-    strValue = pref_->GetString("MouseKey", "");
-    isMouseKeyState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
+    shortkeyTarget_ = datashare_->GetStringValue("ShortkeyTarget", "none");
 
-    strValue = pref_->GetString("ShortKey", "");
-    isShortKeyState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
+    std::string tmpString = datashare_->GetStringValue(SHORTCUT_SERVICE, "");
+    Utils::StringToVector(tmpString, shortkeyMultiTarget_);
 
-    strValue = pref_->GetString("animationOff", "");
-    animationOffState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
-
-    strValue = pref_->GetString("invertColor", "");
-    invertColorState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
-
-    strValue = pref_->GetString("highContrastText", "");
-    highContrastTextState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
-
-    strValue = pref_->GetString("daltonizationState", "");
-    daltonizationState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
-
-    strValue = pref_->GetString("audioMono", "");
-    audioMonoState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
-
-    strValue = pref_->GetString("ignoreRepeatClickState", "");
-    ignoreRepeatClickState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
-
-    shortkeyTarget_ = pref_->GetString("ShortkeyTarget", "none");
-
-    std::string tmpString = pref_->GetString("ShortkeyMultiTarget", "");
-    StringToVector(tmpString, shortkeyMultiTarget_);
-
-    mouseAutoClick_ = static_cast<int32_t>(pref_->GetInt("MouseAutoClick", -1));
-    daltonizationColorFilter_ = static_cast<uint32_t>(pref_->GetInt("daltonizationColorFilter", 0));
-    contentTimeout_ = static_cast<uint32_t>(pref_->GetInt("contentTimeout", 0));
-    brightnessDiscount_ = static_cast<float>(pref_->GetFloat("brightnessDiscount", 1.0));
-    audioBalance_ = static_cast<float>(pref_->GetFloat("audioBalance", 0));
-    clickResponseTime_ = static_cast<uint32_t>(pref_->GetInt("clickResponseTime", 0));
-    ignoreRepeatClickTime_ = static_cast<uint32_t>(pref_->GetInt("ignoreRepeatClickTime", 0));
+    mouseAutoClick_ = static_cast<int32_t>(datashare_->GetIntValue("MouseAutoClick", -1));
+    daltonizationColorFilter_ = static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0));
+    contentTimeout_ = static_cast<uint32_t>(datashare_->GetIntValue(CONTENT_TIMEOUT_KEY, 0));
+    brightnessDiscount_ = static_cast<float>(datashare_->GetFloatValue(BRIGHTNESS_DISCOUNT_KEY, 1.0));
+    audioBalance_ = static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0));
+    clickResponseTime_ = static_cast<uint32_t>(datashare_->GetIntValue(CLICK_RESPONCE_TIME, 0));
+    ignoreRepeatClickTime_ = static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0));
 }
 
 void AccessibilitySettingsConfig::InitCapability()
 {
     HILOG_DEBUG();
-    if (!pref_) {
-        HILOG_ERROR("Input Parameter is nullptr");
+    if (datashare_ == nullptr) {
         return;
     }
 
-    std::string strValue = pref_->GetString("accessible", "");
-    HILOG_DEBUG("accessible = %{public}s", strValue.c_str());
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        enabled_ = true;
-    } else {
-        enabled_ = false;
-    }
-
-    strValue = pref_->GetString("touchGuide", "");
-    HILOG_DEBUG("touchGuide = %{public}s", strValue.c_str());
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        eventTouchGuideState_ = true;
-    } else {
-        eventTouchGuideState_ = false;
-    }
-
-    strValue = pref_->GetString("gesture", "");
-    HILOG_DEBUG("gesture = %{public}s", strValue.c_str());
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        gesturesSimulation_ = true;
-    } else {
-        gesturesSimulation_ = false;
-    }
-
-    strValue = pref_->GetString("keyEventObserver", "");
-    HILOG_DEBUG("keyEventObserver = %{public}s", strValue.c_str());
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        filteringKeyEvents_ = true;
-    } else {
-        filteringKeyEvents_ = false;
-    }
+    enabled_ = datashare_->GetBoolValue(ACCESSIBILITY, false);
+    eventTouchGuideState_ = datashare_->GetBoolValue(TOUCH_GUIDE_STATE, false);
+    gesturesSimulation_ = datashare_->GetBoolValue(GESTURE_KEY, false);
+    filteringKeyEvents_ = datashare_->GetBoolValue(KEYEVENT_OBSERVER, false);
 }
 
 void AccessibilitySettingsConfig::InitEnabledList()
 {
     HILOG_DEBUG();
-    if (!pref_) {
-        HILOG_ERROR("Input Parameter is nullptr");
+    if (datashare_ == nullptr) {
         return;
     }
 
-    std::string strValue = pref_->GetString("BundleName/AbilityName/Capabilities", "");
+    std::string strValue = datashare_->GetStringValue("BundleName/AbilityName/Capabilities", "");
     HILOG_DEBUG("Capabilities = %{public}s", strValue.c_str());
+    Utils::StringToVector(strValue, enabledAbilityInfos_);
+}
 
-    StringToVector(strValue, enabledAbilityInfos_);
+RetError AccessibilitySettingsConfig::SetConfigState(const std::string& key, bool value)
+{
+    if (!datashare_) {
+        return RET_ERR_NULLPTR;
+    }
+    return datashare_->PutBoolValue(key, value);
 }
 
 void AccessibilitySettingsConfig::Init()
 {
-    HILOG_INFO();
-    int errCode = -1;
-
-    pref_ = NativePreferences::PreferencesHelper::GetPreferences(PREF_PATH + std::to_string(accountId_) + ".xml",
-                                                                 errCode);
-    if (errCode) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::READ_EVENT, A11yError::ERROR_READ_FAILED);
-        HILOG_ERROR("GetPreferences failed! errCode(%{public}d).", errCode);
+    HILOG_DEBUG();
+    datashare_ = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SECURE, accountId_);
+    if (datashare_ == nullptr) {
         return;
     }
-
+    datashare_->Initialize(POWER_MANAGER_SERVICE_ID);
     InitCaption();
     InitSetting();
-}
-
-void AccessibilitySettingsConfig::VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut)
-{
-    HILOG_DEBUG();
-    int32_t i = 0;
-    for (auto& var : vectorVal) {
-        if (i > 0) {
-            stringOut = stringOut + ',';
-        }
-        stringOut = stringOut + var.c_str();
-        i++;
-    }
-    HILOG_DEBUG("stringOUT = %{public}s .", stringOut.c_str());
-}
-
-void AccessibilitySettingsConfig::StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult)
-{
-    HILOG_DEBUG();
-    int32_t strLength = static_cast<int32_t>(stringIn.size());
-    std::vector<int32_t> position;
-
-    if (strLength == 0) {
-        return;
-    }
-
-    for (int32_t j = 0; j < strLength; j++) {
-        if (stringIn[j] == ',') {
-            position.push_back(j);
-        }
-    }
-
-    int32_t wrodCount = static_cast<int32_t>(position.size());
-    if ((wrodCount == 0) && (strLength > 0)) {
-        vectorResult.push_back(stringIn);
-    } else {
-        int32_t startWrod = 0;
-        int32_t length = 0;
-        for (int32_t i = 0; i <= wrodCount; i++) {
-            if (i == 0) {
-                length = position[i];
-                vectorResult.push_back(stringIn.substr(startWrod, length)); // First string
-            } else if (i < wrodCount) {
-                startWrod = position[i - 1] + 1;
-                length = position[i] - position[i - 1] - 1;
-                vectorResult.push_back(stringIn.substr(startWrod, length)); // Second string to last-1 string
-            } else {
-                startWrod = position[i - 1] + 1;
-                length = strLength - position[i - 1] - 1;
-                vectorResult.push_back(stringIn.substr(startWrod, length)); // Last string
-            }
-        }
-    }
-    HILOG_DEBUG("strLength = %{public}d, wrodCount = %{public}d, stringIn : %{public}s",
-        strLength, wrodCount, stringIn.c_str());
-    for (auto& var : vectorResult) {
-        HILOG_DEBUG("vectorResult = %{public}s ", var.c_str());
-    }
 }
 
 const std::vector<std::string> &AccessibilitySettingsConfig::GetEnabledAbilityInfos()
@@ -798,26 +606,18 @@ void AccessibilitySettingsConfig::UpdateEnabledAbilities(const std::vector<std::
 {
     HILOG_DEBUG();
     enabledAbilityInfos_ = vecvalue;
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
+    if (datashare_ == nullptr) {
         return;
     }
+
     std::string stringOut = "";
-    VectorToString(enabledAbilityInfos_, stringOut);
-    pref_->PutString("BundleName/AbilityName/Capabilities", stringOut);
-    pref_->Flush();
+    Utils::VectorToString(enabledAbilityInfos_, stringOut);
+    datashare_->PutStringValue("BundleName/AbilityName/Capabilities", stringOut);
 }
 
 void AccessibilitySettingsConfig::ClearData()
 {
     HILOG_DEBUG();
-    int errCode = -1;
-    errCode = NativePreferences::PreferencesHelper::DeletePreferences(PREF_PATH + std::to_string(accountId_) + ".xml");
-    if (errCode) {
-        HILOG_ERROR("DeletePreferences failed!");
-    }
-
-    pref_ = nullptr;
 }
 } // namespace Accessibility
 } // namespace OHOS

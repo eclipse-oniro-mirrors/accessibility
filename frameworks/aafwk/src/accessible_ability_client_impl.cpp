@@ -784,6 +784,25 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId,
     return SearchElementInfoFromAce(activeWindow, elementId, cacheMode_, targetElementInfo);
 }
 
+RetError AccessibleAbilityClientImpl::GetCursorPosition(const AccessibilityElementInfo &elementInfo, int32_t &position)
+{
+    HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+    int32_t windowId = elementInfo.GetWindowId();
+    int64_t elementId = elementInfo.GetAccessibilityId();
+    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]d", windowId, elementId);
+    return channelClient_->GetCursorPosition(windowId, elementId, position);
+}
+
 RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &elementInfo,
     const ActionType action, const std::map<std::string, std::string> &actionArguments)
 {
@@ -807,6 +826,16 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d", windowId, elementId, action);
     return channelClient_->ExecuteAction(windowId, elementId, action,
         const_cast<std::map<std::string, std::string> &>(actionArguments));
+}
+
+RetError AccessibleAbilityClientImpl::EnableScreenCurtain(bool isEnable)
+{
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    return channelClient_->EnableScreenCurtain(isEnable);
 }
 
 RetError AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)

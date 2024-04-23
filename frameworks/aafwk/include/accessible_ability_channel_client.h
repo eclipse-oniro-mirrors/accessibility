@@ -95,6 +95,22 @@ public:
         int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments);
 
     /**
+     * @brief Package status to send server data.
+     * @param isEnable status info.
+     * @return Return RET_OK if search element info successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError EnableScreenCurtain(bool isEnable);
+
+    /**
+     * @brief To return the result of cursor position.
+     * @param accessibilityWindowId The window id that the component belongs to.
+     * @param elementId: The unique id of the component ID.
+     * @param position: The position of the cursor to get.
+     * @return Return RET_OK if search element info successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError GetCursorPosition(int32_t accessibilityWindowId, int64_t elementId, int32_t &position);
+
+    /**
      * @brief Find the node information by accessibility ID.
      * @param accessibilityWindowId The window id that the component belongs to.
      * @param elementId: The unique id of the component ID.

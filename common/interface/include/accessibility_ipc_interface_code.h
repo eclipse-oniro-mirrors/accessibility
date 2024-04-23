@@ -24,12 +24,14 @@ namespace Accessibility {
         SET_RESULT_FOCUSED_INFO,
         SET_RESULT_FOCUS_MOVE,
         SET_RESULT_PERFORM_ACTION,
+        SET_RESULT_CURSOR_RESULT,
 
         SEARCH_BY_ACCESSIBILITY_ID = 200,
         SEARCH_BY_TEXT,
         FIND_FOCUSED_INFO,
         FOCUS_FIND,
         PERFORM_ACTION_ELEMENT,
+        CURSOR_POSITION,
         CLEAR_FOCUS,
         OUTSIDE_TOUCH,
 
@@ -41,6 +43,7 @@ namespace Accessibility {
         FIND_FOCUSED_ELEMENTINFO,
         FOCUS_MOVE_SEARCH,
         PERFORM_ACTION,
+        SET_CURTAIN_SCREEN,
         GET_WINDOW,
         GET_WINDOWS,
         GET_WINDOWS_BY_DISPLAY_ID,
@@ -49,6 +52,7 @@ namespace Accessibility {
         SEND_SIMULATE_GESTURE_PATH,
         SET_TARGET_BUNDLE_NAME,
         GET_FOCUSED_WINDOW_ID,
+        GET_CURSOR_POSITION,
 
         INIT = 500,
         DISCONNECT,

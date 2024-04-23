@@ -1183,11 +1183,23 @@ HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityText_001, TestSize.Level1
 HWTEST_F(AccessibilityElementInfoTest, SetTextType_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetTextType_001 start";
-    elementInfo_->SetAccessibilityText("test");
-    EXPECT_STREQ(elementInfo_->GetAccessibilityText().c_str(), "test");
+    elementInfo_->SetTextType("test");
+    EXPECT_STREQ(elementInfo_->GetTextType().c_str(), "test");
     GTEST_LOG_(INFO) << "SetTextType_001 end";
 }
 
+/**
+ * @tc.number: SetOffset_001
+ * @tc.name: SetOffset
+ * @tc.desc: Test function SetOffset, GetOffset
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetOffset_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetOffset_001 start";
+    elementInfo_->SetOffset(6.6f);
+    EXPECT_FLOAT_EQ(elementInfo_->GetOffset(), 6.6f);
+    GTEST_LOG_(INFO) << "SetOffset_001 end";
+}
 
 } // namespace Accessibility
 } // namespace OHOS
