@@ -154,11 +154,16 @@ RetError AccessibleAbilityChannelClient::GetCursorPosition(
 RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId,
     int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments)
 {
-    HILOG_DEBUG("[channelId:%{public}d]", channelId_);
+    HILOG_DEBUG("execute action:%{public}d, elementId:%{public}" PRId64 "", action, elementId);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "ExecuteAction");
     if (!proxy_) {
         HILOG_ERROR("ExecuteAction Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
+    }
+    if (action == ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS &&
+        accessibilityFocusedElementId_ != INVALID_WINDOW_ID) {
+        ExecuteAction(accessibilityFocusedWindowId_, accessibilityFocusedElementId_,
+            ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS, actionArguments);
     }
 
     int32_t requestId = GenerateRequestId();
@@ -182,17 +187,18 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
         HILOG_ERROR("Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
-    HILOG_INFO("Get result successfully from ace. executeActionResult_[%{public}d]",
-        elementOperator->executeActionResult_);
+    HILOG_INFO("action:[%{public}d], executeActionResult_[%{public}d]", action, elementOperator->executeActionResult_);
 
     if (elementOperator->executeActionResult_) {
         switch (action) {
             case ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS:
                 accessibilityFocusedWindowId_ = accessibilityWindowId;
-                HILOG_INFO("Set accessibility focused window id[%{public}d]", accessibilityFocusedWindowId_);
+                accessibilityFocusedElementId_ = elementId;
+                HILOG_INFO("Set windowId:%{public}d, elementId:%{public}" PRId64 "", accessibilityWindowId, elementId);
                 break;
             case ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS:
                 accessibilityFocusedWindowId_ = INVALID_WINDOW_ID;
+                accessibilityFocusedElementId_ = INVALID_WINDOW_ID;
                 HILOG_INFO("Clear accessibility focused window id");
                 break;
             default:
