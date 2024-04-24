@@ -185,24 +185,24 @@ int64_t AccessibilityWindowInfo::GetUiNodeId() const
 void AccessibilityWindowInfo::SetBundleName(const std::string bundleName)
 {
     bundleName_ = bundleName;
-    HILOG_DEBUG("set bundleName_");
+    HILOG_DEBUG("set bundleName_ [%{public}s]", bundleName_.c_str());
 }
 
 std::string AccessibilityWindowInfo::GetBundleName()
 {
-    HILOG_DEBUG("get bundleName_");
+    HILOG_DEBUG("get bundleName_ [%{public}s]", bundleName_.c_str());
     return bundleName_;
 }
 
 void AccessibilityWindowInfo::SetTouchHotAreas(const std::vector<Rect> &touchHotAreas)
 {
     touchHotAreas_ = touchHotAreas;
-    HILOG_DEBUG("set touchHotAreas_");
+    HILOG_DEBUG("set touchHotAreas_ size(%{public}u)", touchHotAreas_.size());
 }
 
 std::vector<Rect> AccessibilityWindowInfo::GetTouchHotAreas()
 {
-    HILOG_DEBUG("get touchHotAreas_");
+    HILOG_DEBUG("get touchHotAreas_size(%{public}u)", touchHotAreas_.size());
     return touchHotAreas_;
 }
 
