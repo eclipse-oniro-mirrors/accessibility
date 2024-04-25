@@ -127,6 +127,7 @@ public:
     static void GetElementInfoAccessibilityText(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoTextType(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoOffset(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);
@@ -171,6 +172,10 @@ private:
     static AccessibilityElement* UnrapAccessibilityElement(napi_env env, napi_value thisVar);
     static bool CheckElementInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value);
     static bool CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoAllAttribute1(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoAllAttribute2(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoAllAttribute3(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoAllAttribute4(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     NAccessibilityElement() = default;
     ~NAccessibilityElement() = default;
