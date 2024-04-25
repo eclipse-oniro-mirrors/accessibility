@@ -935,6 +935,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState(
     MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG();
+
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
     bool result = false;
     RetError ret = GetScreenMagnificationState(result);
     reply.WriteInt32(ret);
@@ -1074,6 +1080,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetHighContrastTextState(Mess
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioMonoState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
+
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
     bool result = false;
     RetError ret = GetAudioMonoState(result);
     reply.WriteInt32(ret);
@@ -1178,6 +1190,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetBrightnessDiscount(Message
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioBalance(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
+
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
     float result = 0;
     RetError ret = GetAudioBalance(result);
     reply.WriteInt32(ret);
@@ -1227,6 +1245,11 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAllConfigs(MessageParcel &
 {
     HILOG_DEBUG();
 
+    if (!IsSystemApp()) {
+        HILOG_WARN("HandleSetHighContrastTextState Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
     AccessibilityConfigData configData;
     GetAllConfigs(configData);
     CaptionPropertyParcel captionParcel(configData.captionProperty_);
