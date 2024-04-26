@@ -176,6 +176,7 @@ private:
     static void GetElementInfoAllAttribute2(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAllAttribute3(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAllAttribute4(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     NAccessibilityElement() = default;
     ~NAccessibilityElement() = default;
