@@ -197,6 +197,7 @@ int AccessibleAbilityManagerServiceStub::OnRemoteRequest(
     if (memFunc != memberFuncMap_.end()) {
         auto func = memFunc->second;
         if (func != nullptr) {
+            PostDelayUnloadTask(); // try to unload accessibility sa
             return (this->*func)(data, reply);
         }
     }

@@ -20,10 +20,14 @@
 #include <deque>
 #include <memory>
 #include <mutex>
+#include <condition_variable>
 #include "accessible_ability_channel_client.h"
 #include "accessible_ability_client.h"
 #include "accessible_ability_client_stub.h"
 #include "i_accessible_ability_manager_service.h"
+#include "refbase.h"
+#include "system_ability_load_callback_stub.h"
+#include "system_ability_status_change_stub.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -343,6 +347,10 @@ public:
     void AddCacheByAce(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
     void SortElementInfosIfNecessary(std::vector<AccessibilityElementInfo> &elementInfos);
 
+    bool LoadAccessibilityService();
+    void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
+    void LoadSystemAbilityFail();
+
 private:
     class ElementCacheInfo {
     public:
@@ -398,6 +406,19 @@ private:
         AccessibleAbilityClientImpl &client_;
     };
 
+    class AccessibilityLoadCallback : public SystemAbilityLoadCallbackStub {
+    public:
+        void OnLoadSystemAbilitySuccess(int32_t systemAbilityId,
+            const sptr<IRemoteObject> &remoteObject) override;
+        void OnLoadSystemAbilityFail(int32_t systemAbilityId) override;
+    };
+
+    class AccessibilitySaStatusChange : public SystemAbilityStatusChangeStub {
+    public:
+        void OnAddSystemAbility(int32_t saId, const std::string &deviceId) override;
+        void OnRemoveSystemAbility(int32_t saId, const std::string &deviceId) override;
+    };
+
     bool GetCacheElementInfo(const int32_t windowId,
         const int64_t elementId, AccessibilityElementInfo &elementInfo) const;
     void SetCacheElementInfo(const int32_t windowId,
@@ -405,7 +426,7 @@ private:
     RetError SearchElementInfoFromAce(const int32_t windowId, const int64_t elementId,
         const uint32_t mode, AccessibilityElementInfo &info);
     bool InitAccessibilityServiceProxy();
-    static void OnParameterChanged(const char *key, const char *value, void *context);
+    sptr<Accessibility::IAccessibleAbilityManagerService> GetServiceProxy();
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> accessibilityServiceDeathRecipient_ = nullptr;
@@ -420,6 +441,9 @@ private:
     // used for query element info in batch
     ElementCacheInfo elementCacheInfo_;
     SceneBoardWindowElementMap windowElementMap_;
+
+    std::condition_variable proxyConVar_;
+    std::mutex conVarMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
