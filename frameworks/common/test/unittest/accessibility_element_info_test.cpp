@@ -196,6 +196,47 @@ HWTEST_F(AccessibilityElementInfoTest, GetChildId_001, TestSize.Level1)
 }
 
 /**
+ * @tc.number: GetChildId_002
+ * @tc.name: GetChildId
+ * @tc.desc: Test function GetChildId
+ */
+HWTEST_F(AccessibilityElementInfoTest, GetChildId_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetChildId_002 start";
+    elementInfo_->AddChild(1);
+    EXPECT_EQ(elementInfo_->GetChildId(0), 1);
+    GTEST_LOG_(INFO) << "GetChildId_002 end";
+}
+
+/**
+ * @tc.number: GetChildId_003
+ * @tc.name: GetChildId
+ * @tc.desc: Test function GetChildId
+ */
+HWTEST_F(AccessibilityElementInfoTest, GetChildId_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetChildId_003 start";
+    int64_t childId = 1;
+    int32_t index = 1;
+    elementInfo_->AddChild(childId);
+    EXPECT_EQ(elementInfo_->GetChildId(index), -1);
+    GTEST_LOG_(INFO) << "GetChildId_003 end";
+}
+
+/**
+ * @tc.number: GetChildId_004
+ * @tc.name: GetChildId
+ * @tc.desc: Test function GetChildId
+ */
+HWTEST_F(AccessibilityElementInfoTest, GetChildId_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetChildId_004 start";
+    EXPECT_EQ(elementInfo_->GetChildId(-1), -1);
+    GTEST_LOG_(INFO) << "GetChildId_004 end";
+}
+
+
+/**
  * @tc.number: GetChildCount_001
  * @tc.name: GetChildCount
  * @tc.desc: Test function GetChildCount
@@ -234,6 +275,23 @@ HWTEST_F(AccessibilityElementInfoTest, AddChild_001, TestSize.Level1)
 }
 
 /**
+ * @tc.number: AddChild_002
+ * @tc.name: AddChild
+ * @tc.desc: Test function AddChild
+ */
+HWTEST_F(AccessibilityElementInfoTest, AddChild_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AddChild_002 start";
+    elementInfo_->AddChild(1);
+    EXPECT_EQ(elementInfo_->GetChildCount(), 1);
+    EXPECT_EQ(static_cast<int>(elementInfo_->GetChildIds().size()), 1);
+    elementInfo_->AddChild(1);
+    EXPECT_EQ(elementInfo_->GetChildCount(), 1);
+    EXPECT_EQ(static_cast<int>(elementInfo_->GetChildIds().size()), 1);
+    GTEST_LOG_(INFO) << "AddChild_002 end";
+}
+
+/**
  * @tc.number: RemoveChild_001
  * @tc.name: RemoveChild
  * @tc.desc: Test function RemoveChild
@@ -243,6 +301,20 @@ HWTEST_F(AccessibilityElementInfoTest, RemoveChild_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "RemoveChild_001 start";
     EXPECT_FALSE(elementInfo_->RemoveChild(1));
     GTEST_LOG_(INFO) << "RemoveChild_001 end";
+}
+
+/**
+ * @tc.number: RemoveChild_002
+ * @tc.name: RemoveChild
+ * @tc.desc: Test function RemoveChild
+ */
+HWTEST_F(AccessibilityElementInfoTest, RemoveChild_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "RemoveChild_002 start";
+    elementInfo_->AddChild(1);
+    EXPECT_EQ(elementInfo_->GetChildCount(), 1);
+    EXPECT_TRUE(elementInfo_->RemoveChild(1));
+    GTEST_LOG_(INFO) << "RemoveChild_002 end";
 }
 
 /**
@@ -301,6 +373,41 @@ HWTEST_F(AccessibilityElementInfoTest, DeleteAction_002, TestSize.Level1)
     ActionType action = ActionType::ACCESSIBILITY_ACTION_FOCUS;
     EXPECT_FALSE(elementInfo_->DeleteAction(action));
     GTEST_LOG_(INFO) << "DeleteAction_002 end";
+}
+
+/**
+ * @tc.number: DeleteAction_003
+ * @tc.name: DeleteAction
+ * @tc.desc: Test function DeleteAction
+ */
+HWTEST_F(AccessibilityElementInfoTest, DeleteAction_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "DeleteAction_003 start";
+    AccessibleAction action = AccessibleAction(
+        ACCESSIBILITY_ACTION_FOCUS, std::string("accessibility_action_focus"));
+    AccessibleAction actionSelect = AccessibleAction(
+        ACCESSIBILITY_ACTION_SELECT, std::string("accessiblety_action_select"));
+    elementInfo_->AddAction(action);
+    EXPECT_EQ(static_cast<int>(elementInfo_->GetActionList().size()), 1);
+    elementInfo_->DeleteAction(actionSelect);
+    EXPECT_EQ(static_cast<int>(elementInfo_->GetActionList().size()), 1);
+    GTEST_LOG_(INFO) << "DeleteAction_003 end";
+}
+
+/**
+ * @tc.number: DeleteAction_004
+ * @tc.name: DeleteAction
+ * @tc.desc: Test function DeleteAction
+ */
+HWTEST_F(AccessibilityElementInfoTest, DeleteAction_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "DeleteAction_004 start";
+    ActionType actionType = ActionType::ACCESSIBILITY_ACTION_FOCUS;
+    AccessibleAction action = AccessibleAction(actionType, std::string("accessibility_aciton_foucus"));
+    elementInfo_->AddAction(action);
+    EXPECT_EQ(static_cast<int>(elementInfo_->GetActionList().size()), 1);
+    EXPECT_TRUE(elementInfo_->DeleteAction(actionType));
+    GTEST_LOG_(INFO) << "DeleteAction_004 end";
 }
 
 /**
