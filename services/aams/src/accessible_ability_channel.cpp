@@ -51,6 +51,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
     const int32_t mode, bool isFilter)
 {
     HILOG_DEBUG();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -96,6 +97,7 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -134,6 +136,7 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -171,6 +174,7 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -207,6 +211,7 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
 void AccessibleAbilityChannel::SetKeyCodeSingle(std::shared_ptr<MMI::KeyEvent>& keyEvent, const int32_t keyCode)
 {
     HILOG_DEBUG();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (!keyEvent) {
         HILOG_ERROR("KeyEvent is nullptr");
         return;
@@ -226,6 +231,7 @@ void AccessibleAbilityChannel::SetKeyCodeMulti(std::shared_ptr<MMI::KeyEvent>& k
     const int32_t keyCodeNext)
 {
     HILOG_DEBUG();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (!keyEvent) {
         HILOG_ERROR("KeyEvent is nullptr");
         return;
@@ -248,6 +254,7 @@ void AccessibleAbilityChannel::SetKeyCodeMulti(std::shared_ptr<MMI::KeyEvent>& k
 RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
 {
     HILOG_DEBUG("The action is %{public}d", action);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
     if (!keyEvent) {
         HILOG_ERROR("KeyEvent is nullptr");
@@ -275,6 +282,7 @@ RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
 RetError AccessibleAbilityChannel::EnableScreenCurtain(bool isEnable)
 {
     HILOG_DEBUG();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     HILOG_INFO("enter AccessibleAbilityChannel::EnableScreenCurtain isEnable = %{public}d", isEnable);
 
     if (!eventHandler_) {
@@ -298,7 +306,7 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
-
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -343,7 +351,7 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
 RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     HILOG_DEBUG("windowId:%{public}d", windowId);
-
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -387,6 +395,7 @@ RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, Accessibili
 RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     uint64_t displayId = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplayId();
     HILOG_DEBUG("default display id is %{public}" PRIu64 "", displayId);
@@ -459,7 +468,7 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
 void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
 {
     HILOG_DEBUG();
-
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return;
@@ -485,6 +494,7 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -520,6 +530,7 @@ RetError AccessibleAbilityChannel::SendSimulateGesture(
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_INFO();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr");
         return RET_ERR_NULLPTR;
@@ -564,6 +575,7 @@ RetError AccessibleAbilityChannel::SendSimulateGesture(
 RetError AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr");
         return RET_ERR_NULLPTR;

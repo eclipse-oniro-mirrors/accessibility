@@ -18,10 +18,14 @@
 
 #include <array>
 #include <mutex>
+#include <condition_variable>
 #include "accessibility_element_operator_impl.h"
 #include "accessibility_system_ability_client.h"
 #include "accessible_ability_manager_state_observer_stub.h"
 #include "i_accessible_ability_manager_service.h"
+#include "refbase.h"
+#include "system_ability_load_callback_stub.h"
+#include "system_ability_status_change_stub.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -202,6 +206,10 @@ public:
     virtual void SetPerformActionResult(const bool succeeded, const int32_t requestId) override;
     virtual RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
 
+    bool LoadAccessibilityService();
+    void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
+    void LoadSystemAbilityFail();
+
 private:
     class AccessibleAbilityManagerStateObserverImpl : public AccessibleAbilityManagerStateObserverStub {
     public:
@@ -229,6 +237,19 @@ private:
         }
     private:
         AccessibilitySystemAbilityClientImpl &client_;
+    };
+
+    class AccessibilityLoadCallback : public SystemAbilityLoadCallbackStub {
+    public:
+        void OnLoadSystemAbilitySuccess(int32_t systemAbilityId,
+            const sptr<IRemoteObject> &remoteObject) override;
+        void OnLoadSystemAbilityFail(int32_t systemAbilityId) override;
+    };
+
+    class AccessibilitySaStatusChange : public SystemAbilityStatusChangeStub {
+    public:
+        void OnAddSystemAbility(int32_t saId, const std::string &deviceId) override;
+        void OnRemoveSystemAbility(int32_t saId, const std::string &deviceId) override;
     };
 
     /**
@@ -265,6 +286,9 @@ private:
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerStateObserverImpl> stateObserver_ = nullptr;
+
+    std::condition_variable proxyConVar_;
+    std::mutex conVarMutex_; // mutex for proxyConVar
 };
 } // namespace Accessibility
 } // namespace OHOS

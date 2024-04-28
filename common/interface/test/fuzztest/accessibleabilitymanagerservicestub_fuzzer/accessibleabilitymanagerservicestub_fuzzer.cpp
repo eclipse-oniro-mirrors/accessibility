@@ -115,6 +115,7 @@ public:
     void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override {}
     RetError GetFocusedWindowId(int32_t &focusedWindowId) override {return RET_OK;}
     uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override {return 0;}
+    void PostDelayUnloadTask() override {}
 };
 
 uint32_t GetU32Data(const uint8_t* ptr)
