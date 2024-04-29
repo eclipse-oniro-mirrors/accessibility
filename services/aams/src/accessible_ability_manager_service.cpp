@@ -1437,7 +1437,7 @@ bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t window
     }
 
     sptr<ElementOperatorCallbackImpl> callBack = new(std::nothrow) ElementOperatorCallbackImpl();
-    if (!callBack) {
+    if (callBack == nullptr) {
         HILOG_ERROR("Failed to create callBack.");
         return false;
     }
