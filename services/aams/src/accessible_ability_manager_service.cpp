@@ -2166,7 +2166,7 @@ void AccessibleAbilityManagerService::OnDeviceProvisioned()
     if (accountData->GetScreenReaderState() == false) {
         HILOG_DEBUG();
         accountData->GetConfig()->SetShortKeyState(false);
-        std::vector<std::string> tmpVec { "" };
+        std::vector<std::string> tmpVec;
         accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
         UpdateConfigState();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
