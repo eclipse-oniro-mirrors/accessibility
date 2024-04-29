@@ -859,5 +859,20 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_C
     settingConfig_->ClearData();
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_ClearData_001 end";
 }
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001
+ * @tc.name: SetShortkeyMultiTargetInPkgRemove
+ * @tc.desc: Test function SetShortkeyMultiTargetInPkgRemove
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, Unittest_SetShortkeyMultiTargetInPkgRemove_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001 start";
+    settingConfig_->Init();
+    std::string name = "TEST";
+    settingConfig_->SetShortkeyMultiTargetInPkgRemove(name);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001 end";
+}
+
 } // namespace Accessibility
 } // namespace OHOS
