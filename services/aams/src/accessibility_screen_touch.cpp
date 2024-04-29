@@ -273,6 +273,7 @@ void AccessibilityScreenTouch::HandleResponseDelayState(MMI::PointerEvent &event
             HandleResponseDelayStateInnerUp(event);
             break;
         default:
+            EventTransmission::OnPointerEvent(event);
             break;
     }
 }
@@ -333,6 +334,7 @@ void AccessibilityScreenTouch::HandleIgnoreRepeatClickState(MMI::PointerEvent &e
             HandleIgnoreRepeatClickStateInnerUp(event);
             break;
         default:
+            EventTransmission::OnPointerEvent(event);
             break;
     }
 }
@@ -397,6 +399,7 @@ void AccessibilityScreenTouch::HandleBothState(MMI::PointerEvent &event)
             HandleBothStateInnerUp(event);
             break;
         default:
+            EventTransmission::OnPointerEvent(event);
             break;
     }
 }
