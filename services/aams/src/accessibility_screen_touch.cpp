@@ -66,6 +66,7 @@ const std::map<uint32_t, uint32_t> IGNORE_REPEAT_CLICK_TIME_MAP = {
 };
 
 int64_t AccessibilityScreenTouch::lastUpTime = 0; // global last up time
+int32_t AccessibilityScreenTouch::lastDownPointerId = -1; // global last down pointer id
 
 AccessibilityScreenTouch::AccessibilityScreenTouch()
 {
@@ -88,6 +89,7 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
     }
 
     lastUpTime_ = lastUpTime;
+    lastDownPointerId_ = lastDownPointerId;
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
@@ -106,6 +108,7 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
 AccessibilityScreenTouch::~AccessibilityScreenTouch()
 {
     lastUpTime = lastUpTime_;
+    lastDownPointerId = lastDownPointerId_;
     if (drawCircleThread_ && drawCircleThread_->joinable()) {
         drawCircleThread_->join();
     }
@@ -291,6 +294,10 @@ void AccessibilityScreenTouch::HandleIgnoreRepeatClickStateInnerDown(MMI::Pointe
         return;
     }
 
+    // If the value of lastDownPointerId_ is not -1, it is not matched with an up action and shouldn't be update. 
+    if (lastDownPointerId_ == -1) {
+        lastDownPointerId_ = event.GetPointerId();
+    }
     EventTransmission::OnPointerEvent(event);
     isInterceptClick_ = false;
 }
@@ -310,11 +317,17 @@ void AccessibilityScreenTouch::HandleIgnoreRepeatClickStateInnerMove(MMI::Pointe
 void AccessibilityScreenTouch::HandleIgnoreRepeatClickStateInnerUp(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
-        return;
+    std::vector<int32_t> pointerIds{ event.GetPointerIds() };
+    for (const auto &pointerId : pointerIds) {
+        if (pointerId == lastDownPointerId_) {
+            EventTransmission::OnPointerEvent(event);
+            lastUpTime_ = event.GetActionTime();
+            lastDownPointerId_ = -1;
+            return;
+        }
     }
 
-    if (isInterceptClick_ == false) {
+    if (event.GetPointerIds().size() == POINTER_COUNT_1 && isInterceptClick_ == false) {
         EventTransmission::OnPointerEvent(event);
         lastUpTime_ = event.GetActionTime();
     }
@@ -353,6 +366,10 @@ void AccessibilityScreenTouch::HandleBothStateInnerDown(MMI::PointerEvent &event
     }
 
     HandleResponseDelayStateInnerDown(event);
+    // If the value of lastDownPointerId_ is not -1, it is not matched with an up action and shouldn't be update. 
+    if (lastDownPointerId_ == -1) {
+        lastDownPointerId_ = event.GetPointerId();
+    }
     isInterceptClick_ = false;
 }
 
@@ -373,8 +390,13 @@ void AccessibilityScreenTouch::HandleBothStateInnerMove(MMI::PointerEvent &event
 void AccessibilityScreenTouch::HandleBothStateInnerUp(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
-        return;
+    std::vector<int32_t> pointerIds{ event.GetPointerIds() };
+    for (const auto &pointerId : pointerIds) {
+        if (pointerId == lastDownPointerId_) {
+            lastUpTime_ = event.GetActionTime();
+            lastDownPointerId_ = -1;
+            break;
+        }
     }
 
     if (isInterceptClick_ == true) {
