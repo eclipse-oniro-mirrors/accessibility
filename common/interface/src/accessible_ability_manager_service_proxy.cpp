@@ -1449,6 +1449,12 @@ void AccessibleAbilityManagerServiceProxy::GetAllConfigs(AccessibilityConfigData
         HILOG_ERROR("GetAllConfigs fail");
         return;
     }
+
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret != RET_OK) {
+        HILOG_ERROR("GetAllConfigs failed %{public}d", ret);
+        return;
+    }
     std::vector<std::string> tmpMultiTarget;
     configData.highContrastText_ = reply.ReadBool();
     configData.invertColor_ = reply.ReadBool();

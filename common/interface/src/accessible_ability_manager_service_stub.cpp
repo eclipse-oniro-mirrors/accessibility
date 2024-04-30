@@ -1226,6 +1226,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetIgnoreRepeatClickTime(Mess
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetAllConfigs(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
+    reply.WriteInt32(RET_OK);
 
     AccessibilityConfigData configData;
     GetAllConfigs(configData);
