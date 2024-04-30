@@ -34,9 +34,9 @@ namespace {
         {ActionType::ACCESSIBILITY_ACTION_BACK,
             {true, {MMI::KeyEvent::KEYCODE_BACK, MMI::KeyEvent::KEYCODE_BACK}}},
         {ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER,
-            {true, {MMI::KeyEvent::KEYCODE_NOTIFICATION, MMI::KeyEvent::KEYCODE_NOTIFICATION}}},
+            {true, {MMI::KeyEvent::KEYCODE_CALL_NOTIFICATION_CENTER, MMI::KeyEvent::KEYCODE_CALL_NOTIFICATION_CENTER}}},
         {ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER,
-            {true, {MMI::KeyEvent::KEYCODE_CONTROLPANEL, MMI::KeyEvent::KEYCODE_CONTROLPANEL}}}};
+            {true, {MMI::KeyEvent::KEYCODE_CALL_CONTROL_CENTER, MMI::KeyEvent::KEYCODE_CALL_CONTROL_CENTER}}}};
 } // namespace
 
 AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName)
