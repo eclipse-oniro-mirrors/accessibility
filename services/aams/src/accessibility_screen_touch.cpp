@@ -327,7 +327,7 @@ void AccessibilityScreenTouch::HandleIgnoreRepeatClickStateInnerUp(MMI::PointerE
         }
     }
 
-    if (event.GetPointerIds().size() == POINTER_COUNT_1 && isInterceptClick_ == false) {
+    if (isInterceptClick_ == false) {
         EventTransmission::OnPointerEvent(event);
         lastUpTime_ = event.GetActionTime();
     }
