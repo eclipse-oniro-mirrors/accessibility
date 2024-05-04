@@ -17,16 +17,12 @@
 #define ACCESSIBILITY_CONFIG_IMPL_H
 
 #include <mutex>
-#include <condition_variable>
 #include "accessibility_config.h"
 #include "accessibility_enable_ability_lists_observer_stub.h"
 #include "accessible_ability_manager_caption_observer_stub.h"
 #include "accessible_ability_manager_config_observer_stub.h"
 #include "accessible_ability_manager_service_proxy.h"
 #include "event_handler.h"
-#include "refbase.h"
-#include "system_ability_load_callback_stub.h"
-#include "system_ability_status_change_stub.h"
 
 namespace OHOS {
 namespace AccessibilityConfig {
@@ -107,10 +103,6 @@ public:
     void OnAccessibilityEnableAbilityListsChanged();
     void OnAccessibilityInstallAbilityListsChanged();
 
-    void SetInitializeFlag(bool flag)
-    {
-        isInitialized_ = flag;
-    }
 private:
     class AccessibilityEnableAbilityListsObserverImpl :
         public Accessibility::AccessibilityEnableAbilityListsObserverStub {
@@ -145,27 +137,6 @@ private:
         }
     private:
         Impl &config_;
-    };
-
-    class AccessibilityLoadCallback : public SystemAbilityLoadCallbackStub {
-    public:
-        explicit AccessibilityLoadCallback(Impl* config) : config_(config) {}
-        ~AccessibilityLoadCallback() = default;
-        void OnLoadSystemAbilitySuccess(int32_t systemAbilityId,
-            const sptr<IRemoteObject> &remoteObject) override;
-        void OnLoadSystemAbilityFail(int32_t systemAbilityId) override;
-    private:
-        Impl* config_ = nullptr;
-    };
-
-    class AccessibilitySaStatusChange : public SystemAbilityStatusChangeStub {
-    public:
-        explicit AccessibilitySaStatusChange(Impl* config) : config_(config) {}
-        ~AccessibilitySaStatusChange() = default;
-        void OnAddSystemAbility(int32_t saId, const std::string &deviceId) override;
-        void OnRemoveSystemAbility(int32_t saId, const std::string &deviceId) override;
-    private:
-        Impl* config_ = nullptr;
     };
 
     class AccessibleAbilityManagerConfigObserverImpl
@@ -238,11 +209,6 @@ private:
 
     bool RegisterToService();
     bool InitAccessibilityServiceProxy();
-
-    bool LoadAccessibilityService();
-    void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
-    void LoadSystemAbilityFail();
-    sptr<Accessibility::IAccessibleAbilityManagerService> GetServiceProxy();
 
     void NotifyCaptionStateChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
         const bool state);
@@ -343,9 +309,6 @@ private:
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AppExecFwk::EventHandler> handler_;
-
-    std::condition_variable proxyConVar_;
-    std::mutex conVarMutex_; // mutex for proxyConVar
 };
 } // namespace AccessibilityConfig
 } // namespace OHOS
