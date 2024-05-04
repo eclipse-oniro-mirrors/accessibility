@@ -179,6 +179,8 @@ private:
     ErrCode HandleGetSceneBoardInnerWinId(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetFocusedWindowId(MessageParcel &data, MessageParcel &reply);
 
+    virtual void PostDelayUnloadTask() = 0;
+
     using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceStub::*)(
         MessageParcel &data, MessageParcel &reply);
     std::map<uint32_t, AccessibilityAbilityManagerServiceFunc> memberFuncMap_;
