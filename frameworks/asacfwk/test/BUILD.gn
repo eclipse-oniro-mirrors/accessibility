@@ -82,7 +82,6 @@ ohos_unittest("asac_unit_test") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
-    "samgr:samgr_proxy",
   ]
 }
 

@@ -82,7 +82,6 @@ public:
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
     void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
     int Dump(int fd, const std::vector<std::u16string>& args) override;
-    void PostDelayUnloadTask() override;
 
 public:
     /* For AccessibleAbilityManagerServiceStub */
@@ -368,7 +367,6 @@ private:
     
     void OnDeviceProvisioned();
     void RegisterShortKeyEvent();
-    bool IsNeedUnload();
 
     bool isReady_ = false;
     bool isPublished_ = false;
