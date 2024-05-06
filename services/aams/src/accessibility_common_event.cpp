@@ -24,6 +24,7 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr int32_t RETRY_SUBSCRIBER = 3;
+    const std::string KEY_USER_ID = "userId";
 } // namespace
 
 AccessibilityCommonEvent::AccessibilityCommonEvent()
@@ -156,21 +157,39 @@ void AccessibilityCommonEvent::HandleUserSwitched(const EventFwk::CommonEventDat
 void AccessibilityCommonEvent::HandlePackageRemoved(const EventFwk::CommonEventData &data) const
 {
     std::string bundleName = data.GetWant().GetBundle();
-    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
+    int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
+    int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
+    HILOG_INFO("bundleName is %{public}s, userId is %{public}d accountId is %{public}d",
+        bundleName.c_str(), userId, accountId);
+    if (userId != accountId) {
+        return;
+    }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
 }
 
 void AccessibilityCommonEvent::HandlePackageAdd(const EventFwk::CommonEventData &data) const
 {
     std::string bundleName = data.GetWant().GetBundle();
-    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
+    int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
+    int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
+    HILOG_INFO("bundleName is %{public}s, userId is %{public}d accountId is %{public}d",
+        bundleName.c_str(), userId, accountId);
+    if (userId != accountId) {
+        return;
+    }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
 }
 
 void AccessibilityCommonEvent::HandlePackageChanged(const EventFwk::CommonEventData &data) const
 {
     std::string bundleName = data.GetWant().GetBundle();
-    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
+    int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
+    int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
+    HILOG_INFO("bundleName is %{public}s, userId is %{public}d accountId is %{public}d",
+        bundleName.c_str(), userId, accountId);
+    if (userId != accountId) {
+        return;
+    }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
 }
 } // namespace Accessibility
