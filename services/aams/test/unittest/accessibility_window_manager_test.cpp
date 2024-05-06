@@ -1708,5 +1708,36 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_IsI
     mgr.sceneBoardElementIdMap_.Clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_IsInnerWindowRootElement001 end";
 }
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_GetSceneBoardElementId001
+ * @tc.name: GetSceneBoardElementId
+ * @tc.desc: Test function GetSceneBoardElementId
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_GetSceneBoardElementId001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardElementId001 start";
+    int32_t windowId = ANY_WINDOW_ID;
+    int32_t elementId = INVALID_ELEMENT_ID;
+    AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
+    mgr.GetSceneBoardElementId(windowId, elementId);
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardElementId001 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_GetSceneBoardElementId002
+ * @tc.name: GetSceneBoardElementId
+ * @tc.desc: Test function GetSceneBoardElementId
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_GetSceneBoardElementId002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardElementId002 start";
+    int32_t windowId = ANY_WINDOW_ID;
+    int32_t elementId = INVALID_SCENE_BOARD_ELEMENT_ID;
+    AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
+    mgr.GetSceneBoardElementId(windowId, elementId);
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardElementId002 end";
+}
+
 } // namespace Accessibility
 } // namespace OHOS
