@@ -294,7 +294,7 @@ void AccessibilityScreenTouch::HandleIgnoreRepeatClickStateInnerDown(MMI::Pointe
         return;
     }
 
-    // If the value of lastDownPointerId_ is not -1, it is not matched with an up action and shouldn't be update. 
+    // If the value of lastDownPointerId_ is not -1, it is not matched with an up action and shouldn't be update.
     if (lastDownPointerId_ == -1) {
         lastDownPointerId_ = event.GetPointerId();
     }
@@ -366,7 +366,7 @@ void AccessibilityScreenTouch::HandleBothStateInnerDown(MMI::PointerEvent &event
     }
 
     HandleResponseDelayStateInnerDown(event);
-    // If the value of lastDownPointerId_ is not -1, it is not matched with an up action and shouldn't be update. 
+    // If the value of lastDownPointerId_ is not -1, it is not matched with an up action and shouldn't be update.
     if (lastDownPointerId_ == -1) {
         lastDownPointerId_ = event.GetPointerId();
     }
