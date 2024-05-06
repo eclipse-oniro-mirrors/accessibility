@@ -100,9 +100,10 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
     return info;
 }
 
-void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
+void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEvent)
 {
     activeWindowId_ = windowId;
+    (void)isSendEvent;
 }
 
 void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)

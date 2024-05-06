@@ -43,7 +43,7 @@ public:
     int32_t ConvertToRealWindowId(int32_t windowId, int32_t focusType);
     void RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void DeregisterWindowListener();
-    void SetActiveWindow(int32_t windowId);
+    void SetActiveWindow(int32_t windowId, bool isSendEvent = true);
     void SetAccessibilityFocusedWindow(int32_t windowId);
     std::vector<AccessibilityWindowInfo> GetAccessibilityWindows();
     bool GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window);

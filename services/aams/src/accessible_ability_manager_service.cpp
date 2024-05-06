@@ -257,7 +257,8 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
 
 RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent)
 {
-    HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d]", uiEvent.GetEventType(), uiEvent.GetGestureType());
+    HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d] windowId[%{public}d]",
+        uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId());
     if (!handler_) {
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
@@ -1504,7 +1505,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(cons
     switch (evtType) {
         case TYPE_VIEW_HOVER_ENTER_EVENT:
         case TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT:
-            Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(windowId);
+            Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(windowId, false);
             Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(windowId);
             break;
         default:

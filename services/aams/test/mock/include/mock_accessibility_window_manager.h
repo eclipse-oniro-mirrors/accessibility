@@ -35,7 +35,7 @@ public:
     MOCK_METHOD2(ConvertToRealWindowId, int32_t(int32_t windowId, int32_t focusType));
     MOCK_METHOD1(RegisterWindowListener, void(const std::shared_ptr<AppExecFwk::EventHandler> &handler));
     MOCK_METHOD0(DeregisterWindowListener, void());
-    MOCK_METHOD1(SetActiveWindow, void(int32_t windowId));
+    MOCK_METHOD1(SetActiveWindow, void(int32_t windowId, bool isSendEvent));
     MOCK_METHOD1(SetAccessibilityFocusedWindow, void(int32_t windowId));
     MOCK_METHOD0(GetAccessibilityWindows, std::vector<AccessibilityWindowInfo>());
     MOCK_METHOD2(GetAccessibilityWindow, bool(int32_t windowId, AccessibilityWindowInfo& window));
