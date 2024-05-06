@@ -926,6 +926,22 @@ HWTEST_F(AccessibilityConfigImplTest, UnsubscribeConfigObserver_001, TestSize.Le
 }
 
 /**
+ * @tc.number: UnsubscribeConfigObserver_002
+ * @tc.name: UnsubscribeConfigObserver_002
+ * @tc.desc: Test function UnsubscribeConfigObserver
+ */
+HWTEST_F(AccessibilityConfigImplTest, UnsubscribeConfigObserver_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "UnsubscribeConfigObserver_002 start";
+
+    std::shared_ptr<AccessibilityConfigObserver> observer = nullptr;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    instance.UnsubscribeConfigObserver(CONFIG_ID_MAX, observer);
+    GTEST_LOG_(INFO) << "UnsubscribeConfigObserver_002 end";
+}
+
+/**
  * @tc.number: SubscribeEnableAbilityListsObserver_001
  * @tc.name: SubscribeEnableAbilityListsObserver_001
  * @tc.desc: Test function SubscribeEnableAbilityListsObserver
