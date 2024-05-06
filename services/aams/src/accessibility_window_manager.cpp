@@ -320,7 +320,7 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
     return info;
 }
 
-void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
+void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEvent)
 {
     HILOG_DEBUG("windowId is %{public}d", windowId);
     if (windowId == INVALID_WINDOW_ID) {
@@ -338,6 +338,10 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
         ClearOldActiveWindow();
         activeWindowId_ = windowId;
         a11yWindows_[activeWindowId_].SetActive(true);
+        if (!isSendEvent) {
+            HILOG_DEBUG("not send event, activeWindowId is %{public}d", activeWindowId_);
+            return;
+        }
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
         AccessibilityEventInfo evtInf(activeWindowId_, WINDOW_UPDATE_ACTIVE);
         int32_t winId = windowId;
@@ -345,9 +349,10 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
             winId = SCENE_BOARD_WINDOW_ID;
         }
         if (aams.CheckWindowRegister(winId)) {
+            HILOG_DEBUG("send active event, windowId: %{public}d", winId);
             aams.SendEvent(evtInf);
         } else {
-            HILOG_DEBUG("wait for window register to process event");
+            HILOG_DEBUG("wait for window register to process event, windowId: %{public}d", winId);
             aams.InsertWindowIdEventPair(winId, evtInf);
         }
     }
