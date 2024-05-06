@@ -109,6 +109,11 @@ std::shared_ptr<KeyEvent> KeyEvent::Create()
     return std::make_shared<KeyEvent>(InputEvent::EVENT_TYPE_KEY);
 }
 
+void KeyEvent::Reset()
+{
+    InputEvent::Reset();
+}
+
 void KeyEvent::AddKeyItem(const KeyItem& keyItem)
 {
     keys_.push_back(keyItem);
