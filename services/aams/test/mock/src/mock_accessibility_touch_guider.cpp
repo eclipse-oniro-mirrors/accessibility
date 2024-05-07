@@ -538,7 +538,7 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent& event)
         yPointDownF = receivedRecorder_.pointerDownY.find(INDEX_0)->second;
     }
     if (receivedRecorder_.pointerDownX.find(INDEX_1) != receivedRecorder_.pointerDownX.end()) {
-        xPointDownF = receivedRecorder_.pointerDownX.find(INDEX_1)->second;
+        xPointDownS = receivedRecorder_.pointerDownX.find(INDEX_1)->second;
         yPointDownS = receivedRecorder_.pointerDownY.find(INDEX_1)->second;
     }
 
