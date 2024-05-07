@@ -28,7 +28,6 @@ namespace OHOS {
 namespace Accessibility {
 class TouchGuider;
 
-const int32_t MAX_POINTER_COUNT = 32;
 const int64_t EXIT_GESTURE_REC_TIMEOUT = 2000; // millisecond
 const double MAX_DRAG_GESTURE_COSINE = 0.525321989;
 const int32_t MINI_POINTER_DISTANCE_DIP = 200;
@@ -73,9 +72,9 @@ struct InjectedEventRecorder {
  * @brief struct to record received pointers.
  */
 struct ReceivedEventRecorder {
-    int32_t pointerDownX[MAX_POINTER_COUNT];
-    int32_t pointerDownY[MAX_POINTER_COUNT];
-    int64_t pointerActionTime[MAX_POINTER_COUNT];
+    std::map<int32_t, int32_t> pointerDownX;
+    std::map<int32_t, int32_t> pointerDownY;
+    std::map<int32_t, int64_t> pointerActionTime;
     std::shared_ptr<MMI::PointerEvent> lastEvent;
 };
 

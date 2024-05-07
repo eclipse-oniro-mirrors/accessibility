@@ -519,20 +519,29 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent& event)
     MMI::PointerEvent::PointerItem pointerF = {};
     MMI::PointerEvent::PointerItem pointerS = {};
     if (!event.GetPointerItem(pIds[0], pointerF)) {
-        HILOG_ERROR("GetPointerItem(%d) failed", pIds[0]);
+        HILOG_ERROR("GetPointerItem(%{public}d) failed", pIds[0]);
     }
     if (!event.GetPointerItem(pIds[1], pointerS)) {
-        HILOG_ERROR("GetPointerItem(%d) failed", pIds[1]);
+        HILOG_ERROR("GetPointerItem(%{public}d) failed", pIds[1]);
     }
 
     float xPointF = pointerF.GetDisplayX();
     float xPointS = pointerS.GetDisplayX();
     float yPointF = pointerF.GetDisplayY();
     float yPointS = pointerS.GetDisplayY();
-    float xPointDownF = receivedRecorder_.pointerDownX[INDEX_0];
-    float xPointDownS = receivedRecorder_.pointerDownX[INDEX_1];
-    float yPointDownF = receivedRecorder_.pointerDownY[INDEX_0];
-    float yPointDownS = receivedRecorder_.pointerDownY[INDEX_1];
+    float xPointDownF = 0;
+    float xPointDownS = 0;
+    float yPointDownF = 0;
+    float yPointDownS = 0;
+    if (receivedRecorder_.pointerDownX.find(INDEX_0) != receivedRecorder_.pointerDownX.end()) {
+        xPointDownF = receivedRecorder_.pointerDownX.find(INDEX_0)->second;
+        yPointDownF = receivedRecorder_.pointerDownY.find(INDEX_0)->second;
+    }
+    if (receivedRecorder_.pointerDownX.find(INDEX_1) != receivedRecorder_.pointerDownX.end()) {
+        xPointDownS = receivedRecorder_.pointerDownX.find(INDEX_1)->second;
+        yPointDownS = receivedRecorder_.pointerDownY.find(INDEX_1)->second;
+    }
+
     float firstOffsetX = xPointF - xPointDownF;
     float firstOffsetY = yPointF - yPointDownF;
     float secondOffsetX = xPointS - xPointDownS;
@@ -586,7 +595,7 @@ void TouchGuider::RecordReceivedEvent(MMI::PointerEvent& event)
     int32_t pointId = event.GetPointerId();
     MMI::PointerEvent::PointerItem pointer;
     if (!event.GetPointerItem(pointId, pointer)) {
-        HILOG_ERROR("GetPointerItem(%d) failed", pointId);
+        HILOG_ERROR("GetPointerItem(%{public}d) failed", pointId);
     }
     receivedRecorder_.lastEvent = std::make_shared<MMI::PointerEvent>(event);
     switch (event.GetPointerAction()) {
@@ -595,8 +604,8 @@ void TouchGuider::RecordReceivedEvent(MMI::PointerEvent& event)
             receivedRecorder_.pointerDownY[pointId] = pointer.GetDisplayY();
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            receivedRecorder_.pointerDownX[pointId] = 0;
-            receivedRecorder_.pointerDownY[pointId] = 0;
+            receivedRecorder_.pointerDownX.erase(pointId);
+            receivedRecorder_.pointerDownY.erase(pointId);
             break;
         default:
             break;
@@ -607,14 +616,8 @@ void TouchGuider::ClearReceivedEventRecorder()
 {
     HILOG_DEBUG();
 
-    (void)memset_s(receivedRecorder_.pointerDownX,
-                   sizeof(receivedRecorder_.pointerDownX),
-                   0,
-                   sizeof(receivedRecorder_.pointerDownX));
-    (void)memset_s(receivedRecorder_.pointerDownY,
-                   sizeof(receivedRecorder_.pointerDownY),
-                   0,
-                   sizeof(receivedRecorder_.pointerDownY));
+    receivedRecorder_.pointerDownX.clear();
+    receivedRecorder_.pointerDownY.clear();
     receivedRecorder_.lastEvent = nullptr;
 }
 
