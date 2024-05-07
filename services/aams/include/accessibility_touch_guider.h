@@ -62,9 +62,9 @@ enum ClickLocation : int32_t {
  * @brief struct to record injected pointers.
  */
 struct InjectedEventRecorder {
-    std::map<int32_t, int32_t> downPointers;
-    std::map<int32_t, int32_t> downPointerNum;
-    std::map<int32_t, int64_t> lastDownTime;
+    int32_t downPointers;
+    int32_t downPointerNum;
+    int64_t lastDownTime;
     std::shared_ptr<MMI::PointerEvent> lastHoverEvent;
 };
 
@@ -72,9 +72,9 @@ struct InjectedEventRecorder {
  * @brief struct to record received pointers.
  */
 struct ReceivedEventRecorder {
-    int32_t pointerDownX[MAX_POINTER_COUNT];
-    int32_t pointerDownY[MAX_POINTER_COUNT];
-    int64_t pointerActionTime[MAX_POINTER_COUNT];
+    std::map<int32_t, int32_t> pointerDownX;
+    std::map<int32_t, int32_t> pointerDownY;
+    std::map<int32_t, int64_t> pointerActionTime;
     std::shared_ptr<MMI::PointerEvent> lastEvent;
 };
 
