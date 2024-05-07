@@ -57,6 +57,9 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
     if (ret != 0) {
         HILOG_ERROR("subscribe accessibility failed, error = %{public}d", ret);
     }
+    if (ConnectToService()) {
+        Init();
+    }
 }
 
 AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
