@@ -28,7 +28,6 @@ namespace OHOS {
 namespace Accessibility {
 class TouchGuider;
 
-const int32_t MAX_POINTER_COUNT = 32;
 const int64_t EXIT_GESTURE_REC_TIMEOUT = 2000; // millisecond
 const double MAX_DRAG_GESTURE_COSINE = 0.525321989;
 const int32_t MINI_POINTER_DISTANCE_DIP = 200;
@@ -63,9 +62,9 @@ enum ClickLocation : int32_t {
  * @brief struct to record injected pointers.
  */
 struct InjectedEventRecorder {
-    int32_t downPointers;
-    int32_t downPointerNum;
-    int64_t lastDownTime;
+    std::map<int32_t, int32_t> downPointers;
+    std::map<int32_t, int32_t> downPointerNum;
+    std::map<int32_t, int64_t> lastDownTime;
     std::shared_ptr<MMI::PointerEvent> lastHoverEvent;
 };
 

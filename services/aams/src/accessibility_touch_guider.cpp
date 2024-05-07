@@ -625,15 +625,17 @@ void TouchGuider::HandleTouchGuidingStateInnerDown(MMI::PointerEvent &event)
 void TouchGuider::SendPointerDownEventToMultimodal(MMI::PointerEvent event, int32_t action)
 {
     int32_t currentPid = event.GetPointerId();
-    if (currentPid >= MAX_POINTER_COUNT) {
-        return;
+    int32_t xPointDown = 0;
+    int32_t yPointDown = 0;
+    int64_t actionTime = 0;
+
+    if (receivedRecorder_.pointerDownX.find(currentPid) != receivedRecorder_.pointerDownX.end()) {
+        xPointDown = receivedRecorder_.pointerDownX.find(currentPid)->second;
+        yPointDown = receivedRecorder_.pointerDownY.find(currentPid)->second;
+        actionTime = receivedRecorder_.pointerActionTime.find(currentPid)->second;
     }
 
-    int32_t xPointDown = receivedRecorder_.pointerDownX[currentPid];
-    int32_t yPointDown = receivedRecorder_.pointerDownY[currentPid];
-    int64_t actionTime = receivedRecorder_.pointerActionTime[currentPid];
-
-    HILOG_DEBUG("first down point info is: xPos: %d, yPos: %d, actionTime: [%{public}" PRId64 "], "
+    HILOG_DEBUG("first down point info is: xPos: %{public}d, yPos: %{public}d, actionTime: [%{public}" PRId64 "], "
         "currentTime: [%{public}" PRId64 "]", xPointDown, yPointDown, actionTime, event.GetActionTime());
     MMI::PointerEvent::PointerItem pointer = {};
     event.GetPointerItem(currentPid, pointer);
@@ -767,12 +769,12 @@ void TouchGuider::GetPointOffset(MMI::PointerEvent &event, std::vector<float> &f
     MMI::PointerEvent::PointerItem pointerF = {};
     MMI::PointerEvent::PointerItem pointerS = {};
     if (!event.GetPointerItem(pIds[0], pointerF)) {
-        HILOG_ERROR("GetPointerItem(%d) failed", pIds[0]);
+        HILOG_ERROR("GetPointerItem(%{public}d) failed", pIds[0]);
         return;
     }
 
     if (!event.GetPointerItem(pIds[1], pointerS)) {
-        HILOG_ERROR("GetPointerItem(%d) failed", pIds[1]);
+        HILOG_ERROR("GetPointerItem(%{public}d) failed", pIds[1]);
         return;
     }
 
@@ -780,10 +782,18 @@ void TouchGuider::GetPointOffset(MMI::PointerEvent &event, std::vector<float> &f
     float xPointS = pointerS.GetDisplayX();
     float yPointF = pointerF.GetDisplayY();
     float yPointS = pointerS.GetDisplayY();
-    float xPointDownF = receivedRecorder_.pointerDownX[INDEX_0];
-    float xPointDownS = receivedRecorder_.pointerDownX[INDEX_1];
-    float yPointDownF = receivedRecorder_.pointerDownY[INDEX_0];
-    float yPointDownS = receivedRecorder_.pointerDownY[INDEX_1];
+    float xPointDownF = 0;
+    float xPointDownS = 0;
+    float yPointDownF = 0;
+    float yPointDownS = 0;
+    if (receivedRecorder_.pointerDownX.find(INDEX_0) != receivedRecorder_.pointerDownX.end()) {
+        xPointDownF = receivedRecorder_.pointerDownX.find(INDEX_0)->second;
+        yPointDownF = receivedRecorder_.pointerDownY.find(INDEX_0)->second;
+    }
+    if (receivedRecorder_.pointerDownX.find(INDEX_1) != receivedRecorder_.pointerDownX.end()) {
+        xPointDownF = receivedRecorder_.pointerDownX.find(INDEX_1)->second;
+        yPointDownS = receivedRecorder_.pointerDownY.find(INDEX_1)->second;
+    }
 
     firstPointOffset.push_back(xPointF - xPointDownF); // firstOffsetX
     firstPointOffset.push_back(yPointF - yPointDownF); // firstOffsetY
@@ -823,7 +833,7 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
 
 bool TouchGuider::IsRealMoveState(MMI::PointerEvent &event) const
 {
-    HILOG_DEBUG("moveThreshold: %f", multiFingerGestureRecognizer_.GetTouchSlop());
+    HILOG_DEBUG("moveThreshold: %{public}f", multiFingerGestureRecognizer_.GetTouchSlop());
 
     std::vector<float> firstPointOffset;
     std::vector<float> secondPointOffset;
@@ -832,7 +842,7 @@ bool TouchGuider::IsRealMoveState(MMI::PointerEvent &event) const
         return false;
     }
 
-    HILOG_DEBUG("offset of fisrt down points and current points: %f, %f,%f, %f",
+    HILOG_DEBUG("offset of fisrt down points and current points: %{public}f, %{public}f,%{public}f, %{public}f",
         firstPointOffset[0], firstPointOffset[1], secondPointOffset[0], secondPointOffset[1]);
     if (hypot(firstPointOffset[0], firstPointOffset[1]) >= multiFingerGestureRecognizer_.GetTouchSlop() &&
         hypot(secondPointOffset[0], secondPointOffset[1]) >= multiFingerGestureRecognizer_.GetTouchSlop()) {
@@ -876,7 +886,7 @@ void TouchGuider::RecordReceivedEvent(MMI::PointerEvent &event)
     int32_t pointId = event.GetPointerId();
     MMI::PointerEvent::PointerItem pointer;
     if (!event.GetPointerItem(pointId, pointer)) {
-        HILOG_ERROR("GetPointerItem(%d) failed", pointId);
+        HILOG_ERROR("GetPointerItem(%{public}d) failed", pointId);
     }
     receivedRecorder_.lastEvent = std::make_shared<MMI::PointerEvent>(event);
     switch (event.GetPointerAction()) {
@@ -886,9 +896,9 @@ void TouchGuider::RecordReceivedEvent(MMI::PointerEvent &event)
             receivedRecorder_.pointerActionTime[pointId] = event.GetActionTime();
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            receivedRecorder_.pointerDownX[pointId] = 0;
-            receivedRecorder_.pointerDownY[pointId] = 0;
-            receivedRecorder_.pointerActionTime[pointId] = 0;
+            receivedRecorder_.pointerDownX.erase(pointId);
+            receivedRecorder_.pointerDownY.erase(pointId);
+            receivedRecorder_.pointerActionTime.erase(pointId);
             break;
         default:
             break;
@@ -899,12 +909,9 @@ void TouchGuider::ClearReceivedEventRecorder()
 {
     HILOG_DEBUG();
 
-    (void)memset_s(receivedRecorder_.pointerDownX, sizeof(receivedRecorder_.pointerDownX),
-             0, sizeof(receivedRecorder_.pointerDownX));
-    (void)memset_s(receivedRecorder_.pointerDownY, sizeof(receivedRecorder_.pointerDownY),
-             0, sizeof(receivedRecorder_.pointerDownY));
-    (void)memset_s(receivedRecorder_.pointerActionTime, sizeof(receivedRecorder_.pointerActionTime),
-             0, sizeof(receivedRecorder_.pointerActionTime));
+    receivedRecorder_.pointerDownX.clear();
+    receivedRecorder_.pointerDownY.clear();
+    receivedRecorder_.pointerActionTime.clear();
     receivedRecorder_.lastEvent = nullptr;
 }
 
