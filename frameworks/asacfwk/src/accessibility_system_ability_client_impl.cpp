@@ -82,7 +82,7 @@ bool AccessibilitySystemAbilityClientImpl::ConnectToService()
         return false;
     }
 
-    sptr<IRemoteObject> object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+    sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (object == nullptr && LoadAccessibilityService() == false) {
         HILOG_ERROR("Get IAccessibleAbilityManagerService object from samgr failed");
         return false;
