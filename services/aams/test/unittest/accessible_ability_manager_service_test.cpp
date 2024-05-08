@@ -1990,5 +1990,146 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, InsertWindowIdEventPair_001, T
     EXPECT_TRUE(ret);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_InsertWindowIdEventPair_001 end";
 }
+
+/**
+ * @tc.number: Accessible_Ability_Manager_ServiceUnittest_OnAddSystemAbility_001
+ * @tc.name: OnAddSystemAbility
+ * @tc.desc: Test insert foucus window event.
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnAddSystemAbility_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAddSystemAbility_001 start";
+    TearDownTestCase();
+    std::string deviceId = "test";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(0, deviceId);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAddSystemAbility_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_003
+ * @tc.name: OnRemoveSystemAbility
+ * @tc.desc: Test function OnRemoveSystemAbility
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnRemoveSystemAbility_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_003 start";
+    TearDownTestCase();
+    std::string deviceId = "test";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(0, deviceId);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_003 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SendEvent_001
+ * @tc.name: SendEvent
+ * @tc.desc: Test function SendEvent
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SendEvent_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SendEvent_001 start";
+    TearDownTestCase();
+    AccessibilityEventInfo event;
+    RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(event);
+    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SendEvent_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_DeregisterElementOperator_003
+ * @tc.name: DeregisterElementOperator
+ * @tc.desc: Test function DeregisterElementOperator
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperator_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_DeregisterElementOperator_003 start";
+    TearDownTestCase();
+    RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
+    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_DeregisterElementOperator_003 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetEnabledState_002
+ * @tc.name: GetEnabledState
+ * @tc.desc: Test function GetEnabledState
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetEnabledState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetEnabledState_002 start";
+    TearDownTestCase();
+    bool ret = true;
+    ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledState();
+    EXPECT_EQ(ret, false);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetEnabledState_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetTouchGuideState_003
+ * @tc.name: GetTouchGuideState
+ * @tc.desc: Test function GetTouchGuideState
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetTouchGuideState_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetTouchGuideState_003 start";
+    TearDownTestCase();
+    bool ret = true;
+    ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchGuideState();
+    EXPECT_EQ(ret, false);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetTouchGuideState_003 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetGestureState_003
+ * @tc.name: GetGestureState
+ * @tc.desc: Test function GetGestureState
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetGestureState_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetGestureState_003 start";
+    TearDownTestCase();
+    bool ret = true;
+    ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetGestureState();
+    EXPECT_EQ(ret, false);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetGestureState_003 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetKeyEventObserverState_003
+ * @tc.name: GetKeyEventObserverState
+ * @tc.desc: Test function GetKeyEventObserverState
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetKeyEventObserverState_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetKeyEventObserverState_003 start";
+    TearDownTestCase();
+    bool ret = true;
+    ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetKeyEventObserverState();
+    EXPECT_EQ(ret, false);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetKeyEventObserverState_003 end";
+}
+
+/*
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_GetEnabledAbilities_003
+ * @tc.name: GetEnabledAbilities
+ * @tc.desc: Test function GetEnabledAbilities
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetEnabledAbilities_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_GetEnabledAbilities_003 start";
+    TearDownTestCase();
+    std::vector<std::string> enabledAbilities;
+    RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledAbilities(enabledAbilities);
+    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_GetEnabledAbilities_003 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
