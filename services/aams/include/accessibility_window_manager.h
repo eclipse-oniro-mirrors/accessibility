@@ -36,6 +36,7 @@ class AccessibilityWindowManager {
 public:
     bool Init();
     void DeInit();
+    void WinDeInit();
     static AccessibilityWindowInfo CreateAccessibilityWindowInfo(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     static void UpdateAccessibilityWindowInfo(AccessibilityWindowInfo &accWindowInfo,
         const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
@@ -106,12 +107,20 @@ private:
         AccessibilityWindowManager &windInfoMgr_;
     };
 
+    bool CompareRect(const Rect &rectAccessibility, const Rosen::Rect &rectWindow);
+    bool EqualFocus(const Accessibility::AccessibilityWindowInfo &accWindowInfo,
+        const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
+    bool EqualBound(const Accessibility::AccessibilityWindowInfo &accWindowInfo,
+        const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
+    bool EqualProperty(Accessibility::AccessibilityWindowInfo &accWindowInfo,
+        const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
     void WindowUpdateAdded(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateRemoved(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateBounds(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateActive(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateFocused(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
+    void WindowUpdateTypeEvent(const int32_t realWidId, Accessibility::WindowUpdateType type);
     void WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void ClearOldActiveWindow();
 

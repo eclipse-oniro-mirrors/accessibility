@@ -182,6 +182,42 @@ int64_t AccessibilityWindowInfo::GetUiNodeId() const
     return uiNodeId_;
 }
 
+void AccessibilityWindowInfo::SetScaleVal(const float scaleVal)
+{
+    scaleVal_ = scaleVal;
+    HILOG_DEBUG("set scaleVal_ [%{public}f]", scaleVal_);
+}
+
+float AccessibilityWindowInfo::GetScaleVal() const
+{
+    HILOG_DEBUG("get scaleVal_ [%{public}f]", scaleVal_);
+    return scaleVal_;
+}
+
+void AccessibilityWindowInfo::SetScaleX(const float scaleX)
+{
+    scaleX_ = scaleX;
+    HILOG_DEBUG("set scaleX_ [%{public}f]", scaleX_);
+}
+
+float AccessibilityWindowInfo::GetScaleX() const
+{
+    HILOG_DEBUG("get scaleX_ [%{public}f]", scaleX_);
+    return scaleX_;
+}
+
+void AccessibilityWindowInfo::SetScaleY(const float scaleY)
+{
+    scaleY_ = scaleY;
+    HILOG_DEBUG("set scaleY_ [%{public}f]", scaleY_);
+}
+
+float AccessibilityWindowInfo::GetScaleY() const
+{
+    HILOG_DEBUG("get scaleY_ [%{public}f]", scaleY_);
+    return scaleY_;
+}
+
 void AccessibilityWindowInfo::SetBundleName(const std::string bundleName)
 {
     bundleName_ = bundleName;
