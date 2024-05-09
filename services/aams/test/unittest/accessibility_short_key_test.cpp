@@ -277,5 +277,21 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
 
     GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_006 end";
 }
+
+/**
+ * @tc.number: Accessibility_Short_Key_UnitTest_AccessibilityShortKey001
+ * @tc.name: AccessibilityShortKey
+ * @tc.desc: Test function AccessibilityShortKey(power key cancel)
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessibility_Short_Key_UnitTest_AccessibilityShortKey001 start";
+    TearDownTestCase();
+    AccessibilityShortKey *test = new AccessibilityShortKey();
+    delete test;
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "Accessibility_Short_Key_UnitTest_AccessibilityShortKey001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
