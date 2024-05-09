@@ -204,6 +204,25 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_002, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetShortkeyMultiTarget_001
+ * @tc.name: SetShortkeyMultiTarget_001
+ * @tc.desc: Test function SetShortkeyMultiTarget GetShortkeyMultiTarget
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetShortkeyMultiTarget_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetShortkeyMultiTarget_001 start";
+
+    std::vector<std::string> name = {"test"};
+    std::vector<std::string> value = {"test"};
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.SetShortkeyMultiTarget(name);
+    instance.GetShortkeyMultiTarget(value);
+    EXPECT_EQ(value.size(), 1);
+    GTEST_LOG_(INFO) << "SetShortkeyMultiTarget_001 end";
+}
+
+/**
  * @tc.number: SetShortkeyMultiTarget_002
  * @tc.name: SetShortkeyMultiTarget_002
  * @tc.desc: Test function SetShortkeyMultiTarget GetShortkeyMultiTarget
@@ -973,6 +992,22 @@ HWTEST_F(AccessibilityConfigImplTest, UnsubscribeEnableAbilityListsObserver_001,
     instance.SubscribeEnableAbilityListsObserver(observer);
     instance.UnsubscribeEnableAbilityListsObserver(observer);
     GTEST_LOG_(INFO) << "UnsubscribeEnableAbilityListsObserver_001 end";
+}
+
+/**
+ * @tc.number: UnsubscribeEnableAbilityListsObserver_002
+ * @tc.name: UnsubscribeEnableAbilityListsObserver_002
+ * @tc.desc: Test function UnsubscribeEnableAbilityListsObserver
+ */
+HWTEST_F(AccessibilityConfigImplTest, UnsubscribeEnableAbilityListsObserver_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "UnsubscribeEnableAbilityListsObserver_002 start";
+
+    std::shared_ptr<AccessibilityEnableAbilityListsObserver> observer = nullptr;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    instance.UnsubscribeEnableAbilityListsObserver(observer);
+    GTEST_LOG_(INFO) << "UnsubscribeEnableAbilityListsObserver_002 end";
 }
 
 /**
