@@ -257,6 +257,108 @@ HWTEST_F(
 }
 
 /**
+ * @tc.number: AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_004
+ * @tc.name: OnAccessibilityEvent
+ * @tc.desc: Test function OnAccessibilityEvent
+ */
+HWTEST_F(
+    AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_004 start";
+    AccessibilityAbilityInitParams initParams;
+    initParams.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_ALL;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
+    sptr<AccessibleAbilityConnection> connection =
+        new AccessibleAbilityConnection(AccessibilityAbilityHelper::accountId_, 0, *abilityInfo);
+    if (connection != nullptr) {
+        AccessibilityEventInfo eventInfo;
+        /* EventType is not in the allowed list */
+        eventInfo.SetEventType(TYPE_VIEW_INVALID);
+        sleep(SLEEP_TIME_2);
+        connection->OnAccessibilityEvent(eventInfo);
+        sleep(SLEEP_TIME_2);
+        EXPECT_EQ(0, AccessibilityAbilityHelper::GetInstance().GetTestEventType());
+    }
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_004 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_005
+ * @tc.name: OnAccessibilityEvent
+ * @tc.desc: Test function OnAccessibilityEvent
+ */
+HWTEST_F(
+    AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_005 start";
+
+    // new AAconnection
+    AccessibilityAbilityInitParams initParams;
+    initParams.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_ALL;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetEventTypes(EventType::TYPE_VIEW_INVALID);
+
+    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
+        AccessibilityAbilityHelper::accountId_, 0, *abilityInfo);
+    sptr<AppExecFwk::ElementName> elementName = new AppExecFwk::ElementName("1", "2", "3");
+    sptr<IRemoteObject> obj = new IPCObjectProxy(0);
+    if (obj != nullptr && connection != nullptr) {
+        connection->OnAbilityConnectDoneSync(*elementName, obj);
+    }
+
+    if (connection != nullptr) {
+        AccessibilityEventInfo eventInfo;
+        /* EventType is not in the allowed list */
+        AccessibilityAbilityHelper::GetInstance().SetTestEventType(-1);
+        eventInfo.SetEventType(TYPE_VIEW_CLICKED_EVENT);
+        sleep(SLEEP_TIME_2);
+        connection->OnAccessibilityEvent(eventInfo);
+        sleep(SLEEP_TIME_2);
+        EXPECT_EQ(-1, AccessibilityAbilityHelper::GetInstance().GetTestEventType());
+    }
+
+    AccessibilityAbilityHelper::GetInstance().SetTestChannelId(INVALID_CHANNEL_ID);
+    if (accountData_) {
+        accountData_->RemoveAccessibilityWindowConnection(0);
+    }
+
+    if (connection) {
+        connection->OnAbilityDisconnectDoneSync(*elementName);
+    }
+    connection = nullptr;
+    elementName = nullptr;
+    obj = nullptr;
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_005 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityConnection_Unittest_OnAbilityDisconnectDoneSync_001
+ * @tc.name: OnAbilityDisconnectDoneSync
+ * @tc.desc: Test function OnAbilityDisconnectDoneSync
+ */
+HWTEST_F(AccessibleAbilityConnectionUnitTest,
+    AccessibleAbilityConnection_Unittest_OnAbilityDisconnectDoneSync_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAbilityDisconnectDoneSync_001 start";
+    // new AAconnection
+    AccessibilityAbilityInitParams initParams;
+    initParams.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_ALL;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
+    sptr<AccessibleAbilityConnection> connection =
+        new AccessibleAbilityConnection(AccessibilityAbilityHelper::accountId_, 0, *abilityInfo);
+    if (connection != nullptr) {
+        AccessibilityEventInfo eventInfo;
+        /* EventType is not in the allowed list */
+        eventInfo.SetEventType(TYPE_VIEW_INVALID);
+        sleep(SLEEP_TIME_2);
+        connection->OnAbilityDisconnectDoneSync(*elementName_);
+    }
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAbilityDisconnectDoneSync_001 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityConnection_Unittest_Connect_001
  * @tc.name: Connect
  * @tc.desc: Test function Connect

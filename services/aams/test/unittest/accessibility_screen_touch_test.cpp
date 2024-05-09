@@ -27,6 +27,7 @@ using namespace testing::ext;
 namespace OHOS {
 namespace Accessibility {
 namespace {
+    constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100; // ms
     constexpr uint32_t CLICK_RESPONSE_TIME_LONG = 600; // ms
     constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONGEST = 1300; // ms
     constexpr uint32_t CLICK_RESPONSE_DELAY_LONG = 2;
@@ -283,6 +284,52 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     auto eventUp = SetPointerEvent(TIMESTAMP_2800, MMI::PointerEvent::POINTER_ACTION_UP);
     EXPECT_EQ(screenTouch_->OnPointerEvent(*eventUp), true);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_007 end";
+}
+
+/**
+ * @tc.number: AccessibilityScreenTouch_Unittest_GetRealClickResponseTime_001
+ * @tc.name: GetRealClickResponseTime
+ * @tc.desc: Test function GetRealClickResponseTime
+ */
+HWTEST_F(AccessibilityScreenTouchUnitTest,
+    AccessibilityScreenTouch_Unittest_GetRealClickResponseTime_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealClickResponseTime_001 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is nullptr";
+        return;
+    }
+
+    accountData->GetConfig()->SetClickResponseTime(900);
+    screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
+
+    EXPECT_EQ(screenTouch_->GetRealClickResponseTime(), 0);
+    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealClickResponseTime_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityScreenTouch_Unittest_GetRealIgnoreRepeatClickTime_001
+ * @tc.name: GetRealIgnoreRepeatClickTime
+ * @tc.desc: Test function OnPointerEvent
+ */
+HWTEST_F(AccessibilityScreenTouchUnitTest,
+    AccessibilityScreenTouch_Unittest_GetRealIgnoreRepeatClickTime_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealIgnoreRepeatClickTime_001 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is nullptr";
+        return;
+    }
+
+    accountData->GetConfig()->SetIgnoreRepeatClickTime(2000);
+    screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
+
+    EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickTime(), IGNORE_REPEAT_CLICK_TIME_SHORTEST);
+    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealIgnoreRepeatClickTime end";
 }
 } // namespace Accessibility
 } // namespace OHOS

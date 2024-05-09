@@ -17,6 +17,7 @@
 #include <gtest/gtest.h>
 #include <unistd.h>
 #include "accessibility_dumper.h"
+#include "accessibility_ut_helper.h"
 #include "mock_accessible_ability_connection.h"
 #include "mock_accessible_ability_manager_service.h"
 #include "string_ex.h"
@@ -61,6 +62,7 @@ void AccessibilityDumperUnitTest::SetUp()
 void AccessibilityDumperUnitTest::TearDown()
 {
     close(fd_);
+    fd_ = -1;
     dumper_ = nullptr;
 }
 
@@ -211,6 +213,106 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_006, Tes
 
     currentAccount->RemoveAccessibilityWindowConnection(windowId);
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_006 end";
+}
+
+/**
+ * @tc.number: AccessibilityDumper_Unittest_Dump_007
+ * @tc.name: Dump
+ * @tc.desc: Test function Dump
+ */
+HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_007, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_007 start";
+    sptr<AccessibilityAccountData> currentAccount =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = currentAccount->GetConfig();
+    if (!config) {
+        GTEST_LOG_(ERROR) << "Config is nullptr";
+        return;
+    }
+    config->SetCaptionState(true);
+
+    std::string cmdUser("-u");
+    std::vector<std::u16string> args;
+    args.emplace_back(Str8ToStr16(cmdUser));
+    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(true);
+    int ret = dumper_->Dump(fd_, args);
+    EXPECT_GE(ret, -1);
+    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(false);
+    GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_007 end";
+}
+
+/**
+ * @tc.number: AccessibilityDumper_Unittest_Dump_008
+ * @tc.name: Dump
+ * @tc.desc: Test function Dump
+ */
+HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_008, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_005 start";
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "ohos";
+    initParams.moduleName = "accessibility";
+    initParams.name = "test";
+    initParams.description = "for dumper-ut";
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    sptr<AccessibilityAccountData> currentAccount =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!currentAccount) {
+        GTEST_LOG_(ERROR) << "Account data is nullptr";
+        return;
+    }
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo);
+    if (!connection) {
+        GTEST_LOG_(ERROR) << "Connection is nullptr";
+        return;
+    }
+    currentAccount->AddConnectedAbility(connection);
+
+    std::string cmdClient("-c");
+    std::vector<std::u16string> args;
+    args.emplace_back(Str8ToStr16(cmdClient));
+    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(true);
+    int ret = dumper_->Dump(fd_, args);
+    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(false);
+    EXPECT_GE(ret, -1);
+
+    currentAccount->RemoveConnectedAbility(connection->GetElementName());
+    GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_008 end";
+}
+
+/**
+ * @tc.number: AccessibilityDumper_Unittest_Dump_009
+ * @tc.name: Dump
+ * @tc.desc: Test function Dump.
+ */
+HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_009, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_009 start";
+    const int32_t accountId = 1;
+    const int32_t windowId = 1;
+    sptr<AccessibilityAccountData> currentAccount =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!currentAccount) {
+        GTEST_LOG_(ERROR) << "Account data is nullptr";
+        return;
+    }
+    sptr<AccessibilityWindowConnection> operationConnection =
+        new AccessibilityWindowConnection(windowId, nullptr, accountId);
+    /* add asacConnections */
+    currentAccount->AddAccessibilityWindowConnection(windowId, operationConnection);
+
+    std::string cmdWindow("-w");
+    std::vector<std::u16string> args;
+    args.emplace_back(Str8ToStr16(cmdWindow));
+    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(true);
+    int ret = dumper_->Dump(fd_, args);
+    EXPECT_GE(ret, -1);
+    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(false);
+    currentAccount->RemoveAccessibilityWindowConnection(windowId);
+    GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_009 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

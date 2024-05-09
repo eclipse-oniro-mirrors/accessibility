@@ -1672,6 +1672,36 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Get
 }
 
 /**
+ * @tc.number: AccessibilityWindowManager_Unittest_GetSceneBoardInnerWinId002
+ * @tc.name: GetSceneBoardInnerWinId
+ * @tc.desc: Test function GetSceneBoardInnerWinId
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_GetSceneBoardInnerWinId002,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardInnerWinId002 start";
+    sptr<Rosen::AccessibilityWindowInfo> rosen_winInfo = GetRosenWindowInfo(Rosen::WindowType::APP_WINDOW_BASE);
+    EXPECT_TRUE(rosen_winInfo != nullptr);
+    rosen_winInfo->wid_ = 1;
+    rosen_winInfo->innerWid_ = INNER_WINDOW_ID;
+    rosen_winInfo->uiNodeId_ = INNER_ELEMENT_ID;
+
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.a11yWindows_.clear();
+    windowInfoManager.subWindows_.clear();
+    windowInfoManager.a11yWindows_.insert(std::make_pair(rosen_winInfo->innerWid_,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosen_winInfo)));
+    windowInfoManager.subWindows_.insert(rosen_winInfo->innerWid_);
+
+    int32_t windowId = 2;
+    int64_t elementId = INNER_ELEMENT_ID;
+    int32_t innerWid = 0;
+    windowInfoManager.GetSceneBoardInnerWinId(windowId, elementId, innerWid);
+    EXPECT_NE(innerWid, INNER_WINDOW_ID);
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardInnerWinId002 end";
+}
+
+/**
  * @tc.number: AccessibilityWindowManager_Unittest_GetFocusedWindowId001
  * @tc.name: GetFocusedWindowId
  * @tc.desc: Test function GetFocusedWindowId
@@ -1739,5 +1769,23 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Get
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardElementId002 end";
 }
 
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowUpdate001
+ * @tc.name: OnWindowUpdate
+ * @tc.desc: Test function OnWindowUpdate
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowUpdate001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowUpdate001 start";
+
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    infos.emplace_back(nullptr);
+    windowInfoManager.RegisterWindowListener(nullptr);
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE);
+    sleep(1);
+    windowInfoManager.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowUpdate001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
