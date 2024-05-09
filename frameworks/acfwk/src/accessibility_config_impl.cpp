@@ -184,7 +184,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
 
     if (!captionObserver_) {
         captionObserver_ = new(std::nothrow) AccessibleAbilityManagerCaptionObserverImpl(*this);
-        if (!captionObserver_) {
+        if (captionObserver_ == nullptr) {
             HILOG_ERROR("Create captionObserver_ failed.");
             return false;
         }
@@ -197,7 +197,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
 
     if (!enableAbilityListsObserver_) {
         enableAbilityListsObserver_ = new(std::nothrow) AccessibilityEnableAbilityListsObserverImpl(*this);
-        if (!enableAbilityListsObserver_) {
+        if (enableAbilityListsObserver_ == nullptr) {
             HILOG_ERROR("Create enableAbilityListsObserver_ failed.");
             return false;
         }
@@ -206,7 +206,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
 
     if (!configObserver_) {
         configObserver_ = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(*this);
-        if (!configObserver_) {
+        if (configObserver_ == nullptr) {
             HILOG_ERROR("Create configObserver_ failed.");
             return false;
         }
