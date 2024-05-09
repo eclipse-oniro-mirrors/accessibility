@@ -216,6 +216,24 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
 }
 
 /**
+ * @tc.number: AccessibilityAccountData_Unittest_AddConnectedAbility002
+ * @tc.name: AddConnectedAbility
+ * @tc.desc: Check the add connected ability.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConnectedAbility002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddConnectedAbility_002 start";
+    const int32_t accountId = 1;
+    sptr<AccessibleAbilityConnection> connection = nullptr;
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    /* add connected ability */
+    accountData->AddConnectedAbility(connection);
+    EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
+
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddConnectedAbility_002 end";
+}
+
+/**
  * @tc.number: AccessibilityAccountData_Unittest_RemoveConnectedAbility001
  * @tc.name: RemoveConnectedAbility
  * @tc.desc: Check the remove connected ability.
@@ -241,6 +259,50 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveC
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveConnectedAbility001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_DelAutoStartPrefKeyInRemovePkg001
+ * @tc.name: DelAutoStartPrefKeyInRemovePkg
+ * @tc.desc: Check DelAutoStartPrefKeyInRemovePkg.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+        AccessibilityAccountData_Unittest_DelAutoStartPrefKeyInRemovePkg001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_DelAutoStartPrefKeyInRemovePkg001 start";
+    const int32_t accountId = 1;
+    const std::string bundleName = "test";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->DelAutoStartPrefKeyInRemovePkg(bundleName);
+    EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_DelAutoStartPrefKeyInRemovePkg001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_DelAutoStartPrefKeyInRemovePkg002
+ * @tc.name: DelAutoStartPrefKeyInRemovePkg
+ * @tc.desc: Check DelAutoStartPrefKeyInRemovePkg.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+        AccessibilityAccountData_Unittest_DelAutoStartPrefKeyInRemovePkg002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_DelAutoStartPrefKeyInRemovePkg002 start";
+    const int32_t accountId = 1;
+    const std::string name = "testName";
+    const std::string bundleName = "testBundleName";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    /*add*/
+    AccessibilityAbilityInitParams initParams;
+    initParams.name = name;
+    initParams.bundleName = bundleName;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetCapabilityValues(1);
+    accountData->AddInstalledAbility(*abilityInfo);
+    accountData->DelAutoStartPrefKeyInRemovePkg(bundleName);
+    std::string abilityId = bundleName + "/" + name;
+    bool ret = accountData->GetAbilityAutoStartState(abilityId);
+    EXPECT_EQ(false, ret);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_DelAutoStartPrefKeyInRemovePkg002 end";
 }
 
 /**
@@ -620,6 +682,52 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
 }
 
 /**
+ * @tc.number: AccessibilityAccountData_Unittest_GetAbilitiesByState004
+ * @tc.name: GetAbilitiesByState
+ * @tc.desc: Check the get ability state.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbilitiesByState004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilitiesByState004 start";
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+
+    AccessibilityAbilityInitParams initParamsDefault;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParamsDefault);
+    AccessibilityAbilityInitParams initParams;
+    initParams.name = "TEST_ABILITY_NAME";
+    initParams.bundleName = "TEST_BUNDLE_NAME";
+    std::shared_ptr<AccessibilityAbilityInfo> installAbilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountId, connectCounter++, *abilityInfo);
+
+    EXPECT_NE(abilityInfo->GetId(), installAbilityInfo->GetId());
+
+    /* add connected ability */
+    EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
+    accountData->AddConnectedAbility(connection);
+    EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
+
+    /* add install ability */
+    EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
+    accountData->AddInstalledAbility(*installAbilityInfo);
+    EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
+    sleep(SLEEP_TIME_1);
+
+    /* ABILITY_STATE_DISABLE */
+    AbilityStateType state = AbilityStateType::ABILITY_STATE_INVALID;
+
+    /* get ability */
+    std::vector<AccessibilityAbilityInfo> disabledAbilities;
+    accountData->GetAbilitiesByState(state, disabledAbilities);
+    EXPECT_EQ(1, (int)disabledAbilities.size());
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilitiesByState004 end";
+}
+
+/**
  * @tc.number: AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001
  * @tc.name: AddAccessibilityWindowConnection
  * @tc.desc: Check the add accessibility interaction connection.
@@ -642,6 +750,26 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddAcce
     EXPECT_EQ(connection, accountData->GetAccessibilityWindowConnection(windowId));
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_UpdateEnableAbilityListsState001
+ * @tc.name: UpdateEnableAbilityListsState
+ * @tc.desc: Check the add connecting A11y ability.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_UpdateEnableAbilityListsState001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateEnableAbilityListsState001 start";
+    const int32_t accountId = 1;
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    sptr<AccessibilityEnableAbilityListsObserverStub> stub = new MockAccessibilityEnableAbilityListsObserverStub();
+    sptr<IAccessibilityEnableAbilityListsObserver> observer =
+        new MockAccessibilityEnableAbilityListsObserverProxy(stub);
+    accountData->AddEnableAbilityListsObserver(observer);
+    EXPECT_NE(accountData.GetRefPtr(), nullptr);
+    accountData->UpdateEnableAbilityListsState();
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateEnableAbilityListsState001 end";
 }
 
 /**
@@ -1409,6 +1537,83 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetAbil
     accountData->SetAbilityAutoStartState(abilityName, false);
     EXPECT_EQ(accountData->GetAbilityAutoStartState(abilityName), false);
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetAbilityAutoStartState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_SetAbilityAutoStartState_002
+ * @tc.name: SetAbilityAutoStartState
+ * @tc.desc: Check set and get AbilityAutoStartState.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetAbilityAutoStartState002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetAbilityAutoStartState002 start";
+    const int32_t accountId = 1;
+    const std::string abilityName = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->SetAbilityAutoStartState(abilityName, false);
+    EXPECT_EQ(accountData->GetAbilityAutoStartState(abilityName), false);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetAbilityAutoStartState002 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities_001
+ * @tc.name: UpdateAutoStartEnabledAbilities
+ * @tc.desc: Check UpdateAutoStartEnabledAbilities.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+        AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities001 start";
+    const int32_t accountId = -1;
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->UpdateAutoStartEnabledAbilities();
+    EXPECT_EQ(-1, accountData->GetAccountId());
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities_002
+ * @tc.name: UpdateAutoStartEnabledAbilities
+ * @tc.desc: Check UpdateAutoStartEnabledAbilities.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+        AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities002 start";
+    const int32_t accountId = 1;
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->UpdateAutoStartEnabledAbilities();
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities002 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_GetInputFilterFlag_001
+ * @tc.name: GetInputFilterFlag
+ * @tc.desc: Check GetInputFilterFlag.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetInputFilterFlag001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetInputFilterFlag001 start";
+    const int32_t accountId = 1;
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    EXPECT_EQ(0, accountData->GetInputFilterFlag());
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetInputFilterFlag001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_SetScreenReaderState_001
+ * @tc.name: SetScreenReaderState
+ * @tc.desc: Check SetScreenReaderState.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetScreenReaderState001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetScreenReaderState001 start";
+    const int32_t accountId = 1;
+    const std::string abilityName = "test";
+    const std::string state = "off";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->SetScreenReaderState(abilityName, state);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetScreenReaderState001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
