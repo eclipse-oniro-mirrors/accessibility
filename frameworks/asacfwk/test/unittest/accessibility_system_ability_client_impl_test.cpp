@@ -971,5 +971,199 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetFocusedWindowId_001, TestS
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "GetFocusedWindowId_001 end";
 }
+
+/**
+ * @tc.number: LoadAccessibilityService_001
+ * @tc.name: LoadAccessibilityService
+ * @tc.desc: Test function LoadAccessibilityService (false)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, LoadAccessibilityService_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "LoadAccessibilityService_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    EXPECT_EQ(false, impl_->LoadAccessibilityService());
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "LoadAccessibilityService_001 end";
+}
+
+/**
+ * @tc.number: LoadSystemAbilitySuccess_001
+ * @tc.name: LoadSystemAbilitySuccess
+ * @tc.desc: Test function LoadSystemAbilitySuccess
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, LoadSystemAbilitySuccess_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "LoadSystemAbilitySuccess_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    sptr<IRemoteObject> object;
+    impl_->LoadSystemAbilitySuccess(object);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "LoadSystemAbilitySuccess_001 end";
+}
+
+/**
+ * @tc.number: LoadSystemAbilitySuccess_002
+ * @tc.name: LoadSystemAbilitySuccess
+ * @tc.desc: Test function LoadSystemAbilitySuccess
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, LoadSystemAbilitySuccess_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "LoadSystemAbilitySuccess_002 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    impl_->LoadSystemAbilitySuccess(nullptr);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "LoadSystemAbilitySuccess_002 end";
+}
+
+/**
+ * @tc.number: LoadSystemAbilityFail_001
+ * @tc.name: LoadSystemAbilityFail
+ * @tc.desc: Test function LoadSystemAbilityFail
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, LoadSystemAbilityFail_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "LoadSystemAbilityFail_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    impl_->LoadSystemAbilityFail();
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "LoadSystemAbilityFail_001 end";
+}
+
+/**
+ * @tc.number: Init_001
+ * @tc.name: Init
+ * @tc.desc: Test function Init AccessibilitySystemAbilityClientImpl
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, Init_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Init_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    impl_->LoadSystemAbilityFail();
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "Init_001 end";
+}
+
+/**
+ * @tc.number: CheckEventType_001
+ * @tc.name: CheckEventType
+ * @tc.desc: Test function CheckEventType SendEvent (false: TYPE_VIEW_INVALID)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckEventType_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "CheckEventType_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    EventType eventType = TYPE_VIEW_INVALID;
+    EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SendEvent(eventType, 0));
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "CheckEventType_001 end";
+}
+
+/**
+ * @tc.number: CheckEventType_002
+ * @tc.name: CheckEventType
+ * @tc.desc: Test function CheckEventType SendEvent (false: TYPE_MAX_NUM)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckEventType_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "CheckEventType_002 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    EventType eventType = TYPE_MAX_NUM;
+    EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SendEvent(eventType, 0));
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "CheckEventType_002 end";
+}
+
+/**
+ * @tc.number: CheckEventType_003
+ * @tc.name: CheckEventType
+ * @tc.desc: Test function CheckEventType SendEvent (false: TYPE_VIEW_FOCUSED_EVENT)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckEventType_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "CheckEventType_003 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    EventType eventType = TYPE_VIEW_FOCUSED_EVENT;
+    EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(eventType, 0));
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "CheckEventType_003 end";
+}
+
+/**
+ * @tc.number: CheckEventType_004
+ * @tc.name: CheckEventType
+ * @tc.desc: Test function CheckEventType SendEvent (false: TYPE_PAGE_STATE_UPDATE)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckEventType_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "CheckEventType_004 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    EventType eventType = TYPE_PAGE_STATE_UPDATE;
+    EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(eventType, 0));
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "CheckEventType_004 end";
+}
+
+/**
+ * @tc.number: CheckEventType_005
+ * @tc.name: CheckEventType
+ * @tc.desc: Test function CheckEventType SendEvent (false: TYPE_VIEW_SCROLLED_EVENT)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckEventType_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "CheckEventType_005 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    EventType eventType = TYPE_VIEW_SCROLLED_EVENT;
+    EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(eventType, 0));
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "CheckEventType_005 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
