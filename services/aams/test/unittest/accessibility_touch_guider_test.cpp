@@ -1021,5 +1021,21 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_DestroyEvents_001, TestSize.Level
 
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_DestroyEvents_001 end";
 }
+
+/**
+ * @tc.number: StartUp001
+ * @tc.name: StartUp
+ * @tc.desc: Check the first down event.
+ */
+HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_StartUp_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "TouchGuider_Unittest_StartUp_001 start";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
+    std::unique_ptr<TouchGuider> touchGuider = std::make_unique<TouchGuider>();
+    touchGuider->StartUp();
+    EXPECT_EQ(nullptr, Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner());
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    GTEST_LOG_(INFO) << "TouchGuider_Unittest_StartUp_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

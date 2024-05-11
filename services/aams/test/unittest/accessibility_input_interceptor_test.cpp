@@ -394,5 +394,25 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001 end";
 }
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnInputEvent001
+ * @tc.name: OnInputEvent
+ * @tc.desc: Check the OnInputEvent.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnInputEvent001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnInputEvent001 start";
+    if (!inputInterceptor_) {
+        return;
+    }
+    std::shared_ptr<MMI::KeyEvent> keyEvent = nullptr;
+    std::shared_ptr<AccessibilityInputEventConsumer> inputEventConsumer_ =
+        std::make_shared<AccessibilityInputEventConsumer>();
+    inputEventConsumer_->OnInputEvent(keyEvent);
+
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnInputEvent001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
