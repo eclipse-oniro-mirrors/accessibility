@@ -2131,5 +2131,82 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetEnabledAbilities_003, TestS
     SetUpTestCase();
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_GetEnabledAbilities_003 end";
 }
+
+/*
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_Dump_001
+ * @tc.name: Dump
+ * @tc.desc: Test function Dump
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, Dump_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_Dump_001 start";
+    TearDownTestCase();
+    std::vector<std::u16string> args;
+    int ret = Singleton<AccessibleAbilityManagerService>::GetInstance().Dump(0, args);
+    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_Dump_001 end";
+}
+
+/*
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_003
+ * @tc.name: EnableUITestAbility
+ * @tc.desc: Test function EnableUITestAbility
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_003 start";
+    TearDownTestCase();
+    sptr<IRemoteObject> obj = nullptr;
+    RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj);
+    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_003 end";
+}
+
+/*
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_004
+ * @tc.name: EnableUITestAbility
+ * @tc.desc: Test function EnableUITestAbility
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_004 start";
+    sptr<IRemoteObject> obj = nullptr;
+    RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj);
+    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_004 end";
+}
+
+/*
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_DisableAbility_003
+ * @tc.name: DisableAbility
+ * @tc.desc: Test function DisableAbility
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableAbility_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_DisableAbility_003 start";
+    TearDownTestCase();
+    std::string name = "test";
+    RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name);
+    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_DisableAbility_003 end";
+}
+
+/*
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_DisableUITestAbility_003
+ * @tc.name: DisableUITestAbility
+ * @tc.desc: Test function DisableUITestAbility
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableUITestAbility_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_DisableUITestAbility_003 start";
+    TearDownTestCase();
+    RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility();
+    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    SetUpTestCase();
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_DisableUITestAbility_003 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
