@@ -203,14 +203,14 @@ void AccessibilityAccountData::UpdateInstallAbilityListsState()
 void AccessibilityAccountData::AddAccessibilityWindowConnection(
     const int32_t windowId, const sptr<AccessibilityWindowConnection>& interactionConnection)
 {
-    HILOG_DEBUG("windowId(%{public}d)", windowId);
+    HILOG_INFO("windowId(%{public}d)", windowId);
     std::lock_guard lock(asacConnectionsMutex_);
     asacConnections_[windowId] = interactionConnection;
 }
 
 void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int32_t windowId)
 {
-    HILOG_DEBUG("windowId(%{public}d)", windowId);
+    HILOG_INFO("windowId(%{public}d)", windowId);
     std::lock_guard lock(asacConnectionsMutex_);
     std::map<int32_t, sptr<AccessibilityWindowConnection>>::iterator it = asacConnections_.find(windowId);
     if (it != asacConnections_.end()) {
