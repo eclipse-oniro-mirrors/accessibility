@@ -227,6 +227,48 @@ public:
     int64_t GetUiNodeId() const;
 
     /**
+     * @brief Set window scale val
+     * @param scaleVal_ WMS scale Val
+     * @sysCap Accessibility
+    */
+    void SetScaleVal(const float scaleVal);
+
+    /**
+     * @brief Get window scale val
+     * @return window scale val
+     * @sysCap Accessibility
+    */
+    float GetScaleVal() const;
+
+    /**
+     * @brief Set window scale x
+     * @param scaleX_ WMS scale x
+     * @sysCap Accessibility
+    */
+    void SetScaleX(const float scaleX);
+
+    /**
+     * @brief Get window Scale X
+     * @return window Scale X
+     * @sysCap Accessibility
+    */
+    float GetScaleX() const;
+
+    /**
+     * @brief Set window scale Y
+     * @param scaleY_ WMS scale Y
+     * @sysCap Accessibility
+    */
+    void SetScaleY(const float scaleY);
+
+    /**
+     * @brief Get window scale Y
+     * @return window scale Y
+     * @sysCap Accessibility
+    */
+    float GetScaleY() const;
+
+    /**
      * @brief Set window bundle name
      * @param bundleName_ WMS bundle name
      * @sysCap Accessibility
@@ -268,6 +310,9 @@ protected:
     bool isDecorEnable_ = false;
     int32_t innerWid_ = 0; // used for window id 1, scene board
     int64_t uiNodeId_ = 0; // used for window id 1, scene board
+    float scaleVal_ = 0.0;
+    float scaleX_ = 0.0;
+    float scaleY_ = 0.0;
     std::string bundleName_ = "";
     std::vector<Rect> touchHotAreas_ = {};
 };
