@@ -75,7 +75,8 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbilityWrapper(int32_t
 sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t systemAbilityId)
 {
     (void)systemAbilityId;
-    return nullptr;
+    sptr<IRemoteObject> remote = new OHOS::Accessibility::MockAccessibleAbilityManagerServiceStub();
+    return remote;
 }
 
 sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
