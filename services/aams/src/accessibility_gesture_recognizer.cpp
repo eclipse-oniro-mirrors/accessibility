@@ -165,7 +165,7 @@ void AccessibilityGestureRecognizer::HandleTouchDownEvent(MMI::PointerEvent &eve
     Pointer mp;
     MMI::PointerEvent::PointerItem pointerIterm;
     if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
-        HILOG_WARN("get GetPointerItem(%d) failed", event.GetPointerId());
+        HILOG_WARN("get GetPointerItem(%{public}d) failed", event.GetPointerId());
     }
     mp.px_ = static_cast<float>(pointerIterm.GetDisplayX());
     mp.py_ = static_cast<float>(pointerIterm.GetDisplayY());
@@ -186,7 +186,7 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
     Pointer mp;
     MMI::PointerEvent::PointerItem pointerIterm;
     if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
-        HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
+        HILOG_ERROR("get GetPointerItem(%{public}d) failed", event.GetPointerId());
         return false;
     }
     int64_t eventTime = event.GetActionTime();
@@ -237,7 +237,7 @@ bool AccessibilityGestureRecognizer::HandleTouchUpEvent(MMI::PointerEvent &event
     Pointer mp;
     MMI::PointerEvent::PointerItem pointerIterm;
     if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
-        HILOG_WARN("get GetPointerItem(%d) failed", event.GetPointerId());
+        HILOG_WARN("get GetPointerItem(%{public}d) failed", event.GetPointerId());
     }
 
     if (isDoubleTap_) {
@@ -443,7 +443,7 @@ bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 
     MMI::PointerEvent::PointerItem curPI;
     if (!event.GetPointerItem(event.GetPointerId(), curPI)) {
-        HILOG_WARN("get GetPointerItem(%d) failed", event.GetPointerId());
+        HILOG_WARN("get GetPointerItem(%{public}d) failed", event.GetPointerId());
     }
 
     MMI::PointerEvent::PointerItem firstPI;

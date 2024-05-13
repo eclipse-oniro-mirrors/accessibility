@@ -52,7 +52,7 @@ bool MultiFingerGestureHandler::IsTapGesture(const GestureType gestureType)
 
 void MultiFingerGestureHandler::ProcessMultiFingerGestureTypeEvent(const GestureType gestureType)
 {
-    HILOG_DEBUG("gesture id: %d", static_cast<int32_t>(gestureType));
+    HILOG_DEBUG("gesture id: %{public}d", static_cast<int32_t>(gestureType));
 
     if (IsTapGesture(gestureType)) {
         if (server_.GetFingerTouchUpState() == FingerTouchUpState::ALL_FINGER_TOUCH_UP) {
@@ -73,7 +73,7 @@ void MultiFingerGestureHandler::ProcessMultiFingerGestureTypeEvent(const Gesture
 
 bool MultiFingerGestureHandler::ProcessMultiFingerGestureEvent(const AppExecFwk::InnerEvent::Pointer &event)
 {
-    HILOG_DEBUG("Inner Event Id id: %u", static_cast<uint32_t>(event->GetInnerEventId()));
+    HILOG_DEBUG("Inner Event Id id: %{public}u", static_cast<uint32_t>(event->GetInnerEventId()));
 
     static std::map<uint32_t, GestureType> MULTI_GESTURE_TYPE = {
         {AccessibilityMultiTapGestureRecognizer::TWO_FINGER_SINGLE_TAP_MSG,
@@ -352,7 +352,7 @@ bool AccessibilityMultiTapGestureRecognizer::ParamCheck(const int32_t fingerNum)
 
     for (int pId = 0; pId < fingerNum; pId++) {
         if (!lastUpPoint_.count(pId) || !lastUpPoint_[pId]) {
-            HILOG_ERROR("last_up point or first_down point container has wrong value and pId is: %d", pId);
+            HILOG_ERROR("last_up point or first_down point container has wrong value and pId is: %{public}d", pId);
             return false;
         }
     }
@@ -377,7 +377,7 @@ bool AccessibilityMultiTapGestureRecognizer::IsDoubelTapSlopConditionMatch(const
     const std::vector<MMI::PointerEvent::PointerItem> &curPoints,
     const std::vector<MMI::PointerEvent::PointerItem> &prePoints)
 {
-    HILOG_DEBUG("doubleTapOffsetThresh_, %d", doubleTapOffsetThresh_);
+    HILOG_DEBUG("doubleTapOffsetThresh_, %{public}d", doubleTapOffsetThresh_);
 
     std::vector<int32_t> excludePid(fingerNum, -1);
     for (auto curPoint : curPoints) {
@@ -406,7 +406,7 @@ bool AccessibilityMultiTapGestureRecognizer::IsDoubelTapSlopConditionMatch(const
                 nearestPid = pId;
             }
         }
-        HILOG_DEBUG("moveDelta = %f, right = %d", moveDelta, doubleTapOffsetThresh_ * fingerNum);
+        HILOG_DEBUG("moveDelta = %{public}f, right = %{public}d", moveDelta, doubleTapOffsetThresh_ * fingerNum);
         if (moveDelta < doubleTapOffsetThresh_ * fingerNum) {
             excludePid.push_back(nearestPid);
         } else {
@@ -427,11 +427,11 @@ bool AccessibilityMultiTapGestureRecognizer::GetPointerItemWithFingerNum(int32_t
     std::vector<int32_t> pIds = event.GetPointerIds();
     for (int32_t pId = 0; pId < fingerNum; pId++) {
         if (!event.GetPointerItem(pIds[pId], curPoints[pId])) {
-            HILOG_ERROR("curPoint GetPointerItem(%d) failed", pIds[pId]);
+            HILOG_ERROR("curPoint GetPointerItem(%{public}d) failed", pIds[pId]);
             return false;
         }
         if (!prePointsEventInfo[pId]->GetPointerItem(prePointsEventInfo[pId]->GetPointerId(), prePoints[pId])) {
-            HILOG_ERROR("prePoint GetPointerItem(%d) failed", prePointsEventInfo[pId]->GetPointerId());
+            HILOG_ERROR("prePoint GetPointerItem(%{public}d) failed", prePointsEventInfo[pId]->GetPointerId());
             return false;
         }
     }
@@ -441,7 +441,7 @@ bool AccessibilityMultiTapGestureRecognizer::GetPointerItemWithFingerNum(int32_t
 bool AccessibilityMultiTapGestureRecognizer::IsMultiFingerDoubleTap(MMI::PointerEvent &event,
     const int32_t fingerNum)
 {
-    HILOG_DEBUG("fingerNum is %d", fingerNum);
+    HILOG_DEBUG("fingerNum is %{public}d", fingerNum);
 
     if (!ParamCheck(fingerNum)) {
         return false;
@@ -471,7 +471,7 @@ bool AccessibilityMultiTapGestureRecognizer::IsMultiFingerDoubleTap(MMI::Pointer
 
 void AccessibilityMultiTapGestureRecognizer::HanleFirstTouchDownEvent(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG("gestureState is %d, touchUpState is %d", multiFingerGestureState_, fingerTouchUpState_);
+    HILOG_DEBUG("gestureState is %{public}d, touchUpState is %{public}d", multiFingerGestureState_, fingerTouchUpState_);
 
     if (multiFingerGestureState_ == MultiFingerGestureState::GESTURE_WAIT) {
         if (event.GetPointerId() == 0) {
@@ -515,23 +515,23 @@ void AccessibilityMultiTapGestureRecognizer::HanleFirstTouchDownEvent(MMI::Point
 
 void AccessibilityMultiTapGestureRecognizer::HandleMultiTapEvent(MMI::PointerEvent &event, const int32_t fingerNum)
 {
-    HILOG_DEBUG("fingerNum is %d", fingerNum);
+    HILOG_DEBUG("fingerNum is %{public}d", fingerNum);
 
     // check is double tap
     if (static_cast<int32_t>(firstDownPoint_.size()) == fingerNum &&
         static_cast<int32_t>(lastUpPoint_.size()) == fingerNum &&
         IsMultiFingerDoubleTap(event, fingerNum)) {
-        HILOG_DEBUG("two finger Double tap is recognized, addContinueTapNum %d", addContinueTapNum_);
         addContinueTapNum_ = addContinueTapNum_ + 1;
+        HILOG_DEBUG("two finger Double tap is recognized, addContinueTapNum %{public}d", addContinueTapNum_);
     } else {
         addContinueTapNum_ = 0;
     }
     if (fingerNum < POINTER_COUNT_2 || fingerNum > POINTER_COUNT_4) {
-        HILOG_ERROR("fingerNum: %d is wrong", fingerNum);
+        HILOG_ERROR("fingerNum: %{public}d is wrong", fingerNum);
         return;
     }
     if (addContinueTapNum_ >= MULTI_FINGER_MAX_CONTINUE_TAP_NUM) {
-        HILOG_ERROR("continue tap times: %u is wrong", addContinueTapNum_);
+        HILOG_ERROR("continue tap times: %{public}u is wrong", addContinueTapNum_);
         CancelGesture(true);
         return;
     }
@@ -542,7 +542,7 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiTapEvent(MMI::PointerEve
 
 void AccessibilityMultiTapGestureRecognizer::HandleContinueTouchDownEvent(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG("fingerNum is %d, gestureState is %d, touchUpstate is %d",
+    HILOG_DEBUG("fingerNum is %{public}d, gestureState is %{public}d, touchUpstate is %{public}d",
         targetFingers_, multiFingerGestureState_, fingerTouchUpState_);
 
     if (targetFingers_ == POINTER_COUNT_1) {
@@ -582,7 +582,7 @@ void AccessibilityMultiTapGestureRecognizer::storeBaseDownPoint()
         int32_t pId = iter.first;
 
         if (!iter.second->GetPointerItem(pId, pointerIterm)) {
-            HILOG_ERROR("get GetPointerItem(%d) failed", pId);
+            HILOG_ERROR("get GetPointerItem(%{public}d) failed", pId);
             return;
         }
 
@@ -638,7 +638,7 @@ bool AccessibilityMultiTapGestureRecognizer::GetBasePointItem(MMI::PointerEvent:
         return false;
     }
     if (!pointInfo[pId]->GetPointerItem(pointInfo[pId]->GetPointerId(), basePointerIterm)) {
-        HILOG_ERROR("base down point get GetPointerItem(%d) failed", pId);
+        HILOG_ERROR("base down point get GetPointerItem(%{public}d) failed", pId);
         return false;
     }
 
@@ -650,11 +650,11 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiFingerMoveEvent(MMI::Poi
     int32_t pIdSize = static_cast<int32_t>(event.GetPointerIds().size());
     int32_t downPointSize = static_cast<int32_t>(currentDownPoint_.size());
     int32_t pId = event.GetPointerId();
-    HILOG_DEBUG("pointer num is %d, down pointer size is %d, pointId is %d", pIdSize, downPointSize, pId);
+    HILOG_DEBUG("pointer num is %{public}d, down pointer size is %{public}d, pointId is %{public}d", pIdSize, downPointSize, pId);
 
     MMI::PointerEvent::PointerItem pointerIterm;
     if (!event.GetPointerItem(pId, pointerIterm)) {
-        HILOG_ERROR("get GetPointerItem(%d) failed", pId);
+        HILOG_ERROR("get GetPointerItem(%{public}d) failed", pId);
         return;
     }
 
@@ -671,8 +671,9 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiFingerMoveEvent(MMI::Poi
 
     int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
     int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
-    HILOG_DEBUG("current point and first down point: pid %d, %d, %d, %d, %d", pId, pointerIterm.GetDisplayX(),
-        pointerIterm.GetDisplayY(), basePointerIterm.GetDisplayX(), basePointerIterm.GetDisplayY());
+    HILOG_DEBUG("current point and first down point: pid %{public}d, %{public}d, %{public}d, %{public}d, %{public}d",
+                pId, pointerIterm.GetDisplayX(), pointerIterm.GetDisplayY(), basePointerIterm.GetDisplayX(),
+                basePointerIterm.GetDisplayY());
 
     // two finger move will cancel gesture, but three or four finger move will enter move gesture recognize
     if (!isMoveGestureRecognizing && hypot(offsetX, offsetY) >= TOUCH_SLOP * downPointSize) {
@@ -701,7 +702,7 @@ void AccessibilityMultiTapGestureRecognizer::StoreUpPointInPointerRoute(MMI::Poi
     MMI::PointerEvent::PointerItem pointerIterm;
     int32_t pId = event.GetPointerId();
     if (!event.GetPointerItem(pId, pointerIterm)) {
-        HILOG_ERROR("get GetPointerItem(%d) failed", pId);
+        HILOG_ERROR("get GetPointerItem(%{public}d) failed", pId);
         return;
     }
 
@@ -800,7 +801,7 @@ bool AccessibilityMultiTapGestureRecognizer::IsMoveGestureRecognize()
 
 void AccessibilityMultiTapGestureRecognizer::HandleMultiFingerTouchUpEvent(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG("gestureState is %d, isFirstUp is %d, target finger num is %d",
+    HILOG_DEBUG("gestureState is %{public}d, isFirstUp is %{public}d, target finger num is %{public}d",
         multiFingerGestureState_, isFirstUp_, targetFingers_);
 
     handler_->RemoveEvent(WAIT_ANOTHER_FINGER_DOWN_MSG);
@@ -844,7 +845,7 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiFingerTouchUpEvent(MMI::
 
 bool AccessibilityMultiTapGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG("gestureState is %d", multiFingerGestureState_);
+    HILOG_DEBUG("gestureState is %{public}d", multiFingerGestureState_);
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
