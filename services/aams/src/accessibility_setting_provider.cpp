@@ -26,7 +26,6 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilitySettingProvider* AccessibilitySettingProvider::instance_;
 std::mutex AccessibilitySettingProvider::mutex_;
-std::mutex AccessibilitySettingProvider::observerMutex_;
 namespace {
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
 } // namespace
@@ -122,46 +121,15 @@ sptr<AccessibilitySettingObserver> AccessibilitySettingProvider::CreateObserver(
     return AccessibilityDatashareHelper::CreateObserver(key, func);
 }
 
-RetError AccessibilitySettingProvider::RegisterObserver(const sptr<AccessibilitySettingObserver>& observer)
+RetError AccessibilitySettingProvider::RegisterObserver(const std::string& key,
+    AccessibilitySettingObserver::UpdateFunc& func)
 {
-    return AccessibilityDatashareHelper::RegisterObserver(observer);
-}
-
-RetError AccessibilitySettingProvider::RegisterObserver(const std::string& key, AccessibilitySettingObserver::UpdateFunc& func)
-{
-    sptr<AccessibilitySettingObserver> observer = CreateObserver(key, func);
-    if (observer == nullptr) {
-        return RET_ERR_NULLPTR;
-    }
-    if (RegisterObserver(observer) != ERR_OK) {
-        return RET_ERR_NULLPTR;
-    }
-    std::lock_guard<std::mutex> lock(observerMutex_);
-    settingObserverMap_.insert(std::make_pair(key, observer));
-    return RET_OK;
-}
-
-RetError AccessibilitySettingProvider::UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer)
-{
-    return AccessibilityDatashareHelper::UnregisterObserver(observer);
+    return AccessibilityDatashareHelper::RegisterObserver(key, func);
 }
 
 RetError AccessibilitySettingProvider::UnregisterObserver(const std::string& key)
 {
-    auto iter = settingObserverMap_.find(key);
-    if (iter != settingObserverMap_.end() && iter->second != nullptr) {
-        if (UnregisterObserver(iter->second) == ERR_OK) {
-            std::lock_guard<std::mutex> lock(observerMutex_);
-            settingObserverMap_.erase(iter);
-            HILOG_DEBUG("succeed to unregister observer of key %{public}s", key.c_str());
-            return RET_OK;
-        } else {
-            HILOG_WARN("failed to unregister observer of key %{public}s", key.c_str());
-            return RET_ERR_FAILED;
-        }
-    }
-    HILOG_WARN("failed to find the key %{public}s", key.c_str());
-    return RET_ERR_FAILED;
+    return AccessibilityDatashareHelper::UnregisterObserver(key);
 }
 } // namespace Accessibility
 } // namespace OHOS

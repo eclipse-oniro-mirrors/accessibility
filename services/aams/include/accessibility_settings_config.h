@@ -87,6 +87,10 @@ public:
     const std::vector<std::string> &GetEnabledAbilityInfos();
     uint32_t GetConfigState();
     bool GetStartFromAtoHosState();
+    std::shared_ptr<AccessibilityDatashareHelper> GetDbHandle()
+    {
+        return datashare_;
+    }
 
     void Init();
     void ClearData();

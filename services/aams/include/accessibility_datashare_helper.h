@@ -32,6 +32,7 @@ enum DATASHARE_TYPE : int32_t {
 class AccessibilityDatashareHelper {
 public:
     AccessibilityDatashareHelper(DATASHARE_TYPE type, int32_t accountID);
+    ~AccessibilityDatashareHelper();
     std::string GetStringValue(const std::string& key, const std::string& defaultValue);
     int32_t GetIntValue(const std::string& key, const int32_t& defaultValue);
     int64_t GetLongValue(const std::string& key, const int64_t& defaultValue);
@@ -51,6 +52,9 @@ public:
     RetError RegisterObserver(const sptr<AccessibilitySettingObserver>& observer);
     RetError UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer);
 
+    RetError RegisterObserver(const std::string& key, AccessibilitySettingObserver::UpdateFunc& func);
+    RetError UnregisterObserver(const std::string& key);
+
 private:
     std::shared_ptr<DataShare::DataShareHelper> CreateDatashareHelper();
     bool DestoryDatashareHelper(std::shared_ptr<DataShare::DataShareHelper>& helper);
@@ -61,6 +65,10 @@ private:
     int32_t accountId_;
     std::string uriProxyStr_;
     sptr<IRemoteObject> remoteObj_ = nullptr;
+    std::shared_ptr<DataShare::DataShareHelper> dataShareHelper_ = nullptr;
+
+    static std::mutex observerMutex_;
+    std::map<std::string, sptr<AccessibilitySettingObserver>> settingObserverMap_;
 };
 } // namespace Accessibility
 } // namespace OHOS

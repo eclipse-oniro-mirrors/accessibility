@@ -107,18 +107,6 @@ sptr<AccessibilitySettingObserver> AccessibilitySettingProvider::CreateObserver(
     return nullptr;
 }
 
-RetError AccessibilitySettingProvider::RegisterObserver(const sptr<AccessibilitySettingObserver>& observer)
-{
-    (void)observer;
-    return RET_OK;
-}
-
-RetError AccessibilitySettingProvider::UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer)
-{
-    (void)observer;
-    return RET_OK;
-}
-
 RetError AccessibilitySettingProvider::RegisterObserver(const std::string& key,
     AccessibilitySettingObserver::UpdateFunc& func)
 {
