@@ -42,12 +42,9 @@ public:
     bool IsValidKey(const std::string& key);
     sptr<AccessibilitySettingObserver> CreateObserver(const std::string& key,
         AccessibilitySettingObserver::UpdateFunc& func);
-    RetError RegisterObserver(const sptr<AccessibilitySettingObserver>& observer);
-    RetError UnregisterObserver(const sptr<AccessibilitySettingObserver>& observer);
 
     RetError RegisterObserver(const std::string& key, AccessibilitySettingObserver::UpdateFunc& func);
     RetError UnregisterObserver(const std::string& key);
-
 private:
     std::string GetConfigKey(int32_t state);
 
@@ -57,8 +54,6 @@ protected:
 private:
     static AccessibilitySettingProvider* instance_;
     static std::mutex mutex_;
-    static std::mutex observerMutex_;
-    std::map<std::string, sptr<AccessibilitySettingObserver>> settingObserverMap_;
 };
 } // namespace Accessibility
 } // namespace OHOS
