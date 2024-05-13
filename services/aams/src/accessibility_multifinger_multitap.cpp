@@ -471,7 +471,8 @@ bool AccessibilityMultiTapGestureRecognizer::IsMultiFingerDoubleTap(MMI::Pointer
 
 void AccessibilityMultiTapGestureRecognizer::HanleFirstTouchDownEvent(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG("gestureState is %{public}d, touchUpState is %{public}d", multiFingerGestureState_, fingerTouchUpState_);
+    HILOG_DEBUG("gestureState is %{public}d, touchUpState is %{public}d", multiFingerGestureState_,
+                fingerTouchUpState_);
 
     if (multiFingerGestureState_ == MultiFingerGestureState::GESTURE_WAIT) {
         if (event.GetPointerId() == 0) {
@@ -650,7 +651,8 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiFingerMoveEvent(MMI::Poi
     int32_t pIdSize = static_cast<int32_t>(event.GetPointerIds().size());
     int32_t downPointSize = static_cast<int32_t>(currentDownPoint_.size());
     int32_t pId = event.GetPointerId();
-    HILOG_DEBUG("pointer num is %{public}d, down pointer size is %{public}d, pointId is %{public}d", pIdSize, downPointSize, pId);
+    HILOG_DEBUG("pointer num is %{public}d, down pointer size is %{public}d, pointId is %{public}d", pIdSize,
+                downPointSize, pId);
 
     MMI::PointerEvent::PointerItem pointerIterm;
     if (!event.GetPointerItem(pId, pointerIterm)) {
