@@ -32,7 +32,7 @@ AccessibleAbilityManagerServiceProxy::~AccessibleAbilityManagerServiceProxy()
 bool AccessibleAbilityManagerServiceProxy::WriteInterfaceToken(MessageParcel &data)
 {
     HILOG_DEBUG();
-    if (!data.WriteInterfaceToken(IAccessibleAbilityManagerService::GetDescriptor())) {
+    if (!data.WriteInterfaceToken(AccessibleAbilityManagerServiceProxy::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
         return false;
     }
