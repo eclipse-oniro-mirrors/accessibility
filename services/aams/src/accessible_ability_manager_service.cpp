@@ -2206,8 +2206,7 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
             accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
             UpdateConfigState();
             Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
-            AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state)
-            {
+            AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
                 Singleton<AccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
             };
             provider.RegisterObserver(DEVICE_PROVISIONED, func);
@@ -2215,7 +2214,7 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
                 accountData->GetConfig()->GetDbHandle()->RegisterObserver(USER_SETUP_COMPLETED, func);
             }
         }
-    }), "REGISTER_SHORTKEY_OBSERVER");
+        }), "REGISTER_SHORTKEY_OBSERVER");
 }
 
 void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
