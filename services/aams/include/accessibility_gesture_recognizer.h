@@ -275,10 +275,16 @@ private:
     void StandardGestureCanceled();
 
     /**
+     * @brief Add position to pointer route.
+     * @param pointerIterm the touch item from touchguide
+     */
+    void AddSwipePosition(MMI::PointerEvent::PointerItem &pointerIterm);
+
+    /**
      * @brief Calculate the move threshold for the double tap gesture.
      * @param densityDpi the physical density
      */
-    float getDoubleTapMoveThreshold(float densityDpi);
+    float GetDoubleTapMoveThreshold(float densityDpi);
 
     /**
      * @brief Get pointer path.

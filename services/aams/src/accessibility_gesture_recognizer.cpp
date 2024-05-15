@@ -55,7 +55,7 @@ void GestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
     }
 }
 
-float AccessibilityGestureRecognizer::getDoubleTapMoveThreshold(float densityDpi)
+float AccessibilityGestureRecognizer::GetDoubleTapMoveThreshold(float densityDpi)
 {
     return densityDpi * (1.0f / 25.4f) * MM_PER_CM;
 }
@@ -185,11 +185,21 @@ void AccessibilityGestureRecognizer::HandleTouchDownEvent(MMI::PointerEvent &eve
     startTime_ = event.GetActionTime();
 }
 
-bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &event)
+void AccessibilityGestureRecognizer::AddSwipePosition(MMI::PointerEvent::PointerItem &pointerIterm)
 {
     HILOG_DEBUG();
 
     Pointer mp;
+    prePointer_ = pointerIterm;
+    mp.px_ = pointerIterm.GetDisplayX();
+    mp.py_ = pointerIterm.GetDisplayY();
+    pointerRoute_.push_back(mp);
+}
+
+bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
     MMI::PointerEvent::PointerItem pointerIterm;
     if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
         HILOG_ERROR("get GetPointerItem(%{public}d) failed", event.GetPointerId());
@@ -228,13 +238,10 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
         }
         if ((abs(pointerIterm.GetDisplayX() - prePointer_.GetDisplayX())) >= xMinPixels_ ||
             (abs(pointerIterm.GetDisplayY() - prePointer_.GetDisplayY())) >= yMinPixels_) {
-            HILOG_DEBUG("Add position to pointer route.");
-            prePointer_ = pointerIterm;
-            mp.px_ = pointerIterm.GetDisplayX();
-            mp.py_ = pointerIterm.GetDisplayY();
-            pointerRoute_.push_back(mp);
+            AddSwipePosition(pointerIterm);
         }
-    } else {
+    }
+    if (!isRecognizingGesture_) {
         return false;
     }
 
