@@ -678,7 +678,7 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiFingerMoveEvent(MMI::Poi
                 basePointerIterm.GetDisplayY());
 
     // two finger move will cancel gesture, but three or four finger move will enter move gesture recognize
-    if (!isMoveGestureRecognizing && hypot(offsetX, offsetY) >= TOUCH_SLOP * downPointSize) {
+    if (!isMoveGestureRecognizing && hypot(offsetX, offsetY) > TOUCH_SLOP * downPointSize) {
         if (downPointSize == POINTER_COUNT_2) {
             HILOG_DEBUG("cancel gesture because finger move");
             CancelGesture(false);

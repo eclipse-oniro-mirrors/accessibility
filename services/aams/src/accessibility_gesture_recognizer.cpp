@@ -23,6 +23,7 @@ namespace {
     constexpr int32_t LIMIT_SIZE_THREE = 3;
     constexpr int32_t POINTER_COUNT_1 = 1;
     constexpr float EPSINON = 0.0001f;
+    constexpr float TOUCH_SLOP = 8.0f;
 } // namespace
 
 GestureHandler::GestureHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
@@ -65,7 +66,7 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
         return;
     }
 
-    threshold_ = CALCULATION_DIMENSION(display->GetWidth());
+    threshold_ = CALCULATION_DIMENSION(display->GetDpi());
     xMinPixels_ = MIN_PIXELS(display->GetWidth());
     yMinPixels_ = MIN_PIXELS(display->GetHeight());
 
@@ -194,7 +195,14 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
     float offsetY = startPointer_.GetDisplayY() - pointerIterm.GetDisplayY();
     double duration = hypot(offsetX, offsetY);
     if (isRecognizingGesture_) {
-        if (duration > threshold_) {
+        if (isDoubleTap_ && duration > TOUCH_SLOP) {
+            HILOG_DEBUG("Cancel double tap event because the finger moves beyond preset slop.");
+            isRecognizingGesture_ = false;
+            isGestureStarted_ = false;
+            isDoubleTap_ = false;
+            pointerRoute_.clear();
+            return listener_->OnCancelled(event);
+        } else if (duration > threshold_) {
             startPointer_ = pointerIterm;
             startTime_ = eventTime;
             isFirstTapUp_ = false;
