@@ -41,6 +41,7 @@ const int64_t TAP_INTERVAL_TIMEOUT = 100000; // microsecond
 const float DEGREES_THRESHOLD = 0.0f;
 const int32_t DIRECTION_NUM = 4;
 const int64_t US_TO_MS = 1000;
+const int32_t MM_PER_CM = 10;
 #define CALCULATION_DIMENSION(xdpi) ((xdpi) * 0.25f)
 #define MIN_PIXELS(xyDpi) ((xyDpi) * 0.1f)
 
@@ -272,6 +273,18 @@ private:
      * @brief Cancel the gesture.
      */
     void StandardGestureCanceled();
+
+    /**
+     * @brief Add position to pointer route.
+     * @param pointerIterm the touch item from touchguide
+     */
+    void AddSwipePosition(MMI::PointerEvent::PointerItem &pointerIterm);
+
+    /**
+     * @brief Calculate the move threshold for the double tap gesture.
+     * @param densityDpi the physical density
+     */
+    float GetDoubleTapMoveThreshold(float densityDpi);
 
     /**
      * @brief Get pointer path.
