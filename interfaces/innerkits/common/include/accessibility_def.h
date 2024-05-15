@@ -361,10 +361,13 @@ constexpr int32_t DEFAULT_INT32 = 0;
 constexpr int32_t CODE_SUCCESS = 0;
 constexpr int32_t CODE_FAILED = -1;
 constexpr int32_t CHAE_BUFFER_MAX = 1024;
-const std::string ERROR_MESSAGE_PARAMETER_ERROR = "Input parameter error";
-const std::string ERROR_MESSAGE_NO_PERMISSION = "Permission denied";
-const std::string ERROR_MESSAGE_NOT_SYSTEM_APP = "Not system App";
-const std::string ERROR_MESSAGE_NO_RIGHT = "Do not have accessibility right for this operation";
+const std::string ERROR_MESSAGE_PARAMETER_ERROR = "Parameter error. Possible causes:"
+    "1. Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.";
+const std::string ERROR_MESSAGE_NO_PERMISSION = "Permission verification failed."
+    "The application does not have the permission required to call the API.";
+const std::string ERROR_MESSAGE_NOT_SYSTEM_APP = "Permission verification failed."
+    "A non-system application calls a system API.";
+const std::string ERROR_MESSAGE_NO_RIGHT = "No accessibility permission to perform the operation";
 const std::string ERROR_MESSAGE_SYSTEM_ABNORMALITY = "System abnormality";
 const std::string ERROR_MESSAGE_PROPERTY_NOT_EXIST = "This property does not exist";
 const std::string ERROR_MESSAGE_ACTION_NOT_SUPPORT = "This action is not supported";
