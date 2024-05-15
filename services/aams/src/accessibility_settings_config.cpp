@@ -140,6 +140,7 @@ RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
         return RET_ERR_NULLPTR;
     }
 
+    shortkeyTarget_ = name;
     return datashare_->PutStringValue("ShortkeyTarget", name);
 }
 

@@ -265,14 +265,16 @@ RetError AccessibilityDatashareHelper::UnregisterObserver(const sptr<Accessibili
 
 RetError AccessibilityDatashareHelper::UnregisterObserver(const std::string& key)
 {
+    std::lock_guard<std::mutex> lock(observerMutex_);
     auto iter = settingObserverMap_.find(key);
     if (iter != settingObserverMap_.end() && iter->second != nullptr) {
-        if (UnregisterObserver(iter->second) == ERR_OK) {
-            std::lock_guard<std::mutex> lock(observerMutex_);
+        sptr<AccessibilitySettingObserver> observer = iter->second;
+        if (UnregisterObserver(observer) == ERR_OK) {
             settingObserverMap_.erase(iter);
             HILOG_DEBUG("succeed to unregister observer of key %{public}s", key.c_str());
             return RET_OK;
         } else {
+            settingObserverMap_.erase(iter);
             HILOG_WARN("failed to unregister observer of key %{public}s", key.c_str());
             return RET_ERR_FAILED;
         }
