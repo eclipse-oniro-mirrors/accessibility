@@ -915,6 +915,8 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     sptr<Rosen::AccessibilityWindowInfo> rosen_winInfo_second = GetRosenWindowInfo(Rosen::WindowType::APP_WINDOW_BASE);
     rosen_winInfo_second->bundleName_ = "rosen_winInfo_second";
     rosen_winInfo_second->touchHotAreas_ = {Rosen::Rect{0, 0, 3, 3}, Rosen::Rect{3, 3, 6, 6}};
+    rosen_winInfo_second->wid_ = 2;
+    rosen_winInfo_second->innerWid_ = 2;
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
     infos.emplace_back(rosen_winInfo_first);
     infos.emplace_back(rosen_winInfo_second);
