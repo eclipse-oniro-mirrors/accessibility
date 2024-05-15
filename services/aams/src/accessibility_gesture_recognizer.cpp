@@ -71,7 +71,7 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
         return;
     }
 
-    threshold_ = getDoubleTapMoveThreshold(display->GetDpi());
+    threshold_ = GetDoubleTapMoveThreshold(display->GetDpi());
     xMinPixels_ = MIN_PIXELS(display->GetWidth());
     yMinPixels_ = MIN_PIXELS(display->GetHeight());
 
