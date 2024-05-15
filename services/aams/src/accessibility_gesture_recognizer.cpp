@@ -55,6 +55,11 @@ void GestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
     }
 }
 
+float AccessibilityGestureRecognizer::getDoubleTapMoveThreshold(float densityDpi)
+{
+    return densityDpi * (1.0f / 25.4f) * MM_PER_CM;
+}
+
 AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
 {
     HILOG_DEBUG();
@@ -66,7 +71,7 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
         return;
     }
 
-    threshold_ = CALCULATION_DIMENSION(display->GetDpi());
+    threshold_ = getDoubleTapMoveThreshold(display->GetDpi());
     xMinPixels_ = MIN_PIXELS(display->GetWidth());
     yMinPixels_ = MIN_PIXELS(display->GetHeight());
 
@@ -198,9 +203,7 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
         if (isDoubleTap_ && duration > TOUCH_SLOP) {
             HILOG_DEBUG("Cancel double tap event because the finger moves beyond preset slop.");
             isRecognizingGesture_ = false;
-            isGestureStarted_ = false;
             isDoubleTap_ = false;
-            pointerRoute_.clear();
             return listener_->OnCancelled(event);
         } else if (duration > threshold_) {
             startPointer_ = pointerIterm;
@@ -231,10 +234,10 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
             mp.py_ = pointerIterm.GetDisplayY();
             pointerRoute_.push_back(mp);
         }
-    }
-    if (!isRecognizingGesture_) {
+    } else {
         return false;
     }
+
     return StandardGestureRecognizer(event);
 }
 
