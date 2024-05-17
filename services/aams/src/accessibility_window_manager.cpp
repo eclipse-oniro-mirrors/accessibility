@@ -408,18 +408,13 @@ std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilit
             HILOG_DEBUG("info is nullptr");
             continue;
         }
-
-        int32_t realWidId = GetRealWindowId(info);
-        if (a11yWindows_.count(realWidId)) {
-            UpdateAccessibilityWindowInfo(a11yWindows_[realWidId], info);
+        AccessibilityWindowInfo tmpWindowInfo;
+        UpdateAccessibilityWindowInfo(tmpWindowInfo, info);
+        if (tmpWindowInfo.IsFocused()) {
+            HILOG_DEBUG("set active windowId: %{public}d", tmpWindowInfo.GetWindowId());
+            tmpWindowInfo.SetActive(true);
         }
-    }
-    std::transform(a11yWindows_.begin(), a11yWindows_.end(), std::back_inserter(windows),
-        [](const std::map<int32_t, AccessibilityWindowInfo>::value_type &window) { return window.second; });
-
-    HILOG_DEBUG("window size[%{public}zu]", windows.size());
-    for (auto &logWindow : windows) {
-        HILOG_DEBUG("logWindow id[%{public}d]", logWindow.GetWindowId());
+        windows.push_back(tmpWindowInfo);
     }
     return windows;
 }
