@@ -80,6 +80,7 @@ void AccessibilityWindowManager::WinDeInit()
     a11yWindows_.clear();
     subWindows_.clear();
     sceneBoardElementIdMap_.Clear();
+    activeWindowId_ = INVALID_WINDOW_ID;
 }
 
 AccessibilityWindowManager::~AccessibilityWindowManager()
