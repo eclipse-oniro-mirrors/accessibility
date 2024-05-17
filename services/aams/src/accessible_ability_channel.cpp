@@ -316,8 +316,10 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         RetError ret = TransmitActionToMmi(action);
         if (ret != RET_OK) {
             HILOG_ERROR("Transmit Action To Mmi failed!");
+            callback->SetExecuteActionResult(false, requestId);
             return RET_ERR_FAILED;
         }
+        callback->SetExecuteActionResult(true, requestId);
         return RET_OK;
     }
     
