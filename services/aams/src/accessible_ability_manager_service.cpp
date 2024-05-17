@@ -148,8 +148,6 @@ void AccessibleAbilityManagerService::OnStop()
         }), "TASK_ONSTOP");
     syncFuture.wait();
 
-    runner_.reset();
-    handler_.reset();
     for (auto &iter : dependentServicesStatus_) {
         iter.second = false;
     }
