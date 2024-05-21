@@ -62,7 +62,7 @@ enum ClickLocation : int32_t {
  * @brief struct to record injected pointers.
  */
 struct InjectedEventRecorder {
-    int32_t downPointers;
+    std::set<int32_t> downPointers {};
     int32_t downPointerNum;
     int64_t lastDownTime;
     std::shared_ptr<MMI::PointerEvent> lastHoverEvent;
