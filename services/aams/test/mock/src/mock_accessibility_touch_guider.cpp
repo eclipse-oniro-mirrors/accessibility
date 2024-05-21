@@ -568,15 +568,15 @@ void TouchGuider::RecordInjectedEvent(MMI::PointerEvent& event)
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
             injectedRecorder_.downPointerNum++;
-            injectedRecorder_.downPointers |= (1 << pointerId);
+            injectedRecorder_.downPointers.insert(pointerId);
             injectedRecorder_.lastDownTime = event.GetActionTime() / US_TO_MS;
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            injectedRecorder_.downPointers &= ~(1 << pointerId);
+            injectedRecorder_.downPointers.erase(pointerId);
             if (injectedRecorder_.downPointerNum > 0) {
                 injectedRecorder_.downPointerNum--;
             }
-            if (!injectedRecorder_.downPointers) {
+            if (injectedRecorder_.downPointers.empty()) {
                 injectedRecorder_.lastDownTime = 0;
             }
             break;
@@ -626,7 +626,7 @@ void TouchGuider::ClearInjectedEventRecorder()
     HILOG_DEBUG();
 
     injectedRecorder_.downPointerNum = 0;
-    injectedRecorder_.downPointers = 0;
+    injectedRecorder_.downPointers.clear();
     injectedRecorder_.lastHoverEvent = nullptr;
 }
 
@@ -636,7 +636,7 @@ void TouchGuider::SendAllDownEvents(MMI::PointerEvent& event)
 
     std::vector<int32_t> pIds = event.GetPointerIds();
     for (auto& pId : pIds) {
-        if (!(injectedRecorder_.downPointers & (1 << pId))) {
+        if (injectedRecorder_.downPointers.find(pId) == injectedRecorder_.downPointers.end()) {
             event.SetPointerId(pId);
             SendEventToMultimodal(event, POINTER_DOWN);
         }
@@ -660,7 +660,7 @@ void TouchGuider::SendUpForAllInjectedEvent(MMI::PointerEvent& event)
 
     std::vector<int32_t> pIds = event.GetPointerIds();
     for (const auto& pId : pIds) {
-        if (!(injectedRecorder_.downPointers & (1 << pId))) {
+        if (injectedRecorder_.downPointers.find(pId) == injectedRecorder_.downPointers.end()) {
             continue;
         }
         SendEventToMultimodal(event, POINTER_UP);
