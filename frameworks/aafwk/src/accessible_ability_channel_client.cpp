@@ -242,7 +242,8 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     RetError ret = proxy_->SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId,
         elementOperator, mode, isFilter);
     if (ret != RET_OK) {
-        HILOG_ERROR("SearchElementInfosByAccessibilityId failed. ret[%{public}d]", ret);
+        HILOG_ERROR("SearchElementInfosByAccessibilityId windowId :[%{pubic}d] Failed to wait result, Time out",
+            accessibilityWindowId);
         return ret;
     }
 

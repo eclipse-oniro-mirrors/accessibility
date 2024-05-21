@@ -142,6 +142,21 @@ public:
      * @brief Get isFilter.
      */
     bool GetFilter();
+
+    /**
+    * @brief To return the result of nodeId, treeId, childWindowId.
+    * @param nodeId: The node Id.
+    * @param treeId: The tree Id.
+    * @param childWindowId The childwindow Id.
+    */
+    virtual void SetChildTreeIdAndWinId(const int64_t nodeId, const int32_t treeId,
+        const int32_t childWindowId) override;
+
+    /**
+    * @brief To return the result of treeId
+    * @param treeId: The tree Id.
+    */
+    virtual void SetBelongTreeId(const int32_t treeId) override;
 private:
     bool isFilter = false;
 

@@ -58,6 +58,7 @@ namespace {
     constexpr int32_t REQUEST_ID_MAX = 0x0000FFFF;
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
     constexpr int32_t UNLOAD_TASK_INTERNAL = 3 * 60 * 1000; // ms
+    constexpr int32_t ELEMENT_MOVE_BIT_SPLIT = 13;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -613,6 +614,106 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
     return RET_OK;
 }
 
+RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const Registration &parameter,
+    const int32_t treeId, const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation, bool isApp)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
+        HILOG_ERROR("Get current account data failed!!");
+        return RET_ERR_REGISTER_EXIST;
+    }
+    operation->SetBelongTreeId(treeId);
+    sptr<AccessibilityWindowConnection> oldConnection =
+        accountData->GetAccessibilityWindowConnection(parameter.windowId);
+    bool isParentConectionExist = false;
+    if (isApp && oldConnection) {
+        if (oldConnection->GetCardProxy(treeId) != nullptr) {
+            HILOG_WARN("no need to register again.");
+            return RET_ERR_REGISTER_EXIST;
+        } else {
+            oldConnection->SetCardProxy(treeId, operation);
+            isParentConectionExist = true;
+            HILOG_DEBUG("Winid exist, treeid not exist.");
+        }
+    }
+    sptr<AccessibilityWindowConnection> parentConnection =
+        accountData->GetAccessibilityWindowConnection(parameter.parentWindowId);
+    if (isApp && parentConnection) {
+        sptr<IAccessibilityElementOperator> parentAamsOper =
+            parentConnection->GetCardProxy(parameter.parentTreeId);
+        if (parentAamsOper != nullptr) {
+            parentAamsOper->SetChildTreeIdAndWinId(nodeId, treeId, parameter.windowId);
+        } else {
+            HILOG_DEBUG("parentAamsOper is nullptr");
+        }
+    } else {
+        HILOG_DEBUG("parentConnection is nullptr");
+    }
+    if (isParentConectionExist == false) {
+        DeleteConnectionAndDeathRecipient(parameter.windowId, oldConnection);
+        sptr<AccessibilityWindowConnection> connection =
+            new(std::nothrow) AccessibilityWindowConnection(parameter.windowId,
+                treeId, operation, currentAccountId_);
+        if (connection == nullptr) {
+            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
+            HILOG_ERROR("New AccessibilityWindowConnection failed!!");
+            return RET_ERR_REGISTER_EXIST;
+        }
+        accountData->AddAccessibilityWindowConnection(parameter.windowId, connection);
+    }
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration parameter,
+    const sptr<IAccessibilityElementOperator> &operation, bool isApp)
+{
+    static int32_t treeId = 0;
+    ++treeId;
+    int64_t nodeId = parameter.elementId;
+    if (parameter.elementId > 0) {
+        nodeId = (parameter.elementId << ELEMENT_MOVE_BIT_SPLIT) >> ELEMENT_MOVE_BIT_SPLIT;
+    }
+    HILOG_INFO("get element and treeid - parameter.elementId[%{public}" PRId64 "] element[%{public}" PRId64 "]",
+        parameter.elementId, nodeId);
+
+    if (!handler_) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
+        HILOG_ERROR("handler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    handler_->PostTask(std::bind([=]() -> void {
+        HILOG_INFO("Register windowId[%{public}d]", parameter.windowId);
+        HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
+
+        if (RET_OK != RegisterElementOperatorChildWork(parameter, treeId, nodeId, operation, isApp)) {
+            return;
+        }
+
+        if (CheckWindowIdEventExist(parameter.windowId)) {
+            SendEvent(windowFocusEventMap_[parameter.windowId]);
+            windowFocusEventMap_.erase(parameter.windowId);
+        }
+        if (operation && operation->AsObject()) {
+            sptr<IRemoteObject::DeathRecipient> deathRecipient =
+                new(std::nothrow) InteractionOperationDeathRecipient(parameter.windowId);
+            if (deathRecipient == nullptr) {
+                Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                    A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
+                HILOG_ERROR("Create interactionOperationDeathRecipient failed");
+                return;
+            }
+            bool result = operation->AsObject()->AddDeathRecipient(deathRecipient);
+            interactionOperationDeathRecipients_[parameter.windowId] = deathRecipient;
+            HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
+        }
+        }), "TASK_REGISTER_ELEMENT_OPERATOR");
+    return RET_OK;
+}
+
 void AccessibleAbilityManagerService::DeleteConnectionAndDeathRecipient(
     const int32_t windowId, const sptr<AccessibilityWindowConnection> &connection)
 {
@@ -674,6 +775,48 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
         }
 
         auto object = connection->GetProxy()->AsObject();
+        if (object) {
+            auto iter = interactionOperationDeathRecipients_.find(windowId);
+            if (iter != interactionOperationDeathRecipients_.end()) {
+                sptr<IRemoteObject::DeathRecipient> deathRecipient = iter->second;
+                bool result = object->RemoveDeathRecipient(deathRecipient);
+                HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
+                interactionOperationDeathRecipients_.erase(iter);
+            } else {
+                HILOG_INFO("cannot find remote object. windowId[%{public}d]", windowId);
+            }
+        }
+        }), "TASK_DEREGISTER_ELEMENT_OPERATOR");
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId, const int32_t treeId)
+{
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    handler_->PostTask(std::bind([=]() -> void {
+        HILOG_INFO("Deregister windowId[%{public}d], treeId[%{public}d] start", windowId, treeId);
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            return;
+        }
+        sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
+        if (!connection) {
+            HILOG_WARN("The operation of windowId[%{public}d] has not been registered.", windowId);
+            return;
+        }
+        accountData->RemoveAccessibilityWindowConnection(windowId);
+
+        if (!connection->GetCardProxy(treeId)) {
+            HILOG_ERROR("proxy is null");
+            return;
+        }
+
+        auto object = connection->GetCardProxy(treeId)->AsObject();
         if (object) {
             auto iter = interactionOperationDeathRecipients_.find(windowId);
             if (iter != interactionOperationDeathRecipients_.end()) {

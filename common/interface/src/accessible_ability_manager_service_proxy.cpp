@@ -241,6 +241,57 @@ RetError AccessibleAbilityManagerServiceProxy::RegisterElementOperator(
     return RET_OK;
 }
 
+RetError AccessibleAbilityManagerServiceProxy::RegisterElementOperator(Registration parameter,
+    const sptr<IAccessibilityElementOperator> &operation, bool isApp)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (operation == nullptr) {
+        HILOG_ERROR("fail, Input operation is null");
+        return RET_ERR_INVALID_PARAM;
+    }
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteInt32(parameter.windowId)) {
+        HILOG_ERROR("fail, connection write windowId error");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteInt32(parameter.parentWindowId)) {
+        HILOG_ERROR("fail, connection write windowId error");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteInt32(parameter.parentTreeId)) {
+        HILOG_ERROR("fail, connection write windowId error");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteInt64(parameter.elementId)) {
+        HILOG_ERROR("fail, connection write windowId error");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteRemoteObject(operation->AsObject())) {
+        HILOG_ERROR("fail, connection write parcelable operation error");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::CARDREGISTER_INTERACTION_CONNECTION,
+        data, reply, option)) {
+        HILOG_ERROR("RegisterElementOperator fail");
+        return RET_ERR_IPC_FAILED;
+    }
+    return RET_OK;
+}
+
 RetError AccessibleAbilityManagerServiceProxy::DeregisterElementOperator(const int32_t windowId)
 {
     HILOG_DEBUG("windowId(%{public}d)", windowId);
@@ -259,6 +310,35 @@ RetError AccessibleAbilityManagerServiceProxy::DeregisterElementOperator(const i
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION,
+        data, reply, option)) {
+        HILOG_ERROR("DeregisterElementOperator fail");
+        return RET_ERR_IPC_FAILED;
+    }
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerServiceProxy::DeregisterElementOperator(const int32_t windowId, const int32_t treeId)
+{
+    HILOG_DEBUG("windowId(%{public}d)", windowId);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteInt32(windowId)) {
+        HILOG_ERROR("fail, connection write windowId error");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteInt32(treeId)) {
+        HILOG_ERROR("fail, connection write treeId error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::CARDDEREGISTER_INTERACTION_CONNECTION,
         data, reply, option)) {
         HILOG_ERROR("DeregisterElementOperator fail");
         return RET_ERR_IPC_FAILED;

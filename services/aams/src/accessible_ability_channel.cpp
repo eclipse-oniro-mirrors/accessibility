@@ -25,6 +25,7 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr uint32_t TIME_OUT_OPERATOR = 5000;
+    constexpr int32_t ELEMENT_MOVE_BIT = 51;
     MMI::InputManager* inputManager_ = MMI::InputManager::GetInstance();
     std::map<int32_t, std::pair<bool, std::pair<int32_t, int32_t>>> accessibleKeyCodeTable = {
         {ActionType::ACCESSIBILITY_ACTION_HOME,
@@ -51,20 +52,25 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
     const int32_t mode, bool isFilter)
 {
     HILOG_DEBUG();
+    HILOG_DEBUG("channel SearchElementInfo elementId: %{public}" PRId64 " winId: %{public}d",
+        elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
-    if (!eventHandler_) {
+    if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
-    eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, requestId, callback, mode,
-        isFilter](int32_t accountId, const std::string &name) -> void {
+    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    HILOG_DEBUG("SearchElementInfoByAccessibilityId :channel SearchElementInfo treeId: %{public}d", treeId);
+    eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, treeId, requestId,
+        callback, mode, isFilter](int32_t accountId, const std::string &name) -> void {
         HILOG_DEBUG("search element accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-        RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name, elementOperator);
+        RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name,
+            elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             syncPromise->set_value(ret);
@@ -97,20 +103,26 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
+    HILOG_DEBUG("SearchElementInfosByText :channel SearchElementInfo elementId: %{public}" PRId64 " winId: %{public}d",
+        elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
-    if (!eventHandler_) {
+    if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
+    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    HILOG_DEBUG("SearchElementInfosByText :channel SearchElementInfo treeId: %{public}d", treeId);
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
-    eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, text, requestId, callback](
+    eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, treeId, text, requestId,
+        callback](
         int32_t accountId, const std::string &name) -> void {
         HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-        RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name, elementOperator);
+        RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID,
+            name, elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             syncPromise->set_value(ret);
@@ -136,20 +148,24 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
+    HILOG_DEBUG("channel FindFocusedElementInfo elementId: %{public}" PRId64 " winId: %{public}d",
+        elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
-    if (!eventHandler_) {
+    if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
-    eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId,
+    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    HILOG_DEBUG("FindFocusedElementInfo :channel FindFocusedElementInfo treeId: %{public}d", treeId);
+    eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, treeId,
         focusType, requestId, callback](int32_t accountId, const std::string &name) -> void {
         HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-        RetError ret = GetElementOperator(accountId, accessibilityWindowId, focusType, name, elementOperator);
+        RetError ret = GetElementOperator(accountId, accessibilityWindowId, focusType, name, elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             syncPromise->set_value(ret);
@@ -174,20 +190,25 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
+    HILOG_DEBUG("FocusMoveSearch :channel FocusMoveSearch elementId: %{public}" PRId64 " winId: %{public}d",
+        elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
-    if (!eventHandler_) {
+    if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
+    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    HILOG_DEBUG("FocusMoveSearch :channel FocusMoveSearch treeId: %{public}d", treeId);
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId,
-        elementId, direction, requestId, callback](int32_t accountId, const std::string &name) -> void {
+        elementId, treeId, direction, requestId, callback](int32_t accountId, const std::string &name) -> void {
         HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-        RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name, elementOperator);
+        RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name, elementOperator,
+            treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             syncPromise->set_value(ret);
@@ -285,7 +306,7 @@ RetError AccessibleAbilityChannel::EnableScreenCurtain(bool isEnable)
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     HILOG_INFO("enter AccessibleAbilityChannel::EnableScreenCurtain isEnable = %{public}d", isEnable);
 
-    if (!eventHandler_) {
+    if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
@@ -306,8 +327,10 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
+    HILOG_DEBUG("ExecuteAction :channel ExecuteAction elementId: %{public}" PRId64 " winId: %{public}d",
+        elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (!eventHandler_) {
+    if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
@@ -325,11 +348,14 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
     
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
-    eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, action,
+    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    HILOG_DEBUG("ExecuteAction :channel ExecuteAction treeId: %{public}d", treeId);
+    eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, treeId, action,
         actionArguments, requestId, callback](int32_t accountId, const std::string &name) -> void {
         HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-        RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name, elementOperator);
+        RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name,
+            elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             syncPromise->set_value(ret);
@@ -354,7 +380,7 @@ RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, Accessibili
 {
     HILOG_DEBUG("windowId:%{public}d", windowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (!eventHandler_) {
+    if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
@@ -417,7 +443,7 @@ RetError AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayI
 
 RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const
 {
-    if (!eventHandler_) {
+    if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
@@ -471,7 +497,7 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
 {
     HILOG_DEBUG();
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (!eventHandler_) {
+    if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return;
     }
@@ -496,18 +522,23 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
+    HILOG_DEBUG("GetCursorPosition :channel GetCursorPosition elementId: %{public}" PRId64 " winId: %{public}d",
+        elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (!eventHandler_) {
+    if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
-    eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId,
+    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    HILOG_DEBUG("GetCursorPosition :channel GetCursorPosition treeId: %{public}d", treeId);
+    eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, treeId,
         requestId, callback](int32_t accountId, const std::string &name) -> void {
         HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-        RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name, elementOperator);
+        RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name,
+            elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             syncPromise->set_value(ret);
@@ -533,7 +564,7 @@ RetError AccessibleAbilityChannel::SendSimulateGesture(
 {
     HILOG_INFO();
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (!eventHandler_) {
+    if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -578,7 +609,7 @@ RetError AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::st
 {
     HILOG_DEBUG();
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (!eventHandler_) {
+    if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -613,7 +644,7 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(
     HILOG_DEBUG();
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
-    if (!accountData) {
+    if (accountData == nullptr) {
         HILOG_ERROR("accountData is nullptr");
         return nullptr;
     }
@@ -624,7 +655,7 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(
 
 RetError AccessibleAbilityChannel::GetElementOperator(
     int32_t accountId, int32_t windowId, int32_t focusType, const std::string &clientName,
-    sptr<IAccessibilityElementOperator> &elementOperator)
+    sptr<IAccessibilityElementOperator> &elementOperator, const int32_t treeId)
 {
     HILOG_DEBUG();
     elementOperator = nullptr;
@@ -645,17 +676,32 @@ RetError AccessibleAbilityChannel::GetElementOperator(
         return RET_ERR_NULLPTR;
     }
     int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, focusType);
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
+    sptr<AccessibilityWindowConnection> connection =  nullptr;
+    connection = accountData->GetAccessibilityWindowConnection(realId);
     if (!connection) {
         HILOG_ERROR("windowId[%{public}d] has no connection", realId);
         return RET_ERR_NO_WINDOW_CONNECTION;
     }
-    elementOperator = connection->GetProxy();
+    if (treeId <= 0) {
+        elementOperator = connection->GetProxy();
+    } else {
+        elementOperator = connection->GetCardProxy(treeId);
+    }
     if (!elementOperator) {
         HILOG_ERROR("The proxy of window connection is nullptr");
         return RET_ERR_NULLPTR;
     }
     return RET_OK;
+}
+
+int32_t AccessibleAbilityChannel::GetTreeIdBySplitElementId(const int64_t elementId)
+{
+    if (elementId < 0) {
+        HILOG_ERROR("The elementId is -1");
+        return -1;
+    }
+    int32_t treeId = (elementId << ELEMENT_MOVE_BIT) >> ELEMENT_MOVE_BIT;
+    return treeId;
 }
 } // namespace Accessibility
 } // namespace OHOS

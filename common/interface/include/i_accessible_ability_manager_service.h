@@ -103,11 +103,29 @@ public:
         const sptr<IAccessibilityElementOperator> &operation, bool isApp = false) = 0;
 
     /**
+     * @brief Register the element operator, so the AA can get node info from ACE.
+     * @param parameter The Register parameters.
+     * @param operation The callback object.
+     * @param isApp whether an application.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError RegisterElementOperator(Registration parameter,
+        const sptr<IAccessibilityElementOperator> &operation, bool isApp = false) = 0;
+
+    /**
      * @brief Deregister the element operator.
      * @param windowId Window ID
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     virtual RetError DeregisterElementOperator(const int32_t windowId) = 0;
+
+    /**
+     * @brief Deregister the element operator.
+     * @param windowId Window ID
+     * @param treeId Tree ID
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError DeregisterElementOperator(const int32_t windowId, const int32_t treeId) = 0;
 
     virtual RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption) = 0;
     virtual bool GetEnabledState() = 0;

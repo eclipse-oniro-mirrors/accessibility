@@ -806,5 +806,31 @@ const std::string &AccessibilityElementInfo::GetLatestContent() const
 {
     return latestContent_;
 }
+
+void AccessibilityElementInfo::SetChildTreeIdAndWinId(const int32_t iChildTreeId, const int32_t iChildWindowId)
+{
+    childTreeId_ = iChildTreeId;
+    childWindowId_ = iChildWindowId;
+}
+
+int32_t AccessibilityElementInfo::GetChildTreeId() const
+{
+    return childTreeId_;
+}
+
+int32_t AccessibilityElementInfo::GetChildWindowId() const
+{
+    return childWindowId_;
+}
+
+void AccessibilityElementInfo::SetBelongTreeId(const int32_t iBelongTreeId)
+{
+    belongTreeId_ = iBelongTreeId;
+}
+
+int32_t AccessibilityElementInfo::GetBelongTreeId() const
+{
+    return belongTreeId_;
+}
 } // namespace Accessibility
 } // namespace OHOS

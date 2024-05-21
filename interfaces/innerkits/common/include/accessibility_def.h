@@ -345,6 +345,13 @@ enum AccessibilityWindowType : int32_t {
     TYPE_SYSTEM = 0x00000010,
 };
 
+struct Registration {
+    int32_t windowId = 0;
+    int32_t parentWindowId = 0;
+    int32_t parentTreeId = 0;
+    int64_t elementId = 0;
+};
+
 constexpr int32_t PARAM0 = 0;
 constexpr int32_t PARAM1 = 1;
 constexpr int32_t PARAM2 = 2;
