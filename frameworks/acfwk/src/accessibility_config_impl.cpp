@@ -158,7 +158,7 @@ void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObjec
             HILOG_DEBUG("successed to add death recipient");
         }
     } else {
-        serviceProxy_ = nullptr;
+        HILOG_WARN("remoteObject is nullptr.");
     }
     proxyConVar_.notify_one();
 }
@@ -166,7 +166,7 @@ void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObjec
 void AccessibilityConfig::Impl::LoadSystemAbilityFail()
 {
     std::lock_guard<std::mutex> lock(conVarMutex_);
-    serviceProxy_ = nullptr;
+    HILOG_WARN("LoadSystemAbilityFail.");
     proxyConVar_.notify_one();
 }
 

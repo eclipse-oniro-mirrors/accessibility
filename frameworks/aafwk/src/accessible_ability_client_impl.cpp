@@ -99,24 +99,30 @@ bool AccessibleAbilityClientImpl::InitAccessibilityServiceProxy()
     HILOG_DEBUG("ISystemAbilityManager obtained");
 
     sptr<IRemoteObject> object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
-    if (object == nullptr && LoadAccessibilityService() == false) {
-        return false;
-    }
-    HILOG_DEBUG("Get remote object ok");
-
-    // Add death recipient
-    if (!accessibilityServiceDeathRecipient_) {
-        accessibilityServiceDeathRecipient_ = new(std::nothrow) AccessibilityServiceDeathRecipient(*this);
+    if (object != nullptr) {
         if (!accessibilityServiceDeathRecipient_) {
-            HILOG_ERROR("Failed to create service deathRecipient.");
+            accessibilityServiceDeathRecipient_ = new(std::nothrow) AccessibilityServiceDeathRecipient(*this);
+            if (!accessibilityServiceDeathRecipient_) {
+                HILOG_ERROR("Failed to create service deathRecipient.");
+                return false;
+            }
+        }
+        serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(object);
+        if (serviceProxy_ == nullptr) {
+            HILOG_ERROR("InitAccessibilityServiceProxy failed.");
             return false;
         }
-    }
-
-    if (serviceProxy_ && serviceProxy_->AsObject()) {
-        HILOG_DEBUG("Add death recipient");
-        serviceProxy_->AsObject()->AddDeathRecipient(accessibilityServiceDeathRecipient_);
-        return true;
+        if (serviceProxy_->AsObject() &&
+            serviceProxy_->AsObject()->AddDeathRecipient(accessibilityServiceDeathRecipient_)) {
+            return true;
+        }
+    } else {
+        if (LoadAccessibilityService() == false) {
+            HILOG_ERROR("LoadAccessibilityService failed.");
+            return false;
+        } else {
+            return true;
+        }
     }
     return false;
 }
@@ -158,7 +164,7 @@ void AccessibleAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<IRemoteObj
     if (remoteObject != nullptr) {
         serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(remoteObject);
     } else {
-        serviceProxy_ = nullptr;
+        HILOG_WARN("remoteObject is nullptr.");
     }
     proxyConVar_.notify_one();
 }
@@ -166,7 +172,7 @@ void AccessibleAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<IRemoteObj
 void AccessibleAbilityClientImpl::LoadSystemAbilityFail()
 {
     std::lock_guard<std::mutex> lock(conVarMutex_);
-    serviceProxy_ = nullptr;
+    HILOG_WARN("LoadSystemAbilityFail.");
     proxyConVar_.notify_one();
 }
 

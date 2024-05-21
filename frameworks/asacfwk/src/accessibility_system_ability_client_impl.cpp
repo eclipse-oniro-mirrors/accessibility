@@ -138,7 +138,7 @@ void AccessibilitySystemAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<I
     if (remoteObject != nullptr) {
         serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(remoteObject);
     } else {
-        serviceProxy_ = nullptr;
+        HILOG_WARN("remoteObject is nullptr.");
     }
     proxyConVar_.notify_one();
 }
@@ -146,7 +146,7 @@ void AccessibilitySystemAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<I
 void AccessibilitySystemAbilityClientImpl::LoadSystemAbilityFail()
 {
     std::lock_guard<std::mutex> lock(conVarMutex_);
-    serviceProxy_ = nullptr;
+    HILOG_WARN("LoadSystemAbilityFail.");
     proxyConVar_.notify_one();
 }
 
