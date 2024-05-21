@@ -274,7 +274,7 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
         accWindowInfo.SetWindowId(windowInfo->innerWid_);
         HILOG_DEBUG("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
     }
-    HILOG_DEBUG("bundle name is [%{public}s] , touchHotAreas size(%{public}u)",
+    HILOG_DEBUG("bundle name is [%{public}s] , touchHotAreas size(%{public}zu)",
         windowInfo->bundleName_.c_str(), windowInfo->touchHotAreas_.size());
     accWindowInfo.SetBundleName(windowInfo->bundleName_);
     HILOG_DEBUG("UpdateAccessibilityWindowInfo is set bundlename is [%{public}s]",
@@ -770,7 +770,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
 {
     HILOG_DEBUG();
     auto oldA11yWindows_ = a11yWindows_;
-    HILOG_DEBUG("WindowUpdateAll info size(%{public}u), oldA11yWindows_ size(%{public}u)",
+    HILOG_DEBUG("WindowUpdateAll info size(%{public}zu), oldA11yWindows_ size(%{public}zu)",
         infos.size(), oldA11yWindows_.size());
     WinDeInit();
     for (auto &window : infos) {
@@ -815,7 +815,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     for (auto it = oldA11yWindows_.begin(); it != oldA11yWindows_.end(); ++it) {
         WindowUpdateTypeEvent(it->first, WINDOW_UPDATE_REMOVED);
     }
-    HILOG_DEBUG("WindowUpdateAll a11yWindowInfo_ size(%{public}u)", a11yWindows_.size());
+    HILOG_DEBUG("WindowUpdateAll a11yWindowInfo_ size(%{public}zu)", a11yWindows_.size());
 }
 
 void AccessibilityWindowManager::ClearOldActiveWindow()
