@@ -272,7 +272,7 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     ignoreRepeatClickState_ = state;
-    return SetConfigState(IGNORE_REPEAT_CLICK_TIME, state);
+    return SetConfigState(IGNORE_REPEAT_CLICK_SWITCH, state);
 }
 
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t time)
@@ -282,7 +282,7 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t ti
     if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
-    return datashare_->PutIntValue("ignoreRepeatClickTime", time);
+    return datashare_->PutIntValue(IGNORE_REPEAT_CLICK_TIME, time);
 }
 
 RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
@@ -536,7 +536,7 @@ void AccessibilitySettingsConfig::InitSetting()
     highContrastTextState_ = datashare_->GetBoolValue(HIGH_CONTRAST_TEXT_KEY, false);
     daltonizationState_ = datashare_->GetBoolValue(DALTONIZATION_STATE, false);
     audioMonoState_ = datashare_->GetBoolValue(AUDIO_MONO_KEY, false);
-    ignoreRepeatClickState_ = datashare_->GetBoolValue(IGNORE_REPEAT_CLICK_TIME, false);
+    ignoreRepeatClickState_ = datashare_->GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, false);
 
     shortkeyTarget_ = datashare_->GetStringValue("ShortkeyTarget", "none");
 
