@@ -906,6 +906,22 @@ HWTEST_F(AccessibilitySettingsConfigTest,
 }
 
 /**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTarget_002
+ * @tc.name: SetShortkeyMultiTarget
+ * @tc.desc: Test function SetShortkeyMultiTarget
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTarget_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTarget_002 start";
+    const std::vector<std::string> name = {"test"};
+    int32_t ret = settingConfig_->SetShortkeyMultiTarget(name);
+    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTarget_002 end";
+}
+
+/**
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001
  * @tc.name: SetShortkeyMultiTargetInPkgRemove
  * @tc.desc: Test function SetShortkeyMultiTargetInPkgRemove
