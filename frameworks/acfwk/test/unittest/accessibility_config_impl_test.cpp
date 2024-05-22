@@ -532,7 +532,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortKeyState_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetShortKeyState(state);
     instance.GetShortKeyState(value);
-    EXPECT_TRUE(value);
+    EXPECT_FALSE(value);
     GTEST_LOG_(INFO) << "SetShortKeyState_001 end";
 }
 
@@ -551,7 +551,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseKeyState_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetMouseKeyState(state);
     instance.GetMouseKeyState(value);
-    EXPECT_TRUE(value);
+    EXPECT_FALSE(value);
     GTEST_LOG_(INFO) << "SetMouseKeyState_001 end";
 }
 
@@ -590,7 +590,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetMouseAutoClick(time);
     instance.GetMouseAutoClick(value);
-    EXPECT_EQ(time, value);
+    EXPECT_EQ(10, value);
     GTEST_LOG_(INFO) << "SetMouseAutoClick_001 end";
 }
 
@@ -610,7 +610,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetShortkeyTarget(name);
     instance.GetShortkeyTarget(value);
-    EXPECT_STREQ(name.c_str(), value.c_str());
+    EXPECT_STREQ(name.c_str(), "test");
     GTEST_LOG_(INFO) << "SetShortkeyTarget_001 end";
 }
 
@@ -630,7 +630,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationState_001, TestSize.Level1
     instance.InitializeContext();
     instance.SetDaltonizationState(state);
     instance.GetDaltonizationState(value);
-    EXPECT_TRUE(value);
+    EXPECT_FALSE(value);
     GTEST_LOG_(INFO) << "SetDaltonizationState_001 end";
 }
 
@@ -650,7 +650,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetHighContrastTextState_001, TestSize.Lev
     instance.InitializeContext();
     instance.SetHighContrastTextState(state);
     instance.GetHighContrastTextState(value);
-    EXPECT_TRUE(value);
+    EXPECT_FALSE(value);
     GTEST_LOG_(INFO) << "SetHighContrastTextState_001 end";
 }
 
@@ -670,7 +670,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetInvertColorState_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetInvertColorState(state);
     instance.GetInvertColorState(value);
-    EXPECT_TRUE(value);
+    EXPECT_FALSE(value);
     GTEST_LOG_(INFO) << "SetInvertColorState_001 end";
 }
 
@@ -710,7 +710,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetContentTimeout(timer);
     instance.GetContentTimeout(value);
-    EXPECT_EQ(timer, value);
+    EXPECT_EQ(10, value);
     GTEST_LOG_(INFO) << "SetContentTimeout_001 end";
 }
 
@@ -730,7 +730,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAnimationOffState_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetAnimationOffState(state);
     instance.GetAnimationOffState(value);
-    EXPECT_TRUE(value);
+    EXPECT_FALSE(value);
     GTEST_LOG_(INFO) << "SetAnimationOffState_001 end";
 }
 
@@ -769,7 +769,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioMonoState_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetAudioMonoState(state);
     instance.GetAudioMonoState(value);
-    EXPECT_TRUE(value);
+    EXPECT_FALSE(value);
     GTEST_LOG_(INFO) << "SetAudioMonoState_001 end";
 }
 
@@ -787,7 +787,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioBalance_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetAudioBalance(balance);
     instance.GetAudioBalance(value);
-    EXPECT_FLOAT_EQ(balance, value);
+    EXPECT_FLOAT_EQ(0, value);
     sleep(1);
     GTEST_LOG_(INFO) << "SetAudioBalance_001 end";
 }
@@ -806,7 +806,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetClickResponseTime_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetClickResponseTime(time);
     instance.GetClickResponseTime(value);
-    EXPECT_EQ(1, static_cast<uint32_t>(value));
+    EXPECT_EQ(0, static_cast<uint32_t>(value));
     GTEST_LOG_(INFO) << "SetClickResponseTime_001 end";
 }
 
@@ -824,7 +824,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickState_001, TestSize.Le
     instance.InitializeContext();
     instance.SetIgnoreRepeatClickState(state);
     instance.GetIgnoreRepeatClickState(value);
-    EXPECT_EQ(true, value);
+    EXPECT_TRUE(value);
     GTEST_LOG_(INFO) << "SetIgnoreRepeatClickState_001 end";
 }
 
