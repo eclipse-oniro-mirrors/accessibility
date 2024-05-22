@@ -156,6 +156,20 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 }
 
 /**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions006
+ * @tc.name: SetAvailableFunctions
+ * @tc.desc: Check the set available Functions.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions006,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions006 start";
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_MOUSE_AUTOCLICK;
+    inputInterceptor_->SetAvailableFunctions(availableFunctions);
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions006 end";
+}
+
+/**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnTouchEvent001
  * @tc.name: OnTouchEvent
  * @tc.desc: Check the on touch event.
@@ -413,6 +427,58 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     inputEventConsumer_->OnInputEvent(keyEvent);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnInputEvent001 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnInputEvent002
+ * @tc.name: OnInputEvent
+ * @tc.desc: Check the OnInputEvent.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnInputEvent002,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnInputEvent002 start";
+    if (!inputInterceptor_) {
+        return;
+    }
+    std::shared_ptr<MMI::PointerEvent> pointerEvent = nullptr;
+    std::shared_ptr<AccessibilityInputEventConsumer> inputEventConsumer_ =
+        std::make_shared<AccessibilityInputEventConsumer>();
+    inputEventConsumer_->OnInputEvent(pointerEvent);
+
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnInputEvent002 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_ProcessPointerEvent001
+ * @tc.name: ProcessPointerEvent
+ * @tc.desc: Check the ProcessPointerEvent.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_ProcessPointerEvent001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_ProcessPointerEvent001 start";
+    uint32_t availableFunctions = 0;
+    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
+    inputInterceptor_->SetAvailableFunctions(availableFunctions);
+    inputInterceptor_->ProcessPointerEvent(event);
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_ProcessPointerEvent001 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_ProcessKeyEvent001
+ * @tc.name: ProcessKeyEvent
+ * @tc.desc: Check the ProcessKeyEvent.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_ProcessKeyEvent001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_ProcessKeyEvent001 start";
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_MOUSE_AUTOCLICK;
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    inputInterceptor_->SetAvailableFunctions(availableFunctions);
+    inputInterceptor_->ProcessKeyEvent(event);
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_ProcessKeyEvent001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

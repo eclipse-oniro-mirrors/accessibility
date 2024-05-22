@@ -585,5 +585,53 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_011 end";
 }
+
+/**
+ * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_012
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(ParseMataKey return false)
+ * @tc.require: issueI5NTXA
+ */
+HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_012, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_012 start";
+    if (!mouseKey_) {
+        return;
+    }
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    if (!event) {
+        return;
+    }
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
+    MMI::KeyEvent::KeyItem item;
+    item.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
+    event->AddKeyItem(item);
+    EXPECT_EQ(false, mouseKey_->OnKeyEvent(*event));
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_012 end";
+}
+
+/**
+ * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_013
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(No mouse event to be sent)
+ * @tc.require: issueI5NTXA
+ */
+HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_013, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_013 start";
+    if (!mouseKey_) {
+        return;
+    }
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    if (!event) {
+        return;
+    }
+    MMI::KeyEvent::KeyItem item;
+    event->AddKeyItem(item);
+    AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
+    mouseKey_->OnKeyEvent(*event);
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_013 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
