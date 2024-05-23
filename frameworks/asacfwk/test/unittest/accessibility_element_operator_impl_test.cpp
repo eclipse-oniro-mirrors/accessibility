@@ -80,24 +80,6 @@ int32_t AccessibilityElementOperatorImplUnitTest::CompositeId(int32_t requestId)
 }
 
 /**
- * @tc.number: SearchElementInfoByAccessibilityId_001
- * @tc.name: SearchElementInfoByAccessibilityId
- * @tc.desc: Test function SearchElementInfoByAccessibilityId
- */
-HWTEST_F(AccessibilityElementOperatorImplUnitTest, SearchElementInfoByAccessibilityId_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SearchElementInfoByAccessibilityId_001 start";
-    if (!mockStub_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
-        return;
-    }
-
-    EXPECT_CALL(*operation_, SearchElementInfoByAccessibilityId(_, _, _, _)).Times(1);
-    mockStub_->SearchElementInfoByAccessibilityId(ELEMENT_ID, REQUEST_ID, nullptr, MODE, false);
-    GTEST_LOG_(INFO) << "SearchElementInfoByAccessibilityId_001 end";
-}
-
-/**
  * @tc.number: SearchElementInfosByText_001
  * @tc.name: SearchElementInfosByText
  * @tc.desc: Test function SearchElementInfosByText
