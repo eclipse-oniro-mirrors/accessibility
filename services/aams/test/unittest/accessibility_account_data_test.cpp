@@ -636,6 +636,34 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
 }
 
 /**
+ * @tc.number: AccessibilityAccountData_Unittest_GetAbilitiesByState002
+ * @tc.name: GetAbilitiesByState
+ * @tc.desc: Check the get ability state.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbilitiesByState002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilitiesByState002 start";
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountId, connectCounter++, *abilityInfo);
+    /* add connected ability */
+    EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
+    accountData->AddConnectedAbility(connection);
+    EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
+    /* ABILITY_STATE_ENABLE */
+    AbilityStateType state = AbilityStateType::ABILITY_STATE_INSTALLED;;
+    /* get ability */
+    std::vector<AccessibilityAbilityInfo> enabledAbilities;
+    accountData->GetAbilitiesByState(state, enabledAbilities);
+    EXPECT_EQ(0, (int)enabledAbilities.size());
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilitiesByState002 end";
+}
+
+/**
  * @tc.number: AccessibilityAccountData_Unittest_GetAbilitiesByState003
  * @tc.name: GetAbilitiesByState
  * @tc.desc: Check the get ability state.
@@ -770,6 +798,26 @@ HWTEST_F(AccessibilityAccountDataTest,
     EXPECT_NE(accountData.GetRefPtr(), nullptr);
     accountData->UpdateEnableAbilityListsState();
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateEnableAbilityListsState001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_UpdateEnableAbilityListsState002
+ * @tc.name: UpdateEnableAbilityListsState
+ * @tc.desc: Check the add connecting A11y ability.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_UpdateEnableAbilityListsState002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateEnableAbilityListsState002 start";
+    const int32_t accountId = 1;
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    sptr<AccessibilityEnableAbilityListsObserverStub> stub = new MockAccessibilityEnableAbilityListsObserverStub();
+    sptr<IAccessibilityEnableAbilityListsObserver> observer =
+        new AccessibilityEnableAbilityListsObserverProxy(stub);
+    accountData->AddEnableAbilityListsObserver(observer);
+    EXPECT_NE(accountData.GetRefPtr(), nullptr);
+    accountData->UpdateEnableAbilityListsState();
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateEnableAbilityListsState002 end";
 }
 
 /**
@@ -1100,6 +1148,27 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
 }
 
 /**
+ * @tc.number: AccessibilityAccountData_Unittest_EnableAbility_005
+ * @tc.name: EnableAbility
+ * @tc.desc: Enable specified ability successfully.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableAbility_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_005 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    accountData->Init();
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "bundle";
+    initParams.name = "ability";
+    initParams.staticCapabilities = CAPABILITY_RETRIEVE;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*abilityInfo);
+    const std::string name = "bundle/ability";
+    EXPECT_EQ(RET_ERR_NO_CAPABILITY, accountData->EnableAbility(name, 0));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_005 end";
+}
+
+/**
  * @tc.number: AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_001
  * @tc.name: GetImportantEnabledAbilities
  * @tc.desc: Get important enabled abilities when there is no installed ability.
@@ -1167,6 +1236,38 @@ HWTEST_F(AccessibilityAccountDataTest,
     accountData->GetImportantEnabledAbilities(abilities);
     EXPECT_EQ(IMPORTANT_ABILITIES_SIZE, abilities.size());
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_003 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_004
+ * @tc.name: GetImportantEnabledAbilities
+ * @tc.desc: Get important enabled abilities.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_004 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "testBundle1";
+    initParams.name = "testAbility1";
+    initParams.isImportant = false;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*abilityInfo);
+    initParams.bundleName = "testBundle2";
+    initParams.name = "testAbility2";
+    initParams.isImportant = true;
+    std::shared_ptr<AccessibilityAbilityInfo> importantAbilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*importantAbilityInfo);
+    accountData->AddEnabledAbility("testBundle1/testAbility1");
+    accountData->AddEnabledAbility("testBundle2/testAbility2");
+    std::map<std::string, uint32_t> abilities;
+    accountData->GetImportantEnabledAbilities(abilities);
+    abilities.emplace(std::make_pair("testBundle2/testAbility2", CAPABILITY_RETRIEVE));
+    EXPECT_NE(IMPORTANT_ABILITIES_SIZE, abilities.size());
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_004 end";
 }
 
 /**
@@ -1381,6 +1482,28 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ChangeA
 }
 
 /**
+ * @tc.number: AccessibilityAccountData_Unittest_ChangeAbility_003
+ * @tc.name: ChangeAbility
+ * @tc.desc: Change ability which is installed.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ChangeAbility_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ChangeAbility_003 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "testBundle";
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*abilityInfo);
+    EXPECT_EQ(1, static_cast<int>(accountData->GetInstalledAbilities().size()));
+    const std::string abilityName = "testBundle";
+    accountData->SetAbilityAutoStartState("testBundle", true);  
+    accountData->ChangeAbility("testBundle");
+    EXPECT_EQ(0, static_cast<int>(accountData->GetInstalledAbilities().size()));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ChangeAbility_003 end";
+}
+
+/**
  * @tc.number: AccessibilityAccountData_Unittest_AddUITestClient
  * @tc.name: AddUITestClient
  * @tc.desc: Add ui test client
@@ -1556,6 +1679,21 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetAbil
 }
 
 /**
+ * @tc.number: AccessibilityAccountData_Unittest_SetAbilityAutoStartState_003
+ * @tc.name: SetAbilityAutoStartState
+ * @tc.desc: Check set and get AbilityAutoStartState.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetAbilityAutoStartState_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetAbilityAutoStartState_003 start";
+    const int32_t accountId = 1;
+    const std::string abilityName = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->SetAbilityAutoStartState(abilityName, true);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetAbilityAutoStartState_003 end";
+}
+
+/**
  * @tc.number: AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities_001
  * @tc.name: UpdateAutoStartEnabledAbilities
  * @tc.desc: Check UpdateAutoStartEnabledAbilities.
@@ -1587,6 +1725,32 @@ HWTEST_F(AccessibilityAccountDataTest,
 }
 
 /**
+ * @tc.number: AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities_003
+ * @tc.name: UpdateAutoStartEnabledAbilities
+ * @tc.desc: Check UpdateAutoStartEnabledAbilities.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+        AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities_003 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    std::map<std::string, uint32_t> abilities;
+    accountData->UpdateImportantEnabledAbilities(abilities);
+    abilities.emplace(std::make_pair("testBundle/testAbility", CAPABILITY_RETRIEVE));
+    accountData->UpdateImportantEnabledAbilities(abilities);
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "testBundle";
+    initParams.name = "testAbility";
+    initParams.isImportant = true;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetCapabilityValues(CAPABILITY_RETRIEVE | CAPABILITY_GESTURE);
+    accountData->AddInstalledAbility(*abilityInfo);
+    accountData->Init();
+    accountData->UpdateAutoStartEnabledAbilities();
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities_003 end";
+}
+
+/**
  * @tc.number: AccessibilityAccountData_Unittest_GetInputFilterFlag_001
  * @tc.name: GetInputFilterFlag
  * @tc.desc: Check GetInputFilterFlag.
@@ -1598,6 +1762,45 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetInpu
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     EXPECT_EQ(0, accountData->GetInputFilterFlag());
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetInputFilterFlag001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_GetInputFilterFlag_002
+ * @tc.name: GetInputFilterFlag
+ * @tc.desc: Check GetInputFilterFlag.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetInputFilterFlag_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetInputFilterFlag_002 start";
+    const int32_t accountId = 0;
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->Init();
+    EXPECT_EQ(0, accountData->GetInputFilterFlag());
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetInputFilterFlag_002 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_GetInputFilterFlag_003
+ * @tc.name: GetInputFilterFlag
+ * @tc.desc: Check GetInputFilterFlag.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetInputFilterFlag_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetInputFilterFlag_003 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    accountData->Init();    
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetCapabilityValues(CAPABILITY_ZOOM);
+    sptr<AccessibleAbilityConnection> AAConnection =
+        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
+    sptr<AccessibleAbilityClientStub> aastub = new MockAccessibleAbilityClientStubImpl();
+    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
+    AAConnection->OnAbilityConnectDoneSync(elementName, aastub);
+    EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
+    accountData->UpdateAccountCapabilities();
+    EXPECT_EQ(32, accountData->GetInputFilterFlag());
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetInputFilterFlag_003 end";
 }
 
 /**
@@ -1614,6 +1817,69 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetScre
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     accountData->SetScreenReaderState(abilityName, state);
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetScreenReaderState001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_SetScreenReaderState_002
+ * @tc.name: SetScreenReaderState
+ * @tc.desc: Check SetScreenReaderState.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetScreenReaderState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetScreenReaderState_002 start";
+    const int32_t accountId = 1;
+    const std::string name = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const std::string state = "on";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->SetScreenReaderState(name, state);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetScreenReaderState_002 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_GetScreenReaderState_001
+ * @tc.name: GetScreenReaderState
+ * @tc.desc: Check the GetScreenReaderState.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetScreenReaderState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetScreenReaderState_001 start";
+    const int32_t accountId = 1;
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->GetScreenReaderState();
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetScreenReaderState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_GetAbilityAutoStartState_001
+ * @tc.name: GetAbilityAutoStartState
+ * @tc.desc: Check GetAbilityAutoStartState.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbilityAutoStartState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilityAutoStartState_001 start";
+    const int32_t accountId = 1;
+    const std::string abilityName = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->SetAbilityAutoStartState(abilityName, false);
+    EXPECT_EQ(accountData->GetAbilityAutoStartState(abilityName), false);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilityAutoStartState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_AddAbility001
+ * @tc.name: AddAbility
+ * @tc.desc: Check the AddAbility.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddAbility001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddAbility001 start";
+    const int32_t accountId = 1;
+    const std::string bundleName = "test";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->AddAbility(bundleName);
+    EXPECT_EQ(0, static_cast<int>(accountData->GetInstalledAbilities().size()));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddAbility001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

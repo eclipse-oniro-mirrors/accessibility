@@ -78,6 +78,7 @@ public:
     MOCK_METHOD0(GetUITestConnectedAbilityConnection, const sptr<AccessibleAbilityConnection>());
     MOCK_METHOD1(GetImportantEnabledAbilities, void(std::map<std::string, uint32_t> &importantEnabledAbilities));
     MOCK_METHOD1(UpdateImportantEnabledAbilities, void(std::map<std::string, uint32_t> &importantEnabledAbilities));
+    MOCK_METHOD0(GetAccountType, AccountSA::OsAccountType());
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -516,5 +516,10 @@ void AccessibilityAccountDataMap::Clear()
 {
     accountDataMap_.clear();
 }
+
+AccountSA::OsAccountType AccessibilityAccountData::GetAccountType()
+{
+    return AccountSA::OsAccountType::PRIVATE;
+}
 } // namespace Accessibility
 } // namespace OHOS
