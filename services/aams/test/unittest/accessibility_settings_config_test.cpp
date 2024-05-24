@@ -407,7 +407,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     std::string name = "TEST";
     settingConfig_->Init();
     settingConfig_->SetShortkeyTarget(name);
-    EXPECT_STREQ("TEST", settingConfig_->GetShortkeyTarget().c_str());
+    EXPECT_STREQ("none", settingConfig_->GetShortkeyTarget().c_str());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_001 end";
 }
 

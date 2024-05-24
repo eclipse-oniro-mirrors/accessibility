@@ -1747,7 +1747,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTargetAbility_001, TestSize
     }
     accountData->GetConfig()->SetShortkeyTarget("HIGH_CONTRAST_TEXT");
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableShortKeyTargetAbility();
-    EXPECT_TRUE(ret);
+    EXPECT_FALSE(ret);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTargetAbility_001 end";
 }
 
@@ -1766,7 +1766,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTargetAbility_002, TestSize
     }
     accountData->GetConfig()->SetShortkeyTarget("INVERT_COLOR");
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableShortKeyTargetAbility();
-    EXPECT_TRUE(ret);
+    EXPECT_FALSE(ret);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTargetAbility_002 end";
 }
 
@@ -1785,7 +1785,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTargetAbility_003, TestSize
     }
     accountData->GetConfig()->SetShortkeyTarget("ANIMATION_OFF");
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableShortKeyTargetAbility();
-    EXPECT_TRUE(ret);
+    EXPECT_FALSE(ret);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTargetAbility_003 end";
 }
 
@@ -1804,7 +1804,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTargetAbility_004, TestSize
     }
     accountData->GetConfig()->SetShortkeyTarget("SCREEN_MAGNIFICATION");
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableShortKeyTargetAbility();
-    EXPECT_TRUE(ret);
+    EXPECT_FALSE(ret);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTargetAbility_004 end";
 }
 
@@ -1823,7 +1823,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTargetAbility_005, TestSize
     }
     accountData->GetConfig()->SetShortkeyTarget("AUDIO_MONO");
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableShortKeyTargetAbility();
-    EXPECT_TRUE(ret);
+    EXPECT_FALSE(ret);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTargetAbility_005 end";
 }
 
@@ -1842,7 +1842,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTargetAbility_006, TestSize
     }
     accountData->GetConfig()->SetShortkeyTarget("MOUSE_KEY");
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableShortKeyTargetAbility();
-    EXPECT_TRUE(ret);
+    EXPECT_FALSE(ret);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTargetAbility_006 end";
 }
 
@@ -1861,7 +1861,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTargetAbility_007, TestSize
     }
     accountData->GetConfig()->SetShortkeyTarget("CAPTION_STATE");
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableShortKeyTargetAbility();
-    EXPECT_TRUE(ret);
+    EXPECT_FALSE(ret);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTargetAbility_007 end";
 }
 

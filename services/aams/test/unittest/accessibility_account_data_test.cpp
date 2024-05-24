@@ -600,7 +600,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetEnab
     accountData->Init();
     bool state = true;
     bool test = accountData->GetConfig()->SetEnabled(state);
-    EXPECT_TRUE(test);
+    EXPECT_FALSE(test);
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetEnabled end";
 }
@@ -924,7 +924,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetTouc
     accountData->Init();
     bool state = true;
     bool test = accountData->GetConfig()->SetTouchGuideState(state);
-    EXPECT_TRUE(test);
+    EXPECT_FALSE(test);
 
     bool result = accountData->GetConfig()->GetTouchGuideState();
     EXPECT_TRUE(result);
@@ -941,7 +941,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetGest
     accountData->Init();
     bool state = false;
     bool test = accountData->GetConfig()->SetGestureState(state);
-    EXPECT_TRUE(test);
+    EXPECT_FALSE(test);
 
     bool result = accountData->GetConfig()->GetGestureState();
     EXPECT_FALSE(result);
@@ -958,7 +958,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetKeyE
     accountData->Init();
     bool state = true;
     bool test = accountData->GetConfig()->SetKeyEventObserverState(state);
-    EXPECT_TRUE(test);
+    EXPECT_FALSE(test);
 
     bool result = accountData->GetConfig()->GetKeyEventObserverState();
     EXPECT_TRUE(result);

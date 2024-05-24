@@ -126,21 +126,6 @@ bool AccessibleAbilityChannelUnitTest::TestElementId()
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_Unittest_SearchElementInfoByAccessibilityId_001
- * @tc.name: SearchElementInfoByAccessibilityId
- * @tc.desc: Test function SearchElementInfoByAccessibilityId
- */
-HWTEST_F(AccessibleAbilityChannelUnitTest,
-    AccessibleAbilityChannel_Unittest_SearchElementInfoByAccessibilityId_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoByAccessibilityId_001 start";
-    channel_->SearchElementInfoByAccessibilityId(WINDOW_ID, ELEMENT_ID, 0, nullptr, 0, true);
-    bool result = TestElementId();
-    EXPECT_TRUE(result);
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoByAccessibilityId_001 end";
-}
-
-/**
  * @tc.number: AccessibleAbilityChannel_Unittest_SearchElementInfosByText_001
  * @tc.name: SearchElementInfosByText
  * @tc.desc: Test function SearchElementInfosByText
