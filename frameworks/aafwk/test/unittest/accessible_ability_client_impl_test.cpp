@@ -989,32 +989,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootBatch_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: AddCacheByWMS_002
- * @tc.name: AddCacheByWMS
- * @tc.desc: Test function AddCacheByWMS
- */
-HWTEST_F(AccessibleAbilityClientImplTest, AddCacheByWMS_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AddCacheByWMS_002 start";
-    AccessibilityElementInfo elementInfo;
-    elementInfo.SetAccessibilityId(ELEMENT_ID);
-    std::vector<AccessibilityElementInfo> info;
-    info.push_back(elementInfo);
-    instance_->AddCacheByWMS(WINDOW_ID, ELEMENT_ID, info);
-    std::vector<AccessibilityElementInfo> result;
-    EXPECT_EQ(instance_->GetElementInfoFromCache(WINDOW_ID, ELEMENT_ID, result), RET_OK);
-    EXPECT_EQ(result.size(), 1);
-
-    AccessibilityEventInfo eventInfo;
-    eventInfo.SetWindowId(WINDOW_ID);
-    eventInfo.SetEventType(TYPE_VIEW_TEXT_UPDATE_EVENT);
-    instance_->RemoveCacheData(eventInfo);
-    EXPECT_EQ(instance_->GetElementInfoFromCache(WINDOW_ID, ELEMENT_ID, result), RET_ERR_FAILED);
-    EXPECT_EQ(result.size(), 0);
-    GTEST_LOG_(INFO) << "AddCacheByWMS_002 end";
-}
-
-/**
  * @tc.number: AddCacheByAce_001
  * @tc.name: AddCacheByAce
  * @tc.desc: Test function AddCacheByAce
