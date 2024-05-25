@@ -78,7 +78,7 @@ bool AccessibilityConfig::Impl::ConnectToServiceAsync()
 bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
 {
     HILOG_DEBUG();
-    if (serviceProxy_) {
+    if (serviceProxy_ != nullptr) {
         return true;
     }
     auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -100,7 +100,7 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
         }
 
         serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(object);
-        if (!serviceProxy_) {
+        if (serviceProxy_ == nullptr) {
             HILOG_ERROR("IAccessibleAbilityManagerService iface_cast failed");
             return false;
         }
@@ -172,7 +172,7 @@ void AccessibilityConfig::Impl::LoadSystemAbilityFail()
 
 bool AccessibilityConfig::Impl::RegisterToService()
 {
-    if (!serviceProxy_) {
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Service is not connected");
         return false;
     }
@@ -223,7 +223,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
 
 sptr<Accessibility::IAccessibleAbilityManagerService> AccessibilityConfig::Impl::GetServiceProxy()
 {
-    if (serviceProxy_ || LoadAccessibilityService()) {
+    if (serviceProxy_ != nullptr || LoadAccessibilityService()) {
         return serviceProxy_;
     }
     return nullptr;
@@ -233,7 +233,7 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
 {
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
-    if (serviceProxy_) {
+    if (serviceProxy_ != nullptr) {
         sptr<IRemoteObject> object = serviceProxy_->AsObject();
         if (object && (remote == object)) {
             object->RemoveDeathRecipient(deathRecipient_);
