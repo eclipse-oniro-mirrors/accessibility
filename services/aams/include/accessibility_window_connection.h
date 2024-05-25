@@ -17,6 +17,7 @@
 #define ACCESSIBILITY_WINDOW_CONNECTION_H
 
 #include "i_accessibility_element_operator.h"
+#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -24,6 +25,8 @@ class AccessibilityWindowConnection : public RefBase {
 public:
     AccessibilityWindowConnection(const int32_t windowId, const sptr<IAccessibilityElementOperator> &connection,
         const int32_t accountId);
+    AccessibilityWindowConnection(const int32_t windowId, const int32_t treeId,
+        const sptr<IAccessibilityElementOperator> &connection, const int32_t accountId);
     ~AccessibilityWindowConnection();
 
     inline sptr<IAccessibilityElementOperator> GetProxy()
@@ -31,9 +34,15 @@ public:
         return proxy_;
     }
 
+    sptr<IAccessibilityElementOperator> GetCardProxy(const int32_t treeId);
+
+    RetError SetCardProxy(const int32_t treeId, sptr<IAccessibilityElementOperator> operation);
+
 private:
     int32_t windowId_;
     int32_t accountId_;
+    int32_t treeId_;
+    std::map<int32_t, sptr<IAccessibilityElementOperator>> cardProxy_;
     sptr<IAccessibilityElementOperator> proxy_;
 };
 } // namespace Accessibility

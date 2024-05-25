@@ -40,8 +40,8 @@ class ElementOperatorForFuzzTest : public AccessibilityElementOperator {
 public:
     virtual ~ElementOperatorForFuzzTest() = default;
     void SearchElementInfoByAccessibilityId(const int64_t elementId,
-        const int32_t requestId, AccessibilityElementOperatorCallback &callback, const int32_t mode) override {}
-
+        const int32_t requestId, AccessibilityElementOperatorCallback &callback,
+        const int32_t mode) override {}
     void SearchElementInfosByText(const int64_t elementId, const std::string &text,
         const int32_t requestId, AccessibilityElementOperatorCallback &callback) override {}
 
@@ -58,6 +58,8 @@ public:
         AccessibilityElementOperatorCallback &callback) override {}
     void ClearFocus() override {}
     void OutsideTouch() override {}
+    void SetChildTreeIdAndWinId(const int64_t nodeId, const int32_t treeId, const int32_t childWindowId) override {}
+    void SetBelongTreeId(const int32_t treeId) override {}
 };
 
 class StateObserverForFuzzTest : public AccessibilityStateObserver {

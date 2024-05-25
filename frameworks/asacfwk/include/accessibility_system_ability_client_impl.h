@@ -55,6 +55,15 @@ public:
         const std::shared_ptr<AccessibilityElementOperator> &operation) override;
 
     /**
+     * @brief Register the element operator, so the AA can get node info from ACE.
+     * @param parameter The Register parameters.
+     * @param operation The callback object.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError RegisterElementOperator(Registration parameter,
+        const std::shared_ptr<AccessibilityElementOperator> &operation) override;
+
+    /**
      * @brief Deregister the element operator.
      * @param windowId Window ID
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
@@ -283,6 +292,7 @@ private:
     StateObserversArray stateObserversArray_;
 
     std::map<int32_t, sptr<AccessibilityElementOperatorImpl>> elementOperators_;
+    std::map<int32_t, std::map<int32_t, sptr<AccessibilityElementOperatorImpl>>> cardElementOperators_;
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerStateObserverImpl> stateObserver_ = nullptr;

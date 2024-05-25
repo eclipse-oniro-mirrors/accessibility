@@ -20,12 +20,8 @@
 #include <cinttypes>
 namespace OHOS {
 namespace Accessibility {
-namespace {
-    constexpr int32_t REQUEST_WINDOW_ID_MAX = 0x00007FFF;
-    constexpr uint32_t REQUEST_ID_MASK = 0x0000FFFF;
-    constexpr int32_t REQUEST_ID_MASK_BIT = 16;
-} // namespaces
 
+std::unordered_map<int32_t, int32_t> AccessibilityElementOperatorImpl::requestWindId_ = {};
 AccessibilityElementOperatorImpl::AccessibilityElementOperatorImpl(int32_t windowId,
     const std::shared_ptr<AccessibilityElementOperator> &operation,
     AccessibilityElementOperatorCallback &callback)
@@ -145,25 +141,39 @@ int32_t AccessibilityElementOperatorImpl::GetWindowId()
     return windowId_;
 }
 
+void AccessibilityElementOperatorImpl::SetChildTreeIdAndWinId(const int64_t nodeId,
+    const int32_t childTreeId, const int32_t childWindowId)
+{
+    HILOG_DEBUG("nodeId:[%{public}" PRId64 "], childTreeId:[%{public}d], childWindowId:[%{public}d]",
+        nodeId, childTreeId, childWindowId);
+    operator_->SetChildTreeIdAndWinId(nodeId, childTreeId, childWindowId);
+}
+
+void AccessibilityElementOperatorImpl::SetBelongTreeId(const int32_t treeId)
+{
+    HILOG_DEBUG("treeId:[%{public}d]", treeId);
+    operator_->SetBelongTreeId(treeId);
+}
+
 int32_t AccessibilityElementOperatorImpl::AddRequest(int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    uint32_t compositionRequestId = static_cast<uint32_t>(requestId) & REQUEST_ID_MASK;
 
-    if (windowId_ < REQUEST_WINDOW_ID_MAX && windowId_ > 0) {
-        compositionRequestId |= static_cast<uint32_t>(windowId_) << REQUEST_ID_MASK_BIT;
-    } else {
-        HILOG_ERROR("window id[%{public}d] is wrong", windowId_);
-        return -1;
-    }
-
-    requestId = static_cast<int32_t>(compositionRequestId);
+    requestWindId_[requestId] = windowId_;
     auto iter = requests_.find(requestId);
     if (iter == requests_.end()) {
         requests_[requestId] = callback;
     }
     return requestId;
+}
+
+int32_t AccessibilityElementOperatorImpl::GetWindIdByRequestId(const int32_t requestId)
+{
+    if (requestWindId_.find(requestId) == requestWindId_.end()) {
+        return -1;
+    }
+    return requestWindId_[requestId];
 }
 
 void AccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResult(

@@ -340,8 +340,14 @@ public:
     void AddWindowElementMapByAce(int32_t windowId, int64_t elementId);
     RetError GetElementInfoFromCache(int32_t windowId, int64_t elementId,
         std::vector<AccessibilityElementInfo> &elementInfos);
-    RetError SearchElementInfoRecursive(int32_t windowId, int64_t elementId, int mode,
+    RetError SearchElementInfoRecursive(int32_t windowId, int64_t elementId, uint32_t mode,
         std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false);
+    RetError SearchElementInfoRecursiveByWinid(int32_t windowId, int64_t elementId,
+        uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false,
+        AccessibilityElementInfo *parentInfo = nullptr);
+    RetError SearchElementInfoRecursiveByContent(int32_t windowId, int64_t elementId,
+        uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, const std::string text,
+        bool isFilter = false);
     void RemoveCacheData(const AccessibilityEventInfo &eventInfo);
     void AddCacheByWMS(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
     void AddCacheByAce(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
@@ -423,6 +429,8 @@ private:
         const int64_t elementId, AccessibilityElementInfo &elementInfo) const;
     void SetCacheElementInfo(const int32_t windowId,
         const std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
+    RetError SearchElementInfoByElementId(const int32_t windowId, const int64_t elementId,
+        const uint32_t mode, AccessibilityElementInfo &info);
     RetError SearchElementInfoFromAce(const int32_t windowId, const int64_t elementId,
         const uint32_t mode, AccessibilityElementInfo &info);
     bool InitAccessibilityServiceProxy();
@@ -435,7 +443,7 @@ private:
     std::shared_ptr<AccessibleAbilityChannelClient> channelClient_ = nullptr;
     uint32_t cacheMode_ = 0;
     int32_t cacheWindowId_ = -1;
-    std::map<int32_t, AccessibilityElementInfo> cacheElementInfos_;
+    std::map<int64_t, AccessibilityElementInfo> cacheElementInfos_;
     std::mutex mutex_;
     std::atomic<bool> isConnected_ = false;
     // used for query element info in batch

@@ -37,6 +37,10 @@ AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
         &AccessibilityElementOperatorStub::HandleClearFocus;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::OUTSIDE_TOUCH)] =
         &AccessibilityElementOperatorStub::HandleOutsideTouch;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CHILDTREEID)] =
+        &AccessibilityElementOperatorStub::HandleSetChildTreeIdAndWinId;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_BELONGTREEID)] =
+        &AccessibilityElementOperatorStub::HandleSetBelongTreeId;
 }
 
 AccessibilityElementOperatorStub::~AccessibilityElementOperatorStub()
@@ -230,6 +234,25 @@ ErrCode AccessibilityElementOperatorStub::HandleOutsideTouch(MessageParcel &data
 
     OutsideTouch();
 
+    return NO_ERROR;
+}
+
+ErrCode AccessibilityElementOperatorStub::HandleSetChildTreeIdAndWinId(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int64_t nodeId = data.ReadInt64();
+    int32_t treeId = data.ReadInt32();
+    int32_t childWindowId = data.ReadInt32();
+    SetChildTreeIdAndWinId(nodeId, treeId, childWindowId);
+    return NO_ERROR;
+}
+
+ErrCode AccessibilityElementOperatorStub::HandleSetBelongTreeId(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int32_t treeId = data.ReadInt32();
+
+    SetBelongTreeId(treeId);
     return NO_ERROR;
 }
 } // namespace Accessibility

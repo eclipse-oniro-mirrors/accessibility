@@ -101,7 +101,12 @@ public:
     RetError RegisterElementOperator(const int32_t windowId,
         const sptr<IAccessibilityElementOperator> &operation, bool isApp) override;
 
+    RetError RegisterElementOperator(Registration parameter,
+        const sptr<IAccessibilityElementOperator> &operation, bool isApp) override;
+
     RetError DeregisterElementOperator(const int32_t windowId) override;
+
+    RetError DeregisterElementOperator(const int32_t windowId, const int32_t treeId) override;
 
     RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption) override;
     RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
@@ -274,6 +279,8 @@ private:
     bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
         AccessibilityElementInfo &elementInfo);
     bool SetTargetAbility(const int32_t targetAbilityValue);
+    RetError RegisterElementOperatorChildWork(const Registration &parameter, const int32_t treeId,
+        const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation, bool isApp);
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         StateCallbackDeathRecipient() = default;

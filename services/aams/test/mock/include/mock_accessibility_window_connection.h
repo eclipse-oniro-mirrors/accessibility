@@ -24,12 +24,18 @@ class MockAccessibilityWindowConnection : public AccessibilityWindowConnection {
 public:
     MockAccessibilityWindowConnection(
         const int32_t windowId, const sptr<IAccessibilityElementOperator>& connection, const int32_t accountId);
+    MockAccessibilityWindowConnection(const int32_t windowId, const int32_t treeId,
+        const sptr<IAccessibilityElementOperator>& connection, const int32_t accountId);
     ~MockAccessibilityWindowConnection();
 
     inline sptr<IAccessibilityElementOperator> GetProxy()
     {
         return proxy_;
     }
+
+    sptr<IAccessibilityElementOperator> GetCardProxy(const int32_t treeId);
+
+    RetError SetCardProxy(const int32_t treeId, sptr<IAccessibilityElementOperator> operation);
 };
 } // namespace Accessibility
 } // namespace OHOS

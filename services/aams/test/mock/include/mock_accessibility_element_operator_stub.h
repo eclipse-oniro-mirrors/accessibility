@@ -47,6 +47,8 @@ public:
     MOCK_METHOD0(OutsideTouch, void());
     MOCK_METHOD1(SetWindowId, void(int32_t windowId));
     MOCK_METHOD0(GetWindowId, int32_t());
+    MOCK_METHOD3(SetChildTreeIdAndWinId, void(const int64_t nodeId, const int32_t treeId, const int32_t childWindowId));
+    MOCK_METHOD1(SetBelongTreeId, void(const int32_t treeId));
 };
 } // namespace Accessibility
 } // namespace OHOS

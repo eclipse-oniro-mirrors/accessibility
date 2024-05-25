@@ -242,5 +242,26 @@ void MockAccessibilityElementOperatorImpl::SetExecuteActionResult(
     }
     return;
 }
+
+void MockAccessibilityElementOperatorImpl::SetChildTreeIdAndWinId(const int64_t nodeId,
+    const int32_t treeId, const int32_t childWindowId)
+{
+    if (operator_ != nullptr) {
+        operator_->SetChildTreeIdAndWinId(nodeId, treeId, childWindowId);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
+    return;
+}
+
+void MockAccessibilityElementOperatorImpl::SetBelongTreeId(const int32_t treeId)
+{
+    if (operator_ != nullptr) {
+        operator_->SetBelongTreeId(treeId);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
+    return;
+}
 } // namespace Accessibility
 } // namespace OHOS

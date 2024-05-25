@@ -115,5 +115,22 @@ void MockAccessibilityElementOperatorProxy::OutsideTouch()
     testOutsideTouch_ = 1;
     return;
 }
+
+void MockAccessibilityElementOperatorProxy::SetChildTreeIdAndWinId(const int64_t nodeId,
+    const int32_t treeId, const int32_t childWindowId)
+{
+    GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy GetCursorPosition";
+    testElementId_ = nodeId;
+    testTreeId_ = treeId;
+    testChildWindowId_ = childWindowId;
+    return;
+}
+
+void MockAccessibilityElementOperatorProxy::SetBelongTreeId(const int32_t treeId)
+{
+    GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy GetCursorPosition";
+    testTreeId_ = treeId;
+    return;
+}
 } // namespace Accessibility
 } // namespace OHOS

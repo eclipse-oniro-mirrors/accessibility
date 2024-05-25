@@ -53,7 +53,12 @@ public:
     RetError RegisterElementOperator(const int32_t windowId,
         const sptr<IAccessibilityElementOperator> &operation, bool isApp = false) override {return RET_OK;}
 
+    RetError RegisterElementOperator(Registration parameter,
+        const sptr<IAccessibilityElementOperator> &operation, bool isApp = false) override {return RET_OK;}
+
     RetError DeregisterElementOperator(const int32_t windowId) override {return RET_OK;}
+
+    RetError DeregisterElementOperator(const int32_t windowId, const int32_t treeId) override {return RET_OK;}
 
     RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption) override {return RET_OK;}
     bool GetEnabledState() override {return true;}

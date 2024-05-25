@@ -108,5 +108,18 @@ void AccessibilityElementOperatorProxy::ClearFocus()
 void AccessibilityElementOperatorProxy::OutsideTouch()
 {
 }
+
+void AccessibilityElementOperatorProxy::SetChildTreeIdAndWinId(const int64_t nodeId, const int32_t treeId,
+    const int32_t childWindowId)
+{
+    (void)nodeId;
+    (void)treeId;
+    (void)childWindowId;
+}
+
+void AccessibilityElementOperatorProxy::SetBelongTreeId(const int32_t treeId)
+{
+    (void)treeId;
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -68,7 +68,8 @@ public:
 private:
     static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);
     static RetError GetElementOperator(int32_t accountId, int32_t windowId, int32_t focusType,
-        const std::string &clientName, sptr<IAccessibilityElementOperator> &elementOperator);
+        const std::string &clientName, sptr<IAccessibilityElementOperator> &elementOperator, const int32_t treeId);
+    int32_t GetTreeIdBySplitElementId(const int64_t elementId);
     RetError GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const;
     RetError TransmitActionToMmi(const int32_t action);
     static void SetKeyCodeMulti(std::shared_ptr<MMI::KeyEvent>& keyEvent,
