@@ -154,8 +154,8 @@ void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObjec
                 HILOG_ERROR("create deathRecipient_ fail.");
             }
         }
-        if (remoteObject->IsProxyObject() && remoteObject->AddDeathRecipient(deathRecipient_)) {
-            HILOG_DEBUG("successed to add death recipient");
+        if (deathRecipient_ && remoteObject->IsProxyObject() && remoteObject->AddDeathRecipient(deathRecipient_)) {
+            HILOG_INFO("successed to add death recipient");
         }
     } else {
         HILOG_WARN("remoteObject is nullptr.");

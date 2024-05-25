@@ -136,6 +136,15 @@ void AccessibilitySystemAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<I
     std::lock_guard<std::mutex> lock(conVarMutex_);
     if (remoteObject != nullptr) {
         serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(remoteObject);
+        if (!deathRecipient_) {
+            deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
+            if (!deathRecipient_) {
+                HILOG_ERROR("create deathRecipient_ fail.");
+            }
+        }
+        if (deathRecipient_ && remoteObject->IsProxyObject() && remoteObject->AddDeathRecipient(deathRecipient_)) {
+            HILOG_INFO("successed to add death recipient");
+        }
     } else {
         HILOG_WARN("remoteObject is nullptr.");
     }
