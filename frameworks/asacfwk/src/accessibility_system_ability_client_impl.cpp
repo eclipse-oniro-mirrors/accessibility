@@ -202,7 +202,11 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
         HILOG_ERROR("Input operation is null");
         return RET_ERR_INVALID_PARAM;
     }
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
@@ -241,7 +245,11 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
     HILOG_INFO("Deregister windowId[%{public}d] start", windowId);
     std::lock_guard<std::mutex> lock(mutex_);
 
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
@@ -293,7 +301,11 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
             accessibilityAbilityTypes, stateType);
         return RET_ERR_INVALID_PARAM;
     }
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
@@ -321,7 +333,11 @@ RetError AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventTy
     AccessibilityEventInfo event;
     event.SetEventType(eventType);
     event.SetSource(componentId);
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
@@ -335,7 +351,11 @@ RetError AccessibilitySystemAbilityClientImpl::SendEvent(const AccessibilityEven
     if (!CheckEventType(event.GetEventType())) {
         return RET_ERR_INVALID_PARAM;
     }
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
@@ -421,7 +441,11 @@ RetError AccessibilitySystemAbilityClientImpl::GetEnabledAbilities(std::vector<s
 {
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
@@ -609,7 +633,11 @@ RetError AccessibilitySystemAbilityClientImpl::GetFocusedWindowId(int32_t &focus
 {
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }

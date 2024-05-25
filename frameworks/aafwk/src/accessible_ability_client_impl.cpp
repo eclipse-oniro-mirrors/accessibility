@@ -67,6 +67,9 @@ AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
     }
 
     sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (samgr == nullptr) {
+        HILOG_ERROR("Failed to get ISystemAbilityManager");
+    }
     sptr<AccessibilitySaStatusChange> statusChange = new AccessibilitySaStatusChange();
     int32_t ret = samgr->SubscribeSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, statusChange);
     if (ret != 0) {
@@ -389,7 +392,12 @@ RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementI
     }
 
     std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
+        HILOG_ERROR("Failed to connect to aams");
+        return RET_ERR_SAMGR;
+    }
+
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to connect to aams");
         return RET_ERR_SAMGR;
     }
@@ -464,8 +472,13 @@ RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElem
         return RET_ERR_NO_CONNECTION;
     }
 
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
         HILOG_ERROR("failed to connect to aams");
+        return RET_ERR_SAMGR;
+    }
+
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to connect to aams");
         return RET_ERR_SAMGR;
     }
 
@@ -541,7 +554,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWi
     }
 
     std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
         HILOG_ERROR("failed to connect to aams");
         return RET_ERR_SAMGR;
     }
@@ -779,8 +792,13 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId,
     }
 
     std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
         HILOG_ERROR("failed to connect to aams");
+        return RET_ERR_SAMGR;
+    }
+
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to connect to aams");
         return RET_ERR_SAMGR;
     }
 
@@ -1007,7 +1025,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
     }
 
     std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
         HILOG_ERROR("Failed to connect to aams");
         return RET_ERR_SAMGR;
     }
@@ -1015,6 +1033,11 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
+    }
+
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to connect to aams");
+        return RET_ERR_SAMGR;
     }
 
     int32_t windowId = serviceProxy_->GetActiveWindow();
@@ -1047,8 +1070,12 @@ RetError AccessibleAbilityClientImpl::Connect()
 {
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
         HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to connect to aams");
         return RET_ERR_SAMGR;
     }
 
@@ -1059,8 +1086,12 @@ RetError AccessibleAbilityClientImpl::Disconnect()
 {
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_ && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
         HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to connect to aams");
         return RET_ERR_SAMGR;
     }
     return serviceProxy_->DisableUITestAbility();
