@@ -30,11 +30,11 @@ namespace {
     const std::string KEYEVENT_OBSERVER = "keyevent_observer";
     const std::string SCREEN_MAGNIFICATION_KEY = "screen_magnification";
     const std::string MOUSEKEY = "mousekey";
-    const std::string HIGH_CONTRAST_TEXT_KEY = "high_text_constrast_enabled";
+    const std::string HIGH_CONTRAST_TEXT_KEY = "high_text_contrast_enabled";
     const std::string DALTONIZATION_STATE = "accessibility_display_daltonizer_enabled";
     const std::string INVERT_COLOR_KEY = "accessibility_display_inversion_enabled";
     const std::string ANIMATION_OFF_KEY = "animation_off";
-    const std::string AUDIO_MONO_KEY = "master_nono";
+    const std::string AUDIO_MONO_KEY = "master_mono";
     const std::string IGNORE_REPEAT_CLICK_SWITCH = "ignore_repeat_click_switch";
     const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
     const std::string SHORTCUT_SERVICE = "accessibility_shortcut_target_service";

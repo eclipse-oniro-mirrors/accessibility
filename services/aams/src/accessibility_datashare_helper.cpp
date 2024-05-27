@@ -168,7 +168,7 @@ RetError AccessibilityDatashareHelper::PutLongValue(const std::string& key, int6
 
 RetError AccessibilityDatashareHelper::PutBoolValue(const std::string& key, bool value, bool needNotify)
 {
-    std::string valueStr = value ? "true" : "false";
+    std::string valueStr = value ? "1" : "0";
     return PutStringValue(key, valueStr, needNotify);
 }
 

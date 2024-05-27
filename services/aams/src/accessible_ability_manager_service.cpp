@@ -2338,7 +2338,7 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
         bool userSetupState = false;
         provider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
         if (accountData->GetConfig()->GetDbHandle()) {
-            accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, userSetupState);
+            userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
         }
         if (oobeState == false || userSetupState == false) {
             HILOG_DEBUG();
