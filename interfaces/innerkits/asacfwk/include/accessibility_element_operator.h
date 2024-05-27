@@ -124,14 +124,14 @@ public:
     virtual void OutsideTouch() = 0;
 
     /**
-    * @brief To return the result of nodeId, treeId, childWindowId.
-    * @param nodeId: The node Id.
+    * @brief To return the result of elementId, treeId, childWindowId.
+    * @param elementId: The element Id.
     * @param treeId: The tree Id.
     * @param childWindowId: The childwindow Id.
     */
-    virtual void SetChildTreeIdAndWinId(const int64_t nodeId, const int32_t treeId, const int32_t childWindowId)
+    virtual void SetChildTreeIdAndWinId(const int64_t elementId, const int32_t treeId, const int32_t childWindowId)
     {
-        (void)nodeId;
+        (void)elementId;
         (void)treeId;
         (void)childWindowId;
     }
@@ -143,6 +143,15 @@ public:
     virtual void SetBelongTreeId(const int32_t treeId)
     {
         (void)treeId;
+    }
+
+    /**
+    * @brief To return the result of parentWindowId
+    * @param parentWindowId: The parentWindowId Id.
+    */
+    virtual void SetParentWindowId(const int32_t parentWindowId)
+    {
+        (void)parentWindowId;
     }
 };
 } // namespace Accessibility

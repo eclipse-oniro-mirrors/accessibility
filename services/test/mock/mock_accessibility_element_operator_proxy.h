@@ -132,18 +132,24 @@ public:
     void OutsideTouch() override;
 
     /**
-    * @brief To return the result of nodeId, treeId, childWindowId.
-    * @param nodeId: The node Id.
+    * @brief To return the result of elementId, treeId, childWindowId.
+    * @param elementId: The element Id.
     * @param treeId: The tree Id.
     * @param childWindowId The childwindow Id.
     */
-    void SetChildTreeIdAndWinId(const int64_t nodeId, const int32_t treeId, const int32_t childWindowId) override;
+    void SetChildTreeIdAndWinId(const int64_t elementId, const int32_t treeId, const int32_t childWindowId) override;
 
     /**
     * @brief To return the result of treeId
     * @param treeId: The tree Id.
     */
     void SetBelongTreeId(const int32_t treeId) override;
+
+    /**
+    * @brief To return the result of parentWindowId
+    * @param parentWindowId: The parentWindow Id.
+    */
+    void SetParentWindowId(const int32_t parentWindowId) override;
 
     int64_t testElementId_ = -1;
     int32_t testClearFocus_ = -1;
@@ -158,6 +164,7 @@ public:
     int32_t testAction_ = 0;
     int32_t testTreeId_ = -1;
     int32_t testChildWindowId_ = -1;
+    int32_t testParentWindowId_ = -1;
     std::map<std::string, std::string> testActionArguments_;
 
     bool isFilter_ = false;

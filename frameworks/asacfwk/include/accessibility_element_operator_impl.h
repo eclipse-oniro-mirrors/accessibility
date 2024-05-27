@@ -146,19 +146,25 @@ public:
     int32_t GetWindowId();
 
     /**
-     * @brief Set the nodeId, childWindowId, childtreeId to AA
-     * @param nodeId The node ID.
+     * @brief Set the elementId, childWindowId, childtreeId to AA
+     * @param elementId The element ID.
      * @param childTreeId The childTree ID.
      * @param childWindowId The childwindow ID.
      */
-    virtual void SetChildTreeIdAndWinId(const int64_t nodeId, const int32_t childTreeId,
+    virtual void SetChildTreeIdAndWinId(const int64_t elementId, const int32_t childTreeId,
         const int32_t childWindowId) override;
 
     /**
-     * @brief Get the belongTree id to AA
+     * @brief Set the belongTree id to AA
      * @param  treeId The tree ID.
      */
     virtual void SetBelongTreeId(const int32_t treeId) override;
+
+    /**
+     * @brief Set the parent window id to AA
+     * @param  parentWindowId The parentWindowId ID.
+     */
+    virtual void SetParentWindowId(const int32_t parentWindowId) override;
 
     /**
      * @brief Set the element information by accessibility id to AA.

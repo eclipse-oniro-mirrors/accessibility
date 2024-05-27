@@ -126,12 +126,12 @@ private:
     ErrCode HandleDeregisterAccessibilityElementOperator(MessageParcel &data, MessageParcel &reply);
 
     /**
-     * @brief Handle the IPC request for the function:HandleLatestDeregisterAccessibilityElementOperator.
+     * @brief Handle the IPC request for the function:HandleMultiDeregisterAccessibilityElementOperator.
      * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandleLatestDeregisterAccessibilityElementOperator(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleMultiDeregisterAccessibilityElementOperator(MessageParcel &data, MessageParcel &reply);
 
     ErrCode HandleGetCaptionProperty(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetCaptionProperty(MessageParcel &data, MessageParcel &reply);

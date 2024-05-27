@@ -129,6 +129,13 @@ private:
      */
     ErrCode HandleSetBelongTreeId(MessageParcel &data, MessageParcel &reply);
 
+    /**
+     * @brief Handle the IPC request for the function:SetParentWindowId.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleSetParentWindowId(MessageParcel &data, MessageParcel &reply);
     using AccessibilityElementOperatorFunc =
         ErrCode (AccessibilityElementOperatorStub::*)(MessageParcel &data, MessageParcel &reply);
     std::map<uint32_t, AccessibilityElementOperatorFunc> memberFuncMap_;

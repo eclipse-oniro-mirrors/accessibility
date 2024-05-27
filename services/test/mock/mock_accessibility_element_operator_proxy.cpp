@@ -116,20 +116,28 @@ void MockAccessibilityElementOperatorProxy::OutsideTouch()
     return;
 }
 
-void MockAccessibilityElementOperatorProxy::SetChildTreeIdAndWinId(const int64_t nodeId,
+void MockAccessibilityElementOperatorProxy::SetChildTreeIdAndWinId(const int64_t elementId,
     const int32_t treeId, const int32_t childWindowId)
 {
-    GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy GetCursorPosition";
-    testElementId_ = nodeId;
+    GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy SetChildTreeIdAndWinId";
+    testElementId_ = elementId;
     testTreeId_ = treeId;
     testChildWindowId_ = childWindowId;
+
     return;
 }
 
 void MockAccessibilityElementOperatorProxy::SetBelongTreeId(const int32_t treeId)
 {
-    GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy GetCursorPosition";
+    GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy SetBelongTreeId";
     testTreeId_ = treeId;
+    return;
+}
+
+void MockAccessibilityElementOperatorProxy::SetParentWindowId(const int32_t parentWindowId)
+{
+    GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy SetParentWindowId";
+    testParentWindowId_ = parentWindowId;
     return;
 }
 } // namespace Accessibility

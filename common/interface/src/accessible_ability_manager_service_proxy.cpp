@@ -265,17 +265,17 @@ RetError AccessibleAbilityManagerServiceProxy::RegisterElementOperator(Registrat
     }
 
     if (!data.WriteInt32(parameter.parentWindowId)) {
-        HILOG_ERROR("fail, connection write windowId error");
+        HILOG_ERROR("fail, connection write parentWindowId error");
         return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteInt32(parameter.parentTreeId)) {
-        HILOG_ERROR("fail, connection write windowId error");
+        HILOG_ERROR("fail, connection write parentTreeId error");
         return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteInt64(parameter.elementId)) {
-        HILOG_ERROR("fail, connection write windowId error");
+        HILOG_ERROR("fail, connection write elementId error");
         return RET_ERR_IPC_FAILED;
     }
 

@@ -109,10 +109,10 @@ void AccessibilityElementOperatorProxy::OutsideTouch()
 {
 }
 
-void AccessibilityElementOperatorProxy::SetChildTreeIdAndWinId(const int64_t nodeId, const int32_t treeId,
+void AccessibilityElementOperatorProxy::SetChildTreeIdAndWinId(const int64_t elementId, const int32_t treeId,
     const int32_t childWindowId)
 {
-    (void)nodeId;
+    (void)elementId;
     (void)treeId;
     (void)childWindowId;
 }
@@ -120,6 +120,11 @@ void AccessibilityElementOperatorProxy::SetChildTreeIdAndWinId(const int64_t nod
 void AccessibilityElementOperatorProxy::SetBelongTreeId(const int32_t treeId)
 {
     (void)treeId;
+}
+
+void AccessibilityElementOperatorProxy::SetParentWindowId(const int32_t parentWindowId)
+{
+    (void)parentWindowId;
 }
 } // namespace Accessibility
 } // namespace OHOS

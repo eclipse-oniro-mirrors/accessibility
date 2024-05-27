@@ -141,18 +141,24 @@ int32_t AccessibilityElementOperatorImpl::GetWindowId()
     return windowId_;
 }
 
-void AccessibilityElementOperatorImpl::SetChildTreeIdAndWinId(const int64_t nodeId,
+void AccessibilityElementOperatorImpl::SetChildTreeIdAndWinId(const int64_t elementId,
     const int32_t childTreeId, const int32_t childWindowId)
 {
-    HILOG_DEBUG("nodeId:[%{public}" PRId64 "], childTreeId:[%{public}d], childWindowId:[%{public}d]",
-        nodeId, childTreeId, childWindowId);
-    operator_->SetChildTreeIdAndWinId(nodeId, childTreeId, childWindowId);
+    HILOG_DEBUG("elementId:%{public}" PRId64 ", childTreeId:%{public}d, childWind:%{public}d",
+        elementId, childTreeId, childWindowId);
+    operator_->SetChildTreeIdAndWinId(elementId, childTreeId, childWindowId);
 }
 
 void AccessibilityElementOperatorImpl::SetBelongTreeId(const int32_t treeId)
 {
     HILOG_DEBUG("treeId:[%{public}d]", treeId);
     operator_->SetBelongTreeId(treeId);
+}
+
+void AccessibilityElementOperatorImpl::SetParentWindowId(const int32_t parentWindowId)
+{
+    HILOG_DEBUG("parentWindowId:[%{public}d]", parentWindowId);
+    operator_->SetParentWindowId(parentWindowId);
 }
 
 int32_t AccessibilityElementOperatorImpl::AddRequest(int32_t requestId,

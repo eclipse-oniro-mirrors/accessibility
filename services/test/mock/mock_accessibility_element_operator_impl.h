@@ -180,18 +180,25 @@ public:
     void SetExecuteActionResult(const bool succeeded, const int32_t requestId);
 
     /**
-    * @brief To return the result of nodeId, treeId, childWindowId.
-    * @param nodeId: The node Id.
+    * @brief To return the result of elementId, treeId, childWindowId.
+    * @param elementId: The element Id.
     * @param treeId: The tree Id.
     * @param childWindowId The childwindow Id.
     */
-    void SetChildTreeIdAndWinId(const int64_t nodeId, const int32_t treeId, const int32_t childWindowId);
+    void SetChildTreeIdAndWinId(const int64_t elementId, const int32_t treeId, const int32_t childWindowId);
 
     /**
     * @brief To return the result of treeId
     * @param treeId: The tree Id.
     */
     void SetBelongTreeId(const int32_t treeId);
+
+    /**
+    * @brief To return the result of parentWindowId
+    * @param parentWindowId: The parentWindow Id.
+    */
+    void SetParentWindowId(const int32_t parentWindowId);
+
 private:
     int32_t AddRequest(int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);
 

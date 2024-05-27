@@ -678,7 +678,7 @@ RetError AccessibleAbilityChannel::GetElementOperator(
     int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, focusType);
     sptr<AccessibilityWindowConnection> connection =  nullptr;
     connection = accountData->GetAccessibilityWindowConnection(realId);
-    if (!connection) {
+    if (connection == nullptr) {
         HILOG_ERROR("windowId[%{public}d] has no connection", realId);
         return RET_ERR_NO_WINDOW_CONNECTION;
     }
@@ -698,7 +698,7 @@ int32_t AccessibleAbilityChannel::GetTreeIdBySplitElementId(const int64_t elemen
 {
     if (elementId < 0) {
         HILOG_ERROR("The elementId is -1");
-        return -1;
+        return elementId;
     }
     int32_t treeId = (elementId << ELEMENT_MOVE_BIT) >> ELEMENT_MOVE_BIT;
     return treeId;

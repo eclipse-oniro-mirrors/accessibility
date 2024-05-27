@@ -58,8 +58,10 @@ public:
         AccessibilityElementOperatorCallback &callback) override {}
     void ClearFocus() override {}
     void OutsideTouch() override {}
-    void SetChildTreeIdAndWinId(const int64_t nodeId, const int32_t treeId, const int32_t childWindowId) override {}
+    void SetChildTreeIdAndWinId(const int64_t elementId, const int32_t treeId,
+        const int32_t childWindowId) override {}
     void SetBelongTreeId(const int32_t treeId) override {}
+    void SetParentWindowId(const int32_t parentWindowId) override {}
 };
 
 class StateObserverForFuzzTest : public AccessibilityStateObserver {

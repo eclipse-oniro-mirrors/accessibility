@@ -227,7 +227,7 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
 
     sptr<AccessibilityElementOperatorImpl> aamsInteractionOperator =
         new(std::nothrow) AccessibilityElementOperatorImpl(windowId, operation, *this);
-    if (!aamsInteractionOperator) {
+    if (aamsInteractionOperator == nullptr) {
         HILOG_ERROR("Failed to create aamsInteractionOperator.");
         return RET_ERR_NULLPTR;
     }
