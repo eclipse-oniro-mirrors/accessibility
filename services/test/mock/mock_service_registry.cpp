@@ -234,6 +234,12 @@ int32_t SystemAbilityManagerProxy::UnloadAllIdleSystemAbility()
     return -1;
 }
 
+int32_t SystemAbilityManagerProxy::GetCommonEventExtraDataIdlist(int32_t saId,
+    std::vector<int64_t>& extraDataIdList, const std::string& eventName)
+{
+    return -1;
+}
+
 int32_t SystemAbilityManagerProxy::GetExtensionSaIds(const std::string& extension, std::vector<int32_t> &saIds)
 {
     return -1;
