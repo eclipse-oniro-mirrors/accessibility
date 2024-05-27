@@ -280,5 +280,56 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetUiNodeId_001, TestSize.Level1)
     EXPECT_EQ(windowInfo_->GetUiNodeId(), UI_NODE_ID);
     GTEST_LOG_(INFO) << "GetUiNodeId_001 end";
 }
+
+/**
+ * @tc.number: GetScaleVal_001
+ * @tc.name: GetScaleVal
+ * @tc.desc: Test function GetScaleVal
+ */
+HWTEST_F(AccessibilityWindowInfoUnitTest, GetScaleVal_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetScaleVal_001 start";
+    if (!windowInfo_) {
+        GTEST_LOG_(INFO) << "windowInfo_ is null";
+        return;
+    }
+    windowInfo_->SetScaleVal(1.1);
+    EXPECT_EQ(windowInfo_->GetScaleVal(), 1.1);
+    GTEST_LOG_(INFO) << "GetScaleVal_001 end";
+}
+
+/**
+ * @tc.number: GetScaleX_001
+ * @tc.name: GetScaleX
+ * @tc.desc: Test function GetScaleX
+ */
+HWTEST_F(AccessibilityWindowInfoUnitTest, GetScaleX_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetScaleX_001 start";
+    if (!windowInfo_) {
+        GTEST_LOG_(INFO) << "windowInfo_ is null";
+        return;
+    }
+    windowInfo_->SetScaleX(1.1);
+    EXPECT_EQ(windowInfo_->GetScaleX(), 1.1);
+    GTEST_LOG_(INFO) << "GetScaleX_001 end";
+}
+
+/**
+ * @tc.number: GetScaleY_001
+ * @tc.name: GetScaleY
+ * @tc.desc: Test function GetScaleY
+ */
+HWTEST_F(AccessibilityWindowInfoUnitTest, GetScaleY_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetScaleY_001 start";
+    if (!windowInfo_) {
+        GTEST_LOG_(INFO) << "windowInfo_ is null";
+        return;
+    }
+    windowInfo_->SetScaleY(1.1);
+    EXPECT_EQ(windowInfo_->GetScaleY(), 1.1);
+    GTEST_LOG_(INFO) << "GetScaleY_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
