@@ -2333,5 +2333,89 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetSceneBoardInnerWinId_002, T
     SetUpTestCase();
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_GetSceneBoardInnerWinId_002 end";
 }
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_UpdateShortkeyMultiTarget_001
+ * @tc.name: UpdateShortkeyMultiTarget
+ * @tc.desc: Test function UpdateShortkeyMultiTarget
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateShortkeyMultiTarget_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_UpdateShortkeyMultiTarget_001 start";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortkeyMultiTarget();
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_UpdateShortkeyMultiTarget_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_OnDeviceProvisioned_001
+ * @tc.name: OnDeviceProvisioned
+ * @tc.desc: Test function OnDeviceProvisioned
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnDeviceProvisioned_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_OnDeviceProvisioned_001 start";
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    auto accountData = aams.GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    std::string deviceId = "false";
+    aams.OnAddSystemAbility(WINDOW_MANAGER_SERVICE_ID, deviceId);
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_OnDeviceProvisioned_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_OnDeviceProvisioned_002
+ * @tc.name: OnDeviceProvisioned
+ * @tc.desc: Test function OnDeviceProvisioned
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnDeviceProvisioned_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_OnDeviceProvisioned_002 start";
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.OnStop();
+    auto accountData = aams.GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "current account data is null";
+    }
+    std::string deviceId = "false";
+    aams.OnAddSystemAbility(WINDOW_MANAGER_SERVICE_ID, deviceId);
+    aams.OnStart();
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_OnDeviceProvisioned_002 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_RegisterShortKeyEvent_001
+ * @tc.name: RegisterShortKeyEvent
+ * @tc.desc: Test function RegisterShortKeyEvent
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterShortKeyEvent_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_RegisterShortKeyEvent_001 start";
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.OnStop();
+    auto accountData = aams.GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "current account data is null";
+    }
+    std::string deviceId = "false";
+    aams.OnAddSystemAbility(WINDOW_MANAGER_SERVICE_ID, deviceId);
+    aams.OnStart();
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_RegisterShortKeyEvent_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_RegisterShortKeyEvent_002
+ * @tc.name: RegisterShortKeyEvent
+ * @tc.desc: Test function RegisterShortKeyEvent
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterShortKeyEvent_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_RegisterShortKeyEvent_002 start";
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    auto accountData = aams.GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    std::string deviceId = "false";
+    aams.OnAddSystemAbility(WINDOW_MANAGER_SERVICE_ID, deviceId);
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_RegisterShortKeyEvent_002 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
