@@ -429,8 +429,8 @@ bool AccessibilitySettingsConfig::GetStartFromAtoHosState()
         return RET_ERR_NULLPTR;
     }
 
-    bool value = false;
-    datashare_->GetBoolValue("AccessibilityStartFromAtoHos", value);
+    bool value = true;
+    value = datashare_->GetBoolValue("AccessibilityStartFromAtoHos", true);
     return value;
 }
 
