@@ -32,8 +32,24 @@ enum ScreenTouchState : int32_t {
     BOTH_RESPONSE_DELAY_IGNORE_REPEAT_CLICK
 };
 
+class AccessibilityScreenTouch;
+class ScreenTouchHandler : public AppExecFwk::EventHandler {
+public:
+    ScreenTouchHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner, AccessibilityScreenTouch &server);
+    virtual ~ScreenTouchHandler() = default;
+    /**
+     * @brief Process the event of install system bundles.
+     * @param event Indicates the event to be processed.
+     */
+    virtual void ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) override;
+private:
+    AccessibilityScreenTouch &server_;
+};
+
 class AccessibilityScreenTouch : public EventTransmission {
 public:
+    static constexpr uint32_t FINGER_DOWN_DELAY_MSG = 0;
+
     /**
      * @brief A constructor used to create a screen touch instance.
      */
@@ -56,6 +72,7 @@ public:
     uint32_t GetRealClickResponseTime();
     uint32_t GetRealIgnoreRepeatClickTime();
     bool GetRealIgnoreRepeatClickState();
+    void SendInterceptedEvent();
 private:
     void HandleResponseDelayStateInnerDown(MMI::PointerEvent &event);
     void HandleResponseDelayStateInnerMove(MMI::PointerEvent &event);
@@ -76,7 +93,6 @@ private:
 
     void DrawCircleProgress();
 
-    bool isFirstDownEvent_ = false;
     bool isMoveBeyondThreshold_ = false;
     int64_t startTime_ = 0; // microsecond
     double threshold_ = 0.0;
@@ -98,6 +114,10 @@ private:
 
     static int64_t lastUpTime; // global last up time
     static int32_t lastDownPointerId; // global last down pointer id
+
+    std::shared_ptr<ScreenTouchHandler> handler_ = nullptr;
+    std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
+    std::shared_ptr<MMI::PointerEvent &event> lastInterceptedEvent_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
