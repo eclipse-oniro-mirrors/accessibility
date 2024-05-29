@@ -70,11 +70,12 @@ AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
     sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (samgr == nullptr) {
         HILOG_ERROR("Failed to get ISystemAbilityManager");
-    }
-    sptr<AccessibilitySaStatusChange> statusChange = new AccessibilitySaStatusChange();
-    int32_t ret = samgr->SubscribeSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, statusChange);
-    if (ret != 0) {
-        HILOG_ERROR("subscribe accessibility failed, error = %{public}d", ret);
+    } else {
+        sptr<AccessibilitySaStatusChange> statusChange = new AccessibilitySaStatusChange();
+        int32_t ret = samgr->SubscribeSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, statusChange);
+        if (ret != 0) {
+            HILOG_ERROR("subscribe accessibility failed, error = %{public}d", ret);
+        }
     }
 }
 
