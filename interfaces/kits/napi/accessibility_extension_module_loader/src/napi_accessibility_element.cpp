@@ -1726,7 +1726,7 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
 
 void NAccessibilityElement::FindElementByText(NAccessibilityElementData *callbackInfo)
 {
-    nlohmann::json jsonStr = nullptr;
+    nlohmann::json jsonStr;
     jsonStr["type"] = (callbackInfo->conditionId_ ==
         FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT) ? "content" : "textType";
     jsonStr["value"] = callbackInfo->condition_;
