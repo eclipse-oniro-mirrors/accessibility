@@ -117,7 +117,7 @@ private:
 
     std::shared_ptr<ScreenTouchHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
-    std::shared_ptr<MMI::PointerEvent &event> lastInterceptedEvent_ = nullptr;
+    std::shared_ptr<MMI::PointerEvent> lastInterceptedEvent_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

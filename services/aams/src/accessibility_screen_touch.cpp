@@ -234,16 +234,16 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
         HILOG_ERROR("create draw circle progress fail");
     }
 
-    handler->RemoveEvent(FINGER_DOWN_DELAY_MSG);
+    handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
     lastInterceptedEvent_ = std::make_shared<MMI::PointerEvent>(event);
-    handler->SendEvent(FINGER_DOWN_DELAY_MSG, 0, static_cast<int32_t>(GetRealClickResponseTime()));
+    handler_->SendEvent(FINGER_DOWN_DELAY_MSG, 0, static_cast<int32_t>(GetRealClickResponseTime()));
 }
 
 void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     if (isMoveBeyondThreshold_ == true) {
-        handler->RemoveEvent(FINGER_DOWN_DELAY_MSG);
+        handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
         EventTransmission::OnPointerEvent(event);
         return;
     }
@@ -257,7 +257,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
     float offsetY = startPointer_.GetDisplayY() - pointerItem.GetDisplayY();
     double duration = hypot(offsetX, offsetY);
     if (duration > threshold_) {
-        handler->RemoveEvent(FINGER_DOWN_DELAY_MSG);
+        handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
         event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
         EventTransmission::OnPointerEvent(event);
         isMoveBeyondThreshold_ = true;
@@ -281,7 +281,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
 void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    handler->RemoveEvent(FINGER_DOWN_DELAY_MSG);
+    handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
     isStopDrawCircle_ = true;
     if (isMoveBeyondThreshold_ == true) {
         EventTransmission::OnPointerEvent(event);
