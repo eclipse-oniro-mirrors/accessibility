@@ -239,7 +239,11 @@ void AccessibleAbilityChannel::SetKeyCodeSingle(std::shared_ptr<MMI::KeyEvent>& 
     }
 
     keyEvent->SetKeyCode(keyCode);
-    keyEvent->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    if (keyCode == MMI::KeyEvent::KEYCODE_BACK) {
+        keyEvent->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
+    } else {
+        keyEvent->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    }
 
     MMI::KeyEvent::KeyItem item;
     item.SetKeyCode(keyCode);
