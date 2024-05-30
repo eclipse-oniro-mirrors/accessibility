@@ -134,7 +134,7 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
         return false;
     }
     auto waitStatus = proxyConVar_.wait_for(lock, std::chrono::milliseconds(SA_CONNECT_TIMEOUT),
-        [=]() { return serviceProxy_ != nullptr; });
+        [this]() { return serviceProxy_ != nullptr; });
     if (!waitStatus) {
         return false;
     }
@@ -146,6 +146,11 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
 void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
     std::lock_guard<std::mutex> lock(conVarMutex_);
+    if (serviceProxy_ != nullptr) {
+        HILOG_INFO("serviceProxy_ isn't nullptr");
+        proxyConVar_.notify_one();
+        return;
+    }
     if (remoteObject != nullptr) {
         serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(remoteObject);
         if (!deathRecipient_) {
@@ -241,7 +246,7 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
             captionObserver_ = nullptr;
             enableAbilityListsObserver_ = nullptr;
             configObserver_ = nullptr;
-            HILOG_DEBUG("Reset OK");
+            HILOG_INFO("ResetService ok");
         }
     }
 }
