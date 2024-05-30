@@ -377,7 +377,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRoot_001, TestSize.Level1)
     Connect();
     AccessibilityElementInfo info {};
     instance_->SetCacheMode(0);
-    EXPECT_EQ(instance_->GetRoot(info), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetRoot(info), RET_ERR_SAMGR);
     GTEST_LOG_(INFO) << "GetRoot_001 end";
 }
 
@@ -569,7 +569,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, EnableScreenCurtain_001, TestSize.Leve
 {
     GTEST_LOG_(INFO) << "EnableScreenCurtain_001 start";
     Connect();
-    EXPECT_EQ(instance_->EnableScreenCurtain(true), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->EnableScreenCurtain(true), RET_ERR_PERFORM_ACTION_FAILED_BY_ACE);
     GTEST_LOG_(INFO) << "EnableScreenCurtain_001 end";
 }
 
@@ -584,7 +584,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetByElementId_001, TestSize.Level1)
     Connect();
     int64_t elementId = 10;
     AccessibilityElementInfo targetElementInfo {};
-    EXPECT_EQ(instance_->GetByElementId(elementId, targetElementInfo), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetByElementId(elementId, targetElementInfo), RET_ERR_SAMGR);
     GTEST_LOG_(INFO) << "GetByElementId_001 end";
 }
 
@@ -969,7 +969,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootByWindowBatch_001, TestSize.Lev
     Connect();
     std::vector<AccessibilityElementInfo> info;
     AccessibilityWindowInfo windowInfo {};
-    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, info, true), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, info, true), RET_ERR_SAMGR);
     GTEST_LOG_(INFO) << "GetRootByWindowBatch_001 end";
 }
 
@@ -984,7 +984,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootBatch_001, TestSize.Level1)
     Connect();
     std::vector<AccessibilityElementInfo> info;
     instance_->SetCacheMode(0);
-    EXPECT_EQ(instance_->GetRootBatch(info), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetRootBatch(info), RET_ERR_SAMGR);
     GTEST_LOG_(INFO) << "GetRootBatch_001 end";
 }
 

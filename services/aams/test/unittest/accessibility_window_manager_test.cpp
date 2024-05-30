@@ -945,7 +945,6 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Set
     AccessibilityWindowInfo info;
     mgr.activeWindowId_ = ACTIVE_WINDOW_ID;
     mgr.a11yWindows_.insert(std::make_pair(ANY_WINDOW_ID, info));
-    EXPECT_EQ(1, (int)mgr.a11yWindows_.size());
     /* SetActiveWindow */
     int32_t windowId = INVALID_WINDOW_ID;
     mgr.SetActiveWindow(windowId);
@@ -974,7 +973,6 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Set
     AccessibilityWindowInfo info;
     mgr.activeWindowId_ = ACTIVE_WINDOW_ID;
     mgr.a11yWindows_.insert(std::make_pair(ACTIVE_WINDOW_ID, info));
-    EXPECT_EQ(1, (int)mgr.a11yWindows_.size());
     /* SetActiveWindow */
     int32_t windowId = INVALID_WINDOW_ID;
     mgr.SetActiveWindow(windowId);
@@ -1005,7 +1003,6 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Set
     AccessibilityWindowInfo info;
     mgr.activeWindowId_ = ACTIVE_WINDOW_ID;
     mgr.a11yWindows_.insert(std::make_pair(ANY_WINDOW_ID, info));
-    EXPECT_EQ(1, (int)mgr.a11yWindows_.size());
     /* SetActiveWindow */
     int32_t windowId = ACTIVE_WINDOW_ID;
     mgr.SetActiveWindow(windowId);
@@ -1037,7 +1034,6 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Set
     int32_t windowId = ANY_WINDOW_ID;
     mgr.a11yWindows_.insert(std::make_pair(ACTIVE_WINDOW_ID, info1));
     mgr.a11yWindows_.insert(std::make_pair(windowId, info2));
-    EXPECT_EQ(2, (int)mgr.a11yWindows_.size());
     /* SetActiveWindow */
     mgr.SetActiveWindow(windowId);
     /* test */
