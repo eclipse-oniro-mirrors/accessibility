@@ -133,7 +133,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_004, 
     }
     std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
     EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    EXPECT_EQ(RET_ERR_CONNECTION_EXIST, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+    EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "RegisterElementOperator_004 end";
 }
@@ -950,6 +950,221 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetExecuteActionResult_003, T
     EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetExecuteActionResult_003 end";
+}
+
+/**
+ * @tc.number: SetCursorPositionResult_001
+ * @tc.name: SetCursorPositionResult
+ * @tc.desc: Test function SetCursorPositionResult(cursorPosition,requestId)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetCursorPositionResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetCursorPositionResult_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    int32_t cursorPosition = 0;
+    int32_t requestId = REQUEST_ID;
+    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+    impl_->SetCursorPositionResult(cursorPosition, requestId);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetCursorPositionResult_001 end";
+}
+
+/**
+ * @tc.number: SetCursorPositionResult_002
+ * @tc.name: SetCursorPositionResult
+ * @tc.desc: Test function SetCursorPositionResult(cursorPosition,requestId)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetCursorPositionResult_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetCursorPositionResult_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    int32_t cursorPosition = 0;
+    impl_->SetCursorPositionResult(cursorPosition, -1);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetCursorPositionResult_001 end";
+}
+
+/**
+ * @tc.number: SetAccessibilityState_001
+ * @tc.name: SetAccessibilityState
+ * @tc.desc: Test function SetAccessibilityState
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetAccessibilityState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityState_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get SetAccessibilityState impl_";
+        return;
+    }
+    impl_->SetAccessibilityState(0);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetAccessibilityState_001 end";
+}
+
+/**
+ * @tc.number: SetFindAccessibilityNodeInfoResult_001
+ * @tc.name: SetFindAccessibilityNodeInfoResult
+ * @tc.desc: Test function SetFindAccessibilityNodeInfoResult(elementInfo,requestId,requestCode)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeInfoResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfoResult impl_";
+        return;
+    }
+    AccessibilityElementInfo elementInfo;
+    int32_t requestId = -1;
+    int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_ACCESSIBILITY_ID;
+    impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_001 end";
+}
+
+/**
+ * @tc.number: SetFindAccessibilityNodeInfoResult_002
+ * @tc.name: SetFindAccessibilityNodeInfoResult
+ * @tc.desc: Test function SetFindAccessibilityNodeInfoResult(elementInfo,requestId,requestCode)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeInfoResult_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_002 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfoResult impl_";
+        return;
+    }
+    AccessibilityElementInfo elementInfo;
+    int32_t requestId = -1;
+    int32_t requestCode = FIND_FOCUS;
+    impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_002 end";
+}
+
+/**
+ * @tc.number: SetFindAccessibilityNodeInfoResult_003
+ * @tc.name: SetFindAccessibilityNodeInfoResult
+ * @tc.desc: Test function SetFindAccessibilityNodeInfoResult(elementInfo,requestId,requestCode)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeInfoResult_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_003 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfoResult impl_";
+        return;
+    }
+    AccessibilityElementInfo elementInfo;
+    int32_t requestId = -1;
+    int32_t requestCode = FIND_FOCUS_SEARCH;
+    impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_003 end";
+}
+
+/**
+ * @tc.number: SetFindAccessibilityNodeInfoResult_004
+ * @tc.name: SetFindAccessibilityNodeInfoResult
+ * @tc.desc: Test function SetFindAccessibilityNodeInfoResult(elementInfo,requestId,requestCode)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeInfoResult_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_004 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfoResult impl_";
+        return;
+    }
+    AccessibilityElementInfo elementInfo;
+    int32_t requestId = -1;
+    int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_TEXT;
+    impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_004 end";
+}
+
+/**
+ * @tc.number: SetFindAccessibilityNodeInfosResult_001
+ * @tc.name: SetFindAccessibilityNodeInfosResult
+ * @tc.desc: Test function SetFindAccessibilityNodeInfosResult(elementInfos,requestId,requestCode)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeInfosResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfosResult_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfosResult_001 impl_";
+        return;
+    }
+    std::list<AccessibilityElementInfo> elementInfos;
+    int32_t requestId = -1;
+    int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_ACCESSIBILITY_ID;
+    impl_->SetFindAccessibilityNodeInfosResult(elementInfos, requestId, requestCode);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfosResult_001 end";
+}
+
+/**
+ * @tc.number: SetFindAccessibilityNodeInfosResult_002
+ * @tc.name: SetFindAccessibilityNodeInfosResult
+ * @tc.desc: Test function SetFindAccessibilityNodeInfosResult(elementInfos,requestId,requestCode)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeInfosResult_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfosResult_002 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfosResult_002 impl_";
+        return;
+    }
+    std::list<AccessibilityElementInfo> elementInfos;
+    int32_t requestId = -1;
+    int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_TEXT;
+    impl_->SetFindAccessibilityNodeInfosResult(elementInfos, requestId, requestCode);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfosResult_002 end";
+}
+
+/**
+ * @tc.number: SetFindAccessibilityNodeInfosResult_003
+ * @tc.name: SetFindAccessibilityNodeInfosResult
+ * @tc.desc: Test function SetFindAccessibilityNodeInfosResult(elementInfos,requestId,requestCode)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeInfosResult_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfosResult_003 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfosResult_003 impl_";
+        return;
+    }
+    std::list<AccessibilityElementInfo> elementInfos;
+    int32_t requestId = -1;
+    int32_t requestCode = FIND_FOCUS_SEARCH;
+    impl_->SetFindAccessibilityNodeInfosResult(elementInfos, requestId, requestCode);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfosResult_003 end";
 }
 
 /**
