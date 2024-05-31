@@ -154,7 +154,7 @@ void AccessibilityScreenTouch::SendInterceptedEvent()
         HILOG_DEBUG("last intercepted event is null!");
     }
 
-    lastInterceptedEvent_->SetActionTime(Utils:GetSystemTime() * US_TO_MS);
+    lastInterceptedEvent_->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
     EventTransmission::OnPointerEvent(*lastInterceptedEvent_);
     lastInterceptedEvent_ = nullptr;
 }
