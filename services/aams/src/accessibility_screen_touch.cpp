@@ -18,6 +18,7 @@
 #include "accessibility_circle_drawing_manager.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -153,6 +154,7 @@ void AccessibilityScreenTouch::SendInterceptedEvent()
         HILOG_DEBUG("last intercepted event is null!");
     }
 
+    lastInterceptedEvent_->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
     EventTransmission::OnPointerEvent(*lastInterceptedEvent_);
     lastInterceptedEvent_ = nullptr;
 }
