@@ -133,7 +133,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_004, 
     }
     std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
     EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+    EXPECT_EQ(RET_ERR_CONNECTION_EXIST, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "RegisterElementOperator_004 end";
 }
@@ -1379,6 +1379,51 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckEventType_005, TestSize.
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "CheckEventType_005 end";
+}
+
+/**
+ * @tc.number: SetSplicElementIdTreeId_001
+ * @tc.name: SetSplicElementIdTreeId
+ * @tc.desc: Test function SetSplicElementIdTreeId
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSplicElementIdTreeId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSplicElementIdTreeId_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    int64_t elementId = 0;
+    impl_->SetSplicElementIdTreeId(1, elementId);
+    EXPECT_EQ(elementId, 2251799813685248);
+    GTEST_LOG_(INFO) << "SetSplicElementIdTreeId_001 end";
+}
+
+/**
+ * @tc.number: GetTreeIdAndElementIdBySplitElementId_001
+ * @tc.name: GetTreeIdAndElementIdBySplitElementId
+ * @tc.desc: Test function GetTreeIdAndElementIdBySplitElementId
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetTreeIdAndElementIdBySplitElementId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetTreeIdAndElementIdBySplitElementId_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    int64_t splitElementId;
+    int32_t splitTreeId;
+
+    impl_->GetTreeIdAndElementIdBySplitElementId(-1, splitElementId, splitTreeId);
+    EXPECT_EQ(splitElementId, -1);
+    EXPECT_EQ(splitTreeId, -1);
+
+    impl_->GetTreeIdAndElementIdBySplitElementId(1, splitElementId, splitTreeId);
+    EXPECT_EQ(splitElementId, 1);
+    EXPECT_EQ(splitTreeId, 0);
+    GTEST_LOG_(INFO) << "GetTreeIdAndElementIdBySplitElementId_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
