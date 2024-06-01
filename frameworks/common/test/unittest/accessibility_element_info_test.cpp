@@ -1308,5 +1308,32 @@ HWTEST_F(AccessibilityElementInfoTest, SetOffset_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetOffset_001 end";
 }
 
+/**
+ * @tc.number: SetChildTreeIdAndWinId_001
+ * @tc.name: SetChildTreeIdAndWinId
+ * @tc.desc: Test function SetChildTreeIdAndWinId GetChildTreeId GetChildWindowId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetChildTreeIdAndWinId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetChildTreeIdAndWinId_001 start";
+    elementInfo_->SetChildTreeIdAndWinId(1, 2);
+    EXPECT_EQ(elementInfo_->GetChildTreeId(), 1);
+    EXPECT_EQ(elementInfo_->GetChildWindowId(), 2);
+    GTEST_LOG_(INFO) << "SetChildTreeIdAndWinId_001 end";
+}
+
+/**
+ * @tc.number: SetBelongTreeId_001
+ * @tc.name: SetBelongTreeId
+ * @tc.desc: Test function SetBelongTreeId, GetBelongTreeId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetBelongTreeId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetBelongTreeId_001 start";
+    elementInfo_->SetBelongTreeId(1);
+    EXPECT_EQ(elementInfo_->GetBelongTreeId(), 1);
+    GTEST_LOG_(INFO) << "SetBelongTreeId_001 end";
+}
+
 } // namespace Accessibility
 } // namespace OHOS
