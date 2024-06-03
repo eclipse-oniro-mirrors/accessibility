@@ -50,6 +50,7 @@ namespace {
     const std::string BACKGROUND_COLOR = "accessibility_background_color";
     const std::string WINDOW_COLOR = "accessibility_window_color";
     const std::string FONT_SCALE = "accessibility_font_scale";
+    const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -422,6 +423,43 @@ uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
     return ignoreRepeatClickTime_;
 }
 
+const std::vector<std::string> &AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
+{
+    return enabledAccessibilityServices_;
+}
+
+RetError AccessibilitySettingsConfig::AddEnabledAccessibilityService(const std::string &serviceName)
+{
+    auto iter = std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(), serviceName);
+    if (iter != enabledAccessibilityServices_.end()) {
+        return RET_OK;
+    }
+
+    if (!datashare_) {
+        return RET_ERR_NULLPTR;
+    }
+    enabledAccessibilityServices_.push_back(serviceName);
+    std::string stringOut = "";
+    Utils::VectorToString(enabledAccessibilityServices_, stringOut);
+    return datashare_->PutStringValue(ENABLED_ACCESSIBILITY_SERVICES, stringOut);
+}
+
+RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const std::string &serviceName)
+{
+    auto iter = std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(), serviceName);
+    if (iter == enabledAccessibilityServices_.end()) {
+        return RET_OK;
+    }
+
+    if (!datashare_) {
+        return RET_ERR_NULLPTR;
+    }
+    enabledAccessibilityServices_.erase(iter);
+    std::string stringOut = "";
+    Utils::VectorToString(enabledAccessibilityServices_, stringOut);
+    return datashare_->PutStringValue(ENABLED_ACCESSIBILITY_SERVICES, stringOut);
+}
+
 bool AccessibilitySettingsConfig::GetStartFromAtoHosState()
 {
     HILOG_DEBUG();
@@ -543,6 +581,9 @@ void AccessibilitySettingsConfig::InitSetting()
     std::string tmpString = datashare_->GetStringValue(SHORTCUT_SERVICE, "");
     Utils::StringToVector(tmpString, shortkeyMultiTarget_);
 
+    tmpString = datashare_->GetStringValue(ENABLED_ACCESSIBILITY_SERVICES, "");
+    Utils::StringToVector(tmpString, enabledAccessibilityServices_);
+
     mouseAutoClick_ = static_cast<int32_t>(datashare_->GetIntValue("MouseAutoClick", -1));
     daltonizationColorFilter_ = static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0));
     contentTimeout_ = static_cast<uint32_t>(datashare_->GetIntValue(CONTENT_TIMEOUT_KEY, 0));
@@ -565,18 +606,6 @@ void AccessibilitySettingsConfig::InitCapability()
     filteringKeyEvents_ = datashare_->GetBoolValue(KEYEVENT_OBSERVER, false);
 }
 
-void AccessibilitySettingsConfig::InitEnabledList()
-{
-    HILOG_DEBUG();
-    if (datashare_ == nullptr) {
-        return;
-    }
-
-    std::string strValue = datashare_->GetStringValue("BundleName/AbilityName/Capabilities", "");
-    HILOG_DEBUG("Capabilities = %{public}s", strValue.c_str());
-    Utils::StringToVector(strValue, enabledAbilityInfos_);
-}
-
 RetError AccessibilitySettingsConfig::SetConfigState(const std::string& key, bool value)
 {
     if (!datashare_) {
@@ -595,25 +624,6 @@ void AccessibilitySettingsConfig::Init()
     datashare_->Initialize(POWER_MANAGER_SERVICE_ID);
     InitCaption();
     InitSetting();
-}
-
-const std::vector<std::string> &AccessibilitySettingsConfig::GetEnabledAbilityInfos()
-{
-    HILOG_DEBUG();
-    return enabledAbilityInfos_;
-}
-
-void AccessibilitySettingsConfig::UpdateEnabledAbilities(const std::vector<std::string> &vecvalue)
-{
-    HILOG_DEBUG();
-    enabledAbilityInfos_ = vecvalue;
-    if (datashare_ == nullptr) {
-        return;
-    }
-
-    std::string stringOut = "";
-    Utils::VectorToString(enabledAbilityInfos_, stringOut);
-    datashare_->PutStringValue("BundleName/AbilityName/Capabilities", stringOut);
 }
 
 void AccessibilitySettingsConfig::ClearData()

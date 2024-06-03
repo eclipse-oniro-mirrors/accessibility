@@ -793,48 +793,6 @@ HWTEST_F(AccessibilitySettingsConfigTest,
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001
- * @tc.name: UpdateEnabledAbilities
- * @tc.desc: Test function UpdateEnabledAbilities
- */
-HWTEST_F(AccessibilitySettingsConfigTest,
-    AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001 start";
-    std::vector<std::string> vecvalue {};
-    settingConfig_->Init();
-    settingConfig_->UpdateEnabledAbilities(vecvalue);
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001 end";
-}
-
-/**
- * @tc.number: AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002
- * @tc.name: UpdateEnabledAbilities
- * @tc.desc: Test function UpdateEnabledAbilities
- */
-HWTEST_F(AccessibilitySettingsConfigTest,
-    AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002 start";
-    std::vector<std::string> vecvalue { "test" };
-    settingConfig_->UpdateEnabledAbilities(vecvalue);
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002 end";
-}
-
-/**
- * @tc.number: AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos_001
- * @tc.name: GetEnabledAbilityInfos
- * @tc.desc: Test function GetEnabledAbilityInfos
- */
-HWTEST_F(AccessibilitySettingsConfigTest,
-    AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos_001 start";
-    settingConfig_->GetEnabledAbilityInfos();
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos_001 end";
-}
-
-/**
  * @tc.number: AccessibilitySettingsConfig_Unittest_GetConfigState_001
  * @tc.name: GetConfigState
  * @tc.desc: Test function GetConfigState

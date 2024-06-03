@@ -83,8 +83,9 @@ public:
     bool GetIgnoreRepeatClickState() const;
     uint32_t GetIgnoreRepeatClickTime() const;
 
-    void UpdateEnabledAbilities(const std::vector<std::string> &vecvalue);
-    const std::vector<std::string> &GetEnabledAbilityInfos();
+    const std::vector<std::string> &GetEnabledAccessibilityServices();
+    RetError AddEnabledAccessibilityService(const std::string &serviceName);
+    RetError RemoveEnabledAccessibilityService(const std::string &serviceName);
     uint32_t GetConfigState();
     bool GetStartFromAtoHosState();
     std::shared_ptr<AccessibilityDatashareHelper> GetDbHandle()
@@ -98,7 +99,6 @@ private:
     void InitCaption();
     void InitSetting();
     void InitCapability();
-    void InitEnabledList();
     RetError SetConfigState(const std::string& key, bool value);
 
     int32_t accountId_;
@@ -127,7 +127,7 @@ private:
     uint32_t ignoreRepeatClickTime_ = 0;
 
     std::vector<std::string> shortkeyMultiTarget_ {};
-    std::vector<std::string> enabledAbilityInfos_; // bundleName/abilityName/capabilities
+    std::vector<std::string> enabledAccessibilityServices_ {}; // bundleName/abilityName
 
     std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
 };
