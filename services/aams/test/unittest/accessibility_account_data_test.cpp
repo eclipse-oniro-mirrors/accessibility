@@ -373,7 +373,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddEnab
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     const std::string bundleName = "/bbb";
     accountData->Init();
-    EXPECT_EQ(0, (int)accountData->GetConfig()->GetEnabledAbilityInfos().size());
     /* add */
     AccessibilityAbilityInitParams initParams;
     initParams.name = "bbb";
@@ -398,7 +397,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     const std::string bundleName = "/bbb";
     accountData->Init();
-    EXPECT_EQ(0, (int)accountData->GetConfig()->GetEnabledAbilityInfos().size());
 
     /* remove */
     accountData->RemoveEnabledAbility(bundleName);
@@ -1082,7 +1080,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
     uint32_t capabilities = 0;
     RetError test = accountData->EnableAbility(name, capabilities);
     EXPECT_EQ(test, RET_ERR_NO_CAPABILITY);
-    ASSERT_EQ(0, (int)accountData->GetConfig()->GetEnabledAbilityInfos().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_001 end";
 }

@@ -40,7 +40,6 @@ namespace {
     constexpr int DISPLAY_DALTONIZER_GREEN = 12;
     constexpr int DISPLAY_DALTONIZER_RED = 11;
     constexpr int DISPLAY_DALTONIZER_BLUE = 13;
-    constexpr int DEFAULT_ACCOUNT_ID = 100;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
@@ -436,18 +435,22 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
 
 void AccessibilityAccountData::SetAbilityAutoStartState(const std::string &name, const bool state)
 {
-    HILOG_DEBUG("start and name[%{public}s], state = [%{public}s].", name.c_str(), state ? "True" : "False");
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    std::string strState = state ? "on" : "off";
-    std::string abilityAutoStartKey = name + "/" + std::to_string(id_);
-    if (name == SCREEN_READER_BUNDLE_ABILITY_NAME && GetAccountType() == AccountSA::OsAccountType::PRIVATE) {
-        abilityAutoStartKey = name + "/" + std::to_string(DEFAULT_ACCOUNT_ID);
+    RetError rtn = RET_OK;
+    if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
+        SetScreenReaderState(screenReaderKey_, state ? "1" : "0");
     }
-    ErrCode ret = provider.PutStringValue(abilityAutoStartKey, strState, false);
-    if (ret != ERR_OK) {
-        HILOG_ERROR("set failed, ret=%{public}d", ret);
+    if (!config_) {
+        HILOG_WARN("conig_ is nullptr.");
+        return;
     }
-    provider.DeleteInstance();
+    if (state) {
+        rtn = config_->AddEnabledAccessibilityService(name);
+    } else {
+        rtn = config_->RemoveEnabledAccessibilityService(name);
+    }
+    if (rtn != RET_OK) {
+        HILOG_WARN("handle service %{public}s state = %{public}d failed, rtn = %{public}d", name.c_str(), state, rtn);
+    }
 }
 
 void AccessibilityAccountData::SetScreenReaderState(const std::string &name, const std::string &state)
@@ -488,31 +491,20 @@ void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string 
 
 bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &name)
 {
-    HILOG_DEBUG();
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    std::string strValue;
-    std::string strAutoStartStateKey = name + "/" + std::to_string(id_);
-    if (name == SCREEN_READER_BUNDLE_ABILITY_NAME && GetAccountType() == AccountSA::OsAccountType::PRIVATE) {
-        strAutoStartStateKey = name + "/" + std::to_string(DEFAULT_ACCOUNT_ID);
+    if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
+        return GetScreenReaderState();
     }
-    ErrCode ret = provider.GetStringValue(strAutoStartStateKey, strValue);
-    if (ret == ERR_NO_INIT) {
-        HILOG_INFO("helper is null, retry.");
-        std::this_thread::sleep_for(std::chrono::milliseconds(INIT_DATASHARE_HELPER_SLEEP_TIME));
-        ret = provider.GetStringValue(strAutoStartStateKey, strValue);
-    }
-    if (ret != ERR_OK) {
-        HILOG_ERROR("get failed, key = %{public}s, ret=%{public}d", strAutoStartStateKey.c_str(), ret);
-        provider.DeleteInstance();
+    if (!config_) {
+        HILOG_WARN("config_ is nullptr.");
         return false;
     }
-    HILOG_DEBUG("provider GetString = %{public}s, key = %{public}s.", strValue.c_str(), strAutoStartStateKey.c_str());
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        provider.DeleteInstance();
+    std::vector<std::string> serviceList = config_->GetEnabledAccessibilityServices();
+    auto iter = std::find(serviceList.begin(), serviceList.end(), name);
+    if (iter != serviceList.end()) {
         return true;
+    } else {
+        return false;
     }
-    provider.DeleteInstance();
-    return false;
 }
 
 void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value)

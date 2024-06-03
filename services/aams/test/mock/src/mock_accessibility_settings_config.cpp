@@ -362,26 +362,9 @@ void AccessibilitySettingsConfig::InitCapability()
     HILOG_DEBUG("start.");
 }
 
-void AccessibilitySettingsConfig::InitEnabledList()
-{
-    HILOG_DEBUG("start.");
-}
-
 void AccessibilitySettingsConfig::Init()
 {
     HILOG_DEBUG("start.");
-}
-
-const std::vector<std::string> &AccessibilitySettingsConfig::GetEnabledAbilityInfos()
-{
-    HILOG_DEBUG("start.");
-    return enabledAbilityInfos_;
-}
-
-void AccessibilitySettingsConfig::UpdateEnabledAbilities(const std::vector<std::string> &vecvalue)
-{
-    HILOG_DEBUG("start.");
-    enabledAbilityInfos_ = vecvalue;
 }
 
 void AccessibilitySettingsConfig::ClearData()
@@ -413,6 +396,23 @@ RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
 {
     HILOG_DEBUG("start.");
     clickResponseTime_ = time;
+    return RET_OK;
+}
+
+const std::vector<std::string> &AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
+{
+    return enabledAccessibilityServices_;
+}
+
+RetError AccessibilitySettingsConfig::AddEnabledAccessibilityService(const std::string &serviceName)
+{
+    (void)serviceName;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const std::string &serviceName)
+{
+    (void)serviceName;
     return RET_OK;
 }
 } // namespace Accessibility
