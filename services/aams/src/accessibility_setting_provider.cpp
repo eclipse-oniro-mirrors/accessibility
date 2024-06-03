@@ -127,7 +127,8 @@ RetError AccessibilitySettingProvider::RegisterObserver(const sptr<Accessibility
     return AccessibilityDatashareHelper::RegisterObserver(observer);
 }
 
-RetError AccessibilitySettingProvider::RegisterObserver(const std::string& key, AccessibilitySettingObserver::UpdateFunc& func)
+RetError AccessibilitySettingProvider::RegisterObserver(const std::string& key,
+    AccessibilitySettingObserver::UpdateFunc& func)
 {
     sptr<AccessibilitySettingObserver> observer = CreateObserver(key, func);
     if (observer == nullptr) {
