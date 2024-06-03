@@ -243,11 +243,11 @@ void MockAccessibilityElementOperatorImpl::SetExecuteActionResult(
     return;
 }
 
-void MockAccessibilityElementOperatorImpl::SetChildTreeIdAndWinId(const int64_t nodeId,
+void MockAccessibilityElementOperatorImpl::SetChildTreeIdAndWinId(const int64_t elementId,
     const int32_t treeId, const int32_t childWindowId)
 {
     if (operator_ != nullptr) {
-        operator_->SetChildTreeIdAndWinId(nodeId, treeId, childWindowId);
+        operator_->SetChildTreeIdAndWinId(elementId, treeId, childWindowId);
     } else {
         HILOG_DEBUG("Can not find interaction object");
     }
@@ -258,6 +258,16 @@ void MockAccessibilityElementOperatorImpl::SetBelongTreeId(const int32_t treeId)
 {
     if (operator_ != nullptr) {
         operator_->SetBelongTreeId(treeId);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
+    return;
+}
+
+void MockAccessibilityElementOperatorImpl::SetParentWindowId(const int32_t parentWindowId)
+{
+    if (operator_ != nullptr) {
+        operator_->SetParentWindowId(parentWindowId);
     } else {
         HILOG_DEBUG("Can not find interaction object");
     }

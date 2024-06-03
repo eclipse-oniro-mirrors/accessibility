@@ -1393,6 +1393,20 @@ public:
     */
     int32_t GetBelongTreeId() const;
 
+    /**
+     * @brief Get the parent WindowId.
+     * @return The parent windowId Id
+     * @sysCap Accessibility
+    */
+    int32_t GetParentWindowId() const;
+
+    /**
+     * @brief Set the parent window Id to the element info.
+     * @param iParentWindowId The parent window Id
+     * @sysCap Accessibility
+    */
+    void SetParentWindowId(const int32_t iParentWindowId);
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1402,6 +1416,7 @@ protected:
     int32_t belongTreeId_ = UNDEFINED_TREE_ID;
     int32_t childTreeId_ = UNDEFINED_TREE_ID;
     int32_t childWindowId_ = UNDEFINED_WINID_ID;
+    int32_t parentWindowId_ = UNDEFINED_WINID_ID;
 
     std::string bundleName_ = "";
     std::string componentType_ = "";

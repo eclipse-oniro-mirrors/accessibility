@@ -832,5 +832,15 @@ int32_t AccessibilityElementInfo::GetBelongTreeId() const
 {
     return belongTreeId_;
 }
+
+void AccessibilityElementInfo::SetParentWindowId(const int32_t iParentWindowId)
+{
+    parentWindowId_ = iParentWindowId;
+}
+
+int32_t AccessibilityElementInfo::GetParentWindowId() const
+{
+    return parentWindowId_;
+}
 } // namespace Accessibility
 } // namespace OHOS

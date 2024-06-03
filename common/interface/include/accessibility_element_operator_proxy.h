@@ -144,12 +144,12 @@ public:
     bool GetFilter();
 
     /**
-    * @brief To return the result of nodeId, treeId, childWindowId.
-    * @param nodeId: The node Id.
+    * @brief To return the result of elementId, treeId, childWindowId.
+    * @param elementId: The element Id.
     * @param treeId: The tree Id.
     * @param childWindowId The childwindow Id.
     */
-    virtual void SetChildTreeIdAndWinId(const int64_t nodeId, const int32_t treeId,
+    virtual void SetChildTreeIdAndWinId(const int64_t elementId, const int32_t treeId,
         const int32_t childWindowId) override;
 
     /**
@@ -157,6 +157,13 @@ public:
     * @param treeId: The tree Id.
     */
     virtual void SetBelongTreeId(const int32_t treeId) override;
+
+    /**
+     * @brief Set the parent window Id to the element info.
+     * @param iParentWindowId The parent window Id
+     * @sysCap Accessibility
+    */
+    void SetParentWindowId(const int32_t iParentWindowId) override;
 private:
     bool isFilter = false;
 

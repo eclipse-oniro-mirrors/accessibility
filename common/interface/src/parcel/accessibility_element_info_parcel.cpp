@@ -39,6 +39,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelFirstPart(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, belongTreeId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, childTreeId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, childWindowId_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, parentWindowId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, componentType_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, text_);
@@ -156,6 +157,7 @@ bool AccessibilityElementInfoParcel::MarshallingFirstPart(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, belongTreeId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, childTreeId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, childWindowId_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, parentWindowId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, componentType_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, text_);

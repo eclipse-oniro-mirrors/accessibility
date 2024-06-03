@@ -144,7 +144,7 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
         &AccessibleAbilityManagerServiceStub::HandleDeregisterAccessibilityElementOperator;
     memberFuncMap_[static_cast<uint32_t>(
         AccessibilityInterfaceCode::CARDDEREGISTER_INTERACTION_CONNECTION)] =
-        &AccessibleAbilityManagerServiceStub::HandleLatestDeregisterAccessibilityElementOperator;
+        &AccessibleAbilityManagerServiceStub::HandleMultiDeregisterAccessibilityElementOperator;
 
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ENABLED)] =
         &AccessibleAbilityManagerServiceStub::HandleGetEnabled;
@@ -374,7 +374,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleDeregisterAccessibilityElemen
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceStub::HandleLatestDeregisterAccessibilityElementOperator(
+ErrCode AccessibleAbilityManagerServiceStub::HandleMultiDeregisterAccessibilityElementOperator(
     MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();

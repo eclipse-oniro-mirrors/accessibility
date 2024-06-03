@@ -625,6 +625,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
         return RET_ERR_REGISTER_EXIST;
     }
     operation->SetBelongTreeId(treeId);
+    operation->SetParentWindowId(parameter.parentWindowId);
     sptr<AccessibilityWindowConnection> oldConnection =
         accountData->GetAccessibilityWindowConnection(parameter.windowId);
     bool isParentConectionExist = false;
@@ -635,7 +636,6 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
         } else {
             oldConnection->SetCardProxy(treeId, operation);
             isParentConectionExist = true;
-            HILOG_DEBUG("Winid exist, treeid not exist.");
         }
     }
     sptr<AccessibilityWindowConnection> parentConnection =
@@ -688,11 +688,9 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
     handler_->PostTask(std::bind([=]() -> void {
         HILOG_INFO("Register windowId[%{public}d]", parameter.windowId);
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
-
         if (RET_OK != RegisterElementOperatorChildWork(parameter, treeId, nodeId, operation, isApp)) {
             return;
         }
-
         if (CheckWindowIdEventExist(parameter.windowId)) {
             SendEvent(windowFocusEventMap_[parameter.windowId]);
             windowFocusEventMap_.erase(parameter.windowId);
@@ -805,7 +803,7 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
             return;
         }
         sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
-        if (!connection) {
+        if (connection == nullptr) {
             HILOG_WARN("The operation of windowId[%{public}d] has not been registered.", windowId);
             return;
         }
@@ -825,7 +823,7 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
                 HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
                 interactionOperationDeathRecipients_.erase(iter);
             } else {
-                HILOG_INFO("cannot find remote object. windowId[%{public}d]", windowId);
+                HILOG_ERROR("cannot find remote object. windowId[%{public}d]", windowId);
             }
         }
         }), "TASK_DEREGISTER_ELEMENT_OPERATOR");

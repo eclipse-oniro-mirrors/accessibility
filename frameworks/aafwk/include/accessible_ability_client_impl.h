@@ -342,10 +342,10 @@ public:
         std::vector<AccessibilityElementInfo> &elementInfos);
     RetError SearchElementInfoRecursive(int32_t windowId, int64_t elementId, uint32_t mode,
         std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false);
-    RetError SearchElementInfoRecursiveByWinid(int32_t windowId, int64_t elementId,
+    RetError SearchElementInfoRecursiveByWinid(const int32_t windowId, const int64_t elementId,
         uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false,
         AccessibilityElementInfo *parentInfo = nullptr);
-    RetError SearchElementInfoRecursiveByContent(int32_t windowId, int64_t elementId,
+    RetError SearchElementInfoRecursiveByContent(const int32_t windowId, const int64_t elementId,
         uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, const std::string text,
         bool isFilter = false);
     void RemoveCacheData(const AccessibilityEventInfo &eventInfo);

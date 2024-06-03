@@ -365,7 +365,7 @@ void AccessibilityElementOperatorProxy::OutsideTouch()
     }
 }
 
-void AccessibilityElementOperatorProxy::SetChildTreeIdAndWinId(const int64_t nodeId, const int32_t treeId,
+void AccessibilityElementOperatorProxy::SetChildTreeIdAndWinId(const int64_t elementId, const int32_t treeId,
     const int32_t childWindowId)
 {
     HILOG_DEBUG();
@@ -378,18 +378,18 @@ void AccessibilityElementOperatorProxy::SetChildTreeIdAndWinId(const int64_t nod
         return;
     }
 
-    if (!data.WriteInt64(nodeId)) {
+    if (!data.WriteInt64(elementId)) {
         HILOG_ERROR("connection write elementId failed");
         return;
     }
 
     if (!data.WriteInt32(treeId)) {
-        HILOG_ERROR("connection write elementId failed");
+        HILOG_ERROR("connection write treeId failed");
         return;
     }
 
     if (!data.WriteInt32(childWindowId)) {
-        HILOG_ERROR("connection write elementId failed");
+        HILOG_ERROR("connection write childWindowId failed");
         return;
     }
 
@@ -416,6 +416,28 @@ void AccessibilityElementOperatorProxy::SetBelongTreeId(const int32_t treeId)
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SET_BELONGTREEID, data, reply, option)) {
+        HILOG_ERROR("clear focus failed");
+        return;
+    }
+}
+
+void AccessibilityElementOperatorProxy::SetParentWindowId(const int32_t iParentWindowId)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+
+    if (!data.WriteInt32(iParentWindowId)) {
+        HILOG_ERROR("connection write iParentWindowId failed");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_PARENTWINDOWID, data, reply, option)) {
         HILOG_ERROR("clear focus failed");
         return;
     }
