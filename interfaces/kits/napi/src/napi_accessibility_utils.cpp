@@ -908,6 +908,19 @@ void ConvertActionArgsJSToNAPI(
                 args.insert(std::pair<std::string, std::string>("selectTextInForWard", value.c_str()));
             }
             break;
+        default:
+            ConvertActionArgsJSToNAPI2(env, object, args, action);
+            break;
+    }
+}
+
+void ConvertActionArgsJSToNAPI2(
+    napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action)
+{
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
+    std::string str = "";
+    switch (action) {
         case ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION:
             napi_create_string_utf8(env, "offset", NAPI_AUTO_LENGTH, &propertyNameValue);
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
