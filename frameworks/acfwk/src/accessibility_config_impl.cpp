@@ -251,6 +251,29 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
     }
 }
 
+bool AccessibilityConfig::Impl::CheckSaStatus()
+{
+    std::vector<int> dependentSa = {
+        ABILITY_MGR_SERVICE_ID,
+        BUNDLE_MGR_SERVICE_SYS_ABILITY_ID,
+        COMMON_EVENT_SERVICE_ID,
+        DISPLAY_MANAGER_SERVICE_SA_ID,
+        SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN,
+        WINDOW_MANAGER_SERVICE_ID
+    };
+    auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (samgr == nullptr) {
+        return false;
+    }
+
+    if (std::any_of(dependentSa.begin(), dependentSa.end(), [&](int saId) {
+        return samgr->CheckSystemAbility(saId) == nullptr;
+    })) {
+        return false;
+    }
+    return true;
+}
+
 Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_INFO("name = [%{private}s] capabilities = [%{private}u]", name.c_str(), capabilities);

@@ -307,6 +307,7 @@ private:
     static void OnParameterChanged(const char *key, const char *value, void *context);
 
     void OnIgnoreRepeatClickStateChanged(const uint32_t stateType);
+    bool CheckSaStatus();
 
     sptr<Accessibility::IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver_ = nullptr;
