@@ -419,12 +419,6 @@ private:
         void OnLoadSystemAbilityFail(int32_t systemAbilityId) override;
     };
 
-    class AccessibilitySaStatusChange : public SystemAbilityStatusChangeStub {
-    public:
-        void OnAddSystemAbility(int32_t saId, const std::string &deviceId) override;
-        void OnRemoveSystemAbility(int32_t saId, const std::string &deviceId) override;
-    };
-
     bool GetCacheElementInfo(const int32_t windowId,
         const int64_t elementId, AccessibilityElementInfo &elementInfo) const;
     void SetCacheElementInfo(const int32_t windowId,
@@ -434,6 +428,7 @@ private:
     RetError SearchElementInfoFromAce(const int32_t windowId, const int64_t elementId,
         const uint32_t mode, AccessibilityElementInfo &info);
     bool InitAccessibilityServiceProxy();
+    static void OnParameterChanged(const char *key, const char *value, void *context);
     sptr<Accessibility::IAccessibleAbilityManagerService> GetServiceProxy();
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;

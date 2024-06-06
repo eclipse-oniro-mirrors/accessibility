@@ -23,6 +23,8 @@
 namespace OHOS {
 namespace AccessibilityConfig {
 namespace {
+    const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
+    constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
     constexpr int32_t SA_CONNECT_TIMEOUT = 500; // ms
 }
 
@@ -40,30 +42,44 @@ bool AccessibilityConfig::Impl::InitializeContext()
     return isInitialized_;
 }
 
+void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *value, void *context)
+{
+    if (key == nullptr || std::strcmp(key, SYSTEM_PARAMETER_AAMS_NAME.c_str())) {
+        return;
+    }
+    if (value == nullptr || std::strcmp(value, "true")) {
+        return;
+    }
+    if (context == nullptr) {
+        return;
+    }
+    Impl* implPtr = static_cast<Impl*>(context);
+    if (implPtr->ConnectToServiceAsync() == true) {
+        HILOG_INFO("ConnectToServiceAsync success.");
+    } else {
+        HILOG_ERROR("ConnectToServiceAsync failed.");
+    }
+}
+
 bool AccessibilityConfig::Impl::ConnectToService()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (samgr == nullptr) {
-        return false;
-    }
+    bool rtn = false;
     if (InitAccessibilityServiceProxy() && RegisterToService()) {
         InitConfigValues();
-        return true;
+        rtn = true;
     }
-    sptr<AccessibilitySaStatusChange> statusChange = new AccessibilitySaStatusChange(this);
-    int32_t ret = samgr->SubscribeSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, statusChange);
-    if (ret != 0) {
-        HILOG_ERROR("subscribe accessibility failed, error = %{public}d", ret);
-        return false;
+    int retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+    if (retSysParam) {
+        HILOG_ERROR("Watch parameter failed, error = %{public}d.", retSysParam);
+        rtn = false;
     }
-    return true;
+    return rtn;
 }
 
 bool AccessibilityConfig::Impl::ConnectToServiceAsync()
 {
     HILOG_DEBUG("ConnectToServiceAsync start.");
-    std::lock_guard<std::mutex> lock(mutex_);
     if (InitAccessibilityServiceProxy()) {
         (void)RegisterToService();
         InitConfigValues();
@@ -85,7 +101,7 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
     if (samgr == nullptr) {
         return false;
     }
-    auto object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+    auto object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (object != nullptr) {
         if (!deathRecipient_) {
             deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
@@ -107,6 +123,9 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
         HILOG_DEBUG("InitAccessibilityServiceProxy success");
         return true;
     } else {
+        if (CheckSaStatus() == false) {
+            return false;
+        }
         if (LoadAccessibilityService()) {
             isInitialized_ = true;
             HILOG_DEBUG("InitAccessibilityServiceProxy success");
@@ -146,24 +165,27 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
 void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
     std::lock_guard<std::mutex> lock(conVarMutex_);
-    if (serviceProxy_ != nullptr) {
-        HILOG_INFO("serviceProxy_ isn't nullptr");
-        proxyConVar_.notify_one();
-        return;
-    }
-    if (remoteObject != nullptr) {
-        serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(remoteObject);
-        if (!deathRecipient_) {
-            deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
-            if (!deathRecipient_) {
-                HILOG_ERROR("create deathRecipient_ fail.");
+    char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
+    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
+    if (retSysParam >= 0 && !std::strcmp(value, "true")) {
+        do {
+            auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+            if (samgr == nullptr) {
+                break;
             }
-        }
-        if (deathRecipient_ && remoteObject->IsProxyObject() && remoteObject->AddDeathRecipient(deathRecipient_)) {
-            HILOG_INFO("successed to add death recipient");
-        }
-    } else {
-        HILOG_WARN("remoteObject is nullptr.");
+            auto object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+            if (object == nullptr) {
+                break;
+            }
+            deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
+            if (deathRecipient_ == nullptr) {
+                break;
+            }
+            if (object->IsProxyObject()) {
+                object->AddDeathRecipient(deathRecipient_);
+            }
+            serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(object);
+        } while(0);
     }
     proxyConVar_.notify_one();
 }
@@ -240,12 +262,13 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
     std::lock_guard<std::mutex> lock(mutex_);
     if (serviceProxy_ != nullptr) {
         sptr<IRemoteObject> object = serviceProxy_->AsObject();
-        if (object && (remote == object)) {
+        if (object != nullptr && (remote == object)) {
             object->RemoveDeathRecipient(deathRecipient_);
             serviceProxy_ = nullptr;
             captionObserver_ = nullptr;
             enableAbilityListsObserver_ = nullptr;
             configObserver_ = nullptr;
+            isInitialized_ = false;
             HILOG_INFO("ResetService ok");
         }
     }
@@ -1851,26 +1874,6 @@ void AccessibilityConfig::Impl::AccessibilityLoadCallback::OnLoadSystemAbilityFa
     HILOG_DEBUG();
     if (config_) {
         config_->LoadSystemAbilityFail();
-    }
-}
-
-void AccessibilityConfig::Impl::AccessibilitySaStatusChange::OnAddSystemAbility(int32_t saId,
-    const std::string &deviceId)
-{
-    HILOG_DEBUG();
-    if (config_ && config_->ConnectToServiceAsync()) {
-        config_->SetInitializeFlag(true);
-        HILOG_DEBUG("connect to accessibility service success.");
-    }
-}
-
-void AccessibilityConfig::Impl::AccessibilitySaStatusChange::OnRemoveSystemAbility(int32_t saId,
-    const std::string &deviceId)
-{
-    HILOG_DEBUG();
-    if (config_) {
-        config_->SetInitializeFlag(false);
-        HILOG_DEBUG("disconnect to Accessibility service");
     }
 }
 } // namespace AccessibilityConfig
