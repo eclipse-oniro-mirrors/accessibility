@@ -564,7 +564,7 @@ bool AccessibilityWindowManager::EqualProperty(Accessibility::AccessibilityWindo
         HILOG_DEBUG("Property different");
         return true;
     }
-    for (int32_t i = 0; i < accWindowInfo.GetTouchHotAreas().size(); i++) {
+    for (uint32_t i = 0; i < accWindowInfo.GetTouchHotAreas().size(); i++) {
         if (CompareRect(accWindowInfo.GetTouchHotAreas()[i], windowInfo->touchHotAreas_[i])) {
             HILOG_DEBUG("touchHotAreas different");
             return true;

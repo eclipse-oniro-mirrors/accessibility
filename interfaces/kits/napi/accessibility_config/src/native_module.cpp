@@ -50,7 +50,7 @@ static napi_value InitHighContrastText(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, highContrastTextValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return highContrastTextValue;
 }
 
@@ -69,7 +69,7 @@ static napi_value InitInvertColor(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, invertColorValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return invertColorValue;
 }
 
@@ -88,7 +88,7 @@ static napi_value InitDaltonizationState(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, daltonizationStateValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return daltonizationStateValue;
 }
 
@@ -108,7 +108,7 @@ static napi_value InitDaltonizationColorFilter(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, daltonizationColorFilterValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return daltonizationColorFilterValue;
 }
 
@@ -127,7 +127,7 @@ static napi_value InitContentTimeout(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, contentTimeoutValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return contentTimeoutValue;
 }
 
@@ -146,7 +146,7 @@ static napi_value InitAnimationOff(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, animationOffValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return animationOffValue;
 }
 
@@ -165,7 +165,7 @@ static napi_value InitBrightnessDiscount(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, brightnessDiscountValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return brightnessDiscountValue;
 }
 
@@ -184,7 +184,7 @@ static napi_value InitScreenMagnifier(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, screenMagnifierValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return screenMagnifierValue;
 }
 
@@ -203,7 +203,7 @@ static napi_value InitAudioMono(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, audioMonoValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return audioMonoValue;
 }
 
@@ -222,7 +222,7 @@ static napi_value InitAudioBalance(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, audioBalanceValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return audioBalanceValue;
 }
 
@@ -241,7 +241,7 @@ static napi_value InitMouseKey(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, mouseKeyValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return mouseKeyValue;
 }
 
@@ -260,7 +260,7 @@ static napi_value InitMouseAutoClick(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, mouseAutoClickValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return mouseAutoClickValue;
 }
 
@@ -279,7 +279,7 @@ static napi_value InitShortKey(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, shortKeyValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return shortKeyValue;
 }
 
@@ -298,7 +298,7 @@ static napi_value InitShortKeyTarget(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, shortKeyTargetValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return shortKeyTargetValue;
 }
 
@@ -317,7 +317,7 @@ static napi_value InitShortKeyMultiTarget(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, shortKeyMultiTargetValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return shortKeyMultiTargetValue;
 }
 
@@ -336,7 +336,7 @@ static napi_value InitCaptionsState(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, captionsValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return captionsValue;
 }
 
@@ -355,7 +355,7 @@ static napi_value InitCaptionsStyle(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, captionsStyleValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return captionsStyleValue;
 }
 
@@ -374,7 +374,7 @@ static napi_value InitClickResponseTime(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, clickResponseTimeValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return clickResponseTimeValue;
 }
 
@@ -393,7 +393,7 @@ static napi_value InitIgnoreRepeatClickState(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, ignoreRepeatClickStateValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return ignoreRepeatClickStateValue;
 }
 
@@ -412,7 +412,7 @@ static napi_value InitIgnoreRepeatClickTime(napi_env env)
     }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, ignoreRepeatClickTimeValue, reinterpret_cast<void*>(nativeObj),
-                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+                             NAccessibilityConfigClass::Destructor, nullptr, nullptr));
     return ignoreRepeatClickTimeValue;
 }
 
