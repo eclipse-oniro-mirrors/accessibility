@@ -158,16 +158,6 @@ private:
         Impl* config_ = nullptr;
     };
 
-    class AccessibilitySaStatusChange : public SystemAbilityStatusChangeStub {
-    public:
-        explicit AccessibilitySaStatusChange(Impl* config) : config_(config) {}
-        ~AccessibilitySaStatusChange() = default;
-        void OnAddSystemAbility(int32_t saId, const std::string &deviceId) override;
-        void OnRemoveSystemAbility(int32_t saId, const std::string &deviceId) override;
-    private:
-        Impl* config_ = nullptr;
-    };
-
     class AccessibleAbilityManagerConfigObserverImpl
         : public Accessibility::AccessibleAbilityManagerConfigObserverStub {
     public:

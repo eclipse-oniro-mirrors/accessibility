@@ -33,6 +33,8 @@ namespace Accessibility {
 constexpr int WAIT_WINDOW_REGIST = 500;
 constexpr int64_t ROOT_PARENT_ELEMENT_ID = -2100000;
 namespace {
+    const std::string SYSTEM_PARAMETER_AAMS_SERVICE = "accessibility.config.ready";
+    constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
     constexpr int64_t ROOT_NONE_ID = -1;
     constexpr int64_t NODE_ID_MAX = 0x7FFFFFFE;
     std::mutex g_Mutex;
@@ -44,7 +46,7 @@ sptr<AccessibleAbilityClient> AccessibleAbilityClient::GetInstance()
 {
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(g_Mutex);
-    if (!g_Instance) {
+    if (g_Instance == nullptr) {
         g_Instance = new(std::nothrow) AccessibleAbilityClientImpl();
     }
     return g_Instance;
@@ -54,7 +56,7 @@ sptr<AccessibleAbilityClientImpl> AccessibleAbilityClientImpl::GetAbilityClientI
 {
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(g_Mutex);
-    if (!g_Instance) {
+    if (g_Instance == nullptr) {
         g_Instance = new(std::nothrow) AccessibleAbilityClientImpl();
     }
     return g_Instance;
@@ -67,15 +69,10 @@ AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
         HILOG_ERROR("Init accessibility service proxy failed");
     }
 
-    sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (samgr == nullptr) {
-        HILOG_ERROR("Failed to get ISystemAbilityManager");
-    } else {
-        sptr<AccessibilitySaStatusChange> statusChange = new AccessibilitySaStatusChange();
-        int32_t ret = samgr->SubscribeSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, statusChange);
-        if (ret != 0) {
-            HILOG_ERROR("subscribe accessibility failed, error = %{public}d", ret);
-        }
+    int retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_SERVICE.c_str(),
+        &AccessibleAbilityClientImpl::OnParameterChanged, this);
+    if (retSysParam) {
+        HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
     }
 }
 
@@ -91,19 +88,19 @@ AccessibleAbilityClientImpl::~AccessibleAbilityClientImpl()
 
 bool AccessibleAbilityClientImpl::InitAccessibilityServiceProxy()
 {
-    if (serviceProxy_) {
+    if (serviceProxy_ != nullptr) {
         HILOG_DEBUG("Accessibility Service is connected");
         return true;
     }
 
     sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (!samgr) {
+    if (samgr == nullptr) {
         HILOG_ERROR("Failed to get ISystemAbilityManager");
         return false;
     }
     HILOG_DEBUG("ISystemAbilityManager obtained");
 
-    sptr<IRemoteObject> object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+    sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (object != nullptr) {
         if (!accessibilityServiceDeathRecipient_) {
             accessibilityServiceDeathRecipient_ = new(std::nothrow) AccessibilityServiceDeathRecipient(*this);
@@ -130,6 +127,25 @@ bool AccessibleAbilityClientImpl::InitAccessibilityServiceProxy()
         }
     }
     return false;
+}
+
+void AccessibleAbilityClientImpl::OnParameterChanged(const char *key, const char *value, void *context)
+{
+    if (key == nullptr || std::strcmp(key, SYSTEM_PARAMETER_AAMS_SERVICE.c_str())) {
+        return;
+    }
+    if (value == nullptr || std::strcmp(value, "true")) {
+        return;
+    }
+    if (context == nullptr) {
+        return;
+    }
+
+    AccessibleAbilityClientImpl * implPtr = static_cast<AccessibleAbilityClientImpl *>(context);
+    std::lock_guard<std::mutex> lock(implPtr->mutex_);
+    if (implPtr->InitAccessibilityServiceProxy()) {
+        HILOG_INFO("InitAccessibilityServiceProxy success");
+    }
 }
 
 sptr<Accessibility::IAccessibleAbilityManagerService> AccessibleAbilityClientImpl::GetServiceProxy()
@@ -166,24 +182,12 @@ bool AccessibleAbilityClientImpl::LoadAccessibilityService()
 void AccessibleAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
     std::lock_guard<std::mutex> lock(conVarMutex_);
-    if (serviceProxy_ != nullptr) {
-        HILOG_INFO("serviceProxy_ isn't nullptr");
-        proxyConVar_.notify_one();
-        return;
-    }
-    if (remoteObject != nullptr) {
-        serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(remoteObject);
-        if (!deathRecipient_) {
-            deathRecipient_ = new(std::nothrow) AccessibilityServiceDeathRecipient(*this);
-            if (!deathRecipient_) {
-                HILOG_ERROR("create deathRecipient_ fail.");
-            }
+    char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
+    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_SERVICE.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
+    if (retSysParam >= 0 && !std::strcmp(value, "true")) {
+        if (InitAccessibilityServiceProxy() == false) {
+            HILOG_ERROR("Init accessibility service proxy failed");
         }
-        if (deathRecipient_ && remoteObject->IsProxyObject() && remoteObject->AddDeathRecipient(deathRecipient_)) {
-            HILOG_INFO("successed to add death recipient");
-        }
-    } else {
-        HILOG_WARN("remoteObject is nullptr.");
     }
     proxyConVar_.notify_one();
 }
@@ -1611,24 +1615,6 @@ void AccessibleAbilityClientImpl::AccessibilityLoadCallback::OnLoadSystemAbility
 {
     if (AccessibleAbilityClientImpl::GetAbilityClientImplement()) {
         AccessibleAbilityClientImpl::GetAbilityClientImplement()->LoadSystemAbilityFail();
-    }
-}
-
-void AccessibleAbilityClientImpl::AccessibilitySaStatusChange::OnAddSystemAbility(int32_t saId,
-    const std::string &deviceId)
-{
-    if (AccessibleAbilityClientImpl::GetAbilityClientImplement() &&
-        AccessibleAbilityClientImpl::GetAbilityClientImplement()->InitAccessibilityServiceProxy()) {
-        HILOG_DEBUG("Connect to accessibility service success");
-    }
-}
-
-void AccessibleAbilityClientImpl::AccessibilitySaStatusChange::OnRemoveSystemAbility(int32_t saId,
-    const std::string &deviceId)
-{
-    HILOG_DEBUG("Disconnect to accessibility service");
-    if (AccessibleAbilityClientImpl::GetAbilityClientImplement()) {
-        AccessibleAbilityClientImpl::GetAbilityClientImplement()->SetConnectionState(false);
     }
 }
 } // namespace Accessibility
