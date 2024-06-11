@@ -55,6 +55,7 @@ std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZ
 std::string ConvertClickResponseTimeTypeToString(OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME type);
 std::string ConvertIgnoreRepeatClickTimeTypeToString(OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME type);
 void ConvertRectToJS(napi_env env, napi_value result, const OHOS::Accessibility::Rect& rect);
+void ConvertGridItemToJS(napi_env env, napi_value result, const Accessibility::GridItemInfo& gridItem);
 void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos);
 void ConvertAccessibleAbilityInfoToJS(
