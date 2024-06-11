@@ -243,6 +243,22 @@ void MockAccessibilityElementOperatorImpl::SetExecuteActionResult(
     return;
 }
 
+void MockAccessibilityElementOperatorImpl::SetCursorPositionResult(
+    const int32_t cursorPosition, const int32_t requestId)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto iterator = requests_.find(requestId);
+    if (iterator != requests_.end()) {
+        if (iterator->second != nullptr) {
+            iterator->second->SetCursorPositionResult(cursorPosition, requestId);
+        }
+        requests_.erase(iterator);
+    } else {
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
+    }
+    return;
+}
+
 void MockAccessibilityElementOperatorImpl::SetChildTreeIdAndWinId(const int64_t elementId,
     const int32_t treeId, const int32_t childWindowId)
 {

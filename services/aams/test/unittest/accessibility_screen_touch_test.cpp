@@ -331,5 +331,18 @@ HWTEST_F(AccessibilityScreenTouchUnitTest,
     EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickTime(), IGNORE_REPEAT_CLICK_TIME_SHORTEST);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealIgnoreRepeatClickTime end";
 }
+
+/**
+ * @tc.number: AccessibilityScreenTouch_Unittest_SendInterceptedEvent_001
+ * @tc.name: SendInterceptedEvent
+ * @tc.desc: Test function SendInterceptedEvent
+ */
+HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_SendInterceptedEvent_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SendInterceptedEvent_001 start";
+    screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
+    screenTouch_->SendInterceptedEvent();
+    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SendInterceptedEvent_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

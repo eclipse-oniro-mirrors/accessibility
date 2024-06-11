@@ -690,7 +690,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationColorFilter_001, TestSize.
     instance.InitializeContext();
     instance.SetDaltonizationColorFilter(type);
     instance.GetDaltonizationColorFilter(value);
-    EXPECT_EQ(0, static_cast<uint32_t>(value));
+    EXPECT_EQ(1, static_cast<uint32_t>(value));
     GTEST_LOG_(INFO) << "SetDaltonizationColorFilter_001 end";
 }
 
@@ -710,7 +710,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetContentTimeout(timer);
     instance.GetContentTimeout(value);
-    EXPECT_EQ(0, value);
+    EXPECT_EQ(10, value);
     GTEST_LOG_(INFO) << "SetContentTimeout_001 end";
 }
 
@@ -730,7 +730,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAnimationOffState_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetAnimationOffState(state);
     instance.GetAnimationOffState(value);
-    EXPECT_FALSE(value);
+    EXPECT_TRUE(value);
     GTEST_LOG_(INFO) << "SetAnimationOffState_001 end";
 }
 
@@ -769,7 +769,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioMonoState_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetAudioMonoState(state);
     instance.GetAudioMonoState(value);
-    EXPECT_FALSE(value);
+    EXPECT_TRUE(value);
     GTEST_LOG_(INFO) << "SetAudioMonoState_001 end";
 }
 

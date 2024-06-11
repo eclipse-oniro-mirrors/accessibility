@@ -180,6 +180,13 @@ public:
     void SetExecuteActionResult(const bool succeeded, const int32_t requestId);
 
     /**
+     * @brief Set the result of action executed to AA.
+     * @param cursorPosition Mark number for cursor position.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId);
+
+    /**
     * @brief To return the result of elementId, treeId, childWindowId.
     * @param elementId: The element Id.
     * @param treeId: The tree Id.

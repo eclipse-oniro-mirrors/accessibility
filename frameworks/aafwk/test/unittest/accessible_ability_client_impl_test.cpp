@@ -484,7 +484,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_001, TestSize.Level1)
     Connect();
     AccessibilityElementInfo elementInfo {};
     std::vector<AccessibilityElementInfo> inelementInfosfos;
-    EXPECT_EQ(instance_->GetByContent(elementInfo, TEST, inelementInfosfos), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetByContent(elementInfo, TEST, inelementInfosfos), RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE);
     GTEST_LOG_(INFO) << "GetByContent_001 end";
 }
 
@@ -969,7 +969,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootByWindowBatch_001, TestSize.Lev
     Connect();
     std::vector<AccessibilityElementInfo> info;
     AccessibilityWindowInfo windowInfo {};
-    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, info, true), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, info, true), RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE);
     GTEST_LOG_(INFO) << "GetRootByWindowBatch_001 end";
 }
 
@@ -984,7 +984,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootBatch_001, TestSize.Level1)
     Connect();
     std::vector<AccessibilityElementInfo> info;
     instance_->SetCacheMode(0);
-    EXPECT_EQ(instance_->GetRootBatch(info), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetRootBatch(info), RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE);
     GTEST_LOG_(INFO) << "GetRootBatch_001 end";
 }
 
@@ -1063,7 +1063,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_003, TestSize.Level1)
     Connect();
     AccessibilityElementInfo elementInfo {};
     std::vector<AccessibilityElementInfo> infos;
-    EXPECT_EQ(instance_->GetByContent(elementInfo, "", infos), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetByContent(elementInfo, "", infos), RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE);
     GTEST_LOG_(INFO) << "GetByContent_003 end";
 }
 } // namespace Accessibility
