@@ -69,6 +69,8 @@ bool AccessibilityConfig::Impl::ConnectToService()
         InitConfigValues();
         rtn = true;
     }
+    mutex_.unlock();
+
     int retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
     if (retSysParam) {
         HILOG_ERROR("Watch parameter failed, error = %{public}d.", retSysParam);
@@ -80,6 +82,7 @@ bool AccessibilityConfig::Impl::ConnectToService()
 bool AccessibilityConfig::Impl::ConnectToServiceAsync()
 {
     HILOG_DEBUG("ConnectToServiceAsync start.");
+    std::lock_guard<std::mutex> lock(mutex_);
     if (InitAccessibilityServiceProxy()) {
         (void)RegisterToService();
         InitConfigValues();
@@ -1737,6 +1740,9 @@ void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
 void AccessibilityConfig::Impl::InitConfigValues()
 {
     Accessibility::AccessibilityConfigData configData;
+    if (serviceProxy_ == nullptr) {
+        return;
+    }
     serviceProxy_->GetAllConfigs(configData);
     highContrastText_ = configData.highContrastText_;
     invertColor_ = configData.invertColor_;
