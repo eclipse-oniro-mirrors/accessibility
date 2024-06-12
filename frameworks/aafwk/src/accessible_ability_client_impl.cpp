@@ -695,9 +695,9 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
     }
     int32_t windowId = parent.GetWindowId();
     std::vector<int64_t> childIds =  parent.GetChildIds();
-    std::vector<AccessibilityElementInfo> elementInfos {};
     HILOG_DEBUG("windowId[%{public}d], childIds.size[%{public}zu]", windowId, childIds.size());
     if ((childIds.size() == 0) && (parent.GetChildWindowId() > 0)) {
+        std::vector<AccessibilityElementInfo> elementInfos {};
         RetError ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetChildWindowId(), ROOT_NONE_ID,
             GET_SOURCE_MODE, elementInfos);
         if (ret != RET_OK) {
