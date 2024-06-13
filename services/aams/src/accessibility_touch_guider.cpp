@@ -96,7 +96,12 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         return false;
     }
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_CANCEL) {
-        Clear(event);
+        if ((static_cast<TouchGuideState>(currentState_) == TouchGuideState::DRAGGING) &&
+            event.GetPointerId() == currentPid_) {
+            EventTransmission::OnPointerEvent(event);
+        } else if (static_cast<TouchGuideState>(currentState_) != TouchGuideState::DRAGGING) {
+            Clear(event);
+        }
         return true;
     }
     RecordReceivedEvent(event);
@@ -453,7 +458,7 @@ void TouchGuider::HandleTouchGuidingState(MMI::PointerEvent &event)
 void TouchGuider::HandleDraggingState(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-
+    std::vector<int32_t> pIds = event.GetPointerIds();
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
             if (event.GetPointerIds().size() == POINTER_COUNT_1) {
@@ -464,15 +469,29 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent &event)
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_MOVE:
-            HandleDraggingStateInnerMove(event);
+            if (event.GetPointerId() == currentPid_) {
+                HandleDraggingStateInnerMove(event);
+            }
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
-                OnTouchInteractionEnd();
-                SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
-                SendEventToMultimodal(event, NO_CHANGE);
-                currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
+            if (pIds.size() == POINTER_COUNT_1) {
+                if (event.GetPointerId() == currentPid_) {
+                    HILOG_DEBUG("single currentPid_ move: %{public}d", event.GetPointerId());
+                    OnTouchInteractionEnd();
+                    SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
+                    SendEventToMultimodal(event, NO_CHANGE);
+                    currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
+                }
             } else {
+                if (event.GetPointerId() == currentPid_) {
+                    HILOG_DEBUG("double currentPid_ move: %{public}d", event.GetPointerId());
+                    int32_t removePid = currentPid_ == pIds[0]? pIds[1] : pIds[0];
+                    event.RemovePointerItem(removePid);
+                    OnTouchInteractionEnd();
+                    SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
+                    SendEventToMultimodal(event, NO_CHANGE);
+                    currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
+                }
                 SendEventToMultimodal(event, NO_CHANGE);
             }
             break;
@@ -624,27 +643,27 @@ void TouchGuider::HandleTouchGuidingStateInnerDown(MMI::PointerEvent &event)
 
 void TouchGuider::SendPointerDownEventToMultimodal(MMI::PointerEvent event, int32_t action)
 {
-    int32_t currentPid = event.GetPointerId();
+    currentPid_ = event.GetPointerId();
     int32_t xPointDown = 0;
     int32_t yPointDown = 0;
     int64_t actionTime = 0;
 
-    if (receivedRecorder_.pointerDownX.find(currentPid) != receivedRecorder_.pointerDownX.end()) {
-        xPointDown = receivedRecorder_.pointerDownX.find(currentPid)->second;
-        yPointDown = receivedRecorder_.pointerDownY.find(currentPid)->second;
-        actionTime = receivedRecorder_.pointerActionTime.find(currentPid)->second;
+    if (receivedRecorder_.pointerDownX.find(currentPid_) != receivedRecorder_.pointerDownX.end()) {
+        xPointDown = receivedRecorder_.pointerDownX.find(currentPid_)->second;
+        yPointDown = receivedRecorder_.pointerDownY.find(currentPid_)->second;
+        actionTime = receivedRecorder_.pointerActionTime.find(currentPid_)->second;
     }
 
     HILOG_DEBUG("first down point info is: xPos: %{public}d, yPos: %{public}d, actionTime: [%{public}" PRId64 "], "
         "currentTime: [%{public}" PRId64 "]", xPointDown, yPointDown, actionTime, event.GetActionTime());
     MMI::PointerEvent::PointerItem pointer = {};
-    event.GetPointerItem(currentPid, pointer);
+    event.GetPointerItem(currentPid_, pointer);
     pointer.SetDisplayX(xPointDown);
     pointer.SetDisplayY(yPointDown);
-    event.RemovePointerItem(currentPid);
+    event.RemovePointerItem(currentPid_);
     event.AddPointerItem(pointer);
     event.SetActionTime(actionTime);
-    int32_t removePid = currentPid == 0 ? REMOVE_POINTER_ID_1 : 0;
+    int32_t removePid = currentPid_ == 0 ? REMOVE_POINTER_ID_1 : 0;
     event.RemovePointerItem(removePid);
     SendEventToMultimodal(event, action);
 }
@@ -737,6 +756,9 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
             event.RemovePointerItem(event.GetPointerId());
             event.AddPointerItem(pointer);
         }
+        int32_t removePid = currentPid_ == pIds[0]? pIds[1] : pIds[0];
+        HILOG_DEBUG("removePid when move: (%{public}d)", removePid);
+        event.RemovePointerItem(removePid);
         SendEventToMultimodal(event, NO_CHANGE);
     } else {
         currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);

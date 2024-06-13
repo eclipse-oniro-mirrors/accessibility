@@ -503,6 +503,7 @@ private:
     int32_t leftTopY_ = INIT_POINT_DISPLAY;
     int32_t rightBottomX_ = INIT_POINT_DISPLAY;
     int32_t rightBottomY_ = INIT_POINT_DISPLAY;
+    int32_t currentPid_ = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS
