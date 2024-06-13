@@ -188,7 +188,7 @@ void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObjec
                 object->AddDeathRecipient(deathRecipient_);
             }
             serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(object);
-        } while(0);
+        } while (0);
     }
     proxyConVar_.notify_one();
 }

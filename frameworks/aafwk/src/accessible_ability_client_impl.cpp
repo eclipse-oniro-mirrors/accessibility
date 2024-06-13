@@ -141,7 +141,7 @@ void AccessibleAbilityClientImpl::OnParameterChanged(const char *key, const char
         return;
     }
 
-    AccessibleAbilityClientImpl * implPtr = static_cast<AccessibleAbilityClientImpl *>(context);
+    AccessibleAbilityClientImpl *implPtr = static_cast<AccessibleAbilityClientImpl *>(context);
     std::lock_guard<std::mutex> lock(implPtr->mutex_);
     if (implPtr->InitAccessibilityServiceProxy()) {
         HILOG_INFO("InitAccessibilityServiceProxy success");
