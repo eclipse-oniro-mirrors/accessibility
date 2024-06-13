@@ -59,6 +59,8 @@ namespace {
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
     constexpr int32_t UNLOAD_TASK_INTERNAL = 3 * 60 * 1000; // ms
     constexpr int32_t ELEMENT_MOVE_BIT_SPLIT = 13;
+    constexpr int32_t TREE_ID_INVALID = -1;
+    constexpr int32_t ELEMENT_MOVE_BIT = 51;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -402,24 +404,34 @@ bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInf
 bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
 {
     HILOG_DEBUG();
-    sptr<AccessibilityWindowConnection> connection = GetRealIdConnection();
-    AccessibilityElementInfo elementInfo = {};
-    if (!FindFocusedElementByConnection(connection, elementInfo)) {
-        HILOG_ERROR("FindFocusedElementByConnection failed");
+    int32_t windowId = GetFocusWindowId();
+    int64_t elementId = GetFocusElementId();
+    uint32_t timeOut = 5000;
+    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("GetCurrentAccountData failed");
         return false;
     }
-
-    int64_t elementId = elementInfo.GetAccessibilityId();
-    uint32_t timeOut = 5000;
-
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
+    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d", windowId, elementId,
+        action);
+    if (connection == nullptr) {
+        HILOG_ERROR("connection is nullptr");
+        return false;
+    }
     std::map<std::string, std::string> actionArguments {};
     sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl();
-    if (!actionCallback) {
+    if (actionCallback == nullptr) {
         HILOG_ERROR("Failed to create actionCallback.");
         return false;
     }
     std::future<void> actionFuture = actionCallback->promise_.get_future();
-    connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, 1, actionCallback);
+    if (treeId != TREE_ID_INVALID) {
+        connection->GetCardProxy(treeId)->ExecuteAction(elementId, action, actionArguments, 1, actionCallback);
+    } else {
+        connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, 1, actionCallback);
+    }
     std::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
     if (waitAction != std::future_status::ready) {
         HILOG_ERROR("ExecuteAction Failed to wait result");
@@ -427,6 +439,26 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     }
 
     return actionCallback->executeActionResult_;
+}
+
+void AccessibleAbilityManagerService::SetFocusWindowId(const int32_t focusWindowId)
+{
+    focusWindowId_ = focusWindowId;
+}
+
+int32_t AccessibleAbilityManagerService::GetFocusWindowId()
+{
+    return focusWindowId_;
+}
+
+void AccessibleAbilityManagerService::SetFocusElementId(const int64_t focusElementId)
+{
+    focusElementId_ = focusElementId;
+}
+
+int64_t AccessibleAbilityManagerService::GetFocusElementId()
+{
+    return focusElementId_;
 }
 
 uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
@@ -2428,6 +2460,16 @@ bool AccessibleAbilityManagerService::IsNeedUnload()
         return false;
     }
     return true;
+}
+
+int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t elementId)
+{
+    if (elementId < 0) {
+        HILOG_ERROR("The elementId is -1");
+        return elementId;
+    }
+    int32_t treeId = (elementId << ELEMENT_MOVE_BIT) >> ELEMENT_MOVE_BIT;
+    return treeId;
 }
 } // namespace Accessibility
 } // namespace OHOS

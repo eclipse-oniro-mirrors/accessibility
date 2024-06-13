@@ -25,7 +25,8 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr uint32_t TIME_OUT_OPERATOR = 5000;
-    constexpr int32_t ELEMENT_MOVE_BIT = 51;
+    constexpr int32_t WINDOW_ID_INVALID = -1;
+    constexpr int64_t ELEMENT_ID_INVALID = -1;
     MMI::InputManager* inputManager_ = MMI::InputManager::GetInstance();
     std::map<int32_t, std::pair<bool, std::pair<int32_t, int32_t>>> accessibleKeyCodeTable = {
         {ActionType::ACCESSIBILITY_ACTION_HOME,
@@ -63,7 +64,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
 
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
-    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("SearchElementInfoByAccessibilityId :channel SearchElementInfo treeId: %{public}d", treeId);
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, treeId, requestId,
         callback, mode, isFilter](int32_t accountId, const std::string &name) -> void {
@@ -112,7 +113,7 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
         return RET_ERR_NULLPTR;
     }
 
-    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("SearchElementInfosByText :channel SearchElementInfo treeId: %{public}d", treeId);
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
@@ -159,7 +160,7 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
 
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
-    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("FindFocusedElementInfo :channel FindFocusedElementInfo treeId: %{public}d", treeId);
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, treeId,
         focusType, requestId, callback](int32_t accountId, const std::string &name) -> void {
@@ -201,7 +202,7 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
 
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
-    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("FocusMoveSearch :channel FocusMoveSearch treeId: %{public}d", treeId);
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId,
         elementId, treeId, direction, requestId, callback](int32_t accountId, const std::string &name) -> void {
@@ -349,10 +350,11 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         callback->SetExecuteActionResult(true, requestId);
         return RET_OK;
     }
-    
+    SetFocusWindowIdAndElementId(accessibilityWindowId, elementId, action);
+    HILOG_DEBUG("ExecuteAction : action: %{public}d", action);
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
-    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("ExecuteAction :channel ExecuteAction treeId: %{public}d", treeId);
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, treeId, action,
         actionArguments, requestId, callback](int32_t accountId, const std::string &name) -> void {
@@ -378,6 +380,19 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         return RET_ERR_TIME_OUT;
     }
     return syncFuture.get();
+}
+
+void AccessibleAbilityChannel::SetFocusWindowIdAndElementId(const int32_t accessibilityWindowId,
+    const int64_t elementId, const int32_t action)
+{
+    auto& awm = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    if ((action == ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS)) {
+        awm.SetFocusWindowId(accessibilityWindowId);
+        awm.SetFocusElementId(elementId);
+    } else if (action == ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS) {
+        awm.SetFocusWindowId(WINDOW_ID_INVALID);
+        awm.SetFocusElementId(ELEMENT_ID_INVALID);
+    }
 }
 
 RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
@@ -535,7 +550,7 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
     }
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
-    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("GetCursorPosition :channel GetCursorPosition treeId: %{public}d", treeId);
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, treeId,
         requestId, callback](int32_t accountId, const std::string &name) -> void {
@@ -696,16 +711,6 @@ RetError AccessibleAbilityChannel::GetElementOperator(
         return RET_ERR_NULLPTR;
     }
     return RET_OK;
-}
-
-int32_t AccessibleAbilityChannel::GetTreeIdBySplitElementId(const int64_t elementId)
-{
-    if (elementId < 0) {
-        HILOG_ERROR("The elementId is -1");
-        return elementId;
-    }
-    int32_t treeId = (elementId << ELEMENT_MOVE_BIT) >> ELEMENT_MOVE_BIT;
-    return treeId;
 }
 } // namespace Accessibility
 } // namespace OHOS

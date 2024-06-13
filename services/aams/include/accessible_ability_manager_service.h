@@ -129,7 +129,14 @@ public:
     bool FindFocusedElement(AccessibilityElementInfo &elementInfo);
     bool ExecuteActionOnAccessibilityFocused(const ActionType &action);
     RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
-
+    void SetFocusWindowId(const int32_t focusWindowId);
+    void SetFocusElementId(const int64_t focusElementId);
+    int32_t GetFocusWindowId();
+    int64_t GetFocusElementId();
+    static int32_t GetTreeIdBySplitElementId(const int64_t elementId);
+private:
+    int32_t focusWindowId_ = -1;
+    int64_t focusElementId_ = -1;
 public:
     /* For inner modules */
     bool EnableShortKeyTargetAbility(const std::string &name = "");

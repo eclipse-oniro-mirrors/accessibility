@@ -592,5 +592,21 @@ bool AccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)
 void AccessibleAbilityManagerService::PostDelayUnloadTask()
 {
 }
+
+void AccessibleAbilityManagerService::SetFocusWindowId(const int32_t focusWindowId)
+{
+    (void)focusWindowId;
+}
+
+void AccessibleAbilityManagerService::SetFocusElementId(const int64_t focusElementId)
+{
+    (void)focusElementId;
+}
+
+int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t elementId)
+{
+    (void)elementId;
+    return 0;
+}
 } // namespace Accessibility
 } // namespace OHOS
