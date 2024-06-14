@@ -46,7 +46,8 @@ enum class TouchGuideState : int32_t {
     TOUCH_GUIDING,
     DRAGGING,
     TRANSMITTING,
-    GESTURE_RECOGNIZING
+    GESTURE_RECOGNIZING,
+    PASSING_THROUGH
 };
 
 /**
@@ -325,6 +326,12 @@ private:
     void HandleTransmitingState(MMI::PointerEvent &event);
 
     /**
+     * @brief Handle touch events on passing through state.
+     * @param event the touch event from Multimodal
+     */
+    void HandlePassingThroughState(MMI::PointerEvent &event);
+
+    /**
      * @brief Determine whether it is a drag gesture.
      * @param event the touch event from Multimodal
      * @return whether the dragGesture is accepted.
@@ -503,7 +510,8 @@ private:
     int32_t leftTopY_ = INIT_POINT_DISPLAY;
     int32_t rightBottomX_ = INIT_POINT_DISPLAY;
     int32_t rightBottomY_ = INIT_POINT_DISPLAY;
-    int32_t currentPid_ = 0;
+    int32_t currentPid_ = -1;
+    std::list<MMI::PointerEvent> cachedPointerEvents_ {};
 };
 } // namespace Accessibility
 } // namespace OHOS
