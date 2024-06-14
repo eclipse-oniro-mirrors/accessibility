@@ -116,6 +116,7 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
 
     switch (static_cast<TouchGuideState>(currentState_)) {
         case TouchGuideState::TOUCH_GUIDING:
+            cachedPointerEvents_.push_back(event);
             HandleTouchGuidingState(event);
             break;
         case TouchGuideState::DRAGGING:
@@ -123,6 +124,9 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
             break;
         case TouchGuideState::TRANSMITTING:
             HandleTransmitingState(event);
+            break;
+        case TouchGuideState::PASSING_THROUGH:
+            HandlePassingThroughState(event);
             break;
         default:
             break;
@@ -483,7 +487,7 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent &event)
                     currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
                 }
             } else {
-                if (event.GetPointerId() == currentPid_) {
+                if (event.GetPointerId() == currentPid_ && pIds.size() == POINTER_COUNT_2) {
                     HILOG_DEBUG("double currentPid_ move: %{public}d", event.GetPointerId());
                     int32_t removePid = currentPid_ == pIds[0]? pIds[1] : pIds[0];
                     event.RemovePointerItem(removePid);
@@ -537,6 +541,23 @@ void TouchGuider::HandleTransmitingState(MMI::PointerEvent &event)
     }
 }
 
+void TouchGuider::HandlePassingThroughState(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
+        event.GetPointerIds().size() == POINTER_COUNT_1) {
+        SendEventToMultimodal(event, NO_CHANGE);
+        OnTouchInteractionEnd();
+        SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
+        currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
+        return;
+    }
+
+    SendEventToMultimodal(event, NO_CHANGE);
+    return;
+}
+
 void TouchGuider::Clear(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
@@ -567,6 +588,8 @@ void TouchGuider::Clear(MMI::PointerEvent &event)
     rightBottomX_ = INIT_POINT_DISPLAY;
     rightBottomY_ = INIT_POINT_DISPLAY;
     focusedElementExist_ = false;
+    currentPid_ = -1;
+    cachedPointerEvents_.clear();
     OnTouchInteractionEnd();
 }
 
@@ -702,7 +725,11 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event)
                 SendPointerDownEventToMultimodal(event, POINTER_DOWN);
                 SendEventToMultimodal(event, NO_CHANGE);
             } else {
-                currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
+                for (auto iter = cachedPointerEvents_.begin(); iter != cachedPointerEvents_.end(); ++iter) {
+                    EventTransmission::OnPointerEvent(*iter);
+                }
+                cachedPointerEvents_.clear();
+                currentState_ = static_cast<int32_t>(TouchGuideState::PASSING_THROUGH);
             }
             break;
         default:
