@@ -21,9 +21,8 @@
 namespace OHOS {
 namespace Accessibility {
 AccessibilityEventInfoParcel::AccessibilityEventInfoParcel(const AccessibilityEventInfo &eventInfo)
+    : AccessibilityEventInfo(eventInfo)
 {
-    AccessibilityEventInfo *self = this;
-    *self = eventInfo;
 }
 
 bool AccessibilityEventInfoParcel::ReadFromParcelFirstPart(Parcel &parcel)
