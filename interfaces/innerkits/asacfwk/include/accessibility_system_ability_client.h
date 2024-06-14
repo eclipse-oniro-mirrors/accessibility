@@ -163,11 +163,15 @@ public:
     */
     static void SetSplicElementIdTreeId(const int32_t treeId, int64_t &elementId)
     {
-        int64_t itemp = 0;
+        if (treeId == CONT_SPLIT_ID || elementId == CONT_SPLIT_ID) {
+            elementId = CONT_SPLIT_ID;
+            return;
+        }
+        uint64_t itemp = 0;
         itemp = treeId;
         itemp = (itemp << ELEMENT_MOVE_BIT);
-        itemp |= elementId;
-        elementId = itemp;
+        itemp |= static_cast<uint64_t>(elementId);
+        elementId = static_cast<int64_t>(itemp);
     }
 
     /**
@@ -179,13 +183,13 @@ public:
     static void GetTreeIdAndElementIdBySplitElementId(const int64_t elementId, int64_t &splitElementId,
         int32_t &splitTreeId)
     {
-        if (elementId == CONT_SPLIT_ID) {
+        if (elementId <= CONT_SPLIT_ID) {
             splitTreeId = CONT_SPLIT_ID;
             splitElementId = CONT_SPLIT_ID;
-            return ;
+            return;
         }
-        splitTreeId = (elementId >> ELEMENT_MOVE_BIT);
-        splitElementId = (elementId << ELEMENT_MOVE_BIT_SPLIT) >> ELEMENT_MOVE_BIT_SPLIT;
+        splitTreeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
+        splitElementId = (static_cast<uint64_t>(elementId) << ELEMENT_MOVE_BIT_SPLIT) >> ELEMENT_MOVE_BIT_SPLIT;
     }
 };
 } // namespace Accessibility

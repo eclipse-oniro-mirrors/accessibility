@@ -706,7 +706,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
     ++treeId;
     int64_t nodeId = parameter.elementId;
     if (parameter.elementId > 0) {
-        nodeId = (parameter.elementId << ELEMENT_MOVE_BIT_SPLIT) >> ELEMENT_MOVE_BIT_SPLIT;
+        nodeId = (static_cast<uint64_t>(parameter.elementId) << ELEMENT_MOVE_BIT_SPLIT) >> ELEMENT_MOVE_BIT_SPLIT;
     }
     HILOG_INFO("get element and treeid - parameter.elementId[%{public}" PRId64 "] element[%{public}" PRId64 "]",
         parameter.elementId, nodeId);
@@ -2468,7 +2468,7 @@ int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t
         HILOG_ERROR("The elementId is -1");
         return elementId;
     }
-    int32_t treeId = (elementId << ELEMENT_MOVE_BIT) >> ELEMENT_MOVE_BIT;
+    int32_t treeId = (static_cast<uint64_t>(elementId) << ELEMENT_MOVE_BIT) >> ELEMENT_MOVE_BIT;
     return treeId;
 }
 } // namespace Accessibility

@@ -41,7 +41,7 @@ public:
 private:
     int32_t windowId_;
     int32_t accountId_;
-    int32_t treeId_;
+    int32_t treeId_ = -1;
     std::map<int32_t, sptr<IAccessibilityElementOperator>> cardProxy_;
     sptr<IAccessibilityElementOperator> proxy_;
 };
