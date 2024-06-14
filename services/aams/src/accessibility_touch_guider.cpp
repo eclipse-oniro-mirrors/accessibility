@@ -545,7 +545,7 @@ void TouchGuider::HandlePassingThroughState(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
-    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP && 
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
         event.GetPointerIds().size() == POINTER_COUNT_1) {
         SendEventToMultimodal(event, NO_CHANGE);
         OnTouchInteractionEnd();
