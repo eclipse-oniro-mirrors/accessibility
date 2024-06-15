@@ -104,7 +104,7 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
     if (samgr == nullptr) {
         return false;
     }
-    auto object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+    auto object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (object != nullptr) {
         if (!deathRecipient_) {
             deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
