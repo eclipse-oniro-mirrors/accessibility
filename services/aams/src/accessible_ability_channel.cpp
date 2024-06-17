@@ -79,7 +79,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
         }
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
-        if (awm.IsInnerWindowRootElement(elementId)) {
+        if (accessibilityWindowId == SCENE_BOARD_WINDOW_ID && awm.IsInnerWindowRootElement(elementId)) {
             std::vector<AccessibilityElementInfo> infos = {};
             callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             HILOG_DEBUG("IsInnerWindowRootElement elementId: %{public}" PRId64 "", elementId);
