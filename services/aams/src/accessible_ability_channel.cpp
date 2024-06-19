@@ -230,59 +230,29 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
     return syncFuture.get();
 }
 
-void AccessibleAbilityChannel::SetKeyCodeSingle(std::shared_ptr<MMI::KeyEvent>& keyEvent, const int32_t keyCode)
+void AccessibleAbilityChannel::SetKeyCodeToMmi(std::shared_ptr<MMI::KeyEvent>& keyEvent, const bool isPress,
+    const int32_t keyCode)
 {
     HILOG_DEBUG();
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (!keyEvent) {
+    if (keyEvent == nullptr) {
         HILOG_ERROR("KeyEvent is nullptr");
         return;
     }
-
-    keyEvent->SetKeyCode(keyCode);
-    if (keyCode == MMI::KeyEvent::KEYCODE_BACK) {
-        keyEvent->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
-    } else {
-        keyEvent->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
-    }
-
     MMI::KeyEvent::KeyItem item;
+    item.SetPressed(isPress);
     item.SetKeyCode(keyCode);
-    item.SetPressed(true);
-
     keyEvent->AddKeyItem(item);
-}
-
-void AccessibleAbilityChannel::SetKeyCodeMulti(std::shared_ptr<MMI::KeyEvent>& keyEvent, const int32_t keyCodePre,
-    const int32_t keyCodeNext)
-{
-    HILOG_DEBUG();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (!keyEvent) {
-        HILOG_ERROR("KeyEvent is nullptr");
-        return;
-    }
-
-    keyEvent->SetKeyCode(keyCodeNext);
-    keyEvent->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
-
-    MMI::KeyEvent::KeyItem item1;
-    item1.SetKeyCode(keyCodePre);
-    item1.SetPressed(true);
-    keyEvent->AddKeyItem(item1);
-
-    MMI::KeyEvent::KeyItem item2;
-    item2.SetKeyCode(keyCodeNext);
-    item2.SetPressed(true);
-    keyEvent->AddKeyItem(item2);
+    keyEvent->SetKeyCode(keyCode);
 }
 
 RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
 {
     HILOG_DEBUG("The action is %{public}d", action);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
-    if (!keyEvent) {
+    std::shared_ptr<MMI::KeyEvent> keyEventUp = MMI::KeyEvent::Create();
+    std::shared_ptr<MMI::KeyEvent> keyEventDown = MMI::KeyEvent::Create();
+    if (keyEventUp == nullptr || keyEventDown == nullptr) {
         HILOG_ERROR("KeyEvent is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -292,16 +262,21 @@ RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
         return RET_ERR_NULLPTR;
     }
     
-    HILOG_DEBUG("Transmit keycode to MMI");
+    HILOG_INFO("Transmit keycode to MMI");
 
     if (accessibleKeyCodeTable.at(action).first) {
-        SetKeyCodeSingle(keyEvent, accessibleKeyCodeTable.at(action).second.first);
+        SetKeyCodeToMmi(keyEventDown, true, accessibleKeyCodeTable.at(action).second.first);
+        SetKeyCodeToMmi(keyEventUp, false, accessibleKeyCodeTable.at(action).second.first);
     } else {
-        SetKeyCodeMulti(keyEvent, accessibleKeyCodeTable.at(action).second.first,
-            accessibleKeyCodeTable.at(action).second.second);
+        SetKeyCodeToMmi(keyEventDown, true, accessibleKeyCodeTable.at(action).second.first);
+        SetKeyCodeToMmi(keyEventUp, false, accessibleKeyCodeTable.at(action).second.first);
+        SetKeyCodeToMmi(keyEventDown, true, accessibleKeyCodeTable.at(action).second.second);
     }
+    keyEventDown->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    keyEventUp->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
+    inputManager_->SimulateInputEvent(keyEventDown);
+    inputManager_->SimulateInputEvent(keyEventUp);
 
-    inputManager_->SimulateInputEvent(keyEvent);
     return RET_OK;
 }
 
