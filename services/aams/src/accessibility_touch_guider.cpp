@@ -116,6 +116,10 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
 
     switch (static_cast<TouchGuideState>(currentState_)) {
         case TouchGuideState::TOUCH_GUIDING:
+            if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN &&
+                event.GetPointerIds().size() == POINTER_COUNT_1) {
+                cachedPointerEvents_.clear();
+            }
             cachedPointerEvents_.push_back(event);
             HandleTouchGuidingState(event);
             break;
