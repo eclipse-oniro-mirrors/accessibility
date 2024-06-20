@@ -74,6 +74,8 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
             elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             syncPromise->set_value(ret);
             return;
         }
@@ -85,6 +87,8 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
             HILOG_DEBUG("IsInnerWindowRootElement elementId: %{public}" PRId64 "", elementId);
         } else {
             int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+            Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+                requestId, callback);
             elementOperator->SearchElementInfoByAccessibilityId(realElementId, requestId, callback, mode, isFilter);
             HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
         }
@@ -126,12 +130,16 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
             name, elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             syncPromise->set_value(ret);
             return;
         }
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+            requestId, callback);
         elementOperator->SearchElementInfosByText(realElementId, text, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "SearchElementInfosByText");
@@ -169,12 +177,16 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         RetError ret = GetElementOperator(accountId, accessibilityWindowId, focusType, name, elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             syncPromise->set_value(ret);
             return;
         }
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+            requestId, callback);
         elementOperator->FindFocusedElementInfo(realElementId, focusType, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "FindFocusedElementInfo");
@@ -212,12 +224,16 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
             treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             syncPromise->set_value(ret);
             return;
         }
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+            requestId, callback);
         elementOperator->FocusMoveSearch(realElementId, direction, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "FocusMoveSearch");
@@ -345,6 +361,8 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+            requestId, callback);
         elementOperator->ExecuteAction(realElementId, action, actionArguments, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "ExecuteAction");
@@ -541,6 +559,8 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+            requestId, callback);
         elementOperator->GetCursorPosition(realElementId, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "GetCursorPosition");

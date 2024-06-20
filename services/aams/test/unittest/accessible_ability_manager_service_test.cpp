@@ -2560,5 +2560,21 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnShortKeyProcess_001, TestSiz
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_001 end";
 }
+
+/**
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_RemoveRequestId_001
+ * @tc.name: RemoveRequestId
+ * @tc.desc: Test function AddRequestId RemoveRequestId
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveRequestId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_RemoveRequestId_001 start";
+    int32_t windowId = 1;
+    int32_t treeId = 2;
+    int32_t requestId = 3;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(windowId, treeId, requestId, nullptr);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_RemoveRequestId_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

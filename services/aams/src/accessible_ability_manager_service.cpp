@@ -798,6 +798,7 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
             return;
         }
         accountData->RemoveAccessibilityWindowConnection(windowId);
+        StopCallbackWait(windowId);
 
         if (!connection->GetProxy()) {
             HILOG_ERROR("proxy is null");
@@ -840,6 +841,7 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
             return;
         }
         accountData->RemoveAccessibilityWindowConnection(windowId);
+        StopCallbackWait(windowId, treeId);
 
         if (!connection->GetCardProxy(treeId)) {
             HILOG_ERROR("proxy is null");
@@ -2470,6 +2472,80 @@ int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t
     }
     int32_t treeId = (elementId << ELEMENT_MOVE_BIT) >> ELEMENT_MOVE_BIT;
     return treeId;
+}
+
+void AccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
+    sptr<IAccessibilityElementOperatorCallback> callback)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    HILOG_DEBUG("Add windowId: %{public}d treeId: %{public}d requestId: %{public}d", windowId, treeId, requestId);
+    if (!windowRequestIdMap_.count(windowId)) {
+        windowRequestIdMap_[windowId] = {};
+    }
+    if (!windowRequestIdMap_[windowId].count(treeId)) {
+        windowRequestIdMap_[windowId][treeId] = {};
+    }
+    if (!windowRequestIdMap_[windowId][treeId].count(requestId)) {
+        windowRequestIdMap_[windowId][treeId].insert(requestId);
+        requestIdMap_[requestId] = callback;
+    }
+}
+
+void AccessibleAbilityManagerService::RemoveRequestId(int32_t requestId)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    HILOG_DEBUG("RemoveRequestId requestId: %{public}d", requestId);
+    for (auto &window : windowRequestIdMap_) {
+        for (auto &tree : window.second) {
+            auto it = tree.second.find(requestId);
+            if (it != tree.second.end()) {
+                HILOG_DEBUG("tree.second.erase requestId:%{public}d", requestId);
+                tree.second.erase(it);
+            }
+            auto ite = requestIdMap_.find(requestId);
+            if (ite != requestIdMap_.end()) {
+                HILOG_DEBUG("requestIdMap_.erase requestId:%{public}d", requestId);
+                requestIdMap_.erase(ite);
+            }
+        }
+    }
+}
+
+void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId)
+{
+    HILOG_INFO("StopCallbackWait start windowId: %{public}d", windowId);
+    if (!windowRequestIdMap_.count(windowId)) {
+        HILOG_DEBUG("windowId not exists");
+        return;
+    }
+    for (auto iter = windowRequestIdMap_[windowId].begin(); iter != windowRequestIdMap_[windowId].end();) {
+        HILOG_DEBUG("stop callback wait windowId: %{public}d, requestId: %{public}d", windowId, iter->first);
+        StopCallbackWait(windowId, iter->first);
+        ++iter;
+    }
+}
+
+void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t treeId)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    HILOG_INFO("StopCallbackWait start windowId: %{public}d treeId: %{public}d", windowId, treeId);
+    if (!windowRequestIdMap_.count(windowId)) {
+        return;
+    }
+    if (!windowRequestIdMap_[windowId].count(treeId)) {
+        return;
+    }
+    auto requestIds = windowRequestIdMap_[windowId][treeId];
+    for (auto iter = requestIds.begin(); iter != requestIds.end();) {
+        HILOG_DEBUG("stop callback wait windowId: %{public}d, requestId: %{public}d", windowId, *iter);
+        requestIdMap_[*iter]->SetExecuteActionResult(false, *iter);
+        auto ite = requestIdMap_.find(*iter);
+        if (ite != requestIdMap_.end()) {
+            HILOG_DEBUG("requestIdMap_.erase requestId:%{public}d", *iter);
+            requestIdMap_.erase(ite);
+        }
+        iter = requestIds.erase(iter);
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS
