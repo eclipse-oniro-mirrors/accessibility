@@ -702,7 +702,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
 RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration parameter,
     const sptr<IAccessibilityElementOperator> &operation, bool isApp)
 {
-    static int32_t treeId = 0;
+    static std::atomic<int32_t> treeId = 0;
     ++treeId;
     int64_t nodeId = parameter.elementId;
     if (parameter.elementId > 0) {
@@ -2465,10 +2465,10 @@ bool AccessibleAbilityManagerService::IsNeedUnload()
 int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t elementId)
 {
     if (elementId < 0) {
-        HILOG_ERROR("The elementId is -1");
+        HILOG_DEBUG("The elementId is -1");
         return elementId;
     }
-    int32_t treeId = (elementId << ELEMENT_MOVE_BIT) >> ELEMENT_MOVE_BIT;
+    int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
     return treeId;
 }
 } // namespace Accessibility
