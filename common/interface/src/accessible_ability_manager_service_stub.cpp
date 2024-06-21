@@ -175,6 +175,8 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
         &AccessibleAbilityManagerServiceStub::HandleRegisterEnableAbilityListsObserver;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_FOCUSED_WINDOW_ID)] =
         &AccessibleAbilityManagerServiceStub::HandleGetFocusedWindowId;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::REMOVE_REQUEST_ID)] =
+        &AccessibleAbilityManagerServiceStub::HandleRemoveRequestId;
 
     AddSetConfigHandles();
     AddGetConfigHandles();
@@ -1261,6 +1263,15 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetFocusedWindowId(MessagePar
     if (reply.WriteInt32(focusedWindowId)) {
         HILOG_ERROR("write windowId fail");
     }
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleRemoveRequestId(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int32_t requestId = data.ReadInt32();
+    RemoveRequestId(requestId);
     return NO_ERROR;
 }
 } // namespace Accessibility

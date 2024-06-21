@@ -1705,5 +1705,28 @@ RetError AccessibleAbilityManagerServiceProxy::GetFocusedWindowId(int32_t &focus
     focusedWindowId = reply.ReadInt32();
     return RET_OK;
 }
+
+void AccessibleAbilityManagerServiceProxy::RemoveRequestId(int32_t requestId)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("write token fail");
+        return;
+    }
+
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("write requestId fail");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::REMOVE_REQUEST_ID, data, reply, option)) {
+        HILOG_ERROR("GetFocusedWindowId fail");
+        return;
+    }
+    return;
+}
 } // namespace Accessibility
 } // namespace OHOS

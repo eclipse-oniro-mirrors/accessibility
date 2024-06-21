@@ -197,6 +197,7 @@ private:
     ErrCode HandleGetFocusedWindowId(MessageParcel &data, MessageParcel &reply);
 
     virtual void PostDelayUnloadTask() = 0;
+    ErrCode HandleRemoveRequestId(MessageParcel &data, MessageParcel &reply);
 
     using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceStub::*)(
         MessageParcel &data, MessageParcel &reply);

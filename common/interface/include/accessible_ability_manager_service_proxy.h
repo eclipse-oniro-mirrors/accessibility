@@ -165,6 +165,7 @@ public:
     virtual void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
     virtual void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
     virtual RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
+    virtual void RemoveRequestId(int32_t requestId) override;
 private:
     /**
      * @brief Write the descriptor of IPC.

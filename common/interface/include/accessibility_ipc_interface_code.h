@@ -56,6 +56,7 @@ namespace Accessibility {
         SET_TARGET_BUNDLE_NAME,
         GET_FOCUSED_WINDOW_ID,
         GET_CURSOR_POSITION,
+        REMOVE_REQUEST_ID,
 
         INIT = 500,
         DISCONNECT,

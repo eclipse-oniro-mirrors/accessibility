@@ -544,6 +544,7 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityId
         if (iter != elementOperators_.end()) {
             if (iter->second) {
                 iter->second->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
+                serviceProxy_->RemoveRequestId(requestId);
             }
         }
     }
@@ -560,6 +561,7 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByTextResult(
         if (iter != elementOperators_.end()) {
             if (iter->second) {
                 iter->second->SetSearchElementInfoByTextResult(infos, requestId);
+                serviceProxy_->RemoveRequestId(requestId);
             }
         }
     }
@@ -576,6 +578,7 @@ void AccessibilitySystemAbilityClientImpl::SetFindFocusedElementInfoResult(
         if (iter != elementOperators_.end()) {
             if (iter->second) {
                 iter->second->SetFindFocusedElementInfoResult(info, requestId);
+                serviceProxy_->RemoveRequestId(requestId);
             }
         }
     }
@@ -592,6 +595,7 @@ void AccessibilitySystemAbilityClientImpl::SetFocusMoveSearchResult(
         if (iter != elementOperators_.end()) {
             if (iter->second) {
                 iter->second->SetFocusMoveSearchResult(info, requestId);
+                serviceProxy_->RemoveRequestId(requestId);
             }
         }
     }
@@ -608,6 +612,7 @@ void AccessibilitySystemAbilityClientImpl::SetExecuteActionResult(
         if (iter != elementOperators_.end()) {
             if (iter->second) {
                 iter->second->SetExecuteActionResult(succeeded, requestId);
+                serviceProxy_->RemoveRequestId(requestId);
             }
         }
     }
@@ -624,6 +629,7 @@ void AccessibilitySystemAbilityClientImpl::SetCursorPositionResult(
         if (iter != elementOperators_.end()) {
             if (iter->second) {
                 iter->second->SetCursorPositionResult(cursorPosition, requestId);
+                serviceProxy_->RemoveRequestId(requestId);
             }
         }
     }

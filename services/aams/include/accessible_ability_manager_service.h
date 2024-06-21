@@ -280,8 +280,13 @@ public:
     void UpdateIgnoreRepeatClickTime();
 
     void UpdateInputFilter();
+    void AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
+        sptr<IAccessibilityElementOperatorCallback> callback);
+    void RemoveRequestId(int32_t requestId) override;
 
 private:
+    void StopCallbackWait(int32_t windowId);
+    void StopCallbackWait(int32_t windowId, int32_t treeId);
     sptr<AccessibilityWindowConnection> GetRealIdConnection();
     bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
         AccessibilityElementInfo &elementInfo);
@@ -413,6 +418,9 @@ private:
     std::shared_ptr<AccessibilitySettings> accessibilitySettings_ = nullptr;
     std::vector<std::string> removedAutoStartAbilities_ {};
     std::map<int32_t, AccessibilityEventInfo> windowFocusEventMap_ {};
+
+    std::map<int32_t, std::map<int32_t, std::set<int32_t>>> windowRequestIdMap_ {}; // windowId->treeId->requestId
+    std::map<int32_t, sptr<IAccessibilityElementOperatorCallback>> requestIdMap_ {}; // requestId->callback
 };
 } // namespace Accessibility
 } // namespace OHOS

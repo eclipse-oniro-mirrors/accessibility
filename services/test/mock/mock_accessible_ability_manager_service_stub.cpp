@@ -481,5 +481,10 @@ RetError MockAccessibleAbilityManagerServiceStub::GetFocusedWindowId(int32_t &fo
     focusedWindowId = 1;
     return RET_OK;
 }
+
+void MockAccessibleAbilityManagerServiceStub::RemoveRequestId(int32_t requestId)
+{
+    (void)requestId;
+}
 } // namespace Accessibility
 } // namespace OHOS

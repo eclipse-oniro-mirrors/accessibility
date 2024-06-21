@@ -188,6 +188,7 @@ public:
     virtual RetError GetFocusedWindowId(int32_t &focusedWindowId) = 0;
 
     virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) = 0;
+    virtual void RemoveRequestId(int32_t requestId) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS
