@@ -1371,7 +1371,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
         if (info.GetChildWindowId() > 0) {
             ret = SearchElementInfoRecursiveByWinid(info.GetChildWindowId(),
             elementId, mode, elementInfos, isFilter, &elementInfos[elementInfos.size()-1]);
-            HILOG_ERROR("search ChildWindowId %{public}d} element info failed. ret:%{public}d",
+            HILOG_DEBUG("search ChildWindowId %{public}d} element info. ret:%{public}d",
                 info.GetChildWindowId(), ret);
         }
     }
