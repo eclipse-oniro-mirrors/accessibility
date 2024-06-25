@@ -260,7 +260,10 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
     double duration = hypot(offsetX, offsetY);
     if (duration > threshold_) {
         handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
-        event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
+        if (lastInterceptedEvent_ != nullptr) {
+            event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
+            lastInterceptedEvent_ = nullptr;
+        }
         EventTransmission::OnPointerEvent(event);
         isMoveBeyondThreshold_ = true;
         isStopDrawCircle_ = true;
