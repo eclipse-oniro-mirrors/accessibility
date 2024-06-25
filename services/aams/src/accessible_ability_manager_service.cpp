@@ -2518,10 +2518,9 @@ void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId)
         HILOG_DEBUG("windowId not exists");
         return;
     }
-    for (auto iter = windowRequestIdMap_[windowId].begin(); iter != windowRequestIdMap_[windowId].end();) {
-        HILOG_DEBUG("stop callback wait windowId: %{public}d, requestId: %{public}d", windowId, iter->first);
+    for (auto iter = windowRequestIdMap_[windowId].begin(); iter != windowRequestIdMap_[windowId].end(); ++iter) {
+        HILOG_DEBUG("stop callback wait windowId: %{public}d, treeId: %{public}d", windowId, iter->first);
         StopCallbackWait(windowId, iter->first);
-        ++iter;
     }
 }
 
@@ -2536,15 +2535,18 @@ void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t
         return;
     }
     auto requestIds = windowRequestIdMap_[windowId][treeId];
-    for (auto iter = requestIds.begin(); iter != requestIds.end();) {
-        HILOG_DEBUG("stop callback wait windowId: %{public}d, requestId: %{public}d", windowId, *iter);
-        requestIdMap_[*iter]->SetExecuteActionResult(false, *iter);
-        auto ite = requestIdMap_.find(*iter);
-        if (ite != requestIdMap_.end()) {
-            HILOG_DEBUG("requestIdMap_.erase requestId:%{public}d", *iter);
-            requestIdMap_.erase(ite);
+    for (auto requestId = requestIds.begin(); requestId != requestIds.end();) {
+        HILOG_DEBUG("stop callback wait windowId: %{public}d, requestId: %{public}d", windowId, *requestId);
+        auto iter = requestIdMap_.find(*requestId);
+        if (iter != requestIdMap_.end()) {
+            HILOG_DEBUG("requestIdMap_ set callback and erase requestId:%{public}d", *requestId);
+            sptr<IAccessibilityElementOperatorCallback> callback = requestIdMap_[*requestId];
+            if (callback != nullptr) {
+                callback->SetExecuteActionResult(false, *requestId);
+            }
+            requestIdMap_.erase(iter);
         }
-        iter = requestIds.erase(iter);
+        requestId = requestIds.erase(requestId);
     }
 }
 } // namespace Accessibility
