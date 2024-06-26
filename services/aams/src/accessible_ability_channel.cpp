@@ -52,13 +52,16 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
     const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int32_t mode, bool isFilter)
 {
-    HILOG_DEBUG();
     HILOG_DEBUG("channel SearchElementInfo elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
     if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
@@ -116,6 +119,10 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
 
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("SearchElementInfosByText :channel SearchElementInfo treeId: %{public}d", treeId);
@@ -165,6 +172,10 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
 
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
@@ -207,8 +218,12 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
         elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
-    if (eventHandler_== nullptr) {
+    if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
@@ -322,12 +337,15 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG();
-    HILOG_DEBUG("ExecuteAction :channel ExecuteAction elementId: %{public}" PRId64 " winId: %{public}d",
-        elementId, accessibilityWindowId);
+    HILOG_DEBUG("ExecuteAction elementId:%{public}" PRId64 " winId:%{public}d, action:%{public}d, requestId:%{public}d",
+        elementId, accessibilityWindowId, action, requestId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
@@ -342,14 +360,11 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         return RET_OK;
     }
     SetFocusWindowIdAndElementId(accessibilityWindowId, elementId, action);
-    HILOG_DEBUG("ExecuteAction : action: %{public}d", action);
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
-    HILOG_DEBUG("ExecuteAction :channel ExecuteAction treeId: %{public}d", treeId);
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, treeId, action,
         actionArguments, requestId, callback](int32_t accountId, const std::string &name) -> void {
-        HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
         RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name,
             elementOperator, treeId);
@@ -366,7 +381,7 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         elementOperator->ExecuteAction(realElementId, action, actionArguments, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "ExecuteAction");
-    
+
     std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
         HILOG_ERROR("Failed to wait ExecuteAction result");

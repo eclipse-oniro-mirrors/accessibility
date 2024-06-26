@@ -538,6 +538,10 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityId
 {
     std::lock_guard<std::mutex> lock(mutex_);
     HILOG_DEBUG("search element requestId[%{public}d]", requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
     int32_t windId = AccessibilityElementOperatorImpl::GetWindIdByRequestId(requestId);
     if (requestId >= 0) {
         auto iter = elementOperators_.find(static_cast<uint32_t>(windId));
@@ -555,6 +559,10 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByTextResult(
 {
     std::lock_guard<std::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
     int32_t windId = AccessibilityElementOperatorImpl::GetWindIdByRequestId(requestId);
     if (requestId >= 0) {
         auto iter = elementOperators_.find(static_cast<uint32_t>(windId));
@@ -572,6 +580,10 @@ void AccessibilitySystemAbilityClientImpl::SetFindFocusedElementInfoResult(
 {
     std::lock_guard<std::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
     int32_t windId = AccessibilityElementOperatorImpl::GetWindIdByRequestId(requestId);
     if (requestId >= 0) {
         auto iter = elementOperators_.find(static_cast<uint32_t>(windId));
@@ -589,6 +601,10 @@ void AccessibilitySystemAbilityClientImpl::SetFocusMoveSearchResult(
 {
     std::lock_guard<std::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
     int32_t windId = AccessibilityElementOperatorImpl::GetWindIdByRequestId(requestId);
     if (requestId >= 0) {
         auto iter = elementOperators_.find(static_cast<uint32_t>(windId));
@@ -606,6 +622,10 @@ void AccessibilitySystemAbilityClientImpl::SetExecuteActionResult(
 {
     std::lock_guard<std::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
     int32_t windId = AccessibilityElementOperatorImpl::GetWindIdByRequestId(requestId);
     if (requestId >= 0) {
         auto iter = elementOperators_.find(static_cast<uint32_t>(windId));
@@ -623,6 +643,10 @@ void AccessibilitySystemAbilityClientImpl::SetCursorPositionResult(
 {
     std::lock_guard<std::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]  cursorPosition[%{public}d]", requestId, cursorPosition);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
     int32_t windId = AccessibilityElementOperatorImpl::GetWindIdByRequestId(requestId);
     if (requestId >= 0) {
         auto iter = elementOperators_.find(static_cast<uint32_t>(windId));
