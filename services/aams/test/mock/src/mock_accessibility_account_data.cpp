@@ -277,7 +277,7 @@ void AccessibilityAccountData::SetScreenReaderState(const std::string &name, con
     (void)state;
 }
 
-bool AccessibilityAccountData::GetScreenReaderState()
+bool AccessibilityAccountData::GetDefaultUserScreenReaderState()
 {
     HILOG_DEBUG("start.");
     return true;
