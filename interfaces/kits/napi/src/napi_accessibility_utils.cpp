@@ -254,6 +254,16 @@ void ConvertRectToJS(napi_env env, napi_value result, const Accessibility::Rect&
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "height", nHeight));
 }
 
+void ConvertGridItemToJS(napi_env env, napi_value result, const Accessibility::GridItemInfo& gridItem)
+{
+    napi_value rowIndex = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, gridItem.GetRowIndex(), &rowIndex));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "rowIndex", rowIndex));
+    napi_value columnIndex = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, gridItem.GetColumnIndex(), &columnIndex));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "columnIndex", columnIndex));
+}
+
 std::string ConvertWindowTypeToString(AccessibilityWindowType type)
 {
     static const std::map<AccessibilityWindowType, const std::string> windowTypeTable = {
