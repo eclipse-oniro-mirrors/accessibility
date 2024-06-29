@@ -260,6 +260,20 @@ public:
      * @return Return RET_OK if sets cache mode successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError SetCacheMode(const int32_t cacheMode) = 0;
+
+    /**
+     * @brief Find the node information by accessibility ID.
+     * @param accessibilityWindowId The window id that the component belongs to.
+     * @param elementId: The unique id of the component ID.
+     * @param mode PREFETCH_PREDECESSORS: Need to make the parent node info also.
+     *              PREFETCH_SIBLINGS: Need to make the sister/brothers node info also.
+     *              PREFETCH_CHILDREN: Need to make the child node info also.
+     *              otherwise: Make the node information by elementId only.
+     * @param info[out] The components information matched conditions searched.
+     * @return Return RET_OK if search element info successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError SearchElementInfoByAccessibilityId(const int32_t windowId, const int64_t elementId,
+        const uint32_t mode, AccessibilityElementInfo &info, bool isFilter = false) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

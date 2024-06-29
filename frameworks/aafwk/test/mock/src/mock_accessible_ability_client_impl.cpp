@@ -301,5 +301,12 @@ RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWi
     HILOG_DEBUG();
     return RET_OK;
 }
+
+RetError AccessibleAbilityClientImpl::SearchElementInfoByAccessibilityId(const int32_t windowId,
+    const int64_t elementId, const uint32_t mode, AccessibilityElementInfo &info, bool isFilter)
+{
+    HILOG_DEBUG();
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

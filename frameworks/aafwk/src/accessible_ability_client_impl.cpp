@@ -1428,6 +1428,41 @@ void AccessibleAbilityClientImpl::AddCacheByAce(int32_t windowId, int64_t elemen
     }
 }
 
+RetError AccessibleAbilityClientImpl::SearchElementInfoByAccessibilityId(const int32_t windowId,
+    const int64_t elementId, const uint32_t mode, AccessibilityElementInfo &info, bool isFilter)
+{
+    HILOG_DEBUG();
+    if (isConnected_ == false) {
+        HILOG_ERROR("connection is broken.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("failed to connect aams.");
+        return RET_ERR_SAMGR;
+    }
+    if (channelClient_ == nullptr) {
+        HILOG_ERROR("the channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+    std::vector<AccessibilityElementInfo> elementInfos {};
+    RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId,
+        elementId, static_cast<int32_t>(mode), elementInfos, isFilter);
+    if (ret != RET_OK) {
+        HILOG_ERROR("search element info failed, ret = %{public}d.", ret);
+        return ret;
+    }
+    if (elementInfos.empty()) {
+        HILOG_ERROR("elementInfos from ace is empty.");
+        return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
+    }
+
+    SetCacheElementInfo(windowId, elementInfos);
+    info = elementInfos.front();
+    return RET_OK;
+}
+
 void AccessibleAbilityClientImpl::ElementCacheInfo::AddElementCache(const int32_t windowId,
     const std::vector<AccessibilityElementInfo>& elementInfos)
 {
