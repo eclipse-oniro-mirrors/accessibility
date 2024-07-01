@@ -71,7 +71,7 @@ bool PowerMgrClient::ForceSuspendDevice()
     return true;
 }
 
-bool PowerMgrClient::IsScreenOn()
+bool PowerMgrClient::IsScreenOn(bool needPrintLog)
 {
     return true;
 }
