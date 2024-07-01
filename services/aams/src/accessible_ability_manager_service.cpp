@@ -2018,6 +2018,11 @@ void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &con
         syncPromise.set_value();
         }), "TASK_GET_ALL_CONFIGS");
 
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait GetAllConfigs result");
+        return;
+    }
     return syncFuture.get();
 }
 
