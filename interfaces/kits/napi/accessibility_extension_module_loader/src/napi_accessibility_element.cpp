@@ -34,7 +34,7 @@ namespace {
         "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable",
         "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
-        "textType", "offset", "currentItem", "allAttribute"};
+        "textType", "offset", "currentItem", "extraElement", "allAttribute"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId"};
 

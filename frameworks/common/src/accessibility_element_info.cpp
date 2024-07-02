@@ -842,5 +842,49 @@ int32_t AccessibilityElementInfo::GetParentWindowId() const
 {
     return parentWindowId_;
 }
+
+RetError ExtraElementinfo::SetExtraElementinfo(const std::string k_str, const std::string v_str)
+{
+    for (int i = 0; i < length; i++)
+    {
+        if (*(p + i) == k_str) {
+            extraElementinfoFirst_[k_str] = v_str;
+            return RET_OK;
+        }
+    }
+    return RET_ERR_FAILED;
+}
+
+RetError ExtraElementinfo::SetExtraElementinfo(const std::string k_str, const int32_t v_num)
+{
+    for (int i = 0; i < length; i++)
+    {
+        if (*(p + i) == k_str) {
+            extraElementinfoSecond_[k_str] = v_num;
+            return RET_OK;
+        }
+    }
+    return RET_ERR_FAILED;
+}
+
+const std::map<std::string, std::string> &ExtraElementinfo::GetExtraElementinfoFirst() const
+{
+    return extraElementinfoFirst_;
+}
+
+const std::map<std::string, int32_t> &ExtraElementinfo::GetExtraElementinfoSecond() const
+{
+    return extraElementinfoSecond_;
+}
+
+void AccessibilityElementInfo::SetExtraElementinfoForAcc(const ExtraElementinfo &extraElementinfo)
+{
+    extraElementinfo_ = extraElementinfo;
+}
+
+const ExtraElementinfo &AccessibilityElementInfo::GetExtraElementinfoForAcc() const
+{
+    return extraElementinfo_;
+}
 } // namespace Accessibility
 } // namespace OHOS

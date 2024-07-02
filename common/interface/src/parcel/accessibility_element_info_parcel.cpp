@@ -441,5 +441,77 @@ sptr<RectParcel> RectParcel::Unmarshalling(Parcel& parcel)
     }
     return rect;
 }
+
+ExtraElementinfoParcel::ExtraElementinfoParcel(const ExtraElementinfo &extraElementinfo)
+{
+    ExtraElementinfo *self = this;
+    *self = extraElementinfo;
+}
+
+bool ExtraElementinfoParcel::ReadFromParcel(Parcel &parcel)
+{
+    std::map<std::string, std::string>::iterator iter;
+    for (iter = extraElementinfoFirst_.begin(); iter != extraElementinfoFirst_.end(); ++iter)
+    {
+        std::string temp;
+        std::string temp1;
+        temp = iter->first;
+        temp1 = iter->second;
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, temp);
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, temp1);
+    }
+
+    std::map<std::string, std::int32_t>::iterator iter1;
+    for (iter1 = extraElementinfoSecond_.begin(); iter1 != extraElementinfoSecond_.end(); ++iter1)
+    {
+        std::string tempString;
+        int32_t tempInt = 0;
+        tempString = iter1->first;
+        tempInt = iter1->second;
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempString);
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, tempInt);
+    }
+
+    return true;
+}
+
+bool ExtraElementinfoParcel::Marshalling(Parcel &parcel) const
+{
+    for (auto iter = extraElementinfoFirst_.begin(); iter != extraElementinfoFirst_.end(); ++iter)
+    {
+        std::string temp;
+        std::string temp1;
+        temp = iter->first;
+        temp1 = iter->second;
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, temp);
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, temp1);
+    }
+
+    for (auto iter1 = extraElementinfoSecond_.begin(); iter1 != extraElementinfoSecond_.end(); ++iter1)
+    {
+        std::string tempString;
+        int32_t tempInt = 0;
+        tempString = iter1->first;
+        tempInt = iter1->second;
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempString);
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, tempInt);
+    }
+
+    return true;
+}
+
+sptr<ExtraElementinfoParcel> ExtraElementinfoParcel::Unmarshalling(Parcel &parcel)
+{
+    sptr<ExtraElementinfoParcel> extraElementinfo = new(std::nothrow) ExtraElementinfoParcel();
+    if (!extraElementinfo) {
+        HILOG_ERROR("Failed to create extraElementinfo.");
+        return nullptr;
+    }
+    if (!extraElementinfo->ReadFromParcel(parcel)) {
+        HILOG_ERROR("read from parcel failed");
+        return nullptr;
+    }
+    return extraElementinfo;
+}
 } // namespace Accessibility
 } // namespace OHOS

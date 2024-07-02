@@ -142,6 +142,48 @@ public:
     static sptr<GridInfoParcel> Unmarshalling(Parcel &parcel);
 };
 
+class ExtraElementinfoParcel : public ExtraElementinfo, public Parcelable {
+public:
+    /**
+     * @brief Construct
+     * @since 3
+     * @sysCap Accessibility
+     */
+    ExtraElementinfoParcel() = default;
+
+    /**
+     * @brief Construct
+     * @param gridInfo The object of GridInfo.
+     * @since 3
+     * @sysCap Accessibility
+     */
+    explicit ExtraElementinfoParcel(const ExtraElementinfo &extraElementinfo);
+
+    /**
+     * @brief Used for IPC communication
+     * @param parcel
+     * @since 3
+     * @sysCap Accessibility
+     */
+    bool ReadFromParcel(Parcel &parcel);
+
+    /**
+     * @brief Used for IPC communication
+     * @param parcel
+     * @since 3
+     * @sysCap Accessibility
+     */
+    virtual bool Marshalling(Parcel &parcel) const override;
+
+    /**
+     * @brief Used for IPC communication
+     * @param parcel
+     * @since 3
+     * @sysCap Accessibility
+     */
+    static sptr<ExtraElementinfoParcel> Unmarshalling(Parcel &parcel);
+};
+
 class GridItemInfoParcel : public GridItemInfo, public Parcelable {
 public:
     /**

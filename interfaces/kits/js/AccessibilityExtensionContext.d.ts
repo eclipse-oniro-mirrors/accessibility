@@ -711,6 +711,8 @@ type ElementAttributeValues = {
    * @since 9
    */
   'rect': Rect;
+
+  'extraElementinfo' : ExtraElementinfo;
   /**
    * Indicates the resource name of the element.
    *
@@ -861,4 +863,8 @@ interface Rect {
   top: number;
   width: number;
   height: number;
+}
+interface ExtraElementinfo {
+  extraElementinfoFirst: Map<string, string>;
+  extraElementinfoSecond: Map<string, number>
 }

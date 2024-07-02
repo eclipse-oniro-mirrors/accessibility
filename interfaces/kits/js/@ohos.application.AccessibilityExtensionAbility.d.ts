@@ -22,6 +22,7 @@ import type {
   FocusType as _FocusType,
   WindowType as _WindowType,
   Rect as _Rect,
+  ExtraElementinfo as _ExtraElementinfo
 } from './application/AccessibilityExtensionContext';
 import type * as _AccessibilityExtensionContext from './application/AccessibilityExtensionContext';
 
@@ -82,6 +83,8 @@ export type WindowType = _WindowType;
  * @since 10
  */
 export type Rect = _Rect;
+
+export type ExtraElementinfo = _ExtraElementinfo;
 
 /**
  * The accessibility extension context. Used to configure, query information, and inject gestures.

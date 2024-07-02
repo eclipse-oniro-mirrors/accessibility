@@ -292,6 +292,47 @@ protected:
     bool selected_ = false;
 };
 
+/*
+* struct define the extra elementinfo
+*/
+struct StructOfExtraElementinfo
+{
+    std::string str = "CheckboxGroupselectedStatus";
+    std::string row = "row";
+    std::string column = "column";
+};
+
+/*
+* class define the extra elementinfo
+*/
+class ExtraElementinfo {
+public:
+    /**
+     * @brief Construct
+     */
+    ExtraElementinfo() {}
+
+    /**
+     * @brief Sets the extra Elementinfo.
+     * @param extraElementinfo The extraElementinfo map.
+     */
+    RetError SetExtraElementinfo(const std::string k_str, const std::string v_str);
+
+    RetError SetExtraElementinfo(const std::string k_str, const int32_t v_num);
+
+    const std::map<std::string, std::string> &GetExtraElementinfoFirst() const;
+
+    const std::map<std::string, int32_t> &GetExtraElementinfoSecond() const;
+
+protected:
+    StructOfExtraElementinfo keyInfo; //定义一个结构体变量data
+	std::string* p = (std::string *) & keyInfo;  //定义一个int型的指针变量p 该指针指向结构体变量data的首地址
+	int length = sizeof(StructOfExtraElementinfo) / sizeof(std::string); //结构体成员个数
+    std::map<std::string, std::string> extraElementinfoFirst_ = {};
+    std::map<std::string, int32_t> extraElementinfoSecond_ = {};
+
+};
+
 class Rect {
 public:
     /**
@@ -1407,6 +1448,10 @@ public:
     */
     void SetParentWindowId(const int32_t iParentWindowId);
 
+    void SetExtraElementinfoForAcc(const ExtraElementinfo &extraElementinfo);
+
+    const ExtraElementinfo &GetExtraElementinfoForAcc() const;
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1471,6 +1516,7 @@ protected:
     std::string latestContent_ = "";
     std::string textType_ = "";
     float offset_ = 0.0f;
+    ExtraElementinfo extraElementinfo_;
 };
 } // namespace Accessibility
 } // namespace OHOS
