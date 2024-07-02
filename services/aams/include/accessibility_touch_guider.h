@@ -505,6 +505,7 @@ private:
     std::unique_ptr<TouchGuideListener> touchGuideListener_ = nullptr;
     std::shared_ptr<TGEventHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
+    std::shared_ptr<MMI::PointerEvent> doubleTapLongPressDownEvent_ = nullptr;
     bool focusedElementExist_ = false;
     int32_t leftTopX_ = INIT_POINT_DISPLAY;
     int32_t leftTopY_ = INIT_POINT_DISPLAY;
