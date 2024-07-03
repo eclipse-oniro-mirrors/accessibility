@@ -148,7 +148,8 @@ void AccessibilityScreenTouch::SendInterceptedEvent()
     isStopDrawCircle_ = true;
 
     if (cachedDownPointerEvents_.empty()) {
-        HILOG_ERROR("Cached down event is empty!");
+        HILOG_ERROR("Cached down pointer event is empty!");
+        return;
     }
 
     for (auto iter = cachedDownPointerEvents_.begin(); iter != cachedDownPointerEvents_.end(); ++iter) {
@@ -279,7 +280,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
     double duration = hypot(offsetX, offsetY);
     if (duration > threshold_) {
         handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
-        if (isStopDrawCircle_ != true) {
+        if (isStopDrawCircle_ != true && !cachedDownPointerEvents_.empty()) {
             for (auto iter = cachedDownPointerEvents_.begin(); iter != cachedDownPointerEvents_.end(); ++iter) {
                 iter->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
                 EventTransmission::OnPointerEvent(*iter);
@@ -303,6 +304,13 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
 void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
+
+    if (cachedDownPointerEvents_.empty()) {
+        HILOG_ERROR("cached down pointer event is empty!");
+        handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
+        isStopDrawCircle_ = true;
+        return;
+    }
 
     if (isStopDrawCircle_ == true) {
         for (auto iter = cachedDownPointerEvents_.begin(); iter != cachedDownPointerEvents_.end(); ++iter) {
