@@ -21,9 +21,8 @@ namespace OHOS {
 namespace Accessibility {
 /* AccessibilityElementInfoParcel       Parcel struct                 */
 AccessibilityElementInfoParcel::AccessibilityElementInfoParcel(const AccessibilityElementInfo &elementInfo)
+    : AccessibilityElementInfo(elementInfo)
 {
-    AccessibilityElementInfo *self = this;
-    *self = elementInfo;
 }
 
 bool AccessibilityElementInfoParcel::ReadFromParcelFirstPart(Parcel &parcel)
@@ -252,9 +251,8 @@ sptr<AccessibilityElementInfoParcel> AccessibilityElementInfoParcel::Unmarshalli
 }
 
 AccessibleActionParcel::AccessibleActionParcel(const AccessibleAction &action)
+    : AccessibleAction(action)
 {
-    AccessibleAction *self = this;
-    *self = action;
 }
 
 bool AccessibleActionParcel::ReadFromParcel(Parcel &parcel)
@@ -289,9 +287,8 @@ sptr<AccessibleActionParcel> AccessibleActionParcel::Unmarshalling(Parcel& parce
 }
 
 RangeInfoParcel::RangeInfoParcel(const RangeInfo &rangeInfo)
+    : RangeInfo(rangeInfo)
 {
-    RangeInfo *self = this;
-    *self = rangeInfo;
 }
 
 bool RangeInfoParcel::ReadFromParcel(Parcel &parcel)
@@ -327,9 +324,8 @@ sptr<RangeInfoParcel> RangeInfoParcel::Unmarshalling(Parcel& parcel)
 }
 
 GridInfoParcel::GridInfoParcel(const GridInfo &gridInfo)
+    : GridInfo(gridInfo)
 {
-    GridInfo *self = this;
-    *self = gridInfo;
 }
 
 bool GridInfoParcel::ReadFromParcel(Parcel &parcel)
@@ -365,9 +361,8 @@ sptr<GridInfoParcel> GridInfoParcel::Unmarshalling(Parcel& parcel)
 }
 
 GridItemInfoParcel::GridItemInfoParcel(const GridItemInfo &itemInfo)
+    : GridItemInfo(itemInfo)
 {
-    GridItemInfo *self = this;
-    *self = itemInfo;
 }
 
 bool GridItemInfoParcel::ReadFromParcel(Parcel &parcel)
@@ -409,9 +404,8 @@ sptr<GridItemInfoParcel> GridItemInfoParcel::Unmarshalling(Parcel& parcel)
 }
 
 RectParcel::RectParcel(const Rect &rect)
+    : Rect(rect)
 {
-    Rect *self = this;
-    *self = rect;
 }
 
 bool RectParcel::ReadFromParcel(Parcel &parcel)
