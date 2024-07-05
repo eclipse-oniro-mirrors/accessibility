@@ -157,6 +157,28 @@ bool ParseDouble(napi_env env, double& param, napi_value args)
     return true;
 }
 
+bool ParseBigInt(napi_env env, int64_t& param, napi_value args)
+{
+    napi_status status;
+    napi_valuetype valuetype;
+    status = napi_typeof(env, args, &valuetype);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
+        return false;
+    }
+
+    if (valuetype != napi_bigint) {
+        HILOG_DEBUG("Wrong argument type. bigint expected.");
+        return false;
+    }
+
+    HILOG_DEBUG("The type of args is bigInt");
+    bool lossless = false;
+
+    napi_get_value_bigint_int64(env, args, &param, &lossless);
+    return lossless;
+}
+
 bool CheckJsFunction(napi_env env, napi_value args)
 {
     napi_status status;
