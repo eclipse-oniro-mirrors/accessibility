@@ -22,15 +22,18 @@
 
 namespace OHOS {
 namespace Accessibility {
+
+const int32_t ABILITY_SIZE_MAX = 10000;
+
 AccessibleAbilityManagerServiceProxy::AccessibleAbilityManagerServiceProxy(const sptr<IRemoteObject> &impl)
     : IRemoteProxy<IAccessibleAbilityManagerService>(impl)
 {
-    HILOG_INFO("AccessibleAbilityManagerServiceProxy construct this ptr = %{public}p", this);
+    HILOG_INFO("AccessibleAbilityManagerServiceProxy construct.");
 }
 
 AccessibleAbilityManagerServiceProxy::~AccessibleAbilityManagerServiceProxy()
 {
-    HILOG_INFO("AccessibleAbilityManagerServiceProxy destruct this ptr = %{public}p", this);
+    HILOG_INFO("AccessibleAbilityManagerServiceProxy destruct.");
 }
 
 bool AccessibleAbilityManagerServiceProxy::WriteInterfaceToken(MessageParcel &data)
@@ -198,6 +201,11 @@ RetError AccessibleAbilityManagerServiceProxy::GetAbilityList(const uint32_t abi
     }
     // read result
     int32_t abilityInfoSize = reply.ReadInt32();
+    if (abilityInfoSize < 0 || abilityInfoSize > ABILITY_SIZE_MAX) {
+        HILOG_ERROR("abilityInfoSize is invalid");
+        return RET_ERR_INVALID_PARAM;
+    }
+
     for (int32_t i = 0; i < abilityInfoSize; i++) {
         sptr<AccessibilityAbilityInfoParcel> info = reply.ReadStrongParcelable<AccessibilityAbilityInfoParcel>();
         if (!info) {
@@ -553,6 +561,11 @@ RetError AccessibleAbilityManagerServiceProxy::GetEnabledAbilities(std::vector<s
     }
 
     int32_t dev_num = reply.ReadInt32();
+    if (dev_num < 0 || dev_num > ABILITY_SIZE_MAX) {
+        HILOG_ERROR("dev_num is invalid");
+        return RET_ERR_INVALID_PARAM;
+    }
+
     for (int32_t i = 0; i < dev_num; i++) {
         enabledAbilities.push_back(reply.ReadString());
     }
