@@ -390,6 +390,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 start";
+    settingConfig_->Init();
     settingConfig_->SetMouseAutoClick(MOUSE_AUTO_CLICK_VALUE);
     EXPECT_EQ(-1, settingConfig_->GetMouseAutoClick());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 end";
@@ -421,6 +422,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002 start";
     std::string name = "TEST";
+    settingConfig_->Init();
     settingConfig_->SetShortkeyTarget(name);
     EXPECT_STREQ("", settingConfig_->GetShortkeyTarget().c_str());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002 end";
