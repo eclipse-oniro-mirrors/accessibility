@@ -62,7 +62,7 @@ bool AccessibleAbilityManagerServiceProxy::SendTransactCmd(AccessibilityInterfac
     return true;
 }
 
-RetError AccessibleAbilityManagerServiceProxy::SendEvent(const AccessibilityEventInfo &uiEvent)
+RetError AccessibleAbilityManagerServiceProxy::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
 {
     HILOG_DEBUG();
     MessageParcel data;

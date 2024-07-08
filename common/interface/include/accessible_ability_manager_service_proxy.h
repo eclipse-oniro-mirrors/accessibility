@@ -43,7 +43,7 @@ public:
      * @param uiEvent Indicates the accessibility event information specified by AccessibilityEventInfo.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual RetError SendEvent(const AccessibilityEventInfo &uiEvent) override;
+    virtual RetError SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag) override;
 
     /**
      * @brief Register the state observer of AAMS.

@@ -34,7 +34,7 @@ public:
 
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 
-    RetError SendEvent(const AccessibilityEventInfo &uiEvent) override;
+    RetError SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag) override;
 
     uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) override;
 

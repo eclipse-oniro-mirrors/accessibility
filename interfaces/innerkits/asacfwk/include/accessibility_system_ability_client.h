@@ -32,9 +32,9 @@ enum AccessibilityControlType : int32_t {
     CONTENT_TEXT = 0x00000004,
 };
 
-constexpr int32_t ELEMENT_MOVE_BIT = 51;
-constexpr int32_t ELEMENT_MOVE_BIT_SPLIT = 13;
+constexpr int32_t ELEMENT_MOVE_BIT = 40;
 constexpr int32_t CONT_SPLIT_ID = -1;
+constexpr int64_t MAX_ELEMENT_ID = 0xFFFFFFFFFF;
 
 /*
  * The class register the accessibility service observer to AAMS,and
@@ -167,6 +167,9 @@ public:
             elementId = CONT_SPLIT_ID;
             return;
         }
+        if ((elementId & MAX_ELEMENT_ID) != elementId) {
+            return;
+        }
         uint64_t itemp = 0;
         itemp = treeId;
         itemp = (itemp << ELEMENT_MOVE_BIT);
@@ -189,7 +192,7 @@ public:
             return;
         }
         splitTreeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
-        splitElementId = (static_cast<uint64_t>(elementId) << ELEMENT_MOVE_BIT_SPLIT) >> ELEMENT_MOVE_BIT_SPLIT;
+        splitElementId = MAX_ELEMENT_ID & elementId;
     }
 };
 } // namespace Accessibility
