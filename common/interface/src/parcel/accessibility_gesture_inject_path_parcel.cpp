@@ -21,9 +21,8 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilityGestureInjectPathParcel::AccessibilityGestureInjectPathParcel(
     const AccessibilityGestureInjectPath &gesturePath)
+    : AccessibilityGestureInjectPath(gesturePath)
 {
-    AccessibilityGestureInjectPath *self = this;
-    *self = gesturePath;
 }
 
 bool AccessibilityGestureInjectPathParcel::ReadFromParcel(Parcel &parcel)

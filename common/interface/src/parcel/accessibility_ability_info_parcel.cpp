@@ -21,9 +21,8 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilityAbilityInfoParcel::AccessibilityAbilityInfoParcel(
     const AccessibilityAbilityInfo &accessibilityAbilityInfo)
+    : AccessibilityAbilityInfo(accessibilityAbilityInfo)
 {
-    AccessibilityAbilityInfo *self = this;
-    *self = accessibilityAbilityInfo;
 }
 
 bool AccessibilityAbilityInfoParcel::ReadFromParcel(Parcel &parcel)

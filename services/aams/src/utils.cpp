@@ -45,6 +45,8 @@ namespace {
     const std::string CAPABILITIES_JSON_VALUE_KEY_EVENT_OBSERVER = "keyEventObserver";
     const std::string CAPABILITIES_JSON_VALUE_ZOOM = "zoom";
     const std::string CAPABILITIES_JSON_VALUE_GESTURE = "gesture";
+
+    const int32_t STRING_LEN_MAX = 10240;
 } // namespace
 
 class JsonUtils {
@@ -371,7 +373,7 @@ void Utils::StringToVector(const std::string &stringIn, std::vector<std::string>
     int32_t strLength = static_cast<int32_t>(stringIn.size());
     std::vector<int32_t> position;
 
-    if (strLength == 0) {
+    if (strLength <= 0 || strLength > STRING_LEN_MAX) {
         return;
     }
 

@@ -71,7 +71,7 @@ PowerErrors PowerMgrClient::ForceSuspendDevice()
     return PowerErrors::ERR_OK;
 }
 
-bool PowerMgrClient::IsScreenOn()
+bool PowerMgrClient::IsScreenOn(bool needPrintLog)
 {
     return true;
 }

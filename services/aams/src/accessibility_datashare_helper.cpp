@@ -294,8 +294,7 @@ std::shared_ptr<DataShare::DataShareHelper> AccessibilityDatashareHelper::Create
     }
     auto helper = DataShare::DataShareHelper::Creator(remoteObj_, uriProxyStr_);
     if (helper == nullptr) {
-        HILOG_WARN("helper is nullptr, uri=%{public}s, remoteObj_=%{public}p", uriProxyStr_.c_str(),
-            remoteObj_.GetRefPtr());
+        HILOG_WARN("helper is nullptr, uri=%{public}s", uriProxyStr_.c_str());
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::READ_EVENT, A11yError::ERROR_READ_FAILED);
         return nullptr;
     }
@@ -305,7 +304,7 @@ std::shared_ptr<DataShare::DataShareHelper> AccessibilityDatashareHelper::Create
 bool AccessibilityDatashareHelper::DestoryDatashareHelper(std::shared_ptr<DataShare::DataShareHelper>& helper)
 {
     if (helper && !helper->Release()) {
-        HILOG_WARN("release helper fail, remoteObj_=%{public}p", remoteObj_.GetRefPtr());
+        HILOG_WARN("release helper fail.");
         return false;
     }
     return true;
