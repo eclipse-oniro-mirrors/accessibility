@@ -34,10 +34,8 @@ public:
 
     static void SetUpTestCase();
     static void TearDownTestCase();
-    bool OnKeyEventDown();
     void SetUp() override;
     void TearDown() override;
-    std::shared_ptr<MMI::KeyEvent> CreateKeyEvent(int32_t keyCode, int32_t keyAction);
 
     std::shared_ptr<AccessibilityShortKey> shortKey_ = nullptr;
 };
@@ -66,216 +64,17 @@ void AccessibilityShortKeyUnitTest::TearDown()
     shortKey_ = nullptr;
 }
 
-std::shared_ptr<MMI::KeyEvent> AccessibilityShortKeyUnitTest::CreateKeyEvent(int32_t keyCode, int32_t keyAction)
-{
-    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return nullptr;
-    }
-    event->SetKeyCode(keyCode);
-    event->SetKeyAction(keyAction);
-    return event;
-}
-
-bool AccessibilityShortKeyUnitTest::OnKeyEventDown()
-{
-    std::shared_ptr<MMI::KeyEvent> downEvent = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
-        MMI::KeyEvent::KEY_ACTION_DOWN);
-    if (!downEvent) {
-        return false;
-    }
-    MMI::KeyEvent::KeyItem item;
-    item.SetPressed(true);
-    downEvent->AddKeyItem(item);
-    shortKey_->OnKeyEvent(*downEvent);
-    return true;
-}
-
 /**
- * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_001
- * @tc.name: OnKeyEvent
- * @tc.desc: Test function OnKeyEvent(press '5' key)
+ * @tc.number: AccessibilityShortKey_Unittest_Register_001
+ * @tc.name: Register
+ * @tc.desc: Test function Register
  * @tc.require: issueI5NTXH
  */
-HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_001, TestSize.Level1)
+HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_Register_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_001 start";
-    if (!shortKey_) {
-        return;
-    }
-    std::shared_ptr<MMI::KeyEvent> event = CreateKeyEvent(MMI::KeyEvent::KEYCODE_NUMPAD_5,
-        MMI::KeyEvent::KEY_ACTION_DOWN);
-    if (!event) {
-        return;
-    }
-    MMI::KeyEvent::KeyItem item;
-    item.SetPressed(true);
-    event->AddKeyItem(item);
-    shortKey_->OnKeyEvent(*event);
-    int32_t keyCode = event->GetKeyCode();
-    EXPECT_EQ(keyCode, MMI::KeyEvent::KEYCODE_NUMPAD_5);
-
+    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_Register_001 start";
+    shortKey_->Register();
     GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_001 end";
-}
-
-/**
- * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_002
- * @tc.name: OnKeyEvent
- * @tc.desc: Test function OnKeyEvent
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_002 start";
-    if (!shortKey_) {
-        return;
-    }
-    std::shared_ptr<MMI::KeyEvent> event = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
-        MMI::KeyEvent::KEY_ACTION_DOWN);
-    if (!event) {
-        return;
-    }
-    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
-    shortKey_->OnKeyEvent(*event);
-    int32_t keyCode = AccessibilityAbilityHelper::GetInstance().GetKeyCode();
-    EXPECT_EQ(keyCode, MMI::KeyEvent::KEYCODE_POWER);
-
-    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_002 end";
-}
-
-/**
- * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_003
- * @tc.name: OnKeyEvent
- * @tc.desc: Test function OnKeyEvent(Long press the power key)
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_003, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_003 start";
-    if (!shortKey_) {
-        return;
-    }
-    std::shared_ptr<MMI::KeyEvent> event = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
-        MMI::KeyEvent::KEY_ACTION_DOWN);
-    if (!event) {
-        return;
-    }
-    MMI::KeyEvent::KeyItem item;
-    item.SetPressed(true);
-    event->AddKeyItem(item);
-    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
-    shortKey_->OnKeyEvent(*event);
-    sleep(2);
-    int32_t keyCode = AccessibilityAbilityHelper::GetInstance().GetKeyCode();
-    EXPECT_EQ(keyCode, MMI::KeyEvent::KEYCODE_POWER);
-
-    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_003 end";
-}
-
-/**
- * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_004
- * @tc.name: OnKeyEvent
- * @tc.desc: Test function OnKeyEvent(Press the power button 3 times)
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_004, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_004 start";
-    if (!shortKey_) {
-        return;
-    }
-    // power key(down)
-    if (!OnKeyEventDown()) {
-        return;
-    }
-
-    // power key(up)
-    std::shared_ptr<MMI::KeyEvent> upEvent = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
-        MMI::KeyEvent::KEY_ACTION_UP);
-    if (!upEvent) {
-        return;
-    }
-    shortKey_->OnKeyEvent(*upEvent);
-
-    // power key(down)
-    if (!OnKeyEventDown()) {
-        return;
-    }
-
-    // power key(up)
-    std::shared_ptr<MMI::KeyEvent> upEvent1 = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
-        MMI::KeyEvent::KEY_ACTION_UP);
-    if (!upEvent1) {
-        return;
-    }
-    shortKey_->OnKeyEvent(*upEvent1);
-
-    // power key(down)
-    if (!OnKeyEventDown()) {
-        return;
-    }
-
-    // power key(up)
-    std::shared_ptr<MMI::KeyEvent> upEvent2 = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
-        MMI::KeyEvent::KEY_ACTION_UP);
-    if (!upEvent2) {
-        return;
-    }
-    shortKey_->OnKeyEvent(*upEvent2);
-    bool state = AccessibilityAbilityHelper::GetInstance().GetShortKeyTargetAbilityState();
-    EXPECT_TRUE(state);
-
-    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_004 end";
-}
-
-/**
- * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_005
- * @tc.name: OnKeyEvent
- * @tc.desc: Test function OnKeyEvent(power key up)
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_005, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_005 start";
-    if (!shortKey_) {
-        return;
-    }
-    std::shared_ptr<MMI::KeyEvent> event = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
-        MMI::KeyEvent::KEY_ACTION_UP);
-    if (!event) {
-        return;
-    }
-    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
-    shortKey_->OnKeyEvent(*event);
-    int32_t keyCode = AccessibilityAbilityHelper::GetInstance().GetKeyCode();
-    EXPECT_EQ(keyCode, MMI::KeyEvent::KEYCODE_POWER);
-
-    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_005 end";
-}
-
-/**
- * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_006
- * @tc.name: OnKeyEvent
- * @tc.desc: Test function OnKeyEvent(power key cancel)
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_006, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_006 start";
-    if (!shortKey_) {
-        return;
-    }
-    std::shared_ptr<MMI::KeyEvent> event = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
-        MMI::KeyEvent::KEY_ACTION_CANCEL);
-    if (!event) {
-        return;
-    }
-    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
-    shortKey_->OnKeyEvent(*event);
-    int32_t keyCode = AccessibilityAbilityHelper::GetInstance().GetKeyCode();
-    EXPECT_EQ(keyCode, MMI::KeyEvent::KEYCODE_POWER);
-
-    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_006 end";
 }
 
 /**

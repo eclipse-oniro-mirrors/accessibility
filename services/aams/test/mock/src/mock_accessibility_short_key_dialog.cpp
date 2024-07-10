@@ -42,6 +42,29 @@ std::string ShortkeyAbilityConnection::GetCommandString()
     return "";
 }
 
+void ReConfirmAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
+    const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
+{
+    HILOG_DEBUG("start.");
+    (void)element;
+    (void)remoteObject;
+    (void)resultCode;
+}
+
+void ReConfirmAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element,
+    int32_t resultCode)
+{
+    HILOG_DEBUG("start.");
+    (void)element;
+    (void)resultCode;
+}
+
+std::string ReConfirmAbilityConnection::GetCommandString()
+{
+    HILOG_DEBUG("start.");
+    return "";
+}
+
 // dialog
 AccessibilityShortkeyDialog::AccessibilityShortkeyDialog() {}
 
@@ -50,13 +73,14 @@ AccessibilityShortkeyDialog::~AccessibilityShortkeyDialog()
     HILOG_DEBUG("start.");
 }
 
-bool AccessibilityShortkeyDialog::ConnectDialog()
+bool AccessibilityShortkeyDialog::ConnectDialog(const int32_t dialogType)
 {
     HILOG_DEBUG("start.");
     return true;
 }
 
-bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr)
+bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr,
+                                                          const int32_t dialogType)
 {
     HILOG_DEBUG("start.");
     (void)want;
@@ -64,13 +88,13 @@ bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &wan
     return true;
 }
 
-bool AccessibilityShortkeyDialog::ConnectExtension()
+bool AccessibilityShortkeyDialog::ConnectExtension(const int32_t dialogType)
 {
     HILOG_DEBUG("start.");
     return true;
 }
 
-bool AccessibilityShortkeyDialog::DisconnectExtension() const
+bool AccessibilityShortkeyDialog::DisconnectExtension(const int32_t dialogType) const
 {
     HILOG_DEBUG("start.");
     return true;
