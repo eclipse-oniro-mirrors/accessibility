@@ -136,7 +136,7 @@ AccessibilityShortkeyDialog::~AccessibilityShortkeyDialog()
     HILOG_DEBUG("release AccessibilityShortkeyDialog");
 }
 
-bool AccessibilityShortkeyDialog::ConnectDialog(const int32_t dialogType)
+bool AccessibilityShortkeyDialog::ConnectDialog(ShortKeyDialogType dialogType)
 {
     HILOG_DEBUG("AccessibilityShortkeyDialog dialog");
     if (!ConnectExtension(dialogType)) {
@@ -147,14 +147,14 @@ bool AccessibilityShortkeyDialog::ConnectDialog(const int32_t dialogType)
 }
 
 bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr,
-                                                          const int32_t dialogType)
+                                                          ShortKeyDialogType dialogType)
 {
     // reset current callingIdentify
     std::string identity = IPCSkeleton::ResetCallingIdentity();
     uint32_t ret = ERR_OK;
 
     if (dialogType == ShortKeyDialogType::FUNCTION_SELECT) {
-        functionSelectConn_ = sptr<ShortkeyAbilityConnection>(new (std::nothrow) ShortkeyAbilityConnection(commandStr));
+        functionSelectConn_ = new(std::nothrow) ShortkeyAbilityConnection(commandStr);
         if (functionSelectConn_ == nullptr) {
             HILOG_ERROR("connection_ is nullptr.");
             return false;
@@ -162,7 +162,7 @@ bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &wan
         ret = AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
             functionSelectConn_, nullptr, DEFAULT_VALUE_MINUS_ONE);
     } else {
-        reConfirmConn_ = sptr<ReConfirmAbilityConnection>(new (std::nothrow) ReConfirmAbilityConnection(commandStr));
+        reConfirmConn_ = new(std::nothrow) ReConfirmAbilityConnection(commandStr);
         if (reConfirmConn_ == nullptr) {
             HILOG_ERROR("connection_ is nullptr.");
             return false;
@@ -180,7 +180,7 @@ bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &wan
     return true;
 }
 
-bool AccessibilityShortkeyDialog::ConnectExtension(const int32_t dialogType)
+bool AccessibilityShortkeyDialog::ConnectExtension(ShortKeyDialogType dialogType)
 {
     std::string tmp = BuildStartCommand();
     HILOG_DEBUG("start command: %{public}s", tmp.c_str());
@@ -198,7 +198,7 @@ bool AccessibilityShortkeyDialog::ConnectExtension(const int32_t dialogType)
     return true;
 }
 
-bool AccessibilityShortkeyDialog::DisconnectExtension(const int32_t dialogType) const
+bool AccessibilityShortkeyDialog::DisconnectExtension(ShortKeyDialogType dialogType) const
 {
     if (dialogType == ShortKeyDialogType::FUNCTION_SELECT) {
         if (functionSelectConn_ == nullptr) {

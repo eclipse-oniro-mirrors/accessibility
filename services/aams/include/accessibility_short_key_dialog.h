@@ -31,7 +31,7 @@ namespace Accessibility {
 enum ShortKeyDialogType {
     FUNCTION_SELECT = 0,
     RECONFIRM = 1
-}
+};
 
 class ShortkeyAbilityConnection : public AAFwk::AbilityConnectionStub {
 public:
@@ -73,12 +73,12 @@ class AccessibilityShortkeyDialog {
 public:
     AccessibilityShortkeyDialog();
     ~AccessibilityShortkeyDialog();
-    bool ConnectDialog(const int32_t dialogType);
+    bool ConnectDialog(ShortKeyDialogType dialogType);
 
 private:
-    bool ConnectExtension(const int32_t dialogType);
-    bool ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr, const int32_t dialogType);
-    bool DisconnectExtension(const int32_t dialogType) const;
+    bool ConnectExtension(ShortKeyDialogType dialogType);
+    bool ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr, ShortKeyDialogType dialogType);
+    bool DisconnectExtension(ShortKeyDialogType dialogType) const;
     std::string BuildStartCommand();
 
 private:

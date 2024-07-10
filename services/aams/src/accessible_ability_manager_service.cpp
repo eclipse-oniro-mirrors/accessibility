@@ -63,8 +63,6 @@ namespace {
     constexpr int32_t ELEMENT_MOVE_BIT = 51;
     constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
-    constexpr int32_t SHORT_KEY_FUNCTION_SELECT = 0;
-    constexpr int32_t SHORT_KEY_RECONFIRM = 1;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -1816,7 +1814,7 @@ void AccessibleAbilityManagerService::UpdateShortKeyRegister()
     HILOG_DEBUG();
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
+    if (accountData == nullptr) {
         HILOG_ERROR("Account data is null!");
         return;
     }
@@ -2102,7 +2100,7 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
     HILOG_DEBUG();
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
+    if (accountData == nullptr) {
         HILOG_ERROR("accountData is nullptr");
         return;
     }
@@ -2120,9 +2118,8 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
         int32_t shortKeyTimeout = accountData->GetConfig()->GetShortKeyTimeout();
         if (shortKeyTimeout == SHORT_KEY_TIMEOUT_BEFORE_USE) {
             HILOG_INFO("first use short cut key");
-            if (shortkeyDialog.ConnectDialog(SHORT_KEY_RECONFIRM)) {
-                accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-            }
+            accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+            shortkeyDialog.ConnectDialog(ShortKeyDialogType::RECONFIRM);
             return;
         }
     }
@@ -2134,7 +2131,7 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
         EnableShortKeyTargetAbility(shortkeyMultiTarget[0]);
     } else {
         // dialog
-        if (shortkeyDialog.ConnectDialog(SHORT_KEY_FUNCTION_SELECT)) {
+        if (shortkeyDialog.ConnectDialog(ShortKeyDialogType::FUNCTION_SELECT)) {
             HILOG_DEBUG("ready to build dialog");
         }
     }
