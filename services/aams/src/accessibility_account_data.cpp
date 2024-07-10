@@ -1128,7 +1128,7 @@ void AccessibilityAccountData::AccessibilityAbility::GetDisableAbilities(
     for (auto& connection : connectionMap_) {
         for (auto iter = disabledAbilities.begin(); iter != disabledAbilities.end();) {
             if (connection.second && (iter->GetId() == connection.second->GetAbilityInfo().GetId())) {
-                disabledAbilities.erase(iter);
+                iter = disabledAbilities.erase(iter);
             } else {
                 iter++;
             }
