@@ -28,6 +28,11 @@
 namespace OHOS {
 namespace Accessibility {
 
+enum ShortKeyDialogType {
+    FUNCTION_SELECT = 0,
+    RECONFIRM = 1
+}
+
 class ShortkeyAbilityConnection : public AAFwk::AbilityConnectionStub {
 public:
     explicit ShortkeyAbilityConnection(const std::string commandStr)
@@ -46,20 +51,39 @@ private:
     std::string commandStr_;
 };
 
+class ReConfirmAbilityConnection : public AAFwk::AbilityConnectionStub {
+public:
+    explicit ReConfirmAbilityConnection(const std::string commandStr)
+    {
+        commandStr_ = commandStr;
+    }
+
+    virtual ~ReConfirmAbilityConnection() = default;
+
+    void OnAbilityConnectDone(const AppExecFwk::ElementName &element,
+        const sptr<IRemoteObject> &remoteObject, int32_t resultCode) override;
+    void OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int32_t resultCode) override;
+    std::string GetCommandString();
+
+private:
+    std::string commandStr_;
+};
+
 class AccessibilityShortkeyDialog {
 public:
     AccessibilityShortkeyDialog();
     ~AccessibilityShortkeyDialog();
-    bool ConnectDialog();
+    bool ConnectDialog(const int32_t dialogType);
 
 private:
-    bool ConnectExtension();
-    bool ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr);
-    bool DisconnectExtension() const;
+    bool ConnectExtension(const int32_t dialogType);
+    bool ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr, const int32_t dialogType);
+    bool DisconnectExtension(const int32_t dialogType) const;
     std::string BuildStartCommand();
 
 private:
-    sptr<ShortkeyAbilityConnection> connection_ {nullptr};
+    sptr<ShortkeyAbilityConnection> functionSelectConn_ {nullptr};
+    sptr<ReConfirmAbilityConnection> reConfirmConn_ {nullptr};
 };
 
 } // namespace Accessibility

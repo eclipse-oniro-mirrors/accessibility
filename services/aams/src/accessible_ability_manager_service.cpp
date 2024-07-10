@@ -61,6 +61,10 @@ namespace {
     constexpr int32_t ELEMENT_MOVE_BIT_SPLIT = 13;
     constexpr int32_t TREE_ID_INVALID = -1;
     constexpr int32_t ELEMENT_MOVE_BIT = 51;
+    constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
+    constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
+    constexpr int32_t SHORT_KEY_FUNCTION_SELECT = 0;
+    constexpr int32_t SHORT_KEY_RECONFIRM = 1;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -88,6 +92,7 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
     inputInterceptor_ = nullptr;
     touchEventInjector_ = nullptr;
     keyEventFilter_ = nullptr;
+    accessibilityShortKey_ = nullptr;
     a11yAccountsData_.Clear(); // clear account data
 }
 
@@ -146,6 +151,7 @@ void AccessibleAbilityManagerService::OnStop()
         inputInterceptor_ = nullptr;
         touchEventInjector_ = nullptr;
         keyEventFilter_ = nullptr;
+        accessibilityShortKey_ = nullptr;
         stateObserversDeathRecipient_ = nullptr;
         bundleManagerDeathRecipient_ = nullptr;
 
@@ -1702,6 +1708,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
     accountData->UpdateAccountCapabilities();
     UpdateInputFilter();
     UpdateAccessibilityState();
+    UpdateShortKeyRegister();
 }
 
 void AccessibleAbilityManagerService::UpdateAccessibilityState()
@@ -1802,6 +1809,31 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
 void AccessibleAbilityManagerService::UpdateAllSetting()
 {
     accessibilitySettings_->UpdateAllSetting();
+}
+
+void AccessibleAbilityManagerService::UpdateShortKeyRegister()
+{
+    HILOG_DEBUG();
+
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("Account data is null!");
+        return;
+    }
+
+    bool shortKeyState = accountData->GetConfig()->GetShortKeyState();
+    if (shortKeyState) {
+        if (accessibilityShortKey_ == nullptr) {
+            accessibilityShortKey_ = new (std::nothrow) AccessibilityShortKey();
+            if (accessibilityShortKey_ == nullptr) {
+                HILOG_ERROR("Create AccessibilityShortKey failed");
+                return;
+            }
+            accessibilityShortKey_->Register();
+        }
+    } else {
+        accessibilityShortKey_ = nullptr;
+    }
 }
 
 RetError AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
@@ -2075,6 +2107,26 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
         return;
     }
 
+    AccessibilityShortkeyDialog shortkeyDialog;
+
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    bool oobeState = false;
+    bool userSetupState = false;
+    provider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
+    if (accountData->GetConfig()->GetDbHandle()) {
+        userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
+    }
+    if (oobeState && userSetupState) {
+        int32_t shortKeyTimeout = accountData->GetConfig()->GetShortKeyTimeout();
+        if (shortKeyTimeout == SHORT_KEY_TIMEOUT_BEFORE_USE) {
+            HILOG_INFO("first use short cut key");
+            if (shortkeyDialog.ConnectDialog(SHORT_KEY_RECONFIRM)) {
+                accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+            }
+            return;
+        }
+    }
+
     std::vector<std::string> shortkeyMultiTarget = accountData->GetConfig()->GetShortkeyMultiTarget();
     if (shortkeyMultiTarget.size() == 0) {
         EnableShortKeyTargetAbility();
@@ -2082,8 +2134,7 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
         EnableShortKeyTargetAbility(shortkeyMultiTarget[0]);
     } else {
         // dialog
-        AccessibilityShortkeyDialog shortkeyDialog;
-        if (shortkeyDialog.ConnectDialog()) {
+        if (shortkeyDialog.ConnectDialog(SHORT_KEY_FUNCTION_SELECT)) {
             HILOG_DEBUG("ready to build dialog");
         }
     }
@@ -2349,13 +2400,11 @@ void AccessibleAbilityManagerService::OnDeviceProvisioned()
     if (accountData->GetConfig()->GetDbHandle()) {
         accountData->GetConfig()->GetDbHandle()->UnregisterObserver(USER_SETUP_COMPLETED);
     }
-    if (accountData->GetDefaultUserScreenReaderState() == false) {
-        HILOG_DEBUG();
-        accountData->GetConfig()->SetShortKeyState(false);
-        std::vector<std::string> tmpVec;
-        accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
+    if (accountData->GetDefaultUserScreenReaderState()) {
+        HILOG_INFO("Modify shortKeyTimeout and shortKeyOnLockScreenState");
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+        accountData->GetConfig()->SetShortKeyOnLockScreenState(true);
         UpdateConfigState();
-        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
     }
 }
 
@@ -2386,7 +2435,7 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
             std::vector<std::string> tmpVec { SCREEN_READER_BUNDLE_ABILITY_NAME };
             accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
             UpdateConfigState();
-            Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
+            Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
             AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
                 Singleton<AccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
             };
@@ -2466,6 +2515,7 @@ bool AccessibleAbilityManagerService::IsNeedUnload()
         accountData->GetConfig()->GetCaptionState() != false ||
         accountData->GetConfig()->GetScreenMagnificationState() != false ||
         accountData->GetConfig()->GetShortKeyState() != false ||
+        accountData->GetConfig()->GetShortKeyOnLockScreenState() != false ||
         accountData->GetConfig()->GetBrightnessDiscount() != 1) {
         return false;
     }

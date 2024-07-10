@@ -787,9 +787,6 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     if (isGesturesSimulation_) {
         flag |= AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
     }
-    if (config_->GetShortKeyState()) {
-        flag |= AccessibilityInputInterceptor::FEATURE_SHORT_KEY;
-    }
     if (config_->GetMouseKeyState()) {
         flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_KEY;
     }

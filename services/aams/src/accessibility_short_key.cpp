@@ -20,180 +20,60 @@
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    constexpr size_t KEY_ITEM_COUNT_1 = 1;
-    constexpr uint32_t SHORT_KEY_TIMEOUT_MSG = 1;
-    constexpr int32_t MULTI_PRESS_TIMER = 300; // ms
-    constexpr int32_t TRIPLE_PRESS_COUNT = 3;
+    constexpr int32_t SHORTCUT_TIMEOUT = 3000; // ms
 } // namespace
-
-AccessibilityShortKey::AccessibilityShortKey()
-{
-    HILOG_DEBUG();
-
-    std::shared_ptr<AppExecFwk::EventRunner> runner =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
-    if (!runner) {
-        HILOG_ERROR("get runner failed");
-        return;
-    }
-
-    timeoutHandler_ = std::make_shared<ShortKeyEventHandler>(runner, *this);
-    if (!timeoutHandler_) {
-        HILOG_ERROR("create event handler failed");
-    }
-}
 
 AccessibilityShortKey::~AccessibilityShortKey()
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
-    cachedKeyEvents_.clear();
-    timeoutHandler_ = nullptr;
-    lastKeyAction_ = MMI::KeyEvent::KEY_ACTION_UNKNOWN;
-}
-
-bool AccessibilityShortKey::OnKeyEvent(MMI::KeyEvent &event)
-{
-    HILOG_DEBUG();
-
-    RecognizeShortKey(event);
-    return true;
-}
-
-void AccessibilityShortKey::SendKeyEventToNext()
-{
-    HILOG_DEBUG();
-
-    for (const auto &keyEvent : cachedKeyEvents_) {
-        EventTransmission::OnKeyEvent(*keyEvent);
+    for (auto it = subscribeIds_.begin(); it != subscribeIds_.end(); it = subscribeIds_.erase(it)) {
+        if (*it >= 0) {
+            MMI::InputManager::GetInstance()->UnsubscribeKeyEvent(*it);
+        }
     }
-
-    ClearCachedEventsAndMsg();
 }
 
-void AccessibilityShortKey::DestroyEvents()
+void AccessibilityShortKey::SubscribeShortKey(std::set<int32_t> preKeys, int32_t finalKey, int32_t holdTime)
 {
-    HILOG_DEBUG();
-
-    ClearCachedEventsAndMsg();
-    EventTransmission::DestroyEvents();
-}
-
-void AccessibilityShortKey::RecognizeShortKey(MMI::KeyEvent &event)
-{
-    HILOG_DEBUG();
-
-    int32_t action = event.GetKeyAction();
-    size_t pressedKeyCount = event.GetPressedKeys().size();
-    int32_t keyCode = event.GetKeyCode();
-    std::shared_ptr<MMI::KeyEvent> keyEvent = std::make_shared<MMI::KeyEvent>(event);
-
-    if (keyCode != MMI::KeyEvent::KEYCODE_POWER && keyCode != MMI::KeyEvent::KEYCODE_VOLUME_UP &&
-        keyCode != MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
-        EventTransmission::OnKeyEvent(event);
+    std::shared_ptr<MMI::KeyOption> keyOption = std::make_shared<MMI::KeyOption>();
+    if (keyOption == nullptr) {
+        HILOG_ERROR("Create keyOption failed.");
         return;
     }
 
-    AddCachedKeyEvent(keyEvent);
+    keyOption->SetPreKeys(preKeys);
+    keyOption->SetFinalKey(finalKey);
+    keyOption->SetFinalKeyDown(true);
+    // MMI will get the real holdTime in SettingsData, so the input parameter may not take effect here.
+    keyOption->SetFinalKeyDownDuration(holdTime);
 
-    if (action == MMI::KeyEvent::KEY_ACTION_DOWN) {
-        if (pressedKeyCount != KEY_ITEM_COUNT_1 || keyCode != MMI::KeyEvent::KEYCODE_POWER) {
-            SendKeyEventToNext();
-            return;
-        }
-        if (lastKeyAction_ != MMI::KeyEvent::KEY_ACTION_DOWN) {
-            timeoutHandler_->RemoveEvent(SHORT_KEY_TIMEOUT_MSG);
-            timeoutHandler_->SendEvent(SHORT_KEY_TIMEOUT_MSG, 0, MULTI_PRESS_TIMER);
-        }
-        lastKeyAction_ = action;
-    } else if (action == MMI::KeyEvent::KEY_ACTION_UP) {
-        if (pressedKeyCount || !IsUpValid()) {
-            SendKeyEventToNext();
-            return;
-        }
-        lastKeyAction_ = action;
-        if (IsTriplePress()) {
-            OnShortKey();
-        }
-    } else {
-        SendKeyEventToNext();
+    auto keyEventCallBack = std::bind(&AccessibilityShortKey::OnShortKey, this);
+    int32_t subscribeId = MMI:InputManager::GetInstance()->SubscribeKeyEvent(keyOption, keyEventCallBack);
+    if (subscribeId < 0) {
+        HILOG_ERROR("Subscribe key event failed, finalKey: %{public}d id: %{public}d", finalKey, subscribeId);
+        return;
     }
+    subscribeIds_.emplace_back(subscribeId);
+}
+
+void AccessibilityShortKey::Register()
+{
+    HILOG_INFO();
+
+    std::set<int32_t> preDownKeysUp;
+    preDownKeysUp.insert(MMI::KeyEvent::KEYCODE_VOLUME_UP);
+    SubscribeShortKey(preDownKeysUp, MMI::KeyEvent::KEYCODE_VOLUME_DOWN, SHORTCUT_TIMEOUT);
+    std::set<int32_t> preUpKeysDown;
+    preUpKeysDown.insert(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
+    SubscribeShortKey(preUpKeysDown, MMI::KeyEvent::KEYCODE_VOLUME_UP, SHORTCUT_TIMEOUT);
 }
 
 void AccessibilityShortKey::OnShortKey()
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
-    ClearCachedEventsAndMsg();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
-}
-
-void AccessibilityShortKey::AddCachedKeyEvent(std::shared_ptr<MMI::KeyEvent> &event)
-{
-    HILOG_DEBUG();
-
-    cachedKeyEvents_.emplace_back(event);
-}
-
-bool AccessibilityShortKey::IsTriplePress()
-{
-    HILOG_DEBUG();
-
-    uint32_t upEventCount = 0;
-    int32_t action = MMI::KeyEvent::KEY_ACTION_UNKNOWN;
-    int32_t keyCode = MMI::KeyEvent::KEYCODE_UNKNOWN;
-    for (auto &keyEvent : cachedKeyEvents_) {
-        action = keyEvent->GetKeyAction();
-        keyCode = keyEvent->GetKeyCode();
-        if (action == MMI::KeyEvent::KEY_ACTION_UP && keyCode == MMI::KeyEvent::KEYCODE_POWER) {
-            upEventCount++;
-        }
-    }
-
-    if (upEventCount >= TRIPLE_PRESS_COUNT) {
-        return true;
-    }
-    return false;
-}
-
-bool AccessibilityShortKey::IsUpValid()
-{
-    HILOG_DEBUG();
-
-    if (lastKeyAction_ == MMI::KeyEvent::KEY_ACTION_DOWN) {
-        return true;
-    }
-    return false;
-}
-
-void AccessibilityShortKey::ClearCachedEventsAndMsg()
-{
-    HILOG_DEBUG();
-
-    cachedKeyEvents_.clear();
-    lastKeyAction_ = MMI::KeyEvent::KEY_ACTION_UNKNOWN;
-    timeoutHandler_->RemoveEvent(SHORT_KEY_TIMEOUT_MSG);
-}
-
-AccessibilityShortKey::ShortKeyEventHandler::ShortKeyEventHandler(
-    const std::shared_ptr<AppExecFwk::EventRunner> &runner,
-    AccessibilityShortKey &shortKey) : AppExecFwk::EventHandler(runner), shortKey_(shortKey)
-{
-    HILOG_DEBUG();
-}
-
-void AccessibilityShortKey::ShortKeyEventHandler::ProcessEvent(
-    const AppExecFwk::InnerEvent::Pointer &event)
-{
-    HILOG_DEBUG();
-
-    switch (event->GetInnerEventId()) {
-        case SHORT_KEY_TIMEOUT_MSG:
-            shortKey_.SendKeyEventToNext();
-            break;
-        default:
-            break;
-    }
+    Singleton<AccessibilityManagerService>::GetInstance().OnShortKeyProcess();
 }
 } // namespace Accessibility
 } // namespace OHOS
