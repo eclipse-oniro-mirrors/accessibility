@@ -159,9 +159,9 @@ void AccessibilityCommonEvent::HandlePackageRemoved(const EventFwk::CommonEventD
     std::string bundleName = data.GetWant().GetBundle();
     int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
     int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
-    HILOG_INFO("bundleName is %{public}s, userId is %{public}d accountId is %{public}d",
-        bundleName.c_str(), userId, accountId);
+    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     if (userId != accountId) {
+        HILOG_ERROR("not same user.");
         return;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
@@ -172,9 +172,9 @@ void AccessibilityCommonEvent::HandlePackageAdd(const EventFwk::CommonEventData 
     std::string bundleName = data.GetWant().GetBundle();
     int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
     int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
-    HILOG_INFO("bundleName is %{public}s, userId is %{public}d accountId is %{public}d",
-        bundleName.c_str(), userId, accountId);
+    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     if (userId != accountId) {
+        HILOG_ERROR("not same user.");
         return;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
@@ -185,9 +185,9 @@ void AccessibilityCommonEvent::HandlePackageChanged(const EventFwk::CommonEventD
     std::string bundleName = data.GetWant().GetBundle();
     int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
     int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
-    HILOG_INFO("bundleName is %{public}s, userId is %{public}d accountId is %{public}d",
-        bundleName.c_str(), userId, accountId);
+    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     if (userId != accountId) {
+        HILOG_ERROR("not same user.");
         return;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
