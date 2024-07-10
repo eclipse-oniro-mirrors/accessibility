@@ -2109,10 +2109,10 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
 
     AccessibilityShortkeyDialog shortkeyDialog;
 
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    AccessibilitySettingProvider& settingProvider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     bool oobeState = false;
     bool userSetupState = false;
-    provider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
+    settingProvider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
     if (accountData->GetConfig()->GetDbHandle()) {
         userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
     }

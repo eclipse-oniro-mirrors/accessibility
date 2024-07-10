@@ -161,7 +161,7 @@ bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &wan
         }
         ret = AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
             functionSelectConn_, nullptr, DEFAULT_VALUE_MINUS_ONE);
-    else {
+    } else {
         reConfirmConn_ = sptr<ReConfirmAbilityConnection>(new (std::nothrow) ReConfirmAbilityConnection(commandStr));
         if (reConfirmConn_ == nullptr) {
             HILOG_ERROR("connection_ is nullptr.");
