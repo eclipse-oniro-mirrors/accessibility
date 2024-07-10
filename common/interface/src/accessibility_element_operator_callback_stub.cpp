@@ -115,7 +115,10 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
 
     int32_t accessibilityInfosize = data.ReadInt32();
     std::vector<AccessibilityElementInfo> tmpData;
-    ContainerSecurityVerify(data, accessibilityInfosize, tmpData.max_size());
+    bool verifyResult = ContainerSecurityVerify(data, accessibilityInfosize, tmpData.max_size());
+    if (!verifyResult || accessibilityInfosize < 0 || accessibilityInfosize > INT32_MAX) {
+        return TRANSACTION_ERR;
+    }
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfoParcel> accessibilityInfo =
             data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
@@ -147,7 +150,10 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
     HILOG_DEBUG();
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
-    ContainerSecurityVerify(data, accessibilityInfosize, infos.max_size());
+    bool verifyResult = ContainerSecurityVerify(data, accessibilityInfosize, infos.max_size());
+    if (!verifyResult || accessibilityInfosize < 0 || accessibilityInfosize > INT32_MAX) {
+        return TRANSACTION_ERR;
+    }
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfoParcel> accessibilityInfo =
             data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
