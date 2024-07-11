@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,36 +21,18 @@
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityShortKey : public EventTransmission {
+class AccessibilityShortKey : public RefBase {
 public:
-    AccessibilityShortKey();
-    virtual ~AccessibilityShortKey();
+    AccessibilityShortKey() = default;
+    ~AccessibilityShortKey();
 
-    bool OnKeyEvent(MMI::KeyEvent &event) override;
-    void SendKeyEventToNext();
-    void DestroyEvents() override;
+    void Register();
 
 private:
-    class ShortKeyEventHandler : public AppExecFwk::EventHandler {
-    public:
-        ShortKeyEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner, AccessibilityShortKey &shortKey);
-        virtual ~ShortKeyEventHandler() = default;
-        virtual void ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) override;
-
-    private:
-        AccessibilityShortKey &shortKey_;
-    };
-
-    void AddCachedKeyEvent(std::shared_ptr<MMI::KeyEvent> &event);
-    void RecognizeShortKey(MMI::KeyEvent &event);
-    void ClearCachedEventsAndMsg();
-    bool IsUpValid();
-    bool IsTriplePress();
+    void SubscribeShortKey(std::set<int32_t> preKeys, int32_t finalKey, int32_t holdTime);
     void OnShortKey();
 
-    std::vector<std::shared_ptr<MMI::KeyEvent>> cachedKeyEvents_;
-    std::shared_ptr<ShortKeyEventHandler> timeoutHandler_ = nullptr;
-    int32_t lastKeyAction_ = MMI::KeyEvent::KEY_ACTION_UNKNOWN;
+    std::list<int32_t> subscribeIds_;
 };
 } // namespace Accessibility
 } // namespace OHOS

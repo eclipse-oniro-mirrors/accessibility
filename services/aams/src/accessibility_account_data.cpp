@@ -40,6 +40,7 @@ namespace {
     constexpr int DISPLAY_DALTONIZER_GREEN = 12;
     constexpr int DISPLAY_DALTONIZER_RED = 11;
     constexpr int DISPLAY_DALTONIZER_BLUE = 13;
+    constexpr int DEFAULT_ACCOUNT_ID = 100;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
@@ -52,6 +53,7 @@ namespace {
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER = "accessibility_display_daltonizer";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
+    const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -463,13 +465,18 @@ void AccessibilityAccountData::SetScreenReaderState(const std::string &name, con
     }
 }
 
-bool AccessibilityAccountData::GetScreenReaderState()
+bool AccessibilityAccountData::GetDefaultUserScreenReaderState()
 {
     HILOG_DEBUG();
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    bool state = false;
-    provider.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, state);
-    return state;
+    auto datashare = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SECURE, DEFAULT_ACCOUNT_ID);
+    if (datashare == nullptr) {
+        return false;
+    }
+    std::string tmpString = datashare->GetStringValue(ENABLED_ACCESSIBILITY_SERVICES, "");
+    std::vector<std::string> services;
+    Utils::StringToVector(tmpString, services);
+    auto iter = std::find(services.begin(), services.end(), SCREEN_READER_BUNDLE_ABILITY_NAME);
+    return iter != services.end();
 }
 
 void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)
@@ -491,8 +498,8 @@ void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string 
 
 bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &name)
 {
-    if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
-        return GetScreenReaderState();
+    if (name == SCREEN_READER_BUNDLE_ABILITY_NAME && GetAccountType() == AccountSA::OsAccountType::PRIVATE) {
+        return GetDefaultUserScreenReaderState();
     }
     if (!config_) {
         HILOG_WARN("config_ is nullptr.");
@@ -779,9 +786,6 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     }
     if (isGesturesSimulation_) {
         flag |= AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
-    }
-    if (config_->GetShortKeyState()) {
-        flag |= AccessibilityInputInterceptor::FEATURE_SHORT_KEY;
     }
     if (config_->GetMouseKeyState()) {
         flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_KEY;
@@ -1121,7 +1125,7 @@ void AccessibilityAccountData::AccessibilityAbility::GetDisableAbilities(
     for (auto& connection : connectionMap_) {
         for (auto iter = disabledAbilities.begin(); iter != disabledAbilities.end();) {
             if (connection.second && (iter->GetId() == connection.second->GetAbilityInfo().GetId())) {
-                disabledAbilities.erase(iter);
+                iter = disabledAbilities.erase(iter);
             } else {
                 iter++;
             }

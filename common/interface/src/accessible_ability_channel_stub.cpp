@@ -383,7 +383,10 @@ ErrCode AccessibleAbilityChannelStub::HandleSetTargetBundleName(MessageParcel &d
     HILOG_DEBUG();
     std::vector<std::string> targetBundleNames;
     int32_t size = data.ReadInt32();
-    ContainerSecurityVerify(data, size, targetBundleNames.max_size());
+    bool verifyResult = ContainerSecurityVerify(data, size, targetBundleNames.max_size());
+    if (!verifyResult || size < 0 || size > INT32_MAX) {
+        return TRANSACTION_ERR;
+    }
     for (int32_t i = 0; i < size; i++) {
         std::string temp = data.ReadString();
         targetBundleNames.emplace_back(temp);

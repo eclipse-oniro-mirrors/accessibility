@@ -126,6 +126,7 @@ private:
 
     sptr<AccessibilityWindowListener> windowListener_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
+    std::recursive_mutex interfaceMutex_; // mutex for interface to make sure AccessibilityWindowManager thread-safe
 };
 } // namespace Accessibility
 } // namespace OHOS

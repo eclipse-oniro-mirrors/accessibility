@@ -1335,5 +1335,30 @@ HWTEST_F(AccessibilityElementInfoTest, SetBelongTreeId_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetBelongTreeId_001 end";
 }
 
+/**
+ * @tc.number: SetAccessibilityGroup_001
+ * @tc.name: SetAccessibilityGroup
+ * @tc.desc: Test function SetAccessibilityGroup, GetAccessibilityGroup
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityGroup_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityGroup_001 start";
+    elementInfo_->SetAccessibilityGroup(false);
+    EXPECT_FALSE(elementInfo_->GetAccessibilityGroup());
+    GTEST_LOG_(INFO) << "SetAccessibilityGroup_001 end";
+}
+
+/**
+ * @tc.number: SetAccessibilityLevel_001
+ * @tc.name: SetAccessibilityLevel
+ * @tc.desc: Test function SetAccessibilityLevel, GetAccessibilityLevel
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityLevel_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityLevel_001 start";
+    elementInfo_->SetAccessibilityLevel("test");
+    EXPECT_STREQ(elementInfo_->GetAccessibilityLevel().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetAccessibilityLevel_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

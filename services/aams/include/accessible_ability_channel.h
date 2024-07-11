@@ -74,10 +74,8 @@ private:
         const std::string &clientName, sptr<IAccessibilityElementOperator> &elementOperator, const int32_t treeId);
     RetError GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const;
     RetError TransmitActionToMmi(const int32_t action);
-    static void SetKeyCodeMulti(std::shared_ptr<MMI::KeyEvent>& keyEvent,
-        const int32_t keyCodePre, const int32_t keyCodeNext);
-    static void SetKeyCodeSingle(std::shared_ptr<MMI::KeyEvent>& keyEvent, const int32_t keyCode);
-
+    static void SetKeyCodeToMmi(std::shared_ptr<MMI::KeyEvent>& keyEvent, const bool isPress,
+        const int32_t keyCode);
     std::string clientName_ = "";
     int32_t accountId_ = -1;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;

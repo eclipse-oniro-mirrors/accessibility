@@ -31,6 +31,7 @@
 
 constexpr int32_t SHORTKEY_DIALOG_PARAM_NUM = 3;
 constexpr int32_t DEFAULT_VALUE_MINUS_ONE = -1;
+constexpr int32_t SYS_DIALOG_Z_ORDER_ON_LOCK_SCREEN = 2;
 
 namespace OHOS {
 namespace Accessibility {
@@ -81,6 +82,52 @@ std::string ShortkeyAbilityConnection::GetCommandString()
     return commandStr_;
 }
 
+void ReConfirmAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
+    const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
+{
+    HILOG_DEBUG("on ability connected");
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    data.WriteInt32(SHORTKEY_DIALOG_PARAM_NUM);
+    data.WriteString16(u"bundleName");
+    data.WriteString16(u"com.ohos.settings");
+    data.WriteString16(u"abilityName");
+    data.WriteString16(u"AccessibilityReConfirmDialog");
+    data.WriteString16(u"parameters");
+    data.WriteString16(Str8ToStr16(GetCommandString()));
+
+    if (!data.WriteParcelable(&element)) {
+        HILOG_ERROR("Connect done element error.");
+        return;
+    }
+
+    if (!data.WriteRemoteObject(remoteObject)) {
+        HILOG_ERROR("Connect done remote object error.");
+        return;
+    }
+
+    if (!data.WriteInt32(resultCode)) {
+        HILOG_ERROR("Connect done result code error.");
+        return;
+    }
+
+    int32_t errCode = remoteObject->SendRequest(
+        AAFwk::IAbilityConnection::ON_ABILITY_CONNECT_DONE, data, reply, option);
+    HILOG_DEBUG("AbilityConnectionWrapperProxy::OnAbilityConnectDone result %{public}d", errCode);
+}
+
+void ReConfirmAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element,
+    int32_t resultCode)
+{
+    HILOG_DEBUG("on ability disconnected");
+}
+
+std::string ReConfirmAbilityConnection::GetCommandString()
+{
+    return commandStr_;
+}
+
 // dialog
 AccessibilityShortkeyDialog::AccessibilityShortkeyDialog() {}
 
@@ -89,27 +136,40 @@ AccessibilityShortkeyDialog::~AccessibilityShortkeyDialog()
     HILOG_DEBUG("release AccessibilityShortkeyDialog");
 }
 
-bool AccessibilityShortkeyDialog::ConnectDialog()
+bool AccessibilityShortkeyDialog::ConnectDialog(ShortKeyDialogType dialogType)
 {
     HILOG_DEBUG("AccessibilityShortkeyDialog dialog");
-    if (!ConnectExtension()) {
+    if (!ConnectExtension(dialogType)) {
         HILOG_ERROR("failed to connect dialog.");
         return false;
     }
     return true;
 }
 
-bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr)
+bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr,
+                                                          ShortKeyDialogType dialogType)
 {
-    connection_ = sptr<ShortkeyAbilityConnection>(new (std::nothrow) ShortkeyAbilityConnection(commandStr));
-    if (connection_ == nullptr) {
-        HILOG_ERROR("connection_ is nullptr.");
-        return false;
-    }
     // reset current callingIdentify
     std::string identity = IPCSkeleton::ResetCallingIdentity();
-    auto ret = AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want, connection_, nullptr,
-        DEFAULT_VALUE_MINUS_ONE);
+    uint32_t ret = ERR_OK;
+
+    if (dialogType == ShortKeyDialogType::FUNCTION_SELECT) {
+        functionSelectConn_ = new(std::nothrow) ShortkeyAbilityConnection(commandStr);
+        if (functionSelectConn_ == nullptr) {
+            HILOG_ERROR("connection_ is nullptr.");
+            return false;
+        }
+        ret = AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
+            functionSelectConn_, nullptr, DEFAULT_VALUE_MINUS_ONE);
+    } else {
+        reConfirmConn_ = new(std::nothrow) ReConfirmAbilityConnection(commandStr);
+        if (reConfirmConn_ == nullptr) {
+            HILOG_ERROR("connection_ is nullptr.");
+            return false;
+        }
+        ret = AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
+            reConfirmConn_, nullptr, DEFAULT_VALUE_MINUS_ONE);
+    }
     HILOG_DEBUG("ret is: %{public}d.", ret);
     // set current callingIdentify back.
     IPCSkeleton::SetCallingIdentity(identity);
@@ -120,7 +180,7 @@ bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &wan
     return true;
 }
 
-bool AccessibilityShortkeyDialog::ConnectExtension()
+bool AccessibilityShortkeyDialog::ConnectExtension(ShortKeyDialogType dialogType)
 {
     std::string tmp = BuildStartCommand();
     HILOG_DEBUG("start command: %{public}s", tmp.c_str());
@@ -129,7 +189,7 @@ bool AccessibilityShortkeyDialog::ConnectExtension()
     std::string bundleName = "com.ohos.systemui";
     std::string abilityName = "com.ohos.systemui.dialog";
     want.SetElementName(bundleName, abilityName);
-    bool ret = ConnectExtensionAbility(want, tmp);
+    bool ret = ConnectExtensionAbility(want, tmp, dialogType);
     if (!ret) {
         HILOG_ERROR("ConnectExtensionAbility failed.");
         return false;
@@ -138,17 +198,29 @@ bool AccessibilityShortkeyDialog::ConnectExtension()
     return true;
 }
 
-bool AccessibilityShortkeyDialog::DisconnectExtension() const
+bool AccessibilityShortkeyDialog::DisconnectExtension(ShortKeyDialogType dialogType) const
 {
-    if (connection_ == nullptr) {
+    if (dialogType == ShortKeyDialogType::FUNCTION_SELECT) {
+        if (functionSelectConn_ == nullptr) {
+            return true;
+        }
+        ErrCode ret = AAFwk::ExtensionManagerClient::GetInstance().DisconnectAbility(functionSelectConn_);
+        if (ret != ERR_OK) {
+            HILOG_ERROR("disconnect extension ability failed ret: %{public}d.", ret);
+            return false;
+        }
+        return true;
+    } else {
+        if (reConfirmConn_ == nullptr) {
+            return true;
+        }
+        ErrCode ret = AAFwk::ExtensionManagerClient::GetInstance().DisconnectAbility(reConfirmConn_);
+        if (ret != ERR_OK) {
+            HILOG_ERROR("disconnect extension ability failed ret: %{public}d.", ret);
+            return false;
+        }
         return true;
     }
-    ErrCode ret = AAFwk::ExtensionManagerClient::GetInstance().DisconnectAbility(connection_);
-    if (ret != ERR_OK) {
-        HILOG_ERROR("disconnect extension ability failed ret: %{public}d.", ret);
-        return false;
-    }
-    return true;
 }
 
 std::string AccessibilityShortkeyDialog::BuildStartCommand()
@@ -156,6 +228,7 @@ std::string AccessibilityShortkeyDialog::BuildStartCommand()
     nlohmann::json root;
     std::string tmp = "sysDialog/common";
     root["ability.want.params.uiExtensionType"] = tmp;
+    root["sysDialogZOrder"] = SYS_DIALOG_Z_ORDER_ON_LOCK_SCREEN;
     std::string cmdData = root.dump();
     HILOG_DEBUG("cmdData is: %{public}s.", cmdData.c_str());
     return cmdData;

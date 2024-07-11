@@ -66,12 +66,12 @@ bool PowerMgrClient::IsRunningLockTypeSupported(RunningLockType type)
     return true;
 }
 
-bool PowerMgrClient::ForceSuspendDevice()
+PowerErrors PowerMgrClient::ForceSuspendDevice()
 {
-    return true;
+    return PowerErrors::ERR_OK;
 }
 
-bool PowerMgrClient::IsScreenOn()
+bool PowerMgrClient::IsScreenOn(bool needPrintLog)
 {
     return true;
 }

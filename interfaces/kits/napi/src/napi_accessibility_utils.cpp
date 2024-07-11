@@ -72,7 +72,7 @@ std::string GetStringFromNAPI(napi_env env, napi_value value)
 bool ParseBool(napi_env env, bool& param, napi_value args)
 {
     napi_status status;
-    napi_valuetype valuetype;
+    napi_valuetype valuetype = napi_null;
     status = napi_typeof(env, args, &valuetype);
     if (status != napi_ok) {
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);
@@ -91,7 +91,7 @@ bool ParseBool(napi_env env, bool& param, napi_value args)
 bool ParseString(napi_env env, std::string& param, napi_value args)
 {
     napi_status status;
-    napi_valuetype valuetype;
+    napi_valuetype valuetype = napi_null;
     status = napi_typeof(env, args, &valuetype);
     if (status != napi_ok) {
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);
@@ -111,7 +111,7 @@ bool ParseString(napi_env env, std::string& param, napi_value args)
 bool ParseNumber(napi_env env, napi_value args)
 {
     napi_status status;
-    napi_valuetype valuetype;
+    napi_valuetype valuetype = napi_null;
     status = napi_typeof(env, args, &valuetype);
     if (status != napi_ok) {
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);
@@ -157,10 +157,32 @@ bool ParseDouble(napi_env env, double& param, napi_value args)
     return true;
 }
 
+bool ParseBigInt(napi_env env, int64_t& param, napi_value args)
+{
+    napi_status status;
+    napi_valuetype valuetype = napi_null;
+    status = napi_typeof(env, args, &valuetype);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
+        return false;
+    }
+
+    if (valuetype != napi_bigint) {
+        HILOG_DEBUG("Wrong argument type. bigint expected.");
+        return false;
+    }
+
+    HILOG_DEBUG("The type of args is bigInt");
+    bool lossless = false;
+
+    napi_get_value_bigint_int64(env, args, &param, &lossless);
+    return lossless;
+}
+
 bool CheckJsFunction(napi_env env, napi_value args)
 {
     napi_status status;
-    napi_valuetype valuetype;
+    napi_valuetype valuetype = napi_null;
     status = napi_typeof(env, args, &valuetype);
     if (status != napi_ok) {
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);
@@ -252,6 +274,16 @@ void ConvertRectToJS(napi_env env, napi_value result, const Accessibility::Rect&
     int32_t height = rect.GetRightBottomYScreenPostion() - rect.GetLeftTopYScreenPostion();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, height, &nHeight));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "height", nHeight));
+}
+
+void ConvertGridItemToJS(napi_env env, napi_value result, const Accessibility::GridItemInfo& gridItem)
+{
+    napi_value rowIndex = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, gridItem.GetRowIndex(), &rowIndex));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "rowIndex", rowIndex));
+    napi_value columnIndex = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, gridItem.GetColumnIndex(), &columnIndex));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "columnIndex", columnIndex));
 }
 
 std::string ConvertWindowTypeToString(AccessibilityWindowType type)

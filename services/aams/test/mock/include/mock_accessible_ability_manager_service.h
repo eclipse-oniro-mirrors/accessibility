@@ -103,6 +103,7 @@ public:
     MOCK_METHOD1(ExecuteActionOnAccessibilityFocused, bool(const ActionType &action));
     MOCK_METHOD1(FindFocusedElement, bool(AccessibilityElementInfo &elementInfo));
     MOCK_METHOD1(GetFocusedWindowId, RetError(int32_t &focusedWindowId));
+    MOCK_METHOD1(RemoveRequestId, void(int32_t requestId));
 };
 } // namespace Accessibility
 } // namespace OHOS

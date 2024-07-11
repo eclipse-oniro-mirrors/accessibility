@@ -21,9 +21,8 @@
 namespace OHOS {
 namespace Accessibility {
 AccessibilityWindowInfoParcel::AccessibilityWindowInfoParcel(const AccessibilityWindowInfo &accessibilityWindowInfo)
+    : AccessibilityWindowInfo(accessibilityWindowInfo)
 {
-    AccessibilityWindowInfo *self = this;
-    *self = accessibilityWindowInfo;
 }
 
 bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)

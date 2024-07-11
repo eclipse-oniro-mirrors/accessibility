@@ -97,7 +97,7 @@ std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key,
 int64_t AccessibilityDatashareHelper::GetLongValue(const std::string& key, const int64_t& defaultValue)
 {
     int64_t result = defaultValue;
-    std::string valueStr = GetStringValue(key, "");
+    std::string valueStr = GetStringValue(key, std::to_string(result));
     if (valueStr != "") {
         result = static_cast<int64_t>(std::strtoll(valueStr.c_str(), nullptr, DECIMAL_NOTATION));
     }
@@ -113,7 +113,7 @@ int32_t AccessibilityDatashareHelper::GetIntValue(const std::string& key, const 
 bool AccessibilityDatashareHelper::GetBoolValue(const std::string& key, const bool& defaultValue)
 {
     bool result = defaultValue;
-    std::string valueStr = GetStringValue(key, "");
+    std::string valueStr = GetStringValue(key, result ? "1" : "0");
     if (valueStr != "") {
         result = (valueStr == "1" || valueStr == "true");
     }
@@ -123,7 +123,7 @@ bool AccessibilityDatashareHelper::GetBoolValue(const std::string& key, const bo
 float AccessibilityDatashareHelper::GetFloatValue(const std::string& key, const float& defaultValue)
 {
     float result = defaultValue;
-    std::string valueStr = GetStringValue(key, "");
+    std::string valueStr = GetStringValue(key, std::to_string(result));
     if (valueStr != "") {
         result = std::stof(valueStr);
     }
@@ -294,8 +294,7 @@ std::shared_ptr<DataShare::DataShareHelper> AccessibilityDatashareHelper::Create
     }
     auto helper = DataShare::DataShareHelper::Creator(remoteObj_, uriProxyStr_);
     if (helper == nullptr) {
-        HILOG_WARN("helper is nullptr, uri=%{public}s, remoteObj_=%{public}p", uriProxyStr_.c_str(),
-            remoteObj_.GetRefPtr());
+        HILOG_WARN("helper is nullptr, uri=%{public}s", uriProxyStr_.c_str());
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::READ_EVENT, A11yError::ERROR_READ_FAILED);
         return nullptr;
     }
@@ -305,7 +304,7 @@ std::shared_ptr<DataShare::DataShareHelper> AccessibilityDatashareHelper::Create
 bool AccessibilityDatashareHelper::DestoryDatashareHelper(std::shared_ptr<DataShare::DataShareHelper>& helper)
 {
     if (helper && !helper->Release()) {
-        HILOG_WARN("release helper fail, remoteObj_=%{public}p", remoteObj_.GetRefPtr());
+        HILOG_WARN("release helper fail.");
         return false;
     }
     return true;

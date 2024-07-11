@@ -21,9 +21,8 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilityGestureInjectPathParcel::AccessibilityGestureInjectPathParcel(
     const AccessibilityGestureInjectPath &gesturePath)
+    : AccessibilityGestureInjectPath(gesturePath)
 {
-    AccessibilityGestureInjectPath *self = this;
-    *self = gesturePath;
 }
 
 bool AccessibilityGestureInjectPathParcel::ReadFromParcel(Parcel &parcel)
@@ -31,7 +30,10 @@ bool AccessibilityGestureInjectPathParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, durationTime_);
     int32_t positionSize = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, positionSize);
-    ContainerSecurityVerify(parcel, positionSize, positions_.max_size());
+    bool verifyResult = ContainerSecurityVerify(parcel, positionSize, positions_.max_size());
+    if (!verifyResult || positionSize < 0 || positionSize > INT32_MAX) {
+        return false;
+    }
     for (auto i = 0; i < positionSize; i++) {
         AccessibilityGesturePosition position;
         READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, position.positionX_);

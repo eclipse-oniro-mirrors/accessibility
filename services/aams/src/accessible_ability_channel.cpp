@@ -52,13 +52,16 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
     const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int32_t mode, bool isFilter)
 {
-    HILOG_DEBUG();
     HILOG_DEBUG("channel SearchElementInfo elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
     if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
@@ -74,17 +77,21 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
             elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             syncPromise->set_value(ret);
             return;
         }
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
-        if (awm.IsInnerWindowRootElement(elementId)) {
+        if (accessibilityWindowId == SCENE_BOARD_WINDOW_ID && awm.IsInnerWindowRootElement(elementId)) {
             std::vector<AccessibilityElementInfo> infos = {};
             callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             HILOG_DEBUG("IsInnerWindowRootElement elementId: %{public}" PRId64 "", elementId);
         } else {
             int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+            Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+                requestId, callback);
             elementOperator->SearchElementInfoByAccessibilityId(realElementId, requestId, callback, mode, isFilter);
             HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
         }
@@ -112,6 +119,10 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
 
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("SearchElementInfosByText :channel SearchElementInfo treeId: %{public}d", treeId);
@@ -126,12 +137,16 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
             name, elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             syncPromise->set_value(ret);
             return;
         }
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+            requestId, callback);
         elementOperator->SearchElementInfosByText(realElementId, text, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "SearchElementInfosByText");
@@ -157,6 +172,10 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
 
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
@@ -169,12 +188,16 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         RetError ret = GetElementOperator(accountId, accessibilityWindowId, focusType, name, elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             syncPromise->set_value(ret);
             return;
         }
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+            requestId, callback);
         elementOperator->FindFocusedElementInfo(realElementId, focusType, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "FindFocusedElementInfo");
@@ -195,8 +218,12 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
         elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
-    if (eventHandler_== nullptr) {
+    if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
@@ -212,12 +239,16 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
             treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             syncPromise->set_value(ret);
             return;
         }
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+            requestId, callback);
         elementOperator->FocusMoveSearch(realElementId, direction, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "FocusMoveSearch");
@@ -230,59 +261,29 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
     return syncFuture.get();
 }
 
-void AccessibleAbilityChannel::SetKeyCodeSingle(std::shared_ptr<MMI::KeyEvent>& keyEvent, const int32_t keyCode)
+void AccessibleAbilityChannel::SetKeyCodeToMmi(std::shared_ptr<MMI::KeyEvent>& keyEvent, const bool isPress,
+    const int32_t keyCode)
 {
     HILOG_DEBUG();
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (!keyEvent) {
+    if (keyEvent == nullptr) {
         HILOG_ERROR("KeyEvent is nullptr");
         return;
     }
-
-    keyEvent->SetKeyCode(keyCode);
-    if (keyCode == MMI::KeyEvent::KEYCODE_BACK) {
-        keyEvent->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
-    } else {
-        keyEvent->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
-    }
-
     MMI::KeyEvent::KeyItem item;
+    item.SetPressed(isPress);
     item.SetKeyCode(keyCode);
-    item.SetPressed(true);
-
     keyEvent->AddKeyItem(item);
-}
-
-void AccessibleAbilityChannel::SetKeyCodeMulti(std::shared_ptr<MMI::KeyEvent>& keyEvent, const int32_t keyCodePre,
-    const int32_t keyCodeNext)
-{
-    HILOG_DEBUG();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (!keyEvent) {
-        HILOG_ERROR("KeyEvent is nullptr");
-        return;
-    }
-
-    keyEvent->SetKeyCode(keyCodeNext);
-    keyEvent->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
-
-    MMI::KeyEvent::KeyItem item1;
-    item1.SetKeyCode(keyCodePre);
-    item1.SetPressed(true);
-    keyEvent->AddKeyItem(item1);
-
-    MMI::KeyEvent::KeyItem item2;
-    item2.SetKeyCode(keyCodeNext);
-    item2.SetPressed(true);
-    keyEvent->AddKeyItem(item2);
+    keyEvent->SetKeyCode(keyCode);
 }
 
 RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
 {
     HILOG_DEBUG("The action is %{public}d", action);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
-    if (!keyEvent) {
+    std::shared_ptr<MMI::KeyEvent> keyEventUp = MMI::KeyEvent::Create();
+    std::shared_ptr<MMI::KeyEvent> keyEventDown = MMI::KeyEvent::Create();
+    if (keyEventUp == nullptr || keyEventDown == nullptr) {
         HILOG_ERROR("KeyEvent is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -292,16 +293,21 @@ RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
         return RET_ERR_NULLPTR;
     }
     
-    HILOG_DEBUG("Transmit keycode to MMI");
+    HILOG_INFO("Transmit keycode to MMI");
 
     if (accessibleKeyCodeTable.at(action).first) {
-        SetKeyCodeSingle(keyEvent, accessibleKeyCodeTable.at(action).second.first);
+        SetKeyCodeToMmi(keyEventDown, true, accessibleKeyCodeTable.at(action).second.first);
+        SetKeyCodeToMmi(keyEventUp, false, accessibleKeyCodeTable.at(action).second.first);
     } else {
-        SetKeyCodeMulti(keyEvent, accessibleKeyCodeTable.at(action).second.first,
-            accessibleKeyCodeTable.at(action).second.second);
+        SetKeyCodeToMmi(keyEventDown, true, accessibleKeyCodeTable.at(action).second.first);
+        SetKeyCodeToMmi(keyEventUp, false, accessibleKeyCodeTable.at(action).second.first);
+        SetKeyCodeToMmi(keyEventDown, true, accessibleKeyCodeTable.at(action).second.second);
     }
+    keyEventDown->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    keyEventUp->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
+    inputManager_->SimulateInputEvent(keyEventDown);
+    inputManager_->SimulateInputEvent(keyEventUp);
 
-    inputManager_->SimulateInputEvent(keyEvent);
     return RET_OK;
 }
 
@@ -331,12 +337,15 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG();
-    HILOG_DEBUG("ExecuteAction :channel ExecuteAction elementId: %{public}" PRId64 " winId: %{public}d",
-        elementId, accessibilityWindowId);
+    HILOG_DEBUG("ExecuteAction elementId:%{public}" PRId64 " winId:%{public}d, action:%{public}d, requestId:%{public}d",
+        elementId, accessibilityWindowId, action, requestId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
@@ -351,14 +360,11 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         return RET_OK;
     }
     SetFocusWindowIdAndElementId(accessibilityWindowId, elementId, action);
-    HILOG_DEBUG("ExecuteAction : action: %{public}d", action);
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
-    HILOG_DEBUG("ExecuteAction :channel ExecuteAction treeId: %{public}d", treeId);
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, treeId, action,
         actionArguments, requestId, callback](int32_t accountId, const std::string &name) -> void {
-        HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
         RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name,
             elementOperator, treeId);
@@ -370,10 +376,12 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+            requestId, callback);
         elementOperator->ExecuteAction(realElementId, action, actionArguments, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "ExecuteAction");
-    
+
     std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
         HILOG_ERROR("Failed to wait ExecuteAction result");
@@ -566,6 +574,8 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
+            requestId, callback);
         elementOperator->GetCursorPosition(realElementId, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "GetCursorPosition");

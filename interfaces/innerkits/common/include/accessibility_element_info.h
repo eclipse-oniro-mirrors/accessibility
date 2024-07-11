@@ -1407,6 +1407,34 @@ public:
     */
     void SetParentWindowId(const int32_t iParentWindowId);
 
+    /**
+     * @brief Get the accessibilityGroup to the element info.
+     * @return the accessibilityGroup
+     * @sysCap Accessibility
+    */
+    bool GetAccessibilityGroup() const;
+
+    /**
+     * @brief Set the accessibilityGroup to the element info.
+     * @param accessibilityGroup The accessibilityGroup of node
+     * @sysCap Accessibility
+    */
+    void SetAccessibilityGroup(const bool accessibilityGroup);
+
+    /**
+     * @brief Set the accessibilityLevel to the element info.
+     * @param accessibilityLevel The accessibilityLevel of node.
+     * @sysCap Accessibility
+    */
+    void SetAccessibilityLevel(const std::string accessibilityLevel);
+
+    /**
+     * @brief Get the accessibilityLevel to the element info.
+     * @return the accessibilityLevel
+     * @sysCap Accessibility
+    */
+    const std::string &GetAccessibilityLevel() const;
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1471,6 +1499,8 @@ protected:
     std::string latestContent_ = "";
     std::string textType_ = "";
     float offset_ = 0.0f;
+    bool accessibilityGroup_ = true;
+    std::string accessibilityLevel_ = "auto";
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -176,6 +176,8 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
         &AccessibleAbilityManagerServiceStub::HandleRegisterEnableAbilityListsObserver;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_FOCUSED_WINDOW_ID)] =
         &AccessibleAbilityManagerServiceStub::HandleGetFocusedWindowId;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::REMOVE_REQUEST_ID)] =
+        &AccessibleAbilityManagerServiceStub::HandleRemoveRequestId;
 
     AddSetConfigHandles();
     AddGetConfigHandles();
@@ -219,13 +221,13 @@ bool AccessibleAbilityManagerServiceStub::CheckPermission(const std::string &per
     int result = TypePermissionState::PERMISSION_GRANTED;
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
     if (tokenType == TOKEN_INVALID) {
-        HILOG_WARN("AccessToken type:%{private}d, permission:%{private}d denied!", tokenType, callerToken);
+        HILOG_WARN("AccessToken type invalid!");
         return false;
     } else {
         result = AccessTokenKit::VerifyAccessToken(callerToken, permission);
     }
     if (result == TypePermissionState::PERMISSION_DENIED) {
-        HILOG_WARN("AccessTokenID:%{private}u, permission:%{private}s denied!", callerToken, permission.c_str());
+        HILOG_WARN("AccessTokenID denied!");
         return false;
     }
     HILOG_DEBUG("tokenType %{private}d dAccessTokenID:%{private}u, permission:%{private}s matched!",
@@ -1262,6 +1264,15 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetFocusedWindowId(MessagePar
     if (reply.WriteInt32(focusedWindowId)) {
         HILOG_ERROR("write windowId fail");
     }
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleRemoveRequestId(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int32_t requestId = data.ReadInt32();
+    RemoveRequestId(requestId);
     return NO_ERROR;
 }
 } // namespace Accessibility

@@ -102,6 +102,8 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         } else if (static_cast<TouchGuideState>(currentState_) != TouchGuideState::DRAGGING) {
             Clear(event);
         }
+        event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_CANCEL);
+        EventTransmission::OnPointerEvent(event);
         return true;
     }
     RecordReceivedEvent(event);
@@ -116,6 +118,11 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
 
     switch (static_cast<TouchGuideState>(currentState_)) {
         case TouchGuideState::TOUCH_GUIDING:
+            if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN &&
+                event.GetPointerIds().size() == POINTER_COUNT_1) {
+                cachedPointerEvents_.clear();
+            }
+            cachedPointerEvents_.push_back(event);
             HandleTouchGuidingState(event);
             break;
         case TouchGuideState::DRAGGING:
@@ -123,6 +130,9 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
             break;
         case TouchGuideState::TRANSMITTING:
             HandleTransmitingState(event);
+            break;
+        case TouchGuideState::PASSING_THROUGH:
+            HandlePassingThroughState(event);
             break;
         default:
             break;
@@ -483,7 +493,7 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent &event)
                     currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
                 }
             } else {
-                if (event.GetPointerId() == currentPid_) {
+                if (event.GetPointerId() == currentPid_ && pIds.size() == POINTER_COUNT_2) {
                     HILOG_DEBUG("double currentPid_ move: %{public}d", event.GetPointerId());
                     int32_t removePid = currentPid_ == pIds[0]? pIds[1] : pIds[0];
                     event.RemovePointerItem(removePid);
@@ -537,6 +547,23 @@ void TouchGuider::HandleTransmitingState(MMI::PointerEvent &event)
     }
 }
 
+void TouchGuider::HandlePassingThroughState(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
+        event.GetPointerIds().size() == POINTER_COUNT_1) {
+        SendEventToMultimodal(event, NO_CHANGE);
+        OnTouchInteractionEnd();
+        SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
+        currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
+        return;
+    }
+
+    SendEventToMultimodal(event, NO_CHANGE);
+    return;
+}
+
 void TouchGuider::Clear(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
@@ -567,6 +594,8 @@ void TouchGuider::Clear(MMI::PointerEvent &event)
     rightBottomX_ = INIT_POINT_DISPLAY;
     rightBottomY_ = INIT_POINT_DISPLAY;
     focusedElementExist_ = false;
+    currentPid_ = -1;
+    cachedPointerEvents_.clear();
     OnTouchInteractionEnd();
 }
 
@@ -611,7 +640,7 @@ void TouchGuider::HandleTouchGuidingStateInnerDown(MMI::PointerEvent &event)
             }
         }
     } else if (gestureRecognizer_.GetIsDoubleTap() && !multiFingerGestureRecognizer_.IsMultiFingerGestureStarted()) {
-        pointerEvents_.clear();
+        doubleTapLongPressDownEvent_ = nullptr;
 
         AccessibilityElementInfo focusedElementInfo = {};
         if (!FindFocusedElement(focusedElementInfo)) {
@@ -635,7 +664,7 @@ void TouchGuider::HandleTouchGuidingStateInnerDown(MMI::PointerEvent &event)
         longPressOffsetX_ = static_cast<float>(DIVIDE_2(leftTopX_ + rightBottomX_) - pointerIterm.GetDisplayX());
         longPressOffsetY_ = static_cast<float>(DIVIDE_2(leftTopY_ + rightBottomY_) - pointerIterm.GetDisplayY());
 
-        pointerEvents_.push_back(event);
+        doubleTapLongPressDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
     } else {
         CancelPostEvent(SEND_TOUCH_INTERACTION_END_MSG);
     }
@@ -680,10 +709,10 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event)
                 SendEventToMultimodal(event, HOVER_MOVE);
             } else if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
                 HILOG_DEBUG();
-                if (!pointerEvents_.empty()) {
-                    HILOG_DEBUG("pointerEvents_ is not empty");
-                    SendEventToMultimodal(pointerEvents_.front(), NO_CHANGE);
-                    pointerEvents_.clear();
+                if (doubleTapLongPressDownEvent_ != nullptr) {
+                    HILOG_DEBUG("doubleTapLongPressDownEvent_ is not null");
+                    SendEventToMultimodal(*doubleTapLongPressDownEvent_, NO_CHANGE);
+                    doubleTapLongPressDownEvent_ = nullptr;
                 }
                 SendEventToMultimodal(event, NO_CHANGE);
             } else {
@@ -702,7 +731,11 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event)
                 SendPointerDownEventToMultimodal(event, POINTER_DOWN);
                 SendEventToMultimodal(event, NO_CHANGE);
             } else {
-                currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
+                for (auto iter = cachedPointerEvents_.begin(); iter != cachedPointerEvents_.end(); ++iter) {
+                    EventTransmission::OnPointerEvent(*iter);
+                }
+                cachedPointerEvents_.clear();
+                currentState_ = static_cast<int32_t>(TouchGuideState::PASSING_THROUGH);
             }
             break;
         default:

@@ -78,7 +78,7 @@ RetError AccessibilitySettings::SetShortKeyState(const bool state)
         RetError ret = accountData->GetConfig()->SetShortKeyState(state);
         syncPromise.set_value(ret);
         UpdateConfigState();
-        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
         }), "TASK_SET_SHORTKEY_STATE");
     return syncFuture.get();
 }

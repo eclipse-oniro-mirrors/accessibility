@@ -96,10 +96,9 @@ private:
     bool isMoveBeyondThreshold_ = false;
     int64_t startTime_ = 0; // microsecond
     double threshold_ = 0.0;
-    MMI::PointerEvent::PointerItem startPointer_ = {};
+    std::shared_ptr<MMI::PointerEvent::PointerItem> startPointer_ = nullptr;
 
     int64_t lastUpTime_ = 0;
-    int32_t lastDownPointerId_ = -1;
     bool isInterceptClick_ = false;
     
     ScreenTouchState currentState_;
@@ -113,11 +112,11 @@ private:
     std::shared_ptr<std::thread> drawCircleThread_ = nullptr;
 
     static int64_t lastUpTime; // global last up time
-    static int32_t lastDownPointerId; // global last down pointer id
 
     std::shared_ptr<ScreenTouchHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
-    std::shared_ptr<MMI::PointerEvent> lastInterceptedEvent_ = nullptr;
+    
+    std::list<MMI::PointerEvent> cachedDownPointerEvents_ {};
 };
 } // namespace Accessibility
 } // namespace OHOS

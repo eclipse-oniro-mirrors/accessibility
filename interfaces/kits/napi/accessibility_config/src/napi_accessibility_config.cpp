@@ -201,13 +201,13 @@ bool NAccessibilityConfig::CheckReadPermission(const std::string &permission)
     int result = TypePermissionState::PERMISSION_GRANTED;
     ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenId);
     if (tokenType == TOKEN_INVALID) {
-        HILOG_WARN("AccessToken type:%{private}d, permission:%{private}d denied!", tokenType, tokenId);
+        HILOG_WARN("AccessToken type invalid!");
         return false;
     } else {
         result = AccessTokenKit::VerifyAccessToken(tokenId, permission);
     }
     if (result == TypePermissionState::PERMISSION_DENIED) {
-        HILOG_WARN("AccessTokenID:%{private}u, permission:%{private}s denied!", tokenId, permission.c_str());
+        HILOG_WARN("AccessTokenID denied!");
         return false;
     }
     HILOG_DEBUG("tokenType %{private}d dAccessTokenID:%{private}u, permission:%{private}s matched!",

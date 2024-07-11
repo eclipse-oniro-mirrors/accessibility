@@ -67,7 +67,6 @@ const std::map<uint32_t, uint32_t> IGNORE_REPEAT_CLICK_TIME_MAP = {
 };
 
 int64_t AccessibilityScreenTouch::lastUpTime = 0; // global last up time
-int32_t AccessibilityScreenTouch::lastDownPointerId = -1; // global last down pointer id
 
 ScreenTouchHandler::ScreenTouchHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
     AccessibilityScreenTouch &server) : AppExecFwk::EventHandler(runner), server_(server)
@@ -95,7 +94,6 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
     }
 
     lastUpTime_ = lastUpTime;
-    lastDownPointerId_ = lastDownPointerId;
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
@@ -137,7 +135,6 @@ void ScreenTouchHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &eve
 AccessibilityScreenTouch::~AccessibilityScreenTouch()
 {
     lastUpTime = lastUpTime_;
-    lastDownPointerId = lastDownPointerId_;
     if (drawCircleThread_ && drawCircleThread_->joinable()) {
         drawCircleThread_->join();
     }
@@ -150,13 +147,15 @@ void AccessibilityScreenTouch::SendInterceptedEvent()
     HILOG_DEBUG();
     isStopDrawCircle_ = true;
 
-    if (lastInterceptedEvent_ == nullptr) {
-        HILOG_DEBUG("last intercepted event is null!");
+    if (cachedDownPointerEvents_.empty()) {
+        HILOG_ERROR("Cached down pointer event is empty!");
+        return;
     }
 
-    lastInterceptedEvent_->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
-    EventTransmission::OnPointerEvent(*lastInterceptedEvent_);
-    lastInterceptedEvent_ = nullptr;
+    for (auto iter = cachedDownPointerEvents_.begin(); iter != cachedDownPointerEvents_.end(); ++iter) {
+        iter->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
+        EventTransmission::OnPointerEvent(*iter);
+    }
 }
 
 uint32_t AccessibilityScreenTouch::GetRealClickResponseTime()
@@ -219,8 +218,21 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
         HILOG_WARN("get GetPointerItem %{public}d failed", event.GetPointerId());
     }
 
+    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
+        if (isMoveBeyondThreshold_ == true) {
+            cachedDownPointerEvents_.push_back(event);
+            EventTransmission::OnPointerEvent(event);
+            return;
+        } else if (isStopDrawCircle_ == true) {
+            return;
+        } else {
+            cachedDownPointerEvents_.push_back(event);
+            return;
+        }
+    }
+
     startTime_ = event.GetActionTime();
-    startPointer_ = pointerItem;
+    startPointer_ = std::make_shared<MMI::PointerEvent::PointerItem>(pointerItem);
     isMoveBeyondThreshold_ = false;
 
     circleCenterPhysicalX_ = pointerItem.GetDisplayX();
@@ -237,7 +249,8 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
     }
 
     handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
-    lastInterceptedEvent_ = std::make_shared<MMI::PointerEvent>(event);
+    cachedDownPointerEvents_.clear();
+    cachedDownPointerEvents_.push_back(event);
     handler_->SendEvent(FINGER_DOWN_DELAY_MSG, 0, static_cast<int32_t>(GetRealClickResponseTime()));
 }
 
@@ -250,64 +263,85 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
         return;
     }
 
+    if (startPointer_ == nullptr) {
+        return;
+    }
+
+    if (event.GetPointerId() != startPointer_->GetPointerId()) {
+        if (isStopDrawCircle_ == true) {
+            EventTransmission::OnPointerEvent(event);
+        }
+        return;
+    }
+
     MMI::PointerEvent::PointerItem pointerItem;
     if (!event.GetPointerItem(event.GetPointerId(), pointerItem)) {
         HILOG_WARN("get GetPointerItem %{public}d failed", event.GetPointerId());
     }
 
-    float offsetX = startPointer_.GetDisplayX() - pointerItem.GetDisplayX();
-    float offsetY = startPointer_.GetDisplayY() - pointerItem.GetDisplayY();
+    float offsetX = startPointer_->GetDisplayX() - pointerItem.GetDisplayX();
+    float offsetY = startPointer_->GetDisplayY() - pointerItem.GetDisplayY();
     double duration = hypot(offsetX, offsetY);
     if (duration > threshold_) {
         handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
-        event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
+        if (isStopDrawCircle_ != true && !cachedDownPointerEvents_.empty()) {
+            for (auto iter = cachedDownPointerEvents_.begin(); iter != cachedDownPointerEvents_.end(); ++iter) {
+                iter->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
+                EventTransmission::OnPointerEvent(*iter);
+            }
+        }
         EventTransmission::OnPointerEvent(event);
         isMoveBeyondThreshold_ = true;
         isStopDrawCircle_ = true;
         return;
     }
 
-    if ((startTime_ + static_cast<int64_t>(GetRealClickResponseTime()) * US_TO_MS) >
-        static_cast<int64_t>(event.GetActionTime())) {
+    if (isStopDrawCircle_ != true) {
         circleCenterPhysicalX_ = pointerItem.GetDisplayX();
         circleCenterPhysicalY_ = pointerItem.GetDisplayY();
-        return;
-    }
-
-    isStopDrawCircle_ = true;
-    if (lastInterceptedEvent_ == nullptr) {
-        EventTransmission::OnPointerEvent(event);
-    }
-}
-
-void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent &event)
-{
-    HILOG_DEBUG();
-    handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
-    isStopDrawCircle_ = true;
-    if (isMoveBeyondThreshold_ == true) {
-        EventTransmission::OnPointerEvent(event);
-        return;
-    }
-
-    if ((startTime_ + static_cast<int64_t>(GetRealClickResponseTime()) * US_TO_MS) >
-        static_cast<int64_t>(event.GetActionTime())) {
-        return;
-    }
-
-    if (lastInterceptedEvent_ != nullptr) {
         return;
     }
 
     EventTransmission::OnPointerEvent(event);
 }
 
+void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    if (cachedDownPointerEvents_.empty()) {
+        HILOG_ERROR("cached down pointer event is empty!");
+        handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
+        isStopDrawCircle_ = true;
+        return;
+    }
+
+    if (isStopDrawCircle_ == true) {
+        for (auto iter = cachedDownPointerEvents_.begin(); iter != cachedDownPointerEvents_.end(); ++iter) {
+            if (iter->GetPointerId() == event.GetPointerId()) {
+                EventTransmission::OnPointerEvent(event);
+            }
+        }
+        if (event.GetPointerIds().size() == POINTER_COUNT_1) {
+            cachedDownPointerEvents_.clear();
+        }
+        return;
+    }
+
+    if (startPointer_ != nullptr && event.GetPointerId() == startPointer_->GetPointerId()) {
+        handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
+        isStopDrawCircle_ = true;
+        cachedDownPointerEvents_.clear();
+    } else {
+        cachedDownPointerEvents_.remove_if([&](const MMI::PointerEvent &e) {
+            return e.GetPointerId() == event.GetPointerId();
+        });
+    }
+}
+
 void AccessibilityScreenTouch::HandleResponseDelayState(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
-        return;
-    }
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
@@ -328,20 +362,16 @@ void AccessibilityScreenTouch::HandleResponseDelayState(MMI::PointerEvent &event
 void AccessibilityScreenTouch::HandleIgnoreRepeatClickStateInnerDown(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
-        return;
-    }
 
     int64_t downTime = event.GetActionTime();
-    if ((downTime - lastUpTime_) / US_TO_MS < GetRealIgnoreRepeatClickTime()) {
+    if ((event.GetPointerIds().size() == POINTER_COUNT_1) &&
+        ((downTime - lastUpTime_) / US_TO_MS < GetRealIgnoreRepeatClickTime())) {
         isInterceptClick_ = true;
+        return;
+    } else if ((event.GetPointerIds().size() > POINTER_COUNT_1) && (isInterceptClick_ == true)) {
         return;
     }
 
-    // If the value of lastDownPointerId_ is not -1, it is not matched with an up action and shouldn't be update.
-    if (lastDownPointerId_ == -1) {
-        lastDownPointerId_ = event.GetPointerId();
-    }
     EventTransmission::OnPointerEvent(event);
     isInterceptClick_ = false;
 }
@@ -349,9 +379,6 @@ void AccessibilityScreenTouch::HandleIgnoreRepeatClickStateInnerDown(MMI::Pointe
 void AccessibilityScreenTouch::HandleIgnoreRepeatClickStateInnerMove(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
-        return;
-    }
 
     if (isInterceptClick_ == false) {
         EventTransmission::OnPointerEvent(event);
@@ -361,19 +388,12 @@ void AccessibilityScreenTouch::HandleIgnoreRepeatClickStateInnerMove(MMI::Pointe
 void AccessibilityScreenTouch::HandleIgnoreRepeatClickStateInnerUp(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    std::vector<int32_t> pointerIds{ event.GetPointerIds() };
-    for (const auto &pointerId : pointerIds) {
-        if (pointerId == lastDownPointerId_) {
-            EventTransmission::OnPointerEvent(event);
-            lastUpTime_ = event.GetActionTime();
-            lastDownPointerId_ = -1;
-            return;
-        }
-    }
 
     if (isInterceptClick_ == false) {
         EventTransmission::OnPointerEvent(event);
-        lastUpTime_ = event.GetActionTime();
+        if (event.GetPointerIds().size() == POINTER_COUNT_1) {
+            lastUpTime_ = event.GetActionTime();
+        }
     }
 }
 
@@ -399,30 +419,24 @@ void AccessibilityScreenTouch::HandleIgnoreRepeatClickState(MMI::PointerEvent &e
 void AccessibilityScreenTouch::HandleBothStateInnerDown(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
-        return;
-    }
 
     int64_t downTime = event.GetActionTime();
-    if ((downTime - lastUpTime_) / US_TO_MS < GetRealIgnoreRepeatClickTime()) {
+    if ((event.GetPointerIds().size() == POINTER_COUNT_1) &&
+        ((downTime - lastUpTime_) / US_TO_MS < GetRealIgnoreRepeatClickTime())) {
         isInterceptClick_ = true;
+        return;
+    } else if ((event.GetPointerIds().size() > POINTER_COUNT_1) && (isInterceptClick_ == true)) {
         return;
     }
 
-    HandleResponseDelayStateInnerDown(event);
-    // If the value of lastDownPointerId_ is not -1, it is not matched with an up action and shouldn't be update.
-    if (lastDownPointerId_ == -1) {
-        lastDownPointerId_ = event.GetPointerId();
-    }
     isInterceptClick_ = false;
+
+    HandleResponseDelayStateInnerDown(event);
 }
 
 void AccessibilityScreenTouch::HandleBothStateInnerMove(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
-        return;
-    }
 
     if (isInterceptClick_ == true) {
         return;
@@ -434,20 +448,15 @@ void AccessibilityScreenTouch::HandleBothStateInnerMove(MMI::PointerEvent &event
 void AccessibilityScreenTouch::HandleBothStateInnerUp(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    std::vector<int32_t> pointerIds{ event.GetPointerIds() };
-    for (const auto &pointerId : pointerIds) {
-        if (pointerId == lastDownPointerId_) {
-            lastUpTime_ = event.GetActionTime();
-            lastDownPointerId_ = -1;
-            break;
-        }
-    }
 
     if (isInterceptClick_ == true) {
         return;
     }
 
-    lastUpTime_ = event.GetActionTime();
+    if (event.GetPointerIds().size() == POINTER_COUNT_1) {
+        lastUpTime_ = event.GetActionTime();
+    }
+
     HandleResponseDelayStateInnerUp(event);
 }
 
@@ -474,7 +483,7 @@ void AccessibilityScreenTouch::Clear()
 {
     isMoveBeyondThreshold_ = false;
     isInterceptClick_ = false;
-    startPointer_ = {};
+    startPointer_ = nullptr;
 }
 
 bool AccessibilityScreenTouch::OnPointerEvent(MMI::PointerEvent &event)

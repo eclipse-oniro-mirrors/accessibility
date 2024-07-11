@@ -375,6 +375,11 @@ RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWind
     }
 
     int32_t windowsSize = reply.ReadInt32();
+    if (windowsSize < 0 || windowsSize > INT32_MAX) {
+        HILOG_ERROR("windowsSize is invalid");
+        return RET_ERR_INVALID_PARAM;
+    }
+
     for (int32_t i = 0; i < windowsSize; i++) {
         sptr<AccessibilityWindowInfoParcel> window = reply.ReadStrongParcelable<AccessibilityWindowInfoParcel>();
         if (!window) {
@@ -411,6 +416,11 @@ RetError AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t dis
     }
 
     int32_t windowsSize = reply.ReadInt32();
+    if (windowsSize < 0 || windowsSize > INT32_MAX) {
+        HILOG_ERROR("windowsSize is invalid");
+        return RET_ERR_INVALID_PARAM;
+    }
+
     for (int32_t i = 0; i < windowsSize; i++) {
         sptr<AccessibilityWindowInfoParcel> window = reply.ReadStrongParcelable<AccessibilityWindowInfoParcel>();
         if (!window) {

@@ -261,6 +261,11 @@ void AccessibleAbilityManagerService::UpdateAllSetting()
     return;
 }
 
+void AccessibleAbilityManagerService::UpdateShortKeyRegister()
+{
+    return;
+}
+
 RetError AccessibleAbilityManagerService::SetShortKeyState(const bool state)
 {
     (void)state;
@@ -607,6 +612,20 @@ int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t
 {
     (void)elementId;
     return 0;
+}
+
+void AccessibleAbilityManagerService::RemoveRequestId(int32_t requestId)
+{
+    (void)requestId;
+}
+
+void AccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
+    sptr<IAccessibilityElementOperatorCallback> callback)
+{
+    (void)windowId;
+    (void)treeId;
+    (void)requestId;
+    (void)callback;
 }
 } // namespace Accessibility
 } // namespace OHOS

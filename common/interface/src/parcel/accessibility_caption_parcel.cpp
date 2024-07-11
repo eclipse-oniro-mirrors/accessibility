@@ -20,9 +20,8 @@
 namespace OHOS {
 namespace Accessibility {
 CaptionPropertyParcel::CaptionPropertyParcel(const CaptionProperty &property)
+    : CaptionProperty(property)
 {
-    AccessibilityConfig::CaptionProperty *self = this;
-    *self = property;
 }
 
 bool CaptionPropertyParcel::ReadFromParcel(Parcel& parcel)
