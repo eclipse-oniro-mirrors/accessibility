@@ -263,6 +263,10 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
         return;
     }
 
+    if (startPointer_ == nullptr) {
+        return;
+    }
+
     if (event.GetPointerId() != startPointer_->GetPointerId()) {
         if (isStopDrawCircle_ == true) {
             EventTransmission::OnPointerEvent(event);
@@ -324,7 +328,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent
         return;
     }
 
-    if (event.GetPointerId() == startPointer_->GetPointerId()) {
+    if (startPointer_ != nullptr && event.GetPointerId() == startPointer_->GetPointerId()) {
         handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
         isStopDrawCircle_ = true;
         cachedDownPointerEvents_.clear();
