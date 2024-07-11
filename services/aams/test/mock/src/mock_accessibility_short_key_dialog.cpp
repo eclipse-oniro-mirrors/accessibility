@@ -73,14 +73,14 @@ AccessibilityShortkeyDialog::~AccessibilityShortkeyDialog()
     HILOG_DEBUG("start.");
 }
 
-bool AccessibilityShortkeyDialog::ConnectDialog(const int32_t dialogType)
+bool AccessibilityShortkeyDialog::ConnectDialog(ShortKeyDialogType dialogType)
 {
     HILOG_DEBUG("start.");
     return true;
 }
 
 bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr,
-                                                          const int32_t dialogType)
+                                                          ShortKeyDialogType dialogType)
 {
     HILOG_DEBUG("start.");
     (void)want;
@@ -88,13 +88,13 @@ bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &wan
     return true;
 }
 
-bool AccessibilityShortkeyDialog::ConnectExtension(const int32_t dialogType)
+bool AccessibilityShortkeyDialog::ConnectExtension(ShortKeyDialogType dialogType)
 {
     HILOG_DEBUG("start.");
     return true;
 }
 
-bool AccessibilityShortkeyDialog::DisconnectExtension(const int32_t dialogType) const
+bool AccessibilityShortkeyDialog::DisconnectExtension(ShortKeyDialogType dialogType) const
 {
     HILOG_DEBUG("start.");
     return true;
