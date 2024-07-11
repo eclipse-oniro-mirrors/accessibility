@@ -27,6 +27,10 @@ AccessibilityShortKey::~AccessibilityShortKey()
 {
     HILOG_INFO();
 
+    if (subscribeIds_.empty()) {
+        return;
+    }
+
     for (auto it = subscribeIds_.begin(); it != subscribeIds_.end(); it = subscribeIds_.erase(it)) {
         if (*it >= 0) {
             MMI::InputManager::GetInstance()->UnsubscribeKeyEvent(*it);
