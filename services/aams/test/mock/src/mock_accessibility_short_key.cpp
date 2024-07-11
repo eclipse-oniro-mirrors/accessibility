@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "accessibility_short_key_dialog.h"
+#include "accessibility_short_key.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
