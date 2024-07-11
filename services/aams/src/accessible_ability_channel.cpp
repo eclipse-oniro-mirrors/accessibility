@@ -110,7 +110,6 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
     const int64_t elementId, const std::string &text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG();
     HILOG_DEBUG("SearchElementInfosByText :channel SearchElementInfo elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
@@ -163,7 +162,6 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
     const int64_t elementId, const int32_t focusType, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG();
     HILOG_DEBUG("channel FindFocusedElementInfo elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
@@ -213,7 +211,6 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
 RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG();
     HILOG_DEBUG("FocusMoveSearch :channel FocusMoveSearch elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
@@ -548,7 +545,6 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
 RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG();
     HILOG_DEBUG("GetCursorPosition :channel GetCursorPosition elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
