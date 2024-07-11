@@ -42,7 +42,6 @@ std::string ShortkeyAbilityConnection::GetCommandString()
 void ReConfirmAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
 {
-    HILOG_DEBUG("start.");
     (void)element;
     (void)remoteObject;
     (void)resultCode;
@@ -51,14 +50,12 @@ void ReConfirmAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementN
 void ReConfirmAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element,
     int32_t resultCode)
 {
-    HILOG_DEBUG("start.");
     (void)element;
     (void)resultCode;
 }
 
 std::string ReConfirmAbilityConnection::GetCommandString()
 {
-    HILOG_DEBUG("start.");
     return "";
 }
 
