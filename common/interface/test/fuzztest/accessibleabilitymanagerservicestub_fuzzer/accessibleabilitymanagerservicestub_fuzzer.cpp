@@ -37,7 +37,7 @@ public:
     AccessibleAbilityManagerServiceStubFuzzTest() = default;
     ~AccessibleAbilityManagerServiceStubFuzzTest() = default;
 
-    RetError SendEvent(const AccessibilityEventInfo &uiEvent) override {return RET_OK;}
+    RetError SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag) override {return RET_OK;}
 
     uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) override {return 0;}
 

@@ -26,6 +26,7 @@
 namespace OHOS {
 namespace Accessibility {
 using namespace Security::AccessToken;
+constexpr int32_t IS_EXTERNAL = 1;
 
 void AccessibleAbilityManagerServiceStub::AddSetConfigHandles()
 {
@@ -271,7 +272,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSendEvent(MessageParcel &data
         HILOG_DEBUG("ReadStrongParcelable<AbilityInfo> failed");
         return TRANSACTION_ERR;
     }
-    SendEvent(*uiEvent);
+    SendEvent(*uiEvent, IS_EXTERNAL);
 
     return NO_ERROR;
 }

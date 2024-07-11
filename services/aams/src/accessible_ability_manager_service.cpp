@@ -36,6 +36,8 @@
 #include "system_ability_definition.h"
 #include "utils.h"
 #include "accessibility_short_key_dialog.h"
+#include <ipc_skeleton.h>
+
 
 using namespace std;
 
@@ -58,9 +60,11 @@ namespace {
     constexpr int32_t REQUEST_ID_MAX = 0x0000FFFF;
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
     constexpr int32_t UNLOAD_TASK_INTERNAL = 3 * 60 * 1000; // ms
-    constexpr int32_t ELEMENT_MOVE_BIT_SPLIT = 13;
     constexpr int32_t TREE_ID_INVALID = -1;
-    constexpr int32_t ELEMENT_MOVE_BIT = 51;
+    constexpr int32_t ELEMENT_MOVE_BIT = 40;
+    constexpr int64_t MAX_ELEMENT_ID = 0xFFFFFFFFFF;
+    constexpr int32_t SINGLE_TREE_ID = 0;
+    constexpr int32_t TREE_ID_MAX = 0x00001FFF;
     constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
 } // namespace
@@ -262,13 +266,51 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
     return syncFuture.get();
 }
 
-RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent)
+RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowId, const int64_t elementId)
+{
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
+    int32_t treeId = (static_cast<int64_t>(elementId) >> ELEMENT_MOVE_BIT);
+    HILOG_DEBUG("VerifyingToKenId: treeId[%{public}d]", treeId);
+
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
+            HILOG_ERROR("Get current account data failed!!");
+            return RET_ERR_CONNECTION_EXIST;
+    }
+    HILOG_DEBUG("treeId %{public}d, windowId %{public}d", treeId, windowId);
+    int32_t realId =
+        Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, FOCUS_TYPE_INVALID);
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
+    if (connection == nullptr) {
+        HILOG_ERROR("connection is empty.");
+        return RET_ERR_REGISTER_EXIST;
+    }
+    uint32_t expectTokenId = connection->GetTokenIdMap(treeId);
+    if (tokenId != expectTokenId) {
+        HILOG_DEBUG("tokenId error!");
+        return RET_ERR_TOKEN_ID;
+    }
+
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
 {
     HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d] windowId[%{public}d]",
         uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId());
     if (!handler_) {
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
+    }
+    if (flag) {
+        if (VerifyingToKenId(uiEvent.GetWindowId(), uiEvent.GetAccessibilityId()) == RET_OK) {
+            HILOG_DEBUG("VerifyingToKenId ok");
+        } else {
+            HILOG_DEBUG("VerifyingToKenId failed");
+            return RET_ERR_CONNECTION_EXIST;
+        }
     }
 
     UpdateAccessibilityWindowStateByEvent(uiEvent);
@@ -602,7 +644,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
-
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     handler_->PostTask(std::bind([=]() -> void {
         HILOG_INFO("Register windowId[%{public}d]", windowId);
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
@@ -627,13 +669,10 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
             HILOG_ERROR("New  AccessibilityWindowConnection failed!!");
             return;
         }
+        connection->SetTokenIdMap(SINGLE_TREE_ID, tokenId);
         accountData->AddAccessibilityWindowConnection(windowId, connection);
 
-        if (CheckWindowIdEventExist(windowId)) {
-            SendEvent(windowFocusEventMap_[windowId]);
-            windowFocusEventMap_.erase(windowId);
-        }
-
+        IsCheckWindowIdEventExist(windowId);
         if (operation && operation->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
                 new(std::nothrow) InteractionOperationDeathRecipient(windowId);
@@ -652,8 +691,17 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
     return RET_OK;
 }
 
+void AccessibleAbilityManagerService::IsCheckWindowIdEventExist(const int32_t windowId)
+{
+    if (CheckWindowIdEventExist(windowId)) {
+        SendEvent(windowFocusEventMap_[windowId]);
+        windowFocusEventMap_.erase(windowId);
+    }
+}
+
 RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const Registration &parameter,
-    const int32_t treeId, const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation, bool isApp)
+    const int32_t treeId, const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation,
+    const uint32_t tokenId, bool isApp)
 {
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData == nullptr) {
@@ -672,6 +720,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
             HILOG_WARN("no need to register again.");
             return RET_ERR_REGISTER_EXIST;
         } else {
+            oldConnection->SetTokenIdMap(treeId, tokenId);
             oldConnection->SetCardProxy(treeId, operation);
             isParentConectionExist = true;
         }
@@ -686,8 +735,6 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
         } else {
             HILOG_DEBUG("parentAamsOper is nullptr");
         }
-    } else {
-        HILOG_DEBUG("parentConnection is nullptr");
     }
     if (isParentConectionExist == false) {
         DeleteConnectionAndDeathRecipient(parameter.windowId, oldConnection);
@@ -700,6 +747,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
             HILOG_ERROR("New AccessibilityWindowConnection failed!!");
             return RET_ERR_REGISTER_EXIST;
         }
+        connection->SetTokenIdMap(treeId, tokenId);
         accountData->AddAccessibilityWindowConnection(parameter.windowId, connection);
     }
     return RET_OK;
@@ -710,9 +758,14 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
 {
     static std::atomic<int32_t> treeId = 0;
     ++treeId;
+    if (treeId > TREE_ID_MAX) {
+        HILOG_ERROR("TreeId more than 13.");
+        return RET_ERR_TREE_TOO_BIG;
+    }
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     int64_t nodeId = parameter.elementId;
     if (parameter.elementId > 0) {
-        nodeId = (parameter.elementId << ELEMENT_MOVE_BIT_SPLIT) >> ELEMENT_MOVE_BIT_SPLIT;
+        nodeId = MAX_ELEMENT_ID & static_cast<uint64_t>(parameter.elementId);
     }
     HILOG_INFO("get element and treeid - parameter.elementId[%{public}" PRId64 "] element[%{public}" PRId64 "]",
         parameter.elementId, nodeId);
@@ -726,7 +779,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
     handler_->PostTask(std::bind([=]() -> void {
         HILOG_INFO("Register windowId[%{public}d]", parameter.windowId);
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
-        if (RET_OK != RegisterElementOperatorChildWork(parameter, treeId, nodeId, operation, isApp)) {
+        if (RET_OK != RegisterElementOperatorChildWork(parameter, treeId, nodeId, operation, tokenId, isApp)) {
             return;
         }
         if (CheckWindowIdEventExist(parameter.windowId)) {
@@ -1556,32 +1609,62 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFindFocuse
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    accessibilityInfoResult_ = info;
-    promise_.set_value();
+    if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
+        info.GetAccessibilityId()) == RET_OK) {
+        HILOG_DEBUG("VerifyingToKenId ok");
+        accessibilityInfoResult_ = info;
+        promise_.set_value();
+    } else {
+        HILOG_DEBUG("VerifyingToKenId failed");
+    }
 }
 
 void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoByTextResult(
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    elementInfosResult_ = infos;
-    promise_.set_value();
+    for (auto info : infos) {
+        if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
+            info.GetAccessibilityId()) == RET_OK) {
+            HILOG_DEBUG("VerifyingToKenId ok");
+        } else {
+            HILOG_DEBUG("VerifyingToKenId failed");
+            return;
+        }
+        elementInfosResult_ = infos;
+        promise_.set_value();
+    }
 }
 
 void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    elementInfosResult_ = infos;
-    promise_.set_value();
+    for (auto info : infos) {
+        if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
+            info.GetAccessibilityId()) == RET_OK) {
+            HILOG_DEBUG("VerifyingToKenId ok");
+        } else {
+            HILOG_DEBUG("VerifyingToKenId failed");
+            return;
+        }
+        elementInfosResult_ = infos;
+        promise_.set_value();
+    }
 }
 
 void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    accessibilityInfoResult_ = info;
-    promise_.set_value();
+    if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
+        info.GetAccessibilityId()) == RET_OK) {
+        HILOG_DEBUG("VerifyingToKenId ok");
+        accessibilityInfoResult_ = info;
+        promise_.set_value();
+    } else {
+        HILOG_DEBUG("VerifyingToKenId failed");
+    }
 }
 
 void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetExecuteActionResult(const bool succeeded,

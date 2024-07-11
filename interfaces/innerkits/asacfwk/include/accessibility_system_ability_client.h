@@ -32,9 +32,9 @@ enum AccessibilityControlType : int32_t {
     CONTENT_TEXT = 0x00000004,
 };
 
-constexpr int32_t ELEMENT_MOVE_BIT = 51;
-constexpr int32_t ELEMENT_MOVE_BIT_SPLIT = 13;
+constexpr int32_t ELEMENT_MOVE_BIT = 40;
 constexpr int32_t CONT_SPLIT_ID = -1;
+constexpr int64_t MAX_ELEMENT_ID = 0xFFFFFFFFFF;
 
 /*
  * The class register the accessibility service observer to AAMS,and
@@ -163,11 +163,18 @@ public:
     */
     static void SetSplicElementIdTreeId(const int32_t treeId, int64_t &elementId)
     {
-        int64_t itemp = 0;
+        if (treeId == CONT_SPLIT_ID || elementId == CONT_SPLIT_ID) {
+            elementId = CONT_SPLIT_ID;
+            return;
+        }
+        if ((elementId & MAX_ELEMENT_ID) != elementId) {
+            return;
+        }
+        uint64_t itemp = 0;
         itemp = treeId;
         itemp = (itemp << ELEMENT_MOVE_BIT);
-        itemp |= elementId;
-        elementId = itemp;
+        itemp |= static_cast<uint64_t>(elementId);
+        elementId = static_cast<int64_t>(itemp);
     }
 
     /**
@@ -179,13 +186,13 @@ public:
     static void GetTreeIdAndElementIdBySplitElementId(const int64_t elementId, int64_t &splitElementId,
         int32_t &splitTreeId)
     {
-        if (elementId == CONT_SPLIT_ID) {
+        if (elementId <= CONT_SPLIT_ID) {
             splitTreeId = CONT_SPLIT_ID;
             splitElementId = CONT_SPLIT_ID;
-            return ;
+            return;
         }
-        splitTreeId = (elementId >> ELEMENT_MOVE_BIT);
-        splitElementId = (elementId << ELEMENT_MOVE_BIT_SPLIT) >> ELEMENT_MOVE_BIT_SPLIT;
+        splitTreeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
+        splitElementId = MAX_ELEMENT_ID & elementId;
     }
 };
 } // namespace Accessibility

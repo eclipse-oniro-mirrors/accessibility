@@ -87,7 +87,9 @@ public:
 
 public:
     /* For AccessibleAbilityManagerServiceStub */
-    RetError SendEvent(const AccessibilityEventInfo &uiEvent) override;
+    RetError SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag = 0) override;
+
+    RetError VerifyingToKenId(const int32_t windowId, const int64_t elementId);
 
     uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) override;
 
@@ -294,7 +296,9 @@ private:
         AccessibilityElementInfo &elementInfo);
     bool SetTargetAbility(const int32_t targetAbilityValue);
     RetError RegisterElementOperatorChildWork(const Registration &parameter, const int32_t treeId,
-        const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation, bool isApp);
+        const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation,
+        const uint32_t tokenId, bool isApp);
+    void IsCheckWindowIdEventExist(const int32_t windowId);
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         StateCallbackDeathRecipient() = default;

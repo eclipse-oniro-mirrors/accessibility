@@ -62,5 +62,19 @@ sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetCardProxy(
     HILOG_DEBUG("GetCardProxy : operation is no");
     return proxy_;
 }
+
+RetError AccessibilityWindowConnection::SetTokenIdMap(const int32_t treeId,
+    const uint32_t tokenId)
+{
+    HILOG_DEBUG("treeId : %{public}d", treeId);
+    tokenIdMap_[treeId] = tokenId;
+    return RET_OK;
+}
+
+uint32_t AccessibilityWindowConnection::GetTokenIdMap(const int32_t treeId)
+{
+    HILOG_DEBUG("treeId : %{public}d", treeId);
+    return tokenIdMap_[treeId];
+}
 } // namespace Accessibility
 } // namespace OHOS
