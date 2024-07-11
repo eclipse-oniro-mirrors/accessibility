@@ -110,7 +110,7 @@ static bool IsNapiBool(napi_env env, napi_value param)
 
 static bool IsNapiNumber(napi_env env, napi_value param)
 {
-    napi_valuetype valuetype;
+    napi_valuetype valuetype = napi_null;
     napi_status status = napi_typeof(env, param, &valuetype);
     if (status != napi_ok) {
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);
