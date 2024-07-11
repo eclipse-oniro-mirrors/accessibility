@@ -49,7 +49,7 @@ void AccessibilityShortKey::SubscribeShortKey(std::set<int32_t> preKeys, int32_t
     keyOption->SetFinalKeyDownDuration(holdTime);
 
     auto keyEventCallBack = std::bind(&AccessibilityShortKey::OnShortKey, this);
-    int32_t subscribeId = MMI:InputManager::GetInstance()->SubscribeKeyEvent(keyOption, keyEventCallBack);
+    int32_t subscribeId = MMI::InputManager::GetInstance()->SubscribeKeyEvent(keyOption, keyEventCallBack);
     if (subscribeId < 0) {
         HILOG_ERROR("Subscribe key event failed, finalKey: %{public}d id: %{public}d", finalKey, subscribeId);
         return;
@@ -73,7 +73,7 @@ void AccessibilityShortKey::OnShortKey()
 {
     HILOG_INFO();
 
-    Singleton<AccessibilityManagerService>::GetInstance().OnShortKeyProcess();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
 }
 } // namespace Accessibility
 } // namespace OHOS
