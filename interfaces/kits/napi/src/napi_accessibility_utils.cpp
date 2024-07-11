@@ -72,7 +72,7 @@ std::string GetStringFromNAPI(napi_env env, napi_value value)
 bool ParseBool(napi_env env, bool& param, napi_value args)
 {
     napi_status status;
-    napi_valuetype valuetype;
+    napi_valuetype valuetype = napi_null;
     status = napi_typeof(env, args, &valuetype);
     if (status != napi_ok) {
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);
@@ -91,7 +91,7 @@ bool ParseBool(napi_env env, bool& param, napi_value args)
 bool ParseString(napi_env env, std::string& param, napi_value args)
 {
     napi_status status;
-    napi_valuetype valuetype;
+    napi_valuetype valuetype = napi_null;
     status = napi_typeof(env, args, &valuetype);
     if (status != napi_ok) {
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);
@@ -111,7 +111,7 @@ bool ParseString(napi_env env, std::string& param, napi_value args)
 bool ParseNumber(napi_env env, napi_value args)
 {
     napi_status status;
-    napi_valuetype valuetype;
+    napi_valuetype valuetype = napi_null;
     status = napi_typeof(env, args, &valuetype);
     if (status != napi_ok) {
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);
@@ -160,7 +160,7 @@ bool ParseDouble(napi_env env, double& param, napi_value args)
 bool ParseBigInt(napi_env env, int64_t& param, napi_value args)
 {
     napi_status status;
-    napi_valuetype valuetype;
+    napi_valuetype valuetype = napi_null;
     status = napi_typeof(env, args, &valuetype);
     if (status != napi_ok) {
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);
@@ -182,7 +182,7 @@ bool ParseBigInt(napi_env env, int64_t& param, napi_value args)
 bool CheckJsFunction(napi_env env, napi_value args)
 {
     napi_status status;
-    napi_valuetype valuetype;
+    napi_valuetype valuetype = napi_null;
     status = napi_typeof(env, args, &valuetype);
     if (status != napi_ok) {
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);

@@ -25,7 +25,7 @@ napi_value NAccessibilityGesturePoint::JSConstructor(napi_env env, napi_callback
     HILOG_DEBUG();
     size_t argc = ARGS_SIZE_TWO;
     napi_value argv[ARGS_SIZE_TWO] = {nullptr};
-    napi_valuetype valueType;
+    napi_valuetype valueType = napi_null;
     napi_value jsthis = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &jsthis, nullptr));
     if (argc != ARGS_SIZE_TWO) {
