@@ -96,7 +96,7 @@ private:
     bool isMoveBeyondThreshold_ = false;
     int64_t startTime_ = 0; // microsecond
     double threshold_ = 0.0;
-    MMI::PointerEvent::PointerItem startPointer_ = {};
+    std::shared_ptr<MMI::PointerEvent::PointerItem> startPointer_ = nullptr;
 
     int64_t lastUpTime_ = 0;
     bool isInterceptClick_ = false;
