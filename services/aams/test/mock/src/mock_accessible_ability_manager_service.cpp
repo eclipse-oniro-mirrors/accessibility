@@ -261,6 +261,11 @@ void AccessibleAbilityManagerService::UpdateAllSetting()
     return;
 }
 
+void AccessibleAbilityManagerService::UpdateShortKeyRegister()
+{
+    return;
+}
+
 RetError AccessibleAbilityManagerService::SetShortKeyState(const bool state)
 {
     (void)state;

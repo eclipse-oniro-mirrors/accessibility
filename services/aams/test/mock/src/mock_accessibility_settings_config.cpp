@@ -73,6 +73,20 @@ RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetShortKeyOnLockScreenState(const bool state)
+{
+    HILOG_DEBUG("start.");
+    isShortKeyEnabledOnLockScreen_ = state;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetShortKeyTimeout(const int32_t time)
+{
+    HILOG_DEBUG("start.");
+    shortKeyTimeout_ = time;
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
 {
     HILOG_DEBUG("start.");
@@ -207,6 +221,18 @@ bool AccessibilitySettingsConfig::GetShortKeyState() const
 {
     HILOG_DEBUG("start.");
     return isShortKeyState_;
+}
+
+bool AccessibilitySettingsConfig::GetShortKeyOnLockScreenState() const
+{
+    HILOG_DEBUG("start.");
+    return isShortKeyEnabledOnLockScreen_;
+}
+
+int32_t AccessibilitySettingsConfig::GetShortKeyTimeout() const
+{
+    HILOG_DEBUG("start.");
+    return shortKeyTimeout_;
 }
 
 bool AccessibilitySettingsConfig::GetMouseKeyState() const

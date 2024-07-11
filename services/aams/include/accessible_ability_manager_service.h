@@ -42,6 +42,7 @@
 #include "singleton.h"
 #include "system_ability.h"
 #include "window_manager.h"
+#include "accessibility_short_key.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -142,6 +143,7 @@ public:
     bool EnableShortKeyTargetAbility(const std::string &name = "");
     bool DisableShortKeyTargetAbility();
     void OnShortKeyProcess();
+    void UpdateShortKeyRegister();
 
     void SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector);
 
@@ -400,6 +402,7 @@ private:
     sptr<TouchEventInjector> touchEventInjector_ = nullptr;
     sptr<KeyEventFilter> keyEventFilter_ = nullptr;
     sptr<AccessibilityDumper> accessibilityDumper_ = nullptr;
+    sptr<AccessibilityShortKey> accessibilityShortKey_ = nullptr;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AAMSEventHandler> handler_;

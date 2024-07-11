@@ -97,7 +97,7 @@ std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key,
 int64_t AccessibilityDatashareHelper::GetLongValue(const std::string& key, const int64_t& defaultValue)
 {
     int64_t result = defaultValue;
-    std::string valueStr = GetStringValue(key, "");
+    std::string valueStr = GetStringValue(key, std::to_string(result));
     if (valueStr != "") {
         result = static_cast<int64_t>(std::strtoll(valueStr.c_str(), nullptr, DECIMAL_NOTATION));
     }
@@ -113,7 +113,7 @@ int32_t AccessibilityDatashareHelper::GetIntValue(const std::string& key, const 
 bool AccessibilityDatashareHelper::GetBoolValue(const std::string& key, const bool& defaultValue)
 {
     bool result = defaultValue;
-    std::string valueStr = GetStringValue(key, "");
+    std::string valueStr = GetStringValue(key, result ? "1" : "0");
     if (valueStr != "") {
         result = (valueStr == "1" || valueStr == "true");
     }
@@ -123,7 +123,7 @@ bool AccessibilityDatashareHelper::GetBoolValue(const std::string& key, const bo
 float AccessibilityDatashareHelper::GetFloatValue(const std::string& key, const float& defaultValue)
 {
     float result = defaultValue;
-    std::string valueStr = GetStringValue(key, "");
+    std::string valueStr = GetStringValue(key, std::to_string(result));
     if (valueStr != "") {
         result = std::stof(valueStr);
     }

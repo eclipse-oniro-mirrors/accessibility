@@ -148,7 +148,6 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions005 start";
     uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION |
         AccessibilityInputInterceptor::FEATURE_MOUSE_AUTOCLICK |
-        AccessibilityInputInterceptor::FEATURE_SHORT_KEY |
         AccessibilityInputInterceptor::FEATURE_MOUSE_KEY;
     inputInterceptor_->SetAvailableFunctions(availableFunctions);
 
