@@ -102,6 +102,8 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         } else if (static_cast<TouchGuideState>(currentState_) != TouchGuideState::DRAGGING) {
             Clear(event);
         }
+        event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_CANCEL);
+        EventTransmission::OnPointerEvent(event);
         return true;
     }
     RecordReceivedEvent(event);
