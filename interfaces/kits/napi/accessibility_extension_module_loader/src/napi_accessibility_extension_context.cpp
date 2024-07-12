@@ -22,6 +22,8 @@
 #include "hilog_wrapper.h"
 #include "napi_accessibility_element.h"
 #include "accessibility_utils.h"
+#include "napi_common_want.h"
+#include "napi_common_start_options.h"
 
 using namespace OHOS::AbilityRuntime;
 using namespace OHOS::AccessibilityNapi;
@@ -147,6 +149,21 @@ static void GetLastParamForTwo(napi_env env, NapiCallbackInfo& info, napi_value&
     }
 }
 
+static bool CheckStartAbilityInputParam(napi_env env, NapiCallbackInfo& info,
+    AAFwk::Want& want)
+{
+    if (info.argc < ARGS_SIZE_ONE) {
+        return false;
+    }
+    if (!AppExecFwk::UnwrapWant(env, info.argv[PARAM0], want)) {
+        return false;
+    }
+    if (!want.HasParameter(Want::PARAM_BACK_TO_OTHER_MISSION_STACK)) {
+        want.SetParam(Want::PARAM_BACK_TO_OTHER_MISSION_STACK, true);
+    }
+    return true;
+}
+
 class NAccessibilityExtensionContext final {
 public:
     explicit NAccessibilityExtensionContext(
@@ -187,6 +204,11 @@ public:
     static napi_value InjectGestureSync(napi_env env, napi_callback_info info)
     {
         GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGestureInjectSync);
+    }
+
+    static napi_value StartAbility(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnStartAbility);
     }
 
 private:
@@ -622,6 +644,54 @@ private:
             env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
         return result;
     }
+
+    napi_value OnStartAbility(napi_env env, NapiCallbackInfo& info)
+    {
+        if (info.argc < ARGS_SIZE_ONE) {
+            HILOG_ERROR("Start ability failed, not enough params.");
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM)));
+            return CreateJsUndefined(env);
+        }
+
+        AAFwk::Want want;
+        if (!CheckStartAbilityInputParam(env, info, want)) {
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM)));
+            return CreateJsUndefined(env);
+        }
+
+        NapiAsyncTask::CompleteCallback complete =
+        [weak = context_, want](napi_env env, NapiAsyncTask& task, int32_t status) {
+            HILOG_INFO("startAbility begin");
+            auto context = weak.lock();
+            if (context == nullptr) {
+                HILOG_ERROR("context is released");
+                task.Reject(env, CreateJsError(env,
+                    static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                    ERROR_MESSAGE_PARAMETER_ERROR));
+                return;
+            }
+
+            auto ret = std::make_shared<RetError>(RET_OK);
+            *ret = context->StartAbility(want);
+            if (*ret == RET_OK) {
+                task.Resolve(env, CreateJsUndefined(env));
+            } else {
+                HILOG_ERROR("startAbility failed. ret: %{public}d.", *ret);
+                task.Reject(env, CreateJsError(env,
+                    static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
+                    ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
+            }
+        };
+
+        napi_value lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr :
+            ((info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) ? info.argv[PARAM1] : nullptr);
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnStartAbility",
+            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
+        return result;
+    }
 };
 } // namespace
 
@@ -647,6 +717,7 @@ napi_value CreateJsAccessibilityExtensionContext(
     BindNativeFunction(env, object, "getWindows", moduleName, NAccessibilityExtensionContext::GetWindows);
     BindNativeFunction(env, object, "injectGesture", moduleName, NAccessibilityExtensionContext::InjectGesture);
     BindNativeFunction(env, object, "injectGestureSync", moduleName, NAccessibilityExtensionContext::InjectGestureSync);
+    BindNativeFunction(env, object, "startAbility", moduleName, NAccessibilityExtensionContext::StartAbility);
     return object;
 }
 } // namespace Accessibility
