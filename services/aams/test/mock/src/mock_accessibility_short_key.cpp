@@ -19,8 +19,7 @@
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    constexpr int32_t SUBSCRIBE_ID_1 = 1;
-    constexpr int32_t SUBSCRIBE_ID_2 = 2;
+    constexpr int32_t SUBSCRIBE_ID = 1;
     constexpr int32_t KEYCODE_VOLUME_UP = 0;
     constexpr int32_t KEYCODE_VOLUME_DOWN = 1;
     constexpr int32_t SHORTCUT_TIMEOUT = 3000;
@@ -29,7 +28,7 @@ namespace {
 AccessibilityShortKey::~AccessibilityShortKey()
 {
     HILOG_DEBUG("start.");
-    subscribeIds_.clear();
+    subscribeId_ = -1;
 }
 
 void AccessibilityShortKey::SubscribeShortKey(std::set<int32_t> preKeys, int32_t finalKey, int32_t holdTime)
@@ -38,8 +37,7 @@ void AccessibilityShortKey::SubscribeShortKey(std::set<int32_t> preKeys, int32_t
     (void)preKeys;
     (void)finalKey;
     (void)holdTime;
-    subscribeIds_.emplace_back(SUBSCRIBE_ID_1);
-    subscribeIds_.emplace_back(SUBSCRIBE_ID_2);
+    subscribeId_ = SUBSCRIBE_ID;
 }
 
 void AccessibilityShortKey::Register()

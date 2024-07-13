@@ -27,15 +27,11 @@ AccessibilityShortKey::~AccessibilityShortKey()
 {
     HILOG_INFO();
 
-    if (subscribeIds_.empty()) {
+    if (subscribeId_ < 0) {
         return;
     }
 
-    for (auto it = subscribeIds_.begin(); it != subscribeIds_.end(); it = subscribeIds_.erase(it)) {
-        if (*it >= 0) {
-            MMI::InputManager::GetInstance()->UnsubscribeKeyEvent(*it);
-        }
-    }
+    MMI::InputManager::GetInstance()->UnsubscribeKeyEvent(subscribeId_);
 }
 
 void AccessibilityShortKey::SubscribeShortKey(std::set<int32_t> preKeys, int32_t finalKey, int32_t holdTime)
@@ -54,11 +50,11 @@ void AccessibilityShortKey::SubscribeShortKey(std::set<int32_t> preKeys, int32_t
 
     auto keyEventCallBack = std::bind(&AccessibilityShortKey::OnShortKey, this);
     int32_t subscribeId = MMI::InputManager::GetInstance()->SubscribeKeyEvent(keyOption, keyEventCallBack);
+    subscribeId_ = subscribeId;
     if (subscribeId < 0) {
         HILOG_ERROR("Subscribe key event failed, finalKey: %{public}d id: %{public}d", finalKey, subscribeId);
         return;
     }
-    subscribeIds_.emplace_back(subscribeId);
 }
 
 void AccessibilityShortKey::Register()
@@ -68,9 +64,6 @@ void AccessibilityShortKey::Register()
     std::set<int32_t> preDownKeysUp;
     preDownKeysUp.insert(MMI::KeyEvent::KEYCODE_VOLUME_UP);
     SubscribeShortKey(preDownKeysUp, MMI::KeyEvent::KEYCODE_VOLUME_DOWN, SHORTCUT_TIMEOUT);
-    std::set<int32_t> preUpKeysDown;
-    preUpKeysDown.insert(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
-    SubscribeShortKey(preUpKeysDown, MMI::KeyEvent::KEYCODE_VOLUME_UP, SHORTCUT_TIMEOUT);
 }
 
 void AccessibilityShortKey::OnShortKey()
