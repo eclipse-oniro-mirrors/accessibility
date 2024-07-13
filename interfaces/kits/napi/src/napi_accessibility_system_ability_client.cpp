@@ -60,7 +60,7 @@ napi_value NAccessibilityClient::IsOpenAccessibilitySync(napi_env env, napi_call
 {
     HILOG_INFO();
     size_t argc = ARGS_SIZE_ONE;
-    napi_value argv;
+    napi_value argv = nullptr;
     napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
     ACCESSIBILITY_NAPI_ASSERT(env, argc == ARGS_SIZE_ZERO, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
 
@@ -69,7 +69,7 @@ napi_value NAccessibilityClient::IsOpenAccessibilitySync(napi_env env, napi_call
     bool status = false;
     auto ret = asaClient->IsEnabled(status);
     ACCESSIBILITY_NAPI_ASSERT(env, ret == RET_OK, OHOS::Accessibility::RET_ERR_FAILED);
-    napi_value result;
+    napi_value result = nullptr;
     napi_get_boolean(env, status, &result);
     return result;
 }
@@ -78,7 +78,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
 {
     HILOG_INFO();
     size_t argc = ARGS_SIZE_ONE;
-    napi_value argv;
+    napi_value argv = nullptr;
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
     if (!callbackInfo) {
         HILOG_ERROR("Failed to create callbackInfo.");
@@ -121,7 +121,7 @@ napi_value NAccessibilityClient::IsOpenTouchExplorationSync(napi_env env, napi_c
 {
     HILOG_INFO();
     size_t argc = ARGS_SIZE_ONE;
-    napi_value argv;
+    napi_value argv = nullptr;
     napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
     ACCESSIBILITY_NAPI_ASSERT(env, argc == ARGS_SIZE_ZERO, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
 
@@ -130,7 +130,7 @@ napi_value NAccessibilityClient::IsOpenTouchExplorationSync(napi_env env, napi_c
     bool status = false;
     auto ret = asaClient->IsTouchExplorationEnabled(status);
     ACCESSIBILITY_NAPI_ASSERT(env, ret == RET_OK, OHOS::Accessibility::RET_ERR_FAILED);
-    napi_value result;
+    napi_value result = nullptr;
     napi_get_boolean(env, status, &result);
     return result;
 }
@@ -144,7 +144,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
         return nullptr;
     }
     size_t argc = ARGS_SIZE_ONE;
-    napi_value argv;
+    napi_value argv = nullptr;
     napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
 
     napi_value promise = nullptr;
@@ -198,7 +198,7 @@ void NAccessibilityClient::Completefunction(napi_env env, std::string type, void
     result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
     if (callbackInfo->callback_) {
         napi_get_reference_value(env, callbackInfo->callback_, &callback);
-        napi_value returnVal;
+        napi_value returnVal = nullptr;
         napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
         napi_delete_reference(env, callbackInfo->callback_);
     } else {
@@ -237,7 +237,7 @@ void NAccessibilityClient::GetAbilityListComplete(napi_env env, napi_status stat
     result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
     if (callbackInfo->callback_) {
         napi_get_reference_value(env, callbackInfo->callback_, &callback);
-        napi_value returnVal;
+        napi_value returnVal = nullptr;
         napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
         napi_delete_reference(env, callbackInfo->callback_);
     } else {
@@ -432,7 +432,7 @@ napi_value NAccessibilityClient::GetAccessibilityExtensionListSync(napi_env env,
     ACCESSIBILITY_NAPI_ASSERT(env, errCode == OHOS::Accessibility::RET_OK,
         OHOS::Accessibility::RET_ERR_INVALID_PARAM);
 
-    napi_value resultAbilityList;
+    napi_value resultAbilityList = nullptr;
     napi_create_array(env, &resultAbilityList);
     ConvertAccessibleAbilityInfosToJS(env, resultAbilityList, abilityList);
     return resultAbilityList;
@@ -486,7 +486,7 @@ void NAccessibilityClient::SendEventComplete(napi_env env, napi_status status, v
     result[PARAM1] = ret;
     if (callbackInfo->callback_) {
         napi_get_reference_value(env, callbackInfo->callback_, &callback);
-        napi_value returnVal;
+        napi_value returnVal = nullptr;
         napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
         napi_delete_reference(env, callbackInfo->callback_);
     } else {

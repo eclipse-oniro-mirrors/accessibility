@@ -257,20 +257,20 @@ bool CheckObserverEqual(napi_env env, napi_value observer, napi_env iterEnv, nap
  *********************************************************/
 void ConvertRectToJS(napi_env env, napi_value result, const Accessibility::Rect& rect)
 {
-    napi_value nLeftTopX;
+    napi_value nLeftTopX = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rect.GetLeftTopXScreenPostion(), &nLeftTopX));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "left", nLeftTopX));
 
-    napi_value nLeftTopY;
+    napi_value nLeftTopY = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rect.GetLeftTopYScreenPostion(), &nLeftTopY));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "top", nLeftTopY));
 
-    napi_value nWidth;
+    napi_value nWidth = nullptr;
     int32_t width = rect.GetRightBottomXScreenPostion() - rect.GetLeftTopXScreenPostion();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, width, &nWidth));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "width", nWidth));
 
-    napi_value nHeight;
+    napi_value nHeight = nullptr;
     int32_t height = rect.GetRightBottomYScreenPostion() - rect.GetLeftTopYScreenPostion();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, height, &nHeight));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "height", nHeight));
@@ -434,25 +434,25 @@ void ConvertAccessibleAbilityInfoToJSPart1(
     napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info)
 {
     HILOG_DEBUG();
-    napi_value nId;
+    napi_value nId = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.GetId().c_str(), NAPI_AUTO_LENGTH, &nId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "id", nId));
 
-    napi_value nName;
+    napi_value nName = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.GetName().c_str(), NAPI_AUTO_LENGTH, &nName));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "name", nName));
 
-    napi_value nBundleName;
+    napi_value nBundleName = nullptr;
     NAPI_CALL_RETURN_VOID(
         env, napi_create_string_utf8(env, info.GetPackageName().c_str(), NAPI_AUTO_LENGTH, &nBundleName));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "bundleName", nBundleName));
 
-    napi_value nAbilityType;
+    napi_value nAbilityType = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nAbilityType));
     uint32_t abilityTypesValue = info.GetAccessibilityAbilityType();
     std::vector<std::string> abilityTypes = ParseAbilityTypesToVec(abilityTypesValue);
     for (size_t idxType = 0; idxType < abilityTypes.size(); idxType++) {
-        napi_value nType;
+        napi_value nType = nullptr;
         NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, abilityTypes[idxType].c_str(),
             NAPI_AUTO_LENGTH, &nType));
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, nAbilityType, idxType, nType));
@@ -464,40 +464,40 @@ void ConvertAccessibleAbilityInfoToJSPart2(
     napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info)
 {
     HILOG_DEBUG();
-    napi_value nCapabilities;
+    napi_value nCapabilities = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nCapabilities));
     uint32_t capabilitiesValue = info.GetStaticCapabilityValues();
     std::vector<std::string> capabilities = ParseCapabilitiesToVec(capabilitiesValue);
     for (size_t idxCap = 0; idxCap < capabilities.size(); idxCap++) {
-        napi_value nCap;
+        napi_value nCap = nullptr;
         NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, capabilities[idxCap].c_str(),
             NAPI_AUTO_LENGTH, &nCap));
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, nCapabilities, idxCap, nCap));
     }
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "capabilities", nCapabilities));
 
-    napi_value description;
+    napi_value description = nullptr;
     NAPI_CALL_RETURN_VOID(
         env, napi_create_string_utf8(env, info.GetDescription().c_str(), NAPI_AUTO_LENGTH, &description));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "description", description));
 
-    napi_value nEventTypes;
+    napi_value nEventTypes = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nEventTypes));
     uint32_t eventTypesValue = info.GetEventTypes();
     std::vector<std::string> eventTypes = ParseEventTypesToVec(eventTypesValue);
     for (size_t idxEve = 0; idxEve < eventTypes.size(); idxEve++) {
-        napi_value nEve;
+        napi_value nEve = nullptr;
         NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, eventTypes[idxEve].c_str(), NAPI_AUTO_LENGTH, &nEve));
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, nEventTypes, idxEve, nEve));
     }
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "eventTypes", nEventTypes));
 
-    napi_value filterBundleNames;
+    napi_value filterBundleNames = nullptr;
     size_t idx = 0;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &filterBundleNames));
     std::vector<std::string> strFilterBundleNames = info.GetFilterBundleNames();
     for (auto &filterBundleName : strFilterBundleNames) {
-        napi_value bundleName;
+        napi_value bundleName = nullptr;
         NAPI_CALL_RETURN_VOID(
             env, napi_create_string_utf8(env, filterBundleName.c_str(), NAPI_AUTO_LENGTH, &bundleName));
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, filterBundleNames, idx, bundleName));
@@ -510,7 +510,7 @@ void ConvertAccessibleAbilityInfoToJSPart3(
     napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info)
 {
     HILOG_DEBUG();
-    napi_value nNeedHide;
+    napi_value nNeedHide = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, info.NeedHide(), &nNeedHide));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "needHide", nNeedHide));
 }
@@ -1510,7 +1510,7 @@ void ConvertCaptionPropertyToJS(
 {
     HILOG_DEBUG();
 
-    napi_value value;
+    napi_value value = nullptr;
 
     NAPI_CALL_RETURN_VOID(env,
         napi_create_string_utf8(env, captionProperty.GetFontFamily().c_str(), NAPI_AUTO_LENGTH, &value));
