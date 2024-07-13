@@ -45,6 +45,7 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
+    const std::string AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
@@ -120,6 +121,22 @@ void AccessibleAbilityManagerService::OnStart()
         handler_ = std::make_shared<AAMSEventHandler>(runner_);
         if (!handler_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS event handler failed");
+            return;
+        }
+    }
+
+    if (!actionRunner_) {
+        actionRunner_ = AppExecFwk::EventRunner::Create(AAMS_ACTION_RUNNER_NAME);
+        if (!actionRunner_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS action runner failed");
+            return;
+        }
+    }
+
+    if (!actionHandler_) {
+        actionHandler_ = std::make_shared<AAMSEventHandler>(actionRunner_);
+        if (!actionHandler_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS action handler failed");
             return;
         }
     }
@@ -525,14 +542,14 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
     const sptr<IAccessibleAbilityManagerCaptionObserver> &callback)
 {
     HILOG_DEBUG();
-    if (!callback || !handler_) {
+    if (!callback || !actionHandler_) {
         HILOG_ERROR("Parameters check failed!");
         return ERR_INVALID_VALUE;
     }
 
     std::shared_ptr<std::promise<uint32_t>> syncPromise = std::make_shared<std::promise<uint32_t>>();
     std::future syncFuture = syncPromise->get_future();
-    handler_->PostTask(std::bind([this, syncPromise, callback]() -> void {
+    actionHandler_->PostTask(std::bind([this, syncPromise, callback]() -> void {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -572,14 +589,14 @@ void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
 {
     HILOG_DEBUG();
-    if (!observer || !handler_) {
+    if (!observer || !actionHandler_) {
         HILOG_ERROR("Parameters check failed!");
         return;
     }
 
     std::shared_ptr<std::promise<void>> syncPromisePtr = std::make_shared<std::promise<void>>();
     std::future syncFuture = syncPromisePtr->get_future();
-    handler_->PostTask(std::bind([this, syncPromisePtr, observer]() -> void {
+    actionHandler_->PostTask(std::bind([this, syncPromisePtr, observer]() -> void {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -2128,7 +2145,7 @@ void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &con
     HILOG_DEBUG();
     std::promise<void> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &configData]() -> void {
+    actionHandler_->PostTask(std::bind([this, &syncPromise, &configData]() -> void {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -2268,14 +2285,14 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
     const sptr<IAccessibleAbilityManagerConfigObserver> &callback)
 {
     HILOG_DEBUG();
-    if (!callback || !handler_) {
+    if (!callback || !actionHandler_) {
         HILOG_ERROR("Parameters check failed!");
         return ERR_INVALID_VALUE;
     }
 
     std::shared_ptr<std::promise<uint32_t>> syncPromisePtr = std::make_shared<std::promise<uint32_t>>();
     std::future syncFuture = syncPromisePtr->get_future();
-    handler_->PostTask(std::bind([this, syncPromisePtr, callback]() -> void {
+    actionHandler_->PostTask(std::bind([this, syncPromisePtr, callback]() -> void {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
