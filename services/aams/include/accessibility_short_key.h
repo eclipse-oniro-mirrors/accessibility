@@ -32,7 +32,7 @@ private:
     void SubscribeShortKey(std::set<int32_t> preKeys, int32_t finalKey, int32_t holdTime);
     void OnShortKey();
 
-    std::list<int32_t> subscribeIds_;
+    int32_t subscribeId_ = -1;
 };
 } // namespace Accessibility
 } // namespace OHOS

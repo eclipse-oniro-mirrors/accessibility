@@ -30,6 +30,8 @@ namespace {
     const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
+    const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
 }
 
 void AccessibilitySettings::RegisterSettingsHandler(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
@@ -479,6 +481,9 @@ void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpd
     if (atoHosValue.ignoreRepeatClickState) {
         accountData->GetConfig()->SetIgnoreRepeatClickState(atoHosValue.ignoreRepeatClickState);
     }
+    if (atoHosValue.shortcutEnabledOnLockScreen) {
+        accountData->GetConfig()->SetShortKeyOnLockScreenState(atoHosValue.shortcutEnabledOnLockScreen);
+    }
     UpdateConfigState();
 }
 
@@ -514,6 +519,11 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
     if (atoHosValue.daltonizationState && atoHosValue.displayDaltonizer != 0) {
         accountData->GetConfig()->SetDaltonizationColorFilter(static_cast<uint32_t>(atoHosValue.displayDaltonizer));
         UpdateDaltonizationColorFilter();
+    }
+    if (atoHosValue.shortcutDialogShown) {
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+    } else {
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
     
     if (atoHosValue.isScreenReaderEnabled) {

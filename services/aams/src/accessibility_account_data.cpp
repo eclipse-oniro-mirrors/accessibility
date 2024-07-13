@@ -40,7 +40,6 @@ namespace {
     constexpr int DISPLAY_DALTONIZER_GREEN = 12;
     constexpr int DISPLAY_DALTONIZER_RED = 11;
     constexpr int DISPLAY_DALTONIZER_BLUE = 13;
-    constexpr int DEFAULT_ACCOUNT_ID = 100;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
@@ -54,6 +53,8 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
+    const std::string ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen";
+    const std::string ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN = "accessibility_shortcut_dialog_shown";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -468,13 +469,7 @@ void AccessibilityAccountData::SetScreenReaderState(const std::string &name, con
 bool AccessibilityAccountData::GetDefaultUserScreenReaderState()
 {
     HILOG_DEBUG();
-    auto datashare = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SECURE, DEFAULT_ACCOUNT_ID);
-    if (datashare == nullptr) {
-        return false;
-    }
-    std::string tmpString = datashare->GetStringValue(ENABLED_ACCESSIBILITY_SERVICES, "");
-    std::vector<std::string> services;
-    Utils::StringToVector(tmpString, services);
+    std::vector<std::string> services = config_->GetEnabledAccessibilityServices();
     auto iter = std::find(services.begin(), services.end(), SCREEN_READER_BUNDLE_ABILITY_NAME);
     return iter != services.end();
 }
@@ -530,6 +525,8 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     provider.GetBoolValue(MASTER_MONO, value.audioMono);
     provider.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
     provider.GetFloatValue(MASTER_BALENCE, value.audioBalance);
+    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN, value.shortcutEnabledOnLockScreen);
+    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN, value.shortcutDialogShown);
     int tmpClickResTime = 0;
     provider.GetIntValue(CLICK_RESPONSE_TIME, tmpClickResTime);
     if (tmpClickResTime == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
@@ -637,6 +634,10 @@ void AccessibilityAccountData::Init()
     if (!config_) {
         config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
         config_->Init();
+    }
+    ErrCode rtn = AccountSA::OsAccountManager::GetOsAccountType(id_, accountType_);
+    if (rtn != ERR_OK) {
+        HILOG_ERROR("get account type failed for accountId [%{public}d]", id_);
     }
 }
 
@@ -998,12 +999,6 @@ void AccessibilityAccountData::RemoveUITestClient(sptr<AccessibleAbilityConnecti
 
 AccountSA::OsAccountType AccessibilityAccountData::GetAccountType()
 {
-    if (accountType_ == AccountSA::OsAccountType::END) {
-        ErrCode rtn = AccountSA::OsAccountManager::GetOsAccountType(id_, accountType_);
-        if (rtn != ERR_OK) {
-            HILOG_ERROR("get account type failed for accountId [%{public}d]", id_);
-        }
-    }
     return accountType_;
 }
 

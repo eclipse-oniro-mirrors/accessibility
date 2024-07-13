@@ -69,6 +69,11 @@ namespace {
     constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     constexpr int32_t WINDOW_ID_INVALID = -1;
     constexpr int64_t ELEMENT_ID_INVALID = -1;
+    enum SCREENREADER_STATE : int32_t {
+        UNINIT = -1,
+        OFF = 0,
+        ON = 1,
+    };
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -1468,6 +1473,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     }
 
     std::map<std::string, uint32_t> importantEnabledAbilities;
+    SCREENREADER_STATE screenReaderState = SCREENREADER_STATE::UNINIT;
     // Clear last account's data
     if (currentAccountId_ != -1) {
         HILOG_DEBUG();
@@ -1477,6 +1483,8 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
             return;
         }
         defaultConfigCallbacks_ = accountData->GetConfigCallbacks();
+        screenReaderState = accountData->GetDefaultUserScreenReaderState() ?
+            SCREENREADER_STATE::ON : SCREENREADER_STATE::OFF;
         accountData->GetImportantEnabledAbilities(importantEnabledAbilities);
         accountData->OnAccountSwitched();
         UpdateAccessibilityManagerService();
@@ -1499,6 +1507,14 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         HILOG_ERROR("Failed to set brightness discount");
     }
 #endif
+    AccountSA::OsAccountType accountType = accountData->GetAccountType();
+    if (screenReaderState != SCREENREADER_STATE::UNINIT &&
+        (accountType == AccountSA::OsAccountType::PRIVATE || accountType == AccountSA::OsAccountType::ADMIN)) {
+        bool state = (screenReaderState == SCREENREADER_STATE::ON) ? true : false;
+        accountData->SetAbilityAutoStartState(SCREEN_READER_BUNDLE_ABILITY_NAME, state);
+        HILOG_INFO("set screenreader auto-start state = %{public}d", true);
+    }
+
     if (accountData->GetInstalledAbilitiesFromBMS()) {
         accountData->UpdateImportantEnabledAbilities(importantEnabledAbilities);
         accountData->UpdateAbilities();

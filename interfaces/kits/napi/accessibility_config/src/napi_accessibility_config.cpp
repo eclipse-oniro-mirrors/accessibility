@@ -595,7 +595,7 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
 NAccessibilityConfigData* NAccessibilityConfig::GetCallbackInfo(napi_env env, napi_callback_info info,
     napi_value* parameters, size_t& argc, NAccessibilityConfigClass*& obj)
 {
-    napi_value jsthis;
+    napi_value jsthis = nullptr;
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
 
     napi_status status = napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj));
@@ -763,7 +763,7 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
     HILOG_DEBUG();
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
-    napi_value jsthis;
+    napi_value jsthis = nullptr;
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
 
     NAccessibilityConfigClass* obj;
@@ -821,7 +821,7 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
     }
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
-    napi_value jsthis;
+    napi_value jsthis = nullptr;
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
     NAccessibilityConfigClass* obj;
     napi_status status = napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj));
@@ -870,7 +870,7 @@ napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_ca
     if (!IsAvailable(env, info)) {
         return nullptr;
     }
-    napi_value jsthis;
+    napi_value jsthis = nullptr;
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
