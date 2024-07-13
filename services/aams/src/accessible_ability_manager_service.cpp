@@ -1920,14 +1920,13 @@ void AccessibleAbilityManagerService::UpdateShortKeyRegister()
 
     bool shortKeyState = accountData->GetConfig()->GetShortKeyState();
     if (shortKeyState) {
+        accessibilityShortKey_ = nullptr;
+        accessibilityShortKey_ = new (std::nothrow) AccessibilityShortKey();
         if (accessibilityShortKey_ == nullptr) {
-            accessibilityShortKey_ = new (std::nothrow) AccessibilityShortKey();
-            if (accessibilityShortKey_ == nullptr) {
-                HILOG_ERROR("Create AccessibilityShortKey failed");
-                return;
-            }
-            accessibilityShortKey_->Register();
+            HILOG_ERROR("Create AccessibilityShortKey failed");
+            return;
         }
+        accessibilityShortKey_->Register();
     } else {
         accessibilityShortKey_ = nullptr;
     }
