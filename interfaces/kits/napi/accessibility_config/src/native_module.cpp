@@ -37,8 +37,12 @@ static napi_property_descriptor configDesc[] = {
 
 static napi_value InitHighContrastText(napi_env env)
 {
-    napi_value highContrastTextValue;
+    napi_value highContrastTextValue = nullptr;
     napi_create_object(env, &highContrastTextValue);
+    if (highContrastTextValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return highContrastTextValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, highContrastTextValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -56,8 +60,12 @@ static napi_value InitHighContrastText(napi_env env)
 
 static napi_value InitInvertColor(napi_env env)
 {
-    napi_value invertColorValue;
+    napi_value invertColorValue = nullptr;
     napi_create_object(env, &invertColorValue);
+    if (invertColorValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return invertColorValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, invertColorValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -75,8 +83,12 @@ static napi_value InitInvertColor(napi_env env)
 
 static napi_value InitDaltonizationState(napi_env env)
 {
-    napi_value daltonizationStateValue;
+    napi_value daltonizationStateValue = nullptr;
     napi_create_object(env, &daltonizationStateValue);
+    if (daltonizationStateValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return daltonizationStateValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, daltonizationStateValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -94,8 +106,12 @@ static napi_value InitDaltonizationState(napi_env env)
 
 static napi_value InitDaltonizationColorFilter(napi_env env)
 {
-    napi_value daltonizationColorFilterValue;
+    napi_value daltonizationColorFilterValue = nullptr;
     napi_create_object(env, &daltonizationColorFilterValue);
+    if (daltonizationColorFilterValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return daltonizationColorFilterValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, daltonizationColorFilterValue,
                                           sizeof(configDesc) /
                                           sizeof(configDesc[0]),
@@ -114,8 +130,12 @@ static napi_value InitDaltonizationColorFilter(napi_env env)
 
 static napi_value InitContentTimeout(napi_env env)
 {
-    napi_value contentTimeoutValue;
+    napi_value contentTimeoutValue = nullptr;
     napi_create_object(env, &contentTimeoutValue);
+    if (contentTimeoutValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return contentTimeoutValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, contentTimeoutValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -133,8 +153,12 @@ static napi_value InitContentTimeout(napi_env env)
 
 static napi_value InitAnimationOff(napi_env env)
 {
-    napi_value animationOffValue;
+    napi_value animationOffValue = nullptr;
     napi_create_object(env, &animationOffValue);
+    if (animationOffValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return animationOffValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, animationOffValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -152,8 +176,12 @@ static napi_value InitAnimationOff(napi_env env)
 
 static napi_value InitBrightnessDiscount(napi_env env)
 {
-    napi_value brightnessDiscountValue;
+    napi_value brightnessDiscountValue = nullptr;
     napi_create_object(env, &brightnessDiscountValue);
+    if (brightnessDiscountValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return brightnessDiscountValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, brightnessDiscountValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -171,8 +199,12 @@ static napi_value InitBrightnessDiscount(napi_env env)
 
 static napi_value InitScreenMagnifier(napi_env env)
 {
-    napi_value screenMagnifierValue;
+    napi_value screenMagnifierValue = nullptr;
     napi_create_object(env, &screenMagnifierValue);
+    if (screenMagnifierValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return screenMagnifierValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, screenMagnifierValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -190,8 +222,12 @@ static napi_value InitScreenMagnifier(napi_env env)
 
 static napi_value InitAudioMono(napi_env env)
 {
-    napi_value audioMonoValue;
+    napi_value audioMonoValue = nullptr;
     napi_create_object(env, &audioMonoValue);
+    if (audioMonoValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return audioMonoValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, audioMonoValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -209,8 +245,12 @@ static napi_value InitAudioMono(napi_env env)
 
 static napi_value InitAudioBalance(napi_env env)
 {
-    napi_value audioBalanceValue;
+    napi_value audioBalanceValue = nullptr;
     napi_create_object(env, &audioBalanceValue);
+    if (audioBalanceValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return audioBalanceValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, audioBalanceValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -228,8 +268,12 @@ static napi_value InitAudioBalance(napi_env env)
 
 static napi_value InitMouseKey(napi_env env)
 {
-    napi_value mouseKeyValue;
+    napi_value mouseKeyValue = nullptr;
     napi_create_object(env, &mouseKeyValue);
+    if (mouseKeyValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return mouseKeyValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, mouseKeyValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -247,8 +291,12 @@ static napi_value InitMouseKey(napi_env env)
 
 static napi_value InitMouseAutoClick(napi_env env)
 {
-    napi_value mouseAutoClickValue;
+    napi_value mouseAutoClickValue = nullptr;
     napi_create_object(env, &mouseAutoClickValue);
+    if (mouseAutoClickValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return mouseAutoClickValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, mouseAutoClickValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -266,8 +314,12 @@ static napi_value InitMouseAutoClick(napi_env env)
 
 static napi_value InitShortKey(napi_env env)
 {
-    napi_value shortKeyValue;
+    napi_value shortKeyValue = nullptr;
     napi_create_object(env, &shortKeyValue);
+    if (shortKeyValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return shortKeyValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, shortKeyValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -285,8 +337,12 @@ static napi_value InitShortKey(napi_env env)
 
 static napi_value InitShortKeyTarget(napi_env env)
 {
-    napi_value shortKeyTargetValue;
+    napi_value shortKeyTargetValue = nullptr;
     napi_create_object(env, &shortKeyTargetValue);
+    if (shortKeyTargetValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return shortKeyTargetValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, shortKeyTargetValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -304,8 +360,12 @@ static napi_value InitShortKeyTarget(napi_env env)
 
 static napi_value InitShortKeyMultiTarget(napi_env env)
 {
-    napi_value shortKeyMultiTargetValue;
+    napi_value shortKeyMultiTargetValue = nullptr;
     napi_create_object(env, &shortKeyMultiTargetValue);
+    if (shortKeyMultiTargetValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return shortKeyMultiTargetValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, shortKeyMultiTargetValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -323,8 +383,12 @@ static napi_value InitShortKeyMultiTarget(napi_env env)
 
 static napi_value InitCaptionsState(napi_env env)
 {
-    napi_value captionsValue;
+    napi_value captionsValue = nullptr;
     napi_create_object(env, &captionsValue);
+    if (captionsValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return captionsValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, captionsValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -342,8 +406,12 @@ static napi_value InitCaptionsState(napi_env env)
 
 static napi_value InitCaptionsStyle(napi_env env)
 {
-    napi_value captionsStyleValue;
+    napi_value captionsStyleValue = nullptr;
     napi_create_object(env, &captionsStyleValue);
+    if (captionsStyleValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return captionsStyleValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, captionsStyleValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -361,8 +429,12 @@ static napi_value InitCaptionsStyle(napi_env env)
 
 static napi_value InitClickResponseTime(napi_env env)
 {
-    napi_value clickResponseTimeValue;
+    napi_value clickResponseTimeValue = nullptr;
     napi_create_object(env, &clickResponseTimeValue);
+    if (clickResponseTimeValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return clickResponseTimeValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, clickResponseTimeValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -380,8 +452,12 @@ static napi_value InitClickResponseTime(napi_env env)
 
 static napi_value InitIgnoreRepeatClickState(napi_env env)
 {
-    napi_value ignoreRepeatClickStateValue;
+    napi_value ignoreRepeatClickStateValue = nullptr;
     napi_create_object(env, &ignoreRepeatClickStateValue);
+    if (ignoreRepeatClickStateValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return ignoreRepeatClickStateValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, ignoreRepeatClickStateValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
@@ -399,8 +475,12 @@ static napi_value InitIgnoreRepeatClickState(napi_env env)
 
 static napi_value InitIgnoreRepeatClickTime(napi_env env)
 {
-    napi_value ignoreRepeatClickTimeValue;
+    napi_value ignoreRepeatClickTimeValue = nullptr;
     napi_create_object(env, &ignoreRepeatClickTimeValue);
+    if (ignoreRepeatClickTimeValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return ignoreRepeatClickTimeValue;
+    }
     NAPI_CALL(env, napi_define_properties(env, ignoreRepeatClickTimeValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
