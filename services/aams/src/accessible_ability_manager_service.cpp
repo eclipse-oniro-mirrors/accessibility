@@ -67,6 +67,8 @@ namespace {
     constexpr int32_t TREE_ID_MAX = 0x00001FFF;
     constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
+    constexpr int32_t WINDOW_ID_INVALID = -1;
+    constexpr int64_t ELEMENT_ID_INVALID = -1;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -270,8 +272,12 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
 {
     uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     int32_t treeId = (static_cast<int64_t>(elementId) >> ELEMENT_MOVE_BIT);
-    HILOG_DEBUG("VerifyingToKenId: treeId[%{public}d]", treeId);
-
+    HILOG_DEBUG("VerifyingToKenId: treeId[%{public}d], windowId[%{public}d], elementId[%{public}" PRId64 "]",
+        treeId, windowId, elementId);
+    if (elementId == ELEMENT_ID_INVALID || windowId == WINDOW_ID_INVALID) {
+        HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
+        return RET_OK;
+    }
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData == nullptr) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
@@ -305,7 +311,8 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
         return RET_ERR_NULLPTR;
     }
     if (flag) {
-        if (VerifyingToKenId(uiEvent.GetWindowId(), uiEvent.GetAccessibilityId()) == RET_OK) {
+        if (VerifyingToKenId(uiEvent.GetElementInfo().GetWindowId(),
+            uiEvent.GetElementInfo().GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_DEBUG("VerifyingToKenId failed");
@@ -1616,6 +1623,7 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFindFocuse
         promise_.set_value();
     } else {
         HILOG_DEBUG("VerifyingToKenId failed");
+        promise_.set_value();
     }
 }
 
@@ -1629,6 +1637,7 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_DEBUG("VerifyingToKenId failed");
+            elementInfosResult_.clear();
             return;
         }
         elementInfosResult_ = infos;
@@ -1646,6 +1655,7 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_DEBUG("VerifyingToKenId failed");
+            elementInfosResult_.clear();
             return;
         }
         elementInfosResult_ = infos;
@@ -1664,6 +1674,7 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveS
         promise_.set_value();
     } else {
         HILOG_DEBUG("VerifyingToKenId failed");
+        promise_.set_value();
     }
 }
 
