@@ -66,8 +66,6 @@ namespace {
     constexpr int64_t MAX_ELEMENT_ID = 0xFFFFFFFFFF;
     constexpr int32_t SINGLE_TREE_ID = 0;
     constexpr int32_t TREE_ID_MAX = 0x00001FFF;
-    constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
-    constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     constexpr int32_t WINDOW_ID_INVALID = -1;
     constexpr int64_t ELEMENT_ID_INVALID = -1;
     enum SCREENREADER_STATE : int32_t {
@@ -2233,23 +2231,6 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
 
     AccessibilityShortkeyDialog shortkeyDialog;
 
-    AccessibilitySettingProvider& settingProvider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    bool oobeState = false;
-    bool userSetupState = false;
-    settingProvider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
-    if (accountData->GetConfig()->GetDbHandle()) {
-        userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
-    }
-    if (oobeState && userSetupState) {
-        int32_t shortKeyTimeout = accountData->GetConfig()->GetShortKeyTimeout();
-        if (shortKeyTimeout == SHORT_KEY_TIMEOUT_BEFORE_USE) {
-            HILOG_INFO("first use short cut key");
-            accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-            shortkeyDialog.ConnectDialog(ShortKeyDialogType::RECONFIRM);
-            return;
-        }
-    }
-
     std::vector<std::string> shortkeyMultiTarget = accountData->GetConfig()->GetShortkeyMultiTarget();
     if (shortkeyMultiTarget.size() == 0) {
         EnableShortKeyTargetAbility();
@@ -2525,7 +2506,6 @@ void AccessibleAbilityManagerService::OnDeviceProvisioned()
     }
     if (accountData->GetDefaultUserScreenReaderState()) {
         HILOG_INFO("Modify shortKeyTimeout and shortKeyOnLockScreenState");
-        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
         accountData->GetConfig()->SetShortKeyOnLockScreenState(true);
         UpdateConfigState();
     }
