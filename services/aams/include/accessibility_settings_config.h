@@ -72,7 +72,7 @@ public:
     bool GetMouseKeyState() const;
     int32_t GetMouseAutoClick() const;
     const std::string &GetShortkeyTarget() const;
-    const std::vector<std::string> &GetShortkeyMultiTarget() const;
+    const std::vector<std::string> GetShortkeyMultiTarget();
     bool GetHighContrastTextState() const;
     bool GetInvertColorState() const;
     bool GetAnimationOffState() const;
@@ -87,7 +87,7 @@ public:
     bool GetIgnoreRepeatClickState() const;
     uint32_t GetIgnoreRepeatClickTime() const;
 
-    const std::vector<std::string> &GetEnabledAccessibilityServices();
+    const std::vector<std::string> GetEnabledAccessibilityServices();
     RetError AddEnabledAccessibilityService(const std::string &serviceName);
     RetError RemoveEnabledAccessibilityService(const std::string &serviceName);
     uint32_t GetConfigState();
@@ -136,6 +136,7 @@ private:
     std::vector<std::string> enabledAccessibilityServices_ {}; // bundleName/abilityName
 
     std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
+    std::mutex interfaceMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

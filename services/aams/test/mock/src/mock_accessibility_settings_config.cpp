@@ -253,7 +253,7 @@ const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
     return shortkeyTarget_;
 }
 
-const std::vector<std::string> &AccessibilitySettingsConfig::GetShortkeyMultiTarget() const
+const std::vector<std::string> AccessibilitySettingsConfig::GetShortkeyMultiTarget()
 {
     return shortkeyMultiTarget_;
 }
@@ -425,7 +425,7 @@ RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
     return RET_OK;
 }
 
-const std::vector<std::string> &AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
+const std::vector<std::string> AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
 {
     return enabledAccessibilityServices_;
 }
