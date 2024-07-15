@@ -168,6 +168,7 @@ RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<std::string> &name)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(interfaceMutex_);
     shortkeyMultiTarget_ = name;
     if (!datashare_) {
         return RET_ERR_NULLPTR;
@@ -363,9 +364,11 @@ const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
     return shortkeyTarget_;
 }
 
-const std::vector<std::string> &AccessibilitySettingsConfig::GetShortkeyMultiTarget() const
+const std::vector<std::string> AccessibilitySettingsConfig::GetShortkeyMultiTarget()
 {
-    return shortkeyMultiTarget_;
+    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::vector<std::string> rtnVec = shortkeyMultiTarget_;
+    return rtnVec;
 }
 
 bool AccessibilitySettingsConfig::GetHighContrastTextState() const
@@ -453,13 +456,16 @@ uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
     return ignoreRepeatClickTime_;
 }
 
-const std::vector<std::string> &AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
+const std::vector<std::string> AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
 {
-    return enabledAccessibilityServices_;
+    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::vector<std::string> rtnVec = enabledAccessibilityServices_;
+    return rtnVec;
 }
 
 RetError AccessibilitySettingsConfig::AddEnabledAccessibilityService(const std::string &serviceName)
 {
+    std::lock_guard<std::mutex> lock(interfaceMutex_);
     auto iter = std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(), serviceName);
     if (iter != enabledAccessibilityServices_.end()) {
         return RET_OK;
@@ -476,6 +482,7 @@ RetError AccessibilitySettingsConfig::AddEnabledAccessibilityService(const std::
 
 RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const std::string &serviceName)
 {
+    std::lock_guard<std::mutex> lock(interfaceMutex_);
     auto iter = std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(), serviceName);
     if (iter == enabledAccessibilityServices_.end()) {
         return RET_OK;
