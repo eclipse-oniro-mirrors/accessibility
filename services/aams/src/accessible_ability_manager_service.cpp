@@ -2233,23 +2233,6 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
 
     AccessibilityShortkeyDialog shortkeyDialog;
 
-    AccessibilitySettingProvider& settingProvider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    bool oobeState = false;
-    bool userSetupState = false;
-    settingProvider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
-    if (accountData->GetConfig()->GetDbHandle()) {
-        userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
-    }
-    if (oobeState && userSetupState) {
-        int32_t shortKeyTimeout = accountData->GetConfig()->GetShortKeyTimeout();
-        if (shortKeyTimeout == SHORT_KEY_TIMEOUT_BEFORE_USE) {
-            HILOG_INFO("first use short cut key");
-            accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-            shortkeyDialog.ConnectDialog(ShortKeyDialogType::RECONFIRM);
-            return;
-        }
-    }
-
     std::vector<std::string> shortkeyMultiTarget = accountData->GetConfig()->GetShortkeyMultiTarget();
     if (shortkeyMultiTarget.size() == 0) {
         EnableShortKeyTargetAbility();
