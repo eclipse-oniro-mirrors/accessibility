@@ -1307,5 +1307,71 @@ HWTEST_F(AccessibilityElementInfoTest, SetOffset_001, TestSize.Level1)
     EXPECT_FLOAT_EQ(elementInfo_->GetOffset(), 6.6f);
     GTEST_LOG_(INFO) << "SetOffset_001 end";
 }
+
+/**
+ * @tc.number: SetChildTreeIdAndWinId_001
+ * @tc.name: SetChildTreeIdAndWinId
+ * @tc.desc: Test function SetChildTreeIdAndWinId GetChildTreeId GetChildWindowId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetChildTreeIdAndWinId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetChildTreeIdAndWinId_001 start";
+    elementInfo_->SetChildTreeIdAndWinId(1, 2);
+    EXPECT_EQ(elementInfo_->GetChildTreeId(), 1);
+    EXPECT_EQ(elementInfo_->GetChildWindowId(), 2);
+    GTEST_LOG_(INFO) << "SetChildTreeIdAndWinId_001 end";
+}
+
+/**
+ * @tc.number: SetBelongTreeId_001
+ * @tc.name: SetBelongTreeId
+ * @tc.desc: Test function SetBelongTreeId, GetBelongTreeId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetBelongTreeId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetBelongTreeId_001 start";
+    elementInfo_->SetBelongTreeId(1);
+    EXPECT_EQ(elementInfo_->GetBelongTreeId(), 1);
+    GTEST_LOG_(INFO) << "SetBelongTreeId_001 end";
+}
+
+/**
+ * @tc.number: SetParentWindowId_001
+ * @tc.name: SetParentWindowId
+ * @tc.desc: Test function SetParentWindowId, GetParentWindowId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetParentWindowId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetParentWindowId_001 start";
+    elementInfo_->SetParentWindowId(1);
+    EXPECT_EQ(elementInfo_->GetParentWindowId(), 1);
+    GTEST_LOG_(INFO) << "SetParentWindowId_001 end";
+}
+
+/**
+ * @tc.number: SetAccessibilityGroup_001
+ * @tc.name: SetAccessibilityGroup
+ * @tc.desc: Test function SetAccessibilityGroup, GetAccessibilityGroup
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityGroup_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityGroup_001 start";
+    elementInfo_->SetAccessibilityGroup(false);
+    EXPECT_FALSE(elementInfo_->GetAccessibilityGroup());
+    GTEST_LOG_(INFO) << "SetAccessibilityGroup_001 end";
+}
+
+/**
+ * @tc.number: SetAccessibilityLevel_001
+ * @tc.name: SetAccessibilityLevel
+ * @tc.desc: Test function SetAccessibilityLevel, GetAccessibilityLevel
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityLevel_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityLevel_001 start";
+    elementInfo_->SetAccessibilityLevel("test");
+    EXPECT_STREQ(elementInfo_->GetAccessibilityLevel().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetAccessibilityLevel_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
