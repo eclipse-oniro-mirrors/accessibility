@@ -499,7 +499,6 @@ bool AccessibilityScreenTouch::OnPointerEvent(MMI::PointerEvent &event)
         return false;
     }
 
-
     if (event.GetSourceType() != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
         EventTransmission::OnPointerEvent(event);
         return false;
