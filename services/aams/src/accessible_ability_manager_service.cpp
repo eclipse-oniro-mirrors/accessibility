@@ -783,9 +783,9 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
 RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration parameter,
     const sptr<IAccessibilityElementOperator> &operation, bool isApp)
 {
-    static std::atomic<int32_t> treeId = 0;
-    ++treeId;
-    if (treeId > TREE_ID_MAX) {
+    static std::atomic<int32_t> treeId(0);
+    int32_t treeIdSingle = treeId.fetch_add(1, std::memory_order_relaxed);
+    if (treeIdSingle > TREE_ID_MAX) {
         HILOG_ERROR("TreeId more than 13.");
         return RET_ERR_TREE_TOO_BIG;
     }
@@ -794,8 +794,9 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
     if (parameter.elementId > 0) {
         nodeId = MAX_ELEMENT_ID & static_cast<uint64_t>(parameter.elementId);
     }
-    HILOG_INFO("get element and treeid - parameter.elementId[%{public}" PRId64 "] element[%{public}" PRId64 "]",
-        parameter.elementId, nodeId);
+    HILOG_INFO("get treeId element and treeid - treeId: %{public}d parameter.elementId[%{public}" PRId64 "]"
+        "element[%{public}" PRId64 "]",
+        treeIdSingle, parameter.elementId, nodeId);
 
     if (!handler_) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
@@ -806,7 +807,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
     handler_->PostTask(std::bind([=]() -> void {
         HILOG_INFO("Register windowId[%{public}d]", parameter.windowId);
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
-        if (RET_OK != RegisterElementOperatorChildWork(parameter, treeId, nodeId, operation, tokenId, isApp)) {
+        if (RET_OK != RegisterElementOperatorChildWork(parameter, treeIdSingle, nodeId, operation, tokenId, isApp)) {
             return;
         }
         if (CheckWindowIdEventExist(parameter.windowId)) {
