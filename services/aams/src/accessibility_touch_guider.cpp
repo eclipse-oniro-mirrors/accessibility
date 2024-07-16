@@ -95,6 +95,13 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         EventTransmission::OnPointerEvent(event);
         return false;
     }
+
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN ||
+        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) {
+        HILOG_INFO("PointerAction:%{public}d, PointerId:%{public}d.", event.GetPointerAction(),
+            event.GetPointerId());
+    }
+
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_CANCEL) {
         if ((static_cast<TouchGuideState>(currentState_) == TouchGuideState::DRAGGING) &&
             event.GetPointerId() == currentPid_) {
@@ -116,6 +123,12 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         return true;
     }
 
+    HandlePointerEvent(event);
+    return true;
+}
+
+void TouchGuider::HandlePointerEvent(MMI::PointerEvent &event)
+{
     switch (static_cast<TouchGuideState>(currentState_)) {
         case TouchGuideState::TOUCH_GUIDING:
             if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN &&
@@ -137,7 +150,6 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         default:
             break;
     }
-    return true;
 }
 
 void TouchGuider::DestroyEvents()
@@ -262,7 +274,7 @@ std::shared_ptr<MMI::PointerEvent> TouchGuider::getLastReceivedEvent()
 
 bool TouchGuider::TouchGuideListener::OnDoubleTap(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     if (server_.currentState_ != static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING)) {
         return false;
@@ -324,7 +336,7 @@ bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
 
 void TouchGuider::TouchGuideListener::MultiFingerGestureOnCompleted(GestureType gestureId)
 {
-    HILOG_DEBUG("gestureId is %{public}d", gestureId);
+    HILOG_INFO("gestureId is %{public}d", gestureId);
 
     server_.OnTouchInteractionEnd();
     server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
