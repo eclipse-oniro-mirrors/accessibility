@@ -20,6 +20,7 @@
 #include "bundle_mgr_client.h"
 #include "hilog_wrapper.h"
 #include "nlohmann/json.hpp"
+#include "ipc_skeleton.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -47,6 +48,9 @@ namespace {
     const std::string CAPABILITIES_JSON_VALUE_GESTURE = "gesture";
 
     const int32_t STRING_LEN_MAX = 10240;
+    constexpr int32_t BASE_USER_RANGE = 200000;
+    constexpr int32_t INVALID_ID = -1;
+    constexpr int32_t INVALID_USER_ID = -1;
 } // namespace
 
 class JsonUtils {
@@ -409,6 +413,15 @@ void Utils::StringToVector(const std::string &stringIn, std::vector<std::string>
     for (auto& var : vectorResult) {
         HILOG_DEBUG("vectorResult = %{public}s ", var.c_str());
     }
+}
+
+int32_t Utils::GetUserIdByCallingUid()
+{
+    int32_t uid = IPCSkeleton::GetCallingUid();
+    if (uid <= INVALID_ID) {
+        return INVALID_USER_ID;
+    }
+    return (uid / BASE_USER_RANGE);
 }
 } // namespace Accessibility
 } // namespace OHOS
