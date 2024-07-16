@@ -150,7 +150,7 @@ public:
      *
      * @param event  the pointer event to be handled.
      */
-    void HandlePointerEvent(MMI::PointerEvent &event)
+    void HandlePointerEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Destroy event state.
