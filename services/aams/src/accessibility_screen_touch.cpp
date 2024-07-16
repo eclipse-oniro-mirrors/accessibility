@@ -494,7 +494,7 @@ bool AccessibilityScreenTouch::OnPointerEvent(MMI::PointerEvent &event)
         HILOG_WARN("get GetPointerItem %{public}d failed", event.GetPointerId());
         return false;
     }
-    if (event.GetToolType() == MMI::PointerEvent::TOOL_TYPE_KNUCKLE) {
+    if (pointerItem.GetToolType() == MMI::PointerEvent::TOOL_TYPE_KNUCKLE) {
         EventTransmission::OnPointerEvent(event);
         return false;
     }
