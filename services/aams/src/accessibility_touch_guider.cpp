@@ -98,8 +98,8 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
 
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN ||
         event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) {
-        HILOG_INFO("PointerAction:%{public}d, PointerId:%{public}d.",
-            pointerEvent->GetPointerAction(), pointerEvent->GetPointerId());
+        HILOG_INFO("PointerAction:%{public}d, PointerId:%{public}d.", event.GetPointerAction(),
+            event.GetPointerId());
     }
 
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_CANCEL) {
@@ -123,6 +123,12 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         return true;
     }
 
+    HandlePointerEvent(event);
+    return true;
+}
+
+void TouchGuider::HandlePointerEvent(MMI::PointerEvent &event)
+{
     switch (static_cast<TouchGuideState>(currentState_)) {
         case TouchGuideState::TOUCH_GUIDING:
             if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN &&
@@ -144,7 +150,6 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         default:
             break;
     }
-    return true;
 }
 
 void TouchGuider::DestroyEvents()
