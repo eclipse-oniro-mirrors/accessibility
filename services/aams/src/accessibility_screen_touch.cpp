@@ -489,6 +489,17 @@ void AccessibilityScreenTouch::Clear()
 bool AccessibilityScreenTouch::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
+    MMI::PointerEvent::PointerItem pointerItem;
+    if (!event.GetPointerItem(event.GetPointerId(), pointerItem)) {
+        HILOG_WARN("get GetPointerItem %{public}d failed", event.GetPointerId());
+        return false;
+    }
+    if (event.GetToolType() == MMI::PointerEvent::TOOL_TYPE_KNUCKLE) {
+        EventTransmission::OnPointerEvent(event);
+        return false;
+    }
+
+
     if (event.GetSourceType() != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
         EventTransmission::OnPointerEvent(event);
         return false;
