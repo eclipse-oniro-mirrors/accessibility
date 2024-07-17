@@ -128,6 +128,13 @@ public:
     static void GetElementInfoTextType(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoOffset(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoGridItem(NAccessibilityElementData *callbackInfo, napi_value &value);
+
+    static void GetElementInfoCheckboxGroup(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoRow(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoColumn(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoSideBarContainer(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoListItemIndex(NAccessibilityElementData *callbackInfo, napi_value &value);
+
     static void GetElementInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityGroup(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityLevel(NAccessibilityElementData *callbackInfo, napi_value &value);

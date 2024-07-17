@@ -118,6 +118,12 @@ bool AccessibilityElementInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
     }
     gridItem_ = *gridItem;
 
+    sptr<ExtraElementinfoParcel> extraElementinfo = parcel.ReadStrongParcelable<ExtraElementinfoParcel>();
+    if (!extraElementinfo) {
+        return false;
+    }
+    extraElementinfo_ = *extraElementinfo;
+
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, liveRegion_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, contentInvalid_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, error_);
@@ -210,6 +216,10 @@ bool AccessibilityElementInfoParcel::MarshallingSecondPart(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &gridParcel);
     GridItemInfoParcel gridItemParcel(gridItem_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &gridItemParcel);
+
+    ExtraElementinfoParcel extraElementinfoParcel(extraElementinfo_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &extraElementinfoParcel);
+
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, liveRegion_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, contentInvalid_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, error_);
