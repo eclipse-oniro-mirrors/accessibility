@@ -1435,6 +1435,90 @@ public:
     */
     const std::string &GetAccessibilityLevel() const;
 
+    /**
+     * @brief Set zIndex
+     * @param textType The value of zIndex
+     * @sysCap Accessibility
+     */
+    void SetZIndex(const int32_t zIndex);
+
+    /**
+     * @brief Get zindex
+     * @return The zindex of node
+     * @sysCap Accessibility
+     */
+    int32_t GetZIndex() const;
+
+    /**
+     * @brief Set opacity
+     * @param textType The value of opacity
+     * @sysCap Accessibility
+     */
+    void SetOpacity(const float opacity);
+
+    /**
+     * @brief Get opacity
+     * @return The opacity of node
+     * @sysCap Accessibility
+     */
+    float GetOpacity() const;
+
+    /**
+     * @brief Set backgroundColor
+     * @param textType The value of backgroundColor
+     * @sysCap Accessibility
+     */
+    void SetBackgroundColor(const std::string &backgroundColor);
+
+    /**
+     * @brief Get backgroundColor
+     * @return The backgroundColor of node
+     * @sysCap Accessibility
+     */
+    const std::string &GetBackgroundColor() const;
+
+    /**
+     * @brief Set backgroundImage
+     * @param textType The value of backgroundImage
+     * @sysCap Accessibility
+     */
+    void SetBackgroundImage(const std::string &backgroundImage);
+
+    /**
+     * @brief Get backgroundImage
+     * @return The backgroundImage of node
+     * @sysCap Accessibility
+     */
+    const std::string &GetBackgroundImage() const;
+
+    /**
+     * @brief Set blur
+     * @param textType The value of blur
+     * @sysCap Accessibility
+     */
+    void SetBlur(const std::string &blur);
+
+    /**
+     * @brief Get blur
+     * @return The blur of node
+     * @sysCap Accessibility
+     */
+    const std::string &GetBlur() const;
+
+    /**
+     * @brief Set hitTestBehavior
+     * @param textType The value of hitTestBehavior
+     * @sysCap Accessibility
+     */
+    void SetHitTestBehavior(const std::string &hitTestBehavior);
+
+    /**
+     * @brief Get hitTestBehavior
+     * @return The hitTestBehavior of node
+     * @sysCap Accessibility
+     */
+    const std::string &GetHitTestBehavior() const;
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1501,6 +1585,12 @@ protected:
     float offset_ = 0.0f;
     bool accessibilityGroup_ = true;
     std::string accessibilityLevel_ = "auto";
+    int32_t zIndex_ = 0;
+    float opacity_ = 0;
+    std::string backgroundColor_ = "";
+    std::string backgroundImage_ = "";
+    std::string blur_ = "";
+    std::string hitTestBehavior_ = "";
 };
 } // namespace Accessibility
 } // namespace OHOS
