@@ -1586,7 +1586,7 @@ protected:
     bool accessibilityGroup_ = true;
     std::string accessibilityLevel_ = "auto";
     int32_t zIndex_ = 0;
-    float opacity_ = 0;
+    float opacity_ = 0.0f;
     std::string backgroundColor_ = "";
     std::string backgroundImage_ = "";
     std::string blur_ = "";
