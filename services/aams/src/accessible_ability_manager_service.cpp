@@ -473,7 +473,44 @@ bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInf
 {
     HILOG_DEBUG();
     sptr<AccessibilityWindowConnection> connection = GetRealIdConnection();
-    return FindFocusedElementByConnection(connection, elementInfo);
+    FindFocusedElementByConnection(connection, elementInfo);
+    if (elementInfo.GetAccessibilityId() >= 0) {
+        HILOG_DEBUG("find focused element success.");
+        return true;
+    }
+    int32_t windowId = GetFocusWindowId();
+    int64_t elementId = GetFocusElementId();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("GetCurrentAccountData failed");
+        return false;
+    }
+    connection = accountData->GetAccessibilityWindowConnection(windowId);
+    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
+    if (connection == nullptr) {
+        HILOG_ERROR("connection is nullptr");
+        return false;
+    }
+    sptr<ElementOperatorCallbackImpl> callBack = new(std::nothrow) ElementOperatorCallbackImpl();
+    if (callBack == nullptr) {
+        HILOG_ERROR("Failed to create callBack.");
+        return false;
+    }
+    std::future<void> promiseFuture = callBack->promise_.get_future();
+    connection->GetProxy()->SearchElementInfoByAccessibilityId(elementId, REQUEST_ID_MAX, callBack, 0);
+    std::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitFocus != std::future_status::ready) {
+        ipcTimeoutNum_++;
+        HILOG_ERROR("Failed to wait result, number %{public}" PRId64 "", ipcTimeoutNum_);
+        return false;
+    }
+
+    if (callBack->elementInfosResult_.size() <= 0) {
+        HILOG_ERROR("SearchElementInfoByAccessibilityId return null");
+        return false;
+    }
+    elementInfo = callBack->elementInfosResult_[0];
+    return true;
 }
 
 bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
