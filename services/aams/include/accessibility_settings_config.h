@@ -92,6 +92,7 @@ public:
     RetError RemoveEnabledAccessibilityService(const std::string &serviceName);
     uint32_t GetConfigState();
     bool GetStartFromAtoHosState();
+    void OnDataClone();
     std::shared_ptr<AccessibilityDatashareHelper> GetDbHandle()
     {
         return datashare_;

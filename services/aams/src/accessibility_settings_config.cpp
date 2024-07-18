@@ -17,6 +17,7 @@
 #include "hilog_wrapper.h"
 #include "system_ability_definition.h"
 #include "utils.h"
+#include "accessibility_setting_provider.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -54,6 +55,16 @@ namespace {
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
     const std::string SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
     const std::string SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
+    const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
+    const std::string SCREENREADER_TAG = "screenreader";
+    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
+    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
+    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM = 700;
+    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG = 1000;
+    constexpr int DISPLAY_DALTONIZER_GREEN = 12;
+    constexpr int DISPLAY_DALTONIZER_RED = 11;
+    constexpr int DISPLAY_DALTONIZER_BLUE = 13;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -668,6 +679,55 @@ void AccessibilitySettingsConfig::Init()
 void AccessibilitySettingsConfig::ClearData()
 {
     HILOG_DEBUG();
+}
+
+void AccessibilitySettingsConfig::OnDataClone()
+{
+    InitSetting();
+    if (clickResponseTime_ == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
+        SetClickResponseTime(AccessibilityConfig::ResponseDelayMedium);
+    } else if (clickResponseTime_ > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
+        SetClickResponseTime(AccessibilityConfig::ResponseDelayLong);
+    }
+
+    if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
+        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutShort);
+    } else if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
+        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutMedium);
+    } else if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
+        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutLong);
+    } else if (ignoreRepeatClickTime_ > DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
+        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutLongest);
+    }
+
+    if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_GREEN) {
+        SetDaltonizationColorFilter(AccessibilityConfig::Deuteranomaly);
+    } else if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_RED) {
+        SetDaltonizationColorFilter(AccessibilityConfig::Protanomaly);
+    } else if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_BLUE) {
+        SetDaltonizationColorFilter(AccessibilityConfig::Tritanomaly);
+    }
+
+    std::vector<std::string> tmpVec = GetShortkeyMultiTarget();
+    auto iter = std::find_if(tmpVec.begin(), tmpVec.end(),
+        [] (const std::string& service) { return service.find(SCREENREADER_TAG) != std::string::npos; });
+    if (iter != tmpVec.end()) {
+        tmpVec.erase(iter);
+        tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
+        SetShortkeyMultiTarget(tmpVec);
+    }
+
+    tmpVec = GetEnabledAccessibilityServices();
+    iter = std::find_if(tmpVec.begin(), tmpVec.end(),
+        [] (const std::string& service) { return service.find(SCREENREADER_TAG) != std::string::npos; });
+    if (iter != tmpVec.end()) {
+        RemoveEnabledAccessibilityService(*iter);
+        AddEnabledAccessibilityService(SCREEN_READER_BUNDLE_ABILITY_NAME);
+    }
+
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    provider.PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
+    HILOG_INFO();
 }
 } // namespace Accessibility
 } // namespace OHOS

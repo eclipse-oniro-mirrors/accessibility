@@ -441,5 +441,9 @@ RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const st
     (void)serviceName;
     return RET_OK;
 }
+
+void AccessibilitySettingsConfig::OnDataClone()
+{
+}
 } // namespace Accessibility
 } // namespace OHOS
