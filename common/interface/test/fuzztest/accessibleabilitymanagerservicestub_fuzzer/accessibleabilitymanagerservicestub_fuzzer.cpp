@@ -15,6 +15,7 @@
 
 #include "accessibleabilitymanagerservicestub_fuzzer.h"
 #include "accessible_ability_manager_service_stub.h"
+#include "accessibility_ipc_interface_code.h"
 #include "securec.h"
 
 namespace OHOS {
@@ -23,13 +24,14 @@ namespace {
     constexpr size_t FOO_MAX_LEN = 1024;
     constexpr size_t U32_AT_SIZE = 4;
     constexpr size_t BASE_CODE = 800;
-    constexpr size_t MESSAGE_SIZE = 61;
+    constexpr size_t MESSAGE_SIZE = 63;
     constexpr size_t FUZZ_NUM1 = 1;
     constexpr size_t FUZZ_NUM2 = 2;
     constexpr size_t FUZZ_NUM3 = 3;
     constexpr size_t FUZZ_NUM8 = 8;
     constexpr size_t FUZZ_NUM16 = 16;
     constexpr size_t FUZZ_NUM24 = 24;
+    constexpr uint8_t DEVISOR_TWO = 2;
 }
 
 class AccessibleAbilityManagerServiceStubFuzzTest : public AccessibleAbilityManagerServiceStub {
@@ -144,6 +146,20 @@ bool OnRemoteRequestSvcFuzzTest(const uint8_t* data, size_t size)
     serviceStub.OnRemoteRequest(code, datas, reply, option);
     return true;
 }
+
+bool HandleSetDaltonizationStateTest(const uint8_t *data, size_t size)
+{
+    MessageParcel datas;
+    bool isSetDaltonizationState = data[0] % DEVISOR_TWO;
+    datas.WriteBool(isSetDaltonizationState);
+    MessageParcel reply;
+    MessageOption option;
+    AccessibleAbilityManagerServiceStubFuzzTest serviceStub;
+
+    serviceStub.OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::SET_DALTONIZATION_STATE),
+        datas, reply, option);
+    return true;
+}
 } // namespace Accessibility
 } // namespace OHOS
 
@@ -160,5 +176,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     }
 
     OHOS::Accessibility::OnRemoteRequestSvcFuzzTest(data, size);
+    OHOS::Accessibility::HandleSetDaltonizationStateTest(data, size);
     return 0;
 }
