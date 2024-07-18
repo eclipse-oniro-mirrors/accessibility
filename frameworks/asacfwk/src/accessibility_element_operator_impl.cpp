@@ -20,6 +20,8 @@
 #include <cinttypes>
 namespace OHOS {
 namespace Accessibility {
+std::unordered_map<int32_t,
+    sptr<IAccessibilityElementOperatorCallback>> AccessibilityElementOperatorImpl::requests_ = {};
 
 std::unordered_map<int32_t, int32_t> AccessibilityElementOperatorImpl::requestWindId_ = {};
 AccessibilityElementOperatorImpl::AccessibilityElementOperatorImpl(int32_t windowId,
@@ -293,6 +295,26 @@ void AccessibilityElementOperatorImpl::SetCursorPositionResult(const int32_t cur
         requests_.erase(iter);
     } else {
         HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
+    }
+}
+
+sptr<IAccessibilityElementOperatorCallback> AccessibilityElementOperatorImpl::GetCallbackByRequestId(
+    const int32_t requestId)
+{
+    auto iter = requests_.find(requestId);
+    if (iter == requests_.end()) {
+        return nullptr;
+    }
+    return iter->second;
+}
+
+void AccessibilityElementOperatorImpl::EraseCallback(const int32_t requestId)
+{
+    auto iter = requests_.find(requestId);
+    if (iter != requests_.end()) {
+        requests_.erase(iter);
+    } else {
+        HILOG_DEBUG("Can't find the callback [requestId:%{public}d]", requestId);
     }
 }
 } // namespace Accessibility

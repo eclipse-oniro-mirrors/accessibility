@@ -118,6 +118,8 @@ public:
     void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
     RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
     void RemoveRequestId(int32_t requestId) override;
+    int64_t GetRootParentId(int32_t windowId, int32_t treeId) override;
+    RetError GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds) override;
 
 private:
     std::shared_ptr<AppExecFwk::EventRunner> runner_;

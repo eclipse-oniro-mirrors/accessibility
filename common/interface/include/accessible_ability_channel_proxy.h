@@ -47,8 +47,8 @@ public:
      *             otherwise: Make the element information by elementId only.
      * @return Return RET_OK if search elementInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
-        const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
+    virtual RetError SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int32_t mode, bool isFilter) override;
 
     /**

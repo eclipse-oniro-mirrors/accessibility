@@ -627,5 +627,19 @@ void AccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t tre
     (void)requestId;
     (void)callback;
 }
+
+int64_t AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId)
+{
+    (void)windowId;
+    (void)treeId;
+    return 0;
+}
+
+RetError AccessibleAbilityManagerService::GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds)
+{
+    (void)windowId;
+    (void)treeIds;
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -90,6 +90,7 @@ extern const int32_t SELECTION_MODE_SINGLE;
 extern const int32_t SELECTION_MODE_MULTIPLE;
 
 extern const int32_t INVALID_WINDOW_ID;
+extern const int32_t INVALID_TREE_ID;
 extern const int32_t ANY_WINDOW_ID;
 extern const int32_t ACTIVE_WINDOW_ID;
 

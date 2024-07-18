@@ -199,6 +199,9 @@ private:
     virtual void PostDelayUnloadTask() = 0;
     ErrCode HandleRemoveRequestId(MessageParcel &data, MessageParcel &reply);
 
+    ErrCode HandleGetRootParentId(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetAllTreeId(MessageParcel &data, MessageParcel &reply);
+
     using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceStub::*)(
         MessageParcel &data, MessageParcel &reply);
     std::map<uint32_t, AccessibilityAbilityManagerServiceFunc> memberFuncMap_;

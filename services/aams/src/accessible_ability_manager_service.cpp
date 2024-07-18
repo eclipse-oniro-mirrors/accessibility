@@ -58,12 +58,12 @@ namespace {
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
     constexpr uint32_t TIME_OUT_OPERATOR = 5000;
-    constexpr int32_t REQUEST_ID_MAX = 0x0000FFFF;
+    constexpr int32_t REQUEST_ID_MAX = 0xFFFFFFFF;
+    constexpr int32_t REQUEST_ID_MIN = 0x0000FFFF;
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
     constexpr int32_t UNLOAD_TASK_INTERNAL = 3 * 60 * 1000; // ms
-    constexpr int32_t TREE_ID_INVALID = -1;
-    constexpr int32_t ELEMENT_MOVE_BIT = 40;
-    constexpr int64_t MAX_ELEMENT_ID = 0xFFFFFFFFFF;
+    constexpr int32_t TREE_ID_INVALID = 0;
+    constexpr uint32_t ELEMENT_MOVE_BIT = 40;
     constexpr int32_t SINGLE_TREE_ID = 0;
     constexpr int32_t TREE_ID_MAX = 0x00001FFF;
     constexpr int32_t WINDOW_ID_INVALID = -1;
@@ -324,8 +324,11 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
 
 RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
 {
-    HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d] windowId[%{public}d]",
-        uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId());
+    HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d] windowId[%{public}d]"
+        "elementId: %{public}" PRId64 " winId: %{public}d treeId: %{public}d",
+        uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId(),
+        uiEvent.GetElementInfo().GetAccessibilityId(),
+        uiEvent.GetElementInfo().GetWindowId(), uiEvent.GetElementInfo().GetBelongTreeId());
     if (!handler_) {
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
@@ -459,7 +462,7 @@ bool AccessibleAbilityManagerService::FindFocusedElementByConnection(sptr<Access
         return false;
     }
     std::future<void> focusFuture = focusCallback->promise_.get_future();
-    connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, 0, focusCallback);
+    connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, GenerateRequestId(), focusCallback);
     std::future_status waitFocus = focusFuture.wait_for(std::chrono::milliseconds(timeOut));
     if (waitFocus != std::future_status::ready) {
         HILOG_ERROR("FindFocusedElementInfo Failed to wait result");
@@ -473,7 +476,63 @@ bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInf
 {
     HILOG_DEBUG();
     sptr<AccessibilityWindowConnection> connection = GetRealIdConnection();
-    return FindFocusedElementByConnection(connection, elementInfo);
+    FindFocusedElementByConnection(connection, elementInfo);
+    if (elementInfo.GetAccessibilityId() >= 0) {
+        HILOG_DEBUG("find focused element success.");
+        return true;
+    }
+    int32_t windowId = GetFocusWindowId();
+    int64_t elementId = GetFocusElementId();
+    sptr<IAccessibilityElementOperator> elementOperator = nullptr;
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("GetCurrentAccountData failed");
+        return false;
+    }
+    connection = accountData->GetAccessibilityWindowConnection(windowId);
+    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
+    if (connection == nullptr) {
+        HILOG_ERROR("connection is nullptr");
+        return false;
+    }
+    sptr<ElementOperatorCallbackImpl> callBack = new(std::nothrow) ElementOperatorCallbackImpl();
+    if (callBack == nullptr) {
+        HILOG_ERROR("Failed to create callBack.");
+        return false;
+    }
+    std::future<void> promiseFuture = callBack->promise_.get_future();
+    GetElementOperatorConnection(connection, elementId, elementOperator);
+    if (elementOperator == nullptr) {
+        HILOG_ERROR("elementOperator is nullptr");
+        return false;
+    }
+    elementOperator->SearchElementInfoByAccessibilityId(elementId, GenerateRequestId(), callBack, 0);
+    std::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitFocus != std::future_status::ready) {
+        ipcTimeoutNum_++;
+        HILOG_ERROR("Failed to wait result, number %{public}" PRId64 "", ipcTimeoutNum_);
+        return false;
+    }
+
+    if (callBack->elementInfosResult_.size() <= 0) {
+        HILOG_ERROR("SearchElementInfoByAccessibilityId return null");
+        return false;
+    }
+    elementInfo = callBack->elementInfosResult_[0];
+    return true;
+}
+
+void AccessibleAbilityManagerService::GetElementOperatorConnection(sptr<AccessibilityWindowConnection> &connection,
+    const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator)
+{
+    int32_t treeId = 0;
+    if (elementId > 0) {
+        treeId = GetTreeIdBySplitElementId(elementId);
+        elementOperator = connection->GetCardProxy(treeId);
+    } else {
+        elementOperator = connection->GetProxy();
+    }
+    HILOG_DEBUG("elementId:%{public}" PRId64 " treeId:%{public}d", elementId, treeId);
 }
 
 bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
@@ -502,10 +561,16 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         return false;
     }
     std::future<void> actionFuture = actionCallback->promise_.get_future();
-    if (treeId != TREE_ID_INVALID) {
-        connection->GetCardProxy(treeId)->ExecuteAction(elementId, action, actionArguments, 1, actionCallback);
+    if (treeId > TREE_ID_INVALID) {
+        if (connection->GetCardProxy(treeId) != nullptr) {
+            connection->GetCardProxy(treeId)->ExecuteAction(elementId, action,
+                actionArguments, GenerateRequestId(), actionCallback);
+        } else {
+            HILOG_ERROR("get operation is nullptr");
+            return false;
+        }
     } else {
-        connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, 1, actionCallback);
+        connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(), actionCallback);
     }
     std::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
     if (waitAction != std::future_status::ready) {
@@ -747,8 +812,8 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
             HILOG_WARN("no need to register again.");
             return RET_ERR_REGISTER_EXIST;
         } else {
-            oldConnection->SetTokenIdMap(treeId, tokenId);
             oldConnection->SetCardProxy(treeId, operation);
+            SetTokenIdMapAndRootParentId(oldConnection, treeId, nodeId, tokenId);
             isParentConectionExist = true;
         }
     }
@@ -774,16 +839,24 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
             HILOG_ERROR("New AccessibilityWindowConnection failed!!");
             return RET_ERR_REGISTER_EXIST;
         }
-        connection->SetTokenIdMap(treeId, tokenId);
+        SetTokenIdMapAndRootParentId(connection, treeId, nodeId, tokenId);
         accountData->AddAccessibilityWindowConnection(parameter.windowId, connection);
     }
     return RET_OK;
 }
 
+void AccessibleAbilityManagerService::SetTokenIdMapAndRootParentId(
+    const sptr<AccessibilityWindowConnection> connection,
+    const int32_t treeId, const int64_t nodeId, const uint32_t tokenId)
+{
+    connection->SetTokenIdMap(treeId, tokenId);
+    connection->SetRootParentId(treeId, nodeId);
+}
+
 RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration parameter,
     const sptr<IAccessibilityElementOperator> &operation, bool isApp)
 {
-    static std::atomic<int32_t> treeId(0);
+    static std::atomic<int32_t> treeId(1);
     int32_t treeIdSingle = treeId.fetch_add(1, std::memory_order_relaxed);
     if (treeIdSingle > TREE_ID_MAX) {
         HILOG_ERROR("TreeId more than 13.");
@@ -791,9 +864,6 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
     }
     uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     int64_t nodeId = parameter.elementId;
-    if (parameter.elementId > 0) {
-        nodeId = MAX_ELEMENT_ID & static_cast<uint64_t>(parameter.elementId);
-    }
     HILOG_INFO("get treeId element and treeid - treeId: %{public}d parameter.elementId[%{public}" PRId64 "]"
         "element[%{public}" PRId64 "]",
         treeIdSingle, parameter.elementId, nodeId);
@@ -816,7 +886,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
         }
         if (operation && operation->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
-                new(std::nothrow) InteractionOperationDeathRecipient(parameter.windowId);
+                new(std::nothrow) InteractionOperationDeathRecipient(parameter.windowId, treeIdSingle);
             if (deathRecipient == nullptr) {
                 Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
                     A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
@@ -824,7 +894,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
                 return;
             }
             bool result = operation->AsObject()->AddDeathRecipient(deathRecipient);
-            interactionOperationDeathRecipients_[parameter.windowId] = deathRecipient;
+            interactionOperationDeathMap_[parameter.windowId][treeIdSingle] = deathRecipient;
             HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
         }
         }), "TASK_REGISTER_ELEMENT_OPERATOR");
@@ -927,7 +997,6 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
             HILOG_WARN("The operation of windowId[%{public}d] has not been registered.", windowId);
             return;
         }
-        accountData->RemoveAccessibilityWindowConnection(windowId);
         StopCallbackWait(windowId, treeId);
 
         if (!connection->GetCardProxy(treeId)) {
@@ -937,18 +1006,31 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
 
         auto object = connection->GetCardProxy(treeId)->AsObject();
         if (object) {
-            auto iter = interactionOperationDeathRecipients_.find(windowId);
-            if (iter != interactionOperationDeathRecipients_.end()) {
-                sptr<IRemoteObject::DeathRecipient> deathRecipient = iter->second;
-                bool result = object->RemoveDeathRecipient(deathRecipient);
-                HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
-                interactionOperationDeathRecipients_.erase(iter);
-            } else {
-                HILOG_ERROR("cannot find remote object. windowId[%{public}d]", windowId);
-            }
+            RemoveTreeDeathRecipient(windowId, treeId, connection);
         }
         }), "TASK_DEREGISTER_ELEMENT_OPERATOR");
     return RET_OK;
+}
+
+void AccessibleAbilityManagerService::RemoveTreeDeathRecipient(const int32_t windowId, const int32_t treeId,
+    const sptr<AccessibilityWindowConnection> connection)
+{
+    auto object = connection->GetCardProxy(treeId)->AsObject();
+    connection->EraseProxy(treeId);
+    auto iter = interactionOperationDeathMap_.find(windowId);
+    if (iter != interactionOperationDeathMap_.end()) {
+        auto iterTree = iter->second.find(treeId);
+        if (iterTree != iter->second.end()) {
+            sptr<IRemoteObject::DeathRecipient> deathRecipient = iterTree->second;
+            bool result = object->RemoveDeathRecipient(deathRecipient);
+            HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
+            iter->second.erase(iterTree);
+        } else {
+            HILOG_ERROR("cannot find remote object. treeId[%{public}d]", treeId);
+        }
+    } else {
+        HILOG_ERROR("cannot find remote object. windowId[%{public}d]", windowId);
+    }
 }
 
 RetError AccessibleAbilityManagerService::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
@@ -1338,7 +1420,11 @@ void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemo
     Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
         A11yError::ERROR_TARGET_APPLICATION_DISCONNECT_ABNORMALLY);
     HILOG_INFO();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(windowId_);
+    if (treeId_ > 0) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(windowId_, treeId_);
+    } else {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(windowId_);
+    }
 }
 
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
@@ -1670,11 +1756,12 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
         } else {
             HILOG_DEBUG("VerifyingToKenId failed");
             elementInfosResult_.clear();
+            promise_.set_value();
             return;
         }
         elementInfosResult_ = infos;
-        promise_.set_value();
     }
+    promise_.set_value();
 }
 
 void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
@@ -1688,11 +1775,12 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
         } else {
             HILOG_DEBUG("VerifyingToKenId failed");
             elementInfosResult_.clear();
+            promise_.set_value();
             return;
         }
         elementInfosResult_ = infos;
-        promise_.set_value();
     }
+    promise_.set_value();
 }
 
 void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveSearchResult(
@@ -1737,12 +1825,25 @@ bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t window
         return false;
     }
 
+    int32_t treeId = 0;
+    sptr<IAccessibilityElementOperator> elementOperator = nullptr;
     sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
-    if (!connection || !connection->GetProxy()) {
+    if (!connection) {
         HILOG_ERROR("GetAccessibilityWindowConnection failed");
         return false;
     }
 
+    if (elementId > 0) {
+        treeId = GetTreeIdBySplitElementId(elementId);
+        elementOperator = connection->GetCardProxy(treeId);
+    } else {
+        elementOperator = connection->GetProxy();
+    }
+    if (elementOperator == nullptr) {
+        HILOG_DEBUG("elementOperator failed elementId: %{public}" PRId64 " winId: %{public}d treeId: %{public}d",
+            elementId, windowId, treeId);
+        return false;
+    }
     sptr<ElementOperatorCallbackImpl> callBack = new(std::nothrow) ElementOperatorCallbackImpl();
     if (callBack == nullptr) {
         HILOG_ERROR("Failed to create callBack.");
@@ -1750,7 +1851,7 @@ bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t window
     }
 
     std::future<void> promiseFuture = callBack->promise_.get_future();
-    connection->GetProxy()->SearchElementInfoByAccessibilityId(elementId, REQUEST_ID_MAX, callBack, 0);
+    elementOperator->SearchElementInfoByAccessibilityId(elementId, GenerateRequestId(), callBack, 0);
     std::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (waitFocus != std::future_status::ready) {
         ipcTimeoutNum_++;
@@ -2710,6 +2811,41 @@ void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t
         }
         requestId = requestIds.erase(requestId);
     }
+}
+
+int64_t AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId)
+{
+    int64_t elementId = 0;
+    HILOG_DEBUG();
+    sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
+    if (!connection) {
+        HILOG_WARN("The operator of windowId[%{public}d] has not been registered.", windowId);
+        return RET_ERR_NO_CONNECTION;
+    }
+    connection->GetRootParentId(treeId, elementId);
+    return elementId;
+}
+
+RetError AccessibleAbilityManagerService::GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds)
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
+    if (!connection) {
+        HILOG_WARN("The operator of windowId[%{public}d] has not been registered.", windowId);
+        return RET_ERR_NO_CONNECTION;
+    }
+    connection->GetAllTreeId(treeIds);
+    return RET_OK;
+}
+
+int32_t AccessibleAbilityManagerService::GenerateRequestId()
+{
+    int32_t requestId = requestId_.fetch_add(1, std::memory_order_relaxed);
+    if (requestId == REQUEST_ID_MAX) {
+        requestId_ = REQUEST_ID_MIN;
+        requestId = requestId_.fetch_add(1, std::memory_order_relaxed);
+    }
+    return requestId;
 }
 } // namespace Accessibility
 } // namespace OHOS

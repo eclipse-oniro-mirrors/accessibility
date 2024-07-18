@@ -134,7 +134,11 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     AccessibleAbilityChannel_Unittest_SearchElementInfoByAccessibilityId_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoByAccessibilityId_001 start";
-    EXPECT_EQ(channel_->SearchElementInfoByAccessibilityId(WINDOW_ID, ELEMENT_ID, 0, nullptr, 0, true),
+    ElementBasicInfo elementBasicInfo;
+    elementBasicInfo.windowId = 0;
+    elementBasicInfo.treeId = 0;
+    elementBasicInfo.elementId = 0;
+    EXPECT_EQ(channel_->SearchElementInfoByAccessibilityId(elementBasicInfo, 0, nullptr, 0, true),
         RET_ERR_NULLPTR);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoByAccessibilityId_001 end";
 }

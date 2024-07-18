@@ -86,6 +86,7 @@ const int32_t SELECTION_MODE_SINGLE = 1;
 const int32_t SELECTION_MODE_MULTIPLE = 2;
 
 const int32_t INVALID_WINDOW_ID = -1;
+const int32_t INVALID_TREE_ID = -1;
 const int32_t ANY_WINDOW_ID = -2;
 const int32_t ACTIVE_WINDOW_ID = 0x7FFFFFFF;
 
