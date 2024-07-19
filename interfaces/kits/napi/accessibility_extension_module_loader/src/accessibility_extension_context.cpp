@@ -17,6 +17,7 @@
 #include "accessible_ability_client.h"
 #include "hilog_wrapper.h"
 #include "ability_manager_client.h"
+#include "accessibility_permission.h"
 
 using namespace std;
 
@@ -24,7 +25,6 @@ namespace OHOS {
 namespace Accessibility {
 int AccessibilityExtensionContext::illegalRequestCode_(-1);
 const std::string WANT_VERIFY = "";
-const std::string ACCESSIBILITY_MANAGER_BUNDLENAME = "com.huawei.hmos.screenreader";
 RetError AccessibilityExtensionContext::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
@@ -180,19 +180,18 @@ RetError AccessibilityExtensionContext::SetTargetBundleName(const std::vector<st
 RetError AccessibilityExtensionContext::StartAbility(const AAFwk::Want &want)
 {
     HILOG_DEBUG();
-    std::string bundleName = GetBundleName();
+    if (!Permission::IsSystemApp()) {
+        HILOG_ERROR("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
 
-    HILOG_DEBUG("bundleName: %{public}s, abilityName: %{public}s",
-        want.GetBundle().c_str(), want.GetElement().GetAbilityName().c_str());
     if (want.GetBundle() == WANT_VERIFY || want.GetElement().GetAbilityName() == WANT_VERIFY) {
         HILOG_ERROR("Start ability failed, Want Parameter error.");
         return RET_ERR_INVALID_PARAM;
     }
+    HILOG_DEBUG("bundleName: %{public}s, abilityName: %{public}s",
+        want.GetBundle().c_str(), want.GetElement().GetAbilityName().c_str());
 
-    if (bundleName.compare(ACCESSIBILITY_MANAGER_BUNDLENAME) != 0) {
-        HILOG_ERROR("not privilege, bundleName: %{public}s", bundleName.c_str());
-        return RET_ERR_NOT_SYSTEM_APP;
-    }
     auto ret = AAFwk::AbilityManagerClient::GetInstance()->StartAbility(want, token_, illegalRequestCode_);
     if (ret != ERR_OK) {
         HILOG_ERROR("StartAbility is failed %{public}d", ret);
