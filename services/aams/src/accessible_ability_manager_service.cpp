@@ -55,6 +55,7 @@ namespace {
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string USER_SETUP_COMPLETED = "user_setup_complete";
     const std::string DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
+    const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
     constexpr uint32_t TIME_OUT_OPERATOR = 5000;
@@ -2751,6 +2752,30 @@ void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t
             requestIdMap_.erase(iter);
         }
         requestId = requestIds.erase(requestId);
+    }
+}
+
+void AccessibleAbilityManagerService::OnDataClone()
+{
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    bool cloneState = false;
+    provider.GetBoolValue(ACCESSIBILITY_CLONE_FLAG, cloneState);
+    if (cloneState == false) {
+        return;
+    }
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_WARN("accountData is nullptr.");
+        return;
+    }
+    if (accountData->GetConfig() != nullptr) {
+        accountData->GetConfig()->OnDataClone();
+        UpdateAllSetting();
+        UpdateAutoStartAbilities();
+        UpdateInputFilter();
+        HILOG_INFO("accessibility reload config.");
+    } else {
+        HILOG_WARN("config_ is nullptr");
     }
 }
 } // namespace Accessibility

@@ -627,5 +627,9 @@ void AccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t tre
     (void)requestId;
     (void)callback;
 }
+
+void AccessibleAbilityManagerService::OnDataClone()
+{
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -1007,6 +1007,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "../../test/mock/mock_matching_skill.cpp",
     "../src/accessibility_account_data.cpp",
     "../src/accessibility_common_event.cpp",
+    "../src/accessibility_datashare_helper.cpp",
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessible_ability_channel.cpp",
