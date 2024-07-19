@@ -60,6 +60,7 @@ public:
     static void RecordStartingA11yEvent(const std::string &name);
     static void VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut);
     static void StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult);
+    static int32_t GetUserIdByCallingUid();
 
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);

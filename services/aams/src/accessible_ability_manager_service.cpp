@@ -709,6 +709,11 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
         return RET_ERR_NULLPTR;
     }
     uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
+    int32_t accountId = Utils::GetUserIdByCallingUid();
+    if (currentAccountId_ != accountId) {
+        HILOG_WARN("currentAccountId_ is diff from ipc accountId");
+        return RET_ERR_SAMGR;
+    }
     handler_->PostTask(std::bind([=]() -> void {
         HILOG_INFO("Register windowId[%{public}d]", windowId);
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
