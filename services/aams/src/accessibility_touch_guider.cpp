@@ -770,7 +770,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
     int32_t pointCount = pIds.size();
     if (pointCount == POINTER_COUNT_1) {
         HILOG_DEBUG("Only two pointers can be received in the dragging state");
-    } else if (pointCount == POINTER_COUNT_2 && IsDragGestureAccept(event)) {
+    } else if (pointCount == POINTER_COUNT_2) {
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
         // Get densityPixels from WMS
         AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
