@@ -26,6 +26,7 @@ public:
     MockAccessibleAbilityManagerStateObserverProxy(const sptr<IRemoteObject>& object);
     virtual ~MockAccessibleAbilityManagerStateObserverProxy() override;
     MOCK_METHOD1(OnStateChanged, void(const uint32_t stateType));
+    MOCK_METHOD0(OnClientDeleted, void());
 };
 } // namespace Accessibility
 } // namespace OHOS
