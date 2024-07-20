@@ -140,6 +140,8 @@ void AccessibleAbilityManagerService::OnStart()
         }
     }
 
+    SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
+
     HILOG_DEBUG("AddAbilityListener!");
     AddSystemAbilityListener(ABILITY_MGR_SERVICE_ID);
     AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
@@ -190,6 +192,7 @@ void AccessibleAbilityManagerService::OnStop()
 
     isReady_ = false;
     isPublished_ = false;
+    SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
     HILOG_INFO("AccessibleAbilityManagerService::OnStop OK.");
 }
 
@@ -231,6 +234,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         InitInnerResource();
 
         isReady_ = true;
+        SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "true");
         HILOG_DEBUG("AAMS is ready!");
         RegisterShortKeyEvent();
         PostDelayUnloadTask();
@@ -262,6 +266,7 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
             Singleton<AccessibilityWindowManager>::GetInstance().DeInit();
 
             isReady_ = false;
+            SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
         }
         }), "OnRemoveSystemAbility");
 }
@@ -2640,6 +2645,8 @@ void AccessibleAbilityManagerService::PostDelayUnloadTask()
 bool AccessibleAbilityManagerService::IsNeedUnload()
 {
     HILOG_DEBUG();
+    // always return true to avoid stability problem
+    return false;
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
