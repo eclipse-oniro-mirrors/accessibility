@@ -843,65 +843,57 @@ int32_t AccessibilityElementInfo::GetParentWindowId() const
     return parentWindowId_;
 }
 
-ExtraElementinfo::ExtraElementinfo(const std::map<std::string, std::string> extraElementinfoFirst,
-    const std::map<std::string, int32_t> extraElementinfoSecond)
+ExtraElementInfo::ExtraElementInfo(const std::map<std::string, std::string> extraElementValueStr,
+    const std::map<std::string, int32_t> extraElementValueInt)
 {
-    extraElementinfoFirst_ = extraElementinfoFirst;
-    extraElementinfoSecond_ = extraElementinfoSecond;
+    extraElementValueStr_ = extraElementValueStr;
+    extraElementValueInt_ = extraElementValueInt;
 }
 
-RetError ExtraElementinfo::SetExtraElementinfo(const std::string k_str, const std::string v_str)
+RetError ExtraElementInfo::SetExtraElementInfo(const std::string keyStr, const std::string valueStr)
 {
-    HILOG_DEBUG("cjh SetExtraElementinfo1111111");
-    for (int i = 0; i < length; i++) {
-        if (*(p + i) == k_str) {
-            extraElementinfoFirst_[k_str] = v_str;
-            HILOG_DEBUG("cjh SetExtraElementinfo::extraElementinfoFirst_111 : [%{public}zu]",
-                extraElementinfoFirst_.size());
-            return RET_OK;
-        }
+    auto extraElementInfoIter = setOfExtraElementInfo.find(keyStr);
+    if (extraElementInfoIter != setOfExtraElementInfo.end()) {
+        extraElementValueStr_[keyStr] = valueStr;
+        HILOG_DEBUG("SetExtraElementInfo: size is extraElementValueStr : [%{public}zu]",
+            extraElementValueStr_.size());
+    } else {
+        return RET_ERR_FAILED;
     }
-    return RET_ERR_FAILED;
+    return RET_OK;
 }
 
-RetError ExtraElementinfo::SetExtraElementinfo(const std::string k_str, const int32_t v_num)
+RetError ExtraElementInfo::SetExtraElementInfo(const std::string keyStr, const int32_t valueInt)
 {
-    for (int i = 0; i < length; i++) {
-        if (*(p + i) == k_str) {
-            extraElementinfoSecond_[k_str] = v_num;
-            HILOG_DEBUG("cjhcjh SetExtraElementinfo::extraElementinfoSecond_222 : [%{public}zu]",
-                extraElementinfoSecond_.size());
-            return RET_OK;
-        }
+    auto extraElementInfoIter = setOfExtraElementInfo.find(keyStr);
+    if (extraElementInfoIter != setOfExtraElementInfo.end()) {
+        extraElementValueInt_[keyStr] = valueInt;
+        HILOG_DEBUG("SetExtraElementInfo: size is extraElementValueInt : [%{public}zu]",
+            extraElementValueInt_.size());
+    } else {
+        return RET_ERR_FAILED;
     }
-    return RET_ERR_FAILED;
+    return RET_OK;
 }
 
-const std::map<std::string, std::string> &ExtraElementinfo::GetExtraElementinfoFirst() const
+const std::map<std::string, std::string> &ExtraElementInfo::GetExtraElementInfoValueStr() const
 {
-    HILOG_DEBUG("cjh use GetExtraElementinfoFirst");
-    return extraElementinfoFirst_;
+    return extraElementValueStr_;
 }
 
-const std::map<std::string, int32_t> &ExtraElementinfo::GetExtraElementinfoSecond() const
+const std::map<std::string, int32_t> &ExtraElementInfo::GetExtraElementInfoValueInt() const
 {
-    HILOG_DEBUG("cjh use GetExtraElementinfoSecond");
-    HILOG_DEBUG("cjhcjh GetExtraElementinfoSecond : [%{public}zu]", extraElementinfoSecond_.size());
-    for (auto itr = extraElementinfoSecond_.begin(); itr != extraElementinfoSecond_.end(); ++itr) {
-        HILOG_DEBUG("cjhcjh print map");
-        HILOG_DEBUG("cjh in map222 k_str: %{public}s, v_num: %{public}d", itr -> first.c_str(), itr->second);
-    }
-    return extraElementinfoSecond_;
+    return extraElementValueInt_;
 }
 
-void AccessibilityElementInfo::SetExtraElementinfoForAcc(const ExtraElementinfo &extraElementinfo)
+void AccessibilityElementInfo::SetExtraElement(const ExtraElementInfo &extraElementInfo)
 {
-    extraElementinfo_ = extraElementinfo;
+    extraElementInfo_ = extraElementInfo;
 }
 
-const ExtraElementinfo &AccessibilityElementInfo::GetExtraElementinfoForAcc() const
+const ExtraElementInfo &AccessibilityElementInfo::GetExtraElement() const
 {
-    return extraElementinfo_;
+    return extraElementInfo_;
 }
 const std::string &AccessibilityElementInfo::GetAccessibilityLevel() const
 {

@@ -118,12 +118,6 @@ bool AccessibilityElementInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
     }
     gridItem_ = *gridItem;
 
-    sptr<ExtraElementinfoParcel> extraElementinfo = parcel.ReadStrongParcelable<ExtraElementinfoParcel>();
-    if (!extraElementinfo) {
-        return false;
-    }
-    extraElementinfo_ = *extraElementinfo;
-
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, liveRegion_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, contentInvalid_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, error_);
@@ -136,6 +130,13 @@ bool AccessibilityElementInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, pagePath_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityGroup_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, accessibilityLevel_);
+
+    sptr<ExtraElementInfoParcel> extraElementInfo = parcel.ReadStrongParcelable<ExtraElementInfoParcel>();
+    if (extraElementInfo == nullptr) {
+        return false;
+    }
+    extraElementInfo_ = *extraElementInfo;
+
     return true;
 }
 
@@ -217,9 +218,6 @@ bool AccessibilityElementInfoParcel::MarshallingSecondPart(Parcel &parcel) const
     GridItemInfoParcel gridItemParcel(gridItem_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &gridItemParcel);
 
-    ExtraElementinfoParcel extraElementinfoParcel(extraElementinfo_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &extraElementinfoParcel);
-
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, liveRegion_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, contentInvalid_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, error_);
@@ -235,12 +233,23 @@ bool AccessibilityElementInfoParcel::MarshallingSecondPart(Parcel &parcel) const
     return true;
 }
 
+bool AccessibilityElementInfoParcel::MarshallingThirdPart(Parcel &parcel) const
+{
+    ExtraElementInfoParcel extraElementInfoParcel(extraElementInfo_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &extraElementInfoParcel);
+
+    return true;
+}
+
 bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
 {
     if (!MarshallingFirstPart(parcel)) {
         return false;
     }
     if (!MarshallingSecondPart(parcel)) {
+        return false;
+    }
+    if (!MarshallingThirdPart(parcel)) {
         return false;
     }
     return true;
@@ -450,72 +459,90 @@ sptr<RectParcel> RectParcel::Unmarshalling(Parcel& parcel)
     return rect;
 }
 
-ExtraElementinfoParcel::ExtraElementinfoParcel(const ExtraElementinfo &extraElementinfo)
+ExtraElementInfoParcel::ExtraElementInfoParcel(const ExtraElementInfo &extraElementInfo)
+    : ExtraElementInfo(extraElementInfo)
 {
-    ExtraElementinfo *self = this;
-    *self = extraElementinfo;
 }
 
-bool ExtraElementinfoParcel::ReadFromParcel(Parcel &parcel)
+bool ExtraElementInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    std::map<std::string, std::string>::iterator iter;
-    for (iter = extraElementinfoFirst_.begin(); iter != extraElementinfoFirst_.end(); ++iter) {
-        std::string temp;
-        std::string temp1;
-        temp = iter->first;
-        temp1 = iter->second;
-        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, temp);
-        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, temp1);
+    int32_t mapValueStr = 0;
+    int32_t mapValueInt = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mapValueStr);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mapValueInt);
+    HILOG_DEBUG("ReadFromParcel: size is map, mapValueStr: %{public}d,mapValueInt: %{public}d",
+        mapValueStr, mapValueInt);
+
+    if (!ContainerSecurityVerify(parcel, mapValueStr, extraElementValueStr_.max_size())) {
+        HILOG_INFO("extraElementValueStr : ExtraElementInfoParcel verify is false");
+        return false;
+    }
+    for (int32_t i = 0; i < mapValueStr; i++) {
+        std::string tempMapKey;
+        std::string tempMapVal;
+
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapKey);
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapVal);
+        HILOG_INFO("ReadFromParcel: extraElementValueStr's tempMapKey: %{public}s, tempMapVal: %{public}s",
+            tempMapKey.c_str(), tempMapVal.c_str());
+        extraElementValueStr_[tempMapKey] = tempMapVal;
     }
 
-    std::map<std::string, std::int32_t>::iterator iter1;
-    for (iter1 = extraElementinfoSecond_.begin(); iter1 != extraElementinfoSecond_.end(); ++iter1) {
-        std::string tempString;
-        int32_t tempInt = 0;
-        tempString = iter1->first;
-        tempInt = iter1->second;
-        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempString);
-        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, tempInt);
+    if (!ContainerSecurityVerify(parcel, mapValueInt, extraElementValueInt_.max_size())) {
+        HILOG_INFO("extraElementValueInt : ExtraElementInfoParcel verify is false");
+        return false;
+    }
+    for (int32_t i = 0; i < mapValueInt; i++) {
+        std::string tempMapKey;
+        int32_t tempMapVal;
+
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapKey);
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, tempMapVal);
+        HILOG_INFO("ReadFromParcel: extraElementValueInt's tempMapKey: %{public}s, tempMapVal: %{public}d",
+            tempMapKey.c_str(), tempMapVal);
+        extraElementValueInt_[tempMapKey] = tempMapVal;
     }
 
     return true;
 }
 
-bool ExtraElementinfoParcel::Marshalling(Parcel &parcel) const
+bool ExtraElementInfoParcel::Marshalling(Parcel &parcel) const
 {
-    for (auto iter = extraElementinfoFirst_.begin(); iter != extraElementinfoFirst_.end(); ++iter) {
-        std::string temp;
-        std::string temp1;
-        temp = iter->first;
-        temp1 = iter->second;
-        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, temp);
-        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, temp1);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, extraElementValueStr_.size());
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, extraElementValueInt_.size());
+    for (auto iterStr = extraElementValueStr_.begin(); iterStr != extraElementValueStr_.end(); ++iterStr) {
+        std::string tempMapKey;
+        std::string tempMapVal;
+        tempMapKey = iterStr->first;
+        tempMapVal = iterStr->second;
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapKey);
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapVal);
     }
 
-    for (auto iter1 = extraElementinfoSecond_.begin(); iter1 != extraElementinfoSecond_.end(); ++iter1) {
-        std::string tempString;
-        int32_t tempInt = 0;
-        tempString = iter1->first;
-        tempInt = iter1->second;
-        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempString);
-        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, tempInt);
+    for (auto iterInt = extraElementValueInt_.begin(); iterInt != extraElementValueInt_.end(); ++iterInt) {
+        std::string tempMapKey;
+        int32_t tempMapVal;
+        tempMapKey = iterInt->first;
+        tempMapVal = iterInt->second;
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapKey);
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, tempMapVal);
     }
 
     return true;
 }
 
-sptr<ExtraElementinfoParcel> ExtraElementinfoParcel::Unmarshalling(Parcel &parcel)
+sptr<ExtraElementInfoParcel> ExtraElementInfoParcel::Unmarshalling(Parcel &parcel)
 {
-    sptr<ExtraElementinfoParcel> extraElementinfo = new(std::nothrow) ExtraElementinfoParcel();
-    if (!extraElementinfo) {
-        HILOG_ERROR("Failed to create extraElementinfo.");
+    sptr<ExtraElementInfoParcel> extraElementInfo = new(std::nothrow) ExtraElementInfoParcel();
+    if (extraElementInfo == nullptr) {
+        HILOG_ERROR("Failed to create extraElementInfo.");
         return nullptr;
     }
-    if (!extraElementinfo->ReadFromParcel(parcel)) {
+    if (!extraElementInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         return nullptr;
     }
-    return extraElementinfo;
+    return extraElementInfo;
 }
 } // namespace Accessibility
 } // namespace OHOS

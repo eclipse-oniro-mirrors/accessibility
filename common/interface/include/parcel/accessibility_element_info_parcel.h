@@ -142,27 +142,24 @@ public:
     static sptr<GridInfoParcel> Unmarshalling(Parcel &parcel);
 };
 
-class ExtraElementinfoParcel : public ExtraElementinfo, public Parcelable {
+class ExtraElementInfoParcel : public ExtraElementInfo, public Parcelable {
 public:
     /**
      * @brief Construct
-     * @since 3
      * @sysCap Accessibility
      */
-    ExtraElementinfoParcel() = default;
+    ExtraElementInfoParcel() = default;
 
     /**
      * @brief Construct
      * @param gridInfo The object of GridInfo.
-     * @since 3
      * @sysCap Accessibility
      */
-    explicit ExtraElementinfoParcel(const ExtraElementinfo &extraElementinfo);
+    explicit ExtraElementInfoParcel(const ExtraElementInfo &extraElementInfo);
 
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @since 3
      * @sysCap Accessibility
      */
     bool ReadFromParcel(Parcel &parcel);
@@ -170,7 +167,6 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @since 3
      * @sysCap Accessibility
      */
     virtual bool Marshalling(Parcel &parcel) const override;
@@ -178,10 +174,9 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @since 3
      * @sysCap Accessibility
      */
-    static sptr<ExtraElementinfoParcel> Unmarshalling(Parcel &parcel);
+    static sptr<ExtraElementInfoParcel> Unmarshalling(Parcel &parcel);
 };
 
 class GridItemInfoParcel : public GridItemInfo, public Parcelable {
@@ -350,6 +345,13 @@ private:
      * @sysCap Accessibility
      */
     bool MarshallingSecondPart(Parcel &parcel) const;
+
+    /**
+     * @brief Used for IPC communication second part
+     * @param parcel
+     * @sysCap Accessibility
+     */
+    bool MarshallingThirdPart(Parcel &parcel) const;
 };
 } // namespace Accessibility
 } // namespace OHOS

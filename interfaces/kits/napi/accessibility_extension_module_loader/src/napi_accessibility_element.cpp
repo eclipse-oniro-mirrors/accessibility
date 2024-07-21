@@ -34,7 +34,7 @@ namespace {
         "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable",
         "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
-        "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupselectedStatus",
+        "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
         "row", "column", "listItemIndex", "sideBarContainerStates", "allAttribute"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId"};
@@ -89,8 +89,7 @@ namespace {
         {"accessibilityGroup", &NAccessibilityElement::GetElementInfoAccessibilityGroup},
         {"accessibilityLevel", &NAccessibilityElement::GetElementInfoAccessibilityLevel},
         {"currentItem", &NAccessibilityElement::GetElementInfoGridItem},
-
-        {"checkboxGroupselectedStatus", &NAccessibilityElement::GetElementInfoCheckboxGroup},
+        {"checkboxGroupSelectedStatus", &NAccessibilityElement::GetElementInfoCheckboxGroup},
         {"row", &NAccessibilityElement::GetElementInfoRow},
         {"column", &NAccessibilityElement::GetElementInfoColumn},
         {"listItemIndex", &NAccessibilityElement::GetElementInfoListItemIndex},
@@ -598,31 +597,40 @@ void NAccessibilityElement::GetElementInfoGridItem(NAccessibilityElementData *ca
     ConvertGridItemToJS(callbackInfo->env_, value, gridItem);
 }
 
+void NAccessibilityElement::GetExtraElementInfo(NAccessibilityElementData *callbackInfo,
+    napi_value &value, std::string keyStr)
+{
+    std::map<std::string, std::string> mapValIsStr =
+        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElement().GetExtraElementInfoValueStr();
+    std::map<std::string, int32_t> mapValIsInt =
+        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElement().GetExtraElementInfoValueInt();
+    HILOG_DEBUG("GetExtraElementInfo: size is extraElementValueStr : [%{public}zu]",
+        mapValIsStr.size());
+    HILOG_DEBUG("GetExtraElementInfo: size is extraElementValueInt : [%{public}zu]",
+        mapValIsInt.size());
+
+    if (mapValIsStr.empty() && mapValIsInt.empty()) {
+        HILOG_ERROR("extraElement map is null");
+        return;
+    }
+    auto iter = mapValIsStr.find(keyStr);
+    if (iter != mapValIsStr.end()) {
+        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
+            iter->second.c_str(), NAPI_AUTO_LENGTH, &value));
+        return;
+    }
+    auto seconditer = mapValIsInt.find(keyStr);
+    if (seconditer != mapValIsInt.end()) {
+        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_, seconditer->second, &value));
+    }
+}
+
 void NAccessibilityElement::GetElementInfoCheckboxGroup(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-
-    std::map<std::string, std::string> firstMap =
-        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElementinfoForAcc().GetExtraElementinfoFirst();
-    std::map<std::string, int32_t> secondMap =
-        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElementinfoForAcc().GetExtraElementinfoSecond();
-    if (firstMap.empty() && secondMap.empty()) {
-        HILOG_ERROR("extraElement map is null");
-        return;
-    }
-    auto iter = firstMap.find("CheckboxGroupselectedStatus");
-    if (iter != firstMap.end()) {
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
-            iter->second.c_str(), NAPI_AUTO_LENGTH, &value));
-        return;
-    }
-    auto seconditer = secondMap.find("CheckboxGroupselectedStatus");
-    if (seconditer != secondMap.end()) {
-        HILOG_DEBUG("cjh GetElementInfoCheckboxGroup CheckboxGroupselectedStatus v_num : %{public}d", seconditer->second);
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_, seconditer->second, &value));
-    }
+    GetExtraElementInfo(callbackInfo, value, "CheckboxGroupSelectedStatus");
 }
 
 void NAccessibilityElement::GetElementInfoRow(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -630,25 +638,7 @@ void NAccessibilityElement::GetElementInfoRow(NAccessibilityElementData *callbac
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-
-    std::map<std::string, std::string> firstMap =
-        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElementinfoForAcc().GetExtraElementinfoFirst();
-    std::map<std::string, int32_t> secondMap =
-        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElementinfoForAcc().GetExtraElementinfoSecond();
-    if (firstMap.empty() && secondMap.empty()) {
-        HILOG_ERROR("extraElement map is null");
-        return;
-    }
-    auto iter = firstMap.find("Row");
-    if (iter != firstMap.end()) {
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
-            iter->second.c_str(), NAPI_AUTO_LENGTH, &value));
-        return;
-    }
-    auto seconditer = secondMap.find("Row");
-    if (seconditer != secondMap.end()) {
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_, seconditer->second, &value));
-    }
+    GetExtraElementInfo(callbackInfo, value, "Row");
 }
 
 void NAccessibilityElement::GetElementInfoColumn(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -656,25 +646,7 @@ void NAccessibilityElement::GetElementInfoColumn(NAccessibilityElementData *call
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-
-    std::map<std::string, std::string> firstMap =
-        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElementinfoForAcc().GetExtraElementinfoFirst();
-    std::map<std::string, int32_t> secondMap =
-        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElementinfoForAcc().GetExtraElementinfoSecond();
-    if (firstMap.empty() && secondMap.empty()) {
-        HILOG_ERROR("extraElement map is null");
-        return;
-    }
-    auto iter = firstMap.find("Column");
-    if (iter != firstMap.end()) {
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
-            iter->second.c_str(), NAPI_AUTO_LENGTH, &value));
-        return;
-    }
-    auto seconditer = secondMap.find("Column");
-    if (seconditer != secondMap.end()) {
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_, seconditer->second, &value));
-    }
+    GetExtraElementInfo(callbackInfo, value, "Column");
 }
 
 void NAccessibilityElement::GetElementInfoSideBarContainer(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -682,25 +654,7 @@ void NAccessibilityElement::GetElementInfoSideBarContainer(NAccessibilityElement
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-
-    std::map<std::string, std::string> firstMap =
-        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElementinfoForAcc().GetExtraElementinfoFirst();
-    std::map<std::string, int32_t> secondMap =
-        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElementinfoForAcc().GetExtraElementinfoSecond();
-    if (firstMap.empty() && secondMap.empty()) {
-        HILOG_ERROR("extraElement map is null");
-        return;
-    }
-    auto iter = firstMap.find("SideBarContainerStates");
-    if (iter != firstMap.end()) {
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
-            iter->second.c_str(), NAPI_AUTO_LENGTH, &value));
-        return;
-    }
-    auto seconditer = secondMap.find("SideBarContainerStates");
-    if (seconditer != secondMap.end()) {
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_, seconditer->second, &value));
-    }
+    GetExtraElementInfo(callbackInfo, value, "SideBarContainerStates");
 }
 
 void NAccessibilityElement::GetElementInfoListItemIndex(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -708,25 +662,7 @@ void NAccessibilityElement::GetElementInfoListItemIndex(NAccessibilityElementDat
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-
-    std::map<std::string, std::string> firstMap =
-        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElementinfoForAcc().GetExtraElementinfoFirst();
-    std::map<std::string, int32_t> secondMap =
-        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElementinfoForAcc().GetExtraElementinfoSecond();
-    if (firstMap.empty() && secondMap.empty()) {
-        HILOG_ERROR("extraElement map is null");
-        return;
-    }
-    auto iter = firstMap.find("ListItemIndex");
-    if (iter != firstMap.end()) {
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
-            iter->second.c_str(), NAPI_AUTO_LENGTH, &value));
-        return;
-    }
-    auto seconditer = secondMap.find("ListItemIndex");
-    if (seconditer != secondMap.end()) {
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_, seconditer->second, &value));
-    }
+    GetExtraElementInfo(callbackInfo, value, "ListItemIndex");
 }
 
 void NAccessibilityElement::GetElementInfoCheckable(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -1097,6 +1033,7 @@ void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData
         GetElementInfoAllAttribute2(callbackInfo, value);
         GetElementInfoAllAttribute3(callbackInfo, value);
         GetElementInfoAllAttribute4(callbackInfo, value);
+        GetElementInfoAllAttribute5(callbackInfo, value);
     } else if (CheckWindowInfoParameter(callbackInfo, value)) {
         GetWindowInfoAllAttribute(callbackInfo, value);
     } else {
@@ -1215,26 +1152,6 @@ void NAccessibilityElement::GetElementInfoAllAttribute3(NAccessibilityElementDat
     GetElementInfoGridItem(callbackInfo, grid);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "grid", grid));
 
-    napi_value checkBox = nullptr;
-    GetElementInfoCheckboxGroup(callbackInfo, checkBox);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "checkBox", checkBox));
-
-    napi_value row = nullptr;
-    GetElementInfoRow(callbackInfo, row);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "row", row));
-    
-    napi_value column = nullptr;
-    GetElementInfoColumn(callbackInfo, column);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "column", column));
-
-    napi_value sideBarContainer = nullptr;
-    GetElementInfoSideBarContainer(callbackInfo, sideBarContainer);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "sideBarContainer", sideBarContainer));
-
-    napi_value listItemIndex = nullptr;
-    GetElementInfoListItemIndex(callbackInfo, listItemIndex);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "listItemIndex", listItemIndex));
-    
     napi_value currentIndex = nullptr;
     GetElementInfoCurrentIndex(callbackInfo, currentIndex);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "currentIndex", currentIndex));
@@ -1328,6 +1245,30 @@ void NAccessibilityElement::GetElementInfoAllAttribute4(NAccessibilityElementDat
     napi_value accessibilityLevel = nullptr;
     GetElementInfoAccessibilityLevel(callbackInfo, accessibilityLevel);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "accessibilityLevel", accessibilityLevel));
+}
+
+void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    napi_env env = callbackInfo->env_;
+    napi_value checkBox = nullptr;
+    GetElementInfoCheckboxGroup(callbackInfo, checkBox);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "checkBox", checkBox));
+
+    napi_value row = nullptr;
+    GetElementInfoRow(callbackInfo, row);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "row", row));
+
+    napi_value column = nullptr;
+    GetElementInfoColumn(callbackInfo, column);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "column", column));
+
+    napi_value sideBarContainer = nullptr;
+    GetElementInfoSideBarContainer(callbackInfo, sideBarContainer);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "sideBarContainer", sideBarContainer));
+
+    napi_value listItemIndex = nullptr;
+    GetElementInfoListItemIndex(callbackInfo, listItemIndex);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "listItemIndex", listItemIndex));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)

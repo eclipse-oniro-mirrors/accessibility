@@ -17,6 +17,7 @@
 #define ACCESSIBILITY_ELEMENT_INFO_H
 
 #include <map>
+#include <set>
 #include <vector>
 #include "accessibility_def.h"
 
@@ -292,49 +293,66 @@ protected:
     bool selected_ = false;
 };
 
-/*
-* struct define the extra elementinfo
-*/
-struct StructOfExtraElementinfo {
-    std::string checkboxGroup = "CheckboxGroupselectedStatus";
-    std::string row = "Row";
-    std::string column = "Column";
-    std::string sideBarStates = "SideBarContainerStates";
-    std::string listItemIndex = "ListItemIndex";
-};
 
 /*
 * class define the extra elementinfo
 */
-class ExtraElementinfo {
+class ExtraElementInfo {
 public:
     /**
      * @brief Construct
      */
-    ExtraElementinfo() {}
-
-    ExtraElementinfo(const std::map<std::string, std::string> extraElementinfoFirst,
-        const std::map<std::string, int32_t> extraElementinfoSecond);
+    ExtraElementInfo() {}
 
     /**
-     * @brief Sets the extra Elementinfo.
-     * @param extraElementinfo The extraElementinfo map.
+     * @brief Construct
+     * @param extraElementValueStr The map of extraElement.
+     * @param extraElementValueInt  The map of extraElement.
+     * @sysCap Accessibility
      */
-    RetError SetExtraElementinfo(const std::string k_str, const std::string v_str);
+    ExtraElementInfo(const std::map<std::string, std::string> extraElementValueStr,
+        const std::map<std::string, int32_t> extraElementValueInt);
 
-    RetError SetExtraElementinfo(const std::string k_str, const int32_t v_num);
+    /**
+     * @brief Copy the ExtraElementInfo
+     * @param keyStr The key of extraElementValueStr.
+     * @param valueStr The val of extraElementValueStr.
+     * @sysCap Accessibility
+     */
+    RetError SetExtraElementInfo(const std::string keyStr, const std::string valueStr);
 
-    const std::map<std::string, std::string> &GetExtraElementinfoFirst() const;
+    /**
+     * @brief Copy the ExtraElementInfo
+     * @param keyStr The key of extraElementValueInt.
+     * @param valueInt The val of extraElementValueInt.
+     * @sysCap Accessibility
+     */
+    RetError SetExtraElementInfo(const std::string keyStr, const int32_t valueInt);
 
-    const std::map<std::string, int32_t> &GetExtraElementinfoSecond() const;
+    /**
+     * @brief Gets the map of extraElementValueStr.
+     * @return The extraElementValueStr map.
+     * @sysCap Accessibility
+     */
+    const std::map<std::string, std::string> &GetExtraElementInfoValueStr() const;
+
+    /**
+     * @brief Gets the map of extraElementValueInt.
+     * @return The extraElementValueInt map.
+     * @sysCap Accessibility
+     */
+    const std::map<std::string, int32_t> &GetExtraElementInfoValueInt() const;
 
 protected:
-    StructOfExtraElementinfo keyInfo; //定义一个结构体变量data
-    std::string* p = (std::string *) & keyInfo;  //定义一个int型的指针变量p 该指针指向结构体变量data的首地址
-    int length = sizeof(StructOfExtraElementinfo) / sizeof(std::string); //结构体成员个数
-
-    std::map<std::string, std::string> extraElementinfoFirst_ = {};
-    std::map<std::string, int32_t> extraElementinfoSecond_ = {};
+    std::map<std::string, std::string> extraElementValueStr_ = {};
+    std::map<std::string, int32_t> extraElementValueInt_ = {};
+    std::set<std::string> setOfExtraElementInfo = {
+        "CheckboxGroupSelectedStatus",
+        "Row",
+        "Column",
+        "SideBarContainerStates",
+        "ListItemIndex"
+    };
 };
 
 class Rect {
@@ -1452,9 +1470,9 @@ public:
     */
     void SetParentWindowId(const int32_t iParentWindowId);
 
-    void SetExtraElementinfoForAcc(const ExtraElementinfo &extraElementinfo);
+    void SetExtraElement(const ExtraElementInfo &extraElementInfo);
 
-    const ExtraElementinfo &GetExtraElementinfoForAcc() const;
+    const ExtraElementInfo &GetExtraElement() const;
     /**
      * @brief Get the accessibilityGroup to the element info.
      * @return the accessibilityGroup
@@ -1547,7 +1565,7 @@ protected:
     std::string latestContent_ = "";
     std::string textType_ = "";
     float offset_ = 0.0f;
-    ExtraElementinfo extraElementinfo_ {};
+    ExtraElementInfo extraElementInfo_ {};
     bool accessibilityGroup_ = true;
     std::string accessibilityLevel_ = "auto";
 };
