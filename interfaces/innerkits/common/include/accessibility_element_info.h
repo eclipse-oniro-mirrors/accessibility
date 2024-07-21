@@ -295,8 +295,7 @@ protected:
 /*
 * struct define the extra elementinfo
 */
-struct StructOfExtraElementinfo
-{
+struct StructOfExtraElementinfo {
     std::string checkboxGroup = "CheckboxGroupselectedStatus";
     std::string row = "Row";
     std::string column = "Column";
@@ -314,7 +313,8 @@ public:
      */
     ExtraElementinfo() {}
 
-    ExtraElementinfo(const std::map<std::string, std::string> extraElementinfoFirst, const std::map<std::string, int32_t> extraElementinfoSecond);
+    ExtraElementinfo(const std::map<std::string, std::string> extraElementinfoFirst,
+        const std::map<std::string, int32_t> extraElementinfoSecond);
 
     /**
      * @brief Sets the extra Elementinfo.
@@ -330,8 +330,8 @@ public:
 
 protected:
     StructOfExtraElementinfo keyInfo; //定义一个结构体变量data
-	std::string* p = (std::string *) & keyInfo;  //定义一个int型的指针变量p 该指针指向结构体变量data的首地址
-	int length = sizeof(StructOfExtraElementinfo) / sizeof(std::string); //结构体成员个数
+    std::string* p = (std::string *) & keyInfo;  //定义一个int型的指针变量p 该指针指向结构体变量data的首地址
+    int length = sizeof(StructOfExtraElementinfo) / sizeof(std::string); //结构体成员个数
 
     std::map<std::string, std::string> extraElementinfoFirst_ = {};
     std::map<std::string, int32_t> extraElementinfoSecond_ = {};
