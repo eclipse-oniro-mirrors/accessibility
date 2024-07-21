@@ -843,7 +843,8 @@ int32_t AccessibilityElementInfo::GetParentWindowId() const
     return parentWindowId_;
 }
 
-ExtraElementinfo::ExtraElementinfo(const std::map<std::string, std::string> extraElementinfoFirst, const std::map<std::string, int32_t> extraElementinfoSecond)
+ExtraElementinfo::ExtraElementinfo(const std::map<std::string, std::string> extraElementinfoFirst,
+    const std::map<std::string, int32_t> extraElementinfoSecond)
 {
     extraElementinfoFirst_ = extraElementinfoFirst;
     extraElementinfoSecond_ = extraElementinfoSecond;
@@ -856,7 +857,8 @@ RetError ExtraElementinfo::SetExtraElementinfo(const std::string k_str, const st
     {
         if (*(p + i) == k_str) {
             extraElementinfoFirst_[k_str] = v_str;
-            HILOG_DEBUG("cjh SetExtraElementinfo::extraElementinfoFirst_111 : [%{public}zu]", extraElementinfoFirst_.size());
+            HILOG_DEBUG("cjh SetExtraElementinfo::extraElementinfoFirst_111 : [%{public}zu]",
+                extraElementinfoFirst_.size());
             return RET_OK;
         }
     }
@@ -865,12 +867,11 @@ RetError ExtraElementinfo::SetExtraElementinfo(const std::string k_str, const st
 
 RetError ExtraElementinfo::SetExtraElementinfo(const std::string k_str, const int32_t v_num)
 {
-    HILOG_DEBUG("cjhcjh SetExtraElementinfo2222222");
-    for (int i = 0; i < length; i++)
-    {
+    for (int i = 0; i < length; i++) {
         if (*(p + i) == k_str) {
             extraElementinfoSecond_[k_str] = v_num;
-            HILOG_DEBUG("cjhcjh SetExtraElementinfo::extraElementinfoSecond_222 : [%{public}zu]", extraElementinfoSecond_.size());
+            HILOG_DEBUG("cjhcjh SetExtraElementinfo::extraElementinfoSecond_222 : [%{public}zu]",
+                extraElementinfoSecond_.size());
             return RET_OK;
         }
     }
@@ -887,7 +888,7 @@ const std::map<std::string, int32_t> &ExtraElementinfo::GetExtraElementinfoSecon
 {
     HILOG_DEBUG("cjh use GetExtraElementinfoSecond");
     HILOG_DEBUG("cjhcjh GetExtraElementinfoSecond : [%{public}zu]", extraElementinfoSecond_.size());
-    for(auto itr = extraElementinfoSecond_.begin(); itr != extraElementinfoSecond_.end(); ++itr) {
+    for (auto itr = extraElementinfoSecond_.begin(); itr != extraElementinfoSecond_.end(); ++itr) {
         HILOG_DEBUG("cjhcjh print map");
         HILOG_DEBUG("cjh in map222 k_str: %{public}s, v_num: %{public}d", itr -> first.c_str(), itr->second);
     }
