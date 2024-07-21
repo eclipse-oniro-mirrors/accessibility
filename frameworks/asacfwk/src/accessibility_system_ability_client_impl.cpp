@@ -64,6 +64,9 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
 AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
 {
     HILOG_DEBUG();
+    if (stateObserver_ != nullptr) {
+        stateObserver_->OnClientDeleted();
+    }
 }
 
 bool AccessibilitySystemAbilityClientImpl::ConnectToService()
