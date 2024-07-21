@@ -853,8 +853,7 @@ ExtraElementinfo::ExtraElementinfo(const std::map<std::string, std::string> extr
 RetError ExtraElementinfo::SetExtraElementinfo(const std::string k_str, const std::string v_str)
 {
     HILOG_DEBUG("cjh SetExtraElementinfo1111111");
-    for (int i = 0; i < length; i++)
-    {
+    for (int i = 0; i < length; i++) {
         if (*(p + i) == k_str) {
             extraElementinfoFirst_[k_str] = v_str;
             HILOG_DEBUG("cjh SetExtraElementinfo::extraElementinfoFirst_111 : [%{public}zu]",
