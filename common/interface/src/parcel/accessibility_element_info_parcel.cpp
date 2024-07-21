@@ -459,8 +459,7 @@ ExtraElementinfoParcel::ExtraElementinfoParcel(const ExtraElementinfo &extraElem
 bool ExtraElementinfoParcel::ReadFromParcel(Parcel &parcel)
 {
     std::map<std::string, std::string>::iterator iter;
-    for (iter = extraElementinfoFirst_.begin(); iter != extraElementinfoFirst_.end(); ++iter)
-    {
+    for (iter = extraElementinfoFirst_.begin(); iter != extraElementinfoFirst_.end(); ++iter) {
         std::string temp;
         std::string temp1;
         temp = iter->first;
@@ -470,8 +469,7 @@ bool ExtraElementinfoParcel::ReadFromParcel(Parcel &parcel)
     }
 
     std::map<std::string, std::int32_t>::iterator iter1;
-    for (iter1 = extraElementinfoSecond_.begin(); iter1 != extraElementinfoSecond_.end(); ++iter1)
-    {
+    for (iter1 = extraElementinfoSecond_.begin(); iter1 != extraElementinfoSecond_.end(); ++iter1) {
         std::string tempString;
         int32_t tempInt = 0;
         tempString = iter1->first;
@@ -485,8 +483,7 @@ bool ExtraElementinfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool ExtraElementinfoParcel::Marshalling(Parcel &parcel) const
 {
-    for (auto iter = extraElementinfoFirst_.begin(); iter != extraElementinfoFirst_.end(); ++iter)
-    {
+    for (auto iter = extraElementinfoFirst_.begin(); iter != extraElementinfoFirst_.end(); ++iter) {
         std::string temp;
         std::string temp1;
         temp = iter->first;
@@ -495,8 +492,7 @@ bool ExtraElementinfoParcel::Marshalling(Parcel &parcel) const
         WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, temp1);
     }
 
-    for (auto iter1 = extraElementinfoSecond_.begin(); iter1 != extraElementinfoSecond_.end(); ++iter1)
-    {
+    for (auto iter1 = extraElementinfoSecond_.begin(); iter1 != extraElementinfoSecond_.end(); ++iter1) {
         std::string tempString;
         int32_t tempInt = 0;
         tempString = iter1->first;
