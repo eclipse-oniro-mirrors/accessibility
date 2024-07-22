@@ -1519,6 +1519,20 @@ public:
      */
     const std::string &GetHitTestBehavior() const;
 
+    /**
+     * @brief Set the navDestinationId to the element info.
+     * @param navDestinationId The navDestinationId of node.
+     * @sysCap Accessibility
+    */
+    void SetNavDestinationId(const int64_t navDestinationId);
+
+    /**
+     * @brief Get the navDestinationId to the element info.
+     * @return the navDestinationId
+     * @sysCap Accessibility
+    */
+    int64_t GetNavDestinationId() const;
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1591,6 +1605,7 @@ protected:
     std::string backgroundImage_ = "";
     std::string blur_ = "";
     std::string hitTestBehavior_ = "";
+    int64_t navDestinationId_ = -1;
 };
 } // namespace Accessibility
 } // namespace OHOS
