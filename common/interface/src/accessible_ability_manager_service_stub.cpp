@@ -586,7 +586,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleDisableAbility(MessageParcel 
 ErrCode AccessibleAbilityManagerServiceStub::HandleEnableUITestAbility(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG();
+    int32_t clientPid = IPCSkeleton::GetCallingPid();
+    HILOG_INFO("EnableUITestAbility called by %{public}d", clientPid);
     if (!IsSystemApp()) {
         HILOG_WARN("HandleEnableUITestAbility Permission denied");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
@@ -614,7 +615,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetActiveWindow(MessageParcel
 ErrCode AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG();
+    int32_t clientPid = IPCSkeleton::GetCallingPid();
+    HILOG_INFO("DisableUITestAbility called by %{public}d", clientPid);
     if (!IsSystemApp()) {
         HILOG_WARN("HandleDisableUITestAbility Permission denied");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
