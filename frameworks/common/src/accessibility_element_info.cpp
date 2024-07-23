@@ -922,5 +922,15 @@ const std::string &AccessibilityElementInfo::GetHitTestBehavior() const
 {
     return hitTestBehavior_;
 }
+
+void AccessibilityElementInfo::SetNavDestinationId(const int64_t navDestinationId)
+{
+    navDestinationId_ = navDestinationId;
+}
+
+int64_t AccessibilityElementInfo::GetNavDestinationId() const
+{
+    return navDestinationId_;
+}
 } // namespace Accessibility
 } // namespace OHOS

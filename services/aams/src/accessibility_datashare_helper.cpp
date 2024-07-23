@@ -34,6 +34,7 @@ namespace {
     const std::string SETTING_COLUMN_KEYWORD = "KEYWORD";
     const std::string SETTING_COLUMN_VALUE = "VALUE";
     constexpr int32_t DECIMAL_NOTATION = 10;
+    const std::string SETTINGS_DATA_EXT_URI = "datashare_ext";
     const std::string SETTING_GLOBAL_URI = "datashare:///com.ohos.settingsdata/entry/settingsdata/SETTINGSDATA";
     const std::string SETTING_SYSTEM_URI = "datashare:///com.ohos.settingsdata/entry/settingsdata/USER_SETTINGSDATA_";
     const std::string SETTING_SECURE_URI =
@@ -292,13 +293,14 @@ std::shared_ptr<DataShare::DataShareHelper> AccessibilityDatashareHelper::Create
     if (remoteObj_ == nullptr) {
         return nullptr;
     }
-    auto helper = DataShare::DataShareHelper::Creator(remoteObj_, uriProxyStr_);
-    if (helper == nullptr) {
-        HILOG_WARN("helper is nullptr, uri=%{public}s", uriProxyStr_.c_str());
+    std::pair<int, std::shared_ptr<DataShare::DataShareHelper>> ret = DataShare::DataShareHelper::Create(remoteObj_,
+        uriProxyStr_, SETTINGS_DATA_EXT_URI);
+    HILOG_INFO("create helper ret = %{public}d, uri=%{public}s", ret.first, uriProxyStr_.c_str());
+    if (ret.second == nullptr) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::READ_EVENT, A11yError::ERROR_READ_FAILED);
         return nullptr;
     }
-    return helper;
+    return ret.second;
 }
 
 bool AccessibilityDatashareHelper::DestoryDatashareHelper(std::shared_ptr<DataShare::DataShareHelper>& helper)

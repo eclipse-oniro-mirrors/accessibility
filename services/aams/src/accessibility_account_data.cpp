@@ -666,24 +666,29 @@ void AccessibilityAccountData::AddConfigCallback(
     const sptr<IAccessibleAbilityManagerConfigObserver>& callback)
 {
     HILOG_DEBUG("AddConfigCallback start.");
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
     configCallbacks_.push_back(callback);
 }
 
-const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks() const
+const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks()
 {
     HILOG_DEBUG("GetConfigCallbacks start.");
-    return configCallbacks_;
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
+    std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> rtnVec = configCallbacks_;
+    return rtnVec;
 }
 
 void AccessibilityAccountData::SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer)
 {
     HILOG_DEBUG("SetConfigCallbacks start.");
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
     configCallbacks_ = observer;
 }
 
 void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& callback)
 {
     HILOG_DEBUG("RemoveConfigCallback start.");
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
     for (auto itr = configCallbacks_.begin(); itr != configCallbacks_.end(); itr++) {
         if ((*itr)->AsObject() == callback) {
             configCallbacks_.erase(itr);

@@ -71,6 +71,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
     }
 
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, navDestinationId_);
     sptr<RectParcel> rect = parcel.ReadStrongParcelable<RectParcel>();
     if (!rect) {
         return false;
@@ -185,6 +186,7 @@ bool AccessibilityElementInfoParcel::MarshallingFirstPart(Parcel &parcel) const
         WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &action);
     }
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, navDestinationId_);
     return true;
 }
 

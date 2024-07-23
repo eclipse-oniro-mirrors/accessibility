@@ -219,6 +219,10 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
     }
 
     if (event.GetPointerIds().size() > POINTER_COUNT_1) {
+        if (cachedDownPointerEvents_.empty()) {
+            HILOG_ERROR("cached down pointer event is empty!");
+            return;
+        }
         if (isMoveBeyondThreshold_ == true) {
             cachedDownPointerEvents_.push_back(event);
             EventTransmission::OnPointerEvent(event);
@@ -257,6 +261,11 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
 void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
+    if (cachedDownPointerEvents_.empty()) {
+        HILOG_ERROR("cached down pointer event is empty!");
+        return;
+    }
+
     if (isMoveBeyondThreshold_ == true) {
         handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
         EventTransmission::OnPointerEvent(event);
