@@ -23,10 +23,93 @@
 #include "ipc_skeleton.h"
 #include "tokenid_kit.h"
 
+#define SWITCH_BEGIN(code) switch (code) {
+#define SWITCH_CASE(case_code, func) case case_code:\
+    {\
+        result_code = func(data, reply);\
+        break;\
+    }
+
+#define SWITCH_END() default:\
+    {\
+        result_code = ERR_CODE_DEFAULT;\
+        HILOG_WARN("AccessibleAbilityManagerServiceStub::OnRemoteRequest, default case, need check.");\
+        break;\
+    }\
+}
+
+#define ACCESSIBILITY_ABILITY_MANAGER_SERVICE_STUB_CASES() \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_SCREENMAGNIFIER_STATE, HandleSetScreenMagnificationState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_SHORTKEY_STATE, HandleSetShortKeyState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_MOUSEKEY_STATE, HandleSetMouseKeyState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_SHORTKEY_TARGET, HandleSetShortkeyTarget)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_MOUSEKEY_AUTOCLICK, HandleSetMouseAutoClick)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_INVERTCOLOR_STATE, HandleSetInvertColorState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_HIGHCONTRASTTEXT_STATE, HandleSetHighContrastTextState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_AUDIOMONO_STATE, HandleSetAudioMonoState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_ANIMATIONOFF_STATE, HandleSetAnimationOffState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_DALTONIZATION_STATE, HandleSetDaltonizationState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_DALTONIZATION_COLORFILTER, HandleSetDaltonizationColorFilter)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_CONTENT_TIMEOUT, HandleSetContentTimeout)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_BRIGHTNESS_DISCOUNT, HandleSetBrightnessDiscount)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_AUDIO_BALANCE, HandleSetAudioBalance)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_CAPTION_PROPERTY, HandleSetCaptionProperty)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_CAPTION_STATE, HandleSetCaptionState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_CLICK_RESPONSE_TIME, HandleSetClickResponseTime)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_IGNORE_REPEAT_CLICK_STATE, HandleSetIgnoreRepeatClickState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_IGNORE_REPEAT_CLICK_TIME, HandleSetIgnoreRepeatClickTime)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_CLICK_RESPONSE_TIME, HandleGetClickResponseTime)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_IGNORE_REPEAT_CLICK_STATE, HandleGetIgnoreRepeatClickState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_IGNORE_REPEAT_CLICK_TIME, HandleGetIgnoreRepeatClickTime)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_SHORTKEY_MULTI_TARGET, HandleSetShortkeyMultiTarget)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_SCREENMAGNIFIER_STATE, HandleGetScreenMagnificationState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_SHORTKEY_STATE, HandleGetShortKeyState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_MOUSEKEY_STATE, HandleGetMouseKeyState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_SHORTKEY_TARGET, HandleGetShortkeyTarget)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_MOUSEKEY_AUTOCLICK, HandleGetMouseAutoClick)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_INVERTCOLOR_STATE, HandleGetInvertColorState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_HIGHCONTRASTTEXT_STATE, HandleGetHighContrastTextState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_AUDIOMONO_STATE, HandleGetAudioMonoState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_ANIMATIONOFF_STATE, HandleGetAnimationOffState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_DALTONIZATION_STATE, HandleGetDaltonizationState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_DALTONIZATION_COLORFILTER, HandleGetDaltonizationColorFilter)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_CONTENT_TIMEOUT, HandleGetContentTimeout)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_BRIGHTNESS_DISCOUNT, HandleGetBrightnessDiscount)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_AUDIO_BALANCE, HandleGetAudioBalance)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_ALL_CONFIGS, HandleGetAllConfigs)\
+    SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_CONFIG_CALLBACK, HandleRegisterConfigCallback)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_CAPTION_PROPERTY, HandleGetCaptionProperty)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_CAPTION_STATE, HandleGetCaptionState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_WINDOW_AND_ELEMENT_ID, HandleGetWindowAndElementId)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_SCENE_BOARD_INNER_WINDOW_ID, HandleGetSceneBoardInnerWinId)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_SHORTKEY_MULTI_TARGET, HandleGetShortkeyMultiTarget)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SEND_EVENT, HandleSendEvent)\
+    SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_STATE_CALLBACK, HandleRegisterStateCallback)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_ABILITYLIST, HandleGetAbilityList)\
+    SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_INTERACTION_CONNECTION, HandleRegisterAccessibilityElementOperator)\
+    SWITCH_CASE(AccessibilityInterfaceCode::CARDREGISTER_INTERACTION_CONNECTION, HandleMultiRegisterAccessibilityElementOperator)\
+    SWITCH_CASE(AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION, HandleDeregisterAccessibilityElementOperator)\
+    SWITCH_CASE(AccessibilityInterfaceCode::CARDDEREGISTER_INTERACTION_CONNECTION, HandleMultiDeregisterAccessibilityElementOperator)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_ENABLED, HandleGetEnabled)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_TOUCH_GUIDE_STATE, HandleGetTouchGuideState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_GESTURE_STATE, HandleGetGestureState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_KEY_EVENT_OBSERVE_STATE, HandleGetKeyEventObserverState)\
+    SWITCH_CASE(AccessibilityInterfaceCode::ENABLE_ABILITIES, HandleEnableAbility)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_ENABLED_OBJECT, HandleGetEnabledAbilities)\
+    SWITCH_CASE(AccessibilityInterfaceCode::DISABLE_ABILITIES, HandleDisableAbility)\
+    SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_CAPTION_PROPERTY_CALLBACK, HandleRegisterCaptionPropertyCallback)\
+    SWITCH_CASE(AccessibilityInterfaceCode::ENABLE_UI_TEST_ABILITY, HandleEnableUITestAbility)\
+    SWITCH_CASE(AccessibilityInterfaceCode::DISABLE_UI_TEST_ABILITY, HandleDisableUITestAbility)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_ACTIVE_WINDOW, HandleGetActiveWindow)\
+    SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER, HandleRegisterEnableAbilityListsObserver)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_FOCUSED_WINDOW_ID, HandleGetFocusedWindowId)\
+    SWITCH_CASE(AccessibilityInterfaceCode::REMOVE_REQUEST_ID, HandleRemoveRequestId)\
+
 namespace OHOS {
 namespace Accessibility {
 using namespace Security::AccessToken;
 constexpr int32_t IS_EXTERNAL = 1;
+constexpr int32_t ERR_CODE_DEFAULT = -1000;
 
 void AccessibleAbilityManagerServiceStub::AddSetConfigHandles()
 {
@@ -202,15 +285,15 @@ int AccessibleAbilityManagerServiceStub::OnRemoteRequest(
         return ERR_INVALID_STATE;
     }
 
-    auto memFunc = memberFuncMap_.find(code);
-    if (memFunc != memberFuncMap_.end()) {
-        auto func = memFunc->second;
-        if (func != nullptr) {
-            PostDelayUnloadTask(); // try to unload accessibility sa
-            return (this->*func)(data, reply);
-        }
+    ErrCode result_code = ERR_NONE;
+    SWITCH_BEGIN(code)
+    ACCESSIBILITY_ABILITY_MANAGER_SERVICE_STUB_CASES()
+    SWITCH_END()
+
+    if (result_code != ERR_CODE_DEFAULT) {
+        return result_code;
     }
-    HILOG_WARN("AccessibleAbilityManagerServiceStub::OnRemoteRequest, default case, need check.");
+
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
