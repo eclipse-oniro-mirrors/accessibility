@@ -843,6 +843,58 @@ int32_t AccessibilityElementInfo::GetParentWindowId() const
     return parentWindowId_;
 }
 
+ExtraElementInfo::ExtraElementInfo(const std::map<std::string, std::string> extraElementValueStr,
+    const std::map<std::string, int32_t> extraElementValueInt)
+{
+    extraElementValueStr_ = extraElementValueStr;
+    extraElementValueInt_ = extraElementValueInt;
+}
+
+RetError ExtraElementInfo::SetExtraElementInfo(const std::string keyStr, const std::string valueStr)
+{
+    auto extraElementInfoIter = setOfExtraElementInfo.find(keyStr);
+    if (extraElementInfoIter != setOfExtraElementInfo.end()) {
+        extraElementValueStr_[keyStr] = valueStr;
+        HILOG_DEBUG("SetExtraElementInfo: size is extraElementValueStr : [%{public}zu]",
+            extraElementValueStr_.size());
+    } else {
+        return RET_ERR_FAILED;
+    }
+    return RET_OK;
+}
+
+RetError ExtraElementInfo::SetExtraElementInfo(const std::string keyStr, const int32_t valueInt)
+{
+    auto extraElementInfoIter = setOfExtraElementInfo.find(keyStr);
+    if (extraElementInfoIter != setOfExtraElementInfo.end()) {
+        extraElementValueInt_[keyStr] = valueInt;
+        HILOG_DEBUG("SetExtraElementInfo: size is extraElementValueInt : [%{public}zu]",
+            extraElementValueInt_.size());
+    } else {
+        return RET_ERR_FAILED;
+    }
+    return RET_OK;
+}
+
+const std::map<std::string, std::string> &ExtraElementInfo::GetExtraElementInfoValueStr() const
+{
+    return extraElementValueStr_;
+}
+
+const std::map<std::string, int32_t> &ExtraElementInfo::GetExtraElementInfoValueInt() const
+{
+    return extraElementValueInt_;
+}
+
+void AccessibilityElementInfo::SetExtraElement(const ExtraElementInfo &extraElementInfo)
+{
+    extraElementInfo_ = extraElementInfo;
+}
+
+const ExtraElementInfo &AccessibilityElementInfo::GetExtraElement() const
+{
+    return extraElementInfo_;
+}
 const std::string &AccessibilityElementInfo::GetAccessibilityLevel() const
 {
     return accessibilityLevel_;

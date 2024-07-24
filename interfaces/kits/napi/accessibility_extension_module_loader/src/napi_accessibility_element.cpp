@@ -34,7 +34,8 @@ namespace {
         "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable", "navDestinationId",
         "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
-        "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "allAttribute"};
+        "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
+        "row", "column", "listItemIndex", "sideBarContainerStates", "allAttribute"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId"};
 
@@ -89,6 +90,11 @@ namespace {
         {"accessibilityLevel", &NAccessibilityElement::GetElementInfoAccessibilityLevel},
         {"navDestinationId", &NAccessibilityElement::GetElementInfoNavDestinationId},
         {"currentItem", &NAccessibilityElement::GetElementInfoGridItem},
+        {"checkboxGroupSelectedStatus", &NAccessibilityElement::GetElementInfoCheckboxGroup},
+        {"row", &NAccessibilityElement::GetElementInfoRow},
+        {"column", &NAccessibilityElement::GetElementInfoColumn},
+        {"listItemIndex", &NAccessibilityElement::GetElementInfoListItemIndex},
+        {"sideBarContainerStates", &NAccessibilityElement::GetElementInfoSideBarContainer},
         {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
@@ -592,6 +598,74 @@ void NAccessibilityElement::GetElementInfoGridItem(NAccessibilityElementData *ca
     ConvertGridItemToJS(callbackInfo->env_, value, gridItem);
 }
 
+void NAccessibilityElement::GetExtraElementInfo(NAccessibilityElementData *callbackInfo,
+    napi_value &value, std::string keyStr)
+{
+    std::map<std::string, std::string> mapValIsStr =
+        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElement().GetExtraElementInfoValueStr();
+    std::map<std::string, int32_t> mapValIsInt =
+        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElement().GetExtraElementInfoValueInt();
+    HILOG_DEBUG("GetExtraElementInfo: size is extraElementValueStr : [%{public}zu]",
+        mapValIsStr.size());
+    HILOG_DEBUG("GetExtraElementInfo: size is extraElementValueInt : [%{public}zu]",
+        mapValIsInt.size());
+
+    if (mapValIsStr.empty() && mapValIsInt.empty()) {
+        HILOG_ERROR("extraElement map is null");
+        return;
+    }
+    auto iter = mapValIsStr.find(keyStr);
+    if (iter != mapValIsStr.end()) {
+        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
+            iter->second.c_str(), NAPI_AUTO_LENGTH, &value));
+        return;
+    }
+    auto seconditer = mapValIsInt.find(keyStr);
+    if (seconditer != mapValIsInt.end()) {
+        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_, seconditer->second, &value));
+    }
+}
+
+void NAccessibilityElement::GetElementInfoCheckboxGroup(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    GetExtraElementInfo(callbackInfo, value, "CheckboxGroupSelectedStatus");
+}
+
+void NAccessibilityElement::GetElementInfoRow(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    GetExtraElementInfo(callbackInfo, value, "Row");
+}
+
+void NAccessibilityElement::GetElementInfoColumn(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    GetExtraElementInfo(callbackInfo, value, "Column");
+}
+
+void NAccessibilityElement::GetElementInfoSideBarContainer(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    GetExtraElementInfo(callbackInfo, value, "SideBarContainerStates");
+}
+
+void NAccessibilityElement::GetElementInfoListItemIndex(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    GetExtraElementInfo(callbackInfo, value, "ListItemIndex");
+}
+
 void NAccessibilityElement::GetElementInfoCheckable(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!CheckElementInfoParameter(callbackInfo, value)) {
@@ -969,6 +1043,7 @@ void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData
         GetElementInfoAllAttribute2(callbackInfo, value);
         GetElementInfoAllAttribute3(callbackInfo, value);
         GetElementInfoAllAttribute4(callbackInfo, value);
+        GetElementInfoAllAttribute5(callbackInfo, value);
     } else if (CheckWindowInfoParameter(callbackInfo, value)) {
         GetWindowInfoAllAttribute(callbackInfo, value);
     } else {
@@ -1184,6 +1259,30 @@ void NAccessibilityElement::GetElementInfoAllAttribute4(NAccessibilityElementDat
     napi_value accessibilityLevel = nullptr;
     GetElementInfoAccessibilityLevel(callbackInfo, accessibilityLevel);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "accessibilityLevel", accessibilityLevel));
+}
+
+void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    napi_env env = callbackInfo->env_;
+    napi_value checkBox = nullptr;
+    GetElementInfoCheckboxGroup(callbackInfo, checkBox);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "checkBox", checkBox));
+
+    napi_value row = nullptr;
+    GetElementInfoRow(callbackInfo, row);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "row", row));
+
+    napi_value column = nullptr;
+    GetElementInfoColumn(callbackInfo, column);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "column", column));
+
+    napi_value sideBarContainer = nullptr;
+    GetElementInfoSideBarContainer(callbackInfo, sideBarContainer);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "sideBarContainer", sideBarContainer));
+
+    napi_value listItemIndex = nullptr;
+    GetElementInfoListItemIndex(callbackInfo, listItemIndex);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "listItemIndex", listItemIndex));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)

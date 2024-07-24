@@ -17,6 +17,7 @@
 #define ACCESSIBILITY_ELEMENT_INFO_H
 
 #include <map>
+#include <set>
 #include <vector>
 #include "accessibility_def.h"
 
@@ -290,6 +291,68 @@ protected:
     int32_t columnSpan_ = 0;
     int32_t rowSpan_ = 0;
     bool selected_ = false;
+};
+
+
+/*
+* class define the extra elementinfo
+*/
+class ExtraElementInfo {
+public:
+    /**
+     * @brief Construct
+     */
+    ExtraElementInfo() {}
+
+    /**
+     * @brief Construct
+     * @param extraElementValueStr The map of extraElement.
+     * @param extraElementValueInt  The map of extraElement.
+     * @sysCap Accessibility
+     */
+    ExtraElementInfo(const std::map<std::string, std::string> extraElementValueStr,
+        const std::map<std::string, int32_t> extraElementValueInt);
+
+    /**
+     * @brief Copy the ExtraElementInfo
+     * @param keyStr The key of extraElementValueStr.
+     * @param valueStr The val of extraElementValueStr.
+     * @sysCap Accessibility
+     */
+    RetError SetExtraElementInfo(const std::string keyStr, const std::string valueStr);
+
+    /**
+     * @brief Copy the ExtraElementInfo
+     * @param keyStr The key of extraElementValueInt.
+     * @param valueInt The val of extraElementValueInt.
+     * @sysCap Accessibility
+     */
+    RetError SetExtraElementInfo(const std::string keyStr, const int32_t valueInt);
+
+    /**
+     * @brief Gets the map of extraElementValueStr.
+     * @return The extraElementValueStr map.
+     * @sysCap Accessibility
+     */
+    const std::map<std::string, std::string> &GetExtraElementInfoValueStr() const;
+
+    /**
+     * @brief Gets the map of extraElementValueInt.
+     * @return The extraElementValueInt map.
+     * @sysCap Accessibility
+     */
+    const std::map<std::string, int32_t> &GetExtraElementInfoValueInt() const;
+
+protected:
+    std::map<std::string, std::string> extraElementValueStr_ = {};
+    std::map<std::string, int32_t> extraElementValueInt_ = {};
+    std::set<std::string> setOfExtraElementInfo = {
+        "CheckboxGroupSelectedStatus",
+        "Row",
+        "Column",
+        "SideBarContainerStates",
+        "ListItemIndex"
+    };
 };
 
 class Rect {
@@ -1407,6 +1470,9 @@ public:
     */
     void SetParentWindowId(const int32_t iParentWindowId);
 
+    void SetExtraElement(const ExtraElementInfo &extraElementInfo);
+
+    const ExtraElementInfo &GetExtraElement() const;
     /**
      * @brief Get the accessibilityGroup to the element info.
      * @return the accessibilityGroup
@@ -1597,6 +1663,7 @@ protected:
     std::string latestContent_ = "";
     std::string textType_ = "";
     float offset_ = 0.0f;
+    ExtraElementInfo extraElementInfo_ {};
     bool accessibilityGroup_ = true;
     std::string accessibilityLevel_ = "auto";
     int32_t zIndex_ = 0;
