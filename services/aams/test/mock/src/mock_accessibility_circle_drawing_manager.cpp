@@ -56,13 +56,14 @@ void AccessibilityCircleDrawingManager::UpdatePointerVisible(bool state)
 }
 
 void AccessibilityCircleDrawingManager::DrawPointer(int32_t physicalX, int32_t physicalY, int32_t angle,
-    uint64_t screenId)
+    uint64_t screenId, int32_t startAngle)
 {
     HILOG_DEBUG();
     (void)physicalX;
     (void)physicalY;
     (void)angle;
     (void)screenId;
+    (void)startAngle;
 }
 } // namespace Accessibility
 } // namespace OHOS
