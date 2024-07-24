@@ -18,6 +18,7 @@
 
 #include <memory>
 #include "display_manager.h"
+#include "display_info.h"
 #include "dm_common.h"
 #include "event_handler.h"
 #include "singleton.h"
@@ -32,6 +33,10 @@ public:
     const sptr<Rosen::Display> GetDefaultDisplay();
     uint64_t GetDefaultDisplayId();
     int32_t GetDefaultDisplayDpi();
+    sptr<Rosen::Display> GetDefaultDisplaySync();
+    int32_t GetWidth();
+    int32_t GetHeight();
+    OHOS::Rosen::DisplayOrientation GetOrientation();
     bool IsFoldable();
     Rosen::FoldDisplayMode GetFoldDisplayMode();
 

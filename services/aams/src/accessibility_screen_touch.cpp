@@ -24,7 +24,6 @@ namespace OHOS {
 namespace Accessibility {
 
 constexpr int32_t POINTER_COUNT_1 = 1;
-constexpr int32_t DISPLAY_WIDTH_RATIO = 150;
 
 constexpr uint32_t CLICK_RESPONSE_DELAY_SHORT = 0;
 constexpr uint32_t CLICK_RESPONSE_DELAY_MEDIUM = 1;
@@ -47,10 +46,14 @@ constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONG = 1000; // ms
 constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONGEST = 1300; // ms
 
 constexpr uint32_t CIRCLE_ANGLE = 360;
+constexpr uint32_t START_ANGLE_PORTRAIT = -90;
+constexpr uint32_t START_ANGLE_LANDSCAPE = 180;
+constexpr uint32_t START_ANGLE_PORTRAIT_INVERTED = 90;
+constexpr uint32_t START_ANGLE_LANDSCAPE_INVERTED = 0;
 
 constexpr uint32_t NUMBER_10 = 10;
 
-constexpr uint64_t FOLD_SCREEN_ID = 5; // fold screen main screen id 5
+constexpr float TOUCH_SLOP = 8.0f;
 
 const std::map<uint32_t, uint32_t> CLICK_RESPONSE_TIME_MAP = {
     {CLICK_RESPONSE_DELAY_SHORT, CLICK_RESPONSE_TIME_SHORT},
@@ -94,19 +97,6 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
     }
 
     lastUpTime_ = lastUpTime;
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-    auto display = displayMgr.GetDefaultDisplay();
-    if (!display) {
-        HILOG_ERROR("get display is nullptr");
-        return;
-    }
-
-    threshold_ = CALCULATION_DIMENSION(display->GetWidth()) / DISPLAY_WIDTH_RATIO;
-#else
-    HILOG_DEBUG("not support display manager");
-    threshold_ = static_cast<double>(CIRCLE_ANGLE) / DISPLAY_WIDTH_RATIO;
-#endif
 
     runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner_) {
@@ -183,25 +173,54 @@ bool AccessibilityScreenTouch::GetRealIgnoreRepeatClickState()
     return ignoreRepeatClickState_;
 }
 
+void AccessibilityScreenTouch::ConversionCoordinates(MMI::PointerEvent::PointerItem &pointerItem)
+{
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    int32_t displayWidth = displayMgr.GetWidth();
+    int32_t displayHeight = displayMgr.GetHeight();
+    int32_t originalX = pointerItem.GetDisplayX();
+    int32_t originalY = pointerItem.GetDisplayY();
+
+    OHOS::Rosen::DisplayOrientation orientation = displayMgr.GetOrientation();
+    switch (orientation) {
+        case OHOS::Rosen::DisplayOrientation::PORTRAIT:
+            circleCenterPhysicalX_ = originalX;
+            circleCenterPhysicalY_ = originalY;
+            startAngle_ = START_ANGLE_PORTRAIT;
+            break;
+        case OHOS::Rosen::DisplayOrientation::LANDSCAPE:
+            circleCenterPhysicalX_ = originalY;
+            circleCenterPhysicalY_ = displayWidth - originalX;
+            startAngle_ = START_ANGLE_LANDSCAPE;
+            break;
+        case OHOS::Rosen::DisplayOrientation::PORTRAIT_INVERTED:
+            circleCenterPhysicalX_ = displayWidth - originalX;
+            circleCenterPhysicalY_ = displayHeight - originalY;
+            startAngle_ = START_ANGLE_PORTRAIT_INVERTED;
+            break;
+        case OHOS::Rosen::DisplayOrientation::LANDSCAPE_INVERTED:
+            circleCenterPhysicalX_ = displayHeight - originalY;
+            circleCenterPhysicalY_ = originalX;
+            startAngle_ = START_ANGLE_LANDSCAPE_INVERTED;
+            break;
+        default:
+            break;
+    }
+}
+
 void AccessibilityScreenTouch::DrawCircleProgress()
 {
     HILOG_DEBUG();
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-    uint64_t screenId = displayMgr.GetDefaultDisplayId(); // default screenId 0
-    if (displayMgr.IsFoldable() == true && displayMgr.GetFoldDisplayMode() == Rosen::FoldDisplayMode::MAIN) {
-        HILOG_DEBUG("fold screen and main screen, screenId %{public}" PRIu64 "", FOLD_SCREEN_ID);
-        screenId = FOLD_SCREEN_ID;
-    }
 
     AccessibilityCircleDrawingManager::GetInstance()->DrawPointer(circleCenterPhysicalX_,
-        circleCenterPhysicalY_, 0, screenId);
+        circleCenterPhysicalY_, 0, screenId_, startAngle_);
     AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(true);
     uint32_t times = GetRealClickResponseTime() / NUMBER_10;
     uint32_t step = CIRCLE_ANGLE / times;
     uint32_t time = 0;
     while (time < times && isStopDrawCircle_ == false) {
         AccessibilityCircleDrawingManager::GetInstance()->DrawPointer(circleCenterPhysicalX_,
-            circleCenterPhysicalY_, step * time, screenId);
+            circleCenterPhysicalY_, step * time, screenId_, startAngle_);
         time++;
         std::this_thread::yield();
         std::this_thread::sleep_for(std::chrono::milliseconds(NUMBER_10));
@@ -235,12 +254,12 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
         }
     }
 
+    screenId_ = event.GetTargetDisplayId();
     startTime_ = event.GetActionTime();
     startPointer_ = std::make_shared<MMI::PointerEvent::PointerItem>(pointerItem);
     isMoveBeyondThreshold_ = false;
 
-    circleCenterPhysicalX_ = pointerItem.GetDisplayX();
-    circleCenterPhysicalY_ = pointerItem.GetDisplayY();
+    ConversionCoordinates(pointerItem);
     isStopDrawCircle_ = false;
     if (drawCircleThread_ && drawCircleThread_->joinable()) {
         drawCircleThread_->join();
@@ -291,7 +310,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
     float offsetX = startPointer_->GetDisplayX() - pointerItem.GetDisplayX();
     float offsetY = startPointer_->GetDisplayY() - pointerItem.GetDisplayY();
     double duration = hypot(offsetX, offsetY);
-    if (duration > threshold_) {
+    if (duration > TOUCH_SLOP) {
         handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
         if (isStopDrawCircle_ != true && !cachedDownPointerEvents_.empty()) {
             for (auto iter = cachedDownPointerEvents_.begin(); iter != cachedDownPointerEvents_.end(); ++iter) {
@@ -306,8 +325,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
     }
 
     if (isStopDrawCircle_ != true) {
-        circleCenterPhysicalX_ = pointerItem.GetDisplayX();
-        circleCenterPhysicalY_ = pointerItem.GetDisplayY();
+        ConversionCoordinates(pointerItem);
         return;
     }
 

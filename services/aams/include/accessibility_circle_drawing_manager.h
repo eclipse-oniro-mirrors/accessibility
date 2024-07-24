@@ -41,7 +41,7 @@ public:
 
     void UpdatePointerVisible(bool state);
     void CreatePointerWindow(int32_t physicalX, int32_t physicalY, uint64_t screenId);
-    void DrawPointer(int32_t physicalX, int32_t physicalY, int32_t angle, uint64_t screenId);
+    void DrawPointer(int32_t physicalX, int32_t physicalY, int32_t angle, uint64_t screenId, int32_t startAngle);
     void SetPointerLocation(int32_t physicalX, int32_t physicalY, uint64_t screenId);
     void DrawingProgress(int32_t physicalX, int32_t physicalY, int32_t angle);
 
@@ -62,6 +62,7 @@ public:
     int32_t imageWidth_;
     int32_t imageHeight_;
     int32_t half_;
+    int32_t startAngle_;
     float dispalyDensity_;
 };
 } // namespace Accessibility
