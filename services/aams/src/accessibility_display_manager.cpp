@@ -21,6 +21,8 @@ namespace OHOS {
 namespace Accessibility {
 
 constexpr int32_t DEFAULT_DPI = 540;
+constexpr int32_t DEFAULT_WIDTH = 1260;
+constexpr int32_t DEFAULT_HEIGHT = 2720;
 
 AccessibilityDisplayManager::AccessibilityDisplayManager()
 {
@@ -53,6 +55,54 @@ uint64_t AccessibilityDisplayManager::GetDefaultDisplayId()
 {
     HILOG_DEBUG();
     return Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
+}
+
+int32_t AccessibilityDisplayManager::GetWidth()
+{
+    HILOG_DEBUG();
+    sptr<Rosen::Display> displaySync = GetDefaultDisplaySync();
+    if (displaySync == nullptr) {
+        HILOG_ERROR("default displaySync is null");
+        return DEFAULT_WIDTH;
+    }
+
+    return displaySync->GetWidth();
+}
+
+int32_t AccessibilityDisplayManager::GetHeight()
+{
+    HILOG_DEBUG();
+    sptr<Rosen::Display> displaySync = GetDefaultDisplaySync();
+    if (displaySync == nullptr) {
+        HILOG_ERROR("default displaySync is null");
+        return DEFAULT_HEIGHT;
+    }
+
+    return displaySync->GetHeight();
+}
+
+OHOS::Rosen::DisplayOrientation AccessibilityDisplayManager::GetOrientation()
+{
+    HILOG_DEBUG();
+    sptr<Rosen::Display> displaySync = GetDefaultDisplaySync();
+    if (displaySync == nullptr) {
+        HILOG_ERROR("default displaySync is null");
+        return OHOS::Rosen::DisplayOrientation::PORTRAIT;
+    }
+
+    auto displayInfo = displaySync->GetDisplayInfo();
+    if (displayInfo == nullptr) {
+        HILOG_ERROR("default displayInfo is null");
+        return OHOS::Rosen::DisplayOrientation::PORTRAIT;
+    }
+
+    return displayInfo->GetDisplayOrientation();
+}
+
+sptr<Rosen::Display> AccessibilityDisplayManager::GetDefaultDisplaySync()
+{
+    HILOG_DEBUG();
+    return Rosen::DisplayManager::GetInstance().GetDefaultDisplaySync();
 }
 
 int32_t AccessibilityDisplayManager::GetDefaultDisplayDpi()

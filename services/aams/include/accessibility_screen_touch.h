@@ -91,12 +91,13 @@ private:
 
     void Clear();
 
+    void ConversionCoordinates(MMI::PointerEvent::PointerItem &item);
     void DrawCircleProgress();
 
     bool isMoveBeyondThreshold_ = false;
     int64_t startTime_ = 0; // microsecond
-    double threshold_ = 0.0;
     std::shared_ptr<MMI::PointerEvent::PointerItem> startPointer_ = nullptr;
+    int32_t screenId_ = 0;
 
     int64_t lastUpTime_ = 0;
     bool isInterceptClick_ = false;
@@ -108,6 +109,7 @@ private:
 
     std::atomic<int32_t> circleCenterPhysicalX_;
     std::atomic<int32_t> circleCenterPhysicalY_;
+    int32_t startAngle_ = 0;
     std::atomic<bool> isStopDrawCircle_;
     std::shared_ptr<std::thread> drawCircleThread_ = nullptr;
 
