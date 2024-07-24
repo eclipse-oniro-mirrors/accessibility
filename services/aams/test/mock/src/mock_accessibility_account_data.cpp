@@ -310,7 +310,7 @@ void AccessibilityAccountData::AddConfigCallback(
     configCallbacks_.push_back(callback);
 }
 
-const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks() const
+const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks()
 {
     HILOG_DEBUG("GetConfigCallbacks start");
     return configCallbacks_;

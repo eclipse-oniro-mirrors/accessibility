@@ -40,6 +40,7 @@ namespace {
     constexpr int DISPLAY_DALTONIZER_GREEN = 12;
     constexpr int DISPLAY_DALTONIZER_RED = 11;
     constexpr int DISPLAY_DALTONIZER_BLUE = 13;
+    constexpr int DEFAULT_ACCOUNT_ID = 100;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
@@ -55,6 +56,7 @@ namespace {
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
     const std::string ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen";
     const std::string ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN = "accessibility_shortcut_dialog_shown";
+    const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -639,30 +641,54 @@ void AccessibilityAccountData::Init()
     if (rtn != ERR_OK) {
         HILOG_ERROR("get account type failed for accountId [%{public}d]", id_);
     }
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    bool cloneState = false;
+    provider.GetBoolValue(ACCESSIBILITY_CLONE_FLAG, cloneState);
+    if (cloneState == true) {
+        provider.PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
+    }
+    if (id_ != DEFAULT_ACCOUNT_ID) {
+        HILOG_WARN("id != default_account_id.");
+        return;
+    }
+
+    HILOG_INFO("register clone observer.");
+    AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string& state) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnDataClone();
+    };
+    RetError ret = provider.RegisterObserver(ACCESSIBILITY_CLONE_FLAG, func);
+    if (ret != RET_OK) {
+        HILOG_WARN("register clone observer failed %{public}d.", ret);
+    }
 }
 
 void AccessibilityAccountData::AddConfigCallback(
     const sptr<IAccessibleAbilityManagerConfigObserver>& callback)
 {
     HILOG_DEBUG("AddConfigCallback start.");
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
     configCallbacks_.push_back(callback);
 }
 
-const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks() const
+const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks()
 {
     HILOG_DEBUG("GetConfigCallbacks start.");
-    return configCallbacks_;
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
+    std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> rtnVec = configCallbacks_;
+    return rtnVec;
 }
 
 void AccessibilityAccountData::SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer)
 {
     HILOG_DEBUG("SetConfigCallbacks start.");
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
     configCallbacks_ = observer;
 }
 
 void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& callback)
 {
     HILOG_DEBUG("RemoveConfigCallback start.");
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
     for (auto itr = configCallbacks_.begin(); itr != configCallbacks_.end(); itr++) {
         if ((*itr)->AsObject() == callback) {
             configCallbacks_.erase(itr);

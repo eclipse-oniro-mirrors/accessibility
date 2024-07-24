@@ -219,6 +219,10 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
     }
 
     if (event.GetPointerIds().size() > POINTER_COUNT_1) {
+        if (cachedDownPointerEvents_.empty()) {
+            HILOG_ERROR("cached down pointer event is empty!");
+            return;
+        }
         if (isMoveBeyondThreshold_ == true) {
             cachedDownPointerEvents_.push_back(event);
             EventTransmission::OnPointerEvent(event);
@@ -243,7 +247,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
     }
 
     drawCircleThread_ = nullptr;
-    drawCircleThread_ = std::make_shared<std::thread>(&AccessibilityScreenTouch::DrawCircleProgress, this);
+    drawCircleThread_ = std::make_shared<std::thread>([this] {this->DrawCircleProgress();});
     if (drawCircleThread_ == nullptr) {
         HILOG_ERROR("create draw circle progress fail");
     }
@@ -257,6 +261,11 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
 void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
+    if (cachedDownPointerEvents_.empty()) {
+        HILOG_ERROR("cached down pointer event is empty!");
+        return;
+    }
+
     if (isMoveBeyondThreshold_ == true) {
         handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
         EventTransmission::OnPointerEvent(event);

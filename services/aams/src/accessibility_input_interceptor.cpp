@@ -371,7 +371,7 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::KeyEvent
         return;
     }
 
-    auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, interceptor, keyEvent);
+    auto task = [keyEvent, interceptor] {interceptor->ProcessKeyEvent(keyEvent);};
     eventHandler_->PostTask(task, "InputKeyEvent");
 }
 
@@ -394,7 +394,7 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerE
         HILOG_ERROR("eventHandler is empty.");
         return;
     }
-    auto task = std::bind(&AccessibilityInputInterceptor::ProcessPointerEvent, interceptor, pointerEvent);
+    auto task = [pointerEvent, interceptor] {interceptor->ProcessPointerEvent(pointerEvent);};
     eventHandler_->PostTask(task, "InputPointerEvent");
 }
 } // namespace Accessibility

@@ -19,8 +19,31 @@
 #include "accessibility_ipc_interface_code.h"
 #include "hilog_wrapper.h"
 
+#define SWITCH_BEGIN(code) switch (code) {
+#define SWITCH_CASE(case_code, func) case case_code:\
+    {\
+        result_code = func(data, reply);\
+        break;\
+    }
+
+#define SWITCH_END() default:\
+    {\
+        result_code = ERR_CODE_DEFAULT;\
+        HILOG_WARN("AccessibleAbilityClientStub::OnRemoteRequest, default case, need check.");\
+        break;\
+    }\
+}
+
+#define ACCESSIBLE_ABILITY_CLIENT_STUB_CASES() \
+    SWITCH_CASE(AccessibilityInterfaceCode::INIT, HandleInit)\
+    SWITCH_CASE(AccessibilityInterfaceCode::DISCONNECT, HandleDisconnect)\
+    SWITCH_CASE(AccessibilityInterfaceCode::ON_ACCESSIBILITY_EVENT, HandleOnAccessibilityEvent)\
+    SWITCH_CASE(AccessibilityInterfaceCode::ON_KEY_PRESS_EVENT, HandleOnKeyPressEvent)\
+
 namespace OHOS {
 namespace Accessibility {
+constexpr int32_t ERR_CODE_DEFAULT = -1000;
+
 AccessibleAbilityClientStub::AccessibleAbilityClientStub()
 {
     HILOG_DEBUG();
@@ -51,14 +74,15 @@ int AccessibleAbilityClientStub::OnRemoteRequest(uint32_t code,
         return ERR_INVALID_STATE;
     }
 
-    auto func = memberFuncMap_.find(code);
-    if (func != memberFuncMap_.end()) {
-        auto memberFunc = func->second;
-        if (memberFunc != nullptr) {
-            return (this->*memberFunc)(data, reply);
-        }
+    ErrCode result_code = ERR_NONE;
+    SWITCH_BEGIN(code)
+    ACCESSIBLE_ABILITY_CLIENT_STUB_CASES()
+    SWITCH_END()
+
+    if (result_code != ERR_CODE_DEFAULT) {
+        return result_code;
     }
-    HILOG_WARN("AccessibleAbilityClientStub::OnRemoteRequest, default case, need check.");
+
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 

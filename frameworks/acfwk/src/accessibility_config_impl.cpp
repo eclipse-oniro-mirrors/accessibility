@@ -63,20 +63,24 @@ void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *
 
 bool AccessibilityConfig::Impl::ConnectToService()
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-    bool rtn = false;
-    if (InitAccessibilityServiceProxy() && RegisterToService()) {
+    char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
+    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
+    if (retSysParam >= 0 && !std::strcmp(value, "true")) {
+        if (!InitAccessibilityServiceProxy()) {
+            return false;
+        }
+        if (!RegisterToService()) {
+            return false;
+        }
         InitConfigValues();
-        rtn = true;
+    } else {
+        retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+        if (retSysParam) {
+            HILOG_ERROR("Watch parameter failed, error = %{public}d.", retSysParam);
+            return false;
+        }
     }
-    mutex_.unlock();
-
-    int retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
-    if (retSysParam) {
-        HILOG_ERROR("Watch parameter failed, error = %{public}d.", retSysParam);
-        rtn = false;
-    }
-    return rtn;
+    return true;
 }
 
 bool AccessibilityConfig::Impl::ConnectToServiceAsync()
@@ -104,7 +108,7 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
     if (samgr == nullptr) {
         return false;
     }
-    auto object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+    auto object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (object != nullptr) {
         if (!deathRecipient_) {
             deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
@@ -125,17 +129,6 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
         }
         HILOG_DEBUG("InitAccessibilityServiceProxy success");
         return true;
-    } else {
-        if (CheckSaStatus() == false) {
-            return false;
-        }
-        if (LoadAccessibilityService()) {
-            isInitialized_ = true;
-            HILOG_DEBUG("InitAccessibilityServiceProxy success");
-            return true;
-        } else {
-            return false;
-        }
     }
     return true;
 }
@@ -253,7 +246,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
 
 sptr<Accessibility::IAccessibleAbilityManagerService> AccessibilityConfig::Impl::GetServiceProxy()
 {
-    if (serviceProxy_ != nullptr || LoadAccessibilityService()) {
+    if (serviceProxy_ != nullptr) {
         return serviceProxy_;
     }
     return nullptr;

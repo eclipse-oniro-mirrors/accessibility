@@ -71,6 +71,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
     }
 
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, navDestinationId_);
     sptr<RectParcel> rect = parcel.ReadStrongParcelable<RectParcel>();
     if (!rect) {
         return false;
@@ -133,6 +134,12 @@ bool AccessibilityElementInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, pagePath_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityGroup_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, accessibilityLevel_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, zIndex_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, opacity_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, backgroundColor_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, backgroundImage_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, blur_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, hitTestBehavior_);
     return true;
 }
 
@@ -179,6 +186,7 @@ bool AccessibilityElementInfoParcel::MarshallingFirstPart(Parcel &parcel) const
         WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &action);
     }
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, navDestinationId_);
     return true;
 }
 
@@ -225,6 +233,12 @@ bool AccessibilityElementInfoParcel::MarshallingSecondPart(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, pagePath_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityGroup_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, accessibilityLevel_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, zIndex_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, opacity_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, backgroundColor_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, backgroundImage_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, blur_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, hitTestBehavior_);
     return true;
 }
 

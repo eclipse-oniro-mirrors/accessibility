@@ -641,5 +641,9 @@ RetError AccessibleAbilityManagerService::GetAllTreeId(int32_t windowId, std::ve
     (void)treeIds;
     return RET_OK;
 }
+
+void AccessibleAbilityManagerService::OnDataClone()
+{
+}
 } // namespace Accessibility
 } // namespace OHOS

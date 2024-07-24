@@ -299,6 +299,7 @@ public:
     void AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
         sptr<IAccessibilityElementOperatorCallback> callback);
     void RemoveRequestId(int32_t requestId) override;
+    void OnDataClone();
 
 private:
     void StopCallbackWait(int32_t windowId);

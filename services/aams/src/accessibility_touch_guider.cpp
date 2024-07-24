@@ -118,6 +118,15 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         gestureRecognizer_.OnPointerEvent(event)) {
         return true;
     }
+    if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
+        HILOG_DEBUG("recognize doubleTap and longpress");
+        if (doubleTapLongPressDownEvent_ != nullptr) {
+            SendEventToMultimodal(*doubleTapLongPressDownEvent_, NO_CHANGE);
+            doubleTapLongPressDownEvent_ = nullptr;
+        }
+        SendEventToMultimodal(event, NO_CHANGE);
+        return true;
+    }
 
     if (multiFingerGestureRecognizer_.OnPointerEvent(event)) {
         return true;
@@ -215,6 +224,11 @@ void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action
             return;
         }
         OffsetEvent(event);
+        if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
+            event.GetPointerIds().size() == POINTER_COUNT_1) {
+            HILOG_INFO("doubleTap and longpress end");
+            Clear(event);
+        }
     }
 
     switch (action) {
@@ -437,6 +451,8 @@ void TouchGuider::HandleTouchGuidingState(MMI::PointerEvent &event)
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
             if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 HandleTouchGuidingStateInnerDown(event);
+            } else if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
+                SendEventToMultimodal(event, NO_CHANGE);
             } else {
                 CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
                 CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
@@ -770,7 +786,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
     int32_t pointCount = pIds.size();
     if (pointCount == POINTER_COUNT_1) {
         HILOG_DEBUG("Only two pointers can be received in the dragging state");
-    } else if (pointCount == POINTER_COUNT_2 && IsDragGestureAccept(event)) {
+    } else if (pointCount == POINTER_COUNT_2) {
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
         // Get densityPixels from WMS
         AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();

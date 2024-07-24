@@ -236,10 +236,17 @@ private:
 
         virtual void OnStateChanged(const uint32_t stateType) override
         {
-            client_.OnAccessibleAbilityManagerStateChanged(stateType);
+            if (clientDeleted_ == false) {
+                client_.OnAccessibleAbilityManagerStateChanged(stateType);
+            }
+        }
+        void OnClientDeleted()
+        {
+            clientDeleted_ = true;
         }
     private:
         AccessibilitySystemAbilityClientImpl &client_;
+        std::atomic<bool> clientDeleted_ = false;
     };
 
     class DeathRecipient : public IRemoteObject::DeathRecipient {

@@ -31,7 +31,7 @@ namespace {
         "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
         "textMoveUnit", "contents", "lastContent", "itemCount", "currentIndex", "startIndex", "endIndex",
         "resourceName", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible",
-        "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable",
+        "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable", "navDestinationId",
         "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
         "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "allAttribute"};
@@ -87,6 +87,7 @@ namespace {
         {"offset", &NAccessibilityElement::GetElementInfoOffset},
         {"accessibilityGroup", &NAccessibilityElement::GetElementInfoAccessibilityGroup},
         {"accessibilityLevel", &NAccessibilityElement::GetElementInfoAccessibilityLevel},
+        {"navDestinationId", &NAccessibilityElement::GetElementInfoNavDestinationId},
         {"currentItem", &NAccessibilityElement::GetElementInfoGridItem},
         {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
     };
@@ -951,6 +952,15 @@ void NAccessibilityElement::GetElementInfoAccessibilityLevel(NAccessibilityEleme
         callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityLevel().c_str(), NAPI_AUTO_LENGTH, &value));
 }
 
+void NAccessibilityElement::GetElementInfoNavDestinationId(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetNavDestinationId(), &value));
+}
+
 void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_object(callbackInfo->env_, &value));
@@ -1106,6 +1116,10 @@ void NAccessibilityElement::GetElementInfoAllAttribute3(NAccessibilityElementDat
     napi_value contents = nullptr;
     GetElementInfoContents(callbackInfo, contents);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "contents", contents));
+
+    napi_value navDestinationId = nullptr;
+    GetElementInfoNavDestinationId(callbackInfo, navDestinationId);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "navDestinationId", navDestinationId));
 }
 
 void NAccessibilityElement::GetElementInfoAllAttribute4(NAccessibilityElementData *callbackInfo, napi_value &value)
