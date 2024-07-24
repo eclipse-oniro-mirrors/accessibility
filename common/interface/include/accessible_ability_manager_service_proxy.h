@@ -166,6 +166,8 @@ public:
     virtual void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
     virtual RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
     virtual void RemoveRequestId(int32_t requestId) override;
+    virtual int64_t GetRootParentId(int32_t windowsId, int32_t treeId) override;
+    virtual RetError GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds) override;
 private:
     /**
      * @brief Write the descriptor of IPC.

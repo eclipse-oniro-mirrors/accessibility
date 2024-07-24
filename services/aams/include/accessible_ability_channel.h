@@ -29,7 +29,7 @@ class AccessibleAbilityChannel : public AccessibleAbilityChannelStub {
 public:
     AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName);
     ~AccessibleAbilityChannel() = default;
-    RetError SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId, const int64_t elementId,
+    RetError SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int32_t mode, bool isFilter = false) override;
 

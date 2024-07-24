@@ -59,8 +59,8 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(AccessibilityInterfaceCode c
     return true;
 }
 
-RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
-    const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
+RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int32_t mode, bool isFilter)
 {
     HILOG_DEBUG();
@@ -76,12 +76,16 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
     if (!WriteInterfaceToken(data)) {
         return RET_ERR_IPC_FAILED;
     }
-    if (!data.WriteInt32(accessibilityWindowId)) {
-        HILOG_ERROR("accessibilityWindowId write error: %{public}d, ", accessibilityWindowId);
+    if (!data.WriteInt32(elementBasicInfo.windowId)) {
+        HILOG_ERROR("windowId write error: %{public}d, ", elementBasicInfo.windowId);
         return RET_ERR_IPC_FAILED;
     }
-    if (!data.WriteInt64(elementId)) {
-        HILOG_ERROR("elementId write error: %{public}" PRId64 "", elementId);
+    if (!data.WriteInt32(elementBasicInfo.treeId)) {
+        HILOG_ERROR("treeId write error: %{public}d", elementBasicInfo.treeId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt64(elementBasicInfo.elementId)) {
+        HILOG_ERROR("elementId write error: %{public}" PRId64 "", elementBasicInfo.elementId);
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(requestId)) {

@@ -356,6 +356,12 @@ struct Registration {
     int64_t elementId = 0;
 };
 
+struct ElementBasicInfo {
+    int32_t windowId = -2;
+    int32_t treeId = -2;
+    int64_t elementId = -2;
+};
+
 constexpr int32_t PARAM0 = 0;
 constexpr int32_t PARAM1 = 1;
 constexpr int32_t PARAM2 = 2;

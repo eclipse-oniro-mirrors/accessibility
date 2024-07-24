@@ -36,6 +36,12 @@ public:
     sptr<IAccessibilityElementOperator> GetCardProxy(const int32_t treeId);
 
     RetError SetCardProxy(const int32_t treeId, sptr<IAccessibilityElementOperator> operation);
+
+    void GetAllTreeId(std::vector<int32_t> &treeIds);
+
+    RetError GetRootParentId(int32_t treeId, int64_t &elementId);
+
+    RetError SetRootParentId(const int32_t treeId, const int64_t elementId);
 };
 } // namespace Accessibility
 } // namespace OHOS

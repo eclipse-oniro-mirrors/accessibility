@@ -124,6 +124,8 @@ public:
     uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override {return 0;}
     void PostDelayUnloadTask() override {}
     void RemoveRequestId(int32_t requestId) override {}
+    int64_t GetRootParentId(int32_t windowsId, int32_t treeId) override {return 0;}
+    RetError GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds) override {return RET_OK;}
 };
 
 uint32_t GetU32Data(const uint8_t* ptr)

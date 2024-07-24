@@ -261,6 +261,10 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
         &AccessibleAbilityManagerServiceStub::HandleGetFocusedWindowId;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::REMOVE_REQUEST_ID)] =
         &AccessibleAbilityManagerServiceStub::HandleRemoveRequestId;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ROOT_PARENT_ID)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetRootParentId;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ALL_TREE_ID)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetAllTreeId;
 
     AddSetConfigHandles();
     AddGetConfigHandles();
@@ -1468,6 +1472,39 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRemoveRequestId(MessageParcel
     HILOG_DEBUG();
     int32_t requestId = data.ReadInt32();
     RemoveRequestId(requestId);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetRootParentId(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int32_t windowId = data.ReadInt32();
+    int32_t treeId = data.ReadInt32();
+    int64_t elementId = GetRootParentId(windowId, treeId);
+    reply.WriteInt64(elementId);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetAllTreeId(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int32_t windowId = data.ReadInt32();
+    std::vector<int32_t> treeIds {};
+
+    RetError result = GetAllTreeId(windowId, treeIds);
+
+    reply.WriteInt32(static_cast<int32_t>(result));
+    int32_t treeIdSize = static_cast<int32_t>(treeIds.size());
+    reply.WriteInt32(treeIdSize);
+    for (auto &treeId : treeIds) {
+        if (!reply.WriteInt32(treeId)) {
+            HILOG_ERROR("WriteInt32 treeId failed");
+            return TRANSACTION_ERR;
+        }
+    }
+
     return NO_ERROR;
 }
 } // namespace Accessibility

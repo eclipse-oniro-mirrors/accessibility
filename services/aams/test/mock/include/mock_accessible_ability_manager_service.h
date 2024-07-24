@@ -104,6 +104,8 @@ public:
     MOCK_METHOD1(FindFocusedElement, bool(AccessibilityElementInfo &elementInfo));
     MOCK_METHOD1(GetFocusedWindowId, RetError(int32_t &focusedWindowId));
     MOCK_METHOD1(RemoveRequestId, void(int32_t requestId));
+    MOCK_METHOD2(GetRootParentId, int64_t(int32_t windowId, int32_t treeId));
+    MOCK_METHOD2(GetAllTreeId, RetError(int32_t windowId, std::vector<int32_t> &treeIds));
 };
 } // namespace Accessibility
 } // namespace OHOS

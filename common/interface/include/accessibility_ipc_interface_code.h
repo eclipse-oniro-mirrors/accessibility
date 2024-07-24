@@ -140,6 +140,8 @@ namespace Accessibility {
         GET_SCENE_BOARD_INNER_WINDOW_ID,
         SET_SHORTKEY_MULTI_TARGET,
         GET_SHORTKEY_MULTI_TARGET,
+        GET_ROOT_PARENT_ID,
+        GET_ALL_TREE_ID,
 
         ON_STATE_CHANGED = 900,
     };

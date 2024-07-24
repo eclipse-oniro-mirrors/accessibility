@@ -122,8 +122,10 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
 {
     HILOG_DEBUG();
 
-    int32_t accessibilityWindowId = data.ReadInt32();
-    int64_t elementId = data.ReadInt64();
+    ElementBasicInfo elementBasicInfo {};
+    elementBasicInfo.windowId = data.ReadInt32();
+    elementBasicInfo.treeId = data.ReadInt32();
+    elementBasicInfo.elementId = data.ReadInt64();
     int32_t requestId = data.ReadInt32();
 
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
@@ -152,8 +154,8 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
         mode = PREFETCH_RECURSIVE_CHILDREN;
     }
     bool isFilter = data.ReadBool();
-    RetError result = SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId, callback, mode,
-    isFilter);
+    RetError result = SearchElementInfoByAccessibilityId(elementBasicInfo, requestId, callback, mode,
+        isFilter);
     HILOG_DEBUG("SearchElementInfoByAccessibilityId ret = %{public}d", result);
     reply.WriteInt32(result);
 
