@@ -46,7 +46,7 @@ constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONG = 1000; // ms
 constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONGEST = 1300; // ms
 
 constexpr uint32_t CIRCLE_ANGLE = 360;
-constexpr uint32_t START_ANGLE_PORTAIT = -90;
+constexpr uint32_t START_ANGLE_PORTRAIT = -90;
 constexpr uint32_t START_ANGLE_LANDSCAPE = 180;
 constexpr uint32_t START_ANGLE_PORTRAIT_INVERTED = 90;
 constexpr uint32_t START_ANGLE_LANDSCAPE_INVERTED = 0;
@@ -183,22 +183,22 @@ void AccessibilityScreenTouch::ConversionCoordinates(MMI::PointerEvent::PointerI
 
     OHOS::Rosen::DisplayOrientation orientation = displayMgr.GetOrientation();
     switch (orientation) {
-        case OHOS::Rosen::DisplayOrientation::PORTAIT:
+        case OHOS::Rosen::DisplayOrientation::PORTRAIT:
             circleCenterPhysicalX_ = originalX;
             circleCenterPhysicalY_ = originalY;
-            startAngle_ = START_ANGLE_PORTAIT;
+            startAngle_ = START_ANGLE_PORTRAIT;
             break;
         case OHOS::Rosen::DisplayOrientation::LANDSCAPE:
             circleCenterPhysicalX_ = originalY;
             circleCenterPhysicalY_ = displayWidth - originalX;
             startAngle_ = START_ANGLE_LANDSCAPE;
             break;
-        case OHOS::Rosen::DisplayOrientation::PORTAIT_INVERTED:
+        case OHOS::Rosen::DisplayOrientation::PORTRAIT_INVERTED:
             circleCenterPhysicalX_ = displayWidth - originalX;
             circleCenterPhysicalY_ = displayHeight - originalY;
-            startAngle_ = START_ANGLE_PORTAIT_INVERTED;
+            startAngle_ = START_ANGLE_PORTRAIT_INVERTED;
             break;
-        case OHOS::Rosen::DisplayOrientation::LANDSCAPE_INVERTED;
+        case OHOS::Rosen::DisplayOrientation::LANDSCAPE_INVERTED:
             circleCenterPhysicalX_ = displayHeight - originalY;
             circleCenterPhysicalY_ = originalX;
             startAngle_ = START_ANGLE_LANDSCAPE_INVERTED;
