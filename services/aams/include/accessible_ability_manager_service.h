@@ -42,6 +42,7 @@
 #include "singleton.h"
 #include "system_ability.h"
 #include "window_manager.h"
+#include "accessibility_short_key.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -86,7 +87,9 @@ public:
 
 public:
     /* For AccessibleAbilityManagerServiceStub */
-    RetError SendEvent(const AccessibilityEventInfo &uiEvent) override;
+    RetError SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag = 0) override;
+
+    RetError VerifyingToKenId(const int32_t windowId, const int64_t elementId);
 
     uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) override;
 
@@ -142,6 +145,7 @@ public:
     bool EnableShortKeyTargetAbility(const std::string &name = "");
     bool DisableShortKeyTargetAbility();
     void OnShortKeyProcess();
+    void UpdateShortKeyRegister();
 
     void SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector);
 
@@ -283,6 +287,7 @@ public:
     void AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
         sptr<IAccessibilityElementOperatorCallback> callback);
     void RemoveRequestId(int32_t requestId) override;
+    void OnDataClone();
 
 private:
     void StopCallbackWait(int32_t windowId);
@@ -292,7 +297,9 @@ private:
         AccessibilityElementInfo &elementInfo);
     bool SetTargetAbility(const int32_t targetAbilityValue);
     RetError RegisterElementOperatorChildWork(const Registration &parameter, const int32_t treeId,
-        const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation, bool isApp);
+        const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation,
+        const uint32_t tokenId, bool isApp);
+    void IsCheckWindowIdEventExist(const int32_t windowId);
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         StateCallbackDeathRecipient() = default;
@@ -400,9 +407,13 @@ private:
     sptr<TouchEventInjector> touchEventInjector_ = nullptr;
     sptr<KeyEventFilter> keyEventFilter_ = nullptr;
     sptr<AccessibilityDumper> accessibilityDumper_ = nullptr;
+    sptr<AccessibilityShortKey> accessibilityShortKey_ = nullptr;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AAMSEventHandler> handler_;
+
+    std::shared_ptr<AppExecFwk::EventRunner> actionRunner_;
+    std::shared_ptr<AAMSEventHandler> actionHandler_;
 
     int64_t ipcTimeoutNum_ = 0; // count ipc timeout number
 

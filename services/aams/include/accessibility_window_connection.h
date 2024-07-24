@@ -38,12 +38,17 @@ public:
 
     RetError SetCardProxy(const int32_t treeId, sptr<IAccessibilityElementOperator> operation);
 
+    uint32_t GetTokenIdMap(const int32_t treeId);
+
+    RetError SetTokenIdMap(const int32_t treeId, const uint32_t tokenId);
+
 private:
     int32_t windowId_;
     int32_t accountId_;
-    int32_t treeId_;
+    int32_t treeId_ = 0;
     std::map<int32_t, sptr<IAccessibilityElementOperator>> cardProxy_;
     sptr<IAccessibilityElementOperator> proxy_;
+    std::map<int32_t, uint32_t> tokenIdMap_;
 };
 } // namespace Accessibility
 } // namespace OHOS

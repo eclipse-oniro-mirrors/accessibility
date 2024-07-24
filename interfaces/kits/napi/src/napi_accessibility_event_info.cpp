@@ -37,7 +37,7 @@ napi_value NAccessibilityEventInfo::JSConstructor(napi_env env, napi_callback_in
     napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, nullptr));
     if (argc == ARGS_SIZE_ONE) {
-        napi_valuetype valueType;
+        napi_valuetype valueType = napi_null;
         NAPI_CALL(env, napi_typeof(env, argv[PARAM0], &valueType));
         if (valueType != napi_object) {
             HILOG_ERROR("valueType %{public}d is not napi_object", valueType);
@@ -46,7 +46,7 @@ napi_value NAccessibilityEventInfo::JSConstructor(napi_env env, napi_callback_in
 
         return argv[PARAM0];
     } else if (argc == ARGS_SIZE_THREE) {
-        napi_valuetype valueType;
+        napi_valuetype valueType = napi_null;
         NAPI_CALL(env, napi_typeof(env, argv[PARAM0], &valueType));
         if (valueType != napi_string) {
             HILOG_ERROR("type mismatch for parameter 0");

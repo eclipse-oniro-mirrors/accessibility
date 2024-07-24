@@ -26,6 +26,7 @@ namespace Accessibility {
 namespace {
     constexpr uint32_t CONTENT_TIMEOUT_VALUE = 10;
     constexpr int32_t MOUSE_AUTO_CLICK_VALUE = 2;
+    constexpr int32_t SHORT_KEY_TIMEOUT = 3000;
     constexpr float BRIGHTNESS_DISCOUNT_VALUE = 0.3f;
     constexpr float AUDIO_BALANCE_VALUE = 0.1f;
     const std::string CONFIG_ACCESSIBILITY = "accessible";
@@ -42,6 +43,8 @@ namespace {
     const std::string CONFIG_ANIMATIONOFF = "animationOff";
     const std::string CONFIG_AUDIOMONO = "audioMono";
     const std::string CONFIG_IGNOREREPEATCLICKSTATE = "ignoreRepeatClickState";
+    const std::string CONFIG_SHORTCUT_ON_LOCK_SCREEN = "shortcutOnLockScreen";
+    const std::string CONFIG_SHORTCUT_TIMEOUT = "shortcutTimeout";
 } // namespace
 
 class AccessibilitySettingsConfigTest : public testing::Test {
@@ -333,6 +336,70 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     settingConfig_->SetShortKeyState(state);
     EXPECT_TRUE(settingConfig_->GetShortKeyState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyState_002 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortKeyOnLockScreenState_001
+ * @tc.name: SetShortKeyOnLockScreenState
+ * @tc.desc: Test function SetShortKeyOnLockScreenState GetShortKeyOnLockScreenState
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortKeyOnLockScreenState_001,
+         TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyOnLockScreenState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetShortKeyOnLockScreenState(state);
+    EXPECT_TRUE(settingConfig_->GetShortKeyOnLockScreenState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyOnLockScreenState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortKeyOnLockScreenState_002
+ * @tc.name: SetShortKeyOnLockScreenState
+ * @tc.desc: Test function SetShortKeyOnLockScreenState GetShortKeyOnLockScreenState
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortKeyOnLockScreenState_002,
+         TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyOnLockScreenState_002 start";
+    bool state = true;
+    settingConfig_->SetShortKeyOnLockScreenState(state);
+    EXPECT_TRUE(settingConfig_->GetShortKeyOnLockScreenState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyOnLockScreenState_002 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortKeyTimeout_001
+ * @tc.name: SetShortKeyTimeout
+ * @tc.desc: Test function SetShortKeyTimeout GetShortKeyTimeout
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortKeyTimeout_001,
+         TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyTimeout_001 start";
+    settingConfig_->Init();
+    settingConfig_->SetShortKeyTimeout(SHORT_KEY_TIMEOUT);
+    EXPECT_TRUE(settingConfig_->GetShortKeyTimeout() == SHORT_KEY_TIMEOUT);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyTimeout_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortKeyTimeout_002
+ * @tc.name: SetShortKeyTimeout
+ * @tc.desc: Test function SetShortKeyTimeout GetShortKeyTimeout
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortKeyTimeout_002,
+         TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyTimeout_002 start";
+    settingConfig_->SetShortKeyTimeout(SHORT_KEY_TIMEOUT);
+    EXPECT_TRUE(settingConfig_->GetShortKeyTimeout() == SHORT_KEY_TIMEOUT);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyTimeout_002 end";
 }
 
 /**

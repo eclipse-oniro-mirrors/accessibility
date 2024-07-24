@@ -1313,6 +1313,149 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetMouseKeyState_002, TestSize
 }
 
 /**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoByAccessibilityIdResult_001
+ * @tc.name: SetSearchElementInfoByAccessibilityIdResult
+ * @tc.desc: Test function SetSearchElementInfoByAccessibilityIdResult
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetSearchElementInfoByAccessibilityIdResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoByAccessibilityIdResult_001 start";
+    std::vector<AccessibilityElementInfo> infos;
+    int32_t requestId = 0;
+    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
+        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
+    obj->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
+    delete obj;
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoByAccessibilityIdResult_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoByTextResult_001
+ * @tc.name: SetSearchElementInfoByTextResult
+ * @tc.desc: Test function SetSearchElementInfoByTextResult
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetSearchElementInfoByTextResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoByTextResult_001 start";
+    std::vector<AccessibilityElementInfo> infos;
+    int32_t requestId = 0;
+    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
+        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
+    obj->SetSearchElementInfoByTextResult(infos, requestId);
+    delete obj;
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoByTextResult_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetFindFocusedElementInfoResult_001
+ * @tc.name: SetFindFocusedElementInfoResult
+ * @tc.desc: Test function SetFindFocusedElementInfoResult
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetFindFocusedElementInfoResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetFindFocusedElementInfoResult_001 start";
+    AccessibilityElementInfo info;
+    int32_t requestId = 0;
+    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
+        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
+    obj->SetFindFocusedElementInfoResult(info, requestId);
+    delete obj;
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetFindFocusedElementInfoResult_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetFocusMoveSearchResult_001
+ * @tc.name: SetFocusMoveSearchResult
+ * @tc.desc: Test function SetFocusMoveSearchResult
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetFocusMoveSearchResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetFocusMoveSearchResult_001 start";
+    AccessibilityElementInfo info;
+    int32_t requestId = 0;
+    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
+        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
+    obj->SetFocusMoveSearchResult(info, requestId);
+    delete obj;;
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetFocusMoveSearchResult_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetExecuteActionResult_001
+ * @tc.name: SetExecuteActionResult
+ * @tc.desc: Test function SetExecuteActionResult
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetExecuteActionResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetExecuteActionResult_001 start";
+    AccessibilityElementInfo info;
+    int32_t requestId = 0;
+    bool succeeded = true;
+    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
+        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
+    obj->SetExecuteActionResult(succeeded, requestId);
+    delete obj;;
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetExecuteActionResult_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetCursorPositionResult_001
+ * @tc.name: SetCursorPositionResult
+ * @tc.desc: Test function SetCursorPositionResult
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetCursorPositionResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetCursorPositionResult_001 start";
+    AccessibilityElementInfo info;
+    int32_t requestId = 0;
+    int32_t cursorPosition = 0;
+    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
+        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
+    obj->SetCursorPositionResult(cursorPosition, requestId);
+    delete obj;
+
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetCursorPositionResult_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetShortkeyMultiTarget_001
+ * @tc.name: SetShortkeyMultiTarget
+ * @tc.desc: Test function SetShortkeyMultiTarget
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortkeyMultiTarget_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetShortkeyMultiTarget_001 start";
+    std::vector<std::string> name;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetShortkeyMultiTarget_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_GetShortkeyMultiTarget_001
+ * @tc.name: GetShortkeyMultiTarget
+ * @tc.desc: Test function GetShortkeyMultiTarget
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetShortkeyMultiTarget_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_GetShortkeyMultiTarget_001 start";
+    std::vector<std::string> name;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyMultiTarget(name);
+    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_GetShortkeyMultiTarget_001 end";
+}
+
+/**OnShortKeyProcess
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_001
+ * @tc.name: OnShortKeyProcess
+ * @tc.desc: Test function OnShortKeyProcess
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnShortKeyProcess_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_001 start";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_001 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_002
  * @tc.name: SetMouseAutoClick
  * @tc.desc: Test function SetMouseAutoClick GetMouseAutoClick
@@ -2416,149 +2559,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterShortKeyEvent_002, Tes
     std::string deviceId = "false";
     aams.OnAddSystemAbility(WINDOW_MANAGER_SERVICE_ID, deviceId);
     GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_RegisterShortKeyEvent_002 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoByAccessibilityIdResult_001
- * @tc.name: SetSearchElementInfoByAccessibilityIdResult
- * @tc.desc: Test function SetSearchElementInfoByAccessibilityIdResult
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetSearchElementInfoByAccessibilityIdResult_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoByAccessibilityIdResult_001 start";
-    std::vector<AccessibilityElementInfo> infos;
-    int32_t requestId = 0;
-    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
-        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
-    obj->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
-    delete obj;
-    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoByAccessibilityIdResult_001 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoByTextResult_001
- * @tc.name: SetSearchElementInfoByTextResult
- * @tc.desc: Test function SetSearchElementInfoByTextResult
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetSearchElementInfoByTextResult_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoByTextResult_001 start";
-    std::vector<AccessibilityElementInfo> infos;
-    int32_t requestId = 0;
-    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
-        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
-    obj->SetSearchElementInfoByTextResult(infos, requestId);
-    delete obj;
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoByTextResult_001 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetFindFocusedElementInfoResult_001
- * @tc.name: SetFindFocusedElementInfoResult
- * @tc.desc: Test function SetFindFocusedElementInfoResult
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetFindFocusedElementInfoResult_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetFindFocusedElementInfoResult_001 start";
-    AccessibilityElementInfo info;
-    int32_t requestId = 0;
-    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
-        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
-    obj->SetFindFocusedElementInfoResult(info, requestId);
-    delete obj;
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetFindFocusedElementInfoResult_001 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetFocusMoveSearchResult_001
- * @tc.name: SetFocusMoveSearchResult
- * @tc.desc: Test function SetFocusMoveSearchResult
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetFocusMoveSearchResult_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetFocusMoveSearchResult_001 start";
-    AccessibilityElementInfo info;
-    int32_t requestId = 0;
-    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
-        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
-    obj->SetFocusMoveSearchResult(info, requestId);
-    delete obj;;
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetFocusMoveSearchResult_001 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetExecuteActionResult_001
- * @tc.name: SetExecuteActionResult
- * @tc.desc: Test function SetExecuteActionResult
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetExecuteActionResult_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetExecuteActionResult_001 start";
-    AccessibilityElementInfo info;
-    int32_t requestId = 0;
-    bool succeeded = true;
-    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
-        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
-    obj->SetExecuteActionResult(succeeded, requestId);
-    delete obj;;
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetExecuteActionResult_001 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetCursorPositionResult_001
- * @tc.name: SetCursorPositionResult
- * @tc.desc: Test function SetCursorPositionResult
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetCursorPositionResult_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetCursorPositionResult_001 start";
-    AccessibilityElementInfo info;
-    int32_t requestId = 0;
-    int32_t cursorPosition = 0;
-    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
-        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
-    obj->SetCursorPositionResult(cursorPosition, requestId);
-    delete obj;
-
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetCursorPositionResult_001 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetShortkeyMultiTarget_001
- * @tc.name: SetShortkeyMultiTarget
- * @tc.desc: Test function SetShortkeyMultiTarget
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortkeyMultiTarget_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetShortkeyMultiTarget_001 start";
-    std::vector<std::string> name;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_SetShortkeyMultiTarget_001 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_GetShortkeyMultiTarget_001
- * @tc.name: GetShortkeyMultiTarget
- * @tc.desc: Test function GetShortkeyMultiTarget
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetShortkeyMultiTarget_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_GetShortkeyMultiTarget_001 start";
-    std::vector<std::string> name;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyMultiTarget(name);
-    GTEST_LOG_(INFO) << "Accessible_Ability_ManagerService_UnitTest_GetShortkeyMultiTarget_001 end";
-}
-
-/**OnShortKeyProcess
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_001
- * @tc.name: OnShortKeyProcess
- * @tc.desc: Test function OnShortKeyProcess
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnShortKeyProcess_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_001 start";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_001 end";
 }
 
 /**

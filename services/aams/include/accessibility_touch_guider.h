@@ -146,6 +146,13 @@ public:
     bool OnPointerEvent(MMI::PointerEvent &event) override;
 
     /**
+     * @brief Handle pointer events from previous event stream node.
+     *
+     * @param event  the pointer event to be handled.
+     */
+    void HandlePointerEvent(MMI::PointerEvent &event);
+
+    /**
      * @brief Destroy event state.
      */
     void DestroyEvents() override;

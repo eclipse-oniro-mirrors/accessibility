@@ -122,8 +122,12 @@ int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
-            napi_value jsEvent;
+            napi_value jsEvent = nullptr;
             napi_create_object(callbackInfo->env_, &jsEvent);
+            if (jsEvent == nullptr) {
+                HILOG_ERROR("napi_create_object fail.");
+                return;
+            }
             napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &jsEvent);
 
             napi_value handler = nullptr;
@@ -161,8 +165,12 @@ int NAccessibilityConfigObserver::NotifyPropertyChanged(uv_work_t *work)
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
-            napi_value jsEvent;
+            napi_value jsEvent = nullptr;
             napi_create_object(callbackInfo->env_, &jsEvent);
+            if (jsEvent == nullptr) {
+                HILOG_ERROR("napi_create_object fail.");
+                return;
+            }
             ConvertCaptionPropertyToJS(callbackInfo->env_, jsEvent, callbackInfo->caption_);
 
             napi_value handler = nullptr;
@@ -200,7 +208,7 @@ int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
-            napi_value jsEvent;
+            napi_value jsEvent = nullptr;
             napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringValue_.c_str(),
                 callbackInfo->stringValue_.length(), &jsEvent);
             napi_value handler = nullptr;
@@ -240,7 +248,7 @@ int NAccessibilityConfigObserver::NotifyStringVectorChanged(uv_work_t *work)
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
-            napi_value jsEvent;
+            napi_value jsEvent = nullptr;
             napi_create_array(callbackInfo->env_, &jsEvent);
             ConvertStringVecToJS(callbackInfo->env_, jsEvent, callbackInfo->stringVector_);
 
@@ -284,7 +292,7 @@ int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
-            napi_value jsEvent;
+            napi_value jsEvent = nullptr;
             napi_create_int32(callbackInfo->env_, callbackInfo->int32Value_, &jsEvent);
 
             napi_value handler = nullptr;
@@ -325,7 +333,7 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
-            napi_value jsEvent;
+            napi_value jsEvent = nullptr;
             napi_create_uint32(callbackInfo->env_, callbackInfo->uint32Value_, &jsEvent);
 
             napi_value handler = nullptr;
@@ -366,7 +374,7 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
-            napi_value jsEvent;
+            napi_value jsEvent = nullptr;
             napi_create_double(callbackInfo->env_, double(callbackInfo->floatValue_), &jsEvent);
 
             napi_value handler = nullptr;

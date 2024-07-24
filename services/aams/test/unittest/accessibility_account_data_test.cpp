@@ -1833,20 +1833,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetScre
 }
 
 /**
- * @tc.number: AccessibilityAccountData_Unittest_GetDefaultUserScreenReaderState_001
- * @tc.name: GetDefaultUserScreenReaderState
- * @tc.desc: Check the GetDefaultUserScreenReaderState.
- */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetDefaultUserScreenReaderState_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetDefaultUserScreenReaderState_001 start";
-    const int32_t accountId = 1;
-    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    accountData->GetDefaultUserScreenReaderState();
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetDefaultUserScreenReaderState_001 end";
-}
-
-/**
  * @tc.number: AccessibilityAccountData_Unittest_GetAbilityAutoStartState_001
  * @tc.name: GetAbilityAutoStartState
  * @tc.desc: Check GetAbilityAutoStartState.

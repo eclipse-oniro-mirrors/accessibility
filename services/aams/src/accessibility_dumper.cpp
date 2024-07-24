@@ -183,7 +183,9 @@ void ConvertEventTypes(const uint32_t value, std::string &eventTypes)
         {EventType::TYPE_INTERRUPT_EVENT, "interrupt"},
         {EventType::TYPE_GESTURE_EVENT, "gesture"},
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility"},
-        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility"}};
+        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility"},
+        {EventType::TYPE_PAGE_OPEN, "pageOpen"},
+        {EventType::TYPE_PAGE_CLOSE, "pageClose"}};
 
     for (auto itr = accessibilityEventTable.begin(); itr != accessibilityEventTable.end(); ++itr) {
         if (value & itr->first) {
@@ -280,6 +282,7 @@ int AccessibilityDumper::DumpAccessibilityUserInfo(std::string& dumpInfo) const
     oss << "screenMagnification:  " << config->GetScreenMagnificationState() << std::endl;
     oss << "mouseKey:  " << config->GetMouseKeyState() << std::endl;
     oss << "shortKey:  " << config->GetShortKeyState() << std::endl;
+    oss << "shortKeyOnLockScreen:  " << config->GetShortKeyOnLockScreenState() << std::endl;
     oss << "animationOff:  " << config->GetAnimationOffState() << std::endl;
     oss << "invertColor:  " << config->GetInvertColorState() << std::endl;
     oss << "highContrastText:  " << config->GetHighContrastTextState() << std::endl;

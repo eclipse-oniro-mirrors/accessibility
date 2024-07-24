@@ -49,6 +49,8 @@ struct ConfigValueAtoHosUpdate {
     bool ignoreRepeatClickState = false;
     int ignoreRepeatClickTime = 0;
     int displayDaltonizer = 0;
+    bool shortcutEnabledOnLockScreen = false;
+    bool shortcutDialogShown = false;
 };
 
 class AccessibilityAccountData final : public RefBase {
@@ -249,6 +251,7 @@ public:
 
     void SetScreenReaderState(const std::string &name, const std::string &state);
     bool GetDefaultUserScreenReaderState();
+    AccountSA::OsAccountType GetAccountType();
 
     void Init();
 
@@ -257,7 +260,7 @@ public:
 
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
-    const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &GetConfigCallbacks() const;
+    const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &GetConfigCallbacks();
     void SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer);
 
     void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
@@ -307,8 +310,6 @@ private:
      */
     void UpdateMagnificationCapability();
 
-    AccountSA::OsAccountType GetAccountType();
-
     class AccessibilityAbility {
     public:
         AccessibilityAbility() = default;
@@ -348,6 +349,7 @@ private:
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
     std::vector<std::string> enabledAbilities_; // bundleName/abilityName
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> configCallbacks_;
+    std::mutex configCallbacksMutex_; // mutex for vector configCallbacks_
     std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
 };
 

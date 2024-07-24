@@ -25,7 +25,7 @@ napi_value NAccessibilityGesturePath::JSConstructor(napi_env env, napi_callback_
     HILOG_DEBUG();
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv[ARGS_SIZE_ONE] = {nullptr};
-    napi_valuetype valueType;
+    napi_valuetype valueType = napi_null;
     napi_value jsthis = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &jsthis, nullptr));
     if (argc != ARGS_SIZE_ONE) {
@@ -37,7 +37,7 @@ napi_value NAccessibilityGesturePath::JSConstructor(napi_env env, napi_callback_
         HILOG_ERROR("valueType %{public}d is not napi_number", valueType);
         return nullptr;
     }
-    napi_value points;
+    napi_value points = nullptr;
     NAPI_CALL(env, napi_create_array(env, &points));
     NAPI_CALL(env, napi_set_named_property(env, jsthis, "points", points));
     NAPI_CALL(env, napi_set_named_property(env, jsthis, "durationTime", argv[PARAM0]));

@@ -30,6 +30,8 @@ namespace {
     const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
+    const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
 }
 
 void AccessibilitySettings::RegisterSettingsHandler(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
@@ -67,7 +69,7 @@ RetError AccessibilitySettings::SetShortKeyState(const bool state)
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+    handler_->PostTask([this, &syncPromise, state]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
@@ -78,8 +80,8 @@ RetError AccessibilitySettings::SetShortKeyState(const bool state)
         RetError ret = accountData->GetConfig()->SetShortKeyState(state);
         syncPromise.set_value(ret);
         UpdateConfigState();
-        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
-        }), "TASK_SET_SHORTKEY_STATE");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
+        }, "TASK_SET_SHORTKEY_STATE");
     return syncFuture.get();
 }
 
@@ -109,7 +111,7 @@ RetError AccessibilitySettings::SetMouseAutoClick(const int32_t time)
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
+    handler_->PostTask([this, &syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
@@ -121,7 +123,7 @@ RetError AccessibilitySettings::SetMouseAutoClick(const int32_t time)
         syncPromise.set_value(ret);
         UpdateMouseAutoClick();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
-        }), "TASK_SET_MOUSE_AUTOCLICK");
+        }, "TASK_SET_MOUSE_AUTOCLICK");
     return syncFuture.get();
 }
 
@@ -136,7 +138,7 @@ RetError AccessibilitySettings::SetShortkeyTarget(const std::string &name)
     }
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
+    handler_->PostTask([this, &syncPromise, &name]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
@@ -147,7 +149,7 @@ RetError AccessibilitySettings::SetShortkeyTarget(const std::string &name)
         RetError ret = accountData->GetConfig()->SetShortkeyTarget(name);
         syncPromise.set_value(ret);
         UpdateShortkeyTarget();
-        }), "TASK_SET_SHORTKEY_TARGET");
+        }, "TASK_SET_SHORTKEY_TARGET");
     return syncFuture.get();
 }
 
@@ -162,7 +164,7 @@ RetError AccessibilitySettings::SetShortkeyMultiTarget(const std::vector<std::st
     }
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
+    handler_->PostTask([this, &syncPromise, &name]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
@@ -173,7 +175,7 @@ RetError AccessibilitySettings::SetShortkeyMultiTarget(const std::vector<std::st
         RetError ret = accountData->GetConfig()->SetShortkeyMultiTarget(name);
         syncPromise.set_value(ret);
         UpdateShortkeyMultiTarget();
-        }), "TASK_SET_SHORTKEY_MULTI_TARGET");
+        }, "TASK_SET_SHORTKEY_MULTI_TARGET");
     return syncFuture.get();
 }
 
@@ -277,7 +279,7 @@ RetError AccessibilitySettings::SetDaltonizationColorFilter(const uint32_t filte
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, filter]() -> void {
+    handler_->PostTask([this, &syncPromise, filter]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
@@ -288,7 +290,7 @@ RetError AccessibilitySettings::SetDaltonizationColorFilter(const uint32_t filte
         RetError ret = accountData->GetConfig()->SetDaltonizationColorFilter(filter);
         syncPromise.set_value(ret);
         UpdateDaltonizationColorFilter();
-        }), "TASK_SET_DALTONIZATION_COLORFILTER");
+        }, "TASK_SET_DALTONIZATION_COLORFILTER");
     return syncFuture.get();
 }
 
@@ -302,7 +304,7 @@ RetError AccessibilitySettings::SetContentTimeout(const uint32_t time)
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
+    handler_->PostTask([this, &syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
@@ -313,7 +315,7 @@ RetError AccessibilitySettings::SetContentTimeout(const uint32_t time)
         RetError ret = accountData->GetConfig()->SetContentTimeout(time);
         syncPromise.set_value(ret);
         UpdateContentTimeout();
-        }), "TASK_SET_CONTENT_TIMEOUT");
+        }, "TASK_SET_CONTENT_TIMEOUT");
     return syncFuture.get();
 }
 
@@ -333,7 +335,7 @@ RetError AccessibilitySettings::SetBrightnessDiscount(const float discount)
 #endif
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, discount]() -> void {
+    handler_->PostTask([this, &syncPromise, discount]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
@@ -344,7 +346,7 @@ RetError AccessibilitySettings::SetBrightnessDiscount(const float discount)
         RetError ret = accountData->GetConfig()->SetBrightnessDiscount(discount);
         syncPromise.set_value(ret);
         UpdateBrightnessDiscount();
-        }), "TASK_SET_BRIGHTNESS_DISCOUNT");
+        }, "TASK_SET_BRIGHTNESS_DISCOUNT");
     return syncFuture.get();
 }
 
@@ -360,7 +362,7 @@ RetError AccessibilitySettings::SetAudioBalance(const float balance)
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, balance]() -> void {
+    handler_->PostTask([this, &syncPromise, balance]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
@@ -371,7 +373,7 @@ RetError AccessibilitySettings::SetAudioBalance(const float balance)
         RetError ret = accountData->GetConfig()->SetAudioBalance(balance);
         syncPromise.set_value(ret);
         UpdateAudioBalance();
-        }), "TASK_SET_AUDIO_BALANCE");
+        }, "TASK_SET_AUDIO_BALANCE");
     return syncFuture.get();
 }
 
@@ -387,7 +389,7 @@ RetError AccessibilitySettings::SetClickResponseTime(const uint32_t time)
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
+    handler_->PostTask([this, &syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
@@ -399,7 +401,7 @@ RetError AccessibilitySettings::SetClickResponseTime(const uint32_t time)
         syncPromise.set_value(ret);
         UpdateClickResponseTime();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
-        }), "TASK_SET_CLICK_RESPONSE_TIME");
+        }, "TASK_SET_CLICK_RESPONSE_TIME");
     return syncFuture.get();
 }
 
@@ -415,7 +417,7 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickState(const bool state)
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+    handler_->PostTask([this, &syncPromise, state]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
@@ -427,7 +429,7 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickState(const bool state)
         syncPromise.set_value(ret);
         UpdateConfigState();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
-        }), "TASK_SET_IGNORE_REPEAT_CLICK_STATE");
+        }, "TASK_SET_IGNORE_REPEAT_CLICK_STATE");
     return syncFuture.get();
 }
 
@@ -443,7 +445,7 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickTime(const uint32_t time)
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
+    handler_->PostTask([this, &syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
@@ -455,7 +457,7 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickTime(const uint32_t time)
         syncPromise.set_value(ret);
         UpdateIgnoreRepeatClickTime();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
-        }), "TASK_SET_IGNORE_REPEAT_CLICK_TIME");
+        }, "TASK_SET_IGNORE_REPEAT_CLICK_TIME");
     return syncFuture.get();
 }
 
@@ -478,6 +480,9 @@ void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpd
     }
     if (atoHosValue.ignoreRepeatClickState) {
         accountData->GetConfig()->SetIgnoreRepeatClickState(atoHosValue.ignoreRepeatClickState);
+    }
+    if (atoHosValue.shortcutEnabledOnLockScreen) {
+        accountData->GetConfig()->SetShortKeyOnLockScreenState(atoHosValue.shortcutEnabledOnLockScreen);
     }
     UpdateConfigState();
 }
@@ -515,6 +520,11 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
         accountData->GetConfig()->SetDaltonizationColorFilter(static_cast<uint32_t>(atoHosValue.displayDaltonizer));
         UpdateDaltonizationColorFilter();
     }
+    if (atoHosValue.shortcutDialogShown) {
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+    } else {
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
+    }
     
     if (atoHosValue.isScreenReaderEnabled) {
         uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
@@ -535,7 +545,7 @@ RetError AccessibilitySettings::GetScreenMagnificationState(bool &state)
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+    handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -546,7 +556,7 @@ RetError AccessibilitySettings::GetScreenMagnificationState(bool &state)
         }
         state = accountData->GetConfig()->GetScreenMagnificationState();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_SCREENMAGNIFIER_STATE");
+        }, "TASK_GET_SCREENMAGNIFIER_STATE");
     return syncFuture.get();
 }
 
@@ -560,7 +570,7 @@ RetError AccessibilitySettings::GetShortKeyState(bool &state)
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+    handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -571,7 +581,7 @@ RetError AccessibilitySettings::GetShortKeyState(bool &state)
         }
         state = accountData->GetConfig()->GetShortKeyState();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_SHORTKEY_STATE");
+        }, "TASK_GET_SHORTKEY_STATE");
     return syncFuture.get();
 }
 
@@ -585,7 +595,7 @@ RetError AccessibilitySettings::GetMouseKeyState(bool &state)
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+    handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -596,7 +606,7 @@ RetError AccessibilitySettings::GetMouseKeyState(bool &state)
         }
         state = accountData->GetConfig()->GetMouseKeyState();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_MOUSEKEY_STATE");
+        }, "TASK_GET_MOUSEKEY_STATE");
     return syncFuture.get();
 }
 
@@ -605,7 +615,7 @@ RetError AccessibilitySettings::GetMouseAutoClick(int32_t &time)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &time]() -> void {
+    handler_->PostTask([this, &syncPromise, &time]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -616,7 +626,7 @@ RetError AccessibilitySettings::GetMouseAutoClick(int32_t &time)
         }
         time = accountData->GetConfig()->GetMouseAutoClick();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_MOUSE_AUTOCLICK");
+        }, "TASK_GET_MOUSE_AUTOCLICK");
 
     return syncFuture.get();
 }
@@ -626,7 +636,7 @@ RetError AccessibilitySettings::GetShortkeyTarget(std::string &name)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
+    handler_->PostTask([this, &syncPromise, &name]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -637,7 +647,7 @@ RetError AccessibilitySettings::GetShortkeyTarget(std::string &name)
         }
         name = accountData->GetConfig()->GetShortkeyTarget();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_SHORTKEY_TARGET");
+        }, "TASK_GET_SHORTKEY_TARGET");
 
     return syncFuture.get();
 }
@@ -647,7 +657,7 @@ RetError AccessibilitySettings::GetShortkeyMultiTarget(std::vector<std::string> 
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
+    handler_->PostTask([this, &syncPromise, &name]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -658,7 +668,7 @@ RetError AccessibilitySettings::GetShortkeyMultiTarget(std::vector<std::string> 
         }
         name = accountData->GetConfig()->GetShortkeyMultiTarget();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_SHORTKEY_MULTI_TARGET");
+        }, "TASK_GET_SHORTKEY_MULTI_TARGET");
 
     return syncFuture.get();
 }
@@ -668,7 +678,7 @@ RetError AccessibilitySettings::GetHighContrastTextState(bool &state)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+    handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -679,7 +689,7 @@ RetError AccessibilitySettings::GetHighContrastTextState(bool &state)
         }
         state = accountData->GetConfig()->GetHighContrastTextState();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_HIGHCONTRASTTEXT_STATE");
+        }, "TASK_GET_HIGHCONTRASTTEXT_STATE");
 
     return syncFuture.get();
 }
@@ -689,7 +699,7 @@ RetError AccessibilitySettings::GetDaltonizationState(bool &state)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+    handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -700,7 +710,7 @@ RetError AccessibilitySettings::GetDaltonizationState(bool &state)
         }
         state = accountData->GetConfig()->GetDaltonizationState();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_DALTONIZATIONSTATE_STATE");
+        }, "TASK_GET_DALTONIZATIONSTATE_STATE");
 
     return syncFuture.get();
 }
@@ -710,7 +720,7 @@ RetError AccessibilitySettings::GetInvertColorState(bool &state)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+    handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -721,7 +731,7 @@ RetError AccessibilitySettings::GetInvertColorState(bool &state)
         }
         state = accountData->GetConfig()->GetInvertColorState();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_INVERTCOLOR_STATE");
+        }, "TASK_GET_INVERTCOLOR_STATE");
 
     return syncFuture.get();
 }
@@ -731,7 +741,7 @@ RetError AccessibilitySettings::GetAnimationOffState(bool &state)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+    handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -742,7 +752,7 @@ RetError AccessibilitySettings::GetAnimationOffState(bool &state)
         }
         state = accountData->GetConfig()->GetAnimationOffState();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_ANIMATIONOFF_STATE");
+        }, "TASK_GET_ANIMATIONOFF_STATE");
 
     return syncFuture.get();
 }
@@ -752,7 +762,7 @@ RetError AccessibilitySettings::GetAudioMonoState(bool &state)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+    handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -763,7 +773,7 @@ RetError AccessibilitySettings::GetAudioMonoState(bool &state)
         }
         state = accountData->GetConfig()->GetAudioMonoState();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_AUDIOMONO_STATE");
+        }, "TASK_GET_AUDIOMONO_STATE");
 
     return syncFuture.get();
 }
@@ -773,7 +783,7 @@ RetError AccessibilitySettings::GetDaltonizationColorFilter(uint32_t &type)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &type]() -> void {
+    handler_->PostTask([this, &syncPromise, &type]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -784,7 +794,7 @@ RetError AccessibilitySettings::GetDaltonizationColorFilter(uint32_t &type)
         }
         type = accountData->GetConfig()->GetDaltonizationColorFilter();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_DALTONIZATION_COLORFILTER");
+        }, "TASK_GET_DALTONIZATION_COLORFILTER");
 
     return syncFuture.get();
 }
@@ -794,7 +804,7 @@ RetError AccessibilitySettings::GetContentTimeout(uint32_t &timer)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &timer]() -> void {
+    handler_->PostTask([this, &syncPromise, &timer]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -805,7 +815,7 @@ RetError AccessibilitySettings::GetContentTimeout(uint32_t &timer)
         }
         timer = accountData->GetConfig()->GetContentTimeout();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_CONTENT_TIMEOUT");
+        }, "TASK_GET_CONTENT_TIMEOUT");
 
     return syncFuture.get();
 }
@@ -815,7 +825,7 @@ RetError AccessibilitySettings::GetBrightnessDiscount(float &brightness)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &brightness]() -> void {
+    handler_->PostTask([this, &syncPromise, &brightness]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -826,7 +836,7 @@ RetError AccessibilitySettings::GetBrightnessDiscount(float &brightness)
         }
         brightness = accountData->GetConfig()->GetBrightnessDiscount();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_BRIGHTNESS_DISCOUNT");
+        }, "TASK_GET_BRIGHTNESS_DISCOUNT");
 
     return syncFuture.get();
 }
@@ -836,7 +846,7 @@ RetError AccessibilitySettings::GetAudioBalance(float &balance)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &balance]() -> void {
+    handler_->PostTask([this, &syncPromise, &balance]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -847,7 +857,7 @@ RetError AccessibilitySettings::GetAudioBalance(float &balance)
         }
         balance = accountData->GetConfig()->GetAudioBalance();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_AUDIO_BALANCE");
+        }, "TASK_GET_AUDIO_BALANCE");
 
     return syncFuture.get();
 }
@@ -857,7 +867,7 @@ RetError AccessibilitySettings::GetClickResponseTime(uint32_t &time)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &time]() -> void {
+    handler_->PostTask([this, &syncPromise, &time]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -868,7 +878,7 @@ RetError AccessibilitySettings::GetClickResponseTime(uint32_t &time)
         }
         time = accountData->GetConfig()->GetClickResponseTime();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_CLICK_RESPONSE_TIME");
+        }, "TASK_GET_CLICK_RESPONSE_TIME");
 
     return syncFuture.get();
 }
@@ -878,7 +888,7 @@ RetError AccessibilitySettings::GetIgnoreRepeatClickState(bool &state)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+    handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -889,7 +899,7 @@ RetError AccessibilitySettings::GetIgnoreRepeatClickState(bool &state)
         }
         state = accountData->GetConfig()->GetIgnoreRepeatClickState();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_IGNORE_REPEAT_CLICK_STATE");
+        }, "TASK_GET_IGNORE_REPEAT_CLICK_STATE");
 
     return syncFuture.get();
 }
@@ -899,7 +909,7 @@ RetError AccessibilitySettings::GetIgnoreRepeatClickTime(uint32_t &time)
     HILOG_DEBUG();
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &time]() -> void {
+    handler_->PostTask([this, &syncPromise, &time]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -910,14 +920,14 @@ RetError AccessibilitySettings::GetIgnoreRepeatClickTime(uint32_t &time)
         }
         time = accountData->GetConfig()->GetIgnoreRepeatClickTime();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_IGNORE_REPEAT_CLICK_TIME");
+        }, "TASK_GET_IGNORE_REPEAT_CLICK_TIME");
 
     return syncFuture.get();
 }
 
 void AccessibilitySettings::UpdateConfigState()
 {
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         HILOG_INFO("UpdateConfigState.");
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -932,12 +942,12 @@ void AccessibilitySettings::UpdateConfigState()
                 callback->OnConfigStateChanged(state);
             }
         }
-        }), "UpdateConfigState");
+        }, "UpdateConfigState");
 }
 
 void AccessibilitySettings::UpdateAudioBalance()
 {
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         HILOG_INFO("UpdateAudioBalance.");
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -952,12 +962,12 @@ void AccessibilitySettings::UpdateAudioBalance()
                 callback->OnAudioBalanceChanged(audioBalance);
             }
         }
-        }), "UpdateAudioBalance");
+        }, "UpdateAudioBalance");
 }
 
 void AccessibilitySettings::UpdateBrightnessDiscount()
 {
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         HILOG_INFO("UpdateBrightnessDiscount.");
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -972,12 +982,12 @@ void AccessibilitySettings::UpdateBrightnessDiscount()
                 callback->OnBrightnessDiscountChanged(brightnessDiscount);
             }
         }
-        }), "UpdateBrightnessDiscount");
+        }, "UpdateBrightnessDiscount");
 }
 
 void AccessibilitySettings::UpdateContentTimeout()
 {
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         HILOG_INFO("UpdateContentTimeout.");
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -992,12 +1002,12 @@ void AccessibilitySettings::UpdateContentTimeout()
                 callback->OnContentTimeoutChanged(contentTimeout);
             }
         }
-        }), "UpdateContentTimeout");
+        }, "UpdateContentTimeout");
 }
 
 void AccessibilitySettings::UpdateDaltonizationColorFilter()
 {
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         HILOG_INFO("UpdateDaltonizationColorFilter.");
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -1012,12 +1022,12 @@ void AccessibilitySettings::UpdateDaltonizationColorFilter()
                 callback->OnDaltonizationColorFilterChanged(daltonizationColorFilter);
             }
         }
-        }), "UpdateDaltonizationColorFilter");
+        }, "UpdateDaltonizationColorFilter");
 }
 
 void AccessibilitySettings::UpdateMouseAutoClick()
 {
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         HILOG_INFO("UpdateMouseAutoClick.");
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -1032,12 +1042,12 @@ void AccessibilitySettings::UpdateMouseAutoClick()
                 callback->OnMouseAutoClickChanged(mouseAutoClick);
             }
         }
-        }), "UpdateMouseAutoClick");
+        }, "UpdateMouseAutoClick");
 }
 
 void AccessibilitySettings::UpdateShortkeyTarget()
 {
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         HILOG_INFO("UpdateShortkeyTarget.");
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -1052,12 +1062,12 @@ void AccessibilitySettings::UpdateShortkeyTarget()
                 callback->OnShortkeyTargetChanged(shortkeyTarget);
             }
         }
-        }), "UpdateShortkeyTarget");
+        }, "UpdateShortkeyTarget");
 }
 
 void AccessibilitySettings::UpdateShortkeyMultiTarget()
 {
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         HILOG_INFO("UpdateShortkeyMultiTarget.");
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -1072,12 +1082,12 @@ void AccessibilitySettings::UpdateShortkeyMultiTarget()
                 callback->OnShortkeyMultiTargetChanged(shortkeyMultiTarget);
             }
         }
-        }), "UpdateShortkeyMultiTarget");
+        }, "UpdateShortkeyMultiTarget");
 }
 
 void AccessibilitySettings::UpdateClickResponseTime()
 {
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         HILOG_INFO("UpdateClickResponseTime.");
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -1092,12 +1102,12 @@ void AccessibilitySettings::UpdateClickResponseTime()
                 callback->OnClickResponseTimeChanged(time);
             }
         }
-        }), "UpdateClickResponseTime");
+        }, "UpdateClickResponseTime");
 }
 
 void AccessibilitySettings::UpdateIgnoreRepeatClickTime()
 {
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         HILOG_INFO("UpdateIgnoreRepeatClickTime.");
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -1112,7 +1122,7 @@ void AccessibilitySettings::UpdateIgnoreRepeatClickTime()
                 callback->OnIgnoreRepeatClickTimeChanged(time);
             }
         }
-        }), "UpdateIgnoreRepeatClickTime");
+        }, "UpdateIgnoreRepeatClickTime");
 }
 
 RetError AccessibilitySettings::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
@@ -1125,7 +1135,7 @@ RetError AccessibilitySettings::GetCaptionProperty(AccessibilityConfig::CaptionP
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &caption]() -> void {
+    handler_->PostTask([this, &syncPromise, &caption]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -1136,7 +1146,7 @@ RetError AccessibilitySettings::GetCaptionProperty(AccessibilityConfig::CaptionP
         }
         caption = accountData->GetConfig()->GetCaptionProperty();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_CAPTION_PROPERTY");
+        }, "TASK_GET_CAPTION_PROPERTY");
     return syncFuture.get();
 }
 
@@ -1150,7 +1160,7 @@ RetError AccessibilitySettings::SetCaptionProperty(const AccessibilityConfig::Ca
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &caption]() -> void {
+    handler_->PostTask([this, &syncPromise, &caption]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -1162,7 +1172,7 @@ RetError AccessibilitySettings::SetCaptionProperty(const AccessibilityConfig::Ca
         RetError ret = accountData->GetConfig()->SetCaptionProperty(caption);
         syncPromise.set_value(ret);
         UpdateCaptionProperty();
-        }), "TASK_SET_CAPTION_PROPERTY");
+        }, "TASK_SET_CAPTION_PROPERTY");
     return syncFuture.get();
 }
 
@@ -1190,7 +1200,7 @@ RetError AccessibilitySettings::GetCaptionState(bool &state)
 
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+    handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -1201,13 +1211,13 @@ RetError AccessibilitySettings::GetCaptionState(bool &state)
         }
         state = accountData->GetConfig()->GetCaptionState();
         syncPromise.set_value(RET_OK);
-        }), "TASK_GET_CAPTION_STATE");
+        }, "TASK_GET_CAPTION_STATE");
     return syncFuture.get();
 }
 
 void AccessibilitySettings::UpdateCaptionProperty()
 {
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         HILOG_DEBUG("UpdateCaptionProperty.");
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -1222,7 +1232,7 @@ void AccessibilitySettings::UpdateCaptionProperty()
                 callback->OnPropertyChanged(caption);
             }
         }
-        }), "UpdateCaptionProperty");
+        }, "UpdateCaptionProperty");
 }
 
 void AccessibilitySettings::UpdateAllSetting()
@@ -1232,7 +1242,7 @@ void AccessibilitySettings::UpdateAllSetting()
         HILOG_ERROR("UpdateAllSetting: handler is nullptr!");
         return;
     }
-    handler_->PostTask(std::bind([this]() -> void {
+    handler_->PostTask([this]() {
         UpdateConfigState();
         UpdateShortkeyTarget();
         UpdateShortkeyMultiTarget();
@@ -1243,7 +1253,7 @@ void AccessibilitySettings::UpdateAllSetting()
         UpdateAudioBalance();
         UpdateClickResponseTime();
         UpdateIgnoreRepeatClickTime();
-        }), "UPDATE_ALL_SETTING");
+        }, "UPDATE_ALL_SETTING");
 }
 } // namespace Accessibility
 } // namespace OHOS

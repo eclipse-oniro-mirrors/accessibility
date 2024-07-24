@@ -95,6 +95,13 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         EventTransmission::OnPointerEvent(event);
         return false;
     }
+
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN ||
+        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) {
+        HILOG_INFO("PointerAction:%{public}d, PointerId:%{public}d.", event.GetPointerAction(),
+            event.GetPointerId());
+    }
+
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_CANCEL) {
         if ((static_cast<TouchGuideState>(currentState_) == TouchGuideState::DRAGGING) &&
             event.GetPointerId() == currentPid_) {
@@ -102,6 +109,8 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         } else if (static_cast<TouchGuideState>(currentState_) != TouchGuideState::DRAGGING) {
             Clear(event);
         }
+        event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_CANCEL);
+        EventTransmission::OnPointerEvent(event);
         return true;
     }
     RecordReceivedEvent(event);
@@ -109,11 +118,26 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         gestureRecognizer_.OnPointerEvent(event)) {
         return true;
     }
+    if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
+        HILOG_DEBUG("recognize doubleTap and longpress");
+        if (doubleTapLongPressDownEvent_ != nullptr) {
+            SendEventToMultimodal(*doubleTapLongPressDownEvent_, NO_CHANGE);
+            doubleTapLongPressDownEvent_ = nullptr;
+        }
+        SendEventToMultimodal(event, NO_CHANGE);
+        return true;
+    }
 
     if (multiFingerGestureRecognizer_.OnPointerEvent(event)) {
         return true;
     }
 
+    HandlePointerEvent(event);
+    return true;
+}
+
+void TouchGuider::HandlePointerEvent(MMI::PointerEvent &event)
+{
     switch (static_cast<TouchGuideState>(currentState_)) {
         case TouchGuideState::TOUCH_GUIDING:
             if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN &&
@@ -135,7 +159,6 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         default:
             break;
     }
-    return true;
 }
 
 void TouchGuider::DestroyEvents()
@@ -201,6 +224,11 @@ void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action
             return;
         }
         OffsetEvent(event);
+        if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
+            event.GetPointerIds().size() == POINTER_COUNT_1) {
+            HILOG_INFO("doubleTap and longpress end");
+            Clear(event);
+        }
     }
 
     switch (action) {
@@ -260,7 +288,7 @@ std::shared_ptr<MMI::PointerEvent> TouchGuider::getLastReceivedEvent()
 
 bool TouchGuider::TouchGuideListener::OnDoubleTap(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     if (server_.currentState_ != static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING)) {
         return false;
@@ -322,7 +350,7 @@ bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
 
 void TouchGuider::TouchGuideListener::MultiFingerGestureOnCompleted(GestureType gestureId)
 {
-    HILOG_DEBUG("gestureId is %{public}d", gestureId);
+    HILOG_INFO("gestureId is %{public}d", gestureId);
 
     server_.OnTouchInteractionEnd();
     server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
@@ -423,6 +451,8 @@ void TouchGuider::HandleTouchGuidingState(MMI::PointerEvent &event)
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
             if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 HandleTouchGuidingStateInnerDown(event);
+            } else if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
+                SendEventToMultimodal(event, NO_CHANGE);
             } else {
                 CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
                 CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
@@ -756,7 +786,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
     int32_t pointCount = pIds.size();
     if (pointCount == POINTER_COUNT_1) {
         HILOG_DEBUG("Only two pointers can be received in the dragging state");
-    } else if (pointCount == POINTER_COUNT_2 && IsDragGestureAccept(event)) {
+    } else if (pointCount == POINTER_COUNT_2) {
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
         // Get densityPixels from WMS
         AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
