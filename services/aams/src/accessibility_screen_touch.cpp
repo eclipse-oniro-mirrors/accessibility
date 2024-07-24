@@ -247,7 +247,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
     }
 
     drawCircleThread_ = nullptr;
-    drawCircleThread_ = std::make_shared<std::thread>(&AccessibilityScreenTouch::DrawCircleProgress, this);
+    drawCircleThread_ = std::make_shared<std::thread>([this] {this->DrawCircleProgress();});
     if (drawCircleThread_ == nullptr) {
         HILOG_ERROR("create draw circle progress fail");
     }

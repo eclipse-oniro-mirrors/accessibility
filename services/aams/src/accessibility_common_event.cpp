@@ -45,7 +45,12 @@ AccessibilityCommonEvent::AccessibilityCommonEvent()
 
     for (auto it = handleEventFunc_.begin(); it != handleEventFunc_.end(); ++it) {
         HILOG_DEBUG("Add event: %{public}s", it->first.c_str());
-        eventHandles_.emplace(it->first, std::bind(it->second, this, std::placeholders::_1));
+        eventHandles_.emplace(it->first, [this, it](const OHOS::EventFwk::CommonEventData &eventId) {
+            auto requestFunc = it->second;
+            if (requestFunc != nullptr) {
+                (this->*requestFunc)(eventId);
+            }
+        });
     }
 }
 
@@ -108,7 +113,7 @@ void AccessibilityCommonEvent::OnReceiveEvent(const EventFwk::CommonEventData &d
         HILOG_ERROR("eventHandler_ is nullptr.");
         return;
     }
-    eventHandler_->PostTask(std::bind([this, data]() -> void {
+    eventHandler_->PostTask([this, data]() {
         HILOG_DEBUG();
         std::string action = data.GetWant().GetAction();
         HILOG_INFO("Handle event:[%{public}s] eventHandles size[%{public}zu]", action.c_str(), eventHandles_.size());
@@ -118,7 +123,7 @@ void AccessibilityCommonEvent::OnReceiveEvent(const EventFwk::CommonEventData &d
             return;
         }
         it->second(data);
-        }), "TASK_ON_RECEIVE_EVENT");
+        }, "TASK_ON_RECEIVE_EVENT");
 }
 
 void AccessibilityCommonEvent::HandleUserAdded(const EventFwk::CommonEventData &data) const

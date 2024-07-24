@@ -19,11 +19,35 @@
 #include "hilog_wrapper.h"
 #include "parcel_util.h"
 
+#define SWITCH_BEGIN(code) switch (code) {
+#define SWITCH_CASE(case_code, func) case case_code:\
+    {\
+        result_code = func(data, reply);\
+        break;\
+    }
+
+#define SWITCH_END() default:\
+    {\
+        result_code = ERR_CODE_DEFAULT;\
+        HILOG_WARN("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, default case, need check.");\
+        break;\
+    }\
+}
+
+#define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_STUB_CASES() \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID, HandleSetSearchElementInfoByAccessibilityIdResult)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_TEXT, HandleSetSearchElementInfoByTextResult)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUSED_INFO, HandleSetFindFocusedElementInfoResult)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE, HandleSetFocusMoveSearchResult)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION, HandleSetExecuteActionResult)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_CURSOR_RESULT, HandleSetCursorPositionResult)\
+
 namespace OHOS {
 namespace Accessibility {
 
 constexpr int32_t SINGLE_TRANSMIT = -2;
 constexpr int32_t MULTI_TRANSMIT_FINISH = -1;
+constexpr int32_t ERR_CODE_DEFAULT = -1000;
 
 void StoreElementData::WriteData(std::vector<AccessibilityElementInfo> &infos)
 {
@@ -93,14 +117,15 @@ int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, Mes
         return ERR_INVALID_STATE;
     }
 
-    auto memFunc = memberFuncMap_.find(code);
-    if (memFunc != memberFuncMap_.end()) {
-        auto func = memFunc->second;
-        if (func != nullptr) {
-            return (this->*func)(data, reply);
-        }
+    ErrCode result_code = ERR_NONE;
+    SWITCH_BEGIN(code)
+    ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_STUB_CASES()
+    SWITCH_END()
+
+    if (result_code != ERR_CODE_DEFAULT) {
+        return result_code;
     }
-    HILOG_WARN("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, default case, need check.");
+
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
