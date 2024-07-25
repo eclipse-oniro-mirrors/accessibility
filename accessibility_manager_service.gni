@@ -33,8 +33,8 @@ declare_args() {
   }
 
   if (defined(global_parts_info) &&
-  !defined(global_parts_info.distributeddatamgr_data_share)) {
-      distributeddatamgr_data_share = false
+      !defined(global_parts_info.distributeddatamgr_data_share)) {
+    distributeddatamgr_data_share = false
   }
 }
 
@@ -60,5 +60,5 @@ if (accessibility_use_rosen_drawing) {
 }
 
 if (accessibility_feature_data_share) {
-    accessibility_default_defines += [ "OHOS_BUILD_ENABLE_DATA_SHARE" ]
+  accessibility_default_defines += [ "OHOS_BUILD_ENABLE_DATA_SHARE" ]
 }
