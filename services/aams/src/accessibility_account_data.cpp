@@ -142,12 +142,14 @@ void AccessibilityAccountData::AddCaptionPropertyCallback(
     const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(captionPropertyCallbacksMutex_);
     captionPropertyCallbacks_.push_back(callback);
 }
 
 void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteObject>& callback)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(captionPropertyCallbacksMutex_);
     for (auto itr = captionPropertyCallbacks_.begin(); itr != captionPropertyCallbacks_.end(); itr++) {
         if ((*itr)->AsObject() == callback) {
             captionPropertyCallbacks_.erase(itr);
@@ -160,6 +162,7 @@ void AccessibilityAccountData::AddEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver>& observer)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(enableAbilityListObserversMutex_);
     if (std::any_of(enableAbilityListsObservers_.begin(), enableAbilityListsObservers_.end(),
         [observer](const sptr<IAccessibilityEnableAbilityListsObserver> &listObserver) {
             return listObserver == observer;
@@ -174,6 +177,7 @@ void AccessibilityAccountData::AddEnableAbilityListsObserver(
 void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemoteObject>& observer)
 {
     HILOG_INFO();
+    std::lock_guard<std::mutex> lock(enableAbilityListObserversMutex_);
     for (auto itr = enableAbilityListsObservers_.begin(); itr != enableAbilityListsObservers_.end(); itr++) {
         if ((*itr)->AsObject() == observer) {
             HILOG_DEBUG("erase observer");
@@ -186,6 +190,7 @@ void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemo
 
 void AccessibilityAccountData::UpdateEnableAbilityListsState()
 {
+    std::lock_guard<std::mutex> lock(enableAbilityListObserversMutex_);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
     for (auto &observer : enableAbilityListsObservers_) {
         if (observer) {
@@ -196,6 +201,7 @@ void AccessibilityAccountData::UpdateEnableAbilityListsState()
 
 void AccessibilityAccountData::UpdateInstallAbilityListsState()
 {
+    std::lock_guard<std::mutex> lock(enableAbilityListObserversMutex_);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
     for (auto &observer : enableAbilityListsObservers_) {
         if (observer) {
@@ -342,7 +348,9 @@ const std::map<int32_t, sptr<AccessibilityWindowConnection>> AccessibilityAccoun
 const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallbacks()
 {
     HILOG_DEBUG("GetCaptionPropertyCallbacks start.");
-    return captionPropertyCallbacks_;
+    std::lock_guard<std::mutex> lock(captionPropertyCallbacksMutex_);
+    CaptionPropertyCallbacks rtnVec = captionPropertyCallbacks_;
+    return rtnVec;
 }
 
 sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbility(const std::string &uri)
