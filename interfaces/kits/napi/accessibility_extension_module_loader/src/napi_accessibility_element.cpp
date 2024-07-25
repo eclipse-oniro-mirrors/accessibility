@@ -610,10 +610,6 @@ void NAccessibilityElement::GetExtraElementInfo(NAccessibilityElementData *callb
     HILOG_DEBUG("GetExtraElementInfo: size is extraElementValueInt : [%{public}zu]",
         mapValIsInt.size());
 
-    if (mapValIsStr.empty() && mapValIsInt.empty()) {
-        HILOG_ERROR("extraElement map is null");
-        return;
-    }
     auto iter = mapValIsStr.find(keyStr);
     if (iter != mapValIsStr.end()) {
         NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
@@ -1266,23 +1262,33 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     napi_env env = callbackInfo->env_;
     napi_value checkBox = nullptr;
     GetElementInfoCheckboxGroup(callbackInfo, checkBox);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "checkBox", checkBox));
+    if (checkBox != nullptr) {
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "checkboxGroupSelectedStatus", checkBox));
+    }
 
     napi_value row = nullptr;
     GetElementInfoRow(callbackInfo, row);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "row", row));
+    if (row != nullptr) {
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "checkboxGroupSelectedStatus", checkBox));
+    }
 
     napi_value column = nullptr;
     GetElementInfoColumn(callbackInfo, column);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "column", column));
+    if (column != nullptr) {
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "checkboxGroupSelectedStatus", checkBox));
+    }
 
     napi_value sideBarContainer = nullptr;
     GetElementInfoSideBarContainer(callbackInfo, sideBarContainer);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "sideBarContainer", sideBarContainer));
+    if (sideBarContainer != nullptr) {
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "checkboxGroupSelectedStatus", checkBox));
+    }
 
     napi_value listItemIndex = nullptr;
     GetElementInfoListItemIndex(callbackInfo, listItemIndex);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "listItemIndex", listItemIndex));
+    if (listItemIndex != nullptr) {
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "checkboxGroupSelectedStatus", checkBox));
+    }
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
