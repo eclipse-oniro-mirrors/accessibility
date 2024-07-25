@@ -1373,5 +1373,83 @@ HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityLevel_001, TestSize.Level
     EXPECT_STREQ(elementInfo_->GetAccessibilityLevel().c_str(), "test");
     GTEST_LOG_(INFO) << "SetAccessibilityLevel_001 end";
 }
+
+/**
+ * @tc.number: SetZIndex_001
+ * @tc.name: SetZIndex
+ * @tc.desc: Test function SetZIndex, GetZIndex
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetZIndex_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetZIndex_001 start";
+    elementInfo_->SetZIndex(1);
+    EXPECT_EQ(elementInfo_->GetZIndex(), 1);
+    GTEST_LOG_(INFO) << "SetZIndex_001 end";
+}
+
+/**
+ * @tc.number: SetOpacity_001
+ * @tc.name: SetOpacity
+ * @tc.desc: Test function SetOpacity, GetOpacity
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetOpacity_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetOpacity_001 start";
+    elementInfo_->SetOpacity(0.5f);
+    EXPECT_FLOAT_EQ(elementInfo_->GetOpacity(), 0.5f);
+    GTEST_LOG_(INFO) << "SetOpacity_001 end";
+}
+
+/**
+ * @tc.number: SetBackgroundColor_001
+ * @tc.name: SetBackgroundColor
+ * @tc.desc: Test function SetBackgroundColor, GetBackgroundColor
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetBackgroundColor_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetBackgroundColor_001 start";
+    elementInfo_->SetBackgroundColor("test");
+    EXPECT_STREQ(elementInfo_->GetBackgroundColor().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetBackgroundColor_001 end";
+}
+
+/**
+ * @tc.number: SetBackgroundImage_001
+ * @tc.name: SetBackgroundImage
+ * @tc.desc: Test function SetBackgroundImage, GetBackgroundImage
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetBackgroundImage_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetBackgroundImage_001 start";
+    elementInfo_->SetBackgroundImage("test");
+    EXPECT_STREQ(elementInfo_->GetBackgroundImage().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetBackgroundImage_001 end";
+}
+
+/**
+ * @tc.number: SetBlur_001
+ * @tc.name: SetBlur
+ * @tc.desc: Test function SetBlur, GetBlur
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetBlur_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetBlur_001 start";
+    elementInfo_->SetBlur("test");
+    EXPECT_STREQ(elementInfo_->GetBlur().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetBlur_001 end";
+}
+
+/**
+ * @tc.number: SetHitTestBehavior_001
+ * @tc.name: SetHitTestBehavior
+ * @tc.desc: Test function SetHitTestBehavior, GetHitTestBehavior
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetHitTestBehavior_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetHitTestBehavior_001 start";
+    elementInfo_->SetHitTestBehavior("test");
+    EXPECT_STREQ(elementInfo_->GetHitTestBehavior().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetHitTestBehavior_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
