@@ -22,6 +22,7 @@ import type {
   FocusType as _FocusType,
   WindowType as _WindowType,
   Rect as _Rect,
+  Span as _Span,
 } from './application/AccessibilityExtensionContext';
 import type * as _AccessibilityExtensionContext from './application/AccessibilityExtensionContext';
 
@@ -82,6 +83,14 @@ export type WindowType = _WindowType;
  * @since 10
  */
 export type Rect = _Rect;
+
+/**
+ * Indicates rectangle.
+ *
+ * @syscap SystemCapability.BarrierFree.Accessibility.Core
+ * @since 12
+ */
+export type Span = _Span;
 
 /**
  * The accessibility extension context. Used to configure, query information, and inject gestures.

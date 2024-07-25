@@ -790,6 +790,13 @@ type ElementAttributeValues = {
    * @since 9
    */
   'rect': Rect;
+    /**
+   * Indicates the span of the element.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 12
+   */
+  'span': Span;
   /**
    * Indicates the resource name of the element.
    *
@@ -940,4 +947,18 @@ interface Rect {
   top: number;
   width: number;
   height: number;
+}
+
+/**
+ * Indicates span info.
+ *
+ * @typedef Span
+ * @syscap SystemCapability.BarrierFree.Accessibility.Core
+ */
+interface Span {
+  spanId: number;
+  spanText: string;
+  accessibilityText: string;
+  accessibilityDescription: string;
+  accessibilityLevel: string;
 }
