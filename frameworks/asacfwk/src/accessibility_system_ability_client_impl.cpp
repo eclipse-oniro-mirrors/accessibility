@@ -563,9 +563,9 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityId
         if (callback->GetFilter()) {
             AccessibilityElementOperatorImpl::SetFiltering(filterInfos);
         }
+        serviceProxy_->RemoveRequestId(requestId);
         callback->SetSearchElementInfoByAccessibilityIdResult(filterInfos, requestId);
         AccessibilityElementOperatorImpl::EraseCallback(requestId);
-        serviceProxy_->RemoveRequestId(requestId);
     } else {
         HILOG_INFO("callback is nullptr");
     }
@@ -585,9 +585,9 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByTextResult(
         AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
     if (requestId >= 0) {
         if (callback != nullptr) {
+            serviceProxy_->RemoveRequestId(requestId);
             callback->SetSearchElementInfoByTextResult(filterInfos, requestId);
             AccessibilityElementOperatorImpl::EraseCallback(requestId);
-            serviceProxy_->RemoveRequestId(requestId);
         } else {
             HILOG_INFO("callback is nullptr");
         }
@@ -607,9 +607,9 @@ void AccessibilitySystemAbilityClientImpl::SetFindFocusedElementInfoResult(
         AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
     if (requestId >= 0) {
         if (callback != nullptr) {
+            serviceProxy_->RemoveRequestId(requestId);
             callback->SetFindFocusedElementInfoResult(info, requestId);
             AccessibilityElementOperatorImpl::EraseCallback(requestId);
-            serviceProxy_->RemoveRequestId(requestId);
         } else {
             HILOG_INFO("callback is nullptr");
         }
@@ -629,9 +629,9 @@ void AccessibilitySystemAbilityClientImpl::SetFocusMoveSearchResult(
         AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
     if (requestId >= 0) {
         if (callback != nullptr) {
+            serviceProxy_->RemoveRequestId(requestId);
             callback->SetFocusMoveSearchResult(info, requestId);
             AccessibilityElementOperatorImpl::EraseCallback(requestId);
-            serviceProxy_->RemoveRequestId(requestId);
         } else {
             HILOG_INFO("callback is nullptr");
         }
@@ -651,9 +651,9 @@ void AccessibilitySystemAbilityClientImpl::SetExecuteActionResult(
         AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
     if (requestId >= 0) {
         if (callback != nullptr) {
+            serviceProxy_->RemoveRequestId(requestId);
             callback->SetExecuteActionResult(succeeded, requestId);
             AccessibilityElementOperatorImpl::EraseCallback(requestId);
-            serviceProxy_->RemoveRequestId(requestId);
         } else {
             HILOG_INFO("callback is nullptr");
         }
@@ -673,9 +673,9 @@ void AccessibilitySystemAbilityClientImpl::SetCursorPositionResult(
         AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
     if (requestId >= 0) {
         if (callback != nullptr) {
+            serviceProxy_->RemoveRequestId(requestId);
             callback->SetCursorPositionResult(cursorPosition, requestId);
             AccessibilityElementOperatorImpl::EraseCallback(requestId);
-            serviceProxy_->RemoveRequestId(requestId);
         } else {
             HILOG_INFO("callback is nullptr");
         }
