@@ -17,6 +17,7 @@
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "utils.h"
+#include <cinttypes>
 
 namespace OHOS {
 namespace Accessibility {

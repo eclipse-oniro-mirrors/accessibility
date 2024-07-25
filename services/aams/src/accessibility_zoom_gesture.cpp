@@ -53,7 +53,7 @@ AccessibilityZoomGesture::AccessibilityZoomGesture()
     float densityPixels = display->GetVirtualPixelRatio();
     multiTapDistance_ = densityPixels * DOUBLE_TAP_SLOP + 0.5f;
 #else
-    HILOG_DEBUG("not support display manager")
+    HILOG_DEBUG("not support display manager");
     multiTapDistance_ = 1 * DOUBLE_TAP_SLOP + 0.5f;
 #endif
 }
