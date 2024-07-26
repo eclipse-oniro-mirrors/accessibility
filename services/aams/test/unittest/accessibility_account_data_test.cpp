@@ -1843,6 +1843,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
     const int32_t accountId = 1;
     const std::string abilityName = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->Init();
     accountData->SetAbilityAutoStartState(abilityName, false);
     EXPECT_EQ(accountData->GetAbilityAutoStartState(abilityName), false);
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilityAutoStartState_001 end";
