@@ -297,7 +297,7 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
 RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowId, const int64_t elementId)
 {
     uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
-    int32_t treeId = (static_cast<int64_t>(elementId) >> ELEMENT_MOVE_BIT);
+    int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
     HILOG_DEBUG("VerifyingToKenId: treeId[%{public}d], windowId[%{public}d], elementId[%{public}" PRId64 "]",
         treeId, windowId, elementId);
     if (elementId == ELEMENT_ID_INVALID || windowId == WINDOW_ID_INVALID) {

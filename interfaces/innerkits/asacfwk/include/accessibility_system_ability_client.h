@@ -200,7 +200,7 @@ public:
             return;
         }
         splitTreeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
-        splitElementId = MAX_ELEMENT_ID & elementId;
+        splitElementId = (static_cast<uint64_t>(elementId) & MAX_ELEMENT_ID);
     }
 };
 } // namespace Accessibility
