@@ -73,6 +73,20 @@ RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetShortKeyOnLockScreenState(const bool state)
+{
+    HILOG_DEBUG("start.");
+    isShortKeyEnabledOnLockScreen_ = state;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetShortKeyTimeout(const int32_t time)
+{
+    HILOG_DEBUG("start.");
+    shortKeyTimeout_ = time;
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
 {
     HILOG_DEBUG("start.");
@@ -209,6 +223,18 @@ bool AccessibilitySettingsConfig::GetShortKeyState() const
     return isShortKeyState_;
 }
 
+bool AccessibilitySettingsConfig::GetShortKeyOnLockScreenState() const
+{
+    HILOG_DEBUG("start.");
+    return isShortKeyEnabledOnLockScreen_;
+}
+
+int32_t AccessibilitySettingsConfig::GetShortKeyTimeout() const
+{
+    HILOG_DEBUG("start.");
+    return shortKeyTimeout_;
+}
+
 bool AccessibilitySettingsConfig::GetMouseKeyState() const
 {
     HILOG_DEBUG("start.");
@@ -227,7 +253,7 @@ const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
     return shortkeyTarget_;
 }
 
-const std::vector<std::string> &AccessibilitySettingsConfig::GetShortkeyMultiTarget() const
+const std::vector<std::string> AccessibilitySettingsConfig::GetShortkeyMultiTarget()
 {
     return shortkeyMultiTarget_;
 }
@@ -399,7 +425,7 @@ RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
     return RET_OK;
 }
 
-const std::vector<std::string> &AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
+const std::vector<std::string> AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
 {
     return enabledAccessibilityServices_;
 }
@@ -414,6 +440,10 @@ RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const st
 {
     (void)serviceName;
     return RET_OK;
+}
+
+void AccessibilitySettingsConfig::OnDataClone()
+{
 }
 } // namespace Accessibility
 } // namespace OHOS

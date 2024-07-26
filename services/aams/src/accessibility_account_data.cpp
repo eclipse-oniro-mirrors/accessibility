@@ -54,6 +54,9 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
+    const std::string ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen";
+    const std::string ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN = "accessibility_shortcut_dialog_shown";
+    const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -139,12 +142,14 @@ void AccessibilityAccountData::AddCaptionPropertyCallback(
     const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(captionPropertyCallbacksMutex_);
     captionPropertyCallbacks_.push_back(callback);
 }
 
 void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteObject>& callback)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(captionPropertyCallbacksMutex_);
     for (auto itr = captionPropertyCallbacks_.begin(); itr != captionPropertyCallbacks_.end(); itr++) {
         if ((*itr)->AsObject() == callback) {
             captionPropertyCallbacks_.erase(itr);
@@ -157,6 +162,7 @@ void AccessibilityAccountData::AddEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver>& observer)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(enableAbilityListObserversMutex_);
     if (std::any_of(enableAbilityListsObservers_.begin(), enableAbilityListsObservers_.end(),
         [observer](const sptr<IAccessibilityEnableAbilityListsObserver> &listObserver) {
             return listObserver == observer;
@@ -171,6 +177,7 @@ void AccessibilityAccountData::AddEnableAbilityListsObserver(
 void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemoteObject>& observer)
 {
     HILOG_INFO();
+    std::lock_guard<std::mutex> lock(enableAbilityListObserversMutex_);
     for (auto itr = enableAbilityListsObservers_.begin(); itr != enableAbilityListsObservers_.end(); itr++) {
         if ((*itr)->AsObject() == observer) {
             HILOG_DEBUG("erase observer");
@@ -183,6 +190,7 @@ void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemo
 
 void AccessibilityAccountData::UpdateEnableAbilityListsState()
 {
+    std::lock_guard<std::mutex> lock(enableAbilityListObserversMutex_);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
     for (auto &observer : enableAbilityListsObservers_) {
         if (observer) {
@@ -193,6 +201,7 @@ void AccessibilityAccountData::UpdateEnableAbilityListsState()
 
 void AccessibilityAccountData::UpdateInstallAbilityListsState()
 {
+    std::lock_guard<std::mutex> lock(enableAbilityListObserversMutex_);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
     for (auto &observer : enableAbilityListsObservers_) {
         if (observer) {
@@ -339,7 +348,9 @@ const std::map<int32_t, sptr<AccessibilityWindowConnection>> AccessibilityAccoun
 const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallbacks()
 {
     HILOG_DEBUG("GetCaptionPropertyCallbacks start.");
-    return captionPropertyCallbacks_;
+    std::lock_guard<std::mutex> lock(captionPropertyCallbacksMutex_);
+    CaptionPropertyCallbacks rtnVec = captionPropertyCallbacks_;
+    return rtnVec;
 }
 
 sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbility(const std::string &uri)
@@ -468,13 +479,7 @@ void AccessibilityAccountData::SetScreenReaderState(const std::string &name, con
 bool AccessibilityAccountData::GetDefaultUserScreenReaderState()
 {
     HILOG_DEBUG();
-    auto datashare = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SECURE, DEFAULT_ACCOUNT_ID);
-    if (datashare == nullptr) {
-        return false;
-    }
-    std::string tmpString = datashare->GetStringValue(ENABLED_ACCESSIBILITY_SERVICES, "");
-    std::vector<std::string> services;
-    Utils::StringToVector(tmpString, services);
+    std::vector<std::string> services = config_->GetEnabledAccessibilityServices();
     auto iter = std::find(services.begin(), services.end(), SCREEN_READER_BUNDLE_ABILITY_NAME);
     return iter != services.end();
 }
@@ -530,6 +535,8 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     provider.GetBoolValue(MASTER_MONO, value.audioMono);
     provider.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
     provider.GetFloatValue(MASTER_BALENCE, value.audioBalance);
+    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN, value.shortcutEnabledOnLockScreen);
+    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN, value.shortcutDialogShown);
     int tmpClickResTime = 0;
     provider.GetIntValue(CLICK_RESPONSE_TIME, tmpClickResTime);
     if (tmpClickResTime == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
@@ -638,30 +645,58 @@ void AccessibilityAccountData::Init()
         config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
         config_->Init();
     }
+    ErrCode rtn = AccountSA::OsAccountManager::GetOsAccountType(id_, accountType_);
+    if (rtn != ERR_OK) {
+        HILOG_ERROR("get account type failed for accountId [%{public}d]", id_);
+    }
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    bool cloneState = false;
+    provider.GetBoolValue(ACCESSIBILITY_CLONE_FLAG, cloneState);
+    if (cloneState == true) {
+        provider.PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
+    }
+    if (id_ != DEFAULT_ACCOUNT_ID) {
+        HILOG_WARN("id != default_account_id.");
+        return;
+    }
+
+    HILOG_INFO("register clone observer.");
+    AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string& state) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnDataClone();
+    };
+    RetError ret = provider.RegisterObserver(ACCESSIBILITY_CLONE_FLAG, func);
+    if (ret != RET_OK) {
+        HILOG_WARN("register clone observer failed %{public}d.", ret);
+    }
 }
 
 void AccessibilityAccountData::AddConfigCallback(
     const sptr<IAccessibleAbilityManagerConfigObserver>& callback)
 {
     HILOG_DEBUG("AddConfigCallback start.");
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
     configCallbacks_.push_back(callback);
 }
 
-const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks() const
+const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks()
 {
     HILOG_DEBUG("GetConfigCallbacks start.");
-    return configCallbacks_;
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
+    std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> rtnVec = configCallbacks_;
+    return rtnVec;
 }
 
 void AccessibilityAccountData::SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer)
 {
     HILOG_DEBUG("SetConfigCallbacks start.");
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
     configCallbacks_ = observer;
 }
 
 void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& callback)
 {
     HILOG_DEBUG("RemoveConfigCallback start.");
+    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
     for (auto itr = configCallbacks_.begin(); itr != configCallbacks_.end(); itr++) {
         if ((*itr)->AsObject() == callback) {
             configCallbacks_.erase(itr);
@@ -786,9 +821,6 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     }
     if (isGesturesSimulation_) {
         flag |= AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
-    }
-    if (config_->GetShortKeyState()) {
-        flag |= AccessibilityInputInterceptor::FEATURE_SHORT_KEY;
     }
     if (config_->GetMouseKeyState()) {
         flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_KEY;
@@ -1001,12 +1033,6 @@ void AccessibilityAccountData::RemoveUITestClient(sptr<AccessibleAbilityConnecti
 
 AccountSA::OsAccountType AccessibilityAccountData::GetAccountType()
 {
-    if (accountType_ == AccountSA::OsAccountType::END) {
-        ErrCode rtn = AccountSA::OsAccountManager::GetOsAccountType(id_, accountType_);
-        if (rtn != ERR_OK) {
-            HILOG_ERROR("get account type failed for accountId [%{public}d]", id_);
-        }
-    }
     return accountType_;
 }
 
@@ -1128,7 +1154,7 @@ void AccessibilityAccountData::AccessibilityAbility::GetDisableAbilities(
     for (auto& connection : connectionMap_) {
         for (auto iter = disabledAbilities.begin(); iter != disabledAbilities.end();) {
             if (connection.second && (iter->GetId() == connection.second->GetAbilityInfo().GetId())) {
-                disabledAbilities.erase(iter);
+                iter = disabledAbilities.erase(iter);
             } else {
                 iter++;
             }

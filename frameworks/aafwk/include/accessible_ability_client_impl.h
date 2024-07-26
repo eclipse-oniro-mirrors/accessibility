@@ -357,10 +357,10 @@ public:
     RetError SearchElementInfoRecursive(int32_t windowId, int64_t elementId, uint32_t mode,
         std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false);
     RetError SearchElementInfoRecursiveByWinid(const int32_t windowId, const int64_t elementId,
-        uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false,
+        uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId, bool isFilter = false,
         AccessibilityElementInfo *parentInfo = nullptr);
     RetError SearchElementInfoRecursiveByContent(const int32_t windowId, const int64_t elementId,
-        uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, const std::string text,
+        uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, const std::string text, int32_t treeId,
         bool isFilter = false);
     void RemoveCacheData(const AccessibilityEventInfo &eventInfo);
     void AddCacheByWMS(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
@@ -370,6 +370,8 @@ public:
     bool LoadAccessibilityService();
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
+    RetError GetChildrenWork(const int32_t windowId, std::vector<int64_t> childIds,
+        std::vector<AccessibilityElementInfo> &children);
 
 private:
     class ElementCacheInfo {
@@ -438,7 +440,7 @@ private:
     void SetCacheElementInfo(const int32_t windowId,
         const std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
     RetError SearchElementInfoByElementId(const int32_t windowId, const int64_t elementId,
-        const uint32_t mode, AccessibilityElementInfo &info);
+        const uint32_t mode, AccessibilityElementInfo &info, int32_t treeId);
     RetError SearchElementInfoFromAce(const int32_t windowId, const int64_t elementId,
         const uint32_t mode, AccessibilityElementInfo &info);
     bool InitAccessibilityServiceProxy();

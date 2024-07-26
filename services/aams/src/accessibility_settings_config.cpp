@@ -17,12 +17,14 @@
 #include "hilog_wrapper.h"
 #include "system_ability_definition.h"
 #include "utils.h"
+#include "accessibility_setting_provider.h"
 
 namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr uint32_t DEFAULT_COLOR = 0xff000000;
     const int32_t DEFAULT_SCALE = 100;
+    const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const std::string ACCESSIBILITY = "accessibility";
     const std::string TOUCH_GUIDE_STATE = "touch_guide_state";
     const std::string GESTURE_KEY = "gesture_state";
@@ -51,6 +53,18 @@ namespace {
     const std::string WINDOW_COLOR = "accessibility_window_color";
     const std::string FONT_SCALE = "accessibility_font_scale";
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
+    const std::string SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
+    const std::string SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
+    const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
+    const std::string SCREENREADER_TAG = "screenreader";
+    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
+    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
+    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM = 700;
+    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG = 1000;
+    constexpr int DISPLAY_DALTONIZER_GREEN = 12;
+    constexpr int DISPLAY_DALTONIZER_RED = 11;
+    constexpr int DISPLAY_DALTONIZER_BLUE = 13;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -107,6 +121,23 @@ RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
     return SetConfigState(SHORTCUT_ENABLED, state);
 }
 
+RetError AccessibilitySettingsConfig::SetShortKeyOnLockScreenState(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    isShortKeyEnabledOnLockScreen_ = state;
+    return SetConfigState(SHORTCUT_ENABLED_ON_LOCK_SCREEN, state);
+}
+
+RetError AccessibilitySettingsConfig::SetShortKeyTimeout(const int32_t time)
+{
+    HILOG_DEBUG("time = [%{public}u]", time);
+    shortKeyTimeout_ = time;
+    if (!datashare_) {
+        return RET_ERR_NULLPTR;
+    }
+
+    return datashare_->PutIntValue(SHORTCUT_TIMEOUT, static_cast<int32_t>(time));
+}
 
 RetError AccessibilitySettingsConfig::SetStartFromAtoHosState(const bool state)
 {
@@ -148,6 +179,7 @@ RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<std::string> &name)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(interfaceMutex_);
     shortkeyMultiTarget_ = name;
     if (!datashare_) {
         return RET_ERR_NULLPTR;
@@ -318,6 +350,16 @@ bool AccessibilitySettingsConfig::GetShortKeyState() const
     return isShortKeyState_;
 }
 
+bool AccessibilitySettingsConfig::GetShortKeyOnLockScreenState() const
+{
+    return isShortKeyEnabledOnLockScreen_;
+}
+
+int32_t AccessibilitySettingsConfig::GetShortKeyTimeout() const
+{
+    return shortKeyTimeout_;
+}
+
 bool AccessibilitySettingsConfig::GetMouseKeyState() const
 {
     return isMouseKeyState_;
@@ -333,9 +375,11 @@ const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
     return shortkeyTarget_;
 }
 
-const std::vector<std::string> &AccessibilitySettingsConfig::GetShortkeyMultiTarget() const
+const std::vector<std::string> AccessibilitySettingsConfig::GetShortkeyMultiTarget()
 {
-    return shortkeyMultiTarget_;
+    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::vector<std::string> rtnVec = shortkeyMultiTarget_;
+    return rtnVec;
 }
 
 bool AccessibilitySettingsConfig::GetHighContrastTextState() const
@@ -423,13 +467,16 @@ uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
     return ignoreRepeatClickTime_;
 }
 
-const std::vector<std::string> &AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
+const std::vector<std::string> AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
 {
-    return enabledAccessibilityServices_;
+    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::vector<std::string> rtnVec = enabledAccessibilityServices_;
+    return rtnVec;
 }
 
 RetError AccessibilitySettingsConfig::AddEnabledAccessibilityService(const std::string &serviceName)
 {
+    std::lock_guard<std::mutex> lock(interfaceMutex_);
     auto iter = std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(), serviceName);
     if (iter != enabledAccessibilityServices_.end()) {
         return RET_OK;
@@ -446,6 +493,7 @@ RetError AccessibilitySettingsConfig::AddEnabledAccessibilityService(const std::
 
 RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const std::string &serviceName)
 {
+    std::lock_guard<std::mutex> lock(interfaceMutex_);
     auto iter = std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(), serviceName);
     if (iter == enabledAccessibilityServices_.end()) {
         return RET_OK;
@@ -568,7 +616,9 @@ void AccessibilitySettingsConfig::InitSetting()
 
     isScreenMagnificationState_ = datashare_->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
     isMouseKeyState_= datashare_->GetBoolValue(MOUSEKEY, false);
-    isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, false);
+    isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, true);
+    isShortKeyEnabledOnLockScreen_ = datashare_->GetBoolValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN, false);
+    shortKeyTimeout_ = static_cast<int32_t>(datashare_->GetIntValue(SHORTCUT_TIMEOUT, SHORT_KEY_TIMEOUT_BEFORE_USE));
     animationOffState_ = datashare_->GetBoolValue(ANIMATION_OFF_KEY, false);
     invertColorState_ = datashare_->GetBoolValue(INVERT_COLOR_KEY, false);
     highContrastTextState_ = datashare_->GetBoolValue(HIGH_CONTRAST_TEXT_KEY, false);
@@ -629,6 +679,55 @@ void AccessibilitySettingsConfig::Init()
 void AccessibilitySettingsConfig::ClearData()
 {
     HILOG_DEBUG();
+}
+
+void AccessibilitySettingsConfig::OnDataClone()
+{
+    InitSetting();
+    if (clickResponseTime_ == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
+        SetClickResponseTime(AccessibilityConfig::ResponseDelayMedium);
+    } else if (clickResponseTime_ > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
+        SetClickResponseTime(AccessibilityConfig::ResponseDelayLong);
+    }
+
+    if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
+        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutShort);
+    } else if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
+        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutMedium);
+    } else if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
+        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutLong);
+    } else if (ignoreRepeatClickTime_ > DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
+        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutLongest);
+    }
+
+    if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_GREEN) {
+        SetDaltonizationColorFilter(AccessibilityConfig::Deuteranomaly);
+    } else if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_RED) {
+        SetDaltonizationColorFilter(AccessibilityConfig::Protanomaly);
+    } else if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_BLUE) {
+        SetDaltonizationColorFilter(AccessibilityConfig::Tritanomaly);
+    }
+
+    std::vector<std::string> tmpVec = GetShortkeyMultiTarget();
+    auto iter = std::find_if(tmpVec.begin(), tmpVec.end(),
+        [] (const std::string& service) { return service.find(SCREENREADER_TAG) != std::string::npos; });
+    if (iter != tmpVec.end()) {
+        tmpVec.erase(iter);
+        tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
+        SetShortkeyMultiTarget(tmpVec);
+    }
+
+    tmpVec = GetEnabledAccessibilityServices();
+    iter = std::find_if(tmpVec.begin(), tmpVec.end(),
+        [] (const std::string& service) { return service.find(SCREENREADER_TAG) != std::string::npos; });
+    if (iter != tmpVec.end()) {
+        RemoveEnabledAccessibilityService(*iter);
+        AddEnabledAccessibilityService(SCREEN_READER_BUNDLE_ABILITY_NAME);
+    }
+
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    provider.PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
+    HILOG_INFO();
 }
 } // namespace Accessibility
 } // namespace OHOS

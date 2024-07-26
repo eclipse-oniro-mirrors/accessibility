@@ -41,13 +41,12 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(
     return true;
 }
 
-RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
-    const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
+RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
     const int32_t mode, bool isFilter)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy SearchElementInfoByAccessibilityId";
-    (void)accessibilityWindowId;
-    (void)elementId;
+    (void)elementBasicInfo;
     (void)requestId;
     (void)callback;
     (void)mode;

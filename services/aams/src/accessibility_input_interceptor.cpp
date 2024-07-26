@@ -138,8 +138,7 @@ void AccessibilityInputInterceptor::CreateTransmitters()
         CreatePointerEventTransmitters();
     }
     
-    if ((availableFunctions_ & FEATURE_SHORT_KEY) ||
-        (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS)) {
+    if (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS) {
         CreateKeyEventTransmitters();
     }
 }
@@ -209,15 +208,6 @@ void AccessibilityInputInterceptor::CreateKeyEventTransmitters()
     sptr<EventTransmission> header = nullptr;
     sptr<EventTransmission> current = nullptr;
 
-    if (availableFunctions_& FEATURE_SHORT_KEY) {
-        sptr<AccessibilityShortKey> shortKey = new(std::nothrow) AccessibilityShortKey();
-        if (!shortKey) {
-            HILOG_ERROR("shortKey is null");
-            return;
-        }
-        SetNextEventTransmitter(header, current, shortKey);
-    }
-
     if (availableFunctions_& FEATURE_FILTER_KEY_EVENTS) {
         sptr<KeyEventFilter> keyEventFilter = new(std::nothrow) KeyEventFilter();
         if (!keyEventFilter) {
@@ -253,7 +243,7 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
         (availableFunctions_ & FEATURE_SCREEN_TOUCH)) {
             inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
             interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
-    } else if ((availableFunctions_ & FEATURE_FILTER_KEY_EVENTS) || (availableFunctions_ & FEATURE_SHORT_KEY)) {
+    } else if (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS) {
             inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
             interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_, PRIORITY_EVENT,
                 MMI::CapabilityToTags(MMI::INPUT_DEV_CAP_KEYBOARD));
@@ -381,7 +371,7 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::KeyEvent
         return;
     }
 
-    auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, interceptor, keyEvent);
+    auto task = [keyEvent, interceptor] {interceptor->ProcessKeyEvent(keyEvent);};
     eventHandler_->PostTask(task, "InputKeyEvent");
 }
 
@@ -404,7 +394,7 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerE
         HILOG_ERROR("eventHandler is empty.");
         return;
     }
-    auto task = std::bind(&AccessibilityInputInterceptor::ProcessPointerEvent, interceptor, pointerEvent);
+    auto task = [pointerEvent, interceptor] {interceptor->ProcessPointerEvent(pointerEvent);};
     eventHandler_->PostTask(task, "InputPointerEvent");
 }
 } // namespace Accessibility

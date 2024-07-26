@@ -66,7 +66,6 @@ constexpr int32_t NUMBER_0 = 0;
 constexpr int32_t NUMBER_1 = 1;
 constexpr int32_t NUMBER_2 = 2;
 
-constexpr int32_t START_ANGLE = -90; // start angle
 constexpr int32_t INVALID_NODE_ID = -1;
 
 std::shared_ptr<AccessibilityCircleDrawingManager> AccessibilityCircleDrawingManager::pointDrawMgr_ = nullptr;
@@ -253,7 +252,7 @@ void AccessibilityCircleDrawingManager::DrawingProgressByOpenSource(int32_t phys
         half_ - dispalyDensity_ * PROGRESS_RADIUS,
         half_ + dispalyDensity_ * PROGRESS_RADIUS,
         half_ + dispalyDensity_ * PROGRESS_RADIUS);
-    canvas->drawArc(arcRect, START_ANGLE, angle, false, progressArcPaint);
+    canvas->drawArc(arcRect, startAngle_, angle, false, progressArcPaint);
 
     canvasNode_->FinishRecording();
     Rosen::RSTransaction::FlushImplicitTransaction();
@@ -316,7 +315,7 @@ void AccessibilityCircleDrawingManager::DrawingProgressByRosenDrawing(int32_t ph
         half_ + dispalyDensity_ * PROGRESS_RADIUS,
         half_ + dispalyDensity_ * PROGRESS_RADIUS);
     canvas->AttachPen(progressArcPen);
-    canvas->DrawArc(rect, START_ANGLE, angle);
+    canvas->DrawArc(rect, startAngle_, angle);
     canvas->DetachPen();
 
     canvasNode_->FinishRecording();
@@ -348,9 +347,10 @@ void AccessibilityCircleDrawingManager::SetPointerLocation(int32_t physicalX, in
 }
 
 void AccessibilityCircleDrawingManager::DrawPointer(int32_t physicalX, int32_t physicalY, int32_t angle,
-    uint64_t screenId)
+    uint64_t screenId, int32_t startAngle)
 {
     HILOG_DEBUG();
+    startAngle_ = startAngle;
     if (surfaceNode_ != nullptr) {
         SetPointerLocation(physicalX, physicalY, screenId);
         DrawingProgress(physicalX, physicalY, angle);

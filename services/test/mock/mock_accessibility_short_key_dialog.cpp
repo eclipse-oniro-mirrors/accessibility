@@ -39,6 +39,26 @@ std::string ShortkeyAbilityConnection::GetCommandString()
     return "";
 }
 
+void ReConfirmAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
+    const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
+{
+    (void)element;
+    (void)remoteObject;
+    (void)resultCode;
+}
+
+void ReConfirmAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element,
+    int32_t resultCode)
+{
+    (void)element;
+    (void)resultCode;
+}
+
+std::string ReConfirmAbilityConnection::GetCommandString()
+{
+    return "";
+}
+
 // dialog
 AccessibilityShortkeyDialog::AccessibilityShortkeyDialog() {}
 
@@ -46,24 +66,25 @@ AccessibilityShortkeyDialog::~AccessibilityShortkeyDialog()
 {
 }
 
-bool AccessibilityShortkeyDialog::ConnectDialog()
+bool AccessibilityShortkeyDialog::ConnectDialog(ShortKeyDialogType dialogType)
 {
     return true;
 }
 
-bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr)
+bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr,
+                                                          ShortKeyDialogType dialogType)
 {
     (void)want;
     (void)commandStr;
     return true;
 }
 
-bool AccessibilityShortkeyDialog::ConnectExtension()
+bool AccessibilityShortkeyDialog::ConnectExtension(ShortKeyDialogType dialogType)
 {
     return true;
 }
 
-bool AccessibilityShortkeyDialog::DisconnectExtension() const
+bool AccessibilityShortkeyDialog::DisconnectExtension(ShortKeyDialogType dialogType) const
 {
     return true;
 }

@@ -42,6 +42,7 @@
 #include "singleton.h"
 #include "system_ability.h"
 #include "window_manager.h"
+#include "accessibility_short_key.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -55,6 +56,8 @@ enum CallBackID {
     ENABLE_ABILITY_LISTS_CALLBACK,
     CONFIG_CALLBACK
 };
+
+constexpr int REQUEST_ID_INIT = 65535;
 
 const std::map<std::string, int32_t> AccessibilityConfigTable = {
     {"HIGH_CONTRAST_TEXT", HIGH_CONTRAST_TEXT},
@@ -86,7 +89,9 @@ public:
 
 public:
     /* For AccessibleAbilityManagerServiceStub */
-    RetError SendEvent(const AccessibilityEventInfo &uiEvent) override;
+    RetError SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag = 0) override;
+
+    RetError VerifyingToKenId(const int32_t windowId, const int64_t elementId);
 
     uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) override;
 
@@ -134,14 +139,25 @@ public:
     int32_t GetFocusWindowId();
     int64_t GetFocusElementId();
     static int32_t GetTreeIdBySplitElementId(const int64_t elementId);
+    int64_t GetRootParentId(int32_t windowId, int32_t treeId) override;
+    RetError GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds) override;
+    void SetTokenIdMapAndRootParentId(const sptr<AccessibilityWindowConnection> connection,
+        const int32_t treeId, const int64_t nodeId, const uint32_t tokenId);
+    void RemoveTreeDeathRecipient(const int32_t windowId, const int32_t treeId,
+        const sptr<AccessibilityWindowConnection> connection);
+    int32_t GenerateRequestId();
+    void GetElementOperatorConnection(sptr<AccessibilityWindowConnection> &connection,
+        const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
 private:
     int32_t focusWindowId_ = -1;
     int64_t focusElementId_ = -1;
+    std::atomic<int> requestId_ = REQUEST_ID_INIT;
 public:
     /* For inner modules */
     bool EnableShortKeyTargetAbility(const std::string &name = "");
     bool DisableShortKeyTargetAbility();
     void OnShortKeyProcess();
+    void UpdateShortKeyRegister();
 
     void SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector);
 
@@ -283,6 +299,7 @@ public:
     void AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
         sptr<IAccessibilityElementOperatorCallback> callback);
     void RemoveRequestId(int32_t requestId) override;
+    void OnDataClone();
 
 private:
     void StopCallbackWait(int32_t windowId);
@@ -292,7 +309,9 @@ private:
         AccessibilityElementInfo &elementInfo);
     bool SetTargetAbility(const int32_t targetAbilityValue);
     RetError RegisterElementOperatorChildWork(const Registration &parameter, const int32_t treeId,
-        const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation, bool isApp);
+        const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation,
+        const uint32_t tokenId, bool isApp);
+    void IsCheckWindowIdEventExist(const int32_t windowId);
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         StateCallbackDeathRecipient() = default;
@@ -305,11 +324,13 @@ private:
     class InteractionOperationDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         InteractionOperationDeathRecipient(int32_t windowId) : windowId_(windowId) {};
+        InteractionOperationDeathRecipient(int32_t windowId, int32_t treeId) : windowId_(windowId), treeId_(treeId) {};
         ~InteractionOperationDeathRecipient() final = default;
         DISALLOW_COPY_AND_MOVE(InteractionOperationDeathRecipient);
 
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
         int32_t windowId_ = INVALID_WINDOW_ID;
+        int32_t treeId_ = INVALID_TREE_ID;
     };
 
     class CaptionPropertyCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -400,14 +421,19 @@ private:
     sptr<TouchEventInjector> touchEventInjector_ = nullptr;
     sptr<KeyEventFilter> keyEventFilter_ = nullptr;
     sptr<AccessibilityDumper> accessibilityDumper_ = nullptr;
+    sptr<AccessibilityShortKey> accessibilityShortKey_ = nullptr;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AAMSEventHandler> handler_;
+
+    std::shared_ptr<AppExecFwk::EventRunner> actionRunner_;
+    std::shared_ptr<AAMSEventHandler> actionHandler_;
 
     int64_t ipcTimeoutNum_ = 0; // count ipc timeout number
 
     sptr<IRemoteObject::DeathRecipient> stateObserversDeathRecipient_ = nullptr;
     std::map<int32_t, sptr<IRemoteObject::DeathRecipient>> interactionOperationDeathRecipients_ {};
+    std::map<int32_t, std::map<int32_t, sptr<IRemoteObject::DeathRecipient>>> interactionOperationDeathMap_ {};
     sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityListsObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;

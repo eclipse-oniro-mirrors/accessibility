@@ -130,7 +130,7 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
         HILOG_ERROR("window info is err");
         return;
     }
-    eventHandler_->PostTask(std::bind([=]() -> void {
+    eventHandler_->PostTask([=]() {
         switch (type) {
             case Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED: // 1
                 WindowUpdateAdded(infos);
@@ -157,11 +157,12 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
                 break;
         }
         HILOG_DEBUG("a11yWindows[%{public}zu]", a11yWindows_.size());
-        }), "TASK_ON_WINDOW_UPDATE");
+        }, "TASK_ON_WINDOW_UPDATE");
 }
 
 int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int32_t focusType)
 {
+    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
     int32_t winId = windowId;
     HILOG_DEBUG("ConvertToRealWindowId called, windowId[%{public}d], focusType[%{public}d]", windowId, focusType);
     if (windowId == ACTIVE_WINDOW_ID) {

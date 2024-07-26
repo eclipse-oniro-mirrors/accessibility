@@ -43,7 +43,7 @@ void AccessibleAbilityManagerStateObserverProxy::OnStateChanged(const uint32_t s
     int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");

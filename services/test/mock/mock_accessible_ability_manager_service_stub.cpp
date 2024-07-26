@@ -54,9 +54,10 @@ int MockAccessibleAbilityManagerServiceStub::OnRemoteRequest(
     return 0;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SendEvent(const AccessibilityEventInfo &uiEvent)
+RetError MockAccessibleAbilityManagerServiceStub::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
 {
     (void)uiEvent;
+    (void)flag;
     return RET_OK;
 }
 
@@ -485,6 +486,20 @@ RetError MockAccessibleAbilityManagerServiceStub::GetFocusedWindowId(int32_t &fo
 void MockAccessibleAbilityManagerServiceStub::RemoveRequestId(int32_t requestId)
 {
     (void)requestId;
+}
+
+int64_t MockAccessibleAbilityManagerServiceStub::GetRootParentId(int32_t windowId, int32_t treeId)
+{
+    (void)windowId;
+    (void)treeId;
+    return 0;
+}
+
+RetError MockAccessibleAbilityManagerServiceStub::GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds)
+{
+    (void)windowId;
+    (void)treeIds;
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -60,9 +60,6 @@ public:
     // Feature flag for mouse autoclick.
     static constexpr uint32_t FEATURE_MOUSE_AUTOCLICK = 0x00000010;
 
-    // Feature flag for short key.
-    static constexpr uint32_t FEATURE_SHORT_KEY = 0x00000020;
-
     // Feature flag for mouse key.
     static constexpr uint32_t FEATURE_MOUSE_KEY = 0x00000040;
 

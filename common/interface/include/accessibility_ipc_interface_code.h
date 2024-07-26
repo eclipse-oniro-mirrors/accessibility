@@ -18,7 +18,7 @@
 /* SAID:3503 */
 namespace OHOS {
 namespace Accessibility {
-    enum class AccessibilityInterfaceCode {
+    enum AccessibilityInterfaceCode {
         SET_RESULT_BY_ACCESSIBILITY_ID = 100,
         SET_RESULT_BY_TEXT,
         SET_RESULT_FOCUSED_INFO,
@@ -140,6 +140,8 @@ namespace Accessibility {
         GET_SCENE_BOARD_INNER_WINDOW_ID,
         SET_SHORTKEY_MULTI_TARGET,
         GET_SHORTKEY_MULTI_TARGET,
+        GET_ROOT_PARENT_ID,
+        GET_ALL_TREE_ID,
 
         ON_STATE_CHANGED = 900,
     };

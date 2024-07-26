@@ -24,6 +24,7 @@ namespace OHOS {
 namespace Accessibility {
 
 const int32_t ABILITY_SIZE_MAX = 10000;
+const int32_t TREE_ID_MAX = 0x00001FFF;
 
 AccessibleAbilityManagerServiceProxy::AccessibleAbilityManagerServiceProxy(const sptr<IRemoteObject> &impl)
     : IRemoteProxy<IAccessibleAbilityManagerService>(impl)
@@ -65,7 +66,7 @@ bool AccessibleAbilityManagerServiceProxy::SendTransactCmd(AccessibilityInterfac
     return true;
 }
 
-RetError AccessibleAbilityManagerServiceProxy::SendEvent(const AccessibilityEventInfo &uiEvent)
+RetError AccessibleAbilityManagerServiceProxy::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -1740,6 +1741,70 @@ void AccessibleAbilityManagerServiceProxy::RemoveRequestId(int32_t requestId)
         return;
     }
     return;
+}
+
+int64_t AccessibleAbilityManagerServiceProxy::GetRootParentId(int32_t windowsId, int32_t treeId)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("write token fail");
+        return false;
+    }
+
+    if (!data.WriteInt32(windowsId)) {
+        HILOG_ERROR("write windowsId fail");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteInt32(treeId)) {
+        HILOG_ERROR("write treeId fail");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_ROOT_PARENT_ID, data, reply, option)) {
+        HILOG_ERROR("GetRootParentId fail");
+        return false;
+    }
+    return reply.ReadInt64();
+}
+
+RetError AccessibleAbilityManagerServiceProxy::GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token error");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteInt32(windowId)) {
+        HILOG_ERROR("write windowId fail");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_ALL_TREE_ID,
+        data, reply, option)) {
+        HILOG_ERROR("GetAllTreeId fail");
+        return RET_ERR_IPC_FAILED;
+    }
+    RetError result = static_cast<RetError>(reply.ReadInt32());
+    if (result == RET_OK) {
+        int32_t treeIdSize = reply.ReadInt32();
+        if (treeIdSize < 0 || treeIdSize > TREE_ID_MAX) {
+            HILOG_ERROR("treeIdSize is invalid, treeIdSize: %{public}d", treeIdSize);
+            return RET_ERR_INVALID_PARAM;
+        }
+        for (int32_t i = 0; i < treeIdSize; i++) {
+            treeIds.emplace_back(reply.ReadInt32());
+        }
+    }
+    return result;
 }
 } // namespace Accessibility
 } // namespace OHOS

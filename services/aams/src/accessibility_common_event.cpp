@@ -45,7 +45,12 @@ AccessibilityCommonEvent::AccessibilityCommonEvent()
 
     for (auto it = handleEventFunc_.begin(); it != handleEventFunc_.end(); ++it) {
         HILOG_DEBUG("Add event: %{public}s", it->first.c_str());
-        eventHandles_.emplace(it->first, std::bind(it->second, this, std::placeholders::_1));
+        eventHandles_.emplace(it->first, [this, it](const OHOS::EventFwk::CommonEventData &eventId) {
+            auto requestFunc = it->second;
+            if (requestFunc != nullptr) {
+                (this->*requestFunc)(eventId);
+            }
+        });
     }
 }
 
@@ -108,7 +113,7 @@ void AccessibilityCommonEvent::OnReceiveEvent(const EventFwk::CommonEventData &d
         HILOG_ERROR("eventHandler_ is nullptr.");
         return;
     }
-    eventHandler_->PostTask(std::bind([this, data]() -> void {
+    eventHandler_->PostTask([this, data]() {
         HILOG_DEBUG();
         std::string action = data.GetWant().GetAction();
         HILOG_INFO("Handle event:[%{public}s] eventHandles size[%{public}zu]", action.c_str(), eventHandles_.size());
@@ -118,7 +123,7 @@ void AccessibilityCommonEvent::OnReceiveEvent(const EventFwk::CommonEventData &d
             return;
         }
         it->second(data);
-        }), "TASK_ON_RECEIVE_EVENT");
+        }, "TASK_ON_RECEIVE_EVENT");
 }
 
 void AccessibilityCommonEvent::HandleUserAdded(const EventFwk::CommonEventData &data) const
@@ -159,9 +164,9 @@ void AccessibilityCommonEvent::HandlePackageRemoved(const EventFwk::CommonEventD
     std::string bundleName = data.GetWant().GetBundle();
     int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
     int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
-    HILOG_INFO("bundleName is %{public}s, userId is %{public}d accountId is %{public}d",
-        bundleName.c_str(), userId, accountId);
+    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     if (userId != accountId) {
+        HILOG_ERROR("not same user.");
         return;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
@@ -172,9 +177,9 @@ void AccessibilityCommonEvent::HandlePackageAdd(const EventFwk::CommonEventData 
     std::string bundleName = data.GetWant().GetBundle();
     int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
     int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
-    HILOG_INFO("bundleName is %{public}s, userId is %{public}d accountId is %{public}d",
-        bundleName.c_str(), userId, accountId);
+    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     if (userId != accountId) {
+        HILOG_ERROR("not same user.");
         return;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
@@ -185,9 +190,9 @@ void AccessibilityCommonEvent::HandlePackageChanged(const EventFwk::CommonEventD
     std::string bundleName = data.GetWant().GetBundle();
     int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
     int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
-    HILOG_INFO("bundleName is %{public}s, userId is %{public}d accountId is %{public}d",
-        bundleName.c_str(), userId, accountId);
+    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     if (userId != accountId) {
+        HILOG_ERROR("not same user.");
         return;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);

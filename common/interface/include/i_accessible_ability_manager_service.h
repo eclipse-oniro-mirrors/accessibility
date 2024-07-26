@@ -65,7 +65,7 @@ public:
      * @param uiEvent Indicates the accessibility event information specified by AccessibilityEventInfo.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual RetError SendEvent(const AccessibilityEventInfo &uiEvent) = 0;
+    virtual RetError SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag = 0) = 0;
 
     /**
      * @brief Register the state observer of AAMS.
@@ -189,6 +189,9 @@ public:
 
     virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) = 0;
     virtual void RemoveRequestId(int32_t requestId) = 0;
+
+    virtual int64_t GetRootParentId(int32_t windowsId, int32_t treeId) = 0;
+    virtual RetError GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

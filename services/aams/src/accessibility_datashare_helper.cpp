@@ -34,6 +34,7 @@ namespace {
     const std::string SETTING_COLUMN_KEYWORD = "KEYWORD";
     const std::string SETTING_COLUMN_VALUE = "VALUE";
     constexpr int32_t DECIMAL_NOTATION = 10;
+    const std::string SETTINGS_DATA_EXT_URI = "datashare_ext";
     const std::string SETTING_GLOBAL_URI = "datashare:///com.ohos.settingsdata/entry/settingsdata/SETTINGSDATA";
     const std::string SETTING_SYSTEM_URI = "datashare:///com.ohos.settingsdata/entry/settingsdata/USER_SETTINGSDATA_";
     const std::string SETTING_SECURE_URI =
@@ -97,7 +98,7 @@ std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key,
 int64_t AccessibilityDatashareHelper::GetLongValue(const std::string& key, const int64_t& defaultValue)
 {
     int64_t result = defaultValue;
-    std::string valueStr = GetStringValue(key, "");
+    std::string valueStr = GetStringValue(key, std::to_string(result));
     if (valueStr != "") {
         result = static_cast<int64_t>(std::strtoll(valueStr.c_str(), nullptr, DECIMAL_NOTATION));
     }
@@ -113,7 +114,7 @@ int32_t AccessibilityDatashareHelper::GetIntValue(const std::string& key, const 
 bool AccessibilityDatashareHelper::GetBoolValue(const std::string& key, const bool& defaultValue)
 {
     bool result = defaultValue;
-    std::string valueStr = GetStringValue(key, "");
+    std::string valueStr = GetStringValue(key, result ? "1" : "0");
     if (valueStr != "") {
         result = (valueStr == "1" || valueStr == "true");
     }
@@ -123,7 +124,7 @@ bool AccessibilityDatashareHelper::GetBoolValue(const std::string& key, const bo
 float AccessibilityDatashareHelper::GetFloatValue(const std::string& key, const float& defaultValue)
 {
     float result = defaultValue;
-    std::string valueStr = GetStringValue(key, "");
+    std::string valueStr = GetStringValue(key, std::to_string(result));
     if (valueStr != "") {
         result = std::stof(valueStr);
     }
@@ -150,7 +151,7 @@ RetError AccessibilityDatashareHelper::PutStringValue(const std::string& key, co
         if (dataShareHelper_->Update(uri, predicates, bucket) <= 0) {
             HILOG_DEBUG("no data exist, insert one row");
             auto ret = dataShareHelper_->Insert(uri, bucket);
-            HILOG_DEBUG("helper insert ret(%{public}d).", static_cast<int>(ret));
+            HILOG_INFO("helper insert %{public}s ret(%{public}d).", key.c_str(), static_cast<int>(ret));
         }
         if (needNotify) {
             dataShareHelper_->NotifyChange(AssembleUri(key));
@@ -292,13 +293,14 @@ std::shared_ptr<DataShare::DataShareHelper> AccessibilityDatashareHelper::Create
     if (remoteObj_ == nullptr) {
         return nullptr;
     }
-    auto helper = DataShare::DataShareHelper::Creator(remoteObj_, uriProxyStr_);
-    if (helper == nullptr) {
-        HILOG_WARN("helper is nullptr, uri=%{public}s", uriProxyStr_.c_str());
+    std::pair<int, std::shared_ptr<DataShare::DataShareHelper>> ret = DataShare::DataShareHelper::Create(remoteObj_,
+        uriProxyStr_, SETTINGS_DATA_EXT_URI);
+    HILOG_INFO("create helper ret = %{public}d, uri=%{public}s", ret.first, uriProxyStr_.c_str());
+    if (ret.second == nullptr) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::READ_EVENT, A11yError::ERROR_READ_FAILED);
         return nullptr;
     }
-    return helper;
+    return ret.second;
 }
 
 bool AccessibilityDatashareHelper::DestoryDatashareHelper(std::shared_ptr<DataShare::DataShareHelper>& helper)

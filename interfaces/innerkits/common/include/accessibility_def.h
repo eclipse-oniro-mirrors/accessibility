@@ -60,6 +60,8 @@ enum RetError : int32_t {
     RET_ERR_NO_PERMISSION,
     RET_ERR_NOT_SYSTEM_APP,
     RET_ERR_TIME_OUT,
+    RET_ERR_TREE_TOO_BIG,
+    RET_ERR_TOKEN_ID,
 
     RET_ERR_REGISTER_EXIST = 4001,
     RET_ERR_NO_REGISTER,
@@ -258,9 +260,11 @@ enum EventType : uint32_t {
     TYPE_WINDOW_UPDATE = 0x00400000,
     TYPE_INTERRUPT_EVENT = 0x00800000,
     TYPE_GESTURE_EVENT = 0x01000000,
-    TYPE_VIEW_SCROLLED_START = 0x04000000,
     TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY = 0x02000000,
+    TYPE_VIEW_SCROLLED_START = 0x04000000,
+    TYPE_PAGE_CLOSE = 0x08000000,
     TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY = 0x10000000,
+    TYPE_PAGE_OPEN = 0x20000000,
     TYPE_MAX_NUM = 0x80000000,
     TYPES_ALL_MASK = 0xFFFFFFFF,
 };
@@ -350,6 +354,12 @@ struct Registration {
     int32_t parentWindowId = 0;
     int32_t parentTreeId = 0;
     int64_t elementId = 0;
+};
+
+struct ElementBasicInfo {
+    int32_t windowId = -2;
+    int32_t treeId = -2;
+    int64_t elementId = -2;
 };
 
 constexpr int32_t PARAM0 = 0;

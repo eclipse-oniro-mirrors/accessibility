@@ -22,8 +22,40 @@
 #include "hilog_wrapper.h"
 #include "parcel_util.h"
 
+#define SWITCH_BEGIN(code) switch (code) {
+#define SWITCH_CASE(case_code, func) case case_code:\
+    {\
+        result_code = func(data, reply);\
+        break;\
+    }
+
+#define SWITCH_END() default:\
+    {\
+        result_code = ERR_CODE_DEFAULT;\
+        HILOG_WARN("AccessibleAbilityChannelStub::OnRemoteRequest, default case, need check.");\
+        break;\
+    }\
+}
+
+#define ACCESSIBLE_ABILITY_CHANNEL_STUB_CASES() \
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID, HandleSearchElementInfoByAccessibilityId)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT, HandleSearchElementInfosByText)\
+    SWITCH_CASE(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO, HandleFindFocusedElementInfo)\
+    SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH, HandleFocusMoveSearch)\
+    SWITCH_CASE(AccessibilityInterfaceCode::PERFORM_ACTION, HandleExecuteAction)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_CURTAIN_SCREEN, HandleEnableScreenCurtain)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_WINDOW, HandleGetWindow)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_WINDOWS, HandleGetWindows)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_WINDOWS_BY_DISPLAY_ID, HandleGetWindowsByDisplayId)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_ON_KEY_PRESS_EVENT_RESULT, HandleSetOnKeyPressEventResult)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SEND_SIMULATE_GESTURE_PATH, HandleSendSimulateGesturePath)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME, HandleSetTargetBundleName)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_CURSOR_POSITION, HandleGetCursorPosition)\
+
 namespace OHOS {
 namespace Accessibility {
+constexpr int32_t ERR_CODE_DEFAULT = -1000;
+
 AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
 {
     HILOG_DEBUG();
@@ -73,14 +105,15 @@ int AccessibleAbilityChannelStub::OnRemoteRequest(uint32_t code, MessageParcel &
         return ERR_INVALID_STATE;
     }
 
-    auto itFunc = memberFuncMap_.find(code);
-    if (itFunc != memberFuncMap_.end()) {
-        auto requestFunc = itFunc->second;
-        if (requestFunc != nullptr) {
-            return (this->*requestFunc)(data, reply);
-        }
+    ErrCode result_code = ERR_NONE;
+    SWITCH_BEGIN(code)
+    ACCESSIBLE_ABILITY_CHANNEL_STUB_CASES()
+    SWITCH_END()
+
+    if (result_code != ERR_CODE_DEFAULT) {
+        return result_code;
     }
-    HILOG_WARN("AbilityManagerStub::OnRemoteRequest, default case, need check.");
+
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
@@ -89,18 +122,20 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
 {
     HILOG_DEBUG();
 
-    int32_t accessibilityWindowId = data.ReadInt32();
-    int64_t elementId = data.ReadInt64();
+    ElementBasicInfo elementBasicInfo {};
+    elementBasicInfo.windowId = data.ReadInt32();
+    elementBasicInfo.treeId = data.ReadInt32();
+    elementBasicInfo.elementId = data.ReadInt64();
     int32_t requestId = data.ReadInt32();
 
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");
         return ERR_INVALID_VALUE;
     }
     sptr<IAccessibilityElementOperatorCallback> callback =
         iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr.");
         return ERR_INVALID_VALUE;
     }
@@ -119,8 +154,8 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
         mode = PREFETCH_RECURSIVE_CHILDREN;
     }
     bool isFilter = data.ReadBool();
-    RetError result = SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId, callback, mode,
-    isFilter);
+    RetError result = SearchElementInfoByAccessibilityId(elementBasicInfo, requestId, callback, mode,
+        isFilter);
     HILOG_DEBUG("SearchElementInfoByAccessibilityId ret = %{public}d", result);
     reply.WriteInt32(result);
 
@@ -138,8 +173,16 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParc
     int32_t requestId = data.ReadInt32();
 
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (remote == nullptr) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
     sptr<IAccessibilityElementOperatorCallback> callback =
         iface_cast<IAccessibilityElementOperatorCallback>(remote);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
 
     RetError result = SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, callback);
     HILOG_DEBUG("SearchElementInfosByText ret = %{public}d", result);
@@ -158,13 +201,20 @@ ErrCode AccessibleAbilityChannelStub::HandleFindFocusedElementInfo(MessageParcel
     int32_t requestId = data.ReadInt32();
 
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (remote == nullptr) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
     sptr<IAccessibilityElementOperatorCallback> callback =
         iface_cast<IAccessibilityElementOperatorCallback>(remote);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
 
     RetError result = FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, callback);
     HILOG_DEBUG("FindFocusedElementInfo ret = %{public}d", result);
     reply.WriteInt32(result);
-
     return NO_ERROR;
 }
 
@@ -178,8 +228,16 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearch(MessageParcel &data,
     int32_t requestId = data.ReadInt32();
 
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (remote == nullptr) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
     sptr<IAccessibilityElementOperatorCallback> callback =
         iface_cast<IAccessibilityElementOperatorCallback>(remote);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
 
     RetError result = FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, callback);
     HILOG_DEBUG("FocusMoveSearch ret = %{public}d", result);
@@ -219,7 +277,7 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
     int32_t requestId = data.ReadInt32();
 
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");
         return ERR_INVALID_VALUE;
     }
@@ -261,13 +319,12 @@ ErrCode AccessibleAbilityChannelStub::HandleGetCursorPosition(MessageParcel &dat
     int32_t requestId = data.ReadInt32();
     HILOG_INFO("AccessibleAbilityChannelStub::HandleGetCursorPosition   The execution was successful");
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");
         return ERR_INVALID_VALUE;
     }
-
     auto callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return ERR_INVALID_VALUE;
     }
@@ -383,7 +440,10 @@ ErrCode AccessibleAbilityChannelStub::HandleSetTargetBundleName(MessageParcel &d
     HILOG_DEBUG();
     std::vector<std::string> targetBundleNames;
     int32_t size = data.ReadInt32();
-    ContainerSecurityVerify(data, size, targetBundleNames.max_size());
+    bool verifyResult = ContainerSecurityVerify(data, size, targetBundleNames.max_size());
+    if (!verifyResult || size < 0 || size > INT32_MAX) {
+        return TRANSACTION_ERR;
+    }
     for (int32_t i = 0; i < size; i++) {
         std::string temp = data.ReadString();
         targetBundleNames.emplace_back(temp);

@@ -316,7 +316,7 @@ public:
     {
         for (auto iter = userIds_.begin(); iter != userIds_.end();) {
             if (*iter == id) {
-                userIds_.erase(iter);
+                iter = userIds_.erase(iter);
             } else {
                 iter++;
             }
@@ -339,7 +339,7 @@ public:
     {
         for (auto iter = packages_.begin(); iter != packages_.end();) {
             if (*iter == name) {
-                packages_.erase(iter);
+                iter = packages_.erase(iter);
             } else {
                 iter++;
             }

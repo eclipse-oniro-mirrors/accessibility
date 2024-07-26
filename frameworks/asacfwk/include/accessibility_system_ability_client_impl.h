@@ -71,6 +71,14 @@ public:
     virtual RetError DeregisterElementOperator(const int32_t windowId) override;
 
     /**
+     * @brief Deregister the element operator.
+     * @param windowId Window ID
+     * @param treeId Tree ID
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError DeregisterElementOperator(const int32_t windowId, const int32_t treeId) override;
+
+    /**
      * @brief Checks whether accessibility ability is enabled.
      * @param isEnabled true: enabled; false: disabled
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
@@ -228,10 +236,17 @@ private:
 
         virtual void OnStateChanged(const uint32_t stateType) override
         {
-            client_.OnAccessibleAbilityManagerStateChanged(stateType);
+            if (clientDeleted_ == false) {
+                client_.OnAccessibleAbilityManagerStateChanged(stateType);
+            }
+        }
+        void OnClientDeleted()
+        {
+            clientDeleted_ = true;
         }
     private:
         AccessibilitySystemAbilityClientImpl &client_;
+        std::atomic<bool> clientDeleted_ = false;
     };
 
     class DeathRecipient : public IRemoteObject::DeathRecipient {

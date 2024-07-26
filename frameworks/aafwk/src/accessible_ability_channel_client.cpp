@@ -219,7 +219,8 @@ RetError AccessibleAbilityChannelClient::EnableScreenCurtain(bool isEnable)
 }
 
 RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId,
-    int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter)
+    int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId,
+    bool isFilter)
 {
     int32_t requestId = GenerateRequestId();
     HILOG_DEBUG("channelId:%{public}d, elementId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
@@ -238,8 +239,12 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
         return RET_ERR_NULLPTR;
     }
     std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ElementBasicInfo elementBasicInfo {};
+    elementBasicInfo.windowId = accessibilityWindowId;
+    elementBasicInfo.treeId = treeId;
+    elementBasicInfo.elementId = elementId;
 
-    RetError ret = proxy_->SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId,
+    RetError ret = proxy_->SearchElementInfoByAccessibilityId(elementBasicInfo, requestId,
         elementOperator, mode, isFilter);
     if (ret != RET_OK) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId windowId :[%{pubic}d] Failed to wait result, Time out",

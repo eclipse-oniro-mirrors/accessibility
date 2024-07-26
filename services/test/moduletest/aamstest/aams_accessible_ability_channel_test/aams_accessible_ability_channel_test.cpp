@@ -182,8 +182,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    ElementBasicInfo info = {};
     RetError result =
-        AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(0, 0, 0, nullptr, 0, true);
+        AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(info, 0, nullptr, 0, true);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
@@ -208,8 +209,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    ElementBasicInfo info = {};
     RetError result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(
-        ACTIVE_WINDOW_ID, 0, 0, nullptr, 0, true);
+        info, 0, nullptr, 0, true);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
@@ -514,8 +516,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection(true);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    ElementBasicInfo info = {};
     RetError result =
-        AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(0, 0, 0, nullptr, 0, true);
+        AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(info, 0, nullptr, 0, true);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);

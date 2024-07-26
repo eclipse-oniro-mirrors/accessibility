@@ -1335,5 +1335,121 @@ HWTEST_F(AccessibilityElementInfoTest, SetBelongTreeId_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetBelongTreeId_001 end";
 }
 
+/**
+ * @tc.number: SetParentWindowId_001
+ * @tc.name: SetParentWindowId
+ * @tc.desc: Test function SetParentWindowId, GetParentWindowId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetParentWindowId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetParentWindowId_001 start";
+    elementInfo_->SetParentWindowId(1);
+    EXPECT_EQ(elementInfo_->GetParentWindowId(), 1);
+    GTEST_LOG_(INFO) << "SetParentWindowId_001 end";
+}
+
+/**
+ * @tc.number: SetAccessibilityGroup_001
+ * @tc.name: SetAccessibilityGroup
+ * @tc.desc: Test function SetAccessibilityGroup, GetAccessibilityGroup
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityGroup_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityGroup_001 start";
+    elementInfo_->SetAccessibilityGroup(false);
+    EXPECT_FALSE(elementInfo_->GetAccessibilityGroup());
+    GTEST_LOG_(INFO) << "SetAccessibilityGroup_001 end";
+}
+
+/**
+ * @tc.number: SetAccessibilityLevel_001
+ * @tc.name: SetAccessibilityLevel
+ * @tc.desc: Test function SetAccessibilityLevel, GetAccessibilityLevel
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityLevel_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityLevel_001 start";
+    elementInfo_->SetAccessibilityLevel("test");
+    EXPECT_STREQ(elementInfo_->GetAccessibilityLevel().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetAccessibilityLevel_001 end";
+}
+
+/**
+ * @tc.number: SetZIndex_001
+ * @tc.name: SetZIndex
+ * @tc.desc: Test function SetZIndex, GetZIndex
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetZIndex_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetZIndex_001 start";
+    elementInfo_->SetZIndex(1);
+    EXPECT_EQ(elementInfo_->GetZIndex(), 1);
+    GTEST_LOG_(INFO) << "SetZIndex_001 end";
+}
+
+/**
+ * @tc.number: SetOpacity_001
+ * @tc.name: SetOpacity
+ * @tc.desc: Test function SetOpacity, GetOpacity
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetOpacity_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetOpacity_001 start";
+    elementInfo_->SetOpacity(0.5f);
+    EXPECT_FLOAT_EQ(elementInfo_->GetOpacity(), 0.5f);
+    GTEST_LOG_(INFO) << "SetOpacity_001 end";
+}
+
+/**
+ * @tc.number: SetBackgroundColor_001
+ * @tc.name: SetBackgroundColor
+ * @tc.desc: Test function SetBackgroundColor, GetBackgroundColor
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetBackgroundColor_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetBackgroundColor_001 start";
+    elementInfo_->SetBackgroundColor("test");
+    EXPECT_STREQ(elementInfo_->GetBackgroundColor().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetBackgroundColor_001 end";
+}
+
+/**
+ * @tc.number: SetBackgroundImage_001
+ * @tc.name: SetBackgroundImage
+ * @tc.desc: Test function SetBackgroundImage, GetBackgroundImage
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetBackgroundImage_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetBackgroundImage_001 start";
+    elementInfo_->SetBackgroundImage("test");
+    EXPECT_STREQ(elementInfo_->GetBackgroundImage().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetBackgroundImage_001 end";
+}
+
+/**
+ * @tc.number: SetBlur_001
+ * @tc.name: SetBlur
+ * @tc.desc: Test function SetBlur, GetBlur
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetBlur_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetBlur_001 start";
+    elementInfo_->SetBlur("test");
+    EXPECT_STREQ(elementInfo_->GetBlur().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetBlur_001 end";
+}
+
+/**
+ * @tc.number: SetHitTestBehavior_001
+ * @tc.name: SetHitTestBehavior
+ * @tc.desc: Test function SetHitTestBehavior, GetHitTestBehavior
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetHitTestBehavior_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetHitTestBehavior_001 start";
+    elementInfo_->SetHitTestBehavior("test");
+    EXPECT_STREQ(elementInfo_->GetHitTestBehavior().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetHitTestBehavior_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

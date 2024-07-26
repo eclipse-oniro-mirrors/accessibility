@@ -119,6 +119,10 @@ bool AccessibilityGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
+            if (isDoubleTap_ && isLongpress_) {
+                HILOG_INFO("isDoubleTap and longpress, on down event");
+                return false;
+            }
             if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 HandleTouchDownEvent(event);
             } else {

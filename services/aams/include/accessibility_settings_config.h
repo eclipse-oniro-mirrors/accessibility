@@ -39,6 +39,8 @@ public:
     RetError SetCaptionState(const bool state);
     RetError SetScreenMagnificationState(const bool state);
     RetError SetShortKeyState(const bool state);
+    RetError SetShortKeyOnLockScreenState(const bool state);
+    RetError SetShortKeyTimeout(const int32_t time);
     RetError SetMouseKeyState(const bool state);
     RetError SetMouseAutoClick(const int32_t time);
     RetError SetShortkeyTarget(const std::string &name);
@@ -65,10 +67,12 @@ public:
     bool GetCaptionState() const;
     bool GetScreenMagnificationState() const;
     bool GetShortKeyState() const;
+    bool GetShortKeyOnLockScreenState() const;
+    int32_t GetShortKeyTimeout() const;
     bool GetMouseKeyState() const;
     int32_t GetMouseAutoClick() const;
     const std::string &GetShortkeyTarget() const;
-    const std::vector<std::string> &GetShortkeyMultiTarget() const;
+    const std::vector<std::string> GetShortkeyMultiTarget();
     bool GetHighContrastTextState() const;
     bool GetInvertColorState() const;
     bool GetAnimationOffState() const;
@@ -83,11 +87,12 @@ public:
     bool GetIgnoreRepeatClickState() const;
     uint32_t GetIgnoreRepeatClickTime() const;
 
-    const std::vector<std::string> &GetEnabledAccessibilityServices();
+    const std::vector<std::string> GetEnabledAccessibilityServices();
     RetError AddEnabledAccessibilityService(const std::string &serviceName);
     RetError RemoveEnabledAccessibilityService(const std::string &serviceName);
     uint32_t GetConfigState();
     bool GetStartFromAtoHosState();
+    void OnDataClone();
     std::shared_ptr<AccessibilityDatashareHelper> GetDbHandle()
     {
         return datashare_;
@@ -125,11 +130,14 @@ private:
     uint32_t clickResponseTime_ = 0;
     bool ignoreRepeatClickState_ = false;
     uint32_t ignoreRepeatClickTime_ = 0;
+    bool isShortKeyEnabledOnLockScreen_ = false;
+    int32_t shortKeyTimeout_ = 3;
 
     std::vector<std::string> shortkeyMultiTarget_ {};
     std::vector<std::string> enabledAccessibilityServices_ {}; // bundleName/abilityName
 
     std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
+    std::mutex interfaceMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

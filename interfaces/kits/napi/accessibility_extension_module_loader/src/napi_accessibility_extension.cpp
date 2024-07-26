@@ -350,7 +350,7 @@ napi_status SetNapiEventInfoIntProperty(napi_env env, const char *property, int6
         HILOG_ERROR("property is null");
         return napi_invalid_arg;
     }
-    napi_value nValue;
+    napi_value nValue = nullptr;
     napi_status status = napi_create_int64(env, value, &nValue);
     if (status != napi_ok) {
         return status;
@@ -364,7 +364,7 @@ napi_status SetEventInfoStrProperty(napi_env env, const char *property, std::str
         HILOG_ERROR("property is null");
         return napi_invalid_arg;
     }
-    napi_value nValue;
+    napi_value nValue = nullptr;
     napi_status status = napi_create_string_utf8(env, value.c_str(), NAPI_AUTO_LENGTH, &nValue);
     if (status != napi_ok) {
         HILOG_ERROR();
@@ -481,13 +481,13 @@ void NAccessibilityExtension::OnAccessibilityEventCompleteCallback(uv_work_t* wo
     napi_value napiEventInfo = nullptr;
     napi_create_object(data->env_, &napiEventInfo);
 
-    napi_value nType;
+    napi_value nType = nullptr;
     NAPI_CALL_RETURN_VOID(data->env_, napi_create_string_utf8(data->env_, data->eventType_.c_str(),
         NAPI_AUTO_LENGTH, &nType));
     NAPI_CALL_RETURN_VOID(data->env_, napi_set_named_property(data->env_, napiEventInfo, "eventType", nType));
     HILOG_DEBUG("eventType[%{public}s]", data->eventType_.c_str());
 
-    napi_value nTimeStamp;
+    napi_value nTimeStamp = nullptr;
     NAPI_CALL_RETURN_VOID(data->env_, napi_create_int64(data->env_, data->timeStamp_, &nTimeStamp));
     NAPI_CALL_RETURN_VOID(data->env_, napi_set_named_property(data->env_, napiEventInfo, "timeStamp", nTimeStamp));
 
