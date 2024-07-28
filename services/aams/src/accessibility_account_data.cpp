@@ -678,7 +678,7 @@ void AccessibilityAccountData::AddConfigCallback(
     configCallbacks_.push_back(callback);
 }
 
-const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks()
+const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> AccessibilityAccountData::GetConfigCallbacks()
 {
     HILOG_DEBUG("GetConfigCallbacks start.");
     std::lock_guard<std::mutex> lock(configCallbacksMutex_);

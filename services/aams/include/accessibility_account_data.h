@@ -260,7 +260,7 @@ public:
 
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
-    const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &GetConfigCallbacks();
+    const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> GetConfigCallbacks();
     void SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer);
 
     void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
