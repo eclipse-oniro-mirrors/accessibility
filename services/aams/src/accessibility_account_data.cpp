@@ -810,7 +810,7 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
         return 0;
     }
     uint32_t flag = 0;
-    if (isScreenMagnification_ && config_->GetScreenMagnificationState()) {
+    if (config_->GetScreenMagnificationState()) {
         flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION;
     }
     if (isEventTouchGuideState_) {

@@ -409,6 +409,10 @@ private:
     void OnDeviceProvisioned();
     void RegisterShortKeyEvent();
     bool IsNeedUnload();
+    void OnScreenMagnificationStateChanged();
+    void RegisterScreenMagnificationState();
+    void OnScreenMagnificationTypeChanged();
+    void RegisterScreenMagnificationType();
 
     bool isReady_ = false;
     bool isPublished_ = false;

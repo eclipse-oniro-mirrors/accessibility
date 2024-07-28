@@ -17,20 +17,29 @@
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "window_accessibility_controller.h"
+#include "accessibility_window_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr size_t POINTER_COUNT_1 = 1;
+    constexpr size_t POINTER_COUNT_2 = 2;
     constexpr float TAP_MIN_DISTANCE = 8.0f;
     constexpr int32_t MULTI_TAP_TIMER = 300; // ms
-    constexpr int32_t LONG_PRESS_TIMER = 500; // ms
+    constexpr int32_t LONG_PRESS_TIMER = 300; // ms
     constexpr int64_t US_TO_MS = 1000;
-    constexpr float MIN_SCALE_SPAN = 26.0f;
     constexpr float DOUBLE_TAP_SLOP = 100.0f;
     constexpr float HALF = 0.5f;
+    constexpr uint32_t DOUBLE = 2;
     constexpr uint32_t TRIPLE_TAP_COUNT = 3;
     constexpr float DEFAULT_SCALE = 2.0f;
+    constexpr float NORMAL_SCALE = 1.0f;
+    constexpr float MAX_SCALE = 8.0f;
+    constexpr uint32_t INPUT_METHOD_WINDOW_TYPE = 2105;
+    constexpr float EPS = 1e-6;
+    constexpr float MIN_SCROLL_SPAN = 10.0f;
+    constexpr float MIN_SCALE_SPAN = 20.0f;
+    constexpr float DEFAULT_ANCHOR = 0.5f;
 } // namespace
 
 AccessibilityZoomGesture::AccessibilityZoomGesture()
@@ -58,6 +67,38 @@ AccessibilityZoomGesture::AccessibilityZoomGesture()
 #endif
 }
 
+bool AccessibilityZoomGesture::IsTapOnInputMethod(MMI::PointerEvent &event)
+{
+    size_t pointerCount = event.GetPointerIds().size();
+    if (pointerCount != POINTER_COUNT_1) {
+        HILOG_DEBUG("not single finger.");
+        return false;
+    }
+    std::vector<AccessibilityWindowInfo> windowInfos =
+        Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
+    for (auto &window : windowInfos) {
+        if (window.GetWindowType() == INPUT_METHOD_WINDOW_TYPE) {
+            Rect inputRect = window.GetRectInScreen();
+            int32_t leftTopX = inputRect.GetLeftTopXScreenPostion();
+            int32_t leftTopY = inputRect.GetLeftTopYScreenPostion();
+            int32_t rightBottomX = inputRect.GetRightBottomXScreenPostion();
+            int32_t rightBottomY = inputRect.GetRightBottomYScreenPostion();
+            
+            MMI::PointerEvent::PointerItem item;
+            event.GetPointerItem(event.GetPointerId(), item);
+            int32_t itemX = item.GetDisplayX();
+            int32_t itemY = item.GetDisplayY();
+            if ((itemX >= leftTopX) && (itemX <= rightBottomX) &&
+            (itemY >= leftTopY) && (itemY <= rightBottomY)) {
+                HILOG_INFO("tap on input method window.");
+                return true;
+            }
+        }
+    }
+    HILOG_DEBUG("have no input method window.");
+    return false;
+}
+
 bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("state_ is %{public}d.", state_);
@@ -66,6 +107,11 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
     if (sourceType != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
         EventTransmission::OnPointerEvent(event);
         return false;
+    }
+
+    if (IsTapOnInputMethod(event)) {
+        EventTransmission::OnPointerEvent(event);
+        return true;
     }
 
     switch (state_) {
@@ -88,7 +134,7 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
 
 void AccessibilityZoomGesture::TransferState(ACCESSIBILITY_ZOOM_STATE state)
 {
-    HILOG_DEBUG("state:%{public}d.", state);
+    HILOG_DEBUG("old state= %{public}d, new state= %{public}d", state_, state);
 
     state_ = state;
 }
@@ -114,6 +160,12 @@ void AccessibilityZoomGesture::CacheEvents(MMI::PointerEvent &event)
                 HILOG_DEBUG("Cache pointer up");
                 preLastUpEvent_ = lastUpEvent_;
                 lastUpEvent_ = pointerEvent;
+            }
+            break;
+        case MMI::PointerEvent::POINTER_ACTION_MOVE:
+            if (pointerCount == POINTER_COUNT_1) {
+                HILOG_DEBUG("Cache pointer move.");
+                currentMoveEvent_ = pointerEvent;
             }
             break;
         default:
@@ -191,6 +243,14 @@ void AccessibilityZoomGesture::RecognizeInReadyState(MMI::PointerEvent &event)
                 HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
             }
             break;
+        case MMI::PointerEvent::POINTER_ACTION_MOVE:
+            if ((pointerCount == POINTER_COUNT_1) && IsMoveValid()) {
+                HILOG_DEBUG("move valid.");
+            } else {
+                SendCacheEventsToNext();
+                HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
+            }
+            break;
         case MMI::PointerEvent::POINTER_ACTION_CANCEL:
             SendCacheEventsToNext();
             break;
@@ -208,7 +268,8 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
     HILOG_DEBUG();
 
     int32_t action = event.GetPointerAction();
-    size_t pointerCount = event.GetPointerIds().size();
+    std::vector<int32_t> pointerIdList = event.GetPointerIds();
+    size_t pointerCount = pointerIdList.size();
     bool isTripleTaps = false;
 
     HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
@@ -221,21 +282,18 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
                 } else {
                     SendCacheEventsToNext();
                 }
-            } else if (pointerCount > POINTER_COUNT_1) {
+            } else if (pointerCount == POINTER_COUNT_2) {
                 TransferState(SLIDING_STATE);
                 ClearCacheEventsAndMsg();
                 ZOOM_FOCUS_COORDINATE focusXY = {0.0f, 0.0f};
                 CalcFocusCoordinate(event, focusXY);
-                // Used for scroll algorithm.
                 lastScrollFocusX_ = focusXY.centerX;
                 lastScrollFocusY_ = focusXY.centerY;
 
-                // Used for scale algorithm.
                 float span = CalcScaleSpan(event, focusXY);
-                if (span >= MIN_SCALE_SPAN) {
-                    startScaling_ = true;
-                    preSpan_ = lastSpan_ = span;
-                }
+                preSpan_ = lastSpan_ = span;
+            } else {
+                HILOG_INFO("invalid pointer count.");
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
@@ -243,6 +301,14 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
                 isTripleTaps = IsTripleTaps();
             } else {
                 SendCacheEventsToNext();
+            }
+            break;
+        case MMI::PointerEvent::POINTER_ACTION_MOVE:
+            if ((pointerCount == POINTER_COUNT_1) && IsMoveValid()) {
+                HILOG_DEBUG("move valid.");
+            } else {
+                SendCacheEventsToNext();
+                HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_CANCEL:
@@ -264,10 +330,13 @@ void AccessibilityZoomGesture::RecognizeInSlidingState(MMI::PointerEvent &event)
 
     int32_t action = event.GetPointerAction();
     size_t pointerCount = event.GetPointerIds().size();
+    ZOOM_FOCUS_COORDINATE coordinate = {0.0f, 0.0f};
+    CalcFocusCoordinate(event, coordinate);
 
-    // Recognize scroll and zoom gestures.
-    RecognizeScroll(event);
-    RecognizeScale(event);
+    if (pointerCount == POINTER_COUNT_2) {
+        RecognizeScale(event, coordinate);
+        RecognizeScroll(event, coordinate);
+    }
 
     HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
     switch (action) {
@@ -284,14 +353,11 @@ void AccessibilityZoomGesture::RecognizeInSlidingState(MMI::PointerEvent &event)
     }
 }
 
-void AccessibilityZoomGesture::RecognizeScroll(MMI::PointerEvent &event)
+void AccessibilityZoomGesture::RecognizeScroll(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE &coordinate)
 {
     HILOG_DEBUG();
 
     int32_t action = event.GetPointerAction();
-    ZOOM_FOCUS_COORDINATE coordinate = {0.0f, 0.0f};
-    CalcFocusCoordinate(event, coordinate);
-
     switch (action) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
         case MMI::PointerEvent::POINTER_ACTION_UP:
@@ -301,7 +367,7 @@ void AccessibilityZoomGesture::RecognizeScroll(MMI::PointerEvent &event)
         case MMI::PointerEvent::POINTER_ACTION_MOVE: {
             float offsetX = coordinate.centerX - lastScrollFocusX_;
             float offsetY = coordinate.centerY - lastScrollFocusY_;
-            if ((abs(offsetX) > 1) || (abs(offsetY) > 1)) {
+            if ((abs(offsetX) > MIN_SCROLL_SPAN) || (abs(offsetY) > MIN_SCROLL_SPAN)) {
                 lastScrollFocusX_ = coordinate.centerX;
                 lastScrollFocusY_ = coordinate.centerY;
                 OnScroll(offsetX, offsetY);
@@ -313,13 +379,13 @@ void AccessibilityZoomGesture::RecognizeScroll(MMI::PointerEvent &event)
     }
 }
 
-void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event)
+void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE &coordinate)
 {
     HILOG_DEBUG();
 
     int32_t action = event.GetPointerAction();
     size_t pointerCount = event.GetPointerIds().size();
-    if (((action == MMI::PointerEvent::POINTER_ACTION_UP) && (pointerCount == POINTER_COUNT_1)) ||
+    if (((action == MMI::PointerEvent::POINTER_ACTION_UP) && (pointerCount != POINTER_COUNT_2)) ||
         (action == MMI::PointerEvent::POINTER_ACTION_CANCEL)) {
         HILOG_DEBUG("Scaling is end");
         startScaling_ = false;
@@ -327,19 +393,24 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event)
         return;
     }
 
-    ZOOM_FOCUS_COORDINATE focusXY = {0.0f, 0.0f};
-    CalcFocusCoordinate(event, focusXY);
-    float span = CalcScaleSpan(event, focusXY);
+    float span = CalcScaleSpan(event, coordinate);
+
+    if (action == MMI::PointerEvent::POINTER_ACTION_MOVE) {
+        if (abs(preSpan_ - span) >= MIN_SCALE_SPAN) {
+            startScaling_ = true;
+            HILOG_DEBUG("start scaling.");
+        }
+    }
     if (!startScaling_) {
         // When the span is greater than or equal to MIN_SCALE_SPAN, start scaling.
-        if (span >= MIN_SCALE_SPAN) {
+        if (abs(preSpan_ - span) >= MIN_SCALE_SPAN) {
             startScaling_ = true;
-            preSpan_ = lastSpan_ = span;
+            HILOG_DEBUG("start scaling.");
         }
     } else {
         // When the span is smaller than the MIN_SCALE_SPAN,
         // the scale recognition will be restarted.
-        if (span < MIN_SCALE_SPAN) {
+        if (abs(lastSpan_ - span) < 1) {
             startScaling_ = false;
             preSpan_ = lastSpan_ = span;
         }
@@ -358,12 +429,11 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event)
         HILOG_DEBUG("Action(%{public}d) is not move", action);
         return;
     }
-    
-    lastSpan_ = span;
-    float ratio = lastSpan_ / preSpan_;
-    if (ratio != 1) {
-        OnScale(ratio, focusXY.centerX, focusXY.centerY);
-        preSpan_ = lastSpan_;
+
+    float scaleSpan = (span - lastSpan_) * scaleRatio_;
+    if (scaleSpan != 0) {
+        OnScale(scaleSpan);
+        lastSpan_ = span;
     }
 }
 
@@ -399,8 +469,8 @@ void AccessibilityZoomGesture::CalcFocusCoordinate(MMI::PointerEvent &event, ZOO
         }
         MMI::PointerEvent::PointerItem item;
         event.GetPointerItem(pointerId, item);
-        sumX += static_cast<float>(item.GetDisplayX());
-        sumY += static_cast<float>(item.GetDisplayY());
+        sumX += static_cast<float>(item.GetRawDisplayX());
+        sumY += static_cast<float>(item.GetRawDisplayY());
     }
 
     coordinate.centerX = sumX / count;
@@ -441,8 +511,8 @@ float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOC
         }
         MMI::PointerEvent::PointerItem item;
         event.GetPointerItem(pointerId, item);
-        sumSpanX += static_cast<float>(abs(item.GetDisplayX() - coordinate.centerX));
-        sumSpanY += static_cast<float>(abs(item.GetDisplayY() - coordinate.centerY));
+        sumSpanX += static_cast<float>(abs(item.GetRawDisplayX() - coordinate.centerX));
+        sumSpanY += static_cast<float>(abs(item.GetRawDisplayY() - coordinate.centerY));
     }
 
     float spanX = sumSpanX / count;
@@ -483,6 +553,27 @@ bool AccessibilityZoomGesture::IsUpValid()
     }
 
     if (CalcSeparationDistance(lastDownEvent_, lastUpEvent_) >= tapDistance_) {
+        HILOG_DEBUG("The distance has exceeded the threshold");
+        return false;
+    }
+    return true;
+}
+
+bool AccessibilityZoomGesture::IsMoveValid()
+{
+    HILOG_DEBUG();
+
+    if (!lastDownEvent_) {
+        HILOG_DEBUG("The move event is invailid");
+        return false;
+    }
+
+    if (CalcIntervalTime(lastDownEvent_, currentMoveEvent_) >= LONG_PRESS_TIMER) {
+        HILOG_DEBUG("The time has exceeded the long press time");
+        return false;
+    }
+
+    if (CalcSeparationDistance(lastDownEvent_, currentMoveEvent_) >= tapDistance_) {
         HILOG_DEBUG("The distance has exceeded the threshold");
         return false;
     }
@@ -599,31 +690,127 @@ void AccessibilityZoomGesture::ZoomGestureEventHandler::ProcessEvent(const AppEx
 void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
 {
     HILOG_DEBUG("anchorX:%{public}d, anchorY:%{public}d.", anchorX, anchorY);
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
+    if (currentScreen != screenId_) {
+        HILOG_INFO("display id changed.");
+        screenId_ = currentScreen;
+        sptr<Rosen::Display> display = displayMgr.GetDisplay(screenId_);
+        screenWidth_ = display->GetWidth();
+        screenHeight_ = display->GetHeight();
+        screenSpan_ = hypot(screenWidth_, screenHeight_);
+    }
+    if (screenWidth_ == 0 || screenHeight_ == 0) {
+        HILOG_ERROR("screen param invalid.");
+        return;
+    }
+    anchorPointX_ = static_cast<float>(anchorX);
+    anchorPointY_ = static_cast<float>(anchorY);
 
-    OHOS::Rosen::WindowAccessibilityController::GetInstance().SetAnchorAndScale(anchorX, anchorY, DEFAULT_SCALE);
+    float x = anchorPointX_ / screenWidth_;
+    float y = anchorPointY_ / screenHeight_;
+    scaleRatio_ = DEFAULT_SCALE;
+    displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
+#else
+    HILOG_INFO("not support zoom");
+    return;
+#endif
 }
 
 void AccessibilityZoomGesture::OffZoom()
 {
     HILOG_DEBUG();
 
-    OHOS::Rosen::WindowAccessibilityController::GetInstance().OffWindowZoom();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
+    displayMgr.SetDisplayScale(currentScreen, NORMAL_SCALE, NORMAL_SCALE, DEFAULT_ANCHOR, DEFAULT_ANCHOR);
+#else
+    HILOG_INFO("not support zoom");
+    return;
+#endif
 }
 
 void AccessibilityZoomGesture::OnScroll(float offsetX, float offsetY)
 {
     HILOG_DEBUG("offsetX:%{public}f, offsetY:%{public}f.", offsetX, offsetY);
 
-    OHOS::Rosen::WindowAccessibilityController::GetInstance().SetAnchorOffset(
-        static_cast<int32_t>(offsetX), static_cast<int32_t>(offsetY));
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
+    if (currentScreen != screenId_) {
+        HILOG_INFO("display id changed.");
+        screenId_ = currentScreen;
+        sptr<Rosen::Display> display = displayMgr.GetDisplay(screenId_);
+        screenWidth_ = display->GetWidth();
+        screenHeight_ = display->GetHeight();
+        screenSpan_ = hypot(screenWidth_, screenHeight_);
+    }
+    if (screenWidth_ == 0 || screenHeight_ == 0) {
+        HILOG_ERROR("screen param invalid.");
+        return;
+    }
+    anchorPointX_ -= (offsetX * DOUBLE / scaleRatio_);
+    anchorPointY_ -= (offsetY * DOUBLE / scaleRatio_);
+
+    if (anchorPointX_ < 0) {
+        anchorPointX_ = 0;
+    }
+    if (anchorPointX_ > screenWidth_) {
+        anchorPointX_ = screenWidth_;
+    }
+    if (anchorPointY_ < 0) {
+        anchorPointY_ = 0;
+    }
+    if (anchorPointY_ > screenHeight_) {
+        anchorPointY_ = screenHeight_;
+    }
+
+    float x = anchorPointX_ / screenWidth_;
+    float y = anchorPointY_ / screenHeight_;
+    displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
+#else
+    HILOG_INFO("not support zoom");
+    return;
+#endif
 }
 
-void AccessibilityZoomGesture::OnScale(float scaleRatio, float focusX, float focusY)
+void AccessibilityZoomGesture::OnScale(float scaleSpan)
 {
-    HILOG_DEBUG("scaleRatio:%{public}f, focusX:%{public}f, focusY:%{public}f.", scaleRatio, focusX, focusY);
+    HILOG_DEBUG();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
+    if (currentScreen != screenId_) {
+        HILOG_INFO("display id changed.");
+        screenId_ = currentScreen;
+        sptr<Rosen::Display> display = displayMgr.GetDisplay(screenId_);
+        screenWidth_ = display->GetWidth();
+        screenHeight_ = display->GetHeight();
+        screenSpan_ = hypot(screenWidth_, screenHeight_);
+    }
+    if (screenWidth_ == 0 || screenHeight_ == 0 || abs(screenSpan_) < EPS) {
+        HILOG_ERROR("screen param invalid.");
+        return;
+    }
 
-    OHOS::Rosen::WindowAccessibilityController::GetInstance().SetAnchorAndScale(
-        static_cast<int32_t>(focusX), static_cast<int32_t>(focusY), scaleRatio);
+    float ratio = scaleSpan / screenSpan_;
+    scaleRatio_ = scaleRatio_ + ratio;
+    if (scaleRatio_ > MAX_SCALE) {
+        scaleRatio_ = MAX_SCALE;
+    }
+    if (scaleRatio_ < DEFAULT_SCALE) {
+        scaleRatio_ = DEFAULT_SCALE;
+    }
+
+    float x = anchorPointX_ / screenWidth_;
+    float y = anchorPointY_ / screenHeight_;
+    displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
+#else
+    HILOG_INFO("not support zoom");
+    return;
+#endif
 }
 } // namespace Accessibility
 } // namespace OHOS
