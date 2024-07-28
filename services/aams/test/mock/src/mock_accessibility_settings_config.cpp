@@ -66,6 +66,13 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationState(const bool sta
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t type)
+{
+    HILOG_DEBUG("start.");
+    screenMagnificationType_ = type;
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
 {
     HILOG_DEBUG("start.");

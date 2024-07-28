@@ -54,6 +54,8 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string USER_SETUP_COMPLETED = "user_setup_complete";
+    const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
+    const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
     const std::string DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
@@ -238,6 +240,8 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         HILOG_DEBUG("AAMS is ready!");
         RegisterShortKeyEvent();
         PostDelayUnloadTask();
+        RegisterScreenMagnificationState();
+        RegisterScreenMagnificationType();
         }, "OnAddSystemAbility");
 }
 
@@ -1592,7 +1596,6 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
 
     std::map<std::string, uint32_t> importantEnabledAbilities;
     SCREENREADER_STATE screenReaderState = SCREENREADER_STATE::UNINIT;
-    // Clear last account's data
     if (currentAccountId_ != -1) {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1607,11 +1610,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         accountData->OnAccountSwitched();
         UpdateAccessibilityManagerService();
     }
-
-    // Switch account id
     currentAccountId_ = accountId;
-
-    // Initialize data for current account
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr.");
@@ -1641,6 +1640,8 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     UpdateAllSetting();
     UpdateAutoStartAbilities();
     RegisterShortKeyEvent();
+    RegisterScreenMagnificationState();
+    RegisterScreenMagnificationType();
 }
 
 void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
@@ -2666,6 +2667,105 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
             }
         }
         }, "REGISTER_SHORTKEY_OBSERVER");
+}
+
+void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    bool screenMagnificationEnabled = false;
+    screenMagnificationEnabled = config->GetDbHandle()->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
+    config->SetScreenMagnificationState(screenMagnificationEnabled);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
+}
+
+void AccessibleAbilityManagerService::RegisterScreenMagnificationState()
+{
+    HILOG_DEBUG();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().OnScreenMagnificationStateChanged();
+        };
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(SCREEN_MAGNIFICATION_KEY, func);
+        }
+        }, "REGISTER_SCREEN_ZOOM_OBSERVER");
+}
+
+void AccessibleAbilityManagerService::OnScreenMagnificationTypeChanged()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    uint32_t screenMagnificationType = 0;
+    screenMagnificationType =
+        static_cast<int64_t>(config->GetDbHandle()->GetIntValue(SCREEN_MAGNIFICATION_TYPE, 0));
+    config->SetScreenMagnificationType(screenMagnificationType);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
+}
+
+void AccessibleAbilityManagerService::RegisterScreenMagnificationType()
+{
+    HILOG_DEBUG();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().OnScreenMagnificationTypeChanged();
+        };
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(SCREEN_MAGNIFICATION_TYPE, func);
+        }
+        }, "REGISTER_SCREEN_ZOOM_TYPE_OBSERVER");
 }
 
 void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
