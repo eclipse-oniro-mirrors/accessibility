@@ -383,6 +383,12 @@ private:
     void RecordReceivedEvent(MMI::PointerEvent &event);
 
     /**
+     * @brief Send touch event to specific AccessibleAbility.
+     * @param event the touch event from Multimodal
+     */
+    void SendTouchEventToAA(MMI::PointerEvent &event);
+
+    /**
      * @brief Clear received recorder info.
      */
     void ClearReceivedEventRecorder();
