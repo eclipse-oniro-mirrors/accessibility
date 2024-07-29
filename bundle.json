@@ -18,11 +18,7 @@
       "SystemCapability.BarrierFree.Accessibility.Hearing",
       "SystemCapability.BarrierFree.Accessibility.Vision"
     ],
-    "features": [
-      "accessibility_feature_power_manager",
-      "accessibility_feature_display_manager",
-      "accessibility_feature_data_share"
-    ],
+    "features": [ "accessibility_feature_coverage = false" ],
     "adapted_system_type": [
       "standard"
     ],
