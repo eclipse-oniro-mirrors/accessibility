@@ -48,10 +48,13 @@ void AccessibleAbilityClientProxy::Disconnect(const int32_t channelId)
 void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientProxy OnAccessibilityEvent";
+    int32_t gestureId = static_cast<int32_t>(eventInfo.GetGestureType());
+    if (gestureId != 0) {
+        AccessibilityHelper::GetInstance().SetGestureId(gestureId);
+    }
     AccessibilityHelper::GetInstance().SetTestWindowId(eventInfo.GetWindowId());
     AccessibilityHelper::GetInstance().SetTestWindowChangeTypes(eventInfo.GetWindowChangeTypes());
     AccessibilityHelper::GetInstance().SetTestEventType(int32_t(eventInfo.GetEventType()));
-    AccessibilityHelper::GetInstance().SetGestureId(int32_t(eventInfo.GetGestureType()));
 
     switch (eventInfo.GetEventType()) {
         case TYPE_TOUCH_GUIDE_GESTURE_BEGIN:
