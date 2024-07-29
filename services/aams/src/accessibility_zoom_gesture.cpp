@@ -687,20 +687,33 @@ void AccessibilityZoomGesture::ZoomGestureEventHandler::ProcessEvent(const AppEx
     }
 }
 
+void AccessibilityZoomGesture::GetWindowParam()
+{
+    HILOG_DEBUG();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
+    OHOS::Rosen::DisplayOrientation currentOrientation = displayMgr.GetOrientation();
+    if ((currentScreen != screenId_) || (currentOrientation != orientation_)) {
+        HILOG_INFO("display id or orientation changed.");
+        screenId_ = currentScreen;
+        orientation_ = currentOrientation;
+        sptr<Rosen::Display> display = displayMgr.GetDisplay(screenId_);
+        screenWidth_ = display->GetWidth();
+        screenHeight_ = display->GetHeight();
+        HILOG_INFO("screenWidth_ = %{public}d, screenHeight_ = %{public}d.", screenWidth_, screenHeight_);
+    }
+    screenSpan_ = hypot(screenWidth_, screenHeight_);
+#else
+    HILOG_INFO("not support zoom");
+#endif
+}
+
 void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
 {
     HILOG_DEBUG("anchorX:%{public}d, anchorY:%{public}d.", anchorX, anchorY);
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-    uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
-    if (currentScreen != screenId_) {
-        HILOG_INFO("display id changed.");
-        screenId_ = currentScreen;
-        sptr<Rosen::Display> display = displayMgr.GetDisplay(screenId_);
-        screenWidth_ = display->GetWidth();
-        screenHeight_ = display->GetHeight();
-        screenSpan_ = hypot(screenWidth_, screenHeight_);
-    }
+    GetWindowParam();
     if (screenWidth_ == 0 || screenHeight_ == 0) {
         HILOG_ERROR("screen param invalid.");
         return;
@@ -711,6 +724,7 @@ void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
     float x = anchorPointX_ / screenWidth_;
     float y = anchorPointY_ / screenHeight_;
     scaleRatio_ = DEFAULT_SCALE;
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
 #else
     HILOG_INFO("not support zoom");
@@ -721,7 +735,6 @@ void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
 void AccessibilityZoomGesture::OffZoom()
 {
     HILOG_DEBUG();
-
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
@@ -735,20 +748,15 @@ void AccessibilityZoomGesture::OffZoom()
 void AccessibilityZoomGesture::OnScroll(float offsetX, float offsetY)
 {
     HILOG_DEBUG("offsetX:%{public}f, offsetY:%{public}f.", offsetX, offsetY);
-
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-    uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
-    if (currentScreen != screenId_) {
-        HILOG_INFO("display id changed.");
-        screenId_ = currentScreen;
-        sptr<Rosen::Display> display = displayMgr.GetDisplay(screenId_);
-        screenWidth_ = display->GetWidth();
-        screenHeight_ = display->GetHeight();
-        screenSpan_ = hypot(screenWidth_, screenHeight_);
-    }
+    GetWindowParam();
     if (screenWidth_ == 0 || screenHeight_ == 0) {
         HILOG_ERROR("screen param invalid.");
+        return;
+    }
+
+    if (abs(scaleRatio_) < EPS) {
+        HILOG_ERROR("scaleRatio_ param invalid.");
         return;
     }
     anchorPointX_ -= (offsetX * DOUBLE / scaleRatio_);
@@ -769,6 +777,7 @@ void AccessibilityZoomGesture::OnScroll(float offsetX, float offsetY)
 
     float x = anchorPointX_ / screenWidth_;
     float y = anchorPointY_ / screenHeight_;
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
 #else
     HILOG_INFO("not support zoom");
@@ -780,16 +789,7 @@ void AccessibilityZoomGesture::OnScale(float scaleSpan)
 {
     HILOG_DEBUG();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-    uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
-    if (currentScreen != screenId_) {
-        HILOG_INFO("display id changed.");
-        screenId_ = currentScreen;
-        sptr<Rosen::Display> display = displayMgr.GetDisplay(screenId_);
-        screenWidth_ = display->GetWidth();
-        screenHeight_ = display->GetHeight();
-        screenSpan_ = hypot(screenWidth_, screenHeight_);
-    }
+    GetWindowParam();
     if (screenWidth_ == 0 || screenHeight_ == 0 || abs(screenSpan_) < EPS) {
         HILOG_ERROR("screen param invalid.");
         return;
@@ -806,6 +806,7 @@ void AccessibilityZoomGesture::OnScale(float scaleSpan)
 
     float x = anchorPointX_ / screenWidth_;
     float y = anchorPointY_ / screenHeight_;
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
 #else
     HILOG_INFO("not support zoom");

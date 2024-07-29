@@ -2659,6 +2659,22 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
         }, "REGISTER_SHORTKEY_OBSERVER");
 }
 
+void AccessibleAbilityManagerService::OffZoomGesture()
+{
+    HILOG_DEBUG();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
+    float normalScale = 1.0f;
+    float defaultAnchor = 0.5f;
+    displayMgr.SetDisplayScale(currentScreen, normalScale, normalScale, defaultAnchor, defaultAnchor);
+    return;
+#else
+    HILOG_INFO("not support zoom");
+    return;
+#endif
+}
+
 void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
 {
     HILOG_DEBUG();
@@ -2683,6 +2699,9 @@ void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
     screenMagnificationEnabled = config->GetDbHandle()->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
     config->SetScreenMagnificationState(screenMagnificationEnabled);
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
+    if (!screenMagnificationEnabled) {
+        OffZoomGesture();
+    }
 }
 
 void AccessibleAbilityManagerService::RegisterScreenMagnificationState()
