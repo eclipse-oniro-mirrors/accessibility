@@ -24,6 +24,7 @@ namespace Accessibility {
 namespace {
     constexpr uint32_t DEFAULT_COLOR = 0xff000000;
     const int32_t DEFAULT_SCALE = 100;
+    const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const std::string ACCESSIBILITY = "accessibility";
     const std::string TOUCH_GUIDE_STATE = "touch_guide_state";
@@ -703,7 +704,6 @@ void AccessibilitySettingsConfig::OnDataClone()
     } else if (clickResponseTime_ > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
         SetClickResponseTime(AccessibilityConfig::ResponseDelayLong);
     }
-
     if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
         SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutShort);
     } else if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
@@ -713,7 +713,6 @@ void AccessibilitySettingsConfig::OnDataClone()
     } else if (ignoreRepeatClickTime_ > DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
         SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutLongest);
     }
-
     if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_GREEN) {
         SetDaltonizationColorFilter(AccessibilityConfig::Deuteranomaly);
     } else if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_RED) {
@@ -721,21 +720,33 @@ void AccessibilitySettingsConfig::OnDataClone()
     } else if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_BLUE) {
         SetDaltonizationColorFilter(AccessibilityConfig::Tritanomaly);
     }
+    // 1->1000 0->3000
+    if (shortKeyTimeout_ == 1) {
+        shortKeyTimeout_ = SHORT_KEY_TIMEOUT_AFTER_USE;
+    } else {
+        shortKeyTimeout_ = SHORT_KEY_TIMEOUT_BEFORE_USE;
+    }
 
+    auto cleanFunc = [] (std::vector<std::string> &services) -> int {
+        int count = 0;
+        for (auto iter = services.begin(); iter != services.end();) {
+            if (iter->find(SCREENREADER_TAG) != std::string::npos) {
+                iter = services.erase(iter);
+                count++;
+            } else {
+                iter++;
+            }
+        }
+        return count;
+    };
     std::vector<std::string> tmpVec = GetShortkeyMultiTarget();
-    auto iter = std::find_if(tmpVec.begin(), tmpVec.end(),
-        [] (const std::string& service) { return service.find(SCREENREADER_TAG) != std::string::npos; });
-    if (iter != tmpVec.end()) {
-        tmpVec.erase(iter);
+    if (cleanFunc(tmpVec) != 0) {
         tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
         SetShortkeyMultiTarget(tmpVec);
     }
 
     tmpVec = GetEnabledAccessibilityServices();
-    iter = std::find_if(tmpVec.begin(), tmpVec.end(),
-        [] (const std::string& service) { return service.find(SCREENREADER_TAG) != std::string::npos; });
-    if (iter != tmpVec.end()) {
-        RemoveEnabledAccessibilityService(*iter);
+    if (cleanFunc(tmpVec) != 0) {
         AddEnabledAccessibilityService(SCREEN_READER_BUNDLE_ABILITY_NAME);
     }
 
