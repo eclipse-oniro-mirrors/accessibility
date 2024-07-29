@@ -131,7 +131,8 @@ Rosen::FoldDisplayMode AccessibilityDisplayManager::GetFoldDisplayMode()
 void AccessibilityDisplayManager::SetDisplayScale(const uint64_t screenId,
     float scaleX, float scaleY, float pivotX, float pivotY)
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("scaleX = %{public}f, scaleY = %{public}f, pivotX = %{public}f, pivotY = %{public}f",
+        scaleX, scaleY, pivotX, pivotY);
     Rosen::DisplayManager::GetInstance().SetDisplayScale(screenId, scaleX,
         scaleY, pivotX, pivotY);
 }

@@ -19,6 +19,7 @@
 #include "accessibility_event_transmission.h"
 #include "event_handler.h"
 #include "pointer_event.h"
+#include "dm_common.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -77,6 +78,7 @@ private:
         std::shared_ptr<MMI::PointerEvent> secondEvent);
     float CalcSeparationDistance(std::shared_ptr<MMI::PointerEvent> firstEvent,
         std::shared_ptr<MMI::PointerEvent> secondEvent);
+    void GetWindowParam();
     void OnZoom(int32_t centerX, int32_t centerY);
     void OffZoom();
     void OnScroll(float offsetX, float offsetY);
@@ -97,6 +99,8 @@ private:
     float anchorPointY_ = 0.0f;
     float scaleRatio_ = 2.0f;
     ACCESSIBILITY_ZOOM_STATE state_ = READY_STATE;
+    OHOS::Rosen::DisplayOrientation orientation_ =
+        OHOS::Rosen::DisplayOrientation::UNKNOWN;
     std::shared_ptr<MMI::PointerEvent> preLastDownEvent_ = nullptr;
     std::shared_ptr<MMI::PointerEvent> lastDownEvent_ = nullptr;
     std::shared_ptr<MMI::PointerEvent> preLastUpEvent_ = nullptr;
