@@ -104,6 +104,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER, HandleRegisterEnableAbilityListsObserver)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_FOCUSED_WINDOW_ID, HandleGetFocusedWindowId)\
     SWITCH_CASE(AccessibilityInterfaceCode::REMOVE_REQUEST_ID, HandleRemoveRequestId)\
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_ROOT_PARENT_ID, HandleGetRootParentId) \
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_ALL_TREE_ID, HandleGetAllTreeId) \
 
 namespace OHOS {
 namespace Accessibility {
