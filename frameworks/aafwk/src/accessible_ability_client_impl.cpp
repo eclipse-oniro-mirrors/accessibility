@@ -1230,6 +1230,12 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
         return ret;
     }
 
+    ret = SearchElementInfoRecursiveByWinid(windowId, ROOT_NONE_ID, GET_SOURCE_MODE, elementInfos, ROOT_TREE_ID);
+    if (ret != RET_OK) {
+        HILOG_ERROR("get window element failed.");
+        return ret;
+    }
+
     if (elementInfos.empty()) {
         HILOG_ERROR("elementInfos from ace is empty");
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
@@ -1237,7 +1243,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
     SortElementInfosIfNecessary(elementInfos);
     for (auto &info : elementInfos) {
         if (info.GetInspectorKey() == inspectorKey) {
-            HILOG_DEBUG();
+            HILOG_INFO("find elementInfo by inspectorKey success");
             elementInfo = info;
             return RET_OK;
         }
