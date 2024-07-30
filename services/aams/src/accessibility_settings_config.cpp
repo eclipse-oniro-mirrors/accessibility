@@ -188,14 +188,20 @@ RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<std::string> &name)
 {
     HILOG_DEBUG();
+    std::set<std::string> targets;
+    std::for_each(name.begin(), name.end(), [&](const std::string &target) {
+        if (targets.find(target) == targets.end()) {
+            targets.insert(target);
+        }
+    })
     std::lock_guard<std::mutex> lock(interfaceMutex_);
-    shortkeyMultiTarget_ = name;
+    shortkeyMultiTarget_ = std::vector<std::string>(targets.begin(), targets.end());
     if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
     std::string stringOut = "";
-    Utils::VectorToString(name, stringOut);
+    Utils::VectorToString(shortkeyMultiTarget_, stringOut);
     return datashare_->PutStringValue(SHORTCUT_SERVICE, stringOut);
 }
 
