@@ -906,6 +906,7 @@ void ConvertActionArgsJSToNAPI(
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     std::string str = "";
+    std::map<std::string, std::string> scrollValueMap = { {"halfScreen", "0"}, {"fullScreen", "1"} };
     bool seleFlag = false;
     switch (action) {
         case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
@@ -954,6 +955,36 @@ void ConvertActionArgsJSToNAPI(
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
                 args.insert(std::pair<std::string, std::string>("setText", str.c_str()));
+            }
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
+            napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
+            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+            if (hasProperty) {
+                if (scrollValueMap.find(str)!= scrollValueMap.end()) {
+                    std::string scrollvalue = scrollValueMap.find(str)->second;
+                    args.insert(std::pair<std::string, std::string>("scrolltype", scrollvalue.c_str()));
+                    HILOG_DEBUG("Input %{public}s, ScrollValue %{public}s", str.c_str(), scrollvalue.c_str());
+                } else {
+                    str = "1";
+                    args.insert(std::pair<std::string, std::string>("scrolltype", str.c_str()));
+                    HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
+                }
+            }
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
+            napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
+            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+            if (hasProperty) {
+                if (scrollValueMap.find(str)!= scrollValueMap.end()) {
+                    std::string scrollvalue = scrollValueMap.find(str)->second;
+                    args.insert(std::pair<std::string, std::string>("scrolltype", scrollvalue.c_str()));
+                    HILOG_DEBUG("Input %{public}s, ScrollValue %{public}s", str.c_str(), scrollvalue.c_str());
+                } else {
+                    str = "1";
+                    args.insert(std::pair<std::string, std::string>("scrolltype", str.c_str()));
+                    HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
+                }
             }
             break;
         default:
