@@ -58,6 +58,8 @@ namespace {
     const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
     const std::string DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
+    const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
+    constexpr int32_t INVALID_SHORTCUT_STATE = 2;
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
     constexpr uint32_t TIME_OUT_OPERATOR = 5000;
@@ -2647,11 +2649,12 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
         AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
         bool oobeState = false;
         bool userSetupState = false;
+        auto dbHandle = accountData->GetConfig()->GetDbHandle();
         provider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
-        if (accountData->GetConfig()->GetDbHandle()) {
-            userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
+        if (dbHandle != nullptr) {
+            userSetupState = dbHandle->GetBoolValue(USER_SETUP_COMPLETED, false);
         }
-        if (oobeState == false || userSetupState == false) {
+        if (accountData->GetAccountId() == DEFAULT_ACCOUNT_ID && (oobeState == false || userSetupState == false)) {
             HILOG_DEBUG();
             accountData->GetConfig()->SetShortKeyState(true);
             std::vector<std::string> tmpVec { SCREEN_READER_BUNDLE_ABILITY_NAME };
@@ -2662,8 +2665,17 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
                 Singleton<AccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
             };
             provider.RegisterObserver(DEVICE_PROVISIONED, func);
-            if (accountData->GetConfig()->GetDbHandle()) {
-                accountData->GetConfig()->GetDbHandle()->RegisterObserver(USER_SETUP_COMPLETED, func);
+            if (dbHandle != nullptr) {
+                dbHandle->RegisterObserver(USER_SETUP_COMPLETED, func);
+            }
+        } else if (accountData->GetAccountId() != DEFAULT_ACCOUNT_ID && dbHandle != nullptr) {
+            if (dbHandle->GetIntValue(SHORTCUT_ENABLED, INVALID_SHORTCUT_STATE) == INVALID_SHORTCUT_STATE) {
+                HILOG_INFO("Initialize the shortcut key state of PrivateSpace");
+                accountData->GetConfig()->SetShortKeyState(true);
+                std::vector<std::string> tmpVec { SCREEN_READER_BUNDLE_ABILITY_NAME };
+                accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
+                UpdateConfigState();
+                Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
             }
         }
         }, "REGISTER_SHORTKEY_OBSERVER");
