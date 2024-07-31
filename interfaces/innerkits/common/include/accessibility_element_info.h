@@ -75,48 +75,48 @@ public:
      * @param max The max value
      * @param current current value
      */
-    RangeInfo(int32_t min, int32_t max, int32_t current);
+    RangeInfo(double min, double max, double current);
 
     /**
      * @brief Gets the min value.
      * @return min value
      */
-    int32_t GetMin() const;
+    double GetMin() const;
 
     /**
      * @brief Gets the max value.
      * @return max value.
      */
-    int32_t GetMax() const;
+    double GetMax() const;
 
     /**
      * @brief Gets the current value.
      * @return current value.
      */
-    int32_t GetCurrent() const;
+    double GetCurrent() const;
 
     /**
      * @brief Sets the min value.
      * @param min min value
      */
-    void SetMin(int32_t min);
+    void SetMin(double min);
 
     /**
      * @brief Sets the max value.
      * @param max max value.
      */
-    void SetMax(int32_t max);
+    void SetMax(double max);
 
     /**
      * @brief Sets the current value.
      * @param current current value
      */
-    void SetCurrent(int32_t current);
+    void SetCurrent(double current);
 
 protected:
-    int32_t min_ = 0;
-    int32_t max_ = 0;
-    int32_t current_ = 0;
+    double min_ = 0;
+    double max_ = 0;
+    double current_ = 0;
 };
 
 /**
