@@ -747,11 +747,6 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
         return RET_ERR_NULLPTR;
     }
     uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
-    int32_t accountId = Utils::GetUserIdByCallingUid();
-    if (currentAccountId_ != accountId) {
-        HILOG_WARN("currentAccountId_ is diff from ipc accountId");
-        return RET_ERR_SAMGR;
-    }
     handler_->PostTask([=]() {
         HILOG_INFO("Register windowId[%{public}d]", windowId);
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
@@ -871,11 +866,6 @@ void AccessibleAbilityManagerService::SetTokenIdMapAndRootParentId(
 RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration parameter,
     const sptr<IAccessibilityElementOperator> &operation, bool isApp)
 {
-    int32_t accountId = Utils::GetUserIdByCallingUid();
-    if (currentAccountId_ != accountId) {
-        HILOG_WARN("currentAccountId_ is diff from ipc accountId");
-        return RET_ERR_SAMGR;
-    }
     static std::atomic<int32_t> treeId(1);
     int32_t treeIdSingle = treeId.fetch_add(1, std::memory_order_relaxed);
     if (treeIdSingle > TREE_ID_MAX) {
