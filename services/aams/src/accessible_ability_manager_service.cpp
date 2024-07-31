@@ -2640,7 +2640,7 @@ void AccessibleAbilityManagerService::InitializeShortKeyState()
         return;
     }
 
-    boold shortKeyFlag = false;
+    bool shortKeyFlag = false;
     if (accountData->GetAccountId() != DEFAULT_ACCOUNT_ID && accountData->GetConfig()->GetDbHandle() != nullptr) {
         if (accountData->GetConfig()->GetDbHandle()->GetIntValue(SHORTCUT_ENABLED, INVALID_SHORTCUT_STATE) ==
             INVALID_SHORTCUT_STATE) {
@@ -2669,11 +2669,11 @@ void AccessibleAbilityManagerService::RegisterProvisionCallback()
         return;
     }
 
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    AccessibilitySettingProvider& service = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
     };
-    provider.RegisterObserver(DEVICE_PROVISIONED, func);
+    service.RegisterObserver(DEVICE_PROVISIONED, func);
     if (accountData->GetConfig()->GetDbHandle() != nullptr) {
         accountData->GetConfig()->GetDbHandle()->RegisterObserver(USER_SETUP_COMPLETED, func);
     }
