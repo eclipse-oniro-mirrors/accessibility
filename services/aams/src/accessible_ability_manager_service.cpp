@@ -58,6 +58,8 @@ namespace {
     const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
     const std::string DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
+    const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
+    constexpr int32_t INVALID_SHORTCUT_STATE = 2;
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
     constexpr uint32_t TIME_OUT_OPERATOR = 5000;
@@ -2620,6 +2622,53 @@ void AccessibleAbilityManagerService::OnDeviceProvisioned()
     }
 }
 
+void AccessibleAbilityManagerService::InitializeShortKeyState()
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    bool shortKeyFlag = false;
+    if (accountData->GetAccountId() != DEFAULT_ACCOUNT_ID && accountData->GetConfig()->GetDbHandle() != nullptr) {
+        if (accountData->GetConfig()->GetDbHandle()->GetIntValue(SHORTCUT_ENABLED, INVALID_SHORTCUT_STATE) ==
+            INVALID_SHORTCUT_STATE) {
+            HILOG_INFO("Initialize the shortcut key state of PrivateSpace");
+            shortKeyFlag = true;
+        }
+    } else if (accountData->GetAccountId() == DEFAULT_ACCOUNT_ID) {
+        HILOG_INFO("Initialize the shortcut key state of MainSpace");
+        shortKeyFlag = true;
+    }
+
+    if (shortKeyFlag) {
+        accountData->GetConfig()->SetShortKeyState(true);
+        std::vector<std::string> tmpVec { SCREEN_READER_BUNDLE_ABILITY_NAME };
+        accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
+        UpdateConfigState();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
+    }
+}
+
+void AccessibleAbilityManagerService::RegisterProvisionCallback()
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    AccessibilitySettingProvider& service = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
+    };
+    service.RegisterObserver(DEVICE_PROVISIONED, func);
+    if (accountData->GetConfig()->GetDbHandle() != nullptr) {
+        accountData->GetConfig()->GetDbHandle()->RegisterObserver(USER_SETUP_COMPLETED, func);
+    }
+}
+
 void AccessibleAbilityManagerService::RegisterShortKeyEvent()
 {
     HILOG_DEBUG();
@@ -2638,23 +2687,14 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
         bool oobeState = false;
         bool userSetupState = false;
         provider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
-        if (accountData->GetConfig()->GetDbHandle()) {
+        if (accountData->GetConfig()->GetDbHandle() != nullptr) {
             userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
         }
-        if (oobeState == false || userSetupState == false) {
-            HILOG_DEBUG();
-            accountData->GetConfig()->SetShortKeyState(true);
-            std::vector<std::string> tmpVec { SCREEN_READER_BUNDLE_ABILITY_NAME };
-            accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
-            UpdateConfigState();
-            Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
-            AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
-                Singleton<AccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
-            };
-            provider.RegisterObserver(DEVICE_PROVISIONED, func);
-            if (accountData->GetConfig()->GetDbHandle()) {
-                accountData->GetConfig()->GetDbHandle()->RegisterObserver(USER_SETUP_COMPLETED, func);
-            }
+        if (accountData->GetAccountId() == DEFAULT_ACCOUNT_ID && (oobeState == false || userSetupState == false)) {
+            InitializeShortKeyState();
+            RegisterProvisionCallback();
+        } else if (accountData->GetAccountId() != DEFAULT_ACCOUNT_ID) {
+            InitializeShortKeyState();
         }
         }, "REGISTER_SHORTKEY_OBSERVER");
 }
