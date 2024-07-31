@@ -360,9 +360,13 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent
         isStopDrawCircle_ = true;
         cachedDownPointerEvents_.clear();
     } else {
-        cachedDownPointerEvents_.remove_if([&](const MMI::PointerEvent &e) {
-            return e.GetPointerId() == event.GetPointerId();
-        });
+        auto iter = std::find_if(cachedDownPointerEvents_.begin(), cachedDownPointerEvents_.end(),
+            [&](const MMI::PointerEvent &e) {
+                return e.GetPointerId() == event.GetPointerId();
+            });
+        if (iter != cachedDownPointerEvents_.end()) {
+            cachedDownPointerEvents_.erase(iter);
+        }
     }
 }
 

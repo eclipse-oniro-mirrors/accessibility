@@ -407,6 +407,8 @@ private:
         const int32_t windowId, const sptr<AccessibilityWindowConnection> &connection);
     
     void OnDeviceProvisioned();
+    void InitializeShortKeyState();
+    void RegisterProvisionCallback();
     void RegisterShortKeyEvent();
     bool IsNeedUnload();
     void OffZoomGesture();

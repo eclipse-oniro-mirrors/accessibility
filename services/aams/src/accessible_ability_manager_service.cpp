@@ -2632,6 +2632,53 @@ void AccessibleAbilityManagerService::OnDeviceProvisioned()
     }
 }
 
+void AccessibleAbilityManagerService::InitializeShortKeyState()
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    boold shortKeyFlag = false;
+    if (accountData->GetAccountId() != DEFAULT_ACCOUNT_ID && accountData->GetConfig()->GetDbHandle() != nullptr) {
+        if (accountData->GetConfig()->GetDbHandle()->GetIntValue(SHORTCUT_ENABLED, INVALID_SHORTCUT_STATE) ==
+            INVALID_SHORTCUT_STATE) {
+            HILOG_INFO("Initialize the shortcut key state of PrivateSpace");
+            shortKeyFlag = true;
+        }
+    } else if (accountData->GetAccountId() == DEFAULT_ACCOUNT_ID) {
+        HILOG_INFO("Initialize the shortcut key state of MainSpace");
+        shortKeyFlag = true;
+    }
+
+    if (shortKeyFlag) {
+        accountData->GetConfig()->SetShortKeyState(true);
+        std::vector<std::string> tmpVec { SCREEN_READER_BUNDLE_ABILITY_NAME };
+        accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
+        UpdateConfigState();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
+    }
+}
+
+void AccessibleAbilityManagerService::RegisterProvisionCallback()
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
+    };
+    provider.RegisterObserver(DEVICE_PROVISIONED, func);
+    if (accountData->GetConfig()->GetDbHandle() != nullptr) {
+        accountData->GetConfig()->GetDbHandle()->RegisterObserver(USER_SETUP_COMPLETED, func);
+    }
+}
+
 void AccessibleAbilityManagerService::RegisterShortKeyEvent()
 {
     HILOG_DEBUG();
@@ -2649,34 +2696,15 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
         AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
         bool oobeState = false;
         bool userSetupState = false;
-        auto dbHandle = accountData->GetConfig()->GetDbHandle();
         provider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
-        if (dbHandle != nullptr) {
-            userSetupState = dbHandle->GetBoolValue(USER_SETUP_COMPLETED, false);
+        if (accountData->GetConfig()->GetDbHandle() != nullptr) {
+            userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
         }
         if (accountData->GetAccountId() == DEFAULT_ACCOUNT_ID && (oobeState == false || userSetupState == false)) {
-            HILOG_DEBUG();
-            accountData->GetConfig()->SetShortKeyState(true);
-            std::vector<std::string> tmpVec { SCREEN_READER_BUNDLE_ABILITY_NAME };
-            accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
-            UpdateConfigState();
-            Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
-            AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
-                Singleton<AccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
-            };
-            provider.RegisterObserver(DEVICE_PROVISIONED, func);
-            if (dbHandle != nullptr) {
-                dbHandle->RegisterObserver(USER_SETUP_COMPLETED, func);
-            }
-        } else if (accountData->GetAccountId() != DEFAULT_ACCOUNT_ID && dbHandle != nullptr) {
-            if (dbHandle->GetIntValue(SHORTCUT_ENABLED, INVALID_SHORTCUT_STATE) == INVALID_SHORTCUT_STATE) {
-                HILOG_INFO("Initialize the shortcut key state of PrivateSpace");
-                accountData->GetConfig()->SetShortKeyState(true);
-                std::vector<std::string> tmpVec { SCREEN_READER_BUNDLE_ABILITY_NAME };
-                accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
-                UpdateConfigState();
-                Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
-            }
+            InitializeShortKeyState();
+            RegisterProvisionCallback();
+        } else if (accountData->GetAccountId() != DEFAULT_ACCOUNT_ID) {
+            InitializeShortKeyState();
         }
         }, "REGISTER_SHORTKEY_OBSERVER");
 }
