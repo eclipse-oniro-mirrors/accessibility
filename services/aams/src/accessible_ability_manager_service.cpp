@@ -66,6 +66,7 @@ namespace {
     constexpr int32_t REQUEST_ID_MAX = 0xFFFFFFFF;
     constexpr int32_t REQUEST_ID_MIN = 0x0000FFFF;
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
+    constexpr int32_t ROOT_UID = 0;
     constexpr int32_t UNLOAD_TASK_INTERNAL = 3 * 60 * 1000; // ms
     constexpr int32_t TREE_ID_INVALID = 0;
     constexpr uint32_t ELEMENT_MOVE_BIT = 40;
@@ -753,6 +754,9 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
         return RET_ERR_NULLPTR;
     }
     uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
+    if (CheckCallingUid() != RET_OK) {
+        return RET_ERR_SAMGR;
+    }
     handler_->PostTask([=]() {
         HILOG_INFO("Register windowId[%{public}d]", windowId);
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
@@ -818,21 +822,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
         HILOG_ERROR("Get current account data failed!!");
         return RET_ERR_REGISTER_EXIST;
     }
-    operation->SetBelongTreeId(treeId);
-    operation->SetParentWindowId(parameter.parentWindowId);
-    sptr<AccessibilityWindowConnection> oldConnection =
-        accountData->GetAccessibilityWindowConnection(parameter.windowId);
-    bool isParentConectionExist = false;
-    if (isApp && oldConnection) {
-        if (oldConnection->GetCardProxy(treeId) != nullptr) {
-            HILOG_WARN("no need to register again.");
-            return RET_ERR_REGISTER_EXIST;
-        } else {
-            oldConnection->SetCardProxy(treeId, operation);
-            SetTokenIdMapAndRootParentId(oldConnection, treeId, nodeId, tokenId);
-            isParentConectionExist = true;
-        }
-    }
+
     sptr<AccessibilityWindowConnection> parentConnection =
         accountData->GetAccessibilityWindowConnection(parameter.parentWindowId);
     if (isApp && parentConnection) {
@@ -844,19 +834,19 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
             HILOG_DEBUG("parentAamsOper is nullptr");
         }
     }
-    if (isParentConectionExist == false) {
-        DeleteConnectionAndDeathRecipient(parameter.windowId, oldConnection);
-        sptr<AccessibilityWindowConnection> connection =
-            new(std::nothrow) AccessibilityWindowConnection(parameter.windowId,
-                treeId, operation, currentAccountId_);
-        if (connection == nullptr) {
-            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-                A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-            HILOG_ERROR("New AccessibilityWindowConnection failed!!");
+
+    operation->SetBelongTreeId(treeId);
+    operation->SetParentWindowId(parameter.parentWindowId);
+    sptr<AccessibilityWindowConnection> oldConnection =
+        accountData->GetAccessibilityWindowConnection(parameter.windowId);
+    if (isApp && oldConnection) {
+        if (oldConnection->GetCardProxy(treeId) != nullptr) {
+            HILOG_WARN("no need to register again.");
             return RET_ERR_REGISTER_EXIST;
+        } else {
+            oldConnection->SetCardProxy(treeId, operation);
+            SetTokenIdMapAndRootParentId(oldConnection, treeId, nodeId, tokenId);
         }
-        SetTokenIdMapAndRootParentId(connection, treeId, nodeId, tokenId);
-        accountData->AddAccessibilityWindowConnection(parameter.windowId, connection);
     }
     return RET_OK;
 }
@@ -872,6 +862,9 @@ void AccessibleAbilityManagerService::SetTokenIdMapAndRootParentId(
 RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration parameter,
     const sptr<IAccessibilityElementOperator> &operation, bool isApp)
 {
+    if (CheckCallingUid() != RET_OK) {
+        return RET_ERR_SAMGR;
+    }
     static std::atomic<int32_t> treeId(1);
     int32_t treeIdSingle = treeId.fetch_add(1, std::memory_order_relaxed);
     if (treeIdSingle > TREE_ID_MAX) {
@@ -3019,6 +3012,16 @@ int32_t AccessibleAbilityManagerService::GenerateRequestId()
         requestId = requestId_.fetch_add(1, std::memory_order_relaxed);
     }
     return requestId;
+}
+
+RetError AccessibleAbilityManagerService::CheckCallingUid()
+{
+    int32_t accountId = Utils::GetUserIdByCallingUid();
+    if (accountId != currentAccountId_ && accountId != ROOT_UID) {
+        HILOG_WARN("accountId is diff from currentAccountId_.");
+        return RET_ERR_SAMGR;
+    }
+    return RET_OK;
 }
 
 void AccessibleAbilityManagerService::OnDataClone()
