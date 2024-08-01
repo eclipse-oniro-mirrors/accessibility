@@ -235,7 +235,6 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
         interceptorId_ = -1;
     }
 
-    HILOG_INFO("interceptorId:%{public}d", interceptorId_);
     if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
         (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) ||
@@ -248,6 +247,7 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
             interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_, PRIORITY_EVENT,
                 MMI::CapabilityToTags(MMI::INPUT_DEV_CAP_KEYBOARD));
     }
+    HILOG_INFO("interceptorId:%{public}d", interceptorId_);
 }
 
 void AccessibilityInputInterceptor::DestroyInterceptor()
