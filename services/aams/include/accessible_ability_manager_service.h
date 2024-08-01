@@ -304,6 +304,7 @@ public:
 private:
     void StopCallbackWait(int32_t windowId);
     void StopCallbackWait(int32_t windowId, int32_t treeId);
+    RetError CheckCallingUid();
     sptr<AccessibilityWindowConnection> GetRealIdConnection();
     bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
         AccessibilityElementInfo &elementInfo);
