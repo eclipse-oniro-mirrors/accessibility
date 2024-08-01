@@ -44,7 +44,9 @@ constexpr int32_t DEFAULT_WIDTH = 500;
 constexpr int32_t DEFAULT_HEIGHT = 500;
 constexpr int32_t DEFAULT_HALF = 2;
 
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 constexpr int32_t DEFAULT_PIXEL_DENSITY = 160;
+#endif
 
 constexpr int32_t HEXADECIMAL = 16;
 constexpr int32_t DECIMAL = 10;

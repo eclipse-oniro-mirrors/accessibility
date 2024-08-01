@@ -16,6 +16,7 @@
 #include <cfloat>
 #include "accessibility_multifinger_multitap.h"
 #include "hilog_wrapper.h"
+#include <cinttypes>
 
 namespace OHOS {
 namespace Accessibility {

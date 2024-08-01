@@ -18,6 +18,8 @@
 
 #include "accessibility_setting_observer.h"
 #include "accessibility_def.h"
+
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
 #include "datashare_helper.h"
 #include "ffrt.h"
 
@@ -57,8 +59,10 @@ public:
     RetError UnregisterObserver(const std::string& key);
 
 private:
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     std::shared_ptr<DataShare::DataShareHelper> CreateDatashareHelper();
     bool DestoryDatashareHelper(std::shared_ptr<DataShare::DataShareHelper>& helper);
+#endif
     Uri AssembleUri(const std::string& key);
 
 private:
@@ -66,6 +70,7 @@ private:
     int32_t accountId_;
     std::string uriProxyStr_;
     sptr<IRemoteObject> remoteObj_ = nullptr;
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     std::shared_ptr<DataShare::DataShareHelper> dataShareHelper_ = nullptr;
 
     static ffrt::mutex observerMutex_;

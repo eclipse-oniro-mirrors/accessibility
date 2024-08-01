@@ -172,7 +172,9 @@ void AccessibleAbilityManagerService::OnStop()
         HILOG_DEBUG();
 
         Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
         Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
+#endif
         Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
 
         currentAccountId_ = -1;
@@ -267,7 +269,9 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
         if (isReady_) {
             SwitchedUser(-1);
             Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
             Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
+#endif
             Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
             Singleton<AccessibilityWindowManager>::GetInstance().DeInit();
 
@@ -1393,7 +1397,9 @@ bool AccessibleAbilityManagerService::Init()
 {
     HILOG_DEBUG();
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
+#endif
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     bool result = Singleton<AccessibilityWindowManager>::GetInstance().Init();
     HILOG_DEBUG("wms init result is %{public}d", result);
