@@ -19,6 +19,7 @@
 #include "hilog_wrapper.h"
 #include "securec.h"
 #include "utils.h"
+#include <cinttypes>
 
 namespace OHOS {
 namespace Accessibility {

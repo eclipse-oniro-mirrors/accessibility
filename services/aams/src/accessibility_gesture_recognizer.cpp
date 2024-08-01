@@ -15,6 +15,7 @@
 
 #include "accessibility_gesture_recognizer.h"
 #include "hilog_wrapper.h"
+#include <cinttypes>
 
 namespace OHOS {
 namespace Accessibility {

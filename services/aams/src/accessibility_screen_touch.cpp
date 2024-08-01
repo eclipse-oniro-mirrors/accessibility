@@ -46,11 +46,12 @@ constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONG = 1000; // ms
 constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONGEST = 1300; // ms
 
 constexpr uint32_t CIRCLE_ANGLE = 360;
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 constexpr uint32_t START_ANGLE_PORTRAIT = -90;
 constexpr uint32_t START_ANGLE_LANDSCAPE = 180;
 constexpr uint32_t START_ANGLE_PORTRAIT_INVERTED = 90;
 constexpr uint32_t START_ANGLE_LANDSCAPE_INVERTED = 0;
-
+#endif
 constexpr uint32_t NUMBER_10 = 10;
 
 constexpr float TOUCH_SLOP = 8.0f;
@@ -175,6 +176,7 @@ bool AccessibilityScreenTouch::GetRealIgnoreRepeatClickState()
 
 void AccessibilityScreenTouch::ConversionCoordinates(MMI::PointerEvent::PointerItem &pointerItem)
 {
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     int32_t displayWidth = displayMgr.GetWidth();
     int32_t displayHeight = displayMgr.GetHeight();
@@ -206,6 +208,7 @@ void AccessibilityScreenTouch::ConversionCoordinates(MMI::PointerEvent::PointerI
         default:
             break;
     }
+#endif
 }
 
 void AccessibilityScreenTouch::DrawCircleProgress()

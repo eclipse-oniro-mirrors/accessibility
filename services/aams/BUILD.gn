@@ -112,8 +112,6 @@ ohos_shared_library("accessibleabilityms") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
-    "data_share:datashare_consumer",
-    "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
@@ -124,13 +122,24 @@ ohos_shared_library("accessibleabilityms") {
     "input:libmmi-client",
     "ipc:ipc_single",
     "os_account:os_account_innerkits",
-    "power_manager:powermgr_client",
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (accessibility_feature_power_manager) {
+    external_deps += [ "power_manager:powermgr_client" ]
+  }
+
+  if (accessibility_feature_display_manager) {
+    external_deps += [ "display_manager:displaymgr" ]
+  }
+
+  if (accessibility_feature_data_share) {
+    external_deps += [ "data_share:datashare_consumer" ]
+  }
 
   install_enable = true
 
