@@ -222,7 +222,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    std::future syncFuture = callbackInfo->syncPromise_.get_future();
+    ffrt::future syncFuture = callbackInfo->syncPromise_.get_future();
 
     int ret = uv_queue_work_with_qos(
         loop,
@@ -575,7 +575,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
         return false;
     }
     work->data = static_cast<void*>(callbackInfo);
-    std::future syncFuture = callbackInfo->syncPromise_.get_future();
+    ffrt::future syncFuture = callbackInfo->syncPromise_.get_future();
 
     if (OnKeyPressEventExec(work, loop)) {
         HILOG_ERROR("Failed to execute OnKeyPressEvent work queue");

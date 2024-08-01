@@ -108,7 +108,7 @@ namespace {
     };
 } // namespace
 
-thread_local napi_ref NAccessibilityElement::consRef_ = nullptr;
+napi_ref NAccessibilityElement::consRef_ = nullptr;
 
 void NAccessibilityElement::DefineJSAccessibilityElement(napi_env env)
 {

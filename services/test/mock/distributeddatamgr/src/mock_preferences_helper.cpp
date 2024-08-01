@@ -17,7 +17,6 @@
 
 namespace OHOS {
 namespace NativePreferences {
-std::mutex PreferencesHelper::prefsCacheMutex_;
 
 std::string PreferencesHelper::GetRealPath(const std::string& path, int& errorCode)
 {

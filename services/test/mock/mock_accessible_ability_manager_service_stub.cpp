@@ -26,7 +26,7 @@ namespace {
 MockAccessibleAbilityManagerServiceStub::MockAccessibleAbilityManagerServiceStub()
 {
     if (!runner_) {
-        runner_ = AppExecFwk::EventRunner::Create("Accessibility.Config.Unittest");
+        runner_ = AppExecFwk::EventRunner::Create("Accessibility.Config.Unittest", AppExecFwk::ThreadMode::FFRT);
         if (!runner_) {
             return;
         }

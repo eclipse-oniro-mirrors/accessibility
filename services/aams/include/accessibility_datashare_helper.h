@@ -19,6 +19,7 @@
 #include "accessibility_setting_observer.h"
 #include "accessibility_def.h"
 #include "datashare_helper.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -67,7 +68,7 @@ private:
     sptr<IRemoteObject> remoteObj_ = nullptr;
     std::shared_ptr<DataShare::DataShareHelper> dataShareHelper_ = nullptr;
 
-    static std::mutex observerMutex_;
+    static ffrt::mutex observerMutex_;
     std::map<std::string, sptr<AccessibilitySettingObserver>> settingObserverMap_;
 };
 } // namespace Accessibility

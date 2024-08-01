@@ -39,7 +39,7 @@ bool AccessibilityWindowManager::Init()
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
         return false;
     }
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     HILOG_DEBUG("windowInfos size is %{public}zu", windowInfos.size());
     for (auto &window : windowInfos) {
         if (!window) {
@@ -68,7 +68,7 @@ bool AccessibilityWindowManager::Init()
 void AccessibilityWindowManager::DeInit()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     a11yWindows_.clear();
     subWindows_.clear();
     sceneBoardElementIdMap_.Clear();
@@ -79,7 +79,7 @@ void AccessibilityWindowManager::DeInit()
 void AccessibilityWindowManager::WinDeInit()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     a11yWindows_.clear();
     subWindows_.clear();
     sceneBoardElementIdMap_.Clear();
@@ -162,7 +162,7 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
 
 int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int32_t focusType)
 {
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     int32_t winId = windowId;
     HILOG_DEBUG("ConvertToRealWindowId called, windowId[%{public}d], focusType[%{public}d]", windowId, focusType);
     if (windowId == ACTIVE_WINDOW_ID) {
@@ -339,7 +339,7 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
 void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEvent)
 {
     HILOG_DEBUG("windowId is %{public}d", windowId);
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     if (windowId == INVALID_WINDOW_ID) {
         ClearOldActiveWindow();
         activeWindowId_ = INVALID_WINDOW_ID;
@@ -379,7 +379,7 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEv
 void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
 {
     HILOG_DEBUG("windowId is %{public}d", windowId);
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     if (windowId == INVALID_WINDOW_ID) {
         ClearAccessibilityFocused();
         a11yFocusedWindowId_ = INVALID_WINDOW_ID;
@@ -402,7 +402,7 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
 std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilityWindows()
 {
     HILOG_DEBUG("a11yWindows_ size[%{public}zu]", a11yWindows_.size());
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
     std::vector<AccessibilityWindowInfo> windows;
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
@@ -430,7 +430,7 @@ std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilit
 bool AccessibilityWindowManager::GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window)
 {
     HILOG_DEBUG("start windowId(%{public}d)", windowId);
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
     if (err != Rosen::WMError::WM_OK) {
@@ -457,7 +457,7 @@ bool AccessibilityWindowManager::GetAccessibilityWindow(int32_t windowId, Access
 bool AccessibilityWindowManager::IsValidWindow(int32_t windowId)
 {
     HILOG_DEBUG("start windowId(%{public}d)", windowId);
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto it = std::find_if(a11yWindows_.begin(), a11yWindows_.end(),
         [windowId](const std::map<int32_t, AccessibilityWindowInfo>::value_type &window) {
             return window.first == windowId;
@@ -471,7 +471,7 @@ bool AccessibilityWindowManager::IsValidWindow(int32_t windowId)
 void AccessibilityWindowManager::SetWindowSize(int32_t windowId, Rect rect)
 {
     HILOG_DEBUG("start windowId(%{public}d)", windowId);
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto it = std::find_if(a11yWindows_.begin(), a11yWindows_.end(),
         [windowId](const std::map<int32_t, AccessibilityWindowInfo>::value_type &window) {
             return window.first == windowId;
@@ -585,7 +585,7 @@ bool AccessibilityWindowManager::EqualProperty(Accessibility::AccessibilityWindo
 void AccessibilityWindowManager::WindowUpdateAdded(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
             HILOG_ERROR("invalid windowInfo");
@@ -615,7 +615,7 @@ void AccessibilityWindowManager::WindowUpdateAdded(const std::vector<sptr<Rosen:
 void AccessibilityWindowManager::WindowUpdateRemoved(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
@@ -644,7 +644,7 @@ void AccessibilityWindowManager::WindowUpdateRemoved(const std::vector<sptr<Rose
 void AccessibilityWindowManager::WindowUpdateFocused(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
@@ -672,7 +672,7 @@ void AccessibilityWindowManager::WindowUpdateFocused(const std::vector<sptr<Rose
 void AccessibilityWindowManager::WindowUpdateBounds(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
@@ -693,7 +693,7 @@ void AccessibilityWindowManager::WindowUpdateBounds(const std::vector<sptr<Rosen
 void AccessibilityWindowManager::WindowUpdateActive(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
             HILOG_ERROR("invalid windowInfo");
@@ -717,7 +717,7 @@ void AccessibilityWindowManager::WindowUpdateActive(const std::vector<sptr<Rosen
 void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
@@ -737,7 +737,7 @@ void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Ros
 void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId, Accessibility::WindowUpdateType type)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     HILOG_DEBUG("WindowUpdateType type[%{public}d]", type);
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     switch (type) {
@@ -785,7 +785,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId, 
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto oldA11yWindows_ = a11yWindows_;
     HILOG_DEBUG("WindowUpdateAll info size(%{public}zu), oldA11yWindows_ size(%{public}zu)",
         infos.size(), oldA11yWindows_.size());
@@ -838,7 +838,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
 void AccessibilityWindowManager::ClearOldActiveWindow()
 {
     HILOG_DEBUG("active window id is %{public}d", activeWindowId_);
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     if (activeWindowId_ == INVALID_WINDOW_ID) {
         HILOG_DEBUG("active window id is invalid");
         return;
@@ -856,7 +856,7 @@ void AccessibilityWindowManager::ClearOldActiveWindow()
 void AccessibilityWindowManager::ClearAccessibilityFocused()
 {
     HILOG_DEBUG("a11yFocused window id is %{public}d", a11yFocusedWindowId_);
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     if (a11yFocusedWindowId_ == INVALID_WINDOW_ID) {
         HILOG_DEBUG("a11yFocused window id is invalid");
         return;
@@ -896,7 +896,7 @@ void AccessibilityWindowManager::ClearAccessibilityFocused()
 
 int64_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowId, const int64_t elementId)
 {
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     if (elementId != INVALID_SCENE_BOARD_ELEMENT_ID) {
         return elementId;
     }
@@ -913,7 +913,7 @@ int64_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowI
 void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
 {
     // sceneboard window id, element id is not equal -1
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     if (subWindows_.count(windowId) && elementId != INVALID_SCENE_BOARD_ELEMENT_ID) {
         windowId = SCENE_BOARD_WINDOW_ID;
         HILOG_INFO("windowId %{public}d, elementId %{public}" PRId64 "", windowId, elementId);
@@ -938,7 +938,7 @@ void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, in
 void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
     int32_t& innerWid)
 {
-    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     if (windowId != SCENE_BOARD_WINDOW_ID) {
         return;
     }
@@ -954,31 +954,31 @@ void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int64
 
 void AccessibilityWindowManager::SceneBoardElementIdMap::InsertPair(const int32_t windowId, const int64_t elementId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     windowElementMap_[windowId] = elementId;
 }
 
 void AccessibilityWindowManager::SceneBoardElementIdMap::RemovePair(const int32_t windowId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     windowElementMap_.erase(windowId);
 }
 
 bool AccessibilityWindowManager::SceneBoardElementIdMap::CheckWindowIdPair(const int32_t windowId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     return windowElementMap_.count(windowId);
 }
 
 void AccessibilityWindowManager::SceneBoardElementIdMap::Clear()
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     windowElementMap_.clear();
 }
 
 std::map<int32_t, int64_t> AccessibilityWindowManager::SceneBoardElementIdMap::GetAllPairs()
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     return windowElementMap_;
 }
 

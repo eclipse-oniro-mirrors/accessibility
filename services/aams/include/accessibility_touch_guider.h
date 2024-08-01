@@ -295,7 +295,7 @@ private:
         virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
 
     private:
-        std::promise<void> promise_;
+        ffrt::promise<void> promise_;
         bool executeActionResult_ = false;
         AccessibilityElementInfo accessibilityInfoResult_ = {};
         std::vector<AccessibilityElementInfo> elementInfosResult_;

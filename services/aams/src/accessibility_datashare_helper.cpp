@@ -28,7 +28,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-std::mutex AccessibilityDatashareHelper::observerMutex_;
+ffrt::mutex AccessibilityDatashareHelper::observerMutex_;
 namespace {
     constexpr int32_t INDEX = 0;
     const std::string SETTING_COLUMN_KEYWORD = "KEYWORD";
@@ -249,7 +249,7 @@ RetError AccessibilityDatashareHelper::RegisterObserver(const std::string& key,
     if (RegisterObserver(observer) != ERR_OK) {
         return RET_ERR_NULLPTR;
     }
-    std::lock_guard<std::mutex> lock(observerMutex_);
+    std::lock_guard<ffrt::mutex> lock(observerMutex_);
     settingObserverMap_.insert(std::make_pair(key, observer));
     return RET_OK;
 }
@@ -270,7 +270,7 @@ RetError AccessibilityDatashareHelper::UnregisterObserver(const sptr<Accessibili
 
 RetError AccessibilityDatashareHelper::UnregisterObserver(const std::string& key)
 {
-    std::lock_guard<std::mutex> lock(observerMutex_);
+    std::lock_guard<ffrt::mutex> lock(observerMutex_);
     auto iter = settingObserverMap_.find(key);
     if (iter != settingObserverMap_.end() && iter->second != nullptr) {
         sptr<AccessibilitySettingObserver> observer = iter->second;

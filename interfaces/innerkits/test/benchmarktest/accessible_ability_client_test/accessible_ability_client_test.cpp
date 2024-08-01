@@ -14,9 +14,9 @@
  */
 
 #include <benchmark/benchmark.h>
-#include <future>
 #include "accessibility_ui_test_ability.h"
 #include "accessible_ability_listener.h"
+#include "ffrt_inner.h"
 
 using namespace OHOS::Accessibility;
 
@@ -43,13 +43,13 @@ namespace {
             return false;
         }
 
-        void SetCompletePromise(std::promise<void> &promise)
+        void SetCompletePromise(ffrt::promise<void> &promise)
         {
             complete_ = std::move(promise);
         }
 
     private:
-        std::promise<void> complete_;
+        ffrt::promise<void> complete_;
     };
 
     class AccessibleAbilityClientTest : public benchmark::Fixture {
@@ -78,8 +78,8 @@ namespace {
         AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener_);
 
         // Connect
-        std::promise<void> connected;
-        std::future syncFuture = connected.get_future();
+        ffrt::promise<void> connected;
+        ffrt::future syncFuture = connected.get_future();
         listener_->SetCompletePromise(connected);
         AccessibilityUITestAbility::GetInstance()->Connect();
         syncFuture.wait();
@@ -88,8 +88,8 @@ namespace {
     void AccessibleAbilityClientTest::TearDown(const ::benchmark::State &state)
     {
         // Disconnect
-        std::promise<void> disconnect;
-        std::future syncFuture = disconnect.get_future();
+        ffrt::promise<void> disconnect;
+        ffrt::future syncFuture = disconnect.get_future();
         listener_->SetCompletePromise(disconnect);
         AccessibilityUITestAbility::GetInstance()->Disconnect();
         syncFuture.wait();

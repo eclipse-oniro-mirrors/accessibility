@@ -974,7 +974,7 @@ void EnableAbilityListsObserverImpl::SubscribeToFramework()
 void EnableAbilityListsObserverImpl::OnEnableAbilityListsStateChanged()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto &observer : enableAbilityListsObservers_) {
         observer->OnEnableAbilityListsStateChanged();
     }
@@ -983,7 +983,7 @@ void EnableAbilityListsObserverImpl::OnEnableAbilityListsStateChanged()
 void EnableAbilityListsObserverImpl::OnInstallAbilityListsStateChanged()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto &observer : installAbilityListsObservers_) {
         if (observer) {
             observer->OnEnableAbilityListsStateChanged();
@@ -996,7 +996,7 @@ void EnableAbilityListsObserverImpl::OnInstallAbilityListsStateChanged()
 void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
             HILOG_DEBUG("Observer exist");
@@ -1018,7 +1018,7 @@ void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value 
 void EnableAbilityListsObserverImpl::SubscribeInstallObserver(napi_env env, napi_value observer)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = installAbilityListsObservers_.begin(); iter != installAbilityListsObservers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
             HILOG_DEBUG("Observer exist");
@@ -1040,7 +1040,7 @@ void EnableAbilityListsObserverImpl::SubscribeInstallObserver(napi_env env, napi
 void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
             enableAbilityListsObservers_.erase(iter);
@@ -1054,14 +1054,14 @@ void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_env env, napi_valu
 void EnableAbilityListsObserverImpl::UnsubscribeObservers()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     enableAbilityListsObservers_.clear();
 }
 
 void EnableAbilityListsObserverImpl::UnsubscribeInstallObserver(napi_env env, napi_value observer)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = installAbilityListsObservers_.begin(); iter != installAbilityListsObservers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
             installAbilityListsObservers_.erase(iter);
@@ -1075,6 +1075,6 @@ void EnableAbilityListsObserverImpl::UnsubscribeInstallObserver(napi_env env, na
 void EnableAbilityListsObserverImpl::UnsubscribeInstallObservers()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     installAbilityListsObservers_.clear();
 }

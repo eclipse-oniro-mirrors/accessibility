@@ -52,28 +52,28 @@ constexpr int32_t ERR_CODE_DEFAULT = -1000;
 void StoreElementData::WriteData(std::vector<AccessibilityElementInfo> &infos)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     storeData_.insert(storeData_.end(), infos.begin(), infos.end());
 }
 
 void StoreElementData::Clear()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     storeData_.clear();
 }
 
 std::vector<AccessibilityElementInfo> StoreElementData::ReadData()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     return storeData_;
 }
 
 size_t StoreElementData::Size()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     return storeData_.size();
 }
 

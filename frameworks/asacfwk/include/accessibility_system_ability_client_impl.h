@@ -17,11 +17,11 @@
 #define ACCESSIBILITY_SYSTEM_ABILITY_CLIENT_IMPL_H
 
 #include <array>
-#include <mutex>
-#include <condition_variable>
 #include "accessibility_element_operator_impl.h"
 #include "accessibility_system_ability_client.h"
 #include "accessible_ability_manager_state_observer_stub.h"
+#include "ffrt.h"
+#include "ffrt_inner.h"
 #include "i_accessible_ability_manager_service.h"
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
@@ -302,7 +302,7 @@ private:
     void ReregisterElementOperator();
 
     uint32_t state_{0};
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
     StateArray stateArray_;
     StateObserversArray stateObserversArray_;
 
@@ -312,8 +312,8 @@ private:
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerStateObserverImpl> stateObserver_ = nullptr;
 
-    std::condition_variable proxyConVar_;
-    std::mutex conVarMutex_; // mutex for proxyConVar
+    ffrt::condition_variable proxyConVar_;
+    ffrt::mutex conVarMutex_; // mutex for proxyConVar
 };
 } // namespace Accessibility
 } // namespace OHOS

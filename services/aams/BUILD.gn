@@ -115,6 +115,7 @@ ohos_shared_library("accessibleabilityms") {
     "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
+    "ffrt:libffrt",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hilog:libhilog",
