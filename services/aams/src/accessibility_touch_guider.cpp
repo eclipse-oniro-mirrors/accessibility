@@ -777,7 +777,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
     HILOG_DEBUG();
 
     std::vector<int32_t> pIds = event.GetPointerIds();
-    int32_t pointCount = pIds.size();
+    uint32_t pointCount = pIds.size();
     if (pointCount == POINTER_COUNT_1) {
         HILOG_DEBUG("Only two pointers can be received in the dragging state");
     } else if (pointCount == POINTER_COUNT_2) {

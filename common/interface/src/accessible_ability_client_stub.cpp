@@ -90,13 +90,13 @@ ErrCode AccessibleAbilityClientStub::HandleInit(MessageParcel &data, MessageParc
 {
     HILOG_DEBUG();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("object is nullptr.");
         return ERR_INVALID_VALUE;
     }
 
     sptr<IAccessibleAbilityChannel> channel = iface_cast<IAccessibleAbilityChannel>(remote);
-    if (!channel) {
+    if (channel == nullptr) {
         HILOG_ERROR("channel is nullptr.");
         return ERR_INVALID_VALUE;
     }
