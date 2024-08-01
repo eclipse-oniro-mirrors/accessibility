@@ -251,6 +251,8 @@ ohos_unittest("accessibility_touch_guider_test") {
     "../../../common/interface/src/accessibility_element_operator_callback_stub.cpp",
     "../../../common/interface/src/accessible_ability_channel_stub.cpp",
     "../../../common/interface/src/parcel/accessibility_element_info_parcel.cpp",
+    "../../../common/interface/src/parcel/accessibility_gesture_inject_path_parcel.cpp",
+    "../../../common/interface/src/parcel/accessibility_window_info_parcel.cpp",
     "../../test/mock/mock_common_event_data.cpp",
     "../../test/mock/mock_common_event_manager.cpp",
     "../../test/mock/mock_common_event_subscribe_info.cpp",
@@ -836,6 +838,9 @@ ohos_unittest("accessibility_dumper_test") {
   module_out_path = module_output_path
   sources = [
     "../../../common/interface/src/accessible_ability_channel_stub.cpp",
+    "../../../common/interface/src/parcel/accessibility_element_info_parcel.cpp",
+    "../../../common/interface/src/parcel/accessibility_gesture_inject_path_parcel.cpp",
+    "../../../common/interface/src/parcel/accessibility_window_info_parcel.cpp",
     "../../test/mock/mock_common_event_data.cpp",
     "../../test/mock/mock_common_event_manager.cpp",
     "../../test/mock/mock_common_event_subscribe_info.cpp",

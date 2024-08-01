@@ -290,5 +290,22 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDoneSync(const AppExecFwk::
     HILOG_DEBUG("start");
     (void)element;
 }
+
+RetError AccessibleAbilityChannel::EnableScreenCurtain(bool isEnable)
+{
+    (void)isEnable;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilitychannel GetCursorPosition";
+    (void)accessibilityWindowId;
+    (void)elementId;
+    (void)requestId;
+    (void)callback;
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

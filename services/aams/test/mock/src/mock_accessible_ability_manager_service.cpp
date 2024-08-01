@@ -261,6 +261,11 @@ void AccessibleAbilityManagerService::UpdateAllSetting()
     return;
 }
 
+void AccessibleAbilityManagerService::UpdateInputFilter()
+{
+    return;
+}
+
 void AccessibleAbilityManagerService::UpdateShortKeyRegister()
 {
     return;
