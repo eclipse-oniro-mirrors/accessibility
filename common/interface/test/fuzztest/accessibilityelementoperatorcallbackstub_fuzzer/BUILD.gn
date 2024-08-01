@@ -33,6 +33,7 @@ ohos_fuzztest("AccessibilityElementOperatorCallbackStubFuzzTest") {
   ]
   external_deps = [
     "c_utils:utils",
+    "ffrt:libffrt",
     "input:libmmi-client",
     "ipc:ipc_single",
   ]

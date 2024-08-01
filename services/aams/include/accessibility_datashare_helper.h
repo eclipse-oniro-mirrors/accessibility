@@ -21,6 +21,7 @@
 
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
 #include "datashare_helper.h"
+#endif
 #include "ffrt.h"
 
 namespace OHOS {
@@ -72,7 +73,7 @@ private:
     sptr<IRemoteObject> remoteObj_ = nullptr;
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     std::shared_ptr<DataShare::DataShareHelper> dataShareHelper_ = nullptr;
-
+#endif
     static ffrt::mutex observerMutex_;
     std::map<std::string, sptr<AccessibilitySettingObserver>> settingObserverMap_;
 };
