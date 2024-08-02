@@ -105,6 +105,11 @@ void TouchEventInjector::CancelGesture()
     pointer.SetPointerId(0);
     if (GetNext() != nullptr && isGestureUnderway_) {
         event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_CANCEL, pointer, time);
+        if (event == nullptr) {
+            HILOG_ERROR("event is nullptr");
+            return;
+        }
+
         SendPointerEvent(*event);
         isGestureUnderway_ = false;
     }
@@ -124,6 +129,11 @@ std::shared_ptr<MMI::PointerEvent> TouchEventInjector::obtainTouchEvent(int32_t 
 {
     HILOG_DEBUG();
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
+    if (pointerEvent == nullptr) {
+        HILOG_ERROR("pointerEvent is nullptr");
+        return nullptr;
+    }
+
     pointerEvent->SetPointerId(point.GetPointerId());
     pointerEvent->SetTargetDisplayId(0);
     pointerEvent->SetPointerAction(action);
@@ -208,12 +218,22 @@ void TouchEventInjector::ParseTapsEvents(int64_t startTime,
         pointer.SetDisplayY(py);
         pointer.SetDownTime(downTime);
         event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, pointer, downTime);
+        if (event == nullptr) {
+            HILOG_ERROR("event is nullptr");
+            return;
+        }
+
         HILOG_DEBUG("append down event");
         injectedEvents_.push_back(event);
 
         // Append up event
         int64_t upTime = downTime + perDurationTime * MS_TO_US;
         event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, pointer, upTime);
+        if (event == nullptr) {
+            HILOG_ERROR("event is nullptr");
+            return;
+        }
+
         HILOG_DEBUG("append up event");
         injectedEvents_.push_back(event);
         downTime = upTime + DOUBLE_TAP_MIN_TIME;
@@ -255,20 +275,40 @@ void TouchEventInjector::ParseMovesEvents(int64_t startTime,
         if (i == 0) { // Append down event
             HILOG_DEBUG("append down event");
             event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, pointer, downTime);
+            if (event == nullptr) {
+                HILOG_ERROR("event is nullptr");
+                return;
+            }
+
             injectedEvents_.push_back(event);
         } else if (i < (positionSize - 1)) { // Append move event
             HILOG_DEBUG("append move event");
             nowTime += perDurationTime * MS_TO_US;
             event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, pointer, nowTime);
+            if (event == nullptr) {
+                HILOG_ERROR("event is nullptr");
+                return;
+            }
+
             injectedEvents_.push_back(event);
         } else { // Append up event
             HILOG_DEBUG("append move event");
             nowTime += perDurationTime * MS_TO_US;
             event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, pointer, nowTime);
+            if (event == nullptr) {
+                HILOG_ERROR("event is nullptr");
+                return;
+            }
+
             injectedEvents_.push_back(event);
             
             HILOG_DEBUG("append up event");
             event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, pointer, nowTime);
+            if (event == nullptr) {
+                HILOG_ERROR("event is nullptr");
+                return;
+            }
+            
             injectedEvents_.push_back(event);
         }
     }

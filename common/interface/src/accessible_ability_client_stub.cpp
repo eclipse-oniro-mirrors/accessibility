@@ -133,6 +133,11 @@ ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, 
     int32_t sequence = data.ReadInt32();
 
     std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
+    if (keyEvent == nullptr) {
+        HILOG_ERROR("keyEvent is nullptr");
+        return ERR_INVALID_VALUE;
+    }
+    
     if (!keyEvent->ReadFromParcel(data)) {
         HILOG_ERROR("keyEvent ReadFromParcel failed");
         return ERR_INVALID_VALUE;
