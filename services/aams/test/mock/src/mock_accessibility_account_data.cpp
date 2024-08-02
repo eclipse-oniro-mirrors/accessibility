@@ -250,6 +250,11 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
     isScreenMagnification_ = false;
 }
 
+void AccessibilityAccountData::UpdateEnableAbilityListsState()
+{
+    return;
+}
+
 RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start.");
