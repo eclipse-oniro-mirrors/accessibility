@@ -101,8 +101,6 @@ StoreElementData AccessibilityElementOperatorCallbackStub::storeElementData;
 
 AccessibilityElementOperatorCallbackStub::~AccessibilityElementOperatorCallbackStub()
 {
-    HILOG_DEBUG();
-    memberFuncMap_.clear();
 }
 
 int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,

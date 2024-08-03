@@ -833,6 +833,8 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
         } else {
             HILOG_DEBUG("parentAamsOper is nullptr");
         }
+    } else {
+        return RET_ERR_NO_CONNECTION;
     }
 
     operation->SetBelongTreeId(treeId);

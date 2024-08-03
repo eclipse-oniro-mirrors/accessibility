@@ -90,8 +90,6 @@ AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
 
 AccessibleAbilityChannelStub::~AccessibleAbilityChannelStub()
 {
-    HILOG_DEBUG();
-    memberFuncMap_.clear();
 }
 
 int AccessibleAbilityChannelStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
