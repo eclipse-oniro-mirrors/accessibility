@@ -18,6 +18,7 @@
 
 #include <vector>
 #include "accessibility_def.h"
+#include "ffrt.h"
 #include "hilog/log.h"
 #include "i_accessible_ability_channel.h"
 #include "iremote_object.h"
@@ -41,12 +42,12 @@ public:
     }
     std::vector<EventType>& GetEventType()
     {
-        std::lock_guard<std::mutex> lock(mtx_);
+        std::lock_guard<ffrt::mutex> lock(mtx_);
         return mTeventType_;
     }
     EventType GetEventTypeOfTargetIndex(int32_t index)
     {
-        std::lock_guard<std::mutex> lock(mtx_);
+        std::lock_guard<ffrt::mutex> lock(mtx_);
         int32_t size = static_cast<int32_t>(mTeventType_.size());
         if (size > index) {
             return mTeventType_[index];
@@ -55,7 +56,7 @@ public:
     }
     void PushEventType(EventType eventType)
     {
-        std::lock_guard<std::mutex> lock(mtx_);
+        std::lock_guard<ffrt::mutex> lock(mtx_);
         mTeventType_.push_back(eventType);
     }
     int32_t GetGestureId() const
@@ -154,7 +155,7 @@ private:
     int32_t testKeyPressEvent_ = -1;
     int32_t testDisplayId_ = -1;
     int32_t testGestureSimulateResult_ = -1;
-    std::mutex mtx_;
+    ffrt::mutex mtx_;
 };
 } // namespace Accessibility
 } // namespace OHOS

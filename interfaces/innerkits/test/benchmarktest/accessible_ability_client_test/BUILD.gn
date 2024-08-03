@@ -26,6 +26,8 @@ ohos_benchmarktest("BenchmarkTestForAccessibleAbilityClient") {
     "../../../aafwk:accessibleability",
     "../../../common:accessibility_common",
   ]
+
+  external_deps = [ "ffrt:libffrt" ]
 }
 
 group("benchmarktest") {
@@ -36,4 +38,6 @@ group("benchmarktest") {
     # deps file
     ":BenchmarkTestForAccessibleAbilityClient",
   ]
+
+  external_deps = [ "ffrt:libffrt" ]
 }

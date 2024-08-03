@@ -114,7 +114,7 @@ void AccessibleAbilityManagerService::OnStart()
 {
     HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
     if (!runner_) {
-        runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
+        runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME, AppExecFwk::ThreadMode::FFRT);
         if (!runner_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS runner failed");
             return;
@@ -130,7 +130,7 @@ void AccessibleAbilityManagerService::OnStart()
     }
 
     if (!actionRunner_) {
-        actionRunner_ = AppExecFwk::EventRunner::Create(AAMS_ACTION_RUNNER_NAME);
+        actionRunner_ = AppExecFwk::EventRunner::Create(AAMS_ACTION_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
         if (!actionRunner_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS action runner failed");
             return;
@@ -167,8 +167,8 @@ void AccessibleAbilityManagerService::OnStop()
         return;
     }
 
-    std::promise<void> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<void> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise]() {
         HILOG_DEBUG();
 
@@ -289,8 +289,8 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
     }
-    std::promise<int> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<int> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, fd, args]() {
         if (!accessibilityDumper_) {
             accessibilityDumper_ = new(std::nothrow) AccessibilityDumper();
@@ -389,7 +389,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
         return 0;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!stateObserversDeathRecipient_) {
         stateObserversDeathRecipient_ = new(std::nothrow) StateCallbackDeathRecipient();
         if (!stateObserversDeathRecipient_) {
@@ -420,8 +420,8 @@ void AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowI
         return;
     }
 
-    std::promise<void> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<void> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([&, this]() {
         Singleton<AccessibilityWindowManager>::GetInstance().GetRealWindowAndElementId(windowId, elementId);
         syncPromise.set_value();
@@ -437,8 +437,8 @@ void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, 
         return;
     }
 
-    std::promise<void> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<void> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([&, this]() {
         Singleton<AccessibilityWindowManager>::GetInstance().GetSceneBoardInnerWinId(windowId, elementId, innerWid);
         syncPromise.set_value();
@@ -478,10 +478,10 @@ bool AccessibleAbilityManagerService::FindFocusedElementByConnection(sptr<Access
         HILOG_ERROR("Failed to create focusCallback.");
         return false;
     }
-    std::future<void> focusFuture = focusCallback->promise_.get_future();
+    ffrt::future<void> focusFuture = focusCallback->promise_.get_future();
     connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, GenerateRequestId(), focusCallback);
-    std::future_status waitFocus = focusFuture.wait_for(std::chrono::milliseconds(timeOut));
-    if (waitFocus != std::future_status::ready) {
+    ffrt::future_status waitFocus = focusFuture.wait_for(std::chrono::milliseconds(timeOut));
+    if (waitFocus != ffrt::future_status::ready) {
         HILOG_ERROR("FindFocusedElementInfo Failed to wait result");
         return false;
     }
@@ -517,15 +517,15 @@ bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInf
         HILOG_ERROR("Failed to create callBack.");
         return false;
     }
-    std::future<void> promiseFuture = callBack->promise_.get_future();
+    ffrt::future<void> promiseFuture = callBack->promise_.get_future();
     GetElementOperatorConnection(connection, elementId, elementOperator);
     if (elementOperator == nullptr) {
         HILOG_ERROR("elementOperator is nullptr");
         return false;
     }
     elementOperator->SearchElementInfoByAccessibilityId(elementId, GenerateRequestId(), callBack, 0);
-    std::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (waitFocus != std::future_status::ready) {
+    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitFocus != ffrt::future_status::ready) {
         ipcTimeoutNum_++;
         HILOG_ERROR("Failed to wait result, number %{public}" PRId64 "", ipcTimeoutNum_);
         return false;
@@ -577,7 +577,7 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         HILOG_ERROR("Failed to create actionCallback.");
         return false;
     }
-    std::future<void> actionFuture = actionCallback->promise_.get_future();
+    ffrt::future<void> actionFuture = actionCallback->promise_.get_future();
     if (treeId > TREE_ID_INVALID) {
         if (connection->GetCardProxy(treeId) != nullptr) {
             connection->GetCardProxy(treeId)->ExecuteAction(elementId, action,
@@ -589,8 +589,8 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     } else {
         connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(), actionCallback);
     }
-    std::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
-    if (waitAction != std::future_status::ready) {
+    ffrt::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
+    if (waitAction != ffrt::future_status::ready) {
         HILOG_ERROR("ExecuteAction Failed to wait result");
         return false;
     }
@@ -627,8 +627,8 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
         return ERR_INVALID_VALUE;
     }
 
-    std::shared_ptr<std::promise<uint32_t>> syncPromise = std::make_shared<std::promise<uint32_t>>();
-    std::future syncFuture = syncPromise->get_future();
+    std::shared_ptr<ffrt::promise<uint32_t>> syncPromise = std::make_shared<ffrt::promise<uint32_t>>();
+    ffrt::future syncFuture = syncPromise->get_future();
     actionHandler_->PostTask([this, syncPromise, callback]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -657,8 +657,8 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
         syncPromise->set_value(NO_ERROR);
         }, "TASK_REGISTER_CAPTION_OBSERVER");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait RegisterCaptionObserver result");
         return RET_ERR_TIME_OUT;
     }
@@ -674,8 +674,8 @@ void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
         return;
     }
 
-    std::shared_ptr<std::promise<void>> syncPromisePtr = std::make_shared<std::promise<void>>();
-    std::future syncFuture = syncPromisePtr->get_future();
+    std::shared_ptr<ffrt::promise<void>> syncPromisePtr = std::make_shared<ffrt::promise<void>>();
+    ffrt::future syncFuture = syncPromisePtr->get_future();
     actionHandler_->PostTask([this, syncPromisePtr, observer]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -702,8 +702,8 @@ void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
         syncPromisePtr->set_value();
         }, "TASK_REGISTER_ENABLE_ABILITY_LISTS_OBSERVER");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait RegisterEnableAbilityListsObserver result");
         return;
     }
@@ -719,8 +719,8 @@ RetError AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityT
         return RET_ERR_INVALID_PARAM;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &infos, abilityTypes, stateType]() {
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -1065,8 +1065,8 @@ bool AccessibleAbilityManagerService::GetEnabledState()
         return false;
     }
 
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<bool> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1094,8 +1094,8 @@ bool AccessibleAbilityManagerService::GetTouchGuideState()
         return false;
     }
 
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<bool> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1118,8 +1118,8 @@ bool AccessibleAbilityManagerService::GetGestureState()
         return false;
     }
 
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<bool> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1142,8 +1142,8 @@ bool AccessibleAbilityManagerService::GetKeyEventObserverState()
         return false;
     }
 
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<bool> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1166,8 +1166,8 @@ RetError AccessibleAbilityManagerService::EnableAbility(const std::string &name,
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &name, &capabilities]() {
         HILOG_DEBUG();
         RetError result = InnerEnableAbility(name, capabilities);
@@ -1240,8 +1240,8 @@ RetError AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::s
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &enabledAbilities]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1264,8 +1264,8 @@ RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     actionHandler_->PostTask([this, &syncPromise, &name]() {
         HILOG_DEBUG();
         RetError result = InnerDisableAbility(name);
@@ -1315,8 +1315,8 @@ RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemote
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, obj]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1349,8 +1349,8 @@ RetError AccessibleAbilityManagerService::DisableUITestAbility()
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
-    std::future syncFuture = syncPromise->get_future();
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
     handler_->PostTask([this, syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1372,8 +1372,8 @@ RetError AccessibleAbilityManagerService::DisableUITestAbility()
         syncPromise->set_value(RET_OK);
         }, "TASK_DISABLE_UI_TEST_ABILITIES");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait DisableUITestAbility result");
         return RET_ERR_TIME_OUT;
     }
@@ -1858,10 +1858,10 @@ bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t window
         return false;
     }
 
-    std::future<void> promiseFuture = callBack->promise_.get_future();
+    ffrt::future<void> promiseFuture = callBack->promise_.get_future();
     elementOperator->SearchElementInfoByAccessibilityId(elementId, GenerateRequestId(), callBack, 0);
-    std::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (waitFocus != std::future_status::ready) {
+    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitFocus != ffrt::future_status::ready) {
         ipcTimeoutNum_++;
         HILOG_ERROR("Failed to wait result, number %{public}" PRId64 "", ipcTimeoutNum_);
         return false;
@@ -2251,8 +2251,8 @@ RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &tim
 void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &configData)
 {
     HILOG_DEBUG();
-    std::promise<void> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<void> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     actionHandler_->PostTask([this, &syncPromise, &configData]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -2282,8 +2282,8 @@ void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &con
         syncPromise.set_value();
         }, "TASK_GET_ALL_CONFIGS");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait GetAllConfigs result");
         return;
     }
@@ -2381,8 +2381,8 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
         return ERR_INVALID_VALUE;
     }
 
-    std::shared_ptr<std::promise<uint32_t>> syncPromisePtr = std::make_shared<std::promise<uint32_t>>();
-    std::future syncFuture = syncPromisePtr->get_future();
+    std::shared_ptr<ffrt::promise<uint32_t>> syncPromisePtr = std::make_shared<ffrt::promise<uint32_t>>();
+    ffrt::future syncFuture = syncPromisePtr->get_future();
     actionHandler_->PostTask([this, syncPromisePtr, callback]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -2411,8 +2411,8 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
         syncPromisePtr->set_value(NO_ERROR);
         }, "TASK_REGISTER_CONFIG_OBSERVER");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait RegisterConfigObserver result");
         return RET_ERR_TIME_OUT;
     }
@@ -2556,7 +2556,7 @@ void AccessibleAbilityManagerService::OnBundleManagerDied(const wptr<IRemoteObje
 void AccessibleAbilityManagerService::StateObservers::AddStateObserver(
     const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver)
 {
-    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
     auto iter = std::find(observersList_.begin(), observersList_.end(), stateObserver);
     if (iter == observersList_.end()) {
         observersList_.push_back(stateObserver);
@@ -2569,7 +2569,7 @@ void AccessibleAbilityManagerService::StateObservers::AddStateObserver(
 
 void AccessibleAbilityManagerService::StateObservers::OnStateObservers(uint32_t state)
 {
-    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
     for (auto& stateObserver : observersList_) {
         if (stateObserver) {
             stateObserver->OnStateChanged(state);
@@ -2579,7 +2579,7 @@ void AccessibleAbilityManagerService::StateObservers::OnStateObservers(uint32_t 
 
 void AccessibleAbilityManagerService::StateObservers::RemoveStateObserver(const wptr<IRemoteObject> &remote)
 {
-    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
     auto iter = std::find_if(observersList_.begin(), observersList_.end(),
         [remote](const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver) {
             return stateObserver->AsObject() == remote;
@@ -2591,7 +2591,7 @@ void AccessibleAbilityManagerService::StateObservers::RemoveStateObserver(const 
 
 void AccessibleAbilityManagerService::StateObservers::Clear()
 {
-    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
     observersList_.clear();
 }
 
@@ -2906,7 +2906,7 @@ int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t
 void AccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
     sptr<IAccessibilityElementOperatorCallback> callback)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("Add windowId: %{public}d treeId: %{public}d requestId: %{public}d", windowId, treeId, requestId);
     if (!windowRequestIdMap_.count(windowId)) {
         windowRequestIdMap_[windowId] = {};
@@ -2922,7 +2922,7 @@ void AccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t tre
 
 void AccessibleAbilityManagerService::RemoveRequestId(int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("RemoveRequestId requestId: %{public}d", requestId);
     for (auto &window : windowRequestIdMap_) {
         for (auto &tree : window.second) {
@@ -2955,7 +2955,7 @@ void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId)
 
 void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t treeId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_INFO("StopCallbackWait start windowId: %{public}d treeId: %{public}d", windowId, treeId);
     if (!windowRequestIdMap_.count(windowId)) {
         return;

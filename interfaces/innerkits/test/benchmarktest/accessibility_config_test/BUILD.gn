@@ -32,6 +32,7 @@ ohos_benchmarktest("BenchmarkTestForAccessibilityConfig") {
     "access_token:libnativetoken",
     "access_token:libtoken_setproc",
     "c_utils:utils",
+    "ffrt:libffrt",
   ]
 }
 

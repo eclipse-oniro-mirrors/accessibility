@@ -20,14 +20,14 @@
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    std::mutex g_Mutex;
+    ffrt::mutex g_Mutex;
     sptr<AccessibleAbilityClientImpl> g_Instance = nullptr;
 } // namespace
 
 sptr<AccessibleAbilityClient> AccessibleAbilityClient::GetInstance()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(g_Mutex);
+    std::lock_guard<ffrt::mutex> lock(g_Mutex);
     bool isNull = AccessibilityAbilityUtHelper::GetInstance().GetAbilityClientNullFlag();
     if (isNull) {
         return nullptr;
@@ -42,7 +42,7 @@ sptr<AccessibleAbilityClient> AccessibleAbilityClient::GetInstance()
 sptr<AccessibleAbilityClientImpl> AccessibleAbilityClientImpl::GetAbilityClientImplement()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(g_Mutex);
+    std::lock_guard<ffrt::mutex> lock(g_Mutex);
     bool isNull = AccessibilityAbilityUtHelper::GetInstance().GetAbilityClientNullFlag();
     if (isNull) {
         return nullptr;

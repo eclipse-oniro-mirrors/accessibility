@@ -52,7 +52,7 @@ protected:
 
 private:
     static AccessibilitySettingProvider* instance_;
-    static std::mutex mutex_;
+    static ffrt::mutex mutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

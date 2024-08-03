@@ -617,7 +617,7 @@ void NAccessibilityConfigObserverImpl::OnConfigChanged(
     const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue& value)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto &observer : observers_) {
         if (observer && observer->configId_ == id) {
             observer->OnConfigChanged(value);
@@ -629,7 +629,7 @@ void NAccessibilityConfigObserverImpl::SubscribeObserver(napi_env env,
     OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
             HILOG_DEBUG("SubscribeObserver Observer exist");
@@ -651,7 +651,7 @@ void NAccessibilityConfigObserverImpl::UnsubscribeObserver(napi_env env,
     OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if ((*iter)->configId_ == id) {
             if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
@@ -669,7 +669,7 @@ void NAccessibilityConfigObserverImpl::UnsubscribeObserver(napi_env env,
 void NAccessibilityConfigObserverImpl::UnsubscribeObservers(OHOS::AccessibilityConfig::CONFIG_ID id)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if ((*iter)->configId_ == id) {
             iter = observers_.erase(iter);

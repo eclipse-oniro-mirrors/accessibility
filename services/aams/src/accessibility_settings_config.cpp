@@ -194,7 +194,7 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<s
             targets.insert(target);
         }
     });
-    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     shortkeyMultiTarget_ = std::vector<std::string>(targets.begin(), targets.end());
     if (!datashare_) {
         return RET_ERR_NULLPTR;
@@ -392,7 +392,7 @@ const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
 
 const std::vector<std::string> AccessibilitySettingsConfig::GetShortkeyMultiTarget()
 {
-    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     std::vector<std::string> rtnVec = shortkeyMultiTarget_;
     return rtnVec;
 }
@@ -489,14 +489,14 @@ uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
 
 const std::vector<std::string> AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
 {
-    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     std::vector<std::string> rtnVec = enabledAccessibilityServices_;
     return rtnVec;
 }
 
 RetError AccessibilitySettingsConfig::AddEnabledAccessibilityService(const std::string &serviceName)
 {
-    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     auto iter = std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(), serviceName);
     if (iter != enabledAccessibilityServices_.end()) {
         return RET_OK;
@@ -513,7 +513,7 @@ RetError AccessibilitySettingsConfig::AddEnabledAccessibilityService(const std::
 
 RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const std::string &serviceName)
 {
-    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     auto iter = std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(), serviceName);
     if (iter == enabledAccessibilityServices_.end()) {
         return RET_OK;

@@ -14,9 +14,9 @@
  */
 
 #include <benchmark/benchmark.h>
-#include <future>
 #include "accessibility_config.h"
 #include "accesstoken_kit.h"
+#include "ffrt_inner.h"
 #include "nativetoken_kit.h"
 #include "token_setproc.h"
 
@@ -33,13 +33,13 @@ namespace {
             complete_.set_value();
         }
 
-        void SetCompletePromise(std::promise<void> &promise)
+        void SetCompletePromise(ffrt::promise<void> &promise)
         {
             complete_ = std::move(promise);
         }
 
     private:
-        std::promise<void> complete_;
+        ffrt::promise<void> complete_;
     };
 
     static bool g_flag = true;
@@ -85,8 +85,8 @@ namespace {
         config.GetScreenMagnificationState(value);
         for (auto _ : state) {
             /* @tc.steps: step1.call SetScreenMagnificationState in loop */
-            std::promise<void> complete;
-            std::future syncFuture = complete.get_future();
+            ffrt::promise<void> complete;
+            ffrt::future syncFuture = complete.get_future();
             configObserver->SetCompletePromise(complete);
 
             config.SetScreenMagnificationState(!value);
@@ -132,8 +132,8 @@ namespace {
 
         for (auto _ : state) {
             /* @tc.steps: step1.call SetShortkeyTarget in loop */
-            std::promise<void> complete;
-            std::future syncFuture = complete.get_future();
+            ffrt::promise<void> complete;
+            ffrt::future syncFuture = complete.get_future();
             configObserver->SetCompletePromise(complete);
             config.SetShortkeyTarget(nameStr);
             syncFuture.wait();
@@ -183,8 +183,8 @@ namespace {
         for (auto _ : state) {
             /* @tc.steps: step1.call SetContentTimeout in loop */
             value++;
-            std::promise<void> complete;
-            std::future syncFuture = complete.get_future();
+            ffrt::promise<void> complete;
+            ffrt::future syncFuture = complete.get_future();
             configObserver->SetCompletePromise(complete);
 
             config.SetContentTimeout(value);

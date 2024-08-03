@@ -50,6 +50,7 @@ ohos_shared_library("accessibility_napi") {
   ]
 
   external_deps = [
+    "ffrt:libffrt",
     "hilog:libhilog",
     "input:libmmi-client",
     "napi:ace_napi",

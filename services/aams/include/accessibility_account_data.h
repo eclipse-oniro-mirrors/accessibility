@@ -329,7 +329,7 @@ private:
         size_t GetSize();
     private:
         std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMap_;
-        std::mutex mutex_;
+        ffrt::mutex mutex_;
     };
 
     int32_t id_;
@@ -343,15 +343,15 @@ private:
     AccessibilityAbility connectedA11yAbilities_;  // key: bundleName/abilityName
     AccessibilityAbility connectingA11yAbilities_;  // key: bundleName/abilityName
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
-    std::mutex enableAbilityListObserversMutex_; // mutex for enableAbilityListsObservers_
+    ffrt::mutex enableAbilityListObserversMutex_; // mutex for enableAbilityListsObservers_
     std::map<int32_t, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
-    std::mutex asacConnectionsMutex_; // mutex for map asacConnections_
+    ffrt::mutex asacConnectionsMutex_; // mutex for map asacConnections_
     CaptionPropertyCallbacks captionPropertyCallbacks_;
-    std::mutex captionPropertyCallbacksMutex_; // mutex for captionPropertyCallbacks_
+    ffrt::mutex captionPropertyCallbacksMutex_; // mutex for captionPropertyCallbacks_
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
     std::vector<std::string> enabledAbilities_; // bundleName/abilityName
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> configCallbacks_;
-    std::mutex configCallbacksMutex_; // mutex for vector configCallbacks_
+    ffrt::mutex configCallbacksMutex_; // mutex for vector configCallbacks_
     std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
 };
 
@@ -366,7 +366,7 @@ public:
     void Clear();
 private:
     std::map<int32_t, sptr<AccessibilityAccountData>> accountDataMap_;
-    std::mutex accountDataMutex_;
+    ffrt::mutex accountDataMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

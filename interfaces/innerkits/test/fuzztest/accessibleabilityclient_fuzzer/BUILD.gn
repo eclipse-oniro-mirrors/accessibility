@@ -30,7 +30,10 @@ ohos_fuzztest("AccessibleAbilityClientFuzzTest") {
     "../../../aafwk:accessibleability",
     "../../../common:accessibility_common",
   ]
-  external_deps = [ "c_utils:utils" ]
+  external_deps = [
+    "c_utils:utils",
+    "ffrt:libffrt",
+  ]
 }
 
 ###############################################################################

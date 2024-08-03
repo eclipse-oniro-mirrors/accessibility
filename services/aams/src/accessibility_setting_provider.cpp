@@ -25,7 +25,7 @@
 namespace OHOS {
 namespace Accessibility {
 AccessibilitySettingProvider* AccessibilitySettingProvider::instance_;
-std::mutex AccessibilitySettingProvider::mutex_;
+ffrt::mutex AccessibilitySettingProvider::mutex_;
 namespace {
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
 } // namespace
@@ -44,7 +44,7 @@ AccessibilitySettingProvider& AccessibilitySettingProvider::GetInstance(int32_t 
 {
     HILOG_DEBUG("etInstance start, systemAbilityId = %{public}d.", systemAbilityId);
     if (instance_ == nullptr) {
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::lock_guard<ffrt::mutex> lock(mutex_);
         if (instance_ == nullptr) {
             instance_ = new AccessibilitySettingProvider();
             instance_->Initialize(systemAbilityId);
@@ -56,7 +56,7 @@ AccessibilitySettingProvider& AccessibilitySettingProvider::GetInstance(int32_t 
 void AccessibilitySettingProvider::DeleteInstance()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (instance_ == nullptr) {
         HILOG_INFO("instance_ is nullptr");
         return;

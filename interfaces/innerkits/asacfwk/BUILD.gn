@@ -64,6 +64,7 @@ ohos_shared_library("accessibilityclient") {
 
   external_deps = [
     "c_utils:utils",
+    "ffrt:libffrt",
     "hilog:libhilog",
     "init:libbeget_proxy",
     "init:libbegetutil",

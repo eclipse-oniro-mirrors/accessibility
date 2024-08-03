@@ -329,7 +329,8 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Reg
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_RegisterWindowListener002 start";
 
     const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
-    std::shared_ptr<AppExecFwk::EventRunner> runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
+    std::shared_ptr<AppExecFwk::EventRunner> runner_ =
+        AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME, AppExecFwk::ThreadMode::FFRT);
     std::shared_ptr<AppExecFwk::EventHandler> handler_ = std::make_shared<AppExecFwk::EventHandler>(runner_);
 
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
@@ -1538,7 +1539,8 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Der
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_DeregisterWindowListener002 start";
 
     const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
-    std::shared_ptr<AppExecFwk::EventRunner> runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
+    std::shared_ptr<AppExecFwk::EventRunner> runner_ =
+        AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME, AppExecFwk::ThreadMode::FFRT);
     std::shared_ptr<AppExecFwk::EventHandler> handler_ = std::make_shared<AppExecFwk::EventHandler>(runner_);
 
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);

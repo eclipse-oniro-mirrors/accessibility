@@ -140,7 +140,7 @@ private:
     std::vector<std::string> enabledAccessibilityServices_ {}; // bundleName/abilityName
 
     std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
-    std::mutex interfaceMutex_;
+    ffrt::mutex interfaceMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -22,6 +22,7 @@
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
 #include "datashare_helper.h"
 #endif
+#include "ffrt.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -73,7 +74,7 @@ private:
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     std::shared_ptr<DataShare::DataShareHelper> dataShareHelper_ = nullptr;
 #endif
-    static std::mutex observerMutex_;
+    static ffrt::mutex observerMutex_;
     std::map<std::string, sptr<AccessibilitySettingObserver>> settingObserverMap_;
 };
 } // namespace Accessibility
