@@ -274,8 +274,6 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
 
 AccessibleAbilityManagerServiceStub::~AccessibleAbilityManagerServiceStub()
 {
-    HILOG_DEBUG("start.");
-    memberFuncMap_.clear();
 }
 
 int AccessibleAbilityManagerServiceStub::OnRemoteRequest(

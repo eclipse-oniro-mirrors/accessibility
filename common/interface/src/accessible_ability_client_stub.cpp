@@ -59,8 +59,6 @@ AccessibleAbilityClientStub::AccessibleAbilityClientStub()
 
 AccessibleAbilityClientStub::~AccessibleAbilityClientStub()
 {
-    HILOG_DEBUG();
-    memberFuncMap_.clear();
 }
 
 int AccessibleAbilityClientStub::OnRemoteRequest(uint32_t code,
