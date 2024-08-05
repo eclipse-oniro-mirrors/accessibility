@@ -47,6 +47,8 @@ namespace {
     constexpr int32_t ALPHA_MOVE = 24;
     constexpr int32_t COLOR_MOVE = 8;
     const char UNICODE_BODY = '0';
+    const std::string FULL_VALUE = "1";
+    const std::string HALF_VALUE = "0";
 } // namespace
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
@@ -906,7 +908,8 @@ void ConvertActionArgsJSToNAPI(
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     std::string str = "";
-    std::map<std::string, std::string> scrollValueMap = { {"halfScreen", "0"}, {"fullScreen", "1"} };
+    std::map<std::string, std::string> scrollValueMap = { {"halfScreen", HALF_VALUE}, {"fullScreen", FULL_VALUE} };
+    std::string scrollValue = FULL_VALUE;
     bool seleFlag = false;
     switch (action) {
         case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
@@ -961,30 +964,26 @@ void ConvertActionArgsJSToNAPI(
             napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
-                if (scrollValueMap.find(str)!= scrollValueMap.end()) {
-                    std::string scrollvalue = scrollValueMap.find(str)->second;
-                    args.insert(std::pair<std::string, std::string>("scrolltype", scrollvalue.c_str()));
-                    HILOG_DEBUG("Input %{public}s, ScrollValue %{public}s", str.c_str(), scrollvalue.c_str());
+                if (scrollValueMap.find(str) != scrollValueMap.end()) {
+                    scrollValue = scrollValueMap.find(str)->second;
+                    HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
                 } else {
-                    str = "1";
-                    args.insert(std::pair<std::string, std::string>("scrolltype", str.c_str()));
                     HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
                 }
+                args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
             napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
-                if (scrollValueMap.find(str)!= scrollValueMap.end()) {
-                    std::string scrollvalue = scrollValueMap.find(str)->second;
-                    args.insert(std::pair<std::string, std::string>("scrolltype", scrollvalue.c_str()));
-                    HILOG_DEBUG("Input %{public}s, ScrollValue %{public}s", str.c_str(), scrollvalue.c_str());
+                if (scrollValueMap.find(str) != scrollValueMap.end()) {
+                    scrollValue = scrollValueMap.find(str)->second;
+                    HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
                 } else {
-                    str = "1";
-                    args.insert(std::pair<std::string, std::string>("scrolltype", str.c_str()));
                     HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
                 }
+                args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
             }
             break;
         default:
