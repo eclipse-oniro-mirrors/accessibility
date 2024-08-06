@@ -787,7 +787,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
         IsCheckWindowIdEventExist(windowId);
         if (operation && operation->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
-                new(std::nothrow) InteractionOperationDeathRecipient(windowId);
+                new(std::nothrow) InteractionOperationDeathRecipient(windowId, currentAccountId_);
             if (!deathRecipient) {
                 Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
                     A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
@@ -897,7 +897,8 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
         }
         if (operation && operation->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
-                new(std::nothrow) InteractionOperationDeathRecipient(parameter.windowId, treeIdSingle);
+                new(std::nothrow) InteractionOperationDeathRecipient(parameter.windowId, treeIdSingle,
+                    currentAccountId_);
             if (deathRecipient == nullptr) {
                 Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
                     A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
@@ -1433,6 +1434,18 @@ void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemo
     Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
         A11yError::ERROR_TARGET_APPLICATION_DISCONNECT_ABNORMALLY);
     HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData = 
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("get accountData failed");
+        return;
+    }
+    int32_t currentAccountId = accountData->GetAccountId();
+    if (currentAccountId != accountId_) {
+        HILOG_ERROR("check accountId failed");
+        return;
+    }
+
     if (treeId_ > 0) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(windowId_, treeId_);
     } else {
