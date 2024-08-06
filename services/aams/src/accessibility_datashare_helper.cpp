@@ -15,10 +15,12 @@
 
 #include "accessibility_datashare_helper.h"
 
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
 #include "datashare_errno.h"
 #include "datashare_predicates.h"
 #include "datashare_result_set.h"
 #include "datashare_values_bucket.h"
+#endif
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
@@ -28,11 +30,13 @@
 
 namespace OHOS {
 namespace Accessibility {
-std::mutex AccessibilityDatashareHelper::observerMutex_;
+ffrt::mutex AccessibilityDatashareHelper::observerMutex_;
 namespace {
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     constexpr int32_t INDEX = 0;
     const std::string SETTING_COLUMN_KEYWORD = "KEYWORD";
     const std::string SETTING_COLUMN_VALUE = "VALUE";
+#endif
     constexpr int32_t DECIMAL_NOTATION = 10;
     const std::string SETTINGS_DATA_EXT_URI = "datashare_ext";
     const std::string SETTING_GLOBAL_URI = "datashare:///com.ohos.settingsdata/entry/settingsdata/SETTINGSDATA";
@@ -49,15 +53,18 @@ AccessibilityDatashareHelper::AccessibilityDatashareHelper(DATASHARE_TYPE type, 
 
 AccessibilityDatashareHelper::~AccessibilityDatashareHelper()
 {
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     if (dataShareHelper_ != nullptr) {
         DestoryDatashareHelper(dataShareHelper_);
         dataShareHelper_ = nullptr;
     }
+#endif
 }
 
 std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key, const std::string& defaultValue)
 {
     std::string resultStr = defaultValue;
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     std::string callingIdentity = IPCSkeleton::ResetCallingIdentity();
     std::shared_ptr<DataShare::DataShareResultSet> resultSet = nullptr;
     do {
@@ -92,6 +99,7 @@ std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key,
         resultSet = nullptr;
     }
     IPCSkeleton::SetCallingIdentity(callingIdentity);
+#endif
     return resultStr;
 }
 
@@ -135,6 +143,7 @@ RetError AccessibilityDatashareHelper::PutStringValue(const std::string& key, co
 {
     std::string callingIdentity = IPCSkeleton::ResetCallingIdentity();
     RetError rtn = RET_OK;
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     do {
         if (dataShareHelper_ == nullptr) {
             rtn = RET_ERR_NULLPTR;
@@ -158,6 +167,7 @@ RetError AccessibilityDatashareHelper::PutStringValue(const std::string& key, co
         }
     } while (0);
     IPCSkeleton::SetCallingIdentity(callingIdentity);
+#endif
     return rtn;
 }
 
@@ -210,10 +220,12 @@ void AccessibilityDatashareHelper::Initialize(int32_t systemAbilityId)
             HILOG_WARN("undefined DATASHARE_TYPE, use global table");
             break;
     }
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     dataShareHelper_ = CreateDatashareHelper();
     if (dataShareHelper_ == nullptr) {
         HILOG_ERROR("create dataShareHelper_ failed");
     }
+#endif
 }
 
 sptr<AccessibilitySettingObserver> AccessibilityDatashareHelper::CreateObserver(const std::string& key,
@@ -229,11 +241,13 @@ RetError AccessibilityDatashareHelper::RegisterObserver(const sptr<Accessibility
 {
     std::string callingIdentity = IPCSkeleton::ResetCallingIdentity();
     auto uri = AssembleUri(observer->GetKey());
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     if (dataShareHelper_ == nullptr) {
         IPCSkeleton::SetCallingIdentity(callingIdentity);
         return RET_ERR_NULLPTR;
     }
     dataShareHelper_->RegisterObserver(uri, observer);
+#endif
     IPCSkeleton::SetCallingIdentity(callingIdentity);
     HILOG_DEBUG("succeed to register observer of uri=%{public}s", uri.ToString().c_str());
     return RET_OK;
@@ -249,7 +263,7 @@ RetError AccessibilityDatashareHelper::RegisterObserver(const std::string& key,
     if (RegisterObserver(observer) != ERR_OK) {
         return RET_ERR_NULLPTR;
     }
-    std::lock_guard<std::mutex> lock(observerMutex_);
+    std::lock_guard<ffrt::mutex> lock(observerMutex_);
     settingObserverMap_.insert(std::make_pair(key, observer));
     return RET_OK;
 }
@@ -258,11 +272,13 @@ RetError AccessibilityDatashareHelper::UnregisterObserver(const sptr<Accessibili
 {
     std::string callingIdentity = IPCSkeleton::ResetCallingIdentity();
     auto uri = AssembleUri(observer->GetKey());
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     if (dataShareHelper_ == nullptr) {
         IPCSkeleton::SetCallingIdentity(callingIdentity);
         return RET_ERR_NULLPTR;
     }
     dataShareHelper_->UnregisterObserver(uri, observer);
+#endif
     IPCSkeleton::SetCallingIdentity(callingIdentity);
     HILOG_DEBUG("succeed to unregister observer of uri=%{public}s", uri.ToString().c_str());
     return RET_OK;
@@ -270,7 +286,7 @@ RetError AccessibilityDatashareHelper::UnregisterObserver(const sptr<Accessibili
 
 RetError AccessibilityDatashareHelper::UnregisterObserver(const std::string& key)
 {
-    std::lock_guard<std::mutex> lock(observerMutex_);
+    std::lock_guard<ffrt::mutex> lock(observerMutex_);
     auto iter = settingObserverMap_.find(key);
     if (iter != settingObserverMap_.end() && iter->second != nullptr) {
         sptr<AccessibilitySettingObserver> observer = iter->second;
@@ -288,6 +304,7 @@ RetError AccessibilityDatashareHelper::UnregisterObserver(const std::string& key
     return RET_ERR_FAILED;
 }
 
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
 std::shared_ptr<DataShare::DataShareHelper> AccessibilityDatashareHelper::CreateDatashareHelper()
 {
     if (remoteObj_ == nullptr) {
@@ -311,6 +328,7 @@ bool AccessibilityDatashareHelper::DestoryDatashareHelper(std::shared_ptr<DataSh
     }
     return true;
 }
+#endif
 
 Uri AccessibilityDatashareHelper::AssembleUri(const std::string& key)
 {

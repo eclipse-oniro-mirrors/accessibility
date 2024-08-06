@@ -20,7 +20,7 @@
 namespace OHOS {
 namespace Accessibility {
 AccessibilitySettingProvider* AccessibilitySettingProvider::instance_;
-std::mutex AccessibilitySettingProvider::mutex_;
+ffrt::mutex AccessibilitySettingProvider::mutex_;
 namespace {
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
 } // namespace

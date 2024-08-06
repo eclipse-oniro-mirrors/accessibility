@@ -50,6 +50,8 @@ public:
         gridItemInfoParcel_ = std::make_shared<GridItemInfoParcel>(*gridItemInfo_);
         rect_ = std::make_shared<Rect>();
         rectParcel_ = std::make_shared<RectParcel>(*rect_);
+        extraElementInfo_ = std::make_shared<ExtraElementInfo>();
+        extraElementInfoParcel_ = std::make_shared<ExtraElementInfoParcel>(*extraElementInfo_);
         GTEST_LOG_(INFO) << "AccessibilityElementInfoParcelTest SetUp() End";
     };
     void TearDown()
@@ -67,6 +69,8 @@ public:
         gridItemInfoParcel_ = nullptr;
         rect_ = nullptr;
         rectParcel_ = nullptr;
+        extraElementInfo_ = nullptr;
+        extraElementInfoParcel_ = nullptr;
     }
 
     std::shared_ptr<AccessibleAction> action_ = nullptr;
@@ -81,6 +85,8 @@ public:
     std::shared_ptr<RectParcel> rectParcel_ = nullptr;
     std::shared_ptr<AccessibilityElementInfo> elementInfo_ = nullptr;
     std::shared_ptr<AccessibilityElementInfoParcel> elementInfoParcel_ = nullptr;
+    std::shared_ptr<ExtraElementInfo> extraElementInfo_ = nullptr;
+    std::shared_ptr<ExtraElementInfoParcel> extraElementInfoParcel_ = nullptr;
 };
 
 /**
@@ -309,6 +315,43 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Grid_Info_Unmarshalling_001, TestSi
     sptr<GridInfoParcel> gridInfoParcel = gridInfoParcel_->Unmarshalling(parcel);
     EXPECT_EQ(true, gridInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Grid_Info_Unmarshalling_001 end";
+}
+
+/**
+ * @tc.number: Extra_Element_Info_Parcel__001
+ * @tc.name: Extra_Element_Info_Parcel
+ * @tc.desc: Test function ReadFromParcel
+ */
+HWTEST_F(AccessibilityElementInfoParcelTest, Extra_Element_Info_Parcel__001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Extra_Element_Info_Parcel__001 start";
+    if (!extraElementInfoParcel_) {
+        GTEST_LOG_(INFO) << "extraElementInfoParcel_ is null";
+        return;
+    }
+
+    Parcel parcel;
+    EXPECT_EQ(false, extraElementInfoParcel_->ReadFromParcel(parcel));
+    GTEST_LOG_(INFO) << "Extra_Element_Info_Parcel__001 end";
+}
+
+/**
+ * @tc.number: Extra_Element_Info_Parcel__002
+ * @tc.name: Extra_Element_Info_Parcel
+ * @tc.desc: Test function Unmarshalling
+ */
+HWTEST_F(AccessibilityElementInfoParcelTest, Extra_Element_Info_Parcel__002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Extra_Element_Info_Parcel__002 start";
+    if (!extraElementInfoParcel_) {
+        GTEST_LOG_(INFO) << "extraElementInfoParcel_ is null";
+        return;
+    }
+
+    Parcel parcel;
+    sptr<ExtraElementInfoParcel> extraElementInfoParcel = extraElementInfoParcel_->Unmarshalling(parcel);
+    EXPECT_EQ(true, extraElementInfoParcel == nullptr);
+    GTEST_LOG_(INFO) << "Extra_Element_Info_Parcel__002 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

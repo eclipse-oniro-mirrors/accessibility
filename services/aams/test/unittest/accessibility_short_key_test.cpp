@@ -87,8 +87,8 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_001, TestSize.Leve
 {
     GTEST_LOG_(INFO) << "Accessibility_Short_Key_UnitTest_AccessibilityShortKey001 start";
     TearDownTestCase();
-    AccessibilityShortKey *test = new AccessibilityShortKey();
-    delete test;
+    sptr<AccessibilityShortKey> test = new (std::nothrow) AccessibilityShortKey();
+    test = nullptr;
     SetUpTestCase();
     GTEST_LOG_(INFO) << "Accessibility_Short_Key_UnitTest_AccessibilityShortKey001 end";
 }

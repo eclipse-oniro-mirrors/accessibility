@@ -67,8 +67,8 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
-    std::future syncFuture = syncPromise->get_future();
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask([this, syncPromise, windowId, elementId, treeId, requestId,
         callback, mode, isFilter]() {
         HILOG_DEBUG("search element accountId[%{public}d], name[%{public}s]", accountId_, clientName_.c_str());
@@ -98,8 +98,8 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
         syncPromise->set_value(RET_OK);
         }, "SearchElementInfoByAccessibilityId");
     
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait SearchElementInfoByAccessibilityId result");
         return RET_ERR_TIME_OUT;
     }
@@ -125,8 +125,8 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
 
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("SearchElementInfosByText :channel SearchElementInfo treeId: %{public}d", treeId);
-    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
-    std::future syncFuture = syncPromise->get_future();
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask([this, syncPromise, accessibilityWindowId, elementId, treeId, text, requestId,
         callback]() {
         HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId_, clientName_.c_str());
@@ -149,8 +149,8 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
         syncPromise->set_value(RET_OK);
         }, "SearchElementInfosByText");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait SearchElementInfosByText result");
         return RET_ERR_TIME_OUT;
     }
@@ -174,8 +174,8 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
-    std::future syncFuture = syncPromise->get_future();
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("FindFocusedElementInfo :channel FindFocusedElementInfo treeId: %{public}d", treeId);
     eventHandler_->PostTask([this, syncPromise, accessibilityWindowId, elementId, treeId,
@@ -199,8 +199,8 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         syncPromise->set_value(RET_OK);
         }, "FindFocusedElementInfo");
     
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait FindFocusedElementInfo result");
         return RET_ERR_TIME_OUT;
     }
@@ -223,8 +223,8 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
-    std::future syncFuture = syncPromise->get_future();
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("FocusMoveSearch :channel FocusMoveSearch treeId: %{public}d", treeId);
     eventHandler_->PostTask([this, syncPromise, accessibilityWindowId,
@@ -249,8 +249,8 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
         syncPromise->set_value(RET_OK);
         }, "FocusMoveSearch");
     
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait FocusMoveSearch result");
         return RET_ERR_TIME_OUT;
     }
@@ -356,8 +356,8 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         return RET_OK;
     }
     SetFocusWindowIdAndElementId(accessibilityWindowId, elementId, action);
-    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
-    std::future syncFuture = syncPromise->get_future();
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     eventHandler_->PostTask([this, syncPromise, accessibilityWindowId, elementId, treeId, action,
         actionArguments, requestId, callback]() {
@@ -378,8 +378,8 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         syncPromise->set_value(RET_OK);
         }, "ExecuteAction");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait ExecuteAction result");
         return RET_ERR_TIME_OUT;
     }
@@ -408,9 +408,9 @@ RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, Accessibili
         return RET_ERR_NULLPTR;
     }
  
-    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     std::shared_ptr<AccessibilityWindowInfo> tmpWindowInfo = std::make_shared<AccessibilityWindowInfo>(windowInfo);
-    std::future syncFuture = syncPromise->get_future();
+    ffrt::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask([this, windowId, tmpWindowInfo, syncPromise]() {
         HILOG_DEBUG("windowId:%{public}d", windowId);
         sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
@@ -432,8 +432,8 @@ RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, Accessibili
         }
         }, "GetWindow");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait GetWindow result");
         return RET_ERR_TIME_OUT;
     }
@@ -470,9 +470,9 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     auto tmpWindows = std::make_shared<std::vector<AccessibilityWindowInfo>>(windows);
-    std::future syncFuture = syncPromise->get_future();
+    ffrt::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask([this, displayId, tmpWindows, syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
@@ -504,8 +504,8 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
         syncPromise->set_value(RET_OK);
         }, "GetWindows");
     
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait GetWindows result");
         return RET_ERR_TIME_OUT;
     }
@@ -549,8 +549,8 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
-    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
-    std::future syncFuture = syncPromise->get_future();
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("GetCursorPosition :channel GetCursorPosition treeId: %{public}d", treeId);
     eventHandler_->PostTask([this, syncPromise, accessibilityWindowId, elementId, treeId,
@@ -573,8 +573,8 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
         syncPromise->set_value(RET_OK);
         }, "GetCursorPosition");
     
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait GetCursorPosition result");
         return RET_ERR_TIME_OUT;
     }
@@ -591,8 +591,8 @@ RetError AccessibleAbilityChannel::SendSimulateGesture(
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
-    std::future syncFuture = syncPromise->get_future();
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask([this, gesturePath, syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
@@ -619,8 +619,8 @@ RetError AccessibleAbilityChannel::SendSimulateGesture(
         syncPromise->set_value(RET_OK);
         }, "SendSimulateGesture");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait SendSimulateGesture result");
         return RET_ERR_TIME_OUT;
     }
@@ -636,8 +636,8 @@ RetError AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::st
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
-    std::future syncFuture = syncPromise->get_future();
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask([this, targetBundleNames, syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
@@ -651,8 +651,8 @@ RetError AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::st
         syncPromise->set_value(RET_OK);
         }, "SetTargetBundleName");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait SetTargetBundleName result");
         return RET_ERR_TIME_OUT;
     }

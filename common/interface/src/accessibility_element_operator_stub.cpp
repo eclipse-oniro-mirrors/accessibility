@@ -77,8 +77,6 @@ AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
 
 AccessibilityElementOperatorStub::~AccessibilityElementOperatorStub()
 {
-    HILOG_DEBUG();
-    memberFuncMap_.clear();
 }
 
 int AccessibilityElementOperatorStub::OnRemoteRequest(uint32_t code, MessageParcel &data,

@@ -23,7 +23,7 @@
 #include "system_ability_definition.h"
 
 namespace OHOS {
-std::mutex SystemAbilityManager::instanceLock;
+ffrt::mutex SystemAbilityManager::instanceLock;
 sptr<SystemAbilityManager> SystemAbilityManager::instance;
 
 SystemAbilityManager::SystemAbilityManager()
@@ -43,7 +43,7 @@ const sptr<DBinderService> SystemAbilityManager::GetDBinder() const
 sptr<SystemAbilityManager> SystemAbilityManager::GetInstance()
 {
     HILOG_ERROR("SystemAbilityManager::GetInstance");
-    std::lock_guard<std::mutex> autoLock(instanceLock);
+    std::lock_guard<ffrt::mutex> autoLock(instanceLock);
     if (!instance) {
         instance = new SystemAbilityManager;
     }

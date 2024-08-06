@@ -67,8 +67,8 @@ RetError AccessibilitySettings::SetShortKeyState(const bool state)
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, state]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -109,8 +109,8 @@ RetError AccessibilitySettings::SetMouseAutoClick(const int32_t time)
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -136,8 +136,8 @@ RetError AccessibilitySettings::SetShortkeyTarget(const std::string &name)
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &name]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -162,8 +162,8 @@ RetError AccessibilitySettings::SetShortkeyMultiTarget(const std::vector<std::st
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &name]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -277,8 +277,8 @@ RetError AccessibilitySettings::SetDaltonizationColorFilter(const uint32_t filte
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, filter]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -302,8 +302,8 @@ RetError AccessibilitySettings::SetContentTimeout(const uint32_t time)
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -333,8 +333,8 @@ RetError AccessibilitySettings::SetBrightnessDiscount(const float discount)
         return Accessibility::RET_ERR_FAILED;
     }
 #endif
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, discount]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -360,8 +360,8 @@ RetError AccessibilitySettings::SetAudioBalance(const float balance)
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, balance]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -387,8 +387,8 @@ RetError AccessibilitySettings::SetClickResponseTime(const uint32_t time)
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -415,8 +415,8 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickState(const bool state)
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, state]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -443,8 +443,8 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickTime(const uint32_t time)
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -543,8 +543,8 @@ RetError AccessibilitySettings::GetScreenMagnificationState(bool &state)
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -568,8 +568,8 @@ RetError AccessibilitySettings::GetShortKeyState(bool &state)
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -593,8 +593,8 @@ RetError AccessibilitySettings::GetMouseKeyState(bool &state)
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -613,8 +613,8 @@ RetError AccessibilitySettings::GetMouseKeyState(bool &state)
 RetError AccessibilitySettings::GetMouseAutoClick(int32_t &time)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &time]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -634,8 +634,8 @@ RetError AccessibilitySettings::GetMouseAutoClick(int32_t &time)
 RetError AccessibilitySettings::GetShortkeyTarget(std::string &name)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &name]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -655,8 +655,8 @@ RetError AccessibilitySettings::GetShortkeyTarget(std::string &name)
 RetError AccessibilitySettings::GetShortkeyMultiTarget(std::vector<std::string> &name)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &name]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -676,8 +676,8 @@ RetError AccessibilitySettings::GetShortkeyMultiTarget(std::vector<std::string> 
 RetError AccessibilitySettings::GetHighContrastTextState(bool &state)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -697,8 +697,8 @@ RetError AccessibilitySettings::GetHighContrastTextState(bool &state)
 RetError AccessibilitySettings::GetDaltonizationState(bool &state)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -718,8 +718,8 @@ RetError AccessibilitySettings::GetDaltonizationState(bool &state)
 RetError AccessibilitySettings::GetInvertColorState(bool &state)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -739,8 +739,8 @@ RetError AccessibilitySettings::GetInvertColorState(bool &state)
 RetError AccessibilitySettings::GetAnimationOffState(bool &state)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -760,8 +760,8 @@ RetError AccessibilitySettings::GetAnimationOffState(bool &state)
 RetError AccessibilitySettings::GetAudioMonoState(bool &state)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -781,8 +781,8 @@ RetError AccessibilitySettings::GetAudioMonoState(bool &state)
 RetError AccessibilitySettings::GetDaltonizationColorFilter(uint32_t &type)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &type]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -802,8 +802,8 @@ RetError AccessibilitySettings::GetDaltonizationColorFilter(uint32_t &type)
 RetError AccessibilitySettings::GetContentTimeout(uint32_t &timer)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &timer]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -823,8 +823,8 @@ RetError AccessibilitySettings::GetContentTimeout(uint32_t &timer)
 RetError AccessibilitySettings::GetBrightnessDiscount(float &brightness)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &brightness]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -844,8 +844,8 @@ RetError AccessibilitySettings::GetBrightnessDiscount(float &brightness)
 RetError AccessibilitySettings::GetAudioBalance(float &balance)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &balance]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -865,8 +865,8 @@ RetError AccessibilitySettings::GetAudioBalance(float &balance)
 RetError AccessibilitySettings::GetClickResponseTime(uint32_t &time)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &time]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -886,8 +886,8 @@ RetError AccessibilitySettings::GetClickResponseTime(uint32_t &time)
 RetError AccessibilitySettings::GetIgnoreRepeatClickState(bool &state)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -907,8 +907,8 @@ RetError AccessibilitySettings::GetIgnoreRepeatClickState(bool &state)
 RetError AccessibilitySettings::GetIgnoreRepeatClickTime(uint32_t &time)
 {
     HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &time]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -1133,8 +1133,8 @@ RetError AccessibilitySettings::GetCaptionProperty(AccessibilityConfig::CaptionP
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &caption]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -1158,8 +1158,8 @@ RetError AccessibilitySettings::SetCaptionProperty(const AccessibilityConfig::Ca
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &caption]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -1198,8 +1198,8 @@ RetError AccessibilitySettings::GetCaptionState(bool &state)
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =

@@ -18,7 +18,11 @@
 
 #include "accessibility_setting_observer.h"
 #include "accessibility_def.h"
+
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
 #include "datashare_helper.h"
+#endif
+#include "ffrt.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -56,8 +60,10 @@ public:
     RetError UnregisterObserver(const std::string& key);
 
 private:
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     std::shared_ptr<DataShare::DataShareHelper> CreateDatashareHelper();
     bool DestoryDatashareHelper(std::shared_ptr<DataShare::DataShareHelper>& helper);
+#endif
     Uri AssembleUri(const std::string& key);
 
 private:
@@ -65,9 +71,10 @@ private:
     int32_t accountId_;
     std::string uriProxyStr_;
     sptr<IRemoteObject> remoteObj_ = nullptr;
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     std::shared_ptr<DataShare::DataShareHelper> dataShareHelper_ = nullptr;
-
-    static std::mutex observerMutex_;
+#endif
+    static ffrt::mutex observerMutex_;
     std::map<std::string, sptr<AccessibilitySettingObserver>> settingObserverMap_;
 };
 } // namespace Accessibility

@@ -47,7 +47,7 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
 void AccessibleAbilityManagerService::OnStart()
 {
     GTEST_LOG_(INFO) << "###AccessibleAbilityManagerService::OnStart";
-    runner_ = AppExecFwk::EventRunner::Create("AccessibleAbilityManagerService");
+    runner_ = AppExecFwk::EventRunner::Create("AccessibleAbilityManagerService", AppExecFwk::ThreadMode::FFRT);
     handler_ = std::make_shared<AAMSEventHandler>(runner_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
@@ -257,6 +257,11 @@ RetError AccessibleAbilityManagerService::SetScreenMagnificationState(const bool
 }
 
 void AccessibleAbilityManagerService::UpdateAllSetting()
+{
+    return;
+}
+
+void AccessibleAbilityManagerService::UpdateInputFilter()
 {
     return;
 }

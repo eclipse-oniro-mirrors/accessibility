@@ -34,7 +34,6 @@ SystemAbilityManagerClient& SystemAbilityManagerClient::GetInstance()
 
 sptr<ISystemAbilityManager> SystemAbilityManagerClient::GetSystemAbilityManager()
 {
-    std::lock_guard<std::mutex> lock(systemAbilityManagerLock_);
     if (systemAbilityManager_ != nullptr) {
         return systemAbilityManager_;
     }

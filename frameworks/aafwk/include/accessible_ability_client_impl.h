@@ -19,11 +19,11 @@
 #include <atomic>
 #include <deque>
 #include <memory>
-#include <mutex>
-#include <condition_variable>
 #include "accessible_ability_channel_client.h"
 #include "accessible_ability_client.h"
 #include "accessible_ability_client_stub.h"
+#include "ffrt.h"
+#include "ffrt_inner.h"
 #include "i_accessible_ability_manager_service.h"
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
@@ -388,7 +388,7 @@ private:
     private:
         std::map<int32_t, std::map<int32_t, std::shared_ptr<AccessibilityElementInfo>>> elementCache_;
         std::deque<int32_t> windowIdSet_;
-        std::mutex elementCacheMutex_;
+        ffrt::mutex elementCacheMutex_;
     };
 
     class SceneBoardWindowElementMap {
@@ -403,7 +403,7 @@ private:
         void RemovePairByWindowId(int32_t windowId);
     private:
         std::map<int32_t, int64_t> windowElementMap_;
-        std::mutex mapMutex_;
+        ffrt::mutex mapMutex_;
     };
 
     class AccessibleAbilityDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -455,14 +455,14 @@ private:
     uint32_t cacheMode_ = 0;
     int32_t cacheWindowId_ = -1;
     std::map<int64_t, AccessibilityElementInfo> cacheElementInfos_;
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
     std::atomic<bool> isConnected_ = false;
     // used for query element info in batch
     ElementCacheInfo elementCacheInfo_;
     SceneBoardWindowElementMap windowElementMap_;
 
-    std::condition_variable proxyConVar_;
-    std::mutex conVarMutex_;
+    ffrt::condition_variable proxyConVar_;
+    ffrt::mutex conVarMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

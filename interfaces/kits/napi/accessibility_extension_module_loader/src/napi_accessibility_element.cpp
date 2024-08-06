@@ -109,7 +109,7 @@ namespace {
     };
 } // namespace
 
-thread_local napi_ref NAccessibilityElement::consRef_ = nullptr;
+napi_ref NAccessibilityElement::consRef_ = nullptr;
 
 void NAccessibilityElement::DefineJSAccessibilityElement(napi_env env)
 {
@@ -611,10 +611,6 @@ void NAccessibilityElement::GetExtraElementInfo(NAccessibilityElementData *callb
     HILOG_DEBUG("GetExtraElementInfo: size is extraElementValueInt : [%{public}zu]",
         mapValIsInt.size());
 
-    if (mapValIsStr.empty() && mapValIsInt.empty()) {
-        HILOG_ERROR("extraElement map is null");
-        return;
-    }
     auto iter = mapValIsStr.find(keyStr);
     if (iter != mapValIsStr.end()) {
         NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
@@ -624,7 +620,10 @@ void NAccessibilityElement::GetExtraElementInfo(NAccessibilityElementData *callb
     auto seconditer = mapValIsInt.find(keyStr);
     if (seconditer != mapValIsInt.end()) {
         NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_, seconditer->second, &value));
+        return;
     }
+
+    napi_get_undefined(callbackInfo->env_, &value);
 }
 
 void NAccessibilityElement::GetElementInfoCheckboxGroup(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -836,7 +835,7 @@ void NAccessibilityElement::GetElementInfoValueMax(NAccessibilityElementData *ca
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_double(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetRange().GetMax(), &value));
 }
 
@@ -845,7 +844,7 @@ void NAccessibilityElement::GetElementInfoValueMin(NAccessibilityElementData *ca
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_double(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetRange().GetMin(), &value));
 }
 
@@ -854,7 +853,7 @@ void NAccessibilityElement::GetElementInfoValueNow(NAccessibilityElementData *ca
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_double(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetRange().GetCurrent(), &value));
 }
 
@@ -1293,7 +1292,7 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     napi_env env = callbackInfo->env_;
     napi_value checkBox = nullptr;
     GetElementInfoCheckboxGroup(callbackInfo, checkBox);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "checkBox", checkBox));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "checkboxGroupSelectedStatus", checkBox));
 
     napi_value row = nullptr;
     GetElementInfoRow(callbackInfo, row);
@@ -1305,7 +1304,7 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
 
     napi_value sideBarContainer = nullptr;
     GetElementInfoSideBarContainer(callbackInfo, sideBarContainer);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "sideBarContainer", sideBarContainer));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "sideBarContainerStates", sideBarContainer));
 
     napi_value listItemIndex = nullptr;
     GetElementInfoListItemIndex(callbackInfo, listItemIndex);

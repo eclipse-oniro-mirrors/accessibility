@@ -16,7 +16,6 @@
 #ifndef ACCESSIBILITY_SETTING_PROVIDER_H
 #define ACCESSIBILITY_SETTING_PROVIDER_H
 
-#include "datashare_helper.h"
 #include "errors.h"
 #include "mutex"
 #include "accessibility_setting_observer.h"
@@ -53,7 +52,7 @@ protected:
 
 private:
     static AccessibilitySettingProvider* instance_;
-    static std::mutex mutex_;
+    static ffrt::mutex mutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

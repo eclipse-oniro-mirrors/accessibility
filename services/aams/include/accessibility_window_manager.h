@@ -18,10 +18,10 @@
 
 #include <map>
 #include <memory>
-#include <mutex>
 #include <set>
 #include "accessibility_window_info.h"
 #include "event_handler.h"
+#include "ffrt.h"
 #include "singleton.h"
 #include "window_manager.h"
 
@@ -86,7 +86,7 @@ public:
         void Clear();
     private:
         std::map<int32_t, int64_t> windowElementMap_;
-        std::mutex mapMutex_;
+        ffrt::mutex mapMutex_;
     };
     SceneBoardElementIdMap sceneBoardElementIdMap_ = {};
 
@@ -126,7 +126,7 @@ private:
 
     sptr<AccessibilityWindowListener> windowListener_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
-    std::recursive_mutex interfaceMutex_; // mutex for interface to make sure AccessibilityWindowManager thread-safe
+    ffrt::recursive_mutex interfaceMutex_; // mutex for interface to make sure AccessibilityWindowManager thread-safe
 };
 } // namespace Accessibility
 } // namespace OHOS

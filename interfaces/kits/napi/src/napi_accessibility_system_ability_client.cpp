@@ -42,8 +42,8 @@ std::shared_ptr<StateListenerImpl> NAccessibilityClient::touchGuideStateListener
 std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityClient::captionListeners_ =
     std::make_shared<NAccessibilityConfigObserverImpl>();
 
-thread_local napi_ref NAccessibilityClient::aaConsRef_;
-thread_local napi_ref NAccessibilityClient::aaStyleConsRef_;
+napi_ref NAccessibilityClient::aaConsRef_;
+napi_ref NAccessibilityClient::aaStyleConsRef_;
 
 #define ACCESSIBILITY_NAPI_ASSERT(env, cond, errCode) \
 do { \
@@ -1338,7 +1338,7 @@ void StateListenerImpl::SubscribeToFramework()
 void StateListenerImpl::OnStateChanged(const bool state)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto &observer : observers_) {
         observer->OnStateChanged(state);
     }
@@ -1347,7 +1347,7 @@ void StateListenerImpl::OnStateChanged(const bool state)
 void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
             HILOG_DEBUG("SubscribeObserver Observer exist");
@@ -1368,7 +1368,7 @@ void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
 void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
             observers_.erase(iter);
@@ -1382,6 +1382,6 @@ void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
 void StateListenerImpl::UnsubscribeObservers()
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     observers_.clear();
 }

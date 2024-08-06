@@ -24,13 +24,15 @@ namespace Accessibility {
 namespace {
     constexpr uint32_t DEFAULT_COLOR = 0xff000000;
     const int32_t DEFAULT_SCALE = 100;
+    const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const std::string ACCESSIBILITY = "accessibility";
     const std::string TOUCH_GUIDE_STATE = "touch_guide_state";
     const std::string GESTURE_KEY = "gesture_state";
     const std::string CAPTION_KEY = "caption_state";
     const std::string KEYEVENT_OBSERVER = "keyevent_observer";
-    const std::string SCREEN_MAGNIFICATION_KEY = "screen_magnification";
+    const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
+    const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
     const std::string MOUSEKEY = "mousekey";
     const std::string HIGH_CONTRAST_TEXT_KEY = "high_text_contrast_enabled";
     const std::string DALTONIZATION_STATE = "accessibility_display_daltonizer_enabled";
@@ -111,7 +113,14 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationState(const bool sta
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isScreenMagnificationState_ = state;
-    return SetConfigState(SCREEN_MAGNIFICATION_KEY, state);
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t type)
+{
+    HILOG_DEBUG("screenMagnificationType = [%{public}u]", type);
+    screenMagnificationType_ = type;
+    return RET_OK;
 }
 
 RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
@@ -179,14 +188,20 @@ RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<std::string> &name)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(interfaceMutex_);
-    shortkeyMultiTarget_ = name;
+    std::set<std::string> targets;
+    std::for_each(name.begin(), name.end(), [&](const std::string &target) {
+        if (targets.find(target) == targets.end()) {
+            targets.insert(target);
+        }
+    });
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
+    shortkeyMultiTarget_ = std::vector<std::string>(targets.begin(), targets.end());
     if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
     std::string stringOut = "";
-    Utils::VectorToString(name, stringOut);
+    Utils::VectorToString(shortkeyMultiTarget_, stringOut);
     return datashare_->PutStringValue(SHORTCUT_SERVICE, stringOut);
 }
 
@@ -377,7 +392,7 @@ const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
 
 const std::vector<std::string> AccessibilitySettingsConfig::GetShortkeyMultiTarget()
 {
-    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     std::vector<std::string> rtnVec = shortkeyMultiTarget_;
     return rtnVec;
 }
@@ -457,6 +472,11 @@ uint32_t AccessibilitySettingsConfig::GetClickResponseTime() const
     return clickResponseTime_;
 }
 
+uint32_t AccessibilitySettingsConfig::GetScreenMagnificationType() const
+{
+    return screenMagnificationType_;
+}
+
 bool AccessibilitySettingsConfig::GetIgnoreRepeatClickState() const
 {
     return ignoreRepeatClickState_;
@@ -469,14 +489,14 @@ uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
 
 const std::vector<std::string> AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
 {
-    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     std::vector<std::string> rtnVec = enabledAccessibilityServices_;
     return rtnVec;
 }
 
 RetError AccessibilitySettingsConfig::AddEnabledAccessibilityService(const std::string &serviceName)
 {
-    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     auto iter = std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(), serviceName);
     if (iter != enabledAccessibilityServices_.end()) {
         return RET_OK;
@@ -493,7 +513,7 @@ RetError AccessibilitySettingsConfig::AddEnabledAccessibilityService(const std::
 
 RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const std::string &serviceName)
 {
-    std::lock_guard<std::mutex> lock(interfaceMutex_);
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     auto iter = std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(), serviceName);
     if (iter == enabledAccessibilityServices_.end()) {
         return RET_OK;
@@ -639,6 +659,7 @@ void AccessibilitySettingsConfig::InitSetting()
     contentTimeout_ = static_cast<uint32_t>(datashare_->GetIntValue(CONTENT_TIMEOUT_KEY, 0));
     brightnessDiscount_ = static_cast<float>(datashare_->GetFloatValue(BRIGHTNESS_DISCOUNT_KEY, 1.0));
     audioBalance_ = static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0));
+    screenMagnificationType_ = static_cast<uint32_t>(datashare_->GetIntValue(SCREEN_MAGNIFICATION_TYPE, 0));
     clickResponseTime_ = static_cast<uint32_t>(datashare_->GetIntValue(CLICK_RESPONCE_TIME, 0));
     ignoreRepeatClickTime_ = static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0));
 }
@@ -689,7 +710,6 @@ void AccessibilitySettingsConfig::OnDataClone()
     } else if (clickResponseTime_ > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
         SetClickResponseTime(AccessibilityConfig::ResponseDelayLong);
     }
-
     if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
         SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutShort);
     } else if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
@@ -699,7 +719,6 @@ void AccessibilitySettingsConfig::OnDataClone()
     } else if (ignoreRepeatClickTime_ > DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
         SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutLongest);
     }
-
     if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_GREEN) {
         SetDaltonizationColorFilter(AccessibilityConfig::Deuteranomaly);
     } else if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_RED) {
@@ -707,21 +726,33 @@ void AccessibilitySettingsConfig::OnDataClone()
     } else if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_BLUE) {
         SetDaltonizationColorFilter(AccessibilityConfig::Tritanomaly);
     }
+    // 1->1000 0->3000
+    if (shortKeyTimeout_ == 1) {
+        shortKeyTimeout_ = SHORT_KEY_TIMEOUT_AFTER_USE;
+    } else {
+        shortKeyTimeout_ = SHORT_KEY_TIMEOUT_BEFORE_USE;
+    }
 
+    auto cleanFunc = [] (std::vector<std::string> &services) -> int {
+        int count = 0;
+        for (auto iter = services.begin(); iter != services.end();) {
+            if (iter->find(SCREENREADER_TAG) != std::string::npos) {
+                iter = services.erase(iter);
+                count++;
+            } else {
+                iter++;
+            }
+        }
+        return count;
+    };
     std::vector<std::string> tmpVec = GetShortkeyMultiTarget();
-    auto iter = std::find_if(tmpVec.begin(), tmpVec.end(),
-        [] (const std::string& service) { return service.find(SCREENREADER_TAG) != std::string::npos; });
-    if (iter != tmpVec.end()) {
-        tmpVec.erase(iter);
+    if (cleanFunc(tmpVec) != 0) {
         tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
         SetShortkeyMultiTarget(tmpVec);
     }
 
     tmpVec = GetEnabledAccessibilityServices();
-    iter = std::find_if(tmpVec.begin(), tmpVec.end(),
-        [] (const std::string& service) { return service.find(SCREENREADER_TAG) != std::string::npos; });
-    if (iter != tmpVec.end()) {
-        RemoveEnabledAccessibilityService(*iter);
+    if (cleanFunc(tmpVec) != 0) {
         AddEnabledAccessibilityService(SCREEN_READER_BUNDLE_ABILITY_NAME);
     }
 

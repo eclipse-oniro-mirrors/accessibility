@@ -153,6 +153,8 @@ bool HandleSetDaltonizationStateTest(const uint8_t *data, size_t size)
 {
     MessageParcel datas;
     bool isSetDaltonizationState = data[0] % DEVISOR_TWO;
+    std::u16string descriptor = AccessibleAbilityManagerServiceStubFuzzTest::GetDescriptor();
+    datas.WriteInterfaceToken(descriptor);
     datas.WriteBool(isSetDaltonizationState);
     MessageParcel reply;
     MessageOption option;

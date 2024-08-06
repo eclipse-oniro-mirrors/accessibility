@@ -68,7 +68,7 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
         HILOG_ERROR("FindFocusedElementInfo Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     int32_t windowId = accessibilityWindowId;
     if (accessibilityWindowId == ANY_WINDOW_ID && focusType == FOCUS_TYPE_ACCESSIBILITY &&
@@ -86,8 +86,8 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     HILOG_DEBUG("channelId:%{public}d, windowId:%{public}d, elementId:%{public}" PRId64 ", focusType:%{public}d",
         channelId_, windowId, elementId, focusType);
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("FindFocusedElementInfo Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
@@ -132,7 +132,7 @@ RetError AccessibleAbilityChannelClient::GetCursorPosition(
         HILOG_ERROR("GetCursorPosition Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     RetError ret = proxy_->GetCursorPosition(accessibilityWindowId, elementId, requestId, elementOperator);
     if (ret != RET_OK) {
@@ -140,8 +140,8 @@ RetError AccessibleAbilityChannelClient::GetCursorPosition(
         return ret;
     }
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("GetCursorPosition Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
@@ -173,7 +173,7 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
         HILOG_ERROR("ExecuteAction Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     RetError ret = proxy_->ExecuteAction(accessibilityWindowId,
         elementId, action, actionArguments, requestId, elementOperator);
@@ -182,8 +182,8 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
         return ret;
     }
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
@@ -238,7 +238,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
         HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
     ElementBasicInfo elementBasicInfo {};
     elementBasicInfo.windowId = accessibilityWindowId;
     elementBasicInfo.treeId = treeId;
@@ -252,8 +252,8 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
         return ret;
     }
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
@@ -323,7 +323,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
         HILOG_ERROR("SearchElementInfosByText Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     RetError ret = proxy_->SearchElementInfosByText(accessibilityWindowId,
         elementId, text, requestId, elementOperator);
@@ -332,8 +332,8 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
         return ret;
     }
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("SearchElementInfosByText Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
@@ -365,7 +365,7 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWi
         HILOG_ERROR("FocusMoveSearch Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     RetError ret = proxy_->FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, elementOperator);
     if (ret != RET_OK) {
@@ -373,8 +373,8 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWi
         return ret;
     }
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("FocusMoveSearch Failed to wait result");
         return RET_ERR_TIME_OUT;
     }

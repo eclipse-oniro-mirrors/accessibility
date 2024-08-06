@@ -148,7 +148,7 @@ public:
     static void GetWindowInfoIsFocused(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
 
-    static thread_local napi_ref consRef_;
+    static napi_ref consRef_;
 private:
     static void AttributeNamesComplete(napi_env env, napi_status status, void* data);
     static void AttributeValueExecute(napi_env env, void* data);

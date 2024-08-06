@@ -59,8 +59,6 @@ AccessibleAbilityClientStub::AccessibleAbilityClientStub()
 
 AccessibleAbilityClientStub::~AccessibleAbilityClientStub()
 {
-    HILOG_DEBUG();
-    memberFuncMap_.clear();
 }
 
 int AccessibleAbilityClientStub::OnRemoteRequest(uint32_t code,
@@ -90,13 +88,13 @@ ErrCode AccessibleAbilityClientStub::HandleInit(MessageParcel &data, MessageParc
 {
     HILOG_DEBUG();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("object is nullptr.");
         return ERR_INVALID_VALUE;
     }
 
     sptr<IAccessibleAbilityChannel> channel = iface_cast<IAccessibleAbilityChannel>(remote);
-    if (!channel) {
+    if (channel == nullptr) {
         HILOG_ERROR("channel is nullptr.");
         return ERR_INVALID_VALUE;
     }
@@ -133,6 +131,11 @@ ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, 
     int32_t sequence = data.ReadInt32();
 
     std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
+    if (keyEvent == nullptr) {
+        HILOG_ERROR("keyEvent is nullptr");
+        return ERR_INVALID_VALUE;
+    }
+    
     if (!keyEvent->ReadFromParcel(data)) {
         HILOG_ERROR("keyEvent ReadFromParcel failed");
         return ERR_INVALID_VALUE;

@@ -477,6 +477,8 @@ void AamsTouchGuideTest::SetUpTestCase()
 void AamsTouchGuideTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest TearDownTestCase";
+    AccessibilityHelper::GetInstance().SetGestureId(0);
+    AccessibilityHelper::GetInstance().GetEventType().clear();
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
@@ -511,6 +513,7 @@ void AamsTouchGuideTest::TearDown()
     sleep(SLEEP_TIME_3);
     aastub_ = nullptr;
     interceptorId_ = nullptr;
+    AccessibilityHelper::GetInstance().SetGestureId(0);
     AccessibilityHelper::GetInstance().GetEventType().clear();
     MMI::MockInputManager::ClearTouchActions();
 }
@@ -618,7 +621,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent001, Te
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
 
     ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (MMI::MockInputManager::GetTouchActionOfTargetIndex(3) == MMI::PointerEvent::POINTER_ACTION_UP) {
+        if (MMI::MockInputManager::GetTouchActionOfTargetIndex(2) == MMI::PointerEvent::POINTER_ACTION_UP) {
             return true;
         } else {
             return false;
@@ -627,7 +630,6 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent001, Te
     EXPECT_TRUE(ret);
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_DOWN);
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_MOVE);
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent001 ENDs";
 }
 
@@ -667,7 +669,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent002, Te
     inputEventConsumer->OnInputEvent(event);
     retOnPointerEvent2 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
-            EventType::TYPE_TOUCH_END) {
+            EventType::TYPE_TOUCH_GUIDE_END) {
             return true;
         } else {
             return false;
@@ -676,7 +678,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent002, Te
     EXPECT_TRUE(retOnPointerEvent2);
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_HOVER_MOVE);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2), EventType::TYPE_TOUCH_GUIDE_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2), EventType::TYPE_TOUCH_END);
 
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent002 ENDs";
 }
@@ -707,7 +709,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent003, Te
     // Determine event type
     bool retOnPointerEvent3 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -715,10 +717,11 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent003, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(retOnPointerEvent3);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0),
+        EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     // Determine action
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
@@ -767,7 +770,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent004, Te
 
     // Determine event type
     bool retOnPointerEvent4 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -775,10 +778,11 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent004, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(retOnPointerEvent4);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0),
+        EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     // Determine action
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
@@ -827,7 +831,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent005, Te
 
     // Determine event type
     bool retOnPointerEvent5 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -835,10 +839,11 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent005, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(retOnPointerEvent5);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0),
+        EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     // Determine action
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
@@ -887,7 +892,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent006, Te
 
     // Determine event type
     bool retOnPointerEvent6 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -895,10 +900,11 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent006, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(retOnPointerEvent6);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0),
+        EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     // Determine action
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
@@ -945,7 +951,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent007, Te
 
     // Determine event type
     bool retOnPointerEvent7 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -953,10 +959,11 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent007, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(retOnPointerEvent7);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0),
+        EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     // Determine action
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
@@ -998,7 +1005,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent008, Te
     // Determine event type
     bool retOnPointerEvent8 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
-            EventType::TYPE_TOUCH_END) {
+            EventType::TYPE_TOUCH_GUIDE_END) {
             return true;
         } else {
             return false;
@@ -1007,9 +1014,9 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent008, Te
     EXPECT_TRUE(retOnPointerEvent8);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
-        EventType::TYPE_TOUCH_GUIDE_BEGIN);
+        EventType::TYPE_TOUCH_END);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
-        EventType::TYPE_TOUCH_GUIDE_END);
+        EventType::TYPE_TOUCH_GUIDE_BEGIN);
     // Determine action
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_HOVER_EXIT);
@@ -1054,7 +1061,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent009, Te
     inputEventConsumer->OnInputEvent(event);
     // Determine event type
     bool retOnPointerEvent9 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(6) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1063,6 +1070,11 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent009, Te
         }), SLEEP_TIME_3);
     EXPECT_TRUE(retOnPointerEvent9);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_GUIDE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2), EventType::TYPE_TOUCH_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(4), EventType::TYPE_TOUCH_GUIDE_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(5), EventType::TYPE_TOUCH_GUIDE_BEGIN);
     // Determine action
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
 
@@ -1106,7 +1118,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent010, Te
     // Determine event type
     bool retOnPointerEvent10 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(5) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1115,6 +1127,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent010, Te
         }), SLEEP_TIME_3);
     EXPECT_TRUE(retOnPointerEvent10);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_GUIDE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2), EventType::TYPE_TOUCH_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(4), EventType::TYPE_TOUCH_GUIDE_END);
     // Determine action
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
 
@@ -1144,10 +1160,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent011, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool retOnPointerEvent11 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1159,8 +1177,6 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent011, Te
         EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
-        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), 25);
@@ -1192,10 +1208,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent012, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool retOnPointerEvent12 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(4) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1207,8 +1225,6 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent012, Te
         EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
-        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
@@ -1241,10 +1257,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent013, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool retOnPointerEvent13 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(6) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1256,8 +1274,6 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent013, Te
         EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
-        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
@@ -1290,10 +1306,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent014, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool retOnPointerEvent14 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1305,7 +1323,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent014, Te
         EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(4),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -1339,10 +1357,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent015, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool retOnPointerEvent15 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1354,7 +1374,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent015, Te
         EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(6),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -1412,9 +1432,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent016, Te
 
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_DOWN);
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(3), MMI::PointerEvent::POINTER_ACTION_UP);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(4), MMI::PointerEvent::POINTER_ACTION_UP);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_UP);
 
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), static_cast<int32_t>(GestureType::GESTURE_INVALID));
@@ -1458,7 +1476,6 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent017, Te
         }), SLEEP_TIME_3);
     EXPECT_TRUE(retOnPointerEvent15);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 2);
 
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), static_cast<int32_t>(GestureType::GESTURE_INVALID));
@@ -1496,7 +1513,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent018, Te
     // eventType
     bool retOnPointerEvent15 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(4) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1508,7 +1525,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent018, Te
         EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -1543,10 +1560,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent019, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool retOnPointerEvent15 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(7) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(6) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1554,22 +1573,15 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent019, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(retOnPointerEvent15);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 8);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_GUIDE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2), EventType::TYPE_TOUCH_GUIDE_END);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3), EventType::TYPE_TOUCH_END);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(4), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(5),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(6),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(7),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), 25);
 
     // touch action to multimode
-    EXPECT_EQ(static_cast<int32_t>(MMI::MockInputManager::GetTouchActions().size()), 2); //have 2 point
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0),
         MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
     EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1),
@@ -1605,10 +1617,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent020, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1616,11 +1630,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent020, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -1659,10 +1672,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent021, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1670,11 +1685,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent021, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -1711,10 +1725,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent022, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(4) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1722,11 +1738,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent022, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(5),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -1763,10 +1778,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent023, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1774,11 +1791,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent023, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(4),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -1815,10 +1831,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent024, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(6) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1826,11 +1844,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent024, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(7),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -1867,10 +1884,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent025, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1878,11 +1897,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent025, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(6),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -1921,10 +1939,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent026, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(4) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1932,11 +1952,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent026, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(5),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -1975,10 +1994,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent027, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -1986,11 +2007,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent027, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(4),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -2029,10 +2049,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent028, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(6) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -2044,7 +2066,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent028, Te
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(7),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -2083,10 +2105,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent029, Te
         return;
     }
 
+    sleep(1);
+
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -2094,11 +2118,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent029, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(6),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -2146,7 +2169,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent030, Te
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -2154,11 +2177,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent030, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -2209,7 +2231,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent031, Te
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -2217,11 +2239,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent031, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -2268,7 +2289,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent032, Te
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -2276,11 +2297,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent032, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -2327,7 +2347,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent033, Te
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -2335,11 +2355,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent033, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -2386,7 +2405,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent034, Te
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -2394,11 +2413,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent034, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -2449,7 +2467,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent035, Te
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -2457,11 +2475,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent035, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -2512,7 +2529,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent036, Te
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -2520,11 +2537,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent036, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
@@ -2575,7 +2591,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent037, Te
     // eventType
     bool ret =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
             EventType::TYPE_TOUCH_END) {
             return true;
         } else {
@@ -2583,11 +2599,10 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent037, Te
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(ret);
-    EXPECT_EQ(static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size()), 4);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId

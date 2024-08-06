@@ -142,12 +142,14 @@ void AccessibilityAccountData::AddCaptionPropertyCallback(
     const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
 {
     HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(captionPropertyCallbacksMutex_);
     captionPropertyCallbacks_.push_back(callback);
 }
 
 void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteObject>& callback)
 {
     HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(captionPropertyCallbacksMutex_);
     for (auto itr = captionPropertyCallbacks_.begin(); itr != captionPropertyCallbacks_.end(); itr++) {
         if ((*itr)->AsObject() == callback) {
             captionPropertyCallbacks_.erase(itr);
@@ -160,6 +162,7 @@ void AccessibilityAccountData::AddEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver>& observer)
 {
     HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(enableAbilityListObserversMutex_);
     if (std::any_of(enableAbilityListsObservers_.begin(), enableAbilityListsObservers_.end(),
         [observer](const sptr<IAccessibilityEnableAbilityListsObserver> &listObserver) {
             return listObserver == observer;
@@ -174,6 +177,7 @@ void AccessibilityAccountData::AddEnableAbilityListsObserver(
 void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemoteObject>& observer)
 {
     HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(enableAbilityListObserversMutex_);
     for (auto itr = enableAbilityListsObservers_.begin(); itr != enableAbilityListsObservers_.end(); itr++) {
         if ((*itr)->AsObject() == observer) {
             HILOG_DEBUG("erase observer");
@@ -186,6 +190,7 @@ void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemo
 
 void AccessibilityAccountData::UpdateEnableAbilityListsState()
 {
+    std::lock_guard<ffrt::mutex> lock(enableAbilityListObserversMutex_);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
     for (auto &observer : enableAbilityListsObservers_) {
         if (observer) {
@@ -196,6 +201,7 @@ void AccessibilityAccountData::UpdateEnableAbilityListsState()
 
 void AccessibilityAccountData::UpdateInstallAbilityListsState()
 {
+    std::lock_guard<ffrt::mutex> lock(enableAbilityListObserversMutex_);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
     for (auto &observer : enableAbilityListsObservers_) {
         if (observer) {
@@ -342,7 +348,9 @@ const std::map<int32_t, sptr<AccessibilityWindowConnection>> AccessibilityAccoun
 const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallbacks()
 {
     HILOG_DEBUG("GetCaptionPropertyCallbacks start.");
-    return captionPropertyCallbacks_;
+    std::lock_guard<ffrt::mutex> lock(captionPropertyCallbacksMutex_);
+    CaptionPropertyCallbacks rtnVec = captionPropertyCallbacks_;
+    return rtnVec;
 }
 
 sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbility(const std::string &uri)
@@ -666,14 +674,14 @@ void AccessibilityAccountData::AddConfigCallback(
     const sptr<IAccessibleAbilityManagerConfigObserver>& callback)
 {
     HILOG_DEBUG("AddConfigCallback start.");
-    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
+    std::lock_guard<ffrt::mutex> lock(configCallbacksMutex_);
     configCallbacks_.push_back(callback);
 }
 
-const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks()
+const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> AccessibilityAccountData::GetConfigCallbacks()
 {
     HILOG_DEBUG("GetConfigCallbacks start.");
-    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
+    std::lock_guard<ffrt::mutex> lock(configCallbacksMutex_);
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> rtnVec = configCallbacks_;
     return rtnVec;
 }
@@ -681,14 +689,14 @@ const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityA
 void AccessibilityAccountData::SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer)
 {
     HILOG_DEBUG("SetConfigCallbacks start.");
-    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
+    std::lock_guard<ffrt::mutex> lock(configCallbacksMutex_);
     configCallbacks_ = observer;
 }
 
 void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& callback)
 {
     HILOG_DEBUG("RemoveConfigCallback start.");
-    std::lock_guard<std::mutex> lock(configCallbacksMutex_);
+    std::lock_guard<ffrt::mutex> lock(configCallbacksMutex_);
     for (auto itr = configCallbacks_.begin(); itr != configCallbacks_.end(); itr++) {
         if ((*itr)->AsObject() == callback) {
             configCallbacks_.erase(itr);
@@ -802,7 +810,7 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
         return 0;
     }
     uint32_t flag = 0;
-    if (isScreenMagnification_ && config_->GetScreenMagnificationState()) {
+    if (config_->GetScreenMagnificationState()) {
         flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION;
     }
     if (isEventTouchGuideState_) {
@@ -1032,7 +1040,7 @@ void AccessibilityAccountData::AccessibilityAbility::AddAccessibilityAbility(con
     const sptr<AccessibleAbilityConnection>& connection)
 {
     HILOG_INFO("uri is %{private}s", uri.c_str());
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!connectionMap_.count(uri)) {
         connectionMap_[uri] = connection;
         HILOG_DEBUG("connectionMap_ size %{public}zu", connectionMap_.size());
@@ -1045,7 +1053,7 @@ void AccessibilityAccountData::AccessibilityAbility::AddAccessibilityAbility(con
 void AccessibilityAccountData::AccessibilityAbility::RemoveAccessibilityAbilityByUri(const std::string& uri)
 {
     HILOG_INFO("uri is %{private}s", uri.c_str());
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     auto it = connectionMap_.find(uri);
     if (it != connectionMap_.end()) {
         connectionMap_.erase(it);
@@ -1058,7 +1066,7 @@ sptr<AccessibleAbilityConnection> AccessibilityAccountData::AccessibilityAbility
     const std::string& elementName)
 {
     HILOG_DEBUG("elementName is %{public}s", elementName.c_str());
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto& connection : connectionMap_) {
         std::string::size_type index = connection.first.find(elementName);
         if (index == std::string::npos) {
@@ -1076,7 +1084,7 @@ sptr<AccessibleAbilityConnection> AccessibilityAccountData::AccessibilityAbility
     const std::string& uri)
 {
     HILOG_DEBUG("uri is %{private}s", uri.c_str());
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     auto iter = connectionMap_.find(uri);
     if (iter != connectionMap_.end()) {
         return iter->second;
@@ -1087,7 +1095,7 @@ sptr<AccessibleAbilityConnection> AccessibilityAccountData::AccessibilityAbility
 void AccessibilityAccountData::AccessibilityAbility::GetAccessibilityAbilities(
     std::vector<sptr<AccessibleAbilityConnection>>& connectionList)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto& connection : connectionMap_) {
         connectionList.push_back(connection.second);
     }
@@ -1096,7 +1104,7 @@ void AccessibilityAccountData::AccessibilityAbility::GetAccessibilityAbilities(
 void AccessibilityAccountData::AccessibilityAbility::GetAbilitiesInfo(
     std::vector<AccessibilityAbilityInfo>& abilities)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto& connection : connectionMap_) {
         if (connection.second) {
             abilities.push_back(connection.second->GetAbilityInfo());
@@ -1110,7 +1118,7 @@ void AccessibilityAccountData::AccessibilityAbility::GetAbilitiesInfo(
 bool AccessibilityAccountData::AccessibilityAbility::IsExistCapability(Capability capability)
 {
     HILOG_DEBUG("capability %{public}d", capability);
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = connectionMap_.begin(); iter != connectionMap_.end(); iter++) {
         if (iter->second->GetAbilityInfo().GetCapabilityValues() & capability) {
             return true;
@@ -1123,26 +1131,26 @@ bool AccessibilityAccountData::AccessibilityAbility::IsExistCapability(Capabilit
 void AccessibilityAccountData::AccessibilityAbility::GetAccessibilityAbilitiesMap(
     std::map<std::string, sptr<AccessibleAbilityConnection>>& connectionMap)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     connectionMap = connectionMap_;
 }
 
 void AccessibilityAccountData::AccessibilityAbility::Clear()
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     return connectionMap_.clear();
 }
 
 size_t AccessibilityAccountData::AccessibilityAbility::GetSize()
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     return connectionMap_.size();
 }
 
 void AccessibilityAccountData::AccessibilityAbility::GetDisableAbilities(
     std::vector<AccessibilityAbilityInfo> &disabledAbilities)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto& connection : connectionMap_) {
         for (auto iter = disabledAbilities.begin(); iter != disabledAbilities.end();) {
             if (connection.second && (iter->GetId() == connection.second->GetAbilityInfo().GetId())) {
@@ -1157,7 +1165,7 @@ void AccessibilityAccountData::AccessibilityAbility::GetDisableAbilities(
 void AccessibilityAccountData::AccessibilityAbility::RemoveAccessibilityAbilityByName(const std::string& bundleName,
     bool& result)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto& connection : connectionMap_) {
         std::size_t firstPos = connection.first.find_first_of('/') + 1;
         std::size_t endPos = connection.first.find_last_of('/');
@@ -1181,14 +1189,14 @@ void AccessibilityAccountData::AccessibilityAbility::RemoveAccessibilityAbilityB
 
 int32_t AccessibilityAccountData::AccessibilityAbility::GetSizeByUri(const std::string& uri)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     return connectionMap_.count(uri);
 }
 
 sptr<AccessibilityAccountData> AccessibilityAccountDataMap::AddAccountData(
     int32_t accountId)
 {
-    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    std::lock_guard<ffrt::mutex> lock(accountDataMutex_);
     auto iter = accountDataMap_.find(accountId);
     if (iter != accountDataMap_.end()) {
         HILOG_WARN("accountId is existed");
@@ -1209,7 +1217,7 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::AddAccountData(
 sptr<AccessibilityAccountData> AccessibilityAccountDataMap::GetCurrentAccountData(
     int32_t accountId)
 {
-    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    std::lock_guard<ffrt::mutex> lock(accountDataMutex_);
     auto iter = accountDataMap_.find(accountId);
     if (iter != accountDataMap_.end()) {
         return iter->second;
@@ -1228,7 +1236,7 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::GetCurrentAccountDat
 sptr<AccessibilityAccountData> AccessibilityAccountDataMap::GetAccountData(
     int32_t accountId)
 {
-    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    std::lock_guard<ffrt::mutex> lock(accountDataMutex_);
     auto iter = accountDataMap_.find(accountId);
     if (iter != accountDataMap_.end()) {
         return iter->second;
@@ -1242,7 +1250,7 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::RemoveAccountData(
     int32_t accountId)
 {
     sptr<AccessibilityAccountData> accountData = nullptr;
-    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    std::lock_guard<ffrt::mutex> lock(accountDataMutex_);
     auto iter = accountDataMap_.find(accountId);
     if (iter != accountDataMap_.end()) {
         accountData = iter->second;
@@ -1254,7 +1262,7 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::RemoveAccountData(
 
 void AccessibilityAccountDataMap::Clear()
 {
-    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    std::lock_guard<ffrt::mutex> lock(accountDataMutex_);
     accountDataMap_.clear();
 }
 } // namespace Accessibility

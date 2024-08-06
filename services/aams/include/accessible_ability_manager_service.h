@@ -16,10 +16,8 @@
 #ifndef ACCESSIBLE_ABILITY_MANAGER_SERVICE_H
 #define ACCESSIBLE_ABILITY_MANAGER_SERVICE_H
 
-#include <future>
 #include <map>
 #include <memory>
-#include <mutex>
 #include <string>
 
 #include "accessibility_dumper.h"
@@ -235,7 +233,7 @@ public:
         virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
 
     private:
-        std::promise<void> promise_;
+        ffrt::promise<void> promise_;
         bool executeActionResult_ = false;
         AccessibilityElementInfo accessibilityInfoResult_ = {};
         std::vector<AccessibilityElementInfo> elementInfosResult_;
@@ -304,6 +302,7 @@ public:
 private:
     void StopCallbackWait(int32_t windowId);
     void StopCallbackWait(int32_t windowId, int32_t treeId);
+    RetError CheckCallingUid();
     sptr<AccessibilityWindowConnection> GetRealIdConnection();
     bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
         AccessibilityElementInfo &elementInfo);
@@ -382,7 +381,7 @@ private:
         void Clear();
     private:
         std::vector<sptr<IAccessibleAbilityManagerStateObserver>> observersList_;
-        std::mutex stateObserversMutex_;
+        ffrt::mutex stateObserversMutex_;
     };
 
     RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities);
@@ -407,8 +406,15 @@ private:
         const int32_t windowId, const sptr<AccessibilityWindowConnection> &connection);
     
     void OnDeviceProvisioned();
+    void InitializeShortKeyState();
+    void RegisterProvisionCallback();
     void RegisterShortKeyEvent();
     bool IsNeedUnload();
+    void OffZoomGesture();
+    void OnScreenMagnificationStateChanged();
+    void RegisterScreenMagnificationState();
+    void OnScreenMagnificationTypeChanged();
+    void RegisterScreenMagnificationType();
 
     bool isReady_ = false;
     bool isPublished_ = false;
@@ -439,7 +445,7 @@ private:
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> bundleManagerDeathRecipient_ = nullptr;
     StateObservers stateObservers_;
-    std::mutex mutex_; // current used for register state observer
+    ffrt::mutex mutex_; // current used for register state observer
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;
     std::shared_ptr<AccessibilitySettings> accessibilitySettings_ = nullptr;
     std::vector<std::string> removedAutoStartAbilities_ {};

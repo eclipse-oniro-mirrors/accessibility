@@ -28,7 +28,7 @@ namespace OHOS {
 namespace Accessibility {
 class TouchGuider;
 
-const int64_t EXIT_GESTURE_REC_TIMEOUT = 2000; // millisecond
+const int64_t EXIT_GESTURE_REC_TIMEOUT = 400; // millisecond
 const double MAX_DRAG_GESTURE_COSINE = 0.525321989;
 const int32_t MINI_POINTER_DISTANCE_DIP = 200;
 const int32_t INDEX_0 = 0;
@@ -295,7 +295,7 @@ private:
         virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
 
     private:
-        std::promise<void> promise_;
+        ffrt::promise<void> promise_;
         bool executeActionResult_ = false;
         AccessibilityElementInfo accessibilityInfoResult_ = {};
         std::vector<AccessibilityElementInfo> elementInfosResult_;
@@ -381,6 +381,12 @@ private:
      * @param event event the touch event from Multimodal
      */
     void RecordReceivedEvent(MMI::PointerEvent &event);
+
+    /**
+     * @brief Send touch event to specific AccessibleAbility.
+     * @param event the touch event from Multimodal
+     */
+    void SendTouchEventToAA(MMI::PointerEvent &event);
 
     /**
      * @brief Clear received recorder info.

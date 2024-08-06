@@ -260,7 +260,7 @@ public:
 
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
-    const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &GetConfigCallbacks();
+    const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> GetConfigCallbacks();
     void SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer);
 
     void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
@@ -329,7 +329,7 @@ private:
         size_t GetSize();
     private:
         std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMap_;
-        std::mutex mutex_;
+        ffrt::mutex mutex_;
     };
 
     int32_t id_;
@@ -343,13 +343,15 @@ private:
     AccessibilityAbility connectedA11yAbilities_;  // key: bundleName/abilityName
     AccessibilityAbility connectingA11yAbilities_;  // key: bundleName/abilityName
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
-    std::mutex asacConnectionsMutex_;
+    ffrt::mutex enableAbilityListObserversMutex_; // mutex for enableAbilityListsObservers_
     std::map<int32_t, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
+    ffrt::mutex asacConnectionsMutex_; // mutex for map asacConnections_
     CaptionPropertyCallbacks captionPropertyCallbacks_;
+    ffrt::mutex captionPropertyCallbacksMutex_; // mutex for captionPropertyCallbacks_
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
     std::vector<std::string> enabledAbilities_; // bundleName/abilityName
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> configCallbacks_;
-    std::mutex configCallbacksMutex_; // mutex for vector configCallbacks_
+    ffrt::mutex configCallbacksMutex_; // mutex for vector configCallbacks_
     std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
 };
 
@@ -364,7 +366,7 @@ public:
     void Clear();
 private:
     std::map<int32_t, sptr<AccessibilityAccountData>> accountDataMap_;
-    std::mutex accountDataMutex_;
+    ffrt::mutex accountDataMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

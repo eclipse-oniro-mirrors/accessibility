@@ -62,7 +62,7 @@ public:
     int32_t imageWidth_;
     int32_t imageHeight_;
     int32_t half_;
-    int32_t startAngle_;
+    int32_t startAngle_ = 0;
     float dispalyDensity_;
 };
 } // namespace Accessibility
