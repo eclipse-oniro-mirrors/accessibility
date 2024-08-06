@@ -19,7 +19,6 @@
 #include "hilog_wrapper.h"
 #include "securec.h"
 #include "utils.h"
-#include <cinttypes>
 
 namespace OHOS {
 namespace Accessibility {
@@ -531,8 +530,8 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent &event)
                     SendEventToMultimodal(event, NO_CHANGE);
                     currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
                 }
-                SendEventToMultimodal(event, NO_CHANGE);
             }
+
             break;
         default:
             break;
@@ -775,7 +774,6 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event)
 void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-
     std::vector<int32_t> pIds = event.GetPointerIds();
     uint32_t pointCount = pIds.size();
     if (pointCount == POINTER_COUNT_1) {

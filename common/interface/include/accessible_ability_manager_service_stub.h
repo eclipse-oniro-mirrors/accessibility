@@ -72,7 +72,7 @@ private:
     bool IsSystemApp() const;
 
     /**
-     * @brief Check the caller is an application.
+     * @brief Check if the caller is an application.
      * @return Check result.
      */
     bool IsApp() const;

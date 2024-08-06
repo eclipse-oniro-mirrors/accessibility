@@ -244,13 +244,11 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
-
     OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
     if (argc < ARGS_SIZE_TWO) {
         HILOG_ERROR("argc is invalid: %{public}zu", argc);
         errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
-
     std::string observerType = "";
     if (errCode == OHOS::Accessibility::RET_OK) {
         if (!ParseString(env, observerType, args[PARAM0])) {
@@ -404,6 +402,7 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
 
     HILOG_DEBUG("callbackInfo->id_ = %{public}d", callbackInfo->id_);
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+
     if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT) {
         callbackInfo->ret_ = instance.SetHighContrastTextState(callbackInfo->boolConfig_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_STATE) {
@@ -1019,12 +1018,10 @@ void EnableAbilityListsObserverImpl::SubscribeInstallObserver(napi_env env, napi
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    for (auto iter = installAbilityListsObservers_.begin(); iter != installAbilityListsObservers_.end();) {
+    for (auto iter = installAbilityListsObservers_.begin(); iter != installAbilityListsObservers_.end(); iter++) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
             HILOG_DEBUG("Observer exist");
             return;
-        } else {
-            iter++;
         }
     }
 
@@ -1062,12 +1059,10 @@ void EnableAbilityListsObserverImpl::UnsubscribeInstallObserver(napi_env env, na
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    for (auto iter = installAbilityListsObservers_.begin(); iter != installAbilityListsObservers_.end();) {
+    for (auto iter = installAbilityListsObservers_.begin(); iter != installAbilityListsObservers_.end(); iter++) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
             installAbilityListsObservers_.erase(iter);
             return;
-        } else {
-            iter++;
         }
     }
 }

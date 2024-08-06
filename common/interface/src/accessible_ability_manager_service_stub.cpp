@@ -87,9 +87,12 @@
     SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_STATE_CALLBACK, HandleRegisterStateCallback)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_ABILITYLIST, HandleGetAbilityList)\
     SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_INTERACTION_CONNECTION, HandleRegisterAccessibilityElementOperator)\
-    SWITCH_CASE(AccessibilityInterfaceCode::CARDREGISTER_INTERACTION_CONNECTION, HandleMultiRegisterAccessibilityElementOperator)\
-    SWITCH_CASE(AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION, HandleDeregisterAccessibilityElementOperator)\
-    SWITCH_CASE(AccessibilityInterfaceCode::CARDDEREGISTER_INTERACTION_CONNECTION, HandleMultiDeregisterAccessibilityElementOperator)\
+    SWITCH_CASE(AccessibilityInterfaceCode::CARDREGISTER_INTERACTION_CONNECTION, \
+        HandleMultiRegisterAccessibilityElementOperator)\
+    SWITCH_CASE( \
+        AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION, HandleDeregisterAccessibilityElementOperator)\
+    SWITCH_CASE(AccessibilityInterfaceCode::CARDDEREGISTER_INTERACTION_CONNECTION, \
+        HandleMultiDeregisterAccessibilityElementOperator)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_ENABLED, HandleGetEnabled)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_TOUCH_GUIDE_STATE, HandleGetTouchGuideState)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_GESTURE_STATE, HandleGetGestureState)\
@@ -101,7 +104,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::ENABLE_UI_TEST_ABILITY, HandleEnableUITestAbility)\
     SWITCH_CASE(AccessibilityInterfaceCode::DISABLE_UI_TEST_ABILITY, HandleDisableUITestAbility)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_ACTIVE_WINDOW, HandleGetActiveWindow)\
-    SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER, HandleRegisterEnableAbilityListsObserver)\
+    SWITCH_CASE( \
+        AccessibilityInterfaceCode::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER, HandleRegisterEnableAbilityListsObserver)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_FOCUSED_WINDOW_ID, HandleGetFocusedWindowId)\
     SWITCH_CASE(AccessibilityInterfaceCode::REMOVE_REQUEST_ID, HandleRemoveRequestId)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_ROOT_PARENT_ID, HandleGetRootParentId) \
@@ -422,7 +426,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementO
     sptr<IAccessibilityElementOperator> operation = iface_cast<IAccessibilityElementOperator>(obj);
     if (operation == nullptr) {
         HILOG_ERROR("iface_cast obj failed");
-        return TRANSACTION_ERR;      
+        return TRANSACTION_ERR;
     }
     bool isApp = IsApp();
     RegisterElementOperator(windowId, operation, isApp);

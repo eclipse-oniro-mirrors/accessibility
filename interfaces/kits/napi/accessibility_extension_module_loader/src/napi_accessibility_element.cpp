@@ -484,7 +484,7 @@ void NAccessibilityElement::GetElementInfoComponentId(NAccessibilityElementData 
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_bigint_int64(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityId(), &value));
 }
 
@@ -1559,7 +1559,7 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
         return nullptr;
     }
     HILOG_DEBUG("argc = %{public}zu", argc);
-    
+
     AccessibilityElement* accessibilityElement = UnrapAccessibilityElement(env, thisVar);
     if (!accessibilityElement) {
         return nullptr;
@@ -1860,10 +1860,6 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
             HILOG_DEBUG("queryData = %{public}s", queryData.c_str());
             callbackInfo->condition_ = queryData;
         } else if (ParseInt64(env, elementId, argv[PARAM1])) {
-            queryData = std::to_string(elementId);
-            HILOG_DEBUG("queryData = %{public}s", queryData.c_str());
-            callbackInfo->condition_ = queryData;
-        } else if (ParseBigInt(env, elementId, argv[PARAM1])) {
             queryData = std::to_string(elementId);
             HILOG_DEBUG("queryData = %{public}s", queryData.c_str());
             callbackInfo->condition_ = queryData;

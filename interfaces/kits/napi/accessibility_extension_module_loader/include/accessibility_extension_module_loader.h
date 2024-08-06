@@ -30,9 +30,9 @@ public:
      * @param runtime The runtime.
      * @return The Extension instance.
      */
-    virtual AbilityRuntime::Extension *Create(const std::unique_ptr<AbilityRuntime::Runtime> &runtime) const override;
+    AbilityRuntime::Extension *Create(const std::unique_ptr<AbilityRuntime::Runtime> &runtime) const override;
 
-    virtual std::map<std::string, std::string> GetParams() override;
+    std::map<std::string, std::string> GetParams() override;
 };
 } // namespace OHOS::Accessibility
 #endif // ACCESSIBILITY_EXTENSION_MODULE_LOADER_H

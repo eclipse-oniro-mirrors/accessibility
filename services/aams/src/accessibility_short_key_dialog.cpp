@@ -147,7 +147,7 @@ bool AccessibilityShortkeyDialog::ConnectDialog(ShortKeyDialogType dialogType)
 }
 
 bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &want, const std::string commandStr,
-                                                          ShortKeyDialogType dialogType)
+    ShortKeyDialogType dialogType)
 {
     // reset current callingIdentify
     std::string identity = IPCSkeleton::ResetCallingIdentity();

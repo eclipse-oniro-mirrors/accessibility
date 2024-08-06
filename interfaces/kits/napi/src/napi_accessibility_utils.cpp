@@ -47,8 +47,8 @@ namespace {
     constexpr int32_t ALPHA_MOVE = 24;
     constexpr int32_t COLOR_MOVE = 8;
     const char UNICODE_BODY = '0';
-    const std::string FULL_VALUE = "1";
     const std::string HALF_VALUE = "0";
+    const std::string FULL_VALUE = "1";
 } // namespace
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
@@ -157,28 +157,6 @@ bool ParseDouble(napi_env env, double& param, napi_value args)
 
     napi_get_value_double(env, args, &param);
     return true;
-}
-
-bool ParseBigInt(napi_env env, int64_t& param, napi_value args)
-{
-    napi_status status;
-    napi_valuetype valuetype = napi_null;
-    status = napi_typeof(env, args, &valuetype);
-    if (status != napi_ok) {
-        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
-        return false;
-    }
-
-    if (valuetype != napi_bigint) {
-        HILOG_DEBUG("Wrong argument type. bigint expected.");
-        return false;
-    }
-
-    HILOG_DEBUG("The type of args is bigInt");
-    bool lossless = false;
-
-    napi_get_value_bigint_int64(env, args, &param, &lossless);
-    return lossless;
 }
 
 bool CheckJsFunction(napi_env env, napi_value args)
@@ -1368,7 +1346,7 @@ void GetKeyValue(napi_env env, napi_value keyObject, std::optional<MMI::KeyEvent
         HILOG_WARN("keyItem is null.");
         return;
     }
-    
+
     napi_value keyCodeValue = nullptr;
     int32_t keyCode = keyItem->GetKeyCode();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyCode, &keyCodeValue));
@@ -1455,7 +1433,7 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<
     napi_value unicodeCharValue = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, 0, &unicodeCharValue));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "unicodeChar", unicodeCharValue));
-    
+
     // set keys
     SetKeyPropertyPart1(env, result, keyEvent);
     SetKeyPropertyPart2(env, result, keyEvent);

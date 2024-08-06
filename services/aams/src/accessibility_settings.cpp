@@ -505,7 +505,10 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
     UpdateSettingsInAtoHosStatePart(atoHosValue);
 
     if (atoHosValue.audioBalance != 0.0) {
+        int step = 5;
+        float audioBalanceResult = round(atoHosValue.audioBalance * step) / step;
         accountData->GetConfig()->SetAudioBalance(atoHosValue.audioBalance);
+        HILOG_INFO("round audioBalanceResult = [%{public}f]", audioBalanceResult);
         UpdateAudioBalance();
     }
     if (atoHosValue.clickResponseTime != 0) {

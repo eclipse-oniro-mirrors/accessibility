@@ -38,7 +38,8 @@
 }
 
 #define ACCESSIBLE_ABILITY_CHANNEL_STUB_CASES() \
-    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID, HandleSearchElementInfoByAccessibilityId)\
+    SWITCH_CASE( \
+        AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID, HandleSearchElementInfoByAccessibilityId)\
     SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT, HandleSearchElementInfosByText)\
     SWITCH_CASE(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO, HandleFindFocusedElementInfo)\
     SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH, HandleFocusMoveSearch)\

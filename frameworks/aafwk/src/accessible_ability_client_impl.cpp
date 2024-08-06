@@ -594,6 +594,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWi
         HILOG_ERROR("get window element failed");
         return ret;
     }
+    SortElementInfosIfNecessary(elementInfos);
     return RET_OK;
 }
 
@@ -801,7 +802,6 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByContent(const 
     const int64_t elementId, uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos,
     const std::string text, int32_t treeId, bool isFilter)
 {
-    HILOG_DEBUG();
     HILOG_INFO("windowId %{public}d}, elementId %{public}" PRId64 "", windowId, elementId);
     if (windowId <= 0) {
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
