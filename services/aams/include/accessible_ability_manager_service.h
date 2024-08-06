@@ -322,14 +322,17 @@ private:
 
     class InteractionOperationDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        InteractionOperationDeathRecipient(int32_t windowId) : windowId_(windowId) {};
-        InteractionOperationDeathRecipient(int32_t windowId, int32_t treeId) : windowId_(windowId), treeId_(treeId) {};
+        InteractionOperationDeathRecipient(int32_t windowId, int32_t accountId) : windowId_(windowId),
+            accountId_(accountId) {};
+        InteractionOperationDeathRecipient(int32_t windowId, int32_t treeId, int32_t accountId) : windowId_(windowId),
+            treeId_(treeId), accountId_(accountId) {};
         ~InteractionOperationDeathRecipient() final = default;
         DISALLOW_COPY_AND_MOVE(InteractionOperationDeathRecipient);
 
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
         int32_t windowId_ = INVALID_WINDOW_ID;
         int32_t treeId_ = INVALID_TREE_ID;
+        int32_t accountId_ = 0;
     };
 
     class CaptionPropertyCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
