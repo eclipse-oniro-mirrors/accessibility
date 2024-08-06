@@ -95,6 +95,7 @@ public:
     uint32_t GetConfigState();
     bool GetStartFromAtoHosState();
     void OnDataClone();
+    void CloneAudioState();
     std::shared_ptr<AccessibilityDatashareHelper> GetDbHandle()
     {
         return datashare_;
@@ -140,6 +141,7 @@ private:
     std::vector<std::string> enabledAccessibilityServices_ {}; // bundleName/abilityName
 
     std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
+    std::shared_ptr<AccessibilityDatashareHelper> systemDatashare_ = nullptr;
     ffrt::mutex interfaceMutex_;
 };
 } // namespace Accessibility
