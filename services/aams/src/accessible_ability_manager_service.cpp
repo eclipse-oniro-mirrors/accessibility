@@ -1434,7 +1434,7 @@ void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemo
     Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
         A11yError::ERROR_TARGET_APPLICATION_DISCONNECT_ABNORMALLY);
     HILOG_INFO();
-    sptr<AccessibilityAccountData> accountData = 
+    sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     if (accountData == nullptr) {
         HILOG_ERROR("get accountData failed");
