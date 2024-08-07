@@ -27,6 +27,7 @@
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "accessibility_power_manager.h"
 #endif
+#include "accessibility_short_key_dialog.h"
 #include "accessibility_window_manager.h"
 #include "hilog_wrapper.h"
 #include "input_manager.h"
@@ -35,7 +36,7 @@
 #include "parameter.h"
 #include "system_ability_definition.h"
 #include "utils.h"
-#include "accessibility_short_key_dialog.h"
+#include "xcollie_helper.h"
 #include <ipc_skeleton.h>
 
 
@@ -79,6 +80,12 @@ namespace {
         OFF = 0,
         ON = 1,
     };
+    const std::string TIMER_REGISTER_STATE_OBSERVER = "accessibility:registerStateObServer";
+    const std::string TIMER_REGISTER_CAPTION_OBSERVER = "accessibility:registerCaptionObServer";
+    const std::string TIMER_REGISTER_ENABLEABILITY_OBSERVER = "accessibility:registerEnableAbilityObServer";
+    const std::string TIMER_GET_ALL_CONFIG = "accessibility:getAllConfig";
+    const std::string TIMER_REGISTER_CONFIG_OBSERVER = "accessibility:registerConfigObserver";
+    constexpr int32_t XCOLLIE_TIMEOUT = 1; // s
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -388,7 +395,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
         HILOG_ERROR("parameters check failed!");
         return 0;
     }
-
+    XCollieHelper timer(TIMER_REGISTER_STATE_OBSERVER, XCOLLIE_TIMEOUT);
     std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!stateObserversDeathRecipient_) {
         stateObserversDeathRecipient_ = new(std::nothrow) StateCallbackDeathRecipient();
@@ -627,6 +634,7 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
         return ERR_INVALID_VALUE;
     }
 
+    XCollieHelper timer(TIMER_REGISTER_CAPTION_OBSERVER, XCOLLIE_TIMEOUT);
     std::shared_ptr<ffrt::promise<uint32_t>> syncPromise = std::make_shared<ffrt::promise<uint32_t>>();
     ffrt::future syncFuture = syncPromise->get_future();
     actionHandler_->PostTask([this, syncPromise, callback]() {
@@ -673,7 +681,7 @@ void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
         HILOG_ERROR("Parameters check failed!");
         return;
     }
-
+    XCollieHelper timer(TIMER_REGISTER_ENABLEABILITY_OBSERVER, XCOLLIE_TIMEOUT);
     std::shared_ptr<ffrt::promise<void>> syncPromisePtr = std::make_shared<ffrt::promise<void>>();
     ffrt::future syncFuture = syncPromisePtr->get_future();
     actionHandler_->PostTask([this, syncPromisePtr, observer]() {
@@ -2266,6 +2274,7 @@ RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &tim
 void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &configData)
 {
     HILOG_DEBUG();
+    XCollieHelper timer(TIMER_GET_ALL_CONFIG, XCOLLIE_TIMEOUT);
     ffrt::promise<void> syncPromise;
     ffrt::future syncFuture = syncPromise.get_future();
     actionHandler_->PostTask([this, &syncPromise, &configData]() {
@@ -2395,7 +2404,7 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
         HILOG_ERROR("Parameters check failed!");
         return ERR_INVALID_VALUE;
     }
-
+    XCollieHelper timer(TIMER_REGISTER_CONFIG_OBSERVER, XCOLLIE_TIMEOUT);
     std::shared_ptr<ffrt::promise<uint32_t>> syncPromisePtr = std::make_shared<ffrt::promise<uint32_t>>();
     ffrt::future syncFuture = syncPromisePtr->get_future();
     actionHandler_->PostTask([this, syncPromisePtr, callback]() {
