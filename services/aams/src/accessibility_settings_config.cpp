@@ -67,6 +67,8 @@ namespace {
     constexpr int DISPLAY_DALTONIZER_GREEN = 12;
     constexpr int DISPLAY_DALTONIZER_RED = 11;
     constexpr int DISPLAY_DALTONIZER_BLUE = 13;
+    constexpr int INVALID_MASTER_MONO_VALUE = -1;
+    constexpr float INVALID_MASTER_BALANCE_VALUE = 2.0;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -695,6 +697,12 @@ void AccessibilitySettingsConfig::Init()
     datashare_->Initialize(POWER_MANAGER_SERVICE_ID);
     InitCaption();
     InitSetting();
+
+    systemDatashare_ = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SYSTEM, accountId_);
+    if (systemDatashare_ == nullptr) {
+        return;
+    }
+    systemDatashare_->Initialize(POWER_MANAGER_SERVICE_ID);
 }
 
 void AccessibilitySettingsConfig::ClearData()
@@ -702,9 +710,30 @@ void AccessibilitySettingsConfig::ClearData()
     HILOG_DEBUG();
 }
 
+void AccessibilitySettingsConfig::CloneAudioState()
+{
+    HILOG_DEBUG();
+    if (systemDatashare_ == nullptr) {
+        return;
+    }
+
+    int32_t monoValue = static_cast<int32_t>(systemDatashare_->GetIntValue(AUDIO_MONO_KEY, INVALID_MASTER_MONO_VALUE));
+    if (monoValue != INVALID_MASTER_MONO_VALUE) {
+        SetAudioMonoState(monoValue == 1);
+    }
+
+    float audioBalance = static_cast<float>(systemDatashare_->GetFloatValue(AUDIO_BALANCE_KEY,
+        INVALID_MASTER_BALANCE_VALUE));
+    if (audioBalance != INVALID_MASTER_BALANCE_VALUE) {
+        SetAudioBalance(audioBalance);
+    }
+}
+
 void AccessibilitySettingsConfig::OnDataClone()
 {
     InitSetting();
+    CloneAudioState();
+
     if (clickResponseTime_ == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
         SetClickResponseTime(AccessibilityConfig::ResponseDelayMedium);
     } else if (clickResponseTime_ > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
@@ -728,9 +757,9 @@ void AccessibilitySettingsConfig::OnDataClone()
     }
     // 1->1000 0->3000
     if (shortKeyTimeout_ == 1) {
-        shortKeyTimeout_ = SHORT_KEY_TIMEOUT_AFTER_USE;
-    } else {
-        shortKeyTimeout_ = SHORT_KEY_TIMEOUT_BEFORE_USE;
+        SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+    } else if (shortKeyTimeout_ == 0) {
+        SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
 
     auto cleanFunc = [] (std::vector<std::string> &services) -> int {
