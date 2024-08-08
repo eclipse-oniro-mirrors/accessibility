@@ -54,10 +54,10 @@ namespace {
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
-    const std::string USER_SETUP_COMPLETED = "user_setup_complete";
     const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
     const std::string DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
+    const std::string USER_SETUP_COMPLETED = "user_setup_complete";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
     constexpr int32_t INVALID_SHORTCUT_STATE = 2;
@@ -73,6 +73,8 @@ namespace {
     constexpr uint32_t ELEMENT_MOVE_BIT = 40;
     constexpr int32_t SINGLE_TREE_ID = 0;
     constexpr int32_t TREE_ID_MAX = 0x00001FFF;
+    constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
+    constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     constexpr int32_t WINDOW_ID_INVALID = -1;
     constexpr int64_t ELEMENT_ID_INVALID = -1;
     enum SCREENREADER_STATE : int32_t {
@@ -114,7 +116,7 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
     touchEventInjector_ = nullptr;
     keyEventFilter_ = nullptr;
     accessibilityShortKey_ = nullptr;
-    a11yAccountsData_.Clear(); // clear account data
+    a11yAccountsData_.Clear();
 }
 
 void AccessibleAbilityManagerService::OnStart()
@@ -180,9 +182,7 @@ void AccessibleAbilityManagerService::OnStop()
         HILOG_DEBUG();
 
         Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
         Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
-#endif
         Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
 
         currentAccountId_ = -1;
@@ -277,9 +277,7 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
         if (isReady_) {
             SwitchedUser(-1);
             Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
             Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
-#endif
             Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
             Singleton<AccessibilityWindowManager>::GetInstance().DeInit();
 
@@ -594,7 +592,13 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
             return false;
         }
     } else {
-        connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(), actionCallback);
+        if (connection->GetProxy() != nullptr) {
+            connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(),
+                actionCallback);
+        } else {
+            HILOG_ERROR("get operation is nullptr");
+            return false;
+        }
     }
     ffrt::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
     if (waitAction != ffrt::future_status::ready) {
@@ -1401,9 +1405,7 @@ bool AccessibleAbilityManagerService::Init()
 {
     HILOG_DEBUG();
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
-#endif
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     bool result = Singleton<AccessibilityWindowManager>::GetInstance().Init();
     HILOG_DEBUG("wms init result is %{public}d", result);
@@ -2365,6 +2367,23 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
 
     AccessibilityShortkeyDialog shortkeyDialog;
 
+    AccessibilitySettingProvider& settingProvider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    bool oobeState = false;
+    bool userSetupState = false;
+    settingProvider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
+    if (accountData->GetConfig()->GetDbHandle()) {
+        userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
+    }
+    if (oobeState && userSetupState) {
+        int32_t shortKeyTimeout = accountData->GetConfig()->GetShortKeyTimeout();
+        if (shortKeyTimeout == SHORT_KEY_TIMEOUT_BEFORE_USE) {
+            HILOG_INFO("first use short cut key");
+            accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+            shortkeyDialog.ConnectDialog(ShortKeyDialogType::RECONFIRM);
+            return;
+        }
+    }
+
     std::vector<std::string> shortkeyMultiTarget = accountData->GetConfig()->GetShortkeyMultiTarget();
     if (shortkeyMultiTarget.size() == 0) {
         EnableShortKeyTargetAbility();
@@ -2625,6 +2644,27 @@ RetError AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWin
     return Singleton<AccessibilityWindowManager>::GetInstance().GetFocusedWindowId(focusedWindowId);
 }
 
+void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
+{
+    HILOG_DEBUG("insert event, windowId: %{public}d", windowId);
+    windowFocusEventMap_[windowId] = event;
+}
+
+bool AccessibleAbilityManagerService::CheckWindowIdEventExist(int32_t windowId)
+{
+    return windowFocusEventMap_.count(windowId);
+}
+
+bool AccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return false;
+    }
+    return accountData->GetAccessibilityWindowConnection(windowId) != nullptr;
+}
+
 void AccessibleAbilityManagerService::OnDeviceProvisioned()
 {
     HILOG_DEBUG();
@@ -2640,6 +2680,7 @@ void AccessibleAbilityManagerService::OnDeviceProvisioned()
     }
     if (accountData->GetDefaultUserScreenReaderState()) {
         HILOG_INFO("Modify shortKeyTimeout and shortKeyOnLockScreenState");
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
         accountData->GetConfig()->SetShortKeyOnLockScreenState(true);
         UpdateConfigState();
     }
@@ -2840,27 +2881,6 @@ void AccessibleAbilityManagerService::RegisterScreenMagnificationType()
         }, "REGISTER_SCREEN_ZOOM_TYPE_OBSERVER");
 }
 
-void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
-{
-    HILOG_DEBUG("insert event, windowId: %{public}d", windowId);
-    windowFocusEventMap_[windowId] = event;
-}
-
-bool AccessibleAbilityManagerService::CheckWindowIdEventExist(int32_t windowId)
-{
-    return windowFocusEventMap_.count(windowId);
-}
-
-bool AccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)
-{
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return false;
-    }
-    return accountData->GetAccessibilityWindowConnection(windowId) != nullptr;
-}
-
 void AccessibleAbilityManagerService::PostDelayUnloadTask()
 {
     auto task = [=]() {
@@ -2886,7 +2906,7 @@ void AccessibleAbilityManagerService::PostDelayUnloadTask()
 bool AccessibleAbilityManagerService::IsNeedUnload()
 {
     HILOG_DEBUG();
-    // always return true to avoid stability problem
+    // always return true to avoid stablity problem
     return false;
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -3005,8 +3025,8 @@ void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t
 
 int64_t AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId)
 {
+    HILOG_INFO("aa search treeParent from aams, windowId: %{public}d, treeId: %{public}d", windowId, treeId);
     int64_t elementId = 0;
-    HILOG_DEBUG();
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
     if (!connection) {
         HILOG_WARN("The operator of windowId[%{public}d] has not been registered.", windowId);

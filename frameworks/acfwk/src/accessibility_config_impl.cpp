@@ -34,6 +34,7 @@ AccessibilityConfig::Impl::Impl()
 bool AccessibilityConfig::Impl::InitializeContext()
 {
     HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (isInitialized_) {
         HILOG_DEBUG("Context has initialized");
         return true;
@@ -66,17 +67,21 @@ bool AccessibilityConfig::Impl::ConnectToService()
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     if (retSysParam >= 0 && !std::strcmp(value, "true")) {
+        // Accessibility service is ready
         if (!InitAccessibilityServiceProxy()) {
             return false;
         }
+
         if (!RegisterToService()) {
             return false;
         }
+
         InitConfigValues();
     } else {
+        HILOG_DEBUG("Start watching accessibility service.");
         retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
         if (retSysParam) {
-            HILOG_ERROR("Watch parameter failed, error = %{public}d.", retSysParam);
+            HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
             return false;
         }
     }

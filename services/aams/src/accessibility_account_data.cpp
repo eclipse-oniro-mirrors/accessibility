@@ -250,6 +250,9 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
         return;
     }
     enabledAbilities_.push_back(name);
+    if (name == screenReaderAbilityName_) {
+        SetScreenReaderState(screenReaderKey_, "1");
+    }
     UpdateEnableAbilityListsState();
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
@@ -261,6 +264,9 @@ RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
         if (*it == name) {
             HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", name.c_str());
             enabledAbilities_.erase(it);
+            if (name == screenReaderAbilityName_) {
+                SetScreenReaderState(screenReaderKey_, "0");
+            }
             UpdateEnableAbilityListsState();
             HILOG_DEBUG("EnabledAbility size %{public}zu", enabledAbilities_.size());
             return RET_OK;
@@ -272,6 +278,7 @@ RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 
 void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
 {
+    HILOG_DEBUG("abilityInfo's bundle name is %{public}s", abilityInfo.GetPackageName().c_str());
     for (size_t i = 0; i < installedAbilities_.size(); i++) {
         if ((installedAbilities_[i].GetPackageName() == abilityInfo.GetPackageName()) &&
             installedAbilities_[i].GetName() == abilityInfo.GetName()) {
@@ -606,6 +613,9 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
 
     enabledAbilities_.push_back(name);
     SetAbilityAutoStartState(name, true);
+    if (name == screenReaderAbilityName_) {
+        SetScreenReaderState(screenReaderKey_, "1");
+    }
     UpdateAbilities();
     Utils::RecordStartingA11yEvent(name);
     return RET_OK;
@@ -1046,7 +1056,7 @@ void AccessibilityAccountData::AccessibilityAbility::AddAccessibilityAbility(con
         HILOG_DEBUG("connectionMap_ size %{public}zu", connectionMap_.size());
         return;
     }
-    
+
     HILOG_DEBUG("uri %{private}s, connectionMap_ %{public}zu", uri.c_str(), connectionMap_.size());
 }
 

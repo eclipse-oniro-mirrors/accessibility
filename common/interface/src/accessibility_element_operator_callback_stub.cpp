@@ -29,13 +29,14 @@
 #define SWITCH_END() default:\
     {\
         result_code = ERR_CODE_DEFAULT;\
-        HILOG_WARN("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, default case, need check.");\
+        HILOG_WARN("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, default case, need check."); \
         break;\
     }\
 }
 
 #define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_STUB_CASES() \
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID, HandleSetSearchElementInfoByAccessibilityIdResult)\
+    SWITCH_CASE( \
+        AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID, HandleSetSearchElementInfoByAccessibilityIdResult)\
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_TEXT, HandleSetSearchElementInfoByTextResult)\
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUSED_INFO, HandleSetFindFocusedElementInfoResult)\
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE, HandleSetFocusMoveSearchResult)\

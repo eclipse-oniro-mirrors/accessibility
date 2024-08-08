@@ -97,7 +97,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
         }
         syncPromise->set_value(RET_OK);
         }, "SearchElementInfoByAccessibilityId");
-    
+
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait SearchElementInfoByAccessibilityId result");
@@ -182,7 +182,8 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         focusType, requestId, callback]() {
         HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId_, clientName_.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-        RetError ret = GetElementOperator(accountId_, accessibilityWindowId, focusType, clientName_, elementOperator, treeId);
+        RetError ret = GetElementOperator(accountId_, accessibilityWindowId, focusType,
+            clientName_, elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             std::vector<AccessibilityElementInfo> infos = {};
@@ -231,8 +232,8 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
         elementId, treeId, direction, requestId, callback]() {
         HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId_, clientName_.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-        RetError ret = GetElementOperator(accountId_, accessibilityWindowId, FOCUS_TYPE_INVALID, clientName_, elementOperator,
-            treeId);
+        RetError ret = GetElementOperator(accountId_, accessibilityWindowId, FOCUS_TYPE_INVALID,
+            clientName_, elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             std::vector<AccessibilityElementInfo> infos = {};
