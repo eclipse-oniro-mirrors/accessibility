@@ -125,9 +125,11 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
     }
     RecordReceivedEvent(event);
     SendTouchEventToAA(event);
+
+    bool gestureRecognizedFlag = false;
     if (!multiFingerGestureRecognizer_.IsMultiFingerGestureStarted() &&
         gestureRecognizer_.OnPointerEvent(event)) {
-        return true;
+        gestureRecognizedFlag = true;
     }
     if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
         HILOG_DEBUG("recognize doubleTap and longpress");
@@ -136,14 +138,16 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
             doubleTapLongPressDownEvent_ = nullptr;
         }
         SendEventToMultimodal(event, NO_CHANGE);
-        return true;
+        gestureRecognizedFlag = true;
     }
 
     if (multiFingerGestureRecognizer_.OnPointerEvent(event)) {
         return true;
     }
 
-    HandlePointerEvent(event);
+    if (!gestureRecognizedFlag) {
+        HandlePointerEvent(event);
+    }
     return true;
 }
 
@@ -230,16 +234,16 @@ void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action
     HILOG_DEBUG("action:%{public}d, SourceType:%{public}d.", action, event.GetSourceType());
 
     if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
-        if (!focusedElementExist_) {
-            HILOG_DEBUG("send longclick event to multimodal, but no focused element.");
-            return;
-        }
-        OffsetEvent(event);
         if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
             event.GetPointerIds().size() == POINTER_COUNT_1) {
             HILOG_INFO("doubleTap and longpress end");
             Clear(event);
         }
+        if (!focusedElementExist_) {
+            HILOG_ERROR("send longclick event to multimodal, but no focused element.");
+            return;
+        }
+        OffsetEvent(event);
     }
 
     switch (action) {
@@ -250,21 +254,25 @@ void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action
             break;
         case POINTER_DOWN:
             if (event.GetSourceType() == MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
+                HILOG_INFO("inject pointer down event.");
                 event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
             }
             break;
         case POINTER_UP:
             if (event.GetSourceType() == MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
+                HILOG_INFO("inject pointer up event.");
                 event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
             }
             break;
         case HOVER_ENTER:
             if (event.GetSourceType() == MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
+                HILOG_INFO("inject hover-enter event.");
                 event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
             }
             break;
         case HOVER_EXIT:
             if (event.GetSourceType() == MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
+                HILOG_INFO("inject hover-exit event.");
                 event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_EXIT);
             }
             break;
@@ -341,7 +349,7 @@ void TouchGuider::TouchGuideListener::MultiFingerGestureOnStarted(bool isTwoFing
 
 bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
 {
-    HILOG_DEBUG("gestureId is %{public}d", gestureId);
+    HILOG_INFO("gestureId is %{public}d", gestureId);
 
     if (server_.currentState_ != static_cast<int32_t>(TouchGuideState::TRANSMITTING)) {
         HILOG_DEBUG("OnCompleted, state is not transmitting.");
