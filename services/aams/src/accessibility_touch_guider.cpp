@@ -234,16 +234,20 @@ void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action
     HILOG_DEBUG("action:%{public}d, SourceType:%{public}d.", action, event.GetSourceType());
 
     if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
+        bool focusedElementExistFlag = true;
+        if (!focusedElementExist_) {
+            HILOG_ERROR("send longclick event to multimodal, but no focused element.");
+            focusedElementExistFlag = false;
+        }
+        OffsetEvent(event);
         if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
             event.GetPointerIds().size() == POINTER_COUNT_1) {
             HILOG_INFO("doubleTap and longpress end");
             Clear(event);
         }
-        if (!focusedElementExist_) {
-            HILOG_ERROR("send longclick event to multimodal, but no focused element.");
+        if (!focusedElementExistFlag) {
             return;
         }
-        OffsetEvent(event);
     }
 
     switch (action) {
