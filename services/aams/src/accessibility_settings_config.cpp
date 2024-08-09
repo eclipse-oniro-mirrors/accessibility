@@ -210,6 +210,7 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<s
 RetError AccessibilitySettingsConfig::SetShortkeyMultiTargetInPkgRemove(const std::string &name)
 {
     HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     if (!datashare_) {
         return RET_ERR_NULLPTR;
     }

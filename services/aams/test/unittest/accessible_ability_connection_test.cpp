@@ -132,7 +132,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
         bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
             size_t count = accountData_->GetEnabledAbilities().size();
             auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-            if (count == 0 && aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
+            if (count == 0) {
                 return true;
             } else {
                 return false;
@@ -421,8 +421,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
         if (static_cast<int>(accountData->GetEnabledAbilities().size()) == 0 &&
-            !(accountData->GetConnectingA11yAbility(Utils::GetUri(*elementName))) &&
-            aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
+            !(accountData->GetConnectingA11yAbility(Utils::GetUri(*elementName)))) {
             return true;
         } else {
             return false;
@@ -488,8 +487,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
     sleep(SLEEP_TIME_2);
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-        if (accountData->GetConnectingA11yAbility(Utils::GetUri(*elementName)) &&
-            aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
+        if (accountData->GetConnectingA11yAbility(Utils::GetUri(*elementName))) {
             return true;
         } else {
             return false;
@@ -519,7 +517,8 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
 
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-        if (aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
+        if (static_cast<int>(accountData_->GetEnabledAbilities().size()) == 0 &&
+            accountData_->GetConnectingA11yAbility(Utils::GetUri(*elementName))) {
             return true;
         } else {
             return false;
@@ -554,7 +553,8 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
 
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-        if (aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
+        if (static_cast<int>(accountData->GetEnabledAbilities().size()) == 0 &&
+            !(accountData->GetConnectingA11yAbility(Utils::GetUri(*name)))) {
             return true;
         } else {
             return false;
