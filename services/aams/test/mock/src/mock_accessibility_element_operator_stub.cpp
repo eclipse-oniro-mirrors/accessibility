@@ -32,7 +32,6 @@ AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
 
 AccessibilityElementOperatorStub::~AccessibilityElementOperatorStub()
 {
-    memberFuncMap_.clear();
 }
 
 int AccessibilityElementOperatorStub::OnRemoteRequest(

@@ -51,28 +51,6 @@ constexpr int32_t ERR_CODE_DEFAULT = -1000;
 
 AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
 {
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_BY_ACCESSIBILITY_ID)] =
-        &AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibilityId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_BY_TEXT)] =
-        &AccessibilityElementOperatorStub::HandleSearchElementInfosByText;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::FIND_FOCUSED_INFO)] =
-        &AccessibilityElementOperatorStub::HandleFindFocusedElementInfo;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::FOCUS_FIND)] =
-        &AccessibilityElementOperatorStub::HandleFocusFind;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::PERFORM_ACTION_ELEMENT)] =
-        &AccessibilityElementOperatorStub::HandleExecuteAction;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::CURSOR_POSITION)] =
-        &AccessibilityElementOperatorStub::HandleGetCursorPosition;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::CLEAR_FOCUS)] =
-        &AccessibilityElementOperatorStub::HandleClearFocus;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::OUTSIDE_TOUCH)] =
-        &AccessibilityElementOperatorStub::HandleOutsideTouch;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CHILDTREEID)] =
-        &AccessibilityElementOperatorStub::HandleSetChildTreeIdAndWinId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_BELONGTREEID)] =
-        &AccessibilityElementOperatorStub::HandleSetBelongTreeId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_PARENTWINDOWID)] =
-        &AccessibilityElementOperatorStub::HandleSetParentWindowId;
 }
 
 AccessibilityElementOperatorStub::~AccessibilityElementOperatorStub()
