@@ -98,33 +98,6 @@ void TouchGuider::SendTouchEventToAA(MMI::PointerEvent &event)
     }
 }
 
-void TouchGuider::HandleDoubleTapLongPressEvent(MMI::PointerEvent &event)
-{
-    HILOG_DEBUG();
-
-    bool focusedElementExistFlag = true;
-    if (!focusedElementExist_) {
-        HILOG_DEBUG("send long press event to multimodal, but no focused element.");
-        focusedElementExistFlag = false;
-    }
-    OffsetEvent(event);
-    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
-        event.GetPointerIds().size() == POINTER_COUNT_1) {
-        HILOG_INFO("doubleTap and longpress end");
-        Clear(event);
-    }
-    if (!focusedElementExistFlag) {
-        return;
-    }
-
-    if (doubleTapLongPressDownEvent_ != nullptr) {
-        OffsetEvent(*doubleTapLongPressDownEvent_);
-        SendEventToMultimodal(*doubleTapLongPressDownEvent_, NO_CHANGE);
-        doubleTapLongPressDownEvent_ = nullptr;
-    }
-    SendEventToMultimodal(event, NO_CHANGE);
-}
-
 bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
@@ -159,7 +132,12 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         gestureRecognizedFlag = true;
     }
     if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
-        HandleDoubleTapLongPressEvent(event);
+        HILOG_DEBUG("recognize doubleTap and longpress");
+        if (doubleTapLongPressDownEvent_ != nullptr) {
+            SendEventToMultimodal(*doubleTapLongPressDownEvent_, NO_CHANGE);
+            doubleTapLongPressDownEvent_ = nullptr;
+        }
+        SendEventToMultimodal(event, NO_CHANGE);
         gestureRecognizedFlag = true;
     }
 
@@ -251,9 +229,35 @@ void TouchGuider::OffsetEvent(MMI::PointerEvent &event)
     event.AddPointerItem(pointer);
 }
 
+bool TouchGuider::IsEffectiveDoubleTapLongPressEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    bool focusedElementExistFlag = true;
+    if (!focusedElementExist_) {
+        HILOG_DEBUG("send long press event to multimodal, but no focused element.");
+        focusedElementExistFlag = false;
+    }
+    OffsetEvent(event);
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
+        event.GetPointerIds().size() == POINTER_COUNT_1) {
+        HILOG_INFO("doubleTap and longpress end");
+        Clear(event);
+    }
+    if (!focusedElementExistFlag) {
+        return false;
+    }
+
+    return true;
+}
+
 void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action)
 {
     HILOG_DEBUG("action:%{public}d, SourceType:%{public}d.", action, event.GetSourceType());
+
+    if (!IsEffectiveDoubleTapLongPressEvent(event)) {
+        return;
+    }
 
     switch (action) {
         case HOVER_MOVE:
