@@ -150,7 +150,6 @@ private:
 
     using AccessibleAbilityConnectionFunc =
         ErrCode (AccessibleAbilityChannelStub::*)(MessageParcel &data, MessageParcel &reply);
-    std::map<uint32_t, AccessibleAbilityConnectionFunc> memberFuncMap_;
 };
 } // namespace Accessibility
 } // namespace OHOS

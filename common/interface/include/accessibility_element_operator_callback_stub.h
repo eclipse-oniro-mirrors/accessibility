@@ -115,7 +115,6 @@ private:
 
     using AccessibilityElementOperatorCallbackFunc =
         ErrCode (AccessibilityElementOperatorCallbackStub::*)(MessageParcel &data, MessageParcel &reply);
-    std::map<uint32_t, AccessibilityElementOperatorCallbackFunc> memberFuncMap_;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -80,22 +80,6 @@ size_t StoreElementData::Size()
 
 AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackStub()
 {
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAccessibilityIdResult;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_RESULT_BY_TEXT)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTextResult;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::SET_RESULT_FOCUSED_INFO)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetFindFocusedElementInfoResult;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchResult;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::SET_RESULT_CURSOR_RESULT)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetCursorPositionResult;
 }
 
 StoreElementData AccessibilityElementOperatorCallbackStub::storeElementData;

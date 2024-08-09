@@ -215,7 +215,6 @@ public:
      * @param requestId The request id from AA, it is used to match with request and response.
      */
     void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId);
-    static int32_t GetWindIdByRequestId(const int32_t requestId);
 
     static sptr<IAccessibilityElementOperatorCallback> GetCallbackByRequestId(const int32_t requestId);
     static void EraseCallback(const int32_t requestId);
@@ -223,12 +222,11 @@ public:
 private:
     int32_t AddRequest(int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);
 
-    ffrt::mutex mutex_;
+    static ffrt::mutex requestsMutex_;
     int32_t windowId_ = 0;
     AccessibilityElementOperatorCallback &operatorCallback_;
     std::shared_ptr<AccessibilityElementOperator> operator_ = nullptr;
     static std::unordered_map<int32_t, sptr<IAccessibilityElementOperatorCallback>> requests_;
-    static std::unordered_map<int32_t, int32_t> requestWindId_; //key requestid
     DISALLOW_COPY_AND_MOVE(AccessibilityElementOperatorImpl);
 };
 

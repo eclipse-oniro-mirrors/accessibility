@@ -210,7 +210,7 @@ public:
 private:
     int32_t AddRequest(int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);
 
-    ffrt::mutex mutex_;
+    ffrt::mutex requestsMutex_;
     int32_t windowId_ = 0;
     AccessibilityElementOperatorCallback &operatorCallback_;
     std::shared_ptr<AccessibilityElementOperator> operator_ = nullptr;

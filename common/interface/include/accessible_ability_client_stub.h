@@ -38,7 +38,6 @@ private:
 
     using AccessibleAbilityClientFunc =
         ErrCode (AccessibleAbilityClientStub::*)(MessageParcel &data, MessageParcel &reply);
-    std::map<uint32_t, AccessibleAbilityClientFunc> memberFuncMap_;
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityClientStub);
 };
