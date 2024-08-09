@@ -236,7 +236,7 @@ void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action
     if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
         bool focusedElementExistFlag = true;
         if (!focusedElementExist_) {
-            HILOG_ERROR("send longclick event to multimodal, but no focused element.");
+            HILOG_DEBUG("send longclick event to multimodal, but no focused element.");
             focusedElementExistFlag = false;
         }
         OffsetEvent(event);
