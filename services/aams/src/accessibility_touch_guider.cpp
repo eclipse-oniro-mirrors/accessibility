@@ -118,6 +118,7 @@ void TouchGuider::HandleDoubleTapLongPressEvent(MMI::PointerEvent &event)
     }
 
     if (doubleTapLongPressDownEvent_ != nullptr) {
+        OffsetEvent(*doubleTapLongPressDownEvent_);
         SendEventToMultimodal(*doubleTapLongPressDownEvent_, NO_CHANGE);
         doubleTapLongPressDownEvent_ = nullptr;
     }
