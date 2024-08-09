@@ -233,19 +233,21 @@ bool TouchGuider::IsEffectiveDoubleTapLongPressEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
-    bool focusedElementExistFlag = true;
-    if (!focusedElementExist_) {
-        HILOG_DEBUG("send long press event to multimodal, but no focused element.");
-        focusedElementExistFlag = false;
-    }
-    OffsetEvent(event);
-    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
-        event.GetPointerIds().size() == POINTER_COUNT_1) {
-        HILOG_INFO("doubleTap and longpress end");
-        Clear(event);
-    }
-    if (!focusedElementExistFlag) {
-        return false;
+    if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
+        bool focusedElementExistFlag = true;
+        if (!focusedElementExist_) {
+            HILOG_DEBUG("send long press event to multimodal, but no focused element.");
+            focusedElementExistFlag = false;
+        }
+        OffsetEvent(event);
+        if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
+            event.GetPointerIds().size() == POINTER_COUNT_1) {
+            HILOG_INFO("doubleTap and longpress end");
+            Clear(event);
+        }
+        if (!focusedElementExistFlag) {
+            return false;
+        }
     }
 
     return true;
