@@ -339,13 +339,6 @@ private:
     void HandlePassingThroughState(MMI::PointerEvent &event);
 
     /**
-     * @brief Check whether it is an effective double tap and long press event.
-     * @param event the touch event from Multimodal
-     * @return whether the event is effective.
-     */
-    bool IsEffectiveDoubleTapLongPressEvent(MMI::PointerEvent &event);
-
-    /**
      * @brief Determine whether it is a drag gesture.
      * @param event the touch event from Multimodal
      * @return whether the dragGesture is accepted.

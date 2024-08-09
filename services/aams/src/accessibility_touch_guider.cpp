@@ -229,9 +229,9 @@ void TouchGuider::OffsetEvent(MMI::PointerEvent &event)
     event.AddPointerItem(pointer);
 }
 
-bool TouchGuider::IsEffectiveDoubleTapLongPressEvent(MMI::PointerEvent &event)
+void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action)
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("action:%{public}d, SourceType:%{public}d.", action, event.GetSourceType());
 
     if (gestureRecognizer_.GetIsDoubleTap() && gestureRecognizer_.GetIsLongpress()) {
         bool focusedElementExistFlag = true;
@@ -246,19 +246,8 @@ bool TouchGuider::IsEffectiveDoubleTapLongPressEvent(MMI::PointerEvent &event)
             Clear(event);
         }
         if (!focusedElementExistFlag) {
-            return false;
+            return;
         }
-    }
-
-    return true;
-}
-
-void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action)
-{
-    HILOG_DEBUG("action:%{public}d, SourceType:%{public}d.", action, event.GetSourceType());
-
-    if (!IsEffectiveDoubleTapLongPressEvent(event)) {
-        return;
     }
 
     switch (action) {
@@ -269,25 +258,21 @@ void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action
             break;
         case POINTER_DOWN:
             if (event.GetSourceType() == MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
-                HILOG_INFO("inject pointer down event.");
                 event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
             }
             break;
         case POINTER_UP:
             if (event.GetSourceType() == MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
-                HILOG_INFO("inject pointer up event.");
                 event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
             }
             break;
         case HOVER_ENTER:
             if (event.GetSourceType() == MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
-                HILOG_INFO("inject hover-enter event.");
                 event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
             }
             break;
         case HOVER_EXIT:
             if (event.GetSourceType() == MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
-                HILOG_INFO("inject hover-exit event.");
                 event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_EXIT);
             }
             break;
