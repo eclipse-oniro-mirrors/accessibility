@@ -18,6 +18,9 @@
 #include "hilog_wrapper.h"
 #include "window_accessibility_controller.h"
 #include "accessibility_window_manager.h"
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+#include "accessibility_power_manager.h"
+#endif
 
 namespace OHOS {
 namespace Accessibility {
@@ -37,8 +40,8 @@ namespace {
     constexpr float MAX_SCALE = 8.0f;
     constexpr uint32_t INPUT_METHOD_WINDOW_TYPE = 2105;
     constexpr float EPS = 1e-6;
-    constexpr float MIN_SCROLL_SPAN = 10.0f;
-    constexpr float MIN_SCALE_SPAN = 20.0f;
+    constexpr float MIN_SCROLL_SPAN = 2.0f;
+    constexpr float MIN_SCALE_SPAN = 2.0f;
     constexpr float DEFAULT_ANCHOR = 0.5f;
 } // namespace
 
@@ -263,6 +266,43 @@ void AccessibilityZoomGesture::RecognizeInReadyState(MMI::PointerEvent &event)
     }
 }
 
+void AccessibilityZoomGesture::RecognizeInZoomStateDownEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    int32_t action = event.GetPointerAction();
+    std::vector<int32_t> pointerIdList = event.GetPointerIds();
+    size_t pointerCount = pointerIdList.size();
+    zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
+    if (pointerCount == POINTER_COUNT_1) {
+        isLongPress_ = false;
+        std::shared_ptr<MMI::PointerEvent> pointerEvent = std::make_shared<MMI::PointerEvent>(event);
+        longPressDownEvent_ = pointerEvent;
+        downPid_ = event.GetPointerId();
+        if (IsDownValid()) {
+            zoomGestureEventHandler_->SendEvent(MULTI_TAP_MSG, 0, MULTI_TAP_TIMER);
+        } else {
+            SendCacheEventsToNext();
+        }
+    } else if (pointerCount == POINTER_COUNT_2) {
+        if (isLongPress_ || IsKnuckles(event)) {
+            HILOG_INFO("not transferState sliding.");
+            SendCacheEventsToNext();
+        } else {
+            TransferState(SLIDING_STATE);
+            ClearCacheEventsAndMsg();
+            ZOOM_FOCUS_COORDINATE focusXY = {0.0f, 0.0f};
+            CalcFocusCoordinate(event, focusXY);
+            lastScrollFocusX_ = focusXY.centerX;
+            lastScrollFocusY_ = focusXY.centerY;
+            float span = CalcScaleSpan(event, focusXY);
+            preSpan_ = lastSpan_ = span;
+        }
+    } else {
+        HILOG_INFO("invalid pointer count.");
+    }
+}
+
 void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
@@ -275,28 +315,12 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
     HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
     switch (action) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
-            zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
-            if (pointerCount == POINTER_COUNT_1) {
-                if (IsDownValid()) {
-                    zoomGestureEventHandler_->SendEvent(MULTI_TAP_MSG, 0, MULTI_TAP_TIMER);
-                } else {
-                    SendCacheEventsToNext();
-                }
-            } else if (pointerCount == POINTER_COUNT_2) {
-                TransferState(SLIDING_STATE);
-                ClearCacheEventsAndMsg();
-                ZOOM_FOCUS_COORDINATE focusXY = {0.0f, 0.0f};
-                CalcFocusCoordinate(event, focusXY);
-                lastScrollFocusX_ = focusXY.centerX;
-                lastScrollFocusY_ = focusXY.centerY;
-
-                float span = CalcScaleSpan(event, focusXY);
-                preSpan_ = lastSpan_ = span;
-            } else {
-                HILOG_INFO("invalid pointer count.");
-            }
+            RecognizeInZoomStateDownEvent(event);
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
+            if (downPid_ == event.GetPointerId()) {
+                isLongPress_ = false;
+            }
             if ((pointerCount == POINTER_COUNT_1) && IsUpValid()) {
                 isTripleTaps = IsTripleTaps();
             } else {
@@ -304,7 +328,7 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_MOVE:
-            if ((pointerCount == POINTER_COUNT_1) && IsMoveValid()) {
+            if ((pointerCount == POINTER_COUNT_1) && !IsLongPress() && IsMoveValid()) {
                 HILOG_DEBUG("move valid.");
             } else {
                 SendCacheEventsToNext();
@@ -580,6 +604,35 @@ bool AccessibilityZoomGesture::IsMoveValid()
     return true;
 }
 
+bool AccessibilityZoomGesture::IsLongPress()
+{
+    HILOG_DEBUG();
+
+    if (CalcIntervalTime(longPressDownEvent_, currentMoveEvent_) >= LONG_PRESS_TIMER) {
+        HILOG_DEBUG("The time has exceeded the long press time");
+        isLongPress_ = true;
+        return true;
+    }
+    return false;
+}
+
+bool AccessibilityZoomGesture::IsKnuckles(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    std::vector<int32_t> pointerIdList = event.GetPointerIds();
+    for (int32_t pointerId : pointerIdList) {
+        MMI::PointerEvent::PointerItem item;
+        event.GetPointerItem(pointerId, item);
+        int32_t toolType = item.GetToolType();
+        if (toolType == MMI::PointerEvent::TOOL_TYPE_KNUCKLE) {
+            HILOG_INFO("is knuckle event.");
+            return true;
+        }
+    }
+    return false;
+}
+
 bool AccessibilityZoomGesture::IsTripleTaps()
 {
     HILOG_DEBUG();
@@ -779,6 +832,10 @@ void AccessibilityZoomGesture::OnScroll(float offsetX, float offsetY)
     float y = anchorPointY_ / screenHeight_;
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+    AccessibilityPowerManager &powerMgr = Singleton<AccessibilityPowerManager>::GetInstance();
+    powerMgr.RefreshActivity();
+#endif
 #else
     HILOG_INFO("not support zoom");
     return;
