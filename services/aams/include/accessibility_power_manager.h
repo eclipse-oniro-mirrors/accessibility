@@ -17,6 +17,7 @@
 #define ACCESSIBILITY_POWER_MANAGER_H
 
 #include "singleton.h"
+#include "power_mgr_client.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -24,6 +25,7 @@ class AccessibilityPowerManager {
     DECLARE_SINGLETON(AccessibilityPowerManager)
 public:
     bool DiscountBrightness(const float discount);
+    bool RefreshActivity();
 };
 } // namespace Accessibility
 } // namespace OHOS

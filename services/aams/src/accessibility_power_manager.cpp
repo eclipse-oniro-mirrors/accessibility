@@ -37,5 +37,12 @@ bool AccessibilityPowerManager::DiscountBrightness(const float discount)
 
     return true;
 }
+
+bool AccessibilityPowerManager::RefreshActivity()
+{
+    HILOG_DEBUG();
+    return PowerMgr::PowerMgrClient::GetInstance().RefreshActivity(
+        OHOS::PowerMgr::UserActivityType::USER_ACTIVITY_TYPE_TOUCH);
+}
 } // namespace Accessibility
 } // namespace OHOS
