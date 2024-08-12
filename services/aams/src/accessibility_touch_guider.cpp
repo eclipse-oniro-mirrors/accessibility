@@ -88,12 +88,20 @@ void TGEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
 void TouchGuider::SendTouchEventToAA(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (event.GetPointerIds().size() == POINTER_COUNT_1) {
-        if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN) {
-            SendAccessibilityEventToAA(EventType::TYPE_TOUCH_BEGIN);
-        } else if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) {
-            SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
-        }
+
+    if (event.GetPointerIds().size() != POINTER_COUNT_1) {
+        return;
+    }
+
+    MMI::PointerEvent::PointerItem pointerIterm = {};
+    if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
+        HILOG_WARN("GetPointerItem(%{public}d) failed", event.GetPointerId());
+    }
+
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN) {
+        SendAccessibilityEventToAA(EventType::TYPE_TOUCH_BEGIN);
+    } else if (!pointerIterm.IsPressed()) {
+        SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
     }
 }
 
@@ -110,6 +118,7 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         HILOG_INFO("PointerAction:%{public}d, PointerId:%{public}d.", event.GetPointerAction(),
             event.GetPointerId());
     }
+    SendTouchEventToAA(event);
 
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_CANCEL) {
         if ((static_cast<TouchGuideState>(currentState_) == TouchGuideState::DRAGGING) &&
@@ -123,7 +132,6 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         return true;
     }
     RecordReceivedEvent(event);
-    SendTouchEventToAA(event);
 
     bool gestureRecognizedFlag = false;
     if (!multiFingerGestureRecognizer_.IsMultiFingerGestureStarted() &&

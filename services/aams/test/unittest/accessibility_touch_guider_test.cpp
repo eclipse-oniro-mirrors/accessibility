@@ -172,6 +172,8 @@ std::shared_ptr<MMI::PointerEvent> TouchGuiderTest::CreateTouchEvent(int32_t act
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
     MMI::PointerEvent::PointerItem item = {};
 
+    item.SetPointerId(pointId_);
+    item.SetPressed(action == MMI::PointerEvent::POINTER_ACTION_UP ? false : true);
     pointerEvent->AddPointerItem(item);
     pointerEvent->SetPointerId(pointId_++);
     pointerEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
@@ -187,6 +189,11 @@ std::shared_ptr<MMI::PointerEvent> TouchGuiderTest::CreateTouchEvent(int32_t act
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
 
     for (auto &point : points) {
+        if (point.GetPointerId() == pointerId) {
+            point.SetPressed(action == MMI::PointerEvent::POINTER_ACTION_UP ? false : true);
+        } else {
+            point.SetPressed(true);
+        }
         pointerEvent->AddPointerItem(point);
     }
     pointerEvent->SetPointerId(pointerId);
@@ -203,6 +210,8 @@ std::shared_ptr<MMI::PointerEvent> TouchGuiderTest::CreateMoveEvent(int32_t poin
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
     MMI::PointerEvent::PointerItem item = {};
 
+    item.SetPointerId(pointId_);
+    item.SetPressed(true);
     pointerEvent->AddPointerItem(item);
     pointerEvent->SetPointerId(pointId_++);
     pointerEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
