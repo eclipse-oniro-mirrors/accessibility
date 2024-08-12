@@ -441,8 +441,12 @@ bool AccessibilityWindowManager::GetAccessibilityWindow(int32_t windowId, Access
         }
 
         int32_t realWidId = GetRealWindowId(info);
-        if (info != nullptr && a11yWindows_.count(realWidId)) {
+        if (a11yWindows_.count(realWidId)) {
             UpdateAccessibilityWindowInfo(a11yWindows_[realWidId], info);
+        } else {
+            AccessibilityWindowInfo tmpWindowInfo;
+            UpdateAccessibilityWindowInfo(tmpWindowInfo, info);
+            a11yWindows_[realWidId] = tmpWindowInfo;
         }
     }
     if (a11yWindows_.count(windowId)) {
