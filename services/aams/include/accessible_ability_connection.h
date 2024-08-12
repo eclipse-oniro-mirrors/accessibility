@@ -85,7 +85,7 @@ private:
         void OnRemoteDied(const wptr<IRemoteObject>& remote);
 
         int32_t accountId_ = -1;
-        AppExecFwk::ElementName& recipientElementName_;
+        AppExecFwk::ElementName recipientElementName_;
         std::shared_ptr<AppExecFwk::EventHandler> handler_ = nullptr;
     };
 
