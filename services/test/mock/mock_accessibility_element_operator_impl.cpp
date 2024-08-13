@@ -144,7 +144,7 @@ int32_t MockAccessibilityElementOperatorImpl::GetWindowId()
 int32_t MockAccessibilityElementOperatorImpl::AddRequest(int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(requestsMutex_);
     uint32_t compositionRequestId = static_cast<uint32_t>(requestId) & REQUEST_ID_MASK;
 
     if (windowId_ < REQUEST_WINDOW_ID_MAX && windowId_ > 0) {
@@ -164,7 +164,7 @@ int32_t MockAccessibilityElementOperatorImpl::AddRequest(int32_t requestId,
 void MockAccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::list<AccessibilityElementInfo>& infos, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(requestsMutex_);
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto iterator = requests_.find(requestId);
     if (iterator != requests_.end()) {
@@ -181,7 +181,7 @@ void MockAccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityId
 void MockAccessibilityElementOperatorImpl::SetSearchElementInfoByTextResult(
     const std::list<AccessibilityElementInfo>& infos, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(requestsMutex_);
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto iterator = requests_.find(requestId);
     if (iterator != requests_.end()) {
@@ -198,7 +198,7 @@ void MockAccessibilityElementOperatorImpl::SetSearchElementInfoByTextResult(
 void MockAccessibilityElementOperatorImpl::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo& info, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(requestsMutex_);
     auto iterator = requests_.find(requestId);
     if (iterator != requests_.end()) {
         if (iterator->second != nullptr) {
@@ -214,7 +214,7 @@ void MockAccessibilityElementOperatorImpl::SetFindFocusedElementInfoResult(
 void MockAccessibilityElementOperatorImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo& info, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(requestsMutex_);
     auto iterator = requests_.find(requestId);
     if (iterator != requests_.end()) {
         if (iterator->second != nullptr) {
@@ -230,7 +230,7 @@ void MockAccessibilityElementOperatorImpl::SetFocusMoveSearchResult(
 void MockAccessibilityElementOperatorImpl::SetExecuteActionResult(
     const bool succeeded, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(requestsMutex_);
     auto iterator = requests_.find(requestId);
     if (iterator != requests_.end()) {
         if (iterator->second != nullptr) {
@@ -246,7 +246,7 @@ void MockAccessibilityElementOperatorImpl::SetExecuteActionResult(
 void MockAccessibilityElementOperatorImpl::SetCursorPositionResult(
     const int32_t cursorPosition, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(requestsMutex_);
     auto iterator = requests_.find(requestId);
     if (iterator != requests_.end()) {
         if (iterator->second != nullptr) {

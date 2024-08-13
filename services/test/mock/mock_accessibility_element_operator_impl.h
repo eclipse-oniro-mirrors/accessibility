@@ -209,7 +209,7 @@ public:
 private:
     int32_t AddRequest(int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);
 
-    std::mutex mutex_;
+    std::mutex requestsMutex_;
     int32_t windowId_ = 0;
     AccessibilityElementOperatorCallback &operatorCallback_;
     std::shared_ptr<AccessibilityElementOperator> operator_ = nullptr;
