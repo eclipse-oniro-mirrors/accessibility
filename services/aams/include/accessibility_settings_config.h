@@ -94,6 +94,7 @@ public:
     RetError RemoveEnabledAccessibilityService(const std::string &serviceName);
     uint32_t GetConfigState();
     bool GetStartFromAtoHosState();
+    void CloneShortkeyService();
     void OnDataClone();
     void CloneAudioState();
     std::shared_ptr<AccessibilityDatashareHelper> GetDbHandle()

@@ -50,7 +50,7 @@ struct ConfigValueAtoHosUpdate {
     int ignoreRepeatClickTime = 0;
     int displayDaltonizer = 0;
     bool shortcutEnabledOnLockScreen = false;
-    bool shortcutDialogShown = false;
+    int shortcutTimeout = -1;
 };
 
 class AccessibilityAccountData final : public RefBase {

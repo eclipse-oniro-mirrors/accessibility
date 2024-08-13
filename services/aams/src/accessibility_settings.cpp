@@ -497,10 +497,12 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
     HILOG_INFO("daltonizationState(%{public}d), invertColor(%{public}d), \
         audioMono(%{public}d), audioBalance(%{public}f), highContrastText(%{public}d), \
         isScreenReaderEnabled(%{public}d), ignoreRepeatClickState(%{public}d), \
-        clickResponseTime(%{public}d), ignoreRepeatClickTime(%{public}d), displayDaltonizer(%{public}d).",
+        clickResponseTime(%{public}d), ignoreRepeatClickTime(%{public}d), displayDaltonizer(%{public}d), \
+        shortcutEnabledOnLockScreen(%{public}d), shortcutTimeout(%{public}d).",
         atoHosValue.daltonizationState, atoHosValue.invertColor, atoHosValue.audioMono, atoHosValue.audioBalance,
         atoHosValue.highContrastText, atoHosValue.isScreenReaderEnabled, atoHosValue.ignoreRepeatClickState,
-        atoHosValue.clickResponseTime, atoHosValue.ignoreRepeatClickTime, atoHosValue.displayDaltonizer);
+        atoHosValue.clickResponseTime, atoHosValue.ignoreRepeatClickTime, atoHosValue.displayDaltonizer,
+        atoHosValue.shortcutEnabledOnLockScreen, atoHosValue.shortcutTimeout);
 
     UpdateSettingsInAtoHosStatePart(atoHosValue);
 
@@ -523,9 +525,9 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
         accountData->GetConfig()->SetDaltonizationColorFilter(static_cast<uint32_t>(atoHosValue.displayDaltonizer));
         UpdateDaltonizationColorFilter();
     }
-    if (atoHosValue.shortcutDialogShown) {
+    if (atoHosValue.shortcutTimeout == SHORT_KEY_TIMEOUT_AFTER_USE) {
         accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-    } else {
+    } else if (atoHosValue.shortcutTimeout == SHORT_KEY_TIMEOUT_BEFORE_USE) {
         accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
     
@@ -534,6 +536,7 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
             CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
         accountData->EnableAbility(SCREEN_READER_BUNDLE_ABILITY_NAME, capabilities);
     }
+    accountData->GetConfig()->CloneShortkeyService();
 
     accountData->GetConfig()->SetStartFromAtoHosState(false);
 }
