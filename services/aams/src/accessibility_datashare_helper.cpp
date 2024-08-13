@@ -260,6 +260,11 @@ RetError AccessibilityDatashareHelper::RegisterObserver(const std::string& key,
     if (observer == nullptr) {
         return RET_ERR_NULLPTR;
     }
+    auto iter = settingObserverMap_.find(key);
+    if (iter != settingObserverMap_.end() && iter->second != nullptr) {
+        HILOG_INFO("observer of key = %{public}s already exist", key.c_str());
+        return RET_OK;
+    }
     if (RegisterObserver(observer) != ERR_OK) {
         return RET_ERR_NULLPTR;
     }
