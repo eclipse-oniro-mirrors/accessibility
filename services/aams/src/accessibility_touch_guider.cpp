@@ -585,6 +585,13 @@ void TouchGuider::HandleTransmitingState(MMI::PointerEvent &event)
             }
             break;
         default:
+            MMI::PointerEvent::PointerItem pointerItem = {};
+            for (auto& pid : event.GetPointerIds()) {
+                event.GetPointerItem(pid, pointerItem);
+                pointerItem.SetPressed(false);
+                event.RemovePointerItem(pid);
+                event.AddPointerItem(pointerItem);
+            }
             SendEventToMultimodal(event, NO_CHANGE);
             break;
     }
