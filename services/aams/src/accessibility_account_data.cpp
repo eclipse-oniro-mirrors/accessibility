@@ -545,14 +545,7 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     provider.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
     provider.GetFloatValue(MASTER_BALENCE, value.audioBalance);
     provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, value.shortcutEnabledOnLockScreen);
-
-    int shortcutTimeout = 0;
-    provider.GetIntValue(ACCESSIBILITY_SHORTCUT_TIMEOUT, shortcutTimeout);
-    if (shortcutTimeout == 0) {
-        value.shortcutTimeout = SHORT_KEY_TIMEOUT_BEFORE_USE;
-    } else if (shortcutTimeout == 1) {
-        value.shortcutTimeout = SHORT_KEY_TIMEOUT_AFTER_USE;
-    }
+    provider.GetIntValue(ACCESSIBILITY_SHORTCUT_TIMEOUT, value.shortcutTimeout);
 
     int tmpClickResTime = 0;
     provider.GetIntValue(CLICK_RESPONSE_TIME, tmpClickResTime);

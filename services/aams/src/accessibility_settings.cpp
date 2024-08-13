@@ -525,9 +525,9 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
         accountData->GetConfig()->SetDaltonizationColorFilter(static_cast<uint32_t>(atoHosValue.displayDaltonizer));
         UpdateDaltonizationColorFilter();
     }
-    if (atoHosValue.shortcutTimeout == SHORT_KEY_TIMEOUT_AFTER_USE) {
+    if (atoHosValue.shortcutTimeout == 1) {
         accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-    } else if (atoHosValue.shortcutTimeout == SHORT_KEY_TIMEOUT_BEFORE_USE) {
+    } else if (atoHosValue.shortcutTimeout == 0) {
         accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
     
