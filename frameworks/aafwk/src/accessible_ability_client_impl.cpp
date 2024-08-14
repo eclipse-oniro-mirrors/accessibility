@@ -120,13 +120,6 @@ bool AccessibleAbilityClientImpl::InitAccessibilityServiceProxy()
             serviceProxy_->AsObject()->AddDeathRecipient(accessibilityServiceDeathRecipient_)) {
             return true;
         }
-    } else {
-        if (LoadAccessibilityService() == false) {
-            HILOG_ERROR("LoadAccessibilityService failed.");
-            return false;
-        } else {
-            return true;
-        }
     }
     return false;
 }
@@ -414,11 +407,6 @@ RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementI
     }
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("Failed to connect to aams");
-        return RET_ERR_SAMGR;
-    }
-
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to connect to aams");
         return RET_ERR_SAMGR;
@@ -492,11 +480,6 @@ RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElem
     if (!channelClient_) {
         HILOG_ERROR("channel is invalid.");
         return RET_ERR_NO_CONNECTION;
-    }
-
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("failed to connect to aams");
-        return RET_ERR_SAMGR;
     }
 
     if (serviceProxy_ == nullptr) {
@@ -576,7 +559,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWi
     }
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("failed to connect to aams");
         return RET_ERR_SAMGR;
     }
@@ -925,11 +908,6 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId,
     }
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("failed to connect to aams");
-        return RET_ERR_SAMGR;
-    }
-
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to connect to aams");
         return RET_ERR_SAMGR;
@@ -1204,11 +1182,6 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
     }
 
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("Failed to connect to aams");
-        return RET_ERR_SAMGR;
-    }
-
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1255,10 +1228,6 @@ RetError AccessibleAbilityClientImpl::Connect()
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to connect to aams");
         return RET_ERR_SAMGR;
@@ -1271,10 +1240,6 @@ RetError AccessibleAbilityClientImpl::Disconnect()
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to connect to aams");
         return RET_ERR_SAMGR;
