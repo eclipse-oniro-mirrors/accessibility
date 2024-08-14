@@ -730,6 +730,33 @@ void AccessibilitySettingsConfig::CloneAudioState()
     }
 }
 
+void AccessibilitySettingsConfig::CloneShortkeyService()
+{
+    auto cleanFunc = [] (std::vector<std::string> &services) -> int {
+        int count = 0;
+        for (auto iter = services.begin(); iter != services.end();) {
+            if (iter->find(SCREENREADER_TAG) != std::string::npos) {
+                iter = services.erase(iter);
+                count++;
+            } else {
+                iter++;
+            }
+        }
+        return count;
+    };
+    std::vector<std::string> tmpVec = GetShortkeyMultiTarget();
+    if (cleanFunc(tmpVec) != 0) {
+        HILOG_INFO("add ScreenReader service");
+        tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
+        SetShortkeyMultiTarget(tmpVec);
+    }
+
+    tmpVec = GetEnabledAccessibilityServices();
+    if (cleanFunc(tmpVec) != 0) {
+        AddEnabledAccessibilityService(SCREEN_READER_BUNDLE_ABILITY_NAME);
+    }
+}
+
 void AccessibilitySettingsConfig::OnDataClone()
 {
     InitSetting();
@@ -763,28 +790,7 @@ void AccessibilitySettingsConfig::OnDataClone()
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
 
-    auto cleanFunc = [] (std::vector<std::string> &services) -> int {
-        int count = 0;
-        for (auto iter = services.begin(); iter != services.end();) {
-            if (iter->find(SCREENREADER_TAG) != std::string::npos) {
-                iter = services.erase(iter);
-                count++;
-            } else {
-                iter++;
-            }
-        }
-        return count;
-    };
-    std::vector<std::string> tmpVec = GetShortkeyMultiTarget();
-    if (cleanFunc(tmpVec) != 0) {
-        tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
-        SetShortkeyMultiTarget(tmpVec);
-    }
-
-    tmpVec = GetEnabledAccessibilityServices();
-    if (cleanFunc(tmpVec) != 0) {
-        AddEnabledAccessibilityService(SCREEN_READER_BUNDLE_ABILITY_NAME);
-    }
+    CloneShortkeyService();
 
     AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     provider.PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);

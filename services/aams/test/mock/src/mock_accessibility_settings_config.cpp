@@ -449,6 +449,10 @@ RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const st
     return RET_OK;
 }
 
+void AccessibilitySettingsConfig::CloneShortkeyService()
+{
+}
+
 void AccessibilitySettingsConfig::OnDataClone()
 {
 }

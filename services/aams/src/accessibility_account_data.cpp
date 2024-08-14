@@ -41,6 +41,8 @@ namespace {
     constexpr int DISPLAY_DALTONIZER_RED = 11;
     constexpr int DISPLAY_DALTONIZER_BLUE = 13;
     constexpr int DEFAULT_ACCOUNT_ID = 100;
+    constexpr int SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
+    constexpr int SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
@@ -54,8 +56,8 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
-    const std::string ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen";
-    const std::string ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN = "accessibility_shortcut_dialog_shown";
+    const std::string ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
+    const std::string ACCESSIBILITY_SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
 } // namespace
 
@@ -542,8 +544,9 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     provider.GetBoolValue(MASTER_MONO, value.audioMono);
     provider.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
     provider.GetFloatValue(MASTER_BALENCE, value.audioBalance);
-    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN, value.shortcutEnabledOnLockScreen);
-    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN, value.shortcutDialogShown);
+    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, value.shortcutEnabledOnLockScreen);
+    provider.GetIntValue(ACCESSIBILITY_SHORTCUT_TIMEOUT, value.shortcutTimeout);
+
     int tmpClickResTime = 0;
     provider.GetIntValue(CLICK_RESPONSE_TIME, tmpClickResTime);
     if (tmpClickResTime == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
