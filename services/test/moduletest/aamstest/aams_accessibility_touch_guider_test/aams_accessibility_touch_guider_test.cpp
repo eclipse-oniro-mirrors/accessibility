@@ -595,6 +595,7 @@ void AamsTouchGuideTest::AddAccessibilityWindowConnection()
 HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent001 starts";
+    sleep(SLEEP_TIME_3);
 
     AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
