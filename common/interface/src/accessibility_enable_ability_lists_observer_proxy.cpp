@@ -42,7 +42,7 @@ void AccessibilityEnableAbilityListsObserverProxy::OnAccessibilityEnableAbilityL
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("write interface token failed");
@@ -69,7 +69,7 @@ void AccessibilityEnableAbilityListsObserverProxy::OnAccessibilityInstallAbility
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("write interface token failed");
