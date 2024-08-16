@@ -123,6 +123,7 @@ public:
 
     RetError EnableAbility(const std::string &name, const uint32_t capabilities) override;
     RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
+    RetError SetCurtainScreenUsingStatus(bool isEnable);
     RetError DisableAbility(const std::string &name) override;
     RetError EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
     RetError DisableUITestAbility() override;
