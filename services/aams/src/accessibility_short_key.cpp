@@ -37,11 +37,6 @@ AccessibilityShortKey::~AccessibilityShortKey()
 void AccessibilityShortKey::SubscribeShortKey(std::set<int32_t> preKeys, int32_t finalKey, int32_t holdTime)
 {
     std::shared_ptr<MMI::KeyOption> keyOption = std::make_shared<MMI::KeyOption>();
-    if (keyOption == nullptr) {
-        HILOG_ERROR("Create keyOption failed.");
-        return;
-    }
-
     keyOption->SetPreKeys(preKeys);
     keyOption->SetFinalKey(finalKey);
     keyOption->SetFinalKeyDown(true);
