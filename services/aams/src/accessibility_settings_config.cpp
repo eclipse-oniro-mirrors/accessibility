@@ -651,7 +651,7 @@ void AccessibilitySettingsConfig::InitSetting()
 
     shortkeyTarget_ = datashare_->GetStringValue("ShortkeyTarget", "none");
 
-    std::string tmpString = datashare_->GetStringValue(SHORTCUT_SERVICE, "");
+    std::string tmpString = datashare_->GetStringValue(SHORTCUT_SERVICE, SCREEN_READER_BUNDLE_ABILITY_NAME);
     Utils::StringToVector(tmpString, shortkeyMultiTarget_);
 
     tmpString = datashare_->GetStringValue(ENABLED_ACCESSIBILITY_SERVICES, "");
