@@ -445,7 +445,7 @@ private:
         const uint32_t mode, AccessibilityElementInfo &info);
     bool InitAccessibilityServiceProxy();
     static void OnParameterChanged(const char *key, const char *value, void *context);
-    sptr<Accessibility::IAccessibleAbilityManagerService> GetServiceProxy();
+    bool CheckServiceProxy(); // should be used in mutex
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> accessibilityServiceDeathRecipient_ = nullptr;

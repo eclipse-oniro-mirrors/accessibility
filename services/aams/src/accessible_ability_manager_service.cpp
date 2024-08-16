@@ -2906,8 +2906,10 @@ void AccessibleAbilityManagerService::PostDelayUnloadTask()
 bool AccessibleAbilityManagerService::IsNeedUnload()
 {
     HILOG_DEBUG();
+#ifndef ACCESSIBILITY_WATCH_FEATURE
     // always return true to avoid stablity problem
     return false;
+#else // for watch
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
@@ -2919,22 +2921,8 @@ bool AccessibleAbilityManagerService::IsNeedUnload()
     if (enableAbilityList.size() != 0) {
         return false;
     }
-    if (!accountData->GetConfig()) {
-        return true;
-    }
-    if (accountData->GetConfig()->GetHighContrastTextState() != false ||
-        accountData->GetConfig()->GetDaltonizationState() != false ||
-        accountData->GetConfig()->GetInvertColorState() != false ||
-        accountData->GetConfig()->GetAnimationOffState() != false ||
-        accountData->GetConfig()->GetMouseKeyState() != false ||
-        accountData->GetConfig()->GetCaptionState() != false ||
-        accountData->GetConfig()->GetScreenMagnificationState() != false ||
-        accountData->GetConfig()->GetShortKeyState() != false ||
-        accountData->GetConfig()->GetShortKeyOnLockScreenState() != false ||
-        accountData->GetConfig()->GetBrightnessDiscount() != 1) {
-        return false;
-    }
     return true;
+#endif // ACCESSIBILITY_WATCH_FEATURE
 }
 
 int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t elementId)
