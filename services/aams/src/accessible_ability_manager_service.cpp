@@ -2853,7 +2853,7 @@ void AccessibleAbilityManagerService::OnScreenMagnificationTypeChanged()
 
     uint32_t screenMagnificationType = 0;
     screenMagnificationType =
-        static_cast<int64_t>(config->GetDbHandle()->GetIntValue(SCREEN_MAGNIFICATION_TYPE, 0));
+        static_cast<uint32_t>(config->GetDbHandle()->GetIntValue(SCREEN_MAGNIFICATION_TYPE, 0));
     config->SetScreenMagnificationType(screenMagnificationType);
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
 }

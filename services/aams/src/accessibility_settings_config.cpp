@@ -191,11 +191,11 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<s
 {
     HILOG_DEBUG();
     std::set<std::string> targets;
-    std::for_each(name.begin(), name.end(), [&](const std::string &target) {
-        if (targets.find(target) == targets.end()) {
+    std::copy_if(name.begin(), name.end(), std::inserter(targets, targets.end()),
+        [&targets](const std::string &target) {
             targets.insert(target);
-        }
-    });
+            return true;
+        });
     std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     shortkeyMultiTarget_ = std::vector<std::string>(targets.begin(), targets.end());
     if (!datashare_) {

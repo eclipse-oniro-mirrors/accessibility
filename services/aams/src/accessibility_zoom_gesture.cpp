@@ -752,8 +752,8 @@ void AccessibilityZoomGesture::GetWindowParam()
         screenId_ = currentScreen;
         orientation_ = currentOrientation;
         sptr<Rosen::Display> display = displayMgr.GetDisplay(screenId_);
-        screenWidth_ = display->GetWidth();
-        screenHeight_ = display->GetHeight();
+        screenWidth_ = static_cast<uint32_t>(display->GetWidth());
+        screenHeight_ = static_cast<uint32_t>(display->GetHeight());
         HILOG_INFO("screenWidth_ = %{public}d, screenHeight_ = %{public}d.", screenWidth_, screenHeight_);
     }
     screenSpan_ = hypot(screenWidth_, screenHeight_);
