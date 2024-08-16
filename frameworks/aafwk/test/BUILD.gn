@@ -180,6 +180,7 @@ ohos_unittest("accessible_ability_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
