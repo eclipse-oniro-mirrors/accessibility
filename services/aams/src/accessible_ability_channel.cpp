@@ -313,7 +313,7 @@ RetError AccessibleAbilityChannel::EnableScreenCurtain(bool isEnable)
     HILOG_DEBUG();
     auto& aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     aams.PostDelayUnloadTask();
-    return aams.SetCurtainScreenUsingStatus(false);
+    return aams.SetCurtainScreenUsingStatus(isEnable);
 }
 
 RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
