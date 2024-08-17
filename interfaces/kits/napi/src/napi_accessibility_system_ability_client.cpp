@@ -193,6 +193,9 @@ void NAccessibilityClient::Completefunction(napi_env env, std::string type, void
         NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, callbackInfo->touchEnabled_, &result[PARAM1]));
         HILOG_INFO("IsOpenTouchExploration completed touchEnabled_[%{public}d]", callbackInfo->touchEnabled_);
     } else {
+        napi_delete_async_work(env, callbackInfo->work_);
+        delete callbackInfo;
+        callbackInfo = nullptr;
         return;
     }
     result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);

@@ -104,10 +104,16 @@ void NAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoca
         HILOG_ERROR("Failed to get accessibility extension native object");
         return;
     }
-    napi_wrap(env_, contextObj, new std::weak_ptr<AbilityRuntime::Context>(context),
+    auto contextPtr = new std::weak_ptr<AbilityRuntime::Context>(context);
+    napi_status sts = napi_wrap(env_, contextObj, contextPtr,
         [](napi_env env, void* data, void*) {
             delete static_cast<std::weak_ptr<AbilityRuntime::Context>*>(data);
         }, nullptr, nullptr);
+    if (sts != napi_ok) {
+        delete contextPtr;
+        contextPtr = nullptr;
+        HILOG_ERROR("failed to wrap JS object");
+    }
     NAccessibilityElement::DefineJSAccessibilityElement(env_);
 }
 
@@ -340,6 +346,11 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
         },
         nullptr,
         nullptr);
+    if (sts != napi_ok) {
+        delete pAccessibilityElement;
+        pAccessibilityElement = nullptr;
+        HILOG_ERROR("failed to wrap JS object");
+    }
     HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "target", nTargetObject));
 }
