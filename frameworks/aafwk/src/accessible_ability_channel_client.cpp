@@ -161,7 +161,7 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
         return RET_ERR_SAMGR;
     }
     if (action == ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS &&
-        accessibilityFocusedElementId_ != INVALID_WINDOW_ID) {
+        accessibilityFocusedElementId_ != INVALID_WINDOW_ID && accessibilityFocusedWindowId_ != INVALID_WINDOW_ID) {
         ExecuteAction(accessibilityFocusedWindowId_, accessibilityFocusedElementId_,
             ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS, actionArguments);
     }
@@ -178,13 +178,13 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
     RetError ret = proxy_->ExecuteAction(accessibilityWindowId,
         elementId, action, actionArguments, requestId, elementOperator);
     if (ret != RET_OK) {
-        HILOG_ERROR("ExecuteAction failed. ret[%{public}d]", ret);
+        HILOG_ERROR("ExecuteAction failed. action[%{public}d], ret[%{public}d]", action, ret);
         return ret;
     }
 
     ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
-        HILOG_ERROR("Failed to wait result");
+        HILOG_ERROR("execute action: %{public}d failed to wait result", action);
         return RET_ERR_TIME_OUT;
     }
     HILOG_INFO("action:[%{public}d], executeActionResult_[%{public}d]", action, elementOperator->executeActionResult_);
@@ -194,12 +194,10 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
             case ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS:
                 accessibilityFocusedWindowId_ = accessibilityWindowId;
                 accessibilityFocusedElementId_ = elementId;
-                HILOG_INFO("Set windowId:%{public}d, elementId:%{public}" PRId64 "", accessibilityWindowId, elementId);
                 break;
             case ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS:
                 accessibilityFocusedWindowId_ = INVALID_WINDOW_ID;
                 accessibilityFocusedElementId_ = INVALID_WINDOW_ID;
-                HILOG_INFO("Clear accessibility focused window id");
                 break;
             default:
                 break;
