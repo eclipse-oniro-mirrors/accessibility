@@ -102,6 +102,7 @@ void AamsKeyEventFilterTest::SetUp()
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
+    sleep(TEST_NUM_2);
     sptr<AccessibleAbilityConnection> connection =
         new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
     aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
