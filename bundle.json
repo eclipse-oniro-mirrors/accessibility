@@ -18,7 +18,10 @@
       "SystemCapability.BarrierFree.Accessibility.Hearing",
       "SystemCapability.BarrierFree.Accessibility.Vision"
     ],
-    "features": [ "accessibility_feature_coverage" ],
+    "features": [
+      "accessibility_feature_coverage",
+      "accessibility_watch_feature"
+    ],
     "adapted_system_type": [
       "standard"
     ],
