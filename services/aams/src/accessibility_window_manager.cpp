@@ -798,6 +798,8 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             continue;
         }
         int32_t realWid = GetRealWindowId(window);
+        HILOG_DEBUG("windowInfo wid: %{public}d, innerWid: %{public}d, focused: %{public}d",
+            window->wid_, window->innerWid_, window->focused_);
         if (!a11yWindows_.count(realWid)) {
             auto a11yWindowInfo = CreateAccessibilityWindowInfo(window);
             a11yWindows_.emplace(realWid, a11yWindowInfo);

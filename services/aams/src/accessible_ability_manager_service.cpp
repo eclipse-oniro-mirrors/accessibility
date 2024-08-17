@@ -346,9 +346,9 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
 
 RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
 {
-    HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d] windowId[%{public}d]"
+    HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d] windowId[%{public}d] compnentId: %{public}" PRId64 " "
         "elementId: %{public}" PRId64 " winId: %{public}d treeId: %{public}d",
-        uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId(),
+        uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId(), uiEvent.GetAccessibilityId(),
         uiEvent.GetElementInfo().GetAccessibilityId(),
         uiEvent.GetElementInfo().GetWindowId(), uiEvent.GetElementInfo().GetBelongTreeId());
     if (!handler_) {
