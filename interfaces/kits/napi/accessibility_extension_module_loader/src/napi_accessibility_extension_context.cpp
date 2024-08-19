@@ -54,6 +54,11 @@ static void ConvertAccessibilityWindowInfoToJS(
         },
         nullptr,
         nullptr);
+    if (sts != napi_ok) {
+        delete pAccessibilityElement;
+        pAccessibilityElement = nullptr;
+        HILOG_ERROR("failed to wrap JS object");
+    }
     HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
 }
 

@@ -218,6 +218,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
         }
         uint32_t ret = serviceProxy_->RegisterCaptionObserver(captionObserver_);
         if (ret != 0) {
+            captionObserver_ = nullptr;
             HILOG_ERROR("Register captionObserver failed.");
             return false;
         }
@@ -240,6 +241,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
         }
         uint32_t ret = serviceProxy_->RegisterConfigObserver(configObserver_);
         if (ret != 0) {
+            configObserver_ = nullptr;
             HILOG_ERROR("Register configObserver failed.");
             return false;
         }
