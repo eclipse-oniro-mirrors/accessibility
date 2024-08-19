@@ -449,8 +449,9 @@ RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const st
     return RET_OK;
 }
 
-void AccessibilitySettingsConfig::CloneShortkeyService()
+void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnabled)
 {
+    (void)isScreenReaderEnabled;
 }
 
 void AccessibilitySettingsConfig::OnDataClone()

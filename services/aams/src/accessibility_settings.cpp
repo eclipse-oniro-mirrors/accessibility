@@ -536,7 +536,7 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
             CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
         accountData->EnableAbility(SCREEN_READER_BUNDLE_ABILITY_NAME, capabilities);
     }
-    accountData->GetConfig()->CloneShortkeyService();
+    accountData->GetConfig()->CloneShortkeyService(atoHosValue.isScreenReaderEnabled);
 
     accountData->GetConfig()->SetStartFromAtoHosState(false);
 }

@@ -490,6 +490,19 @@ uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
     return ignoreRepeatClickTime_;
 }
 
+RetError AccessibilitySettingsConfig::SetEnabledAccessibilityServices(const std::vector<std::string> &services)
+{
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
+    enabledAccessibilityServices_ = services;
+    if (datashare_ == nullptr) {
+        HILOG_WARN("datashare_ is null.");
+        return RET_ERR_NULLPTR;
+    }
+    std::string stringOut = "";
+    Utils::VectorToString(enabledAccessibilityServices_, stringOut);
+    return datashare_->PutStringValue(ENABLED_ACCESSIBILITY_SERVICES, stringOut);
+}
+
 const std::vector<std::string> AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
 {
     std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
@@ -730,7 +743,7 @@ void AccessibilitySettingsConfig::CloneAudioState()
     }
 }
 
-void AccessibilitySettingsConfig::CloneShortkeyService()
+void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnabled)
 {
     auto cleanFunc = [] (std::vector<std::string> &services) -> int {
         int count = 0;
@@ -752,13 +765,17 @@ void AccessibilitySettingsConfig::CloneShortkeyService()
     }
 
     tmpVec = GetEnabledAccessibilityServices();
-    if (cleanFunc(tmpVec) != 0) {
-        AddEnabledAccessibilityService(SCREEN_READER_BUNDLE_ABILITY_NAME);
+    if (cleanFunc(tmpVec) != 0 || isScreenReaderEnabled == true) {
+        tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
+        SetEnabledAccessibilityServices(tmpVec);
     }
 }
 
 void AccessibilitySettingsConfig::OnDataClone()
 {
+    auto services = GetEnabledAccessibilityServices();
+    bool isScreenReaderEnabled =
+        (std::find(services.begin(), services.end(), SCREEN_READER_BUNDLE_ABILITY_NAME) != services.end());
     InitSetting();
     CloneAudioState();
 
@@ -790,7 +807,7 @@ void AccessibilitySettingsConfig::OnDataClone()
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
 
-    CloneShortkeyService();
+    CloneShortkeyService(isScreenReaderEnabled);
 
     AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     provider.PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);

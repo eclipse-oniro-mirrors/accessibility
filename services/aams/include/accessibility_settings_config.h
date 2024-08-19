@@ -89,12 +89,13 @@ public:
     uint32_t GetIgnoreRepeatClickTime() const;
     uint32_t GetScreenMagnificationType() const;
 
+    RetError SetEnabledAccessibilityServices(const std::vector<std::string> &services);
     const std::vector<std::string> GetEnabledAccessibilityServices();
     RetError AddEnabledAccessibilityService(const std::string &serviceName);
     RetError RemoveEnabledAccessibilityService(const std::string &serviceName);
     uint32_t GetConfigState();
     bool GetStartFromAtoHosState();
-    void CloneShortkeyService();
+    void CloneShortkeyService(bool isScreenReaderEnabled);
     void OnDataClone();
     void CloneAudioState();
     std::shared_ptr<AccessibilityDatashareHelper> GetDbHandle()
