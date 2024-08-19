@@ -23,9 +23,14 @@
 #include "accessibility_utils.h"
 #include "nlohmann/json.hpp"
 
+#include "ipc_skeleton.h"
+#include "tokenid_kit.h"
+#include "accesstoken_kit.h"
+
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityNapi;
+using namespace Security::AccessToken;
 namespace {
     const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "inspectorKey",
         "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
@@ -1558,6 +1563,12 @@ void NAccessibilityElement::ActionNamesComplete(napi_env env, napi_status status
 napi_value NAccessibilityElement::EnableScreenCurtain(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("enter NAccessibilityElement::EnableScreenCurtain");
+    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
+        napi_throw(env, err);
+        HILOG_ERROR("is not system app");
+        return nullptr;
+    }
 
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv[ARGS_SIZE_ONE] = { 0 };
