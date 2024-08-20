@@ -1726,7 +1726,11 @@ void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
         configValue.audioBalance = audioBalance_;
         configValue.brightnessDiscount = brightnessDiscount_;
         configValue.daltonizationState = daltonizationState_;
-        configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
+        if (!configValue.daltonizationState) {
+            configValue.daltonizationColorFilter = normal;
+        } else {
+            configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
+        }
         configValue.shortkey_target = shortkeyTarget_;
         configValue.shortkeyMultiTarget = shortkeyMultiTarget_;
         configValue.captionStyle = captionProperty_;
