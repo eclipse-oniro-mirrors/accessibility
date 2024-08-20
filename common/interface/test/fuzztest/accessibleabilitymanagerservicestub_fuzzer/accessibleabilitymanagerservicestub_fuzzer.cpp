@@ -24,7 +24,7 @@ namespace {
     constexpr size_t FOO_MAX_LEN = 1024;
     constexpr size_t U32_AT_SIZE = 4;
     constexpr size_t BASE_CODE = 800;
-    constexpr size_t MESSAGE_SIZE = 63;
+    constexpr size_t MESSAGE_SIZE = 66;
     constexpr size_t FUZZ_NUM1 = 1;
     constexpr size_t FUZZ_NUM2 = 2;
     constexpr size_t FUZZ_NUM3 = 3;
