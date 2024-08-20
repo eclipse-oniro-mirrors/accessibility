@@ -795,7 +795,7 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     SetShortkeyMultiTarget(shortkeyService);
 
     tmpVec = GetEnabledAccessibilityServices();
-    if (getServiceFlag(tmpVec) & STATE_SCREENMAGNIFIER_ENABLED || isScreenReaderEnabled == true) {
+    if ((getServiceFlag(tmpVec) & STATE_SCREENMAGNIFIER_ENABLED) || (isScreenReaderEnabled == true)) {
         tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
         SetEnabledAccessibilityServices(tmpVec);
     }
