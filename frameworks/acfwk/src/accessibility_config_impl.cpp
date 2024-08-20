@@ -1728,7 +1728,7 @@ void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
         configValue.brightnessDiscount = brightnessDiscount_;
         configValue.daltonizationState = daltonizationState_;
         if (!configValue.daltonizationState) {
-            configValue.daltonizationColorFilter = normal;
+            configValue.daltonizationColorFilter = Normal;
         } else {
             configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
         }
