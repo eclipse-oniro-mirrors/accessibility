@@ -1026,7 +1026,8 @@ void AccessibilityConfig::Impl::NotifyContentTimeoutChanged(
 void AccessibilityConfig::Impl::NotifyDaltonizationColorFilterChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const uint32_t daltonizationColorFilter)
 {
-    HILOG_INFO("daltonizationColorFilter = [%{public}u]", daltonizationColorFilter);
+    HILOG_INFO("daltonizationColorFilter = [%{public}u], daltonizationState_ = [%{public}d]", daltonizationColorFilter,
+        daltonizationState_);
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
