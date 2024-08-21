@@ -219,7 +219,7 @@ void AccessibilityScreenTouch::ConversionCoordinates(int32_t originalX, int32_t 
 #endif
 }
 
-void AccessibilityScreenTouch::ConversionCoordinates(MMI::PointerEvent::PointerItem &pointerItem)
+void AccessibilityScreenTouch::HandleCoordinates(MMI::PointerEvent::PointerItem &pointerItem)
 {
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
