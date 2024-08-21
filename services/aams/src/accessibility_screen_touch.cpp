@@ -190,8 +190,6 @@ void AccessibilityScreenTouch::ConversionCoordinates(int32_t originalX, int32_t 
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     int32_t displayWidth = displayMgr.GetWidth();
     int32_t displayHeight = displayMgr.GetHeight();
-    int32_t originalX = pointerItem.GetDisplayX();
-    int32_t originalY = pointerItem.GetDisplayY();
 
     OHOS::Rosen::DisplayOrientation orientation = displayMgr.GetOrientation();
     switch (orientation) {
