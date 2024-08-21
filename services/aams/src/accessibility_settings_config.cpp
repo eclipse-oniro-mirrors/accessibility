@@ -59,6 +59,10 @@ namespace {
     const std::string SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const std::string SCREENREADER_TAG = "screenreader";
+    const std::string INVERT_COLOR_AOS_TAG = "ColorInversion";
+    const std::string INVERT_COLOR_HMOS_TAG = "INVERT_COLOR";
+    const std::string AUDIO_MONO_HMOS_TAG = "AUDIO_MONO";
+    const std::string HIGH_CONTRAST_TEXT_HMOS_TAG = "HIGH_CONTRAST_TEXT";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -665,6 +669,7 @@ void AccessibilitySettingsConfig::InitSetting()
     shortkeyTarget_ = datashare_->GetStringValue("ShortkeyTarget", "none");
 
     std::string tmpString = datashare_->GetStringValue(SHORTCUT_SERVICE, SCREEN_READER_BUNDLE_ABILITY_NAME);
+    shortkeyMultiTarget_ = {};
     Utils::StringToVector(tmpString, shortkeyMultiTarget_);
 
     tmpString = datashare_->GetStringValue(ENABLED_ACCESSIBILITY_SERVICES, "");
@@ -745,27 +750,52 @@ void AccessibilitySettingsConfig::CloneAudioState()
 
 void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnabled)
 {
-    auto cleanFunc = [] (std::vector<std::string> &services) -> int {
-        int count = 0;
-        for (auto iter = services.begin(); iter != services.end();) {
-            if (iter->find(SCREENREADER_TAG) != std::string::npos) {
-                iter = services.erase(iter);
-                count++;
-            } else {
-                iter++;
-            }
-        }
-        return count;
+    auto getServiceFlag = [] (std::vector<std::string> &services) -> int {
+        int serviceFlag = 0;
+
+        auto screenReader = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+            return service.find(SCREENREADER_TAG) != std::string::npos;
+        });
+        serviceFlag = screenReader != services.end() ? (serviceFlag | STATE_SCREENMAGNIFIER_ENABLED) : serviceFlag;
+
+        auto invertColor = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+            return service.find(INVERT_COLOR_AOS_TAG) != std::string::npos ||
+                service.find(INVERT_COLOR_HMOS_TAG) != std::string::npos;
+        });
+        serviceFlag = invertColor != services.end() ? (serviceFlag | STATE_INVETRTCOLOR_ENABLED) : serviceFlag;
+
+        auto audioMono = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+            return service.find(AUDIO_MONO_HMOS_TAG) != std::string::npos;
+        });
+        serviceFlag = audioMono != services.end() ? (serviceFlag | STATE_AUDIOMONO_ENABLED) : serviceFlag;
+
+        auto highContrastText = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+            return service.find(HIGH_CONTRAST_TEXT_HMOS_TAG) != std::string::npos;
+        });
+        serviceFlag = highContrastText != services.end() ? (serviceFlag | STATE_HIGHCONTRAST_ENABLED) : serviceFlag;
+
+        return serviceFlag;
     };
+
     std::vector<std::string> tmpVec = GetShortkeyMultiTarget();
-    if (cleanFunc(tmpVec) != 0) {
-        HILOG_INFO("add ScreenReader service");
-        tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
-        SetShortkeyMultiTarget(tmpVec);
+    int shortkeyServiceFlag = getServiceFlag(tmpVec);
+    std::vector<std::string> shortkeyService;
+    if (shortkeyServiceFlag & STATE_SCREENMAGNIFIER_ENABLED) {
+        shortkeyService.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
     }
+    if (shortkeyServiceFlag & STATE_INVETRTCOLOR_ENABLED) {
+        shortkeyService.push_back(INVERT_COLOR_HMOS_TAG);
+    }
+    if (shortkeyServiceFlag & STATE_AUDIOMONO_ENABLED) {
+        shortkeyService.push_back(AUDIO_MONO_HMOS_TAG);
+    }
+    if (shortkeyServiceFlag & STATE_HIGHCONTRAST_ENABLED) {
+        shortkeyService.push_back(HIGH_CONTRAST_TEXT_HMOS_TAG);
+    }
+    SetShortkeyMultiTarget(shortkeyService);
 
     tmpVec = GetEnabledAccessibilityServices();
-    if (cleanFunc(tmpVec) != 0 || isScreenReaderEnabled == true) {
+    if ((getServiceFlag(tmpVec) & STATE_SCREENMAGNIFIER_ENABLED) || (isScreenReaderEnabled == true)) {
         tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
         SetEnabledAccessibilityServices(tmpVec);
     }
