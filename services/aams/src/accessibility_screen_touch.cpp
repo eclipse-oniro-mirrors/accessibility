@@ -19,6 +19,7 @@
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "utils.h"
+#include "parameters.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -55,6 +56,15 @@ constexpr uint32_t START_ANGLE_LANDSCAPE_INVERTED = 0;
 constexpr uint32_t NUMBER_10 = 10;
 
 constexpr float TOUCH_SLOP = 8.0f;
+
+const int32_t ROTATE_POLICY = system::GetIntParameter("const.window.device.rotate_policy", 0);
+const std::string FOLDABLE = system::GetParameter("const.window.foldabledevice.rotate_policy", "");
+constexpr int32_t WINDOW_ROTATE = 0;
+constexpr int32_t SCREEN_ROTATE = 1;
+constexpr int32_t FOLDABLE_DEVICE = 2;
+constexpr int32_t SUBSCRIPT_TWO = 2;
+constexpr int32_t SUBSCRIPT_ZERO = 0;
+constexpr char FOLDABLE_SCREEN_ROTATE = '1';
 
 const std::map<uint32_t, uint32_t> CLICK_RESPONSE_TIME_MAP = {
     {CLICK_RESPONSE_DELAY_SHORT, CLICK_RESPONSE_TIME_SHORT},
@@ -174,7 +184,7 @@ bool AccessibilityScreenTouch::GetRealIgnoreRepeatClickState()
     return ignoreRepeatClickState_;
 }
 
-void AccessibilityScreenTouch::ConversionCoordinates(MMI::PointerEvent::PointerItem &pointerItem)
+void AccessibilityScreenTouch::ConversionCoordinates(int32_t originalX, int32_t originalY)
 {
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
@@ -206,6 +216,42 @@ void AccessibilityScreenTouch::ConversionCoordinates(MMI::PointerEvent::PointerI
             startAngle_ = START_ANGLE_LANDSCAPE_INVERTED;
             break;
         default:
+            break;
+    }
+#endif
+}
+
+void AccessibilityScreenTouch::ConversionCoordinates(MMI::PointerEvent::PointerItem &pointerItem)
+{
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    int32_t originalX = pointerItem.GetDisplayX();
+    int32_t originalY = pointerItem.GetDisplayY();
+
+    switch (ROTATE_POLICY) {
+        case WINDOW_ROTATE:
+            ConversionCoordinates(originalX, originalY);
+            break;
+        case SCREEN_ROTATE:
+            circleCenterPhysicalX_ = originalX;
+            circleCenterPhysicalY_ = originalY;
+            startAngle_ = START_ANGLE_PORTRAIT;
+            break;
+        case FOLDABLE_DEVICE:
+            if ((displayMgr.GetFoldStatus() == Rosen::FoldStatus::EXPAND &&
+                FOLDABLE[SUBSCRIPT_TWO] == FOLDABLE_SCREEN_ROTATE) ||
+                (displayMgr.GetFoldStatus() == Rosen::FoldStatus::FOLDED &&
+                FOLDABLE[SUBSCRIPT_ZERO] == FOLDABLE_SCREEN_ROTATE)) {
+                circleCenterPhysicalX_ = originalX;
+                circleCenterPhysicalY_ = originalY;
+                startAngle_ = START_ANGLE_PORTRAIT;
+            } else {
+                ConversionCoordinates(originalX, originalY);
+            }
+            break;
+        default:
+            HILOG_WARN("unknown rotate policy");
+            ConversionCoordinates(originalX, originalY);
             break;
     }
 #endif
@@ -262,7 +308,8 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
     startPointer_ = std::make_shared<MMI::PointerEvent::PointerItem>(pointerItem);
     isMoveBeyondThreshold_ = false;
 
-    ConversionCoordinates(pointerItem);
+    HILOG_INFO("ROTATE_POLICY = %{public}d, FOLDABLE = %{public}s", ROTATE_POLICY, FOLDABLE.c_str());
+    HandleCoordinates(pointerItem);
     isStopDrawCircle_ = false;
     if (drawCircleThread_ && drawCircleThread_->joinable()) {
         drawCircleThread_->join();
@@ -328,7 +375,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
     }
 
     if (isStopDrawCircle_ != true) {
-        ConversionCoordinates(pointerItem);
+        HandleCoordinates(pointerItem);
         return;
     }
 

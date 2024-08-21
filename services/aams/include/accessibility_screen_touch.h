@@ -91,7 +91,8 @@ private:
 
     void Clear();
 
-    void ConversionCoordinates(MMI::PointerEvent::PointerItem &item);
+    void HandleCoordinates(MMI::PointerEvent::PointerItem &item);
+    void ConversionCoordinates(int32_t originalX, int32_t originalY);
     void DrawCircleProgress();
 
     bool isMoveBeyondThreshold_ = false;
