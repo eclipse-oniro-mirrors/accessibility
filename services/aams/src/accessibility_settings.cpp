@@ -481,6 +481,9 @@ void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpd
     if (atoHosValue.ignoreRepeatClickState) {
         accountData->GetConfig()->SetIgnoreRepeatClickState(atoHosValue.ignoreRepeatClickState);
     }
+    if (atoHosValue.shortcutEnabled) {
+        accountData->GetConfig()->SetShortKeyState(atoHosValue.shortcutEnabled);
+    }
     if (atoHosValue.shortcutEnabledOnLockScreen) {
         accountData->GetConfig()->SetShortKeyOnLockScreenState(atoHosValue.shortcutEnabledOnLockScreen);
     }
@@ -498,11 +501,11 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
         audioMono(%{public}d), audioBalance(%{public}f), highContrastText(%{public}d), \
         isScreenReaderEnabled(%{public}d), ignoreRepeatClickState(%{public}d), \
         clickResponseTime(%{public}d), ignoreRepeatClickTime(%{public}d), displayDaltonizer(%{public}d), \
-        shortcutEnabledOnLockScreen(%{public}d), shortcutTimeout(%{public}d).",
+        shortcutEnabled(%{public}d), shortcutEnabledOnLockScreen(%{public}d), shortcutTimeout(%{public}d).",
         atoHosValue.daltonizationState, atoHosValue.invertColor, atoHosValue.audioMono, atoHosValue.audioBalance,
         atoHosValue.highContrastText, atoHosValue.isScreenReaderEnabled, atoHosValue.ignoreRepeatClickState,
         atoHosValue.clickResponseTime, atoHosValue.ignoreRepeatClickTime, atoHosValue.displayDaltonizer,
-        atoHosValue.shortcutEnabledOnLockScreen, atoHosValue.shortcutTimeout);
+        atoHosValue.shortcutEnabled, atoHosValue.shortcutEnabledOnLockScreen, atoHosValue.shortcutTimeout);
 
     UpdateSettingsInAtoHosStatePart(atoHosValue);
 
