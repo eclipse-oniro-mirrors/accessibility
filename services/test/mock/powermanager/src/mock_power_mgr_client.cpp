@@ -86,7 +86,7 @@ std::shared_ptr<RunningLock> PowerMgrClient::CreateRunningLock(const std::string
     return nullptr;
 }
 
-bool PowerMgrClient::RegisterPowerStateCallback(const sptr<IPowerStateCallback>& callback)
+bool PowerMgrClient::RegisterPowerStateCallback(const sptr<IPowerStateCallback>& callback, bool isSync)
 {
     return true;
 }
