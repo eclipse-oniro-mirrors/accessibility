@@ -565,7 +565,7 @@ napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callb
 
     if (errCode == OHOS::Accessibility::RET_OK) {
         callbackInfo->result_ = ConvertEventInfoJSToNAPI(env, parameters[0], callbackInfo->eventInfo_);
-        if (callbackInfo == nullptr->result_) {
+        if (!callbackInfo->result_) {
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
     }
