@@ -119,6 +119,10 @@ void TouchEventInjector::CancelGesture()
 void TouchEventInjector::CancelInjectedEvents()
 {
     HILOG_DEBUG();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
     if (handler_->HasInnerEvent(SEND_TOUCH_EVENT_MSG)) {
         handler_->RemoveEvent(SEND_TOUCH_EVENT_MSG);
         CancelGesture();

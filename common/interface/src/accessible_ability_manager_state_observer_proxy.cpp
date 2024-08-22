@@ -56,7 +56,7 @@ void AccessibleAbilityManagerStateObserverProxy::OnStateChanged(const uint32_t s
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }

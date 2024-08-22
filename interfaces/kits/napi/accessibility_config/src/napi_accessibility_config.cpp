@@ -94,7 +94,7 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
 {
     HILOG_DEBUG();
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
         napi_throw(env, err);
@@ -146,7 +146,7 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
 {
     HILOG_DEBUG();
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("DisableAbility callbackInfo is nullptr");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
         napi_throw(env, err);
@@ -391,7 +391,7 @@ void NAccessibilityConfig::AsyncWorkComplete(napi_env env, napi_status status, v
 {
     HILOG_DEBUG();
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
@@ -436,7 +436,7 @@ void NAccessibilityConfig::SetScreenTouchConfigExecute(NAccessibilityConfigData*
 void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
 {
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
@@ -531,7 +531,7 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
 {
     HILOG_DEBUG();
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
@@ -582,7 +582,7 @@ void NAccessibilityConfig::GetScreenTouchConfigExecute(NAccessibilityConfigData*
 void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
 {
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
@@ -653,7 +653,7 @@ NAccessibilityConfigData* NAccessibilityConfig::GetCallbackInfo(napi_env env, na
     }
     HILOG_DEBUG("ConfigID = %{public}d", obj->GetConfigId());
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
         napi_throw(env, err);
@@ -826,7 +826,7 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
     HILOG_DEBUG("ConfigID = %{public}d", obj->GetConfigId());
     
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
         napi_throw(env, err);
@@ -945,7 +945,7 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
     HILOG_DEBUG();
 
     AccessibilityCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }

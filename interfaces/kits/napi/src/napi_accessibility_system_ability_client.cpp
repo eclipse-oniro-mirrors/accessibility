@@ -80,7 +80,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
@@ -139,7 +139,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
 {
     HILOG_INFO();
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
@@ -260,7 +260,7 @@ void NAccessibilityClient::GetAbilityListComplete(napi_env env, napi_status stat
 napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info info)
 {
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
@@ -301,7 +301,7 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
 napi_value NAccessibilityClient::GetAccessibilityExtensionList(napi_env env, napi_callback_info info)
 {
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
         napi_throw(env, err);
@@ -510,7 +510,7 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
 {
     HILOG_INFO();
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
@@ -546,7 +546,7 @@ napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callb
 {
     HILOG_INFO();
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
         napi_throw(env, err);
@@ -565,7 +565,7 @@ napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callb
 
     if (errCode == OHOS::Accessibility::RET_OK) {
         callbackInfo->result_ = ConvertEventInfoJSToNAPI(env, parameters[0], callbackInfo->eventInfo_);
-        if (!callbackInfo->result_) {
+        if (callbackInfo == nullptr->result_) {
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
     }
@@ -719,7 +719,7 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
     HILOG_INFO("state = [%{public}s]", state ? "true" : "false");
     
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }

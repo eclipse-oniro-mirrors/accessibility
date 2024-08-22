@@ -2387,10 +2387,15 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
 
     AccessibilityShortkeyDialog shortkeyDialog;
 
-    AccessibilitySettingProvider& settingProvider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
     bool oobeState = false;
     bool userSetupState = false;
-    settingProvider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
+    service->GetBoolValue(DEVICE_PROVISIONED, oobeState);
     if (accountData->GetConfig()->GetDbHandle()) {
         userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
     }
@@ -2693,8 +2698,13 @@ void AccessibleAbilityManagerService::OnDeviceProvisioned()
         HILOG_ERROR("accountData is nullptr");
         return;
     }
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    provider.UnregisterObserver(DEVICE_PROVISIONED);
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
+    service->UnregisterObserver(DEVICE_PROVISIONED);
     if (accountData->GetConfig()->GetDbHandle()) {
         accountData->GetConfig()->GetDbHandle()->UnregisterObserver(USER_SETUP_COMPLETED);
     }
@@ -2743,11 +2753,16 @@ void AccessibleAbilityManagerService::RegisterProvisionCallback()
         return;
     }
 
-    AccessibilitySettingProvider& service = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
     AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
     };
-    service.RegisterObserver(DEVICE_PROVISIONED, func);
+    service->RegisterObserver(DEVICE_PROVISIONED, func);
     if (accountData->GetConfig()->GetDbHandle() != nullptr) {
         accountData->GetConfig()->GetDbHandle()->RegisterObserver(USER_SETUP_COMPLETED, func);
     }
@@ -2767,10 +2782,15 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
             HILOG_ERROR("accountData is nullptr");
             return;
         }
-        AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+        std::shared_ptr<AccessibilitySettingProvider> service =
+            AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+        if (service == nullptr) {
+            HILOG_ERROR("service is nullptr");
+            return;
+        }
         bool oobeState = false;
         bool userSetupState = false;
-        provider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
+        service->GetBoolValue(DEVICE_PROVISIONED, oobeState);
         if (accountData->GetConfig()->GetDbHandle() != nullptr) {
             userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
         }
@@ -3078,9 +3098,14 @@ RetError AccessibleAbilityManagerService::CheckCallingUid()
 
 void AccessibleAbilityManagerService::OnDataClone()
 {
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
     bool cloneState = false;
-    provider.GetBoolValue(ACCESSIBILITY_CLONE_FLAG, cloneState);
+    service->GetBoolValue(ACCESSIBILITY_CLONE_FLAG, cloneState);
     if (cloneState == false) {
         return;
     }

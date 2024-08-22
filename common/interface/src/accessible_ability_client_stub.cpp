@@ -107,7 +107,7 @@ ErrCode AccessibleAbilityClientStub::HandleOnAccessibilityEvent(MessageParcel &d
 {
     HILOG_DEBUG();
     sptr<AccessibilityEventInfoParcel> eventInfo = data.ReadStrongParcelable<AccessibilityEventInfoParcel>();
-    if (!eventInfo) {
+    if (eventInfo == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityEventInfo> failed");
         return ERR_INVALID_VALUE;
     }

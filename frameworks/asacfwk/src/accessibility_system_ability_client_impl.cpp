@@ -95,9 +95,9 @@ bool AccessibilitySystemAbilityClientImpl::ConnectToService()
         return false;
     }
 
-    if (!deathRecipient_) {
+    if (deathRecipient_ == nullptr) {
         deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
-        if (!deathRecipient_) {
+        if (deathRecipient_ == nullptr) {
             HILOG_ERROR("Failed to create deathRecipient.");
             return false;
         }
@@ -107,7 +107,7 @@ bool AccessibilitySystemAbilityClientImpl::ConnectToService()
     }
     HILOG_DEBUG("Get remote object ok");
     serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(object);
-    if (!serviceProxy_) {
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("IAccessibleAbilityManagerService iface_cast failed");
         return false;
     }
@@ -184,9 +184,9 @@ void AccessibilitySystemAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<I
     }
     if (remoteObject != nullptr) {
         serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(remoteObject);
-        if (!deathRecipient_) {
+        if (deathRecipient_ == nullptr) {
             deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
-            if (!deathRecipient_) {
+            if (deathRecipient_ == nullptr) {
                 HILOG_ERROR("create deathRecipient_ fail.");
             }
         }
@@ -300,7 +300,7 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(Registrat
         return RET_ERR_INVALID_PARAM;
     }
 
-    if (!serviceProxy_) {
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
@@ -319,7 +319,7 @@ void AccessibilitySystemAbilityClientImpl::ReregisterElementOperator()
 {
     HILOG_DEBUG();
 
-    if (!serviceProxy_) {
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("serviceProxy_ is null.");
         return;
     }

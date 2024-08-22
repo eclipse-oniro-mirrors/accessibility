@@ -130,7 +130,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfoParcel> accessibilityInfo =
             data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-        if (!accessibilityInfo) {
+        if (accessibilityInfo == nullptr) {
             HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
             storeElementData.Clear();
             reply.WriteInt32(RET_ERR_FAILED);
@@ -165,7 +165,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfoParcel> accessibilityInfo =
             data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-        if (!accessibilityInfo) {
+        if (accessibilityInfo == nullptr) {
             HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
             return TRANSACTION_ERR;
         }
@@ -183,7 +183,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFindFocusedElementInf
 {
     HILOG_DEBUG();
     sptr<AccessibilityElementInfoParcel> info = data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-    if (!info) {
+    if (info == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityElementInfo> failed");
         return TRANSACTION_ERR;
     }
@@ -200,7 +200,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchResult
 {
     HILOG_DEBUG();
     sptr<AccessibilityElementInfoParcel> info = data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-    if (!info) {
+    if (info == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityElementInfo> failed");
         return TRANSACTION_ERR;
     }

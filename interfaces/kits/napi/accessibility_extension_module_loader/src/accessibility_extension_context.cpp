@@ -29,7 +29,7 @@ RetError AccessibilityExtensionContext::GetFocus(const int32_t focusType, Access
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -41,7 +41,7 @@ RetError AccessibilityExtensionContext::GetFocusByElementInfo(const Accessibilit
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -53,7 +53,7 @@ RetError AccessibilityExtensionContext::InjectGesture(
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -64,7 +64,7 @@ RetError AccessibilityExtensionContext::GetRoot(AccessibilityElementInfo &elemen
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -76,7 +76,7 @@ RetError AccessibilityExtensionContext::GetRootByWindow(const AccessibilityWindo
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -87,7 +87,7 @@ RetError AccessibilityExtensionContext::GetWindows(std::vector<AccessibilityWind
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -99,7 +99,7 @@ RetError AccessibilityExtensionContext::GetWindows(const uint64_t displayId,
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -111,7 +111,7 @@ RetError AccessibilityExtensionContext::GetNext(const AccessibilityElementInfo &
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -123,7 +123,7 @@ RetError AccessibilityExtensionContext::GetChildElementInfo(const int32_t index,
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -135,7 +135,7 @@ RetError AccessibilityExtensionContext::GetByContent(const AccessibilityElementI
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -147,7 +147,7 @@ RetError AccessibilityExtensionContext::GetParentElementInfo(const Accessibility
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -159,7 +159,7 @@ RetError AccessibilityExtensionContext::ExecuteAction(const AccessibilityElement
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
@@ -170,7 +170,7 @@ RetError AccessibilityExtensionContext::SetTargetBundleName(const std::vector<st
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
+    if (aaClient == nullptr) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }

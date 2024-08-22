@@ -179,7 +179,7 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
 sptr<AccessibilityEventInfoParcel> AccessibilityEventInfoParcel::Unmarshalling(Parcel& parcel)
 {
     sptr<AccessibilityEventInfoParcel> accessibilityEventInfo = new(std::nothrow) AccessibilityEventInfoParcel();
-    if (!accessibilityEventInfo) {
+    if (accessibilityEventInfo == nullptr) {
         HILOG_ERROR("Failed to create accessibilityEventInfo.");
         return nullptr;
     }
