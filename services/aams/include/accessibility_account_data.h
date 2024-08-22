@@ -49,6 +49,7 @@ struct ConfigValueAtoHosUpdate {
     bool ignoreRepeatClickState = false;
     int ignoreRepeatClickTime = 0;
     int displayDaltonizer = 0;
+    bool shortcutEnabled = false;
     bool shortcutEnabledOnLockScreen = false;
     int shortcutTimeout = 0;
 };

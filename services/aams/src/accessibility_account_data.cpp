@@ -56,6 +56,7 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
+    const std::string ACCESSIBILITY_SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
     const std::string ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
     const std::string ACCESSIBILITY_SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
@@ -544,6 +545,7 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     provider.GetBoolValue(MASTER_MONO, value.audioMono);
     provider.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
     provider.GetFloatValue(MASTER_BALENCE, value.audioBalance);
+    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED, value.shortcutEnabled);
     provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, value.shortcutEnabledOnLockScreen);
     provider.GetIntValue(ACCESSIBILITY_SHORTCUT_TIMEOUT, value.shortcutTimeout);
 
