@@ -1777,9 +1777,9 @@ napi_value NAccessibilityElement::GetCursorPositionAsync(napi_env env, size_t ar
     napi_value promise = nullptr;
     if (argc > ARGS_SIZE_ONE - 1) {
         napi_valuetype valueType = napi_null;
-        napi_typeof(env, argv[PARAM2], &valueType);
+        napi_typeof(env, argv[PARAM0], &valueType);
         if (valueType == napi_function) {
-            napi_create_reference(env, argv[PARAM2], 1, &callbackInfo->callback_);
+            napi_create_reference(env, argv[PARAM0], 1, &callbackInfo->callback_);
             napi_get_undefined(env, &promise);
         } else {
             napi_create_promise(env, &callbackInfo->deferred_, &promise);
@@ -1971,14 +1971,14 @@ void NAccessibilityElement::GetCursorPositionComplete(napi_env env, napi_status 
     napi_value undefined = 0;
     napi_get_undefined(env, &undefined);
     napi_create_int32(env, callbackInfo->cursorPosition_, &result[PARAM1]);
-    HILOG_INFO("Response [requestId:%{public}d]", callbackInfo->cursorPosition_);
+    HILOG_INFO("Response [callback cursorPosition:%{public}d]", callbackInfo->cursorPosition_);
     result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
     if (callbackInfo->callback_) {
         // Callback mode
         napi_get_reference_value(env, callbackInfo->callback_, &callback);
         napi_value returnVal = nullptr;
         napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
-        HILOG_INFO("NAccessibilityElement::GetCursorPositionComplete   in CallbackMode");
+        HILOG_INFO("NAccessibilityElement::GetCursorPositionComplete in CallbackMode");
         napi_delete_reference(env, callbackInfo->callback_);
     } else {
         // Promise mode
