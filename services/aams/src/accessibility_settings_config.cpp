@@ -750,8 +750,8 @@ void AccessibilitySettingsConfig::CloneAudioState()
 
 void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnabled)
 {
-    auto getServiceFlag = [] (std::vector<std::string> &services) -> int {
-        int serviceFlag = 0;
+    auto getServiceFlag = [] (std::vector<std::string> &services) -> uint32_t {
+        uint32_t serviceFlag = 0;
 
         auto screenReader = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
             return service.find(SCREENREADER_TAG) != std::string::npos;
@@ -778,7 +778,7 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     };
 
     std::vector<std::string> tmpVec = GetShortkeyMultiTarget();
-    int shortkeyServiceFlag = getServiceFlag(tmpVec);
+    uint32_t shortkeyServiceFlag = getServiceFlag(tmpVec);
     std::vector<std::string> shortkeyService;
     if (shortkeyServiceFlag & STATE_SCREENMAGNIFIER_ENABLED) {
         shortkeyService.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
