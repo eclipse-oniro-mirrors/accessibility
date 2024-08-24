@@ -27,6 +27,10 @@ config("accessibility_extension_module_config") {
     "AAMS_LOG_TAG = \"accessibility_napi\"",
     "AAMS_LOG_DOMAIN = 0xD001D10",
   ]
+
+  if (build_variant == "user") {
+    defines += [ "RELEASE_VERSION" ]
+  }
 }
 
 ohos_shared_library("accessibility_extension_module") {
