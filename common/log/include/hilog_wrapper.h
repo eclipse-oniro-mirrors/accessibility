@@ -52,23 +52,39 @@
 #undef LOG_LABEL
 #endif
 
-#define FILENAME (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
-
+#ifndef RELEASE_VERSION
 #define HILOG_FATAL(fmt, ...)            \
     ((void)HILOG_IMPL(LOG_CORE, LOG_FATAL, AAMS_LOG_DOMAIN, AAMS_LOG_TAG, \
-    "[%{public}s(%{public}s:%{public}d)]" fmt, FILENAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+    "[%{public}s(%{public}s:%{public}d)]" fmt, __FILE_NAME__, __FUNCTION__, __LINE__, ##__VA_ARGS__))
 #define HILOG_ERROR(fmt, ...)            \
     ((void)HILOG_IMPL(LOG_CORE, LOG_ERROR, AAMS_LOG_DOMAIN, AAMS_LOG_TAG, \
-    "[%{public}s(%{public}s:%{public}d)]" fmt, FILENAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+    "[%{public}s(%{public}s:%{public}d)]" fmt, __FILE_NAME__, __FUNCTION__, __LINE__, ##__VA_ARGS__))
 #define HILOG_WARN(fmt, ...)            \
     ((void)HILOG_IMPL(LOG_CORE, LOG_WARN, AAMS_LOG_DOMAIN, AAMS_LOG_TAG, \
-    "[%{public}s(%{public}s:%{public}d)]" fmt, FILENAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+    "[%{public}s(%{public}s:%{public}d)]" fmt, __FILE_NAME__, __FUNCTION__, __LINE__, ##__VA_ARGS__))
 #define HILOG_INFO(fmt, ...)            \
     ((void)HILOG_IMPL(LOG_CORE, LOG_INFO, AAMS_LOG_DOMAIN, AAMS_LOG_TAG, \
-    "[%{public}s(%{public}s:%{public}d)]" fmt, FILENAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+    "[%{public}s(%{public}s:%{public}d)]" fmt, __FILE_NAME__, __FUNCTION__, __LINE__, ##__VA_ARGS__))
 #define HILOG_DEBUG(fmt, ...)            \
     ((void)HILOG_IMPL(LOG_CORE, LOG_DEBUG, AAMS_LOG_DOMAIN, AAMS_LOG_TAG, \
-    "[%{public}s(%{public}s:%{public}d)]" fmt, FILENAME, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+    "[%{public}s(%{public}s:%{public}d)]" fmt, __FILE_NAME__, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+#else // RELEASE_VERSION
+#define HILOG_FATAL(fmt, ...)            \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_FATAL, AAMS_LOG_DOMAIN, AAMS_LOG_TAG, \
+    "[(%{public}s:%{public}d)]" fmt, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+#define HILOG_ERROR(fmt, ...)            \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_ERROR, AAMS_LOG_DOMAIN, AAMS_LOG_TAG, \
+    "[(%{public}s:%{public}d)]" fmt, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+#define HILOG_WARN(fmt, ...)            \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_WARN, AAMS_LOG_DOMAIN, AAMS_LOG_TAG, \
+    "[(%{public}s:%{public}d)]" fmt, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+#define HILOG_INFO(fmt, ...)            \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_INFO, AAMS_LOG_DOMAIN, AAMS_LOG_TAG, \
+    "[(%{public}s:%{public}d)]" fmt, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+#define HILOG_DEBUG(fmt, ...)            \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_DEBUG, AAMS_LOG_DOMAIN, AAMS_LOG_TAG, \
+    "[(%{public}s:%{public}d)]" fmt, __FUNCTION__, __LINE__, ##__VA_ARGS__))
+#endif // RELEASE_VERSION
 #else
 
 #define HILOG_FATAL(...)

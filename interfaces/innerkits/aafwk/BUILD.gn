@@ -31,6 +31,10 @@ config("accessibleability_private_config") {
   ]
 
   defines += accessibility_default_defines
+
+  if (build_variant == "user") {
+    cflags += [ "-DRELEASE_VERSION" ]
+  }
 }
 
 config("accessibleability_public_config") {
