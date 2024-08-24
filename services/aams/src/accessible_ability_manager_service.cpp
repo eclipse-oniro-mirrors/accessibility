@@ -106,6 +106,7 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     dependentServicesStatus_[DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID] = false;
 
     accessibilitySettings_ = std::make_shared<AccessibilitySettings>();
+    accessibilityShortKey_ = std::make_shared<AccessibilityShortKey>();
 }
 
 AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
@@ -115,7 +116,6 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
     inputInterceptor_ = nullptr;
     touchEventInjector_ = nullptr;
     keyEventFilter_ = nullptr;
-    accessibilityShortKey_ = nullptr;
     a11yAccountsData_.Clear();
 }
 
@@ -192,7 +192,6 @@ void AccessibleAbilityManagerService::OnStop()
         inputInterceptor_ = nullptr;
         touchEventInjector_ = nullptr;
         keyEventFilter_ = nullptr;
-        accessibilityShortKey_ = nullptr;
         stateObserversDeathRecipient_ = nullptr;
         bundleManagerDeathRecipient_ = nullptr;
 
@@ -2095,15 +2094,10 @@ void AccessibleAbilityManagerService::UpdateShortKeyRegister()
 
     bool shortKeyState = accountData->GetConfig()->GetShortKeyState();
     if (shortKeyState) {
-        accessibilityShortKey_ = nullptr;
-        accessibilityShortKey_ = new (std::nothrow) AccessibilityShortKey();
-        if (accessibilityShortKey_ == nullptr) {
-            HILOG_ERROR("Create AccessibilityShortKey failed");
-            return;
-        }
+        accessibilityShortKey_->Unregister();
         accessibilityShortKey_->Register();
     } else {
-        accessibilityShortKey_ = nullptr;
+        accessibilityShortKey_->Unregister();
     }
 }
 

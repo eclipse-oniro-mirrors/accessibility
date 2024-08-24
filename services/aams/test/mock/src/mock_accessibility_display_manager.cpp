@@ -131,6 +131,12 @@ Rosen::FoldDisplayMode AccessibilityDisplayManager::GetFoldDisplayMode()
     return Rosen::DisplayManager::GetInstance().GetFoldDisplayMode();
 }
 
+Rosen::FoldStatus AccessibilityDisplayManager::GetFoldStatus()
+{
+    HILOG_DEBUG();
+    return Rosen::DisplayManager::GetInstance().GetFoldStatus();
+}
+
 void AccessibilityDisplayManager::SetDisplayScale(const uint64_t screenId,
     float scaleX, float scaleY, float pivotX, float pivotY)
 {
