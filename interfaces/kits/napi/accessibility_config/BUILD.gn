@@ -35,6 +35,10 @@ ohos_shared_library("config_napi") {
     "AAMS_LOG_DOMAIN = 0xD001D10",
   ]
 
+  if (build_variant == "user") {
+    cflags += [ "-DRELEASE_VERSION" ]
+  }
+
   sources = [
     "./src/napi_accessibility_config.cpp",
     "./src/native_module.cpp",
