@@ -431,7 +431,6 @@ private:
     sptr<TouchEventInjector> touchEventInjector_ = nullptr;
     sptr<KeyEventFilter> keyEventFilter_ = nullptr;
     sptr<AccessibilityDumper> accessibilityDumper_ = nullptr;
-    sptr<AccessibilityShortKey> accessibilityShortKey_ = nullptr;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AAMSEventHandler> handler_;
@@ -452,6 +451,7 @@ private:
     ffrt::mutex mutex_; // current used for register state observer
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;
     std::shared_ptr<AccessibilitySettings> accessibilitySettings_ = nullptr;
+    std::shared_ptr<AccessibilityShortKey> accessibilityShortKey_ = nullptr;
     std::vector<std::string> removedAutoStartAbilities_ {};
     std::map<int32_t, AccessibilityEventInfo> windowFocusEventMap_ {};
 
