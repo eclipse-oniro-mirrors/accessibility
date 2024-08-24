@@ -38,7 +38,7 @@ bool AccessibilityElementOperatorProxy::SendTransactCmd(AccessibilityInterfaceCo
 {
     HILOG_DEBUG();
     sptr<IRemoteObject> remoteObj = Remote();
-    if (!remoteObj) {
+    if (remoteObj == nullptr) {
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
         return false;
     }
@@ -74,7 +74,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
         return;
     }
 
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return;
     }
@@ -128,7 +128,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int64_t e
         return;
     }
 
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return;
     }
@@ -171,7 +171,7 @@ void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int64_t ele
         return;
     }
 
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return;
     }
@@ -214,7 +214,7 @@ void AccessibilityElementOperatorProxy::FocusMoveSearch(const int64_t elementId,
         return;
     }
 
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr.");
         return;
     }
@@ -277,7 +277,7 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int64_t elementId, c
         return;
     }
 
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return;
     }
@@ -316,7 +316,7 @@ void AccessibilityElementOperatorProxy::GetCursorPosition(const int64_t elementI
         return;
     }
 
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return;
     }

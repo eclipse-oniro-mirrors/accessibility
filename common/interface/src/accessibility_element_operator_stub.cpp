@@ -88,7 +88,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibility
     int64_t elementId = data.ReadInt64();
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");
         return ERR_INVALID_VALUE;
     }
@@ -113,7 +113,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfosByText(Message
     std::string text = data.ReadString();
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");
         return ERR_INVALID_VALUE;
     }
@@ -136,7 +136,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFindFocusedElementInfo(MessagePa
     int32_t focusType = data.ReadInt32();
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");
         return ERR_INVALID_VALUE;
     }
@@ -158,7 +158,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFocusFind(MessageParcel &data, M
     int32_t direction = data.ReadInt32();
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");
         return ERR_INVALID_VALUE;
     }
@@ -194,7 +194,7 @@ ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &dat
     }
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");
         return ERR_INVALID_VALUE;
     }
@@ -214,7 +214,7 @@ ErrCode AccessibilityElementOperatorStub::HandleGetCursorPosition(MessageParcel 
     int64_t elementId = data.ReadInt64();
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");
         return ERR_INVALID_VALUE;
     }

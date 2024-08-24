@@ -56,7 +56,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnConfigStateChanged(const uin
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -90,7 +90,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnAudioBalanceChanged(const fl
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -124,7 +124,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnBrightnessDiscountChanged(co
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -158,7 +158,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnContentTimeoutChanged(const 
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -192,7 +192,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChan
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -226,7 +226,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnMouseAutoClickChanged(const 
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -260,7 +260,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyTargetChanged(const 
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -295,7 +295,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyMultiTargetChanged(
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -329,7 +329,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnClickResponseTimeChanged(con
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -363,7 +363,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnIgnoreRepeatClickTimeChanged
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }

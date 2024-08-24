@@ -204,7 +204,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSendEvent(MessageParcel &data
     HILOG_DEBUG();
 
     sptr<AccessibilityEventInfoParcel> uiEvent = data.ReadStrongParcelable<AccessibilityEventInfoParcel>();
-    if (!uiEvent) {
+    if (uiEvent == nullptr) {
         HILOG_DEBUG("ReadStrongParcelable<AbilityInfo> failed");
         return TRANSACTION_ERR;
     }
@@ -219,7 +219,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback(
     HILOG_DEBUG();
 
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
-    if (!obj) {
+    if (obj == nullptr) {
         HILOG_ERROR("obj is nullptr.");
         return ERR_INVALID_VALUE;
     }
@@ -248,7 +248,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAbilityList(MessageParcel 
     reply.WriteInt32(abilityInfoSize);
     for (auto &abilityInfo : abilityInfos) {
         sptr<AccessibilityAbilityInfoParcel> info = new(std::nothrow) AccessibilityAbilityInfoParcel(abilityInfo);
-        if (!info) {
+        if (info == nullptr) {
             HILOG_ERROR("Failed to create info.");
             return ERR_NULL_OBJECT;
         }
@@ -360,7 +360,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty(MessagePar
         return NO_ERROR;
     }
     sptr<CaptionPropertyParcel> caption = data.ReadStrongParcelable<CaptionPropertyParcel>();
-    if (!caption) {
+    if (caption == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<CaptionProperty> failed");
         reply.WriteInt32(RET_ERR_IPC_FAILED);
         return TRANSACTION_ERR;
@@ -1255,7 +1255,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback(
     HILOG_DEBUG();
 
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
-    if (!obj) {
+    if (obj == nullptr) {
         HILOG_ERROR("obj is nullptr.");
         return ERR_INVALID_VALUE;
     }

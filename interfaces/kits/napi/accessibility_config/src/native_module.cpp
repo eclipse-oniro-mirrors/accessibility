@@ -48,7 +48,7 @@ static napi_value InitHighContrastText(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_HIGH_CONTRAST_TEXT);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -77,7 +77,7 @@ static napi_value InitInvertColor(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_INVERT_COLOR);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -106,7 +106,7 @@ static napi_value InitDaltonizationState(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_DALTONIZATION_STATE);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -136,7 +136,7 @@ static napi_value InitDaltonizationColorFilter(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_DALTONIZATION_COLOR_FILTER);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -165,7 +165,7 @@ static napi_value InitContentTimeout(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_CONTENT_TIMEOUT);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -194,7 +194,7 @@ static napi_value InitAnimationOff(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_ANIMATION_OFF);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -223,7 +223,7 @@ static napi_value InitBrightnessDiscount(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_BRIGHTNESS_DISCOUNT);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -252,7 +252,7 @@ static napi_value InitScreenMagnifier(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_SCREEN_MAGNIFICATION);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -281,7 +281,7 @@ static napi_value InitAudioMono(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_AUDIO_MONO);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -310,7 +310,7 @@ static napi_value InitAudioBalance(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_AUDIO_BALANCE);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -339,7 +339,7 @@ static napi_value InitMouseKey(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_MOUSE_KEY);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -368,7 +368,7 @@ static napi_value InitMouseAutoClick(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_MOUSE_AUTOCLICK);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -397,7 +397,7 @@ static napi_value InitShortKey(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_SHORT_KEY);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -426,7 +426,7 @@ static napi_value InitShortKeyTarget(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_SHORT_KEY_TARGET);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -455,7 +455,7 @@ static napi_value InitShortKeyMultiTarget(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_SHORT_KEY_MULTI_TARGET);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -484,7 +484,7 @@ static napi_value InitCaptionsState(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_CAPTION_STATE);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -513,7 +513,7 @@ static napi_value InitCaptionsStyle(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_CAPTION_STYLE);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -542,7 +542,7 @@ static napi_value InitClickResponseTime(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONIFG_CLICK_RESPONSE_TIME);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -571,7 +571,7 @@ static napi_value InitIgnoreRepeatClickState(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_IGNORE_REPEAT_CLICK_STATE);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }
@@ -600,7 +600,7 @@ static napi_value InitIgnoreRepeatClickTime(napi_env env)
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
         new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_IGNORE_REPEAT_CLICK_TIME);
-    if (!nativeObj) {
+    if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
     }

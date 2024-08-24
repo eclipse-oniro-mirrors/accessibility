@@ -19,7 +19,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-AccessibilitySettingProvider* AccessibilitySettingProvider::instance_;
+std::shared_ptr<AccessibilitySettingProvider> AccessibilitySettingProvider::instance_ = nullptr;
 ffrt::mutex AccessibilitySettingProvider::mutex_;
 namespace {
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
@@ -35,12 +35,12 @@ AccessibilitySettingProvider::~AccessibilitySettingProvider()
     instance_ = nullptr;
 }
 
-AccessibilitySettingProvider& AccessibilitySettingProvider::GetInstance(int32_t systemAbilityId)
+std::shared_ptr<AccessibilitySettingProvider> AccessibilitySettingProvider::GetInstance(int32_t systemAbilityId)
 {
     if (instance_ == nullptr) {
-        instance_ = new AccessibilitySettingProvider();
+        instance_ = std::make_shared<AccessibilitySettingProvider>();
     }
-    return *instance_;
+    return instance_;
 }
 
 void AccessibilitySettingProvider::DeleteInstance()

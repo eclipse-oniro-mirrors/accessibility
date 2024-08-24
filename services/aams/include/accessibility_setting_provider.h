@@ -26,8 +26,10 @@ namespace OHOS {
 namespace Accessibility {
 class AccessibilitySettingProvider : public AccessibilityDatashareHelper {
 public:
-    static AccessibilitySettingProvider& GetInstance(int32_t systemAbilityId);
+    static std::shared_ptr<AccessibilitySettingProvider> GetInstance(int32_t systemAbilityId);
+    static std::shared_ptr<AccessibilitySettingProvider> instance_;
     AccessibilitySettingProvider();
+    ~AccessibilitySettingProvider();
     void DeleteInstance();
     RetError GetStringValue(const std::string& key, std::string& value);
     RetError GetIntValue(const std::string& key, int32_t& value);
@@ -47,11 +49,7 @@ public:
 private:
     std::string GetConfigKey(int32_t state);
 
-protected:
-    ~AccessibilitySettingProvider();
-
 private:
-    static AccessibilitySettingProvider* instance_;
     static ffrt::mutex mutex_;
 };
 } // namespace Accessibility

@@ -400,7 +400,7 @@ void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
     HILOG_INFO("id = [%{public}d] enabled = [%{public}s]", static_cast<int32_t>(configId_), enabled ? "true" : "false");
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -430,7 +430,7 @@ void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::Accessib
     HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(configId_));
 
     CaptionCallbackInfo *callbackInfo = new(std::nothrow) CaptionCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -460,7 +460,7 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& val
     HILOG_INFO("value = [%{public}s]", value.c_str());
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -490,7 +490,7 @@ void NAccessibilityConfigObserver::NotifyStringVectorChanged2JS(std::vector<std:
     HILOG_DEBUG();
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -520,7 +520,7 @@ void NAccessibilityConfigObserver::NotifyIntChanged2JS(int32_t value)
     HILOG_INFO("id = [%{public}d] value = [%{public}d]", static_cast<int32_t>(configId_), value);
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -550,7 +550,7 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
     HILOG_INFO("id = [%{public}d] value = [%{public}u]", static_cast<int32_t>(configId_), value);
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -580,7 +580,7 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
     HILOG_INFO("id = [%{public}d] value = [%{public}f]", static_cast<int32_t>(configId_), value);
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }

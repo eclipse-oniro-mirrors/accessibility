@@ -105,9 +105,9 @@ bool AccessibleAbilityClientImpl::InitAccessibilityServiceProxy()
 
     sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (object != nullptr) {
-        if (!accessibilityServiceDeathRecipient_) {
+        if (accessibilityServiceDeathRecipient_ == nullptr) {
             accessibilityServiceDeathRecipient_ = new(std::nothrow) AccessibilityServiceDeathRecipient(*this);
-            if (!accessibilityServiceDeathRecipient_) {
+            if (accessibilityServiceDeathRecipient_ == nullptr) {
                 HILOG_ERROR("Failed to create service deathRecipient.");
                 return false;
             }
@@ -272,9 +272,9 @@ void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &ch
         channelClient_ = std::make_shared<AccessibleAbilityChannelClient>(channelId, channel);
 
         // Add death recipient
-        if (!deathRecipient_) {
+        if (deathRecipient_ == nullptr) {
             deathRecipient_ = new(std::nothrow) AccessibleAbilityDeathRecipient(*this);
-            if (!deathRecipient_) {
+            if (deathRecipient_ == nullptr) {
                 HILOG_ERROR("Failed to create deathRecipient.");
                 return;
             }

@@ -38,7 +38,7 @@ static void ConvertAccessibilityWindowInfoToJS(
     std::shared_ptr<AccessibilityWindowInfo> windowInfo =
         std::make_shared<AccessibilityWindowInfo>(accessibilityWindowInfo);
     AccessibilityElement* pAccessibilityElement = new(std::nothrow) AccessibilityElement(windowInfo);
-    if (!pAccessibilityElement) {
+    if (pAccessibilityElement == nullptr) {
         HILOG_ERROR("Failed to create work.");
         return;
     }

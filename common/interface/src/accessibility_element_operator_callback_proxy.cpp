@@ -48,7 +48,7 @@ bool AccessibilityElementOperatorCallbackProxy::SendTransactCmd(AccessibilityInt
     HILOG_DEBUG();
 
     sptr<IRemoteObject> remoteObj = Remote();
-    if (!remoteObj) {
+    if (remoteObj == nullptr) {
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
         return false;
     }

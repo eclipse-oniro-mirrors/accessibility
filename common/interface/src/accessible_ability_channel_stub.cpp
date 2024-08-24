@@ -312,7 +312,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindow(MessageParcel &data, Messa
 
     int32_t windowId = data.ReadInt32();
     sptr<AccessibilityWindowInfoParcel> windowInfoParcel = new(std::nothrow) AccessibilityWindowInfoParcel();
-    if (!windowInfoParcel) {
+    if (windowInfoParcel == nullptr) {
         HILOG_ERROR("Failed to create windowInfoParcel.");
         return ERR_NULL_OBJECT;
     }
@@ -338,7 +338,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, Mess
     }
     for (auto &window : windows) {
         sptr<AccessibilityWindowInfoParcel> windowInfo = new(std::nothrow) AccessibilityWindowInfoParcel(window);
-        if (!windowInfo) {
+        if (windowInfo == nullptr) {
             HILOG_ERROR("Failed to create windowInfo.");
             return ERR_NULL_OBJECT;
         }
@@ -364,7 +364,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId(MessageParcel 
     }
     for (auto &window : windows) {
         sptr<AccessibilityWindowInfoParcel> windowInfo = new(std::nothrow) AccessibilityWindowInfoParcel(window);
-        if (!windowInfo) {
+        if (windowInfo == nullptr) {
             HILOG_ERROR("Failed to create windowInfo.");
             return ERR_NULL_OBJECT;
         }
@@ -394,7 +394,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesturePath(MessageParce
 
     sptr<AccessibilityGestureInjectPathParcel> positions =
         data.ReadStrongParcelable<AccessibilityGestureInjectPathParcel>();
-    if (!positions) {
+    if (positions == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityGestureInjectPathParcel> failed");
         return ERR_INVALID_VALUE;
     }

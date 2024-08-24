@@ -33,7 +33,7 @@ sptr<AccessibleAbilityClient> AccessibleAbilityClient::GetInstance()
         return nullptr;
     }
 
-    if (!g_Instance) {
+    if (g_Instance == nullptr) {
         g_Instance = new(std::nothrow) AccessibleAbilityClientImpl();
     }
     return g_Instance;
@@ -48,7 +48,7 @@ sptr<AccessibleAbilityClientImpl> AccessibleAbilityClientImpl::GetAbilityClientI
         return nullptr;
     }
 
-    if (!g_Instance) {
+    if (g_Instance == nullptr) {
         g_Instance = new(std::nothrow) AccessibleAbilityClientImpl();
     }
     return g_Instance;

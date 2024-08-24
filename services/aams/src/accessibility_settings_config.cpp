@@ -803,6 +803,7 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
 
 void AccessibilitySettingsConfig::OnDataClone()
 {
+    HILOG_INFO();
     auto services = GetEnabledAccessibilityServices();
     bool isScreenReaderEnabled =
         (std::find(services.begin(), services.end(), SCREEN_READER_BUNDLE_ABILITY_NAME) != services.end());
@@ -839,9 +840,13 @@ void AccessibilitySettingsConfig::OnDataClone()
 
     CloneShortkeyService(isScreenReaderEnabled);
 
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    provider.PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
-    HILOG_INFO();
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
+    service->PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
 }
 } // namespace Accessibility
 } // namespace OHOS

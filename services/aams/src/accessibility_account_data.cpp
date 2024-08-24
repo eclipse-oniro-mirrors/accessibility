@@ -479,8 +479,13 @@ void AccessibilityAccountData::SetAbilityAutoStartState(const std::string &name,
 void AccessibilityAccountData::SetScreenReaderState(const std::string &name, const std::string &state)
 {
     HILOG_DEBUG("set screen reader key [%{public}s], state = [%{public}s].", name.c_str(), state.c_str());
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    ErrCode ret = provider.PutStringValue(name, state, true);
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
+    ErrCode ret = service->PutStringValue(name, state, true);
     if (ret != ERR_OK) {
         HILOG_ERROR("set failed, ret=%{public}d", ret);
     }
@@ -532,33 +537,38 @@ bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &name)
 void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value)
 {
     HILOG_DEBUG();
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
 
-    ErrCode ret = provider.GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
+    ErrCode ret = service->GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
     if (ret == ERR_NO_INIT) {
         HILOG_INFO("helper is null, retry.");
         std::this_thread::sleep_for(std::chrono::milliseconds(INIT_DATASHARE_HELPER_SLEEP_TIME));
-        provider.GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
+        service->GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
     }
-    provider.GetBoolValue(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, value.invertColor);
-    provider.GetBoolValue(ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED, value.daltonizationState);
-    provider.GetBoolValue(MASTER_MONO, value.audioMono);
-    provider.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
-    provider.GetFloatValue(MASTER_BALENCE, value.audioBalance);
-    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED, value.shortcutEnabled);
-    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, value.shortcutEnabledOnLockScreen);
-    provider.GetIntValue(ACCESSIBILITY_SHORTCUT_TIMEOUT, value.shortcutTimeout);
+    service->GetBoolValue(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, value.invertColor);
+    service->GetBoolValue(ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED, value.daltonizationState);
+    service->GetBoolValue(MASTER_MONO, value.audioMono);
+    service->GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
+    service->GetFloatValue(MASTER_BALENCE, value.audioBalance);
+    service->GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED, value.shortcutEnabled);
+    service->GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, value.shortcutEnabledOnLockScreen);
+    service->GetIntValue(ACCESSIBILITY_SHORTCUT_TIMEOUT, value.shortcutTimeout);
 
     int tmpClickResTime = 0;
-    provider.GetIntValue(CLICK_RESPONSE_TIME, tmpClickResTime);
+    service->GetIntValue(CLICK_RESPONSE_TIME, tmpClickResTime);
     if (tmpClickResTime == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
         value.clickResponseTime = static_cast<int>(AccessibilityConfig::ResponseDelayMedium);
     } else if (tmpClickResTime > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
         value.clickResponseTime = static_cast<int>(AccessibilityConfig::ResponseDelayLong);
     }
-    provider.GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, value.ignoreRepeatClickState);
+    service->GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, value.ignoreRepeatClickState);
     int tmpIgnoreRepeatClickTime = 0;
-    provider.GetIntValue(IGNORE_REPEAT_CLICK_TIME, tmpIgnoreRepeatClickTime);
+    service->GetIntValue(IGNORE_REPEAT_CLICK_TIME, tmpIgnoreRepeatClickTime);
     if (tmpIgnoreRepeatClickTime == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
         value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutShort);
     } else if (tmpIgnoreRepeatClickTime == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
@@ -569,7 +579,7 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
         value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutLongest);
     }
     int tmpDaltonizer = 0;
-    provider.GetIntValue(ACCESSIBILITY_DISPLAY_DALTONIZER, tmpDaltonizer);
+    service->GetIntValue(ACCESSIBILITY_DISPLAY_DALTONIZER, tmpDaltonizer);
     if (tmpDaltonizer == DISPLAY_DALTONIZER_GREEN) {
         value.displayDaltonizer = static_cast<int>(AccessibilityConfig::Deuteranomaly);
     } else if (tmpDaltonizer == DISPLAY_DALTONIZER_RED) {
@@ -577,7 +587,7 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     } else if (tmpDaltonizer == DISPLAY_DALTONIZER_BLUE) {
         value.displayDaltonizer= static_cast<int>(AccessibilityConfig::Tritanomaly);
     }
-    provider.DeleteInstance();
+    service->DeleteInstance();
 }
 
 RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
@@ -664,11 +674,16 @@ void AccessibilityAccountData::Init()
     if (rtn != ERR_OK) {
         HILOG_ERROR("get account type failed for accountId [%{public}d]", id_);
     }
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
     bool cloneState = false;
-    provider.GetBoolValue(ACCESSIBILITY_CLONE_FLAG, cloneState);
+    service->GetBoolValue(ACCESSIBILITY_CLONE_FLAG, cloneState);
     if (cloneState == true) {
-        provider.PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
+        service->PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
     }
     if (id_ != DEFAULT_ACCOUNT_ID) {
         HILOG_WARN("id != default_account_id.");
@@ -679,7 +694,7 @@ void AccessibilityAccountData::Init()
     AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string& state) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnDataClone();
     };
-    RetError ret = provider.RegisterObserver(ACCESSIBILITY_CLONE_FLAG, func);
+    RetError ret = service->RegisterObserver(ACCESSIBILITY_CLONE_FLAG, func);
     if (ret != RET_OK) {
         HILOG_WARN("register clone observer failed %{public}d.", ret);
     }
