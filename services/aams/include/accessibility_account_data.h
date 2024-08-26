@@ -52,6 +52,7 @@ struct ConfigValueAtoHosUpdate {
     bool shortcutEnabled = false;
     bool shortcutEnabledOnLockScreen = false;
     int shortcutTimeout = 0;
+    bool screenMagnificationState = false;
 };
 
 class AccessibilityAccountData final : public RefBase {

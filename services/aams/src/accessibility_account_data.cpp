@@ -33,13 +33,6 @@ namespace {
     constexpr int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
     constexpr int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
     constexpr int32_t INIT_DATASHARE_HELPER_SLEEP_TIME = 500;
-    constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
-    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
-    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM = 700;
-    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG = 1000;
-    constexpr int DISPLAY_DALTONIZER_GREEN = 12;
-    constexpr int DISPLAY_DALTONIZER_RED = 11;
-    constexpr int DISPLAY_DALTONIZER_BLUE = 13;
     constexpr int DEFAULT_ACCOUNT_ID = 100;
     constexpr int SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     constexpr int SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
@@ -59,6 +52,7 @@ namespace {
     const std::string ACCESSIBILITY_SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
     const std::string ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
     const std::string ACCESSIBILITY_SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
+    const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
 } // namespace
 
@@ -537,56 +531,46 @@ bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &name)
 void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value)
 {
     HILOG_DEBUG();
+    if (config_ == nullptr) {
+        HILOG_ERROR("config_ is nullptr");
+        return;
+    }
+
+    if (config_->GetDbHandle() == nullptr) {
+        HILOG_INFO("helper is null, retry.");
+        std::this_thread::sleep_for(std::chrono::milliseconds(INIT_DATASHARE_HELPER_SLEEP_TIME));
+        if (config_->GetDbHandle() == nullptr) {
+            HILOG_ERROR("helper is null");
+            return;
+        }
+    }
+
+    value.highContrastText = config_->GetDbHandle()->GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, false);
+    value.invertColor = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, false);
+    value.daltonizationState = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED, false);
+    value.displayDaltonizer = config_->GetDbHandle()->GetIntValue(ACCESSIBILITY_DISPLAY_DALTONIZER, 0);
+    value.shortcutEnabled = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED, false);
+    value.shortcutEnabledOnLockScreen = config_->GetDbHandle()->GetBoolValue(
+        ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, false);
+    value.shortcutTimeout = config_->GetDbHandle()->GetIntValue(ACCESSIBILITY_SHORTCUT_TIMEOUT,
+        SHORT_KEY_TIMEOUT_BEFORE_USE);
+    value.clickResponseTime = config_->GetDbHandle()->GetIntValue(CLICK_RESPONSE_TIME, 0);
+    value.ignoreRepeatClickState = config_->GetDbHandle()->GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, false);
+    value.ignoreRepeatClickTime = config_->GetDbHandle()->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0);
+    value.screenMagnificationState = config_->GetDbHandle()->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
+
+    // In Aos, the audio configuration is stored in SYSTEM and it should be copied to SECURE
+    config_->CloneAudioState();
+    value.audioMono = config_->GetDbHandle()->GetBoolValue(MASTER_MONO);
+    value.audioBalance = config_->GetDbHandle()->GetFloatValue(MASTER_BALENCE);
+
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     if (service == nullptr) {
         HILOG_ERROR("service is nullptr");
         return;
     }
-
-    ErrCode ret = service->GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
-    if (ret == ERR_NO_INIT) {
-        HILOG_INFO("helper is null, retry.");
-        std::this_thread::sleep_for(std::chrono::milliseconds(INIT_DATASHARE_HELPER_SLEEP_TIME));
-        service->GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
-    }
-    service->GetBoolValue(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, value.invertColor);
-    service->GetBoolValue(ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED, value.daltonizationState);
-    service->GetBoolValue(MASTER_MONO, value.audioMono);
     service->GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
-    service->GetFloatValue(MASTER_BALENCE, value.audioBalance);
-    service->GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED, value.shortcutEnabled);
-    service->GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, value.shortcutEnabledOnLockScreen);
-    service->GetIntValue(ACCESSIBILITY_SHORTCUT_TIMEOUT, value.shortcutTimeout);
-
-    int tmpClickResTime = 0;
-    service->GetIntValue(CLICK_RESPONSE_TIME, tmpClickResTime);
-    if (tmpClickResTime == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
-        value.clickResponseTime = static_cast<int>(AccessibilityConfig::ResponseDelayMedium);
-    } else if (tmpClickResTime > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
-        value.clickResponseTime = static_cast<int>(AccessibilityConfig::ResponseDelayLong);
-    }
-    service->GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, value.ignoreRepeatClickState);
-    int tmpIgnoreRepeatClickTime = 0;
-    service->GetIntValue(IGNORE_REPEAT_CLICK_TIME, tmpIgnoreRepeatClickTime);
-    if (tmpIgnoreRepeatClickTime == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
-        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutShort);
-    } else if (tmpIgnoreRepeatClickTime == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
-        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutMedium);
-    } else if (tmpIgnoreRepeatClickTime == DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
-        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutLong);
-    } else if (tmpIgnoreRepeatClickTime > DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
-        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutLongest);
-    }
-    int tmpDaltonizer = 0;
-    service->GetIntValue(ACCESSIBILITY_DISPLAY_DALTONIZER, tmpDaltonizer);
-    if (tmpDaltonizer == DISPLAY_DALTONIZER_GREEN) {
-        value.displayDaltonizer = static_cast<int>(AccessibilityConfig::Deuteranomaly);
-    } else if (tmpDaltonizer == DISPLAY_DALTONIZER_RED) {
-        value.displayDaltonizer = static_cast<int>(AccessibilityConfig::Protanomaly);
-    } else if (tmpDaltonizer == DISPLAY_DALTONIZER_BLUE) {
-        value.displayDaltonizer= static_cast<int>(AccessibilityConfig::Tritanomaly);
-    }
     service->DeleteInstance();
 }
 
