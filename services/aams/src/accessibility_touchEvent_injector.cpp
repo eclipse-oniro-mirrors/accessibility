@@ -41,6 +41,10 @@ void TouchInjectHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &eve
     switch (event->GetInnerEventId()) {
         case TouchEventInjector::SEND_TOUCH_EVENT_MSG:
             parameters = event->GetSharedObject<SendEventArgs>();
+            if (parameters == nullptr) {
+                HILOG_ERROR("parameters is nullptr");
+                return;
+            }
             if (!parameters->event_) {
                 HILOG_WARN("pointer event is nullptr");
                 return;
