@@ -24,10 +24,6 @@ config("accessibility_common_private_config") {
     "AAMS_LOG_TAG = \"accessibility_common\"",
     "AAMS_LOG_DOMAIN = 0xD001D04",
   ]
-
-  if (build_variant == "user") {
-    cflags += [ "-DRELEASE_VERSION" ]
-  }
 }
 
 config("accessibility_common_public_config") {
