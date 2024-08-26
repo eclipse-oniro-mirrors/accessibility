@@ -28,7 +28,7 @@ namespace {
     constexpr int32_t MOUSE_AUTO_CLICK_VALUE = 2;
     constexpr int32_t SHORT_KEY_TIMEOUT = 3000;
     constexpr float BRIGHTNESS_DISCOUNT_VALUE = 0.3f;
-    constexpr float AUDIO_BALANCE_VALUE = 0.1f;
+    constexpr float AUDIO_BALANCE_VALUE = 0.2f;
     const std::string CONFIG_ACCESSIBILITY = "accessible";
     const std::string CONFIG_TOUCHGUIDE = "touchGuide";
     const std::string CONFIG_GESTURE = "gesture";

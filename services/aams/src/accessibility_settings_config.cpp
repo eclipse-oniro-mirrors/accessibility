@@ -72,6 +72,7 @@ namespace {
     constexpr int DISPLAY_DALTONIZER_RED = 11;
     constexpr int DISPLAY_DALTONIZER_BLUE = 13;
     constexpr int INVALID_MASTER_MONO_VALUE = -1;
+    constexpr int AUDIO_BALANCE_STEP = 5;
     constexpr float INVALID_MASTER_BALANCE_VALUE = 2.0;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
@@ -270,12 +271,20 @@ RetError AccessibilitySettingsConfig::SetDaltonizationState(const bool state)
 RetError AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t filter)
 {
     HILOG_DEBUG("filter = [%{public}u]", filter);
-    daltonizationColorFilter_ = filter;
+    if (filter == DISPLAY_DALTONIZER_GREEN) {
+        daltonizationColorFilter_ = AccessibilityConfig::Deuteranomaly;
+    } else if (filter == DISPLAY_DALTONIZER_RED) {
+        daltonizationColorFilter_ = AccessibilityConfig::Protanomaly;
+    } else if (filter == DISPLAY_DALTONIZER_BLUE) {
+        daltonizationColorFilter_ = AccessibilityConfig::Tritanomaly;
+    } else {
+        daltonizationColorFilter_ = filter;
+    }
     if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
-    return datashare_->PutIntValue(DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(filter));
+    return datashare_->PutIntValue(DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(daltonizationColorFilter_));
 }
 
 
@@ -304,23 +313,29 @@ RetError AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount
 RetError AccessibilitySettingsConfig::SetAudioBalance(const float balance)
 {
     HILOG_DEBUG("balance = [%{public}f]", balance);
-    audioBalance_ = balance;
+    audioBalance_ = round(balance * AUDIO_BALANCE_STEP) / AUDIO_BALANCE_STEP;
     if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
-    return datashare_->PutFloatValue(AUDIO_BALANCE_KEY, balance);
+    return datashare_->PutFloatValue(AUDIO_BALANCE_KEY, audioBalance_);
 }
 
 RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
 {
     HILOG_DEBUG("clickResponseTime = [%{public}u]", time);
-    clickResponseTime_ = time;
+    if (time == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
+        clickResponseTime_ = AccessibilityConfig::ResponseDelayMedium;
+    } else if (time > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
+        clickResponseTime_ = AccessibilityConfig::ResponseDelayLong;
+    } else {
+        clickResponseTime_ = time;
+    }
     if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
 
-    return datashare_->PutIntValue(CLICK_RESPONCE_TIME, time);
+    return datashare_->PutIntValue(CLICK_RESPONCE_TIME, clickResponseTime_);
 }
 
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state)
@@ -333,11 +348,21 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t time)
 {
     HILOG_DEBUG("ignoreRepeatClickTime = [%{public}u]", time);
-    ignoreRepeatClickTime_ = time;
+    if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
+        ignoreRepeatClickTime_ = AccessibilityConfig::RepeatClickTimeoutShort;
+    } else if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
+        ignoreRepeatClickTime_ = AccessibilityConfig::RepeatClickTimeoutMedium;
+    } else if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
+        ignoreRepeatClickTime_ = AccessibilityConfig::RepeatClickTimeoutLong;
+    } else if (time > DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
+        ignoreRepeatClickTime_ = AccessibilityConfig::RepeatClickTimeoutLongest;
+    } else {
+        ignoreRepeatClickTime_ = time;
+    }
     if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
-    return datashare_->PutIntValue(IGNORE_REPEAT_CLICK_TIME, time);
+    return datashare_->PutIntValue(IGNORE_REPEAT_CLICK_TIME, ignoreRepeatClickTime_);
 }
 
 RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
@@ -677,12 +702,16 @@ void AccessibilitySettingsConfig::InitSetting()
 
     mouseAutoClick_ = static_cast<int32_t>(datashare_->GetIntValue("MouseAutoClick", -1));
     daltonizationColorFilter_ = static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0));
+    SetDaltonizationColorFilter(daltonizationColorFilter_);
     contentTimeout_ = static_cast<uint32_t>(datashare_->GetIntValue(CONTENT_TIMEOUT_KEY, 0));
     brightnessDiscount_ = static_cast<float>(datashare_->GetFloatValue(BRIGHTNESS_DISCOUNT_KEY, 1.0));
     audioBalance_ = static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0));
+    SetAudioBalance(audioBalance_);
     screenMagnificationType_ = static_cast<uint32_t>(datashare_->GetIntValue(SCREEN_MAGNIFICATION_TYPE, 0));
     clickResponseTime_ = static_cast<uint32_t>(datashare_->GetIntValue(CLICK_RESPONCE_TIME, 0));
+    SetClickResponseTime(clickResponseTime_);
     ignoreRepeatClickTime_ = static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0));
+    SetIgnoreRepeatClickTime(ignoreRepeatClickTime_);
 }
 
 void AccessibilitySettingsConfig::InitCapability()
@@ -810,27 +839,6 @@ void AccessibilitySettingsConfig::OnDataClone()
     InitSetting();
     CloneAudioState();
 
-    if (clickResponseTime_ == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
-        SetClickResponseTime(AccessibilityConfig::ResponseDelayMedium);
-    } else if (clickResponseTime_ > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
-        SetClickResponseTime(AccessibilityConfig::ResponseDelayLong);
-    }
-    if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
-        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutShort);
-    } else if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
-        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutMedium);
-    } else if (ignoreRepeatClickTime_ == DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
-        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutLong);
-    } else if (ignoreRepeatClickTime_ > DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
-        SetIgnoreRepeatClickTime(AccessibilityConfig::RepeatClickTimeoutLongest);
-    }
-    if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_GREEN) {
-        SetDaltonizationColorFilter(AccessibilityConfig::Deuteranomaly);
-    } else if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_RED) {
-        SetDaltonizationColorFilter(AccessibilityConfig::Protanomaly);
-    } else if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_BLUE) {
-        SetDaltonizationColorFilter(AccessibilityConfig::Tritanomaly);
-    }
     // 1->1000 0->3000
     if (shortKeyTimeout_ == 1) {
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);

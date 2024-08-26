@@ -487,6 +487,9 @@ void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpd
     if (atoHosValue.shortcutEnabledOnLockScreen) {
         accountData->GetConfig()->SetShortKeyOnLockScreenState(atoHosValue.shortcutEnabledOnLockScreen);
     }
+    if (atoHosValue.screenMagnificationState) {
+        accountData->GetConfig()->SetScreenMagnificationState(atoHosValue.screenMagnificationState);
+    }
     UpdateConfigState();
 }
 
@@ -501,30 +504,29 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
         audioMono(%{public}d), audioBalance(%{public}f), highContrastText(%{public}d), \
         isScreenReaderEnabled(%{public}d), ignoreRepeatClickState(%{public}d), \
         clickResponseTime(%{public}d), ignoreRepeatClickTime(%{public}d), displayDaltonizer(%{public}d), \
-        shortcutEnabled(%{public}d), shortcutEnabledOnLockScreen(%{public}d), shortcutTimeout(%{public}d).",
+        shortcutEnabled(%{public}d), shortcutEnabledOnLockScreen(%{public}d), shortcutTimeout(%{public}d), \
+        screenMagnificationState(%{public}d).",
         atoHosValue.daltonizationState, atoHosValue.invertColor, atoHosValue.audioMono, atoHosValue.audioBalance,
         atoHosValue.highContrastText, atoHosValue.isScreenReaderEnabled, atoHosValue.ignoreRepeatClickState,
         atoHosValue.clickResponseTime, atoHosValue.ignoreRepeatClickTime, atoHosValue.displayDaltonizer,
-        atoHosValue.shortcutEnabled, atoHosValue.shortcutEnabledOnLockScreen, atoHosValue.shortcutTimeout);
+        atoHosValue.shortcutEnabled, atoHosValue.shortcutEnabledOnLockScreen, atoHosValue.shortcutTimeout,
+        atoHosValue.screenMagnificationState);
 
     UpdateSettingsInAtoHosStatePart(atoHosValue);
 
     if (atoHosValue.audioBalance != 0.0) {
-        int step = 5;
-        float audioBalanceResult = round(atoHosValue.audioBalance * step) / step;
         accountData->GetConfig()->SetAudioBalance(atoHosValue.audioBalance);
-        HILOG_INFO("round audioBalanceResult = [%{public}f]", audioBalanceResult);
         UpdateAudioBalance();
     }
     if (atoHosValue.clickResponseTime != 0) {
         accountData->GetConfig()->SetClickResponseTime(static_cast<uint32_t>(atoHosValue.clickResponseTime));
         UpdateClickResponseTime();
     }
-    if (atoHosValue.ignoreRepeatClickState && atoHosValue.ignoreRepeatClickTime != 0) {
+    if (atoHosValue.ignoreRepeatClickTime != 0) {
         accountData->GetConfig()->SetIgnoreRepeatClickTime(static_cast<uint32_t>(atoHosValue.ignoreRepeatClickTime));
         UpdateIgnoreRepeatClickTime();
     }
-    if (atoHosValue.daltonizationState && atoHosValue.displayDaltonizer != 0) {
+    if (atoHosValue.displayDaltonizer != 0) {
         accountData->GetConfig()->SetDaltonizationColorFilter(static_cast<uint32_t>(atoHosValue.displayDaltonizer));
         UpdateDaltonizationColorFilter();
     }
