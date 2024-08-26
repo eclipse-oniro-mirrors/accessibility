@@ -2379,7 +2379,7 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
         return;
     }
 
-    AccessibilityShortkeyDialog shortkeyDialog;
+    std::shared_ptr<AccessibilityShortkeyDialog> shortkeyDialog = std::make_shared<AccessibilityShortkeyDialog>();
 
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
@@ -2398,7 +2398,7 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
         if (shortKeyTimeout == SHORT_KEY_TIMEOUT_BEFORE_USE) {
             HILOG_INFO("first use short cut key");
             accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-            shortkeyDialog.ConnectDialog(ShortKeyDialogType::RECONFIRM);
+            shortkeyDialog->ConnectDialog(ShortKeyDialogType::RECONFIRM);
             return;
         }
     }
@@ -2410,7 +2410,7 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
         EnableShortKeyTargetAbility(shortkeyMultiTarget[0]);
     } else {
         // dialog
-        if (shortkeyDialog.ConnectDialog(ShortKeyDialogType::FUNCTION_SELECT)) {
+        if (shortkeyDialog->ConnectDialog(ShortKeyDialogType::FUNCTION_SELECT)) {
             HILOG_DEBUG("ready to build dialog");
         }
     }

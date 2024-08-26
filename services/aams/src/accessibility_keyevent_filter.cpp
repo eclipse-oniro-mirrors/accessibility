@@ -231,6 +231,10 @@ void KeyEventFilterEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Poin
     }
 
     auto processingEvent = event->GetSharedObject<KeyEventFilter::ProcessingEvent>();
+    if (processingEvent == nullptr) {
+        HILOG_ERROR("processingEvent is nullptr");
+        return;
+    }
     if (processingEvent->seqNum_ != event->GetInnerEventId()) {
         HILOG_ERROR("event is wrong.");
         return;
