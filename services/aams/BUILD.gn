@@ -36,10 +36,6 @@ config("aams_service_config") {
     "AAMS_LOG_DOMAIN = 0xD001D00",
   ]
 
-  if (build_variant == "user") {
-    cflags += [ "-DRELEASE_VERSION" ]
-  }
-
   defines += accessibility_default_defines
 }
 
