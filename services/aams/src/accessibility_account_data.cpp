@@ -561,8 +561,8 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
 
     // In Aos, the audio configuration is stored in SYSTEM and it should be copied to SECURE
     config_->CloneAudioState();
-    value.audioMono = config_->GetDbHandle()->GetBoolValue(MASTER_MONO);
-    value.audioBalance = config_->GetDbHandle()->GetFloatValue(MASTER_BALENCE);
+    value.audioMono = config_->GetDbHandle()->GetBoolValue(MASTER_MONO, false);
+    value.audioBalance = config_->GetDbHandle()->GetFloatValue(MASTER_BALENCE, 0);
 
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
