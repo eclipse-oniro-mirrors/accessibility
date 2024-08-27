@@ -87,6 +87,7 @@ public:
 
 private:
     ffrt::promise<void> promise_;
+    std::atomic<bool> promiseFlag_ = false;
     bool executeActionResult_ = false;
     AccessibilityElementInfo accessibilityInfoResult_ = {};
     std::vector<AccessibilityElementInfo> elementInfosResult_;
