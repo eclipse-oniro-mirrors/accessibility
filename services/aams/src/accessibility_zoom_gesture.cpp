@@ -28,7 +28,7 @@ namespace {
     constexpr size_t POINTER_COUNT_1 = 1;
     constexpr size_t POINTER_COUNT_2 = 2;
     constexpr float TAP_MIN_DISTANCE = 8.0f;
-    constexpr int32_t MULTI_TAP_TIMER = 300; // ms
+    constexpr int32_t MULTI_TAP_TIMER = 250; // ms
     constexpr int32_t LONG_PRESS_TIMER = 300; // ms
     constexpr int64_t US_TO_MS = 1000;
     constexpr float DOUBLE_TAP_SLOP = 100.0f;
@@ -270,7 +270,6 @@ void AccessibilityZoomGesture::RecognizeInZoomStateDownEvent(MMI::PointerEvent &
 {
     HILOG_DEBUG();
 
-    int32_t action = event.GetPointerAction();
     std::vector<int32_t> pointerIdList = event.GetPointerIds();
     size_t pointerCount = pointerIdList.size();
     zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
@@ -704,6 +703,7 @@ void AccessibilityZoomGesture::OnTripleTaps(MMI::PointerEvent &event)
             event.GetPointerItem(pointerId, item);
             int32_t anchorX = item.GetDisplayX();
             int32_t anchorY = item.GetDisplayY();
+            HILOG_DEBUG("anchorX:%{public}d, anchorY:%{public}d.", anchorX, anchorY);
             OnZoom(anchorX, anchorY);
             break;
         }
@@ -764,7 +764,7 @@ void AccessibilityZoomGesture::GetWindowParam()
 
 void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
 {
-    HILOG_DEBUG("anchorX:%{public}d, anchorY:%{public}d.", anchorX, anchorY);
+    HILOG_INFO();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     GetWindowParam();
     if (screenWidth_ == 0 || screenHeight_ == 0) {
@@ -787,7 +787,7 @@ void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
 
 void AccessibilityZoomGesture::OffZoom()
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
