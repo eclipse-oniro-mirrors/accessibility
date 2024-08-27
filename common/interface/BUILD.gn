@@ -29,6 +29,10 @@ config("accessibility_interface_private_config") {
   if (target_cpu == "arm") {
     cflags = [ "-DBINDER_IPC_32BIT" ]
   }
+
+  if (build_variant == "user") {
+    defines += [ "RELEASE_VERSION" ]
+  }
 }
 
 config("accessibility_interface_public_config") {
