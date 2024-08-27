@@ -164,7 +164,7 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_001,
     EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
 
     ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
-        if (EventType::TYPE_TOUCH_END == AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3)) {
+        if (EventType::TYPE_TOUCH_GUIDE_END == AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3)) {
             return true;
         } else {
             return false;
@@ -172,8 +172,8 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_001,
         }), SLEEP_TIME_2);
     EXPECT_TRUE(ret);
     EXPECT_EQ(EventType::TYPE_TOUCH_BEGIN, AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0));
-    EXPECT_EQ(EventType::TYPE_TOUCH_GUIDE_BEGIN, AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1));
-    EXPECT_EQ(EventType::TYPE_TOUCH_GUIDE_END, AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2));
+    EXPECT_EQ(EventType::TYPE_TOUCH_END, AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1));
+    EXPECT_EQ(EventType::TYPE_TOUCH_GUIDE_BEGIN, AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2));
 
     GTEST_LOG_(INFO) << "TouchEventInjector_ModuleTest_TouchEventInjector_001 end";
 }

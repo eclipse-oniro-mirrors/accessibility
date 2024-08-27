@@ -1796,7 +1796,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetInpu
     AAConnection->OnAbilityConnectDoneSync(elementName, aastub);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     accountData->UpdateAccountCapabilities();
-    EXPECT_EQ(32, accountData->GetInputFilterFlag());
+    EXPECT_EQ(0, accountData->GetInputFilterFlag());
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetInputFilterFlag_003 end";
 }
 

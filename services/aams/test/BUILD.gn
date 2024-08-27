@@ -1483,7 +1483,6 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "../src/accessibility_account_data.cpp",
     "../src/accessibility_circle_drawing_manager.cpp",
     "../src/accessibility_datashare_helper.cpp",
-    "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
     "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
@@ -1509,11 +1508,11 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/utils.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
+    "mock/src/mock_accessibility_display_manager.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
     "mock/src/mock_accessible_ability_client_stub_impl.cpp",
     "mock/src/mock_accessible_ability_manager_service.cpp",
     "mock/src/mock_system_ability.cpp",
-    "mock/src/mock_window_accessibility_controller.cpp",
     "unittest/accessibility_zoom_gesture_test.cpp",
   ]
   sources += aams_mock_distributeddatamgr_src

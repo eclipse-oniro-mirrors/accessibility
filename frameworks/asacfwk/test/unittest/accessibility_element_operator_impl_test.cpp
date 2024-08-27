@@ -312,7 +312,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoByTextRes
     std::list<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
     infos.push_back(info);
-    mockStub_->SetSearchElementInfoByTextResult(infos, CompositeId(REQUEST_ID_2));
+    mockStub_->SetSearchElementInfoByTextResult(infos, REQUEST_ID_2);
     GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_002 end";
 }
 
@@ -355,7 +355,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFindFocusedElementInfoResu
     EXPECT_CALL(*elementOperator, SetFindFocusedElementInfoResult(_, _)).Times(1);
     mockStub_->FindFocusedElementInfo(ELEMENT_ID, FOCUS_TYPE, REQUEST_ID_2, elementOperator);
     AccessibilityElementInfo info {};
-    mockStub_->SetFindFocusedElementInfoResult(info, CompositeId(REQUEST_ID_2));
+    mockStub_->SetFindFocusedElementInfoResult(info, REQUEST_ID_2);
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_002 end";
 }
 
@@ -398,7 +398,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFocusMoveSearchResult_002,
     EXPECT_CALL(*elementOperator, SetFocusMoveSearchResult(_, _)).Times(1);
     mockStub_->FocusMoveSearch(ELEMENT_ID, DIRECTION, REQUEST_ID_2, elementOperator);
     AccessibilityElementInfo info {};
-    mockStub_->SetFocusMoveSearchResult(info, CompositeId(REQUEST_ID_2));
+    mockStub_->SetFocusMoveSearchResult(info, REQUEST_ID_2);
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_002 end";
 }
 
