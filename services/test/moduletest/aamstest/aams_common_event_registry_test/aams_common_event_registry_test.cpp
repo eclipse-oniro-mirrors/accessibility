@@ -94,6 +94,7 @@ void AccessibilityCommonEventRegistryTest::AddAccessibleAbilityConnection()
     aastub_ = new AccessibleAbilityChannel(accountData_->GetAccountId(), abilityInfo->GetId());
     AAConnection_->OnAbilityConnectDoneSync(*elementName_, aastub_);
     accountData_->AddInstalledAbility(*abilityInfo);
+    sleep(1);
 }
 
 /**

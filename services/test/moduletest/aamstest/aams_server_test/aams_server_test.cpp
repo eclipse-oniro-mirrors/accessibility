@@ -67,6 +67,7 @@ void AAMSServerTest::SetUp()
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
+    sleep(1);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 }
 
@@ -117,6 +118,7 @@ void AAMSServerTest::AddAccessibleAbilityConnection()
     aastub_ = new AccessibleAbilityChannel(accountData_->GetAccountId(), abilityInfo->GetId());
     AAConnection_->OnAbilityConnectDoneSync(*elementName_, aastub_);
     accountData_->AddInstalledAbility(*abilityInfo);
+    sleep(1);
 }
 
 /**

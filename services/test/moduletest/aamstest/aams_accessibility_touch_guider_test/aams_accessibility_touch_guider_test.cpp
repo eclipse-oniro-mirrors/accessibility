@@ -497,6 +497,7 @@ void AamsTouchGuideTest::SetUp()
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
+    sleep(1);
     sptr<AccessibleAbilityConnection> connection =
         new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
     aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
@@ -588,6 +589,7 @@ void AamsTouchGuideTest::AddAccessibilityWindowConnection()
 HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent001 starts";
+    sleep(SLEEP_TIME_3);
 
     AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
@@ -608,10 +610,11 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent001, Te
     }
 
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        sleep(1);
         int32_t eventTypeSize =
             static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size());
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(eventTypeSize - 1) ==
-            EventType::TYPE_TOUCH_END) {
+            EventType::TYPE_TOUCH_GUIDE_GESTURE_END) {
             return true;
         } else {
             return false;
