@@ -372,7 +372,7 @@ RetError AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t
         return RET_ERR_NULLPTR;
     }
 
-    uint32_t daltonizationColorFilter = filter
+    uint32_t daltonizationColorFilter = filter;
     if (filter == DISPLAY_DALTONIZER_GREEN) {
         daltonizationColorFilter = AccessibilityConfig::Deuteranomaly;
     } else if (filter == DISPLAY_DALTONIZER_RED) {
