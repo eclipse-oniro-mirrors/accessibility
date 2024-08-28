@@ -66,7 +66,7 @@ public:
 
     void Disconnect();
 
-    void Connect(const AppExecFwk::ElementName &element);
+    bool Connect(const AppExecFwk::ElementName &element);
 
     int32_t GetChannelId();
 

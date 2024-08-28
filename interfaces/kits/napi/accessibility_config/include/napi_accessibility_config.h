@@ -88,7 +88,10 @@ public:
 
     static void Destructor(napi_env env, void* nativeObject, void*)
     {
-        reinterpret_cast<NAccessibilityConfigClass*>(nativeObject)->~NAccessibilityConfigClass();
+        NAccessibilityConfigClass* obj = static_cast<NAccessibilityConfigClass*>(nativeObject);
+        obj->~NAccessibilityConfigClass();
+        delete obj;
+        nativeObject = nullptr;
     }
 
     OHOS::AccessibilityConfig::CONFIG_ID GetConfigId() const

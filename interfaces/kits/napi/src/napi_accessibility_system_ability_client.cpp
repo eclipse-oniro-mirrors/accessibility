@@ -98,7 +98,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "IsOpenAccessibility", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(env, nullptr, resource,
+    auto ret = napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
@@ -113,6 +113,12 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
             Completefunction(env, "IsOpenAccessibility", data);
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -159,7 +165,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "IsOpenTouchExploration", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(env, nullptr, resource,
+    auto ret = napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
@@ -174,6 +180,12 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
             Completefunction(env, "IsOpenTouchExploration", data);
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -287,13 +299,19 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetAbilityList", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(env, nullptr, resource,
+    auto ret = napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         NAccessibilityClient::GetAbilityListExecute,
         // Execute the complete function
         NAccessibilityClient::GetAbilityListComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -370,13 +388,19 @@ napi_value NAccessibilityClient::GetAccessibilityExtensionListAsync(
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetAccessibilityExtensionList", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(env, nullptr, resource,
+    auto ret = napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         NAccessibilityClient::GetAbilityListExecute,
         // Execute the complete function
         NAccessibilityClient::GetAbilityListComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -532,11 +556,17 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SendEvent", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(env, nullptr, resource,
+    auto ret = napi_create_async_work(env, nullptr, resource,
         NAccessibilityClient::SendEventExecute,
         NAccessibilityClient::SendEventComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
 
     return promise;
@@ -590,11 +620,17 @@ napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callb
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SendAccessibilityEvent", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(env, nullptr, resource,
+    auto ret = napi_create_async_work(env, nullptr, resource,
         NAccessibilityClient::SendEventExecute,
         NAccessibilityClient::SendEventComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
 
     return promise;

@@ -262,10 +262,6 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
 
     auto iter = elementOperators_.find(windowId);
     if (iter != elementOperators_.end()) {
@@ -337,10 +333,6 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
     auto iter = elementOperators_.find(windowId);
     if (iter != elementOperators_.end()) {
         HILOG_DEBUG("windowID[%{public}d] is erase", windowId);
@@ -406,10 +398,6 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
     return serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
 }
 
@@ -438,10 +426,6 @@ RetError AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventTy
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
     return serviceProxy_->SendEvent(event);
 }
 
@@ -451,10 +435,6 @@ RetError AccessibilitySystemAbilityClientImpl::SendEvent(const AccessibilityEven
     std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!CheckEventType(event.GetEventType())) {
         return RET_ERR_INVALID_PARAM;
-    }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
     }
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
@@ -546,10 +526,6 @@ RetError AccessibilitySystemAbilityClientImpl::GetEnabledAbilities(std::vector<s
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
     return serviceProxy_->GetEnabledAbilities(enabledAbilities);
 }
 
@@ -558,29 +534,17 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
     HILOG_DEBUG("stateType[%{public}d}", stateType);
     SetAccessibilityState(stateType);
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (stateType & STATE_ACCESSIBILITY_ENABLED) {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED, true);
-    } else {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED, false);
-    }
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED,
+        !!(stateType & STATE_ACCESSIBILITY_ENABLED));
+    
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED,
+        !!(stateType & STATE_EXPLORATION_ENABLED));
 
-    if (stateType & STATE_EXPLORATION_ENABLED) {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED, true);
-    } else {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED, false);
-    }
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED,
+        !!(stateType & STATE_KEYEVENT_ENABLED));
 
-    if (stateType & STATE_KEYEVENT_ENABLED) {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED, true);
-    } else {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED, false);
-    }
-
-    if (stateType & STATE_GESTURE_ENABLED) {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED, true);
-    } else {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED, false);
-    }
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED,
+        !!(stateType & STATE_GESTURE_ENABLED));
 }
 
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityIdResult(
@@ -783,10 +747,6 @@ RetError AccessibilitySystemAbilityClientImpl::GetFocusedWindowId(int32_t &focus
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
