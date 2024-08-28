@@ -364,7 +364,7 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
         Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
-             requestId, callback);
+            requestId, callback);
         elementOperator->ExecuteAction(realElementId, action, actionArguments, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, "ExecuteAction");
