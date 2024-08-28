@@ -846,7 +846,7 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiFingerTouchUpEvent(MMI::
     }
 }
 
-bool AccessibilityMultiTapGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
+void AccessibilityMultiTapGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("gestureState is %{public}d", multiFingerGestureState_);
 
