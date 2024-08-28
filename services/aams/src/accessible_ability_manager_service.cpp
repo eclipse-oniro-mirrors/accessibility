@@ -2251,35 +2251,40 @@ RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &tim
 void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &configData)
 {
     HILOG_DEBUG();
-    std::promise<void> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    actionHandler_->PostTask([this, &syncPromise, &configData]() {
+    std::shared_ptr<std::promise<void>> syncPromise = std::make_shared<std::promise<void>>();
+    std::shared_ptr<AccessibilityConfigData> config = std::make_shared<AccessibilityConfigData>();
+    if (syncPromise == nullptr || config == nullptr) {
+        HILOG_WARN("create syncPromise or config failed");
+        return;
+    }
+    std::future syncFuture = syncPromise->get_future();
+    actionHandler_->PostTask([this, syncPromise, config]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value();
+            syncPromise->set_value();
             return;
         }
 
-        configData.highContrastText_ = accountData->GetConfig()->GetHighContrastTextState();
-        configData.daltonizationState_ = accountData->GetConfig()->GetDaltonizationState();
-        configData.invertColor_ = accountData->GetConfig()->GetInvertColorState();
-        configData.animationOff_ = accountData->GetConfig()->GetAnimationOffState();
-        configData.audioMono_ = accountData->GetConfig()->GetAudioMonoState();
-        configData.mouseKey_ = accountData->GetConfig()->GetMouseKeyState();
-        configData.captionState_ = accountData->GetConfig()->GetCaptionState();
-        configData.screenMagnifier_ = accountData->GetConfig()->GetScreenMagnificationState();
-        configData.shortkey_ = accountData->GetConfig()->GetShortKeyState();
-        configData.mouseAutoClick_ = accountData->GetConfig()->GetMouseAutoClick();
-        configData.daltonizationColorFilter_ = accountData->GetConfig()->GetDaltonizationColorFilter();
-        configData.contentTimeout_ = accountData->GetConfig()->GetContentTimeout();
-        configData.brightnessDiscount_ = accountData->GetConfig()->GetBrightnessDiscount();
-        configData.audioBalance_ = accountData->GetConfig()->GetAudioBalance();
-        configData.shortkeyTarget_ = accountData->GetConfig()->GetShortkeyTarget();
-        configData.shortkeyMultiTarget_ = accountData->GetConfig()->GetShortkeyMultiTarget();
-        configData.captionProperty_ = accountData->GetConfig()->GetCaptionProperty();
-        syncPromise.set_value();
+        config->highContrastText_ = accountData->GetConfig()->GetHighContrastTextState();
+        config->daltonizationState_ = accountData->GetConfig()->GetDaltonizationState();
+        config->invertColor_ = accountData->GetConfig()->GetInvertColorState();
+        config->animationOff_ = accountData->GetConfig()->GetAnimationOffState();
+        config->audioMono_ = accountData->GetConfig()->GetAudioMonoState();
+        config->mouseKey_ = accountData->GetConfig()->GetMouseKeyState();
+        config->captionState_ = accountData->GetConfig()->GetCaptionState();
+        config->screenMagnifier_ = accountData->GetConfig()->GetScreenMagnificationState();
+        config->shortkey_ = accountData->GetConfig()->GetShortKeyState();
+        config->mouseAutoClick_ = accountData->GetConfig()->GetMouseAutoClick();
+        config->daltonizationColorFilter_ = accountData->GetConfig()->GetDaltonizationColorFilter();
+        config->contentTimeout_ = accountData->GetConfig()->GetContentTimeout();
+        config->brightnessDiscount_ = accountData->GetConfig()->GetBrightnessDiscount();
+        config->audioBalance_ = accountData->GetConfig()->GetAudioBalance();
+        config->shortkeyTarget_ = accountData->GetConfig()->GetShortkeyTarget();
+        config->shortkeyMultiTarget_ = accountData->GetConfig()->GetShortkeyMultiTarget();
+        config->captionProperty_ = accountData->GetConfig()->GetCaptionProperty();
+        syncPromise->set_value();
         }, "TASK_GET_ALL_CONFIGS");
 
     std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
@@ -2287,6 +2292,7 @@ void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &con
         HILOG_ERROR("Failed to wait GetAllConfigs result");
         return;
     }
+    configData = *config;
     return syncFuture.get();
 }
 
