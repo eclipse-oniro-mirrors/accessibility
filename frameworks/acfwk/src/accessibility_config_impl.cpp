@@ -128,7 +128,7 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
 
         if (object->IsProxyObject() && !object->AddDeathRecipient(deathRecipient_)) {
             HILOG_ERROR("Failed to add death recipient");
-            return;
+            return false;
         }
 
         serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(object);

@@ -44,7 +44,7 @@ AccessibleAbilityConnection::~AccessibleAbilityConnection()
 void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
 {
-    HILOG_INFO();
+    HILOG_INFO("ResultCode is %{public}d", resultCode);
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
@@ -57,7 +57,6 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
 
     int32_t accountId = accountId_;
     eventHandler_->PostTask([accountId, element, remoteObject, resultCode]() {
-        HILOG_DEBUG("ResultCode is %{public}d", resultCode);
         FinishAsyncTrace(HITRACE_TAG_ACCESSIBILITY_MANAGER, "AccessibleAbilityConnect",
             static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
         std::string bundleName = element.GetBundleName();

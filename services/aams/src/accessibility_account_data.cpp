@@ -879,10 +879,8 @@ void AccessibilityAccountData::UpdateAbilities()
             }
             AppExecFwk::ElementName element("", bundleName, abilityName);
             connection = new(std::nothrow) AccessibleAbilityConnection(id_, connectCounter_++, installAbility);
-            if (connection) {
-                if (connection->Connect(element)) {
-                    AddConnectingA11yAbility(Utils::GetUri(bundleName, abilityName), connection);
-                }
+            if (connection != nullptr && connection->Connect(element)) {
+                AddConnectingA11yAbility(Utils::GetUri(bundleName, abilityName), connection);
             }
         } else {
             HILOG_DEBUG("not in enabledAbilites list .");

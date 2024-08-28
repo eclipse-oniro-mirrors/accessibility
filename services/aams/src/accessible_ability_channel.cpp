@@ -58,12 +58,9 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
     HILOG_DEBUG("elementId:%{public}" PRId64 " winId: %{public}d treeId: %{public}d", elementId, windowId, treeId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
-    if (eventHandler_ == nullptr) {
-        HILOG_ERROR("eventHandler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    if (callback == nullptr) {
-        HILOG_ERROR("callback is nullptr.");
+    if (eventHandler_ == nullptr || callback == nullptr) {
+        HILOG_ERROR("eventHandler_ exist: %{public}d, callback exist: %{public}d.", eventHandler_ != nullptr,
+            callback != nullptr);
         return RET_ERR_NULLPTR;
     }
 
@@ -331,12 +328,9 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
     HILOG_DEBUG("ExecuteAction elementId:%{public}" PRId64 " winId:%{public}d, action:%{public}d, requestId:%{public}d",
         elementId, accessibilityWindowId, action, requestId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (eventHandler_== nullptr) {
-        HILOG_ERROR("eventHandler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    if (callback == nullptr) {
-        HILOG_ERROR("callback is nullptr.");
+    if (eventHandler_ == nullptr || callback == nullptr) {
+        HILOG_ERROR("eventHandler_ exist: %{public}d, callback exist: %{public}d.", eventHandler_ != nullptr,
+            callback != nullptr);
         return RET_ERR_NULLPTR;
     }
 
@@ -370,7 +364,7 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
         Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
-            requestId, callback);
+             requestId, callback);
         elementOperator->ExecuteAction(realElementId, action, actionArguments, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, "ExecuteAction");

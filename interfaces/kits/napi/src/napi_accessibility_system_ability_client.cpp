@@ -620,17 +620,11 @@ napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callb
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SendAccessibilityEvent", NAPI_AUTO_LENGTH, &resource);
 
-    auto ret = napi_create_async_work(env, nullptr, resource,
+    napi_create_async_work(env, nullptr, resource,
         NAccessibilityClient::SendEventExecute,
         NAccessibilityClient::SendEventComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
-    if (ret != napi_ok) {
-        delete callbackInfo;
-        callbackInfo = nullptr;
-        HILOG_ERROR("failed to create async work.");
-        return nullptr;
-    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
 
     return promise;
