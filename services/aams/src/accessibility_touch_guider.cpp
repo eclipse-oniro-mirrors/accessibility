@@ -148,9 +148,7 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         gestureRecognizedFlag = true;
     }
 
-    if (multiFingerGestureRecognizer_.OnPointerEvent(event)) {
-        return true;
-    }
+    multiFingerGestureRecognizer_.OnPointerEvent(event);
 
     if (!gestureRecognizedFlag) {
         HandlePointerEvent(event);

@@ -84,36 +84,61 @@ AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 RetError AccessibilitySettingsConfig::SetEnabled(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(ACCESSIBILITY, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set accessibility failed");
+        return ret;
+    }
     enabled_ = state;
-    return SetConfigState(ACCESSIBILITY, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetTouchGuideState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(TOUCH_GUIDE_STATE, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set eventTouchGuideState_ failed");
+        return ret;
+    }
     eventTouchGuideState_ = state;
-    return SetConfigState(TOUCH_GUIDE_STATE, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetGestureState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(GESTURE_KEY, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set gesturesSimulation_ failed");
+        return ret;
+    }
     gesturesSimulation_ = state;
-    return SetConfigState(GESTURE_KEY, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetKeyEventObserverState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(KEYEVENT_OBSERVER, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set filteringKeyEvents_ failed");
+        return ret;
+    }
     filteringKeyEvents_ = state;
-    return SetConfigState(KEYEVENT_OBSERVER, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetCaptionState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(CAPTION_KEY, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set isCaptionState_ failed");
+        return ret;
+    }
     isCaptionState_ = state;
-    return SetConfigState(CAPTION_KEY, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetScreenMagnificationState(const bool state)
@@ -133,32 +158,49 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t 
 RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(SHORTCUT_ENABLED, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set isShortKeyState_ failed");
+        return ret;
+    }
     isShortKeyState_ = state;
-    return SetConfigState(SHORTCUT_ENABLED, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetShortKeyOnLockScreenState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(SHORTCUT_ENABLED_ON_LOCK_SCREEN, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set isShortKeyEnabledOnLockScreen_ failed");
+        return ret;
+    }
     isShortKeyEnabledOnLockScreen_ = state;
-    return SetConfigState(SHORTCUT_ENABLED_ON_LOCK_SCREEN, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetShortKeyTimeout(const int32_t time)
 {
     HILOG_DEBUG("time = [%{public}u]", time);
-    shortKeyTimeout_ = time;
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
 
-    return datashare_->PutIntValue(SHORTCUT_TIMEOUT, static_cast<int32_t>(time));
+    auto ret = datashare_->PutIntValue(SHORTCUT_TIMEOUT, static_cast<int32_t>(time));
+    if (ret != RET_OK) {
+        HILOG_ERROR("set shortKeyTimeout_ failed");
+        return ret;
+    }
+    shortKeyTimeout_ = time;
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetStartFromAtoHosState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
     return datashare_->PutBoolValue("AccessibilityStartFromAtoHos", state);
@@ -167,29 +209,47 @@ RetError AccessibilitySettingsConfig::SetStartFromAtoHosState(const bool state)
 RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(MOUSEKEY, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set isMouseKeyState_ failed");
+        return ret;
+    }
     isMouseKeyState_ = state;
-    return SetConfigState(MOUSEKEY, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetMouseAutoClick(const int32_t time)
 {
     HILOG_DEBUG("time = [%{public}d]", time);
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
+
+    auto ret = datashare_->PutIntValue("MouseAutoClick", time);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set mouseAutoClick_ failed");
+        return ret;
+    }
     mouseAutoClick_ = time;
-    return datashare_->PutIntValue("MouseAutoClick", time);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 {
     HILOG_DEBUG("name = [%{public}s]", name.c_str());
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
 
+    auto ret = datashare_->PutStringValue("ShortkeyTarget", name);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set shortkeyTarget_ failed");
+        return ret;
+    }
     shortkeyTarget_ = name;
-    return datashare_->PutStringValue("ShortkeyTarget", name);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<std::string> &name)
@@ -202,14 +262,20 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<s
             return true;
         });
     std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
-    shortkeyMultiTarget_ = std::vector<std::string>(targets.begin(), targets.end());
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
 
     std::string stringOut = "";
-    Utils::VectorToString(shortkeyMultiTarget_, stringOut);
-    return datashare_->PutStringValue(SHORTCUT_SERVICE, stringOut);
+    Utils::VectorToString(std::vector<std::string>(targets.begin(), targets.end()), stringOut);
+    auto ret = datashare_->PutStringValue(SHORTCUT_SERVICE, stringOut);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set shortkeyMultiTarget_ failed");
+        return ret;
+    }
+    shortkeyMultiTarget_ = std::vector<std::string>(targets.begin(), targets.end());
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetShortkeyMultiTargetInPkgRemove(const std::string &name)
@@ -217,6 +283,7 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTargetInPkgRemove(const st
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
     RetError rtn = RET_OK;
@@ -230,139 +297,212 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTargetInPkgRemove(const st
             break;
         }
     }
+    if (rtn != RET_OK) {
+        HILOG_ERROR("set shortkeyMultiTarget_ failed");
+        shortkeyMultiTarget_.push_back(name);
+    }
     return rtn;
 }
 
 RetError AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(HIGH_CONTRAST_TEXT_KEY, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set highContrastTextState_ failed");
+        return ret;
+    }
     highContrastTextState_ = state;
-    return SetConfigState(HIGH_CONTRAST_TEXT_KEY, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetInvertColorState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(INVERT_COLOR_KEY, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set invertColorState_ failed");
+        return ret;
+    }
     invertColorState_ = state;
-    return SetConfigState(INVERT_COLOR_KEY, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetAnimationOffState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(ANIMATION_OFF_KEY, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set animationOffState_ failed");
+        return ret;
+    }
     animationOffState_ = state;
-    return SetConfigState(ANIMATION_OFF_KEY, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetAudioMonoState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(AUDIO_MONO_KEY, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set audioMonoState_ failed");
+        return ret;
+    }
     audioMonoState_ = state;
-    return SetConfigState(AUDIO_MONO_KEY, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetDaltonizationState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(DALTONIZATION_STATE, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set daltonizationState_ failed");
+        return ret;
+    }
     daltonizationState_ = state;
-    return SetConfigState(DALTONIZATION_STATE, state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t filter)
 {
     HILOG_DEBUG("filter = [%{public}u]", filter);
-    if (filter == DISPLAY_DALTONIZER_GREEN) {
-        daltonizationColorFilter_ = AccessibilityConfig::Deuteranomaly;
-    } else if (filter == DISPLAY_DALTONIZER_RED) {
-        daltonizationColorFilter_ = AccessibilityConfig::Protanomaly;
-    } else if (filter == DISPLAY_DALTONIZER_BLUE) {
-        daltonizationColorFilter_ = AccessibilityConfig::Tritanomaly;
-    } else {
-        daltonizationColorFilter_ = filter;
-    }
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
 
-    return datashare_->PutIntValue(DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(daltonizationColorFilter_));
+    uint32_t daltonizationColorFilter = filter;
+    if (filter == DISPLAY_DALTONIZER_GREEN) {
+        daltonizationColorFilter = AccessibilityConfig::Deuteranomaly;
+    } else if (filter == DISPLAY_DALTONIZER_RED) {
+        daltonizationColorFilter = AccessibilityConfig::Protanomaly;
+    } else if (filter == DISPLAY_DALTONIZER_BLUE) {
+        daltonizationColorFilter = AccessibilityConfig::Tritanomaly;
+    }
+    auto ret = datashare_->PutIntValue(DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(daltonizationColorFilter));
+    if (ret != RET_OK) {
+        HILOG_ERROR("set daltonizationColorFilter_ failed");
+        return ret;
+    }
+    daltonizationColorFilter_ = daltonizationColorFilter;
+    return ret;
 }
 
 
 RetError AccessibilitySettingsConfig::SetContentTimeout(const uint32_t time)
 {
     HILOG_DEBUG("time = [%{public}u]", time);
-    contentTimeout_ = time;
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
 
-    return datashare_->PutIntValue(CONTENT_TIMEOUT_KEY, static_cast<int32_t>(time));
+    auto ret = datashare_->PutIntValue(CONTENT_TIMEOUT_KEY, static_cast<int32_t>(time));
+    if (ret != RET_OK) {
+        HILOG_ERROR("set contentTimeout_ failed");
+        return ret;
+    }
+    contentTimeout_ = time;
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount)
 {
     HILOG_DEBUG("discount = [%{public}f]", discount);
-    brightnessDiscount_ = discount;
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
 
-    return datashare_->PutFloatValue(BRIGHTNESS_DISCOUNT_KEY, discount);
+    auto ret = datashare_->PutFloatValue(BRIGHTNESS_DISCOUNT_KEY, discount);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set brightnessDiscount_ failed");
+        return ret;
+    }
+    brightnessDiscount_ = discount;
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetAudioBalance(const float balance)
 {
     HILOG_DEBUG("balance = [%{public}f]", balance);
-    audioBalance_ = round(balance * AUDIO_BALANCE_STEP) / AUDIO_BALANCE_STEP;
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
 
-    return datashare_->PutFloatValue(AUDIO_BALANCE_KEY, audioBalance_);
+    float audioBalance = round(balance * AUDIO_BALANCE_STEP) / AUDIO_BALANCE_STEP;
+    auto ret = datashare_->PutFloatValue(AUDIO_BALANCE_KEY, audioBalance);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set audioBalance_ failed");
+        return ret;
+    }
+    audioBalance_ = audioBalance;
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
 {
     HILOG_DEBUG("clickResponseTime = [%{public}u]", time);
-    if (time == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
-        clickResponseTime_ = AccessibilityConfig::ResponseDelayMedium;
-    } else if (time > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
-        clickResponseTime_ = AccessibilityConfig::ResponseDelayLong;
-    } else {
-        clickResponseTime_ = time;
-    }
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
 
-    return datashare_->PutIntValue(CLICK_RESPONCE_TIME, clickResponseTime_);
+    uint32_t clickResponseTime = time;
+    if (time == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
+        clickResponseTime = AccessibilityConfig::ResponseDelayMedium;
+    } else if (time > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
+        clickResponseTime = AccessibilityConfig::ResponseDelayLong;
+    }
+    auto ret = datashare_->PutIntValue(CLICK_RESPONCE_TIME, clickResponseTime);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set clickResponseTime_ failed");
+        return ret;
+    }
+    clickResponseTime_ = clickResponseTime;
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     ignoreRepeatClickState_ = state;
-    return SetConfigState(IGNORE_REPEAT_CLICK_SWITCH, state);
+    auto ret = SetConfigState(IGNORE_REPEAT_CLICK_SWITCH, state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set ignoreRepeatClickState_ failed");
+        return ret;
+    }
+    ignoreRepeatClickState_ = state;
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t time)
 {
     HILOG_DEBUG("ignoreRepeatClickTime = [%{public}u]", time);
-    if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
-        ignoreRepeatClickTime_ = AccessibilityConfig::RepeatClickTimeoutShort;
-    } else if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
-        ignoreRepeatClickTime_ = AccessibilityConfig::RepeatClickTimeoutMedium;
-    } else if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
-        ignoreRepeatClickTime_ = AccessibilityConfig::RepeatClickTimeoutLong;
-    } else if (time > DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
-        ignoreRepeatClickTime_ = AccessibilityConfig::RepeatClickTimeoutLongest;
-    } else {
-        ignoreRepeatClickTime_ = time;
-    }
     if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return datashare_->PutIntValue(IGNORE_REPEAT_CLICK_TIME, ignoreRepeatClickTime_);
+
+    uint32_t ignoreRepeatClickTime = time;
+    if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
+        ignoreRepeatClickTime = AccessibilityConfig::RepeatClickTimeoutShort;
+    } else if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
+        ignoreRepeatClickTime = AccessibilityConfig::RepeatClickTimeoutMedium;
+    } else if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
+        ignoreRepeatClickTime = AccessibilityConfig::RepeatClickTimeoutLong;
+    } else if (time > DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
+        ignoreRepeatClickTime = AccessibilityConfig::RepeatClickTimeoutLongest;
+    }
+    auto ret = datashare_->PutIntValue(IGNORE_REPEAT_CLICK_TIME, ignoreRepeatClickTime);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set ignoreRepeatClickTime_ failed");
+        return ret;
+    }
+    ignoreRepeatClickTime_ = ignoreRepeatClickTime;
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
@@ -785,7 +925,7 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
         auto screenReader = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
             return service.find(SCREENREADER_TAG) != std::string::npos;
         });
-        serviceFlag = screenReader != services.end() ? (serviceFlag | STATE_SCREENMAGNIFIER_ENABLED) : serviceFlag;
+        serviceFlag = screenReader != services.end() ? STATE_EXPLORATION_ENABLED : serviceFlag;
 
         auto invertColor = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
             return service.find(INVERT_COLOR_AOS_TAG) != std::string::npos ||
@@ -809,7 +949,7 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     std::vector<std::string> tmpVec = GetShortkeyMultiTarget();
     uint32_t shortkeyServiceFlag = getServiceFlag(tmpVec);
     std::vector<std::string> shortkeyService;
-    if (shortkeyServiceFlag & STATE_SCREENMAGNIFIER_ENABLED) {
+    if (shortkeyServiceFlag & STATE_EXPLORATION_ENABLED) {
         shortkeyService.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
     }
     if (shortkeyServiceFlag & STATE_INVETRTCOLOR_ENABLED) {
@@ -824,7 +964,7 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     SetShortkeyMultiTarget(shortkeyService);
 
     tmpVec = GetEnabledAccessibilityServices();
-    if ((getServiceFlag(tmpVec) & STATE_SCREENMAGNIFIER_ENABLED) || (isScreenReaderEnabled == true)) {
+    if ((getServiceFlag(tmpVec) & STATE_EXPLORATION_ENABLED) || (isScreenReaderEnabled == true)) {
         tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
         SetEnabledAccessibilityServices(tmpVec);
     }

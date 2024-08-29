@@ -128,6 +128,7 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
 
         if (object->IsProxyObject() && !object->AddDeathRecipient(deathRecipient_)) {
             HILOG_ERROR("Failed to add death recipient");
+            return false;
         }
 
         serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(object);
@@ -256,10 +257,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
 
 sptr<Accessibility::IAccessibleAbilityManagerService> AccessibilityConfig::Impl::GetServiceProxy()
 {
-    if (serviceProxy_ != nullptr) {
-        return serviceProxy_;
-    }
-    return nullptr;
+    return serviceProxy_;
 }
 
 void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)

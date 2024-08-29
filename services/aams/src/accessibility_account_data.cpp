@@ -879,8 +879,7 @@ void AccessibilityAccountData::UpdateAbilities()
             }
             AppExecFwk::ElementName element("", bundleName, abilityName);
             connection = new(std::nothrow) AccessibleAbilityConnection(id_, connectCounter_++, installAbility);
-            if (connection) {
-                connection->Connect(element);
+            if (connection != nullptr && connection->Connect(element)) {
                 AddConnectingA11yAbility(Utils::GetUri(bundleName, abilityName), connection);
             }
         } else {

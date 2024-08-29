@@ -846,7 +846,7 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiFingerTouchUpEvent(MMI::
     }
 }
 
-bool AccessibilityMultiTapGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
+void AccessibilityMultiTapGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("gestureState is %{public}d", multiFingerGestureState_);
 
@@ -865,7 +865,7 @@ bool AccessibilityMultiTapGestureRecognizer::OnPointerEvent(MMI::PointerEvent &e
             break;
         case MMI::PointerEvent::POINTER_ACTION_MOVE:
             if (multiFingerGestureState_ != MultiFingerGestureState::GESTURE_START) {
-                return false;
+                return;
             }
             HandleMultiFingerMoveEvent(event);
             break;
@@ -875,7 +875,7 @@ bool AccessibilityMultiTapGestureRecognizer::OnPointerEvent(MMI::PointerEvent &e
         default:
             break;
     }
-    return false;
+    return;
 }
 } // namespace Accessibility
 } // namespace OHOS

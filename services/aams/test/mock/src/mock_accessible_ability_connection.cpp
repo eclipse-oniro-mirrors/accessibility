@@ -242,10 +242,11 @@ void AccessibleAbilityConnection::Disconnect()
     AccessibilityAbilityHelper::GetInstance().SetTestChannelId(-1);
 }
 
-void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName& element)
+bool AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName& element)
 {
     HILOG_DEBUG("start");
     elementName_ = element;
+    return true;
 }
 
 int32_t AccessibleAbilityConnection::GetChannelId()
