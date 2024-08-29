@@ -1368,6 +1368,15 @@ void StateListenerImpl::SubscribeToFramework()
     }
 }
 
+void StateListenerImpl::UnsubscribeFromFramework()
+{
+    HILOG_INFO("UnsubscribeFromFramework");
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient) {
+        asaClient->UnsubscribeStateObserver(shared_from_this(), type_);
+    }
+}
+
 void StateListenerImpl::OnStateChanged(const bool state)
 {
     HILOG_INFO();

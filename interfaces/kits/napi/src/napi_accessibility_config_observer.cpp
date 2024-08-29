@@ -613,6 +613,15 @@ void NAccessibilityConfigObserverImpl::SubscribeToFramework()
     }
 }
 
+void NAccessibilityConfigObserverImpl::UnsubscribeFromFramework()
+{
+    HILOG_INFO("UnsubscribeFromFramework");
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    for (int32_t index = 0; index < static_cast<int32_t>(CONFIG_ID_MAX); index ++) {
+        instance.UnsubscribeConfigObserver(static_cast<CONFIG_ID>(index), shared_from_this());
+    }
+}
+
 void NAccessibilityConfigObserverImpl::OnConfigChanged(
     const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue& value)
 {

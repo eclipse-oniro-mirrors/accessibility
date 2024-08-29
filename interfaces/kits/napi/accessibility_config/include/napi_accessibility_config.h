@@ -47,6 +47,7 @@ public:
     void OnEnableAbilityListsStateChanged() override;
     void OnInstallAbilityListsStateChanged() override;
     void SubscribeToFramework();
+    void UnsubscribeFromFramework();
     void SubscribeObserver(napi_env env, napi_value observer);
     void SubscribeInstallObserver(napi_env env, napi_value observer);
     void UnsubscribeObserver(napi_env env, napi_value observer);
