@@ -50,6 +50,7 @@ public:
     StateListenerImpl(OHOS::Accessibility::AccessibilityStateEventType type) : type_(type) {};
     void OnStateChanged(const bool state) override;
     void SubscribeToFramework();
+    void UnsubscribeFromFramework();
     void SubscribeObserver(napi_env env, napi_value observer);
     void UnsubscribeObserver(napi_env env, napi_value observer);
     void UnsubscribeObservers();

@@ -25,6 +25,19 @@
 #include "napi/native_node_api.h"
 
 EXTERN_C_START
+static void Cleanup(void *data)
+{
+    HILOG_INFO("cleanup hook");
+    if (NAccessibilityClient::accessibilityStateListeners_) {
+        NAccessibilityClient::accessibilityStateListeners_->UnsubscribeFromFramework();
+    }
+    if (NAccessibilityClient::touchGuideStateListeners_) {
+        NAccessibilityClient::touchGuideStateListeners_->UnsubscribeFromFramework();
+    }
+    if (NAccessibilityClient::captionListeners_) {
+        NAccessibilityClient::captionListeners_->UnsubscribeFromFramework();
+    }
+}
 /*
  * function for module exports
  */
@@ -56,6 +69,10 @@ static napi_value Init(napi_env env, napi_value exports)
     NAccessibilityClient::accessibilityStateListeners_->SubscribeToFramework();
     NAccessibilityClient::touchGuideStateListeners_->SubscribeToFramework();
     NAccessibilityClient::captionListeners_->SubscribeToFramework();
+    napi_status status = napi_add_env_cleanup_hook(env, Cleanup, nullptr);
+    if (status != napi_ok) {
+        HILOG_WARN("add cleanup hook failed %{public}d", status);
+    }
     HILOG_INFO("-----Init end------");
     return exports;
 }

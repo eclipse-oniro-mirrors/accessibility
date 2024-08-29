@@ -67,6 +67,7 @@ public:
     virtual void OnConfigChanged(
         const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue& value) override;
     void SubscribeToFramework();
+    void UnsubscribeFromFramework();
     void SubscribeObserver(napi_env env, OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer);
     void UnsubscribeObserver(napi_env env, OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer);
     void UnsubscribeObservers(OHOS::AccessibilityConfig::CONFIG_ID id);

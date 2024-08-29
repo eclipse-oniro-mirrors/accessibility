@@ -616,6 +616,17 @@ static napi_value InitIgnoreRepeatClickTime(napi_env env)
     return ignoreRepeatClickTimeValue;
 }
 
+static void Cleanup(void *data)
+{
+    HILOG_INFO("accessibiliyConfig cleanup");
+    if (NAccessibilityConfig::configObservers_) {
+        NAccessibilityConfig::configObservers_->UnsubscribeFromFramework();
+    }
+    if (NAccessibilityConfig::enableAbilityListsObservers_) {
+        NAccessibilityConfig::enableAbilityListsObservers_->UnsubscribeFromFramework();
+    }
+}
+
 static napi_value InitConfigModule(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
@@ -651,6 +662,10 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
     (void)instance.InitializeContext();
     NAccessibilityConfig::configObservers_->SubscribeToFramework();
     NAccessibilityConfig::enableAbilityListsObservers_->SubscribeToFramework();
+    napi_status status = napi_add_env_cleanup_hook(env, Cleanup, nullptr);
+    if (status != napi_ok) {
+        HILOG_WARN("add cleanup hook failed %{public}d", status);
+    }
     HILOG_INFO("-----Init config module end------");
     return exports;
 }

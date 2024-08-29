@@ -1014,6 +1014,13 @@ void EnableAbilityListsObserverImpl::SubscribeToFramework()
     instance.SubscribeEnableAbilityListsObserver(shared_from_this());
 }
 
+void EnableAbilityListsObserverImpl::UnsubscribeFromFramework()
+{
+    HILOG_INFO("UnsubscribeFromFramework");
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.UnsubscribeEnableAbilityListsObserver(shared_from_this());
+}
+
 void EnableAbilityListsObserverImpl::OnEnableAbilityListsStateChanged()
 {
     HILOG_DEBUG();
