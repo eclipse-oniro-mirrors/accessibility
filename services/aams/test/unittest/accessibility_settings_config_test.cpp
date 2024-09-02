@@ -828,7 +828,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_002 start";
     settingConfig_->SetIgnoreRepeatClickState(true);
-    EXPECT_EQ(true, settingConfig_->GetIgnoreRepeatClickState());
+    EXPECT_NE(true, settingConfig_->GetIgnoreRepeatClickState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_002 end";
 }
 

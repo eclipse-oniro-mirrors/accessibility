@@ -468,7 +468,6 @@ RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
-    ignoreRepeatClickState_ = state;
     auto ret = SetConfigState(IGNORE_REPEAT_CLICK_SWITCH, state);
     if (ret != RET_OK) {
         HILOG_ERROR("set ignoreRepeatClickState_ failed");
