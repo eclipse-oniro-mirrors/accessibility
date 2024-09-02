@@ -1300,7 +1300,7 @@ std::vector<int32_t> AccessibilityAccountDataMap::GetAllAccountIds()
 {
     std::lock_guard<ffrt::mutex> lock(accountDataMutex_);
     std::vector<int32_t> accountIds;
-    for (auto it = accountDataMap_.begin(), it != accountDataMap_.end(), it++) {
+    for (auto it = accountDataMap_.begin(); it != accountDataMap_.end(); it++) {
         accountIds.push_back(it->first);
     }
     return accountIds;
