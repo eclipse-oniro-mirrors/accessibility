@@ -1493,6 +1493,12 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(i
     return a11yAccountsData_.GetAccountData(accountId);
 }
 
+std::vector<int32_t> AccessibleAbilityManagerService::GetAllAccountIds()
+{
+    HILOG_DEBUG();
+    return a11yAccountsData_.GetAllAccountIds();
+}
+
 sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy()
 {
     HILOG_DEBUG();

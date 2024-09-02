@@ -197,6 +197,7 @@ public:
 
     sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
     sptr<AccessibilityAccountData> GetCurrentAccountData();
+    std::vector<int32_t> GetAllAccountIds();
     sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
 
     /* For common event */
