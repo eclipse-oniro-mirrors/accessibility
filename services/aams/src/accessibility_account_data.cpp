@@ -450,11 +450,34 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
     isScreenMagnification_ = false;
 }
 
+void AccessibilityAccountData::SetScreenReaderExtInAllAccounts(const bool state)
+{
+    RetError rtn = RET_OK;
+    std::vector<int32_t> accountIds = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAllAccountIds();
+    for (auto accountId : accountIds) {
+        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
+        std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+        if (config == nullptr) {
+            HILOG_WARN("config is nullptr, accountId = %{public}d", accountId);
+            continue;
+        }
+        if (state) {
+            rtn = config->AddEnabledAccessibilityService(SCREEN_READER_BUNDLE_ABILITY_NAME);
+        } else {
+            rtn = config->RemoveEnabledAccessibilityService(SCREEN_READER_BUNDLE_ABILITY_NAME);
+        }
+        HILOG_INFO("set screenReader state = %{public}d, rtn = %{public}d, accountId = %{public}d", state, rtn,
+            accountId);
+    }
+}
+
 void AccessibilityAccountData::SetAbilityAutoStartState(const std::string &name, const bool state)
 {
     RetError rtn = RET_OK;
     if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
         SetScreenReaderState(screenReaderKey_, state ? "1" : "0");
+        SetScreenReaderExtInAllAccounts(state);
+        return;
     }
     if (!config_) {
         HILOG_WARN("conig_ is nullptr.");
@@ -1271,6 +1294,16 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::RemoveAccountData(
     }
 
     return accountData;
+}
+
+std::vector<int32_t> AccessibilityAccountDataMap::GetAllAccountIds()
+{
+    std::lock_guard<ffrt::mutex> lock(accountDataMutex_);
+    std::vector<int32_t> accountIds;
+    for (auto it = accountDataMap_.begin(); it != accountDataMap_.end(); it++) {
+        accountIds.push_back(it->first);
+    }
+    return accountIds;
 }
 
 void AccessibilityAccountDataMap::Clear()

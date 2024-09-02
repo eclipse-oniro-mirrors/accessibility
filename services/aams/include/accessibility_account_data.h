@@ -279,6 +279,7 @@ public:
         const std::string &bundleName, const std::string &abilityName);
     void RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection, const std::string &bundleName);
     void SetAbilityAutoStartState(const std::string &name, const bool state);
+    void SetScreenReaderExtInAllAccounts(const bool state);
     void DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName);
     bool GetAbilityAutoStartState(const std::string &name);
     void GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value);
@@ -366,6 +367,7 @@ public:
     sptr<AccessibilityAccountData> GetCurrentAccountData(int32_t accountId);
     sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
     sptr<AccessibilityAccountData> RemoveAccountData(int32_t accountId);
+    std::vector<int32_t> GetAllAccountIds();
     void Clear();
 private:
     std::map<int32_t, sptr<AccessibilityAccountData>> accountDataMap_;
