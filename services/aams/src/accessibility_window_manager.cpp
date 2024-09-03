@@ -376,6 +376,13 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEv
     HILOG_DEBUG("activeWindowId is %{public}d", activeWindowId_);
 }
 
+int32_t AccessibilityWindowManager::GetActiveWindowId()
+{
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
+    HILOG_DEBUG("activeWindowId_ is %{public}d", activeWindowId_);
+    return activeWindowId_;
+}
+
 void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
 {
     HILOG_DEBUG("windowId is %{public}d", windowId);

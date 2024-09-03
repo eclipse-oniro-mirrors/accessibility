@@ -304,6 +304,21 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Cre
 }
 
 /**
+ * @tc.number: AccessibilityWindowManager_Unittest_GetActiveWindowId_001
+ * @tc.name: GetActiveWindowId
+ * @tc.desc: Test function GetActiveWindowId
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_GetActiveWindowId001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetActiveWindowId_001 start";
+
+    Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
+
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetActiveWindowId_001 end";
+}
+
+/**
  * @tc.number: AccessibilityWindowManager_Unittest_RegisterWindowListener001
  * @tc.name: RegisterWindowListener
  * @tc.desc: Test function RegisterWindowListener

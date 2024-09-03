@@ -195,7 +195,7 @@ void TouchGuider::SendAccessibilityEventToAA(EventType eventType)
 
     AccessibilityEventInfo eventInfo {};
     eventInfo.SetEventType(eventType);
-    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().activeWindowId_;
+    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
     eventInfo.SetWindowId(windowsId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
     if (eventType == EventType::TYPE_TOUCH_GUIDE_BEGIN) {
@@ -210,7 +210,7 @@ void TouchGuider::SendGestureEventToAA(GestureType gestureId)
     HILOG_DEBUG("gestureId is %{public}d.", gestureId);
 
     AccessibilityEventInfo eventInfo {};
-    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().activeWindowId_;
+    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
     eventInfo.SetWindowId(windowsId);
     eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
     eventInfo.SetGestureType(gestureId);
