@@ -15,7 +15,9 @@
 
 #include "accessible_ability_connection.h"
 
+#ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
 #include "ability_manager_client.h"
 #include "accessible_ability_manager_service.h"
@@ -41,24 +43,30 @@ AccessibleAbilityConnection::~AccessibleAbilityConnection()
     }
 }
 
+void AccessibleAbilityConnection::HandleNoEventHandler(const AppExecFwk::ElementName &element)
+{
+    HILOG_ERROR("eventHandler_ is nullptr.");
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
+    if (accountData != nullptr) {
+        accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
+    }
+}
+
 void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
 {
     HILOG_INFO("ResultCode is %{public}d", resultCode);
     if (!eventHandler_) {
-        HILOG_ERROR("eventHandler_ is nullptr.");
-        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
-        if (accountData != nullptr) {
-            accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
-            return;
-        }
+        HandleNoEventHandler(element);
         return;
     }
 
     int32_t accountId = accountId_;
     eventHandler_->PostTask([accountId, element, remoteObject, resultCode]() {
+#ifdef OHOS_BUILD_ENABLE_HITRACE
         FinishAsyncTrace(HITRACE_TAG_ACCESSIBILITY_MANAGER, "AccessibleAbilityConnect",
             static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
+#endif // OHOS_BUILD_ENABLE_HITRACE
         std::string bundleName = element.GetBundleName();
         std::string abilityName = element.GetAbilityName();
         auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
@@ -190,8 +198,10 @@ void AccessibleAbilityConnection::Disconnect()
 bool AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element)
 {
     HILOG_DEBUG();
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     StartAsyncTrace(HITRACE_TAG_ACCESSIBILITY_MANAGER, "AccessibleAbilityConnect",
         static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
+#endif // OHOS_BUILD_ENABLE_HITRACE
     std::string bundleName = element.GetBundleName();
     std::string abilityName = element.GetAbilityName();
 
