@@ -266,7 +266,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoByAccessi
     std::list<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
     infos.push_back(info);
-    mockStub_->SetSearchElementInfoByAccessibilityIdResult(infos, CompositeId(REQUEST_ID_2));
+    mockStub_->SetSearchElementInfoByAccessibilityIdResult(infos, REQUEST_ID_2);
     GTEST_LOG_(INFO) << "SetSearchElementInfoByAccessibilityIdResult_002 end";
 }
 
