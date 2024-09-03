@@ -14,7 +14,9 @@
  */
 
 #include <string>
+#ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
+#endif // OHOS_BUILD_ENABLE_HITRACE
 #include "accessibility_account_data.h"
 #include "accessible_ability_manager_service.h"
 #include "accessibility_settings.h"
@@ -43,7 +45,9 @@ void AccessibilitySettings::RegisterSettingsHandler(const std::shared_ptr<AppExe
 RetError AccessibilitySettings::SetScreenMagnificationState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetScreenMagnificationState:" + std::to_string(state));
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -60,7 +64,9 @@ RetError AccessibilitySettings::SetScreenMagnificationState(const bool state)
 RetError AccessibilitySettings::SetShortKeyState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetShortKeyState:" + std::to_string(state));
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -130,7 +136,9 @@ RetError AccessibilitySettings::SetMouseAutoClick(const int32_t time)
 RetError AccessibilitySettings::SetShortkeyTarget(const std::string &name)
 {
     HILOG_INFO("name = [%{public}s]", name.c_str());
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetShortkeyTarget:" + name);
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -156,7 +164,9 @@ RetError AccessibilitySettings::SetShortkeyTarget(const std::string &name)
 RetError AccessibilitySettings::SetShortkeyMultiTarget(const std::vector<std::string> &name)
 {
     HILOG_DEBUG();
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetShortkeyMultiTarget");
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -182,7 +192,9 @@ RetError AccessibilitySettings::SetShortkeyMultiTarget(const std::vector<std::st
 RetError AccessibilitySettings::SetHighContrastTextState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetHighContrastTextState:" + std::to_string(state));
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -198,7 +210,9 @@ RetError AccessibilitySettings::SetHighContrastTextState(const bool state)
 RetError AccessibilitySettings::SetDaltonizationState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetDaltonizationState:" + std::to_string(state));
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -214,7 +228,9 @@ RetError AccessibilitySettings::SetDaltonizationState(const bool state)
 RetError AccessibilitySettings::SetInvertColorState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetInvertColorState:" + std::to_string(state));
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -255,7 +271,9 @@ RetError AccessibilitySettings::SetAnimationOffState(const bool state)
 RetError AccessibilitySettings::SetAudioMonoState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetAudioMonoState:" + std::to_string(state));
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -271,7 +289,9 @@ RetError AccessibilitySettings::SetAudioMonoState(const bool state)
 RetError AccessibilitySettings::SetDaltonizationColorFilter(const uint32_t filter)
 {
     HILOG_INFO("filter = [%{public}u]", filter);
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetDaltonizationColorFilter:" + std::to_string(filter));
+#endif // OHOS_BUILD_ENABLE_HITRACE
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -353,7 +373,9 @@ RetError AccessibilitySettings::SetBrightnessDiscount(const float discount)
 RetError AccessibilitySettings::SetAudioBalance(const float balance)
 {
     HILOG_INFO("balance = [%{public}f]", balance);
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetAudioBalance:" + std::to_string(balance));
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -380,7 +402,9 @@ RetError AccessibilitySettings::SetAudioBalance(const float balance)
 RetError AccessibilitySettings::SetClickResponseTime(const uint32_t time)
 {
     HILOG_INFO("click response time = [%{public}u]", time);
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetClickResponseTime:" + std::to_string(time));
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -408,7 +432,9 @@ RetError AccessibilitySettings::SetClickResponseTime(const uint32_t time)
 RetError AccessibilitySettings::SetIgnoreRepeatClickState(const bool state)
 {
     HILOG_INFO("ignore repeat click state = [%{public}s]", state ? "True" : "False");
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetIgnoreRepeatClickState:" + std::to_string(state));
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -436,7 +462,9 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickState(const bool state)
 RetError AccessibilitySettings::SetIgnoreRepeatClickTime(const uint32_t time)
 {
     HILOG_INFO("click response time = [%{public}u]", time);
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetIgnoreRepeatClickTime:" + std::to_string(time));
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");

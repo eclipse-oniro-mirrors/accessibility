@@ -122,8 +122,6 @@ ohos_shared_library("accessibleabilityms") {
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
     "hilog:libhilog",
-    "hisysevent:libhisysevent",
-    "hitrace:hitrace_meter",
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_single",
@@ -145,6 +143,14 @@ ohos_shared_library("accessibleabilityms") {
 
   if (accessibility_feature_data_share) {
     external_deps += [ "data_share:datashare_consumer" ]
+  }
+
+  if (accessibility_feature_hiviewdfx_hitrace) {
+    external_deps += [ "hitrace:hitrace_meter" ]
+  }
+
+  if (accessibility_feature_hiviewdfx_hisysevent) {
+    external_deps += [ "hisysevent:libhisysevent" ]
   }
 
   install_enable = true

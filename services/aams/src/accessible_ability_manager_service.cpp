@@ -20,7 +20,9 @@
 #include <string>
 #include <unistd.h>
 #include <functional>
+#ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
 #include "ability_info.h"
 #include "accessibility_event_info.h"
@@ -770,7 +772,9 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
     }
     handler_->PostTask([=]() {
         HILOG_INFO("Register windowId[%{public}d]", windowId);
+#ifdef OHOS_BUILD_ENABLE_HITRACE
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
+#endif // OHOS_BUILD_ENABLE_HITRACE
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
@@ -898,7 +902,9 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
     }
     handler_->PostTask([=]() {
         HILOG_INFO("Register windowId[%{public}d]", parameter.windowId);
+#ifdef OHOS_BUILD_ENABLE_HITRACE
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
+#endif // OHOS_BUILD_ENABLE_HITRACE
         if (RET_OK != RegisterElementOperatorChildWork(parameter, treeIdSingle, nodeId, operation, tokenId, isApp)) {
             return;
         }
@@ -1304,7 +1310,9 @@ RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name
 RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string &name)
 {
     HILOG_INFO();
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "InnerDisableAbility:" + name);
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -2340,7 +2348,9 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::str
 {
     HILOG_DEBUG();
     HILOG_INFO("EnableShortKeyTargetAbility name = %{public}s", name.c_str());
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableShortKeyTargetAbility");
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {

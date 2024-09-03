@@ -76,13 +76,16 @@ ohos_shared_library("accessibleability") {
     "c_utils:utils",
     "ffrt:libffrt",
     "hilog:libhilog",
-    "hitrace:hitrace_meter",
     "init:libbeget_proxy",
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_single",
     "samgr:samgr_proxy",
   ]
+
+  if (accessibility_feature_hiviewdfx_hitrace) {
+    external_deps += [ "hitrace:hitrace_meter" ]
+  }
 
   install_enable = true
 

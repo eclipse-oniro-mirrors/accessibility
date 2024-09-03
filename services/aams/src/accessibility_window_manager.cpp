@@ -15,7 +15,9 @@
 
 #include "accessibility_window_manager.h"
 
+#ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
@@ -31,7 +33,9 @@ bool AccessibilityWindowManager::Init()
 {
     DeInit();
     HILOG_DEBUG("deinit before start");
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryWindowInfo");
+#endif // OHOS_BUILD_ENABLE_HITRACE
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
     if (err != Rosen::WMError::WM_OK) {
@@ -989,7 +993,9 @@ std::map<int32_t, int64_t> AccessibilityWindowManager::SceneBoardElementIdMap::G
 RetError AccessibilityWindowManager::GetFocusedWindowId(int32_t &focusedWindowId)
 {
     HILOG_DEBUG();
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryFocusedWindowInfo");
+#endif // OHOS_BUILD_ENABLE_HITRACE
     Rosen::FocusChangeInfo focusedWindowInfo;
     OHOS::Rosen::WindowManager::GetInstance().GetFocusWindowInfo(focusedWindowInfo);
     if (focusedWindowInfo.windowId_ == INVALID_WINDOW_ID) {

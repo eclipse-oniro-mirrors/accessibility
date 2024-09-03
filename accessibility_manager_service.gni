@@ -19,6 +19,8 @@ declare_args() {
   accessibility_feature_data_share = true
   accessibility_use_rosen_drawing = false
   accessibility_watch_feature = false
+  accessibility_feature_hiviewdfx_hitrace = true
+  accessibility_feature_hiviewdfx_hisysevent = true
   if (defined(global_parts_info) &&
       !defined(global_parts_info.powermgr_display_manager)) {
     accessibility_feature_display_manager = false
@@ -37,6 +39,15 @@ declare_args() {
       !defined(global_parts_info.distributeddatamgr_data_share)) {
     distributeddatamgr_data_share = false
   }
+  if (defined(global_parts_info) &&
+      !defined(global_parts_info.hiviewdfx_hitrace)) {
+    accessibility_feature_hiviewdfx_hitrace = false
+  }
+
+  if (defined(global_parts_info) &&
+      !defined(global_parts_info.hiviewdfx_hisysevent)) {
+    accessibility_feature_hiviewdfx_hisysevent = false
+  }
 }
 
 print(
@@ -45,6 +56,10 @@ print(
     "accessibility_feature_power_manager = ${accessibility_feature_power_manager}")
 print("accessibility_use_rosen_drawing = ${accessibility_use_rosen_drawing}")
 print("accessibility_feature_data_share = ${accessibility_feature_data_share}")
+print(
+    "accessibility_feature_hiviewdfx_hitrace = ${accessibility_feature_hiviewdfx_hitrace}")
+print(
+    "accessibility_feature_hiviewdfx_hisysevent = ${accessibility_feature_hiviewdfx_hisysevent}")
 
 accessibility_default_defines = []
 
@@ -66,4 +81,12 @@ if (accessibility_feature_data_share) {
 
 if (defined(accessibility_watch_feature) && accessibility_watch_feature) {
   accessibility_default_defines += [ "ACCESSIBILITY_WATCH_FEATURE" ]
+}
+
+if (accessibility_feature_hiviewdfx_hitrace) {
+  accessibility_default_defines += [ "OHOS_BUILD_ENABLE_HITRACE" ]
+}
+
+if (accessibility_feature_hiviewdfx_hisysevent) {
+  accessibility_default_defines += [ "OHOS_BUILD_ENABLE_HISYSEVENT" ]
 }

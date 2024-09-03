@@ -35,6 +35,8 @@ public:
 
     virtual ~AccessibleAbilityConnection();
 
+    void HandleNoEventHandler(const AppExecFwk::ElementName &element);
+
     virtual void OnAbilityConnectDone(const AppExecFwk::ElementName &element,
                                       const sptr<IRemoteObject> &remoteObject,
                                       int32_t resultCode) override;

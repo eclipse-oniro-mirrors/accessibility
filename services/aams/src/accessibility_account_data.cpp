@@ -16,7 +16,9 @@
 #include "accessibility_account_data.h"
 
 #include <any>
+#ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
+#endif // OHOS_BUILD_ENABLE_HITRACE
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 #include "accessibility_display_manager.h"
 #endif
@@ -631,7 +633,9 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
         HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
         return RET_ERR_CONNECTION_EXIST;
     }
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableAbility:" + name);
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
     enabledAbilities_.push_back(name);
     SetAbilityAutoStartState(name, true);
@@ -646,7 +650,9 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
 bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 {
     HILOG_DEBUG("start.");
+#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryInstalledAbilityInfo");
+#endif // OHOS_BUILD_ENABLE_HITRACE
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
     sptr<AppExecFwk::IBundleMgr> bms = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
     if (!bms) {
