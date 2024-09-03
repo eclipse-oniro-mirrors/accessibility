@@ -703,7 +703,7 @@ void AccessibilityZoomGesture::OnTripleTaps(MMI::PointerEvent &event)
             event.GetPointerItem(pointerId, item);
             int32_t anchorX = item.GetDisplayX();
             int32_t anchorY = item.GetDisplayY();
-            HILOG_DEBUG("anchorX:%{public}d, anchorY:%{public}d.", anchorX, anchorY);
+            HILOG_DEBUG("anchorX:%{private}d, anchorY:%{private}d.", anchorX, anchorY);
             OnZoom(anchorX, anchorY);
             break;
         }
