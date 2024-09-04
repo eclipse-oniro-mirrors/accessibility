@@ -219,27 +219,6 @@ bool NAccessibilityConfig::CheckReadPermission(const std::string &permission)
     return true;
 }
 
-bool NAccessibilityConfig::CheckWritePermission(const std::string &permission)
-{
-    HILOG_DEBUG();
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
-    int result = TypePermissionState::PERMISSION_GRANTED;
-    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenId);
-    if (tokenType == TOKEN_INVALID) {
-        HILOG_WARN("AccessToken type invalid!");
-        return false;
-    } else {
-        result = AccessTokenKit::VerifyAccessToken(tokenId, permission);
-    }
-    if (result == TypePermissionState::PERMISSION_DENIED) {
-        HILOG_WARN("AccessTokenID denied!");
-        return false;
-    }
-    HILOG_DEBUG("tokenType %{private}d dAccessTokenID:%{private}u, permission:%{private}s matched!",
-        tokenType, tokenId, permission.c_str());
-    return true;
-}
-
 bool NAccessibilityConfig::IsAvailable(napi_env env, napi_callback_info info)
 {
     HILOG_DEBUG();
@@ -254,26 +233,6 @@ bool NAccessibilityConfig::IsAvailable(napi_env env, napi_callback_info info)
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NO_PERMISSION);
         napi_throw(env, err);
         HILOG_ERROR("have no read permission");
-        return false;
-    }
-    
-    return true;
-}
-
-bool NAccessibilityConfig::IsAvailableWrite(napi_env env, napi_callback_info info)
-{
-    HILOG_DEBUG();
-    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
-        napi_throw(env, err);
-        HILOG_ERROR("is not system app");
-        return false;
-    }
-
-    if (!CheckWritePermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NO_PERMISSION);
-        napi_throw(env, err);
-        HILOG_ERROR("have no write permission");
         return false;
     }
     
@@ -754,10 +713,6 @@ bool NAccessibilityConfig::SetConfigParseData(napi_env env, NAccessibilityConfig
 napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info)
 {
     HILOG_DEBUG();
-    if (!IsAvailableWrite(env, info)) {
-        return nullptr;
-    }
-
     NAccessibilityConfigClass* obj;
     size_t argc = ARGS_SIZE_TWO;
     napi_value parameters[ARGS_SIZE_TWO] = {0};
