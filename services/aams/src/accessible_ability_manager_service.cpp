@@ -1636,6 +1636,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         HILOG_WARN("The account is current account id.");
         return;
     }
+    OffZoomGesture();
 
     std::map<std::string, uint32_t> importantEnabledAbilities;
     SCREENREADER_STATE screenReaderState = SCREENREADER_STATE::UNINIT;
@@ -2815,7 +2816,7 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
 
 void AccessibleAbilityManagerService::OffZoomGesture()
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
