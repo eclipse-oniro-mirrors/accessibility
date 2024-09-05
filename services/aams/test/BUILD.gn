@@ -1422,6 +1422,86 @@ ohos_unittest("accessibility_short_key_test") {
 }
 
 ################################################################################
+ohos_unittest("accessibility_short_key_dialog_test") {
+  module_out_path = module_output_path
+  sources = [
+    "../../test/mock/mock_common_event_data.cpp",
+    "../../test/mock/mock_common_event_manager.cpp",
+    "../../test/mock/mock_common_event_subscribe_info.cpp",
+    "../../test/mock/mock_common_event_subscriber.cpp",
+    "../../test/mock/mock_matching_skill.cpp",
+    "../src/accessibility_account_data.cpp",
+    "../src/accessibility_datashare_helper.cpp",
+    "../src/accessibility_display_manager.cpp",
+    "../src/accessibility_dumper.cpp",
+    "../src/accessibility_power_manager.cpp",
+    "../src/accessibility_setting_observer.cpp",
+    "../src/accessibility_setting_provider.cpp",
+    "../src/accessibility_settings.cpp",
+    "../src/accessibility_settings_config.cpp",
+    "../src/accessibility_short_key.cpp",
+    "../src/accessibility_short_key_dialog.cpp",
+    "../src/accessibility_window_connection.cpp",
+    "../src/accessibility_window_manager.cpp",
+    "../src/accessible_ability_channel.cpp",
+    "../src/accessible_ability_connection.cpp",
+    "../src/accessible_ability_manager_service_event_handler.cpp",
+    "../src/utils.cpp",
+    "mock/src/mock_accessibility_common_event.cpp",
+    "mock/src/mock_accessibility_event_transmission.cpp",
+    "mock/src/mock_accessible_ability_client_stub_impl.cpp",
+    "mock/src/mock_accessible_ability_manager_service.cpp",
+    "mock/src/mock_system_ability.cpp",
+    "unittest/accessibility_short_key_dialog_test.cpp",
+  ]
+  sources += aams_mock_distributeddatamgr_src
+
+  configs = [
+    ":module_private_config",
+    "../../../resources/config/build:coverage_flags",
+  ]
+
+  deps = [
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+  ]
+
+  external_deps = [
+    "ability_base:want",
+    "ability_base:zuri",
+    "ability_runtime:ability_manager",
+    "ability_runtime:abilitykit_native",
+    "ability_runtime:dataobs_manager",
+    "ability_runtime:extension_manager",
+    "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_consumer",
+    "display_manager:displaymgr",
+    "eventhandler:libeventhandler",
+    "ffrt:libffrt",
+    "graphic_2d:2d_graphics",
+    "graphic_2d:librender_service_client",
+    "hicollie:libhicollie",
+    "hilog:libhilog",
+    "hisysevent:libhisysevent",
+    "hitrace:hitrace_meter",
+    "init:libbegetutil",
+    "input:libmmi-client",
+    "ipc:ipc_single",
+    "os_account:os_account_innerkits",
+    "power_manager:powermgr_client",
+    "preferences:native_preferences",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
+  ]
+}
+
+################################################################################
 ohos_unittest("accessibility_settings_config_test") {
   module_out_path = module_output_path
   sources = [
