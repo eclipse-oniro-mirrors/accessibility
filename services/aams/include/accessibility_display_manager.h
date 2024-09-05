@@ -39,7 +39,6 @@ public:
     OHOS::Rosen::DisplayOrientation GetOrientation();
     bool IsFoldable();
     Rosen::FoldDisplayMode GetFoldDisplayMode();
-    void SetDisplayScale(const uint64_t screenId, float scaleX, float scaleY, float pivotX, float pivotY);
 
     void RegisterDisplayListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void UnregisterDisplayListener();

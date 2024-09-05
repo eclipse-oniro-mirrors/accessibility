@@ -272,8 +272,8 @@ HWTEST_F(AccessibilityZoomGestureUnitTest, AccessibilityZoomGesture_Unittest_OnP
     item4.SetDisplayY(50);
     eventMove->AddPointerItem(item4);
     zoomGesture_->OnPointerEvent(*eventMove);
-    zoomState = AccessibilityAbilityHelper::GetInstance().GetZoomState();
-    EXPECT_TRUE(zoomState);
+    bool scrollState = AccessibilityAbilityHelper::GetInstance().GetScrollState();
+    EXPECT_TRUE(!scrollState);
 
     GTEST_LOG_(INFO) << "AccessibilityZoomGesture_Unittest_OnPointerEvent_005 end";
 }
