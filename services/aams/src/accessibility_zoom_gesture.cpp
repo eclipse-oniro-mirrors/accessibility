@@ -18,6 +18,7 @@
 #include "hilog_wrapper.h"
 #include "window_accessibility_controller.h"
 #include "accessibility_window_manager.h"
+#include "utils.h"
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "accessibility_power_manager.h"
 #endif
@@ -203,6 +204,7 @@ void AccessibilityZoomGesture::SendCacheEventsToNext()
         if (isStartNewAction) {
             OnPointerEvent(*pointerEvent);
         } else {
+            pointerEvent->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
             EventTransmission::OnPointerEvent(*pointerEvent);
         }
     }
