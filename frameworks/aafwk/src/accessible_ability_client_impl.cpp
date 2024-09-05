@@ -728,7 +728,7 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
         std::vector<AccessibilityElementInfo> elementInfos {};
         if (parent.GetChildWindowId() > 0 && (parent.GetChildWindowId() != windowId)) {
             ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetChildWindowId(), ROOT_NONE_ID,
-            GET_SOURCE_MODE, elementInfos, ROOT_TREE_ID);
+            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
         } else if (parent.GetChildTreeId() > 0) {
             ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
             GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
@@ -860,7 +860,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByContent(const 
         }
         if (info.GetChildWindowId() > 0 && info.GetChildWindowId() != info.GetWindowId()) {
             ret = SearchElementInfoRecursiveByContent(info.GetChildWindowId(),
-                elementId, mode, elementInfos, text, ROOT_TREE_ID, isFilter);
+                elementId, mode, elementInfos, text, info.GetChildTreeId(), isFilter);
         } else if (info.GetChildTreeId() > 0) {
             ret = SearchElementInfoRecursiveByContent(info.GetWindowId(),
                 elementId, mode, elementInfos, text, info.GetChildTreeId(), isFilter);
@@ -1405,7 +1405,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
         if ((elementInfos[i].GetChildWindowId() > 0) &&
             (elementInfos[i].GetChildWindowId() != elementInfos[i].GetWindowId())) {
             ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetChildWindowId(),
-            elementId, mode, elementInfos, ROOT_TREE_ID, isFilter, &elementInfos[i]);
+            elementId, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, &elementInfos[i]);
             HILOG_DEBUG("ChildWindowId %{public}d}. ret:%{public}d", elementInfos[i].GetChildWindowId(), ret);
         } else if (elementInfos[i].GetChildTreeId() > 0) {
             ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetWindowId(),
