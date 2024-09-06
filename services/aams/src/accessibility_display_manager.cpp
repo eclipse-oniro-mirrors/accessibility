@@ -128,15 +128,6 @@ Rosen::FoldDisplayMode AccessibilityDisplayManager::GetFoldDisplayMode()
     return Rosen::DisplayManager::GetInstance().GetFoldDisplayMode();
 }
 
-void AccessibilityDisplayManager::SetDisplayScale(const uint64_t screenId,
-    float scaleX, float scaleY, float pivotX, float pivotY)
-{
-    HILOG_DEBUG("scaleX = %{public}f, scaleY = %{public}f, pivotX = %{public}f, pivotY = %{public}f",
-        scaleX, scaleY, pivotX, pivotY);
-    Rosen::DisplayManager::GetInstance().SetDisplayScale(screenId, scaleX,
-        scaleY, pivotX, pivotY);
-}
-
 void AccessibilityDisplayManager::RegisterDisplayListener(
     const std::shared_ptr<AppExecFwk::EventHandler> &handler)
 {
