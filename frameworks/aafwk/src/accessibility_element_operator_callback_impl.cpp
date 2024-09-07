@@ -23,7 +23,10 @@ void AccessibilityElementOperatorCallbackImpl::SetFindFocusedElementInfoResult(c
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
     accessibilityInfoResult_ = info;
-    promise_.set_value();
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
 }
 
 void AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoByTextResult(
@@ -31,7 +34,10 @@ void AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoByTextResult(
 {
     HILOG_DEBUG("Response [elementInfoSize:%{public}zu] [requestId:%{public}d]", infos.size(), requestId);
     elementInfosResult_ = infos;
-    promise_.set_value();
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
 }
 
 void AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
@@ -39,7 +45,10 @@ void AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoByAccessibili
 {
     HILOG_DEBUG("Response[elementInfoSize:%{public}zu] [requestId:%{public}d]", infos.size(), requestId);
     elementInfosResult_ = infos;
-    promise_.set_value();
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
 }
 
 void AccessibilityElementOperatorCallbackImpl::SetFocusMoveSearchResult(const AccessibilityElementInfo &info,
@@ -47,14 +56,20 @@ void AccessibilityElementOperatorCallbackImpl::SetFocusMoveSearchResult(const Ac
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
     accessibilityInfoResult_ = info;
-    promise_.set_value();
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
 }
 
 void AccessibilityElementOperatorCallbackImpl::SetExecuteActionResult(const bool succeeded, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d] result[%{public}d]", requestId, succeeded);
     executeActionResult_ = succeeded;
-    promise_.set_value();
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
 }
 
 void AccessibilityElementOperatorCallbackImpl::SetCursorPositionResult(const int32_t cursorPosition,
@@ -62,7 +77,10 @@ void AccessibilityElementOperatorCallbackImpl::SetCursorPositionResult(const int
 {
     HILOG_DEBUG("Response [requestId:%{public}d] cursorPosition[%{public}d]", requestId, cursorPosition);
     CursorPosition_ = cursorPosition;
-    promise_.set_value();
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS
