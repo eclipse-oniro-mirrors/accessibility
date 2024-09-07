@@ -1709,6 +1709,20 @@ public:
      */
     const std::vector<SpanInfo> &GetSpanList() const;
 
+    /**
+     * @brief Get the isActive to the element info.
+     * @return isActive status.
+     * @sysCap Accessibility
+     */
+    bool GetIsActive() const;
+
+    /**
+     * @brief Set the isActive to the element info.
+     * @param isActive The isActive of node.
+     * @sysCap Accessibility
+     */
+    void SetIsActive(const bool isActive);
+ 
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1784,6 +1798,7 @@ protected:
     std::string hitTestBehavior_ = "";
     int64_t navDestinationId_ = -1;
     std::vector<SpanInfo> spanList_ {};
+    bool isActive_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -166,6 +166,8 @@ bool AccessibilityElementInfoParcel::ReadFromParcelFourthPart(Parcel &parcel)
         }
         spanList_.emplace_back(*spanList);
     }
+
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isActive_);
     return true;
 }
 
@@ -283,6 +285,7 @@ bool AccessibilityElementInfoParcel::MarshallingThirdPart(Parcel &parcel) const
         WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &spanList);
     }
 
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isActive_);
     return true;
 }
 

@@ -138,6 +138,7 @@ public:
     static void GetElementInfoAccessibilityLevel(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoNavDestinationId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoSpan(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);
     
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);

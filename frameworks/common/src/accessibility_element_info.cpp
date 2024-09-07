@@ -1067,5 +1067,15 @@ const std::string &SpanInfo::GetAccessibilityLevel() const
 {
     return accessibilityLevel_;
 }
+
+bool AccessibilityElementInfo::GetIsActive() const
+{
+    return isActive_;
+}
+
+void AccessibilityElementInfo::SetIsActive(const bool isActive)
+{
+    isActive_ = isActive;
+}
 } // namespace Accessibility
 } // namespace OHOS
