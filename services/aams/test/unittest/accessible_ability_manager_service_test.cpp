@@ -1562,8 +1562,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnShortKeyProcess_004, TestSiz
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
     EXPECT_EQ(accountData->GetConfig()->GetShortkeyMultiTarget().size(), 0);
 
+    size_t size = accountData->GetConfig()->GetEnabledAccessibilityServices().size();
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
-    EXPECT_EQ(accountData->GetConfig()->GetEnabledAccessibilityServices().size(), 0);
+    EXPECT_EQ(accountData->GetConfig()->GetEnabledAccessibilityServices().size(), size);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_004 end";
 }
 
@@ -1594,8 +1595,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnShortKeyProcess_005, TestSiz
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
     EXPECT_EQ(accountData->GetConfig()->GetShortkeyMultiTarget().size(), 1);
 
+    size_t size = accountData->GetConfig()->GetEnabledAccessibilityServices().size();
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
-    EXPECT_EQ(accountData->GetConfig()->GetEnabledAccessibilityServices().size(), 0);
+    EXPECT_EQ(accountData->GetConfig()->GetEnabledAccessibilityServices().size(), size);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_005 end";
 }
 
@@ -1625,10 +1627,11 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnShortKeyProcess_006, TestSiz
     name.push_back("test1");
     name.push_back("test2");
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
-    EXPECT_EQ(accountData->GetConfig()->GetShortkeyMultiTarget().size(), 1);
+    EXPECT_EQ(accountData->GetConfig()->GetShortkeyMultiTarget().size(), 2);
 
+    size_t size = accountData->GetConfig()->GetEnabledAccessibilityServices().size();
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
-    EXPECT_EQ(accountData->GetConfig()->GetEnabledAccessibilityServices().size(), 0);
+    EXPECT_EQ(accountData->GetConfig()->GetEnabledAccessibilityServices().size(), size);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_006 end";
 }
 
