@@ -459,7 +459,7 @@ bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     int64_t durationTime = event.GetActionTime() - pPreUp_->GetActionTime();
-    if (!(durationTime <= DOUBLE_TAP_TIMEOUT && durationTime >= MIN_DOUBLE_TAP_TIME)) {
+    if (!(durationTime <= DOUBLE_TAP_TIMEOUT)) {
         HILOG_WARN("durationTime[%{public}" PRId64 "] is wrong", durationTime);
         return false;
     }
