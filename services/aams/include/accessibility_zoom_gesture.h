@@ -44,6 +44,7 @@ public:
     ~AccessibilityZoomGesture() = default;
 
     virtual bool OnPointerEvent(MMI::PointerEvent &event) override;
+    void DestroyEvents() override;
 
 private:
     class ZoomGestureEventHandler : public AppExecFwk::EventHandler {
@@ -86,6 +87,7 @@ private:
     void OffZoom();
     void OnScroll(float offsetX, float offsetY);
     void OnScale(float scaleSpan);
+    void Clear();
 
     bool startScaling_ = false;
     bool isLongPress_ = false;

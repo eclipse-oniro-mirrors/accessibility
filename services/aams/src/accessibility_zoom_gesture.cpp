@@ -219,6 +219,8 @@ void AccessibilityZoomGesture::ClearCacheEventsAndMsg()
     lastDownEvent_ = nullptr;
     preLastUpEvent_ = nullptr;
     lastUpEvent_ = nullptr;
+    currentMoveEvent_ = nullptr;
+    longPressDownEvent_ = nullptr;
     zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
 }
 
@@ -871,6 +873,20 @@ void AccessibilityZoomGesture::OnScale(float scaleSpan)
     HILOG_INFO("not support zoom");
     return;
 #endif
+}
+
+void AccessibilityZoomGesture::Clear()
+{
+    HILOG_DEBUG();
+    ClearCacheEventsAndMsg();
+    TransferState(READY_STATE);
+}
+
+void AccessibilityZoomGesture::DestroyEvents()
+{
+    HILOG_INFO();
+    Clear();
+    EventTransmission::DestroyEvents();
 }
 } // namespace Accessibility
 } // namespace OHOS

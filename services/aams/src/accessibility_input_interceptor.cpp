@@ -106,7 +106,8 @@ void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunc
 {
     HILOG_INFO("function[%{public}d].", availableFunctions);
 
-    if (availableFunctions_ == availableFunctions && ((availableFunctions & FEATURE_SCREEN_TOUCH) == 0)) {
+    if (((availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) != FEATURE_SCREEN_MAGNIFICATION) &&
+        (availableFunctions_ == availableFunctions) && ((availableFunctions & FEATURE_SCREEN_TOUCH) == 0)) {
         return;
     }
     availableFunctions_ = availableFunctions;
