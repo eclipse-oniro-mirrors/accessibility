@@ -98,6 +98,8 @@ public:
     void CloneShortkeyService(bool isScreenReaderEnabled);
     void OnDataClone();
     void CloneAudioState();
+    void InitShortKeyConfig();
+    uint32_t GetShortKeyService(std::vector<std::string> &services);
     std::shared_ptr<AccessibilityDatashareHelper> GetDbHandle()
     {
         return datashare_;

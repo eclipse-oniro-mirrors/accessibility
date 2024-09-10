@@ -64,6 +64,7 @@ namespace {
     const std::string AUDIO_MONO_HMOS_TAG = "AUDIO_MONO";
     const std::string HIGH_CONTRAST_TEXT_HMOS_TAG = "HIGH_CONTRAST_TEXT";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const std::string ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM = 700;
@@ -74,6 +75,7 @@ namespace {
     constexpr int INVALID_MASTER_MONO_VALUE = -1;
     constexpr int AUDIO_BALANCE_STEP = 5;
     constexpr float INVALID_MASTER_BALANCE_VALUE = 2.0;
+    constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -811,6 +813,29 @@ void AccessibilitySettingsConfig::InitCaption()
     captionProperty_.SetWindowColor(windowColor);
 }
 
+void AccessibilitySettingsConfig::InitShortKeyConfig()
+{
+    isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, true);
+    int isShortKeyEnabledOnLockScreen = datashare_->GetIntValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN,
+        INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
+    shortKeyTimeout_ = static_cast<int32_t>(datashare_->GetIntValue(SHORTCUT_TIMEOUT, SHORT_KEY_TIMEOUT_BEFORE_USE));
+    bool shortKeyOnLockScreenAutoOn = false;
+
+    if (shortKeyTimeout_ == 1) {
+        SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+        if (isShortKeyEnabledOnLockScreen == INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
+            shortKeyOnLockScreenAutoOn = true;
+            SetShortKeyOnLockScreenState(true);
+        }
+    } else if (shortKeyTimeout_ == 0) {
+        SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
+    }
+
+    if (!shortKeyOnLockScreenAutoOn) {
+        SetShortKeyOnLockScreenState(isShortKeyEnabledOnLockScreen == 1);
+    }
+}
+
 void AccessibilitySettingsConfig::InitSetting()
 {
     HILOG_DEBUG();
@@ -818,11 +843,10 @@ void AccessibilitySettingsConfig::InitSetting()
         return;
     }
 
+    InitShortKeyConfig();
+    CloneAudioState();
     isScreenMagnificationState_ = datashare_->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
     isMouseKeyState_= datashare_->GetBoolValue(MOUSEKEY, false);
-    isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, true);
-    isShortKeyEnabledOnLockScreen_ = datashare_->GetBoolValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN, false);
-    shortKeyTimeout_ = static_cast<int32_t>(datashare_->GetIntValue(SHORTCUT_TIMEOUT, SHORT_KEY_TIMEOUT_BEFORE_USE));
     animationOffState_ = datashare_->GetBoolValue(ANIMATION_OFF_KEY, false);
     invertColorState_ = datashare_->GetBoolValue(INVERT_COLOR_KEY, false);
     highContrastTextState_ = datashare_->GetBoolValue(HIGH_CONTRAST_TEXT_KEY, false);
@@ -836,8 +860,13 @@ void AccessibilitySettingsConfig::InitSetting()
     shortkeyMultiTarget_ = {};
     Utils::StringToVector(tmpString, shortkeyMultiTarget_);
 
+    bool isScreenReaderEnabledOriginal =
+        (std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(),
+        SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
     tmpString = datashare_->GetStringValue(ENABLED_ACCESSIBILITY_SERVICES, "");
+    enabledAccessibilityServices_ = {};
     Utils::StringToVector(tmpString, enabledAccessibilityServices_);
+    CloneShortkeyService(isScreenReaderEnabledOriginal);
 
     mouseAutoClick_ = static_cast<int32_t>(datashare_->GetIntValue("MouseAutoClick", -1));
     daltonizationColorFilter_ = static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0));
@@ -916,37 +945,38 @@ void AccessibilitySettingsConfig::CloneAudioState()
     }
 }
 
+uint32_t AccessibilitySettingsConfig::GetShortKeyService(std::vector<std::string> &services)
+{
+    uint32_t serviceFlag = 0;
+
+    auto screenReader = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+        return service.find(SCREENREADER_TAG) != std::string::npos;
+    });
+    serviceFlag = screenReader != services.end() ? STATE_EXPLORATION_ENABLED : serviceFlag;
+
+    auto invertColor = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+        return service.find(INVERT_COLOR_AOS_TAG) != std::string::npos ||
+            service.find(INVERT_COLOR_HMOS_TAG) != std::string::npos;
+    });
+    serviceFlag = invertColor != services.end() ? (serviceFlag | STATE_INVETRTCOLOR_ENABLED) : serviceFlag;
+
+    auto audioMono = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+        return service.find(AUDIO_MONO_HMOS_TAG) != std::string::npos;
+    });
+    serviceFlag = audioMono != services.end() ? (serviceFlag | STATE_AUDIOMONO_ENABLED) : serviceFlag;
+
+    auto highContrastText = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+        return service.find(HIGH_CONTRAST_TEXT_HMOS_TAG) != std::string::npos;
+    });
+    serviceFlag = highContrastText != services.end() ? (serviceFlag | STATE_HIGHCONTRAST_ENABLED) : serviceFlag;
+
+    return serviceFlag;
+}
+
 void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnabled)
 {
-    auto getServiceFlag = [] (std::vector<std::string> &services) -> uint32_t {
-        uint32_t serviceFlag = 0;
-
-        auto screenReader = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
-            return service.find(SCREENREADER_TAG) != std::string::npos;
-        });
-        serviceFlag = screenReader != services.end() ? STATE_EXPLORATION_ENABLED : serviceFlag;
-
-        auto invertColor = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
-            return service.find(INVERT_COLOR_AOS_TAG) != std::string::npos ||
-                service.find(INVERT_COLOR_HMOS_TAG) != std::string::npos;
-        });
-        serviceFlag = invertColor != services.end() ? (serviceFlag | STATE_INVETRTCOLOR_ENABLED) : serviceFlag;
-
-        auto audioMono = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
-            return service.find(AUDIO_MONO_HMOS_TAG) != std::string::npos;
-        });
-        serviceFlag = audioMono != services.end() ? (serviceFlag | STATE_AUDIOMONO_ENABLED) : serviceFlag;
-
-        auto highContrastText = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
-            return service.find(HIGH_CONTRAST_TEXT_HMOS_TAG) != std::string::npos;
-        });
-        serviceFlag = highContrastText != services.end() ? (serviceFlag | STATE_HIGHCONTRAST_ENABLED) : serviceFlag;
-
-        return serviceFlag;
-    };
-
     std::vector<std::string> tmpVec = GetShortkeyMultiTarget();
-    uint32_t shortkeyServiceFlag = getServiceFlag(tmpVec);
+    uint32_t shortkeyServiceFlag = GetShortKeyService(tmpVec);
     std::vector<std::string> shortkeyService;
     if (shortkeyServiceFlag & STATE_EXPLORATION_ENABLED) {
         shortkeyService.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
@@ -963,35 +993,31 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     SetShortkeyMultiTarget(shortkeyService);
 
     tmpVec = GetEnabledAccessibilityServices();
-    if ((getServiceFlag(tmpVec) & STATE_EXPLORATION_ENABLED) || (isScreenReaderEnabled == true)) {
-        tmpVec.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
-        SetEnabledAccessibilityServices(tmpVec);
+    shortkeyServiceFlag = GetShortKeyService(tmpVec);
+    std::vector<std::string> enabledShortkeyService;
+    if ((shortkeyServiceFlag & STATE_EXPLORATION_ENABLED) || (isScreenReaderEnabled == true)) {
+        enabledShortkeyService.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
     }
+    SetEnabledAccessibilityServices(enabledShortkeyService);
 }
 
 void AccessibilitySettingsConfig::OnDataClone()
 {
     HILOG_INFO();
-    auto services = GetEnabledAccessibilityServices();
-    bool isScreenReaderEnabled =
-        (std::find(services.begin(), services.end(), SCREEN_READER_BUNDLE_ABILITY_NAME) != services.end());
     InitSetting();
-    CloneAudioState();
-
-    // 1->1000 0->3000
-    if (shortKeyTimeout_ == 1) {
-        SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-    } else if (shortKeyTimeout_ == 0) {
-        SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
-    }
-
-    CloneShortkeyService(isScreenReaderEnabled);
 
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     if (service == nullptr) {
         HILOG_ERROR("service is nullptr");
         return;
+    }
+    bool isScreenReaderEnabled =
+        (std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(),
+        SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
+    if (isScreenReaderEnabled) {
+        ErrCode ret = service->PutBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, true, true);
+        HILOG_INFO("set screenReader state, ret = %{public}d", ret);
     }
     service->PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
 }

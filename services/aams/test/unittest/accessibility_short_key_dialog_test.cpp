@@ -25,11 +25,11 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityShortKeyDialogUnitTest : public ::testing::Test {
+class AccessibilityShortkeyDialogUnitTest : public ::testing::Test {
 public:
-    AccessibilityShortKeyDialogUnitTest()
+    AccessibilityShortkeyDialogUnitTest()
     {}
-    ~AccessibilityShortKeyDialogUnitTest()
+    ~AccessibilityShortkeyDialogUnitTest()
     {}
 
     static void SetUpTestCase();
@@ -37,57 +37,57 @@ public:
     void SetUp() override;
     void TearDown() override;
 
-    std::shared_ptr<AccessibilityShortKeyDialog> shortKeyDialog_ = nullptr;
+    std::shared_ptr<AccessibilityShortkeyDialog> shortKeyDialog_ = nullptr;
 };
 
-void AccessibilityShortKeyDialogUnitTest::SetUpTestCase()
+void AccessibilityShortkeyDialogUnitTest::SetUpTestCase()
 {
-    GTEST_LOG_(INFO) << "###################### AccessibilityShortKeyDialogUnitTest Start ######################";
+    GTEST_LOG_(INFO) << "###################### AccessibilityShortkeyDialogUnitTest Start ######################";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
-void AccessibilityShortKeyDialogUnitTest::TearDownTestCase()
+void AccessibilityShortkeyDialogUnitTest::TearDownTestCase()
 {
-    GTEST_LOG_(INFO) << "###################### AccessibilityShortKeyDialogUnitTest End ######################";
+    GTEST_LOG_(INFO) << "###################### AccessibilityShortkeyDialogUnitTest End ######################";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
-void AccessibilityShortKeyDialogUnitTest::SetUp()
+void AccessibilityShortkeyDialogUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    shortKeyDialog_ = std::make_shared<AccessibilityShortKeyDialog>();
+    shortKeyDialog_ = std::make_shared<AccessibilityShortkeyDialog>();
 }
 
-void AccessibilityShortKeyDialogUnitTest::TearDown()
+void AccessibilityShortkeyDialogUnitTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TearDown";
     shortKeyDialog_ = nullptr;
 }
 
 /**
- * @tc.number: AccessibilityshortKeyDialog_Unittest_ConnectDialog_001
+ * @tc.number: AccessibilityShortkeyDialog_Unittest_ConnectDialog_001
  * @tc.name: ConnectDialog
  * @tc.desc: Test function ConnectDialog
  * @tc.require: issueI5NTXH
  */
-HWTEST_F(AccessibilityShortKeyDialogUnitTest, AccessibilityshortKeyDialog_Unittest_ConnectDialog_001, TestSize.Level1)
+HWTEST_F(AccessibilityShortkeyDialogUnitTest, AccessibilityShortkeyDialog_Unittest_ConnectDialog_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityshortKeyDialog_Unittest_ConnectDialog_001 start";
+    GTEST_LOG_(INFO) << "AccessibilityShortkeyDialog_Unittest_ConnectDialog_001 start";
     EXPECT_TRUE(shortKeyDialog_->ConnectDialog(ShortKeyDialogType::FUNCTION_SELECT));
-    GTEST_LOG_(INFO) << "AccessibilityshortKeyDialog_Unittest_ConnectDialog_001 end";
+    GTEST_LOG_(INFO) << "AccessibilityShortkeyDialog_Unittest_ConnectDialog_001 end";
 }
 
 /**
- * @tc.number: AccessibilityshortKeyDialog_Unittest_ConnectDialog_002
+ * @tc.number: AccessibilityShortkeyDialog_Unittest_ConnectDialog_002
  * @tc.name: ConnectDialog
  * @tc.desc: Test function ConnectDialog
  * @tc.require: issueI5NTXH
  */
-HWTEST_F(AccessibilityShortKeyDialogUnitTest, AccessibilityshortKeyDialog_Unittest_ConnectDialog_002, TestSize.Level1)
+HWTEST_F(AccessibilityShortkeyDialogUnitTest, AccessibilityShortkeyDialog_Unittest_ConnectDialog_002, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityshortKeyDialog_Unittest_ConnectDialog_002 start";
+    GTEST_LOG_(INFO) << "AccessibilityShortkeyDialog_Unittest_ConnectDialog_002 start";
     EXPECT_TRUE(shortKeyDialog_->ConnectDialog(ShortKeyDialogType::RECONFIRM));
-    GTEST_LOG_(INFO) << "AccessibilityshortKeyDialog_Unittest_ConnectDialog_002 end";
+    GTEST_LOG_(INFO) << "AccessibilityShortkeyDialog_Unittest_ConnectDialog_002 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
