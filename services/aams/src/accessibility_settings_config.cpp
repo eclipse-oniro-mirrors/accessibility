@@ -815,7 +815,7 @@ void AccessibilitySettingsConfig::InitCaption()
 
 void AccessibilitySettingsConfig::InitShortKeyConfig()
 {
-    isShortKeyState_ = isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, true);
+    isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, true);
     int isShortKeyEnabledOnLockScreen = datashare_->GetIntValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN,
         INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
     shortKeyTimeout_ = static_cast<int32_t>(datashare_->GetIntValue(SHORTCUT_TIMEOUT, SHORT_KEY_TIMEOUT_BEFORE_USE));
@@ -866,7 +866,7 @@ void AccessibilitySettingsConfig::InitSetting()
     tmpString = datashare_->GetStringValue(ENABLED_ACCESSIBILITY_SERVICES, "");
     enabledAccessibilityServices_ = {};
     Utils::StringToVector(tmpString, enabledAccessibilityServices_);
-    CloneShortkeyService(isScreenReaderEnabledOriginal)
+    CloneShortkeyService(isScreenReaderEnabledOriginal);
 
     mouseAutoClick_ = static_cast<int32_t>(datashare_->GetIntValue("MouseAutoClick", -1));
     daltonizationColorFilter_ = static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0));
@@ -998,7 +998,7 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     if ((shortkeyServiceFlag & STATE_EXPLORATION_ENABLED) || (isScreenReaderEnabled == true)) {
         enabledShortkeyService.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
     }
-    SetEnabledAccessibilityServices(tmpVec);
+    SetEnabledAccessibilityServices(enabledShortkeyService);
 }
 
 void AccessibilitySettingsConfig::OnDataClone()

@@ -55,7 +55,7 @@ void AccessibilityShortkeyDialogUnitTest::TearDownTestCase()
 void AccessibilityShortkeyDialogUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    shortKeyDialog_ = std::make_shared<AccessibilityShortKeyDialog>();
+    shortKeyDialog_ = std::make_shared<AccessibilityShortkeyDialog>();
 }
 
 void AccessibilityShortkeyDialogUnitTest::TearDown()
