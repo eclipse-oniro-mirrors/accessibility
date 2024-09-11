@@ -834,7 +834,7 @@ void NAccessibilityElement::GetElementInfoValueMax(NAccessibilityElementData *ca
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_double(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetRange().GetMax(), &value));
 }
 
@@ -843,7 +843,7 @@ void NAccessibilityElement::GetElementInfoValueMin(NAccessibilityElementData *ca
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_double(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetRange().GetMin(), &value));
 }
 
@@ -852,7 +852,7 @@ void NAccessibilityElement::GetElementInfoValueNow(NAccessibilityElementData *ca
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_double(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetRange().GetCurrent(), &value));
 }
 

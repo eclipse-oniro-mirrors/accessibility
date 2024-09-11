@@ -608,39 +608,39 @@ const std::string &AccessibleAction::GetDescriptionInfo() const
     return description_;
 }
 
-RangeInfo::RangeInfo(double min, double max, double current)
+RangeInfo::RangeInfo(int32_t min, int32_t max, int32_t current)
 {
     min_ = min;
     max_ = max;
     current_ = current;
 }
 
-double RangeInfo::GetMin() const
+int32_t RangeInfo::GetMin() const
 {
     return min_;
 }
 
-double RangeInfo::GetMax() const
+int32_t RangeInfo::GetMax() const
 {
     return max_;
 }
 
-double RangeInfo::GetCurrent() const
+int32_t RangeInfo::GetCurrent() const
 {
     return current_;
 }
 
-void RangeInfo::SetMin(double min)
+void RangeInfo::SetMin(int32_t min)
 {
     min_ = min;
 }
 
-void RangeInfo::SetMax(double max)
+void RangeInfo::SetMax(int32_t max)
 {
     max_ = max;
 }
 
-void RangeInfo::SetCurrent(double current)
+void RangeInfo::SetCurrent(int32_t current)
 {
     current_ = current;
 }
