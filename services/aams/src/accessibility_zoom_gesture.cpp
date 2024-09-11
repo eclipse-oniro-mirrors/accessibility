@@ -219,8 +219,6 @@ void AccessibilityZoomGesture::ClearCacheEventsAndMsg()
     lastDownEvent_ = nullptr;
     preLastUpEvent_ = nullptr;
     lastUpEvent_ = nullptr;
-    currentMoveEvent_ = nullptr;
-    longPressDownEvent_ = nullptr;
     zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
 }
 
