@@ -57,7 +57,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
@@ -107,7 +107,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int64_t e
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
@@ -149,7 +149,7 @@ void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int64_t ele
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
@@ -192,7 +192,7 @@ void AccessibilityElementOperatorProxy::FocusMoveSearch(const int64_t elementId,
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -236,7 +236,7 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int64_t elementId, c
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
@@ -299,7 +299,7 @@ void AccessibilityElementOperatorProxy::GetCursorPosition(const int64_t elementI
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
@@ -336,7 +336,7 @@ void AccessibilityElementOperatorProxy::ClearFocus()
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
         return;
@@ -353,7 +353,7 @@ void AccessibilityElementOperatorProxy::OutsideTouch()
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
         return;
@@ -371,7 +371,7 @@ void AccessibilityElementOperatorProxy::SetChildTreeIdAndWinId(const int64_t ele
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
@@ -404,7 +404,7 @@ void AccessibilityElementOperatorProxy::SetBelongTreeId(const int32_t treeId)
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
         return;
@@ -426,7 +426,7 @@ void AccessibilityElementOperatorProxy::SetParentWindowId(const int32_t iParentW
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
         return;
