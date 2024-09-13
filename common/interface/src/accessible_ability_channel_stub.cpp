@@ -58,40 +58,10 @@ constexpr int32_t ERR_CODE_DEFAULT = -1000;
 
 AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
 {
-    HILOG_DEBUG();
-
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID)] =
-        &AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT)] =
-        &AccessibleAbilityChannelStub::HandleSearchElementInfosByText;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO)] =
-        &AccessibleAbilityChannelStub::HandleFindFocusedElementInfo;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH)] =
-        &AccessibleAbilityChannelStub::HandleFocusMoveSearch;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::PERFORM_ACTION)] =
-        &AccessibleAbilityChannelStub::HandleExecuteAction;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CURTAIN_SCREEN)] =
-        &AccessibleAbilityChannelStub::HandleEnableScreenCurtain;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOW)] =
-        &AccessibleAbilityChannelStub::HandleGetWindow;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOWS)] =
-        &AccessibleAbilityChannelStub::HandleGetWindows;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOWS_BY_DISPLAY_ID)] =
-        &AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_ON_KEY_PRESS_EVENT_RESULT)] =
-        &AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEND_SIMULATE_GESTURE_PATH)] =
-        &AccessibleAbilityChannelStub::HandleSendSimulateGesturePath;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME)] =
-        &AccessibleAbilityChannelStub::HandleSetTargetBundleName;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CURSOR_POSITION)] =
-        &AccessibleAbilityChannelStub::HandleGetCursorPosition;
 }
 
 AccessibleAbilityChannelStub::~AccessibleAbilityChannelStub()
 {
-    HILOG_DEBUG();
-    memberFuncMap_.clear();
 }
 
 int AccessibleAbilityChannelStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,

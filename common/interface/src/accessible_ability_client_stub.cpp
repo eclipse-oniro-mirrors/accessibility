@@ -46,21 +46,10 @@ constexpr int32_t ERR_CODE_DEFAULT = -1000;
 
 AccessibleAbilityClientStub::AccessibleAbilityClientStub()
 {
-    HILOG_DEBUG();
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::INIT)] =
-        &AccessibleAbilityClientStub::HandleInit;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::DISCONNECT)] =
-        &AccessibleAbilityClientStub::HandleDisconnect;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::ON_ACCESSIBILITY_EVENT)] =
-        &AccessibleAbilityClientStub::HandleOnAccessibilityEvent;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::ON_KEY_PRESS_EVENT)] =
-        &AccessibleAbilityClientStub::HandleOnKeyPressEvent;
 }
 
 AccessibleAbilityClientStub::~AccessibleAbilityClientStub()
 {
-    HILOG_DEBUG();
-    memberFuncMap_.clear();
 }
 
 int AccessibleAbilityClientStub::OnRemoteRequest(uint32_t code,

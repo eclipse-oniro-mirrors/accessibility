@@ -388,7 +388,7 @@ void Utils::StringToVector(const std::string &stringIn, std::vector<std::string>
     }
 
     int32_t wrodCount = static_cast<int32_t>(position.size());
-    if ((wrodCount == 0) && (strLength > 0)) {
+    if (wrodCount == 0) {
         vectorResult.push_back(stringIn);
     } else {
         int32_t startWrod = 0;
