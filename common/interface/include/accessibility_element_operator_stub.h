@@ -138,7 +138,6 @@ private:
     ErrCode HandleSetParentWindowId(MessageParcel &data, MessageParcel &reply);
     using AccessibilityElementOperatorFunc =
         ErrCode (AccessibilityElementOperatorStub::*)(MessageParcel &data, MessageParcel &reply);
-    std::map<uint32_t, AccessibilityElementOperatorFunc> memberFuncMap_;
 };
 } // namespace Accessibility
 } // namespace OHOS
