@@ -119,6 +119,11 @@ void KeyEvent::AddKeyItem(const KeyItem& keyItem)
     keys_.push_back(keyItem);
 }
 
+std::string KeyEvent::ToString()
+{
+    return "";
+}
+
 int32_t KeyEvent::GetKeyCode() const
 {
     return keyCode_;

@@ -176,6 +176,11 @@ void PointerEvent::SetSourceType(int32_t sourceType)
     sourceType_ = sourceType;
 }
 
+std::string PointerEvent::ToString()
+{
+    return "";
+}
+
 int32_t PointerEvent::GetPointerAction() const
 {
     return pointerAction_;
