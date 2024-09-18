@@ -47,6 +47,11 @@ InputEvent::~InputEvent()
 void InputEvent::Reset()
 {}
 
+std::string InputEvent::ToString()
+{
+    return "";
+}
+
 std::shared_ptr<InputEvent> InputEvent::Create()
 {
     return std::make_shared<InputEvent>(InputEvent::EVENT_TYPE_BASE);
