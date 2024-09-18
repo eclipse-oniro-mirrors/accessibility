@@ -310,23 +310,9 @@ RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
 RetError AccessibleAbilityChannel::EnableScreenCurtain(bool isEnable)
 {
     HILOG_DEBUG();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    HILOG_INFO("enter AccessibleAbilityChannel::EnableScreenCurtain isEnable = %{public}d", isEnable);
-
-    if (eventHandler_== nullptr) {
-        HILOG_ERROR("eventHandler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    HILOG_DEBUG("Run RSInterfaces -> SetCurtainScreenUsingStatus");
-    auto rsInterfaces = &(Rosen::RSInterfaces::GetInstance());
-    if (rsInterfaces == nullptr) {
-        HILOG_ERROR("rsInterfaces is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    HILOG_INFO("EnableScreenCurtain : rsInterfaces->SetCurtainScreenUsingStatus(isEnable) %{public}d", isEnable);
-    rsInterfaces->SetCurtainScreenUsingStatus(isEnable);
-    return RET_OK;
+    auto& aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.PostDelayUnloadTask();
+    return aams.SetCurtainScreenUsingStatus(isEnable);
 }
 
 RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,

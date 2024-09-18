@@ -178,6 +178,7 @@ ohos_unittest("accessible_ability_test") {
     "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
+    "graphic_2d:librender_service_client",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",

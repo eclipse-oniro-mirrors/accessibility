@@ -37,7 +37,7 @@
 #include "utils.h"
 #include "accessibility_short_key_dialog.h"
 #include <ipc_skeleton.h>
-
+#include "transaction/rs_interfaces.h"
 
 using namespace std;
 
@@ -1252,6 +1252,19 @@ RetError AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::s
     return syncFuture.get();
 }
 
+RetError AccessibleAbilityManagerService::SetCurtainScreenUsingStatus(bool isEnable)
+{
+    HILOG_DEBUG();
+    auto rsInterfaces = &(Rosen::RSInterfaces::GetInstance());
+    if (rsInterfaces == nullptr) {
+        HILOG_ERROR("rsInterfaces is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    HILOG_INFO("SetCurtainScreenUsingStatus: status = %{public}d", isEnable);
+    rsInterfaces->SetCurtainScreenUsingStatus(isEnable);
+    return RET_OK;
+}
+
 RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     HILOG_INFO();
@@ -1286,6 +1299,7 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
     }
     if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
         ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
+        SetCurtainScreenUsingStatus(false);
     }
     RetError ret = accountData->RemoveEnabledAbility(name);
     if (ret != RET_OK) {

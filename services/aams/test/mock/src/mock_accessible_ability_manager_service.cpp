@@ -228,6 +228,12 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
     return NO_ERROR;
 }
 
+RetError AccessibleAbilityManagerService::SetCurtainScreenUsingStatus(bool isEnable)
+{
+    (void)isEnable;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     (void)name;
