@@ -102,20 +102,20 @@ void AccessibilityMemo::SetComponentType(const std::string &className)
 
 const std::string &AccessibilityMemo::GetBeforeText() const
 {
-    HILOG_DEBUG("beforeText_[%{public}s]", beforeText_.c_str());
+    HILOG_DEBUG("beforeText_[%{private}s]", beforeText_.c_str());
     return beforeText_;
 }
 
 void AccessibilityMemo::SetBeforeText(const std::string &beforeText)
 {
     beforeText_ = beforeText;
-    HILOG_DEBUG("beforeText_[%{public}s]", beforeText_.c_str());
+    HILOG_DEBUG("beforeText_[%{private}s]", beforeText_.c_str());
 }
 
 void AccessibilityMemo::AddContent(const std::string &content)
 {
     contents_.push_back(content);
-    HILOG_DEBUG("content[%{public}s]", content.c_str());
+    HILOG_DEBUG("content[%{private}s]", content.c_str());
 }
 
 const std::vector<std::string> &AccessibilityMemo::GetContentList() const
@@ -125,14 +125,14 @@ const std::vector<std::string> &AccessibilityMemo::GetContentList() const
 
 const std::string &AccessibilityMemo::GetLatestContent() const
 {
-    HILOG_DEBUG("latestContent_[%{public}s]", latestContent_.c_str());
+    HILOG_DEBUG("latestContent_[%{private}s]", latestContent_.c_str());
     return latestContent_;
 }
 
 void AccessibilityMemo::SetLatestContent(const std::string &content)
 {
     latestContent_ = content;
-    HILOG_DEBUG("latestContent_[%{public}s]", latestContent_.c_str());
+    HILOG_DEBUG("latestContent_[%{private}s]", latestContent_.c_str());
 }
 
 const std::string &AccessibilityMemo::GetDescription() const
