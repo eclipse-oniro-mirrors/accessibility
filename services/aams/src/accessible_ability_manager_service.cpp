@@ -69,6 +69,7 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     dependentServicesStatus_[DISPLAY_MANAGER_SERVICE_SA_ID] = false;
     dependentServicesStatus_[SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN] = false;
     dependentServicesStatus_[WINDOW_MANAGER_SERVICE_ID] = false;
+    dependentServicesStatus_[DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID] = false;
 
     accessibilitySettings_ = std::make_shared<AccessibilitySettings>();
 }
@@ -110,6 +111,7 @@ void AccessibleAbilityManagerService::OnStart()
     AddSystemAbilityListener(DISPLAY_MANAGER_SERVICE_SA_ID);
     AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
+    AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
 
     accessibilitySettings_->RegisterSettingsHandler(handler_);
 }
