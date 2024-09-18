@@ -336,9 +336,8 @@ private:
                 task.Resolve(env, napiElementInfo);
             } else {
                 HILOG_ERROR("Get focus elementInfo failed. ret: %{public}d", *ret);
-                task.Reject(env, CreateJsError(env,
-                    static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
-                    ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
+                NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
+                task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
             }
         };
 
@@ -418,9 +417,8 @@ private:
                 task.Resolve(env, napiElementInfo);
             } else {
                 HILOG_ERROR("Get root elementInfo failed. ret : %{public}d", *ret);
-                task.Reject(env, CreateJsError(env,
-                    static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
-                    ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
+                NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
+                task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
             }
         };
 
@@ -493,9 +491,8 @@ private:
                     task.Resolve(env, napiWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
-                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
+                    NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
+                    task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
                 }
         };
 
@@ -535,9 +532,8 @@ private:
                     task.Resolve(env, napiWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfosByDisplayId failed.");
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
-                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
+                    NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
+                    task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
                 }
         };
 
@@ -636,9 +632,8 @@ private:
                 task.Resolve(env, CreateJsUndefined(env));
             } else {
                 HILOG_ERROR("Gesture inject failed. ret: %{public}d.", *ret);
-                task.Reject(env, CreateJsError(env,
-                    static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
-                    ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
+                NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
+                task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
             }
         };
 
@@ -684,9 +679,8 @@ private:
                 task.Resolve(env, CreateJsUndefined(env));
             } else {
                 HILOG_ERROR("startAbility failed. ret: %{public}d.", *ret);
-                task.Reject(env, CreateJsError(env,
-                    static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
-                    ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
+                NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
+                task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
             }
         };
 
