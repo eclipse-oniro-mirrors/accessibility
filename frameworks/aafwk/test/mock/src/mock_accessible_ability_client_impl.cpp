@@ -214,11 +214,12 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     return RET_OK;
 }
 
-RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId,
+RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, const int32_t windowId,
     AccessibilityElementInfo &targetElementInfo)
 {
     HILOG_DEBUG();
     (void)elementId;
+    (void)windowId;
     (void)targetElementInfo;
     return RET_OK;
 }
