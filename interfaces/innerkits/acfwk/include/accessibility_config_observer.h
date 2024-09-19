@@ -51,8 +51,8 @@ public:
     int NotifyIntChanged(uv_work_t *work);
     void NotifyUintChanged2JS(uint32_t value);
     int NotifyUintChanged(uv_work_t *work);
-    void NotifyFloatChanged2JS(float value);
-    int NotifyFloatChanged(uv_work_t *work);
+    void NotifyDoubleChanged2JS(double value);
+    int NotifyDoubleChanged(uv_work_t *work);
 
     napi_env env_ = nullptr;
     napi_ref handlerRef_ = nullptr;

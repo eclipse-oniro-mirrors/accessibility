@@ -33,14 +33,9 @@ namespace {
     constexpr int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
     constexpr int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
     constexpr int32_t INIT_DATASHARE_HELPER_SLEEP_TIME = 500;
-    constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
-    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
-    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM = 700;
-    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG = 1000;
-    constexpr int DISPLAY_DALTONIZER_GREEN = 12;
-    constexpr int DISPLAY_DALTONIZER_RED = 11;
-    constexpr int DISPLAY_DALTONIZER_BLUE = 13;
     constexpr int DEFAULT_ACCOUNT_ID = 100;
+    constexpr int SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
+    constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
@@ -54,8 +49,9 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
-    const std::string ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen";
-    const std::string ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN = "accessibility_shortcut_dialog_shown";
+    const std::string ACCESSIBILITY_SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
+    const std::string ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
+    const std::string ACCESSIBILITY_SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
 } // namespace
 
@@ -522,50 +518,41 @@ bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &name)
 void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value)
 {
     HILOG_DEBUG();
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (config_ == nullptr) {
+        HILOG_ERROR("config_ is nullptr");
+        return;
+    }
 
-    ErrCode ret = provider.GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
-    if (ret == ERR_NO_INIT) {
+    if (config_->GetDbHandle() == nullptr) {
         HILOG_INFO("helper is null, retry.");
         std::this_thread::sleep_for(std::chrono::milliseconds(INIT_DATASHARE_HELPER_SLEEP_TIME));
-        provider.GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
+        if (config_->GetDbHandle() == nullptr) {
+            HILOG_ERROR("helper is null");
+            return;
+        }
     }
-    provider.GetBoolValue(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, value.invertColor);
-    provider.GetBoolValue(ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED, value.daltonizationState);
-    provider.GetBoolValue(MASTER_MONO, value.audioMono);
-    provider.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
-    provider.GetFloatValue(MASTER_BALENCE, value.audioBalance);
-    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN, value.shortcutEnabledOnLockScreen);
-    provider.GetBoolValue(ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN, value.shortcutDialogShown);
-    int tmpClickResTime = 0;
-    provider.GetIntValue(CLICK_RESPONSE_TIME, tmpClickResTime);
-    if (tmpClickResTime == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
-        value.clickResponseTime = static_cast<int>(AccessibilityConfig::ResponseDelayMedium);
-    } else if (tmpClickResTime > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
-        value.clickResponseTime = static_cast<int>(AccessibilityConfig::ResponseDelayLong);
-    }
-    provider.GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, value.ignoreRepeatClickState);
-    int tmpIgnoreRepeatClickTime = 0;
-    provider.GetIntValue(IGNORE_REPEAT_CLICK_TIME, tmpIgnoreRepeatClickTime);
-    if (tmpIgnoreRepeatClickTime == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
-        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutShort);
-    } else if (tmpIgnoreRepeatClickTime == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
-        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutMedium);
-    } else if (tmpIgnoreRepeatClickTime == DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
-        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutLong);
-    } else if (tmpIgnoreRepeatClickTime > DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
-        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutLongest);
-    }
-    int tmpDaltonizer = 0;
-    provider.GetIntValue(ACCESSIBILITY_DISPLAY_DALTONIZER, tmpDaltonizer);
-    if (tmpDaltonizer == DISPLAY_DALTONIZER_GREEN) {
-        value.displayDaltonizer = static_cast<int>(AccessibilityConfig::Deuteranomaly);
-    } else if (tmpDaltonizer == DISPLAY_DALTONIZER_RED) {
-        value.displayDaltonizer = static_cast<int>(AccessibilityConfig::Protanomaly);
-    } else if (tmpDaltonizer == DISPLAY_DALTONIZER_BLUE) {
-        value.displayDaltonizer= static_cast<int>(AccessibilityConfig::Tritanomaly);
-    }
-    provider.DeleteInstance();
+
+    value.highContrastText = config_->GetDbHandle()->GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, false);
+    value.invertColor = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, false);
+    value.daltonizationState = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED, false);
+    value.displayDaltonizer = config_->GetDbHandle()->GetIntValue(ACCESSIBILITY_DISPLAY_DALTONIZER, 0);
+    value.shortcutEnabled = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED, false);
+    value.shortcutEnabledOnLockScreen = config_->GetDbHandle()->GetIntValue(
+        ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
+    value.shortcutTimeout = config_->GetDbHandle()->GetIntValue(ACCESSIBILITY_SHORTCUT_TIMEOUT,
+        SHORT_KEY_TIMEOUT_BEFORE_USE);
+    value.clickResponseTime = config_->GetDbHandle()->GetIntValue(CLICK_RESPONSE_TIME, 0);
+    value.ignoreRepeatClickState = config_->GetDbHandle()->GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, false);
+    value.ignoreRepeatClickTime = config_->GetDbHandle()->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0);
+
+    // In Aos, the audio configuration is stored in SYSTEM and it should be copied to SECURE
+    config_->CloneAudioState();
+    value.audioMono = config_->GetDbHandle()->GetBoolValue(MASTER_MONO, false);
+    value.audioBalance = config_->GetDbHandle()->GetFloatValue(MASTER_BALENCE, 0);
+
+    AccessibilitySettingProvider& service = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    service.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
+    service.DeleteInstance();
 }
 
 RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)

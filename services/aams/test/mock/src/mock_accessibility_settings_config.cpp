@@ -442,6 +442,15 @@ RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const st
     return RET_OK;
 }
 
+void AccessibilitySettingsConfig::CloneAudioState()
+{
+}
+
+void CloneShortkeyService(bool isScreenReaderEnabled)
+{
+    (void)isScreenReaderEnabled;
+}
+
 void AccessibilitySettingsConfig::OnDataClone()
 {
 }
