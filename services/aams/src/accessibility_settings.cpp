@@ -486,7 +486,7 @@ void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpd
         accountData->GetConfig()->SetShortKeyState(true);
     }
     bool shortKeyOnLockScreenAutoOn = false;
-    if (atoHosValue.shortcutTimeout == 1){
+    if (atoHosValue.shortcutTimeout == 1) {
         accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
         if (atoHosValue.shortcutEnabledOnLockScreen == INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
             shortKeyOnLockScreenAutoOn = true;
