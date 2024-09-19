@@ -143,7 +143,7 @@ struct StateCallbackInfo: public AccessibilityCallbackInfo {
     std::string stringValue_;
     uint32_t uint32Value_;
     int32_t int32Value_;
-    float   floatValue_;
+    double doubleValue_;
     std::vector<std::string> stringVector_;
 };
 

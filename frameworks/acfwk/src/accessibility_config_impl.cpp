@@ -26,6 +26,9 @@ namespace {
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
     constexpr int32_t SA_CONNECT_TIMEOUT = 500; // ms
+    constexpr uint32_t DISPLAY_DALTONIZER_GREEN = 12;
+    constexpr uint32_t DISPLAY_DALTONIZER_RED = 11;
+    constexpr uint32_t DISPLAY_DALTONIZER_BLUE = 13;
 }
 
 AccessibilityConfig::Impl::Impl()
@@ -1582,7 +1585,7 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerDaltonizationColorFilt
             HILOG_DEBUG("filterType[%{public}u]", daltonizationColorFilter_);
             return;
         }
-        daltonizationColorFilter_ = filterType;
+        daltonizationColorFilter_ = InvertDaltonizationColorInAtoHos(filterType);
         std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_DALTONIZATION_COLOR_FILTER);
         if (it == configObservers_.end()) {
@@ -1591,7 +1594,7 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerDaltonizationColorFilt
         observers = it->second;
     }
 
-    NotifyDaltonizationColorFilterChanged(observers, filterType);
+    NotifyDaltonizationColorFilterChanged(observers, daltonizationColorFilter_);
 }
 
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerMouseAutoClickChanged(const int32_t mouseAutoClick)
@@ -1719,7 +1722,11 @@ void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
         configValue.audioBalance = audioBalance_;
         configValue.brightnessDiscount = brightnessDiscount_;
         configValue.daltonizationState = daltonizationState_;
-        configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
+        if (!configValue.daltonizationState) {
+            configValue.daltonizationColorFilter = Normal;
+        } else {
+            configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
+        }
         configValue.shortkey_target = shortkeyTarget_;
         configValue.shortkeyMultiTarget = shortkeyMultiTarget_;
         configValue.captionStyle = captionProperty_;
@@ -1728,6 +1735,20 @@ void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
         configValue.ignoreRepeatClickTime = static_cast<IGNORE_REPEAT_CLICK_TIME>(ignoreRepeatClickTime_);
     }
     observer->OnConfigChanged(id, configValue);
+}
+
+uint32_t AccessibilityConfig::Impl::InvertDaltonizationColorInAtoHos(uint32_t filter)
+{
+    if (filter == DISPLAY_DALTONIZER_GREEN) {
+        return Deuteranomaly;
+    }
+    if (filter == DISPLAY_DALTONIZER_RED) {
+        return Protanomaly;
+    }
+    if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_BLUE) {
+        return Tritanomaly;
+    }
+    return filter;
 }
 
 void AccessibilityConfig::Impl::InitConfigValues()
@@ -1747,7 +1768,7 @@ void AccessibilityConfig::Impl::InitConfigValues()
     shortkey_ = configData.shortkey_;
     mouseAutoClick_ = configData.mouseAutoClick_;
     daltonizationState_ = configData.daltonizationState_;
-    daltonizationColorFilter_ = configData.daltonizationColorFilter_;
+    daltonizationColorFilter_ = InvertDaltonizationColorInAtoHos(configData.daltonizationColorFilter_);
     contentTimeout_ = configData.contentTimeout_;
     brightnessDiscount_ = configData.brightnessDiscount_;
     audioBalance_ = configData.audioBalance_;

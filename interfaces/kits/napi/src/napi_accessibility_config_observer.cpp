@@ -29,6 +29,9 @@ using namespace OHOS::AccessibilityConfig;
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int ROUND_STEP = 10;
+}
 napi_handle_scope TmpOpenScope(napi_env env)
 {
     napi_handle_scope scope = nullptr;
@@ -44,9 +47,12 @@ void NAccessibilityConfigObserver::OnConfigChangedExtra(const ConfigValue &value
     if (configId_ == CONFIG_CONTENT_TIMEOUT) {
         NotifyIntChanged2JS(static_cast<int32_t>(value.contentTimeout));
     } else if (configId_ == CONFIG_BRIGHTNESS_DISCOUNT) {
-        NotifyFloatChanged2JS(value.brightnessDiscount);
+        NotifyDoubleChanged2JS(static_cast<double>(value.brightnessDiscount));
     } else if (configId_ == CONFIG_AUDIO_BALANCE) {
-        NotifyFloatChanged2JS(value.audioBalance);
+        float audioBalance = value.audioBalance;
+        double value = static_cast<double>(audioBalance);
+        value = round(value * ROUND_STEP) / ROUND_STEP;
+        NotifyDoubleChanged2JS(value);
     } else if (configId_ ==  CONFIG_HIGH_CONTRAST_TEXT) {
         NotifyStateChanged2JS(value.highContrastText);
     } else if (configId_ ==  CONFIG_DALTONIZATION_STATE) {
@@ -354,7 +360,7 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
     return ret;
 }
 
-int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
+int NAccessibilityConfigObserver::NotifyDoubleChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
@@ -375,7 +381,7 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent = nullptr;
-            napi_create_double(callbackInfo->env_, double(callbackInfo->floatValue_), &jsEvent);
+            napi_create_double(callbackInfo->env_, callbackInfo->doubleValue_, &jsEvent);
 
             napi_value handler = nullptr;
             napi_value callResult = nullptr;
@@ -385,7 +391,7 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
             napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
             int32_t result;
             napi_get_value_int32(callbackInfo->env_, callResult, &result);
-            HILOG_INFO("NotifyFloatChanged2JSInner napi_call_function result[%{public}d]", result);
+            HILOG_INFO("NotifyDoubleChanged2JSInner napi_call_function result[%{public}d]", result);
             delete callbackInfo;
             callbackInfo = nullptr;
             delete work;
@@ -575,29 +581,29 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
     }
 }
 
-void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
+void NAccessibilityConfigObserver::NotifyDoubleChanged2JS(double value)
 {
     HILOG_INFO("id = [%{public}d] value = [%{public}f]", static_cast<int32_t>(configId_), value);
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
-    callbackInfo->floatValue_ = value;
+    callbackInfo->doubleValue_ = value;
     callbackInfo->env_ = env_;
     callbackInfo->ref_ = handlerRef_;
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {
-        HILOG_ERROR("NotifyFloatChanged2JS Failed to create work.");
+        HILOG_ERROR("NotifyDoubleChanged2JS Failed to create work.");
         delete callbackInfo;
         callbackInfo = nullptr;
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    int ret = NotifyFloatChanged(work);
+    int ret = NotifyDoubleChanged(work);
     if (ret != 0) {
-        HILOG_ERROR("Failed to execute NotifyFloatChanged2JS work queue");
+        HILOG_ERROR("Failed to execute NotifyDoubleChanged2JS work queue");
         delete callbackInfo;
         callbackInfo = nullptr;
         delete work;

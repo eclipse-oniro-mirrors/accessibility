@@ -525,6 +525,7 @@ std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateTouchEvent(int32_t 
     MMI::PointerEvent::PointerItem item = {};
 
     item.SetPointerId(1);
+    item.SetPressed(action == MMI::PointerEvent::POINTER_ACTION_UP ? false : true);
     touchEvent->AddPointerItem(item);
     touchEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     touchEvent->SetPointerAction(action);
@@ -540,6 +541,7 @@ std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateMoveEvent(int32_t p
 
     for (int32_t i = 0; i < pointerCount; i++) {
         item.SetPointerId(i + 1);
+        item.SetPressed(true);
         touchEvent->AddPointerItem(item);
     }
     touchEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
@@ -556,6 +558,11 @@ std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateTouchEvent(int32_t 
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
 
     for (auto &point : points) {
+        if (point.GetPointerId() == pointId) {
+            point.SetPressed(action == MMI::PointerEvent::POINTER_ACTION_UP ? false : true);
+        } else {
+            point.SetPressed(true);
+        }
         pointerEvent->AddPointerItem(point);
     }
     pointerEvent->SetPointerId(pointId);

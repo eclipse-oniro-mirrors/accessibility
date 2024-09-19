@@ -32,6 +32,7 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
+    constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
 }
 
 void AccessibilitySettings::RegisterSettingsHandler(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
@@ -481,8 +482,21 @@ void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpd
     if (atoHosValue.ignoreRepeatClickState) {
         accountData->GetConfig()->SetIgnoreRepeatClickState(atoHosValue.ignoreRepeatClickState);
     }
-    if (atoHosValue.shortcutEnabledOnLockScreen) {
-        accountData->GetConfig()->SetShortKeyOnLockScreenState(atoHosValue.shortcutEnabledOnLockScreen);
+    if (atoHosValue.shortcutEnabled) {
+        accountData->GetConfig()->SetShortKeyState(true);
+    }
+    bool shortKeyOnLockScreenAutoOn = false;
+    if (atoHosValue.shortcutTimeout == 1) {
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+        if (atoHosValue.shortcutEnabledOnLockScreen == INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
+            shortKeyOnLockScreenAutoOn = true;
+            accountData->GetConfig()->SetShortKeyOnLockScreenState(true);
+        }
+    } else if (atoHosValue.shortcutTimeout == 0) {
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
+    }
+    if (!shortKeyOnLockScreenAutoOn) {
+        accountData->GetConfig()->SetShortKeyOnLockScreenState(atoHosValue.shortcutEnabledOnLockScreen == 1);
     }
     UpdateConfigState();
 }
@@ -497,10 +511,12 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
     HILOG_INFO("daltonizationState(%{public}d), invertColor(%{public}d), \
         audioMono(%{public}d), audioBalance(%{public}f), highContrastText(%{public}d), \
         isScreenReaderEnabled(%{public}d), ignoreRepeatClickState(%{public}d), \
-        clickResponseTime(%{public}d), ignoreRepeatClickTime(%{public}d), displayDaltonizer(%{public}d).",
+        clickResponseTime(%{public}d), ignoreRepeatClickTime(%{public}d), displayDaltonizer(%{public}d), \
+        shortcutEnabled(%{public}d), shortcutEnabledOnLockScreen(%{public}d), shortcutTimeout(%{public}d).",
         atoHosValue.daltonizationState, atoHosValue.invertColor, atoHosValue.audioMono, atoHosValue.audioBalance,
         atoHosValue.highContrastText, atoHosValue.isScreenReaderEnabled, atoHosValue.ignoreRepeatClickState,
-        atoHosValue.clickResponseTime, atoHosValue.ignoreRepeatClickTime, atoHosValue.displayDaltonizer);
+        atoHosValue.clickResponseTime, atoHosValue.ignoreRepeatClickTime, atoHosValue.displayDaltonizer,
+        atoHosValue.shortcutEnabled, atoHosValue.shortcutEnabledOnLockScreen, atoHosValue.shortcutTimeout);
 
     UpdateSettingsInAtoHosStatePart(atoHosValue);
 
@@ -512,18 +528,13 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
         accountData->GetConfig()->SetClickResponseTime(static_cast<uint32_t>(atoHosValue.clickResponseTime));
         UpdateClickResponseTime();
     }
-    if (atoHosValue.ignoreRepeatClickState && atoHosValue.ignoreRepeatClickTime != 0) {
+    if (atoHosValue.ignoreRepeatClickTime != 0) {
         accountData->GetConfig()->SetIgnoreRepeatClickTime(static_cast<uint32_t>(atoHosValue.ignoreRepeatClickTime));
         UpdateIgnoreRepeatClickTime();
     }
-    if (atoHosValue.daltonizationState && atoHosValue.displayDaltonizer != 0) {
+    if (atoHosValue.displayDaltonizer != 0) {
         accountData->GetConfig()->SetDaltonizationColorFilter(static_cast<uint32_t>(atoHosValue.displayDaltonizer));
         UpdateDaltonizationColorFilter();
-    }
-    if (atoHosValue.shortcutDialogShown) {
-        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-    } else {
-        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
     
     if (atoHosValue.isScreenReaderEnabled) {
@@ -531,6 +542,7 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
             CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
         accountData->EnableAbility(SCREEN_READER_BUNDLE_ABILITY_NAME, capabilities);
     }
+    accountData->GetConfig()->CloneShortkeyService(atoHosValue.isScreenReaderEnabled);
 
     accountData->GetConfig()->SetStartFromAtoHosState(false);
 }

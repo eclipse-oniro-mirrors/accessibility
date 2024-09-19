@@ -294,6 +294,7 @@ private:
     void NotifyDefaultShortKeyMultiConfigs();
     void NotifyImmediately(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
     void InitConfigValues();
+    uint32_t InvertDaltonizationColorInAtoHos(uint32_t filter);
     static void OnParameterChanged(const char *key, const char *value, void *context);
 
     void OnIgnoreRepeatClickStateChanged(const uint32_t stateType);

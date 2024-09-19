@@ -30,6 +30,9 @@ using namespace Security::AccessToken;
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int ROUND_STEP = 10;
+}
 napi_handle_scope TmpOpenScope(napi_env env)
 {
     napi_handle_scope scope = nullptr;
@@ -447,6 +450,7 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
 void NAccessibilityConfig::ConfigCompleteInfoById(napi_env env, NAccessibilityConfigData* callbackInfo,
     napi_value* result, size_t len)
 {
+    double value = 0.0;
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
@@ -465,6 +469,10 @@ void NAccessibilityConfig::ConfigCompleteInfoById(napi_env env, NAccessibilityCo
             napi_create_int32(env, callbackInfo->int32Config_, &result[PARAM1]);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
+            value = static_cast<double>(callbackInfo->floatConfig_);
+            value = round(value * ROUND_STEP) / ROUND_STEP;
+            napi_create_double(env, value, &result[PARAM1]);
+            break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
             napi_create_double(env, static_cast<double>(callbackInfo->floatConfig_), &result[PARAM1]);
             break;

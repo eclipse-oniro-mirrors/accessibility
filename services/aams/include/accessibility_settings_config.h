@@ -87,12 +87,17 @@ public:
     bool GetIgnoreRepeatClickState() const;
     uint32_t GetIgnoreRepeatClickTime() const;
 
+    RetError SetEnabledAccessibilityServices(const std::vector<std::string> &services);
     const std::vector<std::string> GetEnabledAccessibilityServices();
     RetError AddEnabledAccessibilityService(const std::string &serviceName);
     RetError RemoveEnabledAccessibilityService(const std::string &serviceName);
     uint32_t GetConfigState();
     bool GetStartFromAtoHosState();
+    void CloneShortkeyService(bool isScreenReaderEnabled);
     void OnDataClone();
+    void CloneAudioState();
+    void InitShortKeyConfig();
+    uint32_t GetShortKeyService(std::vector<std::string> &services);
     std::shared_ptr<AccessibilityDatashareHelper> GetDbHandle()
     {
         return datashare_;
@@ -137,6 +142,7 @@ private:
     std::vector<std::string> enabledAccessibilityServices_ {}; // bundleName/abilityName
 
     std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
+    std::shared_ptr<AccessibilityDatashareHelper> systemDatashare_ = nullptr;
     std::mutex interfaceMutex_;
 };
 } // namespace Accessibility
