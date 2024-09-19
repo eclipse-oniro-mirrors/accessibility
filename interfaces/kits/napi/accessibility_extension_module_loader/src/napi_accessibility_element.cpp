@@ -2007,9 +2007,10 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
         case FindElementCondition::FIND_ELEMENT_CONDITION_ELEMENT_ID:
             {
                 int64_t elementId = std::stoll(callbackInfo->condition_);
-                HILOG_DEBUG("elementId is %{public}" PRId64 "", elementId);
+                int32_t windowId = callbackInfo->accessibilityElement_.elementInfo_->GetWindowId();
+                HILOG_DEBUG("elementId is %{public}" PRId64 " windowId: %{public}d", elementId, windowId);
                 callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetByElementId(
-                    elementId, callbackInfo->nodeInfo_);
+                    elementId, windowId, callbackInfo->nodeInfo_);
             }
             break;
         default:
