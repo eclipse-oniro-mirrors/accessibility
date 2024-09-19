@@ -100,6 +100,8 @@ ohos_shared_library("accessibleabilityms") {
     "../../resources/config/build:coverage_flags",
   ]
 
+  version_script = "libaccessibilityms.map"
+
   deps = [
     "../../common/interface:accessibility_interface",
     "../../interfaces/innerkits/common:accessibility_common",
@@ -126,11 +128,9 @@ ohos_shared_library("accessibleabilityms") {
     "input:libmmi-client",
     "ipc:ipc_single",
     "os_account:os_account_innerkits",
-    "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "window_manager:libdm",
-    "window_manager:libwm",
   ]
 
   if (accessibility_feature_power_manager) {
