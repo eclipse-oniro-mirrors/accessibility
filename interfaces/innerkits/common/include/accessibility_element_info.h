@@ -1722,7 +1722,20 @@ public:
      * @sysCap Accessibility
      */
     void SetIsActive(const bool isActive);
- 
+
+      /**
+     * @brief Get the accessibilityVisible to the element info.
+     * @return accessibilityVisible status.
+     * @sysCap Accessibility
+     */
+    bool GetAccessibilityVisible() const;
+
+    /**
+     * @brief Set the accessibilityVisible to the element info.
+     * @param isActive The accessibilityVisible of node.
+     * @sysCap Accessibility
+     */
+    void SetAccessibilityVisible(const bool accessibilityVisible);
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1798,7 +1811,8 @@ protected:
     std::string hitTestBehavior_ = "";
     int64_t navDestinationId_ = -1;
     std::vector<SpanInfo> spanList_ {};
-    bool isActive_ = false;
+    bool isActive_ = true;
+    bool accessibilityVisible_ = true;
 };
 } // namespace Accessibility
 } // namespace OHOS
