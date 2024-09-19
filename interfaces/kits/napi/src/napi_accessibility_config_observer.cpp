@@ -381,7 +381,7 @@ int NAccessibilityConfigObserver::NotifyDoubleChanged(uv_work_t *work)
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent = nullptr;
-            napi_create_double(callbackInfo->env_, double(callbackInfo->doubleValue_), &jsEvent);
+            napi_create_double(callbackInfo->env_, callbackInfo->doubleValue_, &jsEvent);
 
             napi_value handler = nullptr;
             napi_value callResult = nullptr;

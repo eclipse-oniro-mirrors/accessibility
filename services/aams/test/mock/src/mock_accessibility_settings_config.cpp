@@ -446,7 +446,7 @@ void AccessibilitySettingsConfig::CloneAudioState()
 {
 }
 
-void CloneShortkeyService(bool isScreenReaderEnabled)
+void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnabled)
 {
     (void)isScreenReaderEnabled;
 }
