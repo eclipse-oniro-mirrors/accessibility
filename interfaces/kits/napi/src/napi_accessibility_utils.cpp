@@ -179,11 +179,48 @@ bool CheckJsFunction(napi_env env, napi_value args)
 
 NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode)
 {
-    auto iter = ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.find(errorCode);
-    if (iter != ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.end()) {
-        return iter->second;
-    } else {
-        return ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(OHOS::Accessibility::RetError::RET_ERR_FAILED);
+    switch (errorCode) {
+        case OHOS::Accessibility::RetError::RET_OK:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_OK, "" };
+        case OHOS::Accessibility::RetError::RET_ERR_FAILED:
+        case OHOS::Accessibility::RetError::RET_ERR_NULLPTR:
+        case OHOS::Accessibility::RetError::RET_ERR_IPC_FAILED:
+        case OHOS::Accessibility::RetError::RET_ERR_SAMGR:
+        case OHOS::Accessibility::RetError::RET_ERR_TIME_OUT:
+        case OHOS::Accessibility::RetError::RET_ERR_REGISTER_EXIST:
+        case OHOS::Accessibility::RetError::RET_ERR_NO_REGISTER:
+        case OHOS::Accessibility::RetError::RET_ERR_NO_CONNECTION:
+        case OHOS::Accessibility::RetError::RET_ERR_NO_WINDOW_CONNECTION:
+        case OHOS::Accessibility::RetError::RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE:
+        case OHOS::Accessibility::RetError::RET_ERR_PERFORM_ACTION_FAILED_BY_ACE:
+        case OHOS::Accessibility::RetError::RET_ERR_NO_INJECTOR:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY };
+        case OHOS::Accessibility::RetError::RET_ERR_INVALID_PARAM:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM, ERROR_MESSAGE_PARAMETER_ERROR };
+        case OHOS::Accessibility::RetError::RET_ERR_NO_PERMISSION:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_NO_PERMISSION, ERROR_MESSAGE_NO_PERMISSION };
+        case OHOS::Accessibility::RetError::RET_ERR_CONNECTION_EXIST:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_ABILITY_ALREADY_ENABLED,
+                     ERROR_MESSAGE_TARGET_ABILITY_ALREADY_ENABLED };
+        case OHOS::Accessibility::RetError::RET_ERR_NO_CAPABILITY:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_NO_RIGHT, ERROR_MESSAGE_NO_RIGHT };
+        case OHOS::Accessibility::RetError::RET_ERR_NOT_INSTALLED:
+        case OHOS::Accessibility::RetError::RET_ERR_NOT_ENABLED:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_ERROR_EXTENSION_NAME,
+                     ERROR_MESSAGE_INVALID_BUNDLE_NAME_OR_ABILITY_NAME};
+        case OHOS::Accessibility::RetError::RET_ERR_PROPERTY_NOT_EXIST:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_PROPERTY_NOT_EXIST,
+                     ERROR_MESSAGE_PROPERTY_NOT_EXIST };
+        case OHOS::Accessibility::RetError::RET_ERR_ACTION_NOT_SUPPORT:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_ACTION_NOT_SUPPORT,
+                     ERROR_MESSAGE_ACTION_NOT_SUPPORT };
+        case OHOS::Accessibility::RetError::RET_ERR_NOT_SYSTEM_APP:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_NOT_SYSTEM_APP,
+                     ERROR_MESSAGE_NOT_SYSTEM_APP };
+        default:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY };
     }
 }
 
