@@ -1077,5 +1077,15 @@ void AccessibilityElementInfo::SetIsActive(const bool isActive)
 {
     isActive_ = isActive;
 }
+
+bool AccessibilityElementInfo::GetAccessibilityVisible() const
+{
+    return accessibilityVisible_;
+}
+
+void AccessibilityElementInfo::SetAccessibilityVisible(const bool accessibilityVisible)
+{
+    accessibilityVisible_ = accessibilityVisible;
+}
 } // namespace Accessibility
 } // namespace OHOS
