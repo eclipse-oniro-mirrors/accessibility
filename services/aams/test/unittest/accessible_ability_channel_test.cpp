@@ -467,5 +467,25 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     EXPECT_EQ(channel->SetTargetBundleName(targetBundleNames), RET_ERR_NO_CONNECTION);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SetTargetBundleName_002 end";
 }
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_GetCursorPosition_001
+ * @tc.name: GetCursorPosition
+ * @tc.desc: Test function GetCursorPosition
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_GetCursorPosition_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetCursorPosition_001 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    std::string abilityName = "testSetTargetBundleName";
+    EXPECT_FALSE(accountData->GetAccessibleAbilityConnection(abilityName));
+    sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName);
+
+    EXPECT_EQ(channel->GetCursorPosition(WINDOW_ID, ELEMENT_ID, 0, nullptr), RET_ERR_NO_CONNECTION);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetCursorPosition_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
