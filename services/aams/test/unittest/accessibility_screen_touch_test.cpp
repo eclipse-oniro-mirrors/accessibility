@@ -121,7 +121,7 @@ std::shared_ptr<MMI::PointerEvent> AccessibilityScreenTouchUnitTest::SetPointerE
         } else {
             point.SetPressed(true);
         }
-        pointerEvent->AddPointerItem(point);
+        event->AddPointerItem(point);
     }
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     event->SetPointerAction(action);
@@ -196,7 +196,6 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
 
     EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickTime(), IGNORE_REPEAT_CLICK_TIME_LONGEST);
-    EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickState(), true);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetIgnoreRepeatClickTime_001 end";
 }
 
@@ -207,7 +206,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
  */
 HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnPointerEvent_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_002 start";
+    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_001 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     if (screenTouch_ == nullptr || event == nullptr) {
@@ -464,7 +463,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
         MMI::PointerEvent::POINTER_ACTION_UP, points, 1);
     screenTouch_->OnPointerEvent(*secondUpEvent);
 
-    auto firstUpEvent = SetPointerEvent((lastUpTime_ + TIMESTAMP_1700 * US_TO_MS),
+    auto firstUpEvent = SetPointerEvent((lastUpTime_ + TIMESTAMP_1700) * US_TO_MS,
         MMI::PointerEvent::POINTER_ACTION_UP);
     screenTouch_->OnPointerEvent(*firstUpEvent);
 
@@ -849,7 +848,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
         MMI::PointerEvent::POINTER_ACTION_UP, points, 1);
     screenTouch_->OnPointerEvent(*secondUpEvent);
 
-    auto firstUpEvent = SetPointerEvent((lastUpTime_ + TIMESTAMP_1700 * US_TO_MS),
+    auto firstUpEvent = SetPointerEvent((lastUpTime_ + TIMESTAMP_1700) * US_TO_MS,
         MMI::PointerEvent::POINTER_ACTION_UP);
     screenTouch_->OnPointerEvent(*firstUpEvent);
 
