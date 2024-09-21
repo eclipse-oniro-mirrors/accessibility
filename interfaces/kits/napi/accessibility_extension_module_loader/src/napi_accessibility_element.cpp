@@ -1355,7 +1355,7 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "isActive", isActive));
 
     napi_value accessibilityVisible = nullptr;
-    GetElementInfoIsActive(callbackInfo, accessibilityVisible);
+    GetElementInfoAccessibilityVisible(callbackInfo, accessibilityVisible);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "accessibilityVisible", accessibilityVisible));
 }
 
