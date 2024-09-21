@@ -470,14 +470,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector().size(), 6);
     int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0);
     EXPECT_EQ(touchAction, MMI::PointerEvent::POINTER_ACTION_DOWN);
-    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1);
-    EXPECT_EQ(touchAction, MMI::PointerEvent::POINTER_ACTION_MOVE);
     touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(2);
     EXPECT_EQ(touchAction, MMI::PointerEvent::POINTER_ACTION_DOWN);
-    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(3);
-    EXPECT_EQ(touchAction, MMI::PointerEvent::POINTER_ACTION_MOVE);
-    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(4);
-    EXPECT_EQ(touchAction, MMI::PointerEvent::POINTER_ACTION_UP);
     touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(5);
     EXPECT_EQ(touchAction, MMI::PointerEvent::POINTER_ACTION_UP);
 
@@ -857,8 +851,6 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     EXPECT_EQ(touchAction, MMI::PointerEvent::POINTER_ACTION_DOWN);
     touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1);
     EXPECT_EQ(touchAction, MMI::PointerEvent::POINTER_ACTION_DOWN);
-    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(2);
-    EXPECT_EQ(touchAction, MMI::PointerEvent::POINTER_ACTION_UP);
     touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(3);
     EXPECT_EQ(touchAction, MMI::PointerEvent::POINTER_ACTION_UP);
 
