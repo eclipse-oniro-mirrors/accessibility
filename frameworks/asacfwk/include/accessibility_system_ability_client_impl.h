@@ -270,12 +270,6 @@ private:
         void OnLoadSystemAbilityFail(int32_t systemAbilityId) override;
     };
 
-    class AccessibilitySaStatusChange : public SystemAbilityStatusChangeStub {
-    public:
-        void OnAddSystemAbility(int32_t saId, const std::string &deviceId) override;
-        void OnRemoveSystemAbility(int32_t saId, const std::string &deviceId) override;
-    };
-
     /**
      * @brief Connect to AAMS Service.
      * @return success : true, failed : false.
