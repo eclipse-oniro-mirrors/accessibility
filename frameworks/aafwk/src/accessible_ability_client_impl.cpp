@@ -958,14 +958,15 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, co
     }
 
     int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
+    int32_t wid = windowId > 0 ? windowId : serviceProxy_->GetActiveWindow();
     HILOG_DEBUG("window:[%{public}d],treeId:%{public}d,elementId:%{public}" PRId64 "",
-        windowId, treeId, elementId);
-    if (GetCacheElementInfo(windowId, elementId, targetElementInfo)) {
+        wid, treeId, elementId);
+    if (GetCacheElementInfo(wid, elementId, targetElementInfo)) {
         HILOG_DEBUG("get element info from cache");
         return RET_OK;
     }
 
-    return SearchElementInfoByElementId(windowId, elementId, cacheMode_, targetElementInfo, treeId);
+    return SearchElementInfoByElementId(wid, elementId, cacheMode_, targetElementInfo, treeId);
 }
 
 RetError AccessibleAbilityClientImpl::GetCursorPosition(const AccessibilityElementInfo &elementInfo, int32_t &position)
