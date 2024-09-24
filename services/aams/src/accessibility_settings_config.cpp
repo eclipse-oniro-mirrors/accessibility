@@ -18,6 +18,7 @@
 #include "system_ability_definition.h"
 #include "utils.h"
 #include "accessibility_setting_provider.h"
+#include "cfloat"
 
 namespace OHOS {
 namespace Accessibility {
@@ -940,7 +941,7 @@ void AccessibilitySettingsConfig::CloneAudioState()
 
     float audioBalance = static_cast<float>(systemDatashare_->GetFloatValue(AUDIO_BALANCE_KEY,
         INVALID_MASTER_BALANCE_VALUE));
-    if (audioBalance != INVALID_MASTER_BALANCE_VALUE) {
+    if (fabs(audioBalance - INVALID_MASTER_BALANCE_VALUE) < FLT_EPSILON) {
         SetAudioBalance(audioBalance);
     }
 }
