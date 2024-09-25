@@ -267,6 +267,7 @@ void AccessibilityInputInterceptor::DestroyInterceptor()
 
 void AccessibilityInputInterceptor::DestroyTransmitters()
 {
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG();
 
     if ((availableFunctions_ & FEATURE_MOUSE_KEY) != FEATURE_MOUSE_KEY) {
@@ -288,8 +289,9 @@ void AccessibilityInputInterceptor::DestroyTransmitters()
     }
 }
 
-void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event) const
+void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event)
 {
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG();
 
     if (mouseKey_) {
@@ -305,8 +307,9 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
     pointerEventTransmitters_->OnPointerEvent(*event);
 }
 
-void AccessibilityInputInterceptor::ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const
+void AccessibilityInputInterceptor::ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event)
 {
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG();
 
     if (mouseKey_) {
