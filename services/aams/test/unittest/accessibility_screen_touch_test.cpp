@@ -339,7 +339,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     pointer.SetPointerId(0);
     event->SetPointerId(0);
     event->AddPointerItem(pointer);
-    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);   
+    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     EXPECT_EQ(screenTouch_->OnPointerEvent(*event), true);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_001 end";
 }
@@ -361,7 +361,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(0);
     event->SetPointerId(0);
-    event->AddPointerItem(pointer); 
+    event->AddPointerItem(pointer);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     EXPECT_EQ(screenTouch_->OnPointerEvent(*event), false);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_002 end";
@@ -381,7 +381,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
         GTEST_LOG_(INFO) << "null pointer";
     }
 
-    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);   
+    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     EXPECT_EQ(screenTouch_->OnPointerEvent(*event), false);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_003 end";
 }
