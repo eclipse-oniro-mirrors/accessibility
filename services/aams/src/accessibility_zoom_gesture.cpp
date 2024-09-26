@@ -19,7 +19,6 @@
 #include "window_accessibility_controller.h"
 #include "accessibility_window_manager.h"
 #include "utils.h"
-#include "cfloat"
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "accessibility_power_manager.h"
 #endif
@@ -457,7 +456,7 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event, ZOOM_FOC
     }
 
     float scaleSpan = (span - lastSpan_) * scaleRatio_;
-    if (fabs(scaleSpan) > FLT_EPSILON) {
+    if (abs(scaleSpan) > EPS) {
         OnScale(scaleSpan);
         lastSpan_ = span;
     }
