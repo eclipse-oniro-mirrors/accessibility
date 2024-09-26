@@ -941,7 +941,7 @@ void AccessibilitySettingsConfig::CloneAudioState()
 
     float audioBalance = static_cast<float>(systemDatashare_->GetFloatValue(AUDIO_BALANCE_KEY,
         INVALID_MASTER_BALANCE_VALUE));
-    if (fabs(audioBalance - INVALID_MASTER_BALANCE_VALUE) < FLT_EPSILON) {
+    if (fabs(audioBalance - INVALID_MASTER_BALANCE_VALUE) > FLT_EPSILON) {
         SetAudioBalance(audioBalance);
     }
 }
