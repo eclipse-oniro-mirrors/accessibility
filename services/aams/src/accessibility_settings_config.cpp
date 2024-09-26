@@ -56,7 +56,8 @@ namespace {
     const std::string WINDOW_COLOR = "accessibility_window_color";
     const std::string FONT_SCALE = "accessibility_font_scale";
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
-    const std::string SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
+    const std::string SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen"; // HMOS key
+    const std::string SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen"; // AOS key
     const std::string SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const std::string SCREENREADER_TAG = "screenreader";
@@ -819,12 +820,14 @@ void AccessibilitySettingsConfig::InitShortKeyConfig()
     isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, true);
     int isShortKeyEnabledOnLockScreen = datashare_->GetIntValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN,
         INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
+    int isShortKeyOnLockScreen = datashare_->GetIntValue(SHORTCUT_ON_LOCK_SCREEN,
+        INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
     shortKeyTimeout_ = static_cast<int32_t>(datashare_->GetIntValue(SHORTCUT_TIMEOUT, SHORT_KEY_TIMEOUT_BEFORE_USE));
     bool shortKeyOnLockScreenAutoOn = false;
 
     if (shortKeyTimeout_ == 1) {
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-        if (isShortKeyEnabledOnLockScreen == INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
+        if (isShortKeyOnLockScreen == INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
             shortKeyOnLockScreenAutoOn = true;
             SetShortKeyOnLockScreenState(true);
         }
@@ -832,8 +835,15 @@ void AccessibilitySettingsConfig::InitShortKeyConfig()
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
 
-    if (!shortKeyOnLockScreenAutoOn) {
+    if (isShortKeyOnLockScreen != INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
+        SetShortKeyOnLockScreenState(isShortKeyOnLockScreen == 1);
+    } else if (!shortKeyOnLockScreenAutoOn) {
         SetShortKeyOnLockScreenState(isShortKeyEnabledOnLockScreen == 1);
+    }
+
+    auto ret = datashare_->PutIntValue(SHORTCUT_ON_LOCK_SCREEN, INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
+    if (ret != RET_OK) {
+        HILOG_ERROR("reset shortcut on lock screen failed");
     }
 }
 
@@ -934,15 +944,24 @@ void AccessibilitySettingsConfig::CloneAudioState()
         return;
     }
 
+    RetError ret = RET_OK;
     int32_t monoValue = static_cast<int32_t>(systemDatashare_->GetIntValue(AUDIO_MONO_KEY, INVALID_MASTER_MONO_VALUE));
     if (monoValue != INVALID_MASTER_MONO_VALUE) {
         SetAudioMonoState(monoValue == 1);
+        ret = systemDatashare_->PutIntValue(AUDIO_MONO_KEY, INVALID_MASTER_MONO_VALUE);
+        if (ret != RET_OK) {
+            HILOG_ERROR("reset monoValue in system table failed");
+        }
     }
 
     float audioBalance = static_cast<float>(systemDatashare_->GetFloatValue(AUDIO_BALANCE_KEY,
         INVALID_MASTER_BALANCE_VALUE));
     if (fabs(audioBalance - INVALID_MASTER_BALANCE_VALUE) < FLT_EPSILON) {
         SetAudioBalance(audioBalance);
+        ret = systemDatashare_->PutFloatValue(AUDIO_BALANCE_KEY, INVALID_MASTER_BALANCE_VALUE);
+        if (ret != RET_OK) {
+            HILOG_ERROR("reset audioBalance in system table failed");
+        }
     }
 }
 
