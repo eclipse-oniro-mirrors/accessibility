@@ -841,7 +841,7 @@ void AccessibilitySettingsConfig::InitShortKeyConfig()
         SetShortKeyOnLockScreenState(isShortKeyEnabledOnLockScreen == 1);
     }
 
-    auto ret = dataShare_->PutIntValue(SHORTCUT_ON_LOCK_SCREEN, INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
+    auto ret = datashare_->PutIntValue(SHORTCUT_ON_LOCK_SCREEN, INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
     if (ret != RET_OK) {
         HILOG_ERROR("reset shortcut on lock screen failed");
     }
