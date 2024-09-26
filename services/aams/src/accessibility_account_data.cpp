@@ -38,7 +38,7 @@ namespace {
     constexpr int DEFAULT_ACCOUNT_ID = 100;
     constexpr int SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     constexpr int SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
-    constexpt int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
+    constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
