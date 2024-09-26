@@ -947,7 +947,11 @@ const std::string &AccessibilityElementInfo::GetBackgroundColor() const
 
 void AccessibilityElementInfo::SetBackgroundImage(const std::string &backgroundImage)
 {
-    backgroundImage_ = backgroundImage;
+    if (backgroundImage.length() > backgroundImageMaxLength) {
+        backgroundImage_ = "true";
+    } else {
+        backgroundImage_ = backgroundImage;
+    }
 }
 
 const std::string &AccessibilityElementInfo::GetBackgroundImage() const
@@ -1086,6 +1090,16 @@ bool AccessibilityElementInfo::GetAccessibilityVisible() const
 void AccessibilityElementInfo::SetAccessibilityVisible(const bool accessibilityVisible)
 {
     accessibilityVisible_ = accessibilityVisible;
+}
+
+bool AccessibilityElementInfo::GetClip() const
+{
+    return clip_;
+}
+
+void AccessibilityElementInfo::SetClip(const bool clip)
+{
+    clip_ = clip;
 }
 } // namespace Accessibility
 } // namespace OHOS

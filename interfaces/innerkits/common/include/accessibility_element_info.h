@@ -1736,6 +1736,20 @@ public:
      * @sysCap Accessibility
      */
     void SetAccessibilityVisible(const bool accessibilityVisible);
+
+    /**
+     * @brief Get the clip to the element info.
+     * @return clip status.
+     * @sysCap Accessibility
+     */
+    bool GetClip() const;
+
+    /**
+     * @brief Set the clip to the element info.
+     * @param clip The clip of node.
+     * @sysCap Accessibility
+     */
+    void SetClip(const bool clip);
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1813,6 +1827,8 @@ protected:
     std::vector<SpanInfo> spanList_ {};
     bool isActive_ = true;
     bool accessibilityVisible_ = true;
+    bool clip_ = false;
+    static const int backgroundImageMaxLength = 20;
 };
 } // namespace Accessibility
 } // namespace OHOS
