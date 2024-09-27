@@ -1830,5 +1830,165 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
     EXPECT_EQ(0, static_cast<int>(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_078 end";
 }
+
+/**OnShortKeyProcess
+ * @tc.number: ManagerStateObserverProxy_Unittest_Test_079
+ * @tc.name: OnShortKeyProcess
+ * @tc.desc: Test function OnShortKeyProcess
+ */
+HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverProxy_Unittest_Test_079, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_079 start";
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        GTEST_LOG_(INFO) << "service is nullptr";
+        return;
+    }
+    service->PutBoolValue(DEVICE_PROVISIONED, true, true);
+
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        GTEST_LOG_(INFO) << "accountData is nullptr";
+        return;
+    }
+
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
+    EXPECT_EQ(accountData->GetConfig()->GetShortKeyTimeout(), SHORT_KEY_TIMEOUT_BEFORE_USE);
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_079 end";
+}
+
+/**OnShortKeyProcess
+ * @tc.number: ManagerStateObserverProxy_Unittest_Test_080
+ * @tc.name: OnShortKeyProcess
+ * @tc.desc: Test function OnShortKeyProcess
+ */
+HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverProxy_Unittest_Test_080, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_080 start";
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        GTEST_LOG_(INFO) << "service is nullptr";
+        return;
+    }
+    service->PutBoolValue(DEVICE_PROVISIONED, true, true);
+
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        GTEST_LOG_(INFO) << "accountData is nullptr";
+        return;
+    }
+
+    std::vector<std::string> name;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
+    EXPECT_EQ(accountData->GetConfig()->GetShortkeyMultiTarget().size(), 0);
+
+    size_t size = accountData->GetConfig()->GetEnabledAccessibilityServices().size();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
+    EXPECT_EQ(accountData->GetConfig()->GetEnabledAccessibilityServices().size(), size);
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_080 end";
+}
+
+/**OnShortKeyProcess
+ * @tc.number: ManagerStateObserverProxy_Unittest_Test_081
+ * @tc.name: OnShortKeyProcess
+ * @tc.desc: Test function OnShortKeyProcess
+ */
+HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverProxy_Unittest_Test_081, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_081 start";
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        GTEST_LOG_(INFO) << "service is nullptr";
+        return;
+    }
+    service->PutBoolValue(DEVICE_PROVISIONED, true, true);
+
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        GTEST_LOG_(INFO) << "accountData is nullptr";
+        return;
+    }
+
+    std::vector<std::string> name;
+    name.push_back("test1");
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
+    EXPECT_EQ(accountData->GetConfig()->GetShortkeyMultiTarget().size(), 1);
+
+    size_t size = accountData->GetConfig()->GetEnabledAccessibilityServices().size();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
+    EXPECT_EQ(accountData->GetConfig()->GetEnabledAccessibilityServices().size(), size);
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_081 end";
+}
+
+/**OnShortKeyProcess
+ * @tc.number: ManagerStateObserverProxy_Unittest_Test_082
+ * @tc.name: OnShortKeyProcess
+ * @tc.desc: Test function OnShortKeyProcess
+ */
+HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverProxy_Unittest_Test_082, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_081 start";
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        GTEST_LOG_(INFO) << "service is nullptr";
+        return;
+    }
+    service->PutBoolValue(DEVICE_PROVISIONED, true, true);
+
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        GTEST_LOG_(INFO) << "accountData is nullptr";
+        return;
+    }
+
+    std::vector<std::string> name;
+    name.push_back("test1");
+    name.push_back("test2");
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
+    EXPECT_EQ(accountData->GetConfig()->GetShortkeyMultiTarget().size(), 2);
+
+    size_t size = accountData->GetConfig()->GetEnabledAccessibilityServices().size();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
+    EXPECT_EQ(accountData->GetConfig()->GetEnabledAccessibilityServices().size(), size);
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_082 end";
+}
+
+/**
+ * @tc.number: ManagerStateObserverProxy_Unittest_Test_083
+ * @tc.name: SetMouseAutoClick
+ * @tc.desc: Test function SetMouseAutoClick GetMouseAutoClick
+ * @tc.require: issueI5NTXC
+ */
+HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverProxy_Unittest_Test_083, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_083 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    int32_t value = MOUSE_AUTO_CLICK_VALUE;
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetMouseAutoClick(value));
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetMouseAutoClick(value));
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_083 end";
+}
+
+/**
+ * @tc.number: ManagerStateObserverProxy_Unittest_Test_084
+ * @tc.name: SetShortkeyTarget
+ * @tc.desc: Test function SetShortkeyTarget GetShortkeyTarget
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverProxy_Unittest_Test_084, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_084 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    std::string name = "test";
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyTarget(name));
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyTarget(name));
+    GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_084 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
