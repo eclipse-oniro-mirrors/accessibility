@@ -2080,7 +2080,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent028, Te
 /**
  * @tc.number: OnPointerEvent029
  * @tc.name:OnPointerEvent
- * @tc.desc: Check the four finger tri[le tap event and hold.
+ * @tc.desc: Check the four finger triple tap event and hold.
  */
 HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent029, TestSize.Level1)
 {
@@ -2610,6 +2610,949 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent037, Te
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
         static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_RIGHT));
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent037 ends";
+}
+
+/**
+ * @tc.number: OnPointerEvent038
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the event that two fingers moving in down directions in dragging state.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent038, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent038 starts";
+    sleep(SLEEP_TIME_3);
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 1, 500, 500);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 2, 1000, 500);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 1, 500, 1000);
+    MMI::PointerEvent::PointerItem point4 = {};
+    TouchGuiderPointSet(point4, 1, 1000, 1000);
+
+    bool flag = OnPointerEventOnePointsTest1(points, point1, point2, point3, point4);
+    if (!flag) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent038 inputEventConsumer is null";
+        return;
+    }
+
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        sleep(1);
+        int32_t eventTypeSize =
+            static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size());
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(eventTypeSize - 1) ==
+            EventType::TYPE_TOUCH_GUIDE_GESTURE_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+
+    ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (MMI::MockInputManager::GetTouchActionOfTargetIndex(2) == MMI::PointerEvent::POINTER_ACTION_UP) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_DOWN);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent038 ENDs";
+}
+
+/**
+ * @tc.number: OnPointerEvent039
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the event that two fingers moving in right and down directions in dragging state.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent039, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent039 starts";
+    sleep(SLEEP_TIME_3);
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 1, 500, 500);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 2, 1000, 500);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 1, 1000, 1000);
+    MMI::PointerEvent::PointerItem point4 = {};
+    TouchGuiderPointSet(point4, 1, 1500, 1000);
+
+    bool flag = OnPointerEventOnePointsTest1(points, point1, point2, point3, point4);
+    if (!flag) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent039 inputEventConsumer is null";
+        return;
+    }
+
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        sleep(1);
+        int32_t eventTypeSize =
+            static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size());
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(eventTypeSize - 1) ==
+            EventType::TYPE_TOUCH_GUIDE_GESTURE_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+
+    ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (MMI::MockInputManager::GetTouchActionOfTargetIndex(2) == MMI::PointerEvent::POINTER_ACTION_UP) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_DOWN);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent039 ENDs";
+}
+
+/**
+ * @tc.number: OnPointerEvent040
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the event that two fingers zoom moving in right and down directions in dragging state.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent040, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent040 starts";
+    sleep(SLEEP_TIME_3);
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 1, 500, 500);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 2, 1000, 500);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 1, 2000, 1500);
+    MMI::PointerEvent::PointerItem point4 = {};
+    TouchGuiderPointSet(point4, 1, 2500, 1000);
+
+    bool flag = OnPointerEventOnePointsTest1(points, point1, point2, point3, point4);
+    if (!flag) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent040 inputEventConsumer is null";
+        return;
+    }
+
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        sleep(1);
+        int32_t eventTypeSize =
+            static_cast<int32_t>(AccessibilityHelper::GetInstance().GetEventType().size());
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(eventTypeSize - 1) ==
+            EventType::TYPE_TOUCH_GUIDE_GESTURE_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+
+    ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (MMI::MockInputManager::GetTouchActionOfTargetIndex(2) == MMI::PointerEvent::POINTER_ACTION_UP) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_DOWN);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent040 ENDs";
+}
+
+/**
+ * @tc.number: OnPointerEvent041
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the GESTURE_SWIPE_LEFT_THEN_RIGHT gesture.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent041, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent041 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 1, 2500, 2500);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 1500, 2200);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 1, 0, 2200);
+    MMI::PointerEvent::PointerItem point4 = {};
+    TouchGuiderPointSet(point4, 1, 2100, 2500);
+
+    OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
+
+    // Determine event type
+    bool retOnPointerEvent16 =
+        AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(retOnPointerEvent16);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0),
+        EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    // Determine action
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    // Determine gesture type
+    retOnPointerEvent16 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetGestureId() ==
+            static_cast<int32_t>(GestureType::GESTURE_SWIPE_LEFT_THEN_RIGHT)) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(retOnPointerEvent16);
+
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent041 ENDs";
+}
+
+/**
+ * @tc.number: OnPointerEvent042
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the GESTURE_SWIPE_DOWN_THEN_UP gesture.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent042, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent042 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 1, 1500, 2500);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 1500, 3500);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 1, 1200, 5000);
+    MMI::PointerEvent::PointerItem point4 = {};
+    TouchGuiderPointSet(point4, 1, 1250, 2500);
+
+    bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
+    if (!flag) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent042 inputEventConsumer is null";
+        return;
+    }
+
+    // Determine event type
+    bool retOnPointerEvent17 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(retOnPointerEvent17);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0),
+        EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    // Determine action
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    // Determine gesture type
+    retOnPointerEvent17 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetGestureId() ==
+            static_cast<int32_t>(GestureType::GESTURE_SWIPE_DOWN_THEN_UP)) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(retOnPointerEvent17);
+
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent042 ENDs";
+}
+
+/**
+ * @tc.number: OnPointerEvent043
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the GESTURE_SWIPE_RIGHT_THEN_LEFT gesture.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent043, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent043 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 1, 2500, 1500);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 3500, 1500);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 1, 5000, 1500);
+    MMI::PointerEvent::PointerItem point4 = {};
+    TouchGuiderPointSet(point4, 1, 2500, 1250);
+
+    bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
+    if (!flag) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent043 inputEventConsumer is null";
+        return;
+    }
+
+    // Determine event type
+    bool retOnPointerEvent18 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(retOnPointerEvent18);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0),
+        EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    // Determine action
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    // Determine gesture type
+    retOnPointerEvent18 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetGestureId() ==
+            static_cast<int32_t>(GestureType::GESTURE_SWIPE_RIGHT_THEN_LEFT)) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(retOnPointerEvent18);
+
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent043 ENDs";
+}
+
+/**
+ * @tc.number: OnPointerEvent044
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the GESTURE_SWIPE_UP_THEN_DOWN gesture.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent044, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent044 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 1, 1500, 2500);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 1500, 1500);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 1, 1500, 0);
+    MMI::PointerEvent::PointerItem point4 = {};
+    TouchGuiderPointSet(point4, 1, 1250, 2500);
+
+    bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
+    if (!flag) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent044 inputEventConsumer is null";
+        return;
+    }
+
+    // Determine event type
+    bool retOnPointerEvent19 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(retOnPointerEvent19);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0),
+        EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    // Determine action
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    // Determine gesture type
+    retOnPointerEvent19 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetGestureId() ==
+            static_cast<int32_t>(GestureType::GESTURE_SWIPE_UP_THEN_DOWN)) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(retOnPointerEvent19);
+
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent044 ENDs";
+}
+
+/**
+ * @tc.number: OnPointerEvent045
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the UP gesture.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent045, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent045 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 1, 1500, 1500);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 1500, 500);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 1, 1500, 0);
+
+    bool flag = OnPointerEventOnePointsTest7(points, point1, point2, point3);
+    if (!flag) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent045 inputEventConsumer is null";
+        return;
+    }
+
+    // Determine event type
+    bool retOnPointerEvent20 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(retOnPointerEvent20);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0),
+        EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    // Determine action
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    // Determine gesture type
+    retOnPointerEvent20 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetGestureId() == static_cast<int32_t>(GestureType::GESTURE_SWIPE_UP)) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(retOnPointerEvent20);
+
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent045 ENDs";
+}
+
+/**
+ * @tc.number: OnPointerEvent046
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the three finger swipe down.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent046, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent046 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 0, 100, 100);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 200, 100);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 2, 300, 100);
+    std::vector<MMI::PointerEvent::PointerItem> pointStartVec{point1, point2, point3};
+
+    MMI::PointerEvent::PointerItem point11 = {};
+    TouchGuiderPointSet(point11, 0, 200, 800);
+    MMI::PointerEvent::PointerItem point22 = {};
+    TouchGuiderPointSet(point22, 1, 250, 800);
+    MMI::PointerEvent::PointerItem point33 = {};
+    TouchGuiderPointSet(point33, 2, 360, 800);
+    std::vector<MMI::PointerEvent::PointerItem> pointEndVec{point11, point22, point33};
+
+    bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
+    if (!eventProduceRst) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent046 inputEventConsumer is null";
+        return;
+    }
+
+    // eventType
+    bool ret =
+        AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+
+    // gestureId
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_DOWN));
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent046 ends";
+}
+
+/**
+ * @tc.number: OnPointerEvent047
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the four finger swipe down.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent047, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent047 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 0, 100, 100);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 200, 100);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 2, 300, 100);
+    MMI::PointerEvent::PointerItem point4 = {};
+    TouchGuiderPointSet(point4, 3, 400, 100);
+    std::vector<MMI::PointerEvent::PointerItem> pointStartVec{point1, point2, point3, point4};
+
+    MMI::PointerEvent::PointerItem point11 = {};
+    TouchGuiderPointSet(point11, 0, 120, 800);
+    MMI::PointerEvent::PointerItem point22 = {};
+    TouchGuiderPointSet(point22, 1, 240, 800);
+    MMI::PointerEvent::PointerItem point33 = {};
+    TouchGuiderPointSet(point33, 2, 350, 800);
+    MMI::PointerEvent::PointerItem point44 = {};
+    TouchGuiderPointSet(point44, 3, 460, 800);
+    std::vector<MMI::PointerEvent::PointerItem> pointEndVec{point11, point22, point33, point44};
+
+    bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
+    if (!eventProduceRst) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent047 inputEventConsumer is null";
+        return;
+    }
+
+    // eventType
+    bool ret =
+        AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+
+    // gestureId
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_DOWN));
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent047 ends";
+}
+
+/**
+ * @tc.number: OnPointerEvent048
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the three finger swipe up.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent048, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent048 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 0, 100, 800);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 200, 800);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 2, 300, 800);
+    std::vector<MMI::PointerEvent::PointerItem> pointStartVec{point1, point2, point3};
+
+    MMI::PointerEvent::PointerItem point11 = {};
+    TouchGuiderPointSet(point11, 0, 140, 100);
+    MMI::PointerEvent::PointerItem point22 = {};
+    TouchGuiderPointSet(point22, 1, 260, 100);
+    MMI::PointerEvent::PointerItem point33 = {};
+    TouchGuiderPointSet(point33, 2, 330, 100);
+    std::vector<MMI::PointerEvent::PointerItem> pointEndVec{point11, point22, point33};
+
+    bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
+    if (!eventProduceRst) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent048 inputEventConsumer is null";
+        return;
+    }
+
+    // eventType
+    bool ret =
+        AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+
+    // gestureId
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_UP));
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent048 ends";
+}
+
+/**
+ * @tc.number: OnPointerEvent049
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the three finger swipe left.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent049, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent049 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 0, 600, 100);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 600, 200);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 2, 600, 300);
+    std::vector<MMI::PointerEvent::PointerItem> pointStartVec{point1, point2, point3};
+
+    MMI::PointerEvent::PointerItem point11 = {};
+    TouchGuiderPointSet(point11, 0, 100, 120);
+    MMI::PointerEvent::PointerItem point22 = {};
+    TouchGuiderPointSet(point22, 1, 100, 280);
+    MMI::PointerEvent::PointerItem point33 = {};
+    TouchGuiderPointSet(point33, 2, 100, 300);
+    std::vector<MMI::PointerEvent::PointerItem> pointEndVec{point11, point22, point33};
+
+    bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
+    if (!eventProduceRst) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent049 inputEventConsumer is null";
+        return;
+    }
+
+    // eventType
+    bool ret =
+        AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+
+    // gestureId
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_LEFT));
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent049 ends";
+}
+
+/**
+ * @tc.number: OnPointerEvent050
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the three finger swipe right.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent050, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent050 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 0, 100, 100);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 100, 200);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 2, 100, 300);
+    std::vector<MMI::PointerEvent::PointerItem> pointStartVec{point1, point2, point3};
+
+    MMI::PointerEvent::PointerItem point11 = {};
+    TouchGuiderPointSet(point11, 0, 600, 120);
+    MMI::PointerEvent::PointerItem point22 = {};
+    TouchGuiderPointSet(point22, 1, 600, 240);
+    MMI::PointerEvent::PointerItem point33 = {};
+    TouchGuiderPointSet(point33, 2, 600, 280);
+    std::vector<MMI::PointerEvent::PointerItem> pointEndVec{point11, point22, point33};
+
+    bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
+    if (!eventProduceRst) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent050 inputEventConsumer is null";
+        return;
+    }
+
+    // eventType
+    bool ret =
+        AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+
+    // gestureId
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_RIGHT));
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent050 ends";
+}
+
+/**
+ * @tc.number: OnPointerEvent051
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the four finger swipe up.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent051, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent051 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 0, 100, 800);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 200, 800);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 2, 300, 800);
+    MMI::PointerEvent::PointerItem point4 = {};
+    TouchGuiderPointSet(point4, 3, 400, 800);
+    std::vector<MMI::PointerEvent::PointerItem> pointStartVec{point1, point2, point3, point4};
+
+    MMI::PointerEvent::PointerItem point11 = {};
+    TouchGuiderPointSet(point11, 0, 100, 140);
+    MMI::PointerEvent::PointerItem point22 = {};
+    TouchGuiderPointSet(point22, 1, 200, 120);
+    MMI::PointerEvent::PointerItem point33 = {};
+    TouchGuiderPointSet(point33, 2, 300, 100);
+    MMI::PointerEvent::PointerItem point44 = {};
+    TouchGuiderPointSet(point44, 3, 400, 100);
+    std::vector<MMI::PointerEvent::PointerItem> pointEndVec{point11, point22, point33, point44};
+
+    bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
+    if (!eventProduceRst) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent0051 inputEventConsumer is null";
+        return;
+    }
+
+    // eventType
+    bool ret =
+        AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+
+    // gestureId
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_UP));
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent051 ends";
+}
+
+/**
+ * @tc.number: OnPointerEvent052
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the four finger swipe left.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent052, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent052 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 0, 600, 100);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 600, 200);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 2, 600, 300);
+    MMI::PointerEvent::PointerItem point4 = {};
+    TouchGuiderPointSet(point4, 3, 600, 400);
+    std::vector<MMI::PointerEvent::PointerItem> pointStartVec{point1, point2, point3, point4};
+
+    MMI::PointerEvent::PointerItem point11 = {};
+    TouchGuiderPointSet(point11, 0, 100, 120);
+    MMI::PointerEvent::PointerItem point22 = {};
+    TouchGuiderPointSet(point22, 1, 100, 230);
+    MMI::PointerEvent::PointerItem point33 = {};
+    TouchGuiderPointSet(point33, 2, 100, 280);
+    MMI::PointerEvent::PointerItem point44 = {};
+    TouchGuiderPointSet(point44, 3, 100, 410);
+    std::vector<MMI::PointerEvent::PointerItem> pointEndVec{point11, point22, point33, point44};
+
+    bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
+    if (!eventProduceRst) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent0052 inputEventConsumer is null";
+        return;
+    }
+
+    // eventType
+    bool ret =
+        AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+
+    // gestureId
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_LEFT));
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent052 ends";
+}
+
+/**
+ * @tc.number: OnPointerEvent053
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the four finger swipe right.
+ */
+HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent053, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent053 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchGuiderPointSet(point1, 0, 100, 100);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchGuiderPointSet(point2, 1, 100, 200);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchGuiderPointSet(point3, 2, 100, 300);
+    MMI::PointerEvent::PointerItem point4 = {};
+    TouchGuiderPointSet(point4, 3, 100, 400);
+    std::vector<MMI::PointerEvent::PointerItem> pointStartVec{point1, point2, point3, point4};
+
+    MMI::PointerEvent::PointerItem point11 = {};
+    TouchGuiderPointSet(point11, 0, 600, 120);
+    MMI::PointerEvent::PointerItem point22 = {};
+    TouchGuiderPointSet(point22, 1, 600, 210);
+    MMI::PointerEvent::PointerItem point33 = {};
+    TouchGuiderPointSet(point33, 2, 600, 350);
+    MMI::PointerEvent::PointerItem point44 = {};
+    TouchGuiderPointSet(point44, 3, 600, 420);
+    std::vector<MMI::PointerEvent::PointerItem> pointEndVec{point11, point22, point33, point44};
+
+    bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
+    if (!eventProduceRst) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent053 inputEventConsumer is null";
+        return;
+    }
+
+    // eventType
+    bool ret =
+        AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2) ==
+            EventType::TYPE_TOUCH_END) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3),
+        EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+
+    // gestureId
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_RIGHT));
+    GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent053 ends";
 }
 } // namespace Accessibility
 } // namespace OHOS
