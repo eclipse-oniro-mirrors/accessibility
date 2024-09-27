@@ -46,7 +46,8 @@ public:
 
     static void SetUpTestCase();
     static void TearDownTestCase();
-    static void SetAccessibleAbilityManagerServiceStubPoint(MMI::PointerEvent::PointerItem &point, int id, int x, int y);
+    static void SetAccessibleAbilityManagerServiceStubPoint(MMI::PointerEvent::PointerItem &point,
+        int id, int x, int y);
     static void AccessibleAbilityManagerServiceStubExpect(EventType eventType, int32_t GestureTypeInt);
     void PointerEventTest(std::vector<MMI::PointerEvent::PointerItem> &points,
         MMI::PointerEvent::PointerItem movepoint2, MMI::PointerEvent::PointerItem movepoint3);
@@ -93,7 +94,8 @@ void AccessibleAbilityManagerServiceStubTest::PointerEventTest(std::vector<MMI::
     AccessibleAbilityManagerServiceStub_->OnPointerEvent(*event);
 }
 
-void AccessibleAbilityManagerServiceStubTest::AccessibleAbilityManagerServiceStubExpect(EventType eventType, int32_t GestureTypeInt)
+void AccessibleAbilityManagerServiceStubTest::AccessibleAbilityManagerServiceStubExpect(EventType eventType,
+    int32_t GestureTypeInt)
 {
     eventType = AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(GET_EVENT_TARGET_INDEX_2);
     EXPECT_EQ(eventType, EventType::TYPE_TOUCH_END);
@@ -103,7 +105,8 @@ void AccessibleAbilityManagerServiceStubTest::AccessibleAbilityManagerServiceStu
     EXPECT_EQ(uTgestureId, GestureTypeInt);
 }
 
-void AccessibleAbilityManagerServiceStubTest::SetAccessibleAbilityManagerServiceStubPoint(MMI::PointerEvent::PointerItem &point, int id, int x, int y)
+void AccessibleAbilityManagerServiceStubTest::SetAccessibleAbilityManagerServiceStubPoint(
+    MMI::PointerEvent::PointerItem &point, int id, int x, int y)
 {
     point.SetPointerId(id);
     point.SetDisplayX(x);
