@@ -253,6 +253,7 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
     accWindowInfo.SetScaleX(windowInfo->scaleX_);
     accWindowInfo.SetScaleY(windowInfo->scaleY_);
     accWindowInfo.SetWindowId(windowInfo->wid_);
+    accWindowInfo.SetMainWindowId(windowInfo->wid_);
     accWindowInfo.SetWindowType(static_cast<uint32_t>(windowInfo->type_));
     accWindowInfo.SetWindowMode(static_cast<uint32_t>(windowInfo->mode_));
     accWindowInfo.SetAccessibilityWindowType(ConvertWindowType(windowInfo->type_));

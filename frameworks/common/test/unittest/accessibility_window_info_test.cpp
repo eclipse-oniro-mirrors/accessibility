@@ -331,5 +331,22 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetScaleY_001, TestSize.Level1)
     EXPECT_FLOAT_EQ(windowInfo_->GetScaleY(), 1.1f);
     GTEST_LOG_(INFO) << "GetScaleY_001 end";
 }
+
+/**
+ * @tc.number: SetMainWindowId_001
+ * @tc.name: SetMainWindowId
+ * @tc.desc: Test function SetMainWindowId
+ */
+HWTEST_F(AccessibilityWindowInfoUnitTest, SetMainWindowId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetMainWindowId_001 start";
+    if (!windowInfo_) {
+        GTEST_LOG_(INFO) << "windowInfo_ is null";
+        return;
+    }
+    windowInfo_->SetMainWindowId(1);
+    EXPECT_EQ(windowInfo_->GetMainWindowId(), 1);
+    GTEST_LOG_(INFO) << "SetMainWindowId_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

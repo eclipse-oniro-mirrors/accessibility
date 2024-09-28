@@ -296,6 +296,20 @@ public:
     */
     std::vector<Rect> GetTouchHotAreas();
 
+    /**
+     * @brief Get the main window id of current window.
+     * @return The main window id of current window.
+     * @sysCap Accessibility
+     */
+    int32_t GetMainWindowId() const;
+
+    /**
+     * @brief Set the main window id of current window.
+     * @param id The main window id of current window.
+     * @sysCap Accessibility
+     */
+    void SetMainWindowId(const int32_t id);
+
 protected:
     uint64_t displayId_ = 0;
     uint32_t windowMode_ = 0;
@@ -315,6 +329,7 @@ protected:
     float scaleY_ = 0.0;
     std::string bundleName_ = "";
     std::vector<Rect> touchHotAreas_ = {};
+    int32_t mainWindowId_ = INVALID_WINDOW_ID;
 };
 } // namespace Accessibility
 } // namespace OHOS
