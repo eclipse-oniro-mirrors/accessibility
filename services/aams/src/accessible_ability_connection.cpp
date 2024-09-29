@@ -184,6 +184,11 @@ void AccessibleAbilityConnection::Disconnect()
     }
     abilityClient_->Disconnect(connectionId_);
 
+    if (deathRecipient_ == nullptr || !abilityClient_->AsObject() ||
+        !abilityClient_->AsObject()->RemoveDeathRecipient(deathRecipient_)) {
+        HILOG_ERROR("Failed to add death recipient");
+    }
+
     auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
     if (!abilityManagerClient) {
         HILOG_ERROR("abilityManagerClient is nullptr");
