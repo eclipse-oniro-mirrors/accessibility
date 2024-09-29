@@ -22,9 +22,15 @@
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "utils.h"
+#include "xcollie_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string TIMER_GET_ACCESSIBILITY_WINDOWS = "accessibilty:getAccessibilityWindowInfo";
+    constexpr int32_t WMS_TIMEOUT = 10; // s
+}
+
 AccessibilityWindowManager::AccessibilityWindowManager()
 {
 }
@@ -413,6 +419,7 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
 std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilityWindows()
 {
     HILOG_DEBUG("a11yWindows_ size[%{public}zu]", a11yWindows_.size());
+    XCollieHelper timer(TIMER_GET_ACCESSIBILITY_WINDOWS, WMS_TIMEOUT);
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
     std::vector<AccessibilityWindowInfo> windows;
@@ -439,6 +446,7 @@ std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilit
 bool AccessibilityWindowManager::GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window)
 {
     HILOG_DEBUG("start windowId(%{public}d)", windowId);
+    XCollieHelper timer(TIMER_GET_ACCESSIBILITY_WINDOWS, WMS_TIMEOUT);
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);

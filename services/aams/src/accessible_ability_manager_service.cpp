@@ -89,7 +89,7 @@ namespace {
     const std::string TIMER_REGISTER_ENABLEABILITY_OBSERVER = "accessibility:registerEnableAbilityObServer";
     const std::string TIMER_GET_ALL_CONFIG = "accessibility:getAllConfig";
     const std::string TIMER_REGISTER_CONFIG_OBSERVER = "accessibility:registerConfigObserver";
-    constexpr int32_t XCOLLIE_TIMEOUT = 1; // s
+    constexpr int32_t XCOLLIE_TIMEOUT = 6; // s
 } // namespace
 
 const bool REGISTER_RESULT =
