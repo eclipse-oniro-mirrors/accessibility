@@ -1369,7 +1369,7 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "accessibilityVisible", accessibilityVisible));
 
     napi_value clip = nullptr;
-    GetElementInfoClip(callbackInfo, isActive);
+    GetElementInfoClip(callbackInfo, clip);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "clip", clip));
 }
 
