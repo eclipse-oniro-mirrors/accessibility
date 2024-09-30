@@ -242,5 +242,16 @@ std::vector<Rect> AccessibilityWindowInfo::GetTouchHotAreas()
     return touchHotAreas_;
 }
 
+int32_t AccessibilityWindowInfo::GetMainWindowId() const
+{
+    HILOG_DEBUG("mainWindowId_[%{public}d]", mainWindowId_);
+    return mainWindowId_;
+}
+
+void AccessibilityWindowInfo::SetMainWindowId(const int32_t id)
+{
+    mainWindowId_ = id;
+    HILOG_DEBUG("mainWindowId_[%{public}d]", mainWindowId_);
+}
 } // namespace Accessibility
 } // namespace OHOS

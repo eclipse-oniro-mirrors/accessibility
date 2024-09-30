@@ -35,7 +35,7 @@ namespace {
     const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "inspectorKey",
         "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
         "textMoveUnit", "contents", "lastContent", "itemCount", "currentIndex", "startIndex", "endIndex",
-        "resourceName", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible",
+        "resourceName", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible", "mainWindowId",
         "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable", "navDestinationId",
         "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
@@ -43,7 +43,7 @@ namespace {
         "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
         "allAttribute", "clip"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
-        "rootElement", "isFocused", "windowId"};
+        "rootElement", "isFocused", "windowId", "mainWindowId"};
 
     using AttributeNamesFunc = void (*)(NAccessibilityElementData *callbackInfo, napi_value &value);
     std::map<std::string, AttributeNamesFunc> elementInfoCompleteMap = {
@@ -104,6 +104,7 @@ namespace {
         {"span", &NAccessibilityElement::GetElementInfoSpan},
         {"isActive", &NAccessibilityElement::GetElementInfoIsActive},
         {"accessibilityVisible", &NAccessibilityElement::GetElementInfoAccessibilityVisible},
+        {"mainWindowId", &NAccessibilityElement::GetElementInfoWindowId},
         {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
         {"clip", &NAccessibilityElement::GetElementInfoClip},
     };
@@ -115,6 +116,7 @@ namespace {
         {"rootElement", &NAccessibilityElement::GetWindowInfoRootElement},
         {"isFocused", &NAccessibilityElement::GetWindowInfoIsFocused},
         {"windowId", &NAccessibilityElement::GetWindowInfoWindowId},
+        {"mainWindowId", &NAccessibilityElement::GetWindowInfoMainWindowId},
     };
 } // namespace
 
@@ -1371,6 +1373,10 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     napi_value clip = nullptr;
     GetElementInfoClip(callbackInfo, clip);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "clip", clip));
+
+    napi_value mainWindowId = nullptr;
+    GetElementInfoWindowId(callbackInfo, mainWindowId);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "mainWindowId", mainWindowId));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -1399,6 +1405,10 @@ void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData 
     napi_value windowId = nullptr;
     GetWindowInfoWindowId(callbackInfo, windowId);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "windowId", windowId));
+
+    napi_value mainWindowId = nullptr;
+    GetWindowInfoMainWindowId(callbackInfo, mainWindowId);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "mainWindowId", mainWindowId));
 }
 
 bool NAccessibilityElement::CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -1496,6 +1506,15 @@ void NAccessibilityElement::GetWindowInfoWindowId(NAccessibilityElementData *cal
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
         callbackInfo->accessibilityElement_.windowInfo_->GetWindowId(), &value));
+}
+
+void NAccessibilityElement::GetWindowInfoMainWindowId(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.windowInfo_->GetMainWindowId(), &value));
 }
 
 napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info info)

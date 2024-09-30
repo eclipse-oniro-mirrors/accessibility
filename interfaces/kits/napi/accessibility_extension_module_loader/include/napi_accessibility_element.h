@@ -150,6 +150,7 @@ public:
     static void GetWindowInfoRootElement(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoIsFocused(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoMainWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     static napi_ref consRef_;
 private:
