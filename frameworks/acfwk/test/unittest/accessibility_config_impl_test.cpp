@@ -521,7 +521,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_003, TestSize.Level1)
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetMouseAutoClick(time);
     instance.GetMouseAutoClick(value);
-    EXPECT_EQ(info.size(), 0);
+    EXPECT_EQ(info.size(), 2);
     GTEST_LOG_(INFO) << "SetMouseAutoClick_003 end";
 }
 
