@@ -1044,14 +1044,19 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
 void AccessibleAbilityManagerService::RemoveTreeDeathRecipient(const int32_t windowId, const int32_t treeId,
     const sptr<AccessibilityWindowConnection> connection)
 {
-    auto object = connection->GetCardProxy(treeId)->AsObject();
+    auto object = connection->GetCardProxy(treeId);
+    if (object == nullptr) {
+        HILOG_ERROR("GetCardProxy is null");
+        return;
+    }
+    auto remoteObject = object->AsObject();
     connection->EraseProxy(treeId);
     auto iter = interactionOperationDeathMap_.find(windowId);
     if (iter != interactionOperationDeathMap_.end()) {
         auto iterTree = iter->second.find(treeId);
         if (iterTree != iter->second.end()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient = iterTree->second;
-            bool result = object->RemoveDeathRecipient(deathRecipient);
+            bool result = remoteObject->RemoveDeathRecipient(deathRecipient);
             HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
             iter->second.erase(iterTree);
         } else {
