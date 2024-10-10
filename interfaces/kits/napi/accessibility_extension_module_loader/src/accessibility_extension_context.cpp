@@ -199,5 +199,16 @@ RetError AccessibilityExtensionContext::StartAbility(const AAFwk::Want &want)
     }
     return RET_OK;
 }
+
+RetError AccessibilityExtensionContext::EnableScreenCurtain(const bool isEnable)
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->EnableScreenCurtain(isEnable);
+}
 } // namespace Accessibility
 } // namespace OHOS

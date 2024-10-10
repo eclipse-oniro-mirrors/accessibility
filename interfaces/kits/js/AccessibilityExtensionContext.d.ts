@@ -309,6 +309,21 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
    * @since 12
    */
    startAbility(want: Want): Promise<void>;
+
+  /**
+   * Set the screen curtain enable or disable.
+   *
+   * @param { boolean } isEnable Indicates whether the screen curtain is enabled.
+   * @throws { BusinessError } 401 - Parameter error. Possible causes:
+   *                           1. Mandatory parameters are left unspecified;
+   *                           2. Incorrect parameter types;
+   *                           3. Parameter verification failed.
+   * @throws { BusinessError } 9300003 -  No accessibility permission to perform the operation.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 12
+   */
+  enableScreenCurtain(isEnable: boolean): void;
 }
 
 /**

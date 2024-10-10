@@ -54,6 +54,11 @@ class AccessibilityExtensionContext extends ExtensionContext {
     console.log('startAbility');
     return this.__context_impl__.startAbility(want, callback);
   }
+
+  enableScreenCurtain(isEnable) {
+    console.log('enableScreenCurtain');
+    return this.__context_impl__.enableScreenCurtain(isEnable);
+  }
 }
 
 export default AccessibilityExtensionContext;

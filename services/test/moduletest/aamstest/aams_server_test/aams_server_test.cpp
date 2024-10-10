@@ -292,6 +292,7 @@ HWTEST_F(AAMSServerTest, RegisterElementOperator_001, TestSize.Level1)
     sleep(1);
     AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     accountData_->ClearInstalledAbility();
+    sleep(1);
     GTEST_LOG_(INFO) << "AAMSServerTest RegisterElementOperator_001 end";
 }
 
@@ -330,6 +331,7 @@ HWTEST_F(AAMSServerTest, DeregisterElementOperator_001, TestSize.Level1)
 
     AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     accountData_->ClearInstalledAbility();
+    sleep(1);
     GTEST_LOG_(INFO) << "AAMSServerTest DeregisterElementOperator_001 end";
 }
 } // namespace Accessibility

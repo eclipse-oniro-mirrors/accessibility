@@ -216,6 +216,11 @@ public:
         GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnStartAbility);
     }
 
+    static napi_value EnableScreenCurtain(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnEnableScreenCurtain);
+    }
+
 private:
     std::weak_ptr<AccessibilityExtensionContext> context_;
 
@@ -691,6 +696,33 @@ private:
             env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
+
+    napi_value OnEnableScreenCurtain(napi_env env, NapiCallbackInfo& info)
+    {
+        HILOG_INFO();
+        if (info.argc != ARGS_SIZE_ONE) {
+            HILOG_ERROR("Not enough params");
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return CreateJsUndefined(env);
+        }
+
+        bool isEnable = false;
+        napi_get_value_bool(env, info.argv[PARAM0], &isEnable);
+        auto context = context_.lock();
+        RetError ret = context->EnableScreenCurtain(isEnable);
+        if (ret != RET_OK) {
+            HILOG_ERROR("result error, ret %{public}d", ret);
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return CreateJsUndefined(env);
+        }
+
+        HILOG_INFO("OnEnableScreenCurtain success");
+        return CreateJsUndefined(env);
+    }
 };
 } // namespace
 
@@ -717,6 +749,8 @@ napi_value CreateJsAccessibilityExtensionContext(
     BindNativeFunction(env, object, "injectGesture", moduleName, NAccessibilityExtensionContext::InjectGesture);
     BindNativeFunction(env, object, "injectGestureSync", moduleName, NAccessibilityExtensionContext::InjectGestureSync);
     BindNativeFunction(env, object, "startAbility", moduleName, NAccessibilityExtensionContext::StartAbility);
+    BindNativeFunction(env, object, "enableScreenCurtain", moduleName,
+        NAccessibilityExtensionContext::EnableScreenCurtain);
     return object;
 }
 } // namespace Accessibility
