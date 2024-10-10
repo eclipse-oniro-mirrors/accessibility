@@ -75,7 +75,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
         RetError ret = GetElementOperator(accountId_, windowId, FOCUS_TYPE_INVALID, clientName_,
             elementOperator, treeId);
-        if (ret != RET_OK) {
+        if (ret != RET_OK || !CheckWinFromAwm(windowId)) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", windowId);
             std::vector<AccessibilityElementInfo> infos = {};
             callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
@@ -713,6 +713,20 @@ RetError AccessibleAbilityChannel::GetElementOperator(
         return RET_ERR_NULLPTR;
     }
     return RET_OK;
+}
+
+bool AccessibleAbilityChannel::CheckWinFromAwm(const int32_t windowId)
+{
+    std::vector<AccessibilityWindowInfo> windowsFromAwm =
+        Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
+    if (!windowsFromAwm.empty()) {
+        for (const auto& window: windowsFromAwm) {
+            if (windowId == window.GetWindowId()) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 } // namespace Accessibility
 } // namespace OHOS
