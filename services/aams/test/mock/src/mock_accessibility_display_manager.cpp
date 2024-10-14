@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,7 @@
 #include "accessibility_display_manager.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
+#include "accessibility_ut_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -23,6 +24,8 @@ namespace Accessibility {
 constexpr int32_t DEFAULT_DPI = 540;
 constexpr int32_t DEFAULT_WIDTH = 1260;
 constexpr int32_t DEFAULT_HEIGHT = 2720;
+constexpr float DEFAULT_SCALE = 2.0f;
+constexpr float NORMAL_SCALE = 1.0f;
 
 AccessibilityDisplayManager::AccessibilityDisplayManager()
 {
@@ -133,8 +136,13 @@ void AccessibilityDisplayManager::SetDisplayScale(const uint64_t screenId,
 {
     HILOG_DEBUG("scaleX = %{public}f, scaleY = %{public}f, pivotX = %{public}f, pivotY = %{public}f",
         scaleX, scaleY, pivotX, pivotY);
-    Rosen::DisplayManager::GetInstance().SetDisplayScale(screenId, scaleX,
-        scaleY, pivotX, pivotY);
+    if ((scaleX >= DEFAULT_SCALE) || (scaleY >= DEFAULT_SCALE)) {
+        Accessibility::AccessibilityAbilityHelper::GetInstance().SetZoomState(true);
+    }
+
+    if ((scaleX == NORMAL_SCALE) || (scaleY == NORMAL_SCALE)) {
+        Accessibility::AccessibilityAbilityHelper::GetInstance().SetZoomState(false);
+    }
 }
 
 void AccessibilityDisplayManager::RegisterDisplayListener(
