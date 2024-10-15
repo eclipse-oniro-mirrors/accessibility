@@ -31,7 +31,8 @@ namespace {
     const std::string GESTURE_KEY = "gesture_state";
     const std::string CAPTION_KEY = "caption_state";
     const std::string KEYEVENT_OBSERVER = "keyevent_observer";
-    const std::string SCREEN_MAGNIFICATION_KEY = "screen_magnification";
+    const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
+    const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
     const std::string MOUSEKEY = "mousekey";
     const std::string HIGH_CONTRAST_TEXT_KEY = "high_text_contrast_enabled";
     const std::string DALTONIZATION_STATE = "accessibility_display_daltonizer_enabled";
@@ -112,7 +113,14 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationState(const bool sta
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isScreenMagnificationState_ = state;
-    return SetConfigState(SCREEN_MAGNIFICATION_KEY, state);
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t type)
+{
+    HILOG_DEBUG("screenMagnificationType = [%{public}u]", type);
+    screenMagnificationType_ = type;
+    return RET_OK;
 }
 
 RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
@@ -464,6 +472,11 @@ uint32_t AccessibilitySettingsConfig::GetClickResponseTime() const
     return clickResponseTime_;
 }
 
+uint32_t AccessibilitySettingsConfig::GetScreenMagnificationType() const
+{
+    return screenMagnificationType_;
+}
+
 bool AccessibilitySettingsConfig::GetIgnoreRepeatClickState() const
 {
     return ignoreRepeatClickState_;
@@ -646,6 +659,7 @@ void AccessibilitySettingsConfig::InitSetting()
     contentTimeout_ = static_cast<uint32_t>(datashare_->GetIntValue(CONTENT_TIMEOUT_KEY, 0));
     brightnessDiscount_ = static_cast<float>(datashare_->GetFloatValue(BRIGHTNESS_DISCOUNT_KEY, 1.0));
     audioBalance_ = static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0));
+    screenMagnificationType_ = static_cast<uint32_t>(datashare_->GetIntValue(SCREEN_MAGNIFICATION_TYPE, 0));
     clickResponseTime_ = static_cast<uint32_t>(datashare_->GetIntValue(CLICK_RESPONCE_TIME, 0));
     ignoreRepeatClickTime_ = static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0));
 }
