@@ -830,7 +830,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             sceneBoardElementIdMap_.InsertPair(realWid, window->uiNodeId_);
         }
 
-        if (a11yWindows_[realWid].IsFocused()) {
+        if (window->focused_) {
             SetActiveWindow(realWid);
         }
 
