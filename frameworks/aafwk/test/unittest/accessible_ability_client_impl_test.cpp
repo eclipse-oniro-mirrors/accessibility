@@ -583,8 +583,9 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetByElementId_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetByElementId_001 start";
     Connect();
     int64_t elementId = 10;
+    int32_t windowId = 1;
     AccessibilityElementInfo targetElementInfo {};
-    EXPECT_EQ(instance_->GetByElementId(elementId, targetElementInfo), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetByElementId(elementId, windowId, targetElementInfo), RET_ERR_TIME_OUT);
     GTEST_LOG_(INFO) << "GetByElementId_001 end";
 }
 
@@ -597,8 +598,9 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetByElementId_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetByElementId_002 start";
     int64_t elementId = 10;
+    int32_t windowId = 1;
     AccessibilityElementInfo targetElementInfo {};
-    EXPECT_EQ(instance_->GetByElementId(elementId, targetElementInfo), RET_ERR_NO_CONNECTION);
+    EXPECT_EQ(instance_->GetByElementId(elementId, windowId, targetElementInfo), RET_ERR_NO_CONNECTION);
     GTEST_LOG_(INFO) << "GetByElementId_002 end";
 }
 

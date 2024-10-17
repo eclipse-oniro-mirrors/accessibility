@@ -915,7 +915,7 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     return SearchElementInfoByElementId(windowId, parentElementId, cacheMode_, parent, treeId);
 }
 
-RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId,
+RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, const int32_t windowId,
     AccessibilityElementInfo &targetElementInfo)
 {
     HILOG_DEBUG();
@@ -940,16 +940,15 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId,
         return RET_ERR_NO_CONNECTION;
     }
 
-    int32_t activeWindow = serviceProxy_->GetActiveWindow();
     int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
     HILOG_DEBUG("window:[%{public}d],treeId:%{public}d,elementId:%{public}" PRId64 "",
-        activeWindow, treeId, elementId);
-    if (GetCacheElementInfo(activeWindow, elementId, targetElementInfo)) {
+        windowId, treeId, elementId);
+    if (GetCacheElementInfo(windowId, elementId, targetElementInfo)) {
         HILOG_DEBUG("get element info from cache");
         return RET_OK;
     }
 
-    return SearchElementInfoByElementId(activeWindow, elementId, cacheMode_, targetElementInfo, treeId);
+    return SearchElementInfoByElementId(windowId, elementId, cacheMode_, targetElementInfo, treeId);
 }
 
 RetError AccessibleAbilityClientImpl::GetCursorPosition(const AccessibilityElementInfo &elementInfo, int32_t &position)
