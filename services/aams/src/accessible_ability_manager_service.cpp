@@ -1977,8 +1977,10 @@ void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(cons
 
     switch (evtType) {
         case TYPE_VIEW_HOVER_ENTER_EVENT:
-        case TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT:
             Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(windowId, false);
+            Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(windowId);
+            break;
+        case TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT:
             Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(windowId);
             break;
         default:
