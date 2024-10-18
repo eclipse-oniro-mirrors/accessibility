@@ -184,10 +184,12 @@ public:
     /**
      * @brief Get node information based on element id in active window.
      * @param elementId The target element id.
+     * @param windowId The target window id.
      * @param targetElementInfo The element info of specified content.
      * @return Return RET_OK if gets info successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetByElementId(const int64_t elementId, AccessibilityElementInfo &targetElementInfo) = 0;
+    virtual RetError GetByElementId(const int64_t elementId, const int32_t windowId,
+        AccessibilityElementInfo &targetElementInfo) = 0;
 
     /**
      * @brief Get node information based on inspectorKey in active window.
