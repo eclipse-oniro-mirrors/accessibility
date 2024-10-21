@@ -20,28 +20,28 @@
 #include "parcel_util.h"
 
 #define SWITCH_BEGIN(code) switch (code) {
-#define SWITCH_CASE(case_code, func) case case_code:\
-    {\
-        result_code = func(data, reply);\
-        break;\
+#define SWITCH_CASE(case_code, func)     \
+    case case_code: {                    \
+        result_code = func(data, reply); \
+        break;                           \
     }
 
-#define SWITCH_END() default:\
-    {\
-        result_code = ERR_CODE_DEFAULT;\
+#define SWITCH_END()                                                                                        \
+    default: {                                                                                              \
+        result_code = ERR_CODE_DEFAULT;                                                                     \
         HILOG_WARN("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, default case, need check."); \
-        break;\
-    }\
-}
+        break;                                                                                              \
+    }                                                                                                       \
+        }
 
-#define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_STUB_CASES() \
-    SWITCH_CASE( \
-        AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID, HandleSetSearchElementInfoByAccessibilityIdResult)\
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_TEXT, HandleSetSearchElementInfoByTextResult)\
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUSED_INFO, HandleSetFindFocusedElementInfoResult)\
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE, HandleSetFocusMoveSearchResult)\
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION, HandleSetExecuteActionResult)\
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_CURSOR_RESULT, HandleSetCursorPositionResult)\
+#define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_STUB_CASES()                                                \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID,                                 \
+        HandleSetSearchElementInfoByAccessibilityIdResult)                                                  \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_TEXT, HandleSetSearchElementInfoByTextResult)     \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUSED_INFO, HandleSetFindFocusedElementInfoResult) \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE, HandleSetFocusMoveSearchResult)          \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION, HandleSetExecuteActionResult)        \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_CURSOR_RESULT, HandleSetCursorPositionResult)
 
 namespace OHOS {
 namespace Accessibility {

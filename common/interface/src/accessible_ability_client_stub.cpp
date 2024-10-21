@@ -20,25 +20,25 @@
 #include "hilog_wrapper.h"
 
 #define SWITCH_BEGIN(code) switch (code) {
-#define SWITCH_CASE(case_code, func) case case_code:\
-    {\
-        result_code = func(data, reply);\
-        break;\
+#define SWITCH_CASE(case_code, func)     \
+    case case_code: {                    \
+        result_code = func(data, reply); \
+        break;                           \
     }
 
-#define SWITCH_END() default:\
-    {\
-        result_code = ERR_CODE_DEFAULT;\
-        HILOG_WARN("AccessibleAbilityClientStub::OnRemoteRequest, default case, need check.");\
-        break;\
-    }\
-}
+#define SWITCH_END()                                                                           \
+    default: {                                                                                 \
+        result_code = ERR_CODE_DEFAULT;                                                        \
+        HILOG_WARN("AccessibleAbilityClientStub::OnRemoteRequest, default case, need check."); \
+        break;                                                                                 \
+    }                                                                                          \
+        }
 
-#define ACCESSIBLE_ABILITY_CLIENT_STUB_CASES() \
-    SWITCH_CASE(AccessibilityInterfaceCode::INIT, HandleInit)\
-    SWITCH_CASE(AccessibilityInterfaceCode::DISCONNECT, HandleDisconnect)\
-    SWITCH_CASE(AccessibilityInterfaceCode::ON_ACCESSIBILITY_EVENT, HandleOnAccessibilityEvent)\
-    SWITCH_CASE(AccessibilityInterfaceCode::ON_KEY_PRESS_EVENT, HandleOnKeyPressEvent)\
+#define ACCESSIBLE_ABILITY_CLIENT_STUB_CASES()                                                  \
+    SWITCH_CASE(AccessibilityInterfaceCode::INIT, HandleInit)                                   \
+    SWITCH_CASE(AccessibilityInterfaceCode::DISCONNECT, HandleDisconnect)                       \
+    SWITCH_CASE(AccessibilityInterfaceCode::ON_ACCESSIBILITY_EVENT, HandleOnAccessibilityEvent) \
+    SWITCH_CASE(AccessibilityInterfaceCode::ON_KEY_PRESS_EVENT, HandleOnKeyPressEvent)
 
 namespace OHOS {
 namespace Accessibility {

@@ -25,12 +25,19 @@ ohos_fuzztest("AccessibleAbilityManagerServiceStubFuzzTest") {
     "../../fuzztest:configs_cc_ld",
     "../../../../../resources/config/build:coverage_flags",
   ]
-  sources = [ "accessibleabilitymanagerservicestub_fuzzer.cpp" ]
+  sources = [
+    "../common_fuzzer/addaamstoken_fuzzer.cpp",
+    "accessibleabilitymanagerservicestub_fuzzer.cpp",
+  ]
   deps = [
     "../../../../../interfaces/innerkits/common:accessibility_common",
+    "../../../../../services/aams:accessibleabilityms",
     "../../../../interface:accessibility_interface",
   ]
   external_deps = [
+    "access_token:libaccesstoken_sdk",
+    "access_token:libnativetoken",
+    "access_token:libtoken_setproc",
     "c_utils:utils",
     "input:libmmi-client",
     "ipc:ipc_single",
