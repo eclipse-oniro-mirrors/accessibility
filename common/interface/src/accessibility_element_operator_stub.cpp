@@ -18,32 +18,32 @@
 #include "hilog_wrapper.h"
 
 #define SWITCH_BEGIN(code) switch (code) {
-#define SWITCH_CASE(case_code, func) case case_code:\
-    {\
-        result_code = func(data, reply);\
-        break;\
+#define SWITCH_CASE(case_code, func)     \
+    case case_code: {                    \
+        result_code = func(data, reply); \
+        break;                           \
     }
 
-#define SWITCH_END() default:\
-    {\
-        result_code = ERR_CODE_DEFAULT;\
-        HILOG_WARN("AccessibilityElementOperatorStub::OnRemoteRequest, default case, need check.");\
-        break;\
-    }\
-}
+#define SWITCH_END()                                                                                \
+    default: {                                                                                      \
+        result_code = ERR_CODE_DEFAULT;                                                             \
+        HILOG_WARN("AccessibilityElementOperatorStub::OnRemoteRequest, default case, need check."); \
+        break;                                                                                      \
+    }                                                                                               \
+        }
 
-#define ACCESSIBILITY_ELEMENT_OPERATOR_STUB_CASES() \
-    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_BY_ACCESSIBILITY_ID, HandleSearchElementInfoByAccessibilityId)\
-    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_BY_TEXT, HandleSearchElementInfosByText)\
-    SWITCH_CASE(AccessibilityInterfaceCode::FIND_FOCUSED_INFO, HandleFindFocusedElementInfo)\
-    SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_FIND, HandleFocusFind)\
-    SWITCH_CASE(AccessibilityInterfaceCode::PERFORM_ACTION_ELEMENT, HandleExecuteAction)\
-    SWITCH_CASE(AccessibilityInterfaceCode::CURSOR_POSITION, HandleGetCursorPosition)\
-    SWITCH_CASE(AccessibilityInterfaceCode::CLEAR_FOCUS, HandleClearFocus)\
-    SWITCH_CASE(AccessibilityInterfaceCode::OUTSIDE_TOUCH, HandleOutsideTouch)\
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_CHILDTREEID, HandleSetChildTreeIdAndWinId)\
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_BELONGTREEID, HandleSetBelongTreeId)\
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_PARENTWINDOWID, HandleSetParentWindowId)\
+#define ACCESSIBILITY_ELEMENT_OPERATOR_STUB_CASES()                                                               \
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_BY_ACCESSIBILITY_ID, HandleSearchElementInfoByAccessibilityId) \
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_BY_TEXT, HandleSearchElementInfosByText)                       \
+    SWITCH_CASE(AccessibilityInterfaceCode::FIND_FOCUSED_INFO, HandleFindFocusedElementInfo)                      \
+    SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_FIND, HandleFocusFind)                                          \
+    SWITCH_CASE(AccessibilityInterfaceCode::PERFORM_ACTION_ELEMENT, HandleExecuteAction)                          \
+    SWITCH_CASE(AccessibilityInterfaceCode::CURSOR_POSITION, HandleGetCursorPosition)                             \
+    SWITCH_CASE(AccessibilityInterfaceCode::CLEAR_FOCUS, HandleClearFocus)                                        \
+    SWITCH_CASE(AccessibilityInterfaceCode::OUTSIDE_TOUCH, HandleOutsideTouch)                                    \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_CHILDTREEID, HandleSetChildTreeIdAndWinId)                        \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_BELONGTREEID, HandleSetBelongTreeId)                              \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_PARENTWINDOWID, HandleSetParentWindowId)
 
 namespace OHOS {
 namespace Accessibility {

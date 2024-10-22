@@ -191,9 +191,6 @@ private:
 
     ErrCode HandleGetRootParentId(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetAllTreeId(MessageParcel &data, MessageParcel &reply);
-
-    using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceStub::*)(
-        MessageParcel &data, MessageParcel &reply);
 };
 } // namespace Accessibility
 } // namespace OHOS
