@@ -267,6 +267,8 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
     int64_t componentId = eventInfo.GetAccessibilityId();
     int32_t windowId = eventInfo.GetWindowId();
     std::shared_ptr<AccessibilityElement> element = nullptr;
+    HILOG_DEBUG("GetElement componentId: %{public}" PRId64 ", windowId: %{public}d, eventType: %{public}d",
+        componentId, windowId, eventInfo.GetEventType());
     if (componentId > 0) {
         std::shared_ptr<AccessibilityElementInfo> elementInfo =
             std::make_shared<AccessibilityElementInfo>(eventInfo.GetElementInfo());
@@ -279,13 +281,18 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
     } else {
         std::shared_ptr<AccessibilityElementInfo> elementInfo = std::make_shared<AccessibilityElementInfo>();
         std::string inspectorKey = eventInfo.GetInspectorKey();
+        RetError ret = RET_ERR_FAILED;
+        AccessibilityElementInfo accessibilityElementInfo;
         if (eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY && inspectorKey != "") {
-            AccessibilityElementInfo accessibilityElementInfo;
-            if (aaClient->SearchElementInfoByInspectorKey(inspectorKey, accessibilityElementInfo) == RET_OK) {
-                elementInfo = std::make_shared<AccessibilityElementInfo>(accessibilityElementInfo);
-            }
+            ret = aaClient->SearchElementInfoByInspectorKey(inspectorKey, accessibilityElementInfo);
         }
-        CreateElementInfoByEventInfo(eventInfo, elementInfo);
+        if (ret == RET_OK) {
+            elementInfo = std::make_shared<AccessibilityElementInfo>(accessibilityElementInfo);
+            elementInfo->SetBundleName(eventInfo.GetBundleName());
+            elementInfo->SetTriggerAction(eventInfo.GetTriggerAction());
+        } else {
+            CreateElementInfoByEventInfo(eventInfo, elementInfo);
+        }
         element = std::make_shared<AccessibilityElement>(elementInfo);
     }
     return element;
@@ -296,6 +303,7 @@ void NAccessibilityExtension::CreateElementInfoByEventInfo(const AccessibilityEv
 {
     HILOG_DEBUG();
     if (!elementInfo) {
+        HILOG_ERROR("elementInfo is nullptr");
         return;
     }
     if (elementInfo->GetAccessibilityId() < 0) {
