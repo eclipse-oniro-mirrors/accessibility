@@ -35,7 +35,7 @@ namespace {
         "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
         "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
-        "row", "column", "listItemIndex", "sideBarContainerStates", "allAttribute"};
+        "row", "column", "listItemIndex", "sideBarContainerStates", "span", "allAttribute"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId"};
 
@@ -95,6 +95,7 @@ namespace {
         {"column", &NAccessibilityElement::GetElementInfoColumn},
         {"listItemIndex", &NAccessibilityElement::GetElementInfoListItemIndex},
         {"sideBarContainerStates", &NAccessibilityElement::GetElementInfoSideBarContainer},
+        {"span", &NAccessibilityElement::GetElementInfoSpan},
         {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
@@ -1034,6 +1035,32 @@ void NAccessibilityElement::GetElementInfoNavDestinationId(NAccessibilityElement
         callbackInfo->accessibilityElement_.elementInfo_->GetNavDestinationId(), &value));
 }
 
+void NAccessibilityElement::GetElementInfoSpan(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    std::vector<SpanInfo> spanInfo {};
+    spanInfo = callbackInfo->accessibilityElement_.elementInfo_->GetSpanList();
+    HILOG_DEBUG("spanInfo size: [%{public}zu]", spanInfo.size());
+
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_array(callbackInfo->env_, &value));
+    size_t index = 0;
+    napi_status status;
+    for (auto& span : spanInfo) {
+        napi_value result = nullptr;
+        status = napi_create_object(callbackInfo->env_, &result);
+        if (status != napi_ok) {
+            HILOG_DEBUG("cant create napi object!");
+            return;
+        }
+        ConvertSpanToJS(callbackInfo->env_, result, span);
+        HILOG_DEBUG("ConvertSpanToJS spanInfo spanid: [%{public}d]", span.GetSpanId());
+        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_set_element(callbackInfo->env_, value, index, result));
+        index++;
+    }
+}
+
 void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_object(callbackInfo->env_, &value));
@@ -1282,6 +1309,10 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     napi_value listItemIndex = nullptr;
     GetElementInfoListItemIndex(callbackInfo, listItemIndex);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "listItemIndex", listItemIndex));
+
+    napi_value span = nullptr;
+    GetElementInfoSpan(callbackInfo, span);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "span", span));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
