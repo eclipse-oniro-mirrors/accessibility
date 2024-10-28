@@ -180,7 +180,7 @@ void AccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResu
 {
     HILOG_DEBUG("requestId is %{public}d", requestId);
     std::lock_guard<ffrt::mutex> lock(requestsMutex_);
-    std::vector<AccessibilityElementInfo> filterInfos = TranslateListToVector(infos);
+    std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {
@@ -213,7 +213,7 @@ void AccessibilityElementOperatorImpl::SetSearchElementInfoByTextResult(
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(requestsMutex_);
-    std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
+    std::vector<AccessibilityElementInfo> myInfos(infos.begin(), infos.end());
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {

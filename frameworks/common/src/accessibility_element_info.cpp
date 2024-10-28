@@ -852,8 +852,8 @@ ExtraElementInfo::ExtraElementInfo(const std::map<std::string, std::string> extr
 
 RetError ExtraElementInfo::SetExtraElementInfo(const std::string keyStr, const std::string valueStr)
 {
-    auto extraElementInfoIter = setOfExtraElementInfo.find(keyStr);
-    if (extraElementInfoIter != setOfExtraElementInfo.end()) {
+    auto extraElementInfoIter = EXTRA_ELEMENTINFO_SET.find(keyStr);
+    if (extraElementInfoIter != EXTRA_ELEMENTINFO_SET.end()) {
         extraElementValueStr_[keyStr] = valueStr;
         HILOG_DEBUG("SetExtraElementInfo: size is extraElementValueStr : [%{public}zu]",
             extraElementValueStr_.size());
@@ -865,8 +865,8 @@ RetError ExtraElementInfo::SetExtraElementInfo(const std::string keyStr, const s
 
 RetError ExtraElementInfo::SetExtraElementInfo(const std::string keyStr, const int32_t valueInt)
 {
-    auto extraElementInfoIter = setOfExtraElementInfo.find(keyStr);
-    if (extraElementInfoIter != setOfExtraElementInfo.end()) {
+    auto extraElementInfoIter = EXTRA_ELEMENTINFO_SET.find(keyStr);
+    if (extraElementInfoIter != EXTRA_ELEMENTINFO_SET.end()) {
         extraElementValueInt_[keyStr] = valueInt;
         HILOG_DEBUG("SetExtraElementInfo: size is extraElementValueInt : [%{public}zu]",
             extraElementValueInt_.size());

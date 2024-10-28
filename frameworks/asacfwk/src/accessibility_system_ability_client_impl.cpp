@@ -556,7 +556,7 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityId
         HILOG_ERROR("serviceProxy_ is nullptr");
         return;
     }
-    std::vector<AccessibilityElementInfo> filterInfos = TranslateListToVector(infos);
+    std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
     sptr<IAccessibilityElementOperatorCallback> callback =
         AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
     if (requestId < 0) {
@@ -584,7 +584,7 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByTextResult(
         HILOG_ERROR("serviceProxy_ is nullptr");
         return;
     }
-    std::vector<AccessibilityElementInfo> filterInfos = TranslateListToVector(infos);
+    std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
     sptr<IAccessibilityElementOperatorCallback> callback =
         AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
     if (requestId >= 0) {
