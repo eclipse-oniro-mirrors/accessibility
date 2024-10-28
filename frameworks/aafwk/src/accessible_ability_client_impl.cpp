@@ -1255,11 +1255,12 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
     SortElementInfosIfNecessary(elementInfos);
     for (auto &info : elementInfos) {
         if (info.GetInspectorKey() == inspectorKey) {
-            HILOG_INFO("find elementInfo by inspectorKey success");
+            HILOG_INFO("find elementInfo by inspectorKey success, inspectorKey: %{public}s", inspectorKey.c_str());
             elementInfo = info;
             return RET_OK;
         }
     }
+    HILOG_INFO("SearchElementInfoByInspectorKey failed, inspectorKey: %{public}s", inspectorKey.c_str());
     return RET_ERR_FAILED;
 }
 
