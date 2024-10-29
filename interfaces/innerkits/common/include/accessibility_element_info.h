@@ -23,6 +23,14 @@
 
 namespace OHOS {
 namespace Accessibility {
+static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
+    "CheckboxGroupSelectedStatus",
+    "Row",
+    "Column",
+    "SideBarContainerStates",
+    "ListItemIndex"
+};
+
 /*
 * class define the action on Accessibility info
 */
@@ -346,13 +354,6 @@ public:
 protected:
     std::map<std::string, std::string> extraElementValueStr_ = {};
     std::map<std::string, int32_t> extraElementValueInt_ = {};
-    std::set<std::string> setOfExtraElementInfo = {
-        "CheckboxGroupSelectedStatus",
-        "Row",
-        "Column",
-        "SideBarContainerStates",
-        "ListItemIndex"
-    };
 };
 
 class Rect {
