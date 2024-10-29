@@ -142,6 +142,7 @@ namespace Accessibility {
         GET_ALL_TREE_ID,
         GET_FOCUSED_WINDOW_ID,
         REMOVE_REQUEST_ID,
+        SERVICE_CODE_END,
 
         ON_STATE_CHANGED = 900,
     };
