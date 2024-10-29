@@ -198,7 +198,7 @@ void AccessibleAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<IRemoteObj
         if (serviceProxy_ != nullptr) {
             break;
         }
-        if (retSysParam >= 0 && !std::strcmp(value, "true")) {
+        if (retSysParam >= 0 && std::strcmp(value, "true")) { // when Load success but SA didn't set flag
             break;
         }
         sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
