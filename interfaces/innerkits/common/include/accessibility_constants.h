@@ -37,6 +37,7 @@ extern const std::string ACTION_ARGU_SET_OFFSET;
 extern const std::string ACTION_ARGU_HTML_ELEMENT;
 extern const std::string ACTION_ARGU_SET_TEXT;
 extern const std::string ACTION_ARGU_MOVE_UNIT;
+extern const std::string ACTION_ARGU_SPAN_ID;
 
 // HtmlItemType
 extern const std::string HTML_ITEM_INVALID;

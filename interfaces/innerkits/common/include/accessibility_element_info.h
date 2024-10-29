@@ -465,6 +465,95 @@ protected:
 };
 
 /*
+* class define the span info
+*/
+class SpanInfo {
+public:
+    /**
+     * @brief Construct
+     */
+    SpanInfo() {}
+
+    /**
+     * @brief Construct
+     * @param spanId The span Id.
+     * @param spanText The text of span.
+     * @param accessibilityText The accessibility text of span.
+     * @param accessibilityDescription The accessibility description of span.
+     * @param accessibilityLevel The accessibility level of span.
+     */
+    SpanInfo(const int32_t &spanId, const std::string &spanText, const std::string &accessibilityText,
+        const std::string &accessibilityDescription, const std::string &accessibilityLevel);
+
+    /**
+     * @brief Sets the span Id of spanInfo.
+     * @param spanId The span Id.
+     */
+    void SetSpanId(const int32_t spanId);
+
+    /**
+     * @brief Sets the Text of spanInfo.
+     * @param spanText The span text.
+     */
+    void SetSpanText(const std::string spanText);
+
+    /**
+     * @brief Sets the accessibility text of spanInfo.
+     * @param accessibilityText The accessibility text.
+     */
+    void SetAccessibilityText(const std::string accessibilityText);
+
+    /**
+     * @brief Sets the accessibilityDescription of spanInfo.
+     * @param accessibilityDescription The accessibility description.
+     */
+    void SetAccessibilityDescription(const std::string accessibilityDescription);
+
+    /**
+     * @brief Sets the accessibilityLevel of spanInfo.
+     * @param accessibilityLevel The accessibility level.
+     */
+    void SetAccessibilityLevel(const std::string accessibilityLevel);
+
+    /**
+     * @brief Gets the span id.
+     * @return The id of span.
+     */
+    int32_t GetSpanId() const;
+
+    /**
+     * @brief Gets the span Text.
+     * @return The Text of span.
+     */
+    const std::string &GetSpanText() const;
+
+    /**
+     * @brief Gets the accessibility text.
+     * @return The accessibility text of span.
+     */
+    const std::string &GetAccessibilityText() const;
+
+    /**
+     * @brief Gets the accessibility description.
+     * @return The accessibility description of span.
+     */
+    const std::string &GetAccessibilityDescription() const;
+
+    /**
+     * @brief Gets the accessibility level.
+     * @return The accessibility level of span.
+     */
+    const std::string &GetAccessibilityLevel() const;
+
+protected:
+    int32_t spanId_;
+    std::string spanText_;
+    std::string accessibilityText_;
+    std::string accessibilityDescription_;
+    std::string accessibilityLevel_;
+};
+
+/*
 * The class supply the api to set/get ui component property
 */
 class AccessibilityElementInfo {
@@ -1599,6 +1688,27 @@ public:
     */
     int64_t GetNavDestinationId() const;
 
+    /**
+     * @brief Set the span to the spanlist.
+     * @param span The span.
+     * @sysCap Accessibility
+    */
+    void AddSpan(const SpanInfo &span);
+
+    /**
+     * @brief Set the spanlist to the element info.
+     * @param spanList The list of span.
+     * @sysCap Accessibility
+    */
+    void SetSpanList(const std::vector<SpanInfo> &spanList);
+
+    /**
+     * @brief Gets an span list.
+     * @return span list.
+     * @sysCap Accessibility
+     */
+    const std::vector<SpanInfo> &GetSpanList() const;
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1673,6 +1783,7 @@ protected:
     std::string blur_ = "";
     std::string hitTestBehavior_ = "";
     int64_t navDestinationId_ = -1;
+    std::vector<SpanInfo> spanList_ {};
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -113,6 +113,7 @@ bool ConvertBoolJSToNAPI(napi_env env, napi_value object, napi_value propertyNam
 void ConvertStringArrayJSToNAPI(napi_env env, napi_value object,
     napi_value propertyNameValue, bool &hasProperty, std::vector<std::string> &stringArray);
 void ConvertStringArrayJSToNAPICommon(napi_env env, napi_value object, std::vector<std::string> &stringArray);
+void ConvertSpanToJS(napi_env env, napi_value result, const Accessibility::SpanInfo& span);
 
 OHOS::Accessibility::ActionType ConvertStringToAccessibleOperationType(const std::string &type);
 OHOS::Accessibility::AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type);
