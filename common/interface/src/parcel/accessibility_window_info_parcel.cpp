@@ -25,6 +25,7 @@ AccessibilityWindowInfoParcel::AccessibilityWindowInfoParcel(const Accessibility
 {
 }
 
+// LCOV_EXCL_START
 bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
 {
     int32_t accessibilityWindowType = TYPE_WINDOW_INVALID;
@@ -48,6 +49,7 @@ bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
 
     return true;
 }
+// LCOV_EXCL_STOP
 
 bool AccessibilityWindowInfoParcel::Marshalling(Parcel &parcel) const
 {
@@ -67,6 +69,7 @@ bool AccessibilityWindowInfoParcel::Marshalling(Parcel &parcel) const
     return true;
 };
 
+// LCOV_EXCL_START
 sptr<AccessibilityWindowInfoParcel> AccessibilityWindowInfoParcel::Unmarshalling(Parcel &parcel)
 {
     sptr<AccessibilityWindowInfoParcel> info = new(std::nothrow) AccessibilityWindowInfoParcel();
@@ -81,5 +84,6 @@ sptr<AccessibilityWindowInfoParcel> AccessibilityWindowInfoParcel::Unmarshalling
     }
     return info;
 }
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

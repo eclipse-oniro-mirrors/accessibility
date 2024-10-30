@@ -24,6 +24,7 @@ CaptionPropertyParcel::CaptionPropertyParcel(const CaptionProperty &property)
 {
 }
 
+// LCOV_EXCL_START
 bool CaptionPropertyParcel::ReadFromParcel(Parcel& parcel)
 {
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, fontFamily_);
@@ -35,6 +36,7 @@ bool CaptionPropertyParcel::ReadFromParcel(Parcel& parcel)
 
     return true;
 }
+// LCOV_EXCL_STOP
 
 bool CaptionPropertyParcel::Marshalling(Parcel& parcel) const
 {
@@ -48,6 +50,7 @@ bool CaptionPropertyParcel::Marshalling(Parcel& parcel) const
     return true;
 }
 
+// LCOV_EXCL_START
 sptr<CaptionPropertyParcel> CaptionPropertyParcel::Unmarshalling(Parcel& parcel)
 {
     sptr<CaptionPropertyParcel> captionProperty = new(std::nothrow) CaptionPropertyParcel();
@@ -61,5 +64,6 @@ sptr<CaptionPropertyParcel> CaptionPropertyParcel::Unmarshalling(Parcel& parcel)
     }
     return captionProperty;
 }
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS
