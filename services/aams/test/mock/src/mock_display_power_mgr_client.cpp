@@ -70,16 +70,18 @@ bool DisplayPowerMgrClient::DiscountBrightness(double discount, uint32_t display
     return true;
 }
 
-bool DisplayPowerMgrClient::OverrideBrightness(uint32_t value, uint32_t displayId)
+bool DisplayPowerMgrClient::OverrideBrightness(uint32_t value, uint32_t displayId, uint32_t duration)
 {
     (void)value;
     (void)displayId;
+    (void)duration;
     return true;
 }
 
-bool DisplayPowerMgrClient::RestoreBrightness(uint32_t displayId)
+bool DisplayPowerMgrClient::RestoreBrightness(uint32_t displayId, uint32_t duration)
 {
     (void)displayId;
+    (void)duration;
     return true;
 }
 
