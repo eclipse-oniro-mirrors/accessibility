@@ -67,9 +67,11 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
+    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM = 700;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG = 1000;
+    constexpr int DISPLAY_DALTONIZER_INVALID = -1;
     constexpr int DISPLAY_DALTONIZER_GREEN = 12;
     constexpr int DISPLAY_DALTONIZER_RED = 11;
     constexpr int DISPLAY_DALTONIZER_BLUE = 13;
@@ -383,6 +385,8 @@ RetError AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t
         daltonizationColorFilter = AccessibilityConfig::Protanomaly;
     } else if (filter == DISPLAY_DALTONIZER_BLUE) {
         daltonizationColorFilter = AccessibilityConfig::Tritanomaly;
+    } else if (filter == DISPLAY_DALTONIZER_INVALID) {
+        daltonizationColorFilter = 0;
     }
     auto ret = datashare_->PutIntValue(DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(daltonizationColorFilter));
     if (ret != RET_OK) {
@@ -490,7 +494,9 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t ti
     }
 
     uint32_t ignoreRepeatClickTime = time;
-    if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
+    if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST) {
+        ignoreRepeatClickTime = AccessibilityConfig::RepeatClickTimeoutShortest;
+    } else if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
         ignoreRepeatClickTime = AccessibilityConfig::RepeatClickTimeoutShort;
     } else if (time == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
         ignoreRepeatClickTime = AccessibilityConfig::RepeatClickTimeoutMedium;
