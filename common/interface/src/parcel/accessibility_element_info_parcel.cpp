@@ -357,18 +357,18 @@ RangeInfoParcel::RangeInfoParcel(const RangeInfo &rangeInfo)
 
 bool RangeInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, min_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, max_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, current_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Double, parcel, min_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Double, parcel, max_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Double, parcel, current_);
 
     return true;
 }
 
 bool RangeInfoParcel::Marshalling(Parcel &parcel) const
 {
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, min_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, max_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, current_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Double, parcel, min_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Double, parcel, max_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Double, parcel, current_);
 
     return true;
 }
