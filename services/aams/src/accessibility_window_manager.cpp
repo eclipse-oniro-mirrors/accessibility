@@ -28,6 +28,7 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     const std::string TIMER_GET_ACCESSIBILITY_WINDOWS = "accessibilty:getAccessibilityWindowInfo";
+    const std::string SCB_SCENE_PANEL = "SCBScenePanel";
     constexpr int32_t WMS_TIMEOUT = 10; // s
 }
 
@@ -331,6 +332,11 @@ bool AccessibilityWindowManager::IsSceneBoard(const sptr<Rosen::AccessibilityWin
         return true;
     }
     return false;
+}
+
+bool AccessibilityWindowManager::IsScenePanel(const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
+{
+    return windowInfo->bundleName_.find(SCB_SCENE_PANEL) != std::string::npos;
 }
 
 AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInfo(
@@ -830,7 +836,8 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             sceneBoardElementIdMap_.InsertPair(realWid, window->uiNodeId_);
         }
 
-        if (window->focused_) {
+        // IsScenePanel for recent-task window
+        if (window->focused_ || IsScenePanel(window)) {
             SetActiveWindow(realWid);
         }
 
