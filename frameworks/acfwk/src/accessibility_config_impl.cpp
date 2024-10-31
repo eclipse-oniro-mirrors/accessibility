@@ -1751,7 +1751,7 @@ uint32_t AccessibilityConfig::Impl::InvertDaltonizationColorInAtoHos(uint32_t fi
     if (filter == DISPLAY_DALTONIZER_RED) {
         return Protanomaly;
     }
-    if (daltonizationColorFilter_ == DISPLAY_DALTONIZER_BLUE) {
+    if (filter == DISPLAY_DALTONIZER_BLUE) {
         return Tritanomaly;
     }
     return filter;
