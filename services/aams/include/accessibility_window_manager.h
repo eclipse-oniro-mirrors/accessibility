@@ -56,6 +56,7 @@ public:
     int64_t GetSceneBoardElementId(const int32_t windowId, const int64_t elementId);
     int32_t GetRealWindowId(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     bool IsSceneBoard(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
+    bool IsScenePanel(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
 
     // used for batch query, provide window and element id translation
     void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId);
