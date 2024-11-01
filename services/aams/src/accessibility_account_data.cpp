@@ -417,8 +417,14 @@ void AccessibilityAccountData::UpdateAccountCapabilities()
 
 void AccessibilityAccountData::UpdateEventTouchGuideCapability()
 {
-    if (connectedA11yAbilities_.IsExistCapability(Capability::CAPABILITY_TOUCH_GUIDE) &&
-        config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, true)) {
+    auto touchGuideState = true;
+    if (config_->GetDbHandle() == nullptr) {
+        HILOG_WARN("helper is null!");
+    } else {
+        touchGuideState = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, true);
+    }
+    
+    if (connectedA11yAbilities_.IsExistCapability(Capability::CAPABILITY_TOUCH_GUIDE) && touchGuideState) {
         isEventTouchGuideState_ = true;
         return;
     }
