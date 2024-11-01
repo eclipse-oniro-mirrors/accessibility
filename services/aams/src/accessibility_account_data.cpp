@@ -723,7 +723,7 @@ void AccessibilityAccountData::Init()
         HILOG_ERROR("helper is null!");
         return;
     }
-    AccessibilitySettingObserver::UpdateFunc func = [this](const std::string& state) {
+    AccessibilitySettingObserver::UpdateFunc callback = [this](const std::string& state) {
         OnTouchGuideStateChanged();
     };
     if (config_->GetDbHandle()->RegisterObserver(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, callback) != RET_OK) {
