@@ -58,6 +58,7 @@ namespace {
     const std::string ACCESSIBILITY_SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
+    const std::string ACCESSIBILITY_TOUCH_GUIDE_ENABLED = "enableTouchMode";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -416,7 +417,8 @@ void AccessibilityAccountData::UpdateAccountCapabilities()
 
 void AccessibilityAccountData::UpdateEventTouchGuideCapability()
 {
-    if (connectedA11yAbilities_.IsExistCapability(Capability::CAPABILITY_TOUCH_GUIDE)) {
+    if (connectedA11yAbilities_.IsExistCapability(Capability::CAPABILITY_TOUCH_GUIDE) &&
+        config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, true)) {
         isEventTouchGuideState_ = true;
         return;
     }
@@ -715,6 +717,17 @@ void AccessibilityAccountData::Init()
     RetError ret = service->RegisterObserver(ACCESSIBILITY_CLONE_FLAG, func);
     if (ret != RET_OK) {
         HILOG_WARN("register clone observer failed %{public}d.", ret);
+    }
+
+    if (config_->GetDbHandle() == nullptr) {
+        HILOG_ERROR("helper is null!");
+        return;
+    }
+    AccessibilitySettingObserver::UpdateFunc func = [this](const std::string& state) {
+        OnTouchGuideStateChanged();
+    };
+    if (config_->GetDbHandle()->RegisterObserver(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, callback) != RET_OK) {
+        HILOG_ERROR("register touch guide observer failed, ret = %{public}d", ret);
     }
 }
 
@@ -1081,6 +1094,22 @@ void AccessibilityAccountData::RemoveUITestClient(sptr<AccessibleAbilityConnecti
 AccountSA::OsAccountType AccessibilityAccountData::GetAccountType()
 {
     return accountType_;
+}
+
+void AccessibilityAccountData::OnTouchGuideStateChanged()
+{
+    HILOG_INFO();
+
+    UpdateAccountCapabilities();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
+    if (config_->GetDbHandle() == nullptr) {
+        HILOG_ERROR("helper is nullptr!");
+        return;
+    }
+    if (!config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, true)) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(
+           ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
+    }
 }
 
 void AccessibilityAccountData::AccessibilityAbility::AddAccessibilityAbility(const std::string& uri,
