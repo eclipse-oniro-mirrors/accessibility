@@ -225,7 +225,7 @@ TouchExploration::TouchExploration()
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
-    if (!display) {
+    if (display == nullptr) {
         HILOG_ERROR("get display is nullptr");
         return;
     }
