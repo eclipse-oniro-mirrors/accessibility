@@ -1032,6 +1032,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "../src/accessibility_common_event.cpp",
     "../src/accessibility_datashare_helper.cpp",
     "../src/accessibility_display_manager.cpp",
+    "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessible_ability_channel.cpp",
     "../src/accessible_ability_connection.cpp",
