@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +20,8 @@
 #include <string>
 #include <thread>
 #include "accessibility_event_transmission.h"
-#include "accessibility_gesture_recognizer.h"
+#include "event_handler.h"
+#include "event_runner.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -123,4 +124,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_TOUCH_GUIDER_H
+#endif // ACCESSIBILITY_SCREEN_TOUCH_H

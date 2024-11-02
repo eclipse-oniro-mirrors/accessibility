@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,7 @@
 
 #include "accessibility_input_interceptor.h"
 #include "accessibility_keyevent_filter.h"
-#include "accessibility_touch_guider.h"
+#include "accessibility_touch_exploration.h"
 #include "accessibility_touchEvent_injector.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
