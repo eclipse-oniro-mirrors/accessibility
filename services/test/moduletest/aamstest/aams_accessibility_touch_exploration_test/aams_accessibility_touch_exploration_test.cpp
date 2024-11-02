@@ -279,12 +279,13 @@ bool AamsTouchExplorationTest::TwoFingerMoveEventProduce(std::vector<MMI::Pointe
     return true;
 }
 
-bool AamsTouchExplorationTest::OneFingerTapAndTwoFingerTapEventProduce(std::vector<MMI::PointerEvent::PointerItem> &points,
-    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, bool isSeparateFlag)
+bool AamsTouchExplorationTest::OneFingerTapAndTwoFingerTapEventProduce(
+    std::vector<MMI::PointerEvent::PointerItem> &points, MMI::PointerEvent::PointerItem point1,
+    MMI::PointerEvent::PointerItem point2, bool isSeparateFlag)
 {
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
-        GTEST_LOG_(INFO) << "AamsTouchExplorationTest OneFingerTapAndTwoFingerTapEventProduce inputEventConsumer is null";
+        GTEST_LOG_(INFO) << "AamsTouchExplorationTest inputEventConsumer is null";
         return false;
     }
 
@@ -323,12 +324,13 @@ bool AamsTouchExplorationTest::OneFingerTapAndTwoFingerTapEventProduce(std::vect
     return true;
 }
 
-bool AamsTouchExplorationTest::TwoFingerTapAndOneFingerTapEventProduce(std::vector<MMI::PointerEvent::PointerItem> &points,
-    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2)
+bool AamsTouchExplorationTest::TwoFingerTapAndOneFingerTapEventProduce(
+    std::vector<MMI::PointerEvent::PointerItem> &points, MMI::PointerEvent::PointerItem point1,
+    MMI::PointerEvent::PointerItem point2)
 {
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
-        GTEST_LOG_(INFO) << "AamsTouchExplorationTest TwoFingerTapAndOneFingerTapEventProduce inputEventConsumer is null";
+        GTEST_LOG_(INFO) << "AamsTouchExplorationTest inputEventConsumer is null";
         return false;
     }
 
