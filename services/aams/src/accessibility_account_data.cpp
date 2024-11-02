@@ -1114,7 +1114,7 @@ void AccessibilityAccountData::OnTouchGuideStateChanged()
     }
     if (!config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, true)) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(
-           ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
+            ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
     }
 }
 
