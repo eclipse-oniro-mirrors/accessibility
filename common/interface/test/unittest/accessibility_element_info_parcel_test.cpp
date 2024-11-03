@@ -40,6 +40,8 @@ public:
         GTEST_LOG_(INFO) << "AccessibilityElementInfoParcelTest SetUp() Start";
         elementInfo_ = std::make_shared<AccessibilityElementInfo>();
         elementInfoParcel_ = std::make_shared<AccessibilityElementInfoParcel>(*elementInfo_);
+        spanInfo_ = std::make_shared<SpanInfo>();
+        spanInfoParcel_ = std::make_shared<SpanInfoParcel>(*spanInfo_);
         action_ = std::make_shared<AccessibleAction>();
         actionParcel_ = std::make_shared<AccessibleActionParcel>(*action_);
         rangeInfo_ = std::make_shared<RangeInfo>();
@@ -59,6 +61,8 @@ public:
         GTEST_LOG_(INFO) << "AccessibilityElementInfoParcelTest TearDown()";
         elementInfo_ = nullptr;
         elementInfoParcel_ = nullptr;
+        spanInfo_ = nullptr;
+        spanInfoParcel_ = nullptr;
         action_ = nullptr;
         actionParcel_ = nullptr;
         rangeInfo_ = nullptr;
@@ -85,6 +89,8 @@ public:
     std::shared_ptr<RectParcel> rectParcel_ = nullptr;
     std::shared_ptr<AccessibilityElementInfo> elementInfo_ = nullptr;
     std::shared_ptr<AccessibilityElementInfoParcel> elementInfoParcel_ = nullptr;
+    std::shared_ptr<SpanInfo> spanInfo_ = nullptr;
+    std::shared_ptr<SpanInfoParcel> spanInfoParcel_ = nullptr;
     std::shared_ptr<ExtraElementInfo> extraElementInfo_ = nullptr;
     std::shared_ptr<ExtraElementInfoParcel> extraElementInfoParcel_ = nullptr;
 };
@@ -352,6 +358,62 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Extra_Element_Info_Parcel__002, Tes
     sptr<ExtraElementInfoParcel> extraElementInfoParcel = extraElementInfoParcel_->Unmarshalling(parcel);
     EXPECT_EQ(true, extraElementInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Extra_Element_Info_Parcel__002 end";
+}
+
+/**
+ * @tc.number: Span_Info_Parcel__001
+ * @tc.name: Span_Info_Parcel
+ * @tc.desc: Test function ReadFromParcel
+ */
+HWTEST_F(AccessibilityElementInfoParcelTest, Span_Info_Parcel__001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Span_Info_Parcel__001 start";
+    if (!spanInfoParcel_) {
+        GTEST_LOG_(INFO) << "spanInfoParcel_ is null";
+        return;
+    }
+
+    Parcel parcel;
+    EXPECT_EQ(false, spanInfoParcel_->ReadFromParcel(parcel));
+    GTEST_LOG_(INFO) << "Span_Info_Parcel__001 end";
+}
+
+/**
+ * @tc.number: Span_Info_Marshalling_001
+ * @tc.name: Span_Info_Marshalling
+ * @tc.desc: Test function Marshalling
+ */
+HWTEST_F(AccessibilityElementInfoParcelTest, Span_Info_Marshalling_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Span_Info_Marshalling_001 start";
+    if (!spanInfoParcel_) {
+        GTEST_LOG_(INFO) << "spanInfoParcel_ is null";
+        return;
+    }
+
+    Parcel parcel;
+    bool ret = spanInfoParcel_->Marshalling(parcel);
+    EXPECT_EQ(ret, true);
+    GTEST_LOG_(INFO) << "Span_Info_Marshalling_001 end";
+}
+
+/**
+ * @tc.number: Span_Info_Unmarshalling__001
+ * @tc.name: Span_Info_Unmarshalling
+ * @tc.desc: Test function Unmarshalling
+ */
+HWTEST_F(AccessibilityElementInfoParcelTest, Span_Info_Unmarshalling__001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Span_Info_Unmarshalling__001 start";
+    if (!spanInfoParcel_) {
+        GTEST_LOG_(INFO) << "spanInfoParcel_ is null";
+        return;
+    }
+
+    Parcel parcel;
+    sptr<SpanInfoParcel> spanInfoParcel = spanInfoParcel_->Unmarshalling(parcel);
+    EXPECT_EQ(true, spanInfoParcel == nullptr);
+    GTEST_LOG_(INFO) << "Span_Info_Unmarshalling__001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
