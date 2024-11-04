@@ -1479,5 +1479,76 @@ HWTEST_F(AccessibilityElementInfoTest, SetNavDestinationId_001, TestSize.Level1)
     EXPECT_TRUE(elementInfo_->GetNavDestinationId() == 1);
     GTEST_LOG_(INFO) << "SetNavDestinationId_001 end";
 }
+
+/**
+ * @tc.number: SetSpanList_001
+ * @tc.name: SetSpanList
+ * @tc.desc: Test function AddSpan, SetSpanList
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetSpanList_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSpanList_001 start";
+    SpanInfo span;
+    span.SetSpanId(1);
+    EXPECT_TRUE(span.GetSpanId() == 1);
+    span.SetSpanText("spanText");
+    EXPECT_TRUE(span.GetSpanText() == "spanText");
+    span.SetAccessibilityText("accessibilityText");
+    EXPECT_TRUE(span.GetAccessibilityText() == "accessibilityText");
+    span.SetAccessibilityDescription("accessibilityDescription");
+    EXPECT_TRUE(span.GetAccessibilityDescription() == "accessibilityDescription");
+    span.SetAccessibilityLevel("accessibilityLevel");
+    EXPECT_TRUE(span.GetAccessibilityLevel() == "accessibilityLevel");
+
+    elementInfo_->AddSpan(span);
+    EXPECT_TRUE(elementInfo_->GetSpanList().size() == 1);
+
+    std::vector<SpanInfo> spanList;
+    spanList.push_back(span);
+    spanList.push_back(span);
+    elementInfo_->SetSpanList(spanList);
+    EXPECT_TRUE(elementInfo_->GetSpanList().size() == 2);
+
+    GTEST_LOG_(INFO) << "SetSpanList_001 end";
+}
+
+/**
+ * @tc.number: SetIsActive_001
+ * @tc.name: SetIsActive
+ * @tc.desc: Test function SetIsActive, GetIsActive
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetIsActive_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetIsActive_001 start";
+    elementInfo_->SetIsActive(true);
+    EXPECT_TRUE(elementInfo_->GetIsActive());
+    GTEST_LOG_(INFO) << "SetIsActive_001 end";
+}
+
+/**
+ * @tc.number: SetAccessibilityVisible_001
+ * @tc.name: SetAccessibilityVisible
+ * @tc.desc: Test function SetAccessibilityVisible, GetAccessibilityVisible
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityVisible_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityVisible_001 start";
+    elementInfo_->SetAccessibilityVisible(true);
+    EXPECT_TRUE(elementInfo_->GetAccessibilityVisible());
+    GTEST_LOG_(INFO) << "SetAccessibilityVisible_001 end";
+}
+
+/**
+ * @tc.number: SetClip_001
+ * @tc.name: SetClip
+ * @tc.desc: Test function SetClip, GetClip
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetClip_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetClip_001 start";
+    elementInfo_->SetClip(true);
+    EXPECT_TRUE(elementInfo_->GetClip());
+    GTEST_LOG_(INFO) << "SetClip_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

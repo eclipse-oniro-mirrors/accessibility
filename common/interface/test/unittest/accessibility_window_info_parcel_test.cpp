@@ -88,5 +88,23 @@ HWTEST_F(AccessibilityWindowInfoParcelTest, Window_Info_Unmarshalling_001, TestS
     EXPECT_EQ(true, windowInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Window_Info_Unmarshalling_001 end";
 }
+
+/**
+ * @tc.number: Window_Info_Parcel__001
+ * @tc.name: Window_Info_Parcel
+ * @tc.desc: Test function ReadFromParcel
+ */
+HWTEST_F(AccessibilityWindowInfoParcelTest, Window_Info_Parcel__001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Window_Info_Parcel__001 start";
+    if (!windowInfoParcel_) {
+        GTEST_LOG_(INFO) << "windowInfoParcel_ is null";
+        return;
+    }
+
+    Parcel parcel;
+    EXPECT_EQ(false, windowInfoParcel_->ReadFromParcel(parcel));
+    GTEST_LOG_(INFO) << "Window_Info_Parcel__001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
