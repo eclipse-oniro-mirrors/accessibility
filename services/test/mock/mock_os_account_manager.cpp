@@ -15,6 +15,7 @@
 
 #include "accessibility_mt_helper.h"
 #include "os_account_manager.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace AccountSA {

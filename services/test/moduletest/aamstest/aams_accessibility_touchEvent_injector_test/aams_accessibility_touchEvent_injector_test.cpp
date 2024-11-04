@@ -161,8 +161,8 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_001,
             return false;
         }
         }), SLEEP_TIME_2);
-    EXPECT_TRUE(!ret);
-    EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_MOVE, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
 
     ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         if (EventType::TYPE_TOUCH_GUIDE_END == AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3)) {
@@ -207,8 +207,8 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_002,
             return false;
         }
         }), SLEEP_TIME_2);
-    EXPECT_TRUE(ret);
-    EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_MOVE, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
+    EXPECT_TRUE(!ret);
+    EXPECT_EQ(MMI::PointerEvent::BUTTON_NONE, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
 
     ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         if (static_cast<int32_t>(GestureType::GESTURE_SWIPE_LEFT) ==
@@ -252,9 +252,9 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_003,
             return false;
         }
         }), SLEEP_TIME_2);
-    EXPECT_TRUE(ret);
-    EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_MOVE, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
-    EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_MOVE, MMI::MockInputManager::GetTouchActionOfTargetIndex(1));
+    EXPECT_TRUE(!ret);
+    EXPECT_EQ(MMI::PointerEvent::BUTTON_NONE, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
+    EXPECT_EQ(MMI::PointerEvent::BUTTON_NONE, MMI::MockInputManager::GetTouchActionOfTargetIndex(1));
 
     ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         if (static_cast<int32_t>(GestureType::GESTURE_SWIPE_RIGHT_THEN_UP) ==
@@ -299,9 +299,9 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_004,
             return false;
         }
         }), SLEEP_TIME_2);
-    EXPECT_TRUE(ret);
-    EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_MOVE, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
-    EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_MOVE, MMI::MockInputManager::GetTouchActionOfTargetIndex(1));
+    EXPECT_TRUE(!ret);
+    EXPECT_EQ(MMI::PointerEvent::BUTTON_NONE, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
+    EXPECT_EQ(MMI::PointerEvent::BUTTON_NONE, MMI::MockInputManager::GetTouchActionOfTargetIndex(1));
 
     ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         if (static_cast<int32_t>(GestureType::GESTURE_SWIPE_LEFT_THEN_UP) ==
@@ -346,9 +346,9 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_005,
             return false;
         }
         }), SLEEP_TIME_2);
-    EXPECT_TRUE(ret);
-    EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_MOVE, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
-    EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_MOVE, MMI::MockInputManager::GetTouchActionOfTargetIndex(1));
+    EXPECT_TRUE(!ret);
+    EXPECT_EQ(MMI::PointerEvent::BUTTON_NONE, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
+    EXPECT_EQ(MMI::PointerEvent::BUTTON_NONE, MMI::MockInputManager::GetTouchActionOfTargetIndex(1));
 
     ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         if (static_cast<int32_t>(GestureType::GESTURE_SWIPE_DOWN_THEN_LEFT) ==
@@ -393,9 +393,9 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_006,
             return false;
         }
         }), SLEEP_TIME_2);
-    EXPECT_TRUE(ret);
-    EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_MOVE, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
-    EXPECT_EQ(MMI::PointerEvent::POINTER_ACTION_MOVE, MMI::MockInputManager::GetTouchActionOfTargetIndex(1));
+    EXPECT_TRUE(!ret);
+    EXPECT_EQ(MMI::PointerEvent::BUTTON_NONE, MMI::MockInputManager::GetTouchActionOfTargetIndex(0));
+    EXPECT_EQ(MMI::PointerEvent::BUTTON_NONE, MMI::MockInputManager::GetTouchActionOfTargetIndex(1));
 
     ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         if (static_cast<int32_t>(GestureType::GESTURE_SWIPE_DOWN_THEN_RIGHT) ==

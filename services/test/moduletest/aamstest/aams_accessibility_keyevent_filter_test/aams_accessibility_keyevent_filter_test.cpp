@@ -31,7 +31,7 @@ using namespace testing;
 using namespace testing::ext;
 
 namespace OHOS {
-namespace Accessibility {
+namespace Accessibility { //Accessibility
 namespace {
     constexpr uint8_t TEST_NUM_2 = 2;
     constexpr uint8_t TEST_NUM_3 = 3;
