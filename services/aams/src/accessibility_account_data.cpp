@@ -58,7 +58,7 @@ namespace {
     const std::string ACCESSIBILITY_SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
-    const std::string ACCESSIBILITY_TOUCH_GUIDE_ENABLED = "enableTouchMode";
+    const std::string ACCESSIBILITY_TOUCH_GUIDE_ENABLED = "enableTouchGuideMode";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
