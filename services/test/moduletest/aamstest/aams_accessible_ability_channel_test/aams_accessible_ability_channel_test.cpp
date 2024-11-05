@@ -116,6 +116,7 @@ void AamsAccessibleAbilityChannelTest::WritefileAll(const char* fname, const cha
 
 void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection(bool isNoCapability)
 {
+    // start
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest AddAccessibleAbilityConnection";
     AAFwk::Want want;
     AppExecFwk::ElementName name;
@@ -188,10 +189,10 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
         AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(info, 0, nullptr, 0, true);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, proxy_->testChannelElementId_);
-    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
-    EXPECT_EQ(-1, proxy_->testChannelMode_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(0, proxy_->testChannelElementId_);
+    EXPECT_EQ(0, proxy_->testChannelRequestId_);
+    EXPECT_EQ(0, proxy_->testChannelMode_);
+    EXPECT_EQ(result, RET_OK);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_001 end";
 }
 
@@ -218,7 +219,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_EQ(-1, proxy_->testChannelMode_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(result, RET_ERR_NO_WINDOW_CONNECTION);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002 end";
 }
 
@@ -241,10 +242,10 @@ HWTEST_F(
         AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, proxy_->testChannelElementId_);
-    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
-    EXPECT_EQ("", proxy_->testText_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(0, proxy_->testChannelElementId_);
+    EXPECT_EQ(0, proxy_->testChannelRequestId_);
+    EXPECT_EQ(text, proxy_->testText_);
+    EXPECT_EQ(result, RET_OK);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_001 end";
 }
 
@@ -270,7 +271,7 @@ HWTEST_F(
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(text, proxy_->testText_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(result, RET_ERR_NO_WINDOW_CONNECTION);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002 end";
 }
 
@@ -293,10 +294,10 @@ HWTEST_F(
         AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, proxy_->testChannelElementId_);
-    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
-    EXPECT_EQ(0, proxy_->testFocusType_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(0, proxy_->testChannelElementId_);
+    EXPECT_EQ(0, proxy_->testChannelRequestId_);
+    EXPECT_EQ(focusType, proxy_->testFocusType_);
+    EXPECT_EQ(result, RET_OK);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_001 end";
 }
 
@@ -322,7 +323,7 @@ HWTEST_F(
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(focusType, proxy_->testFocusType_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(result, RET_ERR_NO_WINDOW_CONNECTION);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002 end";
 }
 
@@ -345,10 +346,10 @@ HWTEST_F(
         AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 1, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, proxy_->testChannelElementId_);
-    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
-    EXPECT_EQ(0, proxy_->testFocusType_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(0, proxy_->testChannelElementId_);
+    EXPECT_EQ(1, proxy_->testChannelRequestId_);
+    EXPECT_EQ(focusType, proxy_->testFocusType_);
+    EXPECT_EQ(result, RET_OK);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_003 end";
 }
 
@@ -369,10 +370,10 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     RetError result = AccessibilityHelper::GetInstance().GetTestStub()->FocusMoveSearch(0, 0, direction, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, proxy_->testChannelElementId_);
-    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
-    EXPECT_EQ(0, proxy_->testDirection_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(0, proxy_->testChannelElementId_);
+    EXPECT_EQ(0, proxy_->testChannelRequestId_);
+    EXPECT_EQ(direction, proxy_->testDirection_);
+    EXPECT_EQ(result, RET_OK);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_001 end";
 }
 
@@ -397,7 +398,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(direction, proxy_->testDirection_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(result, RET_ERR_NO_WINDOW_CONNECTION);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_002 end";
 }
 
@@ -421,11 +422,11 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
         AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, proxy_->testChannelElementId_);
-    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
-    EXPECT_EQ(0, proxy_->testAction_);
-    EXPECT_TRUE(proxy_->testActionArguments_.empty());
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(4, proxy_->testChannelElementId_);
+    EXPECT_EQ(0, proxy_->testChannelRequestId_);
+    EXPECT_EQ(3, proxy_->testAction_);
+    EXPECT_EQ(actionArguments, proxy_->testActionArguments_);
+    EXPECT_EQ(result, RET_OK);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_001 end";
 }
 
@@ -452,7 +453,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_EQ(0, proxy_->testAction_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(result, RET_ERR_NO_WINDOW_CONNECTION);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_002 end";
 }
 
@@ -525,7 +526,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_EQ(-1, proxy_->testChannelMode_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(result, RET_ERR_NO_CAPABILITY);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_NoCapability_001 end";
 }
 
@@ -551,7 +552,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(text, proxy_->testText_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(result, RET_ERR_NO_CAPABILITY);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_NoCapability_001 end";
 }
 
@@ -577,7 +578,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(focusType, proxy_->testFocusType_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(result, RET_ERR_NO_CAPABILITY);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001 end";
 }
 
@@ -602,7 +603,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(direction, proxy_->testDirection_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(result, RET_ERR_NO_CAPABILITY);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001 end";
 }
 
@@ -631,7 +632,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_EQ(0, proxy_->testAction_);
     EXPECT_NE(actionArguments, proxy_->testActionArguments_);
-    EXPECT_EQ(result, RET_ERR_NULLPTR);
+    EXPECT_EQ(result, RET_ERR_NO_CAPABILITY);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001 end";
 }
 

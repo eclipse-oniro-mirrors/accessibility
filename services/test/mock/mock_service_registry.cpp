@@ -34,7 +34,6 @@ SystemAbilityManagerClient& SystemAbilityManagerClient::GetInstance()
 
 sptr<ISystemAbilityManager> SystemAbilityManagerClient::GetSystemAbilityManager()
 {
-    std::lock_guard<std::mutex> lock(systemAbilityManagerLock_);
     if (systemAbilityManager_ != nullptr) {
         return systemAbilityManager_;
     }
@@ -84,11 +83,6 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbilityWrapper(int32_t
 sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t systemAbilityId)
 {
     return nullptr;
-}
-
-int32_t GetOnDemandSystemAbilityIds(std::vector<int32_t>& systemAbilityIds)
-{
-    return -1;
 }
 
 sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t systemAbilityId, const std::string& deviceId)

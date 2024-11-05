@@ -34,6 +34,7 @@ ohos_fuzztest("AccessibilityConfigFuzzTest") {
     "access_token:libnativetoken",
     "access_token:libtoken_setproc",
     "c_utils:utils",
+    "ffrt:libffrt",
   ]
 }
 
