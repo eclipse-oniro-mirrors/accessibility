@@ -284,6 +284,7 @@ public:
     void DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName);
     bool GetAbilityAutoStartState(const std::string &name);
     void GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value);
+    void OnTouchGuideStateChanged();
 
 private:
     /**
