@@ -107,6 +107,11 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("state_ is %{public}d.", state_);
 
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN ||
+        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) {
+        HILOG_INFO("PointerAction: %{public}d.", event.GetPointerAction());
+    }
+
     int32_t sourceType = event.GetSourceType();
     if (sourceType != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
         EventTransmission::OnPointerEvent(event);
@@ -735,6 +740,7 @@ void AccessibilityZoomGesture::ZoomGestureEventHandler::ProcessEvent(const AppEx
     switch (eventId) {
         case MULTI_TAP_MSG:
             zoomGesture_.SendCacheEventsToNext();
+            HILOG_DEBUG("process multi tap msg.");
             break;
         default:
             break;
