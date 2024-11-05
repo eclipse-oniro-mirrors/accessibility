@@ -1709,6 +1709,47 @@ public:
      */
     const std::vector<SpanInfo> &GetSpanList() const;
 
+    /**
+     * @brief Get the isActive to the element info.
+     * @return isActive status.
+     * @sysCap Accessibility
+    */
+    bool GetIsActive() const;
+
+    /**
+     * @brief Set the isActive to the element info.
+     * @param isActive The isActive of node.
+     * @sysCap Accessibility
+     */
+    void SetIsActive(const bool isActive);
+
+    /**
+     * @brief Get the accessibilityVisible to the element info.
+     * @return accessibilityVisible status.
+     * @sysCap Accessibility
+    */
+    bool GetAccessibilityVisible() const;
+
+    /**
+     * @brief Set the accessibilityVisible to the element info.
+     * @param accessibilityVisible The accessibilityVisible of node.
+     * @sysCap Accessibility
+     */
+    void SetAccessibilityVisible(const bool accessibilityVisible);
+
+    /**
+     * @brief Get the clip to the element info.
+     * @return clip status.
+     * @sysCap Accessibility
+    */
+    bool GetClip() const;
+
+    /**
+     * @brief Set the clip to the element info.
+     * @param clip The clip of node.
+     * @sysCap Accessibility
+     */
+    void SetClip(const bool clip);
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1784,6 +1825,10 @@ protected:
     std::string hitTestBehavior_ = "";
     int64_t navDestinationId_ = -1;
     std::vector<SpanInfo> spanList_ {};
+    bool isActive_ = true;
+    bool accessibilityVisible_ = true;
+    bool clip_ = false;
+    static const int backgroundImageMaxLength = 20;
 };
 } // namespace Accessibility
 } // namespace OHOS

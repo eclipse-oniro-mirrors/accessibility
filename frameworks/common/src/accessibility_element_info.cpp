@@ -947,7 +947,11 @@ const std::string &AccessibilityElementInfo::GetBackgroundColor() const
 
 void AccessibilityElementInfo::SetBackgroundImage(const std::string &backgroundImage)
 {
-    backgroundImage_ = backgroundImage;
+    if (backgroundImage.length() > backgroundImageMaxLength) {
+        backgroundImage_ = "true";
+    } else {
+        backgroundImage_ = backgroundImage;
+    }
 }
 
 const std::string &AccessibilityElementInfo::GetBackgroundImage() const
@@ -1066,6 +1070,36 @@ const std::string &SpanInfo::GetAccessibilityDescription() const
 const std::string &SpanInfo::GetAccessibilityLevel() const
 {
     return accessibilityLevel_;
+}
+
+bool AccessibilityElementInfo::GetIsActive() const
+{
+    return isActive_;
+}
+
+void AccessibilityElementInfo::SetIsActive(const bool isActive)
+{
+    isActive_ = isActive;
+}
+
+bool AccessibilityElementInfo::GetAccessibilityVisible() const
+{
+    return accessibilityVisible_;
+}
+
+void AccessibilityElementInfo::SetAccessibilityVisible(const bool accessibilityVisible)
+{
+    accessibilityVisible_ = accessibilityVisible;
+}
+
+bool AccessibilityElementInfo::GetClip() const
+{
+    return clip_;
+}
+
+void AccessibilityElementInfo::SetClip(const bool clip)
+{
+    clip_ = clip;
 }
 } // namespace Accessibility
 } // namespace OHOS
