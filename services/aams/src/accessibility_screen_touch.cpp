@@ -236,6 +236,11 @@ void AccessibilityScreenTouch::HandleCoordinates(MMI::PointerEvent::PointerItem 
             startAngle_ = START_ANGLE_PORTRAIT;
             break;
         case FOLDABLE_DEVICE:
+            if (FOLDABLE.length() < SUBSCRIPT_TWO) {
+                HILOG_ERROR("get foldable parameter failed");
+                ConversionCoordinates(originalX, originalY);
+                break;
+            }
             if ((displayMgr.GetFoldStatus() == Rosen::FoldStatus::EXPAND &&
                 FOLDABLE[SUBSCRIPT_TWO] == FOLDABLE_SCREEN_ROTATE) ||
                 (displayMgr.GetFoldStatus() == Rosen::FoldStatus::FOLDED &&
