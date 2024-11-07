@@ -385,7 +385,7 @@ RetError AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t
         daltonizationColorFilter = AccessibilityConfig::Protanomaly;
     } else if (filter == DISPLAY_DALTONIZER_BLUE) {
         daltonizationColorFilter = AccessibilityConfig::Tritanomaly;
-    } else if (filter == DISPLAY_DALTONIZER_INVALID) {
+    } else if (filter == static_cast<uint32_t>(DISPLAY_DALTONIZER_INVALID)) {
         daltonizationColorFilter = 0;
     }
     auto ret = datashare_->PutIntValue(DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(daltonizationColorFilter));
