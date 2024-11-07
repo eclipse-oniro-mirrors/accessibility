@@ -1106,8 +1106,7 @@ void AccessibilityAccountData::OnTouchGuideStateChanged()
 {
     HILOG_INFO();
 
-    UpdateAccountCapabilities();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
     if (config_->GetDbHandle() == nullptr) {
         HILOG_ERROR("helper is nullptr!");
         return;
