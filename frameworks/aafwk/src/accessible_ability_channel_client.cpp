@@ -104,6 +104,7 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     HILOG_INFO("Get result successfully from ace.");
 
     elementInfo = elementOperator->accessibilityInfoResult_;
+    elementInfo.SetMainWindowId(windowId);
     return RET_OK;
 }
 
@@ -274,6 +275,11 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     }
     HILOG_DEBUG("Get result successfully from ace. size[%{public}zu]", elementOperator->elementInfosResult_.size());
     elementInfos = elementOperator->elementInfosResult_;
+    if (!elementInfos.empty()) {
+        for (auto &element : elementInfos) {
+            element.SetMainWindowId(accessibilityWindowId);
+        }
+    }
     return RET_OK;
 }
 

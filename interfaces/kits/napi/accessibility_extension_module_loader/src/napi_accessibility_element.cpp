@@ -104,7 +104,7 @@ namespace {
         {"span", &NAccessibilityElement::GetElementInfoSpan},
         {"isActive", &NAccessibilityElement::GetElementInfoIsActive},
         {"accessibilityVisible", &NAccessibilityElement::GetElementInfoAccessibilityVisible},
-        {"mainWindowId", &NAccessibilityElement::GetElementInfoWindowId},
+        {"mainWindowId", &NAccessibilityElement::GetElementInfoMainWindowId},
         {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
         {"clip", &NAccessibilityElement::GetElementInfoClip},
     };
@@ -992,6 +992,20 @@ void NAccessibilityElement::GetElementInfoWindowId(NAccessibilityElementData *ca
         callbackInfo->accessibilityElement_.elementInfo_->GetWindowId(), &value));
 }
 
+void NAccessibilityElement::GetElementInfoMainWindowId(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    int32_t windowId = callbackInfo->accessibilityElement_.elementInfo_->GetWindowId();
+    int32_t mainWindowId = callbackInfo->accessibilityElement_.elementInfo_->GetMainWindowId();
+    if (mainWindowId <= 0) {
+        mainWindowId = windowId;
+        HILOG_INFO("mainWindowId <= 0, use windowId");
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_, mainWindowId, &value));
+}
+
 void NAccessibilityElement::GetElementInfoIsFocused(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!CheckElementInfoParameter(callbackInfo, value)) {
@@ -1375,7 +1389,7 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "clip", clip));
 
     napi_value mainWindowId = nullptr;
-    GetElementInfoWindowId(callbackInfo, mainWindowId);
+    GetElementInfoMainWindowId(callbackInfo, mainWindowId);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "mainWindowId", mainWindowId));
 }
 
@@ -2114,6 +2128,22 @@ void NAccessibilityElement::FindElementComplete(napi_env env, napi_status status
     }
 
     napi_value result[ARGS_SIZE_TWO] = {0};
+    // set reslult mainWindowId = param mainWidnowId
+    int32_t mainWindowId = -1;
+    if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
+        mainWindowId = callbackInfo->accessibilityElement_.elementInfo_->GetMainWindowId();
+    } else if (callbackInfo->accessibilityElement_.windowInfo_ != nullptr) {
+        mainWindowId = callbackInfo->accessibilityElement_.windowInfo_->GetMainWindowId();
+    }
+
+    if (mainWindowId > 0) {
+        HILOG_INFO("callbackInfo node set mainWindowId: %{public}d", mainWindowId);
+        callbackInfo->nodeInfo_.SetMainWindowId(mainWindowId);
+        for (auto &node : callbackInfo->nodeInfos_) {
+            node.SetMainWindowId(mainWindowId);
+        }
+    }
+
     GetElement(callbackInfo, result[PARAM1]);
     result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
     if (callbackInfo->callback_) {

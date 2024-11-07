@@ -512,7 +512,9 @@ bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInf
         HILOG_ERROR("GetCurrentAccountData failed");
         return false;
     }
-    connection = accountData->GetAccessibilityWindowConnection(windowId);
+    int32_t realId =
+        Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, FOCUS_TYPE_INVALID);
+    connection = accountData->GetAccessibilityWindowConnection(realId);
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
     if (connection == nullptr) {
         HILOG_ERROR("connection is nullptr");
@@ -560,7 +562,6 @@ void AccessibleAbilityManagerService::GetElementOperatorConnection(sptr<Accessib
 
 bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
 {
-    HILOG_DEBUG();
     int32_t windowId = GetFocusWindowId();
     int64_t elementId = GetFocusElementId();
     uint32_t timeOut = 5000;
@@ -570,9 +571,9 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         HILOG_ERROR("GetCurrentAccountData failed");
         return false;
     }
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
-    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d", windowId, elementId,
-        action);
+    int32_t realId =
+        Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, FOCUS_TYPE_INVALID);
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
     if (connection == nullptr) {
         HILOG_ERROR("connection is nullptr");
         return false;
@@ -606,7 +607,8 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         HILOG_ERROR("ExecuteAction Failed to wait result");
         return false;
     }
-
+    HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d",
+        windowId, elementId, action, actionCallback->executeActionResult_);
     return actionCallback->executeActionResult_;
 }
 
@@ -1971,9 +1973,11 @@ void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(cons
     EventType evtType = event.GetEventType();
     HILOG_DEBUG("windowId is %{public}d", event.GetWindowId());
     int32_t windowId = event.GetWindowId();
-    if (windowId == 1 && (evtType == TYPE_VIEW_HOVER_ENTER_EVENT || evtType == TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT)) {
+    if (windowId == 1) {
         FindInnerWindowId(event, windowId);
     }
+
+    const_cast<AccessibilityEventInfo&>(event).SetElementMainWindowId(windowId);
 
     switch (evtType) {
         case TYPE_VIEW_HOVER_ENTER_EVENT:
