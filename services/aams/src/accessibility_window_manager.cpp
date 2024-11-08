@@ -92,7 +92,6 @@ void AccessibilityWindowManager::WinDeInit()
     HILOG_DEBUG();
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     a11yWindows_.clear();
-    subWindows_.clear();
     sceneBoardElementIdMap_.Clear();
     activeWindowId_ = INVALID_WINDOW_ID;
 }
@@ -288,6 +287,7 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
     accWindowInfo.SetInnerWid(windowInfo->innerWid_);
     if (accWindowInfo.GetWindowId() == SCENE_BOARD_WINDOW_ID) {
         accWindowInfo.SetWindowId(windowInfo->innerWid_);
+        accWindowInfo.SetMainWindowId(windowInfo->innerWid_);
         HILOG_DEBUG("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
     }
     HILOG_DEBUG("bundle name is [%{public}s] , touchHotAreas size(%{public}zu)",
@@ -355,7 +355,7 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
 
 void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEvent)
 {
-    HILOG_DEBUG("windowId is %{public}d", windowId);
+    HILOG_INFO("windowId is %{public}d, activeWindowId_: %{public}d", windowId, activeWindowId_);
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     if (windowId == INVALID_WINDOW_ID) {
         ClearOldActiveWindow();
@@ -812,11 +812,10 @@ void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId, 
 
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
-    HILOG_DEBUG();
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto oldA11yWindows_ = a11yWindows_;
-    HILOG_DEBUG("WindowUpdateAll info size(%{public}zu), oldA11yWindows_ size(%{public}zu)",
-        infos.size(), oldA11yWindows_.size());
+    int32_t oldActiveWindowId = activeWindowId_;
+    HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
     WinDeInit();
     for (auto &window : infos) {
         if (window == nullptr) {
@@ -829,7 +828,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         if (!a11yWindows_.count(realWid)) {
             auto a11yWindowInfo = CreateAccessibilityWindowInfo(window);
             a11yWindows_.emplace(realWid, a11yWindowInfo);
-            HILOG_DEBUG("WindowUpdateAll a11yWindowInfo size(%{public}s)", a11yWindowInfo.GetBundleName().c_str());
+            HILOG_DEBUG("a11yWindowInfo bundleName(%{public}s)", a11yWindowInfo.GetBundleName().c_str());
         }
         if (IsSceneBoard(window)) {
             subWindows_.insert(realWid);
@@ -863,7 +862,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     for (auto it = oldA11yWindows_.begin(); it != oldA11yWindows_.end(); ++it) {
         WindowUpdateTypeEvent(it->first, WINDOW_UPDATE_REMOVED);
     }
-    HILOG_DEBUG("WindowUpdateAll a11yWindowInfo_ size(%{public}zu)", a11yWindows_.size());
+    HILOG_INFO("WindowUpdateAll end activeWindowId_: %{public}d", activeWindowId_);
 }
 
 void AccessibilityWindowManager::ClearOldActiveWindow()
