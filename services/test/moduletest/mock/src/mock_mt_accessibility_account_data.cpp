@@ -288,6 +288,12 @@ bool MockAccessibilityAccountData::GetDefaultUserScreenReaderState()
     return true;
 }
 
+bool MockAccessibilityAccountData::GetScreenReaderState()
+{
+    HILOG_DEBUG("start.");
+    return true;
+}
+
 void MockAccessibilityAccountData::Init()
 {
     HILOG_DEBUG("start.");

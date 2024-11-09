@@ -143,6 +143,7 @@ namespace Accessibility {
         GET_FOCUSED_WINDOW_ID,
         REMOVE_REQUEST_ID,
         SERVICE_CODE_END,
+        GET_SCREEN_READER_STATE,
 
         ON_STATE_CHANGED = 900,
     };

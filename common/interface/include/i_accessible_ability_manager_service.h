@@ -192,6 +192,7 @@ public:
 
     virtual int64_t GetRootParentId(int32_t windowsId, int32_t treeId) = 0;
     virtual RetError GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds) = 0;
+    virtual bool GetScreenReaderState() = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -168,6 +168,7 @@ public:
     virtual void RemoveRequestId(int32_t requestId) override;
     virtual int64_t GetRootParentId(int32_t windowsId, int32_t treeId) override;
     virtual RetError GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds) override;
+    virtual bool GetScreenReaderState() override;
 private:
     /**
      * @brief Write the descriptor of IPC.

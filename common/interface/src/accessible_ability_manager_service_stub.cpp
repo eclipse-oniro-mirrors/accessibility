@@ -110,7 +110,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::GET_FOCUSED_WINDOW_ID, HandleGetFocusedWindowId)                           \
     SWITCH_CASE(AccessibilityInterfaceCode::REMOVE_REQUEST_ID, HandleRemoveRequestId)                                  \
     SWITCH_CASE(AccessibilityInterfaceCode::GET_ROOT_PARENT_ID, HandleGetRootParentId)                                 \
-    SWITCH_CASE(AccessibilityInterfaceCode::GET_ALL_TREE_ID, HandleGetAllTreeId)
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_ALL_TREE_ID, HandleGetAllTreeId)                                       \
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_SCREEN_READER_STATE, HandleGetScreenReaderState)
 
 namespace OHOS {
 namespace Accessibility {
@@ -457,6 +458,17 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState(
     HILOG_DEBUG();
 
     bool result = GetKeyEventObserverState();
+    reply.WriteBool(result);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetScreenReaderState(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    bool result = GetScreenReaderState();
     reply.WriteBool(result);
 
     return NO_ERROR;

@@ -288,6 +288,12 @@ bool AccessibilityAccountData::GetDefaultUserScreenReaderState()
     return true;
 }
 
+bool AccessibilityAccountData::GetScreenReaderState()
+{
+    HILOG_DEBUG("start.");
+    return true;
+}
+
 void AccessibilityAccountData::Init()
 {
     HILOG_DEBUG("start.");

@@ -191,6 +191,7 @@ private:
 
     ErrCode HandleGetRootParentId(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetAllTreeId(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetScreenReaderState(MessageParcel &data, MessageParcel &reply);
 };
 } // namespace Accessibility
 } // namespace OHOS
