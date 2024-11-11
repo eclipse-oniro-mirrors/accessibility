@@ -1413,6 +1413,7 @@ void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
     std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
+            napi_delete_reference((*iter)->env_, (*iter)->handlerRef_);
             observers_.erase(iter);
             return;
         } else {
@@ -1425,5 +1426,9 @@ void StateListenerImpl::UnsubscribeObservers()
 {
     HILOG_INFO();
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto iter = observers_.begin(); iter != observers_.end();) {
+        napi_delete_reference((*iter)->env_, (*iter)->handlerRef_);
+        observers_.erase(iter);
+    }
     observers_.clear();
 }
