@@ -149,6 +149,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "ffrt:libffrt",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
+    "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -159,7 +160,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "window_manager:libdm",
-    "window_manager:libwm",
+    "window_manager:libwm_lite",
   ]
 }
 
@@ -249,6 +250,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "ffrt:libffrt",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
+    "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -259,7 +261,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "window_manager:libdm",
-    "window_manager:libwm",
+    "window_manager:libwm_lite",
   ]
 }
 
@@ -354,6 +356,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "ffrt:libffrt",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
+    "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -364,7 +367,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "window_manager:libdm",
-    "window_manager:libwm",
+    "window_manager:libwm_lite",
   ]
 }
 
@@ -457,6 +460,7 @@ ohos_moduletest("aams_server_test") {
     "ffrt:libffrt",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
+    "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -467,7 +471,7 @@ ohos_moduletest("aams_server_test") {
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "window_manager:libdm",
-    "window_manager:libwm",
+    "window_manager:libwm_lite",
   ]
 }
 
@@ -555,6 +559,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "ffrt:libffrt",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
+    "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -565,7 +570,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "window_manager:libdm",
-    "window_manager:libwm",
+    "window_manager:libwm_lite",
   ]
 }
 
@@ -658,6 +663,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "ffrt:libffrt",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
+    "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -668,7 +674,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "window_manager:libdm",
-    "window_manager:libwm",
+    "window_manager:libwm_lite",
   ]
 }
 

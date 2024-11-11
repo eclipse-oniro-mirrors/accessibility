@@ -21,6 +21,7 @@
 #include "accessibility_element_operator.h"
 #include "accessibility_element_operator_callback.h"
 #include "accessibility_element_operator_stub.h"
+#include "ffrt.h"
 #include "nocopyable.h"
 
 namespace OHOS {
@@ -180,13 +181,6 @@ public:
     void SetExecuteActionResult(const bool succeeded, const int32_t requestId);
 
     /**
-     * @brief Set the result of action executed to AA.
-     * @param cursorPosition Mark number for cursor position.
-     * @param requestId The request id from AA, it is used to match with request and response.
-     */
-    void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId);
-
-    /**
     * @brief To return the result of elementId, treeId, childWindowId.
     * @param elementId: The element Id.
     * @param treeId: The tree Id.
@@ -209,7 +203,7 @@ public:
 private:
     int32_t AddRequest(int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);
 
-    std::mutex requestsMutex_;
+    ffrt::mutex requestsMutex_;
     int32_t windowId_ = 0;
     AccessibilityElementOperatorCallback &operatorCallback_;
     std::shared_ptr<AccessibilityElementOperator> operator_ = nullptr;
