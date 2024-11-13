@@ -439,6 +439,9 @@ private:
     std::shared_ptr<AppExecFwk::EventRunner> actionRunner_;
     std::shared_ptr<AAMSEventHandler> actionHandler_;
 
+    std::shared_ptr<AppExecFwk::EventRunner> sendEventRunner_;
+    std::shared_ptr<AAMSEventHandler> sendEventHandler_;
+
     int64_t ipcTimeoutNum_ = 0; // count ipc timeout number
 
     sptr<IRemoteObject::DeathRecipient> stateObserversDeathRecipient_ = nullptr;
