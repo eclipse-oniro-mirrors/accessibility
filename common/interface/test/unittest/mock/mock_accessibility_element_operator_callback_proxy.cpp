@@ -60,77 +60,57 @@ bool AccessibilityElementOperatorCallbackProxyTest::SendTransactCmd(Accessibilit
     return true;
 }
 
-int32_t AccessibilityElementOperatorCallbackProxyTest::GetTransmitFlag(int32_t time, int32_t leftSize)
-{
-    int32_t flag = time;
-    if (time == 0 && leftSize <= DATA_NUMBER_ONE_TIME) {
-        flag = SINGLE_TRANSMIT;
-    } else if (leftSize <= DATA_NUMBER_ONE_TIME) {
-        flag = MULTI_TRANSMIT_FINISH;
-    }
-
-    return flag;
-}
-
-void AccessibilityElementOperatorCallbackProxyTest::SetSearchElementInfoByAccessibilityIdResult(
+void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibilityIdResult(
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     HILOG_DEBUG("infos size %{public}zu, resquestId %{public}d", infos.size(), requestId);
-    int32_t leftSize = static_cast<int32_t>(infos.size());
-    int32_t time = 0;
-    int32_t index = 0;
-    while (leftSize >= 0) {
-        MessageParcel data;
-        MessageParcel reply;
-        MessageOption type = MessageOption::TF_SYNC;
-        if (leftSize <= DATA_NUMBER_ONE_TIME) {
-            type = MessageOption::TF_ASYNC;
-        }
-        MessageOption option(type);
-        data.SetMaxCapacity(IPC_MEMORY_SIZE);
-        
-        // when infos size is a multi of 800, do not send the last empty reply
-        if (leftSize == 0 && time > 0) {
-            return;
-        }
-        if (!WriteInterfaceToken(data)) {
-            return;
-        }
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
 
-        int32_t flag = GetTransmitFlag(time, leftSize);
-        if (!data.WriteInt32(flag)) {
-            return;
-        }
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
 
-        int32_t writeSize = (leftSize <= DATA_NUMBER_ONE_TIME) ? leftSize : DATA_NUMBER_ONE_TIME;
-        if (!data.WriteInt32(writeSize)) {
-            return;
-        }
+    if (!data.WriteInt32(infos.size())) {
+        HILOG_ERROR("write infos's size failed");
+        return;
+    }
 
-        for (int32_t i = 0; i < writeSize; ++i) {
-            AccessibilityElementInfoParcel infoParcel(infos[index]);
-            index++;
-            if (!data.WriteParcelable(&infoParcel)) {
-                HILOG_ERROR("accessibility element info failed index %{public}d", index);
-                return;
-            }
-        }
-
-        if (!data.WriteInt32(requestId)) {
-            return;
-        }
-
-        if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID, data, reply, option)) {
-            HILOG_ERROR("set search element info by accessibility id result failed");
-            return;
-        }
-    
-        leftSize -= DATA_NUMBER_ONE_TIME;
-        time++;
-        if (static_cast<RetError>(reply.ReadInt32()) != RET_OK) {
+    MessageParcel tmpParcel;
+    tmpParcel.SetMaxCapacity(MAX_RAWDATA_SIZE);
+    // when set pracel's max capacity, it won't alloc memory immediately
+    // MessageParcel will expand memory dynamiclly
+    for (const auto &info : infos) {
+        AccessibilityElementInfoParcel infoParcel(info);
+        if (!tmpParcel.WriteParcelable(&infoParcel)) {
+            HILOG_ERROR("write accessibilityElementInfoParcel failed");
             return;
         }
     }
+    size_t tmpParcelSize = tmpParcel.GetDataSize();
+    if (!data.WriteUint32(tmpParcelSize)) {
+        HILOG_ERROR("write rawData size failed");
+        return;
+    }
+    if (!data.WriteRawData(reinterpret_cast<uint8_t *>(tmpParcel.GetData()), tmpParcelSize)) {
+        HILOG_ERROR("write rawData failed");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID, data, reply, option)) {
+        HILOG_ERROR("setSearchElementInfoByAccessibilityIdResult failed");
+        return;
+    }
+    if (static_cast<RetError>(reply.ReadInt32() != RET_OK)) {
+        HILOG_ERROR("read reply code failed");
+    }
+    return;
 }
 
 void AccessibilityElementOperatorCallbackProxyTest::SetSearchElementInfoByTextResult(
