@@ -835,14 +835,14 @@ void AccessibilitySettingsConfig::InitShortKeyConfig()
     }
 
     // Initialization of the private space after cloning or upgrade
-    std::shared_ptr<AccessibilitySettingProvider> service =
-        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    std::shared_ptr<AccessibilitySettingProvider> service = AccessibilitySettingProvider::GetInstance(
+        POWER_MANAGER_SERVICE_ID);
     if (service == nullptr) {
         HILOG_ERROR("service is nullptr");
         return;
     }
     bool cloneOrUpgradeFlag = false;
-    service->GetBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, false);
+    service->GetBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, cloneOrUpgradeFlag);
     if (cloneOrUpgradeFlag && (accountId_ != DEFAULT_ACCOUNT_ID)) {
         if (isShortKeyState_) {
             SetShortKeyOnLockScreenState(true);
@@ -1032,10 +1032,10 @@ void AccessibilitySettingsConfig::OnDataClone()
     HILOG_INFO();
     InitSetting();
 
-    if (shortKeyTimeout_ == 1) {
-        SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-    } else if (shortKeyTimeout_ == 0) {
-        SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
+    if (isShortKeyState_) {
+        SetShortKeyOnLockScreenState(true);
+    } else {
+        SetShortKeyOnLockScreenState(false);
     }
 
     std::shared_ptr<AccessibilitySettingProvider> service =
