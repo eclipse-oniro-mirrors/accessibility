@@ -95,6 +95,7 @@ public:
     RetError RemoveEnabledAccessibilityService(const std::string &serviceName);
     uint32_t GetConfigState();
     bool GetStartFromAtoHosState();
+    void InitSetting();
     void CloneShortkeyService(bool isScreenReaderEnabled);
     void OnDataClone();
     void CloneAudioState();
@@ -109,7 +110,6 @@ public:
     void ClearData();
 private:
     void InitCaption();
-    void InitSetting();
     void InitCapability();
     RetError SetConfigState(const std::string& key, bool value);
 
