@@ -826,7 +826,6 @@ void AccessibilitySettingsConfig::InitShortKeyConfig()
     isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, true);
     bool isShortKeyEnabledOnLockScreen = datashare_->GetBoolValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN, true);
     shortKeyTimeout_ = static_cast<int32_t>(datashare_->GetIntValue(SHORTCUT_TIMEOUT, SHORT_KEY_TIMEOUT_BEFORE_USE));
-
     // for AOS to HMOS
     if (shortKeyTimeout_ == 1) {
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
