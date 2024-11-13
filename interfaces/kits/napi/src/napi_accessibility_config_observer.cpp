@@ -662,7 +662,6 @@ void NAccessibilityConfigObserverImpl::UnsubscribeObserver(napi_env env,
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if ((*iter)->configId_ == id) {
             if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
-                napi_delete_reference((*iter)->env_, (*iter)->handlerRef_);
                 observers_.erase(iter);
                 return;
             } else {
@@ -680,7 +679,6 @@ void NAccessibilityConfigObserverImpl::UnsubscribeObservers(OHOS::AccessibilityC
     std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if ((*iter)->configId_ == id) {
-            napi_delete_reference((*iter)->env_, (*iter)->handlerRef_);
             iter = observers_.erase(iter);
         } else {
             iter++;
