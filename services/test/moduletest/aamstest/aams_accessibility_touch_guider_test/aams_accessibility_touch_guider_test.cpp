@@ -1577,7 +1577,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent019, Te
     bool retOnPointerEvent15 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(5) ==
-            EventType::TYPE_TOUCH_END) {
+            EventType::TYPE_TOUCH_GUIDE_END) {
             return true;
         } else {
             return false;
