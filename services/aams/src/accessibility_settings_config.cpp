@@ -26,6 +26,7 @@ namespace {
     const int32_t DEFAULT_SCALE = 100;
     const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
+    const int32_t DEFAULT_ACCOUNT_ID = 100;
     const std::string ACCESSIBILITY = "accessibility";
     const std::string TOUCH_GUIDE_STATE = "touch_guide_state";
     const std::string GESTURE_KEY = "gesture_state";
@@ -55,8 +56,7 @@ namespace {
     const std::string WINDOW_COLOR = "accessibility_window_color";
     const std::string FONT_SCALE = "accessibility_font_scale";
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
-    const std::string SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen"; // HMOS key
-    const std::string SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen"; // AOS key
+    const std::string SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
     const std::string SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const std::string SCREENREADER_TAG = "screenreader";
@@ -66,6 +66,7 @@ namespace {
     const std::string HIGH_CONTRAST_TEXT_HMOS_TAG = "HIGH_CONTRAST_TEXT";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
+    const std::string ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -78,7 +79,6 @@ namespace {
     constexpr int INVALID_MASTER_MONO_VALUE = -1;
     constexpr int AUDIO_BALANCE_STEP = 5;
     constexpr float INVALID_MASTER_BALANCE_VALUE = 2.0;
-    constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
     constexpr float EPS = 1e-6;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
@@ -824,32 +824,32 @@ void AccessibilitySettingsConfig::InitCaption()
 void AccessibilitySettingsConfig::InitShortKeyConfig()
 {
     isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, true);
-    int isShortKeyEnabledOnLockScreen = datashare_->GetIntValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN,
-        INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
-    int isShortKeyOnLockScreen = datashare_->GetIntValue(SHORTCUT_ON_LOCK_SCREEN,
-        INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
+    bool isShortKeyEnabledOnLockScreen = datashare_->GetBoolValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN, true);
     shortKeyTimeout_ = static_cast<int32_t>(datashare_->GetIntValue(SHORTCUT_TIMEOUT, SHORT_KEY_TIMEOUT_BEFORE_USE));
-    bool shortKeyOnLockScreenAutoOn = false;
 
+    // for AOS to HMOS
     if (shortKeyTimeout_ == 1) {
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-        if (isShortKeyOnLockScreen == INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
-            shortKeyOnLockScreenAutoOn = true;
-            SetShortKeyOnLockScreenState(true);
-        }
     } else if (shortKeyTimeout_ == 0) {
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
 
-    if (isShortKeyOnLockScreen != INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
-        SetShortKeyOnLockScreenState(isShortKeyOnLockScreen == 1);
-    } else if (!shortKeyOnLockScreenAutoOn) {
-        SetShortKeyOnLockScreenState(isShortKeyEnabledOnLockScreen == 1);
+    // Initialization of the private space after cloning or upgrade
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
     }
-
-    auto ret = datashare_->PutIntValue(SHORTCUT_ON_LOCK_SCREEN, INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
-    if (ret != RET_OK) {
-        HILOG_ERROR("reset shortcut on lock screen failed");
+    bool cloneOrUpgradeFlag = false;
+    service->GetBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, false);
+    if (cloneOrUpgradeFlag && (accountId_ != DEFAULT_ACCOUNT_ID)) {
+        if (isShortKeyState_) {
+            SetShortKeyOnLockScreenState(true);
+        } else {
+            SetShortKeyOnLockScreenState(false);
+        }
+        service->PutBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, false);
     }
 }
 
@@ -1032,6 +1032,12 @@ void AccessibilitySettingsConfig::OnDataClone()
     HILOG_INFO();
     InitSetting();
 
+    if (shortKeyTimeout_ == 1) {
+        SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+    } else if (shortKeyTimeout_ == 0) {
+        SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
+    }
+
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     if (service == nullptr) {
@@ -1045,6 +1051,7 @@ void AccessibilitySettingsConfig::OnDataClone()
         ErrCode ret = service->PutBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, true, true);
         HILOG_INFO("set screenReader state, ret = %{public}d", ret);
     }
+    service->PutBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, true);
     service->PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
 }
 } // namespace Accessibility
