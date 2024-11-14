@@ -39,6 +39,8 @@ std::shared_ptr<StateListenerImpl> NAccessibilityClient::accessibilityStateListe
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED);
 std::shared_ptr<StateListenerImpl> NAccessibilityClient::touchGuideStateListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED);
+std::shared_ptr<StateListenerImpl> NAccessibilityClient::screenReaderStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED);
 std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityClient::captionListeners_ =
     std::make_shared<NAccessibilityConfigObserverImpl>();
 
@@ -55,6 +57,24 @@ do { \
         return res; \
     } \
 } while (0)
+
+napi_value NAccessibilityClient::IsOpenScreenReaderSync(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv = nullptr;
+    napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+    ACCESSIBILITY_NAPI_ASSERT(env, argc == ARGS_SIZE_ZERO, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    ACCESSIBILITY_NAPI_ASSERT(env, asaClient != nullptr, OHOS::Accessibility::RET_ERR_NULLPTR);
+    bool status = false;
+    auto ret = asaClient->IsScreenReaderEnabled(status);
+    ACCESSIBILITY_NAPI_ASSERT(env, ret == RET_OK, OHOS::Accessibility::RET_ERR_FAILED);
+    napi_value result = nullptr;
+    napi_get_boolean(env, status, &result);
+    return result;
+}
 
 napi_value NAccessibilityClient::IsOpenAccessibilitySync(napi_env env, napi_callback_info info)
 {
@@ -673,6 +693,9 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
         case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
             touchGuideStateListeners_->SubscribeObserver(env, args[PARAM1]);
             break;
+        case AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED:
+            screenReaderStateListeners_->SubscribeObserver(env, args[PARAM1]);
+            break;
         default:
             break;
     }
@@ -692,6 +715,8 @@ void NAccessibilityClient::GetAccessibilityStateEventType(
                 type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
             } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
                 type = AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED;
+            } else if (std::strcmp(eventType.c_str(), "screenReaderStateChange") == 0) {
+                type = AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED;
             } else {
                 HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
                 errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
@@ -735,6 +760,13 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
                 touchGuideStateListeners_->UnsubscribeObserver(env, args[PARAM1]);
             } else {
                 touchGuideStateListeners_->UnsubscribeObservers();
+            }
+            break;
+        case AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED:
+            if (argc >= ARGS_SIZE_TWO && CheckJsFunction(env, args[PARAM1])) {
+                screenReaderStateListeners_->UnsubscribeObserver(env, args[PARAM1]);
+            } else {
+                screenReaderStateListeners_->UnsubscribeObservers();
             }
             break;
         default:

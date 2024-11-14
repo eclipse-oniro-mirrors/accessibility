@@ -147,6 +147,7 @@ public:
     int32_t GenerateRequestId();
     void GetElementOperatorConnection(sptr<AccessibilityWindowConnection> &connection,
         const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
+    bool GetScreenReaderState() override;
 private:
     int32_t focusWindowId_ = -1;
     int64_t focusElementId_ = -1;

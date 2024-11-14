@@ -65,6 +65,7 @@ public:
     bool GetTouchGuideState() override;
     bool GetGestureState() override;
     bool GetKeyEventObserverState() override;
+    bool GetScreenReaderState() override;
 
     RetError EnableAbility(const std::string &name, const uint32_t capabilities) override;
     RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;

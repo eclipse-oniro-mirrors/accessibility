@@ -208,6 +208,11 @@ bool AccessibleAbilityManagerService::GetKeyEventObserverState()
     return true;
 }
 
+bool AccessibleAbilityManagerService::GetScreenReaderState()
+{
+    return true;
+}
+
 RetError AccessibleAbilityManagerService::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     (void)name;

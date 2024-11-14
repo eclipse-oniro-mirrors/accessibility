@@ -1241,6 +1241,16 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
     }
 }
 
+bool AccessibleAbilityManagerService::GetScreenReaderState()
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
+    return accountData->GetScreenReaderState();
+}
+
 RetError AccessibleAbilityManagerService::InnerEnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG();

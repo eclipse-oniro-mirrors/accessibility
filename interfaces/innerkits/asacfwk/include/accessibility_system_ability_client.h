@@ -89,6 +89,13 @@ public:
     virtual RetError DeregisterElementOperator(const int32_t windowId, const int32_t treeId) = 0;
 
     /**
+     * @brief Checks whether screenreader ability is enabled.
+     * @param isEnabled true: enabled; false: disabled
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError IsScreenReaderEnabled(bool &isEnabled)= 0;
+
+    /**
      * @brief Checks whether accessibility ability is enabled.
      * @param isEnabled true: enabled; false: disabled
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.

@@ -233,6 +233,9 @@ void AccessibilitySystemAbilityClientImpl::Init()
     if (stateType & STATE_GESTURE_ENABLED) {
         stateArray_[AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED] = true;
     }
+    if (stateType & STATE_SCREENREADER_ENABLED) {
+        stateArray_[AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED] = true;
+    }
 }
 
 void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject> &remote)
@@ -355,6 +358,19 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
     }
 
     return serviceProxy_->DeregisterElementOperator(windowId, treeId);
+}
+
+RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderEnabled(bool &isEnabled)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    isEnabled = serviceProxy_->GetScreenReaderState();
+    return RET_OK;
 }
 
 RetError AccessibilitySystemAbilityClientImpl::IsEnabled(bool &isEnabled)
@@ -545,6 +561,9 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED,
         !!(stateType & STATE_GESTURE_ENABLED));
+
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED,
+        !!(stateType & STATE_SCREENREADER_ENABLED));
 }
 
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityIdResult(

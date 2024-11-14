@@ -514,6 +514,25 @@ bool AccessibleAbilityManagerServiceProxy::GetKeyEventObserverState()
     return reply.ReadBool();
 }
 
+bool AccessibleAbilityManagerServiceProxy::GetScreenReaderState()
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return false;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_SCREEN_READER_STATE,
+        data, reply, option)) {
+        HILOG_ERROR("GetScreenReaderState fail");
+        return false;
+    }
+    return reply.ReadBool();
+}
+
 RetError AccessibleAbilityManagerServiceProxy::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG();

@@ -151,6 +151,11 @@ bool MockAccessibleAbilityManagerServiceStub::GetTouchGuideState()
     return true;
 }
 
+bool MockAccessibleAbilityManagerServiceStub::GetScreenReaderState()
+{
+    return true;
+}
+
 bool MockAccessibleAbilityManagerServiceStub::GetGestureState()
 {
     return true;

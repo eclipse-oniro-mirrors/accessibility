@@ -111,6 +111,10 @@ public:
     {
         return true;
     }
+    bool GetScreenReaderState() override
+    {
+        return true;
+    }
 
     RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override
     {

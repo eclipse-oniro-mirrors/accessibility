@@ -92,6 +92,7 @@ public:
     MOCK_METHOD0(GetTouchGuideState, bool());
     MOCK_METHOD0(GetGestureState, bool());
     MOCK_METHOD0(GetKeyEventObserverState, bool());
+    MOCK_METHOD0(GetScreenReaderState, bool());
     MOCK_METHOD1(SetTouchGuideState, bool(const bool state));
     MOCK_METHOD1(SetGestureState, bool(const bool state));
     MOCK_METHOD1(SetKeyEventObserverState, bool(const bool state));

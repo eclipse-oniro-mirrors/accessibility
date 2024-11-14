@@ -252,6 +252,7 @@ public:
     RetError EnableAbility(const std::string &name, const uint32_t capabilities);
 
     void SetScreenReaderState(const std::string &name, const std::string &state);
+    bool GetScreenReaderState();
     bool GetDefaultUserScreenReaderState();
     AccountSA::OsAccountType GetAccountType();
 

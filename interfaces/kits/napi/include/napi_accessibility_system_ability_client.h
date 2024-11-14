@@ -99,6 +99,7 @@ public:
     static napi_value IsOpenAccessibilitySync(napi_env env, napi_callback_info info);
     static napi_value IsOpenTouchExploration(napi_env env, napi_callback_info info);
     static napi_value IsOpenTouchExplorationSync(napi_env env, napi_callback_info info);
+    static napi_value IsOpenScreenReaderSync(napi_env env, napi_callback_info info);
     static napi_value GetAbilityList(napi_env env, napi_callback_info info);
     static napi_value GetAccessibilityExtensionList(napi_env env, napi_callback_info info);
     static napi_value GetAccessibilityExtensionListSync(napi_env env, napi_callback_info info);
@@ -136,6 +137,7 @@ public:
     static napi_ref aaStyleConsRef_;
     static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;
     static std::shared_ptr<StateListenerImpl> touchGuideStateListeners_;
+    static std::shared_ptr<StateListenerImpl> screenReaderStateListeners_;
     static std::shared_ptr<NAccessibilityConfigObserverImpl> captionListeners_;
 
 private:
