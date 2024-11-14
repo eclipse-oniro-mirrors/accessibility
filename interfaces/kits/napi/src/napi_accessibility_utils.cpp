@@ -554,7 +554,8 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility"},
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility"},
         {EventType::TYPE_PAGE_OPEN, "pageOpen"},
-        {EventType::TYPE_PAGE_CLOSE, "pageClose"}};
+        {EventType::TYPE_PAGE_CLOSE, "pageClose"},
+        {EventType::TYPE_ELEMENT_INFO_CHANGE, "elementInfoChange"}};
 
     if (a11yEvtTypeTable.find(type) == a11yEvtTypeTable.end()) {
         return "";
