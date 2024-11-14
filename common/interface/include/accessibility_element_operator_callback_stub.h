@@ -23,19 +23,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
-class StoreElementData {
-public:
-    StoreElementData() = default;
-    ~StoreElementData() = default;
-    void WriteData(std::vector<AccessibilityElementInfo> &infos);
-    std::vector<AccessibilityElementInfo> ReadData();
-    size_t Size();
-    void Clear();
-    std::vector<AccessibilityElementInfo> storeData_ = {};
-    ffrt::mutex mutex_;
-};
-
 /*
 * The class define the interface for UI to implement.
 * It triggered by ABMS when AA to request the accessibility information.
@@ -63,7 +50,6 @@ public:
     virtual int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
         MessageOption &option) override;
 
-    static StoreElementData storeElementData;
 private:
     /**
      * @brief Handle the IPC request for the function:SetSearchElementInfoByAccessibilityIdResult.

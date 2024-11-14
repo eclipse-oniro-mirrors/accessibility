@@ -18,6 +18,7 @@
 #include "accessibility_ipc_interface_code.h"
 #include "hilog_wrapper.h"
 #include "parcel_util.h"
+#include <securec.h>
 
 #define SWITCH_BEGIN(code) switch (code) {
 #define SWITCH_CASE(case_code, func)     \
@@ -49,40 +50,30 @@ namespace Accessibility {
 constexpr int32_t SINGLE_TRANSMIT = -2;
 constexpr int32_t MULTI_TRANSMIT_FINISH = -1;
 constexpr int32_t ERR_CODE_DEFAULT = -1000;
+constexpr int32_t MAX_RAWDATA_SIZE = 128 * 1024 * 1024; // RawData limit is 128M, limited by IPC
 
-void StoreElementData::WriteData(std::vector<AccessibilityElementInfo> &infos)
+static bool GetData(size_t size, const void *data, void *&buffer)
 {
-    HILOG_DEBUG();
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    storeData_.insert(storeData_.end(), infos.begin(), infos.end());
-}
-
-void StoreElementData::Clear()
-{
-    HILOG_DEBUG();
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    storeData_.clear();
-}
-
-std::vector<AccessibilityElementInfo> StoreElementData::ReadData()
-{
-    HILOG_DEBUG();
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    return storeData_;
-}
-
-size_t StoreElementData::Size()
-{
-    HILOG_DEBUG();
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    return storeData_.size();
+    if (data == nullptr || size == 0) {
+        return false;
+    }
+    if (size > MAX_RAWDATA_SIZE) {
+        return false;
+    }
+    buffer = malloc(size);
+    if (buffer == nullptr) {
+        return false;
+    }
+    if (memcpy_s(buffer, size, data, size) != EOK) {
+        free(buffer);
+        return false;
+    }
+    return true;
 }
 
 AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackStub()
 {
 }
-
-StoreElementData AccessibilityElementOperatorCallbackStub::storeElementData;
 
 AccessibilityElementOperatorCallbackStub::~AccessibilityElementOperatorCallbackStub()
 {
@@ -116,39 +107,33 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-    int32_t flag = data.ReadInt32();
-    if (flag == SINGLE_TRANSMIT || flag == 0) {
-        storeElementData.Clear();
-    }
-
-    int32_t accessibilityInfosize = data.ReadInt32();
-    std::vector<AccessibilityElementInfo> tmpData;
-    bool verifyResult = ContainerSecurityVerify(data, accessibilityInfosize, tmpData.max_size());
-    if (!verifyResult || accessibilityInfosize < 0 || accessibilityInfosize > INT32_MAX) {
+    std::vector<AccessibilityElementInfo> storeData;
+    int32_t requestId = data.ReadInt32();
+    size_t infoSize = data.ReadUint32();
+    size_t rawDataSize = data.ReadUint32();
+    MessageParcel tmpParcel;
+    void *buffer = nullptr;
+    // memory alloced in GetData will be released when tmpParcel destruct
+    if (!GetData(rawDataSize, data.ReadRawData(rawDataSize), buffer)) {
+        reply.WriteInt32(RET_ERR_FAILED);
         return TRANSACTION_ERR;
     }
-    for (int32_t i = 0; i < accessibilityInfosize; i++) {
-        sptr<AccessibilityElementInfoParcel> accessibilityInfo =
-            data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-        if (accessibilityInfo == nullptr) {
-            HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
-            storeElementData.Clear();
+
+    if (!tmpParcel.ParseFrom(reinterpret_cast<uintptr_t>(buffer), rawDataSize)) {
+        reply.WriteInt32(RET_ERR_FAILED);
+        return TRANSACTION_ERR;
+    }
+
+    for (size_t i = 0; i < infoSize; i++) {
+        sptr<AccessibilityElementInfoParcel> info = tmpParcel.ReadStrongParcelable<AccessibilityElementInfoParcel>();
+        if (info == nullptr) {
             reply.WriteInt32(RET_ERR_FAILED);
             return TRANSACTION_ERR;
         }
-        tmpData.push_back(*accessibilityInfo);
+        storeData.emplace_back(*info);
     }
-
-    storeElementData.WriteData(tmpData); // get all data and push once
-    int32_t requestId = data.ReadInt32();
-    if (flag == SINGLE_TRANSMIT || flag == MULTI_TRANSMIT_FINISH) {
-        reply.WriteInt32(0);
-        HILOG_DEBUG("infos size %{public}zu, requestId %{public}d", storeElementData.Size(), requestId);
-        SetSearchElementInfoByAccessibilityIdResult(storeElementData.ReadData(), requestId);
-        return NO_ERROR;
-    }
-
-    reply.WriteInt32(0);
+    reply.WriteInt32(RET_OK);
+    SetSearchElementInfoByAccessibilityIdResult(storeData, requestId);
     return NO_ERROR;
 }
 
