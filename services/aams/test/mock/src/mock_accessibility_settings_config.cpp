@@ -425,6 +425,12 @@ RetError AccessibilitySettingsConfig::SetStartToHosState(const bool state)
     return RET_OK;
 }
 
+void AccessibilitySettingsConfig::SetDefaultShortcutKeyService()
+{
+    HILOG_DEBUG("start.");
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
 {
     HILOG_DEBUG("start.");
