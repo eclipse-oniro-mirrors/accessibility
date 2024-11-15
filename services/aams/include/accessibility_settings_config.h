@@ -94,7 +94,7 @@ public:
     RetError AddEnabledAccessibilityService(const std::string &serviceName);
     RetError RemoveEnabledAccessibilityService(const std::string &serviceName);
     uint32_t GetConfigState();
-    bool GetStartFromAtoHosState();
+    bool GetStartToHosState();
     void SetDefaultShortcutKeyService();
     void InitSetting();
     void CloneShortkeyService(bool isScreenReaderEnabled);

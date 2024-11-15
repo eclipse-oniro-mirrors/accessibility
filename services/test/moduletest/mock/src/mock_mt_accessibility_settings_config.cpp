@@ -375,7 +375,7 @@ uint32_t MockAccessibilitySettingsConfig::GetConfigState()
     return state;
 }
 
-bool MockAccessibilitySettingsConfig::GetStartFromAtoHosState()
+bool MockAccessibilitySettingsConfig::GetStartToHosState()
 {
     return true;
 }

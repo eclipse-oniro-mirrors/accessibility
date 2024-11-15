@@ -723,7 +723,7 @@ RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const st
     return datashare_->PutStringValue(ENABLED_ACCESSIBILITY_SERVICES, stringOut);
 }
 
-bool AccessibilitySettingsConfig::GetStartFromAtoHosState()
+bool AccessibilitySettingsConfig::GetStartToHosState()
 {
     HILOG_DEBUG();
     if (!datashare_) {

@@ -2107,7 +2107,7 @@ void AccessibleAbilityManagerService::UpdateSettingsInAtoHos()
         return;
     }
 
-    if (!accountData->GetConfig()->GetStartFromAtoHosState() || currentAccountId_ != DEFAULT_ACCOUNT_ID) {
+    if (!accountData->GetConfig()->GetStartToHosState() || currentAccountId_ != DEFAULT_ACCOUNT_ID) {
         HILOG_INFO("Not first start from a to hos.");
         return;
     }

@@ -375,7 +375,7 @@ uint32_t AccessibilitySettingsConfig::GetConfigState()
     return state;
 }
 
-bool AccessibilitySettingsConfig::GetStartFromAtoHosState()
+bool AccessibilitySettingsConfig::GetStartToHosState()
 {
     return true;
 }
