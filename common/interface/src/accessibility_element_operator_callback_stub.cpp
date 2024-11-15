@@ -110,27 +110,30 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     std::vector<AccessibilityElementInfo> storeData;
     int32_t requestId = data.ReadInt32();
     size_t infoSize = data.ReadUint32();
-    size_t rawDataSize = data.ReadUint32();
-    MessageParcel tmpParcel;
-    void *buffer = nullptr;
-    // memory alloced in GetData will be released when tmpParcel destruct
-    if (!GetData(rawDataSize, data.ReadRawData(rawDataSize), buffer)) {
-        reply.WriteInt32(RET_ERR_FAILED);
-        return TRANSACTION_ERR;
-    }
-
-    if (!tmpParcel.ParseFrom(reinterpret_cast<uintptr_t>(buffer), rawDataSize)) {
-        reply.WriteInt32(RET_ERR_FAILED);
-        return TRANSACTION_ERR;
-    }
-
-    for (size_t i = 0; i < infoSize; i++) {
-        sptr<AccessibilityElementInfoParcel> info = tmpParcel.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-        if (info == nullptr) {
+    if (infoSize != 0) {
+        size_t rawDataSize = data.ReadUint32();
+        MessageParcel tmpParcel;
+        void *buffer = nullptr;
+        // memory alloced in GetData will be released when tmpParcel destruct
+        if (!GetData(rawDataSize, data.ReadRawData(rawDataSize), buffer)) {
             reply.WriteInt32(RET_ERR_FAILED);
             return TRANSACTION_ERR;
         }
-        storeData.emplace_back(*info);
+
+        if (!tmpParcel.ParseFrom(reinterpret_cast<uintptr_t>(buffer), rawDataSize)) {
+            reply.WriteInt32(RET_ERR_FAILED);
+            return TRANSACTION_ERR;
+        }
+
+        for (size_t i = 0; i < infoSize; i++) {
+            sptr<AccessibilityElementInfoParcel> info =
+                tmpParcel.ReadStrongParcelable<AccessibilityElementInfoParcel>();
+            if (info == nullptr) {
+                reply.WriteInt32(RET_ERR_FAILED);
+                return TRANSACTION_ERR;
+            }
+            storeData.emplace_back(*info);
+        }
     }
     reply.WriteInt32(RET_OK);
     SetSearchElementInfoByAccessibilityIdResult(storeData, requestId);

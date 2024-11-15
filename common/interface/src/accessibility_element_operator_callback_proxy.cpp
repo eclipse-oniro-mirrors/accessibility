@@ -81,25 +81,27 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
         return;
     }
 
-    MessageParcel tmpParcel;
-    tmpParcel.SetMaxCapacity(MAX_RAWDATA_SIZE);
-    // when set pracel's max capacity, it won't alloc memory immediately
-    // MessageParcel will expand memory dynamiclly
-    for (const auto &info : infos) {
-        AccessibilityElementInfoParcel infoParcel(info);
-        if (!tmpParcel.WriteParcelable(&infoParcel)) {
-            HILOG_ERROR("write accessibilityElementInfoParcel failed");
+    if (infos.size() != 0) {
+        MessageParcel tmpParcel;
+        tmpParcel.SetMaxCapacity(MAX_RAWDATA_SIZE);
+        // when set pracel's max capacity, it won't alloc memory immediately
+        // MessageParcel will expand memory dynamiclly
+        for (const auto &info : infos) {
+            AccessibilityElementInfoParcel infoParcel(info);
+            if (!tmpParcel.WriteParcelable(&infoParcel)) {
+                HILOG_ERROR("write accessibilityElementInfoParcel failed");
+                return;
+            }
+        }
+        size_t tmpParcelSize = tmpParcel.GetDataSize();
+        if (!data.WriteUint32(tmpParcelSize)) {
+            HILOG_ERROR("write rawData size failed");
             return;
         }
-    }
-    size_t tmpParcelSize = tmpParcel.GetDataSize();
-    if (!data.WriteUint32(tmpParcelSize)) {
-        HILOG_ERROR("write rawData size failed");
-        return;
-    }
-    if (!data.WriteRawData(reinterpret_cast<uint8_t *>(tmpParcel.GetData()), tmpParcelSize)) {
-        HILOG_ERROR("write rawData failed");
-        return;
+        if (!data.WriteRawData(reinterpret_cast<uint8_t *>(tmpParcel.GetData()), tmpParcelSize)) {
+            HILOG_ERROR("write rawData failed");
+            return;
+        }
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID, data, reply, option)) {
