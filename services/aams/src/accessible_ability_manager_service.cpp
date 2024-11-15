@@ -49,6 +49,7 @@ namespace Accessibility {
 namespace {
     const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
     const std::string AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
+    const std::string AAMS_SEND_EVENT_RUNNER_NAME = "AamsSendEventRunner";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
@@ -152,6 +153,22 @@ void AccessibleAbilityManagerService::OnStart()
         actionHandler_ = std::make_shared<AAMSEventHandler>(actionRunner_);
         if (!actionHandler_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS action handler failed");
+            return;
+        }
+    }
+
+    if (!sendEventRunner_) {
+        sendEventRunner_ = AppExecFwk::EventRunner::Create(AAMS_SEND_EVENT_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
+        if (!sendEventRunner_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS sendEvent runner failed");
+            return;
+        }
+    }
+
+    if (!sendEventHandler_) {
+        sendEventHandler_ = std::make_shared<AAMSEventHandler>(sendEventRunner_);
+        if (!sendEventHandler_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS sendEvent handler failed");
             return;
         }
     }
@@ -352,7 +369,7 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
         uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId(), uiEvent.GetAccessibilityId(),
         uiEvent.GetElementInfo().GetAccessibilityId(),
         uiEvent.GetElementInfo().GetWindowId(), uiEvent.GetElementInfo().GetBelongTreeId());
-    if (!handler_) {
+    if (!sendEventHandler_) {
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
     }
@@ -366,9 +383,9 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
         }
     }
 
-    UpdateAccessibilityWindowStateByEvent(uiEvent);
-    handler_->PostTask([this, uiEvent]() {
+    sendEventHandler_->PostTask([this, uiEvent]() {
         HILOG_DEBUG();
+        UpdateAccessibilityWindowStateByEvent(uiEvent);
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
@@ -1929,7 +1946,9 @@ bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t window
     }
 
     ffrt::future<void> promiseFuture = callBack->promise_.get_future();
-    elementOperator->SearchElementInfoByAccessibilityId(elementId, GenerateRequestId(), callBack, 0);
+    int32_t requestId = GenerateRequestId();
+    AddRequestId(windowId, treeId, requestId, callBack);
+    elementOperator->SearchElementInfoByAccessibilityId(elementId, requestId, callBack, 0);
     ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (waitFocus != ffrt::future_status::ready) {
         ipcTimeoutNum_++;
@@ -1961,6 +1980,10 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
                 HILOG_DEBUG("inner windowId %{public}d", windowId);
                 return;
             }
+        }
+        if (event.GetWindowId() == 1 && elementId == 0) {
+            HILOG_INFO("parent elementId is 0");
+            return;
         }
 
         std::vector<AccessibilityElementInfo> infos = {};
