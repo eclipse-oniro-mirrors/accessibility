@@ -1847,14 +1847,14 @@ HWTEST_F(AccessibilitySettingsConfigTest, Unittest_SetShortkeyMultiTargetInPkgRe
 
 /**
  * @tc.number: ManagerServiceStub_Test_075
- * @tc.name: SetStartFromAtoHosState
+ * @tc.name: SetStartToHosState
  * @tc.desc: Test function SetScreenMagnificationState GetScreenMagnificationState
  */
 HWTEST_F(AccessibilitySettingsConfigTest, ManagerServiceStub_Test_075, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ManagerServiceStub_Test_075 start";
     bool state = true;
-    int32_t ret = settingConfig_->SetStartFromAtoHosState(state);
+    int32_t ret = settingConfig_->SetStartToHosState(state);
     EXPECT_EQ(ret, RET_ERR_NULLPTR);
     GTEST_LOG_(INFO) << "ManagerServiceStub_Test_075 end";
 }

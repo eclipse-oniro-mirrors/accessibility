@@ -191,7 +191,7 @@ RetError AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount
     return RET_OK;
 }
 
-RetError SetStartFromAtoHosState(const bool state)
+RetError SetStartToHosState(const bool state)
 {
     HILOG_DEBUG("start.");
     (void)state;
@@ -419,7 +419,7 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t ti
     return RET_OK;
 }
 
-RetError AccessibilitySettingsConfig::SetStartFromAtoHosState(const bool state)
+RetError AccessibilitySettingsConfig::SetStartToHosState(const bool state)
 {
     HILOG_DEBUG("start.");
     return RET_OK;

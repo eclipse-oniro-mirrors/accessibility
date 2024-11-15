@@ -570,8 +570,9 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
         accountData->EnableAbility(SCREEN_READER_BUNDLE_ABILITY_NAME, capabilities);
     }
     accountData->GetConfig()->CloneShortkeyService(atoHosValue.isScreenReaderEnabled);
+    accountData->GetConfig()->SetDefaultShortcutKeyService();
 
-    accountData->GetConfig()->SetStartFromAtoHosState(false);
+    accountData->GetConfig()->SetStartToHosState(false);
 }
 
 RetError AccessibilitySettings::GetScreenMagnificationState(bool &state)
