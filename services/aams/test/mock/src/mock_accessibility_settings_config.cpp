@@ -191,7 +191,7 @@ RetError AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount
     return RET_OK;
 }
 
-RetError SetStartFromAtoHosState(const bool state)
+RetError SetStartToHosState(const bool state)
 {
     HILOG_DEBUG("start.");
     (void)state;
@@ -375,7 +375,7 @@ uint32_t AccessibilitySettingsConfig::GetConfigState()
     return state;
 }
 
-bool AccessibilitySettingsConfig::GetStartFromAtoHosState()
+bool AccessibilitySettingsConfig::GetStartToHosState()
 {
     return true;
 }
@@ -419,10 +419,16 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t ti
     return RET_OK;
 }
 
-RetError AccessibilitySettingsConfig::SetStartFromAtoHosState(const bool state)
+RetError AccessibilitySettingsConfig::SetStartToHosState(const bool state)
 {
     HILOG_DEBUG("start.");
     return RET_OK;
+}
+
+void AccessibilitySettingsConfig::SetDefaultShortcutKeyService()
+{
+    HILOG_DEBUG("start.");
+    return;
 }
 
 RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)

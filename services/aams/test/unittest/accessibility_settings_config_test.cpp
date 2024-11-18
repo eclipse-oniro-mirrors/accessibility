@@ -902,18 +902,18 @@ HWTEST_F(AccessibilitySettingsConfigTest, Unittest_SetShortkeyMultiTargetInPkgRe
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetStartFromAtoHosState_001
- * @tc.name: SetStartFromAtoHosState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetStartToHosState_001
+ * @tc.name: SetStartToHosState
  * @tc.desc: Test function SetScreenMagnificationState GetScreenMagnificationState
  */
 HWTEST_F(AccessibilitySettingsConfigTest,
-    AccessibilitySettingsConfig_Unittest_SetStartFromAtoHosState_001, TestSize.Level1)
+    AccessibilitySettingsConfig_Unittest_SetStartToHosState_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetStartFromAtoHosState_001 start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetStartToHosState_001 start";
     bool state = true;
-    int32_t ret = settingConfig_->SetStartFromAtoHosState(state);
+    int32_t ret = settingConfig_->SetStartToHosState(state);
     EXPECT_EQ(ret, RET_ERR_NULLPTR);
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetStartFromAtoHosState_001 end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetStartToHosState_001 end";
 }
 
 /**

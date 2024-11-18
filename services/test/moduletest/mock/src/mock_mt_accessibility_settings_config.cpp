@@ -191,7 +191,7 @@ RetError MockAccessibilitySettingsConfig::SetBrightnessDiscount(const float disc
     return RET_OK;
 }
 
-RetError SetStartFromAtoHosState(const bool state)
+RetError SetStartToHosState(const bool state)
 {
     HILOG_DEBUG("start.");
     (void)state;
@@ -375,7 +375,7 @@ uint32_t MockAccessibilitySettingsConfig::GetConfigState()
     return state;
 }
 
-bool MockAccessibilitySettingsConfig::GetStartFromAtoHosState()
+bool MockAccessibilitySettingsConfig::GetStartToHosState()
 {
     return true;
 }
@@ -419,7 +419,7 @@ RetError MockAccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_
     return RET_OK;
 }
 
-RetError MockAccessibilitySettingsConfig::SetStartFromAtoHosState(const bool state)
+RetError MockAccessibilitySettingsConfig::SetStartToHosState(const bool state)
 {
     HILOG_DEBUG("start.");
     return RET_OK;

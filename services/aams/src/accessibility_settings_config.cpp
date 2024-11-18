@@ -18,6 +18,7 @@
 #include "system_ability_definition.h"
 #include "utils.h"
 #include "accessibility_setting_provider.h"
+#include "accessible_ability_manager_service.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -202,14 +203,14 @@ RetError AccessibilitySettingsConfig::SetShortKeyTimeout(const int32_t time)
     return ret;
 }
 
-RetError AccessibilitySettingsConfig::SetStartFromAtoHosState(const bool state)
+RetError AccessibilitySettingsConfig::SetStartToHosState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     if (!datashare_) {
         HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return datashare_->PutBoolValue("AccessibilityStartFromAtoHos", state);
+    return datashare_->PutBoolValue("AccessibilityStartToHos", state);
 }
 
 RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
@@ -722,7 +723,7 @@ RetError AccessibilitySettingsConfig::RemoveEnabledAccessibilityService(const st
     return datashare_->PutStringValue(ENABLED_ACCESSIBILITY_SERVICES, stringOut);
 }
 
-bool AccessibilitySettingsConfig::GetStartFromAtoHosState()
+bool AccessibilitySettingsConfig::GetStartToHosState()
 {
     HILOG_DEBUG();
     if (!datashare_) {
@@ -730,7 +731,7 @@ bool AccessibilitySettingsConfig::GetStartFromAtoHosState()
     }
 
     bool value = true;
-    value = datashare_->GetBoolValue("AccessibilityStartFromAtoHos", true);
+    value = datashare_->GetBoolValue("AccessibilityStartToHos", true);
     return value;
 }
 
@@ -833,6 +834,20 @@ void AccessibilitySettingsConfig::InitShortKeyConfig()
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
 
+    shortkeyTarget_ = datashare_->GetStringValue("ShortkeyTarget", "none");
+
+    std::string tmpString = datashare_->GetStringValue(SHORTCUT_SERVICE, SCREEN_READER_BUNDLE_ABILITY_NAME);
+    shortkeyMultiTarget_ = {};
+    Utils::StringToVector(tmpString, shortkeyMultiTarget_);
+
+    bool isScreenReaderEnabledOriginal =
+        (std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(),
+        SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
+    tmpString = datashare_->GetStringValue(ENABLED_ACCESSIBILITY_SERVICES, "");
+    enabledAccessibilityServices_ = {};
+    Utils::StringToVector(tmpString, enabledAccessibilityServices_);
+    CloneShortkeyService(isScreenReaderEnabledOriginal);
+
     // Initialization of the private space after cloning or upgrade
     std::shared_ptr<AccessibilitySettingProvider> service = AccessibilitySettingProvider::GetInstance(
         POWER_MANAGER_SERVICE_ID);
@@ -848,6 +863,7 @@ void AccessibilitySettingsConfig::InitShortKeyConfig()
         } else {
             SetShortKeyOnLockScreenState(false);
         }
+        SetDefaultShortcutKeyService();
         service->PutBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, false);
     }
 }
@@ -869,21 +885,6 @@ void AccessibilitySettingsConfig::InitSetting()
     daltonizationState_ = datashare_->GetBoolValue(DALTONIZATION_STATE, false);
     audioMonoState_ = datashare_->GetBoolValue(AUDIO_MONO_KEY, false);
     ignoreRepeatClickState_ = datashare_->GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, false);
-
-    shortkeyTarget_ = datashare_->GetStringValue("ShortkeyTarget", "none");
-
-    std::string tmpString = datashare_->GetStringValue(SHORTCUT_SERVICE, SCREEN_READER_BUNDLE_ABILITY_NAME);
-    shortkeyMultiTarget_ = {};
-    Utils::StringToVector(tmpString, shortkeyMultiTarget_);
-
-    bool isScreenReaderEnabledOriginal =
-        (std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(),
-        SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
-    tmpString = datashare_->GetStringValue(ENABLED_ACCESSIBILITY_SERVICES, "");
-    enabledAccessibilityServices_ = {};
-    Utils::StringToVector(tmpString, enabledAccessibilityServices_);
-    CloneShortkeyService(isScreenReaderEnabledOriginal);
-
     mouseAutoClick_ = static_cast<int32_t>(datashare_->GetIntValue("MouseAutoClick", -1));
     daltonizationColorFilter_ = static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0));
     SetDaltonizationColorFilter(daltonizationColorFilter_);
@@ -1026,16 +1027,43 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     SetEnabledAccessibilityServices(enabledShortkeyService);
 }
 
+void AccessibilitySettingsConfig::SetDefaultShortcutKeyService()
+{
+    HILOG_DEBUG();
+
+    if (GetShortkeyMultiTarget().empty()) {
+        HILOG_INFO("set default shortcut key service.");
+        std::vector<std::string> defaultService;
+        defaultService.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
+        SetShortkeyMultiTarget(defaultService);
+    }
+}
+
 void AccessibilitySettingsConfig::OnDataClone()
 {
     HILOG_INFO();
+
+    bool isShortkeyEnabled = GetShortKeyState();
+    bool isShortkeyEnabledOnLockScreen = GetShortKeyOnLockScreenState();
+
     InitSetting();
+    SetDefaultShortcutKeyService();
 
     if (isShortKeyState_) {
         SetShortKeyOnLockScreenState(true);
     } else {
         SetShortKeyOnLockScreenState(false);
     }
+
+    if (isShortkeyEnabled != GetShortKeyState()) {
+        SetShortKeyState(isShortkeyEnabled);
+        SetShortKeyState(!isShortkeyEnabled);
+    }
+    if (isShortkeyEnabledOnLockScreen != GetShortKeyOnLockScreenState()) {
+        SetShortKeyOnLockScreenState(isShortkeyEnabledOnLockScreen);
+        SetShortKeyOnLockScreenState(!isShortkeyEnabledOnLockScreen);
+    }
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
 
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);

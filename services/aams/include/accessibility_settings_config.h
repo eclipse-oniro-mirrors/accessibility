@@ -59,7 +59,7 @@ public:
     RetError SetClickResponseTime(const uint32_t time);
     RetError SetIgnoreRepeatClickState(const bool state);
     RetError SetIgnoreRepeatClickTime(const uint32_t time);
-    RetError SetStartFromAtoHosState(const bool state);
+    RetError SetStartToHosState(const bool state);
 
     bool GetEnabledState() const;
     bool GetTouchGuideState() const;
@@ -94,7 +94,8 @@ public:
     RetError AddEnabledAccessibilityService(const std::string &serviceName);
     RetError RemoveEnabledAccessibilityService(const std::string &serviceName);
     uint32_t GetConfigState();
-    bool GetStartFromAtoHosState();
+    bool GetStartToHosState();
+    void SetDefaultShortcutKeyService();
     void InitSetting();
     void CloneShortkeyService(bool isScreenReaderEnabled);
     void OnDataClone();
