@@ -41,10 +41,14 @@ domain: ACCESSIBILITY_UE
 
 ENABLE_SHORTKEY_ABILITY_SINGLE:
   __BASE: {type: BEHAVIOR, level: CRITICAL, desc: enable single ability targets}
+  PNAMEID: {type: STRING, desc: package name}
+  PVERSIONID: {type: STRING, desc: application version}
   MSG_NAME: {type: STRING, desc: enable single targets name}
   MSG_VALUE: {type: STRING, desc: enable single targets value}
 
 ZOOM_GESTURE_ACTION:
   __BASE: {type: BEHAVIOR, level: CRITICAL, desc: on zoom gesture state}
+  PNAMEID: {type: STRING, desc: package name}
+  PVERSIONID: {type: STRING, desc: application version}
   MSG_NAME: {type: STRING, desc: on zoom gesture state name}
   MSG_VALUE: {type: STRING, desc: on zoom gesture state value}
