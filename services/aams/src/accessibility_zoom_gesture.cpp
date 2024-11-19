@@ -785,6 +785,7 @@ void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
     float y = anchorPointY_ / screenHeight_;
     scaleRatio_ = DEFAULT_SCALE;
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    Utils::RecordOnZoomGestureEvent("on");
     displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
 #else
     HILOG_INFO("not support zoom");
@@ -798,6 +799,7 @@ void AccessibilityZoomGesture::OffZoom()
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
+    Utils::RecordOnZoomGestureEvent("off");
     displayMgr.SetDisplayScale(currentScreen, NORMAL_SCALE, NORMAL_SCALE, DEFAULT_ANCHOR, DEFAULT_ANCHOR);
 #else
     HILOG_INFO("not support zoom");

@@ -2468,6 +2468,7 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
     if (shortkeyMultiTarget.size() == 0) {
         EnableShortKeyTargetAbility();
     } else if (shortkeyMultiTarget.size() == 1) {
+        Utils::RecordEnableShortkeyAbilityEvent(shortkeyMultiTarget[0]);
         EnableShortKeyTargetAbility(shortkeyMultiTarget[0]);
     } else {
         // dialog

@@ -61,6 +61,8 @@ public:
     static void VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut);
     static void StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult);
     static int32_t GetUserIdByCallingUid();
+    static void RecordEnableShortkeyAbilityEvent(const std::string &name);
+    static void RecordOnZoomGestureEvent(const std::string &state);
 
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);
