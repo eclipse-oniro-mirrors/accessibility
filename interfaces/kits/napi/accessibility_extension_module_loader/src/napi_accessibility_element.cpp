@@ -214,6 +214,15 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &argv, &thisVar, &data));
     HILOG_DEBUG("argc = %{public}d", (int)argc);
 
+    AccessibilityElement* accessibilityElement = nullptr;
+    napi_status status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
+    if (!accessibilityElement || status != napi_ok) {
+        HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_NULLPTR);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
@@ -235,12 +244,6 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
 
-    AccessibilityElement* accessibilityElement = nullptr;
-    napi_status status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
-    if (!accessibilityElement || status != napi_ok) {
-        HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
-        return ErrorOperation(callbackInfo);
-    }
     callbackInfo->accessibilityElement_ = *accessibilityElement;
 
     napi_value resource = nullptr;
@@ -1540,12 +1543,18 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &argv, &thisVar, &data));
     HILOG_DEBUG("argc = %{public}zu", argc);
 
+    AccessibilityElement* accessibilityElement = UnrapAccessibilityElement(env, thisVar);
+    if (!accessibilityElement) {
+        return nullptr;
+    }
+
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
     callbackInfo->env_ = env;
+    callbackInfo->accessibilityElement_ = *accessibilityElement;
 
     napi_value promise = nullptr;
     if (argc > ARGS_SIZE_ONE - 1) {
@@ -1559,18 +1568,6 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
         }
     } else {
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
-    }
-
-    AccessibilityElement* accessibilityElement = nullptr;
-    napi_status status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
-    if (!accessibilityElement || status != napi_ok) {
-        HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
-        return ErrorOperation(callbackInfo);
-    }
-    callbackInfo->accessibilityElement_ = *accessibilityElement;
-    if (!callbackInfo->accessibilityElement_.isElementInfo_) {
-        HILOG_ERROR("it is not element info");
-        return ErrorOperation(callbackInfo);
     }
 
     napi_value resource = nullptr;
