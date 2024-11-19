@@ -37,22 +37,7 @@ config("module_private_config") {
     "../../test/mock/common",
     "../../../common/interface/include",
     "../../../common/interface/include/parcel",
-    "${ability_base_path}/interfaces/inner_api/base/include",
-    "${ability_base_path}/interfaces/kits/native/uri/include",
-    "${ability_base_path}/interfaces/kits/native/want/include",
-    "${ability_runtime_path}/interfaces/kits/native/ability/native/",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/app/",
-    "${ability_runtime_inner_api_path}/ability_manager/include",
-    "${ability_runtime_inner_api_path}/app_manager/include/appmgr/",
-    "${ability_runtime_services_path}/abilitymgr/include",
     "mock",
-    "../../../../graphic/graphic_2d/rosen/modules/render_service_base/include",
-    "../../../../graphic/graphic_2d/rosen/modules/2d_graphics/include",
-    "../../../../multimedia/image_framework/interfaces/innerkits/include",
-    "../../../../multimedia/image_framework/interfaces/kits/native/include",
-    "../../../../window/window_manager/previewer/mock",
-    "../../../../multimodalinput/input/util/common/include",
-    "../../../../window/window_manager/utils/include",
   ]
 
   defines = [
@@ -110,8 +95,6 @@ ohos_unittest("accessibility_account_data_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -146,6 +129,8 @@ ohos_unittest("accessibility_account_data_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -205,8 +190,6 @@ ohos_unittest("accessible_ability_manager_service_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -241,6 +224,8 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -290,8 +275,6 @@ ohos_unittest("accessibility_touch_exploration_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
@@ -322,6 +305,9 @@ ohos_unittest("accessibility_touch_exploration_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
+    "power_manager:powermgr_client"
   ]
 }
 
@@ -376,8 +362,6 @@ ohos_unittest("accessibility_common_event_registry_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -412,6 +396,8 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -471,8 +457,6 @@ ohos_unittest("accessibility_input_interceptor_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -507,6 +491,8 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -562,8 +548,6 @@ ohos_unittest("accessibility_window_manager_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -598,6 +582,8 @@ ohos_unittest("accessibility_window_manager_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -644,8 +630,6 @@ ohos_unittest("accessibility_keyevent_filter_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -680,6 +664,8 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -742,8 +728,6 @@ ohos_unittest("accessible_ability_connection_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -783,6 +767,8 @@ ohos_unittest("accessible_ability_connection_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -802,8 +788,6 @@ ohos_unittest("accessibility_display_manager_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
   ]
 
@@ -829,6 +813,8 @@ ohos_unittest("accessibility_display_manager_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -872,8 +858,6 @@ ohos_unittest("accessibility_dumper_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
@@ -903,6 +887,9 @@ ohos_unittest("accessibility_dumper_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
+    "power_manager:powermgr_client"
   ]
 }
 
@@ -956,8 +943,6 @@ ohos_unittest("accessibility_touchevent_injector_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -992,6 +977,8 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -1041,8 +1028,6 @@ ohos_unittest("accessible_ability_channel_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
@@ -1075,6 +1060,8 @@ ohos_unittest("accessible_ability_channel_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -1128,8 +1115,6 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1164,6 +1149,8 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -1217,8 +1204,6 @@ ohos_unittest("accessibility_screen_touch_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1253,6 +1238,8 @@ ohos_unittest("accessibility_screen_touch_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -1272,8 +1259,6 @@ ohos_unittest("accessibility_mouse_key_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
@@ -1299,6 +1284,8 @@ ohos_unittest("accessibility_mouse_key_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -1352,8 +1339,6 @@ ohos_unittest("accessibility_short_key_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1388,6 +1373,8 @@ ohos_unittest("accessibility_short_key_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -1434,8 +1421,6 @@ ohos_unittest("accessibility_short_key_dialog_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1470,6 +1455,8 @@ ohos_unittest("accessibility_short_key_dialog_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -1515,8 +1502,6 @@ ohos_unittest("accessibility_settings_config_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1551,6 +1536,8 @@ ohos_unittest("accessibility_settings_config_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 
@@ -1604,8 +1591,6 @@ ohos_unittest("accessibility_zoom_gesture_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1640,6 +1625,8 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "googletest:gmock_main",
+    "googletest:gtest_main"
   ]
 }
 

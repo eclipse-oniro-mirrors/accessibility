@@ -14,7 +14,7 @@
  */
 
 #include "display.h"
-#include "window/window_manager/utils/include/display_info.h"
+#include "display_info.h"
 
 namespace OHOS::Rosen {
 namespace {

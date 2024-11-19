@@ -12,7 +12,6 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
-import("../../../accessibility_aafwk.gni")
 import("../../../accessibility_manager_service.gni")
 
 aafwk_path = "../../../frameworks/aafwk"
