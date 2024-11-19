@@ -41,7 +41,7 @@ config("module_private_config") {
     "../aams/include",
     "mock",
     "./mock/common",
-    "mock/aafwk/include"
+    "mock/aafwk/include",
   ]
 
   defines = [

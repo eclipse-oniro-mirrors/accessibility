@@ -21,7 +21,7 @@ AAMS_FOUNDATION_PATH = "//foundation"
 aams_mock_include_dirs = [
   "$AAMS_MOCK_PATH/distributeddatamgr/include",
   "$AAMS_MOCK_PATH/multimodalinput/include",
-  "$AAMS_MOCK_PATH/powermanager/include"
+  "$AAMS_MOCK_PATH/powermanager/include",
 ]
 
 aams_mock_distributeddatamgr_src =

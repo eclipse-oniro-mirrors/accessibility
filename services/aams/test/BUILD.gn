@@ -113,10 +113,10 @@ ohos_unittest("accessibility_account_data_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
-    "graphic_2d:2d_graphics",
-    "graphic_2d:librender_service_client",
     "googletest:gmock_main",
     "googletest:gtest_main",
+    "graphic_2d:2d_graphics",
+    "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
@@ -274,9 +274,7 @@ ohos_unittest("accessibility_touch_exploration_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:want",
@@ -787,9 +785,7 @@ ohos_unittest("accessibility_display_manager_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../common/interface:accessibility_interface",
-  ]
+  deps = [ "../../../common/interface:accessibility_interface" ]
 
   external_deps = [
     "ability_base:zuri",
@@ -857,9 +853,7 @@ ohos_unittest("accessibility_dumper_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:want",
@@ -1027,9 +1021,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:want",
@@ -1258,9 +1250,7 @@ ohos_unittest("accessibility_mouse_key_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:zuri",

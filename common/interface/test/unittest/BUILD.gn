@@ -60,9 +60,7 @@ ohos_unittest("accessibility_parcel_test") {
     "../../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "access_token:libaccesstoken_sdk",
