@@ -59,6 +59,10 @@ private:
     ffrt::mutex mutex_;
     OHOS::Accessibility::AccessibilityStateEventType type_;
     std::vector<std::shared_ptr<StateListener>> observers_ = {};
+
+private:
+    void DeleteObserverReference(napi_env env, std::shared_ptr<StateListener> observer);
+    int DeleteObserverReferenceWork(napi_env env, uv_work_t *work);
 };
 
 struct NAccessibilitySystemAbilityClient {
