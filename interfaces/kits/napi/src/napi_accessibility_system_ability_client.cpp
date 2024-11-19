@@ -1384,7 +1384,7 @@ void StateListenerImpl::DeleteObserverReference(napi_env env, std::shared_ptr<St
     }
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (work == nullptr) {
-        HILOG_ERROR("failed tp create work");
+        HILOG_ERROR("failed to create work");
         return;
     }
     AccessibilityCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityCallbackInfo();
@@ -1397,7 +1397,6 @@ void StateListenerImpl::DeleteObserverReference(napi_env env, std::shared_ptr<St
     callbackInfo->env_ = observer->env_;
     callbackInfo->ref_ = observer->handlerRef_;
     work->data = static_cast<void*>(callbackInfo);
-    
     int ret = DeleteObserverReferenceWork(env, work);
     if (ret != RET_OK) {
         HILOG_ERROR("failed to execute delete observer reference");
@@ -1425,7 +1424,7 @@ int StateListenerImpl::DeleteObserverReferenceWork(napi_env env, uv_work_t *work
             auto closeScope = [tmpEnv](napi_handle_scope scope) {
                 napi_close_handle_scope(tmpEnv, scope);
             };
-            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scope(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_delete_reference(tmpEnv, callbackInfo->ref_);
             delete callbackInfo;
