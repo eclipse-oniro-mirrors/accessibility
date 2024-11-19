@@ -115,6 +115,8 @@ ohos_unittest("accessibility_account_data_test") {
     "ffrt:libffrt",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
@@ -129,8 +131,6 @@ ohos_unittest("accessibility_account_data_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -208,6 +208,8 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -224,8 +226,6 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -293,6 +293,8 @@ ohos_unittest("accessibility_touch_exploration_test") {
     "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
@@ -300,14 +302,12 @@ ohos_unittest("accessibility_touch_exploration_test") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "power_manager:powermgr_client",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main",
-    "power_manager:powermgr_client"
   ]
 }
 
@@ -380,6 +380,8 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -396,8 +398,6 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -475,6 +475,8 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -491,8 +493,6 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -566,6 +566,8 @@ ohos_unittest("accessibility_window_manager_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -582,8 +584,6 @@ ohos_unittest("accessibility_window_manager_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -648,6 +648,8 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -664,8 +666,6 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -749,6 +749,8 @@ ohos_unittest("accessible_ability_connection_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -767,8 +769,6 @@ ohos_unittest("accessible_ability_connection_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -803,6 +803,8 @@ ohos_unittest("accessibility_display_manager_test") {
     "data_share:datashare_common",
     "data_share:datashare_consumer",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "init:libbegetutil",
@@ -813,8 +815,6 @@ ohos_unittest("accessibility_display_manager_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -876,20 +876,20 @@ ohos_unittest("accessibility_dumper_test") {
     "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "init:libbegetutil",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "power_manager:powermgr_client",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main",
-    "power_manager:powermgr_client"
   ]
 }
 
@@ -961,6 +961,8 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -977,8 +979,6 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -1046,6 +1046,8 @@ ohos_unittest("accessible_ability_channel_test") {
     "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
     "hilog:libhilog",
@@ -1060,8 +1062,6 @@ ohos_unittest("accessible_ability_channel_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -1133,6 +1133,8 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1149,8 +1151,6 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -1222,6 +1222,8 @@ ohos_unittest("accessibility_screen_touch_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1238,8 +1240,6 @@ ohos_unittest("accessibility_screen_touch_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -1274,6 +1274,8 @@ ohos_unittest("accessibility_mouse_key_test") {
     "data_share:datashare_common",
     "data_share:datashare_consumer",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "init:libbegetutil",
@@ -1284,8 +1286,6 @@ ohos_unittest("accessibility_mouse_key_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -1357,6 +1357,8 @@ ohos_unittest("accessibility_short_key_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1373,8 +1375,6 @@ ohos_unittest("accessibility_short_key_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -1439,6 +1439,8 @@ ohos_unittest("accessibility_short_key_dialog_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1455,8 +1457,6 @@ ohos_unittest("accessibility_short_key_dialog_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -1520,6 +1520,8 @@ ohos_unittest("accessibility_settings_config_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1536,8 +1538,6 @@ ohos_unittest("accessibility_settings_config_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
@@ -1609,6 +1609,8 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1625,8 +1627,6 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "googletest:gmock_main",
-    "googletest:gtest_main"
   ]
 }
 
