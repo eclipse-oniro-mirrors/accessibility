@@ -1418,6 +1418,66 @@ void StateListenerImpl::OnStateChanged(const bool state)
     }
 }
 
+void StateListenerImpl::DeleteObserverReference(napi_env env, std::shared_ptr<StateListener> observer)
+{
+    if (observer == nullptr) {
+        return;
+    }
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (work == nullptr) {
+        HILOG_ERROR("failed to create work");
+        return;
+    }
+    AccessibilityCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityCallbackInfo();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("failed to create callbackInfo");
+        delete work;
+        work = nullptr;
+        return;
+    }
+    callbackInfo->env_ = observer->env_;
+    callbackInfo->ref_ = observer->handlerRef_;
+    work->data = static_cast<void*>(callbackInfo);
+
+    int ret = DeleteObserverReferenceWork(env, work);
+    if (ret != RET_OK) {
+        HILOG_ERROR("failed to execute delete observer reference");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
+}
+
+int StateListenerImpl::DeleteObserverReferenceWork(napi_env env, uv_work_t *work)
+{
+    uv_loop_s *loop = nullptr;
+    napi_get_uv_event_loop(env, &loop);
+    if (loop == nullptr) {
+        return RET_ERR_FAILED;
+    }
+    int ret = uv_queue_work_with_qos(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            AccessibilityCallbackInfo *callbackInfo = static_cast<AccessibilityCallbackInfo *>(work->data);
+            napi_env tmpEnv = callbackInfo->env_;
+            auto closeScope = [tmpEnv](napi_handle_scope scope) {
+                napi_close_handle_scope(tmpEnv, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scope(
+                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
+            napi_delete_reference(tmpEnv, callbackInfo->ref_);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+            delete work;
+            work = nullptr;
+        },
+        uv_qos_default);
+    return ret;
+}
+
 void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
@@ -1445,7 +1505,7 @@ void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
     std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
-            napi_delete_reference((*iter)->env_, (*iter)->handlerRef_);
+            DeleteObserverReference(env, *iter);
             observers_.erase(iter);
             return;
         } else {
@@ -1459,7 +1519,7 @@ void StateListenerImpl::UnsubscribeObservers()
     HILOG_INFO();
     std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
-        napi_delete_reference((*iter)->env_, (*iter)->handlerRef_);
+        DeleteObserverReference((*iter)->env_, *iter);
         observers_.erase(iter);
     }
     observers_.clear();
