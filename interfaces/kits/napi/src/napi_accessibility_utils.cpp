@@ -37,9 +37,11 @@ namespace {
     const uint32_t COLOR_GRAY = 0xffc0c0c0;
 
     constexpr uint32_t COLOR_STRING_SIZE_STANDARD = 8;
+    constexpr uint32_t COLOR_STRING_SIZE_4 = 4;
+    constexpr uint32_t COLOR_STRING_SIZE_5 = 5;
+    constexpr uint32_t COLOR_STRING_SIZE_7 = 7;
+    constexpr uint32_t COLOR_STRING_SIZE_9 = 9;
     constexpr uint32_t COLOR_STRING_BASE = 16;
-    const std::regex COLOR_WITH_MAGIC("#[0-9A-Fa-f]{6,8}");
-    const std::regex COLOR_WITH_MAGIC_MINI("#[0-9A-Fa-f]{3,4}");
     constexpr uint32_t COLOR_ALPHA_MASK = 0xff000000;
 
     constexpr int32_t RGB_LENGTH = 6;
@@ -49,6 +51,7 @@ namespace {
     const char UNICODE_BODY = '0';
     const std::string HALF_VALUE = "0";
     const std::string FULL_VALUE = "1";
+    const std::string NUMBER_VALID_CHARS = "0123456789ABCDEFabcdef";
 } // namespace
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
@@ -1654,10 +1657,26 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
     return color;
 }
 
+bool IsColorWithMagic(const std::string& colorStr)
+{
+    if (colorStr.size() < 1 || colorStr.substr(0, 1) != "#") {
+        return false;
+    }
+
+    for (int i = 1; i < colorStr.size(); i++) {
+        if (NUMBER_VALID_CHARS.find(colorStr[i]) == std::string::npos) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool ColorRegexMatch(std::string colorStr, uint32_t &color)
 {
-    // Regex match for #909090 or #90909090.
-    if (std::regex_match(colorStr, COLOR_WITH_MAGIC)) {
+    // for example #909090 or #90909090. avoid use regex match #[0-9A-Fa-f]{6,8}.
+    if (IsColorWithMagic(colorStr) &&
+        (colorStr.size() == COLOR_STRING_SIZE_7 || colorStr.size() == COLOR_STRING_SIZE_9)) {
         colorStr.erase(0, 1);
         auto colorValue = stoul(colorStr, nullptr, COLOR_STRING_BASE);
         if (colorStr.length() < COLOR_STRING_SIZE_STANDARD) {
@@ -1671,8 +1690,9 @@ bool ColorRegexMatch(std::string colorStr, uint32_t &color)
         color = colorValue;
         return true;
     }
-    // Regex match for #rgb or #rgba.
-    if (std::regex_match(colorStr, COLOR_WITH_MAGIC_MINI)) {
+    // for #rgb or #rgba. avoid use regex match #[0-9A-Fa-f]{3,4}.
+    if (IsColorWithMagic(colorStr) &&
+        (colorStr.size() == COLOR_STRING_SIZE_4 || colorStr.size() == COLOR_STRING_SIZE_5)) {
         colorStr.erase(0, 1);
         std::string newColorStr;
         // Translate #rgb or #rgba to #rrggbb or #rrggbbaa
