@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Huawei Device Co., Ltd.
+# Copyright (C) 2022-2024 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -37,22 +37,7 @@ config("module_private_config") {
     "../../test/mock/common",
     "../../../common/interface/include",
     "../../../common/interface/include/parcel",
-    "${ability_base_path}/interfaces/inner_api/base/include",
-    "${ability_base_path}/interfaces/kits/native/uri/include",
-    "${ability_base_path}/interfaces/kits/native/want/include",
-    "${ability_runtime_path}/interfaces/kits/native/ability/native/",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/app/",
-    "${ability_runtime_inner_api_path}/ability_manager/include",
-    "${ability_runtime_inner_api_path}/app_manager/include/appmgr/",
-    "${ability_runtime_services_path}/abilitymgr/include",
     "mock",
-    "../../../../graphic/graphic_2d/rosen/modules/render_service_base/include",
-    "../../../../graphic/graphic_2d/rosen/modules/2d_graphics/include",
-    "../../../../multimedia/image_framework/interfaces/innerkits/include",
-    "../../../../multimedia/image_framework/interfaces/kits/native/include",
-    "../../../../window/window_manager/previewer/mock",
-    "../../../../multimodalinput/input/util/common/include",
-    "../../../../window/window_manager/utils/include",
   ]
 
   defines = [
@@ -75,12 +60,10 @@ ohos_unittest("accessibility_account_data_test") {
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
     "../src/accessibility_event_transmission.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -88,7 +71,7 @@ ohos_unittest("accessibility_account_data_test") {
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
@@ -112,8 +95,6 @@ ohos_unittest("accessibility_account_data_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -132,6 +113,8 @@ ohos_unittest("accessibility_account_data_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -169,12 +152,10 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
     "../src/accessibility_event_transmission.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -183,7 +164,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "../src/accessibility_settings_config.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_zoom_gesture.cpp",
     "../src/accessible_ability_channel.cpp",
@@ -209,8 +190,6 @@ ohos_unittest("accessible_ability_manager_service_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -229,6 +208,8 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -249,7 +230,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
 }
 
 ################################################################################
-ohos_unittest("accessibility_touch_guider_test") {
+ohos_unittest("accessibility_touch_exploration_test") {
   module_out_path = module_output_path
   sources = [
     "../../../common/interface/src/accessibility_element_operator_callback_stub.cpp",
@@ -265,11 +246,9 @@ ohos_unittest("accessibility_touch_guider_test") {
     "../../test/mock/mock_matching_skill.cpp",
     "../src/accessibility_datashare_helper.cpp",
     "../src/accessibility_display_manager.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_settings_config.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/utils.cpp",
@@ -286,7 +265,7 @@ ohos_unittest("accessibility_touch_guider_test") {
     "mock/src/mock_accessible_ability_manager_service_stub.cpp",
     "mock/src/mock_display.cpp",
     "mock/src/mock_system_ability.cpp",
-    "unittest/accessibility_touch_guider_test.cpp",
+    "unittest/accessibility_touch_exploration_test.cpp",
   ]
   sources += aams_mock_distributeddatamgr_src
 
@@ -295,11 +274,7 @@ ohos_unittest("accessibility_touch_guider_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
-    "../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:want",
@@ -316,6 +291,8 @@ ohos_unittest("accessibility_touch_guider_test") {
     "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
@@ -323,6 +300,7 @@ ohos_unittest("accessibility_touch_guider_test") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "power_manager:powermgr_client",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
@@ -348,12 +326,10 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
     "../src/accessibility_event_transmission.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -363,7 +339,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
@@ -384,8 +360,6 @@ ohos_unittest("accessibility_common_event_registry_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -404,6 +378,8 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -442,11 +418,9 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
     "../src/accessibility_event_transmission.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -455,7 +429,7 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "../src/accessibility_settings_config.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_zoom_gesture.cpp",
     "../src/accessible_ability_channel.cpp",
@@ -481,8 +455,6 @@ ohos_unittest("accessibility_input_interceptor_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -501,6 +473,8 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -534,12 +508,10 @@ ohos_unittest("accessibility_window_manager_test") {
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
     "../src/accessibility_event_transmission.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -549,7 +521,7 @@ ohos_unittest("accessibility_window_manager_test") {
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
@@ -574,8 +546,6 @@ ohos_unittest("accessibility_window_manager_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -594,6 +564,8 @@ ohos_unittest("accessibility_window_manager_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -622,12 +594,10 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "../src/accessibility_datashare_helper.cpp",
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -637,7 +607,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
@@ -658,8 +628,6 @@ ohos_unittest("accessibility_keyevent_filter_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -678,6 +646,8 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -716,11 +686,9 @@ ohos_unittest("accessible_ability_connection_test") {
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
     "../src/accessibility_event_transmission.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -728,7 +696,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "../src/accessibility_settings_config.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
@@ -758,8 +726,6 @@ ohos_unittest("accessible_ability_connection_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -781,6 +747,8 @@ ohos_unittest("accessible_ability_connection_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -817,11 +785,7 @@ ohos_unittest("accessibility_display_manager_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
-    "../../../common/interface:accessibility_interface",
-  ]
+  deps = [ "../../../common/interface:accessibility_interface" ]
 
   external_deps = [
     "ability_base:zuri",
@@ -835,6 +799,8 @@ ohos_unittest("accessibility_display_manager_test") {
     "data_share:datashare_common",
     "data_share:datashare_consumer",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "init:libbegetutil",
@@ -887,11 +853,7 @@ ohos_unittest("accessibility_dumper_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
-    "../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:want",
@@ -908,12 +870,15 @@ ohos_unittest("accessibility_dumper_test") {
     "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "init:libbegetutil",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "power_manager:powermgr_client",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
@@ -936,12 +901,10 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "../src/accessibility_datashare_helper.cpp",
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -951,7 +914,7 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
@@ -974,8 +937,6 @@ ohos_unittest("accessibility_touchevent_injector_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -994,6 +955,8 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1059,11 +1022,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
-    "../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:want",
@@ -1080,6 +1039,8 @@ ohos_unittest("accessible_ability_channel_test") {
     "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
     "hilog:libhilog",
@@ -1111,12 +1072,10 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "../src/accessibility_datashare_helper.cpp",
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -1125,7 +1084,7 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
@@ -1149,8 +1108,6 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1169,6 +1126,8 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1201,12 +1160,10 @@ ohos_unittest("accessibility_screen_touch_test") {
     "../src/accessibility_datashare_helper.cpp",
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -1215,7 +1172,7 @@ ohos_unittest("accessibility_screen_touch_test") {
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
@@ -1240,8 +1197,6 @@ ohos_unittest("accessibility_screen_touch_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1260,6 +1215,8 @@ ohos_unittest("accessibility_screen_touch_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1294,11 +1251,7 @@ ohos_unittest("accessibility_mouse_key_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
-    "../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:zuri",
@@ -1312,6 +1265,8 @@ ohos_unittest("accessibility_mouse_key_test") {
     "data_share:datashare_common",
     "data_share:datashare_consumer",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "init:libbegetutil",
@@ -1339,12 +1294,10 @@ ohos_unittest("accessibility_short_key_test") {
     "../src/accessibility_datashare_helper.cpp",
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -1354,7 +1307,7 @@ ohos_unittest("accessibility_short_key_test") {
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
@@ -1377,8 +1330,6 @@ ohos_unittest("accessibility_short_key_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1397,6 +1348,8 @@ ohos_unittest("accessibility_short_key_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1459,8 +1412,6 @@ ohos_unittest("accessibility_short_key_dialog_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1479,6 +1430,8 @@ ohos_unittest("accessibility_short_key_dialog_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1509,12 +1462,10 @@ ohos_unittest("accessibility_settings_config_test") {
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
     "../src/accessibility_event_transmission.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -1524,7 +1475,7 @@ ohos_unittest("accessibility_settings_config_test") {
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
@@ -1542,8 +1493,6 @@ ohos_unittest("accessibility_settings_config_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1562,6 +1511,8 @@ ohos_unittest("accessibility_settings_config_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1594,12 +1545,10 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "../src/accessibility_circle_drawing_manager.cpp",
     "../src/accessibility_datashare_helper.cpp",
     "../src/accessibility_dumper.cpp",
-    "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
-    "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
@@ -1609,7 +1558,7 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
-    "../src/accessibility_touch_guider.cpp",
+    "../src/accessibility_touch_exploration.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
@@ -1633,8 +1582,6 @@ ohos_unittest("accessibility_zoom_gesture_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -1653,6 +1600,8 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -1689,7 +1638,7 @@ group("unittest") {
     ":accessibility_screen_touch_test",
     ":accessibility_settings_config_test",
     ":accessibility_short_key_test",
-    ":accessibility_touch_guider_test",
+    ":accessibility_touch_exploration_test",
     ":accessibility_touchevent_injector_test",
     ":accessibility_window_manager_test",
     ":accessibility_zoom_gesture_test",

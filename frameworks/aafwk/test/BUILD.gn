@@ -27,7 +27,6 @@ config("module_private_config") {
   }
   include_dirs = aams_mock_include_dirs
   include_dirs += [
-    "${ability_runtime_inner_api_path}/ability_manager/include",
     "../../../common/log/include",
     "../include",
     "./mock/include",
@@ -73,8 +72,6 @@ ohos_unittest("accessibility_ui_test_ability_impl_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -92,6 +89,8 @@ ohos_unittest("accessibility_ui_test_ability_impl_test") {
     "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbeget_proxy",
     "init:libbegetutil",
@@ -161,8 +160,6 @@ ohos_unittest("accessible_ability_test") {
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
     "../../../common/interface:accessibility_interface",
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -180,6 +177,8 @@ ohos_unittest("accessible_ability_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
     "hilog:libhilog",

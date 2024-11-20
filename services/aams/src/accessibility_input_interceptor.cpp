@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,7 @@
 #include "accessibility_mouse_autoclick.h"
 #include "accessibility_short_key.h"
 #include "accessibility_screen_touch.h"
-#include "accessibility_touch_guider.h"
+#include "accessibility_touch_exploration.h"
 #include "accessibility_touchEvent_injector.h"
 #include "accessibility_zoom_gesture.h"
 #include "accessible_ability_manager_service.h"
@@ -79,8 +79,14 @@ bool AccessibilityInputInterceptor::OnKeyEvent(MMI::KeyEvent &event)
 
 bool AccessibilityInputInterceptor::OnPointerEvent(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d",
-        event.GetPointerAction(), event.GetSourceType(), event.GetPointerId());
+    if (event.GetPointerAction() != MMI::PointerEvent::POINTER_ACTION_MOVE &&
+        event.GetPointerAction() != MMI::PointerEvent::POINTER_ACTION_HOVER_MOVE) {
+        HILOG_INFO("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d",
+            event.GetPointerAction(), event.GetSourceType(), event.GetPointerId());
+    } else {
+        HILOG_DEBUG("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d",
+            event.GetPointerAction(), event.GetSourceType(), event.GetPointerId());
+    }
 
     event.AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
     std::shared_ptr<MMI::PointerEvent> pointerEvent = std::make_shared<MMI::PointerEvent>(event);
@@ -180,13 +186,13 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
     }
 
     if (availableFunctions_& FEATURE_TOUCH_EXPLORATION) {
-        sptr<TouchGuider> touchGuider = new(std::nothrow) TouchGuider();
-        if (!touchGuider) {
-            HILOG_ERROR("touchGuider is null");
+        sptr<TouchExploration> touchExploration = new(std::nothrow) TouchExploration();
+        if (!touchExploration) {
+            HILOG_ERROR("touchExploration is null");
             return;
         }
-        touchGuider->StartUp();
-        SetNextEventTransmitter(header, current, touchGuider);
+        touchExploration->StartUp();
+        SetNextEventTransmitter(header, current, touchExploration);
     }
 
     if ((availableFunctions_ & FEATURE_SCREEN_TOUCH) && ((availableFunctions_ & FEATURE_TOUCH_EXPLORATION) == 0)) {
@@ -385,8 +391,14 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerE
         HILOG_WARN("pointerEvent is null.");
         return;
     }
-    HILOG_DEBUG("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d.",
-        pointerEvent->GetPointerAction(), pointerEvent->GetSourceType(), pointerEvent->GetPointerId());
+
+    if (pointerEvent->GetPointerAction() != MMI::PointerEvent::POINTER_ACTION_MOVE) {
+        HILOG_INFO("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d.",
+            pointerEvent->GetPointerAction(), pointerEvent->GetSourceType(), pointerEvent->GetPointerId());
+    } else {
+        HILOG_DEBUG("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d.",
+            pointerEvent->GetPointerAction(), pointerEvent->GetSourceType(), pointerEvent->GetPointerId());
+    }
 
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
     if (!interceptor) {

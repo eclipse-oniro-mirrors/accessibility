@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +31,6 @@ namespace {
     constexpr float TAP_MIN_DISTANCE = 8.0f;
     constexpr int32_t MULTI_TAP_TIMER = 250; // ms
     constexpr int32_t LONG_PRESS_TIMER = 300; // ms
-    constexpr int64_t US_TO_MS = 1000;
     constexpr float DOUBLE_TAP_SLOP = 100.0f;
     constexpr float HALF = 0.5f;
     constexpr uint32_t DOUBLE = 2;

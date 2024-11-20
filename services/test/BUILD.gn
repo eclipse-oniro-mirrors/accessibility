@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Huawei Device Co., Ltd.
+# Copyright (C) 2022-2024 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -41,16 +41,7 @@ config("module_private_config") {
     "../aams/include",
     "mock",
     "./mock/common",
-    "${ability_runtime_path}/interfaces/kits/native/ability/native/",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime/context",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/app/",
-    "${ability_runtime_inner_api_path}/ability_manager/include",
-    "${ability_runtime_inner_api_path}/app_manager/include/appmgr",
-    "${ability_runtime_services_path}/abilitymgr/include",
     "mock/aafwk/include",
-    "${AAMS_FOUNDATION_PATH}/window/window_manager/utils/include",
-    "../../../graphic/graphic_2d/rosen/modules/2d_graphics/include",
   ]
 
   defines = [
@@ -64,7 +55,7 @@ config("module_private_config") {
 MockDistributedscheduleSrc = []
 
 ################################################################################
-ohos_moduletest("aams_accessibility_touch_guider_test") {
+ohos_moduletest("aams_accessibility_touch_exploration_test") {
   module_out_path = module_output_path
 
   sources = [
@@ -76,12 +67,10 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
     "../aams/src/accessibility_event_transmission.cpp",
-    "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_mouse_autoclick.cpp",
     "../aams/src/accessibility_mouse_key.cpp",
-    "../aams/src/accessibility_multifinger_multitap.cpp",
     "../aams/src/accessibility_power_manager.cpp",
     "../aams/src/accessibility_screen_touch.cpp",
     "../aams/src/accessibility_setting_observer.cpp",
@@ -89,7 +78,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
-    "../aams/src/accessibility_touch_guider.cpp",
+    "../aams/src/accessibility_touch_exploration.cpp",
     "../aams/src/accessibility_window_connection.cpp",
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
@@ -114,7 +103,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "./mock/mock_parameter.c",
     "./mock/mock_service_registry.cpp",
     "./mock/mock_system_ability.cpp",
-    "moduletest/aamstest/aams_accessibility_touch_guider_test/aams_accessibility_touch_guider_test.cpp",
+    "moduletest/aamstest/aams_accessibility_touch_exploration_test/aams_accessibility_touch_exploration_test.cpp",
   ]
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
@@ -127,8 +116,6 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
   ]
 
   deps = [
-    "../../../../../third_party/googletest:gmock_main",
-    "../../../../../third_party/googletest:gtest_main",
     "../../common/interface:accessibility_interface",
     "../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -147,6 +134,8 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -176,12 +165,10 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
     "../aams/src/accessibility_event_transmission.cpp",
-    "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_mouse_autoclick.cpp",
     "../aams/src/accessibility_mouse_key.cpp",
-    "../aams/src/accessibility_multifinger_multitap.cpp",
     "../aams/src/accessibility_power_manager.cpp",
     "../aams/src/accessibility_screen_touch.cpp",
     "../aams/src/accessibility_setting_observer.cpp",
@@ -189,7 +176,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
-    "../aams/src/accessibility_touch_guider.cpp",
+    "../aams/src/accessibility_touch_exploration.cpp",
     "../aams/src/accessibility_window_connection.cpp",
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
@@ -228,8 +215,6 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
   ]
 
   deps = [
-    "../../../../../third_party/googletest:gmock_main",
-    "../../../../../third_party/googletest:gtest_main",
     "../../common/interface:accessibility_interface",
     "../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -248,6 +233,8 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -277,12 +264,10 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
     "../aams/src/accessibility_event_transmission.cpp",
-    "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_mouse_autoclick.cpp",
     "../aams/src/accessibility_mouse_key.cpp",
-    "../aams/src/accessibility_multifinger_multitap.cpp",
     "../aams/src/accessibility_power_manager.cpp",
     "../aams/src/accessibility_screen_touch.cpp",
     "../aams/src/accessibility_setting_observer.cpp",
@@ -290,7 +275,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
-    "../aams/src/accessibility_touch_guider.cpp",
+    "../aams/src/accessibility_touch_exploration.cpp",
     "../aams/src/accessibility_window_connection.cpp",
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
@@ -335,8 +320,6 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
   ]
 
   deps = [
-    "../../../../../third_party/googletest:gmock_main",
-    "../../../../../third_party/googletest:gtest_main",
     "../../common/interface:accessibility_interface",
     "../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -354,6 +337,8 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -383,12 +368,10 @@ ohos_moduletest("aams_server_test") {
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
     "../aams/src/accessibility_event_transmission.cpp",
-    "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_mouse_autoclick.cpp",
     "../aams/src/accessibility_mouse_key.cpp",
-    "../aams/src/accessibility_multifinger_multitap.cpp",
     "../aams/src/accessibility_power_manager.cpp",
     "../aams/src/accessibility_screen_touch.cpp",
     "../aams/src/accessibility_setting_observer.cpp",
@@ -396,7 +379,7 @@ ohos_moduletest("aams_server_test") {
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
-    "../aams/src/accessibility_touch_guider.cpp",
+    "../aams/src/accessibility_touch_exploration.cpp",
     "../aams/src/accessibility_window_connection.cpp",
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
@@ -439,8 +422,6 @@ ohos_moduletest("aams_server_test") {
   ]
 
   deps = [
-    "../../../../../third_party/googletest:gmock_main",
-    "../../../../../third_party/googletest:gtest_main",
     "../../common/interface:accessibility_interface",
     "../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -458,6 +439,8 @@ ohos_moduletest("aams_server_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -487,12 +470,10 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
     "../aams/src/accessibility_event_transmission.cpp",
-    "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_mouse_autoclick.cpp",
     "../aams/src/accessibility_mouse_key.cpp",
-    "../aams/src/accessibility_multifinger_multitap.cpp",
     "../aams/src/accessibility_power_manager.cpp",
     "../aams/src/accessibility_screen_touch.cpp",
     "../aams/src/accessibility_setting_observer.cpp",
@@ -500,7 +481,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
-    "../aams/src/accessibility_touch_guider.cpp",
+    "../aams/src/accessibility_touch_exploration.cpp",
     "../aams/src/accessibility_window_connection.cpp",
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
@@ -537,8 +518,6 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
   ]
 
   deps = [
-    "../../../../../third_party/googletest:gmock_main",
-    "../../../../../third_party/googletest:gtest_main",
     "../../common/interface:accessibility_interface",
     "../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -557,6 +536,8 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -586,12 +567,10 @@ ohos_moduletest("aams_common_event_registry_test") {
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
     "../aams/src/accessibility_event_transmission.cpp",
-    "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_mouse_autoclick.cpp",
     "../aams/src/accessibility_mouse_key.cpp",
-    "../aams/src/accessibility_multifinger_multitap.cpp",
     "../aams/src/accessibility_power_manager.cpp",
     "../aams/src/accessibility_screen_touch.cpp",
     "../aams/src/accessibility_setting_observer.cpp",
@@ -599,7 +578,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
-    "../aams/src/accessibility_touch_guider.cpp",
+    "../aams/src/accessibility_touch_exploration.cpp",
     "../aams/src/accessibility_window_connection.cpp",
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
@@ -642,8 +621,6 @@ ohos_moduletest("aams_common_event_registry_test") {
   ]
 
   deps = [
-    "../../../../../third_party/googletest:gmock_main",
-    "../../../../../third_party/googletest:gtest_main",
     "../../common/interface:accessibility_interface",
     "../../interfaces/innerkits/common:accessibility_common",
   ]
@@ -661,6 +638,8 @@ ohos_moduletest("aams_common_event_registry_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "googletest:gmock_main",
+    "googletest:gtest_main",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
@@ -686,7 +665,7 @@ group("moduletest") {
     deps += [
       ":aams_accessibility_keyevent_filter_test",
       ":aams_accessibility_touchEvent_injector_test",
-      ":aams_accessibility_touch_guider_test",
+      ":aams_accessibility_touch_exploration_test",
       ":aams_accessible_ability_channel_test",
       ":aams_common_event_registry_test",
       ":aams_server_test",

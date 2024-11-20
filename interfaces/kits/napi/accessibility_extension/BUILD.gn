@@ -12,8 +12,7 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
-import(
-    "../../../../../../../arkcompiler/ets_frontend/es2panda/es2abc_config.gni")
+import("//build/templates/abc/ohos_abc.gni")
 
 es2abc_gen_abc("gen_accessibility_extension_abc") {
   src_js = rebase_path("accessibility_extension.js")
