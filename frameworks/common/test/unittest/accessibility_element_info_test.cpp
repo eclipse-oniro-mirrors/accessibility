@@ -1550,5 +1550,18 @@ HWTEST_F(AccessibilityElementInfoTest, SetClip_001, TestSize.Level1)
     EXPECT_TRUE(elementInfo_->GetClip());
     GTEST_LOG_(INFO) << "SetClip_001 end";
 }
+
+/**
+ * @tc.number: SetMainWindowId_001
+ * @tc.name: SetMainWindowId
+ * @tc.desc: Test function SetMainWindowId, GetMainWindowId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetMainWindowId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetMainWindowId_001 start";
+    elementInfo_->SetMainWindowId(1);
+    EXPECT_TRUE(elementInfo_->GetMainWindowId() == 1);
+    GTEST_LOG_(INFO) << "SetMainWindowId_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

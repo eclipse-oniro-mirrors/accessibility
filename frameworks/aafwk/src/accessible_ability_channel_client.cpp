@@ -161,7 +161,6 @@ RetError AccessibleAbilityChannelClient::GetCursorPosition(
 RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId,
     int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments)
 {
-    HILOG_DEBUG("execute action:%{public}d, elementId:%{public}" PRId64 "", action, elementId);
 #ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "ExecuteAction");
 #endif // OHOS_BUILD_ENABLE_HITRACE
@@ -196,7 +195,8 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
         HILOG_ERROR("execute action: %{public}d failed to wait result", action);
         return RET_ERR_TIME_OUT;
     }
-    HILOG_INFO("action:[%{public}d], executeActionResult_[%{public}d]", action, elementOperator->executeActionResult_);
+    HILOG_INFO("action:[%{public}d], executeActionResult_[%{public}d], elementId:%{public}" PRId64 "",
+        action, elementOperator->executeActionResult_, elementId);
 
     if (elementOperator->executeActionResult_) {
         switch (action) {
@@ -256,8 +256,8 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     RetError ret = proxy_->SearchElementInfoByAccessibilityId(elementBasicInfo, requestId,
         elementOperator, mode, isFilter);
     if (ret != RET_OK) {
-        HILOG_ERROR("SearchElementInfosByAccessibilityId windowId :[%{pubic}d] Failed to wait result, Time out",
-            accessibilityWindowId);
+        HILOG_ERROR("searchElement failed. ret: %{public}d. elementId: %{public}" PRId64 ", requestId :[%{public}d]",
+            ret, elementId, requestId);
         return ret;
     }
 
