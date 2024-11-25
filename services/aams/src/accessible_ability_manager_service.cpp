@@ -383,6 +383,7 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
         }
     }
 
+    Singleton<AccessibilityWindowManager>::GetInstance().SetEventInfoBundleName(uiEvent);
     sendEventHandler_->PostTask([this, uiEvent]() {
         HILOG_DEBUG();
         UpdateAccessibilityWindowStateByEvent(uiEvent);

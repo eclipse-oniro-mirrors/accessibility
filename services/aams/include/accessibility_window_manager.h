@@ -49,6 +49,8 @@ public:
     void SetAccessibilityFocusedWindow(int32_t windowId);
     std::vector<AccessibilityWindowInfo> GetAccessibilityWindows();
     bool GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window);
+    std::string GetA11yWindowsBundleName(int32_t windowId);
+    void SetEventInfoBundleName(const AccessibilityEventInfo &uiEvent);
     bool IsValidWindow(int32_t windowId);
     void ClearAccessibilityFocused();
 
@@ -115,6 +117,8 @@ private:
     bool EqualBound(const Accessibility::AccessibilityWindowInfo &accWindowInfo,
         const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
     bool EqualProperty(Accessibility::AccessibilityWindowInfo &accWindowInfo,
+        const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
+    bool EqualLayer(Accessibility::AccessibilityWindowInfo &accWindowInfo,
         const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
     void WindowUpdateAdded(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateRemoved(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);

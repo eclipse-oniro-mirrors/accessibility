@@ -643,7 +643,8 @@ const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type)
         {WindowUpdateType::WINDOW_UPDATE_ADDED, "add"},
         {WindowUpdateType::WINDOW_UPDATE_REMOVED, "remove"},
         {WindowUpdateType::WINDOW_UPDATE_BOUNDS, "bounds"},
-        {WindowUpdateType::WINDOW_UPDATE_PROPERTY, "property"}};
+        {WindowUpdateType::WINDOW_UPDATE_PROPERTY, "property"},
+        {WindowUpdateType::WINDOW_UPDATE_LAYER, "layer"}};
 
     if (windowUpdateTypeTable.find(type) == windowUpdateTypeTable.end()) {
         return "";
