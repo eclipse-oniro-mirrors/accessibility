@@ -278,7 +278,7 @@ protected:
     AccessibilityElementInfo elementInfo_ {};
     std::string textAnnouncedForAccessibility_ = "";
     std::string inspectorKey_ = "";
-    int32_t requestFocusElementId_ = 0;
+    int32_t requestFocusElementId_ = -1;
 };
 } // namespace Accessibility
 } // namespace OHOS
