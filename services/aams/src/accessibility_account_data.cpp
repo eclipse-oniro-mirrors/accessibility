@@ -717,6 +717,19 @@ void AccessibilityAccountData::Init()
     if (rtn != ERR_OK) {
         HILOG_ERROR("get account type failed for accountId [%{public}d]", id_);
     }
+
+    if (config_->GetDbHandle() == nullptr) {
+        HILOG_ERROR("helper is null!");
+        return;
+    }
+    AccessibilitySettingObserver::UpdateFunc callback = [this](const std::string& state) {
+        OnTouchGuideStateChanged();
+    };
+    RetError ret = config_->GetDbHandle()->RegisterObserver(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, callback);
+    if (ret != RET_OK) {
+        HILOG_ERROR("register touch guide observer failed, ret = %{public}d", ret);
+    }
+
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     if (service == nullptr) {
@@ -737,20 +750,9 @@ void AccessibilityAccountData::Init()
     AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string& state) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnDataClone();
     };
-    RetError ret = service->RegisterObserver(ACCESSIBILITY_CLONE_FLAG, func);
+    ret = service->RegisterObserver(ACCESSIBILITY_CLONE_FLAG, func);
     if (ret != RET_OK) {
         HILOG_WARN("register clone observer failed %{public}d.", ret);
-    }
-
-    if (config_->GetDbHandle() == nullptr) {
-        HILOG_ERROR("helper is null!");
-        return;
-    }
-    AccessibilitySettingObserver::UpdateFunc callback = [this](const std::string& state) {
-        OnTouchGuideStateChanged();
-    };
-    if (config_->GetDbHandle()->RegisterObserver(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, callback) != RET_OK) {
-        HILOG_ERROR("register touch guide observer failed, ret = %{public}d", ret);
     }
 }
 
