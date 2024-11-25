@@ -118,7 +118,7 @@ private:
         const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
     bool EqualProperty(Accessibility::AccessibilityWindowInfo &accWindowInfo,
         const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
-    bool EqualLayer(Accessibility::AccessibilityWindowInfo &accWindowInfo,
+    bool EqualLayer(const Accessibility::AccessibilityWindowInfo &accWindowInfo,
         const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
     void WindowUpdateAdded(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateRemoved(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);

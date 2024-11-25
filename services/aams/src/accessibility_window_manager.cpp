@@ -1045,9 +1045,7 @@ std::string AccessibilityWindowManager::GetA11yWindowsBundleName(int32_t windowI
     return "";
 }
 
-
-
-void SetEventInfoBundleName(const AccessibilityEventInfo &uiEvent)
+void AccessibilityWindowManager::SetEventInfoBundleName(const AccessibilityEventInfo &uiEvent)
 {
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     std::string windowsBundleNameCache = GetA11yWindowsBundleName(uiEvent.GetWindowId());
