@@ -850,12 +850,10 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             subWindows_.insert(realWid);
             sceneBoardElementIdMap_.InsertPair(realWid, window->uiNodeId_);
         }
-
         // IsScenePanel for recent-task window
         if (window->focused_ || IsScenePanel(window)) {
             SetActiveWindow(realWid);
         }
-
         if (!oldA11yWindows_.count(realWid)) {
             WindowUpdateTypeEvent(realWid, WINDOW_UPDATE_ADDED);
         } else {
@@ -1037,8 +1035,8 @@ std::string AccessibilityWindowManager::GetA11yWindowsBundleName(int32_t windowI
     for (auto iter = a11yWindows_.begin(); iter != a11yWindows_.end(); iter++) {
         if (iter->first == windowId) {
             AccessibilityWindowInfo tempWindowInfo = iter->second;
-            HILOG_DEBUG("GetA11yWindowsBundleName windowId: %{public}d, BundleName: %{public}s",
-              windowId, tempWindowInfo.GetBundleName().c_str());
+            HILOG_DEBUG("GetA11yWindowsBundleName windowId:[%{public}d], BundleName:[%{public}s]",
+                windowId, tempWindowInfo.GetBundleName().c_str());
             return tempWindowInfo.GetBundleName();
         }
     }
@@ -1053,16 +1051,18 @@ void AccessibilityWindowManager::SetEventInfoBundleName(const AccessibilityEvent
         const_cast<AccessibilityEventInfo&>(uiEvent).SetBundleName(windowsBundleNameCache);
     } else {
         std::vector<AccessibilityWindowInfo> windowsInfo = GetAccessibilityWindows();
-        if (!windowsInfo.empty()) {
-            for (auto &window : windowsInfo) {
-                const std::string currentBundleName = window.GetBundleName();
-                int32_t currentWid = window.GetWindowId();
-                if (currentBundleName != "" && uiEvent.GetWindowId() == currentWid) {
-                    const_cast<AccessibilityEventInfo&>(uiEvent).SetBundleName(currentBundleName);
-                    HILOG_DEBUG("GetAccessibilityWindows windowId: %{public}d, BundleName: %{public}s",
-                      currentWid, currentBundleName.c_str());
-                    break;
-                }
+        if (windowsInfo.empty()) {
+            HILOG_DEBUG("GetAccessibilityWindows is empty");
+            return nullptr;
+        }
+        for (auto &window : windowsInfo) {
+            const std::string currentBundleName = window.GetBundleName();
+            int32_t currentWid = window.GetWindowId();
+            if (currentBundleName != "" && uiEvent.GetWindowId() == currentWid) {
+                const_cast<AccessibilityEventInfo&>(uiEvent).SetBundleName(currentBundleName);
+                HILOG_DEBUG("GetAccessibilityWindows windowId:[%{public}d], BundleName:[%{public}s]",
+                    currentWid, currentBundleName.c_str());
+                break;
             }
         }
     }
