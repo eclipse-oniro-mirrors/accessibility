@@ -2994,6 +2994,7 @@ void AccessibleAbilityManagerService::PostDelayUnloadTask()
             HILOG_ERROR("unload system ability failed");
             return;
         }
+        SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
     };
     handler_->RemoveTask(DELAY_UNLOAD_TASK);
     handler_->PostTask(task, DELAY_UNLOAD_TASK, UNLOAD_TASK_INTERNAL);
