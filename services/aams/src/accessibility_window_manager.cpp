@@ -1053,7 +1053,7 @@ void AccessibilityWindowManager::SetEventInfoBundleName(const AccessibilityEvent
         std::vector<AccessibilityWindowInfo> windowsInfo = GetAccessibilityWindows();
         if (windowsInfo.empty()) {
             HILOG_DEBUG("GetAccessibilityWindows is empty");
-            return nullptr;
+            return;
         }
         for (auto &window : windowsInfo) {
             const std::string currentBundleName = window.GetBundleName();
