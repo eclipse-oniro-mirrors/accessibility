@@ -165,6 +165,19 @@ bool AccessibleAbilityClientImpl::CheckServiceProxy()
 #endif // ACCESSIBILITY_WATCH_FEATURE
 }
 
+RetError AccessibleAbilityClientImpl::CheckConnection()
+{
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+    if (!channelClient_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+    return RET_OK;
+}
+
 bool AccessibleAbilityClientImpl::LoadAccessibilityService()
 {
     std::unique_lock<ffrt::mutex> lock(conVarMutex_);
@@ -726,18 +739,13 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
     std::vector<AccessibilityElementInfo> &children)
 {
     HILOG_DEBUG();
-    if (!isConnected_) {
-        HILOG_ERROR("connection is broken");
-        return RET_ERR_NO_CONNECTION;
-    }
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (!channelClient_) {
-        HILOG_ERROR("The channel is invalid.");
-        return RET_ERR_NO_CONNECTION;
+    RetError ret = CheckConnection();
+    if (ret != RET_OK) {
+        return ret;
     }
     int32_t windowId = parent.GetWindowId();
     std::vector<int64_t> childIds =  parent.GetChildIds();
-    RetError ret = RET_OK;
     HILOG_DEBUG("windowId[%{public}d], childIds.size[%{public}zu] childTreeId:%{public}d",
         windowId, childIds.size(), parent.GetChildTreeId());
     if ((childIds.size() == 0) && (parent.GetChildWindowId() > 0 || parent.GetChildTreeId() > 0)) {
@@ -749,7 +757,6 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
             ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
             GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
         }
-
         if (ret != RET_OK) {
             HILOG_ERROR("Get element info from ace failed");
             return ret;
@@ -759,6 +766,15 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
             return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
         }
         SortElementInfosIfNecessary(elementInfos);
+        children.emplace_back(elementInfos.front());
+    } else if (childIds.size() > 0 && parent.GetChildTreeId() > 0) {
+        std::vector<AccessibilityElementInfo> elementInfos {};
+        ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
+            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
+        if (ret != RET_OK) {
+            HILOG_ERROR("Get element info from ace failed");
+            return ret;
+        }
         children.emplace_back(elementInfos.front());
     }
     ret = GetChildrenWork(windowId, childIds, children);

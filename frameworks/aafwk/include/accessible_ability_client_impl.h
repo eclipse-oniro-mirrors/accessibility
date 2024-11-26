@@ -448,6 +448,7 @@ private:
     bool InitAccessibilityServiceProxy();
     static void OnParameterChanged(const char *key, const char *value, void *context);
     bool CheckServiceProxy(); // should be used in mutex
+    RetError CheckConnection(); // should be used in mutex, to check isConnected_ and channelClient_
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> accessibilityServiceDeathRecipient_ = nullptr;
