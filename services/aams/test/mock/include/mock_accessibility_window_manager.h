@@ -39,7 +39,7 @@ public:
     MOCK_METHOD1(SetAccessibilityFocusedWindow, void(int32_t windowId));
     MOCK_METHOD0(GetAccessibilityWindows, std::vector<AccessibilityWindowInfo>());
     MOCK_METHOD2(GetAccessibilityWindow, bool(int32_t windowId, AccessibilityWindowInfo& window));
-    MOCK_METHOD2(SetEventInfoBundleName, void(const AccessibilityEventInfo& uiEvent);
+    MOCK_METHOD2(SetEventInfoBundleName, void(const AccessibilityEventInfo& uiEvent));
     MOCK_METHOD1(IsValidWindow, bool(int32_t windowId));
     MOCK_METHOD2(SetWindowSize, void(int32_t windowId, Rect rect));
     MOCK_METHOD2(GetSceneBoardElementId, int32_t(const int32_t windowId, const int64_t elementId));
