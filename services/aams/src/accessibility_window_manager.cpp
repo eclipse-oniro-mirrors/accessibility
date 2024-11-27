@@ -850,36 +850,44 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             subWindows_.insert(realWid);
             sceneBoardElementIdMap_.InsertPair(realWid, window->uiNodeId_);
         }
+
         // IsScenePanel for recent-task window
         if (window->focused_ || IsScenePanel(window)) {
             SetActiveWindow(realWid);
         }
-        if (!oldA11yWindows_.count(realWid)) {
-            WindowUpdateTypeEvent(realWid, WINDOW_UPDATE_ADDED);
-        } else {
-            if (EqualFocus(oldA11yWindows_[realWid], window)) {
-                WindowUpdateTypeEvent(realWid, WINDOW_UPDATE_FOCUSED);
-            }
-            if (EqualBound(oldA11yWindows_[realWid], window)) {
-                WindowUpdateTypeEvent(realWid, WINDOW_UPDATE_BOUNDS);
-            }
-            if (EqualProperty(oldA11yWindows_[realWid], window)) {
-                WindowUpdateTypeEvent(realWid, WINDOW_UPDATE_PROPERTY);
-            }
-            if (EqualLayer(oldA11yWindows_[realWid], window)) {
-                WindowUpdateTypeEvent(realWid, WINDOW_UPDATE_LAYER);
-            }
-            auto itr = oldA11yWindows_.find(realWid);
-            if (itr != oldA11yWindows_.end()) {
-                oldA11yWindows_.erase(itr);
-            }
-        }
+
+        WindowUpdateAllExec();
     }
 
     for (auto it = oldA11yWindows_.begin(); it != oldA11yWindows_.end(); ++it) {
         WindowUpdateTypeEvent(it->first, WINDOW_UPDATE_REMOVED);
     }
     HILOG_INFO("WindowUpdateAll end activeWindowId_: %{public}d", activeWindowId_);
+}
+
+void AccessibilityWindowManager::WindowUpdateAllExec(std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_,
+    int32_t realWid, const sptr<Rosen::AccessibilityWindowInfo>& window)
+{
+    if (!oldA11yWindows_.count(realWid)) {
+        WindowUpdateTypeEvent(realWid, WINDOW_UPDATE_ADDED);
+    } else {
+        if (EqualFocus(oldA11yWindows_[realWid], window)) {
+            WindowUpdateTypeEvent(realWid, WINDOW_UPDATE_FOCUSED);
+        }
+        if (EqualBound(oldA11yWindows_[realWid], window)) {
+            WindowUpdateTypeEvent(realWid, WINDOW_UPDATE_BOUNDS);
+        }
+        if (EqualProperty(oldA11yWindows_[realWid], window)) {
+            WindowUpdateTypeEvent(realWid, WINDOW_UPDATE_PROPERTY);
+        }
+        if (EqualLayer(oldA11yWindows_[realWid], window)) {
+            WindowUpdateTypeEvent(realWid, WINDOW_UPDATE_LAYER);
+        }
+        auto itr = oldA11yWindows_.find(realWid);
+        if (itr != oldA11yWindows_.end()) {
+            oldA11yWindows_.erase(itr);
+        }
+    }
 }
 
 void AccessibilityWindowManager::ClearOldActiveWindow()

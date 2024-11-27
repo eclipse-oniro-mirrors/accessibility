@@ -128,6 +128,8 @@ private:
     void WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateTypeEvent(const int32_t realWidId, Accessibility::WindowUpdateType type);
     void WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
+    void WindowUpdateAllExec(std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_,
+        int32_t realWid, const sptr<Rosen::AccessibilityWindowInfo>& window);
     void ClearOldActiveWindow();
 
     sptr<AccessibilityWindowListener> windowListener_ = nullptr;
