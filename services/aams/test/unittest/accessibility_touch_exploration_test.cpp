@@ -572,7 +572,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSwipeSta
 
     usleep(SLEEP_US_50);
 
-    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::TWO_FINGERS_UNKNOWN);
+    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::INVALID);
 
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSwipeStateDown_001 end";
 }
