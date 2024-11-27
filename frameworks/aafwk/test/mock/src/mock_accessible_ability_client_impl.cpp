@@ -309,5 +309,15 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByAccessibilityId(const i
     HILOG_DEBUG();
     return RET_OK;
 }
+
+RetError AccessibleAbilityClientImpl::GetElements(const int32_t windowId, const int64_t elementId,
+    std::vector<AccessibilityElementInfo> &elementInfos)
+{
+    HILOG_DEBUG();
+    (void)windowId;
+    (void)elementId;
+    (void)elementInfos;
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

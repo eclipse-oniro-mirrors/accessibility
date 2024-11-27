@@ -276,6 +276,16 @@ public:
      */
     virtual RetError SearchElementInfoByAccessibilityId(const int32_t windowId, const int64_t elementId,
         const uint32_t mode, AccessibilityElementInfo &info, bool isFilter = false) = 0;
+
+    /**
+     * @brief Search all child nodes
+     * @param windowId The target window id.
+     * @param elementId The target element id.
+     * @param elementInfos The element infos of specified content.
+     * @return Return RET_OK if gets all child nodes successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetElements(const int32_t windowId, const int64_t elementId,
+        std::vector<AccessibilityElementInfo> &elementInfos) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS
