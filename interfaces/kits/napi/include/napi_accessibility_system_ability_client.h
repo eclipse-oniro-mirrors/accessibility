@@ -103,7 +103,7 @@ public:
     static napi_value IsOpenAccessibilitySync(napi_env env, napi_callback_info info);
     static napi_value IsOpenTouchExploration(napi_env env, napi_callback_info info);
     static napi_value IsOpenTouchExplorationSync(napi_env env, napi_callback_info info);
-    static napi_value IsOpenScreenReaderSync(napi_env env, napi_callback_info info);
+    static napi_value IsScreenReaderOpenSync(napi_env env, napi_callback_info info);
     static napi_value GetAbilityList(napi_env env, napi_callback_info info);
     static napi_value GetAccessibilityExtensionList(napi_env env, napi_callback_info info);
     static napi_value GetAccessibilityExtensionListSync(napi_env env, napi_callback_info info);
