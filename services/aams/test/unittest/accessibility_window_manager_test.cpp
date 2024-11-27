@@ -978,7 +978,8 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
     windowInfoManager.a11yWindows_.clear();
     EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 0);
-    windowInfoManager.a11yWindows_.emplace(rosen_winInfo_first->wid_, rosen_winInfo_first);
+    auto a11yWindowInfo = CreateAccessibilityWindowInfo(rosen_winInfo_first);
+    windowInfoManager.a11yWindows_.emplace(rosen_winInfo_first->wid_, a11yWindowInfo);
     windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_ALL);
     windowInfoManager.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange020 end";
