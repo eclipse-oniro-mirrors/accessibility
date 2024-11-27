@@ -856,7 +856,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             SetActiveWindow(realWid);
         }
 
-        WindowUpdateAllExec();
+        WindowUpdateAllExec(oldA11yWindows_, realWid, window);
     }
 
     for (auto it = oldA11yWindows_.begin(); it != oldA11yWindows_.end(); ++it) {
