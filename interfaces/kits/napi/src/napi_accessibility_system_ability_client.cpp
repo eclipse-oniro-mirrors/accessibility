@@ -58,7 +58,7 @@ do { \
     } \
 } while (0)
 
-napi_value NAccessibilityClient::IsOpenScreenReaderSync(napi_env env, napi_callback_info info)
+napi_value NAccessibilityClient::IsScreenReaderOpenSync(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
     size_t argc = ARGS_SIZE_ONE;
