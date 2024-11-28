@@ -34,6 +34,7 @@ InputEvent::InputEvent(const InputEvent& other)
       action_(other.action_),
       actionStartTime_(other.actionStartTime_),
       deviceId_(other.deviceId_),
+      sourceType_(other.sourceType_),
       targetDisplayId_(other.targetDisplayId_),
       targetWindowId_(other.targetWindowId_),
       agentWindowId_(other.agentWindowId_),
@@ -98,6 +99,16 @@ int64_t InputEvent::GetActionStartTime() const
 void InputEvent::SetActionStartTime(int64_t actionStartTime)
 {
     actionStartTime_ = actionStartTime;
+}
+
+int32_t InputEvent::GetSourceType() const
+{
+    return sourceType_;
+}
+
+void InputEvent::SetSourceType(int32_t sourceType)
+{
+    sourceType_ = sourceType;
 }
 
 uint32_t InputEvent::GetFlag() const
