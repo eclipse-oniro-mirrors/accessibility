@@ -49,7 +49,7 @@ public:
     void SetAccessibilityFocusedWindow(int32_t windowId);
     std::vector<AccessibilityWindowInfo> GetAccessibilityWindows();
     bool GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window);
-    std::string GetA11yWindowsBundleName(int32_t windowId);
+    std::string GetA11yWindowsBundleName(int32_t windowId, std::string bundleName);
     void SetEventInfoBundleName(const AccessibilityEventInfo &uiEvent);
     bool IsValidWindow(int32_t windowId);
     void ClearAccessibilityFocused();
