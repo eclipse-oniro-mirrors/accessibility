@@ -382,7 +382,10 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
             return RET_ERR_CONNECTION_EXIST;
         }
     }
-
+    
+    if (uiEvent.GetEventType() == EventType::TYPE_WINDOW_UPDATE) {
+        Singleton<AccessibilityWindowManager>::GetInstance().SetEventInfoBundleName(uiEvent);
+    }
     sendEventHandler_->PostTask([this, uiEvent]() {
         HILOG_DEBUG();
         UpdateAccessibilityWindowStateByEvent(uiEvent);
