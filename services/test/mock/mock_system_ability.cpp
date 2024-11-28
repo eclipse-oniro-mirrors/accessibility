@@ -246,6 +246,14 @@ void SystemAbility::OnRemoveSystemAbility(int32_t systemAbilityId, const std::st
     (void)deviceId;
 }
 
+// The details should be implemented by subclass
+int32_t SystemAbility::OnSvcCmd(int32_t fd, const std::vector<std::u16string>& args)
+{
+    (void)fd;
+    (void)args;
+    return 0;
+}
+
 sptr<IRemoteObject> SystemAbility::GetSystemAbility(int32_t systemAbilityId)
 {
     GTEST_LOG_(INFO) << "MOCK SystemAbility GetSystemAbility";
