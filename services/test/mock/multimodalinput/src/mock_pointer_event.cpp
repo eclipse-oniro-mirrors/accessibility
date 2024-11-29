@@ -146,7 +146,6 @@ PointerEvent::PointerEvent(const PointerEvent& other)
       pointerId_(other.pointerId_),
       pointers_(other.pointers_),
       pressedButtons_(other.pressedButtons_),
-      sourceType_(other.sourceType_),
       pointerAction_(other.pointerAction_),
       buttonId_(other.buttonId_),
       axes_(other.axes_),
@@ -164,16 +163,6 @@ PointerEvent::~PointerEvent()
 std::shared_ptr<PointerEvent> PointerEvent::Create()
 {
     return std::make_shared<PointerEvent>(InputEvent::EVENT_TYPE_POINTER);
-}
-
-int32_t PointerEvent::GetSourceType() const
-{
-    return sourceType_;
-}
-
-void PointerEvent::SetSourceType(int32_t sourceType)
-{
-    sourceType_ = sourceType;
 }
 
 std::string PointerEvent::ToString()
