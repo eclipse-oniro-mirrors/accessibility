@@ -1046,6 +1046,7 @@ std::string AccessibilityWindowManager::GetA11yWindowsBundleName(int32_t windowI
             HILOG_DEBUG("GetA11yWindowsBundleName windowId:[%{public}d], BundleName:[%{public}s]",
                 windowId, tempWindowInfo.GetBundleName().c_str());
             bundleName = tempWindowInfo.GetBundleName();
+            break;
         }
     }
     return bundleName;
