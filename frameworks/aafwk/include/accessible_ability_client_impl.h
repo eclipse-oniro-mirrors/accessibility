@@ -307,6 +307,16 @@ public:
     virtual RetError SetCacheMode(const int32_t cacheMode) override;
 
     /**
+     * @brief Search all child nodes
+     * @param windowId The target window id.
+     * @param elementId The target element id.
+     * @param elementInfos The element infos of specified content.
+     * @return Return RET_OK if gets all child nodes successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetElements(const int32_t windowId, const int64_t elementId,
+        std::vector<AccessibilityElementInfo> &elementInfos) override;
+
+    /**
      * @brief Clean data.
      * @param remote The object access to AAMS.
      */

@@ -18,6 +18,9 @@
 #include <chrono>
 #include <cinttypes>
 #include <thread>
+#ifdef OHOS_BUILD_ENABLE_HITRACE
+#include <hitrace_meter.h>
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
 #include "accessible_ability_client.h"
 #include "hilog_wrapper.h"
@@ -1731,6 +1734,46 @@ void AccessibleAbilityClientImpl::AccessibilityLoadCallback::OnLoadSystemAbility
     if (AccessibleAbilityClientImpl::GetAbilityClientImplement()) {
         AccessibleAbilityClientImpl::GetAbilityClientImplement()->LoadSystemAbilityFail();
     }
+}
+
+RetError AccessibleAbilityClientImpl::GetElements(const int32_t windowId, const int64_t elementId,
+    std::vector<AccessibilityElementInfo> &elementInfos)
+{
+#ifdef OHOS_BUILD_ENABLE_HITRACE
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "GetElements");
+#endif // OHOS_BUILD_ENABLE_HITRACE
+    if (windowId <= 0 || elementId < -1) {
+        HILOG_ERROR("invalid param.");
+        return RET_ERR_INVALID_PARAM;
+    }
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    if (CheckServiceProxy() == false) {
+        HILOG_ERROR("failed to connect to aams.");
+        return RET_ERR_SAMGR;
+    }
+
+    int32_t treeId = ROOT_TREE_ID;
+    if (elementId > 0) {
+        treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
+    }
+
+    RetError ret = SearchElementInfoRecursiveByWinid(windowId, elementId, GET_SOURCE_MODE, elementInfos, treeId);
+    if (!elementInfos.empty() && elementInfos[0].GetAccessibilityId() == elementId) {
+        elementInfos.erase(elementInfos.begin());
+    }
+    HILOG_INFO("windowId: %{public}d, elementId: %{public}" PRId64 ", ret: %{public}d, size: %{public}zu",
+        windowId, elementId, ret, elementInfos.size());
+    return ret;
 }
 } // namespace Accessibility
 } // namespace OHOS

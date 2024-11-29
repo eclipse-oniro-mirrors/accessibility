@@ -174,6 +174,9 @@ public:
      */
     RetError EnableScreenCurtain(bool isEnable);
 
+    RetError GetElements(const int32_t windowId, const int64_t elementId,
+        std::vector<AccessibilityElementInfo> &elementInfos);
+
 private:
     static int illegalRequestCode_;
 };

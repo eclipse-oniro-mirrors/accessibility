@@ -324,6 +324,19 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
    * @since 12
    */
   enableScreenCurtain(isEnable: boolean): void;
+
+  /**
+   * Get all subElements in window
+   *
+   * @param { number } windowId Indicates the window ID.
+   * @param { number } elementId Indicates the elementId.
+   * @returns { Promise<Array<AccessibilityElement>> }
+   * @throws { BusinessError } 401 - Input parameter error.
+   * @throws { BusinessError } 9300003 -  No accessibility permission to perform the operation.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 16
+   */
+  getElements(windowId: number, elementId?: number): Promise<Array<AccessibilityElement>>;
 }
 
 /**

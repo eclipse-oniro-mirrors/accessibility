@@ -210,5 +210,17 @@ RetError AccessibilityExtensionContext::EnableScreenCurtain(const bool isEnable)
     }
     return aaClient->EnableScreenCurtain(isEnable);
 }
+
+RetError AccessibilityExtensionContext::GetElements(const int32_t windowId, const int64_t elementId,
+    std::vector<AccessibilityElementInfo> &elementInfos)
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->GetElements(windowId, elementId, elementInfos);
+}
 } // namespace Accessibility
 } // namespace OHOS

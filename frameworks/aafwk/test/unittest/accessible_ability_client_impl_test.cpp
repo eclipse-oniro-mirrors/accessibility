@@ -1068,5 +1068,22 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_003, TestSize.Level1)
     EXPECT_EQ(instance_->GetByContent(elementInfo, "", infos), RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE);
     GTEST_LOG_(INFO) << "GetByContent_003 end";
 }
+
+/**
+ * @tc.number: GetElements_001
+ * @tc.name: GetElements
+ * @tc.desc: Test function GetElements
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetElements_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetElements_001 start";
+    Connect();
+    std::vector<AccessibilityElementInfo> infos;
+    EXPECT_EQ(instance_->GetElements(1, -1, infos), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetElements(1, 1, infos), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetElements(1, -2, infos), RET_ERR_INVALID_PARAM);
+    EXPECT_EQ(instance_->GetElements(-1, -1, infos), RET_ERR_INVALID_PARAM);
+    GTEST_LOG_(INFO) << "GetElements_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

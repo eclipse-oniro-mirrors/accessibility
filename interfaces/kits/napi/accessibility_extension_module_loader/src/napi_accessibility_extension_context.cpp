@@ -221,6 +221,11 @@ public:
         GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnEnableScreenCurtain);
     }
 
+    static napi_value GetElements(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetElements);
+    }
+
 private:
     std::weak_ptr<AccessibilityExtensionContext> context_;
 
@@ -723,6 +728,77 @@ private:
         HILOG_INFO("OnEnableScreenCurtain success");
         return CreateJsUndefined(env);
     }
+
+    napi_value OnGetElements(napi_env env, NapiCallbackInfo& info)
+    {
+        int32_t windowId = 0;
+        int64_t elementId = -1;
+        napi_value lastParam = nullptr;
+
+        if (info.argc >= ARGS_SIZE_TWO) {
+            if (info.argv[PARAM1] != nullptr && IsNapiNumber(env, info.argv[PARAM1])) {
+                ConvertFromJsValue(env, info.argv[PARAM1], elementId);
+            }
+            if (info.argv[PARAM0] != nullptr && IsNapiNumber(env, info.argv[PARAM0])) {
+                ConvertFromJsValue(env, info.argv[PARAM0], windowId);
+            }
+        } else if (info.argc == ARGS_SIZE_ONE) {
+            if (info.argv[PARAM0] != nullptr && IsNapiNumber(env, info.argv[PARAM0])) {
+                ConvertFromJsValue(env, info.argv[PARAM0], windowId);
+            }
+        } else {
+            HILOG_ERROR("Not enough params");
+        }
+        HILOG_INFO("windowId: %{public}d, elementId: %{public}" PRId64 "", windowId, elementId);
+        return GetElementsAsync(env, lastParam, windowId, elementId);
+    }
+
+    napi_value GetElementsAsync(napi_env env, napi_value lastParam, int32_t windowId, int64_t elementId)
+    {
+        auto accessibilityElements = std::make_shared<std::vector<OHOS::Accessibility::AccessibilityElementInfo>>();
+        auto ret = std::make_shared<RetError>(RET_OK);
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, accessibilityElements, ret, windowId, elementId] () {
+            HILOG_INFO("GetElementsAsync begin");
+            auto context = weak.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                *ret = RET_ERR_FAILED;
+                return;
+            }
+
+            if (windowId <= 0) {
+                HILOG_ERROR("windowId is error: %{public}d", windowId);
+                *ret = RET_ERR_INVALID_PARAM;
+                return;
+            }
+
+            if (elementId < -1) {
+                HILOG_ERROR("elementId is error: %{public}" PRId64 "", elementId);
+                *ret = RET_ERR_INVALID_PARAM;
+                return;
+            }
+            *ret = context->GetElements(windowId, elementId, *accessibilityElements);
+        };
+
+        NapiAsyncTask::CompleteCallback complete =
+            [ret, accessibilityElements] (napi_env env, NapiAsyncTask& task, int32_t status) {
+                if (*ret == RET_OK) {
+                    napi_value napiElementInfos = nullptr;
+                    napi_create_array(env, &napiElementInfos);
+                    NAccessibilityElement::ConvertElementInfosToJS(env, napiElementInfos, *accessibilityElements);
+                    task.Resolve(env, napiElementInfos);
+                } else {
+                    HILOG_ERROR("Get GetElementsAsync failed.");
+                    NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
+                    task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+                }
+        };
+
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::GetElementsAsync",
+            env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
+        return result;
+    }
 };
 } // namespace
 
@@ -751,6 +827,7 @@ napi_value CreateJsAccessibilityExtensionContext(
     BindNativeFunction(env, object, "startAbility", moduleName, NAccessibilityExtensionContext::StartAbility);
     BindNativeFunction(env, object, "enableScreenCurtain", moduleName,
         NAccessibilityExtensionContext::EnableScreenCurtain);
+    BindNativeFunction(env, object, "getElements", moduleName, NAccessibilityExtensionContext::GetElements);
     return object;
 }
 } // namespace Accessibility
