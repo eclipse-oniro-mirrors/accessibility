@@ -51,6 +51,8 @@ public:
     bool GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window);
     std::string GetA11yWindowsBundleName(int32_t windowId, std::string bundleName);
     void SetEventInfoBundleName(const AccessibilityEventInfo &uiEvent);
+    void SetEventInfoBundleNameOld(const AccessibilityEventInfo &uiEvent, const int32_t windowId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
     bool IsValidWindow(int32_t windowId);
     void ClearAccessibilityFocused();
 
@@ -126,7 +128,20 @@ private:
     void WindowUpdateActive(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateFocused(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
-    void WindowUpdateTypeEvent(const int32_t realWidId, Accessibility::WindowUpdateType type);
+    void WindowUpdateTypeEvent(const int32_t realWidId, std::map<int32_t,
+        AccessibilityWindowInfo> &oldA11yWindows_, Accessibility::WindowUpdateType type);
+    void WindowUpdateTypeEventAdded(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
+    void WindowUpdateTypeEventRemoved(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
+    void WindowUpdateTypeEventBounds(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
+    void WindowUpdateTypeEventFocused(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
+    void WindowUpdateTypeEventProperty(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
+    void WindowUpdateTypeEventLayer(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
     void WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateAllExec(std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_,
         int32_t realWid, const sptr<Rosen::AccessibilityWindowInfo>& window);
