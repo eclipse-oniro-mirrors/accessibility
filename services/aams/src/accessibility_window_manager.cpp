@@ -797,7 +797,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEventRemoved(const int32_t real
 
     AccessibilityEventInfo evtInfRemoved(realWidId, WINDOW_UPDATE_REMOVED);
     SetEventInfoBundleNameOld(evtInfRemoved, realWidId, oldA11yWindows_);
-    aams.SendEvent(evtInfRemoved);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfRemoved);
 }
 
 void AccessibilityWindowManager::WindowUpdateTypeEventBounds(const int32_t realWidId,
@@ -805,7 +805,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEventBounds(const int32_t realW
 {
     AccessibilityEventInfo evtInfBounds(realWidId, WINDOW_UPDATE_BOUNDS);
     SetEventInfoBundleNameOld(evtInfBounds, realWidId, oldA11yWindows_);
-    aams.SendEvent(evtInfBounds);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfBounds);
 }
 
 void AccessibilityWindowManager::WindowUpdateTypeEventFocused(const int32_t realWidId,
@@ -814,7 +814,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEventFocused(const int32_t real
     SetActiveWindow(realWidId);
     AccessibilityEventInfo evtInfFocused(realWidId, WINDOW_UPDATE_FOCUSED);
     SetEventInfoBundleNameOld(evtInfFocused, realWidId, oldA11yWindows_);
-    aams.SendEvent(evtInfFocused);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfFocused);
 }
 
 void AccessibilityWindowManager::WindowUpdateTypeEventProperty(const int32_t realWidId,
@@ -822,7 +822,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEventProperty(const int32_t rea
 {
     AccessibilityEventInfo evtInfProperty(realWidId, WINDOW_UPDATE_PROPERTY);
     SetEventInfoBundleNameOld(evtInfProperty, realWidId, oldA11yWindows_);
-    aams.SendEvent(evtInfProperty);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfProperty);
 }
 
 void AccessibilityWindowManager::WindowUpdateTypeEventLayer(const int32_t realWidId,
@@ -830,7 +830,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEventLayer(const int32_t realWi
 {
     AccessibilityEventInfo evtInfLayer(realWidId, WINDOW_UPDATE_LAYER);
     SetEventInfoBundleNameOld(evtInfLayer, realWidId, oldA11yWindows_);
-    aams.SendEvent(evtInfLayer);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfLayer);
 }
 
 void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId,
@@ -839,7 +839,6 @@ void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId,
     HILOG_DEBUG();
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     HILOG_DEBUG("WindowUpdateType type[%{public}d]", type);
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     switch (type) {
         case WindowUpdateType::WINDOW_UPDATE_ADDED: {
             WindowUpdateTypeEventAdded(realWidId, oldA11yWindows_);
