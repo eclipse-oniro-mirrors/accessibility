@@ -183,6 +183,7 @@ void TouchExplorationEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Po
     switch (event->GetInnerEventId()) {
         case TouchExploration::SEND_HOVER_MSG:
             server_.HoverEventRunner();
+            server_.Clear();
             break;
         case TouchExploration::LONG_PRESS_MSG:
             HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to ONE_FINGER_LONG_PRESS.");
@@ -196,7 +197,7 @@ void TouchExplorationEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Po
             server_.SetCurrentState(TouchExplorationState::TOUCH_INIT);
             break;
         case TouchExploration::SWIPE_COMPLETE_TIMEOUT_MSG:
-            server_.Clear();
+            server_.HoverEventRunner();
             HILOG_ERROR("swipe gesture timeout, currentState is changed from ONE_FINGER_SWIPE to INVALID.");
             server_.SetCurrentState(TouchExplorationState::INVALID);
             break;
@@ -278,6 +279,10 @@ bool TouchExploration::OnPointerEvent(MMI::PointerEvent &event)
             HILOG_ERROR("get pointerItem(%{public}d) failed", pid);
             return false;
         }
+        if (pointerIterm.GetToolType() == MMI::PointerEvent::TOOL_TYPE_PEN) {
+            EventTransmission::OnPointerEvent(event);
+            return false;
+        }
     }
 
     // Send touch event to AA to control volume adjustment.
@@ -313,7 +318,7 @@ void TouchExploration::HandlePointerEvent(MMI::PointerEvent &event)
     // If the event is not processed, GetCurrentState() is set to TOUCH_INIT when the last finger is lifted.
     if (event.GetPointerIds().size() == POINTER_COUNT_1 || !pointerIterm.IsPressed()) {
         Clear();
-        HILOG_INFO("currentState is changed from %{pinlic}d to TOUCH_INIT.", GetCurrentState());
+        HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
         SetCurrentState(TouchExplorationState::TOUCH_INIT);
     }
 }
@@ -392,6 +397,7 @@ void TouchExploration::SendEventToMultimodal(MMI::PointerEvent &event, ChangeAct
         for (auto iter = injectedPointerDownEvents_.begin(); iter != injectedPointerDownEvents_.end(); ++iter) {
             if (iter->GetPointerId() == event.GetPointerId()) {
                 injectedPointerDownEvents_.erase(iter);
+                return;
             }
         }
     }
@@ -423,7 +429,6 @@ void TouchExploration::HoverEventRunner()
             SendEventToMultimodal(event, ChangeAction::HOVER_EXIT);
         }
     }
-    Clear();
 }
 
 std::map<uint32_t, GestureType> TouchExploration::GetMultiFingerMsgToGestureMap()
@@ -479,6 +484,11 @@ void TouchExploration::ProcessMultiFingerGesture(uint32_t eventId)
             SetCurrentState(TouchExplorationState::TOUCH_INIT);
         }
     } else if (gestureType == GestureType::GESTURE_INVALID) {
+        if (GetCurrentState() == TouchExplorationState::TWO_FINGERS_DOWN) {
+            HILOG_INFO("currentState is changed from TWO_FINGERS_DOWN to TWO_FINGERS_UNKNOWN.");
+            SetCurrentState(TouchExplorationState::TWO_FINGERS_UNKNOWN);
+            return;
+        }
         Clear();
         HILOG_ERROR("currentState is changed from %{public}d to INVALID.", GetCurrentState());
         SetCurrentState(TouchExplorationState::INVALID);
@@ -671,11 +681,10 @@ void TouchExploration::HandleOneFingerLongPressStateMove(MMI::PointerEvent &even
 
 void TouchExploration::HandleOneFingerSwipeStateDown(MMI::PointerEvent &event)
 {
-    oneFingerSwipeRoute_.clear();
-    receivedPointerEvents_.push_back(event);
-    draggingPid_ = event.GetPointerId();
-    HILOG_INFO("currentState is changed from ONE_FINGER_SWIPE to TWO_FINGERS_UNKNOWN.");
-    SetCurrentState(TouchExplorationState::TWO_FINGERS_UNKNOWN);
+    Clear();
+    CancelPostEvent(SWIPE_COMPLETE_TIMEOUT_MSG);
+    HILOG_ERROR("currentState is changed from ONE_FINGER_SWIPE to INVALID.");
+    SetCurrentState(TouchExplorationState::INVALID);
 }
 
 void TouchExploration::AddOneFingerSwipeEvent(MMI::PointerEvent &event)
@@ -1813,6 +1822,8 @@ void TouchExploration::HandleThreeFingersContinueDownStateMove(MMI::PointerEvent
 void TouchExploration::HandleFourFingersDownStateDown(MMI::PointerEvent &event)
 {
     Clear();
+    CancelPostEvent(FOUR_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(FOUR_FINGER_LONG_PRESS_MSG);
     HILOG_ERROR("receive down event, currentState is changed from FOUR_FINGERS_DOWN to INVALID.");
     SetCurrentState(TouchExplorationState::INVALID);
 }
