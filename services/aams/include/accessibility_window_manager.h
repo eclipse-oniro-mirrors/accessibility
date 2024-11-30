@@ -49,6 +49,10 @@ public:
     void SetAccessibilityFocusedWindow(int32_t windowId);
     std::vector<AccessibilityWindowInfo> GetAccessibilityWindows();
     bool GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window);
+    std::string GetA11yWindowsBundleName(int32_t windowId, std::string bundleName);
+    void SetEventInfoBundleName(const AccessibilityEventInfo &uiEvent);
+    void SetEventInfoBundleNameOld(const AccessibilityEventInfo &uiEvent, const int32_t windowId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
     bool IsValidWindow(int32_t windowId);
     void ClearAccessibilityFocused();
 
@@ -116,14 +120,31 @@ private:
         const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
     bool EqualProperty(Accessibility::AccessibilityWindowInfo &accWindowInfo,
         const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
+    bool EqualLayer(const Accessibility::AccessibilityWindowInfo &accWindowInfo,
+        const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);
     void WindowUpdateAdded(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateRemoved(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateBounds(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateActive(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateFocused(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
-    void WindowUpdateTypeEvent(const int32_t realWidId, Accessibility::WindowUpdateType type);
+    void WindowUpdateTypeEvent(const int32_t realWidId, std::map<int32_t,
+        AccessibilityWindowInfo> &oldA11yWindows_, Accessibility::WindowUpdateType type);
+    void WindowUpdateTypeEventAdded(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
+    void WindowUpdateTypeEventRemoved(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
+    void WindowUpdateTypeEventBounds(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
+    void WindowUpdateTypeEventFocused(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
+    void WindowUpdateTypeEventProperty(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
+    void WindowUpdateTypeEventLayer(const int32_t realWidId,
+        std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
     void WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
+    void WindowUpdateAllExec(std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_,
+        int32_t realWid, const sptr<Rosen::AccessibilityWindowInfo>& window);
     void ClearOldActiveWindow();
 
     sptr<AccessibilityWindowListener> windowListener_ = nullptr;

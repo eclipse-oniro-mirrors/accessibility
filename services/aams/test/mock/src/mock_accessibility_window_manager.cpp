@@ -127,6 +127,12 @@ bool AccessibilityWindowManager::GetAccessibilityWindow(int32_t windowId, Access
     return false;
 }
 
+void AccessibilityWindowManager::SetEventInfoBundleName(const AccessibilityEventInfo& uiEvent)
+{
+    std::string windowsBundleNameCache = "";
+    const_cast<AccessibilityEventInfo&>(uiEvent).SetBundleName(windowsBundleNameCache);
+}
+
 bool AccessibilityWindowManager::IsValidWindow(int32_t windowId)
 {
     (void)windowId;
