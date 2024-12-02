@@ -74,7 +74,7 @@ static napi_value Init(napi_env env, napi_value exports)
     NAccessibilityClient::touchGuideStateListeners_->SubscribeToFramework();
     NAccessibilityClient::screenReaderStateListeners_->SubscribeToFramework();
     NAccessibilityClient::captionListeners_->SubscribeToFramework();
-    napi_status status = napi_add_env_cleanup_hook(env, Cleanup, nullptr);
+    napi_status status = napi_add_env_cleanup_hook(env, Cleanup, &NAccessibilityClient::accessibilityStateListeners_);
     if (status != napi_ok) {
         HILOG_WARN("add cleanup hook failed %{public}d", status);
     }

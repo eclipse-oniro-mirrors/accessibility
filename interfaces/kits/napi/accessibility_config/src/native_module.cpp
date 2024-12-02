@@ -662,7 +662,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
     (void)instance.InitializeContext();
     NAccessibilityConfig::configObservers_->SubscribeToFramework();
     NAccessibilityConfig::enableAbilityListsObservers_->SubscribeToFramework();
-    napi_status status = napi_add_env_cleanup_hook(env, Cleanup, nullptr);
+    napi_status status = napi_add_env_cleanup_hook(env, Cleanup, &NAccessibilityConfig::configObservers_);
     if (status != napi_ok) {
         HILOG_WARN("add cleanup hook failed %{public}d", status);
     }
