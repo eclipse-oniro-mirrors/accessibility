@@ -198,7 +198,7 @@ void TouchExplorationEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Po
             break;
         case TouchExploration::SWIPE_COMPLETE_TIMEOUT_MSG:
             server_.HoverEventRunner();
-            HILOG_ERROR("swipe gesture timeout, currentState is changed from ONE_FINGER_SWIPE to ONE_FINGER_LONG_PRESS.");
+            HILOG_ERROR("timeout, currentState is changed from ONE_FINGER_SWIPE to ONE_FINGER_LONG_PRESS.");
             server_.SetCurrentState(TouchExplorationState::ONE_FINGER_LONG_PRESS);
             break;
         case TouchExploration::WAIT_ANOTHER_FINGER_DOWN_MSG:
