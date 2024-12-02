@@ -362,7 +362,6 @@ private:
 
     TouchExplorationState currentState_ = TouchExplorationState::TOUCH_INIT;
     std::list<MMI::PointerEvent> receivedPointerEvents_ {};
-    std::list<MMI::PointerEvent> injectedPointerDownEvents_ {};
 
     // single-finger gesture
     int32_t offsetX_ = 0;
@@ -375,6 +374,7 @@ private:
 
     // multi-finger gesture
     int32_t draggingPid_ = -1;
+    std::shared_ptr<MMI::PointerEvent> draggingDownEvent_ = nullptr;
     int32_t multiTapNum_ = 0;
     int32_t multiTapOffsetThresh_ = 0;
     int32_t multiFingerSwipeDirection_ = -1;
