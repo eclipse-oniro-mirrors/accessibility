@@ -41,7 +41,7 @@ namespace {
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
         "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
         "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
-        "allAttribute", "clip"};
+        "allAttribute", "clip", "customComponentType"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
@@ -107,6 +107,7 @@ namespace {
         {"mainWindowId", &NAccessibilityElement::GetElementInfoMainWindowId},
         {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
         {"clip", &NAccessibilityElement::GetElementInfoClip},
+        {"customComponentType", &NAccessibilityElement::GetElementInfoCustomComponentType},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
         {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
@@ -1126,6 +1127,16 @@ void NAccessibilityElement::GetElementInfoClip(NAccessibilityElementData *callba
         callbackInfo->accessibilityElement_.elementInfo_->GetClip(), &value));
 }
 
+void NAccessibilityElement::GetElementInfoCustomComponentType(NAccessibilityElementData *callbackInfo,
+    napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetCustomComponentType().c_str(), NAPI_AUTO_LENGTH, &value));
+}
+
 void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_object(callbackInfo->env_, &value));
@@ -1394,6 +1405,10 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     napi_value mainWindowId = nullptr;
     GetElementInfoMainWindowId(callbackInfo, mainWindowId);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "mainWindowId", mainWindowId));
+
+    napi_value customComponentType = nullptr;
+    GetElementInfoCustomComponentType(callbackInfo, customComponentType);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "customComponentType", customComponentType));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
