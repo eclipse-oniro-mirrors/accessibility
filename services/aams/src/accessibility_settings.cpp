@@ -34,6 +34,7 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
+    const int32_t DATASHARE_DEFAULT_TIMEOUT = 2 * 1000; // ms
 }
 
 void AccessibilitySettings::RegisterSettingsHandler(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
@@ -88,6 +89,12 @@ RetError AccessibilitySettings::SetShortKeyState(const bool state)
         UpdateConfigState();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
         }, "TASK_SET_SHORTKEY_STATE");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetShortKeyState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -130,6 +137,12 @@ RetError AccessibilitySettings::SetMouseAutoClick(const int32_t time)
         UpdateMouseAutoClick();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
         }, "TASK_SET_MOUSE_AUTOCLICK");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetMouseAutoClick Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -158,6 +171,12 @@ RetError AccessibilitySettings::SetShortkeyTarget(const std::string &name)
         syncPromise.set_value(ret);
         UpdateShortkeyTarget();
         }, "TASK_SET_SHORTKEY_TARGET");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetShortkeyTarget Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -186,6 +205,12 @@ RetError AccessibilitySettings::SetShortkeyMultiTarget(const std::vector<std::st
         syncPromise.set_value(ret);
         UpdateShortkeyMultiTarget();
         }, "TASK_SET_SHORTKEY_MULTI_TARGET");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetShortkeyMultiTarget Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -311,6 +336,12 @@ RetError AccessibilitySettings::SetDaltonizationColorFilter(const uint32_t filte
         syncPromise.set_value(ret);
         UpdateDaltonizationColorFilter();
         }, "TASK_SET_DALTONIZATION_COLORFILTER");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetDaltonizationColorFilter Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -336,6 +367,12 @@ RetError AccessibilitySettings::SetContentTimeout(const uint32_t time)
         syncPromise.set_value(ret);
         UpdateContentTimeout();
         }, "TASK_SET_CONTENT_TIMEOUT");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetContentTimeout Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -367,6 +404,12 @@ RetError AccessibilitySettings::SetBrightnessDiscount(const float discount)
         syncPromise.set_value(ret);
         UpdateBrightnessDiscount();
         }, "TASK_SET_BRIGHTNESS_DISCOUNT");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetBrightnessDiscount Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -396,6 +439,12 @@ RetError AccessibilitySettings::SetAudioBalance(const float balance)
         syncPromise.set_value(ret);
         UpdateAudioBalance();
         }, "TASK_SET_AUDIO_BALANCE");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetAudioBalance Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -426,6 +475,12 @@ RetError AccessibilitySettings::SetClickResponseTime(const uint32_t time)
         UpdateClickResponseTime();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
         }, "TASK_SET_CLICK_RESPONSE_TIME");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetClickResponseTime Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -456,6 +511,12 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickState(const bool state)
         UpdateConfigState();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
         }, "TASK_SET_IGNORE_REPEAT_CLICK_STATE");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetIgnoreRepeatClickState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -486,6 +547,12 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickTime(const uint32_t time)
         UpdateIgnoreRepeatClickTime();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
         }, "TASK_SET_IGNORE_REPEAT_CLICK_TIME");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetIgnoreRepeatClickTime Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -597,6 +664,12 @@ RetError AccessibilitySettings::GetScreenMagnificationState(bool &state)
         state = accountData->GetConfig()->GetScreenMagnificationState();
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_SCREENMAGNIFIER_STATE");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetScreenMagnificationState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -622,6 +695,12 @@ RetError AccessibilitySettings::GetShortKeyState(bool &state)
         state = accountData->GetConfig()->GetShortKeyState();
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_SHORTKEY_STATE");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetShortKeyState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -647,6 +726,12 @@ RetError AccessibilitySettings::GetMouseKeyState(bool &state)
         state = accountData->GetConfig()->GetMouseKeyState();
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_MOUSEKEY_STATE");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetMouseKeyState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -668,6 +753,11 @@ RetError AccessibilitySettings::GetMouseAutoClick(int32_t &time)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_MOUSE_AUTOCLICK");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetMouseAutoClick Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -689,6 +779,11 @@ RetError AccessibilitySettings::GetShortkeyTarget(std::string &name)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_SHORTKEY_TARGET");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetShortkeyTarget Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -710,6 +805,11 @@ RetError AccessibilitySettings::GetShortkeyMultiTarget(std::vector<std::string> 
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_SHORTKEY_MULTI_TARGET");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetShortkeyMultiTarget Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -731,6 +831,11 @@ RetError AccessibilitySettings::GetHighContrastTextState(bool &state)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_HIGHCONTRASTTEXT_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetHighContrastTextState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -752,6 +857,11 @@ RetError AccessibilitySettings::GetDaltonizationState(bool &state)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_DALTONIZATIONSTATE_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetDaltonizationState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -773,6 +883,11 @@ RetError AccessibilitySettings::GetInvertColorState(bool &state)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_INVERTCOLOR_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetInvertColorState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -794,6 +909,11 @@ RetError AccessibilitySettings::GetAnimationOffState(bool &state)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_ANIMATIONOFF_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetAnimationOffState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -815,6 +935,11 @@ RetError AccessibilitySettings::GetAudioMonoState(bool &state)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_AUDIOMONO_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetAudioMonoState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -836,6 +961,11 @@ RetError AccessibilitySettings::GetDaltonizationColorFilter(uint32_t &type)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_DALTONIZATION_COLORFILTER");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetDaltonizationColorFilter Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -857,6 +987,11 @@ RetError AccessibilitySettings::GetContentTimeout(uint32_t &timer)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_CONTENT_TIMEOUT");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetContentTimeout Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -878,6 +1013,11 @@ RetError AccessibilitySettings::GetBrightnessDiscount(float &brightness)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_BRIGHTNESS_DISCOUNT");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetBrightnessDiscount Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -899,6 +1039,11 @@ RetError AccessibilitySettings::GetAudioBalance(float &balance)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_AUDIO_BALANCE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetAudioBalance Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -920,6 +1065,11 @@ RetError AccessibilitySettings::GetClickResponseTime(uint32_t &time)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_CLICK_RESPONSE_TIME");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetClickResponseTime Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -941,6 +1091,11 @@ RetError AccessibilitySettings::GetIgnoreRepeatClickState(bool &state)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_IGNORE_REPEAT_CLICK_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetIgnoreRepeatClickState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -962,6 +1117,11 @@ RetError AccessibilitySettings::GetIgnoreRepeatClickTime(uint32_t &time)
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_IGNORE_REPEAT_CLICK_TIME");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetIgnoreRepeatClickTime Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -1187,6 +1347,12 @@ RetError AccessibilitySettings::GetCaptionProperty(AccessibilityConfig::CaptionP
         caption = accountData->GetConfig()->GetCaptionProperty();
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_CAPTION_PROPERTY");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetCaptionProperty Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -1213,6 +1379,12 @@ RetError AccessibilitySettings::SetCaptionProperty(const AccessibilityConfig::Ca
         syncPromise.set_value(ret);
         UpdateCaptionProperty();
         }, "TASK_SET_CAPTION_PROPERTY");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetCaptionProperty Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -1252,6 +1424,12 @@ RetError AccessibilitySettings::GetCaptionState(bool &state)
         state = accountData->GetConfig()->GetCaptionState();
         syncPromise.set_value(RET_OK);
         }, "TASK_GET_CAPTION_STATE");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetCaptionState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
