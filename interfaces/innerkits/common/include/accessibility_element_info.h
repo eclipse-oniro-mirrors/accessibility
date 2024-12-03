@@ -1766,6 +1766,20 @@ public:
      */
     void SetMainWindowId(const int32_t windowId);
 
+    /**
+     * @brief Get the customComponentType to the element info.
+     * @return customComponentType status.
+     * @sysCap Accessibility
+     */
+    const std::string &GetCustomComponentType() const;
+
+    /**
+     * @brief Set the customComponentType to the element info.
+     * @param customComponentType The customComponentType of node.
+     * @sysCap Accessibility
+     */
+    void SetCustomComponentType(const std::string &customComponentType);
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1846,6 +1860,7 @@ protected:
     bool clip_ = false;
     static const int backgroundImageMaxLength = 20;
     int32_t mainWindowId_ = -1; // same widowId in uiview
+    std::string customComponentType_ = "";
 };
 } // namespace Accessibility
 } // namespace OHOS
