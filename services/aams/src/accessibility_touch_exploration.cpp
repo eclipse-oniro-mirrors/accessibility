@@ -198,8 +198,8 @@ void TouchExplorationEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Po
             break;
         case TouchExploration::SWIPE_COMPLETE_TIMEOUT_MSG:
             server_.HoverEventRunner();
-            HILOG_ERROR("swipe gesture timeout, currentState is changed from ONE_FINGER_SWIPE to INVALID.");
-            server_.SetCurrentState(TouchExplorationState::INVALID);
+            HILOG_ERROR("timeout, currentState is changed from ONE_FINGER_SWIPE to ONE_FINGER_LONG_PRESS.");
+            server_.SetCurrentState(TouchExplorationState::ONE_FINGER_LONG_PRESS);
             break;
         case TouchExploration::WAIT_ANOTHER_FINGER_DOWN_MSG:
             if (server_.GetCurrentState() == TouchExplorationState::TWO_FINGERS_TAP ||
@@ -388,19 +388,6 @@ void TouchExploration::SendEventToMultimodal(MMI::PointerEvent &event, ChangeAct
             break;
     }
     EventTransmission::OnPointerEvent(event);
-
-    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN) {
-        injectedPointerDownEvents_.push_back(event);
-        return;
-    }
-    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) {
-        for (auto iter = injectedPointerDownEvents_.begin(); iter != injectedPointerDownEvents_.end(); ++iter) {
-            if (iter->GetPointerId() == event.GetPointerId()) {
-                injectedPointerDownEvents_.erase(iter);
-                return;
-            }
-        }
-    }
 }
 
 void TouchExploration::SendScreenWakeUpEvent(MMI::PointerEvent &event)
@@ -1064,6 +1051,7 @@ void TouchExploration::SendDragDownEventToMultimodal(MMI::PointerEvent event)
     int32_t removePid = draggingPid_ == pIds[0] ? pIds[1] : pIds[0];
     event.RemovePointerItem(removePid);
     SendEventToMultimodal(event, ChangeAction::POINTER_DOWN);
+    draggingDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
 }
 
 void TouchExploration::HandleTwoFingersDownStateMove(MMI::PointerEvent &event)
@@ -1122,22 +1110,24 @@ void TouchExploration::SendUpForDraggingDownEvent()
     }
 
     MMI::PointerEvent lastMoveEvent = receivedPointerEvents_.back();
-    MMI::PointerEvent::PointerItem pointerIterm;
-    lastMoveEvent.GetPointerItem(lastMoveEvent.GetPointerId(), pointerIterm);
-    int32_t x = pointerIterm.GetDisplayX();
-    int32_t y = pointerIterm.GetDisplayY();
+    MMI::PointerEvent::PointerItem movePointerItem;
+    lastMoveEvent.GetPointerItem(lastMoveEvent.GetPointerId(), movePointerItem);
+    int32_t x = movePointerItem.GetDisplayX();
+    int32_t y = movePointerItem.GetDisplayY();
 
-    MMI::PointerEvent::PointerItem pointerItem = {};
-    for (auto& event : injectedPointerDownEvents_) {
-        event.SetActionTime(Utils::GetSystemTime() * US_TO_MS);
-        event.GetPointerItem(event.GetPointerId(), pointerItem);
-        pointerItem.SetPressed(false);
-        pointerItem.SetDisplayX(x);
-        pointerItem.SetDisplayY(y);
-        event.RemovePointerItem(event.GetPointerId());
-        event.AddPointerItem(pointerItem);
-        SendEventToMultimodal(event, ChangeAction::POINTER_UP);
+    if (draggingDownEvent_ == nullptr) {
+        HILOG_ERROR("dragging down event is null!");
+        return;
     }
+    MMI::PointerEvent::PointerItem pointerItem = {};
+    draggingDownEvent_->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
+    draggingDownEvent_->GetPointerItem(draggingDownEvent_->GetPointerId(), pointerItem);
+    pointerItem.SetPressed(false);
+    pointerItem.SetDisplayX(x);
+    pointerItem.SetDisplayY(y);
+    draggingDownEvent_->RemovePointerItem(draggingDownEvent_->GetPointerId());
+    draggingDownEvent_->AddPointerItem(pointerItem);
+    SendEventToMultimodal(*draggingDownEvent_, ChangeAction::POINTER_UP);
 }
 
 void TouchExploration::HandleTwoFingersDragStateDown(MMI::PointerEvent &event)
@@ -1522,6 +1512,7 @@ void TouchExploration::HandleTwoFingersUnknownStateMove(MMI::PointerEvent &event
         int32_t removePid = draggingPid_ == pIds[0] ? pIds[1] : pIds[0];
         event.RemovePointerItem(removePid);
         SendEventToMultimodal(event, ChangeAction::POINTER_DOWN);
+        draggingDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
         HILOG_INFO("currentState is changed from TWO_FINGERS_UNKNOWN to TWO_FINGERS_DRAG.");
         SetCurrentState(TouchExplorationState::TWO_FINGERS_DRAG);
         return;
@@ -1965,7 +1956,7 @@ void TouchExploration::Clear()
 {
     HILOG_DEBUG();
     receivedPointerEvents_.clear();
-    injectedPointerDownEvents_.clear();
+    draggingDownEvent_ = nullptr;
     offsetX_ = 0;
     offsetY_ = 0;
     oneFingerSwipeRoute_.clear();
