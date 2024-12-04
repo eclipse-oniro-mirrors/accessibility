@@ -44,7 +44,7 @@ namespace {
     constexpr int64_t NODE_ID_MAX = 0x7FFFFFFE;
     ffrt::mutex g_Mutex;
     sptr<AccessibleAbilityClientImpl> g_Instance = nullptr;
-    constexpr int32_t SA_CONNECT_TIMEOUT = 900; // ms
+    constexpr int32_t SA_CONNECT_TIMEOUT = 6 * 1000; // ms
 } // namespace
 
 sptr<AccessibleAbilityClient> AccessibleAbilityClient::GetInstance()
