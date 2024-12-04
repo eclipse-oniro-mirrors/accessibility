@@ -147,7 +147,6 @@ void AccessibilitySystemAbilityClientImpl::OnParameterChanged(const char *key, c
             return;
         }
         implPtr->Init();
-        implPtr->ReregisterElementOperator();
     }
 }
 
