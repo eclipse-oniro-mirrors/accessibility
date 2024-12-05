@@ -33,8 +33,9 @@ AccessibilityWindowConnection::AccessibilityWindowConnection(const int32_t windo
 {
     windowId_ = windowId;
     treeId_ = treeId;
-    cardProxy_[treeId] = connection;
     accountId_ = accountId;
+    std::lock_guard<ffrt::mutex> lock(cardProxyMutex_);
+    cardProxy_[treeId] = connection;
 }
 
 AccessibilityWindowConnection::~AccessibilityWindowConnection()
@@ -48,12 +49,14 @@ RetError AccessibilityWindowConnection::SetCardProxy(const int32_t treeId,
         HILOG_DEBUG("SetCardProxy : operation is nullptr");
         return RET_ERR_FAILED;
     }
+    std::lock_guard<ffrt::mutex> lock(cardProxyMutex_);
     cardProxy_[treeId] = operation;
     return RET_OK;
 }
 
 sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetCardProxy(const int32_t treeId)
 {
+    std::lock_guard<ffrt::mutex> lock(cardProxyMutex_);
     auto iter = cardProxy_.find(treeId);
     if (iter != cardProxy_.end()) {
         HILOG_DEBUG("GetCardProxy : operation is ok");
@@ -79,6 +82,7 @@ uint32_t AccessibilityWindowConnection::GetTokenIdMap(const int32_t treeId)
 
 void AccessibilityWindowConnection::GetAllTreeId(std::vector<int32_t> &treeIds)
 {
+    std::lock_guard<ffrt::mutex> lock(cardProxyMutex_);
     for (auto &treeId: cardProxy_) {
         treeIds.emplace_back(treeId.first);
     }
@@ -102,6 +106,7 @@ RetError AccessibilityWindowConnection::SetRootParentId(const int32_t treeId, co
 
 void AccessibilityWindowConnection::EraseProxy(const int32_t treeId)
 {
+    std::lock_guard<ffrt::mutex> lock(cardProxyMutex_);
     cardProxy_.erase(treeId);
 }
 } // namespace Accessibility
