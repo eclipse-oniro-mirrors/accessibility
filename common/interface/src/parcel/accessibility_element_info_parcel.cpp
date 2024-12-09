@@ -58,7 +58,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
     int32_t operationsSize = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, operationsSize);
     bool verifyResult = ContainerSecurityVerify(parcel, operationsSize, operations_.max_size());
-    if (!verifyResult || operationsSize < 0 || operationsSize > INT32_MAX) {
+    if (!verifyResult || operationsSize < 0 || operationsSize > MAX_ALLOW_SIZE) {
         return false;
     }
     for (int32_t i = 0; i < operationsSize; i++) {

@@ -111,6 +111,7 @@ extern const uint32_t STATE_AUDIOMONO_ENABLED;
 extern const uint32_t STATE_IGNORE_REPEAT_CLICK_ENABLED;
 extern const uint32_t STATE_SCREENREADER_ENABLED;
 extern const int32_t INVALID_CHANNEL_ID;
+extern const int32_t MAX_ALLOW_SIZE;
 } // namespace Accessibility
 } // namespace OHOS
 #endif // ACCESSIBILITY_CONSTANTS_H
