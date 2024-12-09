@@ -110,6 +110,27 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
 void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int32_t resultCode)
 {
     HILOG_INFO("resultCode[%{public}d]", resultCode);
+    if (resultCode == NO_ERROR) {
+        return;
+    }
+    // when calling ConnectAbility function, OnAbilityDisconnectDone could be called when ability crashed
+    // and OnAbilityConnectDone won't be called. At this time, ConnectingA11yAbility should be cleaned up
+    if (!eventHandler_) {
+        HILOG_ERROR("eventHanlder_ is nullptr");
+        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
+        if (accountData != nullptr) {
+            accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
+        }
+        return;
+    }
+    
+    int32_t accountId = accountId_;
+    eventHandler_->PostTask([accountId, element]() {
+        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
+        if (accountData != nullptr) {
+            accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
+        }
+        }, "OnAbilityDisconnectDone");
 }
 
 void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &eventInfo)
