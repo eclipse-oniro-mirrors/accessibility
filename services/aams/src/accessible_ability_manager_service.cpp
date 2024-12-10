@@ -75,7 +75,6 @@ namespace {
     constexpr int32_t TREE_ID_INVALID = 0;
     constexpr uint32_t ELEMENT_MOVE_BIT = 40;
     constexpr int32_t SINGLE_TREE_ID = 0;
-    constexpr int32_t TREE_ID_MAX = 0x00001FFF;
     constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     constexpr int32_t WINDOW_ID_INVALID = -1;
@@ -895,16 +894,35 @@ void AccessibleAbilityManagerService::SetTokenIdMapAndRootParentId(
     connection->SetRootParentId(treeId, nodeId);
 }
 
+int32_t AccessibleAbilityManagerService::ApplyTreeId()
+{
+    std::lock_guard<ffrt::mutex> lock(treeIdPoolMutex_);
+    for(int32_t index = 0; index < TREE_ID_MAX; index++) {
+        if (!treeIdPool_.test(index)) {
+            treeIdPoll_.set(index, true);
+            return index + 1;
+        }
+    }
+    return 0;
+}
+
+void AccessibleAbilityManagerService::RecycleTreeId(int32_t treeId)
+{
+    std::lock_guard<ffrt::mutex> lock(treeIdPoolMutex_);
+    if ((treeId > 0) && (treeId < TREE_ID_MAX)) {
+        treeIdPool_.set(treeId - 1, false);
+    }
+}
+
 RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration parameter,
     const sptr<IAccessibilityElementOperator> &operation, bool isApp)
 {
     if (CheckCallingUid() != RET_OK) {
         return RET_ERR_SAMGR;
     }
-    static std::atomic<int32_t> treeId(1);
-    int32_t treeIdSingle = treeId.fetch_add(1, std::memory_order_relaxed);
-    if (treeIdSingle > TREE_ID_MAX) {
-        HILOG_ERROR("TreeId more than 13.");
+    int32_t treeIdSingle = ApplyTreeId();
+    if (treeIdSingle == 0) {
+        HILOG_ERROR("TreeId is used up.");
         return RET_ERR_TREE_TOO_BIG;
     }
     uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
@@ -1035,6 +1053,7 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
 
     handler_->PostTask([=]() {
         HILOG_INFO("Deregister windowId[%{public}d], treeId[%{public}d] start", windowId, treeId);
+        RecycleTreeId(treeId);
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");

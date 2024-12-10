@@ -56,6 +56,7 @@ enum CallBackID {
 };
 
 constexpr int REQUEST_ID_INIT = 65535;
+constexpr int32_t TREE_ID_MAX = 0x00001FFF;
 
 const std::map<std::string, int32_t> AccessibilityConfigTable = {
     {"HIGH_CONTRAST_TEXT", HIGH_CONTRAST_TEXT},
@@ -422,6 +423,9 @@ private:
     void OnScreenMagnificationTypeChanged();
     void RegisterScreenMagnificationType();
 
+    int32_t ApplyTreeId();
+    void RecycleTreeId();
+
     bool isReady_ = false;
     bool isPublished_ = false;
     std::map<int32_t, bool> dependentServicesStatus_;
@@ -462,6 +466,9 @@ private:
 
     std::map<int32_t, std::map<int32_t, std::set<int32_t>>> windowRequestIdMap_ {}; // windowId->treeId->requestId
     std::map<int32_t, sptr<IAccessibilityElementOperatorCallback>> requestIdMap_ {}; // requestId->callback
+
+    std::bitset<TREE_ID_MAX> treeIdPool_;
+    ffrt::mutex treeIdPoolMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

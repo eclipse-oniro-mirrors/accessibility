@@ -69,7 +69,8 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
 {
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_001 start";
     int32_t accountId = 1;
-    sptr<AccessibleAbilityManagerStateObserverProxy> accountData = new AccessibleAbilityManagerStateObserverProxy(accountId);
+    sptr<AccessibleAbilityManagerStateObserverProxy> accountData =
+        new AccessibleAbilityManagerStateObserverProxy(accountId);
     
     /* Initial state */
     accountData->Init();
@@ -1463,7 +1464,7 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
     accountData->AddInstalledAbility(*abilityInfo);
     EXPECT_EQ(1, static_cast<int>(accountData->GetInstalledAbilities().size()));
     const std::string abilityName = "testBundle";
-    accountData->SetAbilityAutoStartState("testBundle", true);  
+    accountData->SetAbilityAutoStartState("testBundle", true);
     accountData->ChangeAbility("testBundle");
     EXPECT_EQ(0, static_cast<int>(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_058 end";
@@ -1751,7 +1752,7 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
 {
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_074 start";
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    accountData->Init();    
+    accountData->Init();
     AccessibilityAbilityInitParams initParams;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     abilityInfo->SetCapabilityValues(CAPABILITY_ZOOM);
