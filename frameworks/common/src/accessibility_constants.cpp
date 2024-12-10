@@ -108,5 +108,6 @@ const uint32_t STATE_IGNORE_REPEAT_CLICK_ENABLED = 0x00002000;
 const uint32_t STATE_SCREENREADER_ENABLED = 0x00004000;
 
 const int32_t INVALID_CHANNEL_ID = 0xFFFFFFFF;
+const int32_t MAX_ALLOW_SIZE = 1024 * 1000;
 } // namespace Accessibility
 } // namespace OHOS

@@ -125,6 +125,11 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
             return TRANSACTION_ERR;
         }
 
+        if (infoSize < 0 || infoSize > MAX_ALLOW_SIZE) {
+            reply.WriteInt32(RET_ERR_FAILED);
+            return TRANSACTION_ERR;
+        }
+
         for (size_t i = 0; i < infoSize; i++) {
             sptr<AccessibilityElementInfoParcel> info =
                 tmpParcel.ReadStrongParcelable<AccessibilityElementInfoParcel>();
@@ -147,7 +152,10 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
     bool verifyResult = ContainerSecurityVerify(data, accessibilityInfosize, infos.max_size());
-    if (!verifyResult || accessibilityInfosize < 0 || accessibilityInfosize > INT32_MAX) {
+    if (!verifyResult) {
+        return TRANSACTION_ERR;
+    }
+    if (accessibilityInfosize < 0 || accessibilityInfosize > MAX_ALLOW_SIZE) {
         return TRANSACTION_ERR;
     }
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
