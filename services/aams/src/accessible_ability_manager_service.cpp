@@ -897,7 +897,7 @@ void AccessibleAbilityManagerService::SetTokenIdMapAndRootParentId(
 int32_t AccessibleAbilityManagerService::ApplyTreeId()
 {
     std::lock_guard<ffrt::mutex> lock(treeIdPoolMutex_);
-    for(int32_t index = 0; index < TREE_ID_MAX; index++) {
+    for (int32_t index = 0; index < TREE_ID_MAX; index++) {
         if (!treeIdPool_.test(index)) {
             treeIdPoll_.set(index, true);
             return index + 1;
