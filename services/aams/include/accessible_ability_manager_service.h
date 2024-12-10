@@ -468,6 +468,7 @@ private:
     std::map<int32_t, sptr<IAccessibilityElementOperatorCallback>> requestIdMap_ {}; // requestId->callback
 
     std::bitset<TREE_ID_MAX> treeIdPool_;
+    int32_t preTreeId_ = -1;
     ffrt::mutex treeIdPoolMutex_;
 };
 } // namespace Accessibility
