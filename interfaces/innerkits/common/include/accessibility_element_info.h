@@ -28,7 +28,8 @@ static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
     "Row",
     "Column",
     "SideBarContainerStates",
-    "ListItemIndex"
+    "ListItemIndex",
+    "ToggleType"
 };
 
 /*

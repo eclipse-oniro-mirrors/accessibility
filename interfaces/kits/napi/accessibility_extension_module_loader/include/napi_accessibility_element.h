@@ -143,6 +143,7 @@ public:
     static void GetElementInfoClip(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoMainWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoCustomComponentType(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoExtraInfo(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);

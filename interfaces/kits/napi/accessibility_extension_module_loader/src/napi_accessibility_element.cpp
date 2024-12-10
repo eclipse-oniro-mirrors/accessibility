@@ -41,7 +41,7 @@ namespace {
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
         "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
         "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
-        "allAttribute", "clip", "customComponentType"};
+        "allAttribute", "clip", "customComponentType", "extraInfo"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
@@ -108,6 +108,7 @@ namespace {
         {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
         {"clip", &NAccessibilityElement::GetElementInfoClip},
         {"customComponentType", &NAccessibilityElement::GetElementInfoCustomComponentType},
+        {"extraInfo", &NAccessibilityElement::GetElementInfoExtraInfo},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
         {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
@@ -1135,6 +1136,27 @@ void NAccessibilityElement::GetElementInfoCustomComponentType(NAccessibilityElem
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetCustomComponentType().c_str(), NAPI_AUTO_LENGTH, &value));
+}
+
+void NAccessibilityElement::GetElementInfoExtraInfo(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    std::map<std::string, std::string> mapValIsStr =
+        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElement().GetExtraElementInfoValueStr();
+    std::map<std::string, int32_t> mapValIsInt =
+        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElement().GetExtraElementInfoValueInt();
+    nlohmann::json extraInfoValue;
+    for (auto &iterStr : mapValIsStr) {
+        extraInfoValue[iterStr.first] = iterStr.second;
+    }
+    for (auto &iterInt : mapValIsInt) {
+        extraInfoValue[iterInt.first] = iterInt.second;
+    }
+    HILOG_DEBUG("GetElementInfoExtraInfo extraInfoValue is [%{public}s]", extraInfoValue.dump().c_str());
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
+        extraInfoValue.dump().c_str(), NAPI_AUTO_LENGTH, &value));
 }
 
 void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
