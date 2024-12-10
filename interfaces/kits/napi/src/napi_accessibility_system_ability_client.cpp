@@ -748,69 +748,37 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
 {
     HILOG_INFO("state = [%{public}s]", state ? "true" : "false");
     
-    StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
+    std::shared_ptr<StateCallbackInfo> callbackInfo = std::make_shared<StateCallbackInfo>();
     if (callbackInfo == nullptr) {
-        HILOG_ERROR("Failed to create callbackInfo.");
+        HILOG_ERROR("Failed to create callbackInfo");
         return;
     }
     callbackInfo->state_ = state;
     callbackInfo->env_ = env;
     callbackInfo->ref_ = handlerRef;
-    uv_work_t *work = new(std::nothrow) uv_work_t;
-    if (!work) {
-        HILOG_ERROR("Failed to create work.");
-        delete callbackInfo;
-        callbackInfo = nullptr;
-        return;
-    }
-    work->data = static_cast<void*>(callbackInfo);
+    auto task = [callbackInfo]() {
+        if (callbackInfo == nullptr) {
+            return;
+        }
 
-    int ret = NotifyJSWork(env, work);
-    if (ret != 0) {
-        HILOG_ERROR("Failed to execute NotifyJS work queue");
-        delete callbackInfo;
-        callbackInfo = nullptr;
-        delete work;
-        work = nullptr;
+        napi_env tmpEnv = callbackInfo->env_;
+        auto closeScope = [tmpEnv](napi_handle_scope scope) {
+            napi_close_handle_scope(tmpEnv, scope);
+        };
+        std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scope(
+            OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
+        napi_value handler = nullptr;
+        napi_value callResult = nullptr;
+        napi_value jsEvent = nullptr;
+        napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &jsEvent);
+        napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+        napi_value undefined = nullptr;
+        napi_get_undefined(callbackInfo->env_, &undefined);
+        napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
+    };
+    if (napi_send_event(env, task, napi_eprio_high) != napi_status::napi_ok) {
+        HILOG_ERROR("failed to send event");
     }
-}
-
-int StateListener::NotifyJSWork(napi_env env, uv_work_t *work)
-{
-    uv_loop_s *loop = nullptr;
-    napi_get_uv_event_loop(env, &loop);
-    if (loop == nullptr || work == nullptr) {
-        HILOG_ERROR("loop or work is nullptr.");
-        return RET_ERR_FAILED;
-    }
-    int ret = uv_queue_work_with_qos(
-        loop,
-        work,
-        [](uv_work_t *work) {},
-        [](uv_work_t *work, int status) {
-            StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            napi_env tmpEnv = callbackInfo->env_;
-            auto closeScope = [tmpEnv](napi_handle_scope scope) {
-                napi_close_handle_scope(tmpEnv, scope);
-            };
-            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
-                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
-            napi_value handler = nullptr;
-            napi_value callResult = nullptr;
-            napi_value jsEvent = nullptr;
-            napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &jsEvent);
-
-            napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
-            napi_value undefined = nullptr;
-            napi_get_undefined(callbackInfo->env_, &undefined);
-            napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
-            delete callbackInfo;
-            callbackInfo = nullptr;
-            delete work;
-            work = nullptr;
-        },
-        uv_qos_default);
-    return ret;
 }
 
 void StateListener::OnStateChanged(const bool state)
@@ -1382,58 +1350,29 @@ void StateListenerImpl::DeleteObserverReference(napi_env env, std::shared_ptr<St
     if (observer == nullptr) {
         return;
     }
-    uv_work_t *work = new(std::nothrow) uv_work_t;
-    if (work == nullptr) {
-        HILOG_ERROR("failed to create work");
-        return;
-    }
-    AccessibilityCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityCallbackInfo();
+    std::shared_ptr<AccessibilityCallbackInfo> callbackInfo =
+        std::make_shared<AccessibilityCallbackInfo>();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("failed to create callbackInfo");
-        delete work;
-        work = nullptr;
         return;
     }
     callbackInfo->env_ = observer->env_;
     callbackInfo->ref_ = observer->handlerRef_;
-    work->data = static_cast<void*>(callbackInfo);
-    int ret = DeleteObserverReferenceWork(env, work);
-    if (ret != RET_OK) {
-        HILOG_ERROR("failed to execute delete observer reference");
-        delete callbackInfo;
-        callbackInfo = nullptr;
-        delete work;
-        work = nullptr;
+    auto task = [callbackInfo]() {
+        if (callbackInfo == nullptr) {
+            return;
+        }
+        napi_env tmpEnv = callbackInfo->env_;
+        auto closeScope = [tmpEnv](napi_handle_scope scope) {
+            napi_close_handle_scope(tmpEnv, scope);
+        };
+        std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scope(
+            OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
+        napi_delete_reference(tmpEnv, callbackInfo->ref_);
+    };
+    if (napi_send_event(env, task, napi_eprio_high) != napi_status::napi_ok) {
+        HILOG_ERROR("failed to send event");
     }
-}
-
-int StateListenerImpl::DeleteObserverReferenceWork(napi_env env, uv_work_t *work)
-{
-    uv_loop_s *loop = nullptr;
-    napi_get_uv_event_loop(env, &loop);
-    if (loop == nullptr) {
-        return RET_ERR_FAILED;
-    }
-    int ret = uv_queue_work_with_qos(
-        loop,
-        work,
-        [](uv_work_t *work) {},
-        [](uv_work_t *work, int status) {
-            AccessibilityCallbackInfo *callbackInfo = static_cast<AccessibilityCallbackInfo *>(work->data);
-            napi_env tmpEnv = callbackInfo->env_;
-            auto closeScope = [tmpEnv](napi_handle_scope scope) {
-                napi_close_handle_scope(tmpEnv, scope);
-            };
-            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scope(
-                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
-            napi_delete_reference(tmpEnv, callbackInfo->ref_);
-            delete callbackInfo;
-            callbackInfo = nullptr;
-            delete work;
-            work = nullptr;
-        },
-        uv_qos_default);
-    return ret;
 }
 
 void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
