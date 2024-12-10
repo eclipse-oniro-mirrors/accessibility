@@ -46,6 +46,17 @@ bool AccessibilityConfig::Impl::InitializeContext()
     return isInitialized_;
 }
 
+void AccessibilityConfig::Impl::UnInitializeContext()
+{
+    HILOG_DEBUG();
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Context UnInitializeContext failed");
+        return;
+    }
+    sptr<IRemoteObject> object = serviceProxy_->AsObject();
+    ResetService(object);
+}
+
 void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *value, void *context)
 {
     if (key == nullptr || std::strcmp(key, SYSTEM_PARAMETER_AAMS_NAME.c_str())) {
