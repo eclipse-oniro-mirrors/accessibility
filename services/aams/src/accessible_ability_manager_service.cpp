@@ -909,7 +909,7 @@ int32_t AccessibleAbilityManagerService::ApplyTreeId()
         }
         curTreeId++;
     }
-    preTreeId_ = TREE_ID_MAX + 1;
+    preTreeId_ = TREE_ID_MAX - 1;
     return 0;
 }
 
