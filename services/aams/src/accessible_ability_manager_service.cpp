@@ -909,7 +909,7 @@ int32_t AccessibleAbilityManagerService::ApplyTreeId()
 void AccessibleAbilityManagerService::RecycleTreeId(int32_t treeId)
 {
     std::lock_guard<ffrt::mutex> lock(treeIdPoolMutex_);
-    if ((treeId > 0) && (treeId < TREE_ID_MAX)) {
+    if ((treeId > 0) && (treeId <= TREE_ID_MAX)) {
         treeIdPool_.set(treeId - 1, false);
     }
 }
