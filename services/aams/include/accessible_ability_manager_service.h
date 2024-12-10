@@ -424,7 +424,7 @@ private:
     void RegisterScreenMagnificationType();
 
     int32_t ApplyTreeId();
-    void RecycleTreeId();
+    void RecycleTreeId(int32_t treeId);
 
     bool isReady_ = false;
     bool isPublished_ = false;
