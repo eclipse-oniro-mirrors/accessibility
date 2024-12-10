@@ -49,6 +49,10 @@ bool AccessibilityConfig::Impl::InitializeContext()
 void AccessibilityConfig::Impl::UnInitializeContext()
 {
     HILOG_DEBUG();
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Context UnInitializeContext failed");
+        return;
+    }
     sptr<IRemoteObject> object = serviceProxy_->AsObject();
     ResetService(object);
 }
