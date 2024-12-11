@@ -1766,6 +1766,48 @@ public:
      */
     void SetMainWindowId(const int32_t windowId);
 
+    /**
+     * @brief Get the accessibilityNextFocusId to the element info.
+     * @return accessibilityNextFocusId.
+     * @sysCap Accessibility
+     */
+    int64_t GetAccessibilityNextFocusId() const;
+
+    /**
+     * @brief Set the accessibilityNextFocusId to the element info.
+     * @param accessibilityNextFocusId The accessibilityNextFocusId of node.
+     * @sysCap Accessibility
+     */
+    void SetAccessibilityNextFocusId(const int64_t accessibilityNextFocusId);
+
+    /**
+     * @brief Get the accessibilityPreviousFocusId to the element info.
+     * @return accessibilityPreviousFocusId.
+     * @sysCap Accessibility
+     */
+    int64_t GetAccessibilityPreviousFocusId() const;
+
+    /**
+     * @brief Set the accessibilityPreviousFocusId to the element info.
+     * @param accessibilityPreviousFocusId The accessibilityPreviousFocusId of node.
+     * @sysCap Accessibility
+     */
+    void SetAccessibilityPreviousFocusId(const int64_t accessibilityPreviousFocusId);
+
+    /**
+     * @brief Get the accessibilityNextFocusInspectorKey to the element info.
+     * @return accessibilityNextFocusInspectorKey.
+     * @sysCap Accessibility
+     */
+    const std::string &GetAccessibilityNextFocusInspectorKey() const;
+
+    /**
+     * @brief Set the accessibilityNextFocusInspectorKey to the element info.
+     * @param accessibilityNextFocusInspectorKey The accessibilityNextFocusInspectorKey of node.
+     * @sysCap Accessibility
+     */
+    void SetAccessibilityNextFocusInspectorKey(const std::string &accessibilityNextFocusInspectorKey);
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1846,6 +1888,9 @@ protected:
     bool clip_ = false;
     static const int backgroundImageMaxLength = 20;
     int32_t mainWindowId_ = -1; // same widowId in uiview
+    int64_t accessibilityNextFocusId_ = -1;
+    int64_t accessibilityPreviousFocusId_ = -1;
+    std::string accessibilityNextFocusInspectorKey_ = "";
 };
 } // namespace Accessibility
 } // namespace OHOS
