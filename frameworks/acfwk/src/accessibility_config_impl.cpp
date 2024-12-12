@@ -256,12 +256,12 @@ bool AccessibilityConfig::Impl::RegisterToService()
         configObserver = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(
             std::shared_ptr<AccessibilityConfig::Impl>(this));
         if (configObserver == nullptr) {
-            HILOG_ERROR("Create configObserver failed.");
             return false;
         }
         uint32_t ret = serviceProxy_->RegisterConfigObserver(configObserver);
         if (ret != 0) {
             configObserver = nullptr;
+            HILOG_ERROR("Register configObserver failed.");
             return false;
         }
         configObserverFlag_ = true;
