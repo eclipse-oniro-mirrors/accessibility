@@ -1121,5 +1121,36 @@ void AccessibilityElementInfo::SetClip(const bool clip)
 {
     clip_ = clip;
 }
+
+int64_t AccessibilityElementInfo::GetAccessibilityNextFocusId() const
+{
+    return accessibilityNextFocusId_;
+}
+
+void AccessibilityElementInfo::SetAccessibilityNextFocusId(const int64_t accessibilityNextFocusId)
+{
+    accessibilityNextFocusId_ = accessibilityNextFocusId;
+}
+
+int64_t AccessibilityElementInfo::GetAccessibilityPreviousFocusId() const
+{
+    return accessibilityPreviousFocusId_;
+}
+
+void AccessibilityElementInfo::SetAccessibilityPreviousFocusId(const int64_t accessibilityPreviousFocusId)
+{
+    accessibilityPreviousFocusId_ = accessibilityPreviousFocusId;
+}
+
+const std::string &AccessibilityElementInfo::GetAccessibilityNextFocusInspectorKey() const
+{
+    return accessibilityNextFocusInspectorKey_;
+}
+
+void AccessibilityElementInfo::SetAccessibilityNextFocusInspectorKey(const
+    std::string &accessibilityNextFocusInspectorKey)
+{
+    accessibilityNextFocusInspectorKey_ = accessibilityNextFocusInspectorKey;
+}
 } // namespace Accessibility
 } // namespace OHOS
