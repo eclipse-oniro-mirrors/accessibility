@@ -123,15 +123,21 @@ private:
 
         virtual void OnAccessibilityEnableAbilityListsChanged() override
         {
+            if (client_ == nullptr) {
+                return;
+            }
             client_->OnAccessibilityEnableAbilityListsChanged();
         }
 
         virtual void OnAccessibilityInstallAbilityListsChanged() override
         {
+            if (client_ == nullptr) {
+                return;
+            }
             client_->OnAccessibilityInstallAbilityListsChanged();
         }
     private:
-        std::shared_ptr<Impl> client_;
+        std::shared_ptr<Impl> client_ = nullptr;
     };
 
     class AccessibleAbilityManagerCaptionObserverImpl
@@ -143,10 +149,13 @@ private:
 
         virtual void OnPropertyChanged(const CaptionProperty &property) override
         {
+            if (config_ == nullptr) {
+                return;
+            }
             config_->OnAccessibleAbilityManagerCaptionPropertyChanged(property);
         }
     private:
-        std::shared_ptr<Impl> config_;
+        std::shared_ptr<Impl> config_ = nullptr;
     };
 
     class AccessibilityLoadCallback : public SystemAbilityLoadCallbackStub {
@@ -168,47 +177,77 @@ private:
 
         virtual void OnConfigStateChanged(const uint32_t stateType) override
         {
+            if (config_ == nullptr) {
+                return;
+            }
             config_->OnAccessibleAbilityManagerConfigStateChanged(stateType);
         }
         virtual void OnAudioBalanceChanged(const float audioBalance) override
         {
+            if (config_ == nullptr) {
+                return;
+            }            
             config_->OnAccessibleAbilityManagerAudioBalanceChanged(audioBalance);
         }
         virtual void OnBrightnessDiscountChanged(const float brightnessDiscount) override
         {
+            if (config_ == nullptr) {
+                return;
+            }            
             config_->OnAccessibleAbilityManagerBrightnessDiscountChanged(brightnessDiscount);
         }
         virtual void OnContentTimeoutChanged(const uint32_t contentTimeout) override
         {
+            if (config_ == nullptr) {
+                return;
+            }            
             config_->OnAccessibleAbilityManagerContentTimeoutChanged(contentTimeout);
         }
         virtual void OnDaltonizationColorFilterChanged(const uint32_t filterType) override
         {
+            if (config_ == nullptr) {
+                return;
+            }            
             config_->OnAccessibleAbilityManagerDaltonizationColorFilterChanged(filterType);
         }
         virtual void OnMouseAutoClickChanged(const int32_t mouseAutoClick) override
         {
+            if (config_ == nullptr) {
+                return;
+            }            
             config_->OnAccessibleAbilityManagerMouseAutoClickChanged(mouseAutoClick);
         }
         virtual void OnShortkeyTargetChanged(const std::string &shortkeyTarget) override
         {
+            if (config_ == nullptr) {
+                return;
+            }            
             config_->OnAccessibleAbilityManagerShortkeyTargetChanged(shortkeyTarget);
         }
         virtual void OnShortkeyMultiTargetChanged(const std::vector<std::string> &shortkeyMultiTarget) override
         {
+            if (config_ == nullptr) {
+                return;
+            }            
             config_->OnAccessibleAbilityManagerShortkeyMultiTargetChanged(shortkeyMultiTarget);
         }
         virtual void OnClickResponseTimeChanged(const uint32_t clickResponseTime) override
         {
+            if (config_ == nullptr) {
+                return;
+            }            
             config_->OnAccessibleAbilityManagerClickResponseTimeChanged(clickResponseTime);
         }
         virtual void OnIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime) override
         {
+            if (config_ == nullptr) {
+                return;
+            }            
             config_->OnAccessibleAbilityManagerIgnoreRepeatClickTimeChanged(ignoreRepeatClickTime);
         }
 
     private:
-        std::shared_ptr<Impl> config_;
+        std::shared_ptr<Impl> config_ = nullptr;
     };
 
     class DeathRecipient : public IRemoteObject::DeathRecipient {
