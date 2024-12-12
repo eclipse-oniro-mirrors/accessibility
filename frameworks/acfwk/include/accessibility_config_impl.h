@@ -186,63 +186,63 @@ private:
         {
             if (config_ == nullptr) {
                 return;
-            }            
+            }
             config_->OnAccessibleAbilityManagerAudioBalanceChanged(audioBalance);
         }
         virtual void OnBrightnessDiscountChanged(const float brightnessDiscount) override
         {
             if (config_ == nullptr) {
                 return;
-            }            
+            }
             config_->OnAccessibleAbilityManagerBrightnessDiscountChanged(brightnessDiscount);
         }
         virtual void OnContentTimeoutChanged(const uint32_t contentTimeout) override
         {
             if (config_ == nullptr) {
                 return;
-            }            
+            }
             config_->OnAccessibleAbilityManagerContentTimeoutChanged(contentTimeout);
         }
         virtual void OnDaltonizationColorFilterChanged(const uint32_t filterType) override
         {
             if (config_ == nullptr) {
                 return;
-            }            
+            }
             config_->OnAccessibleAbilityManagerDaltonizationColorFilterChanged(filterType);
         }
         virtual void OnMouseAutoClickChanged(const int32_t mouseAutoClick) override
         {
             if (config_ == nullptr) {
                 return;
-            }            
+            }
             config_->OnAccessibleAbilityManagerMouseAutoClickChanged(mouseAutoClick);
         }
         virtual void OnShortkeyTargetChanged(const std::string &shortkeyTarget) override
         {
             if (config_ == nullptr) {
                 return;
-            }            
+            }
             config_->OnAccessibleAbilityManagerShortkeyTargetChanged(shortkeyTarget);
         }
         virtual void OnShortkeyMultiTargetChanged(const std::vector<std::string> &shortkeyMultiTarget) override
         {
             if (config_ == nullptr) {
                 return;
-            }            
+            }
             config_->OnAccessibleAbilityManagerShortkeyMultiTargetChanged(shortkeyMultiTarget);
         }
         virtual void OnClickResponseTimeChanged(const uint32_t clickResponseTime) override
         {
             if (config_ == nullptr) {
                 return;
-            }            
+            }
             config_->OnAccessibleAbilityManagerClickResponseTimeChanged(clickResponseTime);
         }
         virtual void OnIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime) override
         {
             if (config_ == nullptr) {
                 return;
-            }            
+            }
             config_->OnAccessibleAbilityManagerIgnoreRepeatClickTimeChanged(ignoreRepeatClickTime);
         }
 
