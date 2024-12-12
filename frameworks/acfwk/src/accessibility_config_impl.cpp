@@ -225,11 +225,6 @@ bool AccessibilityConfig::Impl::RegisterToService()
     sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver_ = nullptr;
     sptr<AccessibilityEnableAbilityListsObserverImpl> enableAbilityListsObserver_ = nullptr;
 
-    if (captionObserver_ && enableAbilityListsObserver_ && configObserver_) {
-        HILOG_DEBUG("Observers is registered");
-        return true;
-    }
-
     if (captionObserverFlag_ == false) {
         captionObserver_ = new(std::nothrow) AccessibleAbilityManagerCaptionObserverImpl(
             std::shared_ptr<AccessibilityConfig::Impl>(this));
@@ -258,7 +253,8 @@ bool AccessibilityConfig::Impl::RegisterToService()
     }
 
     if (configObserverFlag_ == false) {
-        configObserver_ = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(*this);
+        configObserver_ = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(
+            std::shared_ptr<AccessibilityConfig::Impl>(this));
         if (configObserver_ == nullptr) {
             HILOG_ERROR("Create configObserver_ failed.");
             return false;
