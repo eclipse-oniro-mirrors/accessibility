@@ -364,10 +364,10 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
 RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
 {
     HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d] windowId[%{public}d] compnentId: %{public}" PRId64 " "
-        "elementId: %{public}" PRId64 " winId: %{public}d treeId: %{public}d",
+        "elementId: %{public}" PRId64 " winId: %{public}d innerWinId: %{public}d treeId: %{public}d",
         uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId(), uiEvent.GetAccessibilityId(),
-        uiEvent.GetElementInfo().GetAccessibilityId(),
-        uiEvent.GetElementInfo().GetWindowId(), uiEvent.GetElementInfo().GetBelongTreeId());
+        uiEvent.GetElementInfo().GetAccessibilityId(), uiEvent.GetElementInfo().GetWindowId(),
+        uiEvent.GetElementInfo().GetInnerWindowId(), uiEvent.GetElementInfo().GetBelongTreeId());
     if (!sendEventHandler_) {
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
@@ -2033,7 +2033,12 @@ void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(cons
     HILOG_DEBUG("windowId is %{public}d", event.GetWindowId());
     int32_t windowId = event.GetWindowId();
     if (windowId == 1) {
-        FindInnerWindowId(event, windowId);
+        int32_t innerWindowId = event.GetElementInfo().GetInnerWindowId();
+        if (innerWindowId > 0) {
+            windowId = innerWindowId;
+        } else {
+            FindInnerWindowId(event, windowId);
+        }
     }
 
     const_cast<AccessibilityEventInfo&>(event).SetElementMainWindowId(windowId);

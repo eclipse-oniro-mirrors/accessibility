@@ -1807,6 +1807,18 @@ public:
      * @sysCap Accessibility
      */
     void SetAccessibilityNextFocusInspectorKey(const std::string &accessibilityNextFocusInspectorKey);
+     * @brief Get the windowId to the element info.
+     * @return innerWindowId.
+     * @sysCap Accessibility
+     */
+    int32_t GetInnerWindowId() const;
+
+    /**
+     * @brief Set the windowId to the element info.
+     * @param windowId The innerWindowId of node.
+     * @sysCap Accessibility
+     */
+    void SetInnerWindowId(const int32_t windowId);
 
 protected:
     int32_t pageId_ = -1;
@@ -1891,6 +1903,7 @@ protected:
     int64_t accessibilityNextFocusId_ = -1;
     int64_t accessibilityPreviousFocusId_ = -1;
     std::string accessibilityNextFocusInspectorKey_ = "";
+    int32_t innerWindowId_ = -1;
 };
 } // namespace Accessibility
 } // namespace OHOS
