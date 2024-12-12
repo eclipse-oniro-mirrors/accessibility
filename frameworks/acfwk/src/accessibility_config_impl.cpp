@@ -156,7 +156,8 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
 bool AccessibilityConfig::Impl::LoadAccessibilityService()
 {
     std::unique_lock<ffrt::mutex> lock(conVarMutex_);
-    sptr<AccessibilityLoadCallback> loadCallback = new AccessibilityLoadCallback(this);
+    sptr<AccessibilityLoadCallback> loadCallback = new AccessibilityLoadCallback(
+        std::shared_ptr<AccessibilityConfig::Impl>(this));
     if (loadCallback == nullptr) {
         return false;
     }
@@ -220,46 +221,50 @@ bool AccessibilityConfig::Impl::RegisterToService()
         return false;
     }
 
-    if (captionObserver_ && enableAbilityListsObserver_ && configObserver_) {
-        HILOG_DEBUG("Observers is registered");
-        return true;
-    }
+    sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver = nullptr;
+    sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver = nullptr;
+    sptr<AccessibilityEnableAbilityListsObserverImpl> enableAbilityListsObserver = nullptr;
 
-    if (captionObserver_ == nullptr) {
-        captionObserver_ = new(std::nothrow) AccessibleAbilityManagerCaptionObserverImpl(*this);
-        if (captionObserver_ == nullptr) {
-            HILOG_ERROR("Create captionObserver_ failed.");
+    if (captionObserverFlag_ == false) {
+        captionObserver = new(std::nothrow) AccessibleAbilityManagerCaptionObserverImpl(
+            std::shared_ptr<AccessibilityConfig::Impl>(this));
+        if (captionObserver == nullptr) {
+            HILOG_ERROR("Create captionObserver failed.");
             return false;
         }
-        uint32_t ret = serviceProxy_->RegisterCaptionObserver(captionObserver_);
+        uint32_t ret = serviceProxy_->RegisterCaptionObserver(captionObserver);
         if (ret != 0) {
-            captionObserver_ = nullptr;
+            captionObserver = nullptr;
             HILOG_ERROR("Register captionObserver failed.");
             return false;
         }
+        captionObserverFlag_ = true;
     }
 
-    if (!enableAbilityListsObserver_) {
-        enableAbilityListsObserver_ = new(std::nothrow) AccessibilityEnableAbilityListsObserverImpl(*this);
-        if (enableAbilityListsObserver_ == nullptr) {
-            HILOG_ERROR("Create enableAbilityListsObserver_ failed.");
+    if (enableAbilityListsObserverFlag_ == false) {
+        enableAbilityListsObserver = new(std::nothrow) AccessibilityEnableAbilityListsObserverImpl(
+            std::shared_ptr<AccessibilityConfig::Impl>(this));
+        if (enableAbilityListsObserver == nullptr) {
+            HILOG_ERROR("Create enableAbilityListsObserver failed.");
             return false;
         }
-        serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserver_);
+        serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserver);
+        enableAbilityListsObserverFlag_ = true;
     }
 
-    if (!configObserver_) {
-        configObserver_ = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(*this);
-        if (configObserver_ == nullptr) {
-            HILOG_ERROR("Create configObserver_ failed.");
+    if (configObserverFlag_ == false) {
+        configObserver = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(
+            std::shared_ptr<AccessibilityConfig::Impl>(this));
+        if (configObserver == nullptr) {
             return false;
         }
-        uint32_t ret = serviceProxy_->RegisterConfigObserver(configObserver_);
+        uint32_t ret = serviceProxy_->RegisterConfigObserver(configObserver);
         if (ret != 0) {
-            configObserver_ = nullptr;
+            configObserver = nullptr;
             HILOG_ERROR("Register configObserver failed.");
             return false;
         }
+        configObserverFlag_ = true;
     }
 
     HILOG_DEBUG("RegisterToService succeaddss");
@@ -280,9 +285,9 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
         if (object != nullptr && (remote == object)) {
             object->RemoveDeathRecipient(deathRecipient_);
             serviceProxy_ = nullptr;
-            captionObserver_ = nullptr;
-            enableAbilityListsObserver_ = nullptr;
-            configObserver_ = nullptr;
+            captionObserverFlag_ = false;
+            configObserverFlag_ = false;
+            enableAbilityListsObserverFlag_ = false;
             isInitialized_ = false;
             HILOG_INFO("ResetService ok");
         }
