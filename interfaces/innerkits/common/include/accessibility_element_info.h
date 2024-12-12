@@ -1807,6 +1807,8 @@ public:
      * @sysCap Accessibility
      */
     void SetAccessibilityNextFocusInspectorKey(const std::string &accessibilityNextFocusInspectorKey);
+
+    /**
      * @brief Get the windowId to the element info.
      * @return innerWindowId.
      * @sysCap Accessibility
