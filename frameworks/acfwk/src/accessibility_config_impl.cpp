@@ -221,20 +221,20 @@ bool AccessibilityConfig::Impl::RegisterToService()
         return false;
     }
 
-    sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver_ = nullptr;
-    sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver_ = nullptr;
-    sptr<AccessibilityEnableAbilityListsObserverImpl> enableAbilityListsObserver_ = nullptr;
+    sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver = nullptr;
+    sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver = nullptr;
+    sptr<AccessibilityEnableAbilityListsObserverImpl> enableAbilityListsObserver = nullptr;
 
     if (captionObserverFlag_ == false) {
-        captionObserver_ = new(std::nothrow) AccessibleAbilityManagerCaptionObserverImpl(
+        captionObserver = new(std::nothrow) AccessibleAbilityManagerCaptionObserverImpl(
             std::shared_ptr<AccessibilityConfig::Impl>(this));
-        if (captionObserver_ == nullptr) {
-            HILOG_ERROR("Create captionObserver_ failed.");
+        if (captionObserver == nullptr) {
+            HILOG_ERROR("Create captionObserver failed.");
             return false;
         }
-        uint32_t ret = serviceProxy_->RegisterCaptionObserver(captionObserver_);
+        uint32_t ret = serviceProxy_->RegisterCaptionObserver(captionObserver);
         if (ret != 0) {
-            captionObserver_ = nullptr;
+            captionObserver = nullptr;
             HILOG_ERROR("Register captionObserver failed.");
             return false;
         }
@@ -242,27 +242,26 @@ bool AccessibilityConfig::Impl::RegisterToService()
     }
 
     if (enableAbilityListsObserverFlag_ == false) {
-        enableAbilityListsObserver_ = new(std::nothrow) AccessibilityEnableAbilityListsObserverImpl(
+        enableAbilityListsObserver = new(std::nothrow) AccessibilityEnableAbilityListsObserverImpl(
             std::shared_ptr<AccessibilityConfig::Impl>(this));
-        if (enableAbilityListsObserver_ == nullptr) {
-            HILOG_ERROR("Create enableAbilityListsObserver_ failed.");
+        if (enableAbilityListsObserver == nullptr) {
+            HILOG_ERROR("Create enableAbilityListsObserver failed.");
             return false;
         }
-        serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserver_);
+        serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserver);
         enableAbilityListsObserverFlag_ = true;
     }
 
     if (configObserverFlag_ == false) {
-        configObserver_ = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(
+        configObserver = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(
             std::shared_ptr<AccessibilityConfig::Impl>(this));
-        if (configObserver_ == nullptr) {
-            HILOG_ERROR("Create configObserver_ failed.");
+        if (configObserver == nullptr) {
+            HILOG_ERROR("Create configObserver failed.");
             return false;
         }
-        uint32_t ret = serviceProxy_->RegisterConfigObserver(configObserver_);
+        uint32_t ret = serviceProxy_->RegisterConfigObserver(configObserver);
         if (ret != 0) {
-            configObserver_ = nullptr;
-            HILOG_ERROR("Register configObserver failed.");
+            configObserver = nullptr;
             return false;
         }
         configObserverFlag_ = true;
