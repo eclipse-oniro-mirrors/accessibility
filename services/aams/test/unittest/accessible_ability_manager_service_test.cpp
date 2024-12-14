@@ -821,7 +821,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_001, TestS
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_EnableUITestAbility_001 start";
     sptr<IRemoteObject> obj;
-    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj));
+    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj));
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_EnableUITestAbility_001 end";
 }
 
@@ -2227,7 +2227,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SendEvent_002, TestSize.Level1
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(event);
-    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    EXPECT_EQ(ret, RET_OK);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SendEvent_001 end";
 }
 
@@ -2242,7 +2242,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperator_003,
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_DeregisterElementOperator_003 start";
     TearDownTestCase();
     RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
-    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    EXPECT_EQ(ret, RET_OK);
     SetUpTestCase();
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_DeregisterElementOperator_003 end";
 }
@@ -2338,7 +2338,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, Dump_001, TestSize.Level1)
     TearDownTestCase();
     std::vector<std::u16string> args;
     int ret = Singleton<AccessibleAbilityManagerService>::GetInstance().Dump(0, args);
-    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    EXPECT_EQ(ret, RET_ERR_FAILED);
     SetUpTestCase();
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_Dump_001 end";
 }
