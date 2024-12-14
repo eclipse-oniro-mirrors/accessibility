@@ -29,7 +29,8 @@ static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
     "Column",
     "SideBarContainerStates",
     "ListItemIndex",
-    "ToggleType"
+    "ToggleType",
+    "BindSheet"
 };
 
 /*
