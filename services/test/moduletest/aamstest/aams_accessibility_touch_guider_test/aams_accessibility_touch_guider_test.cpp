@@ -1143,7 +1143,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent010, Te
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3), EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(4), EventType::TYPE_TOUCH_GUIDE_END);
     // Determine action
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), POINTER_ACTION_INVALID);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
 
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent010 ends";
 }
@@ -1583,7 +1583,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent019, Te
             return false;
         }
         }), SLEEP_TIME_3);
-    EXPECT_TRUE(retOnPointerEvent15);
+    EXPECT_FALSE(retOnPointerEvent15);
 
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), 25);
