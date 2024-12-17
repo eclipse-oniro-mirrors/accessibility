@@ -1442,11 +1442,12 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
         HILOG_DEBUG("SearchElementInfoRecursiveByWinid :search element info success. windowId %{public}d}",
             elementInfos[i].GetChildWindowId());
         if ((elementInfos[i].GetChildWindowId() > 0) &&
-            (elementInfos[i].GetChildWindowId() != elementInfos[i].GetWindowId())) {
+            (elementInfos[i].GetChildWindowId() != elementInfos[i].GetWindowId()) &&
+            (elementInfos[i].GetChildWindowId() != windowId)) {
             ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetChildWindowId(),
             elementId, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, &elementInfos[i]);
             HILOG_DEBUG("ChildWindowId %{public}d}. ret:%{public}d", elementInfos[i].GetChildWindowId(), ret);
-        } else if (elementInfos[i].GetChildTreeId() > 0) {
+        } else if (elementInfos[i].GetChildTreeId() > 0 && elementInfos[i].GetWindowId() != windowId) {
             ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetWindowId(),
             elementId, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, &elementInfos[i]);
             HILOG_DEBUG("windowId %{public}d}.treeId:%{public}d. ret:%{public}d",
