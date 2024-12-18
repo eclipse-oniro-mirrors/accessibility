@@ -44,8 +44,6 @@ int AccessibilityDumper::Dump(int fd, const std::vector<std::u16string>& args) c
         return -1;
     }
     (void) signal(SIGPIPE, SIG_IGN); // ignore SIGPIPE crash
-    UniqueFd ufd = UniqueFd(fd); // auto close
-    fd = ufd.Get();
     std::vector<std::string> params;
     std::transform(args.begin(), args.end(), std::back_inserter(params),
         [](const std::u16string &arg) { return Str16ToStr8(arg); });
