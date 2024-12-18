@@ -249,6 +249,7 @@ void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject
             HILOG_INFO("ResetService OK");
         }
     }
+    stateArray_.fill(false);
 }
 
 RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
