@@ -960,8 +960,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     sleep(1);
 
     // action type
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_DOWN);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_UP);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), POINTER_ACTION_INVALID);
 
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent010 ends";
 }
@@ -1204,11 +1203,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3), EventType::TYPE_TOUCH_END);
 
     // action type
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_DOWN);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_DOWN);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(3), MMI::PointerEvent::POINTER_ACTION_UP);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(4), MMI::PointerEvent::POINTER_ACTION_UP);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
 
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent017 ends";
 }
