@@ -182,6 +182,9 @@ void TouchExplorationEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Po
     switch (msg) {
         case TouchExplorationMsg::SEND_HOVER_MSG:
             server_.HoverEventRunner();
+            server_.Clear();
+            HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP to TOUCH_INIT.");
+            server_.SetCurrentState(TouchExplorationState::TOUCH_INIT);
             break;
         case TouchExplorationMsg::LONG_PRESS_MSG:
             HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to ONE_FINGER_LONG_PRESS.");
@@ -194,11 +197,6 @@ void TouchExplorationEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Po
                 ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS.");
             server_.SendDoubleTapAndLongPressDownEvent();
             server_.SetCurrentState(TouchExplorationState::ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS);
-            break;
-        case TouchExplorationMsg::DOUBLE_TAP_MSG:
-            server_.Clear();
-            HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP to TOUCH_INIT.");
-            server_.SetCurrentState(TouchExplorationState::TOUCH_INIT);
             break;
         case TouchExplorationMsg::SWIPE_COMPLETE_TIMEOUT_MSG:
             server_.HoverEventRunner();
@@ -616,9 +614,6 @@ void TouchExploration::HandleOneFingerDownStateUp(MMI::PointerEvent &event)
     CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
     receivedPointerEvents_.push_back(event);
 
-    handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::DOUBLE_TAP_MSG), 0,
-        static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
-
     HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to ONE_FINGER_SINGLE_TAP.");
     SetCurrentState(TouchExplorationState::ONE_FINGER_SINGLE_TAP);
 }
@@ -839,7 +834,6 @@ void TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
 void TouchExploration::HandleOneFingerSingleTapStateDown(MMI::PointerEvent &event)
 {
     CancelPostEvent(TouchExplorationMsg::SEND_HOVER_MSG);
-    CancelPostEvent(TouchExplorationMsg::DOUBLE_TAP_MSG);
 
     MMI::PointerEvent::PointerItem curPointerItem;
     event.GetPointerItem(event.GetPointerId(), curPointerItem);
@@ -1254,14 +1248,14 @@ void TouchExploration::HandleTwoFingersDragStateMove(MMI::PointerEvent &event)
     SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
 }
 
-bool TouchExploration::GetPointerItemWithFingerNum(int32_t fingerNum,
+bool TouchExploration::GetPointerItemWithFingerNum(uint32_t fingerNum,
     std::vector<MMI::PointerEvent::PointerItem> &curPoints,
     std::vector<MMI::PointerEvent::PointerItem> &prePoints, MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     bool findPrePointer = false;
     std::vector<int32_t> pIds = event.GetPointerIds();
-    for (int32_t i = 0; i < fingerNum; i++) {
+    for (int32_t i = 0; i < static_cast<int32_t>(fingerNum); i++) {
         findPrePointer = false;
         event.GetPointerItem(pIds[i], curPoints[i]);
         for (auto &preEvent : receivedPointerEvents_) {
@@ -1280,7 +1274,7 @@ bool TouchExploration::GetPointerItemWithFingerNum(int32_t fingerNum,
     return true;
 }
 
-bool TouchExploration::IsMultiFingerMultiTap(MMI::PointerEvent &event, const int32_t fingerNum)
+bool TouchExploration::IsMultiFingerMultiTap(MMI::PointerEvent &event, const uint32_t fingerNum)
 {
     HILOG_DEBUG();
     std::vector<MMI::PointerEvent::PointerItem> curPoints(fingerNum);
@@ -1326,12 +1320,13 @@ bool TouchExploration::IsMultiFingerMultiTap(MMI::PointerEvent &event, const int
     return true;
 }
 
-bool TouchExploration::IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, const int32_t fingerNum)
+bool TouchExploration::IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, const uint32_t fingerNum)
 {
     HILOG_DEBUG();
     if (IsMultiFingerMultiTap(event, fingerNum)) {
         multiTapNum_ = multiTapNum_ + 1;
-        HILOG_DEBUG("%{public}d finger %{public}d tap is recognized", fingerNum, multiTapNum_ + 1);
+        HILOG_DEBUG("%{public}d finger %{public}d tap is recognized", static_cast<int32_t>(fingerNum),
+            multiTapNum_ + 1);
     } else {
         Clear();
         HILOG_ERROR("invalid gesture, currentState is changed from %{public}d to INVALID.", GetCurrentState());
@@ -1339,7 +1334,7 @@ bool TouchExploration::IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, co
         return false;
     }
 
-    uint32_t fingerNumIndex = static_cast<uint32_t>(fingerNum - 2);
+    uint32_t fingerNumIndex = fingerNum - 2;
     handler_->SendEvent(static_cast<uint32_t>(GESTURE_TAP_MSG[multiTapNum_][fingerNumIndex]), 0,
         static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
     handler_->SendEvent(static_cast<uint32_t>(GESTURE_HOLD_MSG[multiTapNum_][fingerNumIndex]), 0,
@@ -1347,7 +1342,7 @@ bool TouchExploration::IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, co
     return true;
 }
 
-void TouchExploration::HandleMultiFingersTapStateDown(MMI::PointerEvent &event, int32_t fingerNum)
+void TouchExploration::HandleMultiFingersTapStateDown(MMI::PointerEvent &event, uint32_t fingerNum)
 {
     receivedPointerEvents_.push_back(event);
     CancelMultiFingerTapEvent();
@@ -1361,7 +1356,7 @@ void TouchExploration::HandleMultiFingersTapStateDown(MMI::PointerEvent &event, 
         return;
     }
 
-    int32_t pointerSize = static_cast<int32_t>(event.GetPointerIds().size());
+    uint32_t pointerSize = event.GetPointerIds().size();
     if (pointerSize < fingerNum) {
         handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
             static_cast<int32_t>(TimeoutDuration::MULTI_FINGER_TAP_INTERVAL_TIMEOUT));
@@ -1395,7 +1390,7 @@ void TouchExploration::HandleMultiFingersTapStateUp(MMI::PointerEvent &event)
     Clear();
     CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
 
-    int32_t pointerSize = static_cast<int32_t>(event.GetPointerIds().size());
+    uint32_t pointerSize = event.GetPointerIds().size();
     if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
         SetCurrentState(TouchExplorationState::TOUCH_INIT);
@@ -1405,9 +1400,9 @@ void TouchExploration::HandleMultiFingersTapStateUp(MMI::PointerEvent &event)
     }
 }
 
-void TouchExploration::HandleMultiFingersTapStateMove(MMI::PointerEvent &event, int32_t fingerNum)
+void TouchExploration::HandleMultiFingersTapStateMove(MMI::PointerEvent &event, uint32_t fingerNum)
 {
-    if (static_cast<int32_t>(event.GetPointerIds().size()) >= fingerNum) {
+    if (event.GetPointerIds().size() >= fingerNum) {
         Clear();
         HILOG_ERROR("invalid pointer num, currentState is changed from %{public}d to INVALID.", GetCurrentState());
         SetCurrentState(TouchExplorationState::INVALID);
@@ -1451,12 +1446,12 @@ void TouchExploration::HandleMultiFingersContinueDownStateDown(MMI::PointerEvent
     SetCurrentState(TouchExplorationState::INVALID);
 }
 
-void TouchExploration::HandleMultiFingersContinueDownStateUp(MMI::PointerEvent &event, int32_t fingerNum)
+void TouchExploration::HandleMultiFingersContinueDownStateUp(MMI::PointerEvent &event, uint32_t fingerNum)
 {
     receivedPointerEvents_.push_back(event);
     CancelMultiFingerTapAndHoldEvent();
 
-    int32_t pointerSize = static_cast<int32_t>(event.GetPointerIds().size());
+    uint32_t pointerSize = event.GetPointerIds().size();
     if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
             HILOG_INFO("currentState is changed from TWO_FINGERS_CONTINUE_DOWN to TWO_FINGERS_TAP.");
@@ -1481,7 +1476,7 @@ void TouchExploration::HandleTwoFingersContinueDownStateUp(MMI::PointerEvent &ev
     HandleMultiFingersContinueDownStateUp(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_2));
 }
 
-void TouchExploration::HandleMultiFingersContinueDownStateMove(MMI::PointerEvent &event, int32_t fingerNum)
+void TouchExploration::HandleMultiFingersContinueDownStateMove(MMI::PointerEvent &event, uint32_t fingerNum)
 {
     receivedPointerEvents_.push_back(event);
 
@@ -1732,7 +1727,7 @@ bool TouchExploration::RecognizeMultiFingerSwipePath(const std::vector<Pointer> 
     return true;
 }
 
-GestureType TouchExploration::GetMultiFingerSwipeGestureId(int32_t fingerNum)
+GestureType TouchExploration::GetMultiFingerSwipeGestureId(uint32_t fingerNum)
 {
     HILOG_DEBUG();
     if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
@@ -1765,7 +1760,7 @@ GestureType TouchExploration::GetMultiFingerSwipeGestureId(int32_t fingerNum)
     return GestureType::GESTURE_INVALID;
 }
 
-void TouchExploration::HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, int32_t fingerNum)
+void TouchExploration::HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, uint32_t fingerNum)
 {
     receivedPointerEvents_.push_back(event);
 
@@ -1774,7 +1769,7 @@ void TouchExploration::HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, 
     }
 
     if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
-        for (int32_t pIndex = 0; pIndex < fingerNum; pIndex++) {
+        for (int32_t pIndex = 0; pIndex < static_cast<int32_t>(fingerNum); pIndex++) {
             if (multiFingerSwipeRoute_.count(pIndex) == 0 ||
                 multiFingerSwipeRoute_[pIndex].size() < MIN_MULTI_FINGER_SWIPE_POINTER_NUM) {
                 Clear();
