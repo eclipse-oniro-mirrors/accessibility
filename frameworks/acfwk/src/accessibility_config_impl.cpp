@@ -25,7 +25,7 @@ namespace AccessibilityConfig {
 namespace {
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
-    constexpr int32_t SA_CONNECT_TIMEOUT = 500; // ms
+    constexpr int32_t SA_CONNECT_TIMEOUT = 6 * 1000; // ms
     constexpr uint32_t DISPLAY_DALTONIZER_GREEN = 12;
     constexpr uint32_t DISPLAY_DALTONIZER_RED = 11;
     constexpr uint32_t DISPLAY_DALTONIZER_BLUE = 13;
@@ -150,6 +150,14 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
         HILOG_DEBUG("InitAccessibilityServiceProxy success");
         return true;
     }
+#ifdef ACCESSIBILITY_WATCH_FEATURE
+        if (LoadAccessibilityService() == false) {
+            HILOG_ERROR("LoadSystemAbilityService failed.");
+            return false;
+        } else {
+            return true;
+        }
+#endif // ACCESSIBILITY_WATCH_FEATURE
     return true;
 }
 
@@ -183,7 +191,7 @@ void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObjec
     std::lock_guard<ffrt::mutex> lock(conVarMutex_);
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
-    if (retSysParam >= 0 && !std::strcmp(value, "true")) {
+    if (retSysParam >= 0 && std::strcmp(value, "true")) {
         do {
             auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
             if (samgr == nullptr) {
@@ -268,7 +276,14 @@ bool AccessibilityConfig::Impl::RegisterToService()
 
 sptr<Accessibility::IAccessibleAbilityManagerService> AccessibilityConfig::Impl::GetServiceProxy()
 {
+#ifdef ACCESSIBILITY_WATCH_FEATURE
     return serviceProxy_;
+#else
+    if (serviceProxy_ == nullptr) {
+        LoadAccessibilityService();
+    }
+    return serviceProxy_;
+#endif // ACCESSIBILITY_WATCH_FEATURE
 }
 
 void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
