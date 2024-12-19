@@ -110,7 +110,6 @@ enum class TimeoutDuration : int64_t {
 enum class TouchExplorationMsg : uint32_t {
     SEND_HOVER_MSG,
     LONG_PRESS_MSG,
-    DOUBLE_TAP_MSG,
     DOUBLE_TAP_AND_LONG_PRESS_MSG,
     SWIPE_COMPLETE_TIMEOUT_MSG,
     TWO_FINGER_SINGLE_TAP_MSG,
@@ -344,20 +343,20 @@ private:
     void SendScreenWakeUpEvent(MMI::PointerEvent &event);
     void SendDragDownEventToMultimodal(MMI::PointerEvent event);
     void SendUpForDragDownEvent();
-    bool GetPointerItemWithFingerNum(int32_t fingerNum, std::vector<MMI::PointerEvent::PointerItem> &curPoints,
+    bool GetPointerItemWithFingerNum(uint32_t fingerNum, std::vector<MMI::PointerEvent::PointerItem> &curPoints,
         std::vector<MMI::PointerEvent::PointerItem> &prePoints, MMI::PointerEvent &event);
-    bool IsMultiFingerMultiTap(MMI::PointerEvent &event, const int32_t fingerNum);
-    bool IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, const int32_t fingerNum);
-    void HandleMultiFingersTapStateDown(MMI::PointerEvent &event, int32_t fingerNum);
-    void HandleMultiFingersTapStateMove(MMI::PointerEvent &event, int32_t fingerNum);
-    void HandleMultiFingersContinueDownStateUp(MMI::PointerEvent &event, int32_t fingerNum);
-    void HandleMultiFingersContinueDownStateMove(MMI::PointerEvent &event, int32_t fingerNum);
+    bool IsMultiFingerMultiTap(MMI::PointerEvent &event, const uint32_t fingerNum);
+    bool IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, const uint32_t fingerNum);
+    void HandleMultiFingersTapStateDown(MMI::PointerEvent &event, uint32_t fingerNum);
+    void HandleMultiFingersTapStateMove(MMI::PointerEvent &event, uint32_t fingerNum);
+    void HandleMultiFingersContinueDownStateUp(MMI::PointerEvent &event, uint32_t fingerNum);
+    void HandleMultiFingersContinueDownStateMove(MMI::PointerEvent &event, uint32_t fingerNum);
     void StoreMultiFingerSwipeBaseDownPoint();
     bool GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId);
     bool SaveMultiFingerSwipeGesturePointerInfo(MMI::PointerEvent &event);
     bool RecognizeMultiFingerSwipePath(const std::vector<Pointer> &path);
-    GestureType GetMultiFingerSwipeGestureId(int32_t fingerNum);
-    void HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, int32_t fingerNum);
+    GestureType GetMultiFingerSwipeGestureId(uint32_t fingerNum);
+    void HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, uint32_t fingerNum);
     std::map<TouchExplorationMsg, GestureType> GetMultiFingerMsgToGestureMap();
     void CancelMultiFingerTapEvent();
     void CancelMultiFingerTapAndHoldEvent();
