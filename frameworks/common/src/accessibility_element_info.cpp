@@ -1122,6 +1122,16 @@ void AccessibilityElementInfo::SetClip(const bool clip)
     clip_ = clip;
 }
 
+const std::string &AccessibilityElementInfo::GetCustomComponentType() const
+{
+    return customComponentType_;
+}
+
+void AccessibilityElementInfo::SetCustomComponentType(const std::string &customComponentType)
+{
+    customComponentType_ = customComponentType;
+}
+
 int64_t AccessibilityElementInfo::GetAccessibilityNextFocusId() const
 {
     return accessibilityNextFocusId_;
