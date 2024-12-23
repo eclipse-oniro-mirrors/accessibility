@@ -16,8 +16,8 @@
 #ifndef ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_IMPL_H
 #define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_IMPL_H
 
-#include <future>
 #include "accessibility_element_operator_callback_stub.h"
+#include "ffrt_inner.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -86,7 +86,7 @@ public:
     virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
 
 private:
-    std::promise<void> promise_;
+    ffrt::promise<void> promise_;
     std::atomic<bool> promiseFlag_ = false;
     bool executeActionResult_ = false;
     AccessibilityElementInfo accessibilityInfoResult_ = {};

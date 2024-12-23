@@ -63,7 +63,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
     }
     for (int32_t i = 0; i < operationsSize; i++) {
         sptr<AccessibleActionParcel> accessibleOperation = parcel.ReadStrongParcelable<AccessibleActionParcel>();
-        if (!accessibleOperation) {
+        if (accessibleOperation == nullptr) {
             HILOG_ERROR("ReadStrongParcelable<accessibleOperation> failed");
             return false;
         }
@@ -73,7 +73,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, navDestinationId_);
     sptr<RectParcel> rect = parcel.ReadStrongParcelable<RectParcel>();
-    if (!rect) {
+    if (rect == nullptr) {
         return false;
     }
     bounds_ = *rect;
@@ -105,19 +105,19 @@ bool AccessibilityElementInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
 bool AccessibilityElementInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
 {
     sptr<RangeInfoParcel> rangeInfo = parcel.ReadStrongParcelable<RangeInfoParcel>();
-    if (!rangeInfo) {
+    if (rangeInfo == nullptr) {
         return false;
     }
     rangeInfo_ = *rangeInfo;
 
     sptr<GridInfoParcel> grid = parcel.ReadStrongParcelable<GridInfoParcel>();
-    if (!grid) {
+    if (grid == nullptr) {
         return false;
     }
     grid_ = *grid;
 
     sptr<GridItemInfoParcel> gridItem = parcel.ReadStrongParcelable<GridItemInfoParcel>();
-    if (!gridItem) {
+    if (gridItem == nullptr) {
         return false;
     }
     gridItem_ = *gridItem;
@@ -169,7 +169,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelFourthPart(Parcel &parcel)
 
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isActive_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityVisible_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, clip_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mainWindowId_);
     return true;
 }
 
@@ -289,7 +289,7 @@ bool AccessibilityElementInfoParcel::MarshallingThirdPart(Parcel &parcel) const
 
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isActive_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityVisible_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, clip_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mainWindowId_);
     return true;
 }
 
@@ -310,7 +310,7 @@ bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
 sptr<AccessibilityElementInfoParcel> AccessibilityElementInfoParcel::Unmarshalling(Parcel& parcel)
 {
     sptr<AccessibilityElementInfoParcel> accessibilityInfo = new(std::nothrow) AccessibilityElementInfoParcel();
-    if (!accessibilityInfo) {
+    if (accessibilityInfo == nullptr) {
         HILOG_ERROR("Failed to create accessibilityInfo.");
         return nullptr;
     }
@@ -346,7 +346,7 @@ bool AccessibleActionParcel::Marshalling(Parcel &parcel) const
 sptr<AccessibleActionParcel> AccessibleActionParcel::Unmarshalling(Parcel& parcel)
 {
     sptr<AccessibleActionParcel> accessibleOperation = new(std::nothrow) AccessibleActionParcel();
-    if (!accessibleOperation) {
+    if (accessibleOperation == nullptr) {
         HILOG_ERROR("Failed to create accessibleOperation.");
         return nullptr;
     }
@@ -420,7 +420,7 @@ bool GridInfoParcel::Marshalling(Parcel &parcel) const
 sptr<GridInfoParcel> GridInfoParcel::Unmarshalling(Parcel& parcel)
 {
     sptr<GridInfoParcel> grid = new(std::nothrow) GridInfoParcel();
-    if (!grid) {
+    if (grid == nullptr) {
         HILOG_ERROR("Failed to create grid.");
         return nullptr;
     }
@@ -463,7 +463,7 @@ bool GridItemInfoParcel::Marshalling(Parcel &parcel) const
 sptr<GridItemInfoParcel> GridItemInfoParcel::Unmarshalling(Parcel& parcel)
 {
     sptr<GridItemInfoParcel> gridItem = new(std::nothrow) GridItemInfoParcel();
-    if (!gridItem) {
+    if (gridItem == nullptr) {
         HILOG_ERROR("Failed to create gridItem.");
         return nullptr;
     }
@@ -500,7 +500,7 @@ bool RectParcel::Marshalling(Parcel &parcel) const
 sptr<RectParcel> RectParcel::Unmarshalling(Parcel& parcel)
 {
     sptr<RectParcel> rect = new(std::nothrow) RectParcel();
-    if (!rect) {
+    if (rect == nullptr) {
         HILOG_ERROR("Failed to create rect.");
         return nullptr;
     }
