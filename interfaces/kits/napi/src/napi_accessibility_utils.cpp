@@ -47,6 +47,8 @@ namespace {
     constexpr int32_t ALPHA_MOVE = 24;
     constexpr int32_t COLOR_MOVE = 8;
     const char UNICODE_BODY = '0';
+    const std::string HALF_VALUE = "0";
+    const std::string FULL_VALUE = "1";
 } // namespace
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
@@ -155,28 +157,6 @@ bool ParseDouble(napi_env env, double& param, napi_value args)
 
     napi_get_value_double(env, args, &param);
     return true;
-}
-
-bool ParseBigInt(napi_env env, int64_t& param, napi_value args)
-{
-    napi_status status;
-    napi_valuetype valuetype = napi_null;
-    status = napi_typeof(env, args, &valuetype);
-    if (status != napi_ok) {
-        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
-        return false;
-    }
-
-    if (valuetype != napi_bigint) {
-        HILOG_DEBUG("Wrong argument type. bigint expected.");
-        return false;
-    }
-
-    HILOG_DEBUG("The type of args is bigInt");
-    bool lossless = false;
-
-    napi_get_value_bigint_int64(env, args, &param, &lossless);
-    return lossless;
 }
 
 bool CheckJsFunction(napi_env env, napi_value args)
@@ -909,7 +889,8 @@ void ConvertActionArgsJSToNAPI(
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     std::string str = "";
-    std::map<std::string, std::string> scrollValueMap = { {"halfScreen", "0"}, {"fullScreen", "1"} };
+    std::map<std::string, std::string> scrollValueMap = { {"halfScreen", HALF_VALUE}, {"fullScreen", FULL_VALUE} };
+    std::string scrollValue = FULL_VALUE;
     bool seleFlag = false;
     switch (action) {
         case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
@@ -971,30 +952,26 @@ void ConvertActionArgsJSToNAPI(
             napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
-                if (scrollValueMap.find(str)!= scrollValueMap.end()) {
-                    std::string scrollvalue = scrollValueMap.find(str)->second;
-                    args.insert(std::pair<std::string, std::string>("scrolltype", scrollvalue.c_str()));
-                    HILOG_DEBUG("Input %{public}s, ScrollValue %{public}s", str.c_str(), scrollvalue.c_str());
+                if (scrollValueMap.find(str) != scrollValueMap.end()) {
+                    scrollValue = scrollValueMap.find(str)->second;
+                    HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
                 } else {
-                    str = "1";
-                    args.insert(std::pair<std::string, std::string>("scrolltype", str.c_str()));
                     HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
                 }
+                args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
             napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
-                if (scrollValueMap.find(str)!= scrollValueMap.end()) {
-                    std::string scrollvalue = scrollValueMap.find(str)->second;
-                    args.insert(std::pair<std::string, std::string>("scrolltype", scrollvalue.c_str()));
-                    HILOG_DEBUG("Input %{public}s, ScrollValue %{public}s", str.c_str(), scrollvalue.c_str());
+                if (scrollValueMap.find(str) != scrollValueMap.end()) {
+                    scrollValue = scrollValueMap.find(str)->second;
+                    HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
                 } else {
-                    str = "1";
-                    args.insert(std::pair<std::string, std::string>("scrolltype", str.c_str()));
                     HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
                 }
+                args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
             }
             break;
         default:
@@ -1406,7 +1383,7 @@ void GetKeyValue(napi_env env, napi_value keyObject, std::optional<MMI::KeyEvent
         HILOG_WARN("keyItem is null.");
         return;
     }
-    
+
     napi_value keyCodeValue = nullptr;
     int32_t keyCode = keyItem->GetKeyCode();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyCode, &keyCodeValue));
@@ -1493,7 +1470,7 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<
     napi_value unicodeCharValue = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, 0, &unicodeCharValue));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "unicodeChar", unicodeCharValue));
-    
+
     // set keys
     SetKeyPropertyPart1(env, result, keyEvent);
     SetKeyPropertyPart2(env, result, keyEvent);
