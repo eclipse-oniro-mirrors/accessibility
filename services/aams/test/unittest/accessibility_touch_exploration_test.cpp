@@ -659,18 +659,61 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTa
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapStateDown_001 start";
 
-    touchExploration_->SetCurrentState(TouchExplorationState::ONE_FINGER_SINGLE_TAP);
+    touchExploration_->SetCurrentState(TouchExplorationState::TOUCH_INIT);
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, POINT_ID_0,
         0, 0);
     touchExploration_->OnPointerEvent(*event);
 
     usleep(SLEEP_US_50);
 
-    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0),
-        MMI::PointerEvent::POINTER_ACTION_DOWN);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, POINT_ID_0, 0, 0);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
+    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::ONE_FINGER_SINGLE_TAP);
+
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, POINT_ID_0, 0, 0);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
     EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
 
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapStateDown_001 end";
+}
+
+/**
+ * @tc.number: HandleOneFingerSingleTapStateDown002
+ * @tc.name: HandleOneFingerSingleTapStateDown
+ * @tc.desc: Test func HandleOneFingerSingleTapStateDown.
+ */
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapStateDown_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapStateDown_002 start";
+
+    touchExploration_->SetCurrentState(TouchExplorationState::TOUCH_INIT);
+    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, POINT_ID_0,
+        0, 0);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, POINT_ID_0, 0, 0);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
+    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::ONE_FINGER_SINGLE_TAP);
+
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, POINT_ID_0, DISPLAY_500, DISPLAY_500);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
+    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::ONE_FINGER_DOWN);
+
+    GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapStateDown_002 end";
 }
 
 /**
@@ -689,9 +732,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTa
 
     usleep(SLEEP_US_50);
 
-    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0),
-        MMI::PointerEvent::POINTER_ACTION_DOWN);
-    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
+    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::INVALID);
 
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateDown_001 end";
 }
@@ -712,40 +753,9 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTa
 
     usleep(SLEEP_US_50);
 
-    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0),
-        MMI::PointerEvent::POINTER_ACTION_UP);
     EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::TOUCH_INIT);
 
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateUp_001 end";
-}
-
-/**
- * @tc.number: HandleOneFingerSingleTapThenDownStateUp002
- * @tc.name: HandleOneFingerSingleTapThenDownStateUp
- * @tc.desc: Test func HandleOneFingerSingleTapThenDownStateUp.
- */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateUp_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateUp_001 start";
-
-    touchExploration_->SetCurrentState(TouchExplorationState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
-
-    std::vector<MMI::PointerEvent::PointerItem> points = {};
-    MMI::PointerEvent::PointerItem point = {};
-    SetTouchExplorationPoint(point, POINT_ID_0, 0, 0);
-    MMI::PointerEvent::PointerItem otherPoint = {};
-    SetTouchExplorationPoint(otherPoint, POINT_ID_1, 0, 0);
-    points.emplace_back(point);
-    points.emplace_back(otherPoint);
-    std::shared_ptr<MMI::PointerEvent> event =
-        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, POINT_ID_1);
-    touchExploration_->OnPointerEvent(*event);
-
-    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0),
-        MMI::PointerEvent::POINTER_ACTION_UP);
-    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
-
-    GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateUp_002 end";
 }
 
 /**
@@ -757,18 +767,75 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTa
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateMove_001 start";
 
-    touchExploration_->SetCurrentState(TouchExplorationState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, POINT_ID_0,
+    touchExploration_->SetCurrentState(TouchExplorationState::TOUCH_INIT);
+    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, POINT_ID_0,
         0, 0);
     touchExploration_->OnPointerEvent(*event);
 
     usleep(SLEEP_US_50);
 
-    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0),
-        MMI::PointerEvent::POINTER_ACTION_MOVE);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, POINT_ID_0, 0, 0);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
+    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::ONE_FINGER_SINGLE_TAP);
+
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, POINT_ID_0, 0, 0);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
+    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
+
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, POINT_ID_0, 0, 0);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
     EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
 
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateMove_001 end";
+}
+
+/**
+ * @tc.number: HandleOneFingerSingleTapThenDownStateMove002
+ * @tc.name: HandleOneFingerSingleTapThenDownStateMove
+ * @tc.desc: Test func HandleOneFingerSingleTapThenDownStateMove.
+ */
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateMove_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateMove_002 start";
+
+    touchExploration_->SetCurrentState(TouchExplorationState::TOUCH_INIT);
+    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, POINT_ID_0,
+        0, 0);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, POINT_ID_0, 0, 0);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
+    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::ONE_FINGER_SINGLE_TAP);
+
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, POINT_ID_0, 0, 0);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
+    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
+
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, POINT_ID_0, DISPLAY_500, DISPLAY_500);
+    touchExploration_->OnPointerEvent(*event);
+
+    usleep(SLEEP_US_50);
+
+    EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::INVALID);
+
+    GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateMove_002 end";
 }
 
 /**
