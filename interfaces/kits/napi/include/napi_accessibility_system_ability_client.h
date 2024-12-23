@@ -55,9 +55,13 @@ public:
     void UnsubscribeObservers();
 
 private:
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
     OHOS::Accessibility::AccessibilityStateEventType type_;
     std::vector<std::shared_ptr<StateListener>> observers_ = {};
+
+private:
+    void DeleteObserverReference(napi_env env, std::shared_ptr<StateListener> observer);
+    int DeleteObserverReferenceWork(napi_env env, uv_work_t *work);
 };
 
 struct NAccessibilitySystemAbilityClient {
@@ -131,8 +135,8 @@ public:
     static napi_value GetCaptionWindowColor(napi_env env, napi_callback_info info);
     static napi_value SetCaptionWindowColor(napi_env env, napi_callback_info info);
 
-    static thread_local napi_ref aaConsRef_;
-    static thread_local napi_ref aaStyleConsRef_;
+    static napi_ref aaConsRef_;
+    static napi_ref aaStyleConsRef_;
     static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;
     static std::shared_ptr<StateListenerImpl> touchGuideStateListeners_;
     static std::shared_ptr<NAccessibilityConfigObserverImpl> captionListeners_;
