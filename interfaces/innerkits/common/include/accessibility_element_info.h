@@ -23,6 +23,14 @@
 
 namespace OHOS {
 namespace Accessibility {
+static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
+    "CheckboxGroupSelectedStatus",
+    "Row",
+    "Column",
+    "SideBarContainerStates",
+    "ListItemIndex"
+};
+
 /*
 * class define the action on Accessibility info
 */
@@ -346,13 +354,6 @@ public:
 protected:
     std::map<std::string, std::string> extraElementValueStr_ = {};
     std::map<std::string, int32_t> extraElementValueInt_ = {};
-    std::set<std::string> setOfExtraElementInfo = {
-        "CheckboxGroupSelectedStatus",
-        "Row",
-        "Column",
-        "SideBarContainerStates",
-        "ListItemIndex"
-    };
 };
 
 class Rect {
@@ -1713,43 +1714,44 @@ public:
      * @brief Get the isActive to the element info.
      * @return isActive status.
      * @sysCap Accessibility
-    */
+     */
     bool GetIsActive() const;
-
+ 
     /**
      * @brief Set the isActive to the element info.
      * @param isActive The isActive of node.
      * @sysCap Accessibility
      */
     void SetIsActive(const bool isActive);
-
-    /**
+ 
+      /**
      * @brief Get the accessibilityVisible to the element info.
      * @return accessibilityVisible status.
      * @sysCap Accessibility
-    */
+     */
     bool GetAccessibilityVisible() const;
-
+ 
     /**
      * @brief Set the accessibilityVisible to the element info.
-     * @param accessibilityVisible The accessibilityVisible of node.
+     * @param isActive The accessibilityVisible of node.
      * @sysCap Accessibility
      */
     void SetAccessibilityVisible(const bool accessibilityVisible);
 
     /**
-     * @brief Get the clip to the element info.
-     * @return clip status.
-     * @sysCap Accessibility
-    */
-    bool GetClip() const;
-
-    /**
-     * @brief Set the clip to the element info.
-     * @param clip The clip of node.
+     * @brief Get the windowId to the element info.
+     * @return mainWindowId.
      * @sysCap Accessibility
      */
-    void SetClip(const bool clip);
+    int32_t GetMainWindowId() const;
+
+    /**
+     * @brief Set the windowId to the element info.
+     * @param windowId The mainWindowId of node.
+     * @sysCap Accessibility
+     */
+    void SetMainWindowId(const int32_t windowId);
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1827,8 +1829,7 @@ protected:
     std::vector<SpanInfo> spanList_ {};
     bool isActive_ = true;
     bool accessibilityVisible_ = true;
-    bool clip_ = false;
-    static const int backgroundImageMaxLength = 20;
+    int32_t mainWindowId_ = -1; // same widowId in uiview
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -126,6 +126,16 @@ void AccessibilityElementInfo::SetWindowId(const int32_t windowId)
     windowId_ = windowId;
 }
 
+int32_t AccessibilityElementInfo::GetMainWindowId() const
+{
+    return mainWindowId_;
+}
+
+void AccessibilityElementInfo::SetMainWindowId(const int32_t windowId)
+{
+    mainWindowId_ = windowId;
+}
+
 int64_t AccessibilityElementInfo::GetParentNodeId() const
 {
     return parentId_;
@@ -852,8 +862,8 @@ ExtraElementInfo::ExtraElementInfo(const std::map<std::string, std::string> extr
 
 RetError ExtraElementInfo::SetExtraElementInfo(const std::string keyStr, const std::string valueStr)
 {
-    auto extraElementInfoIter = setOfExtraElementInfo.find(keyStr);
-    if (extraElementInfoIter != setOfExtraElementInfo.end()) {
+    auto extraElementInfoIter = EXTRA_ELEMENTINFO_SET.find(keyStr);
+    if (extraElementInfoIter != EXTRA_ELEMENTINFO_SET.end()) {
         extraElementValueStr_[keyStr] = valueStr;
         HILOG_DEBUG("SetExtraElementInfo: size is extraElementValueStr : [%{public}zu]",
             extraElementValueStr_.size());
@@ -865,8 +875,8 @@ RetError ExtraElementInfo::SetExtraElementInfo(const std::string keyStr, const s
 
 RetError ExtraElementInfo::SetExtraElementInfo(const std::string keyStr, const int32_t valueInt)
 {
-    auto extraElementInfoIter = setOfExtraElementInfo.find(keyStr);
-    if (extraElementInfoIter != setOfExtraElementInfo.end()) {
+    auto extraElementInfoIter = EXTRA_ELEMENTINFO_SET.find(keyStr);
+    if (extraElementInfoIter != EXTRA_ELEMENTINFO_SET.end()) {
         extraElementValueInt_[keyStr] = valueInt;
         HILOG_DEBUG("SetExtraElementInfo: size is extraElementValueInt : [%{public}zu]",
             extraElementValueInt_.size());
@@ -947,11 +957,7 @@ const std::string &AccessibilityElementInfo::GetBackgroundColor() const
 
 void AccessibilityElementInfo::SetBackgroundImage(const std::string &backgroundImage)
 {
-    if (backgroundImage.length() > backgroundImageMaxLength) {
-        backgroundImage_ = "true";
-    } else {
-        backgroundImage_ = backgroundImage;
-    }
+    backgroundImage_ = backgroundImage;
 }
 
 const std::string &AccessibilityElementInfo::GetBackgroundImage() const
@@ -1076,30 +1082,20 @@ bool AccessibilityElementInfo::GetIsActive() const
 {
     return isActive_;
 }
-
+ 
 void AccessibilityElementInfo::SetIsActive(const bool isActive)
 {
     isActive_ = isActive;
 }
-
+ 
 bool AccessibilityElementInfo::GetAccessibilityVisible() const
 {
     return accessibilityVisible_;
 }
-
+ 
 void AccessibilityElementInfo::SetAccessibilityVisible(const bool accessibilityVisible)
 {
     accessibilityVisible_ = accessibilityVisible;
-}
-
-bool AccessibilityElementInfo::GetClip() const
-{
-    return clip_;
-}
-
-void AccessibilityElementInfo::SetClip(const bool clip)
-{
-    clip_ = clip;
 }
 } // namespace Accessibility
 } // namespace OHOS
