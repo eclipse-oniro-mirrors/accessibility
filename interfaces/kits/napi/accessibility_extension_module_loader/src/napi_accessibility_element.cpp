@@ -41,7 +41,7 @@ namespace {
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
         "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
         "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
-        "allAttribute", "clip", "accessibilityNextFocusId", "accessibilityPreviousFocusId"};
+        "clip", "accessibilityNextFocusId", "accessibilityPreviousFocusId", "parentId", "childrenIds", "allAttribute"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
@@ -105,10 +105,12 @@ namespace {
         {"isActive", &NAccessibilityElement::GetElementInfoIsActive},
         {"accessibilityVisible", &NAccessibilityElement::GetElementInfoAccessibilityVisible},
         {"mainWindowId", &NAccessibilityElement::GetElementInfoMainWindowId},
-        {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
         {"clip", &NAccessibilityElement::GetElementInfoClip},
         {"accessibilityNextFocusId", &NAccessibilityElement::GetElementInfoAccessibilityNextFocusId},
         {"accessibilityPreviousFocusId", &NAccessibilityElement::GetElementInfoAccessibilityPreviousFocusId},
+        {"parentId", &NAccessibilityElement::GetElementInfoParentId},
+        {"childrenIds", &NAccessibilityElement::GetElementInfoChildrenIds},
+        {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
         {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
@@ -1148,6 +1150,26 @@ void NAccessibilityElement::GetElementInfoAccessibilityPreviousFocusId(NAccessib
         callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityPreviousFocusId(), &value));
 }
 
+void NAccessibilityElement::GetElementInfoAccessibilityParentId(NAccessibilityElementData *callbackInfo,
+    napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetParentNodeId(), &value));
+}
+
+void NAccessibilityElement::GetElementInfoAccessibilityChildrenIds(NAccessibilityElementData *callbackInfo,
+    napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_array(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetChildIds(), &value));
+}
+
 void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_object(callbackInfo->env_, &value));
@@ -1426,6 +1448,14 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     GetElementInfoAccessibilityPreviousFocusId(callbackInfo, accessibilityPreviousFocusId);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "accessibilityPreviousFocusId",
         accessibilityPreviousFocusId));
+
+    napi_value parentId = nullptr;
+    GetElementInfoAccessibilityParentId(callbackInfo, parentId);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "parentId", parentId));
+    
+    napi_value childrenIds = nullptr;
+    GetElementInfoAccessibilityChildrenIds(callbackInfo, childrenIds);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "childrenIds", childrenIds));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
