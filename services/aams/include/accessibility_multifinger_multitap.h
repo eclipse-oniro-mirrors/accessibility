@@ -177,9 +177,8 @@ public:
      * @brief Handle a touch event. If an action is completed, the appropriate callback is called.
      *
      * @param event  the touch event to be handled.
-     * @return true if the gesture be recognized, else false.
      */
-    bool OnPointerEvent(MMI::PointerEvent &event);
+    void OnPointerEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Cancle multi finger gesture rocognize state, buffer etc.

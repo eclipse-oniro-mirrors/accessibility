@@ -16,8 +16,8 @@ import("//build/ohos.gni")
 declare_args() {
   accessibility_feature_power_manager = true
   accessibility_feature_display_manager = true
-  accessibility_feature_data_share = true
   accessibility_use_rosen_drawing = false
+  accessibility_watch_feature = false
   if (defined(global_parts_info) &&
       !defined(global_parts_info.powermgr_display_manager)) {
     accessibility_feature_display_manager = false
@@ -31,11 +31,6 @@ declare_args() {
   if (defined(use_rosen_drawing) && use_rosen_drawing) {
     accessibility_use_rosen_drawing = true
   }
-
-  if (defined(global_parts_info) &&
-      !defined(global_parts_info.distributeddatamgr_data_share)) {
-    distributeddatamgr_data_share = false
-  }
 }
 
 print(
@@ -43,7 +38,6 @@ print(
 print(
     "accessibility_feature_power_manager = ${accessibility_feature_power_manager}")
 print("accessibility_use_rosen_drawing = ${accessibility_use_rosen_drawing}")
-print("accessibility_feature_data_share = ${accessibility_feature_data_share}")
 
 accessibility_default_defines = []
 
@@ -59,6 +53,6 @@ if (accessibility_use_rosen_drawing) {
   accessibility_default_defines += [ "USE_ROSEN_DRAWING" ]
 }
 
-if (accessibility_feature_data_share) {
-  accessibility_default_defines += [ "OHOS_BUILD_ENABLE_DATA_SHARE" ]
+if (defined(accessibility_watch_feature) && accessibility_watch_feature) {
+  accessibility_default_defines += [ "ACCESSIBILITY_WATCH_FEATURE" ]
 }
