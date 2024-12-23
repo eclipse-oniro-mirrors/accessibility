@@ -511,6 +511,8 @@ public:
      */
     int32_t GetRequestFocusElementId() const;
 
+    void SetElementMainWindowId(const int32_t windowId);
+
 protected:
     EventType eventType_ = TYPE_VIEW_INVALID;
     std::string bundleName_ = "";
