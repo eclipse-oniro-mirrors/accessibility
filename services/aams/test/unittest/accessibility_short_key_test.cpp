@@ -73,6 +73,7 @@ void AccessibilityShortKeyUnitTest::TearDown()
 HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_Register_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_Register_001 start";
+    shortKey_->Unregister();
     shortKey_->Register();
     GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_001 end";
 }

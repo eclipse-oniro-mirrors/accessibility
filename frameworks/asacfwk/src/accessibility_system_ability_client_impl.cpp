@@ -24,15 +24,17 @@
 namespace OHOS {
 namespace Accessibility {
 namespace {
+    constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
+    const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     constexpr int32_t SA_CONNECT_TIMEOUT = 500; // ms
 } // namespaces
 
-static std::mutex g_Mutex;
+static ffrt::mutex g_Mutex;
 static std::shared_ptr<AccessibilitySystemAbilityClientImpl> g_Instance = nullptr;
 std::shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::GetInstance()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(g_Mutex);
+    std::lock_guard<ffrt::mutex> lock(g_Mutex);
     if (!g_Instance) {
         g_Instance = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     } else {
@@ -47,17 +49,20 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
     HILOG_DEBUG();
 
     stateArray_.fill(false);
-    auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (samgr == nullptr) {
-        return;
-    }
-    sptr<AccessibilitySaStatusChange> statusChange = new AccessibilitySaStatusChange();
-    int32_t ret = samgr->SubscribeSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, statusChange);
-    if (ret != 0) {
-        HILOG_ERROR("subscribe accessibility failed, error = %{public}d", ret);
-    }
-    if (ConnectToService()) {
+    char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
+    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
+    if (retSysParam >= 0 && !std::strcmp(value, "true")) {
+        HILOG_ERROR("accessibility service is ready.");
+        if (!ConnectToService()) {
+            HILOG_ERROR("Failed to connect to aams service");
+            return;
+        }
         Init();
+    }
+ 
+    retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+    if (retSysParam) {
+        HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
     }
 }
 
@@ -90,30 +95,65 @@ bool AccessibilitySystemAbilityClientImpl::ConnectToService()
         return false;
     }
 
-    if (!deathRecipient_) {
+    if (deathRecipient_ == nullptr) {
         deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
-        if (!deathRecipient_) {
+        if (deathRecipient_ == nullptr) {
             HILOG_ERROR("Failed to create deathRecipient.");
             return false;
         }
     }
-
     if ((object->IsProxyObject()) && (!object->AddDeathRecipient(deathRecipient_))) {
         HILOG_ERROR("Failed to add death recipient");
     }
-
     HILOG_DEBUG("Get remote object ok");
     serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(object);
-    if (!serviceProxy_) {
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("IAccessibleAbilityManagerService iface_cast failed");
         return false;
     }
+
     return true;
+}
+
+void AccessibilitySystemAbilityClientImpl::OnParameterChanged(const char *key, const char *value, void *context)
+{
+    HILOG_DEBUG("Parameter key = [%{public}s] value = [%{public}s]", key, value);
+ 
+    if (!key || std::strcmp(key, SYSTEM_PARAMETER_AAMS_NAME.c_str())) {
+        HILOG_WARN("not accessibility.config.ready callback");
+        return;
+    }
+ 
+    if (!value || std::strcmp(value, "true")) {
+        HILOG_WARN("accessibility.config.ready value not true");
+        return;
+    }
+ 
+    if (!context) {
+        HILOG_ERROR("accessibility.config.ready context NULL");
+        return;
+    }
+ 
+    AccessibilitySystemAbilityClientImpl* implPtr = static_cast<AccessibilitySystemAbilityClientImpl*>(context);
+    {
+        HILOG_DEBUG("ConnectToService start.");
+        std::lock_guard<ffrt::mutex> lock(implPtr->mutex_);
+        if (implPtr->serviceProxy_) {
+            HILOG_DEBUG("service is already started.");
+            return;
+        }
+        if (!implPtr->ConnectToService()) {
+            HILOG_ERROR("Failed to connect to aams service");
+            return;
+        }
+        implPtr->Init();
+        implPtr->ReregisterElementOperator();
+    }
 }
 
 bool AccessibilitySystemAbilityClientImpl::LoadAccessibilityService()
 {
-    std::unique_lock<std::mutex> lock(conVarMutex_);
+    std::unique_lock<ffrt::mutex> lock(conVarMutex_);
     sptr<AccessibilityLoadCallback> loadCallback = new AccessibilityLoadCallback();
     if (loadCallback == nullptr) {
         return false;
@@ -136,7 +176,7 @@ bool AccessibilitySystemAbilityClientImpl::LoadAccessibilityService()
 
 void AccessibilitySystemAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
-    std::lock_guard<std::mutex> lock(conVarMutex_);
+    std::lock_guard<ffrt::mutex> lock(conVarMutex_);
     if (serviceProxy_ != nullptr) {
         HILOG_INFO("serviceProxy_ isn't nullptr");
         proxyConVar_.notify_one();
@@ -144,9 +184,9 @@ void AccessibilitySystemAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<I
     }
     if (remoteObject != nullptr) {
         serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(remoteObject);
-        if (!deathRecipient_) {
+        if (deathRecipient_ == nullptr) {
             deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
-            if (!deathRecipient_) {
+            if (deathRecipient_ == nullptr) {
                 HILOG_ERROR("create deathRecipient_ fail.");
             }
         }
@@ -161,7 +201,7 @@ void AccessibilitySystemAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<I
 
 void AccessibilitySystemAbilityClientImpl::LoadSystemAbilityFail()
 {
-    std::lock_guard<std::mutex> lock(conVarMutex_);
+    std::lock_guard<ffrt::mutex> lock(conVarMutex_);
     HILOG_WARN("LoadSystemAbilityFail.");
     proxyConVar_.notify_one();
 }
@@ -198,7 +238,7 @@ void AccessibilitySystemAbilityClientImpl::Init()
 void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject> &remote)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (serviceProxy_ != nullptr) {
         sptr<IRemoteObject> object = serviceProxy_->AsObject();
         if (object && (remote == object)) {
@@ -213,14 +253,10 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
     const int32_t windowId, const std::shared_ptr<AccessibilityElementOperator> &operation)
 {
     HILOG_INFO("Register windowId[%{public}d] start", windowId);
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!operation) {
         HILOG_ERROR("Input operation is null");
         return RET_ERR_INVALID_PARAM;
-    }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
     }
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
@@ -230,7 +266,7 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
     auto iter = elementOperators_.find(windowId);
     if (iter != elementOperators_.end()) {
         HILOG_ERROR("windowID[%{public}d] is exited", windowId);
-        return RET_OK;
+        return RET_ERR_CONNECTION_EXIST;
     }
 
     sptr<AccessibilityElementOperatorImpl> aamsInteractionOperator =
@@ -249,7 +285,7 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(Registrat
     HILOG_DEBUG("parentWindowId:%{public}d, parentTreeId:%{public}d, windowId:%{public}d,nodeId:%{public}" PRId64 "",
         parameter.parentWindowId, parameter.parentTreeId, parameter.windowId, parameter.elementId);
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (parameter.windowId < 0 || parameter.elementId < 0 ||
         parameter.parentTreeId < 0 || parameter.parentWindowId < 0) {
         return RET_ERR_INVALID_PARAM;
@@ -260,7 +296,7 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(Registrat
         return RET_ERR_INVALID_PARAM;
     }
 
-    if (!serviceProxy_) {
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
@@ -279,7 +315,7 @@ void AccessibilitySystemAbilityClientImpl::ReregisterElementOperator()
 {
     HILOG_DEBUG();
 
-    if (!serviceProxy_) {
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("serviceProxy_ is null.");
         return;
     }
@@ -291,12 +327,8 @@ void AccessibilitySystemAbilityClientImpl::ReregisterElementOperator()
 RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const int32_t windowId)
 {
     HILOG_INFO("Deregister windowId[%{public}d] start", windowId);
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
@@ -315,7 +347,7 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
 RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const int32_t windowId, const int32_t treeId)
 {
     HILOG_INFO("Deregister windowId[%{public}d] treeId[%{public}d] start", windowId, treeId);
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
 
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
@@ -328,7 +360,7 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
 RetError AccessibilitySystemAbilityClientImpl::IsEnabled(bool &isEnabled)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     isEnabled = stateArray_[AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED];
     return RET_OK;
 }
@@ -336,7 +368,7 @@ RetError AccessibilitySystemAbilityClientImpl::IsEnabled(bool &isEnabled)
 RetError AccessibilitySystemAbilityClientImpl::IsTouchExplorationEnabled(bool &isEnabled)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     isEnabled = stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED];
     return RET_OK;
 }
@@ -345,7 +377,7 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
     const AbilityStateType stateType, std::vector<AccessibilityAbilityInfo> &infos)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     bool check = false;
     if ((accessibilityAbilityTypes & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN) ||
         (accessibilityAbilityTypes & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_HAPTIC) ||
@@ -361,10 +393,6 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
         HILOG_ERROR("Invalid params: accessibilityAbilityTypes[%{public}d] stateType[%{public}d]",
             accessibilityAbilityTypes, stateType);
         return RET_ERR_INVALID_PARAM;
-    }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
     }
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
@@ -387,7 +415,7 @@ bool AccessibilitySystemAbilityClientImpl::CheckEventType(EventType eventType)
 RetError AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventType, const int64_t componentId)
 {
     HILOG_DEBUG("componentId[%{public}" PRId64 "], eventType[%{public}d]", componentId, eventType);
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!CheckEventType(eventType)) {
         return RET_ERR_INVALID_PARAM;
     }
@@ -398,23 +426,15 @@ RetError AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventTy
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
     return serviceProxy_->SendEvent(event);
 }
 
 RetError AccessibilitySystemAbilityClientImpl::SendEvent(const AccessibilityEventInfo &event)
 {
     HILOG_DEBUG("EventType[%{public}d]", event.GetEventType());
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!CheckEventType(event.GetEventType())) {
         return RET_ERR_INVALID_PARAM;
-    }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
     }
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
@@ -427,7 +447,7 @@ RetError AccessibilitySystemAbilityClientImpl::SubscribeStateObserver(
     const std::shared_ptr<AccessibilityStateObserver> &observer, const uint32_t eventType)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (eventType >= AccessibilityStateEventType::EVENT_TYPE_MAX) {
         HILOG_ERROR("Input eventType is out of scope");
         return RET_ERR_INVALID_PARAM;
@@ -452,7 +472,7 @@ RetError AccessibilitySystemAbilityClientImpl::UnsubscribeStateObserver(
     const std::shared_ptr<AccessibilityStateObserver> &observer, const uint32_t eventType)
 {
     HILOG_DEBUG("eventType is [%{public}d]", eventType);
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (eventType >= AccessibilityStateEventType::EVENT_TYPE_MAX) {
         HILOG_ERROR("Input eventType is out of scope");
         return RET_ERR_INVALID_PARAM;
@@ -501,11 +521,7 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
 RetError AccessibilitySystemAbilityClientImpl::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
@@ -517,42 +533,30 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 {
     HILOG_DEBUG("stateType[%{public}d}", stateType);
     SetAccessibilityState(stateType);
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (stateType & STATE_ACCESSIBILITY_ENABLED) {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED, true);
-    } else {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED, false);
-    }
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED,
+        !!(stateType & STATE_ACCESSIBILITY_ENABLED));
+    
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED,
+        !!(stateType & STATE_EXPLORATION_ENABLED));
 
-    if (stateType & STATE_EXPLORATION_ENABLED) {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED, true);
-    } else {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED, false);
-    }
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED,
+        !!(stateType & STATE_KEYEVENT_ENABLED));
 
-    if (stateType & STATE_KEYEVENT_ENABLED) {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED, true);
-    } else {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED, false);
-    }
-
-    if (stateType & STATE_GESTURE_ENABLED) {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED, true);
-    } else {
-        NotifyStateChanged(AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED, false);
-    }
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED,
+        !!(stateType & STATE_GESTURE_ENABLED));
 }
 
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("search element requestId[%{public}d]", requestId);
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("serviceProxy_ is nullptr");
         return;
     }
-    std::vector<AccessibilityElementInfo> filterInfos = TranslateListToVector(infos);
+    std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
     sptr<IAccessibilityElementOperatorCallback> callback =
         AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
     if (requestId < 0) {
@@ -574,13 +578,13 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityId
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByTextResult(
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("serviceProxy_ is nullptr");
         return;
     }
-    std::vector<AccessibilityElementInfo> filterInfos = TranslateListToVector(infos);
+    std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
     sptr<IAccessibilityElementOperatorCallback> callback =
         AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
     if (requestId >= 0) {
@@ -597,7 +601,7 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByTextResult(
 void AccessibilitySystemAbilityClientImpl::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("serviceProxy_ is nullptr");
@@ -619,7 +623,7 @@ void AccessibilitySystemAbilityClientImpl::SetFindFocusedElementInfoResult(
 void AccessibilitySystemAbilityClientImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("serviceProxy_ is nullptr");
@@ -641,7 +645,7 @@ void AccessibilitySystemAbilityClientImpl::SetFocusMoveSearchResult(
 void AccessibilitySystemAbilityClientImpl::SetExecuteActionResult(
     const bool succeeded, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("serviceProxy_ is nullptr");
@@ -663,7 +667,7 @@ void AccessibilitySystemAbilityClientImpl::SetExecuteActionResult(
 void AccessibilitySystemAbilityClientImpl::SetCursorPositionResult(
     const int32_t cursorPosition, const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]  cursorPosition[%{public}d]", requestId, cursorPosition);
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("serviceProxy_ is nullptr");
@@ -742,11 +746,7 @@ void AccessibilitySystemAbilityClientImpl::SetPerformActionResult(const bool suc
 RetError AccessibilitySystemAbilityClientImpl::GetFocusedWindowId(int32_t &focusedWindowId)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
@@ -769,30 +769,6 @@ void AccessibilitySystemAbilityClientImpl::AccessibilityLoadCallback::OnLoadSyst
     if (g_Instance) {
         g_Instance->LoadSystemAbilityFail();
     }
-}
-
-void AccessibilitySystemAbilityClientImpl::AccessibilitySaStatusChange::OnAddSystemAbility(int32_t saId,
-    const std::string &deviceId)
-{
-    HILOG_DEBUG();
-    if (!g_Instance) {
-        return;
-    }
-    std::lock_guard<std::mutex> lock(g_Instance->mutex_);
-    if (g_Instance->serviceProxy_) {
-        return;
-    }
-    if (!g_Instance->ConnectToService()) {
-        return;
-    }
-    g_Instance->Init();
-    g_Instance->ReregisterElementOperator();
-}
-
-void AccessibilitySystemAbilityClientImpl::AccessibilitySaStatusChange::OnRemoveSystemAbility(int32_t saId,
-    const std::string &deviceId)
-{
-    HILOG_WARN("disconnect to accessibility service");
 }
 } // namespace Accessibility
 } // namespace OHOS
