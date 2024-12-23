@@ -357,6 +357,34 @@ void Utils::RecordStartingA11yEvent(const std::string &name)
     }
 }
 
+void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name)
+{
+    std::string MSG_NAME = "enable single targets";
+    HILOG_DEBUG("starting RecordEnableShortkeyAbilityEvent enable single targets: %{public}s", name.c_str());
+    int32_t ret = HiSysEventWrite(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
+        "ENABLE_SHORTKEY_ABILITY_SINGLE",
+        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
+        "MSG_NAME", MSG_NAME, "MSG_VALUE", name);
+    if (ret != 0) {
+        HILOG_ERROR("Write HiSysEvent RecordEnableShortkeyAbilityEvent error, ret:%{public}d", ret);
+    }
+}
+
+void Utils::RecordOnZoomGestureEvent(const std::string &state)
+{
+    std::string MSG_NAME = "on zoom gesture state";
+    HILOG_DEBUG("starting RecordOnZoomGestureEvent on zoom gesture state: %{public}s", state.c_str());
+    int32_t ret = HiSysEventWrite(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
+        "ZOOM_GESTURE_ACTION",
+        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
+        "MSG_NAME", MSG_NAME, "MSG_VALUE", state);
+    if (ret != 0) {
+        HILOG_ERROR("Write HiSysEvent RecordOnZoomGestureEvent error, ret:%{public}d", ret);
+    }
+}
+
 void Utils::VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut)
 {
     HILOG_DEBUG();
@@ -388,7 +416,7 @@ void Utils::StringToVector(const std::string &stringIn, std::vector<std::string>
     }
 
     int32_t wrodCount = static_cast<int32_t>(position.size());
-    if ((wrodCount == 0) && (strLength > 0)) {
+    if (wrodCount == 0) {
         vectorResult.push_back(stringIn);
     } else {
         int32_t startWrod = 0;
