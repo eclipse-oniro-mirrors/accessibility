@@ -32,7 +32,6 @@ SystemAbilityManagerClient& SystemAbilityManagerClient::GetInstance()
 
 sptr<ISystemAbilityManager> SystemAbilityManagerClient::GetSystemAbilityManager()
 {
-    std::lock_guard<std::mutex> lock(systemAbilityManagerLock_);
     if (systemAbilityManager_ != nullptr) {
         return systemAbilityManager_;
     }
@@ -75,8 +74,7 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbilityWrapper(int32_t
 sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t systemAbilityId)
 {
     (void)systemAbilityId;
-    sptr<IRemoteObject> remote = new OHOS::Accessibility::MockAccessibleAbilityManagerServiceStub();
-    return remote;
+    return nullptr;
 }
 
 sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
@@ -198,7 +196,7 @@ int32_t SystemAbilityManagerProxy::GetOnDemandSystemAbilityIds(std::vector<int32
 {
     return -1;
 }
-
+ 
 sptr<IRemoteObject> SystemAbilityManagerProxy::Recompute(int32_t systemAbilityId, int32_t code)
 {
     return nullptr;

@@ -18,12 +18,13 @@
 
 #include <vector>
 #include <map>
-#include <mutex>
-#include "accessibility_utils.h"
+#include "accessibility_config.h"
 #include "accessibility_config_observer.h"
+#include "accessibility_utils.h"
+#include "ffrt.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "accessibility_config.h"
+
 
 namespace OHOS {
 namespace Accessibility {
@@ -54,7 +55,7 @@ public:
     void UnsubscribeInstallObservers();
 
 private:
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
     std::vector<std::shared_ptr<EnableAbilityListsObserver>> enableAbilityListsObservers_ = {};
     std::vector<std::shared_ptr<EnableAbilityListsObserver>> installAbilityListsObservers_ = {};
 };
@@ -87,7 +88,10 @@ public:
 
     static void Destructor(napi_env env, void* nativeObject, void*)
     {
-        reinterpret_cast<NAccessibilityConfigClass*>(nativeObject)->~NAccessibilityConfigClass();
+        NAccessibilityConfigClass* obj = static_cast<NAccessibilityConfigClass*>(nativeObject);
+        obj->~NAccessibilityConfigClass();
+        delete obj;
+        nativeObject = nullptr;
     }
 
     OHOS::AccessibilityConfig::CONFIG_ID GetConfigId() const
