@@ -51,7 +51,7 @@ bool CaptionPropertyParcel::Marshalling(Parcel& parcel) const
 sptr<CaptionPropertyParcel> CaptionPropertyParcel::Unmarshalling(Parcel& parcel)
 {
     sptr<CaptionPropertyParcel> captionProperty = new(std::nothrow) CaptionPropertyParcel();
-    if (!captionProperty) {
+    if (captionProperty == nullptr) {
         HILOG_ERROR("Failed to create captionProperty.");
         return nullptr;
     }
