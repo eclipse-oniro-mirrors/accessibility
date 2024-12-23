@@ -59,7 +59,7 @@ public:
     RetError SetClickResponseTime(const uint32_t time);
     RetError SetIgnoreRepeatClickState(const bool state);
     RetError SetIgnoreRepeatClickTime(const uint32_t time);
-    RetError SetStartFromAtoHosState(const bool state);
+    RetError SetStartToHosState(const bool state);
 
     bool GetEnabledState() const;
     bool GetTouchGuideState() const;
@@ -89,12 +89,19 @@ public:
     uint32_t GetIgnoreRepeatClickTime() const;
     uint32_t GetScreenMagnificationType() const;
 
+    RetError SetEnabledAccessibilityServices(const std::vector<std::string> &services);
     const std::vector<std::string> GetEnabledAccessibilityServices();
     RetError AddEnabledAccessibilityService(const std::string &serviceName);
     RetError RemoveEnabledAccessibilityService(const std::string &serviceName);
     uint32_t GetConfigState();
-    bool GetStartFromAtoHosState();
+    bool GetStartToHosState();
+    void SetDefaultShortcutKeyService();
+    void InitSetting();
+    void CloneShortkeyService(bool isScreenReaderEnabled);
     void OnDataClone();
+    void CloneAudioState();
+    void InitShortKeyConfig();
+    uint32_t GetShortKeyService(std::vector<std::string> &services);
     std::shared_ptr<AccessibilityDatashareHelper> GetDbHandle()
     {
         return datashare_;
@@ -104,7 +111,6 @@ public:
     void ClearData();
 private:
     void InitCaption();
-    void InitSetting();
     void InitCapability();
     RetError SetConfigState(const std::string& key, bool value);
 
@@ -140,7 +146,8 @@ private:
     std::vector<std::string> enabledAccessibilityServices_ {}; // bundleName/abilityName
 
     std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
-    std::mutex interfaceMutex_;
+    std::shared_ptr<AccessibilityDatashareHelper> systemDatashare_ = nullptr;
+    ffrt::mutex interfaceMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
