@@ -37,8 +37,8 @@ public:
         std::vector<AccessibilityAbilityInfo> &infos));
     MOCK_METHOD3(RegisterElementOperator,
         RetError(const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation, bool isApp));
-    MOCK_METHOD3(RegisterElementOperator, RetError(Registration parameter,
-        const sptr<IAccessibilityElementOperator>& operation, bool isApp));
+    MOCK_METHOD3(RegisterElementOperator,
+        RetError(Registration parameter, const sptr<IAccessibilityElementOperator>& operation, bool isApp));
     MOCK_METHOD1(DeregisterElementOperator, RetError(const int32_t windowId));
     MOCK_METHOD2(DeregisterElementOperator, RetError(const int32_t windowId, const int32_t treeId));
     MOCK_METHOD1(GetCaptionProperty, RetError(AccessibilityConfig::CaptionProperty& caption));

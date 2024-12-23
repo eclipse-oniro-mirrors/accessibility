@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,299 +13,95 @@
  * limitations under the License.
  */
 
-#include <gtest/gtest.h>
-#include "mock_accessible_ability_connection.h"
-#include <algorithm>
-#include <map>
-#include <vector>
-#include "accessibility_account_data.h"
-#include "accessibility_ut_helper.h"
-#include "accessible_ability_manager_service.h"
-#include "hilog_wrapper.h"
+#include "accessibility_window_connection.h"
 
 namespace OHOS {
 namespace Accessibility {
-MockAccessibleAbilityConnection::MockAccessibleAbilityConnection(int32_t accountId, int32_t connectionId,
-    AccessibilityAbilityInfo& abilityInfo)
-    : AccessibleAbilityConnection(accountId, connectionId, abilityInfo)
+AccessibilityWindowConnection::AccessibilityWindowConnection(
+    const int32_t windowId, const sptr<IAccessibilityElementOperator>& connection, const int32_t accountId)
 {
-    (void)accountId;
-    (void)connectionId;
-    (void)abilityInfo;
+    windowId_ = windowId;
+    proxy_ = connection;
+    accountId_ = accountId;
 }
-MockAccessibleAbilityConnection::~MockAccessibleAbilityConnection()
+
+AccessibilityWindowConnection::AccessibilityWindowConnection(
+    const int32_t windowId, const int32_t treeId,
+    const sptr<IAccessibilityElementOperator>& connection, const int32_t accountId)
+{
+    windowId_ = windowId;
+    treeId_ = treeId;
+    proxy_ = connection;
+    accountId_ = accountId;
+}
+
+AccessibilityWindowConnection::~AccessibilityWindowConnection()
 {}
 
-AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName)
-    : clientName_(clientName), accountId_(accountId)
+RetError AccessibilityWindowConnection::SetCardProxy(const int32_t treeId,
+    sptr<IAccessibilityElementOperator> operation)
 {
-}
-
-RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
-    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
-    const int32_t mode, bool isFilter)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SearchElementInfoByAccessibilityId";
-    (void)elementBasicInfo;
-    (void)requestId;
-    (void)callback;
-    (void)mode;
-    (void)isFilter;
-    return RET_OK;
-}
-
-RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t accessibilityWindowId,
-    const int64_t elementId, const std::string& text, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback>& callback)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SearchElementInfosByText";
-    (void)accessibilityWindowId;
-    (void)elementId;
-    (void)text;
-    (void)requestId;
-    (void)callback;
-    return RET_OK;
-}
-
-RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessibilityWindowId,
-    const int64_t elementId, const int32_t focusType, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback>& callback)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel FindFocusedElementInfo";
-    (void)accessibilityWindowId;
-    (void)elementId;
-    (void)focusType;
-    (void)requestId;
-    (void)callback;
-    return RET_OK;
-}
-
-RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId,
-    const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel FocusMoveSearch";
-    (void)accessibilityWindowId;
-    (void)elementId;
-    (void)direction;
-    (void)requestId;
-    (void)callback;
-    return RET_OK;
-}
-
-RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
-    const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback>& callback)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel ExecuteAction";
-    (void)accessibilityWindowId;
-    (void)elementId;
-    (void)action;
-    (void)actionArguments;
-    (void)requestId;
-    (void)callback;
-    return RET_OK;
-}
-
-RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel GetWindows";
-    (void)displayId;
-    (void)windows;
-    sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
-    if (!clientConnection) {
-        HILOG_ERROR("There is no client connection");
-        return RET_ERR_NO_CONNECTION;
+    if (!operation) {
+        return RET_ERR_FAILED;
     }
+    cardProxy_[treeId] = operation;
+    return RET_OK;
+}
 
-    if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
-        HILOG_ERROR("AccessibleAbilityChannel::GetWindows failed: no capability");
-        return RET_ERR_NO_CAPABILITY;
+sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetCardProxy(const int32_t treeId)
+{
+    auto iter = cardProxy_.find(treeId);
+    if (iter != cardProxy_.end()) {
+        HILOG_DEBUG("GetCardProxy : operation is ok");
+        return cardProxy_[treeId];
     }
+    HILOG_DEBUG("GetCardProxy : operation is no");
+    return proxy_;
+}
+
+RetError AccessibilityWindowConnection::SetTokenIdMap(const int32_t treeId,
+    const uint32_t tokenId)
+{
+    HILOG_DEBUG("treeId : %{public}d", treeId);
+    tokenIdMap_[treeId] = tokenId;
     return RET_OK;
 }
 
-RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+uint32_t AccessibilityWindowConnection::GetTokenIdMap(const int32_t treeId)
 {
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel GetWindows";
-    uint64_t displayId = 0;
-    return GetWindows(displayId, windows);
+    HILOG_DEBUG("treeId : %{public}d", treeId);
+    return tokenIdMap_[treeId];
 }
 
-RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+void AccessibilityWindowConnection::GetAllTreeId(std::vector<int32_t> &treeIds)
 {
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel GetWindow";
-    (void)windowId;
-    (void)windowInfo;
-    return RET_OK;
-}
-
-RetError AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SetTargetBundleName";
-    (void)targetBundleNames;
-    return RET_OK;
-}
-
-RetError AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
-    std::vector<AccessibilityWindowInfo> &windows)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel GetWindowsByDisplayId";
-    return GetWindows(displayId, windows);
-}
-
-void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SetOnKeyPressEventResult";
-    (void)handled;
-    (void)sequence;
-}
-
-RetError AccessibleAbilityChannel::SendSimulateGesture(
-    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SendSimulateGesture";
-    (void)gesturePath;
-    return RET_OK;
-}
-
-sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_t accountId,
-    const std::string &clientName)
-{
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr");
-        return nullptr;
-    }
-
-    return accountData->GetAccessibleAbilityConnection(clientName);
-}
-
-AccessibleAbilityConnection::AccessibleAbilityConnection(
-    int32_t accountId, int32_t connectionId, AccessibilityAbilityInfo& abilityInfo)
-{
-    accountId_ = accountId;
-    connectionId_ = connectionId;
-    abilityInfo_ = abilityInfo;
-}
-
-AccessibleAbilityConnection::~AccessibleAbilityConnection()
-{
-    HILOG_DEBUG("start");
-}
-
-void AccessibleAbilityConnection::OnAbilityConnectDone(
-    const AppExecFwk::ElementName& element, const sptr<IRemoteObject>& remoteObject, int32_t resultCode)
-{
-    (void)element;
-    (void)remoteObject;
-    (void)resultCode;
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
-    sptr<AccessibleAbilityConnection> pointer = this;
-    if (accountData) {
-        accountData->AddConnectedAbility(pointer);
+    for (auto &treeId: cardProxy_) {
+        treeIds.emplace_back(treeId.first);
     }
 }
 
-void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName& element, int32_t resultCode)
+RetError AccessibilityWindowConnection::GetRootParentId(int32_t treeId, int64_t &elementId)
 {
-    (void)element;
-    (void)resultCode;
-    return;
-}
-
-bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent& keyEvent, const int32_t sequence)
-{
-    (void)sequence;
-    if (keyEvent.GetKeyAction() == MMI::KeyEvent::KEY_ACTION_UP) {
-        return false;
+    auto iter = treeIdParentId_.find(treeId);
+    if (iter != treeIdParentId_.end()) {
+        elementId = iter->second;
+        return RET_OK;
     }
-    return true;
+    return RET_ERR_FAILED;
 }
 
-bool AccessibleAbilityConnection::IsWantedEvent(int32_t eventType)
+RetError AccessibilityWindowConnection::SetRootParentId(const int32_t treeId, const int64_t elementId)
 {
-    (void)eventType;
-    return true;
-}
-
-AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
-{
-    (void)element;
-    AAFwk::Want want;
-    return want;
-}
-
-void AccessibleAbilityConnection::Disconnect()
-{
-    HILOG_DEBUG("start");
-    AccessibilityAbilityHelper::GetInstance().SetTestChannelId(-1);
-}
-
-void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName& element)
-{
-    HILOG_DEBUG("start");
-    elementName_ = element;
-}
-
-int32_t AccessibleAbilityConnection::GetChannelId()
-{
-    HILOG_DEBUG("connectionId_ is %{public}d", connectionId_);
-    return connectionId_;
-}
-
-void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnRemoteDied(
-    const wptr<IRemoteObject>& remote)
-{
-    (void)remote;
-    // Temp deal: notify setting
-}
-
-void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &eventInfo)
-{
-    (void)eventInfo;
-}
-
-void AccessibleAbilityConnection::OnAbilityConnectDoneSync(const AppExecFwk::ElementName &element,
-    const sptr<IRemoteObject> &remoteObject)
-{
-    HILOG_DEBUG();
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return;
-    }
-    if (!remoteObject) {
-        HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get remoteObject failed");
-        return;
-    }
-    elementName_ = element;
-
-    sptr<AccessibleAbilityConnection> pointer = this;
-    accountData->AddConnectedAbility(pointer);
-}
-
-void AccessibleAbilityConnection::OnAbilityDisconnectDoneSync(const AppExecFwk::ElementName &element)
-{
-    HILOG_DEBUG("start");
-    (void)element;
-}
-
-RetError AccessibleAbilityChannel::EnableScreenCurtain(bool isEnable)
-{
-    (void)isEnable;
+    treeIdParentId_[treeId] = elementId;
     return RET_OK;
 }
 
-RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId,
-    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+void AccessibilityWindowConnection::EraseProxy(const int32_t treeId)
 {
-    GTEST_LOG_(INFO) << "MOCK AccessibleAbilitychannel GetCursorPosition";
-    (void)accessibilityWindowId;
-    (void)elementId;
-    (void)requestId;
-    (void)callback;
-    return RET_OK;
+    auto iter = cardProxy_.find(treeId);
+    if (iter != cardProxy_.end()) {
+        cardProxy_.erase(iter);
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS
