@@ -18,14 +18,18 @@
       "SystemCapability.BarrierFree.Accessibility.Hearing",
       "SystemCapability.BarrierFree.Accessibility.Vision"
     ],
-    "features": [ "accessibility_feature_coverage = false" ],
+    "features": [
+      "accessibility_feature_coverage",
+      "accessibility_watch_feature"
+    ],
     "adapted_system_type": [
       "standard"
     ],
     "rom": "2000KB",
     "ram": "10000KB",
     "hisysevent_config": [
-      "//foundation/barrierfree/accessibility/hisysevent.yaml"
+      "//foundation/barrierfree/accessibility/hisysevent.yaml",
+      "//foundation/barrierfree/accessibility/hisysevent_ue.yaml"
     ],
     "deps": {
       "components": [
@@ -41,6 +45,7 @@
         "safwk",
         "bundle_framework",
         "ffrt",
+        "hicollie",
         "hitrace",
         "hilog",
         "ipc",
