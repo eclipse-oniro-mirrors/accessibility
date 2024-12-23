@@ -22,7 +22,7 @@ namespace OHOS {
 namespace Accessibility {
 std::unordered_map<int32_t,
     sptr<IAccessibilityElementOperatorCallback>> AccessibilityElementOperatorImpl::requests_ = {};
-std::mutex AccessibilityElementOperatorImpl::requestsMutex_;
+ffrt::mutex AccessibilityElementOperatorImpl::requestsMutex_;
 
 AccessibilityElementOperatorImpl::AccessibilityElementOperatorImpl(int32_t windowId,
     const std::shared_ptr<AccessibilityElementOperator> &operation,
@@ -166,7 +166,7 @@ void AccessibilityElementOperatorImpl::SetParentWindowId(const int32_t parentWin
 int32_t AccessibilityElementOperatorImpl::AddRequest(int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    std::lock_guard<std::mutex> lock(requestsMutex_);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
 
     auto iter = requests_.find(requestId);
     if (iter == requests_.end()) {
@@ -179,8 +179,8 @@ void AccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResu
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     HILOG_DEBUG("requestId is %{public}d", requestId);
-    std::lock_guard<std::mutex> lock(requestsMutex_);
-    std::vector<AccessibilityElementInfo> filterInfos = TranslateListToVector(infos);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
+    std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {
@@ -212,8 +212,8 @@ void AccessibilityElementOperatorImpl::SetSearchElementInfoByTextResult(
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(requestsMutex_);
-    std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
+    std::vector<AccessibilityElementInfo> myInfos(infos.begin(), infos.end());
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {
@@ -229,7 +229,7 @@ void AccessibilityElementOperatorImpl::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(requestsMutex_);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {
@@ -245,7 +245,7 @@ void AccessibilityElementOperatorImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(requestsMutex_);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {
@@ -261,7 +261,7 @@ void AccessibilityElementOperatorImpl::SetExecuteActionResult(
     const bool succeeded, const int32_t requestId)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(requestsMutex_);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {
@@ -277,7 +277,7 @@ void AccessibilityElementOperatorImpl::SetExecuteActionResult(
 void AccessibilityElementOperatorImpl::SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(requestsMutex_);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {
@@ -292,7 +292,7 @@ void AccessibilityElementOperatorImpl::SetCursorPositionResult(const int32_t cur
 sptr<IAccessibilityElementOperatorCallback> AccessibilityElementOperatorImpl::GetCallbackByRequestId(
     const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(requestsMutex_);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
     auto iter = requests_.find(requestId);
     if (iter == requests_.end()) {
         return nullptr;
@@ -302,7 +302,7 @@ sptr<IAccessibilityElementOperatorCallback> AccessibilityElementOperatorImpl::Ge
 
 void AccessibilityElementOperatorImpl::EraseCallback(const int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(requestsMutex_);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
         requests_.erase(iter);

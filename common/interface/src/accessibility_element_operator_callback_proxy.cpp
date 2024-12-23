@@ -23,7 +23,7 @@ namespace Accessibility {
 constexpr int32_t IPC_MEMORY_SIZE = 500 * 1024; // default size is 200 * 1024B, batch query need more memory
 constexpr int32_t SINGLE_TRANSMIT = -2;
 constexpr int32_t MULTI_TRANSMIT_FINISH = -1;
-constexpr int32_t DATA_NUMBER_ONE_TIME = 800;
+constexpr int32_t DATA_NUMBER_ONE_TIME = 400;
 
 AccessibilityElementOperatorCallbackProxy::AccessibilityElementOperatorCallbackProxy(
     const sptr<IRemoteObject> &impl) : IRemoteProxy<IAccessibilityElementOperatorCallback>(impl)
@@ -48,7 +48,7 @@ bool AccessibilityElementOperatorCallbackProxy::SendTransactCmd(AccessibilityInt
     HILOG_DEBUG();
 
     sptr<IRemoteObject> remoteObj = Remote();
-    if (!remoteObj) {
+    if (remoteObj == nullptr) {
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
         return false;
     }

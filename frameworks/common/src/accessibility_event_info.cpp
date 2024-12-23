@@ -350,5 +350,11 @@ int32_t AccessibilityEventInfo::GetRequestFocusElementId() const
     HILOG_DEBUG("requestFocusElementId_[%{public}d]", requestFocusElementId_);
     return requestFocusElementId_;
 }
+
+void AccessibilityEventInfo::SetElementMainWindowId(const int32_t windowId)
+{
+    HILOG_DEBUG("mainWindowId[%{public}d]", windowId);
+    elementInfo_.SetMainWindowId(windowId);
+}
 } // namespace Accessibility
 } // namespace OHOS

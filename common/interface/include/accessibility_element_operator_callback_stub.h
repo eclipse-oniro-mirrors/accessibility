@@ -17,9 +17,9 @@
 #define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_STUB_H
 
 #include <map>
-#include <mutex>
 #include "i_accessibility_element_operator_callback.h"
 #include "iremote_stub.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -33,7 +33,7 @@ public:
     size_t Size();
     void Clear();
     std::vector<AccessibilityElementInfo> storeData_ = {};
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
 };
 
 /*
@@ -115,7 +115,6 @@ private:
 
     using AccessibilityElementOperatorCallbackFunc =
         ErrCode (AccessibilityElementOperatorCallbackStub::*)(MessageParcel &data, MessageParcel &reply);
-    std::map<uint32_t, AccessibilityElementOperatorCallbackFunc> memberFuncMap_;
 };
 } // namespace Accessibility
 } // namespace OHOS
