@@ -140,8 +140,8 @@ public:
     static void GetElementInfoSpan(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityVisible(NAccessibilityElementData *callbackInfo, napi_value &value);
-    static void GetElementInfoClip(NAccessibilityElementData *callbackInfo, napi_value &value);
-    
+    static void GetElementInfoMainWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
+
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoScreenRect(NAccessibilityElementData *callbackInfo, napi_value &value);
@@ -150,8 +150,9 @@ public:
     static void GetWindowInfoRootElement(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoIsFocused(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoMainWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
 
-    static thread_local napi_ref consRef_;
+    static napi_ref consRef_;
 private:
     static void AttributeNamesComplete(napi_env env, napi_status status, void* data);
     static void AttributeValueExecute(napi_env env, void* data);
