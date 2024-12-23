@@ -53,7 +53,7 @@ bool AccessibleAbilityManagerServiceProxy::SendTransactCmd(AccessibilityInterfac
     HILOG_DEBUG();
 
     sptr<IRemoteObject> remoteServiceProxy= Remote();
-    if (!remoteServiceProxy) {
+    if (remoteServiceProxy == nullptr) {
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
         return false;
     }
@@ -148,7 +148,7 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterStateObserver(
     MessageParcel reply;
     MessageOption option;
 
-    if (!client) {
+    if (client == nullptr) {
         HILOG_ERROR("RegisterStateObserver fail, Input client is null");
         return TRANSACTION_ERR;
     }
@@ -209,7 +209,7 @@ RetError AccessibleAbilityManagerServiceProxy::GetAbilityList(const uint32_t abi
 
     for (int32_t i = 0; i < abilityInfoSize; i++) {
         sptr<AccessibilityAbilityInfoParcel> info = reply.ReadStrongParcelable<AccessibilityAbilityInfoParcel>();
-        if (!info) {
+        if (info == nullptr) {
             HILOG_ERROR("ReadStrongParcelable<AccessibilityAbilityInfoParcel> failed");
             return RET_ERR_IPC_FAILED;
         }
@@ -226,7 +226,7 @@ RetError AccessibleAbilityManagerServiceProxy::RegisterElementOperator(
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    if (!operation) {
+    if (operation == nullptr) {
         HILOG_ERROR("fail, Input operation is null");
         return RET_ERR_INVALID_PARAM;
     }
@@ -391,7 +391,7 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterCaptionObserver(
     MessageParcel reply;
     MessageOption option;
 
-    if (!client) {
+    if (client == nullptr) {
         HILOG_ERROR("RegisterCaptionObserver fail, Input client is null");
         return TRANSACTION_ERR;
     }
@@ -1547,12 +1547,13 @@ void AccessibleAbilityManagerServiceProxy::GetAllConfigs(AccessibilityConfigData
         HILOG_ERROR("GetAllConfigs fail");
         return;
     }
-
+    
     RetError ret = static_cast<RetError>(reply.ReadInt32());
     if (ret != RET_OK) {
         HILOG_ERROR("GetAllConfigs failed %{public}d", ret);
         return;
     }
+
     std::vector<std::string> tmpMultiTarget;
     configData.highContrastText_ = reply.ReadBool();
     configData.invertColor_ = reply.ReadBool();
@@ -1582,7 +1583,7 @@ void AccessibleAbilityManagerServiceProxy::RegisterEnableAbilityListsObserver(
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    if (!observer) {
+    if (observer == nullptr) {
         HILOG_ERROR("observer is nullptr");
         return;
     }
@@ -1612,7 +1613,7 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterConfigObserver(
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
 
-    if (!client) {
+    if (client == nullptr) {
         HILOG_ERROR("RegisterConfigObserver fail, Input client is null");
         return TRANSACTION_ERR;
     }
