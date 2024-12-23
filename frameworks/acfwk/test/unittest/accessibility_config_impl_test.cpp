@@ -494,7 +494,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetCaptionsProperty(caption);
     instance.GetCaptionsProperty(value);
-    EXPECT_STREQ("sansSerif", value.GetFontFamily().c_str());
+    EXPECT_STREQ(caption.GetFontFamily().c_str(), value.GetFontFamily().c_str());
     GTEST_LOG_(INFO) << "SetCaptionProperty_001 end";
 }
 
@@ -590,7 +590,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetMouseAutoClick(time);
     instance.GetMouseAutoClick(value);
-    EXPECT_EQ(10, value);
+    EXPECT_EQ(time, value);
     GTEST_LOG_(INFO) << "SetMouseAutoClick_001 end";
 }
 
@@ -610,7 +610,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetShortkeyTarget(name);
     instance.GetShortkeyTarget(value);
-    EXPECT_STREQ(name.c_str(), "test");
+    EXPECT_STREQ(name.c_str(), value.c_str());
     GTEST_LOG_(INFO) << "SetShortkeyTarget_001 end";
 }
 
@@ -690,7 +690,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationColorFilter_001, TestSize.
     instance.InitializeContext();
     instance.SetDaltonizationColorFilter(type);
     instance.GetDaltonizationColorFilter(value);
-    EXPECT_EQ(1, static_cast<uint32_t>(value));
+    EXPECT_EQ(static_cast<uint32_t>(type), static_cast<uint32_t>(value));
     GTEST_LOG_(INFO) << "SetDaltonizationColorFilter_001 end";
 }
 
@@ -710,7 +710,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetContentTimeout(timer);
     instance.GetContentTimeout(value);
-    EXPECT_EQ(10, value);
+    EXPECT_EQ(timer, value);
     GTEST_LOG_(INFO) << "SetContentTimeout_001 end";
 }
 
@@ -787,7 +787,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioBalance_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetAudioBalance(balance);
     instance.GetAudioBalance(value);
-    EXPECT_FLOAT_EQ(0, value);
+    EXPECT_FLOAT_EQ(balance, value);
     sleep(1);
     GTEST_LOG_(INFO) << "SetAudioBalance_001 end";
 }
@@ -806,7 +806,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetClickResponseTime_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetClickResponseTime(time);
     instance.GetClickResponseTime(value);
-    EXPECT_EQ(ResponseDelayMedium, static_cast<uint32_t>(value));
+    EXPECT_EQ(1, static_cast<uint32_t>(value));
     GTEST_LOG_(INFO) << "SetClickResponseTime_001 end";
 }
 
@@ -824,7 +824,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickState_001, TestSize.Le
     instance.InitializeContext();
     instance.SetIgnoreRepeatClickState(state);
     instance.GetIgnoreRepeatClickState(value);
-    EXPECT_TRUE(value);
+    EXPECT_EQ(true, value);
     GTEST_LOG_(INFO) << "SetIgnoreRepeatClickState_001 end";
 }
 
@@ -842,7 +842,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickTime_001, TestSize.Lev
     instance.InitializeContext();
     instance.SetIgnoreRepeatClickTime(time);
     instance.GetIgnoreRepeatClickTime(value);
-    EXPECT_EQ(RepeatClickTimeoutShort, static_cast<uint32_t>(value));
+    EXPECT_EQ(1, static_cast<uint32_t>(value));
     GTEST_LOG_(INFO) << "SetIgnoreRepeatClickTime_001 end";
 }
 

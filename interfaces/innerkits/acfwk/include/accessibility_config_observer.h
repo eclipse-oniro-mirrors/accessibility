@@ -20,6 +20,7 @@
 #include <string>
 #include <uv.h>
 #include "accessibility_config.h"
+#include "ffrt.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 
@@ -51,8 +52,8 @@ public:
     int NotifyIntChanged(uv_work_t *work);
     void NotifyUintChanged2JS(uint32_t value);
     int NotifyUintChanged(uv_work_t *work);
-    void NotifyFloatChanged2JS(float value);
-    int NotifyFloatChanged(uv_work_t *work);
+    void NotifyDoubleChanged2JS(double value);
+    int NotifyDoubleChanged(uv_work_t *work);
 
     napi_env env_ = nullptr;
     napi_ref handlerRef_ = nullptr;
@@ -71,7 +72,7 @@ public:
     void UnsubscribeObservers(OHOS::AccessibilityConfig::CONFIG_ID id);
 
 private:
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
     std::vector<std::shared_ptr<NAccessibilityConfigObserver>> observers_ = {};
 };
 #endif // ACCESSIBILITY_CONFIG_OBSERVER_H

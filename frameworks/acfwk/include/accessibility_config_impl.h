@@ -16,13 +16,13 @@
 #ifndef ACCESSIBILITY_CONFIG_IMPL_H
 #define ACCESSIBILITY_CONFIG_IMPL_H
 
-#include <mutex>
-#include <condition_variable>
 #include "accessibility_config.h"
 #include "accessibility_enable_ability_lists_observer_stub.h"
 #include "accessible_ability_manager_caption_observer_stub.h"
 #include "accessible_ability_manager_config_observer_stub.h"
 #include "accessible_ability_manager_service_proxy.h"
+#include "ffrt.h"
+#include "ffrt_inner.h"
 #include "event_handler.h"
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
@@ -294,6 +294,7 @@ private:
     void NotifyDefaultShortKeyMultiConfigs();
     void NotifyImmediately(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
     void InitConfigValues();
+    uint32_t InvertDaltonizationColorInAtoHos(uint32_t filter);
     static void OnParameterChanged(const char *key, const char *value, void *context);
 
     void OnIgnoreRepeatClickStateChanged(const uint32_t stateType);
@@ -330,13 +331,13 @@ private:
     std::vector<std::string> shortkeyMultiTarget_ {};
     std::vector<std::shared_ptr<AccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>> configObservers_;
-    std::mutex mutex_;
+    ffrt::mutex mutex_;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AppExecFwk::EventHandler> handler_;
 
-    std::condition_variable proxyConVar_;
-    std::mutex conVarMutex_; // mutex for proxyConVar
+    ffrt::condition_variable proxyConVar_;
+    ffrt::mutex conVarMutex_; // mutex for proxyConVar
 };
 } // namespace AccessibilityConfig
 } // namespace OHOS
