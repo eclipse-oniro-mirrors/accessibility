@@ -35,6 +35,10 @@ ohos_shared_library("gesturepath_napi") {
     "AAMS_LOG_DOMAIN = 0xD001D10",
   ]
 
+  if (build_variant == "user") {
+    defines += [ "RELEASE_VERSION" ]
+  }
+
   sources = [
     "./src/napi_accessibility_gesture_path.cpp",
     "./src/native_module.cpp",

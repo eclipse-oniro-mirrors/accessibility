@@ -35,6 +35,10 @@ ohos_shared_library("accessibility_napi") {
     "AAMS_LOG_DOMAIN = 0xD001D10",
   ]
 
+  if (build_variant == "user") {
+    defines += [ "RELEASE_VERSION" ]
+  }
+
   sources = [
     "./src/napi_accessibility_event_info.cpp",
     "./src/napi_accessibility_system_ability_client.cpp",
@@ -50,6 +54,7 @@ ohos_shared_library("accessibility_napi") {
   ]
 
   external_deps = [
+    "ffrt:libffrt",
     "hilog:libhilog",
     "input:libmmi-client",
     "napi:ace_napi",
