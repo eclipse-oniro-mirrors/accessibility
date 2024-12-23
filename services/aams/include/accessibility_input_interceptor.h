@@ -23,6 +23,7 @@
 #include "accessibility_event_transmission.h"
 #include "accessibility_mouse_key.h"
 #include "event_handler.h"
+#include "ffrt.h"
 #include "i_input_event_consumer.h"
 #include "input_manager.h"
 #include "key_event.h"
@@ -70,8 +71,8 @@ public:
 
     static sptr<AccessibilityInputInterceptor> GetInstance();
     ~AccessibilityInputInterceptor();
-    void ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const;
-    void ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event) const;
+    void ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event);
+    void ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event);
     bool OnKeyEvent(MMI::KeyEvent &event) override;
     bool OnPointerEvent(MMI::PointerEvent &event) override;
     void OnMoveMouse(int32_t offsetX, int32_t offsetY) override;
@@ -97,6 +98,7 @@ private:
     MMI::InputManager *inputManager_ = nullptr;
     std::shared_ptr<AccessibilityInputEventConsumer> inputEventConsumer_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
+    ffrt::mutex mutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
