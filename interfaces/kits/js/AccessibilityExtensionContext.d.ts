@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import type { AsyncCallback } from '../@ohos.base';
+import type { AsyncCallback } from '../basic';
 import ExtensionContext from './ExtensionContext';
 import type accessibility from '../@ohos.accessibility';
 import type { GesturePath } from '../@ohos.accessibility.GesturePath';
@@ -309,6 +309,21 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
    * @since 12
    */
    startAbility(want: Want): Promise<void>;
+
+  /**
+   * Set the screen curtain enable or disable.
+   *
+   * @param { boolean } isEnable Indicates whether the screen curtain is enabled.
+   * @throws { BusinessError } 401 - Parameter error. Possible causes:
+   *                           1. Mandatory parameters are left unspecified;
+   *                           2. Incorrect parameter types;
+   *                           3. Parameter verification failed.
+   * @throws { BusinessError } 9300003 -  No accessibility permission to perform the operation.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 12
+   */
+  enableScreenCurtain(isEnable: boolean): void;
 }
 
 /**
@@ -434,6 +449,24 @@ declare interface AccessibilityElement {
    * @since 9
    */
   performAction(actionName: string, callback: AsyncCallback<void>): void;
+
+   /**
+   * Get the position of cursor in TextInput.
+   *
+   * @param { AsyncCallback<number> } callback Indicates the listener.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 12
+   */
+   getCursorPosition(callback: AsyncCallback<number>): void;
+
+   /**
+    * Get the position of cursor in TextInput.
+    *
+    * @returns { Promise<number> }
+    * @syscap SystemCapability.BarrierFree.Accessibility.Core
+    * @since 12
+    */
+   getCursorPosition(): Promise<number>;
 
   /**
    * Set the screen curtain enable or disable.
