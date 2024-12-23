@@ -190,7 +190,7 @@ RetError AccessibilityWindowManager::GetFocusedWindowId(int32_t &focusedWindowId
 bool AccessibilityWindowManager::IsInnerWindowRootElement(int64_t elementId)
 {
     (void)elementId;
-    return true;
+    return false;
 }
 } // namespace Accessibility
 } // namespace OHOS
