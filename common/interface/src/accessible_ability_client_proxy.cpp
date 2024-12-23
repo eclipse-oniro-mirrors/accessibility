@@ -42,7 +42,7 @@ bool AccessibleAbilityClientProxy::SendTransactCmd(AccessibilityInterfaceCode co
     HILOG_DEBUG();
 
     sptr<IRemoteObject> remoteClientProxy = Remote();
-    if (!remoteClientProxy) {
+    if (remoteClientProxy == nullptr) {
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
         return false;
     }
@@ -66,7 +66,7 @@ void AccessibleAbilityClientProxy::Init(const sptr<IAccessibleAbilityChannel> &c
     if (!WriteInterfaceToken(data)) {
         return;
     }
-    if (!channel) {
+    if (channel == nullptr) {
         HILOG_ERROR("channel is null.");
         return;
     }
