@@ -27,6 +27,10 @@ config("accessibilityconfig_private_config") {
     "AAMS_LOG_TAG = \"accessibility_acfwk\"",
     "AAMS_LOG_DOMAIN = 0xD001D03",
   ]
+
+  if (build_variant == "user") {
+    defines += [ "RELEASE_VERSION" ]
+  }
 }
 
 config("accessibilityconfig_public_config") {

@@ -24,6 +24,10 @@ config("accessibility_common_private_config") {
     "AAMS_LOG_TAG = \"accessibility_common\"",
     "AAMS_LOG_DOMAIN = 0xD001D04",
   ]
+
+  if (build_variant == "user") {
+    defines += [ "RELEASE_VERSION" ]
+  }
 }
 
 config("accessibility_common_public_config") {
@@ -66,7 +70,6 @@ ohos_shared_library("accessibility_common") {
   external_deps = [
     "access_token:libaccesstoken_sdk",
     "access_token:libtokenid_sdk",
-    "ffrt:libffrt",
     "hilog:libhilog",
     "input:libmmi-client",
     "ipc:ipc_single",
