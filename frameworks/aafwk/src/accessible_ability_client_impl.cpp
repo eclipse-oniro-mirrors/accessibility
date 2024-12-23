@@ -39,7 +39,7 @@ namespace {
     constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
     constexpr int64_t ROOT_NONE_ID = -1;
     constexpr int64_t NODE_ID_MAX = 0x7FFFFFFE;
-    std::mutex g_Mutex;
+    ffrt::mutex g_Mutex;
     sptr<AccessibleAbilityClientImpl> g_Instance = nullptr;
     constexpr int32_t SA_CONNECT_TIMEOUT = 500; // ms
 } // namespace
@@ -47,7 +47,7 @@ namespace {
 sptr<AccessibleAbilityClient> AccessibleAbilityClient::GetInstance()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(g_Mutex);
+    std::lock_guard<ffrt::mutex> lock(g_Mutex);
     if (g_Instance == nullptr) {
         g_Instance = new(std::nothrow) AccessibleAbilityClientImpl();
     }
@@ -57,7 +57,7 @@ sptr<AccessibleAbilityClient> AccessibleAbilityClient::GetInstance()
 sptr<AccessibleAbilityClientImpl> AccessibleAbilityClientImpl::GetAbilityClientImplement()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(g_Mutex);
+    std::lock_guard<ffrt::mutex> lock(g_Mutex);
     if (g_Instance == nullptr) {
         g_Instance = new(std::nothrow) AccessibleAbilityClientImpl();
     }
@@ -70,18 +70,19 @@ AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
     if (!InitAccessibilityServiceProxy()) {
         HILOG_ERROR("Init accessibility service proxy failed");
     }
-
+#ifndef ACCESSIBILITY_WATCH_FEATURE
     int retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_SERVICE.c_str(),
         &AccessibleAbilityClientImpl::OnParameterChanged, this);
     if (retSysParam) {
         HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
     }
+#endif // ACCESSIBILITY_WATCH_FEATURE
 }
 
 AccessibleAbilityClientImpl::~AccessibleAbilityClientImpl()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (serviceProxy_ && serviceProxy_->AsObject()) {
         HILOG_DEBUG("Remove service death recipient");
         serviceProxy_->AsObject()->RemoveDeathRecipient(accessibilityServiceDeathRecipient_);
@@ -104,9 +105,9 @@ bool AccessibleAbilityClientImpl::InitAccessibilityServiceProxy()
 
     sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (object != nullptr) {
-        if (!accessibilityServiceDeathRecipient_) {
+        if (accessibilityServiceDeathRecipient_ == nullptr) {
             accessibilityServiceDeathRecipient_ = new(std::nothrow) AccessibilityServiceDeathRecipient(*this);
-            if (!accessibilityServiceDeathRecipient_) {
+            if (accessibilityServiceDeathRecipient_ == nullptr) {
                 HILOG_ERROR("Failed to create service deathRecipient.");
                 return false;
             }
@@ -121,12 +122,14 @@ bool AccessibleAbilityClientImpl::InitAccessibilityServiceProxy()
             return true;
         }
     } else {
+#ifdef ACCESSIBILITY_WATCH_FEATURE
         if (LoadAccessibilityService() == false) {
-            HILOG_ERROR("LoadAccessibilityService failed.");
+            HILOG_ERROR("LoadSystemAbilityService failed.");
             return false;
         } else {
             return true;
         }
+#endif // ACCESSIBILITY_WATCH_FEATURE
     }
     return false;
 }
@@ -144,23 +147,40 @@ void AccessibleAbilityClientImpl::OnParameterChanged(const char *key, const char
     }
 
     AccessibleAbilityClientImpl *implPtr = static_cast<AccessibleAbilityClientImpl *>(context);
-    std::lock_guard<std::mutex> lock(implPtr->mutex_);
+    std::lock_guard<ffrt::mutex> lock(implPtr->mutex_);
     if (implPtr->InitAccessibilityServiceProxy()) {
         HILOG_INFO("InitAccessibilityServiceProxy success");
     }
 }
 
-sptr<Accessibility::IAccessibleAbilityManagerService> AccessibleAbilityClientImpl::GetServiceProxy()
+bool AccessibleAbilityClientImpl::CheckServiceProxy()
 {
-    if (serviceProxy_ || LoadAccessibilityService()) {
-        return serviceProxy_;
+#ifndef ACCESSIBILITY_WATCH_FEATURE
+    return serviceProxy_ != nullptr;
+#else
+    if (serviceProxy_ != nullptr || LoadAccessibilityService() == true) {
+        return true;
     }
-    return nullptr;
+    return false;
+#endif // ACCESSIBILITY_WATCH_FEATURE
+}
+
+RetError AccessibleAbilityClientImpl::CheckConnection()
+{
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+    if (!channelClient_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+    return RET_OK;
 }
 
 bool AccessibleAbilityClientImpl::LoadAccessibilityService()
 {
-    std::unique_lock<std::mutex> lock(conVarMutex_);
+    std::unique_lock<ffrt::mutex> lock(conVarMutex_);
     sptr<AccessibilityLoadCallback> loadCallback = new AccessibilityLoadCallback();
     if (loadCallback == nullptr) {
         return false;
@@ -183,20 +203,44 @@ bool AccessibleAbilityClientImpl::LoadAccessibilityService()
 
 void AccessibleAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
-    std::lock_guard<std::mutex> lock(conVarMutex_);
+    std::lock_guard<ffrt::mutex> lock(conVarMutex_);
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_SERVICE.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
-    if (retSysParam >= 0 && !std::strcmp(value, "true")) {
-        if (InitAccessibilityServiceProxy() == false) {
-            HILOG_ERROR("Init accessibility service proxy failed");
+    do {
+        if (serviceProxy_ != nullptr) {
+            break;
         }
-    }
+        if (retSysParam >= 0 && !std::strcmp(value, "true")) {
+            break;
+        }
+        sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+        if (samgr == nullptr) {
+            break;
+        }
+        sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+        if (object == nullptr) {
+            break;
+        }
+        serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(object);
+        if (serviceProxy_ == nullptr) {
+            break;
+        }
+        if (accessibilityServiceDeathRecipient_ == nullptr) {
+            accessibilityServiceDeathRecipient_ = new(std::nothrow) AccessibilityServiceDeathRecipient(*this);
+        }
+        if (accessibilityServiceDeathRecipient_ == nullptr) {
+            break;
+        }
+        if (serviceProxy_->AsObject() != nullptr) {
+            serviceProxy_->AsObject()->AddDeathRecipient(accessibilityServiceDeathRecipient_);
+        }
+    } while (0);
     proxyConVar_.notify_one();
 }
 
 void AccessibleAbilityClientImpl::LoadSystemAbilityFail()
 {
-    std::lock_guard<std::mutex> lock(conVarMutex_);
+    std::lock_guard<ffrt::mutex> lock(conVarMutex_);
     HILOG_WARN("LoadSystemAbilityFail.");
     proxyConVar_.notify_one();
 }
@@ -211,7 +255,7 @@ RetError AccessibleAbilityClientImpl::RegisterAbilityListener(
     const std::shared_ptr<AccessibleAbilityListener> &listener)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (listener_) {
         HILOG_DEBUG("listener already exists.");
         return RET_ERR_REGISTER_EXIST;
@@ -231,7 +275,7 @@ void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &ch
 
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     {
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::lock_guard<ffrt::mutex> lock(mutex_);
         if (!listener_) {
             HILOG_ERROR("listener_ is nullptr.");
             return;
@@ -240,9 +284,9 @@ void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &ch
         channelClient_ = std::make_shared<AccessibleAbilityChannelClient>(channelId, channel);
 
         // Add death recipient
-        if (!deathRecipient_) {
+        if (deathRecipient_ == nullptr) {
             deathRecipient_ = new(std::nothrow) AccessibleAbilityDeathRecipient(*this);
-            if (!deathRecipient_) {
+            if (deathRecipient_ == nullptr) {
                 HILOG_ERROR("Failed to create deathRecipient.");
                 return;
             }
@@ -268,7 +312,7 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     {
         isConnected_ = false;
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::lock_guard<ffrt::mutex> lock(mutex_);
         // Delete death recipient
         if (channelClient_ && channelClient_->GetRemote()) {
             HILOG_ERROR("Remove death recipient");
@@ -291,7 +335,7 @@ void AccessibleAbilityClientImpl::OnAccessibilityEvent(const AccessibilityEventI
     HILOG_DEBUG();
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     {
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::lock_guard<ffrt::mutex> lock(mutex_);
         if (!channelClient_) {
             HILOG_ERROR("The channel is invalid.");
             return;
@@ -309,7 +353,7 @@ void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     std::shared_ptr<AccessibleAbilityChannelClient> channel = nullptr;
     {
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::lock_guard<ffrt::mutex> lock(mutex_);
         listener = listener_;
         channel = channelClient_;
     }
@@ -334,7 +378,7 @@ RetError AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, Accessib
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if ((focusType != FOCUS_TYPE_INPUT) && (focusType != FOCUS_TYPE_ACCESSIBILITY)) {
         HILOG_ERROR("focusType is not allowed.");
         return RET_ERR_INVALID_PARAM;
@@ -357,7 +401,7 @@ RetError AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityE
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if ((focusType != FOCUS_TYPE_INPUT) && (focusType != FOCUS_TYPE_ACCESSIBILITY)) {
         HILOG_ERROR("focusType is not allowed.");
         return RET_ERR_INVALID_PARAM;
@@ -373,7 +417,11 @@ RetError AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityE
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], focusType[%{public}d]",
         windowId, elementId, focusType);
 
-    return channelClient_->FindFocusedElementInfo(windowId, elementId, focusType, elementInfo);
+    RetError ret = channelClient_->FindFocusedElementInfo(windowId, elementId, focusType, elementInfo);
+    if (ret == RET_OK) {
+        elementInfo.SetMainWindowId(sourceInfo.GetMainWindowId());
+    }
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
@@ -384,7 +432,7 @@ RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<Access
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!gesturePath) {
         HILOG_ERROR("The gesturePath is null.");
         return RET_ERR_INVALID_PARAM;
@@ -413,14 +461,9 @@ RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementI
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("Failed to connect to aams");
-        return RET_ERR_SAMGR;
-    }
-
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to connect to aams");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (CheckServiceProxy() == false) {
+        HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
     }
 
@@ -436,7 +479,11 @@ RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementI
         return RET_OK;
     }
 
-    return SearchElementInfoFromAce(activeWindow, ROOT_NONE_ID, cacheMode_, elementInfo);
+    RetError ret = SearchElementInfoFromAce(activeWindow, ROOT_NONE_ID, cacheMode_, elementInfo);
+    if (ret == RET_OK) {
+        elementInfo.SetMainWindowId(activeWindow);
+    }
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
@@ -448,7 +495,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowI
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -461,7 +508,11 @@ RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowI
         return RET_OK;
     }
 
-    return SearchElementInfoFromAce(windowId, ROOT_NONE_ID, cacheMode_, elementInfo);
+    RetError ret = SearchElementInfoFromAce(windowId, ROOT_NONE_ID, cacheMode_, elementInfo);
+    if (ret == RET_OK) {
+        elementInfo.SetMainWindowId(windowId);
+    }
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
@@ -472,7 +523,7 @@ RetError AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, Accessib
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -488,19 +539,14 @@ RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElem
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
 
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("failed to connect to aams");
-        return RET_ERR_SAMGR;
-    }
-
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to connect to aams");
+    if (CheckServiceProxy() == false) {
+        HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
     }
 
@@ -575,9 +621,9 @@ RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWi
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("failed to connect to aams");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (CheckServiceProxy() == false) {
+        HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
     }
 
@@ -594,6 +640,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWi
         HILOG_ERROR("get window element failed");
         return ret;
     }
+    SortElementInfosIfNecessary(elementInfos);
     return RET_OK;
 }
 
@@ -605,7 +652,7 @@ RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindow
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -622,7 +669,7 @@ RetError AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId,
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -640,7 +687,7 @@ RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &el
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -649,8 +696,12 @@ RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &el
         HILOG_ERROR("direction is invalid.");
         return RET_ERR_INVALID_PARAM;
     }
-    return channelClient_->FocusMoveSearch(elementInfo.GetWindowId(),
+    RetError ret = channelClient_->FocusMoveSearch(elementInfo.GetWindowId(),
         elementInfo.GetAccessibilityId(), direction, nextElementInfo);
+    if (ret == RET_OK) {
+        nextElementInfo.SetMainWindowId(elementInfo.GetMainWindowId());
+    }
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
@@ -662,7 +713,7 @@ RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, c
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -687,30 +738,24 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
     std::vector<AccessibilityElementInfo> &children)
 {
     HILOG_DEBUG();
-    if (!isConnected_) {
-        HILOG_ERROR("connection is broken");
-        return RET_ERR_NO_CONNECTION;
-    }
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!channelClient_) {
-        HILOG_ERROR("The channel is invalid.");
-        return RET_ERR_NO_CONNECTION;
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    RetError ret = CheckConnection();
+    if (ret != RET_OK) {
+        return ret;
     }
     int32_t windowId = parent.GetWindowId();
     std::vector<int64_t> childIds =  parent.GetChildIds();
-    RetError ret = RET_OK;
     HILOG_DEBUG("windowId[%{public}d], childIds.size[%{public}zu] childTreeId:%{public}d",
         windowId, childIds.size(), parent.GetChildTreeId());
     if ((childIds.size() == 0) && (parent.GetChildWindowId() > 0 || parent.GetChildTreeId() > 0)) {
         std::vector<AccessibilityElementInfo> elementInfos {};
         if (parent.GetChildWindowId() > 0 && (parent.GetChildWindowId() != windowId)) {
             ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetChildWindowId(), ROOT_NONE_ID,
-            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
+                GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
         } else if (parent.GetChildTreeId() > 0) {
             ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
-            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
+                GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
         }
-
         if (ret != RET_OK) {
             HILOG_ERROR("Get element info from ace failed");
             return ret;
@@ -721,8 +766,22 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
         }
         SortElementInfosIfNecessary(elementInfos);
         children.emplace_back(elementInfos.front());
+    } else if (childIds.size() > 0 && parent.GetChildTreeId() > 0) {
+        std::vector<AccessibilityElementInfo> elementInfos {};
+        ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
+            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
+        if (ret != RET_OK) {
+            HILOG_ERROR("Get element info from ace failed");
+            return ret;
+        }
+        children.emplace_back(elementInfos.front());
     }
     ret = GetChildrenWork(windowId, childIds, children);
+    if (!children.empty()) {
+        for (auto &child : children) {
+            child.SetMainWindowId(parent.GetMainWindowId());
+        }
+    }
     return ret;
 }
 
@@ -760,7 +819,7 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -769,39 +828,30 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
     int32_t windowId = elementInfo.GetWindowId();
     int64_t elementId = elementInfo.GetAccessibilityId();
     int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
-    HILOG_DEBUG("windowId %{public}d, elementId %{public}" PRId64 ", text %{public}s",
-        windowId, elementId, text.c_str());
+
+    RetError ret = RET_ERR_FAILED;
     if (text != "") { // find element condition is null, so we will search all element info
-        RetError ret = channelClient_->SearchElementInfosByText(windowId, elementId, text, elementInfos);
-        if (ret != RET_OK) {
-            HILOG_ERROR("SearchElementInfosByText failed ret:%{public}d, windowId:%{public}d, text:%{public}s",
-                ret, windowId, text.c_str());
-        }
+        ret = channelClient_->SearchElementInfosByText(windowId, elementId, text, elementInfos);
         if (elementInfos.empty()) {
-            HILOG_DEBUG("SearchElementInfosByText get resilt size 0, begin SearchElementInfoRecursiveByWinid");
             ret = SearchElementInfoRecursiveByContent(serviceProxy_->GetActiveWindow(),
                 elementId, GET_SOURCE_MODE, elementInfos, text, ROOT_TREE_ID);
-            if (ret != RET_OK) {
-                HILOG_ERROR("get window element info failed ret:%{public}d", ret);
-                return ret;
-            }
-            HILOG_DEBUG("get resilt size:%{public}zu", elementInfos.size());
         }
-        return RET_OK;
+    } else {
+        ret = SearchElementInfoRecursiveByWinid(windowId, elementId, GET_SOURCE_MODE, elementInfos, treeId);
     }
-    RetError ret = SearchElementInfoRecursiveByWinid(windowId, elementId, GET_SOURCE_MODE, elementInfos, treeId);
-    if (ret != RET_OK) {
-        HILOG_ERROR("get window element info failed");
-        return ret;
+    if (!elementInfos.empty()) {
+        for (auto &element : elementInfos) {
+            element.SetMainWindowId(elementInfo.GetMainWindowId());
+        }
     }
-    return RET_OK;
+    HILOG_INFO("ret:%{public}d, windowId:%{public}d, text:%{public}s", ret, windowId, text.c_str());
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByContent(const int32_t windowId,
     const int64_t elementId, uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos,
     const std::string text, int32_t treeId, bool isFilter)
 {
-    HILOG_DEBUG();
     HILOG_INFO("windowId %{public}d}, elementId %{public}" PRId64 "", windowId, elementId);
     if (windowId <= 0) {
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
@@ -860,7 +910,7 @@ RetError AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &ev
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -884,7 +934,7 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -899,20 +949,24 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
         HILOG_DEBUG("get element info from cache");
         return RET_OK;
     }
+    RetError ret = RET_ERR_FAILED;
     if ((parentElementId == ROOT_PARENT_ELEMENT_ID) && (parentWindowId > 0)) {
         parentElementId = serviceProxy_->GetRootParentId(windowId, treeId);
         if (parentElementId > 0) {
             treeId = (static_cast<uint64_t>(parentElementId) >> ELEMENT_MOVE_BIT);
             HILOG_DEBUG("find root parentId and search parentElementId [%{public}" PRId64 "] treeId[%{public}d]",
                 parentElementId, treeId);
-            return SearchElementInfoByElementId(child.GetParentWindowId(), parentElementId, cacheMode_, parent, treeId);
+            ret = SearchElementInfoByElementId(child.GetParentWindowId(), parentElementId, cacheMode_, parent, treeId);
+            parent.SetMainWindowId(child.GetMainWindowId());
+            return ret;
         } else {
             HILOG_DEBUG("GetRootParentId faild, parentElement:%{public}" PRId64 "", parentElementId);
             return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
         }
     }
-
-    return SearchElementInfoByElementId(windowId, parentElementId, cacheMode_, parent, treeId);
+    ret = SearchElementInfoByElementId(windowId, parentElementId, cacheMode_, parent, treeId);
+    parent.SetMainWindowId(child.GetMainWindowId());
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, const int32_t windowId,
@@ -924,14 +978,9 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, co
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("failed to connect to aams");
-        return RET_ERR_SAMGR;
-    }
-
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to connect to aams");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (CheckServiceProxy() == false) {
+        HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
     }
 
@@ -959,7 +1008,7 @@ RetError AccessibleAbilityClientImpl::GetCursorPosition(const AccessibilityEleme
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -979,7 +1028,7 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1013,7 +1062,7 @@ RetError AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std:
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1037,7 +1086,7 @@ void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &r
 {
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     {
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::lock_guard<ffrt::mutex> lock(mutex_);
         if (!serviceProxy_) {
             HILOG_ERROR("serviceProxy_ is nullptr");
             return;
@@ -1062,7 +1111,7 @@ void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &r
 void AccessibleAbilityClientImpl::ResetAAClient(const wptr<IRemoteObject> &remote)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (channelClient_) {
         sptr<IRemoteObject> object = channelClient_->GetRemote();
         if (object && (remote == object)) {
@@ -1078,7 +1127,7 @@ void AccessibleAbilityClientImpl::ResetAAClient(const wptr<IRemoteObject> &remot
 RetError AccessibleAbilityClientImpl::SetCacheMode(const int32_t cacheMode)
 {
     HILOG_DEBUG("set cache mode: [%{public}d]", cacheMode);
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     cacheWindowId_ = -1;
     cacheElementInfos_.clear();
     if (cacheMode < 0) {
@@ -1188,6 +1237,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t win
     if (!GetCacheElementInfo(windowId, elementId, info)) {
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
     }
+    info.SetMainWindowId(windowId);
     HILOG_DEBUG("elementId:%{public}" PRId64 ", windowId:%{public}d, treeId:%{public}d",
         info.GetAccessibilityId(), info.GetWindowId(), info.GetBelongTreeId());
     return RET_OK;
@@ -1202,19 +1252,14 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("Failed to connect to aams");
-        return RET_ERR_SAMGR;
-    }
-
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
 
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to connect to aams");
+    if (CheckServiceProxy() == false) {
+        HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
     }
 
@@ -1242,24 +1287,22 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
     SortElementInfosIfNecessary(elementInfos);
     for (auto &info : elementInfos) {
         if (info.GetInspectorKey() == inspectorKey) {
-            HILOG_INFO("find elementInfo by inspectorKey success");
+            HILOG_INFO("find elementInfo by inspectorKey success, inspectorKey: %{public}s", inspectorKey.c_str());
             elementInfo = info;
+            elementInfo.SetMainWindowId(windowId);
             return RET_OK;
         }
     }
+    HILOG_INFO("SearchElementInfoByInspectorKey failed, inspectorKey: %{public}s", inspectorKey.c_str());
     return RET_ERR_FAILED;
 }
 
 RetError AccessibleAbilityClientImpl::Connect()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to connect to aams");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (CheckServiceProxy() == false) {
+        HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
     }
 
@@ -1269,13 +1312,9 @@ RetError AccessibleAbilityClientImpl::Connect()
 RetError AccessibleAbilityClientImpl::Disconnect()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr && !LoadAccessibilityService()) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to connect to aams");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (CheckServiceProxy() == false) {
+        HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
     }
     return serviceProxy_->DisableUITestAbility();
@@ -1400,11 +1439,11 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
         if ((elementInfos[i].GetChildWindowId() > 0) &&
             (elementInfos[i].GetChildWindowId() != elementInfos[i].GetWindowId())) {
             ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetChildWindowId(),
-            elementId, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, &elementInfos[i]);
+                elementId, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, &elementInfos[i]);
             HILOG_DEBUG("ChildWindowId %{public}d}. ret:%{public}d", elementInfos[i].GetChildWindowId(), ret);
         } else if (elementInfos[i].GetChildTreeId() > 0) {
             ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetWindowId(),
-            elementId, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, &elementInfos[i]);
+                elementId, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, &elementInfos[i]);
             HILOG_DEBUG("windowId %{public}d}.treeId:%{public}d. ret:%{public}d",
                 elementInfos[i].GetWindowId(), elementInfos[i].GetChildTreeId(), ret);
         }
@@ -1471,9 +1510,9 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByAccessibilityId(const i
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("failed to connect aams.");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (CheckServiceProxy() == false) {
+        HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
     }
     if (channelClient_ == nullptr) {
@@ -1498,13 +1537,14 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByAccessibilityId(const i
 
     SetCacheElementInfo(windowId, elementInfos);
     info = elementInfos.front();
+    info.SetMainWindowId(windowId);
     return RET_OK;
 }
 
 void AccessibleAbilityClientImpl::ElementCacheInfo::AddElementCache(const int32_t windowId,
     const std::vector<AccessibilityElementInfo>& elementInfos)
 {
-    std::lock_guard<std::mutex> lock(elementCacheMutex_);
+    std::lock_guard<ffrt::mutex> lock(elementCacheMutex_);
     if (windowIdSet_.size() >= MAX_CACHE_WINDOW_SIZE) {
         auto winId = windowIdSet_.front();
         windowIdSet_.pop_front();
@@ -1553,7 +1593,7 @@ bool AccessibleAbilityClientImpl::ElementCacheInfo::GetElementByWindowId(const i
     const int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos)
 {
     elementInfos.clear(); // clear
-    std::lock_guard<std::mutex> lock(elementCacheMutex_);
+    std::lock_guard<ffrt::mutex> lock(elementCacheMutex_);
     if (elementCache_.find(windowId) == elementCache_.end()) {
         HILOG_DEBUG("windowId %{public}d is not existed", windowId);
         return false;
@@ -1597,7 +1637,7 @@ bool AccessibleAbilityClientImpl::ElementCacheInfo::GetElementByWindowId(const i
 
 void AccessibleAbilityClientImpl::ElementCacheInfo::RemoveElementByWindowId(const int32_t windowId)
 {
-    std::lock_guard<std::mutex> lock(elementCacheMutex_);
+    std::lock_guard<ffrt::mutex> lock(elementCacheMutex_);
     HILOG_DEBUG("erase windowId %{public}d cache", windowId);
     for (auto iter = windowIdSet_.begin(); iter != windowIdSet_.end(); iter++) {
         if (*iter == windowId) {
@@ -1611,7 +1651,7 @@ void AccessibleAbilityClientImpl::ElementCacheInfo::RemoveElementByWindowId(cons
 
 bool AccessibleAbilityClientImpl::ElementCacheInfo::IsExistWindowId(int32_t windowId)
 {
-    std::lock_guard<std::mutex> lock(elementCacheMutex_);
+    std::lock_guard<ffrt::mutex> lock(elementCacheMutex_);
     for (auto iter = windowIdSet_.begin(); iter != windowIdSet_.end(); iter++) {
         if (*iter == windowId) {
             return true;
@@ -1623,7 +1663,7 @@ bool AccessibleAbilityClientImpl::ElementCacheInfo::IsExistWindowId(int32_t wind
 
 bool AccessibleAbilityClientImpl::SceneBoardWindowElementMap::IsExistWindowId(int32_t windowId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     if (windowElementMap_.find(windowId) != windowElementMap_.end()) {
         return true;
     }
@@ -1634,13 +1674,13 @@ bool AccessibleAbilityClientImpl::SceneBoardWindowElementMap::IsExistWindowId(in
 void AccessibleAbilityClientImpl::SceneBoardWindowElementMap::AddWindowElementIdPair(int32_t windowId,
     int64_t elementId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     windowElementMap_[windowId] = elementId;
 }
 
 std::vector<int32_t> AccessibleAbilityClientImpl::SceneBoardWindowElementMap::GetWindowIdList()
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     std::vector<int32_t> windowList;
     for (auto iter = windowElementMap_.begin(); iter != windowElementMap_.end(); iter++) {
         windowList.push_back(iter->first);
@@ -1651,7 +1691,7 @@ std::vector<int32_t> AccessibleAbilityClientImpl::SceneBoardWindowElementMap::Ge
 
 int32_t AccessibleAbilityClientImpl::SceneBoardWindowElementMap::GetWindowIdByElementId(int64_t elementId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     for (auto iter = windowElementMap_.begin(); iter != windowElementMap_.end(); iter++) {
         if (iter->second == elementId) {
             return iter->first;
@@ -1664,7 +1704,7 @@ int32_t AccessibleAbilityClientImpl::SceneBoardWindowElementMap::GetWindowIdByEl
 void AccessibleAbilityClientImpl::SceneBoardWindowElementMap::RemovePairByWindowIdList(
     std::vector<int32_t>& windowIdList)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     for (auto windowId : windowIdList) {
         windowElementMap_.erase(windowId);
     }
@@ -1672,7 +1712,7 @@ void AccessibleAbilityClientImpl::SceneBoardWindowElementMap::RemovePairByWindow
 
 void AccessibleAbilityClientImpl::SceneBoardWindowElementMap::RemovePairByWindowId(int32_t windowId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     windowElementMap_.erase(windowId);
 }
 
