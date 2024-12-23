@@ -66,7 +66,7 @@ AccessibilityZoomGesture::AccessibilityZoomGesture()
     float densityPixels = display->GetVirtualPixelRatio();
     multiTapDistance_ = densityPixels * DOUBLE_TAP_SLOP + 0.5f;
 #else
-    HILOG_DEBUG("not support display manager");
+    HILOG_DEBUG("not support display manager")
     multiTapDistance_ = 1 * DOUBLE_TAP_SLOP + 0.5f;
 #endif
 }
@@ -106,6 +106,11 @@ bool AccessibilityZoomGesture::IsTapOnInputMethod(MMI::PointerEvent &event)
 bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("state_ is %{public}d.", state_);
+
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN ||
+        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) {
+        HILOG_INFO("PointerAction: %{public}d.", event.GetPointerAction());
+    }
 
     int32_t sourceType = event.GetSourceType();
     if (sourceType != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
@@ -219,7 +224,6 @@ void AccessibilityZoomGesture::ClearCacheEventsAndMsg()
     lastDownEvent_ = nullptr;
     preLastUpEvent_ = nullptr;
     lastUpEvent_ = nullptr;
-    zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
 }
 
 void AccessibilityZoomGesture::RecognizeInReadyState(MMI::PointerEvent &event)
@@ -456,7 +460,7 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event, ZOOM_FOC
     }
 
     float scaleSpan = (span - lastSpan_) * scaleRatio_;
-    if (abs(scaleSpan) > EPS) {
+    if (scaleSpan != 0) {
         OnScale(scaleSpan);
         lastSpan_ = span;
     }
@@ -736,6 +740,7 @@ void AccessibilityZoomGesture::ZoomGestureEventHandler::ProcessEvent(const AppEx
     switch (eventId) {
         case MULTI_TAP_MSG:
             zoomGesture_.SendCacheEventsToNext();
+            HILOG_DEBUG("process multi tap msg.");
             break;
         default:
             break;
@@ -780,6 +785,7 @@ void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
     float y = anchorPointY_ / screenHeight_;
     scaleRatio_ = DEFAULT_SCALE;
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    Utils::RecordOnZoomGestureEvent("on");
     displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
 #else
     HILOG_INFO("not support zoom");
@@ -793,6 +799,7 @@ void AccessibilityZoomGesture::OffZoom()
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
+    Utils::RecordOnZoomGestureEvent("off");
     displayMgr.SetDisplayScale(currentScreen, NORMAL_SCALE, NORMAL_SCALE, DEFAULT_ANCHOR, DEFAULT_ANCHOR);
 #else
     HILOG_INFO("not support zoom");

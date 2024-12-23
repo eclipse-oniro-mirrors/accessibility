@@ -55,7 +55,7 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "FindFocusedElement");
-    if (!proxy_) {
+    if (proxy_ == nullptr) {
         HILOG_ERROR("FindFocusedElementInfo Failed to connect to aams [channelId:%{public}d]",
             channelId_);
         return RET_ERR_SAMGR;
@@ -64,11 +64,11 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     int32_t requestId = GenerateRequestId();
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
-    if (!elementOperator) {
+    if (elementOperator == nullptr) {
         HILOG_ERROR("FindFocusedElementInfo Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     int32_t windowId = accessibilityWindowId;
     if (accessibilityWindowId == ANY_WINDOW_ID && focusType == FOCUS_TYPE_ACCESSIBILITY &&
@@ -86,8 +86,8 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     HILOG_DEBUG("channelId:%{public}d, windowId:%{public}d, elementId:%{public}" PRId64 ", focusType:%{public}d",
         channelId_, windowId, elementId, focusType);
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("FindFocusedElementInfo Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
@@ -100,6 +100,7 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     HILOG_INFO("Get result successfully from ace.");
 
     elementInfo = elementOperator->accessibilityInfoResult_;
+    elementInfo.SetMainWindowId(windowId);
     return RET_OK;
 }
 
@@ -119,7 +120,7 @@ RetError AccessibleAbilityChannelClient::GetCursorPosition(
     int32_t accessibilityWindowId, int64_t elementId, int32_t &position)
 {
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "GetCursorPosition");
-    if (!proxy_) {
+    if (proxy_ == nullptr) {
         HILOG_ERROR("GetCursorPosition Failed to connect to aams [channelId:%{public}d]",
             channelId_);
         return RET_ERR_SAMGR;
@@ -128,11 +129,11 @@ RetError AccessibleAbilityChannelClient::GetCursorPosition(
     int32_t requestId = GenerateRequestId();
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
-    if (!elementOperator) {
+    if (elementOperator == nullptr) {
         HILOG_ERROR("GetCursorPosition Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     RetError ret = proxy_->GetCursorPosition(accessibilityWindowId, elementId, requestId, elementOperator);
     if (ret != RET_OK) {
@@ -140,8 +141,8 @@ RetError AccessibleAbilityChannelClient::GetCursorPosition(
         return ret;
     }
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("GetCursorPosition Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
@@ -156,7 +157,7 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
 {
     HILOG_DEBUG("execute action:%{public}d, elementId:%{public}" PRId64 "", action, elementId);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "ExecuteAction");
-    if (!proxy_) {
+    if (proxy_ == nullptr) {
         HILOG_ERROR("ExecuteAction Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
     }
@@ -169,11 +170,11 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
     int32_t requestId = GenerateRequestId();
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
-    if (!elementOperator) {
+    if (elementOperator == nullptr) {
         HILOG_ERROR("ExecuteAction Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     RetError ret = proxy_->ExecuteAction(accessibilityWindowId,
         elementId, action, actionArguments, requestId, elementOperator);
@@ -182,8 +183,8 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
         return ret;
     }
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
@@ -211,11 +212,11 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
 RetError AccessibleAbilityChannelClient::EnableScreenCurtain(bool isEnable)
 {
     HILOG_INFO("[channelId:%{public}d]", channelId_);
-    if (!proxy_) {
+    if (proxy_ == nullptr) {
         HILOG_ERROR("EnableScreenCurtain Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
     }
-    return  proxy_->EnableScreenCurtain(isEnable) ? RET_OK : RET_ERR_PERFORM_ACTION_FAILED_BY_ACE;
+    return  proxy_->EnableScreenCurtain(isEnable);
 }
 
 RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId,
@@ -226,7 +227,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     HILOG_DEBUG("channelId:%{public}d, elementId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
         channelId_, elementId, accessibilityWindowId, requestId);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
-    if (!proxy_) {
+    if (proxy_ == nullptr) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]",
             channelId_);
         return RET_ERR_SAMGR;
@@ -234,11 +235,11 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
 
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
-    if (!elementOperator) {
+    if (elementOperator == nullptr) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
     ElementBasicInfo elementBasicInfo {};
     elementBasicInfo.windowId = accessibilityWindowId;
     elementBasicInfo.treeId = treeId;
@@ -252,8 +253,8 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
         return ret;
     }
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
@@ -266,6 +267,11 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     }
     HILOG_DEBUG("Get result successfully from ace. size[%{public}zu]", elementOperator->elementInfosResult_.size());
     elementInfos = elementOperator->elementInfosResult_;
+    if (!elementInfos.empty()) {
+        for (auto &element : elementInfos) {
+            element.SetMainWindowId(accessibilityWindowId);
+        }
+    }
     return RET_OK;
 }
 
@@ -273,7 +279,7 @@ RetError AccessibleAbilityChannelClient::GetWindow(const int32_t windowId, Acces
 {
     HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d]", channelId_, windowId);
     HITRACE_METER(HITRACE_TAG_ACCESSIBILITY_MANAGER);
-    if (!proxy_) {
+    if (proxy_ == nullptr) {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
     }
@@ -310,7 +316,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementByText");
-    if (!proxy_) {
+    if (proxy_ == nullptr) {
         HILOG_ERROR("SearchElementInfosByText Failed to connect to aams [channelId:%{public}d]",
             channelId_);
         return RET_ERR_SAMGR;
@@ -319,11 +325,11 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
     int32_t requestId = GenerateRequestId();
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
-    if (!elementOperator) {
+    if (elementOperator == nullptr) {
         HILOG_ERROR("SearchElementInfosByText Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     RetError ret = proxy_->SearchElementInfosByText(accessibilityWindowId,
         elementId, text, requestId, elementOperator);
@@ -332,8 +338,8 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
         return ret;
     }
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("SearchElementInfosByText Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
@@ -353,7 +359,7 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWi
     int64_t elementId, int32_t direction, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
-    if (!proxy_) {
+    if (proxy_ == nullptr) {
         HILOG_ERROR("FocusMoveSearch Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
     }
@@ -361,11 +367,11 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWi
     int32_t requestId = GenerateRequestId();
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
-    if (!elementOperator) {
+    if (elementOperator == nullptr) {
         HILOG_ERROR("FocusMoveSearch Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
-    std::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     RetError ret = proxy_->FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, elementOperator);
     if (ret != RET_OK) {
@@ -373,8 +379,8 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWi
         return ret;
     }
 
-    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("FocusMoveSearch Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
