@@ -276,7 +276,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
 
 sptr<Accessibility::IAccessibleAbilityManagerService> AccessibilityConfig::Impl::GetServiceProxy()
 {
-#ifdef ACCESSIBILITY_WATCH_FEATURE
+#ifndef ACCESSIBILITY_WATCH_FEATURE
     return serviceProxy_;
 #else
     if (serviceProxy_ == nullptr) {

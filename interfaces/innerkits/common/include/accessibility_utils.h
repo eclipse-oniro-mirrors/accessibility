@@ -99,6 +99,7 @@ std::string ConvertCaptionPropertyJSToNAPI(
     napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
 bool ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::string> &values);
 void ConvertStringVecToJS(napi_env env, napi_value &result, std::vector<std::string> values);
+void ConvertInt64VecToJS(napi_env env, napi_value &result, std::vector<std::int64_t> values);
 void ConvertJSToEventTypes(napi_env env, napi_value arrayValue, uint32_t &eventTypes);
 bool ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capabilities);
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue);

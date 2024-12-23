@@ -28,7 +28,9 @@ static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
     "Row",
     "Column",
     "SideBarContainerStates",
-    "ListItemIndex"
+    "ListItemIndex",
+    "ToggleType",
+    "BindSheet"
 };
 
 /*
@@ -1767,6 +1769,20 @@ public:
     void SetMainWindowId(const int32_t windowId);
 
     /**
+     * @brief Get the customComponentType to the element info.
+     * @return customComponentType status.
+     * @sysCap Accessibility
+     */
+    const std::string &GetCustomComponentType() const;
+
+    /**
+     * @brief Set the customComponentType to the element info.
+     * @param customComponentType The customComponentType of node.
+     * @sysCap Accessibility
+     */
+    void SetCustomComponentType(const std::string &customComponentType);
+
+    /**
      * @brief Get the accessibilityNextFocusId to the element info.
      * @return accessibilityNextFocusId.
      * @sysCap Accessibility
@@ -1906,6 +1922,7 @@ protected:
     int64_t accessibilityPreviousFocusId_ = -1;
     std::string accessibilityNextFocusInspectorKey_ = "";
     int32_t innerWindowId_ = -1;
+    std::string customComponentType_ = "";
 };
 } // namespace Accessibility
 } // namespace OHOS

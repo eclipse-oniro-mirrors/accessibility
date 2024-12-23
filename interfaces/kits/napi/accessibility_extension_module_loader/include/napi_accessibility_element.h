@@ -142,6 +142,8 @@ public:
     static void GetElementInfoAccessibilityVisible(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoClip(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoMainWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoCustomComponentType(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoExtraInfo(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityNextFocusId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityPreviousFocusId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityParentId(NAccessibilityElementData *callbackInfo, napi_value &value);

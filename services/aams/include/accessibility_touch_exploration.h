@@ -32,19 +32,11 @@ namespace OHOS {
 namespace Accessibility {
 class TouchExploration;
 
-const int32_t POINTER_COUNT_1 = 1;
-const int32_t POINTER_COUNT_2 = 2;
-const int32_t POINTER_COUNT_3 = 3;
-const int32_t POINTER_COUNT_4 = 4;
 const uint32_t MAX_MULTI_FINGER_TYPE = 3;
 const int32_t LIMIT_SIZE_TWO = 2;
 const int32_t LIMIT_SIZE_THREE = 3;
 const int32_t DIRECTION_NUM = 4;
 const int32_t TAP_COUNT_MAXIMUM = 3;
-const int64_t LONG_PRESS_TIMEOUT = 200000; // microsecond
-const int64_t DOUBLE_TAP_TIMEOUT = 300000; // microsecond
-const int64_t MULTI_FINGER_TAP_INTERVAL_TIMEOUT = 100000; // microsecond
-const int64_t SWIPE_COMPLETE_TIMEOUT = 300000; // microsecond
 const int32_t MINI_POINTER_DISTANCE_DIP = 200;
 const float DEGREES_THRESHOLD = 0.0f;
 const uint32_t MIN_MULTI_FINGER_SWIPE_POINTER_NUM = 2;
@@ -72,6 +64,7 @@ enum class TouchExplorationState : int32_t {
     ONE_FINGER_SWIPE,
     ONE_FINGER_SINGLE_TAP,
     ONE_FINGER_SINGLE_TAP_THEN_DOWN,
+    ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS,
 
     TWO_FINGERS_DOWN,
     TWO_FINGERS_DRAG,
@@ -100,6 +93,46 @@ enum class ChangeAction : int32_t {
     HOVER_CANCEL
 };
 
+enum class PointerCount : uint32_t {
+    POINTER_COUNT_1 = 1,
+    POINTER_COUNT_2 = 2,
+    POINTER_COUNT_3 = 3,
+    POINTER_COUNT_4 = 4
+};
+
+enum class TimeoutDuration : int64_t {
+    LONG_PRESS_TIMEOUT = 200,
+    DOUBLE_TAP_TIMEOUT = 300,
+    MULTI_FINGER_TAP_INTERVAL_TIMEOUT = 100,
+    SWIPE_COMPLETE_TIMEOUT = 300
+};
+
+enum class TouchExplorationMsg : uint32_t {
+    SEND_HOVER_MSG,
+    LONG_PRESS_MSG,
+    DOUBLE_TAP_AND_LONG_PRESS_MSG,
+    SWIPE_COMPLETE_TIMEOUT_MSG,
+    TWO_FINGER_SINGLE_TAP_MSG,
+    TWO_FINGER_LONG_PRESS_MSG,
+    TWO_FINGER_DOUBLE_TAP_MSG,
+    TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
+    TWO_FINGER_TRIPLE_TAP_MSG,
+    TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
+    THREE_FINGER_SINGLE_TAP_MSG,
+    THREE_FINGER_LONG_PRESS_MSG,
+    THREE_FINGER_DOUBLE_TAP_MSG,
+    THREE_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
+    THREE_FINGER_TRIPLE_TAP_MSG,
+    THREE_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
+    FOUR_FINGER_SINGLE_TAP_MSG,
+    FOUR_FINGER_LONG_PRESS_MSG,
+    FOUR_FINGER_DOUBLE_TAP_MSG,
+    FOUR_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
+    FOUR_FINGER_TRIPLE_TAP_MSG,
+    FOUR_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
+    WAIT_ANOTHER_FINGER_DOWN_MSG
+};
+
 struct Pointer {
     float px_;
     float py_;
@@ -122,35 +155,6 @@ private:
 
 class TouchExploration : public EventTransmission {
 public:
-    static constexpr uint32_t SEND_HOVER_MSG = 0;
-    static constexpr uint32_t LONG_PRESS_MSG = 1;
-    static constexpr uint32_t DOUBLE_TAP_MSG = 2;
-    static constexpr uint32_t SWIPE_COMPLETE_TIMEOUT_MSG = 3;
-    static constexpr uint32_t TWO_FINGER_SINGLE_TAP_MSG = 4;
-    static constexpr uint32_t TWO_FINGER_LONG_PRESS_MSG = 5;
-    static constexpr uint32_t TWO_FINGER_DOUBLE_TAP_MSG = 6;
-    static constexpr uint32_t TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG = 7;
-    static constexpr uint32_t TWO_FINGER_TRIPLE_TAP_MSG = 8;
-    static constexpr uint32_t TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG = 9;
-    static constexpr uint32_t THREE_FINGER_SINGLE_TAP_MSG = 10;
-    static constexpr uint32_t THREE_FINGER_LONG_PRESS_MSG = 11;
-    static constexpr uint32_t THREE_FINGER_DOUBLE_TAP_MSG = 12;
-    static constexpr uint32_t THREE_FINGER_DOUBLE_TAP_AND_HOLD_MSG = 13;
-    static constexpr uint32_t THREE_FINGER_TRIPLE_TAP_MSG = 14;
-    static constexpr uint32_t THREE_FINGER_TRIPLE_TAP_AND_HOLD_MSG = 15;
-    static constexpr uint32_t FOUR_FINGER_SINGLE_TAP_MSG = 16;
-    static constexpr uint32_t FOUR_FINGER_LONG_PRESS_MSG = 17;
-    static constexpr uint32_t FOUR_FINGER_DOUBLE_TAP_MSG = 18;
-    static constexpr uint32_t FOUR_FINGER_DOUBLE_TAP_AND_HOLD_MSG = 19;
-    static constexpr uint32_t FOUR_FINGER_TRIPLE_TAP_MSG = 20;
-    static constexpr uint32_t FOUR_FINGER_TRIPLE_TAP_AND_HOLD_MSG = 21;
-    static constexpr uint32_t WAIT_ANOTHER_FINGER_DOWN_MSG = 22;
-
-    static constexpr int32_t SWIPE_UP = 0;
-    static constexpr int32_t SWIPE_DOWN = 1;
-    static constexpr int32_t SWIPE_LEFT = 2;
-    static constexpr int32_t SWIPE_RIGHT = 3;
-
     static constexpr GestureType GESTURE_DIRECTION[DIRECTION_NUM] = {
         GestureType::GESTURE_SWIPE_UP,
         GestureType::GESTURE_SWIPE_DOWN,
@@ -187,39 +191,39 @@ public:
         }
     };
 
-    static constexpr uint32_t GESTURE_TAP_MSG[TAP_COUNT_MAXIMUM][MAX_MULTI_FINGER_TYPE] = {
+    static constexpr TouchExplorationMsg GESTURE_TAP_MSG[TAP_COUNT_MAXIMUM][MAX_MULTI_FINGER_TYPE] = {
         {
-            TWO_FINGER_SINGLE_TAP_MSG,
-            THREE_FINGER_SINGLE_TAP_MSG,
-            FOUR_FINGER_SINGLE_TAP_MSG,
+            TouchExplorationMsg::TWO_FINGER_SINGLE_TAP_MSG,
+            TouchExplorationMsg::THREE_FINGER_SINGLE_TAP_MSG,
+            TouchExplorationMsg::FOUR_FINGER_SINGLE_TAP_MSG,
         },
         {
-            TWO_FINGER_DOUBLE_TAP_MSG,
-            THREE_FINGER_DOUBLE_TAP_MSG,
-            FOUR_FINGER_DOUBLE_TAP_MSG,
+            TouchExplorationMsg::TWO_FINGER_DOUBLE_TAP_MSG,
+            TouchExplorationMsg::THREE_FINGER_DOUBLE_TAP_MSG,
+            TouchExplorationMsg::FOUR_FINGER_DOUBLE_TAP_MSG,
         },
         {
-            TWO_FINGER_TRIPLE_TAP_MSG,
-            THREE_FINGER_TRIPLE_TAP_MSG,
-            FOUR_FINGER_TRIPLE_TAP_MSG,
+            TouchExplorationMsg::TWO_FINGER_TRIPLE_TAP_MSG,
+            TouchExplorationMsg::THREE_FINGER_TRIPLE_TAP_MSG,
+            TouchExplorationMsg::FOUR_FINGER_TRIPLE_TAP_MSG,
         }
     };
 
-    static constexpr uint32_t GESTURE_HOLD_MSG[TAP_COUNT_MAXIMUM][MAX_MULTI_FINGER_TYPE] = {
+    static constexpr TouchExplorationMsg GESTURE_HOLD_MSG[TAP_COUNT_MAXIMUM][MAX_MULTI_FINGER_TYPE] = {
         {
-            TWO_FINGER_LONG_PRESS_MSG,
-            THREE_FINGER_LONG_PRESS_MSG,
-            FOUR_FINGER_LONG_PRESS_MSG,
+            TouchExplorationMsg::TWO_FINGER_LONG_PRESS_MSG,
+            TouchExplorationMsg::THREE_FINGER_LONG_PRESS_MSG,
+            TouchExplorationMsg::FOUR_FINGER_LONG_PRESS_MSG,
         },
         {
-            TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
-            THREE_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
-            FOUR_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
+            TouchExplorationMsg::TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
+            TouchExplorationMsg::THREE_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
+            TouchExplorationMsg::FOUR_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
         },
         {
-            TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
-            THREE_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
-            FOUR_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
+            TouchExplorationMsg::TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
+            TouchExplorationMsg::THREE_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
+            TouchExplorationMsg::FOUR_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
         }
     };
 
@@ -229,16 +233,9 @@ public:
 
     void Clear();
     void HoverEventRunner();
-    void SendAccessibilityEventToAA(EventType eventType);
-    void SendTouchEventToAA(MMI::PointerEvent &event);
-    void SendGestureEventToAA(GestureType gestureId);
-    void SendEventToMultimodal(MMI::PointerEvent &event, ChangeAction action);
-    void SendScreenWakeUpEvent(MMI::PointerEvent &event);
-    void SendUpForDraggingDownEvent();
-    void ProcessMultiFingerGesture(uint32_t eventId);
-    void CancelPostEvent(uint32_t innerEventID);
-    void CancelMultiFingerTapEvent();
-    void CancelMultiFingerTapAndHoldEvent();
+    void SendDoubleTapAndLongPressDownEvent();
+    void ProcessMultiFingerGesture(TouchExplorationMsg msg);
+    void CancelPostEvent(TouchExplorationMsg msg);
 
     /**
      * @brief Handle pointer events from previous event stream node.
@@ -262,6 +259,11 @@ public:
     }
 
 private:
+    static constexpr int32_t SWIPE_UP = 0;
+    static constexpr int32_t SWIPE_DOWN = 1;
+    static constexpr int32_t SWIPE_LEFT = 2;
+    static constexpr int32_t SWIPE_RIGHT = 3;
+
     // Processing Functions in the State Machine
     void HandleInitStateDown(MMI::PointerEvent &event);
     void HandleInitStateUp(MMI::PointerEvent &event);
@@ -281,6 +283,7 @@ private:
     void HandleOneFingerSingleTapThenDownStateDown(MMI::PointerEvent &event);
     void HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent &event);
     void HandleOneFingerSingleTapThenDownStateMove(MMI::PointerEvent &event);
+    void HandleOneFingerDoubleTapAndLongPressState(MMI::PointerEvent &event);
     void HandleTwoFingersDownStateDown(MMI::PointerEvent &event);
     void HandleTwoFingersDownStateUp(MMI::PointerEvent &event);
     void HandleTwoFingersDownStateMove(MMI::PointerEvent &event);
@@ -333,22 +336,30 @@ private:
         std::vector<float> &secondPointOffset);
     float GetAngleCos(float offsetX, float offsetY, bool isGetX);
     bool IsDragGestureAccept(MMI::PointerEvent &event);
+    void SendAccessibilityEventToAA(EventType eventType);
+    void SendTouchEventToAA(MMI::PointerEvent &event);
+    void SendGestureEventToAA(GestureType gestureId);
+    void SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action);
+    void SendScreenWakeUpEvent(MMI::PointerEvent &event);
     void SendDragDownEventToMultimodal(MMI::PointerEvent event);
-    bool GetPointerItemWithFingerNum(int32_t fingerNum, std::vector<MMI::PointerEvent::PointerItem> &curPoints,
+    void SendUpForDragDownEvent();
+    bool GetPointerItemWithFingerNum(uint32_t fingerNum, std::vector<MMI::PointerEvent::PointerItem> &curPoints,
         std::vector<MMI::PointerEvent::PointerItem> &prePoints, MMI::PointerEvent &event);
-    bool IsMultiFingerMultiTap(MMI::PointerEvent &event, const int32_t fingerNum);
-    bool IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, const int32_t fingerNum);
-    void HandleMultiFingersTapStateDown(MMI::PointerEvent &event, int32_t fingerNum);
-    void HandleMultiFingersTapStateMove(MMI::PointerEvent &event, int32_t fingerNum);
-    void HandleMultiFingersContinueDownStateUp(MMI::PointerEvent &event, int32_t fingerNum);
-    void HandleMultiFingersContinueDownStateMove(MMI::PointerEvent &event, int32_t fingerNum);
+    bool IsMultiFingerMultiTap(MMI::PointerEvent &event, const uint32_t fingerNum);
+    bool IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, const uint32_t fingerNum);
+    void HandleMultiFingersTapStateDown(MMI::PointerEvent &event, uint32_t fingerNum);
+    void HandleMultiFingersTapStateMove(MMI::PointerEvent &event, uint32_t fingerNum);
+    void HandleMultiFingersContinueDownStateUp(MMI::PointerEvent &event, uint32_t fingerNum);
+    void HandleMultiFingersContinueDownStateMove(MMI::PointerEvent &event, uint32_t fingerNum);
     void StoreMultiFingerSwipeBaseDownPoint();
     bool GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId);
     bool SaveMultiFingerSwipeGesturePointerInfo(MMI::PointerEvent &event);
     bool RecognizeMultiFingerSwipePath(const std::vector<Pointer> &path);
-    GestureType GetMultiFingerSwipeGestureId(int32_t fingerNum);
-    void HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, int32_t fingerNum);
-    std::map<uint32_t, GestureType> GetMultiFingerMsgToGestureMap();
+    GestureType GetMultiFingerSwipeGestureId(uint32_t fingerNum);
+    void HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, uint32_t fingerNum);
+    std::map<TouchExplorationMsg, GestureType> GetMultiFingerMsgToGestureMap();
+    void CancelMultiFingerTapEvent();
+    void CancelMultiFingerTapAndHoldEvent();
 
     inline float CalculateMoveThreshold(int dpi)
     {
@@ -358,7 +369,7 @@ private:
     std::shared_ptr<TouchExplorationEventHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     using HandleEventFunc = std::function<void(MMI::PointerEvent &)>;
-    std::map<TouchExplorationState, std::map<int32_t, HandleEventFunc>> handleEventFuncMap_ = {};
+    std::map<TouchExplorationState, std::map<int32_t, HandleEventFunc>> handleEventFuncMap_ {};
 
     TouchExplorationState currentState_ = TouchExplorationState::TOUCH_INIT;
     std::list<MMI::PointerEvent> receivedPointerEvents_ {};

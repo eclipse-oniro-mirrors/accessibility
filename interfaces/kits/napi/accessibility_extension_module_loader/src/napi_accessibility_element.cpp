@@ -41,7 +41,8 @@ namespace {
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
         "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
         "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
-        "clip", "accessibilityNextFocusId", "accessibilityPreviousFocusId", "parentId", "childrenIds", "allAttribute"};
+        "allAttribute", "clip", "customComponentType", "extraInfo", "accessibilityNextFocusId",
+        "accessibilityPreviousFocusId", "parentId", "childrenIds"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
@@ -106,10 +107,12 @@ namespace {
         {"accessibilityVisible", &NAccessibilityElement::GetElementInfoAccessibilityVisible},
         {"mainWindowId", &NAccessibilityElement::GetElementInfoMainWindowId},
         {"clip", &NAccessibilityElement::GetElementInfoClip},
+        {"customComponentType", &NAccessibilityElement::GetElementInfoCustomComponentType},
+        {"extraInfo", &NAccessibilityElement::GetElementInfoExtraInfo},
         {"accessibilityNextFocusId", &NAccessibilityElement::GetElementInfoAccessibilityNextFocusId},
         {"accessibilityPreviousFocusId", &NAccessibilityElement::GetElementInfoAccessibilityPreviousFocusId},
-        {"parentId", &NAccessibilityElement::GetElementInfoParentId},
-        {"childrenIds", &NAccessibilityElement::GetElementInfoChildrenIds},
+        {"parentId", &NAccessibilityElement::GetElementInfoAccessibilityParentId},
+        {"childrenIds", &NAccessibilityElement::GetElementInfoAccessibilityChildrenIds},
         {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
@@ -1130,6 +1133,37 @@ void NAccessibilityElement::GetElementInfoClip(NAccessibilityElementData *callba
         callbackInfo->accessibilityElement_.elementInfo_->GetClip(), &value));
 }
 
+void NAccessibilityElement::GetElementInfoCustomComponentType(NAccessibilityElementData *callbackInfo,
+    napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetCustomComponentType().c_str(), NAPI_AUTO_LENGTH, &value));
+}
+
+void NAccessibilityElement::GetElementInfoExtraInfo(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    std::map<std::string, std::string> mapValIsStr =
+        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElement().GetExtraElementInfoValueStr();
+    std::map<std::string, int32_t> mapValIsInt =
+        callbackInfo->accessibilityElement_.elementInfo_->GetExtraElement().GetExtraElementInfoValueInt();
+    nlohmann::json extraInfoValue;
+    for (auto &iterStr : mapValIsStr) {
+        extraInfoValue[iterStr.first] = iterStr.second;
+    }
+    for (auto &iterInt : mapValIsInt) {
+        extraInfoValue[iterInt.first] = iterInt.second;
+    }
+    HILOG_DEBUG("GetElementInfoExtraInfo extraInfoValue is [%{public}s]", extraInfoValue.dump().c_str());
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
+        extraInfoValue.dump().c_str(), NAPI_AUTO_LENGTH, &value));
+}
+
 void NAccessibilityElement::GetElementInfoAccessibilityNextFocusId(NAccessibilityElementData *callbackInfo,
     napi_value &value)
 {
@@ -1166,8 +1200,8 @@ void NAccessibilityElement::GetElementInfoAccessibilityChildrenIds(NAccessibilit
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_array(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->GetChildIds(), &value));
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_array(callbackInfo->env_, &value));
+    ConvertInt64VecToJS(callbackInfo->env_, value, callbackInfo->accessibilityElement_.elementInfo_->GetChildIds());
 }
 
 void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -1272,6 +1306,14 @@ void NAccessibilityElement::GetElementInfoAllAttribute2(NAccessibilityElementDat
     napi_value isPassword = nullptr;
     GetElementInfoIsPassword(callbackInfo, isPassword);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "isPassword", isPassword));
+
+    napi_value parentId = nullptr;
+    GetElementInfoAccessibilityParentId(callbackInfo, parentId);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "parentId", parentId));
+
+    napi_value childrenIds = nullptr;
+    GetElementInfoAccessibilityChildrenIds(callbackInfo, childrenIds);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "childrenIds", childrenIds));
 }
 
 void NAccessibilityElement::GetElementInfoAllAttribute3(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -1439,6 +1481,14 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     GetElementInfoMainWindowId(callbackInfo, mainWindowId);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "mainWindowId", mainWindowId));
 
+    napi_value customComponentType = nullptr;
+    GetElementInfoCustomComponentType(callbackInfo, customComponentType);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "customComponentType", customComponentType));
+
+    napi_value extraInfo = nullptr;
+    GetElementInfoExtraInfo(callbackInfo, extraInfo);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "extraInfo", extraInfo));
+
     napi_value accessibilityNextFocusId = nullptr;
     GetElementInfoAccessibilityNextFocusId(callbackInfo, accessibilityNextFocusId);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "accessibilityNextFocusId",
@@ -1448,14 +1498,6 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     GetElementInfoAccessibilityPreviousFocusId(callbackInfo, accessibilityPreviousFocusId);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "accessibilityPreviousFocusId",
         accessibilityPreviousFocusId));
-
-    napi_value parentId = nullptr;
-    GetElementInfoAccessibilityParentId(callbackInfo, parentId);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "parentId", parentId));
-    
-    napi_value childrenIds = nullptr;
-    GetElementInfoAccessibilityChildrenIds(callbackInfo, childrenIds);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "childrenIds", childrenIds));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
