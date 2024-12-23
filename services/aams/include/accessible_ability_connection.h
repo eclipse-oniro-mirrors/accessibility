@@ -16,11 +16,11 @@
 #ifndef ACCESSIBLE_ABILITY_CONNECTION_H
 #define ACCESSIBLE_ABILITY_CONNECTION_H
 
-#include <mutex>
 #include "ability_connect_callback_stub.h"
 #include "accessibility_ability_info.h"
 #include "accessible_ability_channel.h"
 #include "accessible_ability_client_proxy.h"
+#include "ffrt.h"
 #include "common_event_manager.h"
 
 namespace OHOS {
@@ -66,7 +66,7 @@ public:
 
     void Disconnect();
 
-    void Connect(const AppExecFwk::ElementName &element);
+    bool Connect(const AppExecFwk::ElementName &element);
 
     int32_t GetChannelId();
 
@@ -85,7 +85,7 @@ private:
         void OnRemoteDied(const wptr<IRemoteObject>& remote);
 
         int32_t accountId_ = -1;
-        AppExecFwk::ElementName& recipientElementName_;
+        AppExecFwk::ElementName recipientElementName_;
         std::shared_ptr<AppExecFwk::EventHandler> handler_ = nullptr;
     };
 
