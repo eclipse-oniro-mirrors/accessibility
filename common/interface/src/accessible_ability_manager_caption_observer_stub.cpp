@@ -48,7 +48,7 @@ ErrCode AccessibleAbilityManagerCaptionObserverStub::HandleOnCaptionPropertyChan
 {
     HILOG_DEBUG();
     sptr<CaptionPropertyParcel> property = data.ReadStrongParcelable<CaptionPropertyParcel>();
-    if (!property) {
+    if (property == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<CaptionProperty> failed");
         return ERR_TRANSACTION_FAILED;
     }

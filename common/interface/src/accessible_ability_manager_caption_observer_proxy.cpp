@@ -45,7 +45,7 @@ void AccessibleAbilityManagerCaptionObserverProxy::OnPropertyChanged(
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
     CaptionPropertyParcel captionParcel(property);
 
     if (!WriteInterfaceToken(data)) {
@@ -59,7 +59,7 @@ void AccessibleAbilityManagerCaptionObserverProxy::OnPropertyChanged(
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }

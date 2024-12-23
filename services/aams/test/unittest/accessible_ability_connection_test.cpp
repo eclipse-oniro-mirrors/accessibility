@@ -553,8 +553,8 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
 
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-        if (static_cast<int>(accountData_->GetEnabledAbilities().size()) == 0 &&
-            !(accountData_->GetConnectingA11yAbility(Utils::GetUri(*name)))) {
+        if (static_cast<int>(accountData->GetEnabledAbilities().size()) == 0 &&
+            !(accountData->GetConnectingA11yAbility(Utils::GetUri(*name)))) {
             return true;
         } else {
             return false;
