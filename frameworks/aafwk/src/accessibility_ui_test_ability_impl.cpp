@@ -15,8 +15,8 @@
 
 #include "accessibility_ui_test_ability_impl.h"
 
-#include <mutex>
 #include "accessible_ability_client_impl.h"
+#include "ffrt.h"
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"
@@ -24,12 +24,12 @@
 
 namespace OHOS {
 namespace Accessibility {
-static std::mutex g_Mutex;
+static ffrt::mutex g_Mutex;
 static std::shared_ptr<AccessibilityUITestAbilityImpl> g_Instance = nullptr;
 
 std::shared_ptr<AccessibilityUITestAbility> AccessibilityUITestAbility::GetInstance()
 {
-    std::lock_guard<std::mutex> lock(g_Mutex);
+    std::lock_guard<ffrt::mutex> lock(g_Mutex);
     if (!g_Instance) {
         g_Instance = std::make_shared<AccessibilityUITestAbilityImpl>();
     }
