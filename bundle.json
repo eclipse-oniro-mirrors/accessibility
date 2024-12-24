@@ -28,8 +28,7 @@
     "rom": "2000KB",
     "ram": "10000KB",
     "hisysevent_config": [
-      "//foundation/barrierfree/accessibility/hisysevent.yaml",
-      "//foundation/barrierfree/accessibility/hisysevent_ue.yaml"
+      "//foundation/barrierfree/accessibility/hisysevent.yaml"
     ],
     "deps": {
       "components": [

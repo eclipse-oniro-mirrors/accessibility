@@ -362,7 +362,7 @@ void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name)
     std::string MSG_NAME = "enable single targets";
     HILOG_DEBUG("starting RecordEnableShortkeyAbilityEvent enable single targets: %{public}s", name.c_str());
     int32_t ret = HiSysEventWrite(
-        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
         "ENABLE_SHORTKEY_ABILITY_SINGLE",
         OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
         "MSG_NAME", MSG_NAME, "MSG_VALUE", name);
@@ -376,7 +376,7 @@ void Utils::RecordOnZoomGestureEvent(const std::string &state)
     std::string MSG_NAME = "on zoom gesture state";
     HILOG_DEBUG("starting RecordOnZoomGestureEvent on zoom gesture state: %{public}s", state.c_str());
     int32_t ret = HiSysEventWrite(
-        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
         "ZOOM_GESTURE_ACTION",
         OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
         "MSG_NAME", MSG_NAME, "MSG_VALUE", state);

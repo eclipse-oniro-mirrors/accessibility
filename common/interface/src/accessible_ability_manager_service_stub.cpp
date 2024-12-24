@@ -87,10 +87,10 @@
     SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_STATE_CALLBACK, HandleRegisterStateCallback)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_ABILITYLIST, HandleGetAbilityList)\
     SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_INTERACTION_CONNECTION, HandleRegisterAccessibilityElementOperator)\
-    SWITCH_CASE( \
-        AccessibilityInterfaceCode::CARDREGISTER_INTERACTION_CONNECTION, HandleMultiRegisterAccessibilityElementOperator)\
-    SWITCH_CASE( \
-        AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION, HandleDeregisterAccessibilityElementOperator)\
+    SWITCH_CASE(AccessibilityInterfaceCode::CARDREGISTER_INTERACTION_CONNECTION, \
+        HandleMultiRegisterAccessibilityElementOperator)\
+    SWITCH_CASE(AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION, \
+        HandleDeregisterAccessibilityElementOperator)\
     SWITCH_CASE(AccessibilityInterfaceCode::CARDDEREGISTER_INTERACTION_CONNECTION, \
         HandleMultiDeregisterAccessibilityElementOperator)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_ENABLED, HandleGetEnabled)\
