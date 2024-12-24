@@ -1954,5 +1954,17 @@ void ConvertStringVecToJS(napi_env env, napi_value &result, std::vector<std::str
         index++;
     }
 }
+
+void ConvertInt64VecToJS(napi_env env, napi_value &result, std::vector<std::int64_t> values)
+{
+    HILOG_DEBUG();
+    size_t index = 0;
+    for (auto& value : values) {
+        napi_value id = nullptr;
+        napi_create_int64(env, value, &id);
+        napi_set_element(env, result, index, id);
+        index++;
+    }
+}
 } // namespace AccessibilityNapi
 } // namespace OHOS
