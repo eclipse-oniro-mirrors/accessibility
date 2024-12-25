@@ -34,6 +34,21 @@ namespace {
 AccessibilityConfig::Impl::Impl()
 {}
 
+AccessibilityConfig::Impl::~Impl()
+{
+    if (captionObserver_ != nullptr) {
+        captionObserver_->OnclientDeleted;
+    }
+
+    if (configObserver_ != nullptr) {
+        configObserver_->OnclientDeleted;
+    }
+    
+    if (enableAbilityListsObserver_ != nullptr) {
+        enableAbilityListsObserver_->OnclientDeleted;
+    }
+}
+
 bool AccessibilityConfig::Impl::InitializeContext()
 {
     HILOG_DEBUG();
