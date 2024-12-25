@@ -87,9 +87,12 @@
     SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_STATE_CALLBACK, HandleRegisterStateCallback)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_ABILITYLIST, HandleGetAbilityList)\
     SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_INTERACTION_CONNECTION, HandleRegisterAccessibilityElementOperator)\
-    SWITCH_CASE(AccessibilityInterfaceCode::CARDREGISTER_INTERACTION_CONNECTION, HandleMultiRegisterAccessibilityElementOperator)\
-    SWITCH_CASE(AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION, HandleDeregisterAccessibilityElementOperator)\
-    SWITCH_CASE(AccessibilityInterfaceCode::CARDDEREGISTER_INTERACTION_CONNECTION, HandleMultiDeregisterAccessibilityElementOperator)\
+    SWITCH_CASE(AccessibilityInterfaceCode::CARDREGISTER_INTERACTION_CONNECTION, \
+        HandleMultiRegisterAccessibilityElementOperator)\
+    SWITCH_CASE(AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION, \
+        HandleDeregisterAccessibilityElementOperator)\
+    SWITCH_CASE(AccessibilityInterfaceCode::CARDDEREGISTER_INTERACTION_CONNECTION, \
+        HandleMultiDeregisterAccessibilityElementOperator)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_ENABLED, HandleGetEnabled)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_TOUCH_GUIDE_STATE, HandleGetTouchGuideState)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_GESTURE_STATE, HandleGetGestureState)\
@@ -101,7 +104,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::ENABLE_UI_TEST_ABILITY, HandleEnableUITestAbility)\
     SWITCH_CASE(AccessibilityInterfaceCode::DISABLE_UI_TEST_ABILITY, HandleDisableUITestAbility)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_ACTIVE_WINDOW, HandleGetActiveWindow)\
-    SWITCH_CASE(AccessibilityInterfaceCode::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER, HandleRegisterEnableAbilityListsObserver)\
+    SWITCH_CASE( \
+        AccessibilityInterfaceCode::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER, HandleRegisterEnableAbilityListsObserver)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_FOCUSED_WINDOW_ID, HandleGetFocusedWindowId)\
     SWITCH_CASE(AccessibilityInterfaceCode::REMOVE_REQUEST_ID, HandleRemoveRequestId)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_ROOT_PARENT_ID, HandleGetRootParentId) \
@@ -113,169 +117,12 @@ using namespace Security::AccessToken;
 constexpr int32_t IS_EXTERNAL = 1;
 constexpr int32_t ERR_CODE_DEFAULT = -1000;
 
-void AccessibleAbilityManagerServiceStub::AddSetConfigHandles()
-{
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_SCREENMAGNIFIER_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetScreenMagnificationState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_SHORTKEY_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetShortKeyState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_MOUSEKEY_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetMouseKeyState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_SHORTKEY_TARGET)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetShortkeyTarget;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_MOUSEKEY_AUTOCLICK)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetMouseAutoClick;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_INVERTCOLOR_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetInvertColorState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_HIGHCONTRASTTEXT_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetHighContrastTextState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_AUDIOMONO_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetAudioMonoState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_ANIMATIONOFF_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetAnimationOffState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_DALTONIZATION_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetDaltonizationState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_DALTONIZATION_COLORFILTER)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CONTENT_TIMEOUT)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetContentTimeout;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_BRIGHTNESS_DISCOUNT)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetBrightnessDiscount;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_AUDIO_BALANCE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetAudioBalance;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CAPTION_PROPERTY)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CAPTION_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetCaptionState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CLICK_RESPONSE_TIME)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetClickResponseTime;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_IGNORE_REPEAT_CLICK_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetIgnoreRepeatClickState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_IGNORE_REPEAT_CLICK_TIME)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetIgnoreRepeatClickTime;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CLICK_RESPONSE_TIME)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetClickResponseTime;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_IGNORE_REPEAT_CLICK_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetIgnoreRepeatClickState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_IGNORE_REPEAT_CLICK_TIME)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetIgnoreRepeatClickTime;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_SHORTKEY_MULTI_TARGET)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetShortkeyMultiTarget;
-}
-
-void AccessibleAbilityManagerServiceStub::AddGetConfigHandles()
-{
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SCREENMAGNIFIER_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SHORTKEY_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetShortKeyState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_MOUSEKEY_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetMouseKeyState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SHORTKEY_TARGET)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetShortkeyTarget;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_MOUSEKEY_AUTOCLICK)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetMouseAutoClick;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_INVERTCOLOR_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetInvertColorState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_HIGHCONTRASTTEXT_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetHighContrastTextState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_AUDIOMONO_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetAudioMonoState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ANIMATIONOFF_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetAnimationOffState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_DALTONIZATION_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetDaltonizationState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_DALTONIZATION_COLORFILTER)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CONTENT_TIMEOUT)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetContentTimeout;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_BRIGHTNESS_DISCOUNT)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetBrightnessDiscount;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_AUDIO_BALANCE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetAudioBalance;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ALL_CONFIGS)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetAllConfigs;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::REGISTER_CONFIG_CALLBACK)] =
-        &AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CAPTION_PROPERTY)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetCaptionProperty;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CAPTION_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetCaptionState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOW_AND_ELEMENT_ID)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetWindowAndElementId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SCENE_BOARD_INNER_WINDOW_ID)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetSceneBoardInnerWinId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SHORTKEY_MULTI_TARGET)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetShortkeyMultiTarget;
-}
-
 AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
 {
-    HILOG_DEBUG();
-
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEND_EVENT)] =
-        &AccessibleAbilityManagerServiceStub::HandleSendEvent;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::REGISTER_STATE_CALLBACK)] =
-        &AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ABILITYLIST)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetAbilityList;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::REGISTER_INTERACTION_CONNECTION)] =
-        &AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementOperator;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::CARDREGISTER_INTERACTION_CONNECTION)] =
-        &AccessibleAbilityManagerServiceStub::HandleMultiRegisterAccessibilityElementOperator;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION)] =
-        &AccessibleAbilityManagerServiceStub::HandleDeregisterAccessibilityElementOperator;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::CARDDEREGISTER_INTERACTION_CONNECTION)] =
-        &AccessibleAbilityManagerServiceStub::HandleMultiDeregisterAccessibilityElementOperator;
-
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ENABLED)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetEnabled;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_TOUCH_GUIDE_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetTouchGuideState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_GESTURE_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetGestureState;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::GET_KEY_EVENT_OBSERVE_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::ENABLE_ABILITIES)] =
-        &AccessibleAbilityManagerServiceStub::HandleEnableAbility;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ENABLED_OBJECT)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::DISABLE_ABILITIES)] =
-        &AccessibleAbilityManagerServiceStub::HandleDisableAbility;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::REGISTER_CAPTION_PROPERTY_CALLBACK)] =
-        &AccessibleAbilityManagerServiceStub::HandleRegisterCaptionPropertyCallback;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::ENABLE_UI_TEST_ABILITY)] =
-        &AccessibleAbilityManagerServiceStub::HandleEnableUITestAbility;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::DISABLE_UI_TEST_ABILITY)] =
-        &AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ACTIVE_WINDOW)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetActiveWindow;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER)] =
-        &AccessibleAbilityManagerServiceStub::HandleRegisterEnableAbilityListsObserver;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_FOCUSED_WINDOW_ID)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetFocusedWindowId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::REMOVE_REQUEST_ID)] =
-        &AccessibleAbilityManagerServiceStub::HandleRemoveRequestId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ROOT_PARENT_ID)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetRootParentId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ALL_TREE_ID)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetAllTreeId;
-
-    AddSetConfigHandles();
-    AddGetConfigHandles();
 }
 
 AccessibleAbilityManagerServiceStub::~AccessibleAbilityManagerServiceStub()
 {
-    HILOG_DEBUG("start.");
-    memberFuncMap_.clear();
 }
 
 int AccessibleAbilityManagerServiceStub::OnRemoteRequest(
@@ -357,7 +204,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSendEvent(MessageParcel &data
     HILOG_DEBUG();
 
     sptr<AccessibilityEventInfoParcel> uiEvent = data.ReadStrongParcelable<AccessibilityEventInfoParcel>();
-    if (!uiEvent) {
+    if (uiEvent == nullptr) {
         HILOG_DEBUG("ReadStrongParcelable<AbilityInfo> failed");
         return TRANSACTION_ERR;
     }
@@ -372,7 +219,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback(
     HILOG_DEBUG();
 
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
-    if (!obj) {
+    if (obj == nullptr) {
         HILOG_ERROR("obj is nullptr.");
         return ERR_INVALID_VALUE;
     }
@@ -401,7 +248,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAbilityList(MessageParcel 
     reply.WriteInt32(abilityInfoSize);
     for (auto &abilityInfo : abilityInfos) {
         sptr<AccessibilityAbilityInfoParcel> info = new(std::nothrow) AccessibilityAbilityInfoParcel(abilityInfo);
-        if (!info) {
+        if (info == nullptr) {
             HILOG_ERROR("Failed to create info.");
             return ERR_NULL_OBJECT;
         }
@@ -424,7 +271,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementO
     sptr<IAccessibilityElementOperator> operation = iface_cast<IAccessibilityElementOperator>(obj);
     if (operation == nullptr) {
         HILOG_ERROR("iface_cast obj failed");
-        return TRANSACTION_ERR;      
+        return TRANSACTION_ERR;
     }
     bool isApp = IsApp();
     RegisterElementOperator(windowId, operation, isApp);
@@ -513,7 +360,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty(MessagePar
         return NO_ERROR;
     }
     sptr<CaptionPropertyParcel> caption = data.ReadStrongParcelable<CaptionPropertyParcel>();
-    if (!caption) {
+    if (caption == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<CaptionProperty> failed");
         reply.WriteInt32(RET_ERR_IPC_FAILED);
         return TRANSACTION_ERR;
@@ -1360,13 +1207,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetIgnoreRepeatClickTime(Mess
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetAllConfigs(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
+
     if (!IsSystemApp()) {
         HILOG_WARN("Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     reply.WriteInt32(RET_OK);
-
+    
     AccessibilityConfigData configData;
     GetAllConfigs(configData);
     CaptionPropertyParcel captionParcel(configData.captionProperty_);
@@ -1408,7 +1256,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback(
     HILOG_DEBUG();
 
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
-    if (!obj) {
+    if (obj == nullptr) {
         HILOG_ERROR("obj is nullptr.");
         return ERR_INVALID_VALUE;
     }

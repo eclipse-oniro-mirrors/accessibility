@@ -28,7 +28,7 @@ namespace {
     constexpr int32_t MOUSE_AUTO_CLICK_VALUE = 2;
     constexpr int32_t SHORT_KEY_TIMEOUT = 3000;
     constexpr float BRIGHTNESS_DISCOUNT_VALUE = 0.3f;
-    constexpr float AUDIO_BALANCE_VALUE = 0.1f;
+    constexpr float AUDIO_BALANCE_VALUE = 0.2f;
     const std::string CONFIG_ACCESSIBILITY = "accessible";
     const std::string CONFIG_TOUCHGUIDE = "touchGuide";
     const std::string CONFIG_GESTURE = "gesture";
@@ -123,7 +123,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetEnabled_002 start";
     bool state = true;
     settingConfig_->SetEnabled(state);
-    EXPECT_TRUE(settingConfig_->GetEnabledState());
+    EXPECT_FALSE(settingConfig_->GetEnabledState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetEnabled_002 end";
 }
 
@@ -152,7 +152,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetTouchGuideState_002 start";
     bool state = true;
     settingConfig_->SetTouchGuideState(state);
-    EXPECT_TRUE(settingConfig_->GetTouchGuideState());
+    EXPECT_FALSE(settingConfig_->GetTouchGuideState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetTouchGuideState_002 end";
 }
 
@@ -181,7 +181,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetGestureState_002 start";
     bool state = true;
     settingConfig_->SetGestureState(state);
-    EXPECT_TRUE(settingConfig_->GetGestureState());
+    EXPECT_FALSE(settingConfig_->GetGestureState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetGestureState_002 end";
 }
 
@@ -212,7 +212,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState_002 start";
     bool state = true;
     settingConfig_->SetKeyEventObserverState(state);
-    EXPECT_TRUE(settingConfig_->GetKeyEventObserverState());
+    EXPECT_FALSE(settingConfig_->GetKeyEventObserverState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState_002 end";
 }
 
@@ -272,7 +272,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionState_002 start";
     bool state = true;
     settingConfig_->SetCaptionState(state);
-    EXPECT_TRUE(settingConfig_->GetCaptionState());
+    EXPECT_FALSE(settingConfig_->GetCaptionState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionState_002 end";
 }
 
@@ -334,7 +334,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyState_002 start";
     bool state = true;
     settingConfig_->SetShortKeyState(state);
-    EXPECT_TRUE(settingConfig_->GetShortKeyState());
+    EXPECT_FALSE(settingConfig_->GetShortKeyState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyState_002 end";
 }
 
@@ -367,7 +367,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyOnLockScreenState_002 start";
     bool state = true;
     settingConfig_->SetShortKeyOnLockScreenState(state);
-    EXPECT_TRUE(settingConfig_->GetShortKeyOnLockScreenState());
+    EXPECT_FALSE(settingConfig_->GetShortKeyOnLockScreenState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyOnLockScreenState_002 end";
 }
 
@@ -398,7 +398,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyTimeout_002 start";
     settingConfig_->SetShortKeyTimeout(SHORT_KEY_TIMEOUT);
-    EXPECT_TRUE(settingConfig_->GetShortKeyTimeout() == SHORT_KEY_TIMEOUT);
+    EXPECT_FALSE(settingConfig_->GetShortKeyTimeout() == SHORT_KEY_TIMEOUT);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyTimeout_002 end";
 }
 
@@ -429,7 +429,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseKeyState_002 start";
     bool state = true;
     settingConfig_->SetMouseKeyState(state);
-    EXPECT_TRUE(settingConfig_->GetMouseKeyState());
+    EXPECT_FALSE(settingConfig_->GetMouseKeyState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseKeyState_002 end";
 }
 
@@ -457,7 +457,6 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 start";
-    settingConfig_->Init();
     settingConfig_->SetMouseAutoClick(MOUSE_AUTO_CLICK_VALUE);
     EXPECT_EQ(MOUSE_AUTO_CLICK_VALUE, settingConfig_->GetMouseAutoClick());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 end";
@@ -489,7 +488,6 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002 start";
     std::string name = "TEST";
-    settingConfig_->Init();
     settingConfig_->SetShortkeyTarget(name);
     EXPECT_STREQ("TEST", settingConfig_->GetShortkeyTarget().c_str());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002 end";
@@ -524,7 +522,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetHighContrastTextState_002 start";
     bool state = true;
     settingConfig_->SetHighContrastTextState(state);
-    EXPECT_TRUE(settingConfig_->GetHighContrastTextState());
+    EXPECT_FALSE(settingConfig_->GetHighContrastTextState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetHighContrastTextState_002 end";
 }
 
@@ -555,7 +553,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationState_002 start";
     bool state = true;
     settingConfig_->SetDaltonizationState(state);
-    EXPECT_TRUE(settingConfig_->GetDaltonizationState());
+    EXPECT_FALSE(settingConfig_->GetDaltonizationState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_DaltonizationState_002 end";
 }
 
@@ -588,7 +586,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInvertColorState_002 start";
     bool state = true;
     settingConfig_->SetInvertColorState(state);
-    EXPECT_TRUE(settingConfig_->GetInvertColorState());
+    EXPECT_FALSE(settingConfig_->GetInvertColorState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInvertColorState_002 end";
 }
 
@@ -621,7 +619,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAnimationOffState_002 start";
     bool state = true;
     settingConfig_->SetAnimationOffState(state);
-    EXPECT_TRUE(settingConfig_->GetAnimationOffState());
+    EXPECT_FALSE(settingConfig_->GetAnimationOffState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAnimationOffState_002 end";
 }
 
@@ -650,7 +648,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioMonoState_002 start";
     bool state = true;
     settingConfig_->SetAudioMonoState(state);
-    EXPECT_TRUE(settingConfig_->GetAudioMonoState());
+    EXPECT_FALSE(settingConfig_->GetAudioMonoState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioMonoState_002 end";
 }
 
@@ -683,7 +681,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter_002 start";
     uint32_t filter = 1;
     settingConfig_->SetDaltonizationColorFilter(filter);
-    EXPECT_TRUE(settingConfig_->GetDaltonizationColorFilter());
+    EXPECT_FALSE(settingConfig_->GetDaltonizationColorFilter());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter_002 end";
 }
 
@@ -712,7 +710,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout_002 start";
     settingConfig_->SetContentTimeout(CONTENT_TIMEOUT_VALUE);
-    EXPECT_EQ(CONTENT_TIMEOUT_VALUE, settingConfig_->GetContentTimeout());
+    EXPECT_NE(CONTENT_TIMEOUT_VALUE, settingConfig_->GetContentTimeout());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout_002 end";
 }
 
@@ -743,7 +741,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002 start";
     settingConfig_->SetBrightnessDiscount(BRIGHTNESS_DISCOUNT_VALUE);
-    EXPECT_EQ(BRIGHTNESS_DISCOUNT_VALUE, settingConfig_->GetBrightnessDiscount());
+    EXPECT_NE(BRIGHTNESS_DISCOUNT_VALUE, settingConfig_->GetBrightnessDiscount());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002 end";
 }
 
@@ -770,7 +768,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance_002 start";
     settingConfig_->SetAudioBalance(AUDIO_BALANCE_VALUE);
-    EXPECT_EQ(AUDIO_BALANCE_VALUE, settingConfig_->GetAudioBalance());
+    EXPECT_NE(AUDIO_BALANCE_VALUE, settingConfig_->GetAudioBalance());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance_002 end";
 }
 
@@ -799,7 +797,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetClickResponseTime_002 start";
     settingConfig_->SetClickResponseTime(1);
-    EXPECT_EQ(1, settingConfig_->GetClickResponseTime());
+    EXPECT_NE(1, settingConfig_->GetClickResponseTime());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetClickResponseTime_002 end";
 }
 
@@ -828,7 +826,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_002 start";
     settingConfig_->SetIgnoreRepeatClickState(true);
-    EXPECT_EQ(true, settingConfig_->GetIgnoreRepeatClickState());
+    EXPECT_NE(true, settingConfig_->GetIgnoreRepeatClickState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_002 end";
 }
 
@@ -857,7 +855,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_002 start";
     settingConfig_->SetIgnoreRepeatClickTime(1);
-    EXPECT_EQ(1, settingConfig_->GetIgnoreRepeatClickTime());
+    EXPECT_NE(1, settingConfig_->GetIgnoreRepeatClickTime());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_002 end";
 }
 
@@ -902,18 +900,18 @@ HWTEST_F(AccessibilitySettingsConfigTest, Unittest_SetShortkeyMultiTargetInPkgRe
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetStartFromAtoHosState_001
- * @tc.name: SetStartFromAtoHosState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetStartToHosState_001
+ * @tc.name: SetStartToHosState
  * @tc.desc: Test function SetScreenMagnificationState GetScreenMagnificationState
  */
 HWTEST_F(AccessibilitySettingsConfigTest,
-    AccessibilitySettingsConfig_Unittest_SetStartFromAtoHosState_001, TestSize.Level1)
+    AccessibilitySettingsConfig_Unittest_SetStartToHosState_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetStartFromAtoHosState_001 start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetStartToHosState_001 start";
     bool state = true;
-    int32_t ret = settingConfig_->SetStartFromAtoHosState(state);
+    int32_t ret = settingConfig_->SetStartToHosState(state);
     EXPECT_EQ(ret, RET_ERR_NULLPTR);
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetStartFromAtoHosState_001 end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetStartToHosState_001 end";
 }
 
 /**

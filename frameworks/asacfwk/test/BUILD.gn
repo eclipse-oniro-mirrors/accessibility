@@ -81,7 +81,6 @@ ohos_unittest("asac_unit_test") {
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "hilog:libhilog",
-    "init:libbegetutil",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
   ]

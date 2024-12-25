@@ -104,10 +104,16 @@ void NAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoca
         HILOG_ERROR("Failed to get accessibility extension native object");
         return;
     }
-    napi_wrap(env_, contextObj, new std::weak_ptr<AbilityRuntime::Context>(context),
+    auto contextPtr = new std::weak_ptr<AbilityRuntime::Context>(context);
+    napi_status sts = napi_wrap(env_, contextObj, contextPtr,
         [](napi_env env, void* data, void*) {
             delete static_cast<std::weak_ptr<AbilityRuntime::Context>*>(data);
         }, nullptr, nullptr);
+    if (sts != napi_ok) {
+        delete contextPtr;
+        contextPtr = nullptr;
+        HILOG_ERROR("failed to wrap JS object");
+    }
     NAccessibilityElement::DefineJSAccessibilityElement(env_);
 }
 
@@ -222,7 +228,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    std::future syncFuture = callbackInfo->syncPromise_.get_future();
+    ffrt::future syncFuture = callbackInfo->syncPromise_.get_future();
 
     int ret = uv_queue_work_with_qos(
         loop,
@@ -261,6 +267,8 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
     int64_t componentId = eventInfo.GetAccessibilityId();
     int32_t windowId = eventInfo.GetWindowId();
     std::shared_ptr<AccessibilityElement> element = nullptr;
+    HILOG_DEBUG("GetElement componentId: %{public}" PRId64 ", windowId: %{public}d, eventType: %{public}d",
+        componentId, windowId, eventInfo.GetEventType());
     if (componentId > 0) {
         std::shared_ptr<AccessibilityElementInfo> elementInfo =
             std::make_shared<AccessibilityElementInfo>(eventInfo.GetElementInfo());
@@ -273,13 +281,18 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
     } else {
         std::shared_ptr<AccessibilityElementInfo> elementInfo = std::make_shared<AccessibilityElementInfo>();
         std::string inspectorKey = eventInfo.GetInspectorKey();
+        RetError ret = RET_ERR_FAILED;
+        AccessibilityElementInfo accessibilityElementInfo;
         if (eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY && inspectorKey != "") {
-            AccessibilityElementInfo accessibilityElementInfo;
-            if (aaClient->SearchElementInfoByInspectorKey(inspectorKey, accessibilityElementInfo) == RET_OK) {
-                elementInfo = std::make_shared<AccessibilityElementInfo>(accessibilityElementInfo);
-            }
+            ret = aaClient->SearchElementInfoByInspectorKey(inspectorKey, accessibilityElementInfo);
         }
-        CreateElementInfoByEventInfo(eventInfo, elementInfo);
+        if (ret == RET_OK) {
+            elementInfo = std::make_shared<AccessibilityElementInfo>(accessibilityElementInfo);
+            elementInfo->SetBundleName(eventInfo.GetBundleName());
+            elementInfo->SetTriggerAction(eventInfo.GetTriggerAction());
+        } else {
+            CreateElementInfoByEventInfo(eventInfo, elementInfo);
+        }
         element = std::make_shared<AccessibilityElement>(elementInfo);
     }
     return element;
@@ -290,6 +303,7 @@ void NAccessibilityExtension::CreateElementInfoByEventInfo(const AccessibilityEv
 {
     HILOG_DEBUG();
     if (!elementInfo) {
+        HILOG_ERROR("elementInfo is nullptr");
         return;
     }
     if (elementInfo->GetAccessibilityId() < 0) {
@@ -340,6 +354,11 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
         },
         nullptr,
         nullptr);
+    if (sts != napi_ok) {
+        delete pAccessibilityElement;
+        pAccessibilityElement = nullptr;
+        HILOG_ERROR("failed to wrap JS object");
+    }
     HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "target", nTargetObject));
 }
@@ -575,7 +594,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
         return false;
     }
     work->data = static_cast<void*>(callbackInfo);
-    std::future syncFuture = callbackInfo->syncPromise_.get_future();
+    ffrt::future syncFuture = callbackInfo->syncPromise_.get_future();
 
     if (OnKeyPressEventExec(work, loop)) {
         HILOG_ERROR("Failed to execute OnKeyPressEvent work queue");

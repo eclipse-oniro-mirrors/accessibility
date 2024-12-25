@@ -18,7 +18,10 @@
       "SystemCapability.BarrierFree.Accessibility.Hearing",
       "SystemCapability.BarrierFree.Accessibility.Vision"
     ],
-    "features": [ "accessibility_feature_coverage = false" ],
+    "features": [
+      "accessibility_feature_coverage",
+      "accessibility_watch_feature"
+    ],
     "adapted_system_type": [
       "standard"
     ],
@@ -41,6 +44,7 @@
         "safwk",
         "bundle_framework",
         "ffrt",
+        "hicollie",
         "hitrace",
         "hilog",
         "ipc",

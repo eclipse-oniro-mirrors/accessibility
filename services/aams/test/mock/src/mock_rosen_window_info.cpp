@@ -15,7 +15,7 @@
 
 #include "accessibility_window_info.h"
 #include "hilog_wrapper.h"
-#include "window_manager.h"
+#include "window_manager_lite.h"
 
 namespace OHOS {
 namespace Rosen {

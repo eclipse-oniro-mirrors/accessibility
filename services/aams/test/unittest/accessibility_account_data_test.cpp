@@ -148,7 +148,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     const std::string bundleName = "bbb";
     EXPECT_FALSE(accountData->GetConnectingA11yAbility(bundleName));
     /* add connecting A11y ability */
-
     accountData->AddConnectingA11yAbility(bundleName, connection);
     EXPECT_TRUE(accountData->GetConnectingA11yAbility(bundleName));
 
@@ -206,7 +205,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
     sptr<AccessibleAbilityConnection> connection =
         new MockAccessibleAbilityConnection(accountId, connectCounter++, *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
-    /* add connected ability */
+    // add connected ability
     accountData->AddConnectedAbility(connection);
     const std::string elementName = Utils::GetUri(connection->GetElementName());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
@@ -249,11 +248,13 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveC
     sptr<AccessibleAbilityConnection> connection =
         new MockAccessibleAbilityConnection(accountId, connectCounter++, *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
+
     /* add */
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     const std::string elementName = Utils::GetUri(connection->GetElementName());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
+
     /* remove */
     accountData->RemoveConnectedAbility(connection->GetElementName());
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
@@ -433,6 +434,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddInst
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
+    
     /* add */
     accountData->AddInstalledAbility(*abilityInfo);
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
@@ -597,8 +599,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetEnab
 
     accountData->Init();
     bool state = true;
-    RetError test = accountData->GetConfig()->SetEnabled(state);
-    EXPECT_EQ(test, RET_OK);
+    bool test = accountData->GetConfig()->SetEnabled(state);
+    EXPECT_TRUE(test);
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetEnabled end";
 }
@@ -969,8 +971,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetTouc
 
     accountData->Init();
     bool state = true;
-    RetError test = accountData->GetConfig()->SetTouchGuideState(state);
-    EXPECT_EQ(test, RET_OK);
+    bool test = accountData->GetConfig()->SetTouchGuideState(state);
+    EXPECT_TRUE(test);
 
     bool result = accountData->GetConfig()->GetTouchGuideState();
     EXPECT_TRUE(result);
@@ -986,8 +988,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetGest
 
     accountData->Init();
     bool state = false;
-    RetError test = accountData->GetConfig()->SetGestureState(state);
-    EXPECT_EQ(test, RET_OK);
+    bool test = accountData->GetConfig()->SetGestureState(state);
+    EXPECT_TRUE(test);
 
     bool result = accountData->GetConfig()->GetGestureState();
     EXPECT_FALSE(result);
@@ -1003,8 +1005,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetKeyE
 
     accountData->Init();
     bool state = true;
-    RetError test = accountData->GetConfig()->SetKeyEventObserverState(state);
-    EXPECT_EQ(test, RET_OK);
+    bool test = accountData->GetConfig()->SetKeyEventObserverState(state);
+    EXPECT_TRUE(test);
 
     bool result = accountData->GetConfig()->GetKeyEventObserverState();
     EXPECT_TRUE(result);
@@ -1494,7 +1496,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ChangeA
     accountData->AddInstalledAbility(*abilityInfo);
     EXPECT_EQ(1, static_cast<int>(accountData->GetInstalledAbilities().size()));
     const std::string abilityName = "testBundle";
-    accountData->SetAbilityAutoStartState("testBundle", true);  
+    accountData->SetAbilityAutoStartState("testBundle", true);
     accountData->ChangeAbility("testBundle");
     EXPECT_EQ(0, static_cast<int>(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ChangeAbility_003 end";
@@ -1785,7 +1787,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetInpu
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetInputFilterFlag_003 start";
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    accountData->Init();    
+    accountData->Init();
     AccessibilityAbilityInitParams initParams;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     abilityInfo->SetCapabilityValues(CAPABILITY_ZOOM);
@@ -1833,6 +1835,22 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetScre
 }
 
 /**
+ * @tc.number: AccessibilityAccountData_Unittest_GetDefaultUserScreenReaderState_001
+ * @tc.name: GetDefaultUserScreenReaderState
+ * @tc.desc: Check the GetDefaultUserScreenReaderState.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetDefaultUserScreenReaderState_001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetDefaultUserScreenReaderState_001 start";
+    const int32_t accountId = 1;
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->Init();
+    accountData->GetDefaultUserScreenReaderState();
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetDefaultUserScreenReaderState_001 end";
+}
+
+/**
  * @tc.number: AccessibilityAccountData_Unittest_GetAbilityAutoStartState_001
  * @tc.name: GetAbilityAutoStartState
  * @tc.desc: Check GetAbilityAutoStartState.
@@ -1843,7 +1861,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
     const int32_t accountId = 1;
     const std::string abilityName = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    accountData->Init();
     accountData->SetAbilityAutoStartState(abilityName, false);
     EXPECT_EQ(accountData->GetAbilityAutoStartState(abilityName), false);
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilityAutoStartState_001 end";

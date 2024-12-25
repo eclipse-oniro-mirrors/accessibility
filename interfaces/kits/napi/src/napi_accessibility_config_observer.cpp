@@ -29,6 +29,10 @@ using namespace OHOS::AccessibilityConfig;
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int ROUND_STEP = 10;
+}
+
 napi_handle_scope TmpOpenScope(napi_env env)
 {
     napi_handle_scope scope = nullptr;
@@ -44,9 +48,12 @@ void NAccessibilityConfigObserver::OnConfigChangedExtra(const ConfigValue &value
     if (configId_ == CONFIG_CONTENT_TIMEOUT) {
         NotifyIntChanged2JS(static_cast<int32_t>(value.contentTimeout));
     } else if (configId_ == CONFIG_BRIGHTNESS_DISCOUNT) {
-        NotifyFloatChanged2JS(value.brightnessDiscount);
+        NotifyDoubleChanged2JS(static_cast<double>(value.brightnessDiscount));
     } else if (configId_ == CONFIG_AUDIO_BALANCE) {
-        NotifyFloatChanged2JS(value.audioBalance);
+        float audioBalance = value.audioBalance;
+        double value = static_cast<double>(audioBalance);
+        value = round(value * ROUND_STEP) / ROUND_STEP;
+        NotifyDoubleChanged2JS(value);
     } else if (configId_ ==  CONFIG_HIGH_CONTRAST_TEXT) {
         NotifyStateChanged2JS(value.highContrastText);
     } else if (configId_ ==  CONFIG_DALTONIZATION_STATE) {
@@ -354,7 +361,7 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
     return ret;
 }
 
-int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
+int NAccessibilityConfigObserver::NotifyDoubleChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
@@ -375,7 +382,7 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent = nullptr;
-            napi_create_double(callbackInfo->env_, double(callbackInfo->floatValue_), &jsEvent);
+            napi_create_double(callbackInfo->env_, callbackInfo->doubleValue_, &jsEvent);
 
             napi_value handler = nullptr;
             napi_value callResult = nullptr;
@@ -385,7 +392,7 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
             napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
             int32_t result;
             napi_get_value_int32(callbackInfo->env_, callResult, &result);
-            HILOG_INFO("NotifyFloatChanged2JSInner napi_call_function result[%{public}d]", result);
+            HILOG_INFO("NotifyDoubleChanged2JSInner napi_call_function result[%{public}d]", result);
             delete callbackInfo;
             callbackInfo = nullptr;
             delete work;
@@ -400,7 +407,7 @@ void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
     HILOG_INFO("id = [%{public}d] enabled = [%{public}s]", static_cast<int32_t>(configId_), enabled ? "true" : "false");
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -430,7 +437,7 @@ void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::Accessib
     HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(configId_));
 
     CaptionCallbackInfo *callbackInfo = new(std::nothrow) CaptionCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -460,7 +467,7 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& val
     HILOG_INFO("value = [%{public}s]", value.c_str());
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -490,7 +497,7 @@ void NAccessibilityConfigObserver::NotifyStringVectorChanged2JS(std::vector<std:
     HILOG_DEBUG();
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -520,7 +527,7 @@ void NAccessibilityConfigObserver::NotifyIntChanged2JS(int32_t value)
     HILOG_INFO("id = [%{public}d] value = [%{public}d]", static_cast<int32_t>(configId_), value);
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -550,7 +557,7 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
     HILOG_INFO("id = [%{public}d] value = [%{public}u]", static_cast<int32_t>(configId_), value);
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -575,29 +582,29 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
     }
 }
 
-void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
+void NAccessibilityConfigObserver::NotifyDoubleChanged2JS(double value)
 {
     HILOG_INFO("id = [%{public}d] value = [%{public}f]", static_cast<int32_t>(configId_), value);
 
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
-    callbackInfo->floatValue_ = value;
+    callbackInfo->doubleValue_ = value;
     callbackInfo->env_ = env_;
     callbackInfo->ref_ = handlerRef_;
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {
-        HILOG_ERROR("NotifyFloatChanged2JS Failed to create work.");
+        HILOG_ERROR("NotifyDoubleChanged2JS Failed to create work.");
         delete callbackInfo;
         callbackInfo = nullptr;
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    int ret = NotifyFloatChanged(work);
+    int ret = NotifyDoubleChanged(work);
     if (ret != 0) {
-        HILOG_ERROR("Failed to execute NotifyFloatChanged2JS work queue");
+        HILOG_ERROR("Failed to execute NotifyDoubleChanged2JS work queue");
         delete callbackInfo;
         callbackInfo = nullptr;
         delete work;
@@ -617,7 +624,7 @@ void NAccessibilityConfigObserverImpl::OnConfigChanged(
     const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue& value)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto &observer : observers_) {
         if (observer && observer->configId_ == id) {
             observer->OnConfigChanged(value);
@@ -629,7 +636,7 @@ void NAccessibilityConfigObserverImpl::SubscribeObserver(napi_env env,
     OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
             HILOG_DEBUG("SubscribeObserver Observer exist");
@@ -651,7 +658,7 @@ void NAccessibilityConfigObserverImpl::UnsubscribeObserver(napi_env env,
     OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if ((*iter)->configId_ == id) {
             if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
@@ -669,7 +676,7 @@ void NAccessibilityConfigObserverImpl::UnsubscribeObserver(napi_env env,
 void NAccessibilityConfigObserverImpl::UnsubscribeObservers(OHOS::AccessibilityConfig::CONFIG_ID id)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if ((*iter)->configId_ == id) {
             iter = observers_.erase(iter);

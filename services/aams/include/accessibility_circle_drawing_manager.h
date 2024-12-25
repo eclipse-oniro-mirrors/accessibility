@@ -20,8 +20,6 @@
 #include "draw/canvas.h"
 #include <ui/rs_canvas_node.h>
 #include <ui/rs_surface_node.h>
-#include <ui/rs_ui_director.h>
-#include <ui/rs_root_node.h>
 #include <transaction/rs_transaction.h>
 
 #include "accessibility_def.h"
@@ -54,10 +52,8 @@ public:
     void DrawingProgressByRosenDrawing(int32_t physicalX, int32_t physicalY, int32_t angle);
 #endif
 
-    std::shared_ptr<Rosen::RSUIDirector> rsUiDirector_ = nullptr;
-    std::shared_ptr<Rosen::RSSurfaceNode> surfaceNode_ = nullptr;
-    std::shared_ptr<Rosen::RSCanvasNode> canvasNode_ = nullptr;
-    std::shared_ptr<Rosen::RSNode> rootNode_ = nullptr;
+    std::shared_ptr<Rosen::RSSurfaceNode> surfaceNode_;
+    std::shared_ptr<Rosen::RSCanvasNode> canvasNode_;
     uint64_t screenId_;
     int32_t imageWidth_;
     int32_t imageHeight_;

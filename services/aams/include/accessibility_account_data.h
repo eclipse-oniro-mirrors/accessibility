@@ -49,8 +49,10 @@ struct ConfigValueAtoHosUpdate {
     bool ignoreRepeatClickState = false;
     int ignoreRepeatClickTime = 0;
     int displayDaltonizer = 0;
+    bool shortcutEnabled = false;
     bool shortcutEnabledOnLockScreen = false;
-    bool shortcutDialogShown = false;
+    int shortcutTimeout = 0;
+    bool screenMagnificationState = false;
 };
 
 class AccessibilityAccountData final : public RefBase {
@@ -277,6 +279,7 @@ public:
         const std::string &bundleName, const std::string &abilityName);
     void RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection, const std::string &bundleName);
     void SetAbilityAutoStartState(const std::string &name, const bool state);
+    void SetScreenReaderExtInAllAccounts(const bool state);
     void DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName);
     bool GetAbilityAutoStartState(const std::string &name);
     void GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value);
@@ -329,7 +332,7 @@ private:
         size_t GetSize();
     private:
         std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMap_;
-        std::mutex mutex_;
+        ffrt::mutex mutex_;
     };
 
     int32_t id_;
@@ -338,20 +341,21 @@ private:
     bool isScreenMagnification_ = false;
     bool isFilteringKeyEvents_ = false;
     bool isGesturesSimulation_ = false;
+    std::string screenReaderAbilityName_ = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     std::string screenReaderKey_ = "accessibility_screenreader_enabled";
     uint32_t connectCounter_ = 1;
     AccessibilityAbility connectedA11yAbilities_;  // key: bundleName/abilityName
     AccessibilityAbility connectingA11yAbilities_;  // key: bundleName/abilityName
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
-    std::mutex enableAbilityListObserversMutex_; // mutex for enableAbilityListsObservers_
+    ffrt::mutex enableAbilityListObserversMutex_; // mutex for enableAbilityListsObservers_
     std::map<int32_t, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
-    std::mutex asacConnectionsMutex_; // mutex for map asacConnections_
+    ffrt::mutex asacConnectionsMutex_; // mutex for map asacConnections_
     CaptionPropertyCallbacks captionPropertyCallbacks_;
-    std::mutex captionPropertyCallbacksMutex_; // mutex for captionPropertyCallbacks_
+    ffrt::mutex captionPropertyCallbacksMutex_; // mutex for captionPropertyCallbacks_
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
     std::vector<std::string> enabledAbilities_; // bundleName/abilityName
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> configCallbacks_;
-    std::mutex configCallbacksMutex_; // mutex for vector configCallbacks_
+    ffrt::mutex configCallbacksMutex_; // mutex for vector configCallbacks_
     std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
 };
 
@@ -363,10 +367,11 @@ public:
     sptr<AccessibilityAccountData> GetCurrentAccountData(int32_t accountId);
     sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
     sptr<AccessibilityAccountData> RemoveAccountData(int32_t accountId);
+    std::vector<int32_t> GetAllAccountIds();
     void Clear();
 private:
     std::map<int32_t, sptr<AccessibilityAccountData>> accountDataMap_;
-    std::mutex accountDataMutex_;
+    ffrt::mutex accountDataMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

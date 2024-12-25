@@ -1256,7 +1256,7 @@ HWTEST_F(AccessibleActionTest, AccessibleAction_002, TestSize.Level1)
 /**
  * @tc.number: Rect_001
  * @tc.name: Rect
- * @tc.desc: Test function Rect
+ * @tc.desc: Test function Rect.
  */
 HWTEST_F(AccessibilityElementInfoTest, Rect_001, TestSize.Level1)
 {
@@ -1450,34 +1450,6 @@ HWTEST_F(AccessibilityElementInfoTest, SetHitTestBehavior_001, TestSize.Level1)
     elementInfo_->SetHitTestBehavior("test");
     EXPECT_STREQ(elementInfo_->GetHitTestBehavior().c_str(), "test");
     GTEST_LOG_(INFO) << "SetHitTestBehavior_001 end";
-}
-
-/**
- * @tc.number: SetExtraElement_001
- * @tc.name: SetExtraElement
- * @tc.desc: Test function SetExtraElement, GetExtraElement
- */
-HWTEST_F(AccessibilityElementInfoTest, SetExtraElement_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetExtraElement_001 start";
-    ExtraElementInfo extraElementInfo {};
-    extraElementInfo.SetExtraElementInfo("Column", "1");
-    elementInfo_->SetExtraElement(extraElementInfo);
-    EXPECT_TRUE(elementInfo_->GetExtraElement().GetExtraElementInfoValueStr().size() == 1);
-    GTEST_LOG_(INFO) << "SetExtraElement_001 end";
-}
-
-/**
- * @tc.number: SetNavDestinationId_001
- * @tc.name: SetNavDestinationId
- * @tc.desc: Test function SetNavDestinationId, GetNavDestinationId
- */
-HWTEST_F(AccessibilityElementInfoTest, SetNavDestinationId_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetNavDestinationId_001 start";
-    elementInfo_->SetNavDestinationId(1);
-    EXPECT_TRUE(elementInfo_->GetNavDestinationId() == 1);
-    GTEST_LOG_(INFO) << "SetNavDestinationId_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

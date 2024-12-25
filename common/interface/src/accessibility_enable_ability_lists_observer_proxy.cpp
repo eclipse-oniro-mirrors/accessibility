@@ -42,7 +42,7 @@ void AccessibilityEnableAbilityListsObserverProxy::OnAccessibilityEnableAbilityL
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("write interface token failed");
@@ -50,7 +50,7 @@ void AccessibilityEnableAbilityListsObserverProxy::OnAccessibilityEnableAbilityL
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -69,7 +69,7 @@ void AccessibilityEnableAbilityListsObserverProxy::OnAccessibilityInstallAbility
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("write interface token failed");
@@ -77,7 +77,7 @@ void AccessibilityEnableAbilityListsObserverProxy::OnAccessibilityInstallAbility
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    if (remote == nullptr) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }

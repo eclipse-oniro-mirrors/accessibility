@@ -180,6 +180,8 @@ ohos_unittest("accessible_ability_test") {
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
+    "graphic_2d:librender_service_client",
+    "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -189,7 +191,7 @@ ohos_unittest("accessible_ability_test") {
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "window_manager:libdm",
-    "window_manager:libwm",
+    "window_manager:libwm_lite",
   ]
 }
 

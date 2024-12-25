@@ -16,8 +16,8 @@
 #ifndef ACCESSIBILITY_UT_HELPER_H
 #define ACCESSIBILITY_UT_HELPER_H
 
-#include <mutex>
 #include "accessibility_event_info.h"
+#include "ffrt.h"
 #include "hilog/log.h"
 #include "iremote_object.h"
 
@@ -33,13 +33,13 @@ public:
 
     std::vector<int32_t> GetTouchEventActionVector()
     {
-        std::lock_guard<std::mutex> lock(mtx_);
+        std::lock_guard<ffrt::mutex> lock(mtx_);
         return touchAction_;
     }
 
     int32_t GetTouchEventActionOfTargetIndex(int32_t index)
     {
-        std::lock_guard<std::mutex> lock(mtx_);
+        std::lock_guard<ffrt::mutex> lock(mtx_);
         int32_t size = static_cast<int32_t>(touchAction_.size());
         if (size > index) {
             return touchAction_[index];
@@ -49,13 +49,13 @@ public:
 
     void ClearTouchEventActionVector()
     {
-        std::lock_guard<std::mutex> lock(mtx_);
+        std::lock_guard<ffrt::mutex> lock(mtx_);
         touchAction_.clear();
     }
 
     void SetTouchEventActionVectors(int32_t touchAction)
     {
-        std::lock_guard<std::mutex> lock(mtx_);
+        std::lock_guard<ffrt::mutex> lock(mtx_);
         touchAction_.push_back(touchAction);
     }
 
@@ -156,13 +156,13 @@ public:
 
     std::vector<EventType> GetEventTypeVector()
     {
-        std::lock_guard<std::mutex> lock(mtx_);
+        std::lock_guard<ffrt::mutex> lock(mtx_);
         return eventType_;
     }
 
     EventType GetEventTypeOfTargetIndex(int32_t index)
     {
-        std::lock_guard<std::mutex> lock(mtx_);
+        std::lock_guard<ffrt::mutex> lock(mtx_);
         int32_t size = static_cast<int32_t>(eventType_.size());
         if (size > index) {
             return eventType_[index];
@@ -172,13 +172,13 @@ public:
 
     void ClearEventTypeActionVector()
     {
-        std::lock_guard<std::mutex> lock(mtx_);
+        std::lock_guard<ffrt::mutex> lock(mtx_);
         eventType_.clear();
     }
 
     void SetEventTypeVector(EventType eventType)
     {
-        std::lock_guard<std::mutex> lock(mtx_);
+        std::lock_guard<ffrt::mutex> lock(mtx_);
         eventType_.push_back(eventType);
     }
 
@@ -449,7 +449,7 @@ private:
     bool enableShortKeyTargetAbility_ = false;
     bool zoomState_ = false;
     bool scrollState_ = false;
-    std::mutex mtx_;
+    ffrt::mutex mtx_;
     std::vector<int32_t> userIds_;
     std::vector<std::string> packages_;
     int32_t currentUserId_ = -1;

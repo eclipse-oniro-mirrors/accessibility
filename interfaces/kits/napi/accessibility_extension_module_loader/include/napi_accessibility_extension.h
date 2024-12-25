@@ -17,9 +17,9 @@
 #define NAPI_ACCESSIBILITY_EXTENSION_H
 
 #include <uv.h>
-#include <future>
 #include "accessibility_extension.h"
 #include "accessible_ability_listener.h"
+#include "ffrt_inner.h"
 #include "js_runtime.h"
 #include "napi_accessibility_element.h"
 #include "native_engine/native_reference.h"
@@ -153,12 +153,12 @@ private:
 struct ExtensionCallbackInfo {
     napi_env env_;
     NAccessibilityExtension *extension_;
-    std::promise<void> syncPromise_;
+    ffrt::promise<void> syncPromise_;
 };
 
 struct KeyEventCallbackInfo : public ExtensionCallbackInfo {
     std::shared_ptr<MMI::KeyEvent> keyEvent_;
-    std::promise<bool> syncPromise_;
+    ffrt::promise<bool> syncPromise_;
 };
 
 struct AccessibilityEventInfoCallbackInfo : public ExtensionCallbackInfo {

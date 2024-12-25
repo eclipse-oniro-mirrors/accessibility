@@ -233,14 +233,25 @@ std::string AccessibilityWindowInfo::GetBundleName()
 void AccessibilityWindowInfo::SetTouchHotAreas(const std::vector<Rect> &touchHotAreas)
 {
     touchHotAreas_ = touchHotAreas;
-    HILOG_DEBUG("set touchHotAreas_ size(%{public}zu)", touchHotAreas_.size());
+    HILOG_DEBUG("set touchHotAreas_ size(%{public}u)", touchHotAreas_.size());
 }
 
 std::vector<Rect> AccessibilityWindowInfo::GetTouchHotAreas()
 {
-    HILOG_DEBUG("get touchHotAreas_size(%{public}zu)", touchHotAreas_.size());
+    HILOG_DEBUG("get touchHotAreas_size(%{public}u)", touchHotAreas_.size());
     return touchHotAreas_;
 }
 
+int32_t AccessibilityWindowInfo::GetMainWindowId() const
+{
+    HILOG_DEBUG("mainWindowId_[%{public}d]", mainWindowId_);
+    return mainWindowId_;
+}
+
+void AccessibilityWindowInfo::SetMainWindowId(const int32_t id)
+{
+    mainWindowId_ = id;
+    HILOG_DEBUG("mainWindowId_[%{public}d]", mainWindowId_);
+}
 } // namespace Accessibility
 } // namespace OHOS

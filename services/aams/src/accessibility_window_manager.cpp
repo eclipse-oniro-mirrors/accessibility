@@ -24,6 +24,7 @@
 
 namespace OHOS {
 namespace Accessibility {
+
 AccessibilityWindowManager::AccessibilityWindowManager()
 {
 }
@@ -279,7 +280,7 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
         accWindowInfo.SetWindowId(windowInfo->innerWid_);
         HILOG_DEBUG("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
     }
-    HILOG_DEBUG("bundle name is [%{public}s] , touchHotAreas size(%{public}zu)",
+    HILOG_DEBUG("bundle name is [%{public}s] , touchHotAreas size(%{public}u)",
         windowInfo->bundleName_.c_str(), windowInfo->touchHotAreas_.size());
     accWindowInfo.SetBundleName(windowInfo->bundleName_);
     HILOG_DEBUG("UpdateAccessibilityWindowInfo is set bundlename is [%{public}s]",
@@ -743,40 +744,40 @@ void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId, 
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     switch (type) {
         case WindowUpdateType::WINDOW_UPDATE_ADDED: {
-                AccessibilityEventInfo evtInfAdded(realWidId, WINDOW_UPDATE_ADDED);
-                Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfAdded);
-                if (a11yWindows_[realWidId].IsFocused()) {
-                    SetActiveWindow(realWidId);
-                }
-                break;
+            AccessibilityEventInfo evtInfAdded(realWidId, WINDOW_UPDATE_ADDED);
+            Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfAdded);
+            if (a11yWindows_[realWidId].IsFocused()) {
+                SetActiveWindow(realWidId);
+            }
+            break;
             }
         case WindowUpdateType::WINDOW_UPDATE_REMOVED: {
-                if (realWidId == activeWindowId_) {
-                    SetActiveWindow(INVALID_WINDOW_ID);
-                }
-                if (realWidId == a11yFocusedWindowId_) {
-                    SetAccessibilityFocusedWindow(INVALID_WINDOW_ID);
-                }
+            if (realWidId == activeWindowId_) {
+                SetActiveWindow(INVALID_WINDOW_ID);
+            }
+            if (realWidId == a11yFocusedWindowId_) {
+                SetAccessibilityFocusedWindow(INVALID_WINDOW_ID);
+            }
 
-                AccessibilityEventInfo evtInfRemoved(realWidId, WINDOW_UPDATE_REMOVED);
-                aams.SendEvent(evtInfRemoved);
-                break;
+            AccessibilityEventInfo evtInfRemoved(realWidId, WINDOW_UPDATE_REMOVED);
+            aams.SendEvent(evtInfRemoved);
+            break;
             }
         case WindowUpdateType::WINDOW_UPDATE_BOUNDS: {
-                AccessibilityEventInfo evtInfBounds(realWidId, WINDOW_UPDATE_BOUNDS);
-                aams.SendEvent(evtInfBounds);
-                break;
+            AccessibilityEventInfo evtInfBounds(realWidId, WINDOW_UPDATE_BOUNDS);
+            aams.SendEvent(evtInfBounds);
+            break;
             }
         case WindowUpdateType::WINDOW_UPDATE_FOCUSED: {
-                SetActiveWindow(realWidId);
-                AccessibilityEventInfo evtInfFocused(realWidId, WINDOW_UPDATE_FOCUSED);
-                aams.SendEvent(evtInfFocused);
-                break;
+            SetActiveWindow(realWidId);
+            AccessibilityEventInfo evtInfFocused(realWidId, WINDOW_UPDATE_FOCUSED);
+            aams.SendEvent(evtInfFocused);
+            break;
             }
         case WindowUpdateType::WINDOW_UPDATE_PROPERTY: {
-                AccessibilityEventInfo evtInfProperty(realWidId, WINDOW_UPDATE_PROPERTY);
-                aams.SendEvent(evtInfProperty);
-                break;
+            AccessibilityEventInfo evtInfProperty(realWidId, WINDOW_UPDATE_PROPERTY);
+            aams.SendEvent(evtInfProperty);
+            break;
             }
         default:
             break;
@@ -792,7 +793,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         infos.size(), oldA11yWindows_.size());
     WinDeInit();
     for (auto &window : infos) {
-        if (!window) {
+        if (window == nullptr) {
             HILOG_ERROR("window is nullptr");
             continue;
         }
@@ -807,6 +808,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             sceneBoardElementIdMap_.InsertPair(realWid, window->uiNodeId_);
         }
 
+        // IsScenePanel for recent-task window
         if (a11yWindows_[realWid].IsFocused()) {
             SetActiveWindow(realWid);
         }

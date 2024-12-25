@@ -13,6 +13,7 @@
 
 import("//build/ohos.gni")
 import("../../../accessibility_aafwk.gni")
+import("../../../accessibility_manager_service.gni")
 
 aafwk_path = "../../../frameworks/aafwk"
 
@@ -28,6 +29,12 @@ config("accessibleability_private_config") {
     "AAMS_LOG_TAG = \"accessibility_aakit\"",
     "AAMS_LOG_DOMAIN = 0xD001D01",
   ]
+
+  defines += accessibility_default_defines
+
+  if (build_variant == "user") {
+    defines += [ "RELEASE_VERSION" ]
+  }
 }
 
 config("accessibleability_public_config") {

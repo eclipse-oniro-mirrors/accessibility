@@ -42,8 +42,8 @@ std::shared_ptr<StateListenerImpl> NAccessibilityClient::touchGuideStateListener
 std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityClient::captionListeners_ =
     std::make_shared<NAccessibilityConfigObserverImpl>();
 
-thread_local napi_ref NAccessibilityClient::aaConsRef_;
-thread_local napi_ref NAccessibilityClient::aaStyleConsRef_;
+napi_ref NAccessibilityClient::aaConsRef_;
+napi_ref NAccessibilityClient::aaStyleConsRef_;
 
 #define ACCESSIBILITY_NAPI_ASSERT(env, cond, errCode) \
 do { \
@@ -80,7 +80,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
@@ -98,7 +98,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "IsOpenAccessibility", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(env, nullptr, resource,
+    auto ret = napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
@@ -113,6 +113,12 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
             Completefunction(env, "IsOpenAccessibility", data);
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -139,7 +145,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
 {
     HILOG_INFO();
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
@@ -159,7 +165,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "IsOpenTouchExploration", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(env, nullptr, resource,
+    auto ret = napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
@@ -174,6 +180,12 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
             Completefunction(env, "IsOpenTouchExploration", data);
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -193,6 +205,9 @@ void NAccessibilityClient::Completefunction(napi_env env, std::string type, void
         NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, callbackInfo->touchEnabled_, &result[PARAM1]));
         HILOG_INFO("IsOpenTouchExploration completed touchEnabled_[%{public}d]", callbackInfo->touchEnabled_);
     } else {
+        napi_delete_async_work(env, callbackInfo->work_);
+        delete callbackInfo;
+        callbackInfo = nullptr;
         return;
     }
     result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
@@ -257,7 +272,7 @@ void NAccessibilityClient::GetAbilityListComplete(napi_env env, napi_status stat
 napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info info)
 {
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
@@ -284,13 +299,19 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetAbilityList", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(env, nullptr, resource,
+    auto ret = napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         NAccessibilityClient::GetAbilityListExecute,
         // Execute the complete function
         NAccessibilityClient::GetAbilityListComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -298,7 +319,7 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
 napi_value NAccessibilityClient::GetAccessibilityExtensionList(napi_env env, napi_callback_info info)
 {
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
         napi_throw(env, err);
@@ -367,13 +388,19 @@ napi_value NAccessibilityClient::GetAccessibilityExtensionListAsync(
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetAccessibilityExtensionList", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(env, nullptr, resource,
+    auto ret = napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         NAccessibilityClient::GetAbilityListExecute,
         // Execute the complete function
         NAccessibilityClient::GetAbilityListComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -507,7 +534,7 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
 {
     HILOG_INFO();
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
@@ -529,11 +556,17 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SendEvent", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(env, nullptr, resource,
+    auto ret = napi_create_async_work(env, nullptr, resource,
         NAccessibilityClient::SendEventExecute,
         NAccessibilityClient::SendEventComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
 
     return promise;
@@ -543,7 +576,7 @@ napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callb
 {
     HILOG_INFO();
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
         napi_throw(env, err);
@@ -716,7 +749,7 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
     HILOG_INFO("state = [%{public}s]", state ? "true" : "false");
     
     StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
-    if (!callbackInfo) {
+    if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
@@ -1338,16 +1371,76 @@ void StateListenerImpl::SubscribeToFramework()
 void StateListenerImpl::OnStateChanged(const bool state)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto &observer : observers_) {
         observer->OnStateChanged(state);
     }
 }
 
+void StateListenerImpl::DeleteObserverReference(napi_env env, std::shared_ptr<StateListener> observer)
+{
+    if (observer == nullptr) {
+        return;
+    }
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (work == nullptr) {
+        HILOG_ERROR("failed tp create work");
+        return;
+    }
+    AccessibilityCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityCallbackInfo();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("failed to create callbackInfo");
+        delete work;
+        work = nullptr;
+        return;
+    }
+    callbackInfo->env_ = observer->env_;
+    callbackInfo->ref_ = observer->handlerRef_;
+    work->data = static_cast<void*>(callbackInfo);
+    
+    int ret = DeleteObserverReferenceWork(env, work);
+    if (ret != RET_OK) {
+        HILOG_ERROR("failed to execute delete observer reference");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
+}
+
+int StateListenerImpl::DeleteObserverReferenceWork(napi_env env, uv_work_t *work)
+{
+    uv_loop_s *loop = nullptr;
+    napi_get_uv_event_loop(env, &loop);
+    if (loop == nullptr) {
+        return RET_ERR_FAILED;
+    }
+    int ret = uv_queue_work_with_qos(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            AccessibilityCallbackInfo *callbackInfo = static_cast<AccessibilityCallbackInfo *>(work->data);
+            napi_env tmpEnv = callbackInfo->env_;
+            auto closeScope = [tmpEnv](napi_handle_scope scope) {
+                napi_close_handle_scope(tmpEnv, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
+            napi_delete_reference(tmpEnv, callbackInfo->ref_);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+            delete work;
+            work = nullptr;
+        },
+        uv_qos_default);
+    return ret;
+}
+
 void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
             HILOG_DEBUG("SubscribeObserver Observer exist");
@@ -1368,9 +1461,10 @@ void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
 void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
+            DeleteObserverReference(env, *iter);
             observers_.erase(iter);
             return;
         } else {
@@ -1382,6 +1476,10 @@ void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
 void StateListenerImpl::UnsubscribeObservers()
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto iter = observers_.begin(); iter != observers_.end();) {
+        DeleteObserverReference((*iter)->env_, *iter);
+        observers_.erase(iter);
+    }
     observers_.clear();
 }

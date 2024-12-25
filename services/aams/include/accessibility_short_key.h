@@ -27,6 +27,7 @@ public:
     ~AccessibilityShortKey();
 
     void Register();
+    void Unregister();
 
 private:
     void SubscribeShortKey(std::set<int32_t> preKeys, int32_t finalKey, int32_t holdTime);

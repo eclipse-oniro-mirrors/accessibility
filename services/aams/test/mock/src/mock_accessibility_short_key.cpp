@@ -48,6 +48,12 @@ void AccessibilityShortKey::Register()
     SubscribeShortKey(preDownKeysUp, KEYCODE_VOLUME_DOWN, SHORTCUT_TIMEOUT);
 }
 
+void AccessibilityShortKey::Unregister()
+{
+    HILOG_DEBUG("start.");
+    subscribeId_ = -1;
+}
+
 void AccessibilityShortKey::OnShortKey()
 {
     HILOG_DEBUG("start.");

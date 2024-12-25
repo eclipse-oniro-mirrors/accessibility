@@ -24,7 +24,7 @@ namespace {
     constexpr size_t FOO_MAX_LEN = 1024;
     constexpr size_t U32_AT_SIZE = 4;
     constexpr size_t BASE_CODE = 800;
-    constexpr size_t MESSAGE_SIZE = 63;
+    constexpr size_t MESSAGE_SIZE = 66;
     constexpr size_t FUZZ_NUM1 = 1;
     constexpr size_t FUZZ_NUM2 = 2;
     constexpr size_t FUZZ_NUM3 = 3;
@@ -164,6 +164,22 @@ bool HandleSetDaltonizationStateTest(const uint8_t *data, size_t size)
         datas, reply, option);
     return true;
 }
+
+bool HandleRemoveRequestIdTest(const uint8_t *data, size_t size)
+{
+    MessageParcel datas;
+    int32_t requestId = static_cast<int32_t>(*data);
+    std::u16string descriptor = AccessibleAbilityManagerServiceStubFuzzTest::GetDescriptor();
+    datas.WriteInterfaceToken(descriptor);
+    datas.WriteInt32(requestId);
+    MessageParcel reply;
+    MessageOption option;
+    AccessibleAbilityManagerServiceStubFuzzTest serviceStub;
+
+    serviceStub.OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::REMOVE_REQUEST_ID),
+        datas, reply, option);
+    return true;
+}
 } // namespace Accessibility
 } // namespace OHOS
 
@@ -181,5 +197,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 
     OHOS::Accessibility::OnRemoteRequestSvcFuzzTest(data, size);
     OHOS::Accessibility::HandleSetDaltonizationStateTest(data, size);
+    OHOS::Accessibility::HandleRemoveRequestIdTest(data, size);
     return 0;
 }

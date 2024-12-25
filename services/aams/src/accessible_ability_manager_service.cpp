@@ -27,6 +27,7 @@
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "accessibility_power_manager.h"
 #endif
+#include "accessibility_short_key_dialog.h"
 #include "accessibility_window_manager.h"
 #include "hilog_wrapper.h"
 #include "input_manager.h"
@@ -35,9 +36,9 @@
 #include "parameter.h"
 #include "system_ability_definition.h"
 #include "utils.h"
-#include "accessibility_short_key_dialog.h"
+#include "xcollie_helper.h"
 #include <ipc_skeleton.h>
-
+#include "transaction/rs_interfaces.h"
 
 using namespace std;
 
@@ -46,6 +47,7 @@ namespace Accessibility {
 namespace {
     const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
     const std::string AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
+    const std::string AAMS_SEND_EVENT_RUNNER_NAME = "AamsSendEventRunner";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
@@ -55,8 +57,8 @@ namespace {
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
-    const std::string USER_SETUP_COMPLETED = "user_setup_complete";
     const std::string DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
+    const std::string USER_SETUP_COMPLETED = "user_setup_complete";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
     constexpr int32_t INVALID_SHORTCUT_STATE = 2;
@@ -79,6 +81,14 @@ namespace {
         OFF = 0,
         ON = 1,
     };
+    constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
+    constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
+    const std::string TIMER_REGISTER_STATE_OBSERVER = "accessibility:registerStateObServer";
+    const std::string TIMER_REGISTER_CAPTION_OBSERVER = "accessibility:registerCaptionObServer";
+    const std::string TIMER_REGISTER_ENABLEABILITY_OBSERVER = "accessibility:registerEnableAbilityObServer";
+    const std::string TIMER_GET_ALL_CONFIG = "accessibility:getAllConfig";
+    const std::string TIMER_REGISTER_CONFIG_OBSERVER = "accessibility:registerConfigObserver";
+    constexpr int32_t XCOLLIE_TIMEOUT = 6; // s
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -97,6 +107,7 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     dependentServicesStatus_[DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID] = false;
 
     accessibilitySettings_ = std::make_shared<AccessibilitySettings>();
+    accessibilityShortKey_ = std::make_shared<AccessibilityShortKey>();
 }
 
 AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
@@ -106,15 +117,14 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
     inputInterceptor_ = nullptr;
     touchEventInjector_ = nullptr;
     keyEventFilter_ = nullptr;
-    accessibilityShortKey_ = nullptr;
-    a11yAccountsData_.Clear(); // clear account data
+    a11yAccountsData_.Clear();
 }
 
 void AccessibleAbilityManagerService::OnStart()
 {
     HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
     if (!runner_) {
-        runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
+        runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME, AppExecFwk::ThreadMode::FFRT);
         if (!runner_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS runner failed");
             return;
@@ -130,7 +140,7 @@ void AccessibleAbilityManagerService::OnStart()
     }
 
     if (!actionRunner_) {
-        actionRunner_ = AppExecFwk::EventRunner::Create(AAMS_ACTION_RUNNER_NAME);
+        actionRunner_ = AppExecFwk::EventRunner::Create(AAMS_ACTION_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
         if (!actionRunner_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS action runner failed");
             return;
@@ -141,6 +151,22 @@ void AccessibleAbilityManagerService::OnStart()
         actionHandler_ = std::make_shared<AAMSEventHandler>(actionRunner_);
         if (!actionHandler_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS action handler failed");
+            return;
+        }
+    }
+
+    if (!sendEventRunner_) {
+        sendEventRunner_ = AppExecFwk::EventRunner::Create(AAMS_SEND_EVENT_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
+        if (!sendEventRunner_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS sendEvent runner failed");
+            return;
+        }
+    }
+
+    if (!sendEventHandler_) {
+        sendEventHandler_ = std::make_shared<AAMSEventHandler>(sendEventRunner_);
+        if (!sendEventRunner_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS sendEvent handler failed");
             return;
         }
     }
@@ -167,15 +193,13 @@ void AccessibleAbilityManagerService::OnStop()
         return;
     }
 
-    std::promise<void> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<void> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise]() {
         HILOG_DEBUG();
 
         Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
         Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
-#endif
         Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
 
         currentAccountId_ = -1;
@@ -185,7 +209,6 @@ void AccessibleAbilityManagerService::OnStop()
         inputInterceptor_ = nullptr;
         touchEventInjector_ = nullptr;
         keyEventFilter_ = nullptr;
-        accessibilityShortKey_ = nullptr;
         stateObserversDeathRecipient_ = nullptr;
         bundleManagerDeathRecipient_ = nullptr;
 
@@ -270,9 +293,7 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
         if (isReady_) {
             SwitchedUser(-1);
             Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
             Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
-#endif
             Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
             Singleton<AccessibilityWindowManager>::GetInstance().DeInit();
 
@@ -289,8 +310,8 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
     }
-    std::promise<int> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<int> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, fd, args]() {
         if (!accessibilityDumper_) {
             accessibilityDumper_ = new(std::nothrow) AccessibilityDumper();
@@ -315,6 +336,7 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
         HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
         return RET_OK;
     }
+
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData == nullptr) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
@@ -346,7 +368,7 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
         uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId(),
         uiEvent.GetElementInfo().GetAccessibilityId(),
         uiEvent.GetElementInfo().GetWindowId(), uiEvent.GetElementInfo().GetBelongTreeId());
-    if (!handler_) {
+    if (!sendEventHandler_) {
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
     }
@@ -360,9 +382,9 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
         }
     }
 
-    UpdateAccessibilityWindowStateByEvent(uiEvent);
-    handler_->PostTask([this, uiEvent]() {
+    sendEventHandler_->PostTask([this, uiEvent]() {
         HILOG_DEBUG();
+        UpdateAccessibilityWindowStateByEvent(uiEvent);
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
@@ -388,8 +410,8 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
         HILOG_ERROR("parameters check failed!");
         return 0;
     }
-
-    std::lock_guard<std::mutex> lock(mutex_);
+    XCollieHelper timer(TIMER_REGISTER_STATE_OBSERVER, XCOLLIE_TIMEOUT);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!stateObserversDeathRecipient_) {
         stateObserversDeathRecipient_ = new(std::nothrow) StateCallbackDeathRecipient();
         if (!stateObserversDeathRecipient_) {
@@ -420,8 +442,8 @@ void AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowI
         return;
     }
 
-    std::promise<void> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<void> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([&, this]() {
         Singleton<AccessibilityWindowManager>::GetInstance().GetRealWindowAndElementId(windowId, elementId);
         syncPromise.set_value();
@@ -437,8 +459,8 @@ void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, 
         return;
     }
 
-    std::promise<void> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<void> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([&, this]() {
         Singleton<AccessibilityWindowManager>::GetInstance().GetSceneBoardInnerWinId(windowId, elementId, innerWid);
         syncPromise.set_value();
@@ -478,10 +500,10 @@ bool AccessibleAbilityManagerService::FindFocusedElementByConnection(sptr<Access
         HILOG_ERROR("Failed to create focusCallback.");
         return false;
     }
-    std::future<void> focusFuture = focusCallback->promise_.get_future();
+    ffrt::future<void> focusFuture = focusCallback->promise_.get_future();
     connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, GenerateRequestId(), focusCallback);
-    std::future_status waitFocus = focusFuture.wait_for(std::chrono::milliseconds(timeOut));
-    if (waitFocus != std::future_status::ready) {
+    ffrt::future_status waitFocus = focusFuture.wait_for(std::chrono::milliseconds(timeOut));
+    if (waitFocus != ffrt::future_status::ready) {
         HILOG_ERROR("FindFocusedElementInfo Failed to wait result");
         return false;
     }
@@ -506,7 +528,9 @@ bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInf
         HILOG_ERROR("GetCurrentAccountData failed");
         return false;
     }
-    connection = accountData->GetAccessibilityWindowConnection(windowId);
+    int32_t realId =
+        Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, FOCUS_TYPE_INVALID);
+    connection = accountData->GetAccessibilityWindowConnection(realId);
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
     if (connection == nullptr) {
         HILOG_ERROR("connection is nullptr");
@@ -517,15 +541,15 @@ bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInf
         HILOG_ERROR("Failed to create callBack.");
         return false;
     }
-    std::future<void> promiseFuture = callBack->promise_.get_future();
+    ffrt::future<void> promiseFuture = callBack->promise_.get_future();
     GetElementOperatorConnection(connection, elementId, elementOperator);
     if (elementOperator == nullptr) {
         HILOG_ERROR("elementOperator is nullptr");
         return false;
     }
     elementOperator->SearchElementInfoByAccessibilityId(elementId, GenerateRequestId(), callBack, 0);
-    std::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (waitFocus != std::future_status::ready) {
+    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitFocus != ffrt::future_status::ready) {
         ipcTimeoutNum_++;
         HILOG_ERROR("Failed to wait result, number %{public}" PRId64 "", ipcTimeoutNum_);
         return false;
@@ -554,7 +578,6 @@ void AccessibleAbilityManagerService::GetElementOperatorConnection(sptr<Accessib
 
 bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
 {
-    HILOG_DEBUG();
     int32_t windowId = GetFocusWindowId();
     int64_t elementId = GetFocusElementId();
     uint32_t timeOut = 5000;
@@ -564,9 +587,9 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         HILOG_ERROR("GetCurrentAccountData failed");
         return false;
     }
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
-    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d", windowId, elementId,
-        action);
+    int32_t realId =
+        Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, FOCUS_TYPE_INVALID);
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
     if (connection == nullptr) {
         HILOG_ERROR("connection is nullptr");
         return false;
@@ -577,24 +600,31 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         HILOG_ERROR("Failed to create actionCallback.");
         return false;
     }
-    std::future<void> actionFuture = actionCallback->promise_.get_future();
+    ffrt::future<void> actionFuture = actionCallback->promise_.get_future();
     if (treeId > TREE_ID_INVALID) {
         if (connection->GetCardProxy(treeId) != nullptr) {
             connection->GetCardProxy(treeId)->ExecuteAction(elementId, action,
                 actionArguments, GenerateRequestId(), actionCallback);
         } else {
-            HILOG_ERROR("get operation is nullptr");
+            HILOG_ERROR("get card operation is nullptr");
             return false;
         }
     } else {
-        connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(), actionCallback);
+        if (connection->GetProxy() != nullptr) {
+            connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(),
+                actionCallback);
+        } else {
+            HILOG_ERROR("get operation is nullptr");
+            return false;
+        }
     }
-    std::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
-    if (waitAction != std::future_status::ready) {
+    ffrt::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
+    if (waitAction != ffrt::future_status::ready) {
         HILOG_ERROR("ExecuteAction Failed to wait result");
         return false;
     }
-
+    HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d]",
+        windowId, elementId, action, actionCallback->executeActionResult_);
     return actionCallback->executeActionResult_;
 }
 
@@ -627,6 +657,7 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
         return ERR_INVALID_VALUE;
     }
 
+    XCollieHelper timer(TIMER_REGISTER_CAPTION_OBSERVER, XCOLLIE_TIMEOUT);
     std::shared_ptr<std::promise<uint32_t>> syncPromise = std::make_shared<std::promise<uint32_t>>();
     std::future syncFuture = syncPromise->get_future();
     actionHandler_->PostTask([this, syncPromise, callback]() {
@@ -673,7 +704,7 @@ void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
         HILOG_ERROR("Parameters check failed!");
         return;
     }
-
+    XCollieHelper timer(TIMER_REGISTER_ENABLEABILITY_OBSERVER, XCOLLIE_TIMEOUT);
     std::shared_ptr<std::promise<void>> syncPromisePtr = std::make_shared<std::promise<void>>();
     std::future syncFuture = syncPromisePtr->get_future();
     actionHandler_->PostTask([this, syncPromisePtr, observer]() {
@@ -719,8 +750,8 @@ RetError AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityT
         return RET_ERR_INVALID_PARAM;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &infos, abilityTypes, stateType]() {
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -787,7 +818,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
         IsCheckWindowIdEventExist(windowId);
         if (operation && operation->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
-                new(std::nothrow) InteractionOperationDeathRecipient(windowId);
+                new(std::nothrow) InteractionOperationDeathRecipient(windowId, currentAccountId_);
             if (!deathRecipient) {
                 Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
                     A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
@@ -833,6 +864,8 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
         } else {
             HILOG_DEBUG("parentAamsOper is nullptr");
         }
+    } else {
+        return RET_ERR_NO_CONNECTION;
     }
 
     operation->SetBelongTreeId(treeId);
@@ -895,7 +928,8 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
         }
         if (operation && operation->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
-                new(std::nothrow) InteractionOperationDeathRecipient(parameter.windowId, treeIdSingle);
+                new(std::nothrow) InteractionOperationDeathRecipient(parameter.windowId, treeIdSingle,
+                    currentAccountId_);
             if (deathRecipient == nullptr) {
                 Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
                     A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
@@ -1024,14 +1058,27 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
 void AccessibleAbilityManagerService::RemoveTreeDeathRecipient(const int32_t windowId, const int32_t treeId,
     const sptr<AccessibilityWindowConnection> connection)
 {
-    auto object = connection->GetCardProxy(treeId)->AsObject();
+    if (connection == nullptr) {
+        HILOG_ERROR("connection is null");
+        return;
+    }
+    auto object = connection->GetCardProxy(treeId);
+    if (object == nullptr) {
+        HILOG_ERROR("GetCardProxy is null");
+        return;
+    }
+    auto remoteObject = object->AsObject();
+    if (remoteObject == nullptr) {
+        HILOG_ERROR("object->AsObject() is null");
+        return;
+    }
     connection->EraseProxy(treeId);
     auto iter = interactionOperationDeathMap_.find(windowId);
     if (iter != interactionOperationDeathMap_.end()) {
         auto iterTree = iter->second.find(treeId);
         if (iterTree != iter->second.end()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient = iterTree->second;
-            bool result = object->RemoveDeathRecipient(deathRecipient);
+            bool result = remoteObject->RemoveDeathRecipient(deathRecipient);
             HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
             iter->second.erase(iterTree);
         } else {
@@ -1065,8 +1112,8 @@ bool AccessibleAbilityManagerService::GetEnabledState()
         return false;
     }
 
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<bool> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1094,8 +1141,8 @@ bool AccessibleAbilityManagerService::GetTouchGuideState()
         return false;
     }
 
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<bool> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1118,8 +1165,8 @@ bool AccessibleAbilityManagerService::GetGestureState()
         return false;
     }
 
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<bool> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1142,8 +1189,8 @@ bool AccessibleAbilityManagerService::GetKeyEventObserverState()
         return false;
     }
 
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<bool> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1166,8 +1213,8 @@ RetError AccessibleAbilityManagerService::EnableAbility(const std::string &name,
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &name, &capabilities]() {
         HILOG_DEBUG();
         RetError result = InnerEnableAbility(name, capabilities);
@@ -1240,8 +1287,8 @@ RetError AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::s
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, &enabledAbilities]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1256,6 +1303,19 @@ RetError AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::s
     return syncFuture.get();
 }
 
+RetError AccessibleAbilityManagerService::SetCurtainScreenUsingStatus(bool isEnable)
+{
+    HILOG_DEBUG();
+    auto rsInterfaces = &(Rosen::RSInterfaces::GetInstance());
+    if (rsInterfaces == nullptr) {
+        HILOG_ERROR("rsInterfaces is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    HILOG_INFO("SetCurtainScreenUsingStatus: status = %{public}d", isEnable);
+    rsInterfaces->SetCurtainScreenUsingStatus(isEnable);
+    return RET_OK;
+}
+
 RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     HILOG_INFO();
@@ -1264,8 +1324,8 @@ RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     actionHandler_->PostTask([this, &syncPromise, &name]() {
         HILOG_DEBUG();
         RetError result = InnerDisableAbility(name);
@@ -1290,6 +1350,7 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
     }
     if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
         ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
+        SetCurtainScreenUsingStatus(false);
     }
     RetError ret = accountData->RemoveEnabledAbility(name);
     if (ret != RET_OK) {
@@ -1315,8 +1376,8 @@ RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemote
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
+    ffrt::promise<RetError> syncPromise;
+    ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, obj]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1390,9 +1451,7 @@ bool AccessibleAbilityManagerService::Init()
 {
     HILOG_DEBUG();
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
-#endif
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     bool result = Singleton<AccessibilityWindowManager>::GetInstance().Init();
     HILOG_DEBUG("wms init result is %{public}d", result);
@@ -1431,6 +1490,18 @@ void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemo
     Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
         A11yError::ERROR_TARGET_APPLICATION_DISCONNECT_ABNORMALLY);
     HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("get accountData failed");
+        return;
+    }
+    int32_t currentAccountId = accountData->GetAccountId();
+    if (currentAccountId != accountId_) {
+        HILOG_ERROR("check accountId failed");
+        return;
+    }
+
     if (treeId_ > 0) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(windowId_, treeId_);
     } else {
@@ -1453,6 +1524,12 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(i
 {
     HILOG_DEBUG();
     return a11yAccountsData_.GetAccountData(accountId);
+}
+
+std::vector<int32_t> AccessibleAbilityManagerService::GetAllAccountIds()
+{
+    HILOG_DEBUG();
+    return a11yAccountsData_.GetAllAccountIds();
 }
 
 sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy()
@@ -1588,7 +1665,6 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
 
     std::map<std::string, uint32_t> importantEnabledAbilities;
     SCREENREADER_STATE screenReaderState = SCREENREADER_STATE::UNINIT;
-    // Clear last account's data
     if (currentAccountId_ != -1) {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1603,11 +1679,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         accountData->OnAccountSwitched();
         UpdateAccessibilityManagerService();
     }
-
-    // Switch account id
     currentAccountId_ = accountId;
-
-    // Initialize data for current account
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr.");
@@ -1864,10 +1936,12 @@ bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t window
         return false;
     }
 
-    std::future<void> promiseFuture = callBack->promise_.get_future();
+    ffrt::future<void> promiseFuture = callBack->promise_.get_future();
+    int32_t requestId = GenerateRequestId();
+    AddRequestId(windowId, treeId, requestId, callBack);
     elementOperator->SearchElementInfoByAccessibilityId(elementId, GenerateRequestId(), callBack, 0);
-    std::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (waitFocus != std::future_status::ready) {
+    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitFocus != ffrt::future_status::ready) {
         ipcTimeoutNum_++;
         HILOG_ERROR("Failed to wait result, number %{public}" PRId64 "", ipcTimeoutNum_);
         return false;
@@ -1898,6 +1972,10 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
                 return;
             }
         }
+        if (event.GetWindowId() == 1 && elementId == 0) {
+            HILOG_INFO("parent elementId is 0");
+            return;
+        }
 
         std::vector<AccessibilityElementInfo> infos = {};
         if (GetParentElementRecursively(event.GetWindowId(), elementId, infos) == false || infos.size() == 0) {
@@ -1919,14 +1997,18 @@ void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(cons
     EventType evtType = event.GetEventType();
     HILOG_DEBUG("windowId is %{public}d", event.GetWindowId());
     int32_t windowId = event.GetWindowId();
-    if (windowId == 1 && (evtType == TYPE_VIEW_HOVER_ENTER_EVENT || evtType == TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT)) {
+    if (windowId == 1) {
         FindInnerWindowId(event, windowId);
     }
 
+    const_cast<AccessibilityEventInfo&>(event).SetElementMainWindowId(windowId);
+
     switch (evtType) {
         case TYPE_VIEW_HOVER_ENTER_EVENT:
-        case TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT:
             Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(windowId, false);
+            Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(windowId);
+            break;
+        case TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT:
             Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(windowId);
             break;
         default:
@@ -2016,7 +2098,7 @@ void AccessibleAbilityManagerService::UpdateSettingsInAtoHos()
         return;
     }
 
-    if (!accountData->GetConfig()->GetStartFromAtoHosState() || currentAccountId_ != DEFAULT_ACCOUNT_ID) {
+    if (!accountData->GetConfig()->GetStartToHosState() || currentAccountId_ != DEFAULT_ACCOUNT_ID) {
         HILOG_INFO("Not first start from a to hos.");
         return;
     }
@@ -2062,15 +2144,10 @@ void AccessibleAbilityManagerService::UpdateShortKeyRegister()
 
     bool shortKeyState = accountData->GetConfig()->GetShortKeyState();
     if (shortKeyState) {
-        accessibilityShortKey_ = nullptr;
-        accessibilityShortKey_ = new (std::nothrow) AccessibilityShortKey();
-        if (accessibilityShortKey_ == nullptr) {
-            HILOG_ERROR("Create AccessibilityShortKey failed");
-            return;
-        }
+        accessibilityShortKey_->Unregister();
         accessibilityShortKey_->Register();
     } else {
-        accessibilityShortKey_ = nullptr;
+        accessibilityShortKey_->Unregister();
     }
 }
 
@@ -2257,13 +2334,14 @@ RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &tim
 void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &configData)
 {
     HILOG_DEBUG();
-    std::shared_ptr<std::promise<void>> syncPromise = std::make_shared<std::promise<void>>();
+    XCollieHelper timer(TIMER_GET_ALL_CONFIG, XCOLLIE_TIMEOUT);
+    std::shared_ptr<ffrt::promise<void>> syncPromise = std::make_shared<ffrt::promise<void>>();
     std::shared_ptr<AccessibilityConfigData> config = std::make_shared<AccessibilityConfigData>();
     if (syncPromise == nullptr || config == nullptr) {
         HILOG_WARN("create syncPromise or config failed");
         return;
     }
-    std::future syncFuture = syncPromise->get_future();
+    ffrt::future syncFuture = syncPromise->get_future();
     actionHandler_->PostTask([this, syncPromise, config]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -2293,8 +2371,8 @@ void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &con
         syncPromise->set_value();
         }, "TASK_GET_ALL_CONFIGS");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait GetAllConfigs result");
         return;
     }
@@ -2351,16 +2429,39 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
         return;
     }
 
-    AccessibilityShortkeyDialog shortkeyDialog;
+    std::shared_ptr<AccessibilityShortkeyDialog> shortkeyDialog = std::make_shared<AccessibilityShortkeyDialog>();
+
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
+    bool oobeState = false;
+    bool userSetupState = false;
+    service->GetBoolValue(DEVICE_PROVISIONED, oobeState);
+    if (accountData->GetConfig()->GetDbHandle()) {
+        userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
+    }
+    if (oobeState && userSetupState) {
+        int32_t shortKeyTimeout = accountData->GetConfig()->GetShortKeyTimeout();
+        if (shortKeyTimeout == SHORT_KEY_TIMEOUT_BEFORE_USE) {
+            HILOG_INFO("first use short cut key");
+            accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+            shortkeyDialog->ConnectDialog(ShortKeyDialogType::RECONFIRM);
+            return;
+        }
+    }
 
     std::vector<std::string> shortkeyMultiTarget = accountData->GetConfig()->GetShortkeyMultiTarget();
     if (shortkeyMultiTarget.size() == 0) {
         EnableShortKeyTargetAbility();
     } else if (shortkeyMultiTarget.size() == 1) {
+        Utils::RecordEnableShortkeyAbilityEvent(shortkeyMultiTarget[0]);
         EnableShortKeyTargetAbility(shortkeyMultiTarget[0]);
     } else {
         // dialog
-        if (shortkeyDialog.ConnectDialog(ShortKeyDialogType::FUNCTION_SELECT)) {
+        if (shortkeyDialog->ConnectDialog(ShortKeyDialogType::FUNCTION_SELECT)) {
             HILOG_DEBUG("ready to build dialog");
         }
     }
@@ -2392,9 +2493,9 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
         HILOG_ERROR("Parameters check failed!");
         return ERR_INVALID_VALUE;
     }
-
-    std::shared_ptr<std::promise<uint32_t>> syncPromisePtr = std::make_shared<std::promise<uint32_t>>();
-    std::future syncFuture = syncPromisePtr->get_future();
+    XCollieHelper timer(TIMER_REGISTER_CONFIG_OBSERVER, XCOLLIE_TIMEOUT);
+    std::shared_ptr<ffrt::promise<uint32_t>> syncPromisePtr = std::make_shared<ffrt::promise<uint32_t>>();
+    ffrt::future syncFuture = syncPromisePtr->get_future();
     actionHandler_->PostTask([this, syncPromisePtr, callback]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -2423,8 +2524,8 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
         syncPromisePtr->set_value(NO_ERROR);
         }, "TASK_REGISTER_CONFIG_OBSERVER");
 
-    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != std::future_status::ready) {
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait RegisterConfigObserver result");
         return RET_ERR_TIME_OUT;
     }
@@ -2568,7 +2669,7 @@ void AccessibleAbilityManagerService::OnBundleManagerDied(const wptr<IRemoteObje
 void AccessibleAbilityManagerService::StateObservers::AddStateObserver(
     const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver)
 {
-    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
     auto iter = std::find(observersList_.begin(), observersList_.end(), stateObserver);
     if (iter == observersList_.end()) {
         observersList_.push_back(stateObserver);
@@ -2581,7 +2682,7 @@ void AccessibleAbilityManagerService::StateObservers::AddStateObserver(
 
 void AccessibleAbilityManagerService::StateObservers::OnStateObservers(uint32_t state)
 {
-    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
     for (auto& stateObserver : observersList_) {
         if (stateObserver) {
             stateObserver->OnStateChanged(state);
@@ -2591,7 +2692,7 @@ void AccessibleAbilityManagerService::StateObservers::OnStateObservers(uint32_t 
 
 void AccessibleAbilityManagerService::StateObservers::RemoveStateObserver(const wptr<IRemoteObject> &remote)
 {
-    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
     auto iter = std::find_if(observersList_.begin(), observersList_.end(),
         [remote](const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver) {
             return stateObserver->AsObject() == remote;
@@ -2603,7 +2704,7 @@ void AccessibleAbilityManagerService::StateObservers::RemoveStateObserver(const 
 
 void AccessibleAbilityManagerService::StateObservers::Clear()
 {
-    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
     observersList_.clear();
 }
 
@@ -2611,6 +2712,27 @@ RetError AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWin
 {
     HILOG_DEBUG();
     return Singleton<AccessibilityWindowManager>::GetInstance().GetFocusedWindowId(focusedWindowId);
+}
+
+void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
+{
+    HILOG_DEBUG("insert event, windowId: %{public}d", windowId);
+    windowFocusEventMap_[windowId] = event;
+}
+
+bool AccessibleAbilityManagerService::CheckWindowIdEventExist(int32_t windowId)
+{
+    return windowFocusEventMap_.count(windowId);
+}
+
+bool AccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return false;
+    }
+    return accountData->GetAccessibilityWindowConnection(windowId) != nullptr;
 }
 
 void AccessibleAbilityManagerService::OnDeviceProvisioned()
@@ -2621,13 +2743,19 @@ void AccessibleAbilityManagerService::OnDeviceProvisioned()
         HILOG_ERROR("accountData is nullptr");
         return;
     }
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    provider.UnregisterObserver(DEVICE_PROVISIONED);
+    std::shared_ptr<AccessibilitySettingProvider> service=
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
+    service->UnregisterObserver(DEVICE_PROVISIONED);
     if (accountData->GetConfig()->GetDbHandle()) {
         accountData->GetConfig()->GetDbHandle()->UnregisterObserver(USER_SETUP_COMPLETED);
     }
     if (accountData->GetDefaultUserScreenReaderState()) {
         HILOG_INFO("Modify shortKeyTimeout and shortKeyOnLockScreenState");
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
         accountData->GetConfig()->SetShortKeyOnLockScreenState(true);
         UpdateConfigState();
     }
@@ -2670,11 +2798,16 @@ void AccessibleAbilityManagerService::RegisterProvisionCallback()
         return;
     }
 
-    AccessibilitySettingProvider& service = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
     AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
     };
-    service.RegisterObserver(DEVICE_PROVISIONED, func);
+    service->RegisterObserver(DEVICE_PROVISIONED, func);
     if (accountData->GetConfig()->GetDbHandle() != nullptr) {
         accountData->GetConfig()->GetDbHandle()->RegisterObserver(USER_SETUP_COMPLETED, func);
     }
@@ -2694,10 +2827,16 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
             HILOG_ERROR("accountData is nullptr");
             return;
         }
-        AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+
+        std::shared_ptr<AccessibilitySettingProvider> service =
+            AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+        if (service == nullptr) {
+            HILOG_ERROR("service is nullptr");
+            return;
+        }
         bool oobeState = false;
         bool userSetupState = false;
-        provider.GetBoolValue(DEVICE_PROVISIONED, oobeState);
+        service->GetBoolValue(DEVICE_PROVISIONED, oobeState);
         if (accountData->GetConfig()->GetDbHandle() != nullptr) {
             userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
         }
@@ -2828,27 +2967,6 @@ void AccessibleAbilityManagerService::RegisterScreenMagnificationType()
         }, "REGISTER_SCREEN_ZOOM_TYPE_OBSERVER");
 }
 
-void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
-{
-    HILOG_DEBUG("insert event, windowId: %{public}d", windowId);
-    windowFocusEventMap_[windowId] = event;
-}
-
-bool AccessibleAbilityManagerService::CheckWindowIdEventExist(int32_t windowId)
-{
-    return windowFocusEventMap_.count(windowId);
-}
-
-bool AccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)
-{
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return false;
-    }
-    return accountData->GetAccessibilityWindowConnection(windowId) != nullptr;
-}
-
 void AccessibleAbilityManagerService::PostDelayUnloadTask()
 {
     auto task = [=]() {
@@ -2874,8 +2992,10 @@ void AccessibleAbilityManagerService::PostDelayUnloadTask()
 bool AccessibleAbilityManagerService::IsNeedUnload()
 {
     HILOG_DEBUG();
+#ifndef ACCESSIBILITY_WATCH_FEATURE
     // always return true to avoid stability problem
     return false;
+#else //for watch
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
@@ -2887,22 +3007,8 @@ bool AccessibleAbilityManagerService::IsNeedUnload()
     if (enableAbilityList.size() != 0) {
         return false;
     }
-    if (!accountData->GetConfig()) {
-        return true;
-    }
-    if (accountData->GetConfig()->GetHighContrastTextState() != false ||
-        accountData->GetConfig()->GetDaltonizationState() != false ||
-        accountData->GetConfig()->GetInvertColorState() != false ||
-        accountData->GetConfig()->GetAnimationOffState() != false ||
-        accountData->GetConfig()->GetMouseKeyState() != false ||
-        accountData->GetConfig()->GetCaptionState() != false ||
-        accountData->GetConfig()->GetScreenMagnificationState() != false ||
-        accountData->GetConfig()->GetShortKeyState() != false ||
-        accountData->GetConfig()->GetShortKeyOnLockScreenState() != false ||
-        accountData->GetConfig()->GetBrightnessDiscount() != 1) {
-        return false;
-    }
     return true;
+#endif // ACCESSIBILITY_WATCH_FEATURE
 }
 
 int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t elementId)
@@ -2918,7 +3024,7 @@ int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t
 void AccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
     sptr<IAccessibilityElementOperatorCallback> callback)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("Add windowId: %{public}d treeId: %{public}d requestId: %{public}d", windowId, treeId, requestId);
     if (!windowRequestIdMap_.count(windowId)) {
         windowRequestIdMap_[windowId] = {};
@@ -2934,7 +3040,7 @@ void AccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t tre
 
 void AccessibleAbilityManagerService::RemoveRequestId(int32_t requestId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("RemoveRequestId requestId: %{public}d", requestId);
     for (auto &window : windowRequestIdMap_) {
         for (auto &tree : window.second) {
@@ -2967,7 +3073,7 @@ void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId)
 
 void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t treeId)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_INFO("StopCallbackWait start windowId: %{public}d treeId: %{public}d", windowId, treeId);
     if (!windowRequestIdMap_.count(windowId)) {
         return;
@@ -2993,8 +3099,8 @@ void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t
 
 int64_t AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId)
 {
+    HILOG_INFO("aa search treeParent from aams, windowId: %{public}d, treeId: %{public}d", windowId, treeId);
     int64_t elementId = 0;
-    HILOG_DEBUG();
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
     if (!connection) {
         HILOG_WARN("The operator of windowId[%{public}d] has not been registered.", windowId);
@@ -3038,9 +3144,14 @@ RetError AccessibleAbilityManagerService::CheckCallingUid()
 
 void AccessibleAbilityManagerService::OnDataClone()
 {
-    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
     bool cloneState = false;
-    provider.GetBoolValue(ACCESSIBILITY_CLONE_FLAG, cloneState);
+    service->GetBoolValue(ACCESSIBILITY_CLONE_FLAG, cloneState);
     if (cloneState == false) {
         return;
     }

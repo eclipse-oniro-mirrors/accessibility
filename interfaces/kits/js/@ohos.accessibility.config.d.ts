@@ -14,7 +14,7 @@
  */
 
 import type accessibility from './@ohos.accessibility';
-import type { AsyncCallback, Callback } from './@ohos.base';
+import type { AsyncCallback, Callback } from './basic';
 
 /**
  * Configuration of the accessibility.

@@ -47,7 +47,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(AccessibilityInterfaceCode c
     HILOG_DEBUG();
 
     sptr<IRemoteObject> remoteChannelProxy = Remote();
-    if (!remoteChannelProxy) {
+    if (remoteChannelProxy == nullptr) {
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
         return false;
     }
@@ -64,7 +64,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
     const int32_t mode, bool isFilter)
 {
     HILOG_DEBUG();
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr.");
         return RET_ERR_INVALID_PARAM;
     }
@@ -118,7 +118,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t a
 {
     HILOG_DEBUG();
 
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr.");
         return RET_ERR_INVALID_PARAM;
     }
@@ -164,7 +164,7 @@ RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t acc
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr.");
         return RET_ERR_INVALID_PARAM;
     }
@@ -208,7 +208,7 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibil
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr.");
         return RET_ERR_INVALID_PARAM;
     }
@@ -317,7 +317,7 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
         return RET_ERR_IPC_FAILED;
     }
-    if (!callback || !data.WriteRemoteObject(callback->AsObject())) {
+    if (callback == nullptr || !data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
         return RET_ERR_IPC_FAILED;
     }
@@ -353,7 +353,7 @@ RetError AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, Access
     }
 
     sptr<AccessibilityWindowInfoParcel> windowInfoParcel = reply.ReadStrongParcelable<AccessibilityWindowInfoParcel>();
-    if (!windowInfoParcel) {
+    if (windowInfoParcel == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityWindowInfoParcel> failed");
         return RET_ERR_IPC_FAILED;
     }
@@ -386,7 +386,7 @@ RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWind
 
     for (int32_t i = 0; i < windowsSize; i++) {
         sptr<AccessibilityWindowInfoParcel> window = reply.ReadStrongParcelable<AccessibilityWindowInfoParcel>();
-        if (!window) {
+        if (window == nullptr) {
             HILOG_ERROR("ReadStrongParcelable<AccessibilityWindowInfoParcel> failed");
             return RET_ERR_IPC_FAILED;
         }
@@ -427,7 +427,7 @@ RetError AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t dis
 
     for (int32_t i = 0; i < windowsSize; i++) {
         sptr<AccessibilityWindowInfoParcel> window = reply.ReadStrongParcelable<AccessibilityWindowInfoParcel>();
-        if (!window) {
+        if (window == nullptr) {
             HILOG_ERROR("ReadStrongParcelable<AccessibilityWindowInfoParcel> failed");
             return RET_ERR_IPC_FAILED;
         }
@@ -485,7 +485,7 @@ RetError AccessibleAbilityChannelProxy::GetCursorPosition(const int32_t accessib
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
         return RET_ERR_IPC_FAILED;
     }
-    if (!callback) {
+    if (callback == nullptr) {
         HILOG_ERROR("callback is null");
         return RET_ERR_FAILED;
     }
@@ -512,7 +512,7 @@ RetError AccessibleAbilityChannelProxy::SendSimulateGesture(
     HILOG_DEBUG();
     sptr<AccessibilityGestureInjectPathParcel> path =
         new(std::nothrow) AccessibilityGestureInjectPathParcel(*gesturePath);
-    if (!path) {
+    if (path == nullptr) {
         HILOG_ERROR("Failed to create path.");
         return RET_ERR_NULLPTR;
     }

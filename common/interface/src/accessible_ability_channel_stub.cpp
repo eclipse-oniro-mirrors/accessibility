@@ -38,7 +38,8 @@
 }
 
 #define ACCESSIBLE_ABILITY_CHANNEL_STUB_CASES() \
-    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID, HandleSearchElementInfoByAccessibilityId)\
+    SWITCH_CASE( \
+        AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID, HandleSearchElementInfoByAccessibilityId)\
     SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT, HandleSearchElementInfosByText)\
     SWITCH_CASE(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO, HandleFindFocusedElementInfo)\
     SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH, HandleFocusMoveSearch)\
@@ -58,40 +59,10 @@ constexpr int32_t ERR_CODE_DEFAULT = -1000;
 
 AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
 {
-    HILOG_DEBUG();
-
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID)] =
-        &AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT)] =
-        &AccessibleAbilityChannelStub::HandleSearchElementInfosByText;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO)] =
-        &AccessibleAbilityChannelStub::HandleFindFocusedElementInfo;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH)] =
-        &AccessibleAbilityChannelStub::HandleFocusMoveSearch;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::PERFORM_ACTION)] =
-        &AccessibleAbilityChannelStub::HandleExecuteAction;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CURTAIN_SCREEN)] =
-        &AccessibleAbilityChannelStub::HandleEnableScreenCurtain;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOW)] =
-        &AccessibleAbilityChannelStub::HandleGetWindow;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOWS)] =
-        &AccessibleAbilityChannelStub::HandleGetWindows;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOWS_BY_DISPLAY_ID)] =
-        &AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_ON_KEY_PRESS_EVENT_RESULT)] =
-        &AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEND_SIMULATE_GESTURE_PATH)] =
-        &AccessibleAbilityChannelStub::HandleSendSimulateGesturePath;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME)] =
-        &AccessibleAbilityChannelStub::HandleSetTargetBundleName;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CURSOR_POSITION)] =
-        &AccessibleAbilityChannelStub::HandleGetCursorPosition;
 }
 
 AccessibleAbilityChannelStub::~AccessibleAbilityChannelStub()
 {
-    HILOG_DEBUG();
-    memberFuncMap_.clear();
 }
 
 int AccessibleAbilityChannelStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
@@ -301,7 +272,7 @@ ErrCode AccessibleAbilityChannelStub::HandleEnableScreenCurtain(MessageParcel &d
     if (!Permission::IsSystemApp()) {
         HILOG_WARN("Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
-        return NO_ERROR;
+        return RET_ERR_NOT_SYSTEM_APP;
     }
 
     bool isEnable = data.ReadBool();
@@ -341,7 +312,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindow(MessageParcel &data, Messa
 
     int32_t windowId = data.ReadInt32();
     sptr<AccessibilityWindowInfoParcel> windowInfoParcel = new(std::nothrow) AccessibilityWindowInfoParcel();
-    if (!windowInfoParcel) {
+    if (windowInfoParcel == nullptr) {
         HILOG_ERROR("Failed to create windowInfoParcel.");
         return ERR_NULL_OBJECT;
     }
@@ -367,7 +338,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, Mess
     }
     for (auto &window : windows) {
         sptr<AccessibilityWindowInfoParcel> windowInfo = new(std::nothrow) AccessibilityWindowInfoParcel(window);
-        if (!windowInfo) {
+        if (windowInfo == nullptr) {
             HILOG_ERROR("Failed to create windowInfo.");
             return ERR_NULL_OBJECT;
         }
@@ -393,7 +364,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId(MessageParcel 
     }
     for (auto &window : windows) {
         sptr<AccessibilityWindowInfoParcel> windowInfo = new(std::nothrow) AccessibilityWindowInfoParcel(window);
-        if (!windowInfo) {
+        if (windowInfo == nullptr) {
             HILOG_ERROR("Failed to create windowInfo.");
             return ERR_NULL_OBJECT;
         }
@@ -423,7 +394,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesturePath(MessageParce
 
     sptr<AccessibilityGestureInjectPathParcel> positions =
         data.ReadStrongParcelable<AccessibilityGestureInjectPathParcel>();
-    if (!positions) {
+    if (positions == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityGestureInjectPathParcel> failed");
         return ERR_INVALID_VALUE;
     }

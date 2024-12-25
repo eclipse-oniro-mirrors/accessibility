@@ -54,9 +54,7 @@ namespace Accessibility {
         SET_ON_KEY_PRESS_EVENT_RESULT,
         SEND_SIMULATE_GESTURE_PATH,
         SET_TARGET_BUNDLE_NAME,
-        GET_FOCUSED_WINDOW_ID,
         GET_CURSOR_POSITION,
-        REMOVE_REQUEST_ID,
 
         INIT = 500,
         DISCONNECT,
@@ -142,6 +140,8 @@ namespace Accessibility {
         GET_SHORTKEY_MULTI_TARGET,
         GET_ROOT_PARENT_ID,
         GET_ALL_TREE_ID,
+        GET_FOCUSED_WINDOW_ID,
+        REMOVE_REQUEST_ID,
 
         ON_STATE_CHANGED = 900,
     };

@@ -16,10 +16,8 @@
 #ifndef ACCESSIBLE_ABILITY_MANAGER_SERVICE_H
 #define ACCESSIBLE_ABILITY_MANAGER_SERVICE_H
 
-#include <future>
 #include <map>
 #include <memory>
-#include <mutex>
 #include <string>
 
 #include "accessibility_dumper.h"
@@ -41,7 +39,7 @@
 #include "input_manager.h"
 #include "singleton.h"
 #include "system_ability.h"
-#include "window_manager.h"
+#include "window_manager_lite.h"
 #include "accessibility_short_key.h"
 
 namespace OHOS {
@@ -125,6 +123,7 @@ public:
 
     RetError EnableAbility(const std::string &name, const uint32_t capabilities) override;
     RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
+    RetError SetCurtainScreenUsingStatus(bool isEnable);
     RetError DisableAbility(const std::string &name) override;
     RetError EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
     RetError DisableUITestAbility() override;
@@ -198,6 +197,7 @@ public:
 
     sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
     sptr<AccessibilityAccountData> GetCurrentAccountData();
+    std::vector<int32_t> GetAllAccountIds();
     sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
 
     /* For common event */
@@ -235,7 +235,7 @@ public:
         virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
 
     private:
-        std::promise<void> promise_;
+        ffrt::promise<void> promise_;
         bool executeActionResult_ = false;
         AccessibilityElementInfo accessibilityInfoResult_ = {};
         std::vector<AccessibilityElementInfo> elementInfosResult_;
@@ -324,14 +324,17 @@ private:
 
     class InteractionOperationDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        InteractionOperationDeathRecipient(int32_t windowId) : windowId_(windowId) {};
-        InteractionOperationDeathRecipient(int32_t windowId, int32_t treeId) : windowId_(windowId), treeId_(treeId) {};
+        InteractionOperationDeathRecipient(int32_t windowId, int32_t accountId) : windowId_(windowId),
+            accountId_(accountId) {};
+        InteractionOperationDeathRecipient(int32_t windowId, int32_t treeId, int32_t accountId) : windowId_(windowId),
+            treeId_(treeId), accountId_(accountId) {};
         ~InteractionOperationDeathRecipient() final = default;
         DISALLOW_COPY_AND_MOVE(InteractionOperationDeathRecipient);
 
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
         int32_t windowId_ = INVALID_WINDOW_ID;
         int32_t treeId_ = INVALID_TREE_ID;
+        int32_t accountId_ = 0;
     };
 
     class CaptionPropertyCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -383,7 +386,7 @@ private:
         void Clear();
     private:
         std::vector<sptr<IAccessibleAbilityManagerStateObserver>> observersList_;
-        std::mutex stateObserversMutex_;
+        ffrt::mutex stateObserversMutex_;
     };
 
     RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities);
@@ -429,13 +432,15 @@ private:
     sptr<TouchEventInjector> touchEventInjector_ = nullptr;
     sptr<KeyEventFilter> keyEventFilter_ = nullptr;
     sptr<AccessibilityDumper> accessibilityDumper_ = nullptr;
-    sptr<AccessibilityShortKey> accessibilityShortKey_ = nullptr;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AAMSEventHandler> handler_;
 
     std::shared_ptr<AppExecFwk::EventRunner> actionRunner_;
     std::shared_ptr<AAMSEventHandler> actionHandler_;
+
+    std::shared_ptr<AppExecFwk::EventRunner> sendEventRunner_;
+    std::shared_ptr<AAMSEventHandler> sendEventHandler_;
 
     int64_t ipcTimeoutNum_ = 0; // count ipc timeout number
 
@@ -447,9 +452,10 @@ private:
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> bundleManagerDeathRecipient_ = nullptr;
     StateObservers stateObservers_;
-    std::mutex mutex_; // current used for register state observer
+    ffrt::mutex mutex_; // current used for register state observer
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;
     std::shared_ptr<AccessibilitySettings> accessibilitySettings_ = nullptr;
+    std::shared_ptr<AccessibilityShortKey> accessibilityShortKey_ = nullptr;
     std::vector<std::string> removedAutoStartAbilities_ {};
     std::map<int32_t, AccessibilityEventInfo> windowFocusEventMap_ {};
 

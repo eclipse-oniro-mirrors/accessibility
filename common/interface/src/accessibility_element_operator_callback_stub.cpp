@@ -29,13 +29,14 @@
 #define SWITCH_END() default:\
     {\
         result_code = ERR_CODE_DEFAULT;\
-        HILOG_WARN("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, default case, need check.");\
+        HILOG_WARN("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, default case, need check."); \
         break;\
     }\
 }
 
 #define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_STUB_CASES() \
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID, HandleSetSearchElementInfoByAccessibilityIdResult)\
+    SWITCH_CASE( \
+        AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID, HandleSetSearchElementInfoByAccessibilityIdResult)\
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_TEXT, HandleSetSearchElementInfoByTextResult)\
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUSED_INFO, HandleSetFindFocusedElementInfoResult)\
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE, HandleSetFocusMoveSearchResult)\
@@ -52,57 +53,39 @@ constexpr int32_t ERR_CODE_DEFAULT = -1000;
 void StoreElementData::WriteData(std::vector<AccessibilityElementInfo> &infos)
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     storeData_.insert(storeData_.end(), infos.begin(), infos.end());
 }
 
 void StoreElementData::Clear()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     storeData_.clear();
 }
 
 std::vector<AccessibilityElementInfo> StoreElementData::ReadData()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     return storeData_;
 }
 
 size_t StoreElementData::Size()
 {
     HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     return storeData_.size();
 }
 
 AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackStub()
 {
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAccessibilityIdResult;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_RESULT_BY_TEXT)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTextResult;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::SET_RESULT_FOCUSED_INFO)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetFindFocusedElementInfoResult;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchResult;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::SET_RESULT_CURSOR_RESULT)] =
-        &AccessibilityElementOperatorCallbackStub::HandleSetCursorPositionResult;
 }
 
 StoreElementData AccessibilityElementOperatorCallbackStub::storeElementData;
 
 AccessibilityElementOperatorCallbackStub::~AccessibilityElementOperatorCallbackStub()
 {
-    HILOG_DEBUG();
-    memberFuncMap_.clear();
 }
 
 int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
@@ -147,7 +130,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfoParcel> accessibilityInfo =
             data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-        if (!accessibilityInfo) {
+        if (accessibilityInfo == nullptr) {
             HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
             storeElementData.Clear();
             reply.WriteInt32(RET_ERR_FAILED);
@@ -182,7 +165,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfoParcel> accessibilityInfo =
             data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-        if (!accessibilityInfo) {
+        if (accessibilityInfo == nullptr) {
             HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
             return TRANSACTION_ERR;
         }
@@ -200,7 +183,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFindFocusedElementInf
 {
     HILOG_DEBUG();
     sptr<AccessibilityElementInfoParcel> info = data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-    if (!info) {
+    if (info == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityElementInfo> failed");
         return TRANSACTION_ERR;
     }
@@ -217,7 +200,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchResult
 {
     HILOG_DEBUG();
     sptr<AccessibilityElementInfoParcel> info = data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-    if (!info) {
+    if (info == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityElementInfo> failed");
         return TRANSACTION_ERR;
     }

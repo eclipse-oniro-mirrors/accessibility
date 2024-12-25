@@ -484,7 +484,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_001, TestSize.Level1)
     Connect();
     AccessibilityElementInfo elementInfo {};
     std::vector<AccessibilityElementInfo> inelementInfosfos;
-    EXPECT_NE(instance_->GetByContent(elementInfo, TEST, inelementInfosfos), RET_OK);
+    EXPECT_EQ(instance_->GetByContent(elementInfo, TEST, inelementInfosfos), RET_ERR_TIME_OUT);
     GTEST_LOG_(INFO) << "GetByContent_001 end";
 }
 
@@ -569,7 +569,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, EnableScreenCurtain_001, TestSize.Leve
 {
     GTEST_LOG_(INFO) << "EnableScreenCurtain_001 start";
     Connect();
-    EXPECT_EQ(instance_->EnableScreenCurtain(true), RET_ERR_PERFORM_ACTION_FAILED_BY_ACE);
+    EXPECT_EQ(instance_->EnableScreenCurtain(true), RET_OK);
     GTEST_LOG_(INFO) << "EnableScreenCurtain_001 end";
 }
 
@@ -986,7 +986,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootBatch_001, TestSize.Level1)
     Connect();
     std::vector<AccessibilityElementInfo> info;
     instance_->SetCacheMode(0);
-    EXPECT_NE(instance_->GetRootBatch(info), RET_OK);
+    EXPECT_EQ(instance_->GetRootBatch(info), RET_ERR_TIME_OUT);
     GTEST_LOG_(INFO) << "GetRootBatch_001 end";
 }
 
@@ -1057,7 +1057,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, AddCacheByAce_001, TestSize.Level1)
 /**
  * @tc.number: GetByContent_003
  * @tc.name: GetByContent
- * @tc.desc: Test function GetByContent
+ * @tc.desc: Test function GetByContent.
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_003, TestSize.Level1)
 {

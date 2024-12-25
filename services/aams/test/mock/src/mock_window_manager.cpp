@@ -13,31 +13,31 @@
  * limitations under the License.
  */
 
-#include "window_manager.h"
+#include "window_manager_lite.h"
 #include "wm_single_instance.h"
 
 namespace OHOS {
 namespace Rosen {
-WM_IMPLEMENT_SINGLE_INSTANCE(WindowManager)
+WM_IMPLEMENT_SINGLE_INSTANCE(WindowManagerLite)
 
-WMError WindowManager::RegisterWindowUpdateListener(const sptr<IWindowUpdateListener> &listener)
+WMError WindowManagerLite::RegisterWindowUpdateListener(const sptr<IWindowUpdateListener> &listener)
 {
     return WMError::WM_OK;
 }
 
-WMError WindowManager::UnregisterWindowUpdateListener(const sptr<IWindowUpdateListener>& listener)
+WMError WindowManagerLite::UnregisterWindowUpdateListener(const sptr<IWindowUpdateListener>& listener)
 {
     return WMError::WM_OK;
 }
 
-WMError WindowManager::GetAccessibilityWindowInfo(std::vector<sptr<AccessibilityWindowInfo>>& infos) const
+WMError WindowManagerLite::GetAccessibilityWindowInfo(std::vector<sptr<AccessibilityWindowInfo>>& infos) const
 {
     sptr<AccessibilityWindowInfo> winInfo = new(std::nothrow) AccessibilityWindowInfo();
     infos.emplace_back(winInfo);
     return WMError::WM_OK;
 }
 
-void WindowManager::GetFocusWindowInfo(FocusChangeInfo &info)
+void WindowManagerLite::GetFocusWindowInfo(FocusChangeInfo &info)
 {
     info.windowId_ = 1;
 }

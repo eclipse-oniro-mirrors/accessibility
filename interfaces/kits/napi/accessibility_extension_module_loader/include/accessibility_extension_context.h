@@ -167,6 +167,13 @@ public:
     */
     RetError StartAbility(const AAFwk::Want &want);
 
+    /**
+     * @brief Set the screen curtain enable or disable.
+     * @param isEnable Indicates whether the screen curtain is enabled.
+     * @return Return RET_OK if set screen curtain successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError EnableScreenCurtain(bool isEnable);
+
 private:
     static int illegalRequestCode_;
 };

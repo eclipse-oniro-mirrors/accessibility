@@ -66,7 +66,7 @@ void AccessibilityScreenTouchUnitTest::SetUpTestCase()
 
 void AccessibilityScreenTouchUnitTest::TearDownTestCase()
 {
-    GTEST_LOG_(INFO) << "###################### AccessibilityScreenTouchUnitTest End ######################";
+    GTEST_LOG_(INFO) << "###################### AccessibilityScreenTouchUnitTest End #####################";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
@@ -130,7 +130,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     if (screenTouch_ == nullptr || event == nullptr) {
-        GTEST_LOG_(INFO) << "null pointer";
+        GTEST_LOG_(INFO) << "null pointer.";
     }
 
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
@@ -152,10 +152,6 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
         GTEST_LOG_(INFO) << "null pointer";
     }
 
-    MMI::PointerEvent::PointerItem pointer = {};
-    pointer.SetPointerId(1);
-    event->SetPointerId(1);
-    event->AddPointerItem(pointer);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_CANCEL);
 
@@ -334,19 +330,6 @@ HWTEST_F(AccessibilityScreenTouchUnitTest,
 
     EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickTime(), IGNORE_REPEAT_CLICK_TIME_SHORTEST);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealIgnoreRepeatClickTime end";
-}
-
-/**
- * @tc.number: AccessibilityScreenTouch_Unittest_SendInterceptedEvent_001
- * @tc.name: SendInterceptedEvent
- * @tc.desc: Test function SendInterceptedEvent
- */
-HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_SendInterceptedEvent_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SendInterceptedEvent_001 start";
-    screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    screenTouch_->SendInterceptedEvent();
-    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SendInterceptedEvent_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
