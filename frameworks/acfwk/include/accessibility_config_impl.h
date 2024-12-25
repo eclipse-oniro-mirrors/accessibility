@@ -135,7 +135,8 @@ private:
             }
         }
 
-        void OnclientDeleted() {
+        void OnclientDeleted()
+        {
             enableAbilityClientDeleted_ = true;
         }
     private:
@@ -157,7 +158,8 @@ private:
             }
         }
 
-        void OnclientDeleted() {
+        void OnclientDeleted()
+        {
             captionClientDeleted_ = true;
         }
     private:
@@ -243,7 +245,8 @@ private:
             }
         }
         
-        void OnclientDeleted() {
+        void OnclientDeleted()
+        {
             configClientDeleted_ = true;
         }
 
