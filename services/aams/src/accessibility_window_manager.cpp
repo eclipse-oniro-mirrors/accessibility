@@ -899,7 +899,7 @@ void AccessibilityWindowManager::ClearAccessibilityFocused()
 
 int64_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowId, const int64_t elementId)
 {
-    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
+    std::lock_guard<std::recursive_mutex> lock(interfaceMutex_);
     if (elementId != INVALID_SCENE_BOARD_ELEMENT_ID) {
         return elementId;
     }
