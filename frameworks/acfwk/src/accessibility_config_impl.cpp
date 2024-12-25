@@ -37,15 +37,15 @@ AccessibilityConfig::Impl::Impl()
 AccessibilityConfig::Impl::~Impl()
 {
     if (captionObserver_ != nullptr) {
-        captionObserver_->OnclientDeleted;
+        captionObserver_->OnclientDeleted();
     }
 
     if (configObserver_ != nullptr) {
-        configObserver_->OnclientDeleted;
+        configObserver_->OnclientDeleted();
     }
     
     if (enableAbilityListsObserver_ != nullptr) {
-        enableAbilityListsObserver_->OnclientDeleted;
+        enableAbilityListsObserver_->OnclientDeleted();
     }
 }
 
