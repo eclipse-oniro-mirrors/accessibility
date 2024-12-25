@@ -34,7 +34,7 @@ namespace AccessibilityConfig {
 class AccessibilityConfig::Impl {
 public:
     Impl();
-    ~Impl() = default;
+    ~Impl();
 
     bool InitializeContext();
     void UnInitializeContext();
@@ -123,15 +123,25 @@ private:
 
         virtual void OnAccessibilityEnableAbilityListsChanged() override
         {
-            client_.OnAccessibilityEnableAbilityListsChanged();
+            if (enableAbilityClientDeleted_ == false) {
+                client_.OnAccessibilityEnableAbilityListsChanged();
+            }
         }
 
         virtual void OnAccessibilityInstallAbilityListsChanged() override
         {
-            client_.OnAccessibilityInstallAbilityListsChanged();
+            if (enableAbilityClientDeleted_ == false) {
+                client_.OnAccessibilityInstallAbilityListsChanged();
+            }
+        }
+
+        void OnclientDeleted()
+        {
+            enableAbilityClientDeleted_ = true;
         }
     private:
         Impl &client_;
+        std::atomic<bool> enableAbilityClientDeleted_ = false;
     };
 
     class AccessibleAbilityManagerCaptionObserverImpl
@@ -143,10 +153,18 @@ private:
 
         virtual void OnPropertyChanged(const CaptionProperty &property) override
         {
-            config_.OnAccessibleAbilityManagerCaptionPropertyChanged(property);
+            if (captionClientDeleted_ == false) {
+                config_.OnAccessibleAbilityManagerCaptionPropertyChanged(property);
+            }
+        }
+
+        void OnclientDeleted()
+        {
+            captionClientDeleted_ = true;
         }
     private:
         Impl &config_;
+        std::atomic<bool> captionClientDeleted_ = false;
     };
 
     class AccessibilityLoadCallback : public SystemAbilityLoadCallbackStub {
@@ -168,47 +186,73 @@ private:
 
         virtual void OnConfigStateChanged(const uint32_t stateType) override
         {
-            config_.OnAccessibleAbilityManagerConfigStateChanged(stateType);
+            if (configClientDeleted_ == false) {
+                config_.OnAccessibleAbilityManagerConfigStateChanged(stateType);
+            }
         }
         virtual void OnAudioBalanceChanged(const float audioBalance) override
         {
-            config_.OnAccessibleAbilityManagerAudioBalanceChanged(audioBalance);
+            if (configClientDeleted_ == false) {
+                config_.OnAccessibleAbilityManagerAudioBalanceChanged(audioBalance);
+            }
         }
         virtual void OnBrightnessDiscountChanged(const float brightnessDiscount) override
         {
-            config_.OnAccessibleAbilityManagerBrightnessDiscountChanged(brightnessDiscount);
+            if (configClientDeleted_ == false) {
+                config_.OnAccessibleAbilityManagerBrightnessDiscountChanged(brightnessDiscount);
+            }
         }
         virtual void OnContentTimeoutChanged(const uint32_t contentTimeout) override
         {
-            config_.OnAccessibleAbilityManagerContentTimeoutChanged(contentTimeout);
+            if (configClientDeleted_ == false) {
+                config_.OnAccessibleAbilityManagerContentTimeoutChanged(contentTimeout);
+            }
         }
         virtual void OnDaltonizationColorFilterChanged(const uint32_t filterType) override
         {
-            config_.OnAccessibleAbilityManagerDaltonizationColorFilterChanged(filterType);
+            if (configClientDeleted_ == false) {
+                config_.OnAccessibleAbilityManagerDaltonizationColorFilterChanged(filterType);
+            }
         }
         virtual void OnMouseAutoClickChanged(const int32_t mouseAutoClick) override
         {
-            config_.OnAccessibleAbilityManagerMouseAutoClickChanged(mouseAutoClick);
+            if (configClientDeleted_ == false) {
+                config_.OnAccessibleAbilityManagerMouseAutoClickChanged(mouseAutoClick);
+            }
         }
         virtual void OnShortkeyTargetChanged(const std::string &shortkeyTarget) override
         {
-            config_.OnAccessibleAbilityManagerShortkeyTargetChanged(shortkeyTarget);
+            if (configClientDeleted_ == false) {
+                config_.OnAccessibleAbilityManagerShortkeyTargetChanged(shortkeyTarget);
+            }
         }
         virtual void OnShortkeyMultiTargetChanged(const std::vector<std::string> &shortkeyMultiTarget) override
         {
-            config_.OnAccessibleAbilityManagerShortkeyMultiTargetChanged(shortkeyMultiTarget);
+            if (configClientDeleted_ == false) {
+                config_.OnAccessibleAbilityManagerShortkeyMultiTargetChanged(shortkeyMultiTarget);
+            }
         }
         virtual void OnClickResponseTimeChanged(const uint32_t clickResponseTime) override
         {
-            config_.OnAccessibleAbilityManagerClickResponseTimeChanged(clickResponseTime);
+            if (configClientDeleted_ == false) {
+                config_.OnAccessibleAbilityManagerClickResponseTimeChanged(clickResponseTime);
+            }
         }
         virtual void OnIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime) override
         {
-            config_.OnAccessibleAbilityManagerIgnoreRepeatClickTimeChanged(ignoreRepeatClickTime);
+            if (configClientDeleted_ == false) {
+                config_.OnAccessibleAbilityManagerIgnoreRepeatClickTimeChanged(ignoreRepeatClickTime);
+            }
+        }
+        
+        void OnclientDeleted()
+        {
+            configClientDeleted_ = true;
         }
 
     private:
         Impl &config_;
+        std::atomic<bool> configClientDeleted_ = false;
     };
 
     class DeathRecipient : public IRemoteObject::DeathRecipient {
