@@ -742,10 +742,6 @@ std::vector<Pointer> MockTouchExploration::GetOneFingerSwipePath()
             float xNextUnitVector = nextPoint.px_ - newSeparation.px_;
             float yNextUnitVector = nextPoint.py_ - newSeparation.py_;
             float nextVectorLength = hypot(xNextUnitVector, yNextUnitVector);
-            if (nextVectorLength > EPSINON) {
-                xNextUnitVector /= nextVectorLength;
-                yNextUnitVector /= nextVectorLength;
-            }
 
             if ((xVector * xNextUnitVector + yVector * yNextUnitVector) < DEGREES_THRESHOLD) {
                 pointerPath.push_back(newSeparation);
@@ -759,10 +755,6 @@ std::vector<Pointer> MockTouchExploration::GetOneFingerSwipePath()
         yVector = nextPoint.py_ - firstSeparation.py_;
         vectorLength = hypot(xVector, yVector);
         numSinceFirstSep += 1;
-        if (vectorLength > EPSINON) {
-            xUnitVector += xVector / vectorLength;
-            yUnitVector += yVector / vectorLength;
-        }
     }
     pointerPath.push_back(nextPoint);
     return pointerPath;
@@ -1042,9 +1034,6 @@ float MockTouchExploration::GetAngleCos(float offsetX, float offsetY, bool isGet
     HILOG_DEBUG();
     float ret = isGetX ? offsetX : offsetY;
     double duration = hypot(offsetX, offsetY);
-    if (duration < - EPSINON || duration > EPSINON) {
-        ret = ret / duration;
-    }
     return ret;
 }
 
@@ -1659,7 +1648,8 @@ void MockTouchExploration::HandleThreeFingersSwipeStateDown(MMI::PointerEvent &e
     SetCurrentState(TouchExplorationState::INVALID);
 }
 
-bool MockTouchExploration::GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId)
+bool MockTouchExploration::GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerIterm,
+    int32_t pId)
 {
     HILOG_DEBUG();
     if (multiFingerSwipePrePoint_.count(pId) == 0 || !multiFingerSwipePrePoint_[pId]) {
