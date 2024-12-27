@@ -165,7 +165,7 @@ void AccessibleAbilityManagerService::OnStart()
 
     if (!sendEventHandler_) {
         sendEventHandler_ = std::make_shared<AAMSEventHandler>(sendEventRunner_);
-        if (!sendEventRunner_) {
+        if (!sendEventHandler_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS sendEvent handler failed");
             return;
         }
@@ -623,7 +623,7 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         HILOG_ERROR("ExecuteAction Failed to wait result");
         return false;
     }
-    HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d]",
+    HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d",
         windowId, elementId, action, actionCallback->executeActionResult_);
     return actionCallback->executeActionResult_;
 }
