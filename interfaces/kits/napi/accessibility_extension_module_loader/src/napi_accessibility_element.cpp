@@ -35,7 +35,7 @@ namespace {
     const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "inspectorKey",
         "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
         "textMoveUnit", "contents", "lastContent", "itemCount", "currentIndex", "startIndex", "endIndex",
-        "resourceName", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible",
+        "resourceName", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible", "mainWindowId",
         "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable", "navDestinationId",
         "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
         "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
@@ -2114,7 +2114,7 @@ void NAccessibilityElement::FindElementComplete(napi_env env, napi_status status
     }
 
     napi_value result[ARGS_SIZE_TWO] = {0};
-    // set reslult mainWindowId = param mainWindowId
+    // set reslult mainWindowId = param mainWidnowId
     int32_t mainWindowId = -1;
     if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
         mainWindowId = callbackInfo->accessibilityElement_.elementInfo_->GetMainWindowId();
@@ -2129,6 +2129,7 @@ void NAccessibilityElement::FindElementComplete(napi_env env, napi_status status
             node.SetMainWindowId(mainWindowId);
         }
     }
+    
     GetElement(callbackInfo, result[PARAM1]);
     result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
     if (callbackInfo->callback_) {
