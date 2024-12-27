@@ -37,7 +37,6 @@ const uint32_t START_WORK_ARGS_SIZE = 2;
 struct StateListener {
     StateListener(napi_env env, napi_ref ref) : handlerRef_(ref), env_(env) {};
     static void NotifyJS(napi_env env, bool state, napi_ref handlerRef);
-    static int NotifyJSWork(napi_env env, uv_work_t *work);
     void OnStateChanged(const bool state);
 
     napi_ref handlerRef_ = nullptr;
@@ -61,7 +60,6 @@ private:
 
 private:
     void DeleteObserverReference(napi_env env, std::shared_ptr<StateListener> observer);
-    int DeleteObserverReferenceWork(napi_env env, uv_work_t *work);
 };
 
 struct NAccessibilitySystemAbilityClient {

@@ -27,6 +27,7 @@
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
+#include "rwlock.h"
 
 namespace OHOS {
 namespace AccessibilityConfig {
@@ -330,8 +331,15 @@ private:
 
     std::vector<std::string> shortkeyMultiTarget_ {};
     std::vector<std::shared_ptr<AccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
+    ffrt::mutex enableAbilityListsObserversMutex_;
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>> configObservers_;
-    ffrt::mutex mutex_;
+    ffrt::mutex configObserversMutex_;
+    
+    // use write-first-rwLock to protect serviceProxy_ to make sure when serviceProxy_ multi-thread used
+    // and one thread which calls interface like SetAudioMonoState timeout,
+    // InitializeContext will get mutex first, in case main-thread block.
+    // InitializeContext always called in main thread
+    Utils::RWLock rwLock_;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AppExecFwk::EventHandler> handler_;

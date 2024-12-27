@@ -32,6 +32,7 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
+    const int32_t DATASHARE_DEFAULT_TIMEOUT = 2 * 1000; // ms
 }
 
 void AccessibilitySettings::RegisterSettingsHandler(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
@@ -67,21 +68,31 @@ RetError AccessibilitySettings::SetShortKeyState(const bool state)
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, state]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, state]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetShortKeyState(state);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateConfigState();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
         }, "TASK_SET_SHORTKEY_STATE");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetShortKeyState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -109,21 +120,31 @@ RetError AccessibilitySettings::SetMouseAutoClick(const int32_t time)
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, time]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetMouseAutoClick(time);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateMouseAutoClick();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
         }, "TASK_SET_MOUSE_AUTOCLICK");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetMouseAutoClick Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -136,20 +157,31 @@ RetError AccessibilitySettings::SetShortkeyTarget(const std::string &name)
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &name]() {
+
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &name]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetShortkeyTarget(name);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateShortkeyTarget();
         }, "TASK_SET_SHORTKEY_TARGET");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetShortkeyTarget Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -162,20 +194,30 @@ RetError AccessibilitySettings::SetShortkeyMultiTarget(const std::vector<std::st
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &name]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &name]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetShortkeyMultiTarget(name);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateShortkeyMultiTarget();
         }, "TASK_SET_SHORTKEY_MULTI_TARGET");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetShortkeyMultiTarget Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -277,20 +319,30 @@ RetError AccessibilitySettings::SetDaltonizationColorFilter(const uint32_t filte
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, filter]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, filter]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetDaltonizationColorFilter(filter);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateDaltonizationColorFilter();
         }, "TASK_SET_DALTONIZATION_COLORFILTER");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetDaltonizationColorFilter Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -302,20 +354,30 @@ RetError AccessibilitySettings::SetContentTimeout(const uint32_t time)
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, time]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetContentTimeout(time);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateContentTimeout();
         }, "TASK_SET_CONTENT_TIMEOUT");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetContentTimeout Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -333,20 +395,30 @@ RetError AccessibilitySettings::SetBrightnessDiscount(const float discount)
         return Accessibility::RET_ERR_FAILED;
     }
 #endif
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, discount]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, discount]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetBrightnessDiscount(discount);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateBrightnessDiscount();
         }, "TASK_SET_BRIGHTNESS_DISCOUNT");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetBrightnessDiscount Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -360,20 +432,30 @@ RetError AccessibilitySettings::SetAudioBalance(const float balance)
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, balance]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, balance]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetAudioBalance(balance);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateAudioBalance();
         }, "TASK_SET_AUDIO_BALANCE");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetAudioBalance Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -387,21 +469,31 @@ RetError AccessibilitySettings::SetClickResponseTime(const uint32_t time)
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, time]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetClickResponseTime(time);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateClickResponseTime();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
         }, "TASK_SET_CLICK_RESPONSE_TIME");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetClickResponseTime Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -415,21 +507,31 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickState(const bool state)
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, state]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, state]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetIgnoreRepeatClickState(state);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateConfigState();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
         }, "TASK_SET_IGNORE_REPEAT_CLICK_STATE");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetIgnoreRepeatClickState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -443,21 +545,31 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickTime(const uint32_t time)
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, time]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, time]() {
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetIgnoreRepeatClickTime(time);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateIgnoreRepeatClickTime();
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
         }, "TASK_SET_IGNORE_REPEAT_CLICK_TIME");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetIgnoreRepeatClickTime Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -555,20 +667,31 @@ RetError AccessibilitySettings::GetScreenMagnificationState(bool &state)
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &state]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         state = accountData->GetConfig()->GetScreenMagnificationState();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_SCREENMAGNIFIER_STATE");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetScreenMagnificationState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -580,20 +703,30 @@ RetError AccessibilitySettings::GetShortKeyState(bool &state)
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &state]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         state = accountData->GetConfig()->GetShortKeyState();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_SHORTKEY_STATE");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetShortKeyState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -605,335 +738,482 @@ RetError AccessibilitySettings::GetMouseKeyState(bool &state)
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &state]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         state = accountData->GetConfig()->GetMouseKeyState();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_MOUSEKEY_STATE");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetMouseKeyState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetMouseAutoClick(int32_t &time)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &time]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &time]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         time = accountData->GetConfig()->GetMouseAutoClick();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_MOUSE_AUTOCLICK");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetMouseAutoClick Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetShortkeyTarget(std::string &name)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &name]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &name]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         name = accountData->GetConfig()->GetShortkeyTarget();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_SHORTKEY_TARGET");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetShortkeyTarget Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetShortkeyMultiTarget(std::vector<std::string> &name)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &name]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &name]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         name = accountData->GetConfig()->GetShortkeyMultiTarget();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_SHORTKEY_MULTI_TARGET");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetShortkeyMultiTarget Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetHighContrastTextState(bool &state)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &state]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         state = accountData->GetConfig()->GetHighContrastTextState();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_HIGHCONTRASTTEXT_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetHighContrastTextState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetDaltonizationState(bool &state)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &state]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         state = accountData->GetConfig()->GetDaltonizationState();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_DALTONIZATIONSTATE_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetDaltonizationState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetInvertColorState(bool &state)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &state]() {
+
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         state = accountData->GetConfig()->GetInvertColorState();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_INVERTCOLOR_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetInvertColorState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetAnimationOffState(bool &state)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &state]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         state = accountData->GetConfig()->GetAnimationOffState();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_ANIMATIONOFF_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetAnimationOffState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetAudioMonoState(bool &state)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &state]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         state = accountData->GetConfig()->GetAudioMonoState();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_AUDIOMONO_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetAudioMonoState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetDaltonizationColorFilter(uint32_t &type)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &type]() {
+
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &type]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         type = accountData->GetConfig()->GetDaltonizationColorFilter();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_DALTONIZATION_COLORFILTER");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetDaltonizationColorFilter Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetContentTimeout(uint32_t &timer)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &timer]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &timer]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         timer = accountData->GetConfig()->GetContentTimeout();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_CONTENT_TIMEOUT");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetContentTimeout Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetBrightnessDiscount(float &brightness)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &brightness]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &brightness]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         brightness = accountData->GetConfig()->GetBrightnessDiscount();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_BRIGHTNESS_DISCOUNT");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetBrightnessDiscount Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetAudioBalance(float &balance)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &balance]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &balance]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         balance = accountData->GetConfig()->GetAudioBalance();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_AUDIO_BALANCE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetAudioBalance Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetClickResponseTime(uint32_t &time)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &time]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &time]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         time = accountData->GetConfig()->GetClickResponseTime();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_CLICK_RESPONSE_TIME");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetClickResponseTime Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetIgnoreRepeatClickState(bool &state)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &state]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         state = accountData->GetConfig()->GetIgnoreRepeatClickState();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_IGNORE_REPEAT_CLICK_STATE");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetIgnoreRepeatClickState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
 RetError AccessibilitySettings::GetIgnoreRepeatClickTime(uint32_t &time)
 {
     HILOG_DEBUG();
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &time]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &time]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         time = accountData->GetConfig()->GetIgnoreRepeatClickTime();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_IGNORE_REPEAT_CLICK_TIME");
 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetIgnoreRepeatClickTime Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -1145,20 +1425,31 @@ RetError AccessibilitySettings::GetCaptionProperty(AccessibilityConfig::CaptionP
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &caption]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &caption]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         caption = accountData->GetConfig()->GetCaptionProperty();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_CAPTION_PROPERTY");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetCaptionProperty Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -1170,21 +1461,32 @@ RetError AccessibilitySettings::SetCaptionProperty(const AccessibilityConfig::Ca
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &caption]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &caption]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         RetError ret = accountData->GetConfig()->SetCaptionProperty(caption);
-        syncPromise.set_value(ret);
+        syncPromise->set_value(ret);
         UpdateCaptionProperty();
         }, "TASK_SET_CAPTION_PROPERTY");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SetCaptionProperty Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -1210,20 +1512,31 @@ RetError AccessibilitySettings::GetCaptionState(bool &state)
         return RET_ERR_NULLPTR;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &state]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &state]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         state = accountData->GetConfig()->GetCaptionState();
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_CAPTION_STATE");
+    
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetCaptionState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
