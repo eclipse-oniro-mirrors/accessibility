@@ -156,6 +156,15 @@ public:
     }
 
     /**
+     * @brief Set the ability name of the ability.
+     * @param name the name to set.
+     */
+    inline void SetName(const std::string& name)
+    {
+        name_ = name;
+    }
+
+    /**
      * @brief Obtains if the ability is important.
      * @return Return if the ability is important.
      */

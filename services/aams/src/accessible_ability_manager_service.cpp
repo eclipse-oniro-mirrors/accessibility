@@ -1432,6 +1432,7 @@ RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemote
         std::function<void()> addUITestClientFunc = std::bind(&AccessibilityAccountData::AddUITestClient, accountData,
             obj, UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
         handler_->PostTask(addUITestClientFunc, "AddUITestClient");
+        accountData->AddEnabledAbility(uiTestUri);
         syncPromise.set_value(RET_OK);
         }, "TASK_ENABLE_UI_TEST_ABILITIES");
     return syncFuture.get();
@@ -1465,6 +1466,7 @@ RetError AccessibleAbilityManagerService::DisableUITestAbility()
         std::function<void()> removeUITestClientFunc =
             std::bind(&AccessibilityAccountData::RemoveUITestClient, accountData, connection, UI_TEST_BUNDLE_NAME);
         handler_->PostTask(removeUITestClientFunc, "RemoveUITestClient");
+        accountData->RemoveEnabledAbility(uiTestUri);
         syncPromise->set_value(RET_OK);
         }, "TASK_DISABLE_UI_TEST_ABILITIES");
 

@@ -1079,7 +1079,11 @@ void AccessibilityAccountData::AddUITestClient(const sptr<IRemoteObject> &obj,
     HILOG_DEBUG();
     // Add installed ability
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
+    if (abilityInfo == nullptr) {
+        return;
+    }
     abilityInfo->SetPackageName(bundleName);
+    abilityInfo->SetName(abilityName);
     uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_GESTURE;
     abilityInfo->SetCapabilityValues(capabilities);
     abilityInfo->SetAccessibilityAbilityType(ACCESSIBILITY_ABILITY_TYPE_ALL);

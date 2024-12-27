@@ -239,6 +239,8 @@ HWTEST_F(MockAccessibilityAbilityInfo, GetName_001, TestSize.Level1)
         return;
     }
     EXPECT_STREQ(abilityInfo_->GetName().c_str(), "name");
+    abilityInfo_->SetName("new_name");
+    EXPECT_STREQ(abilityInfo_->GetName().c_str(), "new_name");
     GTEST_LOG_(INFO) << "GetName_001 end";
 }
 
