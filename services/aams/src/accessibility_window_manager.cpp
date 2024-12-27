@@ -280,7 +280,7 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
         accWindowInfo.SetWindowId(windowInfo->innerWid_);
         HILOG_DEBUG("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
     }
-    HILOG_DEBUG("bundle name is [%{public}s] , touchHotAreas size(%{public}u)",
+    HILOG_DEBUG("bundle name is [%{public}s] , touchHotAreas size(%{public}zu)",
         windowInfo->bundleName_.c_str(), windowInfo->touchHotAreas_.size());
     accWindowInfo.SetBundleName(windowInfo->bundleName_);
     HILOG_DEBUG("UpdateAccessibilityWindowInfo is set bundlename is [%{public}s]",
