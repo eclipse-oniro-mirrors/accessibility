@@ -62,7 +62,8 @@ sptr<Display> DisplayManager::GetDisplayById(DisplayId displayId)
     return display;
 }
 
-std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(DisplayId displayId, DmErrorCode* errorCode)
+std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(DisplayId displayId, DmErrorCode* errorCode,
+    bool isUseDma)
 {
     return nullptr;
 }
