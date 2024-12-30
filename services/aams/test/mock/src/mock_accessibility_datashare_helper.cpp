@@ -23,10 +23,10 @@
 namespace OHOS {
 namespace Accessibility {
 
-void MockTouchExploration::InitOneFingerGestureFuncMap()
+void MockDataShareHelper::InitOneFingerGestureFuncMap()
 {
     handleEventFuncMap_ = {
-        {TouchExplorationState::TOUCH_INIT, {
+        {DataShareHelperState::TOUCH_INIT, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleInitStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleInitStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleInitStateMove)},
@@ -34,29 +34,29 @@ void MockTouchExploration::InitOneFingerGestureFuncMap()
             {MMI::PointerEvent::POINTER_ACTION_PULL_MOVE, BIND(HandleInitStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_PULL_UP, BIND(HandleInitStateUp)}}
         },
-        {TouchExplorationState::ONE_FINGER_DOWN, {
+        {DataShareHelperState::ONE_FINGER_DOWN, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleOneFingerDownStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleOneFingerDownStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleOneFingerDownStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::ONE_FINGER_LONG_PRESS, {
+        {DataShareHelperState::ONE_FINGER_LONG_PRESS, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleOneFingerLongPressStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleOneFingerLongPressStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleOneFingerLongPressStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::ONE_FINGER_SWIPE, {
+        {DataShareHelperState::ONE_FINGER_SWIPE, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleOneFingerSwipeStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleOneFingerSwipeStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleOneFingerSwipeStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::ONE_FINGER_SINGLE_TAP, {
+        {DataShareHelperState::ONE_FINGER_SINGLE_TAP, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleOneFingerSingleTapStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::ONE_FINGER_SINGLE_TAP_THEN_DOWN, {
+        {DataShareHelperState::ONE_FINGER_SINGLE_TAP_THEN_DOWN, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleOneFingerSingleTapThenDownStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleOneFingerSingleTapThenDownStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleOneFingerSingleTapThenDownStateMove)},
@@ -65,34 +65,34 @@ void MockTouchExploration::InitOneFingerGestureFuncMap()
     };
 }
 
-void MockTouchExploration::InitTwoFingerGestureFuncMap()
+void MockDataShareHelper::InitTwoFingerGestureFuncMap()
 {
     handleEventFuncMap_.insert({
-        {TouchExplorationState::TWO_FINGERS_DOWN, {
+        {DataShareHelperState::TWO_FINGERS_DOWN, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleTwoFingersDownStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleTwoFingersDownStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleTwoFingersDownStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::TWO_FINGERS_DRAG, {
+        {DataShareHelperState::TWO_FINGERS_DRAG, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleTwoFingersDragStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleTwoFingersDragStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleTwoFingersDragStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::TWO_FINGERS_TAP, {
+        {DataShareHelperState::TWO_FINGERS_TAP, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleTwoFingersTapStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleMultiFingersTapStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleTwoFingersTapStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::TWO_FINGERS_CONTINUE_DOWN, {
+        {DataShareHelperState::TWO_FINGERS_CONTINUE_DOWN, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleMultiFingersContinueDownStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleTwoFingersContinueDownStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleTwoFingersContinueDownStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::TWO_FINGERS_UNKNOWN, {
+        {DataShareHelperState::TWO_FINGERS_UNKNOWN, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleTwoFingersUnknownStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleTwoFingersUnknownStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleTwoFingersUnknownStateMove)},
@@ -101,28 +101,28 @@ void MockTouchExploration::InitTwoFingerGestureFuncMap()
     });
 }
 
-void MockTouchExploration::InitThreeFingerGestureFuncMap()
+void MockDataShareHelper::InitThreeFingerGestureFuncMap()
 {
     handleEventFuncMap_.insert({
-        {TouchExplorationState::THREE_FINGERS_DOWN, {
+        {DataShareHelperState::THREE_FINGERS_DOWN, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleThreeFingersDownStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleThreeFingersDownStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleThreeFingersDownStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::THREE_FINGERS_SWIPE, {
+        {DataShareHelperState::THREE_FINGERS_SWIPE, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleThreeFingersSwipeStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleThreeFingersSwipeStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleThreeFingersSwipeStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::THREE_FINGERS_TAP, {
+        {DataShareHelperState::THREE_FINGERS_TAP, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleThreeFingersTapStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleMultiFingersTapStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleThreeFingersTapStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::THREE_FINGERS_CONTINUE_DOWN, {
+        {DataShareHelperState::THREE_FINGERS_CONTINUE_DOWN, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleMultiFingersContinueDownStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleThreeFingersContinueDownStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleThreeFingersContinueDownStateMove)},
@@ -131,34 +131,34 @@ void MockTouchExploration::InitThreeFingerGestureFuncMap()
     });
 }
 
-void MockTouchExploration::InitFourFingerGestureFuncMap()
+void MockDataShareHelper::InitFourFingerGestureFuncMap()
 {
     handleEventFuncMap_.insert({
-        {TouchExplorationState::THREE_FINGERS_CONTINUE_DOWN, {
+        {DataShareHelperState::THREE_FINGERS_CONTINUE_DOWN, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleMultiFingersContinueDownStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleThreeFingersContinueDownStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleThreeFingersContinueDownStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::FOUR_FINGERS_DOWN, {
+        {DataShareHelperState::FOUR_FINGERS_DOWN, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleFourFingersDownStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleFourFingersDownStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleFourFingersDownStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::FOUR_FINGERS_SWIPE, {
+        {DataShareHelperState::FOUR_FINGERS_SWIPE, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleFourFingersSwipeStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleFourFingersSwipeStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleFourFingersSwipeStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::FOUR_FINGERS_TAP, {
+        {DataShareHelperState::FOUR_FINGERS_TAP, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleFourFingersTapStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleMultiFingersTapStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleFourFingersTapStateMove)},
             {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
         },
-        {TouchExplorationState::FOUR_FINGERS_CONTINUE_DOWN, {
+        {DataShareHelperState::FOUR_FINGERS_CONTINUE_DOWN, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleMultiFingersContinueDownStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleFourFingersContinueDownStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleFourFingersContinueDownStateMove)},
@@ -167,49 +167,49 @@ void MockTouchExploration::InitFourFingerGestureFuncMap()
     });
 }
 
-MockTouchExplorationEventHandler::MockTouchExplorationEventHandler(
-    const std::shared_ptr<AppExecFwk::EventRunner> &runner, TouchExploration &server): AppExecFwk::EventHandler(runner),
+DataShareHelperEventHandler::DataShareHelperEventHandler(
+    const std::shared_ptr<AppExecFwk::EventRunner> &runner, DataShareHelper &server): AppExecFwk::EventHandler(runner),
     server_(server)
 {
 }
 
-void MockTouchExplorationEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
+void DataShareHelperEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
 {
     HILOG_INFO("TEhandler process event id = %{public}d, currentState is %{public}d", event->GetInnerEventId(),
         server_.GetCurrentState());
 
-    TouchExplorationMsg msg = static_cast<TouchExplorationMsg>(event->GetInnerEventId());
+    DataShareHelperMsg msg = static_cast<DataShareHelperMsg>(event->GetInnerEventId());
     switch (msg) {
-        case TouchExplorationMsg::SEND_HOVER_MSG:
+        case DataShareHelperMsg::SEND_HOVER_MSG:
             server_.HoverEventRunner();
             server_.Clear();
             HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP to TOUCH_INIT.");
-            server_.SetCurrentState(TouchExplorationState::TOUCH_INIT);
+            server_.SetCurrentState(DataShareHelperState::TOUCH_INIT);
             break;
-        case TouchExplorationMsg::LONG_PRESS_MSG:
+        case DataShareHelperMsg::LONG_PRESS_MSG:
             HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to ONE_FINGER_LONG_PRESS.");
-            server_.CancelPostEvent(TouchExplorationMsg::SEND_HOVER_MSG);
+            server_.CancelPostEvent(DataShareHelperMsg::SEND_HOVER_MSG);
             server_.HoverEventRunner();
-            server_.SetCurrentState(TouchExplorationState::ONE_FINGER_LONG_PRESS);
+            server_.SetCurrentState(DataShareHelperState::ONE_FINGER_LONG_PRESS);
             break;
-        case TouchExplorationMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG:
+        case DataShareHelperMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG:
             HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP_THEN_DOWN to\
                 ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS.");
             server_.SendDoubleTapAndLongPressDownEvent();
-            server_.SetCurrentState(TouchExplorationState::ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS);
+            server_.SetCurrentState(DataShareHelperState::ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS);
             break;
-        case TouchExplorationMsg::SWIPE_COMPLETE_TIMEOUT_MSG:
+        case DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG:
             server_.HoverEventRunner();
             HILOG_INFO("timeout, currentState is changed from ONE_FINGER_SWIPE to ONE_FINGER_LONG_PRESS.");
-            server_.SetCurrentState(TouchExplorationState::ONE_FINGER_LONG_PRESS);
+            server_.SetCurrentState(DataShareHelperState::ONE_FINGER_LONG_PRESS);
             break;
-        case TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG:
-            if (server_.GetCurrentState() == TouchExplorationState::TWO_FINGERS_TAP ||
-                server_.GetCurrentState() == TouchExplorationState::THREE_FINGERS_TAP ||
-                server_.GetCurrentState() == TouchExplorationState::FOUR_FINGERS_TAP) {
+        case DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG:
+            if (server_.GetCurrentState() == DataShareHelperState::TWO_FINGERS_TAP ||
+                server_.GetCurrentState() == DataShareHelperState::THREE_FINGERS_TAP ||
+                server_.GetCurrentState() == DataShareHelperState::FOUR_FINGERS_TAP) {
                 server_.Clear();
                 HILOG_INFO("wait another finger timeout, currentState is changed to INVALID.");
-                server_.SetCurrentState(TouchExplorationState::INVALID);
+                server_.SetCurrentState(DataShareHelperState::INVALID);
             }
             break;
         default:
@@ -218,7 +218,7 @@ void MockTouchExplorationEventHandler::ProcessEvent(const AppExecFwk::InnerEvent
     }
 }
 
-MockTouchExploration::TouchExploration()
+MockDataShareHelper::DataShareHelper()
 {
     InitOneFingerGestureFuncMap();
     InitTwoFingerGestureFuncMap();
@@ -250,7 +250,7 @@ MockTouchExploration::TouchExploration()
 #endif
 }
 
-void MockTouchExploration::StartUp()
+void MockDataShareHelper::StartUp()
 {
     runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner_) {
@@ -258,14 +258,14 @@ void MockTouchExploration::StartUp()
         return;
     }
 
-    handler_ = std::make_shared<MockTouchExplorationEventHandler>(runner_, *this);
+    handler_ = std::make_shared<DataShareHelperEventHandler>(runner_, *this);
     if (!handler_) {
         HILOG_ERROR("create event handler failed");
         return;
     }
 }
 
-bool MockTouchExploration::OnPointerEvent(MMI::PointerEvent &event)
+bool MockDataShareHelper::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("PointerAction:%{public}d, PointerId:%{public}d, currentState:%{public}d.", event.GetPointerAction(),
         event.GetPointerId(), static_cast<int32_t>(GetCurrentState()));
@@ -294,18 +294,18 @@ bool MockTouchExploration::OnPointerEvent(MMI::PointerEvent &event)
     return true;
 }
 
-void MockTouchExploration::HandlePointerEvent(MMI::PointerEvent &event)
+void MockDataShareHelper::HandlePointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (GetCurrentState() == TouchExplorationState::PASSING_THROUGH) {
+    if (GetCurrentState() == DataShareHelperState::PASSING_THROUGH) {
         HandlePassingThroughState(event);
         return;
     }
-    if (GetCurrentState() == TouchExplorationState::INVALID) {
+    if (GetCurrentState() == DataShareHelperState::INVALID) {
         HandleInvalidState(event);
         return;
     }
-    if (GetCurrentState() == TouchExplorationState::ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS) {
+    if (GetCurrentState() == DataShareHelperState::ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS) {
         HandleOneFingerDoubleTapAndLongPressState(event);
         return;
     }
@@ -326,11 +326,11 @@ void MockTouchExploration::HandlePointerEvent(MMI::PointerEvent &event)
         !pointerIterm.IsPressed()) {
         Clear();
         HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
     }
 }
 
-void MockTouchExploration::SendAccessibilityEventToAA(EventType eventType)
+void MockDataShareHelper::SendAccessibilityEventToAA(EventType eventType)
 {
     HILOG_INFO("eventType is 0x%{public}x.", eventType);
 
@@ -341,7 +341,7 @@ void MockTouchExploration::SendAccessibilityEventToAA(EventType eventType)
     Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
 }
 
-void MockTouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
+void MockDataShareHelper::SendTouchEventToAA(MMI::PointerEvent &event)
 {
     if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         return;
@@ -356,7 +356,7 @@ void MockTouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
     }
 }
 
-void MockTouchExploration::SendGestureEventToAA(GestureType gestureId)
+void MockDataShareHelper::SendGestureEventToAA(GestureType gestureId)
 {
     HILOG_INFO("gestureId is %{public}d.", static_cast<int32_t>(gestureId));
 
@@ -368,7 +368,7 @@ void MockTouchExploration::SendGestureEventToAA(GestureType gestureId)
     Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
 }
 
-void MockTouchExploration::SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action)
+void MockDataShareHelper::SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action)
 {
     HILOG_DEBUG("action:%{public}d, SourceType:%{public}d.", action, event.GetSourceType());
 
@@ -397,7 +397,7 @@ void MockTouchExploration::SendEventToMultimodal(MMI::PointerEvent event, Change
     EventTransmission::OnPointerEvent(event);
 }
 
-void MockTouchExploration::SendScreenWakeUpEvent(MMI::PointerEvent &event)
+void MockDataShareHelper::SendScreenWakeUpEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     // Send move event to wake up the screen and prevent the screen from turning off.
@@ -411,7 +411,7 @@ void MockTouchExploration::SendScreenWakeUpEvent(MMI::PointerEvent &event)
     SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
 }
 
-void MockTouchExploration::HoverEventRunner()
+void MockDataShareHelper::HoverEventRunner()
 {
     for (auto& event : receivedPointerEvents_) {
         if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN) {
@@ -424,51 +424,51 @@ void MockTouchExploration::HoverEventRunner()
     }
 }
 
-std::map<TouchExplorationMsg, GestureType> MockTouchExploration::GetMultiFingerMsgToGestureMap()
+std::map<DataShareHelperMsg, GestureType> MockDataShareHelper::GetMultiFingerMsgToGestureMap()
 {
-    static std::map<TouchExplorationMsg, GestureType> MULTI_GESTURE_TYPE = {
-        {TouchExplorationMsg::TWO_FINGER_SINGLE_TAP_MSG, GestureType::GESTURE_TWO_FINGER_SINGLE_TAP},
-        {TouchExplorationMsg::TWO_FINGER_LONG_PRESS_MSG, GestureType::GESTURE_INVALID},
-        {TouchExplorationMsg::TWO_FINGER_DOUBLE_TAP_MSG, GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP},
-        {TouchExplorationMsg::TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG, GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP_AND_HOLD},
-        {TouchExplorationMsg::TWO_FINGER_TRIPLE_TAP_MSG, GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP},
-        {TouchExplorationMsg::TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG, GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP_AND_HOLD},
-        {TouchExplorationMsg::THREE_FINGER_SINGLE_TAP_MSG, GestureType::GESTURE_THREE_FINGER_SINGLE_TAP},
-        {TouchExplorationMsg::THREE_FINGER_LONG_PRESS_MSG, GestureType::GESTURE_INVALID},
-        {TouchExplorationMsg::THREE_FINGER_DOUBLE_TAP_MSG, GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP},
-        {TouchExplorationMsg::THREE_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
+    static std::map<DataShareHelperMsg, GestureType> MULTI_GESTURE_TYPE = {
+        {DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG, GestureType::GESTURE_TWO_FINGER_SINGLE_TAP},
+        {DataShareHelperMsg::TWO_FINGER_LONG_PRESS_MSG, GestureType::GESTURE_INVALID},
+        {DataShareHelperMsg::TWO_FINGER_DOUBLE_TAP_MSG, GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP},
+        {DataShareHelperMsg::TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG, GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP_AND_HOLD},
+        {DataShareHelperMsg::TWO_FINGER_TRIPLE_TAP_MSG, GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP},
+        {DataShareHelperMsg::TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG, GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP_AND_HOLD},
+        {DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG, GestureType::GESTURE_THREE_FINGER_SINGLE_TAP},
+        {DataShareHelperMsg::THREE_FINGER_LONG_PRESS_MSG, GestureType::GESTURE_INVALID},
+        {DataShareHelperMsg::THREE_FINGER_DOUBLE_TAP_MSG, GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP},
+        {DataShareHelperMsg::THREE_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
             GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP_AND_HOLD},
-        {TouchExplorationMsg::THREE_FINGER_TRIPLE_TAP_MSG, GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP},
-        {TouchExplorationMsg::THREE_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
+        {DataShareHelperMsg::THREE_FINGER_TRIPLE_TAP_MSG, GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP},
+        {DataShareHelperMsg::THREE_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
             GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP_AND_HOLD},
-        {TouchExplorationMsg::FOUR_FINGER_SINGLE_TAP_MSG, GestureType::GESTURE_FOUR_FINGER_SINGLE_TAP},
-        {TouchExplorationMsg::FOUR_FINGER_LONG_PRESS_MSG, GestureType::GESTURE_INVALID},
-        {TouchExplorationMsg::FOUR_FINGER_DOUBLE_TAP_MSG, GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP},
-        {TouchExplorationMsg::FOUR_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
+        {DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG, GestureType::GESTURE_FOUR_FINGER_SINGLE_TAP},
+        {DataShareHelperMsg::FOUR_FINGER_LONG_PRESS_MSG, GestureType::GESTURE_INVALID},
+        {DataShareHelperMsg::FOUR_FINGER_DOUBLE_TAP_MSG, GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP},
+        {DataShareHelperMsg::FOUR_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
             GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP_AND_HOLD},
-        {TouchExplorationMsg::FOUR_FINGER_TRIPLE_TAP_MSG, GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP},
-        {TouchExplorationMsg::FOUR_FINGER_TRIPLE_TAP_AND_HOLD_MSG, GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP_AND_HOLD}
+        {DataShareHelperMsg::FOUR_FINGER_TRIPLE_TAP_MSG, GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP},
+        {DataShareHelperMsg::FOUR_FINGER_TRIPLE_TAP_AND_HOLD_MSG, GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP_AND_HOLD}
     };
     return MULTI_GESTURE_TYPE;
 }
 
-void MockTouchExploration::ProcessMultiFingerGesture(TouchExplorationMsg msg)
+void MockDataShareHelper::ProcessMultiFingerGesture(DataShareHelperMsg msg)
 {
-    std::map<TouchExplorationMsg, GestureType> multiGestureMap = GetMultiFingerMsgToGestureMap();
+    std::map<DataShareHelperMsg, GestureType> multiGestureMap = GetMultiFingerMsgToGestureMap();
     if (multiGestureMap.find(msg) == multiGestureMap.end()) {
         return;
     }
 
-    static std::map<GestureType, TouchExplorationState> MULTI_FINGER_TAP_GESTURE_TO_STATE = {
-        {GestureType::GESTURE_TWO_FINGER_SINGLE_TAP, TouchExplorationState::TWO_FINGERS_TAP},
-        {GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP, TouchExplorationState::TWO_FINGERS_TAP},
-        {GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP, TouchExplorationState::TWO_FINGERS_TAP},
-        {GestureType::GESTURE_THREE_FINGER_SINGLE_TAP, TouchExplorationState::THREE_FINGERS_TAP},
-        {GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP, TouchExplorationState::THREE_FINGERS_TAP},
-        {GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP, TouchExplorationState::THREE_FINGERS_TAP},
-        {GestureType::GESTURE_FOUR_FINGER_SINGLE_TAP, TouchExplorationState::FOUR_FINGERS_TAP},
-        {GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP, TouchExplorationState::FOUR_FINGERS_TAP},
-        {GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP, TouchExplorationState::FOUR_FINGERS_TAP}
+    static std::map<GestureType, DataShareHelperState> MULTI_FINGER_TAP_GESTURE_TO_STATE = {
+        {GestureType::GESTURE_TWO_FINGER_SINGLE_TAP, DataShareHelperState::TWO_FINGERS_TAP},
+        {GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP, DataShareHelperState::TWO_FINGERS_TAP},
+        {GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP, DataShareHelperState::TWO_FINGERS_TAP},
+        {GestureType::GESTURE_THREE_FINGER_SINGLE_TAP, DataShareHelperState::THREE_FINGERS_TAP},
+        {GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP, DataShareHelperState::THREE_FINGERS_TAP},
+        {GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP, DataShareHelperState::THREE_FINGERS_TAP},
+        {GestureType::GESTURE_FOUR_FINGER_SINGLE_TAP, DataShareHelperState::FOUR_FINGERS_TAP},
+        {GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP, DataShareHelperState::FOUR_FINGERS_TAP},
+        {GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP, DataShareHelperState::FOUR_FINGERS_TAP}
     };
     GestureType gestureType = multiGestureMap.at(msg);
     if (MULTI_FINGER_TAP_GESTURE_TO_STATE.find(gestureType) != MULTI_FINGER_TAP_GESTURE_TO_STATE.end()) {
@@ -477,64 +477,64 @@ void MockTouchExploration::ProcessMultiFingerGesture(TouchExplorationMsg msg)
             SendGestureEventToAA(gestureType);
             Clear();
             HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
-            SetCurrentState(TouchExplorationState::TOUCH_INIT);
+            SetCurrentState(DataShareHelperState::TOUCH_INIT);
         }
     } else if (gestureType == GestureType::GESTURE_INVALID) {
-        if (GetCurrentState() == TouchExplorationState::TWO_FINGERS_DOWN) {
+        if (GetCurrentState() == DataShareHelperState::TWO_FINGERS_DOWN) {
             HILOG_INFO("currentState is changed from TWO_FINGERS_DOWN to TWO_FINGERS_UNKNOWN.");
-            SetCurrentState(TouchExplorationState::TWO_FINGERS_UNKNOWN);
+            SetCurrentState(DataShareHelperState::TWO_FINGERS_UNKNOWN);
             return;
         }
         Clear();
         HILOG_ERROR("currentState is changed from %{public}d to INVALID.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     } else {
         // multi-finger multi-tap-and-hold gesture
         SendGestureEventToAA(gestureType);
         Clear();
         HILOG_INFO("currentState is changed from %{public}d to INVALID.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     }
 }
 
-void MockTouchExploration::HandleInitStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleInitStateDown(MMI::PointerEvent &event)
 {
     if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         receivedPointerEvents_.push_back(event);
         HILOG_INFO("currentState is changed from TOUCH_INIT to ONE_FINGER_DOWN.");
-        SetCurrentState(TouchExplorationState::ONE_FINGER_DOWN);
-        handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::SEND_HOVER_MSG), 0,
+        SetCurrentState(DataShareHelperState::ONE_FINGER_DOWN);
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::SEND_HOVER_MSG), 0,
             static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
-        handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::LONG_PRESS_MSG), 0,
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::LONG_PRESS_MSG), 0,
             static_cast<int32_t>(TimeoutDuration::LONG_PRESS_TIMEOUT));
-        handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
             static_cast<int32_t>(TimeoutDuration::MULTI_FINGER_TAP_INTERVAL_TIMEOUT));
         return;
     }
 
     HILOG_INFO("currentState is changed from TOUCH_INIT to PASSING_THROUGH.");
     SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
-    SetCurrentState(TouchExplorationState::PASSING_THROUGH);
+    SetCurrentState(DataShareHelperState::PASSING_THROUGH);
 }
 
-void MockTouchExploration::HandleInitStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleInitStateUp(MMI::PointerEvent &event)
 {
     SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
 
     if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         HILOG_INFO("currentState is changed from TOUCH_INIT to PASSING_THROUGH.");
-        SetCurrentState(TouchExplorationState::PASSING_THROUGH);
+        SetCurrentState(DataShareHelperState::PASSING_THROUGH);
     }
 }
 
-void MockTouchExploration::HandleInitStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleInitStateMove(MMI::PointerEvent &event)
 {
     HILOG_INFO("currentState is changed from TOUCH_INIT to PASSING_THROUGH.");
     SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
-    SetCurrentState(TouchExplorationState::PASSING_THROUGH);
+    SetCurrentState(DataShareHelperState::PASSING_THROUGH);
 }
 
-void MockTouchExploration::HandlePassingThroughState(MMI::PointerEvent &event)
+void MockDataShareHelper::HandlePassingThroughState(MMI::PointerEvent &event)
 {
     SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
 
@@ -545,11 +545,11 @@ void MockTouchExploration::HandlePassingThroughState(MMI::PointerEvent &event)
     if ((event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) &&
         (!pointerIterm.IsPressed())) {
         HILOG_INFO("currentState is changed from PASSING_THROUGH to TOUCH_INIT.");
-        SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
     }
 }
 
-void MockTouchExploration::HandleInvalidState(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleInvalidState(MMI::PointerEvent &event)
 {
     MMI::PointerEvent::PointerItem pointerIterm = {};
     event.GetPointerItem(event.GetPointerId(), pointerIterm);
@@ -562,13 +562,13 @@ void MockTouchExploration::HandleInvalidState(MMI::PointerEvent &event)
     if ((event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) &&
         (!pointerIterm.IsPressed())) {
         HILOG_INFO("currentState is changed from INVALID to TOUCH_INIT.");
-        SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
     }
 }
 
-void MockTouchExploration::HandleCancelEvent(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleCancelEvent(MMI::PointerEvent &event)
 {
-    if (GetCurrentState() == TouchExplorationState::TWO_FINGERS_DRAG && event.GetPointerId() == draggingPid_) {
+    if (GetCurrentState() == DataShareHelperState::TWO_FINGERS_DRAG && event.GetPointerId() == draggingPid_) {
         SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
     }
     SendEventToMultimodal(event, ChangeAction::HOVER_CANCEL);
@@ -581,44 +581,44 @@ void MockTouchExploration::HandleCancelEvent(MMI::PointerEvent &event)
         (!pointerIterm.IsPressed())) {
         Clear();
         HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
     }
 }
 
-void MockTouchExploration::HandleOneFingerDownStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerDownStateDown(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
-    CancelPostEvent(TouchExplorationMsg::SEND_HOVER_MSG);
-    CancelPostEvent(TouchExplorationMsg::LONG_PRESS_MSG);
+    CancelPostEvent(DataShareHelperMsg::SEND_HOVER_MSG);
+    CancelPostEvent(DataShareHelperMsg::LONG_PRESS_MSG);
     draggingPid_ = event.GetPointerId();
-    if (!handler_->HasInnerEvent(static_cast<uint32_t>(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG))) {
+    if (!handler_->HasInnerEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG))) {
         HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to TWO_FINGERS_UNKNOWN.");
-        SetCurrentState(TouchExplorationState::TWO_FINGERS_UNKNOWN);
+        SetCurrentState(DataShareHelperState::TWO_FINGERS_UNKNOWN);
         return;
     }
 
-    CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
-    handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
         static_cast<int32_t>(TimeoutDuration::MULTI_FINGER_TAP_INTERVAL_TIMEOUT));
-    handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::TWO_FINGER_SINGLE_TAP_MSG), 0,
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG), 0,
         static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
-    handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::TWO_FINGER_LONG_PRESS_MSG), 0,
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::TWO_FINGER_LONG_PRESS_MSG), 0,
         static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
     HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to TWO_FINGERS_DOWN.");
-    SetCurrentState(TouchExplorationState::TWO_FINGERS_DOWN);
+    SetCurrentState(DataShareHelperState::TWO_FINGERS_DOWN);
 }
 
-void MockTouchExploration::HandleOneFingerDownStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerDownStateUp(MMI::PointerEvent &event)
 {
-    CancelPostEvent(TouchExplorationMsg::LONG_PRESS_MSG);
-    CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    CancelPostEvent(DataShareHelperMsg::LONG_PRESS_MSG);
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
     receivedPointerEvents_.push_back(event);
 
     HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to ONE_FINGER_SINGLE_TAP.");
-    SetCurrentState(TouchExplorationState::ONE_FINGER_SINGLE_TAP);
+    SetCurrentState(DataShareHelperState::ONE_FINGER_SINGLE_TAP);
 }
 
-void MockTouchExploration::HandleOneFingerDownStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerDownStateMove(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
 
@@ -633,9 +633,9 @@ void MockTouchExploration::HandleOneFingerDownStateMove(MMI::PointerEvent &event
     float offsetY = startPointerIterm.GetDisplayY() - pointerIterm.GetDisplayY();
     double duration = hypot(offsetX, offsetY);
     if (duration > moveThreshold_) {
-        CancelPostEvent(TouchExplorationMsg::SEND_HOVER_MSG);
-        CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
-        CancelPostEvent(TouchExplorationMsg::LONG_PRESS_MSG);
+        CancelPostEvent(DataShareHelperMsg::SEND_HOVER_MSG);
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        CancelPostEvent(DataShareHelperMsg::LONG_PRESS_MSG);
         receivedPointerEvents_.clear();
         receivedPointerEvents_.push_back(event);
         oneFingerSwipePrePointer_ = startPointerIterm;
@@ -644,45 +644,45 @@ void MockTouchExploration::HandleOneFingerDownStateMove(MMI::PointerEvent &event
         mp.py_ = static_cast<float>(startPointerIterm.GetDisplayY());
         oneFingerSwipeRoute_.clear();
         oneFingerSwipeRoute_.push_back(mp);
-        handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::SWIPE_COMPLETE_TIMEOUT_MSG), 0,
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG), 0,
             static_cast<int32_t>(TimeoutDuration::SWIPE_COMPLETE_TIMEOUT));
         HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to ONE_FINGER_SWIPE.");
-        SetCurrentState(TouchExplorationState::ONE_FINGER_SWIPE);
+        SetCurrentState(DataShareHelperState::ONE_FINGER_SWIPE);
         SendScreenWakeUpEvent(event);
     }
 }
 
-void MockTouchExploration::HandleOneFingerLongPressStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerLongPressStateDown(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
     draggingPid_ = event.GetPointerId();
     HILOG_INFO("currentState is changed from ONE_FINGER_LONG_PRESS to TWO_FINGERS_UNKNOWN.");
-    SetCurrentState(TouchExplorationState::TWO_FINGERS_UNKNOWN);
+    SetCurrentState(DataShareHelperState::TWO_FINGERS_UNKNOWN);
 }
 
-void MockTouchExploration::HandleOneFingerLongPressStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerLongPressStateUp(MMI::PointerEvent &event)
 {
     Clear();
     SendEventToMultimodal(event, ChangeAction::HOVER_EXIT);
 
     HILOG_INFO("currentState is changed from ONE_FINGER_LONG_PRESS to TOUCH_INIT.");
-    SetCurrentState(TouchExplorationState::TOUCH_INIT);
+    SetCurrentState(DataShareHelperState::TOUCH_INIT);
 }
 
-void MockTouchExploration::HandleOneFingerLongPressStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerLongPressStateMove(MMI::PointerEvent &event)
 {
     SendEventToMultimodal(event, ChangeAction::HOVER_MOVE);
 }
 
-void MockTouchExploration::HandleOneFingerSwipeStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerSwipeStateDown(MMI::PointerEvent &event)
 {
     Clear();
-    CancelPostEvent(TouchExplorationMsg::SWIPE_COMPLETE_TIMEOUT_MSG);
+    CancelPostEvent(DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG);
     HILOG_ERROR("currentState is changed from ONE_FINGER_SWIPE to INVALID.");
-    SetCurrentState(TouchExplorationState::INVALID);
+    SetCurrentState(DataShareHelperState::INVALID);
 }
 
-void MockTouchExploration::AddOneFingerSwipeEvent(MMI::PointerEvent &event)
+void MockDataShareHelper::AddOneFingerSwipeEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     MMI::PointerEvent::PointerItem pointerIterm = {};
@@ -701,8 +701,8 @@ void MockTouchExploration::AddOneFingerSwipeEvent(MMI::PointerEvent &event)
     double duration = hypot(offsetX, offsetY);
     if (duration > moveThreshold_) {
         receivedPointerEvents_.push_back(event);
-        CancelPostEvent(TouchExplorationMsg::SWIPE_COMPLETE_TIMEOUT_MSG);
-        handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::SWIPE_COMPLETE_TIMEOUT_MSG), 0,
+        CancelPostEvent(DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG);
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG), 0,
             static_cast<int32_t>(TimeoutDuration::SWIPE_COMPLETE_TIMEOUT));
     }
 
@@ -716,7 +716,7 @@ void MockTouchExploration::AddOneFingerSwipeEvent(MMI::PointerEvent &event)
     }
 }
 
-std::vector<Pointer> MockTouchExploration::GetOneFingerSwipePath()
+std::vector<Pointer> MockDataShareHelper::GetOneFingerSwipePath()
 {
     HILOG_DEBUG();
     std::vector<Pointer> pointerPath;
@@ -760,7 +760,7 @@ std::vector<Pointer> MockTouchExploration::GetOneFingerSwipePath()
     return pointerPath;
 }
 
-int32_t MockTouchExploration::GetSwipeDirection(const int32_t dx, const int32_t dy)
+int32_t MockDataShareHelper::GetSwipeDirection(const int32_t dx, const int32_t dy)
 {
     if (abs(dx) > abs(dy)) {
         return dx > EPSINON ? SWIPE_RIGHT : SWIPE_LEFT;
@@ -769,15 +769,15 @@ int32_t MockTouchExploration::GetSwipeDirection(const int32_t dx, const int32_t 
     }
 }
 
-void MockTouchExploration::HandleOneFingerSwipeStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerSwipeStateUp(MMI::PointerEvent &event)
 {
     AddOneFingerSwipeEvent(event);
-    CancelPostEvent(TouchExplorationMsg::SWIPE_COMPLETE_TIMEOUT_MSG);
+    CancelPostEvent(DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG);
 
     if (oneFingerSwipeRoute_.size() < LIMIT_SIZE_TWO) {
         Clear();
         HILOG_ERROR("fail to parse swipe direction, currentState is changed from ONE_FINGER_SWIPE to TOUCH_INIT.");
-        SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
         return;
     }
 
@@ -796,16 +796,16 @@ void MockTouchExploration::HandleOneFingerSwipeStateUp(MMI::PointerEvent &event)
 
     Clear();
     HILOG_INFO("currentState is changed from ONE_FINGER_SWIPE to TOUCH_INIT.");
-    SetCurrentState(TouchExplorationState::TOUCH_INIT);
+    SetCurrentState(DataShareHelperState::TOUCH_INIT);
 }
 
-void MockTouchExploration::HandleOneFingerSwipeStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerSwipeStateMove(MMI::PointerEvent &event)
 {
     AddOneFingerSwipeEvent(event);
     SendScreenWakeUpEvent(event);
 }
 
-void MockTouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
+void MockDataShareHelper::RecordFocusedLocation(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     AccessibilityElementInfo focusedElementInfo = {};
@@ -823,9 +823,9 @@ void MockTouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
         focusedElementInfo.GetRectInScreen().GetRightBottomYScreenPostion()) / DIVIDE_NUM - pointer.GetDisplayY();
 }
 
-void MockTouchExploration::HandleOneFingerSingleTapStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerSingleTapStateDown(MMI::PointerEvent &event)
 {
-    CancelPostEvent(TouchExplorationMsg::SEND_HOVER_MSG);
+    CancelPostEvent(DataShareHelperMsg::SEND_HOVER_MSG);
 
     MMI::PointerEvent::PointerItem curPointerItem;
     event.GetPointerItem(event.GetPointerId(), curPointerItem);
@@ -839,45 +839,45 @@ void MockTouchExploration::HandleOneFingerSingleTapStateDown(MMI::PointerEvent &
         Clear();
         receivedPointerEvents_.push_back(event);
         HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP to ONE_FINGER_DOWN.");
-        SetCurrentState(TouchExplorationState::ONE_FINGER_DOWN);
-        handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::SEND_HOVER_MSG), 0,
+        SetCurrentState(DataShareHelperState::ONE_FINGER_DOWN);
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::SEND_HOVER_MSG), 0,
             static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
-        handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::LONG_PRESS_MSG), 0,
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::LONG_PRESS_MSG), 0,
             static_cast<int32_t>(TimeoutDuration::LONG_PRESS_TIMEOUT));
-        handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
             static_cast<int32_t>(TimeoutDuration::MULTI_FINGER_TAP_INTERVAL_TIMEOUT));
         return;
     }
 
     Clear();
     receivedPointerEvents_.push_back(event);
-    handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG), 0,
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG), 0,
         static_cast<int32_t>(TimeoutDuration::LONG_PRESS_TIMEOUT));
     RecordFocusedLocation(event);
     HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP to ONE_FINGER_SINGLE_TAP_THEN_DOWN.");
-    SetCurrentState(TouchExplorationState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
+    SetCurrentState(DataShareHelperState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
 }
 
-void MockTouchExploration::HandleOneFingerSingleTapThenDownStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerSingleTapThenDownStateDown(MMI::PointerEvent &event)
 {
     Clear();
-    CancelPostEvent(TouchExplorationMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG);
+    CancelPostEvent(DataShareHelperMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG);
     HILOG_ERROR("receive down event, currentState is changed from ONE_FINGER_SINGLE_TAP_THEN_DOWN to INVALID.");
-    SetCurrentState(TouchExplorationState::INVALID);
+    SetCurrentState(DataShareHelperState::INVALID);
 }
 
-void MockTouchExploration::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent &event)
 {
-    CancelPostEvent(TouchExplorationMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG);
+    CancelPostEvent(DataShareHelperMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG);
     Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(
         ActionType::ACCESSIBILITY_ACTION_CLICK);
 
     Clear();
     HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP_THEN_DOWN to TOUCH_INIT.");
-    SetCurrentState(TouchExplorationState::TOUCH_INIT);
+    SetCurrentState(DataShareHelperState::TOUCH_INIT);
 }
 
-void MockTouchExploration::HandleOneFingerSingleTapThenDownStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerSingleTapThenDownStateMove(MMI::PointerEvent &event)
 {
     MMI::PointerEvent::PointerItem pointerIterm;
     event.GetPointerItem(event.GetPointerId(), pointerIterm);
@@ -890,14 +890,14 @@ void MockTouchExploration::HandleOneFingerSingleTapThenDownStateMove(MMI::Pointe
     float offsetY = startPointerIterm.GetDisplayY() - pointerIterm.GetDisplayY();
     double duration = hypot(offsetX, offsetY);
     if (duration > moveThreshold_) {
-        CancelPostEvent(TouchExplorationMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG);
+        CancelPostEvent(DataShareHelperMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG);
         Clear();
         HILOG_ERROR("receive move event, currentState is changed from ONE_FINGER_SINGLE_TAP_THEN_DOWN to INVALID.");
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     }
 }
 
-void MockTouchExploration::OffsetEvent(MMI::PointerEvent &event)
+void MockDataShareHelper::OffsetEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     if (receivedPointerEvents_.empty()) {
@@ -918,7 +918,7 @@ void MockTouchExploration::OffsetEvent(MMI::PointerEvent &event)
     event.AddPointerItem(pointer);
 }
 
-void MockTouchExploration::SendDoubleTapAndLongPressDownEvent()
+void MockDataShareHelper::SendDoubleTapAndLongPressDownEvent()
 {
     if (receivedPointerEvents_.empty()) {
         HILOG_ERROR("receivedPointerEvents_ is empty!");
@@ -928,7 +928,7 @@ void MockTouchExploration::SendDoubleTapAndLongPressDownEvent()
     SendEventToMultimodal(receivedPointerEvents_.front(), ChangeAction::NO_CHANGE);
 }
 
-void MockTouchExploration::HandleOneFingerDoubleTapAndLongPressState(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleOneFingerDoubleTapAndLongPressState(MMI::PointerEvent &event)
 {
     OffsetEvent(event);
     SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
@@ -939,61 +939,61 @@ void MockTouchExploration::HandleOneFingerDoubleTapAndLongPressState(MMI::Pointe
         (!pointer.IsPressed())) {
         Clear();
         HILOG_INFO("currentState is changed from ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS to TOUCH_INIT.");
-        SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
     }
 }
 
-void MockTouchExploration::HandleTwoFingersDownStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersDownStateDown(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
-    CancelPostEvent(TouchExplorationMsg::TWO_FINGER_SINGLE_TAP_MSG);
-    CancelPostEvent(TouchExplorationMsg::TWO_FINGER_LONG_PRESS_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_LONG_PRESS_MSG);
 
     if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
-        CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
         Clear();
         HILOG_ERROR("invalid pointer num, currentState is changed from TWO_FINGERS_DOWN to INVALID.");
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
         return;
     }
 
-    if (!handler_->HasInnerEvent(static_cast<uint32_t>(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG))) {
+    if (!handler_->HasInnerEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG))) {
         Clear();
         HILOG_ERROR("timeout, currentState is changed from TWO_FINGERS_DOWN to INVALID.");
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
         return;
     }
 
-    CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
-    handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
         static_cast<int32_t>(TimeoutDuration::MULTI_FINGER_TAP_INTERVAL_TIMEOUT));
-    handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::THREE_FINGER_SINGLE_TAP_MSG), 0,
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG), 0,
         static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
-    handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::THREE_FINGER_LONG_PRESS_MSG), 0,
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::THREE_FINGER_LONG_PRESS_MSG), 0,
         static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
     HILOG_INFO("currentState is changed from TWO_FINGERS_DOWN to THREE_FINGERS_DOWN.");
-    SetCurrentState(TouchExplorationState::THREE_FINGERS_DOWN);
+    SetCurrentState(DataShareHelperState::THREE_FINGERS_DOWN);
 }
 
-void MockTouchExploration::HandleTwoFingersDownStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersDownStateUp(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
-    CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
-    CancelPostEvent(TouchExplorationMsg::TWO_FINGER_LONG_PRESS_MSG);
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_LONG_PRESS_MSG);
 
     uint32_t pointerSize = event.GetPointerIds().size();
     if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         HILOG_INFO("currentState is changed from TWO_FINGERS_DOWN to TWO_FINGERS_TAP.");
-        SetCurrentState(TouchExplorationState::TWO_FINGERS_TAP);
+        SetCurrentState(DataShareHelperState::TWO_FINGERS_TAP);
     } else if (pointerSize > static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
         Clear();
-        CancelPostEvent(TouchExplorationMsg::TWO_FINGER_SINGLE_TAP_MSG);
+        CancelPostEvent(DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG);
         HILOG_ERROR("invalid pointer num, currentState is changed from TWO_FINGERS_DOWN to INVALID.");
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     }
 }
 
-bool MockTouchExploration::GetBasePointItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId)
+bool MockDataShareHelper::GetBasePointItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId)
 {
     HILOG_DEBUG();
     for (auto rIter = receivedPointerEvents_.rbegin(); rIter != receivedPointerEvents_.rend(); ++rIter) {
@@ -1005,7 +1005,7 @@ bool MockTouchExploration::GetBasePointItem(MMI::PointerEvent::PointerItem &base
     return false;
 }
 
-void MockTouchExploration::GetPointOffset(MMI::PointerEvent &event, std::vector<float> &firstPointOffset,
+void MockDataShareHelper::GetPointOffset(MMI::PointerEvent &event, std::vector<float> &firstPointOffset,
     std::vector<float> &secondPointOffset)
 {
     HILOG_DEBUG();
@@ -1029,7 +1029,7 @@ void MockTouchExploration::GetPointOffset(MMI::PointerEvent &event, std::vector<
     }
 }
 
-float MockTouchExploration::GetAngleCos(float offsetX, float offsetY, bool isGetX)
+float MockDataShareHelper::GetAngleCos(float offsetX, float offsetY, bool isGetX)
 {
     HILOG_DEBUG();
     float ret = isGetX ? offsetX : offsetY;
@@ -1037,7 +1037,7 @@ float MockTouchExploration::GetAngleCos(float offsetX, float offsetY, bool isGet
     return ret;
 }
 
-bool MockTouchExploration::IsDragGestureAccept(MMI::PointerEvent &event)
+bool MockDataShareHelper::IsDragGestureAccept(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     std::vector<float> firstPointOffset;
@@ -1066,7 +1066,7 @@ bool MockTouchExploration::IsDragGestureAccept(MMI::PointerEvent &event)
     return true;
 }
 
-void MockTouchExploration::SendDragDownEventToMultimodal(MMI::PointerEvent event)
+void MockDataShareHelper::SendDragDownEventToMultimodal(MMI::PointerEvent event)
 {
     HILOG_DEBUG();
     std::vector<int32_t> pIds = event.GetPointerIds();
@@ -1099,7 +1099,7 @@ void MockTouchExploration::SendDragDownEventToMultimodal(MMI::PointerEvent event
     draggingDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
 }
 
-void MockTouchExploration::HandleTwoFingersDownStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersDownStateMove(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
 
@@ -1116,14 +1116,14 @@ void MockTouchExploration::HandleTwoFingersDownStateMove(MMI::PointerEvent &even
     int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
     if (hypot(offsetX, offsetY) > TOUCH_SLOP * static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
         HILOG_DEBUG("cancel two-finger tap gesture because finger move");
-        CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
-        CancelPostEvent(TouchExplorationMsg::TWO_FINGER_SINGLE_TAP_MSG);
-        CancelPostEvent(TouchExplorationMsg::TWO_FINGER_LONG_PRESS_MSG);
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        CancelPostEvent(DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG);
+        CancelPostEvent(DataShareHelperMsg::TWO_FINGER_LONG_PRESS_MSG);
         if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
             Clear();
             SendScreenWakeUpEvent(event);
             HILOG_ERROR("invalid pointer num, currentState is changed from TWO_FINGERS_DOWN to INVALID.");
-            SetCurrentState(TouchExplorationState::INVALID);
+            SetCurrentState(DataShareHelperState::INVALID);
             return;
         }
         if (IsDragGestureAccept(event)) {
@@ -1131,19 +1131,19 @@ void MockTouchExploration::HandleTwoFingersDownStateMove(MMI::PointerEvent &even
             SendDragDownEventToMultimodal(event);
             SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
             HILOG_INFO("currentState is changed from TWO_FINGERS_DOWN to TWO_FINGERS_DRAG.");
-            SetCurrentState(TouchExplorationState::TWO_FINGERS_DRAG);
+            SetCurrentState(DataShareHelperState::TWO_FINGERS_DRAG);
         } else {
             for (auto &receivedEvent : receivedPointerEvents_) {
                 SendEventToMultimodal(receivedEvent, ChangeAction::NO_CHANGE);
             }
             Clear();
             HILOG_INFO("currentState is changed from TWO_FINGERS_DOWN to PASSING_THROUGH.");
-            SetCurrentState(TouchExplorationState::PASSING_THROUGH);
+            SetCurrentState(DataShareHelperState::PASSING_THROUGH);
         }
     }
 }
 
-void MockTouchExploration::SendUpForDragDownEvent()
+void MockDataShareHelper::SendUpForDragDownEvent()
 {
     HILOG_DEBUG();
     if (receivedPointerEvents_.empty()) {
@@ -1172,27 +1172,27 @@ void MockTouchExploration::SendUpForDragDownEvent()
     SendEventToMultimodal(*draggingDownEvent_, ChangeAction::POINTER_UP);
 }
 
-void MockTouchExploration::HandleTwoFingersDragStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersDragStateDown(MMI::PointerEvent &event)
 {
     if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
         SendUpForDragDownEvent();
         Clear();
         HILOG_ERROR("invalid pointer num, currentState is changed from TWO_FINGERS_DRAG to INVALID.");
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     }
 }
 
-void MockTouchExploration::HandleTwoFingersDragStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersDragStateUp(MMI::PointerEvent &event)
 {
     if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         SendUpForDragDownEvent();
         Clear();
         HILOG_INFO("currentState is changed from TWO_FINGERS_DRAG to TOUCH_INIT.");
-        SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
     }
 }
 
-void MockTouchExploration::HandleTwoFingersDragStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersDragStateMove(MMI::PointerEvent &event)
 {
     std::vector<int32_t> pIds = event.GetPointerIds();
     if (pIds.size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_2) || event.GetPointerId() != draggingPid_) {
@@ -1237,7 +1237,7 @@ void MockTouchExploration::HandleTwoFingersDragStateMove(MMI::PointerEvent &even
     SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
 }
 
-bool MockTouchExploration::GetPointerItemWithFingerNum(uint32_t fingerNum,
+bool MockDataShareHelper::GetPointerItemWithFingerNum(uint32_t fingerNum,
     std::vector<MMI::PointerEvent::PointerItem> &curPoints,
     std::vector<MMI::PointerEvent::PointerItem> &prePoints, MMI::PointerEvent &event)
 {
@@ -1263,7 +1263,7 @@ bool MockTouchExploration::GetPointerItemWithFingerNum(uint32_t fingerNum,
     return true;
 }
 
-bool MockTouchExploration::IsMultiFingerMultiTap(MMI::PointerEvent &event, const uint32_t fingerNum)
+bool MockDataShareHelper::IsMultiFingerMultiTap(MMI::PointerEvent &event, const uint32_t fingerNum)
 {
     HILOG_DEBUG();
     std::vector<MMI::PointerEvent::PointerItem> curPoints(fingerNum);
@@ -1309,7 +1309,7 @@ bool MockTouchExploration::IsMultiFingerMultiTap(MMI::PointerEvent &event, const
     return true;
 }
 
-bool MockTouchExploration::IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, const uint32_t fingerNum)
+bool MockDataShareHelper::IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, const uint32_t fingerNum)
 {
     HILOG_DEBUG();
     if (IsMultiFingerMultiTap(event, fingerNum)) {
@@ -1319,7 +1319,7 @@ bool MockTouchExploration::IsMultiFingerMultiTapGesture(MMI::PointerEvent &event
     } else {
         Clear();
         HILOG_ERROR("invalid gesture, currentState is changed from %{public}d to INVALID.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
         return false;
     }
 
@@ -1331,70 +1331,70 @@ bool MockTouchExploration::IsMultiFingerMultiTapGesture(MMI::PointerEvent &event
     return true;
 }
 
-void MockTouchExploration::HandleMultiFingersTapStateDown(MMI::PointerEvent &event, uint32_t fingerNum)
+void MockDataShareHelper::HandleMultiFingersTapStateDown(MMI::PointerEvent &event, uint32_t fingerNum)
 {
     receivedPointerEvents_.push_back(event);
     CancelMultiFingerTapEvent();
-    CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
 
     if (multiTapNum_ == TAP_COUNT_MAXIMUM - 1) {
         Clear();
         HILOG_ERROR("Exceeds max continuous tap count, currentState is changed from %{public}d to INVALID.",
             GetCurrentState());
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
         return;
     }
 
     uint32_t pointerSize = event.GetPointerIds().size();
     if (pointerSize < fingerNum) {
-        handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
             static_cast<int32_t>(TimeoutDuration::MULTI_FINGER_TAP_INTERVAL_TIMEOUT));
     } else if (pointerSize == fingerNum) {
         if (IsMultiFingerMultiTapGesture(event, fingerNum)) {
             if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
                 HILOG_INFO("currentState is changed from TWO_FINGERS_TAP to TWO_FINGERS_CONTINUE_DOWN.");
-                SetCurrentState(TouchExplorationState::TWO_FINGERS_CONTINUE_DOWN);
+                SetCurrentState(DataShareHelperState::TWO_FINGERS_CONTINUE_DOWN);
             } else if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
                 HILOG_INFO("currentState is changed from THREE_FINGERS_TAP to THREE_FINGERS_CONTINUE_DOWN.");
-                SetCurrentState(TouchExplorationState::THREE_FINGERS_CONTINUE_DOWN);
+                SetCurrentState(DataShareHelperState::THREE_FINGERS_CONTINUE_DOWN);
             } else {
                 HILOG_INFO("currentState is changed from FOUR_FINGERS_TAP to FOUR_FINGERS_CONTINUE_DOWN.");
-                SetCurrentState(TouchExplorationState::FOUR_FINGERS_CONTINUE_DOWN);
+                SetCurrentState(DataShareHelperState::FOUR_FINGERS_CONTINUE_DOWN);
             }
         }
     } else {
         Clear();
         HILOG_INFO("invalid pointer num, currentState is changed from TWO_FINGERS_TAP to INVALID.");
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     }
 }
 
-void MockTouchExploration::HandleTwoFingersTapStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersTapStateDown(MMI::PointerEvent &event)
 {
     HandleMultiFingersTapStateDown(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_2));
 }
 
-void MockTouchExploration::HandleMultiFingersTapStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleMultiFingersTapStateUp(MMI::PointerEvent &event)
 {
     Clear();
-    CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
 
     uint32_t pointerSize = event.GetPointerIds().size();
     if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
     } else {
         HILOG_ERROR("receive up event, currentState is changed from %{public}d to INVALID.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     }
 }
 
-void MockTouchExploration::HandleMultiFingersTapStateMove(MMI::PointerEvent &event, uint32_t fingerNum)
+void MockDataShareHelper::HandleMultiFingersTapStateMove(MMI::PointerEvent &event, uint32_t fingerNum)
 {
     if (event.GetPointerIds().size() >= fingerNum) {
         Clear();
         HILOG_ERROR("invalid pointer num, currentState is changed from %{public}d to INVALID.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
         return;
     }
 
@@ -1412,30 +1412,30 @@ void MockTouchExploration::HandleMultiFingersTapStateMove(MMI::PointerEvent &eve
     int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
     int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
     if (hypot(offsetX, offsetY) > TOUCH_SLOP * (fingerNum - 1)) {
-        CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
         Clear();
         HILOG_ERROR("receive move event, currentState is changed from %{public}d to INVALID.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     }
 
     SendScreenWakeUpEvent(event);
 }
 
-void MockTouchExploration::HandleTwoFingersTapStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersTapStateMove(MMI::PointerEvent &event)
 {
     HandleMultiFingersTapStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_2));
 }
 
-void MockTouchExploration::HandleMultiFingersContinueDownStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleMultiFingersContinueDownStateDown(MMI::PointerEvent &event)
 {
     CancelMultiFingerTapEvent();
     CancelMultiFingerTapAndHoldEvent();
     Clear();
     HILOG_ERROR("receive down event, currentState is changed from %{public}d to INVALID.", GetCurrentState());
-    SetCurrentState(TouchExplorationState::INVALID);
+    SetCurrentState(DataShareHelperState::INVALID);
 }
 
-void MockTouchExploration::HandleMultiFingersContinueDownStateUp(MMI::PointerEvent &event, uint32_t fingerNum)
+void MockDataShareHelper::HandleMultiFingersContinueDownStateUp(MMI::PointerEvent &event, uint32_t fingerNum)
 {
     receivedPointerEvents_.push_back(event);
     CancelMultiFingerTapAndHoldEvent();
@@ -1444,28 +1444,28 @@ void MockTouchExploration::HandleMultiFingersContinueDownStateUp(MMI::PointerEve
     if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
             HILOG_INFO("currentState is changed from TWO_FINGERS_CONTINUE_DOWN to TWO_FINGERS_TAP.");
-            SetCurrentState(TouchExplorationState::TWO_FINGERS_TAP);
+            SetCurrentState(DataShareHelperState::TWO_FINGERS_TAP);
         } else if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
             HILOG_INFO("currentState is changed from THREE_FINGERS_CONTINUE_DOWN to THREE_FINGERS_TAP.");
-            SetCurrentState(TouchExplorationState::THREE_FINGERS_TAP);
+            SetCurrentState(DataShareHelperState::THREE_FINGERS_TAP);
         } else {
             HILOG_INFO("currentState is changed from FOUR_FINGERS_CONTINUE_DOWN to FOUR_FINGERS_TAP.");
-            SetCurrentState(TouchExplorationState::FOUR_FINGERS_TAP);
+            SetCurrentState(DataShareHelperState::FOUR_FINGERS_TAP);
         }
     } else if (pointerSize > fingerNum) {
         CancelMultiFingerTapEvent();
         Clear();
         HILOG_ERROR("invalid pointer num, currentState is changed from %{public}d to INVALID.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     }
 }
 
-void MockTouchExploration::HandleTwoFingersContinueDownStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersContinueDownStateUp(MMI::PointerEvent &event)
 {
     HandleMultiFingersContinueDownStateUp(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_2));
 }
 
-void MockTouchExploration::HandleMultiFingersContinueDownStateMove(MMI::PointerEvent &event, uint32_t fingerNum)
+void MockDataShareHelper::HandleMultiFingersContinueDownStateMove(MMI::PointerEvent &event, uint32_t fingerNum)
 {
     receivedPointerEvents_.push_back(event);
 
@@ -1485,18 +1485,18 @@ void MockTouchExploration::HandleMultiFingersContinueDownStateMove(MMI::PointerE
         CancelMultiFingerTapEvent();
         CancelMultiFingerTapAndHoldEvent();
         HILOG_ERROR("receive move event, currentState is changed from %{public}d to INVALID.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     }
 
     SendScreenWakeUpEvent(event);
 }
 
-void MockTouchExploration::HandleTwoFingersContinueDownStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersContinueDownStateMove(MMI::PointerEvent &event)
 {
     HandleMultiFingersContinueDownStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_2));
 }
 
-void MockTouchExploration::HandleTwoFingersUnknownStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersUnknownStateDown(MMI::PointerEvent &event)
 {
     if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
         receivedPointerEvents_.push_back(event);
@@ -1505,20 +1505,20 @@ void MockTouchExploration::HandleTwoFingersUnknownStateDown(MMI::PointerEvent &e
 
     Clear();
     HILOG_ERROR("receive down event, currentState is changed from TWO_FINGERS_UNKNOWN to INVALID.");
-    SetCurrentState(TouchExplorationState::INVALID);
+    SetCurrentState(DataShareHelperState::INVALID);
 }
 
-void MockTouchExploration::HandleTwoFingersUnknownStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersUnknownStateUp(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
     if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         Clear();
         HILOG_INFO("currentState is changed from TWO_FINGERS_UNKNOWN to TOUCH_INIT.");
-        SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
     }
 }
 
-void MockTouchExploration::HandleTwoFingersUnknownStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleTwoFingersUnknownStateMove(MMI::PointerEvent &event)
 {
     if ((event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) ||
         (event.GetPointerId() != draggingPid_)) {
@@ -1534,60 +1534,60 @@ void MockTouchExploration::HandleTwoFingersUnknownStateMove(MMI::PointerEvent &e
         SendEventToMultimodal(event, ChangeAction::POINTER_DOWN);
         draggingDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
         HILOG_INFO("currentState is changed from TWO_FINGERS_UNKNOWN to TWO_FINGERS_DRAG.");
-        SetCurrentState(TouchExplorationState::TWO_FINGERS_DRAG);
+        SetCurrentState(DataShareHelperState::TWO_FINGERS_DRAG);
         return;
     }
 }
 
-void MockTouchExploration::HandleThreeFingersDownStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleThreeFingersDownStateDown(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
-    CancelPostEvent(TouchExplorationMsg::THREE_FINGER_SINGLE_TAP_MSG);
-    CancelPostEvent(TouchExplorationMsg::THREE_FINGER_LONG_PRESS_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_LONG_PRESS_MSG);
 
     if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_4)) {
-        CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
         Clear();
         HILOG_ERROR("invalid pointer num, currentState is changed from THREE_FINGERS_DOWN to INVALID.");
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
         return;
     }
 
-    if (!handler_->HasInnerEvent(static_cast<uint32_t>(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG))) {
+    if (!handler_->HasInnerEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG))) {
         Clear();
         HILOG_ERROR("timeout, currentState is changed from THREE_FINGERS_DOWN to INVALID.");
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
         return;
     }
 
-    CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
-    handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::FOUR_FINGER_SINGLE_TAP_MSG), 0,
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG), 0,
         static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
-    handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::FOUR_FINGER_LONG_PRESS_MSG), 0,
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::FOUR_FINGER_LONG_PRESS_MSG), 0,
         static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
     HILOG_INFO("currentState is changed from THREE_FINGERS_DOWN to FOUR_FINGERS_DOWN.");
-    SetCurrentState(TouchExplorationState::FOUR_FINGERS_DOWN);
+    SetCurrentState(DataShareHelperState::FOUR_FINGERS_DOWN);
 }
 
-void MockTouchExploration::HandleThreeFingersDownStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleThreeFingersDownStateUp(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
-    CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
-    CancelPostEvent(TouchExplorationMsg::THREE_FINGER_LONG_PRESS_MSG);
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_LONG_PRESS_MSG);
 
     uint32_t pointerSize = event.GetPointerIds().size();
     if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         HILOG_INFO("currentState is changed from THREE_FINGERS_DOWN to THREE_FINGERS_TAP.");
-        SetCurrentState(TouchExplorationState::THREE_FINGERS_TAP);
+        SetCurrentState(DataShareHelperState::THREE_FINGERS_TAP);
     } else if (pointerSize > static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
-        CancelPostEvent(TouchExplorationMsg::THREE_FINGER_SINGLE_TAP_MSG);
+        CancelPostEvent(DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG);
         Clear();
         HILOG_ERROR("invalid pointer num, currentState is changed from THREE_FINGERS_DOWN to INVALID.");
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     }
 }
 
-void MockTouchExploration::StoreMultiFingerSwipeBaseDownPoint()
+void MockDataShareHelper::StoreMultiFingerSwipeBaseDownPoint()
 {
     HILOG_DEBUG();
     for (auto& event : receivedPointerEvents_) {
@@ -1606,7 +1606,7 @@ void MockTouchExploration::StoreMultiFingerSwipeBaseDownPoint()
     }
 }
 
-void MockTouchExploration::HandleThreeFingersDownStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleThreeFingersDownStateMove(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
 
@@ -1622,33 +1622,33 @@ void MockTouchExploration::HandleThreeFingersDownStateMove(MMI::PointerEvent &ev
     int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
     int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
     if (hypot(offsetX, offsetY) > TOUCH_SLOP * static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
-        CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
-        CancelPostEvent(TouchExplorationMsg::THREE_FINGER_SINGLE_TAP_MSG);
-        CancelPostEvent(TouchExplorationMsg::THREE_FINGER_LONG_PRESS_MSG);
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        CancelPostEvent(DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG);
+        CancelPostEvent(DataShareHelperMsg::THREE_FINGER_LONG_PRESS_MSG);
         if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
             Clear();
             SendScreenWakeUpEvent(event);
             HILOG_ERROR("invalid pointer num, currentState is changed from THREE_FINGERS_DOWN to INVALID.");
-            SetCurrentState(TouchExplorationState::INVALID);
+            SetCurrentState(DataShareHelperState::INVALID);
             return;
         }
         StoreMultiFingerSwipeBaseDownPoint();
         multiFingerSwipeDirection_ = GetSwipeDirection(offsetX, offsetY);
         HILOG_INFO("currentState is changed from THREE_FINGERS_DOWN to THREE_FINGERS_SWIPE.");
-        SetCurrentState(TouchExplorationState::THREE_FINGERS_SWIPE);
+        SetCurrentState(DataShareHelperState::THREE_FINGERS_SWIPE);
     }
 
     SendScreenWakeUpEvent(event);
 }
 
-void MockTouchExploration::HandleThreeFingersSwipeStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleThreeFingersSwipeStateDown(MMI::PointerEvent &event)
 {
     Clear();
     HILOG_ERROR("receive down event, currentState is changed from THREE_FINGERS_SWIPE to INVALID.");
-    SetCurrentState(TouchExplorationState::INVALID);
+    SetCurrentState(DataShareHelperState::INVALID);
 }
 
-bool MockTouchExploration::GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerIterm,
+bool MockDataShareHelper::GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerIterm,
     int32_t pId)
 {
     HILOG_DEBUG();
@@ -1660,7 +1660,7 @@ bool MockTouchExploration::GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent:
     return true;
 }
 
-bool MockTouchExploration::SaveMultiFingerSwipeGesturePointerInfo(MMI::PointerEvent &event)
+bool MockDataShareHelper::SaveMultiFingerSwipeGesturePointerInfo(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     MMI::PointerEvent::PointerItem pointerIterm;
@@ -1681,10 +1681,10 @@ bool MockTouchExploration::SaveMultiFingerSwipeGesturePointerInfo(MMI::PointerEv
             if ((event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) &&
                 (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1))) {
                 HILOG_INFO("direction changed, currentState is changed from THREE_FINGERS_SWIPE to TOUCH_INIT.");
-                SetCurrentState(TouchExplorationState::TOUCH_INIT);
+                SetCurrentState(DataShareHelperState::TOUCH_INIT);
             } else {
                 HILOG_INFO("direction changed, currentState is changed from THREE_FINGERS_SWIPE to INVALID.");
-                SetCurrentState(TouchExplorationState::INVALID);
+                SetCurrentState(DataShareHelperState::INVALID);
             }
             return false;
         }
@@ -1699,7 +1699,7 @@ bool MockTouchExploration::SaveMultiFingerSwipeGesturePointerInfo(MMI::PointerEv
     return true;
 }
 
-bool MockTouchExploration::RecognizeMultiFingerSwipePath(const std::vector<Pointer> &path)
+bool MockDataShareHelper::RecognizeMultiFingerSwipePath(const std::vector<Pointer> &path)
 {
     HILOG_DEBUG();
     if (path.size() < MIN_MULTI_FINGER_SWIPE_POINTER_NUM) {
@@ -1717,7 +1717,7 @@ bool MockTouchExploration::RecognizeMultiFingerSwipePath(const std::vector<Point
     return true;
 }
 
-GestureType MockTouchExploration::GetMultiFingerSwipeGestureId(uint32_t fingerNum)
+GestureType MockDataShareHelper::GetMultiFingerSwipeGestureId(uint32_t fingerNum)
 {
     HILOG_DEBUG();
     if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
@@ -1750,7 +1750,7 @@ GestureType MockTouchExploration::GetMultiFingerSwipeGestureId(uint32_t fingerNu
     return GestureType::GESTURE_INVALID;
 }
 
-void MockTouchExploration::HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, uint32_t fingerNum)
+void MockDataShareHelper::HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, uint32_t fingerNum)
 {
     receivedPointerEvents_.push_back(event);
 
@@ -1764,14 +1764,14 @@ void MockTouchExploration::HandleMultiFingersSwipeStateUp(MMI::PointerEvent &eve
                 multiFingerSwipeRoute_[pIndex].size() < MIN_MULTI_FINGER_SWIPE_POINTER_NUM) {
                 Clear();
                 HILOG_ERROR("invalid route, currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
-                SetCurrentState(TouchExplorationState::TOUCH_INIT);
+                SetCurrentState(DataShareHelperState::TOUCH_INIT);
                 return;
             }
             if (!RecognizeMultiFingerSwipePath(multiFingerSwipeRoute_[pIndex])) {
                 Clear();
                 HILOG_ERROR("fail to parse swipe direction, currentState is changed from %{public}d to TOUCH_INIT.",
                     GetCurrentState());
-                SetCurrentState(TouchExplorationState::TOUCH_INIT);
+                SetCurrentState(DataShareHelperState::TOUCH_INIT);
                 return;
             }
         }
@@ -1780,69 +1780,69 @@ void MockTouchExploration::HandleMultiFingersSwipeStateUp(MMI::PointerEvent &eve
         SendGestureEventToAA(gestureId);
         Clear();
         HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
-        SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
     }
 }
 
-void MockTouchExploration::HandleThreeFingersSwipeStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleThreeFingersSwipeStateUp(MMI::PointerEvent &event)
 {
     HandleMultiFingersSwipeStateUp(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_3));
 }
 
-void MockTouchExploration::HandleThreeFingersSwipeStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleThreeFingersSwipeStateMove(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
     SaveMultiFingerSwipeGesturePointerInfo(event);
     SendScreenWakeUpEvent(event);
 }
 
-void MockTouchExploration::HandleThreeFingersTapStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleThreeFingersTapStateDown(MMI::PointerEvent &event)
 {
     HandleMultiFingersTapStateDown(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_3));
 }
 
-void MockTouchExploration::HandleThreeFingersTapStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleThreeFingersTapStateMove(MMI::PointerEvent &event)
 {
     HandleMultiFingersTapStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_3));
 }
 
-void MockTouchExploration::HandleThreeFingersContinueDownStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleThreeFingersContinueDownStateUp(MMI::PointerEvent &event)
 {
     HandleMultiFingersContinueDownStateUp(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_3));
 }
 
-void MockTouchExploration::HandleThreeFingersContinueDownStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleThreeFingersContinueDownStateMove(MMI::PointerEvent &event)
 {
     HandleMultiFingersContinueDownStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_3));
 }
 
-void MockTouchExploration::HandleFourFingersDownStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleFourFingersDownStateDown(MMI::PointerEvent &event)
 {
     Clear();
-    CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_SINGLE_TAP_MSG);
-    CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_LONG_PRESS_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_LONG_PRESS_MSG);
     HILOG_ERROR("receive down event, currentState is changed from FOUR_FINGERS_DOWN to INVALID.");
-    SetCurrentState(TouchExplorationState::INVALID);
+    SetCurrentState(DataShareHelperState::INVALID);
 }
 
-void MockTouchExploration::HandleFourFingersDownStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleFourFingersDownStateUp(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
-    CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_LONG_PRESS_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_LONG_PRESS_MSG);
 
     uint32_t pointerSize = event.GetPointerIds().size();
     if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         HILOG_INFO("currentState is changed from FOUR_FINGERS_DOWN to FOUR_FINGERS_TAP.");
-        SetCurrentState(TouchExplorationState::FOUR_FINGERS_TAP);
+        SetCurrentState(DataShareHelperState::FOUR_FINGERS_TAP);
     } else if (pointerSize > static_cast<uint32_t>(PointerCount::POINTER_COUNT_4)) {
         Clear();
-        CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_SINGLE_TAP_MSG);
+        CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG);
         HILOG_ERROR("invalid pointer num, currentState is changed from FOUR_FINGERS_DOWN to INVALID.");
-        SetCurrentState(TouchExplorationState::INVALID);
+        SetCurrentState(DataShareHelperState::INVALID);
     }
 }
 
-void MockTouchExploration::HandleFourFingersDownStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleFourFingersDownStateMove(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
 
@@ -1857,64 +1857,64 @@ void MockTouchExploration::HandleFourFingersDownStateMove(MMI::PointerEvent &eve
     int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
     int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
     if (hypot(offsetX, offsetY) > TOUCH_SLOP * static_cast<uint32_t>(PointerCount::POINTER_COUNT_4)) {
-        CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_SINGLE_TAP_MSG);
-        CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_LONG_PRESS_MSG);
+        CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG);
+        CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_LONG_PRESS_MSG);
         if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_4)) {
             Clear();
             SendScreenWakeUpEvent(event);
             HILOG_ERROR("invalid pointer num, currentState is changed from FOUR_FINGERS_DOWN to INVALID.");
-            SetCurrentState(TouchExplorationState::INVALID);
+            SetCurrentState(DataShareHelperState::INVALID);
             return;
         }
         StoreMultiFingerSwipeBaseDownPoint();
         multiFingerSwipeDirection_ = GetSwipeDirection(offsetX, offsetY);
         HILOG_INFO("currentState is changed from FOUR_FINGERS_DOWN to FOUR_FINGERS_SWIPE.");
-        SetCurrentState(TouchExplorationState::FOUR_FINGERS_SWIPE);
+        SetCurrentState(DataShareHelperState::FOUR_FINGERS_SWIPE);
     }
 
     SendScreenWakeUpEvent(event);
 }
 
-void MockTouchExploration::HandleFourFingersSwipeStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleFourFingersSwipeStateDown(MMI::PointerEvent &event)
 {
     Clear();
     HILOG_ERROR("receive down event, currentState is changed from FOUR_FINGERS_SWIPE to INVALID.");
-    SetCurrentState(TouchExplorationState::INVALID);
+    SetCurrentState(DataShareHelperState::INVALID);
 }
 
-void MockTouchExploration::HandleFourFingersSwipeStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleFourFingersSwipeStateUp(MMI::PointerEvent &event)
 {
     HandleMultiFingersSwipeStateUp(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_4));
 }
 
-void MockTouchExploration::HandleFourFingersSwipeStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleFourFingersSwipeStateMove(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
     SaveMultiFingerSwipeGesturePointerInfo(event);
     SendScreenWakeUpEvent(event);
 }
 
-void MockTouchExploration::HandleFourFingersTapStateDown(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleFourFingersTapStateDown(MMI::PointerEvent &event)
 {
     HandleMultiFingersTapStateDown(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_4));
 }
 
-void MockTouchExploration::HandleFourFingersTapStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleFourFingersTapStateMove(MMI::PointerEvent &event)
 {
     HandleMultiFingersTapStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_4));
 }
 
-void MockTouchExploration::HandleFourFingersContinueDownStateUp(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleFourFingersContinueDownStateUp(MMI::PointerEvent &event)
 {
     HandleMultiFingersContinueDownStateUp(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_4));
 }
 
-void MockTouchExploration::HandleFourFingersContinueDownStateMove(MMI::PointerEvent &event)
+void MockDataShareHelper::HandleFourFingersContinueDownStateMove(MMI::PointerEvent &event)
 {
     HandleMultiFingersContinueDownStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_4));
 }
 
-void MockTouchExploration::CancelPostEvent(TouchExplorationMsg msg)
+void MockDataShareHelper::CancelPostEvent(DataShareHelperMsg msg)
 {
     HILOG_DEBUG("innerEventID = %{public}u", static_cast<uint32_t>(msg));
     if (handler_->HasInnerEvent(static_cast<uint32_t>(msg))) {
@@ -1922,30 +1922,30 @@ void MockTouchExploration::CancelPostEvent(TouchExplorationMsg msg)
     }
 }
 
-void MockTouchExploration::CancelMultiFingerTapEvent()
+void MockDataShareHelper::CancelMultiFingerTapEvent()
 {
-    CancelPostEvent(TouchExplorationMsg::TWO_FINGER_SINGLE_TAP_MSG);
-    CancelPostEvent(TouchExplorationMsg::TWO_FINGER_DOUBLE_TAP_MSG);
-    CancelPostEvent(TouchExplorationMsg::TWO_FINGER_TRIPLE_TAP_MSG);
-    CancelPostEvent(TouchExplorationMsg::THREE_FINGER_SINGLE_TAP_MSG);
-    CancelPostEvent(TouchExplorationMsg::THREE_FINGER_DOUBLE_TAP_MSG);
-    CancelPostEvent(TouchExplorationMsg::THREE_FINGER_TRIPLE_TAP_MSG);
-    CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_SINGLE_TAP_MSG);
-    CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_DOUBLE_TAP_MSG);
-    CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_TRIPLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_DOUBLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_TRIPLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_DOUBLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_TRIPLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_DOUBLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_TRIPLE_TAP_MSG);
 }
 
-void MockTouchExploration::CancelMultiFingerTapAndHoldEvent()
+void MockDataShareHelper::CancelMultiFingerTapAndHoldEvent()
 {
-    CancelPostEvent(TouchExplorationMsg::TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG);
-    CancelPostEvent(TouchExplorationMsg::TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG);
-    CancelPostEvent(TouchExplorationMsg::THREE_FINGER_DOUBLE_TAP_AND_HOLD_MSG);
-    CancelPostEvent(TouchExplorationMsg::THREE_FINGER_TRIPLE_TAP_AND_HOLD_MSG);
-    CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_DOUBLE_TAP_AND_HOLD_MSG);
-    CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_TRIPLE_TAP_AND_HOLD_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_DOUBLE_TAP_AND_HOLD_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_TRIPLE_TAP_AND_HOLD_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_DOUBLE_TAP_AND_HOLD_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_TRIPLE_TAP_AND_HOLD_MSG);
 }
 
-void MockTouchExploration::Clear()
+void MockDataShareHelper::Clear()
 {
     receivedPointerEvents_.clear();
     draggingDownEvent_ = nullptr;
