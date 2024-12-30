@@ -56,6 +56,7 @@ AccessibilityCommonEvent::AccessibilityCommonEvent()
 
 AccessibilityCommonEvent::~AccessibilityCommonEvent()
 {
+    eventHandles_.clear();
     UnSubscriberEvent();
 }
 
@@ -97,7 +98,6 @@ void AccessibilityCommonEvent::SubscriberEvent(const std::shared_ptr<AppExecFwk:
 void AccessibilityCommonEvent::UnSubscriberEvent()
 {
     HILOG_INFO();
-    eventHandles_.clear();
     if (subscriber_) {
         bool unSubscribeResult = EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriber_);
         HILOG_INFO("unSubscribeResult = %{public}d", unSubscribeResult);
