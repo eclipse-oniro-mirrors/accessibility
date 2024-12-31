@@ -1,1999 +1,1963 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed On an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-#include "accessible_ability_manager_service.h"
-
-#include <cinttypes>
-#include <new>
-#include <string>
-#include <unistd.h>
-#include <functional>
-#ifdef OHOS_BUILD_ENABLE_HITRACE
-#include <hitrace_meter.h>
-#endif // OHOS_BUILD_ENABLE_HITRACE
-
-#include "ability_info.h"
-#include "accessibility_event_info.h"
-#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
-#include "accessibility_power_manager.h"
-#endif
-#include "accessibility_short_key_dialog.h"
+#include "accessibility_touch_exploration.h"
 #include "accessibility_window_manager.h"
+#include "accessibility_event_info.h"
 #include "hilog_wrapper.h"
-#include "input_manager.h"
-#include "iservice_registry.h"
-#include "os_account_manager.h"
-#include "parameter.h"
-#include "system_ability_definition.h"
+#include "securec.h"
 #include "utils.h"
-#include "xcollie_helper.h"
-#include <ipc_skeleton.h>
-#include "transaction/rs_interfaces.h"
-
-using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-namespace {
-    const std::string AAMS_SERVICE_NAME = "MockAccessibilityZoomGesture";
-    const std::string AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
-    const std::string AAMS_SEND_EVENT_RUNNER_NAME = "AamsSendEventRunner";
-    const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
-    const std::string UI_TEST_ABILITY_NAME = "uitestability";
-    const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
-    const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
-    const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
-    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
-    const std::string DEVICE_PROVISIONED = "device_provisioned";
-    const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
-    const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
-    const std::string DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
-    const std::string USER_SETUP_COMPLETED = "user_setup_complete";
-    const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
-    const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
-    constexpr int32_t INVALID_SHORTCUT_STATE = 2;
-    constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
-    constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
-    constexpr uint32_t TIME_OUT_OPERATOR = 5000;
-    constexpr int32_t REQUEST_ID_MAX = 0xFFFFFFFF;
-    constexpr int32_t REQUEST_ID_MIN = 0x0000FFFF;
-    constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
-    constexpr int32_t ROOT_UID = 0;
-    constexpr int32_t UNLOAD_TASK_INTERNAL = 3 * 60 * 1000; // ms
-    constexpr int32_t TREE_ID_INVALID = 0;
-    constexpr uint32_t ELEMENT_MOVE_BIT = 40;
-    constexpr int32_t SINGLE_TREE_ID = 0;
-    constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
-    constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
-    constexpr int32_t WINDOW_ID_INVALID = -1;
-    constexpr int64_t ELEMENT_ID_INVALID = -1;
-    enum SCREENREADER_STATE : int32_t {
-        UNINIT = -1,
-        OFF = 0,
-        ON = 1,
+
+void MockZoomGesture::InitOneFingerGestureFuncMap()
+{
+    handleEventFuncMap_ = {
+        {DataShareHelperState::TOUCH_INIT, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleInitStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleInitStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleInitStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)},
+            {MMI::PointerEvent::POINTER_ACTION_PULL_MOVE, BIND(HandleInitStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_PULL_UP, BIND(HandleInitStateUp)}}
+        },
+        {DataShareHelperState::ONE_FINGER_DOWN, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleOneFingerDownStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleOneFingerDownStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleOneFingerDownStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::ONE_FINGER_LONG_PRESS, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleOneFingerLongPressStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleOneFingerLongPressStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleOneFingerLongPressStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::ONE_FINGER_SWIPE, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleOneFingerSwipeStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleOneFingerSwipeStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleOneFingerSwipeStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::ONE_FINGER_SINGLE_TAP, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleOneFingerSingleTapStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::ONE_FINGER_SINGLE_TAP_THEN_DOWN, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleOneFingerSingleTapThenDownStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleOneFingerSingleTapThenDownStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleOneFingerSingleTapThenDownStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        }
     };
-    const std::string TIMER_REGISTER_STATE_OBSERVER = "accessibility:registerStateObServer";
-    const std::string TIMER_REGISTER_CAPTION_OBSERVER = "accessibility:registerCaptionObServer";
-    const std::string TIMER_REGISTER_ENABLEABILITY_OBSERVER = "accessibility:registerEnableAbilityObServer";
-    const std::string TIMER_GET_ALL_CONFIG = "accessibility:getAllConfig";
-    const std::string TIMER_REGISTER_CONFIG_OBSERVER = "accessibility:registerConfigObserver";
-    constexpr int32_t XCOLLIE_TIMEOUT = 6; // s
-} // namespace
-
-const bool REGISTER_RESULT =
-    SystemAbility::MakeAndRegisterAbility(&Singleton<MockAccessibilityZoomGesture>::GetInstance());
-
-MockAccessibilityZoomGesture::MockAccessibilityZoomGesture()
-    : SystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, true)
-{
-    HILOG_INFO("MockAccessibilityZoomGesture is constructed");
-    dependentServicesStatus_[ABILITY_MGR_SERVICE_ID] = false;
-    dependentServicesStatus_[BUNDLE_MGR_SERVICE_SYS_ABILITY_ID] = false;
-    dependentServicesStatus_[COMMON_EVENT_SERVICE_ID] = false;
-    dependentServicesStatus_[DISPLAY_MANAGER_SERVICE_SA_ID] = false;
-    dependentServicesStatus_[SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN] = false;
-    dependentServicesStatus_[WINDOW_MANAGER_SERVICE_ID] = false;
-    dependentServicesStatus_[DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID] = false;
-
-    accessibilitySettings_ = std::make_shared<AccessibilitySettings>();
-    accessibilityShortKey_ = std::make_shared<AccessibilityShortKey>();
 }
 
-MockAccessibilityZoomGesture::~MockAccessibilityZoomGesture()
+void MockZoomGesture::InitTwoFingerGestureFuncMap()
 {
-    HILOG_INFO("MockAccessibilityZoomGesture::~MockAccessibilityZoomGesture");
-
-    inputInterceptor_ = nullptr;
-    touchEventInjector_ = nullptr;
-    keyEventFilter_ = nullptr;
-    a11yAccountsData_.Clear();
+    handleEventFuncMap_.insert({
+        {DataShareHelperState::TWO_FINGERS_DOWN, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleTwoFingersDownStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleTwoFingersDownStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleTwoFingersDownStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::TWO_FINGERS_DRAG, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleTwoFingersDragStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleTwoFingersDragStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleTwoFingersDragStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::TWO_FINGERS_TAP, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleTwoFingersTapStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleMultiFingersTapStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleTwoFingersTapStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::TWO_FINGERS_CONTINUE_DOWN, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleMultiFingersContinueDownStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleTwoFingersContinueDownStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleTwoFingersContinueDownStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::TWO_FINGERS_UNKNOWN, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleTwoFingersUnknownStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleTwoFingersUnknownStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleTwoFingersUnknownStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        }
+    });
 }
 
-void MockAccessibilityZoomGesture::OnStart()
+void MockZoomGesture::InitThreeFingerGestureFuncMap()
 {
-    HILOG_INFO("MockAccessibilityZoomGesture::OnStart start");
+    handleEventFuncMap_.insert({
+        {DataShareHelperState::THREE_FINGERS_DOWN, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleThreeFingersDownStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleThreeFingersDownStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleThreeFingersDownStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::THREE_FINGERS_SWIPE, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleThreeFingersSwipeStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleThreeFingersSwipeStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleThreeFingersSwipeStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::THREE_FINGERS_TAP, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleThreeFingersTapStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleMultiFingersTapStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleThreeFingersTapStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::THREE_FINGERS_CONTINUE_DOWN, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleMultiFingersContinueDownStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleThreeFingersContinueDownStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleThreeFingersContinueDownStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        }
+    });
+}
+
+void MockZoomGesture::InitFourFingerGestureFuncMap()
+{
+    handleEventFuncMap_.insert({
+        {DataShareHelperState::THREE_FINGERS_CONTINUE_DOWN, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleMultiFingersContinueDownStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleThreeFingersContinueDownStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleThreeFingersContinueDownStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::FOUR_FINGERS_DOWN, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleFourFingersDownStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleFourFingersDownStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleFourFingersDownStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::FOUR_FINGERS_SWIPE, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleFourFingersSwipeStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleFourFingersSwipeStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleFourFingersSwipeStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::FOUR_FINGERS_TAP, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleFourFingersTapStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleMultiFingersTapStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleFourFingersTapStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        },
+        {DataShareHelperState::FOUR_FINGERS_CONTINUE_DOWN, {
+            {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleMultiFingersContinueDownStateDown)},
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleFourFingersContinueDownStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleFourFingersContinueDownStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleCancelEvent)}}
+        }
+    });
+}
+
+DataShareHelperEventHandler::DataShareHelperEventHandler(
+    const std::shared_ptr<AppExecFwk::EventRunner> &runner, DataShareHelper &server): AppExecFwk::EventHandler(runner),
+    server_(server)
+{
+}
+
+void DataShareHelperEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
+{
+    HILOG_INFO("TEhandler process event id = %{public}d, currentState is %{public}d", event->GetInnerEventId(),
+        server_.GetCurrentState());
+
+    DataShareHelperMsg msg = static_cast<DataShareHelperMsg>(event->GetInnerEventId());
+    switch (msg) {
+        case DataShareHelperMsg::SEND_HOVER_MSG:
+            server_.HoverEventRunner();
+            server_.Clear();
+            HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP to TOUCH_INIT.");
+            server_.SetCurrentState(DataShareHelperState::TOUCH_INIT);
+            break;
+        case DataShareHelperMsg::LONG_PRESS_MSG:
+            HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to ONE_FINGER_LONG_PRESS.");
+            server_.CancelPostEvent(DataShareHelperMsg::SEND_HOVER_MSG);
+            server_.HoverEventRunner();
+            server_.SetCurrentState(DataShareHelperState::ONE_FINGER_LONG_PRESS);
+            break;
+        case DataShareHelperMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG:
+            HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP_THEN_DOWN to\
+                ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS.");
+            server_.SendDoubleTapAndLongPressDownEvent();
+            server_.SetCurrentState(DataShareHelperState::ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS);
+            break;
+        case DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG:
+            server_.HoverEventRunner();
+            HILOG_INFO("timeout, currentState is changed from ONE_FINGER_SWIPE to ONE_FINGER_LONG_PRESS.");
+            server_.SetCurrentState(DataShareHelperState::ONE_FINGER_LONG_PRESS);
+            break;
+        case DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG:
+            if (server_.GetCurrentState() == DataShareHelperState::TWO_FINGERS_TAP ||
+                server_.GetCurrentState() == DataShareHelperState::THREE_FINGERS_TAP ||
+                server_.GetCurrentState() == DataShareHelperState::FOUR_FINGERS_TAP) {
+                server_.Clear();
+                HILOG_INFO("wait another finger timeout, currentState is changed to INVALID.");
+                server_.SetCurrentState(DataShareHelperState::INVALID);
+            }
+            break;
+        default:
+            server_.ProcessMultiFingerGesture(msg);
+            break;
+    }
+}
+
+MockZoomGesture::DataShareHelper()
+{
+    InitOneFingerGestureFuncMap();
+    InitTwoFingerGestureFuncMap();
+    InitThreeFingerGestureFuncMap();
+    InitFourFingerGestureFuncMap();
+
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    auto display = displayMgr.GetDefaultDisplay();
+    if (display == nullptr) {
+        HILOG_ERROR("get display is nullptr");
+        return;
+    }
+    moveThreshold_ = CalculateMoveThreshold(display->GetDpi());
+    xMinPixels_ = display->GetWidth() * PIXEL_MULTIPLIER;
+    yMinPixels_ = display->GetHeight() * PIXEL_MULTIPLIER;
+    float density = display->GetVirtualPixelRatio();
+    multiTapOffsetThresh_ = static_cast<int32_t>(density * MULTI_TAP_SLOP + MULTI_TAP_SLOP_DELTA);
+    mMinPixelsBetweenSamplesX_ = display->GetWidth() * PIXEL_MULTIPLIER;
+    mMinPixelsBetweenSamplesY_ = display->GetHeight() * PIXEL_MULTIPLIER;
+#else
+    HILOG_WARN("not support display manager");
+    moveThreshold_ = 1;
+    xMinPixels_ = 1;
+    yMinPixels_ = 1;
+    multiTapOffsetThresh_ = static_cast<int32_t>(1 * MULTI_TAP_SLOP + MULTI_TAP_SLOP_DELTA);
+    mMinPixelsBetweenSamplesX_ = 1;
+    mMinPixelsBetweenSamplesY_ = 1;
+#endif
+}
+
+void MockZoomGesture::StartUp()
+{
+    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner_) {
-        runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME, AppExecFwk::ThreadMode::FFRT);
-        if (!runner_) {
-            HILOG_ERROR("MockAccessibilityZoomGesture::OnStart failed:create AAMS runner failed");
-            return;
-        }
-    }
-
-    if (!handler_) {
-        handler_ = std::make_shared<AAMSEventHandler>(runner_);
-        if (!handler_) {
-            HILOG_ERROR("MockAccessibilityZoomGesture::OnStart failed:create AAMS event handler failed");
-            return;
-        }
-    }
-
-    if (!actionRunner_) {
-        actionRunner_ = AppExecFwk::EventRunner::Create(AAMS_ACTION_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
-        if (!actionRunner_) {
-            HILOG_ERROR("MockAccessibilityZoomGesture::OnStart failed:create AAMS action runner failed");
-            return;
-        }
-    }
-
-    if (!actionHandler_) {
-        actionHandler_ = std::make_shared<AAMSEventHandler>(actionRunner_);
-        if (!actionHandler_) {
-            HILOG_ERROR("MockAccessibilityZoomGesture::OnStart failed:create AAMS action handler failed");
-            return;
-        }
-    }
-
-    if (!sendEventRunner_) {
-        sendEventRunner_ = AppExecFwk::EventRunner::Create(AAMS_SEND_EVENT_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
-        if (!sendEventRunner_) {
-            HILOG_ERROR("MockAccessibilityZoomGesture::OnStart failed:create AAMS sendEvent runner failed");
-            return;
-        }
-    }
-
-    if (!sendEventHandler_) {
-        sendEventHandler_ = std::make_shared<AAMSEventHandler>(sendEventRunner_);
-        if (!sendEventHandler_) {
-            HILOG_ERROR("MockAccessibilityZoomGesture::OnStart failed:create AAMS sendEvent handler failed");
-            return;
-        }
-    }
-
-    SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
-
-    HILOG_DEBUG("AddAbilityListener!");
-    AddSystemAbilityListener(ABILITY_MGR_SERVICE_ID);
-    AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
-    AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
-    AddSystemAbilityListener(DISPLAY_MANAGER_SERVICE_SA_ID);
-    AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
-    AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
-    AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
-
-    accessibilitySettings_->RegisterSettingsHandler(handler_);
-}
-
-void MockAccessibilityZoomGesture::OnStop()
-{
-    HILOG_INFO("stop MockAccessibilityZoomGesture");
-    if (!handler_) {
-        HILOG_ERROR("MockAccessibilityZoomGesture::OnStop failed!");
+        HILOG_ERROR("get runner failed");
         return;
     }
 
-    ffrt::promise<void> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise]() {
-        HILOG_DEBUG();
-
-        Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
-        Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
-        Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
-
-        currentAccountId_ = -1;
-        a11yAccountsData_.Clear();
-        stateObservers_.Clear();
-        bundleManager_ = nullptr;
-        inputInterceptor_ = nullptr;
-        touchEventInjector_ = nullptr;
-        keyEventFilter_ = nullptr;
-        stateObserversDeathRecipient_ = nullptr;
-        bundleManagerDeathRecipient_ = nullptr;
-
-        syncPromise.set_value();
-        }, "TASK_ONSTOP");
-    syncFuture.wait();
-
-    for (auto &iter : dependentServicesStatus_) {
-        iter.second = false;
-    }
-
-    isReady_ = false;
-    isPublished_ = false;
-    SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
-    HILOG_INFO("MockAccessibilityZoomGesture::OnStop OK.");
-}
-
-void MockAccessibilityZoomGesture::OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
-{
-    HILOG_DEBUG("systemAbilityId:%{public}d added!", systemAbilityId);
+    handler_ = std::make_shared<DataShareHelperEventHandler>(runner_, *this);
     if (!handler_) {
-        HILOG_DEBUG("Event handler is nullptr.");
+        HILOG_ERROR("create event handler failed");
         return;
     }
-
-    handler_->PostTask([=]() {
-        auto iter = dependentServicesStatus_.find(systemAbilityId);
-        if (iter == dependentServicesStatus_.end()) {
-            HILOG_ERROR("SystemAbilityId is not found!");
-            return;
-        }
-
-        dependentServicesStatus_[systemAbilityId] = true;
-        if (std::any_of(dependentServicesStatus_.begin(), dependentServicesStatus_.end(),
-            [](const std::map<int32_t, bool>::value_type &status) { return !status.second; })) {
-            HILOG_DEBUG("Not all the dependence is ready!");
-            return;
-        }
-
-        if (Init() == false) {
-            HILOG_ERROR("MockAccessibilityZoomGesture::Init failed!");
-            return;
-        }
-
-        if (!isPublished_) {
-            if (Publish(this) == false) {
-                HILOG_ERROR("MockAccessibilityZoomGesture::Publish failed!");
-                return;
-            }
-            isPublished_ = true;
-        }
-
-        InitInnerResource();
-
-        isReady_ = true;
-        SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "true");
-        HILOG_DEBUG("AAMS is ready!");
-        RegisterShortKeyEvent();
-        PostDelayUnloadTask();
-        RegisterScreenMagnificationState();
-        RegisterScreenMagnificationType();
-        }, "OnAddSystemAbility");
 }
 
-void MockAccessibilityZoomGesture::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
+bool MockZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
 {
-    HILOG_INFO("systemAbilityId:%{public}d removed!", systemAbilityId);
-    if (!handler_) {
-        HILOG_DEBUG("Event handler is nullptr.");
-        return;
-    }
-
-    handler_->PostTask([=]() {
-        HILOG_INFO("Remove system ability start");
-        auto iter = dependentServicesStatus_.find(systemAbilityId);
-        if (iter == dependentServicesStatus_.end()) {
-            HILOG_ERROR("SystemAbilityId is not found!");
-            return;
-        }
-
-        dependentServicesStatus_[systemAbilityId] = false;
-        if (isReady_) {
-            SwitchedUser(-1);
-            Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
-            Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
-            Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
-            Singleton<AccessibilityWindowManager>::GetInstance().DeInit();
-
-            isReady_ = false;
-            SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
-        }
-        }, "OnRemoveSystemAbility");
-}
-
-int MockAccessibilityZoomGesture::Dump(int fd, const std::vector<std::u16string>& args)
-{
-    HILOG_DEBUG("dump AccessibilityManagerServiceInfo");
-    if (!handler_) {
-        HILOG_ERROR("Parameters check failed!");
-        return RET_ERR_NULLPTR;
-    }
-    ffrt::promise<int> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, fd, args]() {
-        if (!accessibilityDumper_) {
-            accessibilityDumper_ = new(std::nothrow) AccessibilityDumper();
-            if (!accessibilityDumper_) {
-                HILOG_ERROR("accessibilityDumper_ is nullptr");
-                syncPromise.set_value(-1);
-                return;
-            }
-        }
-        syncPromise.set_value(accessibilityDumper_->Dump(fd, args));
-        }, "TASK_DUMP_INFO");
-    return syncFuture.get();
-}
-
-RetError MockAccessibilityZoomGesture::VerifyingToKenId(const int32_t windowId, const int64_t elementId)
-{
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
-    int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
-    HILOG_DEBUG("VerifyingToKenId: treeId[%{public}d], windowId[%{public}d], elementId[%{public}" PRId64 "]",
-        treeId, windowId, elementId);
-    if (elementId == ELEMENT_ID_INVALID || windowId == WINDOW_ID_INVALID) {
-        HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
-        return RET_OK;
-    }
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (accountData == nullptr) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-            HILOG_ERROR("Get current account data failed!!");
-            return RET_ERR_CONNECTION_EXIST;
-    }
-    HILOG_DEBUG("treeId %{public}d, windowId %{public}d", treeId, windowId);
-    int32_t realId =
-        Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, FOCUS_TYPE_INVALID);
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-    if (connection == nullptr) {
-        HILOG_ERROR("connection is empty.");
-        return RET_ERR_REGISTER_EXIST;
-    }
-    uint32_t expectTokenId = connection->GetTokenIdMap(treeId);
-    if (tokenId != expectTokenId) {
-        HILOG_DEBUG("tokenId error!");
-        return RET_ERR_TOKEN_ID;
-    }
-
-    return RET_OK;
-}
-
-RetError MockAccessibilityZoomGesture::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
-{
-    HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d] windowId[%{public}d] compnentId: %{public}" PRId64 " "
-        "elementId: %{public}" PRId64 " winId: %{public}d innerWinId: %{public}d treeId: %{public}d",
-        uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId(), uiEvent.GetAccessibilityId(),
-        uiEvent.GetElementInfo().GetAccessibilityId(), uiEvent.GetElementInfo().GetWindowId(),
-        uiEvent.GetElementInfo().GetInnerWindowId(), uiEvent.GetElementInfo().GetBelongTreeId());
-    if (!sendEventHandler_) {
-        HILOG_ERROR("Parameters check failed!");
-        return RET_ERR_NULLPTR;
-    }
-    if (flag) {
-        if (VerifyingToKenId(uiEvent.GetElementInfo().GetWindowId(),
-            uiEvent.GetElementInfo().GetAccessibilityId()) == RET_OK) {
-            HILOG_DEBUG("VerifyingToKenId ok");
-        } else {
-            HILOG_DEBUG("VerifyingToKenId failed");
-            return RET_ERR_CONNECTION_EXIST;
-        }
-    }
-
-    sendEventHandler_->PostTask([this, uiEvent]() {
-        HILOG_DEBUG();
-        UpdateAccessibilityWindowStateByEvent(uiEvent);
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            return;
-        }
-
-        const_cast<AccessibilityEventInfo&>(uiEvent).SetTimeStamp(Utils::GetSystemTime());
-        map<string, sptr<AccessibleAbilityConnection>> abilities = accountData->GetConnectedA11yAbilities();
-        for (auto &ability : abilities) {
-            if (ability.second) {
-                ability.second->OnAccessibilityEvent(const_cast<AccessibilityEventInfo&>(uiEvent));
-            }
-        }
-        }, "TASK_SEND_EVENT");
-    return RET_OK;
-}
-
-uint32_t MockAccessibilityZoomGesture::RegisterStateObserver(
-    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver)
-{
-    HILOG_DEBUG();
-    if (!stateObserver || !handler_) {
-        HILOG_ERROR("parameters check failed!");
-        return 0;
-    }
-    XCollieHelper timer(TIMER_REGISTER_STATE_OBSERVER, XCOLLIE_TIMEOUT);
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (!stateObserversDeathRecipient_) {
-        stateObserversDeathRecipient_ = new(std::nothrow) StateCallbackDeathRecipient();
-        if (!stateObserversDeathRecipient_) {
-            HILOG_ERROR("stateObserversDeathRecipient_ is null");
-            return 0;
-        }
-    }
-
-    if (!stateObserver->AsObject()) {
-        HILOG_ERROR("object is null");
-        return 0;
-    }
-
-    stateObserver->AsObject()->AddDeathRecipient(stateObserversDeathRecipient_);
-    stateObservers_.AddStateObserver(stateObserver);
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return 0;
-    }
-
-    return accountData->GetAccessibilityState();
-}
-
-void MockAccessibilityZoomGesture::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
-{
-    HILOG_DEBUG("real windowId %{public}d", windowId);
-    if (!handler_) {
-        return;
-    }
-
-    ffrt::promise<void> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([&, this]() {
-        Singleton<AccessibilityWindowManager>::GetInstance().GetRealWindowAndElementId(windowId, elementId);
-        syncPromise.set_value();
-        }, "GET_REAL_WINDOW_AND_ELEMENT_ID");
-    return syncFuture.get();
-}
-
-void MockAccessibilityZoomGesture::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
-    int32_t& innerWid)
-{
-    HILOG_DEBUG("real windowId %{public}d", windowId);
-    if (!handler_) {
-        return;
-    }
-
-    ffrt::promise<void> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([&, this]() {
-        Singleton<AccessibilityWindowManager>::GetInstance().GetSceneBoardInnerWinId(windowId, elementId, innerWid);
-        syncPromise.set_value();
-        }, "GET_SCENE_BOARD_INNER_WINDOW_ID");
-    return syncFuture.get();
-}
-
-sptr<AccessibilityWindowConnection> MockAccessibilityZoomGesture::GetRealIdConnection()
-{
-    HILOG_DEBUG();
-    int32_t windowId = ANY_WINDOW_ID;
-    int32_t focusType = FOCUS_TYPE_ACCESSIBILITY;
-    int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, focusType);
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("GetCurrentAccountData failed");
-        return sptr<AccessibilityWindowConnection>();
-    }
-    return accountData->GetAccessibilityWindowConnection(realId);
-}
-
-bool MockAccessibilityZoomGesture::FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
-    AccessibilityElementInfo &elementInfo)
-{
-    HILOG_DEBUG();
-    int64_t elementId = -1;
-    int32_t focusType = FOCUS_TYPE_ACCESSIBILITY;
-    if (!connection || !connection->GetProxy()) {
-        HILOG_ERROR("GetAccessibilityWindowConnection failed");
+    HILOG_DEBUG("PointerAction:%{public}d, PointerId:%{public}d, currentState:%{public}d.", event.GetPointerAction(),
+        event.GetPointerId(), static_cast<int32_t>(GetCurrentState()));
+    if (event.GetSourceType() != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
+        EventTransmission::OnPointerEvent(event);
         return false;
     }
 
-    uint32_t timeOut = 5000;
-    sptr<ElementOperatorCallbackImpl> focusCallback = new(std::nothrow) ElementOperatorCallbackImpl();
-    if (!focusCallback) {
-        HILOG_ERROR("Failed to create focusCallback.");
-        return false;
+    MMI::PointerEvent::PointerItem pointerIterm;
+    std::vector<int32_t> pIds = event.GetPointerIds();
+    for (auto& pid : pIds) {
+        if (!event.GetPointerItem(pid, pointerIterm)) {
+            HILOG_ERROR("get pointerItem(%{public}d) failed", pid);
+            return false;
+        }
+        if (pointerIterm.GetToolType() == MMI::PointerEvent::TOOL_TYPE_PEN) {
+            EventTransmission::OnPointerEvent(event);
+            return false;
+        }
     }
-    ffrt::future<void> focusFuture = focusCallback->promise_.get_future();
-    connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, GenerateRequestId(), focusCallback);
-    ffrt::future_status waitFocus = focusFuture.wait_for(std::chrono::milliseconds(timeOut));
-    if (waitFocus != ffrt::future_status::ready) {
-        HILOG_ERROR("FindFocusedElementInfo Failed to wait result");
-        return false;
-    }
-    elementInfo = focusCallback->accessibilityInfoResult_;
+
+    // Send touch event to AA to control volume adjustment.
+    SendTouchEventToAA(event);
+
+    HandlePointerEvent(event);
     return true;
 }
 
-bool MockAccessibilityZoomGesture::FindFocusedElement(AccessibilityElementInfo &elementInfo)
+void MockZoomGesture::HandlePointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    sptr<AccessibilityWindowConnection> connection = GetRealIdConnection();
-    FindFocusedElementByConnection(connection, elementInfo);
-    if (elementInfo.GetAccessibilityId() >= 0) {
-        HILOG_DEBUG("find focused element success.");
+    if (GetCurrentState() == DataShareHelperState::PASSING_THROUGH) {
+        HandlePassingThroughState(event);
+        return;
+    }
+    if (GetCurrentState() == DataShareHelperState::INVALID) {
+        HandleInvalidState(event);
+        return;
+    }
+    if (GetCurrentState() == DataShareHelperState::ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS) {
+        HandleOneFingerDoubleTapAndLongPressState(event);
+        return;
+    }
+
+    auto iter = handleEventFuncMap_.find(GetCurrentState());
+    if (iter != handleEventFuncMap_.end()) {
+        auto funcMap = iter->second.find(event.GetPointerAction());
+        if (funcMap != iter->second.end()) {
+            funcMap->second(event);
+            return;
+        }
+    }
+
+    MMI::PointerEvent::PointerItem pointerIterm;
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+    // If the event is not processed, GetCurrentState() is set to TOUCH_INIT when the last finger is lifted.
+    if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1) ||
+        !pointerIterm.IsPressed()) {
+        Clear();
+        HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
+    }
+}
+
+void MockZoomGesture::SendAccessibilityEventToAA(EventType eventType)
+{
+    HILOG_INFO("eventType is 0x%{public}x.", eventType);
+
+    AccessibilityEventInfo eventInfo {};
+    eventInfo.SetEventType(eventType);
+    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
+    eventInfo.SetWindowId(windowsId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
+}
+
+void MockZoomGesture::SendTouchEventToAA(MMI::PointerEvent &event)
+{
+    if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        return;
+    }
+
+    MMI::PointerEvent::PointerItem pointerIterm = {};
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN) {
+        SendAccessibilityEventToAA(EventType::TYPE_TOUCH_BEGIN);
+    } else if (!pointerIterm.IsPressed()) {
+        SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
+    }
+}
+
+void MockZoomGesture::SendGestureEventToAA(GestureType gestureId)
+{
+    HILOG_INFO("gestureId is %{public}d.", static_cast<int32_t>(gestureId));
+
+    AccessibilityEventInfo eventInfo {};
+    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
+    eventInfo.SetWindowId(windowsId);
+    eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
+    eventInfo.SetGestureType(gestureId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
+}
+
+void MockZoomGesture::SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action)
+{
+    HILOG_DEBUG("action:%{public}d, SourceType:%{public}d.", action, event.GetSourceType());
+
+    switch (action) {
+        case ChangeAction::HOVER_MOVE:
+            event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_MOVE);
+            break;
+        case ChangeAction::POINTER_DOWN:
+            event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
+            break;
+        case ChangeAction::POINTER_UP:
+            event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
+            break;
+        case ChangeAction::HOVER_ENTER:
+            event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
+            break;
+        case ChangeAction::HOVER_EXIT:
+            event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_EXIT);
+            break;
+        case ChangeAction::HOVER_CANCEL:
+            event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_CANCEL);
+            break;
+        default:
+            break;
+    }
+    EventTransmission::OnPointerEvent(event);
+}
+
+void MockZoomGesture::SendScreenWakeUpEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+    // Send move event to wake up the screen and prevent the screen from turning off.
+    MMI::PointerEvent::PointerItem pointerItem = {};
+    for (auto& pid : event.GetPointerIds()) {
+        event.GetPointerItem(pid, pointerItem);
+        pointerItem.SetPressed(false);
+        event.RemovePointerItem(pid);
+        event.AddPointerItem(pointerItem);
+    }
+    SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
+}
+
+void MockZoomGesture::HoverEventRunner()
+{
+    for (auto& event : receivedPointerEvents_) {
+        if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN) {
+            SendEventToMultimodal(event, ChangeAction::HOVER_ENTER);
+        } else if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_MOVE) {
+            SendEventToMultimodal(event, ChangeAction::HOVER_MOVE);
+        } else if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) {
+            SendEventToMultimodal(event, ChangeAction::HOVER_EXIT);
+        }
+    }
+}
+
+std::map<DataShareHelperMsg, GestureType> MockZoomGesture::GetMultiFingerMsgToGestureMap()
+{
+    static std::map<DataShareHelperMsg, GestureType> MULTI_GESTURE_TYPE = {
+        {DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG, GestureType::GESTURE_TWO_FINGER_SINGLE_TAP},
+        {DataShareHelperMsg::TWO_FINGER_LONG_PRESS_MSG, GestureType::GESTURE_INVALID},
+        {DataShareHelperMsg::TWO_FINGER_DOUBLE_TAP_MSG, GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP},
+        {DataShareHelperMsg::TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG, GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP_AND_HOLD},
+        {DataShareHelperMsg::TWO_FINGER_TRIPLE_TAP_MSG, GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP},
+        {DataShareHelperMsg::TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG, GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP_AND_HOLD},
+        {DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG, GestureType::GESTURE_THREE_FINGER_SINGLE_TAP},
+        {DataShareHelperMsg::THREE_FINGER_LONG_PRESS_MSG, GestureType::GESTURE_INVALID},
+        {DataShareHelperMsg::THREE_FINGER_DOUBLE_TAP_MSG, GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP},
+        {DataShareHelperMsg::THREE_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
+            GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP_AND_HOLD},
+        {DataShareHelperMsg::THREE_FINGER_TRIPLE_TAP_MSG, GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP},
+        {DataShareHelperMsg::THREE_FINGER_TRIPLE_TAP_AND_HOLD_MSG,
+            GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP_AND_HOLD},
+        {DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG, GestureType::GESTURE_FOUR_FINGER_SINGLE_TAP},
+        {DataShareHelperMsg::FOUR_FINGER_LONG_PRESS_MSG, GestureType::GESTURE_INVALID},
+        {DataShareHelperMsg::FOUR_FINGER_DOUBLE_TAP_MSG, GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP},
+        {DataShareHelperMsg::FOUR_FINGER_DOUBLE_TAP_AND_HOLD_MSG,
+            GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP_AND_HOLD},
+        {DataShareHelperMsg::FOUR_FINGER_TRIPLE_TAP_MSG, GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP},
+        {DataShareHelperMsg::FOUR_FINGER_TRIPLE_TAP_AND_HOLD_MSG, GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP_AND_HOLD}
+    };
+    return MULTI_GESTURE_TYPE;
+}
+
+void MockZoomGesture::ProcessMultiFingerGesture(DataShareHelperMsg msg)
+{
+    std::map<DataShareHelperMsg, GestureType> multiGestureMap = GetMultiFingerMsgToGestureMap();
+    if (multiGestureMap.find(msg) == multiGestureMap.end()) {
+        return;
+    }
+
+    static std::map<GestureType, DataShareHelperState> MULTI_FINGER_TAP_GESTURE_TO_STATE = {
+        {GestureType::GESTURE_TWO_FINGER_SINGLE_TAP, DataShareHelperState::TWO_FINGERS_TAP},
+        {GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP, DataShareHelperState::TWO_FINGERS_TAP},
+        {GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP, DataShareHelperState::TWO_FINGERS_TAP},
+        {GestureType::GESTURE_THREE_FINGER_SINGLE_TAP, DataShareHelperState::THREE_FINGERS_TAP},
+        {GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP, DataShareHelperState::THREE_FINGERS_TAP},
+        {GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP, DataShareHelperState::THREE_FINGERS_TAP},
+        {GestureType::GESTURE_FOUR_FINGER_SINGLE_TAP, DataShareHelperState::FOUR_FINGERS_TAP},
+        {GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP, DataShareHelperState::FOUR_FINGERS_TAP},
+        {GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP, DataShareHelperState::FOUR_FINGERS_TAP}
+    };
+    GestureType gestureType = multiGestureMap.at(msg);
+    if (MULTI_FINGER_TAP_GESTURE_TO_STATE.find(gestureType) != MULTI_FINGER_TAP_GESTURE_TO_STATE.end()) {
+        // multi-finger multi-tap gesture
+        if (GetCurrentState() == MULTI_FINGER_TAP_GESTURE_TO_STATE.at(gestureType)) {
+            SendGestureEventToAA(gestureType);
+            Clear();
+            HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
+            SetCurrentState(DataShareHelperState::TOUCH_INIT);
+        }
+    } else if (gestureType == GestureType::GESTURE_INVALID) {
+        if (GetCurrentState() == DataShareHelperState::TWO_FINGERS_DOWN) {
+            HILOG_INFO("currentState is changed from TWO_FINGERS_DOWN to TWO_FINGERS_UNKNOWN.");
+            SetCurrentState(DataShareHelperState::TWO_FINGERS_UNKNOWN);
+            return;
+        }
+        Clear();
+        HILOG_ERROR("currentState is changed from %{public}d to INVALID.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::INVALID);
+    } else {
+        // multi-finger multi-tap-and-hold gesture
+        SendGestureEventToAA(gestureType);
+        Clear();
+        HILOG_INFO("currentState is changed from %{public}d to INVALID.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::INVALID);
+    }
+}
+
+void MockZoomGesture::HandleInitStateDown(MMI::PointerEvent &event)
+{
+    if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        receivedPointerEvents_.push_back(event);
+        HILOG_INFO("currentState is changed from TOUCH_INIT to ONE_FINGER_DOWN.");
+        SetCurrentState(DataShareHelperState::ONE_FINGER_DOWN);
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::SEND_HOVER_MSG), 0,
+            static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::LONG_PRESS_MSG), 0,
+            static_cast<int32_t>(TimeoutDuration::LONG_PRESS_TIMEOUT));
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
+            static_cast<int32_t>(TimeoutDuration::MULTI_FINGER_TAP_INTERVAL_TIMEOUT));
+        return;
+    }
+
+    HILOG_INFO("currentState is changed from TOUCH_INIT to PASSING_THROUGH.");
+    SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
+    SetCurrentState(DataShareHelperState::PASSING_THROUGH);
+}
+
+void MockZoomGesture::HandleInitStateUp(MMI::PointerEvent &event)
+{
+    SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
+
+    if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        HILOG_INFO("currentState is changed from TOUCH_INIT to PASSING_THROUGH.");
+        SetCurrentState(DataShareHelperState::PASSING_THROUGH);
+    }
+}
+
+void MockZoomGesture::HandleInitStateMove(MMI::PointerEvent &event)
+{
+    HILOG_INFO("currentState is changed from TOUCH_INIT to PASSING_THROUGH.");
+    SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
+    SetCurrentState(DataShareHelperState::PASSING_THROUGH);
+}
+
+void MockZoomGesture::HandlePassingThroughState(MMI::PointerEvent &event)
+{
+    SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
+
+    MMI::PointerEvent::PointerItem pointerIterm = {};
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+
+    // the last finger is lifted
+    if ((event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) &&
+        (!pointerIterm.IsPressed())) {
+        HILOG_INFO("currentState is changed from PASSING_THROUGH to TOUCH_INIT.");
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
+    }
+}
+
+void MockZoomGesture::HandleInvalidState(MMI::PointerEvent &event)
+{
+    MMI::PointerEvent::PointerItem pointerIterm = {};
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_MOVE) {
+        SendScreenWakeUpEvent(event);
+    }
+
+    // the last finger is lifted
+    if ((event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) &&
+        (!pointerIterm.IsPressed())) {
+        HILOG_INFO("currentState is changed from INVALID to TOUCH_INIT.");
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
+    }
+}
+
+void MockZoomGesture::HandleCancelEvent(MMI::PointerEvent &event)
+{
+    if (GetCurrentState() == DataShareHelperState::TWO_FINGERS_DRAG && event.GetPointerId() == draggingPid_) {
+        SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
+    }
+    SendEventToMultimodal(event, ChangeAction::HOVER_CANCEL);
+
+    MMI::PointerEvent::PointerItem pointerIterm = {};
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+
+    // the last finger is lifted
+    if ((event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) &&
+        (!pointerIterm.IsPressed())) {
+        Clear();
+        HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
+    }
+}
+
+void MockZoomGesture::HandleOneFingerDownStateDown(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+    CancelPostEvent(DataShareHelperMsg::SEND_HOVER_MSG);
+    CancelPostEvent(DataShareHelperMsg::LONG_PRESS_MSG);
+    draggingPid_ = event.GetPointerId();
+    if (!handler_->HasInnerEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG))) {
+        HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to TWO_FINGERS_UNKNOWN.");
+        SetCurrentState(DataShareHelperState::TWO_FINGERS_UNKNOWN);
+        return;
+    }
+
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
+        static_cast<int32_t>(TimeoutDuration::MULTI_FINGER_TAP_INTERVAL_TIMEOUT));
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG), 0,
+        static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::TWO_FINGER_LONG_PRESS_MSG), 0,
+        static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
+    HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to TWO_FINGERS_DOWN.");
+    SetCurrentState(DataShareHelperState::TWO_FINGERS_DOWN);
+}
+
+void MockZoomGesture::HandleOneFingerDownStateUp(MMI::PointerEvent &event)
+{
+    CancelPostEvent(DataShareHelperMsg::LONG_PRESS_MSG);
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    receivedPointerEvents_.push_back(event);
+
+    HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to ONE_FINGER_SINGLE_TAP.");
+    SetCurrentState(DataShareHelperState::ONE_FINGER_SINGLE_TAP);
+}
+
+void MockZoomGesture::HandleOneFingerDownStateMove(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+
+    MMI::PointerEvent::PointerItem pointerIterm;
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+
+    MMI::PointerEvent startPointerEvent = receivedPointerEvents_.front();
+    MMI::PointerEvent::PointerItem startPointerIterm;
+    startPointerEvent.GetPointerItem(startPointerEvent.GetPointerId(), startPointerIterm);
+
+    float offsetX = startPointerIterm.GetDisplayX() - pointerIterm.GetDisplayX();
+    float offsetY = startPointerIterm.GetDisplayY() - pointerIterm.GetDisplayY();
+    double duration = hypot(offsetX, offsetY);
+    if (duration > moveThreshold_) {
+        CancelPostEvent(DataShareHelperMsg::SEND_HOVER_MSG);
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        CancelPostEvent(DataShareHelperMsg::LONG_PRESS_MSG);
+        receivedPointerEvents_.clear();
+        receivedPointerEvents_.push_back(event);
+        oneFingerSwipePrePointer_ = startPointerIterm;
+        Pointer mp;
+        mp.px_ = static_cast<float>(startPointerIterm.GetDisplayX());
+        mp.py_ = static_cast<float>(startPointerIterm.GetDisplayY());
+        oneFingerSwipeRoute_.clear();
+        oneFingerSwipeRoute_.push_back(mp);
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG), 0,
+            static_cast<int32_t>(TimeoutDuration::SWIPE_COMPLETE_TIMEOUT));
+        HILOG_INFO("currentState is changed from ONE_FINGER_DOWN to ONE_FINGER_SWIPE.");
+        SetCurrentState(DataShareHelperState::ONE_FINGER_SWIPE);
+        SendScreenWakeUpEvent(event);
+    }
+}
+
+void MockZoomGesture::HandleOneFingerLongPressStateDown(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+    draggingPid_ = event.GetPointerId();
+    HILOG_INFO("currentState is changed from ONE_FINGER_LONG_PRESS to TWO_FINGERS_UNKNOWN.");
+    SetCurrentState(DataShareHelperState::TWO_FINGERS_UNKNOWN);
+}
+
+void MockZoomGesture::HandleOneFingerLongPressStateUp(MMI::PointerEvent &event)
+{
+    Clear();
+    SendEventToMultimodal(event, ChangeAction::HOVER_EXIT);
+
+    HILOG_INFO("currentState is changed from ONE_FINGER_LONG_PRESS to TOUCH_INIT.");
+    SetCurrentState(DataShareHelperState::TOUCH_INIT);
+}
+
+void MockZoomGesture::HandleOneFingerLongPressStateMove(MMI::PointerEvent &event)
+{
+    SendEventToMultimodal(event, ChangeAction::HOVER_MOVE);
+}
+
+void MockZoomGesture::HandleOneFingerSwipeStateDown(MMI::PointerEvent &event)
+{
+    Clear();
+    CancelPostEvent(DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG);
+    HILOG_ERROR("currentState is changed from ONE_FINGER_SWIPE to INVALID.");
+    SetCurrentState(DataShareHelperState::INVALID);
+}
+
+void MockZoomGesture::AddOneFingerSwipeEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+    MMI::PointerEvent::PointerItem pointerIterm = {};
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+
+    if (receivedPointerEvents_.empty()) {
+        HILOG_ERROR("received pointer event is null!");
+        return;
+    }
+
+    MMI::PointerEvent preMoveEvent = receivedPointerEvents_.back();
+    MMI::PointerEvent::PointerItem preMovePointerIterm = {};
+    preMoveEvent.GetPointerItem(preMoveEvent.GetPointerId(), preMovePointerIterm);
+    float offsetX = preMovePointerIterm.GetDisplayX() - pointerIterm.GetDisplayX();
+    float offsetY = preMovePointerIterm.GetDisplayY() - pointerIterm.GetDisplayY();
+    double duration = hypot(offsetX, offsetY);
+    if (duration > moveThreshold_) {
+        receivedPointerEvents_.push_back(event);
+        CancelPostEvent(DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG);
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG), 0,
+            static_cast<int32_t>(TimeoutDuration::SWIPE_COMPLETE_TIMEOUT));
+    }
+
+    if ((abs(pointerIterm.GetDisplayX() - oneFingerSwipePrePointer_.GetDisplayX())) >= xMinPixels_ ||
+        (abs(pointerIterm.GetDisplayY() - oneFingerSwipePrePointer_.GetDisplayY())) >= yMinPixels_) {
+        Pointer mp;
+        oneFingerSwipePrePointer_ = pointerIterm;
+        mp.px_ = pointerIterm.GetDisplayX();
+        mp.py_ = pointerIterm.GetDisplayY();
+        oneFingerSwipeRoute_.push_back(mp);
+    }
+}
+
+std::vector<Pointer> MockZoomGesture::GetOneFingerSwipePath()
+{
+    HILOG_DEBUG();
+    std::vector<Pointer> pointerPath;
+    Pointer firstSeparation = oneFingerSwipeRoute_[0];
+    Pointer nextPoint;
+    Pointer newSeparation;
+    float xUnitVector = 0;
+    float yUnitVector = 0;
+    float xVector = 0;
+    float yVector = 0;
+    float vectorLength = 0;
+    int32_t numSinceFirstSep = 0;
+
+    pointerPath.push_back(firstSeparation);
+    for (size_t i = 1; i < oneFingerSwipeRoute_.size(); i++) {
+        nextPoint = oneFingerSwipeRoute_[i];
+        if (numSinceFirstSep > 0) {
+            xVector = xUnitVector / numSinceFirstSep;
+            yVector = yUnitVector / numSinceFirstSep;
+            newSeparation.px_ = vectorLength * xVector + firstSeparation.px_;
+            newSeparation.py_ = vectorLength * yVector + firstSeparation.py_;
+
+            float xNextUnitVector = nextPoint.px_ - newSeparation.px_;
+            float yNextUnitVector = nextPoint.py_ - newSeparation.py_;
+            float nextVectorLength = hypot(xNextUnitVector, yNextUnitVector);
+
+            if ((xVector * xNextUnitVector + yVector * yNextUnitVector) < DEGREES_THRESHOLD) {
+                pointerPath.push_back(newSeparation);
+                firstSeparation = newSeparation;
+                xUnitVector = 0;
+                yUnitVector = 0;
+                numSinceFirstSep = 0;
+            }
+        }
+        xVector = nextPoint.px_ - firstSeparation.px_;
+        yVector = nextPoint.py_ - firstSeparation.py_;
+        vectorLength = hypot(xVector, yVector);
+        numSinceFirstSep += 1;
+    }
+    pointerPath.push_back(nextPoint);
+    return pointerPath;
+}
+
+int32_t MockZoomGesture::GetSwipeDirection(const int32_t dx, const int32_t dy)
+{
+    if (abs(dx) > abs(dy)) {
+        return dx > EPSINON ? SWIPE_RIGHT : SWIPE_LEFT;
+    } else {
+        return dy < EPSINON ? SWIPE_UP : SWIPE_DOWN;
+    }
+}
+
+void MockZoomGesture::HandleOneFingerSwipeStateUp(MMI::PointerEvent &event)
+{
+    AddOneFingerSwipeEvent(event);
+    CancelPostEvent(DataShareHelperMsg::SWIPE_COMPLETE_TIMEOUT_MSG);
+
+    if (oneFingerSwipeRoute_.size() < LIMIT_SIZE_TWO) {
+        Clear();
+        HILOG_ERROR("fail to parse swipe direction, currentState is changed from ONE_FINGER_SWIPE to TOUCH_INIT.");
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
+        return;
+    }
+
+    std::vector<Pointer> pointerPath = GetOneFingerSwipePath();
+    if (pointerPath.size() == LIMIT_SIZE_TWO) {
+        int32_t swipeDirection = GetSwipeDirection(pointerPath[1].px_ - pointerPath[0].px_,
+            pointerPath[1].py_ - pointerPath[0].py_);
+        SendGestureEventToAA(GESTURE_DIRECTION[swipeDirection]);
+    } else if (pointerPath.size() == LIMIT_SIZE_THREE) {
+        int32_t swipeDirectionH = GetSwipeDirection(pointerPath[1].px_ - pointerPath[0].px_,
+            pointerPath[1].py_ - pointerPath[0].py_);
+        int32_t swipeDirectionHV = GetSwipeDirection(pointerPath[2].px_ - pointerPath[1].px_,
+            pointerPath[2].py_ - pointerPath[1].py_);
+        SendGestureEventToAA(GESTURE_DIRECTION_TO_ID[swipeDirectionH][swipeDirectionHV]);
+    }
+
+    Clear();
+    HILOG_INFO("currentState is changed from ONE_FINGER_SWIPE to TOUCH_INIT.");
+    SetCurrentState(DataShareHelperState::TOUCH_INIT);
+}
+
+void MockZoomGesture::HandleOneFingerSwipeStateMove(MMI::PointerEvent &event)
+{
+    AddOneFingerSwipeEvent(event);
+    SendScreenWakeUpEvent(event);
+}
+
+void MockZoomGesture::RecordFocusedLocation(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+    AccessibilityElementInfo focusedElementInfo = {};
+    bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(focusedElementInfo);
+    if (!ret) {
+        HILOG_ERROR("find focused element failed.");
+        return;
+    }
+
+    MMI::PointerEvent::PointerItem pointer = {};
+    event.GetPointerItem(event.GetPointerId(), pointer);
+    offsetX_ = (focusedElementInfo.GetRectInScreen().GetLeftTopXScreenPostion() +
+        focusedElementInfo.GetRectInScreen().GetRightBottomXScreenPostion()) / DIVIDE_NUM - pointer.GetDisplayX();
+    offsetY_ = (focusedElementInfo.GetRectInScreen().GetLeftTopYScreenPostion() +
+        focusedElementInfo.GetRectInScreen().GetRightBottomYScreenPostion()) / DIVIDE_NUM - pointer.GetDisplayY();
+}
+
+void MockZoomGesture::HandleOneFingerSingleTapStateDown(MMI::PointerEvent &event)
+{
+    CancelPostEvent(DataShareHelperMsg::SEND_HOVER_MSG);
+
+    MMI::PointerEvent::PointerItem curPointerItem;
+    event.GetPointerItem(event.GetPointerId(), curPointerItem);
+    MMI::PointerEvent preDownEvent = receivedPointerEvents_.front();
+    MMI::PointerEvent::PointerItem preDownPointerItem;
+    preDownEvent.GetPointerItem(preDownEvent.GetPointerId(), preDownPointerItem);
+    int32_t durationX = preDownPointerItem.GetDisplayX() - curPointerItem.GetDisplayX();
+    int32_t durationY = preDownPointerItem.GetDisplayY() - curPointerItem.GetDisplayY();
+    if (durationX * durationX + durationY * durationY > multiTapOffsetThresh_ * multiTapOffsetThresh_) {
+        HoverEventRunner();
+        Clear();
+        receivedPointerEvents_.push_back(event);
+        HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP to ONE_FINGER_DOWN.");
+        SetCurrentState(DataShareHelperState::ONE_FINGER_DOWN);
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::SEND_HOVER_MSG), 0,
+            static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::LONG_PRESS_MSG), 0,
+            static_cast<int32_t>(TimeoutDuration::LONG_PRESS_TIMEOUT));
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
+            static_cast<int32_t>(TimeoutDuration::MULTI_FINGER_TAP_INTERVAL_TIMEOUT));
+        return;
+    }
+
+    Clear();
+    receivedPointerEvents_.push_back(event);
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG), 0,
+        static_cast<int32_t>(TimeoutDuration::LONG_PRESS_TIMEOUT));
+    RecordFocusedLocation(event);
+    HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP to ONE_FINGER_SINGLE_TAP_THEN_DOWN.");
+    SetCurrentState(DataShareHelperState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
+}
+
+void MockZoomGesture::HandleOneFingerSingleTapThenDownStateDown(MMI::PointerEvent &event)
+{
+    Clear();
+    CancelPostEvent(DataShareHelperMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG);
+    HILOG_ERROR("receive down event, currentState is changed from ONE_FINGER_SINGLE_TAP_THEN_DOWN to INVALID.");
+    SetCurrentState(DataShareHelperState::INVALID);
+}
+
+void MockZoomGesture::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent &event)
+{
+    CancelPostEvent(DataShareHelperMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(
+        ActionType::ACCESSIBILITY_ACTION_CLICK);
+
+    Clear();
+    HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP_THEN_DOWN to TOUCH_INIT.");
+    SetCurrentState(DataShareHelperState::TOUCH_INIT);
+}
+
+void MockZoomGesture::HandleOneFingerSingleTapThenDownStateMove(MMI::PointerEvent &event)
+{
+    MMI::PointerEvent::PointerItem pointerIterm;
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+
+    MMI::PointerEvent startPointerEvent = receivedPointerEvents_.front();
+    MMI::PointerEvent::PointerItem startPointerIterm;
+    startPointerEvent.GetPointerItem(startPointerEvent.GetPointerId(), startPointerIterm);
+
+    float offsetX = startPointerIterm.GetDisplayX() - pointerIterm.GetDisplayX();
+    float offsetY = startPointerIterm.GetDisplayY() - pointerIterm.GetDisplayY();
+    double duration = hypot(offsetX, offsetY);
+    if (duration > moveThreshold_) {
+        CancelPostEvent(DataShareHelperMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG);
+        Clear();
+        HILOG_ERROR("receive move event, currentState is changed from ONE_FINGER_SINGLE_TAP_THEN_DOWN to INVALID.");
+        SetCurrentState(DataShareHelperState::INVALID);
+    }
+}
+
+void MockZoomGesture::OffsetEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+    if (receivedPointerEvents_.empty()) {
+        HILOG_ERROR("received pointer event is null!");
+        return;
+    }
+
+    MMI::PointerEvent startPointerEvent = receivedPointerEvents_.front();
+    if (event.GetPointerId() != startPointerEvent.GetPointerId()) {
+        return;
+    }
+
+    MMI::PointerEvent::PointerItem pointer = {};
+    event.GetPointerItem(event.GetPointerId(), pointer);
+    pointer.SetDisplayX(offsetX_ + pointer.GetDisplayX());
+    pointer.SetDisplayY(offsetY_ + pointer.GetDisplayY());
+    event.RemovePointerItem(event.GetPointerId());
+    event.AddPointerItem(pointer);
+}
+
+void MockZoomGesture::SendDoubleTapAndLongPressDownEvent()
+{
+    if (receivedPointerEvents_.empty()) {
+        HILOG_ERROR("receivedPointerEvents_ is empty!");
+        return;
+    }
+    OffsetEvent(receivedPointerEvents_.front());
+    SendEventToMultimodal(receivedPointerEvents_.front(), ChangeAction::NO_CHANGE);
+}
+
+void MockZoomGesture::HandleOneFingerDoubleTapAndLongPressState(MMI::PointerEvent &event)
+{
+    OffsetEvent(event);
+    SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
+
+    MMI::PointerEvent::PointerItem pointer = {};
+    event.GetPointerItem(event.GetPointerId(), pointer);
+    if ((event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) &&
+        (!pointer.IsPressed())) {
+        Clear();
+        HILOG_INFO("currentState is changed from ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS to TOUCH_INIT.");
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
+    }
+}
+
+void MockZoomGesture::HandleTwoFingersDownStateDown(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_LONG_PRESS_MSG);
+
+    if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        Clear();
+        HILOG_ERROR("invalid pointer num, currentState is changed from TWO_FINGERS_DOWN to INVALID.");
+        SetCurrentState(DataShareHelperState::INVALID);
+        return;
+    }
+
+    if (!handler_->HasInnerEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG))) {
+        Clear();
+        HILOG_ERROR("timeout, currentState is changed from TWO_FINGERS_DOWN to INVALID.");
+        SetCurrentState(DataShareHelperState::INVALID);
+        return;
+    }
+
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
+        static_cast<int32_t>(TimeoutDuration::MULTI_FINGER_TAP_INTERVAL_TIMEOUT));
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG), 0,
+        static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::THREE_FINGER_LONG_PRESS_MSG), 0,
+        static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
+    HILOG_INFO("currentState is changed from TWO_FINGERS_DOWN to THREE_FINGERS_DOWN.");
+    SetCurrentState(DataShareHelperState::THREE_FINGERS_DOWN);
+}
+
+void MockZoomGesture::HandleTwoFingersDownStateUp(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_LONG_PRESS_MSG);
+
+    uint32_t pointerSize = event.GetPointerIds().size();
+    if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        HILOG_INFO("currentState is changed from TWO_FINGERS_DOWN to TWO_FINGERS_TAP.");
+        SetCurrentState(DataShareHelperState::TWO_FINGERS_TAP);
+    } else if (pointerSize > static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
+        Clear();
+        CancelPostEvent(DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG);
+        HILOG_ERROR("invalid pointer num, currentState is changed from TWO_FINGERS_DOWN to INVALID.");
+        SetCurrentState(DataShareHelperState::INVALID);
+    }
+}
+
+bool MockZoomGesture::GetBasePointItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId)
+{
+    HILOG_DEBUG();
+    for (auto rIter = receivedPointerEvents_.rbegin(); rIter != receivedPointerEvents_.rend(); ++rIter) {
+        if ((rIter->GetPointerId() == pId) && (rIter->GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN)) {
+            rIter->GetPointerItem(pId, basePointerIterm);
+            return true;
+        }
+    }
+    return false;
+}
+
+void MockZoomGesture::GetPointOffset(MMI::PointerEvent &event, std::vector<float> &firstPointOffset,
+    std::vector<float> &secondPointOffset)
+{
+    HILOG_DEBUG();
+    std::vector<int32_t> pIds = event.GetPointerIds();
+    if (pIds.size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
+        return;
+    }
+
+    MMI::PointerEvent::PointerItem pointerF = {};
+    MMI::PointerEvent::PointerItem pointerS = {};
+    event.GetPointerItem(pIds[0], pointerF);
+    event.GetPointerItem(pIds[1], pointerS);
+
+    MMI::PointerEvent::PointerItem basePointerF = {};
+    MMI::PointerEvent::PointerItem basePointerS = {};
+    if (GetBasePointItem(basePointerF, pIds[0]) && GetBasePointItem(basePointerS, pIds[1])) {
+        firstPointOffset.push_back(pointerF.GetDisplayX() - basePointerF.GetDisplayX());
+        firstPointOffset.push_back(pointerF.GetDisplayY() - basePointerF.GetDisplayY());
+        secondPointOffset.push_back(pointerS.GetDisplayX() - basePointerS.GetDisplayX());
+        secondPointOffset.push_back(pointerS.GetDisplayY() - basePointerS.GetDisplayY());
+    }
+}
+
+float MockZoomGesture::GetAngleCos(float offsetX, float offsetY, bool isGetX)
+{
+    HILOG_DEBUG();
+    float ret = isGetX ? offsetX : offsetY;
+    double duration = hypot(offsetX, offsetY);
+    return ret;
+}
+
+bool MockZoomGesture::IsDragGestureAccept(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+    std::vector<float> firstPointOffset;
+    std::vector<float> secondPointOffset;
+    GetPointOffset(event, firstPointOffset, secondPointOffset);
+    if (firstPointOffset.size() != SCREEN_AXIS_NUM || secondPointOffset.size() != SCREEN_AXIS_NUM) {
+        return false;
+    }
+
+    float firstOffsetX = firstPointOffset[0];
+    float firstOffsetY = firstPointOffset[1];
+    float secondOffsetX = secondPointOffset[0];
+    float secondOffsetY = secondPointOffset[1];
+    if ((!firstOffsetX && !firstOffsetY) ||
+        (!secondOffsetX && !secondOffsetY)) {
         return true;
     }
-    int32_t windowId = GetFocusWindowId();
-    int64_t elementId = GetFocusElementId();
-    sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (accountData == nullptr) {
-        HILOG_ERROR("GetCurrentAccountData failed");
-        return false;
-    }
-    int32_t realId =
-        Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, FOCUS_TYPE_INVALID);
-    connection = accountData->GetAccessibilityWindowConnection(realId);
-    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
-    if (connection == nullptr) {
-        HILOG_ERROR("connection is nullptr");
-        return false;
-    }
-    sptr<ElementOperatorCallbackImpl> callBack = new(std::nothrow) ElementOperatorCallbackImpl();
-    if (callBack == nullptr) {
-        HILOG_ERROR("Failed to create callBack.");
-        return false;
-    }
-    ffrt::future<void> promiseFuture = callBack->promise_.get_future();
-    GetElementOperatorConnection(connection, elementId, elementOperator);
-    if (elementOperator == nullptr) {
-        HILOG_ERROR("elementOperator is nullptr");
-        return false;
-    }
-    elementOperator->SearchElementInfoByAccessibilityId(elementId, GenerateRequestId(), callBack, 0);
-    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (waitFocus != ffrt::future_status::ready) {
-        ipcTimeoutNum_++;
-        HILOG_ERROR("Failed to wait result, number %{public}" PRId64 "", ipcTimeoutNum_);
-        return false;
-    }
 
-    if (callBack->elementInfosResult_.size() <= 0) {
-        HILOG_ERROR("SearchElementInfoByAccessibilityId return null");
+    float firstXCos = GetAngleCos(firstOffsetX, firstOffsetY, true);
+    float firstYCos = GetAngleCos(firstOffsetX, firstOffsetY, false);
+    float secondXCos = GetAngleCos(secondOffsetX, secondOffsetY, true);
+    float secondYCos = GetAngleCos(secondOffsetX, secondOffsetY, false);
+    if ((firstXCos * secondXCos + firstYCos * secondYCos) < MAX_DRAG_GESTURE_COSINE) {
         return false;
     }
-    elementInfo = callBack->elementInfosResult_[0];
     return true;
 }
 
-void MockAccessibilityZoomGesture::GetElementOperatorConnection(sptr<AccessibilityWindowConnection> &connection,
-    const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator)
-{
-    int32_t treeId = 0;
-    if (elementId > 0) {
-        treeId = GetTreeIdBySplitElementId(elementId);
-        elementOperator = connection->GetCardProxy(treeId);
-    } else {
-        elementOperator = connection->GetProxy();
-    }
-    HILOG_DEBUG("elementId:%{public}" PRId64 " treeId:%{public}d", elementId, treeId);
-}
-
-bool MockAccessibilityZoomGesture::ExecuteActionOnAccessibilityFocused(const ActionType &action)
-{
-    int32_t windowId = GetFocusWindowId();
-    int64_t elementId = GetFocusElementId();
-    uint32_t timeOut = 5000;
-    int32_t treeId = GetTreeIdBySplitElementId(elementId);
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (accountData == nullptr) {
-        HILOG_ERROR("GetCurrentAccountData failed");
-        return false;
-    }
-    int32_t realId =
-        Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, FOCUS_TYPE_INVALID);
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-    if (connection == nullptr) {
-        HILOG_ERROR("connection is nullptr");
-        return false;
-    }
-    std::map<std::string, std::string> actionArguments {};
-    sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl();
-    if (actionCallback == nullptr) {
-        HILOG_ERROR("Failed to create actionCallback.");
-        return false;
-    }
-    ffrt::future<void> actionFuture = actionCallback->promise_.get_future();
-    if (treeId > TREE_ID_INVALID) {
-        if (connection->GetCardProxy(treeId) != nullptr) {
-            connection->GetCardProxy(treeId)->ExecuteAction(elementId, action,
-                actionArguments, GenerateRequestId(), actionCallback);
-        } else {
-            HILOG_ERROR("get operation is nullptr");
-            return false;
-        }
-    } else {
-        if (connection->GetProxy() != nullptr) {
-            connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(),
-                actionCallback);
-        } else {
-            HILOG_ERROR("get operation is nullptr");
-            return false;
-        }
-    }
-    ffrt::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
-    if (waitAction != ffrt::future_status::ready) {
-        HILOG_ERROR("ExecuteAction Failed to wait result");
-        return false;
-    }
-    HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d",
-        windowId, elementId, action, actionCallback->executeActionResult_);
-    return actionCallback->executeActionResult_;
-}
-
-void MockAccessibilityZoomGesture::SetFocusWindowId(const int32_t focusWindowId)
-{
-    focusWindowId_ = focusWindowId;
-}
-
-int32_t MockAccessibilityZoomGesture::GetFocusWindowId()
-{
-    return focusWindowId_;
-}
-
-void MockAccessibilityZoomGesture::SetFocusElementId(const int64_t focusElementId)
-{
-    focusElementId_ = focusElementId;
-}
-
-int64_t MockAccessibilityZoomGesture::GetFocusElementId()
-{
-    return focusElementId_;
-}
-
-uint32_t MockAccessibilityZoomGesture::RegisterCaptionObserver(
-    const sptr<IAccessibleAbilityManagerCaptionObserver> &callback)
+void MockZoomGesture::SendDragDownEventToMultimodal(MMI::PointerEvent event)
 {
     HILOG_DEBUG();
-    if (!callback || !actionHandler_) {
-        HILOG_ERROR("Parameters check failed!");
-        return ERR_INVALID_VALUE;
-    }
+    std::vector<int32_t> pIds = event.GetPointerIds();
+    int32_t xPointDown = 0;
+    int32_t yPointDown = 0;
+    int64_t actionTime = 0;
+    MMI::PointerEvent::PointerItem basePointerIterm = {};
 
-    XCollieHelper timer(TIMER_REGISTER_CAPTION_OBSERVER, XCOLLIE_TIMEOUT);
-    std::shared_ptr<ffrt::promise<uint32_t>> syncPromise = std::make_shared<ffrt::promise<uint32_t>>();
-    ffrt::future syncFuture = syncPromise->get_future();
-    actionHandler_->PostTask([this, syncPromise, callback]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            syncPromise->set_value(ERR_INVALID_VALUE);
-            return;
-        }
-        if (!captionPropertyCallbackDeathRecipient_) {
-            captionPropertyCallbackDeathRecipient_ = new(std::nothrow) CaptionPropertyCallbackDeathRecipient();
-            if (!captionPropertyCallbackDeathRecipient_) {
-                HILOG_ERROR("captionPropertyCallbackDeathRecipient_ is null");
-                syncPromise->set_value(ERR_INVALID_VALUE);
-                return;
-            }
-        }
-        if (!callback->AsObject()) {
-            HILOG_ERROR("object is null");
-            syncPromise->set_value(0);
-            return;
-        }
-        callback->AsObject()->AddDeathRecipient(captionPropertyCallbackDeathRecipient_);
-        accountData->AddCaptionPropertyCallback(callback);
-        HILOG_DEBUG("the size of caption property callbacks is %{public}zu",
-            accountData->GetCaptionPropertyCallbacks().size());
-        syncPromise->set_value(NO_ERROR);
-        }, "TASK_REGISTER_CAPTION_OBSERVER");
-
-    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != ffrt::future_status::ready) {
-        HILOG_ERROR("Failed to wait RegisterCaptionObserver result");
-        return RET_ERR_TIME_OUT;
-    }
-    return syncFuture.get();
-}
-
-void MockAccessibilityZoomGesture::RegisterEnableAbilityListsObserver(
-    const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
-{
-    HILOG_DEBUG();
-    if (!observer || !actionHandler_) {
-        HILOG_ERROR("Parameters check failed!");
-        return;
-    }
-    XCollieHelper timer(TIMER_REGISTER_ENABLEABILITY_OBSERVER, XCOLLIE_TIMEOUT);
-    std::shared_ptr<ffrt::promise<void>> syncPromisePtr = std::make_shared<ffrt::promise<void>>();
-    ffrt::future syncFuture = syncPromisePtr->get_future();
-    actionHandler_->PostTask([this, syncPromisePtr, observer]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            syncPromisePtr->set_value();
-            return;
-        }
-        if (!enableAbilityListsObserverDeathRecipient_) {
-            enableAbilityListsObserverDeathRecipient_ = new(std::nothrow) EnableAbilityListsObserverDeathRecipient();
-            if (!enableAbilityListsObserverDeathRecipient_) {
-                HILOG_ERROR("enableAbilityListsObserverDeathRecipient_ is null");
-                syncPromisePtr->set_value();
-                return;
-            }
-        }
-        if (!observer->AsObject()) {
-            HILOG_ERROR("object is null");
-            syncPromisePtr->set_value();
-            return;
-        }
-        observer->AsObject()->AddDeathRecipient(enableAbilityListsObserverDeathRecipient_);
-        accountData->AddEnableAbilityListsObserver(observer);
-        syncPromisePtr->set_value();
-        }, "TASK_REGISTER_ENABLE_ABILITY_LISTS_OBSERVER");
-
-    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != ffrt::future_status::ready) {
-        HILOG_ERROR("Failed to wait RegisterEnableAbilityListsObserver result");
-        return;
-    }
-    return syncFuture.get();
-}
-
-RetError MockAccessibilityZoomGesture::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
-    std::vector<AccessibilityAbilityInfo> &infos)
-{
-    HILOG_DEBUG("abilityTypes(%{public}d) stateType(%{public}d)", abilityTypes, stateType);
-    if (!handler_ || (stateType > ABILITY_STATE_INSTALLED) || (stateType < ABILITY_STATE_ENABLE)) {
-        HILOG_ERROR("Parameters check failed! stateType:%{public}d", stateType);
-        return RET_ERR_INVALID_PARAM;
-    }
-
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &infos, abilityTypes, stateType]() {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Get current account data failed!!");
-            syncPromise.set_value(RET_ERR_FAILED);
-            return;
-        }
-
-        vector<AccessibilityAbilityInfo> abilities;
-        accountData->GetAbilitiesByState(static_cast<AbilityStateType>(stateType), abilities);
-        HILOG_DEBUG("abilityes count is %{public}zu", abilities.size());
-        for (auto &ability : abilities) {
-            if (abilityTypes == AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL ||
-                (ability.GetAccessibilityAbilityType() & abilityTypes)) {
-                infos.push_back(ability);
-            }
-        }
-        HILOG_DEBUG("infos count is %{public}zu", infos.size());
-        syncPromise.set_value(RET_OK);
-        }, "TASK_GET_ABILITY_LIST");
-    return syncFuture.get();
-}
-
-RetError MockAccessibilityZoomGesture::RegisterElementOperator(
-    const int32_t windowId, const sptr<IAccessibilityElementOperator> &operation, bool isApp)
-{
-    if (!handler_) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
-    if (CheckCallingUid() != RET_OK) {
-        return RET_ERR_SAMGR;
-    }
-    handler_->PostTask([=]() {
-        HILOG_INFO("Register windowId[%{public}d]", windowId);
-#ifdef OHOS_BUILD_ENABLE_HITRACE
-        HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
-#endif // OHOS_BUILD_ENABLE_HITRACE
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-                A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-            HILOG_ERROR("Get current account data failed!!");
-            return;
-        }
-        sptr<AccessibilityWindowConnection> oldConnection = accountData->GetAccessibilityWindowConnection(windowId);
-        if (isApp && oldConnection) {
-            HILOG_WARN("no need to register again.");
-            return;
-        }
-        DeleteConnectionAndDeathRecipient(windowId, oldConnection);
-        sptr<AccessibilityWindowConnection> connection =
-            new(std::nothrow) AccessibilityWindowConnection(windowId, operation, currentAccountId_);
-        if (!connection) {
-            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-                A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-            HILOG_ERROR("New  AccessibilityWindowConnection failed!!");
-            return;
-        }
-        connection->SetTokenIdMap(SINGLE_TREE_ID, tokenId);
-        accountData->AddAccessibilityWindowConnection(windowId, connection);
-
-        IsCheckWindowIdEventExist(windowId);
-        if (operation && operation->AsObject()) {
-            sptr<IRemoteObject::DeathRecipient> deathRecipient =
-                new(std::nothrow) InteractionOperationDeathRecipient(windowId, currentAccountId_);
-            if (!deathRecipient) {
-                Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-                    A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-                HILOG_ERROR("Create interactionOperationDeathRecipient failed");
-                return;
-            }
-
-            bool result = operation->AsObject()->AddDeathRecipient(deathRecipient);
-            interactionOperationDeathRecipients_[windowId] = deathRecipient;
-            HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
-        }
-        }, "TASK_REGISTER_ELEMENT_OPERATOR");
-    return RET_OK;
-}
-
-void MockAccessibilityZoomGesture::IsCheckWindowIdEventExist(const int32_t windowId)
-{
-    if (CheckWindowIdEventExist(windowId)) {
-        SendEvent(windowFocusEventMap_[windowId]);
-        windowFocusEventMap_.erase(windowId);
-    }
-}
-
-RetError MockAccessibilityZoomGesture::RegisterElementOperatorChildWork(const Registration &parameter,
-    const int32_t treeId, const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation,
-    const uint32_t tokenId, bool isApp)
-{
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (accountData == nullptr) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-        HILOG_ERROR("Get current account data failed!!");
-        return RET_ERR_REGISTER_EXIST;
-    }
-
-    sptr<AccessibilityWindowConnection> parentConnection =
-        accountData->GetAccessibilityWindowConnection(parameter.parentWindowId);
-    if (isApp && parentConnection) {
-        sptr<IAccessibilityElementOperator> parentAamsOper =
-            parentConnection->GetCardProxy(parameter.parentTreeId);
-        if (parentAamsOper != nullptr) {
-            parentAamsOper->SetChildTreeIdAndWinId(nodeId, treeId, parameter.windowId);
-        } else {
-            HILOG_DEBUG("parentAamsOper is nullptr");
-        }
-    } else {
-        return RET_ERR_NO_CONNECTION;
-    }
-
-    operation->SetBelongTreeId(treeId);
-    operation->SetParentWindowId(parameter.parentWindowId);
-    sptr<AccessibilityWindowConnection> oldConnection =
-        accountData->GetAccessibilityWindowConnection(parameter.windowId);
-    if (isApp && oldConnection) {
-        if (oldConnection->GetCardProxy(treeId) != nullptr) {
-            HILOG_WARN("no need to register again.");
-            return RET_ERR_REGISTER_EXIST;
-        } else {
-            oldConnection->SetCardProxy(treeId, operation);
-            SetTokenIdMapAndRootParentId(oldConnection, treeId, nodeId, tokenId);
-        }
-    }
-    return RET_OK;
-}
-
-void MockAccessibilityZoomGesture::SetTokenIdMapAndRootParentId(
-    const sptr<AccessibilityWindowConnection> connection,
-    const int32_t treeId, const int64_t nodeId, const uint32_t tokenId)
-{
-    connection->SetTokenIdMap(treeId, tokenId);
-    connection->SetRootParentId(treeId, nodeId);
-}
-
-int32_t MockAccessibilityZoomGesture::ApplyTreeId()
-{
-    std::lock_guard<ffrt::mutex> lock(treeIdPoolMutex_);
-    int32_t curTreeId = preTreeId_ + 1;
-    for (int32_t index = 0; index < TREE_ID_MAX; index++) {
-        if (curTreeId == TREE_ID_MAX) {
-            curTreeId = 0;
-        }
-        if (!treeIdPool_.test(curTreeId)) {
-            treeIdPool_.set(curTreeId, true);
-            preTreeId_ = curTreeId;
-            return curTreeId + 1;
-        }
-        curTreeId++;
-    }
-    preTreeId_ = TREE_ID_MAX - 1;
-    return 0;
-}
-
-void MockAccessibilityZoomGesture::RecycleTreeId(int32_t treeId)
-{
-    std::lock_guard<ffrt::mutex> lock(treeIdPoolMutex_);
-    if ((treeId > 0) && (treeId <= TREE_ID_MAX)) {
-        treeIdPool_.set(treeId - 1, false);
-    }
-}
-
-RetError MockAccessibilityZoomGesture::RegisterElementOperator(Registration parameter,
-    const sptr<IAccessibilityElementOperator> &operation, bool isApp)
-{
-    if (CheckCallingUid() != RET_OK) {
-        return RET_ERR_SAMGR;
-    }
-    int32_t treeIdSingle = ApplyTreeId();
-    if (treeIdSingle == 0) {
-        HILOG_ERROR("TreeId is used up.");
-        return RET_ERR_TREE_TOO_BIG;
-    }
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
-    int64_t nodeId = parameter.elementId;
-    HILOG_INFO("get treeId element and treeid - treeId: %{public}d parameter.elementId[%{public}" PRId64 "]"
-        "element[%{public}" PRId64 "]",
-        treeIdSingle, parameter.elementId, nodeId);
-
-    if (!handler_) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    handler_->PostTask([=]() {
-        HILOG_INFO("Register windowId[%{public}d]", parameter.windowId);
-#ifdef OHOS_BUILD_ENABLE_HITRACE
-        HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
-#endif // OHOS_BUILD_ENABLE_HITRACE
-        if (RET_OK != RegisterElementOperatorChildWork(parameter, treeIdSingle, nodeId, operation, tokenId, isApp)) {
-            return;
-        }
-        if (CheckWindowIdEventExist(parameter.windowId)) {
-            SendEvent(windowFocusEventMap_[parameter.windowId]);
-            windowFocusEventMap_.erase(parameter.windowId);
-        }
-        if (operation && operation->AsObject()) {
-            sptr<IRemoteObject::DeathRecipient> deathRecipient =
-                new(std::nothrow) InteractionOperationDeathRecipient(parameter.windowId, treeIdSingle,
-                    currentAccountId_);
-            if (deathRecipient == nullptr) {
-                Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-                    A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-                HILOG_ERROR("Create interactionOperationDeathRecipient failed");
-                return;
-            }
-            bool result = operation->AsObject()->AddDeathRecipient(deathRecipient);
-            interactionOperationDeathMap_[parameter.windowId][treeIdSingle] = deathRecipient;
-            HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
-        }
-        }, "TASK_REGISTER_ELEMENT_OPERATOR");
-    return RET_OK;
-}
-
-void MockAccessibilityZoomGesture::DeleteConnectionAndDeathRecipient(
-    const int32_t windowId, const sptr<AccessibilityWindowConnection> &connection)
-{
-    HILOG_DEBUG();
-    if (!connection) {
-        HILOG_ERROR("connection is nullptr");
-        return;
-    }
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-        HILOG_ERROR("Get current account data failed!!");
-        return;
-    }
-
-    accountData->RemoveAccessibilityWindowConnection(windowId);
-    if (!connection->GetProxy()) {
-        HILOG_WARN("proxy is null");
-        return;
-    }
-    auto object = connection->GetProxy()->AsObject();
-    if (object) {
-        auto iter = interactionOperationDeathRecipients_.find(windowId);
-        if (iter != interactionOperationDeathRecipients_.end()) {
-            sptr<IRemoteObject::DeathRecipient> deathRecipient = iter->second;
-            bool result = object->RemoveDeathRecipient(deathRecipient);
-            HILOG_DEBUG("The result of deleting connection's death recipient is %{public}d", result);
-            interactionOperationDeathRecipients_.erase(iter);
-        }
-    }
-}
-
-RetError MockAccessibilityZoomGesture::DeregisterElementOperator(int32_t windowId)
-{
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    handler_->PostTask([=]() {
-        HILOG_INFO("Deregister windowId[%{public}d]", windowId);
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            return;
-        }
-        sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
-        if (!connection) {
-            HILOG_WARN("The operation of windowId[%{public}d] has not been registered.", windowId);
-            return;
-        }
-        accountData->RemoveAccessibilityWindowConnection(windowId);
-        StopCallbackWait(windowId);
-
-        if (!connection->GetProxy()) {
-            HILOG_ERROR("proxy is null");
-            return;
-        }
-
-        auto object = connection->GetProxy()->AsObject();
-        if (object) {
-            auto iter = interactionOperationDeathRecipients_.find(windowId);
-            if (iter != interactionOperationDeathRecipients_.end()) {
-                sptr<IRemoteObject::DeathRecipient> deathRecipient = iter->second;
-                bool result = object->RemoveDeathRecipient(deathRecipient);
-                HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
-                interactionOperationDeathRecipients_.erase(iter);
-            } else {
-                HILOG_INFO("cannot find remote object. windowId[%{public}d]", windowId);
-            }
-        }
-        }, "TASK_DEREGISTER_ELEMENT_OPERATOR");
-    return RET_OK;
-}
-
-RetError MockAccessibilityZoomGesture::DeregisterElementOperator(int32_t windowId, const int32_t treeId)
-{
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    handler_->PostTask([=]() {
-        HILOG_INFO("Deregister windowId[%{public}d], treeId[%{public}d] start", windowId, treeId);
-        RecycleTreeId(treeId);
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            return;
-        }
-        sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
-        if (connection == nullptr) {
-            HILOG_WARN("The operation of windowId[%{public}d] has not been registered.", windowId);
-            return;
-        }
-        StopCallbackWait(windowId, treeId);
-
-        if (!connection->GetCardProxy(treeId)) {
-            HILOG_ERROR("proxy is null");
-            return;
-        }
-
-        auto object = connection->GetCardProxy(treeId)->AsObject();
-        if (object) {
-            RemoveTreeDeathRecipient(windowId, treeId, connection);
-        }
-        }, "TASK_DEREGISTER_ELEMENT_OPERATOR");
-    return RET_OK;
-}
-
-void MockAccessibilityZoomGesture::RemoveTreeDeathRecipient(const int32_t windowId, const int32_t treeId,
-    const sptr<AccessibilityWindowConnection> connection)
-{
-    auto object = connection->GetCardProxy(treeId);
-    if (object == nullptr) {
-        HILOG_ERROR("GetCardProxy is null");
-        return;
-    }
-    auto remoteObject = object->AsObject();
-    connection->EraseProxy(treeId);
-    auto iter = interactionOperationDeathMap_.find(windowId);
-    if (iter != interactionOperationDeathMap_.end()) {
-        auto iterTree = iter->second.find(treeId);
-        if (iterTree != iter->second.end()) {
-            sptr<IRemoteObject::DeathRecipient> deathRecipient = iterTree->second;
-            bool result = remoteObject->RemoveDeathRecipient(deathRecipient);
-            HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
-            iter->second.erase(iterTree);
-        } else {
-            HILOG_ERROR("cannot find remote object. treeId[%{public}d]", treeId);
-        }
-    } else {
-        HILOG_ERROR("cannot find remote object. windowId[%{public}d]", windowId);
-    }
-}
-
-RetError MockAccessibilityZoomGesture::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
-{
-    return accessibilitySettings_->GetCaptionProperty(caption);
-}
-
-RetError MockAccessibilityZoomGesture::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
-{
-    return accessibilitySettings_->SetCaptionProperty(caption);
-}
-
-RetError MockAccessibilityZoomGesture::SetCaptionState(const bool state)
-{
-    return accessibilitySettings_->SetCaptionState(state);
-}
-
-bool MockAccessibilityZoomGesture::GetEnabledState()
-{
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return false;
-    }
-
-    ffrt::promise<bool> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(false);
-            return;
-        }
-        bool result = accountData->GetConfig()->GetEnabledState();
-        syncPromise.set_value(result);
-        }, "TASK_GET_ENABLE_STATE");
-    return syncFuture.get();
-}
-
-RetError MockAccessibilityZoomGesture::GetCaptionState(bool &state)
-{
-    return accessibilitySettings_->GetCaptionState(state);
-}
-
-bool MockAccessibilityZoomGesture::GetTouchGuideState()
-{
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return false;
-    }
-
-    ffrt::promise<bool> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(false);
-            return;
-        }
-        bool result = accountData->GetConfig()->GetTouchGuideState();
-        syncPromise.set_value(result);
-        }, "TASK_GET_TOUCH_GUIDE_STATE");
-    return syncFuture.get();
-}
-
-bool MockAccessibilityZoomGesture::GetGestureState()
-{
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return false;
-    }
-
-    ffrt::promise<bool> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(false);
-            return;
-        }
-        bool result = accountData->GetConfig()->GetGestureState();
-        syncPromise.set_value(result);
-        }, "TASK_GET_GESTURE_STATE");
-    return syncFuture.get();
-}
-
-bool MockAccessibilityZoomGesture::GetKeyEventObserverState()
-{
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return false;
-    }
-
-    ffrt::promise<bool> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(false);
-            return;
-        }
-        bool result = accountData->GetConfig()->GetKeyEventObserverState();
-        syncPromise.set_value(result);
-        }, "TASK_GET_KEY_EVENT_OBSERVER_STATE");
-    return syncFuture.get();
-}
-
-RetError MockAccessibilityZoomGesture::EnableAbility(const std::string &name, const uint32_t capabilities)
-{
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &name, &capabilities]() {
-        HILOG_DEBUG();
-        RetError result = InnerEnableAbility(name, capabilities);
-        syncPromise.set_value(result);
-        }, "TASK_ENABLE_ABILITIES");
-    return syncFuture.get();
-}
-
-bool MockAccessibilityZoomGesture::SetTargetAbility(const int32_t targetAbilityValue)
-{
-    HILOG_DEBUG();
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr");
-        return false;
-    }
-
-    bool state;
-    switch (targetAbilityValue) {
-        case HIGH_CONTRAST_TEXT:
-            state = accountData->GetConfig()->GetHighContrastTextState();
-            return SetHighContrastTextState(!state) == RET_OK;
-        case INVERT_COLOR:
-            state = accountData->GetConfig()->GetInvertColorState();
-            return SetInvertColorState(!state) == RET_OK;
-        case ANIMATION_OFF:
-            state = accountData->GetConfig()->GetAnimationOffState();
-            return SetAnimationOffState(!state) == RET_OK;
-        case SCREEN_MAGNIFICATION:
-            state = accountData->GetConfig()->GetScreenMagnificationState();
-            return SetScreenMagnificationState(!state) == RET_OK;
-        case AUDIO_MONO:
-            state = accountData->GetConfig()->GetAudioMonoState();
-            return SetAudioMonoState(!state) == RET_OK;
-        case MOUSE_KEY:
-            state = accountData->GetConfig()->GetMouseKeyState();
-            return SetMouseKeyState(!state) == RET_OK;
-        case CAPTION_STATE:
-            state = accountData->GetConfig()->GetCaptionState();
-            return SetCaptionState(!state) == RET_OK;
-        default:
-            return false;
-    }
-}
-
-bool MockAccessibilityZoomGesture::GetScreenReaderState()
-{
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr");
-        return false;
-    }
-    return accountData->GetScreenReaderState();
-}
-
-RetError MockAccessibilityZoomGesture::InnerEnableAbility(const std::string &name, const uint32_t capabilities)
-{
-    HILOG_DEBUG();
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr");
-        return RET_ERR_NULLPTR;
-    }
-    auto iter = removedAutoStartAbilities_.begin();
-    for (; iter != removedAutoStartAbilities_.end(); ++iter) {
-        if (*iter == name) {
-            removedAutoStartAbilities_.erase(iter);
+    for (auto &baseEvent : receivedPointerEvents_) {
+        if ((baseEvent.GetPointerId() == event.GetPointerId()) &&
+            (baseEvent.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN)) {
+            baseEvent.GetPointerItem(event.GetPointerId(), basePointerIterm);
+            xPointDown = basePointerIterm.GetDisplayX();
+            yPointDown = basePointerIterm.GetDisplayY();
+            actionTime = baseEvent.GetActionTime();
             break;
         }
     }
-    return accountData->EnableAbility(name, capabilities);
+
+    MMI::PointerEvent::PointerItem pointer = {};
+    event.GetPointerItem(draggingPid_, pointer);
+    pointer.SetDisplayX(xPointDown);
+    pointer.SetDisplayY(yPointDown);
+    event.RemovePointerItem(draggingPid_);
+    event.AddPointerItem(pointer);
+    event.SetActionTime(actionTime);
+    int32_t removePid = draggingPid_ == pIds[0] ? pIds[1] : pIds[0];
+    event.RemovePointerItem(removePid);
+    SendEventToMultimodal(event, ChangeAction::POINTER_DOWN);
+    draggingDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
 }
 
-RetError MockAccessibilityZoomGesture::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
+void MockZoomGesture::HandleTwoFingersDownStateMove(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
+    receivedPointerEvents_.push_back(event);
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &enabledAbilities]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        enabledAbilities = accountData->GetEnabledAbilities();
-        syncPromise.set_value(RET_OK);
-        }, "TASK_GET_ENABLE_ABILITIES");
-    return syncFuture.get();
-}
+    MMI::PointerEvent::PointerItem pointerIterm;
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
 
-RetError MockAccessibilityZoomGesture::SetCurtainScreenUsingStatus(bool isEnable)
-{
-    HILOG_DEBUG();
-    auto rsInterfaces = &(Rosen::RSInterfaces::GetInstance());
-    if (rsInterfaces == nullptr) {
-        HILOG_ERROR("rsInterfaces is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    HILOG_INFO("SetCurtainScreenUsingStatus: status = %{public}d", isEnable);
-    rsInterfaces->SetCurtainScreenUsingStatus(isEnable);
-    return RET_OK;
-}
-
-RetError MockAccessibilityZoomGesture::DisableAbility(const std::string &name)
-{
-    HILOG_INFO();
-    if (!actionHandler_) {
-        HILOG_ERROR("actionHandler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    actionHandler_->PostTask([this, &syncPromise, &name]() {
-        HILOG_DEBUG();
-        RetError result = InnerDisableAbility(name);
-        syncPromise.set_value(result);
-        }, "TASK_DISABLE_ABILITIES");
-    return syncFuture.get();
-}
-
-RetError MockAccessibilityZoomGesture::InnerDisableAbility(const std::string &name)
-{
-    HILOG_INFO();
-#ifdef OHOS_BUILD_ENABLE_HITRACE
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "InnerDisableAbility:" + name);
-#endif // OHOS_BUILD_ENABLE_HITRACE
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr");
-        return RET_ERR_NULLPTR;
-    }
-    if (accountData->GetConnectingA11yAbility(name) != nullptr) {
-        HILOG_WARN("refuse to disconnect ability %{public}s when connecting", name.c_str());
-        return RET_OK;
-    }
-    if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
-        ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
-        SetCurtainScreenUsingStatus(false);
-    }
-    RetError ret = accountData->RemoveEnabledAbility(name);
-    if (ret != RET_OK) {
-        HILOG_ERROR("RemoveEnabledAbility failed");
-        return ret;
-    }
-    accountData->SetAbilityAutoStartState(name, false);
-    accountData->RemoveConnectingA11yAbility(name);
-    accountData->UpdateAbilities();
-    return RET_OK;
-}
-
-RetError MockAccessibilityZoomGesture::EnableUITestAbility(const sptr<IRemoteObject> &obj)
-{
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    if (!obj) {
-        HILOG_ERROR("obj is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, obj]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        std::string uiTestUri = Utils::GetUri(UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
-        sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(uiTestUri);
-        if (connection) {
-            HILOG_ERROR("connection is existed!!");
-            syncPromise.set_value(RET_ERR_CONNECTION_EXIST);
-            return;
-        }
-
-        std::function<void()> addUITestClientFunc = std::bind(&AccessibilityAccountData::AddUITestClient, accountData,
-            obj, UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
-        handler_->PostTask(addUITestClientFunc, "AddUITestClient");
-        accountData->AddEnabledAbility(uiTestUri);
-        syncPromise.set_value(RET_OK);
-        }, "TASK_ENABLE_UI_TEST_ABILITIES");
-    return syncFuture.get();
-}
-
-RetError MockAccessibilityZoomGesture::DisableUITestAbility()
-{
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
-    ffrt::future syncFuture = syncPromise->get_future();
-    handler_->PostTask([this, syncPromise]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise->set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        std::string uiTestUri = Utils::GetUri(UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
-        sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(uiTestUri);
-        if (!connection) {
-            HILOG_ERROR("connection is not existed!!");
-            syncPromise->set_value(RET_ERR_NO_CONNECTION);
-            return;
-        }
-        std::function<void()> removeUITestClientFunc =
-            std::bind(&AccessibilityAccountData::RemoveUITestClient, accountData, connection, UI_TEST_BUNDLE_NAME);
-        handler_->PostTask(removeUITestClientFunc, "RemoveUITestClient");
-        accountData->RemoveEnabledAbility(uiTestUri);
-        syncPromise->set_value(RET_OK);
-        }, "TASK_DISABLE_UI_TEST_ABILITIES");
-
-    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != ffrt::future_status::ready) {
-        HILOG_ERROR("Failed to wait DisableUITestAbility result");
-        return RET_ERR_TIME_OUT;
-    }
-    return syncFuture.get();
-}
-
-int32_t MockAccessibilityZoomGesture::GetActiveWindow()
-{
-    HILOG_DEBUG();
-    return Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
-}
-
-bool MockAccessibilityZoomGesture::Init()
-{
-    HILOG_DEBUG();
-    Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
-    Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
-    Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
-    bool result = Singleton<AccessibilityWindowManager>::GetInstance().Init();
-    HILOG_DEBUG("wms init result is %{public}d", result);
-
-    int32_t retry = QUERY_USER_ID_RETRY_COUNT;
-    int32_t sleepTime = QUERY_USER_ID_SLEEP_TIME;
-    std::vector<int32_t> accountIds;
-    ErrCode ret = AccountSA::OsAccountManager::QueryActiveOsAccountIds(accountIds);
-    while (ret != ERR_OK || accountIds.size() == 0) {
-        HILOG_DEBUG("Query account information failed, left retry count:%{public}d", retry);
-        if (retry == 0) {
-            HILOG_ERROR("Query account information failed!!!");
-            break;
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
-        ret = AccountSA::OsAccountManager::QueryActiveOsAccountIds(accountIds);
-        retry--;
-    }
-
-    if (accountIds.size() > 0) {
-        HILOG_DEBUG("Query account information success, account id:%{public}d", accountIds[0]);
-        SwitchedUser(accountIds[0]);
-    }
-
-    return true;
-}
-
-void MockAccessibilityZoomGesture::InitInnerResource()
-{
-    UpdateSettingsInAtoHosTask();
-}
-
-void MockAccessibilityZoomGesture::InteractionOperationDeathRecipient::OnRemoteDied(
-    const wptr<IRemoteObject> &remote)
-{
-    Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-        A11yError::ERROR_TARGET_APPLICATION_DISCONNECT_ABNORMALLY);
-    HILOG_INFO();
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<MockAccessibilityZoomGesture>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        HILOG_ERROR("get accountData failed");
-        return;
-    }
-    int32_t currentAccountId = accountData->GetAccountId();
-    if (currentAccountId != accountId_) {
-        HILOG_ERROR("check accountId failed");
+    MMI::PointerEvent::PointerItem basePointerIterm;
+    if (!GetBasePointItem(basePointerIterm, event.GetPointerId())) {
+        HILOG_ERROR("get base point item failed, pid = %{public}d.", event.GetPointerId());
         return;
     }
 
-    if (treeId_ > 0) {
-        Singleton<MockAccessibilityZoomGesture>::GetInstance().DeregisterElementOperator(windowId_, treeId_);
-    } else {
-        Singleton<MockAccessibilityZoomGesture>::GetInstance().DeregisterElementOperator(windowId_);
-    }
-}
-
-sptr<AccessibilityAccountData> MockAccessibilityZoomGesture::GetCurrentAccountData()
-{
-    HILOG_DEBUG();
-    if (currentAccountId_ == -1) {
-        HILOG_ERROR("current account id is wrong");
-        return nullptr;
-    }
-
-    return a11yAccountsData_.GetCurrentAccountData(currentAccountId_);
-}
-
-sptr<AccessibilityAccountData> MockAccessibilityZoomGesture::GetAccountData(int32_t accountId)
-{
-    HILOG_DEBUG();
-    return a11yAccountsData_.GetAccountData(accountId);
-}
-
-std::vector<int32_t> MockAccessibilityZoomGesture::GetAllAccountIds()
-{
-    HILOG_DEBUG();
-    return a11yAccountsData_.GetAllAccountIds();
-}
-
-sptr<AppExecFwk::IBundleMgr> MockAccessibilityZoomGesture::GetBundleMgrProxy()
-{
-    HILOG_DEBUG();
-    if (bundleManager_) {
-        return bundleManager_;
-    }
-
-    sptr<ISystemAbilityManager> systemAbilityManager =
-        SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (!systemAbilityManager) {
-        HILOG_ERROR("failed:fail to get system ability mgr.");
-        return nullptr;
-    }
-
-    sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
-    if (!remoteObject) {
-        HILOG_ERROR("failed:fail to get bundle manager proxy.");
-        return nullptr;
-    }
-
-    bundleManager_ = iface_cast<AppExecFwk::IBundleMgr>(remoteObject);
-    if (!bundleManager_) {
-        HILOG_ERROR("fail to new bundle manager.");
-        return nullptr;
-    }
-
-    if (!bundleManagerDeathRecipient_) {
-        bundleManagerDeathRecipient_ = new(std::nothrow) BundleManagerDeathRecipient();
-        if (!bundleManagerDeathRecipient_) {
-            HILOG_ERROR("bundleManagerDeathRecipient_ is null");
-            return nullptr;
-        }
-    }
-
-    bundleManager_->AsObject()->AddDeathRecipient(bundleManagerDeathRecipient_);
-    return bundleManager_;
-}
-
-sptr<AccessibilityWindowConnection> MockAccessibilityZoomGesture::GetAccessibilityWindowConnection(
-    int32_t windowId)
-{
-    HILOG_DEBUG("windowId(%{public}d)", windowId);
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("Get account data failed");
-        return nullptr;
-    }
-    return accountData->GetAccessibilityWindowConnection(windowId);
-}
-
-void MockAccessibilityZoomGesture::ClearFocus(int32_t windowId)
-{
-    HILOG_DEBUG();
-    sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
-    if (connection && connection->GetProxy()) {
-        connection->GetProxy()->ClearFocus();
-    }
-}
-
-void MockAccessibilityZoomGesture::OutsideTouch(int32_t windowId)
-{
-    HILOG_DEBUG();
-    sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
-    if (connection && connection->GetProxy()) {
-        connection->GetProxy()->OutsideTouch();
-    }
-}
-
-void MockAccessibilityZoomGesture::SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector)
-{
-    HILOG_DEBUG();
-    touchEventInjector_ = touchEventInjector;
-}
-
-void MockAccessibilityZoomGesture::SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter)
-{
-    HILOG_DEBUG();
-    keyEventFilter_ = keyEventFilter;
-}
-
-void MockAccessibilityZoomGesture::StateCallbackDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &remote)
-{
-    Singleton<MockAccessibilityZoomGesture>::GetInstance().RemoveCallback(STATE_CALLBACK, this, remote);
-}
-
-void MockAccessibilityZoomGesture::CaptionPropertyCallbackDeathRecipient::OnRemoteDied(
-    const wptr<IRemoteObject> &remote)
-{
-    Singleton<MockAccessibilityZoomGesture>::GetInstance().RemoveCallback(CAPTION_PROPERTY_CALLBACK, this, remote);
-}
-
-void MockAccessibilityZoomGesture::EnableAbilityListsObserverDeathRecipient::OnRemoteDied(
-    const wptr<IRemoteObject> &remote)
-{
-    Singleton<MockAccessibilityZoomGesture>::GetInstance().RemoveCallback(
-        ENABLE_ABILITY_LISTS_CALLBACK, this, remote);
-}
-
-void MockAccessibilityZoomGesture::AddedUser(int32_t accountId)
-{
-    HILOG_DEBUG();
-    a11yAccountsData_.AddAccountData(accountId);
-}
-
-void MockAccessibilityZoomGesture::RemovedUser(int32_t accountId)
-{
-    HILOG_DEBUG();
-    if (accountId == currentAccountId_) {
-        HILOG_ERROR("Remove user failed, this account is current account.");
-        return;
-    }
-
-    auto accountData = a11yAccountsData_.RemoveAccountData(accountId);
-    if (accountData) {
-        accountData->GetConfig()->ClearData();
-        return;
-    }
-
-    HILOG_ERROR("accountId is not exist");
-}
-
-void MockAccessibilityZoomGesture::SwitchedUser(int32_t accountId)
-{
-    HILOG_DEBUG();
-
-    if (accountId == currentAccountId_) {
-        HILOG_WARN("The account is current account id.");
-        return;
-    }
-    OffZoomGesture();
-
-    std::map<std::string, uint32_t> importantEnabledAbilities;
-    SCREENREADER_STATE screenReaderState = SCREENREADER_STATE::UNINIT;
-    if (currentAccountId_ != -1) {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Current account data is null");
+    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
+    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    if (hypot(offsetX, offsetY) > TOUCH_SLOP * static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
+        HILOG_DEBUG("cancel two-finger tap gesture because finger move");
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        CancelPostEvent(DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG);
+        CancelPostEvent(DataShareHelperMsg::TWO_FINGER_LONG_PRESS_MSG);
+        if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
+            Clear();
+            SendScreenWakeUpEvent(event);
+            HILOG_ERROR("invalid pointer num, currentState is changed from TWO_FINGERS_DOWN to INVALID.");
+            SetCurrentState(DataShareHelperState::INVALID);
             return;
         }
-        defaultConfigCallbacks_ = accountData->GetConfigCallbacks();
-        screenReaderState = accountData->GetDefaultUserScreenReaderState() ?
-            SCREENREADER_STATE::ON : SCREENREADER_STATE::OFF;
-        accountData->GetImportantEnabledAbilities(importantEnabledAbilities);
-        accountData->OnAccountSwitched();
-        UpdateAccessibilityManagerService();
+        if (IsDragGestureAccept(event)) {
+            draggingPid_ = event.GetPointerId();
+            SendDragDownEventToMultimodal(event);
+            SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
+            HILOG_INFO("currentState is changed from TWO_FINGERS_DOWN to TWO_FINGERS_DRAG.");
+            SetCurrentState(DataShareHelperState::TWO_FINGERS_DRAG);
+        } else {
+            for (auto &receivedEvent : receivedPointerEvents_) {
+                SendEventToMultimodal(receivedEvent, ChangeAction::NO_CHANGE);
+            }
+            Clear();
+            HILOG_INFO("currentState is changed from TWO_FINGERS_DOWN to PASSING_THROUGH.");
+            SetCurrentState(DataShareHelperState::PASSING_THROUGH);
+        }
     }
-    currentAccountId_ = accountId;
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
+}
+
+void MockZoomGesture::SendUpForDragDownEvent()
+{
+    HILOG_DEBUG();
+    if (receivedPointerEvents_.empty()) {
+        HILOG_ERROR("received pointer event is null!");
         return;
     }
-    accountData->Init();
-    accountData->SetConfigCallbacks(defaultConfigCallbacks_);
-#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
-    float discount = accountData->GetConfig()->GetBrightnessDiscount();
-    if (!Singleton<AccessibilityPowerManager>::GetInstance().DiscountBrightness(discount)) {
-        HILOG_ERROR("Failed to set brightness discount");
+
+    MMI::PointerEvent lastMoveEvent = receivedPointerEvents_.back();
+    MMI::PointerEvent::PointerItem movePointerItem;
+    lastMoveEvent.GetPointerItem(lastMoveEvent.GetPointerId(), movePointerItem);
+    int32_t x = movePointerItem.GetDisplayX();
+    int32_t y = movePointerItem.GetDisplayY();
+
+    if (draggingDownEvent_ == nullptr) {
+        HILOG_ERROR("dragging down event is null!");
+        return;
     }
+    MMI::PointerEvent::PointerItem pointerItem = {};
+    draggingDownEvent_->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
+    draggingDownEvent_->GetPointerItem(draggingDownEvent_->GetPointerId(), pointerItem);
+    pointerItem.SetPressed(false);
+    pointerItem.SetDisplayX(x);
+    pointerItem.SetDisplayY(y);
+    draggingDownEvent_->RemovePointerItem(draggingDownEvent_->GetPointerId());
+    draggingDownEvent_->AddPointerItem(pointerItem);
+    SendEventToMultimodal(*draggingDownEvent_, ChangeAction::POINTER_UP);
+}
+
+void MockZoomGesture::HandleTwoFingersDragStateDown(MMI::PointerEvent &event)
+{
+    if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
+        SendUpForDragDownEvent();
+        Clear();
+        HILOG_ERROR("invalid pointer num, currentState is changed from TWO_FINGERS_DRAG to INVALID.");
+        SetCurrentState(DataShareHelperState::INVALID);
+    }
+}
+
+void MockZoomGesture::HandleTwoFingersDragStateUp(MMI::PointerEvent &event)
+{
+    if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        SendUpForDragDownEvent();
+        Clear();
+        HILOG_INFO("currentState is changed from TWO_FINGERS_DRAG to TOUCH_INIT.");
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
+    }
+}
+
+void MockZoomGesture::HandleTwoFingersDragStateMove(MMI::PointerEvent &event)
+{
+    std::vector<int32_t> pIds = event.GetPointerIds();
+    if (pIds.size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_2) || event.GetPointerId() != draggingPid_) {
+        return;
+    }
+
+    receivedPointerEvents_.push_back(event);
+
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    // Get densityPixels from WMS
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    auto display = displayMgr.GetDefaultDisplay();
+    float densityPixels = display->GetVirtualPixelRatio();
+    int32_t miniZoomPointerDistance = static_cast<int32_t>(MINI_POINTER_DISTANCE_DIP * densityPixels);
+#else
+    HILOG_DEBUG("not support display manager");
+    int32_t miniZoomPointerDistance = static_cast<int32_t>(MINI_POINTER_DISTANCE_DIP * 1);
 #endif
-    AccountSA::OsAccountType accountType = accountData->GetAccountType();
-    if (screenReaderState != SCREENREADER_STATE::UNINIT &&
-        (accountType == AccountSA::OsAccountType::PRIVATE || accountType == AccountSA::OsAccountType::ADMIN)) {
-        bool state = (screenReaderState == SCREENREADER_STATE::ON) ? true : false;
-        accountData->SetAbilityAutoStartState(SCREEN_READER_BUNDLE_ABILITY_NAME, state);
-        HILOG_INFO("set screenreader auto-start state = %{public}d", true);
-    }
 
-    if (accountData->GetInstalledAbilitiesFromBMS()) {
-        accountData->UpdateImportantEnabledAbilities(importantEnabledAbilities);
-        accountData->UpdateAbilities();
-        UpdateAccessibilityManagerService();
+    MMI::PointerEvent::PointerItem pointerF = {};
+    MMI::PointerEvent::PointerItem pointerS = {};
+    event.GetPointerItem(pIds[0], pointerF);
+    event.GetPointerItem(pIds[1], pointerS);
+    float xPointF = pointerF.GetDisplayX();
+    float xPointS = pointerS.GetDisplayX();
+    float yPointF = pointerF.GetDisplayY();
+    float yPointS = pointerS.GetDisplayY();
+    float offsetX = abs(xPointF - xPointS);
+    float offsetY = abs(yPointF - yPointS);
+    double duration = hypot(offsetX, offsetY);
+    if (duration > miniZoomPointerDistance) {
+        // Adjust this event's location.
+        MMI::PointerEvent::PointerItem pointer = {};
+        event.GetPointerItem(event.GetPointerId(), pointer);
+        pointer.SetDisplayX(pointer.GetDisplayX() + offsetX / DIVIDE_NUM);
+        pointer.SetDisplayY(pointer.GetDisplayY() + offsetY / DIVIDE_NUM);
+        event.RemovePointerItem(event.GetPointerId());
+        event.AddPointerItem(pointer);
     }
-    UpdateAllSetting();
-    UpdateAutoStartAbilities();
-    RegisterShortKeyEvent();
-    RegisterScreenMagnificationState();
-    RegisterScreenMagnificationType();
+    int32_t removePid = draggingPid_ == pIds[0]? pIds[1] : pIds[0];
+    event.RemovePointerItem(removePid);
+    SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
 }
 
-void MockAccessibilityZoomGesture::PackageRemoved(const std::string &bundleName)
+bool MockZoomGesture::GetPointerItemWithFingerNum(uint32_t fingerNum,
+    std::vector<MMI::PointerEvent::PointerItem> &curPoints,
+    std::vector<MMI::PointerEvent::PointerItem> &prePoints, MMI::PointerEvent &event)
 {
-    sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
-    if (!packageAccount) {
-        HILOG_ERROR("packageAccount is nullptr.");
-        return;
-    }
-
-    packageAccount->DelAutoStartPrefKeyInRemovePkg(bundleName);
-    std::vector<std::string> multiTarget = packageAccount->GetConfig()->GetShortkeyMultiTarget();
-    std::string name = packageAccount->GetConfig()->GetShortkeyTarget();
-    auto installedAbilities_ = packageAccount->GetInstalledAbilities();
-    for (auto &installAbility : installedAbilities_) {
-        std::string abilityId = installAbility.GetId();
-        HILOG_DEBUG("abilityId%{public}s", abilityId.c_str());
-        if (bundleName != installAbility.GetPackageName()) {
-            continue;
-        }
-        if (std::find(removedAutoStartAbilities_.begin(), removedAutoStartAbilities_.end(), abilityId)
-            == removedAutoStartAbilities_.end()) {
-            removedAutoStartAbilities_.push_back(abilityId);
-        }
-        // no use later version
-        if (abilityId == name) {
-            std::string targetName = "";
-            packageAccount->GetConfig()->SetShortkeyTarget(targetName);
-            UpdateShortkeyTarget();
-        }
-        // multi
-        for (const auto &target : multiTarget) {
-            if (target == abilityId) {
-                packageAccount->GetConfig()->SetShortkeyMultiTargetInPkgRemove(abilityId);
-                UpdateShortkeyMultiTarget();
+    HILOG_DEBUG();
+    bool findPrePointer = false;
+    std::vector<int32_t> pIds = event.GetPointerIds();
+    for (int32_t i = 0; i < static_cast<int32_t>(fingerNum); i++) {
+        findPrePointer = false;
+        event.GetPointerItem(pIds[i], curPoints[i]);
+        for (auto &preEvent : receivedPointerEvents_) {
+            if ((preEvent.GetPointerId() == i) &&
+                (preEvent.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN)) {
+                findPrePointer = true;
+                preEvent.GetPointerItem(i, prePoints[i]);
+                break;
             }
         }
-    }
-
-    if (packageAccount->RemoveAbility(bundleName)) {
-        HILOG_DEBUG("ability%{public}s removed!", bundleName.c_str());
-        UpdateAccessibilityManagerService();
-    }
-}
-
-void MockAccessibilityZoomGesture::PackageAdd(const std::string &bundleName)
-{
-    sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
-    if (!packageAccount) {
-        HILOG_ERROR("packageAccount is nullptr");
-        return;
-    }
-    for (auto &abilityId : removedAutoStartAbilities_) {
-        if (packageAccount->GetAbilityAutoStartState(abilityId)) {
-            packageAccount->SetAbilityAutoStartState(abilityId, false);
+        if (!findPrePointer) {
+            HILOG_ERROR("get prePointerItem(%{public}d) failed", i);
+            return false;
         }
     }
-    packageAccount->AddAbility(bundleName);
+    return true;
 }
 
-void MockAccessibilityZoomGesture::PackageChanged(const std::string &bundleName)
+bool MockZoomGesture::IsMultiFingerMultiTap(MMI::PointerEvent &event, const uint32_t fingerNum)
 {
-    sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
-    if (!packageAccount) {
-        HILOG_ERROR("packageAccount is nullptr");
-        return;
+    HILOG_DEBUG();
+    std::vector<MMI::PointerEvent::PointerItem> curPoints(fingerNum);
+    std::vector<MMI::PointerEvent::PointerItem> prePoints(fingerNum);
+    if (!GetPointerItemWithFingerNum(fingerNum, curPoints, prePoints, event)) {
+        return false;
     }
 
-    bool isNeedUpdateShortKeyTarget = false;
-    std::string target = packageAccount->GetConfig()->GetShortkeyTarget();
-    if (target.substr(0, target.find("/")) == bundleName) {
-        isNeedUpdateShortKeyTarget = true;
-    }
-    std::vector<std::string> multiTarget = packageAccount->GetConfig()->GetShortkeyMultiTarget();
+    std::vector<int32_t> excludePid(fingerNum, -1);
+    for (auto curPoint : curPoints) {
+        float moveDelta = FLT_MAX;
+        int32_t nearestPid = -1;
+        int32_t curX = curPoint.GetDisplayX();
+        int32_t curY = curPoint.GetDisplayY();
+        for (auto prePoint : prePoints) {
+            int32_t pId = prePoint.GetPointerId();
+            if (std::find(excludePid.begin(), excludePid.end(), pId) != excludePid.end()) {
+                continue;
+            }
+            int32_t preX = prePoint.GetDisplayX();
+            int32_t preY = prePoint.GetDisplayY();
+            int32_t offsetX = curX - preX;
+            int32_t offsetY = curY - preY;
+            if (offsetX == 0 && offsetY == 0) {
+                nearestPid = pId;
+                moveDelta = 0;
+                break;
+            }
 
-    packageAccount->ChangeAbility(bundleName);
-    UpdateAccessibilityManagerService();
-
-    std::vector<std::string> sameBundleTarget;
-    auto installedAbilities_ = packageAccount->GetInstalledAbilities();
-    for (auto &installAbility : installedAbilities_) {
-        std::string abilityId = installAbility.GetId();
-        if (bundleName != installAbility.GetPackageName()) {
-            continue;
+            float delta = hypot(offsetX, offsetY);
+            if (delta < moveDelta) {
+                moveDelta = delta;
+                nearestPid = pId;
+            }
         }
-        if (abilityId == target) {
-            isNeedUpdateShortKeyTarget = false;
-        }
-        sameBundleTarget.push_back(abilityId);
-    }
-
-    if (isNeedUpdateShortKeyTarget) {
-        packageAccount->GetConfig()->SetShortkeyTarget("");
-        UpdateShortkeyTarget();
-    }
-    std::vector<std::string> tmpAbilities = multiTarget;
-    bool isNeedUpdateShortKeyMultiTarget = false;
-    Utils::SelectUsefulFromVecWithSameBundle(tmpAbilities, sameBundleTarget,
-        isNeedUpdateShortKeyMultiTarget, bundleName);
-    if (isNeedUpdateShortKeyMultiTarget) {
-        packageAccount->GetConfig()->SetShortkeyMultiTarget(tmpAbilities);
-        UpdateShortkeyMultiTarget();
-    }
-}
-
-void MockAccessibilityZoomGesture::ElementOperatorCallbackImpl::SetFindFocusedElementInfoResult(
-    const AccessibilityElementInfo &info, const int32_t requestId)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    if (Singleton<MockAccessibilityZoomGesture>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-        info.GetAccessibilityId()) == RET_OK) {
-        HILOG_DEBUG("VerifyingToKenId ok");
-        accessibilityInfoResult_ = info;
-        promise_.set_value();
-    } else {
-        HILOG_DEBUG("VerifyingToKenId failed");
-        promise_.set_value();
-    }
-}
-
-void MockAccessibilityZoomGesture::ElementOperatorCallbackImpl::SetSearchElementInfoByTextResult(
-    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    for (auto info : infos) {
-        if (Singleton<MockAccessibilityZoomGesture>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId()) == RET_OK) {
-            HILOG_DEBUG("VerifyingToKenId ok");
+        if (moveDelta < multiTapOffsetThresh_ * fingerNum) {
+            excludePid.push_back(nearestPid);
         } else {
-            HILOG_DEBUG("VerifyingToKenId failed");
-            elementInfosResult_.clear();
-            promise_.set_value();
-            return;
-        }
-        elementInfosResult_ = infos;
-    }
-    promise_.set_value();
-}
-
-void MockAccessibilityZoomGesture::ElementOperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
-    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    for (auto info : infos) {
-        if (Singleton<MockAccessibilityZoomGesture>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId()) == RET_OK) {
-            HILOG_DEBUG("VerifyingToKenId ok");
-        } else {
-            HILOG_DEBUG("VerifyingToKenId failed");
-            elementInfosResult_.clear();
-            promise_.set_value();
-            return;
-        }
-        elementInfosResult_ = infos;
-    }
-    promise_.set_value();
-}
-
-void MockAccessibilityZoomGesture::ElementOperatorCallbackImpl::SetFocusMoveSearchResult(
-    const AccessibilityElementInfo &info, const int32_t requestId)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    if (Singleton<MockAccessibilityZoomGesture>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-        info.GetAccessibilityId()) == RET_OK) {
-        HILOG_DEBUG("VerifyingToKenId ok");
-        accessibilityInfoResult_ = info;
-        promise_.set_value();
-    } else {
-        HILOG_DEBUG("VerifyingToKenId failed");
-        promise_.set_value();
-    }
-}
-
-void MockAccessibilityZoomGesture::ElementOperatorCallbackImpl::SetExecuteActionResult(const bool succeeded,
-    const int32_t requestId)
-{
-    HILOG_DEBUG("Response [result:%{public}d, requestId:%{public}d]", succeeded, requestId);
-    executeActionResult_ = succeeded;
-    promise_.set_value();
-}
-
-void MockAccessibilityZoomGesture::ElementOperatorCallbackImpl::SetCursorPositionResult(const int32_t cursorPosition,
-    const int32_t requestId)
-{
-    HILOG_INFO("ElementOperatorCallbackImpl::SetCursorPositionResult [result:%{public}d]",
-        cursorPosition);
-    HILOG_DEBUG("cursorPosition [result:%{public}d, requestId:%{public}d]", cursorPosition, requestId);
-    callCursorPosition_ = cursorPosition;
-    promise_.set_value();
-}
-
-bool MockAccessibilityZoomGesture::GetParentElementRecursively(int32_t windowId, int64_t elementId,
-    std::vector<AccessibilityElementInfo>& infos)
-{
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("GetCurrentAccountData failed");
-        return false;
-    }
-
-    int32_t treeId = 0;
-    sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
-    if (!connection) {
-        HILOG_ERROR("GetAccessibilityWindowConnection failed");
-        return false;
-    }
-
-    if (elementId > 0) {
-        treeId = GetTreeIdBySplitElementId(elementId);
-        elementOperator = connection->GetCardProxy(treeId);
-    } else {
-        elementOperator = connection->GetProxy();
-    }
-    if (elementOperator == nullptr) {
-        HILOG_DEBUG("elementOperator failed elementId: %{public}" PRId64 " winId: %{public}d treeId: %{public}d",
-            elementId, windowId, treeId);
-        return false;
-    }
-    sptr<ElementOperatorCallbackImpl> callBack = new(std::nothrow) ElementOperatorCallbackImpl();
-    if (callBack == nullptr) {
-        HILOG_ERROR("Failed to create callBack.");
-        return false;
-    }
-
-    ffrt::future<void> promiseFuture = callBack->promise_.get_future();
-    int32_t requestId = GenerateRequestId();
-    AddRequestId(windowId, treeId, requestId, callBack);
-    elementOperator->SearchElementInfoByAccessibilityId(elementId, requestId, callBack, 0);
-    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (waitFocus != ffrt::future_status::ready) {
-        ipcTimeoutNum_++;
-        HILOG_ERROR("Failed to wait result, number %{public}" PRId64 "", ipcTimeoutNum_);
-        return false;
-    }
-
-    for (auto& info : callBack->elementInfosResult_) {
-        if (info.GetAccessibilityId() == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
-            HILOG_ERROR("SearchElementInfoByAccessibilityId elementInfo from ace is wrong");
             return false;
         }
     }
 
-    infos = callBack->elementInfosResult_;
-    HILOG_DEBUG("Get parent element success, size %{public}zu", infos.size());
     return true;
+}
+
+bool MockZoomGesture::IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, const uint32_t fingerNum)
+{
+    HILOG_DEBUG();
+    if (IsMultiFingerMultiTap(event, fingerNum)) {
+        multiTapNum_ = multiTapNum_ + 1;
+        HILOG_DEBUG("%{public}d finger %{public}d tap is recognized", static_cast<int32_t>(fingerNum),
+            multiTapNum_ + 1);
+    } else {
+        Clear();
+        HILOG_ERROR("invalid gesture, currentState is changed from %{public}d to INVALID.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::INVALID);
+        return false;
+    }
+
+    uint32_t fingerNumIndex = fingerNum - 2;
+    handler_->SendEvent(static_cast<uint32_t>(GESTURE_TAP_MSG[multiTapNum_][fingerNumIndex]), 0,
+        static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
+    handler_->SendEvent(static_cast<uint32_t>(GESTURE_HOLD_MSG[multiTapNum_][fingerNumIndex]), 0,
+        static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
+    return true;
+}
+
+void MockZoomGesture::HandleMultiFingersTapStateDown(MMI::PointerEvent &event, uint32_t fingerNum)
+{
+    receivedPointerEvents_.push_back(event);
+    CancelMultiFingerTapEvent();
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+
+    if (multiTapNum_ == TAP_COUNT_MAXIMUM - 1) {
+        Clear();
+        HILOG_ERROR("Exceeds max continuous tap count, currentState is changed from %{public}d to INVALID.",
+            GetCurrentState());
+        SetCurrentState(DataShareHelperState::INVALID);
+        return;
+    }
+
+    uint32_t pointerSize = event.GetPointerIds().size();
+    if (pointerSize < fingerNum) {
+        handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG), 0,
+            static_cast<int32_t>(TimeoutDuration::MULTI_FINGER_TAP_INTERVAL_TIMEOUT));
+    } else if (pointerSize == fingerNum) {
+        if (IsMultiFingerMultiTapGesture(event, fingerNum)) {
+            if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
+                HILOG_INFO("currentState is changed from TWO_FINGERS_TAP to TWO_FINGERS_CONTINUE_DOWN.");
+                SetCurrentState(DataShareHelperState::TWO_FINGERS_CONTINUE_DOWN);
+            } else if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
+                HILOG_INFO("currentState is changed from THREE_FINGERS_TAP to THREE_FINGERS_CONTINUE_DOWN.");
+                SetCurrentState(DataShareHelperState::THREE_FINGERS_CONTINUE_DOWN);
+            } else {
+                HILOG_INFO("currentState is changed from FOUR_FINGERS_TAP to FOUR_FINGERS_CONTINUE_DOWN.");
+                SetCurrentState(DataShareHelperState::FOUR_FINGERS_CONTINUE_DOWN);
+            }
+        }
+    } else {
+        Clear();
+        HILOG_INFO("invalid pointer num, currentState is changed from TWO_FINGERS_TAP to INVALID.");
+        SetCurrentState(DataShareHelperState::INVALID);
+    }
+}
+
+void MockZoomGesture::HandleTwoFingersTapStateDown(MMI::PointerEvent &event)
+{
+    HandleMultiFingersTapStateDown(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_2));
+}
+
+void MockZoomGesture::HandleMultiFingersTapStateUp(MMI::PointerEvent &event)
+{
+    Clear();
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+
+    uint32_t pointerSize = event.GetPointerIds().size();
+    if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
+    } else {
+        HILOG_ERROR("receive up event, currentState is changed from %{public}d to INVALID.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::INVALID);
+    }
+}
+
+void MockZoomGesture::HandleMultiFingersTapStateMove(MMI::PointerEvent &event, uint32_t fingerNum)
+{
+    if (event.GetPointerIds().size() >= fingerNum) {
+        Clear();
+        HILOG_ERROR("invalid pointer num, currentState is changed from %{public}d to INVALID.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::INVALID);
+        return;
+    }
+
+    receivedPointerEvents_.push_back(event);
+
+    MMI::PointerEvent::PointerItem pointerIterm;
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+
+    MMI::PointerEvent::PointerItem basePointerIterm;
+    if (!GetBasePointItem(basePointerIterm, event.GetPointerId())) {
+        HILOG_ERROR("get base point item failed, pid = %{public}d.", event.GetPointerId());
+        return;
+    }
+
+    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
+    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    if (hypot(offsetX, offsetY) > TOUCH_SLOP * (fingerNum - 1)) {
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        Clear();
+        HILOG_ERROR("receive move event, currentState is changed from %{public}d to INVALID.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::INVALID);
+    }
+
+    SendScreenWakeUpEvent(event);
+}
+
+void MockZoomGesture::HandleTwoFingersTapStateMove(MMI::PointerEvent &event)
+{
+    HandleMultiFingersTapStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_2));
+}
+
+void MockZoomGesture::HandleMultiFingersContinueDownStateDown(MMI::PointerEvent &event)
+{
+    CancelMultiFingerTapEvent();
+    CancelMultiFingerTapAndHoldEvent();
+    Clear();
+    HILOG_ERROR("receive down event, currentState is changed from %{public}d to INVALID.", GetCurrentState());
+    SetCurrentState(DataShareHelperState::INVALID);
+}
+
+void MockZoomGesture::HandleMultiFingersContinueDownStateUp(MMI::PointerEvent &event, uint32_t fingerNum)
+{
+    receivedPointerEvents_.push_back(event);
+    CancelMultiFingerTapAndHoldEvent();
+
+    uint32_t pointerSize = event.GetPointerIds().size();
+    if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
+            HILOG_INFO("currentState is changed from TWO_FINGERS_CONTINUE_DOWN to TWO_FINGERS_TAP.");
+            SetCurrentState(DataShareHelperState::TWO_FINGERS_TAP);
+        } else if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
+            HILOG_INFO("currentState is changed from THREE_FINGERS_CONTINUE_DOWN to THREE_FINGERS_TAP.");
+            SetCurrentState(DataShareHelperState::THREE_FINGERS_TAP);
+        } else {
+            HILOG_INFO("currentState is changed from FOUR_FINGERS_CONTINUE_DOWN to FOUR_FINGERS_TAP.");
+            SetCurrentState(DataShareHelperState::FOUR_FINGERS_TAP);
+        }
+    } else if (pointerSize > fingerNum) {
+        CancelMultiFingerTapEvent();
+        Clear();
+        HILOG_ERROR("invalid pointer num, currentState is changed from %{public}d to INVALID.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::INVALID);
+    }
+}
+
+void MockZoomGesture::HandleTwoFingersContinueDownStateUp(MMI::PointerEvent &event)
+{
+    HandleMultiFingersContinueDownStateUp(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_2));
+}
+
+void MockZoomGesture::HandleMultiFingersContinueDownStateMove(MMI::PointerEvent &event, uint32_t fingerNum)
+{
+    receivedPointerEvents_.push_back(event);
+
+    MMI::PointerEvent::PointerItem pointerIterm;
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+
+    MMI::PointerEvent::PointerItem basePointerIterm;
+    if (!GetBasePointItem(basePointerIterm, event.GetPointerId())) {
+        HILOG_ERROR("get base point item failed, pid = %{public}d.", event.GetPointerId());
+        return;
+    }
+
+    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
+    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    if (hypot(offsetX, offsetY) > TOUCH_SLOP * fingerNum) {
+        Clear();
+        CancelMultiFingerTapEvent();
+        CancelMultiFingerTapAndHoldEvent();
+        HILOG_ERROR("receive move event, currentState is changed from %{public}d to INVALID.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::INVALID);
+    }
+
+    SendScreenWakeUpEvent(event);
+}
+
+void MockZoomGesture::HandleTwoFingersContinueDownStateMove(MMI::PointerEvent &event)
+{
+    HandleMultiFingersContinueDownStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_2));
+}
+
+void MockZoomGesture::HandleTwoFingersUnknownStateDown(MMI::PointerEvent &event)
+{
+    if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
+        receivedPointerEvents_.push_back(event);
+        return;
+    }
+
+    Clear();
+    HILOG_ERROR("receive down event, currentState is changed from TWO_FINGERS_UNKNOWN to INVALID.");
+    SetCurrentState(DataShareHelperState::INVALID);
+}
+
+void MockZoomGesture::HandleTwoFingersUnknownStateUp(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+    if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        Clear();
+        HILOG_INFO("currentState is changed from TWO_FINGERS_UNKNOWN to TOUCH_INIT.");
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
+    }
+}
+
+void MockZoomGesture::HandleTwoFingersUnknownStateMove(MMI::PointerEvent &event)
+{
+    if ((event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) ||
+        (event.GetPointerId() != draggingPid_)) {
+        return;
+    }
+
+    receivedPointerEvents_.push_back(event);
+
+    std::vector<int32_t> pIds = event.GetPointerIds();
+    if (IsDragGestureAccept(event)) {
+        int32_t removePid = draggingPid_ == pIds[0] ? pIds[1] : pIds[0];
+        event.RemovePointerItem(removePid);
+        SendEventToMultimodal(event, ChangeAction::POINTER_DOWN);
+        draggingDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
+        HILOG_INFO("currentState is changed from TWO_FINGERS_UNKNOWN to TWO_FINGERS_DRAG.");
+        SetCurrentState(DataShareHelperState::TWO_FINGERS_DRAG);
+        return;
+    }
+}
+
+void MockZoomGesture::HandleThreeFingersDownStateDown(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_LONG_PRESS_MSG);
+
+    if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_4)) {
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        Clear();
+        HILOG_ERROR("invalid pointer num, currentState is changed from THREE_FINGERS_DOWN to INVALID.");
+        SetCurrentState(DataShareHelperState::INVALID);
+        return;
+    }
+
+    if (!handler_->HasInnerEvent(static_cast<uint32_t>(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG))) {
+        Clear();
+        HILOG_ERROR("timeout, currentState is changed from THREE_FINGERS_DOWN to INVALID.");
+        SetCurrentState(DataShareHelperState::INVALID);
+        return;
+    }
+
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG), 0,
+        static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
+    handler_->SendEvent(static_cast<uint32_t>(DataShareHelperMsg::FOUR_FINGER_LONG_PRESS_MSG), 0,
+        static_cast<int32_t>(TimeoutDuration::DOUBLE_TAP_TIMEOUT));
+    HILOG_INFO("currentState is changed from THREE_FINGERS_DOWN to FOUR_FINGERS_DOWN.");
+    SetCurrentState(DataShareHelperState::FOUR_FINGERS_DOWN);
+}
+
+void MockZoomGesture::HandleThreeFingersDownStateUp(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+    CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_LONG_PRESS_MSG);
+
+    uint32_t pointerSize = event.GetPointerIds().size();
+    if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        HILOG_INFO("currentState is changed from THREE_FINGERS_DOWN to THREE_FINGERS_TAP.");
+        SetCurrentState(DataShareHelperState::THREE_FINGERS_TAP);
+    } else if (pointerSize > static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
+        CancelPostEvent(DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG);
+        Clear();
+        HILOG_ERROR("invalid pointer num, currentState is changed from THREE_FINGERS_DOWN to INVALID.");
+        SetCurrentState(DataShareHelperState::INVALID);
+    }
+}
+
+void MockZoomGesture::StoreMultiFingerSwipeBaseDownPoint()
+{
+    HILOG_DEBUG();
+    for (auto& event : receivedPointerEvents_) {
+        if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN) {
+            Pointer mp;
+            MMI::PointerEvent::PointerItem pointerIterm;
+            std::vector<Pointer> mpVec;
+            int32_t pId = event.GetPointerId();
+            event.GetPointerItem(pId, pointerIterm);
+            mp.px_ = static_cast<float>(pointerIterm.GetDisplayX());
+            mp.py_ = static_cast<float>(pointerIterm.GetDisplayY());
+            mpVec.push_back(mp);
+            multiFingerSwipeRoute_.insert(std::make_pair(pId, mpVec));
+            multiFingerSwipePrePoint_[event.GetPointerId()] = std::make_shared<MMI::PointerEvent>(event);
+        }
+    }
+}
+
+void MockZoomGesture::HandleThreeFingersDownStateMove(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+
+    MMI::PointerEvent::PointerItem pointerIterm;
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+
+    MMI::PointerEvent::PointerItem basePointerIterm;
+    if (!GetBasePointItem(basePointerIterm, event.GetPointerId())) {
+        HILOG_ERROR("get base point item failed, pid = %{public}d.", event.GetPointerId());
+        return;
+    }
+
+    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
+    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    if (hypot(offsetX, offsetY) > TOUCH_SLOP * static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
+        CancelPostEvent(DataShareHelperMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
+        CancelPostEvent(DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG);
+        CancelPostEvent(DataShareHelperMsg::THREE_FINGER_LONG_PRESS_MSG);
+        if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
+            Clear();
+            SendScreenWakeUpEvent(event);
+            HILOG_ERROR("invalid pointer num, currentState is changed from THREE_FINGERS_DOWN to INVALID.");
+            SetCurrentState(DataShareHelperState::INVALID);
+            return;
+        }
+        StoreMultiFingerSwipeBaseDownPoint();
+        multiFingerSwipeDirection_ = GetSwipeDirection(offsetX, offsetY);
+        HILOG_INFO("currentState is changed from THREE_FINGERS_DOWN to THREE_FINGERS_SWIPE.");
+        SetCurrentState(DataShareHelperState::THREE_FINGERS_SWIPE);
+    }
+
+    SendScreenWakeUpEvent(event);
+}
+
+void MockZoomGesture::HandleThreeFingersSwipeStateDown(MMI::PointerEvent &event)
+{
+    Clear();
+    HILOG_ERROR("receive down event, currentState is changed from THREE_FINGERS_SWIPE to INVALID.");
+    SetCurrentState(DataShareHelperState::INVALID);
+}
+
+bool MockZoomGesture::GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerIterm,
+    int32_t pId)
+{
+    HILOG_DEBUG();
+    if (multiFingerSwipePrePoint_.count(pId) == 0 || !multiFingerSwipePrePoint_[pId]) {
+        HILOG_ERROR("get base pointEvent(%{public}d) failed", pId);
+        return false;
+    }
+    multiFingerSwipePrePoint_[pId]->GetPointerItem(pId, basePointerIterm);
+    return true;
+}
+
+bool MockZoomGesture::SaveMultiFingerSwipeGesturePointerInfo(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+    MMI::PointerEvent::PointerItem pointerIterm;
+    int32_t pId = event.GetPointerId();
+    event.GetPointerItem(pId, pointerIterm);
+
+    MMI::PointerEvent::PointerItem basePointerIterm;
+    if (!GetMultiFingerSwipeBasePointerItem(basePointerIterm, pId)) {
+        HILOG_WARN("get base point item failed, pid = %{public}d.", pId);
+        return true;
+    }
+
+    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
+    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    if (abs(offsetX) > mMinPixelsBetweenSamplesX_ || abs(offsetY) > mMinPixelsBetweenSamplesY_) {
+        if (multiFingerSwipeDirection_ != GetSwipeDirection(offsetX, offsetY)) {
+            Clear();
+            if ((event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) &&
+                (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1))) {
+                HILOG_INFO("direction changed, currentState is changed from THREE_FINGERS_SWIPE to TOUCH_INIT.");
+                SetCurrentState(DataShareHelperState::TOUCH_INIT);
+            } else {
+                HILOG_INFO("direction changed, currentState is changed from THREE_FINGERS_SWIPE to INVALID.");
+                SetCurrentState(DataShareHelperState::INVALID);
+            }
+            return false;
+        }
+
+        Pointer mp;
+        mp.px_ = static_cast<float>(pointerIterm.GetDisplayX());
+        mp.py_ = static_cast<float>(pointerIterm.GetDisplayY());
+        multiFingerSwipeRoute_[pId].push_back(mp);
+        multiFingerSwipePrePoint_[pId] = std::make_shared<MMI::PointerEvent>(event);
+    }
+
+    return true;
+}
+
+bool MockZoomGesture::RecognizeMultiFingerSwipePath(const std::vector<Pointer> &path)
+{
+    HILOG_DEBUG();
+    if (path.size() < MIN_MULTI_FINGER_SWIPE_POINTER_NUM) {
+        return false;
+    }
+
+    int pathSize = static_cast<int>(path.size() - 1);
+    for (int routerIndex = 0; routerIndex < pathSize; routerIndex++) {
+        int32_t dx = static_cast<int32_t>(path[routerIndex + 1].px_ - path[routerIndex].px_);
+        int32_t dy = static_cast<int32_t>(path[routerIndex + 1].py_ - path[routerIndex].py_);
+        if (GetSwipeDirection(dx, dy) != multiFingerSwipeDirection_) {
+            return false;
+        }
+    }
+    return true;
+}
+
+GestureType MockZoomGesture::GetMultiFingerSwipeGestureId(uint32_t fingerNum)
+{
+    HILOG_DEBUG();
+    if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
+        switch (multiFingerSwipeDirection_) {
+            case SWIPE_LEFT:
+                return GestureType::GESTURE_THREE_FINGER_SWIPE_LEFT;
+            case SWIPE_RIGHT:
+                return GestureType::GESTURE_THREE_FINGER_SWIPE_RIGHT;
+            case SWIPE_UP:
+                return GestureType::GESTURE_THREE_FINGER_SWIPE_UP;
+            case SWIPE_DOWN:
+                return GestureType::GESTURE_THREE_FINGER_SWIPE_DOWN;
+            default:
+                return GestureType::GESTURE_INVALID;
+        }
+    } else if (fingerNum == static_cast<uint32_t>(PointerCount::POINTER_COUNT_4)) {
+        switch (multiFingerSwipeDirection_) {
+            case SWIPE_LEFT:
+                return GestureType::GESTURE_FOUR_FINGER_SWIPE_LEFT;
+            case SWIPE_RIGHT:
+                return GestureType::GESTURE_FOUR_FINGER_SWIPE_RIGHT;
+            case SWIPE_UP:
+                return GestureType::GESTURE_FOUR_FINGER_SWIPE_UP;
+            case SWIPE_DOWN:
+                return GestureType::GESTURE_FOUR_FINGER_SWIPE_DOWN;
+            default:
+                return GestureType::GESTURE_INVALID;
+        }
+    }
+    return GestureType::GESTURE_INVALID;
+}
+
+void MockZoomGesture::HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, uint32_t fingerNum)
+{
+    receivedPointerEvents_.push_back(event);
+
+    if (!SaveMultiFingerSwipeGesturePointerInfo(event)) {
+        return;
+    }
+
+    if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        for (int32_t pIndex = 0; pIndex < static_cast<int32_t>(fingerNum); pIndex++) {
+            if (multiFingerSwipeRoute_.count(pIndex) == 0 ||
+                multiFingerSwipeRoute_[pIndex].size() < MIN_MULTI_FINGER_SWIPE_POINTER_NUM) {
+                Clear();
+                HILOG_ERROR("invalid route, currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
+                SetCurrentState(DataShareHelperState::TOUCH_INIT);
+                return;
+            }
+            if (!RecognizeMultiFingerSwipePath(multiFingerSwipeRoute_[pIndex])) {
+                Clear();
+                HILOG_ERROR("fail to parse swipe direction, currentState is changed from %{public}d to TOUCH_INIT.",
+                    GetCurrentState());
+                SetCurrentState(DataShareHelperState::TOUCH_INIT);
+                return;
+            }
+        }
+
+        GestureType gestureId = GetMultiFingerSwipeGestureId(fingerNum);
+        SendGestureEventToAA(gestureId);
+        Clear();
+        HILOG_INFO("currentState is changed from %{public}d to TOUCH_INIT.", GetCurrentState());
+        SetCurrentState(DataShareHelperState::TOUCH_INIT);
+    }
+}
+
+void MockZoomGesture::HandleThreeFingersSwipeStateUp(MMI::PointerEvent &event)
+{
+    HandleMultiFingersSwipeStateUp(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_3));
+}
+
+void MockZoomGesture::HandleThreeFingersSwipeStateMove(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+    SaveMultiFingerSwipeGesturePointerInfo(event);
+    SendScreenWakeUpEvent(event);
+}
+
+void MockZoomGesture::HandleThreeFingersTapStateDown(MMI::PointerEvent &event)
+{
+    HandleMultiFingersTapStateDown(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_3));
+}
+
+void MockZoomGesture::HandleThreeFingersTapStateMove(MMI::PointerEvent &event)
+{
+    HandleMultiFingersTapStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_3));
+}
+
+void MockZoomGesture::HandleThreeFingersContinueDownStateUp(MMI::PointerEvent &event)
+{
+    HandleMultiFingersContinueDownStateUp(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_3));
+}
+
+void MockZoomGesture::HandleThreeFingersContinueDownStateMove(MMI::PointerEvent &event)
+{
+    HandleMultiFingersContinueDownStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_3));
+}
+
+void MockZoomGesture::HandleFourFingersDownStateDown(MMI::PointerEvent &event)
+{
+    Clear();
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_LONG_PRESS_MSG);
+    HILOG_ERROR("receive down event, currentState is changed from FOUR_FINGERS_DOWN to INVALID.");
+    SetCurrentState(DataShareHelperState::INVALID);
+}
+
+void MockZoomGesture::HandleFourFingersDownStateUp(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_LONG_PRESS_MSG);
+
+    uint32_t pointerSize = event.GetPointerIds().size();
+    if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        HILOG_INFO("currentState is changed from FOUR_FINGERS_DOWN to FOUR_FINGERS_TAP.");
+        SetCurrentState(DataShareHelperState::FOUR_FINGERS_TAP);
+    } else if (pointerSize > static_cast<uint32_t>(PointerCount::POINTER_COUNT_4)) {
+        Clear();
+        CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG);
+        HILOG_ERROR("invalid pointer num, currentState is changed from FOUR_FINGERS_DOWN to INVALID.");
+        SetCurrentState(DataShareHelperState::INVALID);
+    }
+}
+
+void MockZoomGesture::HandleFourFingersDownStateMove(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+
+    MMI::PointerEvent::PointerItem pointerIterm;
+    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+    MMI::PointerEvent::PointerItem basePointerIterm;
+    if (!GetBasePointItem(basePointerIterm, event.GetPointerId())) {
+        HILOG_ERROR("get base point item failed, pid = %{public}d.", event.GetPointerId());
+        return;
+    }
+
+    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
+    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    if (hypot(offsetX, offsetY) > TOUCH_SLOP * static_cast<uint32_t>(PointerCount::POINTER_COUNT_4)) {
+        CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG);
+        CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_LONG_PRESS_MSG);
+        if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_4)) {
+            Clear();
+            SendScreenWakeUpEvent(event);
+            HILOG_ERROR("invalid pointer num, currentState is changed from FOUR_FINGERS_DOWN to INVALID.");
+            SetCurrentState(DataShareHelperState::INVALID);
+            return;
+        }
+        StoreMultiFingerSwipeBaseDownPoint();
+        multiFingerSwipeDirection_ = GetSwipeDirection(offsetX, offsetY);
+        HILOG_INFO("currentState is changed from FOUR_FINGERS_DOWN to FOUR_FINGERS_SWIPE.");
+        SetCurrentState(DataShareHelperState::FOUR_FINGERS_SWIPE);
+    }
+
+    SendScreenWakeUpEvent(event);
+}
+
+void MockZoomGesture::HandleFourFingersSwipeStateDown(MMI::PointerEvent &event)
+{
+    Clear();
+    HILOG_ERROR("receive down event, currentState is changed from FOUR_FINGERS_SWIPE to INVALID.");
+    SetCurrentState(DataShareHelperState::INVALID);
+}
+
+void MockZoomGesture::HandleFourFingersSwipeStateUp(MMI::PointerEvent &event)
+{
+    HandleMultiFingersSwipeStateUp(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_4));
+}
+
+void MockZoomGesture::HandleFourFingersSwipeStateMove(MMI::PointerEvent &event)
+{
+    receivedPointerEvents_.push_back(event);
+    SaveMultiFingerSwipeGesturePointerInfo(event);
+    SendScreenWakeUpEvent(event);
+}
+
+void MockZoomGesture::HandleFourFingersTapStateDown(MMI::PointerEvent &event)
+{
+    HandleMultiFingersTapStateDown(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_4));
+}
+
+void MockZoomGesture::HandleFourFingersTapStateMove(MMI::PointerEvent &event)
+{
+    HandleMultiFingersTapStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_4));
+}
+
+void MockZoomGesture::HandleFourFingersContinueDownStateUp(MMI::PointerEvent &event)
+{
+    HandleMultiFingersContinueDownStateUp(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_4));
+}
+
+void MockZoomGesture::HandleFourFingersContinueDownStateMove(MMI::PointerEvent &event)
+{
+    HandleMultiFingersContinueDownStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_4));
+}
+
+void MockZoomGesture::CancelPostEvent(DataShareHelperMsg msg)
+{
+    HILOG_DEBUG("innerEventID = %{public}u", static_cast<uint32_t>(msg));
+    if (handler_->HasInnerEvent(static_cast<uint32_t>(msg))) {
+        handler_->RemoveEvent(static_cast<uint32_t>(msg));
+    }
+}
+
+void MockZoomGesture::CancelMultiFingerTapEvent()
+{
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_DOUBLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_TRIPLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_DOUBLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_TRIPLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_SINGLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_DOUBLE_TAP_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_TRIPLE_TAP_MSG);
+}
+
+void MockZoomGesture::CancelMultiFingerTapAndHoldEvent()
+{
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG);
+    CancelPostEvent(DataShareHelperMsg::TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_DOUBLE_TAP_AND_HOLD_MSG);
+    CancelPostEvent(DataShareHelperMsg::THREE_FINGER_TRIPLE_TAP_AND_HOLD_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_DOUBLE_TAP_AND_HOLD_MSG);
+    CancelPostEvent(DataShareHelperMsg::FOUR_FINGER_TRIPLE_TAP_AND_HOLD_MSG);
+}
+
+void MockZoomGesture::Clear()
+{
+    receivedPointerEvents_.clear();
+    draggingDownEvent_ = nullptr;
+    offsetX_ = 0;
+    offsetY_ = 0;
+    oneFingerSwipeRoute_.clear();
+    oneFingerSwipePrePointer_ = {};
+    draggingPid_ = -1;
+    multiTapNum_ = 0;
+    multiFingerSwipeDirection_ = -1;
+    multiFingerSwipeRoute_.clear();
+    multiFingerSwipePrePoint_.clear();
 }
 } // namespace Accessibility
 } // namespace OHOS
