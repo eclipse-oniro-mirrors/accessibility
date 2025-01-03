@@ -1425,8 +1425,6 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
     }
     SortElementInfosIfNecessary(vecElementInfos);
-    uint64_t elementInfosCountAdded = 0;
-    uint64_t elementInfosCount = elementInfos.size();
     for (auto info : vecElementInfos) {
         if ((info.GetParentNodeId() == ROOT_PARENT_ELEMENT_ID) && (parentInfo != nullptr)) {
             parentInfo->AddChild(info.GetAccessibilityId());
@@ -1434,25 +1432,19 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
             HILOG_DEBUG("Give the father a child. %{public}" PRId64 ",Give the child a father.  %{public}" PRId64 "",
                 info.GetAccessibilityId(), parentInfo->GetAccessibilityId());
         }
-        elementInfos.push_back(info);
-        elementInfosCountAdded++;
-    }
-    for (uint64_t i = elementInfosCount; i < elementInfosCount + elementInfosCountAdded; i++) {
-        HILOG_DEBUG("SearchElementInfoRecursiveByWinid :search element info success. windowId %{public}d",
-            elementInfos[i].GetChildWindowId());
-        if ((elementInfos[i].GetChildWindowId() > 0) &&
-            (elementInfos[i].GetChildWindowId() != elementInfos[i].GetWindowId())) {
-            ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetChildWindowId(),
-            elementId, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, &elementInfos[i]);
+        if ((info.GetChildWindowId() > 0) && info.GetChildWindowId() != info.GetWindowId()) {
+            ret = SearchElementInfoRecursiveByWinid(info.GetChildWindowId(), elementId, mode, elementInfos,
+                info.GetChildTreeId(), isFilter, &info);
             HILOG_INFO("ChildWindowId %{public}d}. ret:%{public}d, GetChildTreeId %{public}d",
-                elementInfos[i].GetChildWindowId(), ret, elementInfos[i].GetChildTreeId());
-        } else if (elementInfos[i].GetChildTreeId() > 0 && elementInfos[i].GetChildTreeId() != treeId) {
-            ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetWindowId(),
-            elementId, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, &elementInfos[i]);
+                info.GetChildWindowId(), ret, info.GetChildTreeId());
+        } else if (info.GetChildTreeId() > 0 && info.GetChildTreeId() != treeId) {
+            ret = SearchElementInfoRecursiveByWinid(info.GetWindowId(), elementId, mode, elementInfos,
+                info.GetChildTreeId(), isFilter, &info);
             HILOG_INFO("windowId %{public}d}.treeId:%{public}d. ret:%{public}d",
-                elementInfos[i].GetWindowId(), elementInfos[i].GetChildTreeId(), ret);
+                info.GetWindowId(), info.GetChildTreeId(), ret);
         }
     }
+    elementInfos.insert(elementInfos.end(), vecElementInfos.begin(), vecElementInfos.end());
     return RET_OK;
 }
 
