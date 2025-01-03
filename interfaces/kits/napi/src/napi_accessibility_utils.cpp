@@ -695,6 +695,8 @@ std::string ConvertOperationTypeToString(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_SET_TEXT, "setText"},
         {ActionType::ACCESSIBILITY_ACTION_DELETED, "delete"},
         {ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK, "spanClick"},
+        {ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM, "nextHtmlItem"},
+        {ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM, "previousHtmlItem"}
     };
 
     if (triggerActionTable.find(type) == triggerActionTable.end()) {
@@ -797,7 +799,9 @@ ActionType ConvertStringToAccessibleOperationType(const std::string &type)
         {"recentTask", ActionType::ACCESSIBILITY_ACTION_RECENTTASK},
         {"notificationCenter", ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER},
         {"controlCenter", ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER},
-        {"spanClick", ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK}};
+        {"spanClick", ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK},
+        {"nextHtmlItem", ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM},
+        {"previousHtmlItem", ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM}};
 
     if (accessibleOperationTypeTable.find(type) == accessibleOperationTypeTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
