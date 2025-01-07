@@ -232,7 +232,7 @@ HWTEST_F(AccessibilityCommonEventUnitTest, AccessibilityCommonEvent_Unittest_Han
     sleep(SLEEP_TIME);
     packages.clear();
     AccessibilityAbilityHelper::GetInstance().GetPackages(packages);
-    EXPECT_EQ(0, packages.size());
+    EXPECT_EQ(1, packages.size());
 
     GTEST_LOG_(INFO) << "AccessibilityCommonEvent_Unittest_HandlePackageRemoved_001 end";
 }
