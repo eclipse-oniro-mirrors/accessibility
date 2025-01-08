@@ -1374,11 +1374,6 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "InnerDisableAbility:" + name);
 #endif // OHOS_BUILD_ENABLE_HITRACE
 
-    if (!actionHandler_) {
-        HILOG_ERROR("actionHandler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
@@ -1389,9 +1384,7 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
         return RET_OK;
     }
     if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
-        actionHandler_->PostTask([this]() {
-            ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
-            }, "TASK_DISABLE_ABILITIES");
+        ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
         SetCurtainScreenUsingStatus(false);
     }
     RetError ret = accountData->RemoveEnabledAbility(name);
