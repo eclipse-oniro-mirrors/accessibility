@@ -1352,14 +1352,14 @@ RetError AccessibleAbilityManagerService::SetCurtainScreenUsingStatus(bool isEna
 RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     HILOG_INFO();
-    if (!actionHandler_) {
-        HILOG_ERROR("actionHandler_ is nullptr.");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
     ffrt::promise<RetError> syncPromise;
     ffrt::future syncFuture = syncPromise.get_future();
-    actionHandler_->PostTask([this, &syncPromise, &name]() {
+    handler_->PostTask([this, &syncPromise, &name]() {
         HILOG_DEBUG();
         RetError result = InnerDisableAbility(name);
         syncPromise.set_value(result);
@@ -1374,6 +1374,11 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "InnerDisableAbility:" + name);
 #endif // OHOS_BUILD_ENABLE_HITRACE
 
+    if (!actionHandler_) {
+        HILOG_ERROR("actionHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
@@ -1384,7 +1389,9 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
         return RET_OK;
     }
     if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
-        ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
+        actionHandler_->PostTask([this]() {
+            ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
+            }, "TASK_DISABLE_ABILITIES");
         SetCurtainScreenUsingStatus(false);
     }
     RetError ret = accountData->RemoveEnabledAbility(name);
