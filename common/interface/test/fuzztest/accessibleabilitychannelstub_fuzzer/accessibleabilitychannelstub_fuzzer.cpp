@@ -316,7 +316,7 @@ bool FuzzHandleSendSimulateGesturePath(const uint8_t *data, size_t size)
         return false;
     }
 
-    sptr<AccessibilityGestureInjectPathParcel> path;
+    sptr<AccessibilityGestureInjectPathParcel> path = nullptr;
     MessageParcel parcelPath;
     parcelPath.WriteRawData(data, size);
     MessageParcel mdata;
