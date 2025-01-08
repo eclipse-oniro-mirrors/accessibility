@@ -1352,14 +1352,14 @@ RetError AccessibleAbilityManagerService::SetCurtainScreenUsingStatus(bool isEna
 RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     HILOG_INFO();
-    if (!actionHandler_) {
-        HILOG_ERROR("actionHandler_ is nullptr.");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
     ffrt::promise<RetError> syncPromise;
     ffrt::future syncFuture = syncPromise.get_future();
-    actionHandler_->PostTask([this, &syncPromise, &name]() {
+    handler_->PostTask([this, &syncPromise, &name]() {
         HILOG_DEBUG();
         RetError result = InnerDisableAbility(name);
         syncPromise.set_value(result);
