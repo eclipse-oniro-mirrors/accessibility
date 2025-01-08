@@ -208,13 +208,9 @@ void AccessibleAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<IRemoteObj
 {
     std::lock_guard<ffrt::mutex> lock(conVarMutex_);
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
-    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_SERVICE.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     do
     {
         if (serviceProxy_ != nullptr) {
-            break;
-        }
-        if (retSysParam >= 0 && std::strcmp(value, "true")) { // when Load success but SA didn't set flag
             break;
         }
         sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();

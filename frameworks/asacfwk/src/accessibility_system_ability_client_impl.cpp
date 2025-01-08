@@ -240,15 +240,20 @@ void AccessibilitySystemAbilityClientImpl::Init()
 void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject> &remote)
 {
     HILOG_DEBUG();
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (serviceProxy_ != nullptr) {
-        sptr<IRemoteObject> object = serviceProxy_->AsObject();
-        if (object && (remote == object)) {
-            object->RemoveDeathRecipient(deathRecipient_);
-            serviceProxy_ = nullptr;
-            HILOG_INFO("ResetService OK");
+    {
+        // there is lock(mutex_) in OnStateChanged, so make sure no deadlock
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        if (serviceProxy_ != nullptr) {
+            sptr<IRemoteObject> object = serviceProxy_->AsObject();
+            if (object && (remote == object)) {
+                object->RemoveDeathRecipient(deathRecipient_);
+                serviceProxy_ = nullptr;
+                HILOG_INFO("ResetService OK");
+            }
         }
     }
+    // notify observer when SA died
+    OnAccessibleAbilityManagerStateChanged(0);
     stateArray_.fill(false);
 }
 
