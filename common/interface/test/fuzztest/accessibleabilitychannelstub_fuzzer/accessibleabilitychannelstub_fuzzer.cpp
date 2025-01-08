@@ -274,10 +274,6 @@ bool FuzzHandleGetWindow(const uint8_t *data, size_t size)
 
 bool FuzzHandleGetWindows()
 {
-    if (data == nullptr || size < DATA_MIN_SIZE) {
-        return false;
-    }
-
     MessageParcel mdata;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
