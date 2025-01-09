@@ -53,6 +53,14 @@ public:
      * @param infos The elements info searched by accessibility id.
      * @param requestId The request id from AA, it is used to match with request and response.
      */
+    virtual void SetSearchDefaultFocusByWindowIdResult(const std::vector<AccessibilityElementInfo> &infos,
+        const int32_t requestId) override;
+
+    /**
+     * @brief Save the elements information searched in ACE side
+     * @param infos The elements info searched by accessibility id.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
     virtual void SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
         const int32_t requestId) override;
 
