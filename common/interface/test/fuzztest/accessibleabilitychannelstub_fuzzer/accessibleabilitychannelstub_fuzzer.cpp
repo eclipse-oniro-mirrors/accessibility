@@ -37,6 +37,12 @@ public:
     {
         return RET_OK;
     }
+    RetError SearchDefaultFocusedByWindowId(const ElementBasicInfo elementBasicInfo,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
+        const int32_t mode, bool isFilter) override
+    {
+        return RET_OK;
+    }
     RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int64_t elementId,
         const std::string &text, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override
