@@ -342,11 +342,11 @@ bool FuzzHandleSetTargetBundleName(const uint8_t *data, size_t size)
     MessageParcel mdata;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
-    GetObject<int32_t>(bundleNamesSize, &data[position], size - position);
+    GetObject<int32_t>(bundleNamesSize, &data[positions], size - positions);
     char name[LEN + 1];
     name[LEN] = END_CHAR;
     for (size_t i = 0; i < LEN; i++) {
-        position += GetObject<char>(name[i], data + position, size - position);
+        positions += GetObject<char>(name[i], data + positions, size - positions);
     }
     std::string bundleName(name);
     std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
