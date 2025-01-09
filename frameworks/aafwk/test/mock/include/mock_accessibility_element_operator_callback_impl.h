@@ -28,6 +28,8 @@ public:
 
     MOCK_METHOD2(SetSearchElementInfoByAccessibilityIdResult, void(const std::vector<AccessibilityElementInfo> &infos,
         const int32_t requestId));
+    MOCK_METHOD2(SetSearchDefaultFocusByWindowIdResult, void(const std::vector<AccessibilityElementInfo> &infos,
+        const int32_t requestId));
     MOCK_METHOD2(SetSearchElementInfoByTextResult, void(const std::vector<AccessibilityElementInfo> &infos,
         const int32_t requestId));
     MOCK_METHOD2(SetFindFocusedElementInfoResult, void(const AccessibilityElementInfo &info, const int32_t requestId));
