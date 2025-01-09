@@ -226,6 +226,11 @@ public:
         GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetElements);
     }
 
+    static napi_value GetDefaultFocusedElementIds(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetDefaultFocusedElementIds);
+    }
+
 private:
     std::weak_ptr<AccessibilityExtensionContext> context_;
 
