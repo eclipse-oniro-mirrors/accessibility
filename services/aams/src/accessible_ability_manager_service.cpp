@@ -1981,6 +1981,25 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetCursorPosi
     promise_.set_value();
 }
 
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchDefaultFocusByWindowIdResult(
+    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    for (auto info : infos) {
+        if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
+            info.GetAccessibilityId()) == RET_OK) {
+            HILOG_DEBUG("VerifyingToKenId ok");
+        } else {
+            HILOG_ERROR("VerifyingToKenId failed");
+            elementInfosResult_.clear();
+            promise_.set_value();
+            return;
+        }
+        elementInfosResult_ = infos;
+    }
+    promise_.set_value();
+}
+
 bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t windowId, int64_t elementId,
     std::vector<AccessibilityElementInfo>& infos)
 {
