@@ -84,6 +84,7 @@ public:
     void InitActionHandler();
     void InitSendEventHandler();
     void InitChannelHandler();
+    void InitGestureHandler();
     void OnStart() override;
     void OnStop() override;
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
