@@ -114,6 +114,61 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
     return;
 }
 
+void AccessibilityElementOperatorCallbackProxy::SetSearchDefaultFocusByWindowIdResult(
+    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
+{
+    HILOG_DEBUG("infos size %{public}zu, resquestId %{public}d", infos.size(), requestId);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+ 
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
+ 
+    if (!data.WriteUint32(infos.size())) {
+        HILOG_ERROR("write infos's size failed");
+        return;
+    }
+ 
+    if (infos.size() != 0) {
+        MessageParcel tmpParcel;
+        tmpParcel.SetMaxCapacity(MAX_RAWDATA_SIZE);
+        // when set pracel's max capacity, it won't alloc memory immediately
+        // MessageParcel will expand memory dynamiclly
+        for (const auto &info : infos) {
+            AccessibilityElementInfoParcel infoParcel(info);
+            if (!tmpParcel.WriteParcelable(&infoParcel)) {
+                HILOG_ERROR("write accessibilityElementInfoParcel failed");
+                return;
+            }
+        }
+        size_t tmpParcelSize = tmpParcel.GetDataSize();
+        if (!data.WriteUint32(tmpParcelSize)) {
+            HILOG_ERROR("write rawData size failed");
+            return;
+        }
+        if (!data.WriteRawData(reinterpret_cast<uint8_t *>(tmpParcel.GetData()), tmpParcelSize)) {
+            HILOG_ERROR("write rawData failed");
+            return;
+        }
+    }
+ 
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_BY_WINDOW_ID, data, reply, option)) {
+        HILOG_ERROR("setSearchDefaultFocusByWindowIdResult failed");
+        return;
+    }
+    if (static_cast<RetError>(reply.ReadInt32() != RET_OK)) {
+        HILOG_ERROR("read reply code failed");
+    }
+    return;
+}
+
 void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult(
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
