@@ -317,6 +317,15 @@ public:
         std::vector<AccessibilityElementInfo> &elementInfos) override;
 
     /**
+     * @brief Search all child nodes
+     * @param windowId The target window id.
+     * @param elementInfos The element infos of specified content.
+     * @return Return RET_OK if gets all child nodes successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetDefaultFocusedElementIds(const int32_t windowId,
+        std::vector<AccessibilityElementInfo> &elementInfos) override;
+
+    /**
      * @brief Clean data.
      * @param remote The object access to AAMS.
      */
