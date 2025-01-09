@@ -193,9 +193,13 @@ void TouchExplorationEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Po
             server_.SetCurrentState(TouchExplorationState::ONE_FINGER_LONG_PRESS);
             break;
         case TouchExplorationMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG:
+            if (!(server_.SendDoubleTapAndLongPressDownEvent())) {
+                HILOG_ERROR("currentState is changed from ONE_FINGER_SINGLE_TAP_THEN_DOWN to INVALID.");
+                server_.SetCurrentState(TouchExplorationState::INVALID);
+                return;
+            }
             HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP_THEN_DOWN to\
                 ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS.");
-            server_.SendDoubleTapAndLongPressDownEvent();
             server_.SetCurrentState(TouchExplorationState::ONE_FINGER_DOUBLE_TAP_AND_LONG_PRESS);
             break;
         case TouchExplorationMsg::SWIPE_COMPLETE_TIMEOUT_MSG:
@@ -263,6 +267,9 @@ void TouchExploration::StartUp()
         HILOG_ERROR("create event handler failed");
         return;
     }
+
+    gestureHandler_ = std::make_shared<AppExecFwk::EventHandler>(
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetGestureRunner());
 }
 
 bool TouchExploration::OnPointerEvent(MMI::PointerEvent &event)
@@ -333,12 +340,18 @@ void TouchExploration::HandlePointerEvent(MMI::PointerEvent &event)
 void TouchExploration::SendAccessibilityEventToAA(EventType eventType)
 {
     HILOG_INFO("eventType is 0x%{public}x.", eventType);
+    if (!gestureHandler_) {
+        HILOG_ERROR("gestureHandler is nullptr!");
+        return;
+    }
 
-    AccessibilityEventInfo eventInfo {};
-    eventInfo.SetEventType(eventType);
-    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
-    eventInfo.SetWindowId(windowsId);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
+    gestureHandler_->PostTask([this, eventType]() {
+        AccessibilityEventInfo eventInfo {};
+        eventInfo.SetEventType(eventType);
+        int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
+        eventInfo.SetWindowId(windowsId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
+        }, "TASK_SEND_ACCESSIBILITY_EVENT");
 }
 
 void TouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
@@ -359,13 +372,19 @@ void TouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
 void TouchExploration::SendGestureEventToAA(GestureType gestureId)
 {
     HILOG_INFO("gestureId is %{public}d.", static_cast<int32_t>(gestureId));
+    if (!gestureHandler_) {
+        HILOG_ERROR("gestureHandler is nullptr!");
+        return;
+    }
 
-    AccessibilityEventInfo eventInfo {};
-    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
-    eventInfo.SetWindowId(windowsId);
-    eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
-    eventInfo.SetGestureType(gestureId);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
+    gestureHandler_->PostTask([this, gestureId]() {
+        AccessibilityEventInfo eventInfo {};
+        int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
+        eventInfo.SetWindowId(windowsId);
+        eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
+        eventInfo.SetGestureType(gestureId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
+        }, "TASK_SEND_GESTURE_EVENT");
 }
 
 void TouchExploration::SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action)
@@ -813,14 +832,15 @@ void TouchExploration::HandleOneFingerSwipeStateMove(MMI::PointerEvent &event)
     SendScreenWakeUpEvent(event);
 }
 
-void TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
+bool TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     AccessibilityElementInfo focusedElementInfo = {};
-    bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(focusedElementInfo);
+    bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(focusedElementInfo,
+        FIND_FOCUS_TIMEOUT);
     if (!ret) {
         HILOG_ERROR("find focused element failed.");
-        return;
+        return false;
     }
 
     MMI::PointerEvent::PointerItem pointer = {};
@@ -829,11 +849,18 @@ void TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
         focusedElementInfo.GetRectInScreen().GetRightBottomXScreenPostion()) / DIVIDE_NUM - pointer.GetDisplayX();
     offsetY_ = (focusedElementInfo.GetRectInScreen().GetLeftTopYScreenPostion() +
         focusedElementInfo.GetRectInScreen().GetRightBottomYScreenPostion()) / DIVIDE_NUM - pointer.GetDisplayY();
+    return true;
 }
 
 void TouchExploration::HandleOneFingerSingleTapStateDown(MMI::PointerEvent &event)
 {
     CancelPostEvent(TouchExplorationMsg::SEND_HOVER_MSG);
+    if (receivedPointerEvents_.empty()) {
+        Clear();
+        HILOG_ERROR("cached event is empty, currentState is changed from ONE_FINGER_SINGLE_TAP to INVALID.");
+        SetCurrentState(TouchExplorationState::INVALID);
+        return;
+    }
 
     MMI::PointerEvent::PointerItem curPointerItem;
     event.GetPointerItem(event.GetPointerId(), curPointerItem);
@@ -861,7 +888,6 @@ void TouchExploration::HandleOneFingerSingleTapStateDown(MMI::PointerEvent &even
     receivedPointerEvents_.push_back(event);
     handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG), 0,
         static_cast<int32_t>(TimeoutDuration::LONG_PRESS_TIMEOUT));
-    RecordFocusedLocation(event);
     HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP to ONE_FINGER_SINGLE_TAP_THEN_DOWN.");
     SetCurrentState(TouchExplorationState::ONE_FINGER_SINGLE_TAP_THEN_DOWN);
 }
@@ -877,12 +903,19 @@ void TouchExploration::HandleOneFingerSingleTapThenDownStateDown(MMI::PointerEve
 void TouchExploration::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent &event)
 {
     CancelPostEvent(TouchExplorationMsg::DOUBLE_TAP_AND_LONG_PRESS_MSG);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(
-        ActionType::ACCESSIBILITY_ACTION_CLICK);
-
     Clear();
     HILOG_INFO("currentState is changed from ONE_FINGER_SINGLE_TAP_THEN_DOWN to TOUCH_INIT.");
     SetCurrentState(TouchExplorationState::TOUCH_INIT);
+
+    if (!gestureHandler_) {
+        HILOG_ERROR("gestureHandler is nullptr!");
+        return;
+    }
+
+    gestureHandler_->PostTask([this]() {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(
+            ActionType::ACCESSIBILITY_ACTION_CLICK);
+        }, "TASK_CLICK_ON_FOCUS");
 }
 
 void TouchExploration::HandleOneFingerSingleTapThenDownStateMove(MMI::PointerEvent &event)
@@ -926,14 +959,18 @@ void TouchExploration::OffsetEvent(MMI::PointerEvent &event)
     event.AddPointerItem(pointer);
 }
 
-void TouchExploration::SendDoubleTapAndLongPressDownEvent()
+bool TouchExploration::SendDoubleTapAndLongPressDownEvent()
 {
     if (receivedPointerEvents_.empty()) {
         HILOG_ERROR("receivedPointerEvents_ is empty!");
-        return;
+        return false;
+    }
+    if (!RecordFocusedLocation(receivedPointerEvents_.front())) {
+        return false;
     }
     OffsetEvent(receivedPointerEvents_.front());
     SendEventToMultimodal(receivedPointerEvents_.front(), ChangeAction::NO_CHANGE);
+    return true;
 }
 
 void TouchExploration::HandleOneFingerDoubleTapAndLongPressState(MMI::PointerEvent &event)
@@ -1253,6 +1290,11 @@ bool TouchExploration::GetPointerItemWithFingerNum(uint32_t fingerNum,
     std::vector<MMI::PointerEvent::PointerItem> &prePoints, MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
+    if (fingerNum > static_cast<uint32_t>(INT32_MAX)) {
+        HILOG_ERROR("fingerNum is invalid!");
+        return false;
+    }
+
     bool findPrePointer = false;
     std::vector<int32_t> pIds = event.GetPointerIds();
     for (int32_t i = 0; i < static_cast<int32_t>(fingerNum); i++) {
@@ -1323,6 +1365,14 @@ bool TouchExploration::IsMultiFingerMultiTap(MMI::PointerEvent &event, const uin
 bool TouchExploration::IsMultiFingerMultiTapGesture(MMI::PointerEvent &event, const uint32_t fingerNum)
 {
     HILOG_DEBUG();
+
+    if (fingerNum < static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
+        Clear();
+        HILOG_ERROR("fingerNum is wrong, currentState is changed from %{public}d to INVALID.", GetCurrentState());
+        SetCurrentState(TouchExplorationState::INVALID);
+        return false;
+    }
+
     if (IsMultiFingerMultiTap(event, fingerNum)) {
         multiTapNum_ = multiTapNum_ + 1;
         HILOG_DEBUG("%{public}d finger %{public}d tap is recognized", static_cast<int32_t>(fingerNum),
@@ -1769,6 +1819,12 @@ void TouchExploration::HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, 
     }
 
     if (event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+        if (fingerNum > static_cast<uint32_t>(INT32_MAX)) {
+            HILOG_ERROR("fingerNum is invalid, currentState is changed from %{public}d to TOUCH_INIT.",
+                GetCurrentState());
+            SetCurrentState(TouchExplorationState::TOUCH_INIT);
+            return;
+        }
         for (int32_t pIndex = 0; pIndex < static_cast<int32_t>(fingerNum); pIndex++) {
             if (multiFingerSwipeRoute_.count(pIndex) == 0 ||
                 multiFingerSwipeRoute_[pIndex].size() < MIN_MULTI_FINGER_SWIPE_POINTER_NUM) {
