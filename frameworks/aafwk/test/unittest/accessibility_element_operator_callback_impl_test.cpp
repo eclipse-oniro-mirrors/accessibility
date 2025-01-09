@@ -79,6 +79,29 @@ HWTEST_F(
 }
 
 /**
+ * @tc.number: SetSearchDefaultFocusByWindowIdResult_001
+ * @tc.name: SetSearchDefaultFocusByWindowIdResult
+ * @tc.desc: Test function SetSearchDefaultFocusByWindowIdResult
+ */
+HWTEST_F(
+    AccessibilityElementOperatorCallbackImplTest, SetSearchDefaultFocusByWindowIdResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchDefaultFocusByWindowIdResult_001 start";
+ 
+    if (!instance_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorCallbackImpl instance_";
+        return;
+    }
+ 
+    std::vector<AccessibilityElementInfo> infos;
+    AccessibilityElementInfo info {};
+    infos.push_back(info);
+    instance_->SetSearchDefaultFocusByWindowIdResult(infos, SEQUENCE_NUM);
+    EXPECT_NE(instance_.get(), nullptr);
+    GTEST_LOG_(INFO) << "SetSearchDefaultFocusByWindowIdResult_001 end";
+}
+
+/**
  * @tc.number: SetSearchElementInfoByTextResult_001
  * @tc.name: SetSearchElementInfoByTextResult
  * @tc.desc: Test function SetSearchElementInfoByTextResult
