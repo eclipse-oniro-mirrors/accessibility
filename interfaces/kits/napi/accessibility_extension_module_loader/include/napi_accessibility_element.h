@@ -71,6 +71,8 @@ public:
         const OHOS::Accessibility::AccessibilityElementInfo& elementInfo);
     static void ConvertElementInfosToJS(napi_env env, napi_value result,
         const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos);
+    static void ConvertElementIdVecToJS(napi_env env, napi_value result,
+        const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos);
 
     static napi_value AttributeNames(napi_env env, napi_callback_info info);
     static napi_value AttributeValue(napi_env env, napi_callback_info info);
