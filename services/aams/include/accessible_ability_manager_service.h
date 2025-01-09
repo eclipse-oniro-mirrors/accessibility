@@ -57,6 +57,7 @@ enum CallBackID {
 
 constexpr int REQUEST_ID_INIT = 65535;
 constexpr int32_t TREE_ID_MAX = 0x00001FFF;
+constexpr uint32_t TIME_OUT_OPERATOR = 5000;
 
 const std::map<std::string, int32_t> AccessibilityConfigTable = {
     {"HIGH_CONTRAST_TEXT", HIGH_CONTRAST_TEXT},
@@ -135,7 +136,7 @@ public:
     int32_t GetActiveWindow() override;
     void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
     void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
-    bool FindFocusedElement(AccessibilityElementInfo &elementInfo);
+    bool FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout = TIME_OUT_OPERATOR);
     bool ExecuteActionOnAccessibilityFocused(const ActionType &action);
     RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
     void SetFocusWindowId(const int32_t focusWindowId);
@@ -204,6 +205,11 @@ public:
     inline std::shared_ptr<AppExecFwk::EventRunner> &GetChannelRunner()
     {
         return channelRunner_;
+    }
+
+    inline std::shared_ptr<AppExecFwk::EventRunner> &GetGestureRunner()
+    {
+        return gestureRunner_;
     }
 
     sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
@@ -458,6 +464,8 @@ private:
 
     std::shared_ptr<AppExecFwk::EventRunner> channelRunner_;
     std::shared_ptr<AAMSEventHandler> channelHandler_;
+
+    std::shared_ptr<AppExecFwk::EventRunner> gestureRunner_;
 
     int64_t ipcTimeoutNum_ = 0; // count ipc timeout number
 
