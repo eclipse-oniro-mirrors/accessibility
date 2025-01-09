@@ -904,6 +904,7 @@ napi_value CreateJsAccessibilityExtensionContext(
     BindNativeFunction(env, object, "enableScreenCurtain", moduleName,
         NAccessibilityExtensionContext::EnableScreenCurtain);
     BindNativeFunction(env, object, "getElements", moduleName, NAccessibilityExtensionContext::GetElements);
+    BindNativeFunction(env, object, "getDefaultFocusedElementIds", moduleName, NAccessibilityExtensionContext::GetDefaultFocusedElementIds);
     return object;
 }
 } // namespace Accessibility
