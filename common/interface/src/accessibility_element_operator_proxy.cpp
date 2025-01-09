@@ -100,6 +100,56 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
     }
 }
 
+void AccessibilityElementOperatorProxy::SearchDefaultFocusedByWindowId(const int32_t windowId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+    bool isFilter)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
+ 
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+ 
+    if (!data.WriteInt32(windowId)) {
+        HILOG_ERROR("connection write parcelable element id failed");
+        return;
+    }
+ 
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write parcelable request id failed");
+        return;
+    }
+ 
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr");
+        return;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("connection write parcelable callback failed");
+        return;
+    }
+ 
+    if (!data.WriteInt32(mode)) {
+        HILOG_ERROR("connection write parcelable mode failed");
+        return;
+    }
+ 
+    if (!data.WriteBool(isFilter)) {
+        HILOG_ERROR("connection write parcelable isFilter failed");
+        return;
+    }
+ 
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_BY_WINDOW_ID,
+        data, reply, option)) {
+        HILOG_ERROR("search element info by accessibility id failed");
+        return;
+    }
+}
+
 void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int64_t elementId,
     const std::string &text,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
