@@ -190,6 +190,14 @@ public:
         const int32_t requestId);
 
     /**
+     * @brief Set the element information by window id to AA.
+     * @param infos The element info searched by window id.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetSearchDefaultFocusByWindowIdResult(const std::list<AccessibilityElementInfo> &infos,
+        const int32_t requestId);
+
+    /**
      * @brief Set whether to perform filtering.
      */
     static void SetFiltering(std::vector<AccessibilityElementInfo> &filterInfos);
