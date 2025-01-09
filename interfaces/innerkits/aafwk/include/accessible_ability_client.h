@@ -286,6 +286,15 @@ public:
      */
     virtual RetError GetElements(const int32_t windowId, const int64_t elementId,
         std::vector<AccessibilityElementInfo> &elementInfos) = 0;
+
+    /**
+     * @brief Search Default Focused ElementId
+     * @param windowId The target window id.
+     * @param elementInfos The element infos of specified content.
+     * @return Return RET_OK if gets all Default Focused successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetDefaultFocusedElementIds(const int32_t windowId,
+        std::vector<AccessibilityElementInfo> &elementInfos) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS
