@@ -1772,5 +1772,27 @@ RetError AccessibleAbilityClientImpl::GetElements(const int32_t windowId, const 
         windowId, elementId, ret, elementInfos.size());
     return ret;
 }
+
+RetError AccessibleAbilityClientImpl::GetDefaultFocusedElementIds(const int32_t windowId,
+    std::vector<AccessibilityElementInfo> &elementInfos)
+{
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "GetDefaultFocusedElementIds");
+    if (windowId <= 0) {
+        HILOG_ERROR("invalid param.");
+        return RET_ERR_INVALID_PARAM;
+    }
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+ 
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+ 
+    return channelClient_->SearchDefaultFocusedByWindowId(windowId, ROOT_NONE_ID, GET_SOURCE_MODE, elementInfos, ROOT_TREE_ID);
+}
 } // namespace Accessibility
 } // namespace OHOS
