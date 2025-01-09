@@ -50,6 +50,7 @@ namespace {
     const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
     const std::string AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
     const std::string AAMS_SEND_EVENT_RUNNER_NAME = "AamsSendEventRunner";
+    const std::string AAMS_CHANNEL_RUNNER_NAME = "AamsChannelRunner";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
@@ -121,9 +122,8 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
     a11yAccountsData_.Clear();
 }
 
-void AccessibleAbilityManagerService::OnStart()
+void AccessibleAbilityManagerService::InitHandler()
 {
-    HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
     if (!runner_) {
         runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME, AppExecFwk::ThreadMode::FFRT);
         if (!runner_) {
@@ -139,7 +139,10 @@ void AccessibleAbilityManagerService::OnStart()
             return;
         }
     }
+}
 
+void AccessibleAbilityManagerService::InitActionHandler()
+{
     if (!actionRunner_) {
         actionRunner_ = AppExecFwk::EventRunner::Create(AAMS_ACTION_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
         if (!actionRunner_) {
@@ -155,7 +158,10 @@ void AccessibleAbilityManagerService::OnStart()
             return;
         }
     }
+}
 
+void AccessibleAbilityManagerService::InitSendEventHandler()
+{
     if (!sendEventRunner_) {
         sendEventRunner_ = AppExecFwk::EventRunner::Create(AAMS_SEND_EVENT_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
         if (!sendEventRunner_) {
@@ -171,6 +177,35 @@ void AccessibleAbilityManagerService::OnStart()
             return;
         }
     }
+}
+
+void AccessibleAbilityManagerService::InitChannelHandler()
+{
+    if (!channelRunner_) {
+        channelRunner_ = AppExecFwk::EventRunner::Create(AAMS_CHANNEL_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
+        if (!channelRunner_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS channel runner failed");
+            return;
+        }
+    }
+
+    if (!channelHandler_) {
+        channelHandler_ = std::make_shared<AAMSEventHandler>(channelRunner_);
+        if (!channelHandler_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS channel handler failed");
+            return;
+        }
+    }
+}
+
+void AccessibleAbilityManagerService::OnStart()
+{
+    HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
+
+    InitHandler();
+    InitActionHandler();
+    InitSendEventHandler();
+    InitChannelHandler();
 
     SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
 
@@ -354,7 +389,7 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
     }
     uint32_t expectTokenId = connection->GetTokenIdMap(treeId);
     if (tokenId != expectTokenId) {
-        HILOG_DEBUG("tokenId error!");
+        HILOG_ERROR("tokenId error!");
         return RET_ERR_TOKEN_ID;
     }
 
@@ -377,7 +412,7 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
             uiEvent.GetElementInfo().GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
-            HILOG_DEBUG("VerifyingToKenId failed");
+            HILOG_ERROR("VerifyingToKenId failed");
             return RET_ERR_CONNECTION_EXIST;
         }
     }
@@ -1870,7 +1905,7 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFindFocuse
         accessibilityInfoResult_ = info;
         promise_.set_value();
     } else {
-        HILOG_DEBUG("VerifyingToKenId failed");
+        HILOG_ERROR("VerifyingToKenId failed");
         promise_.set_value();
     }
 }
@@ -1884,7 +1919,7 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
             info.GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
-            HILOG_DEBUG("VerifyingToKenId failed");
+            HILOG_ERROR("VerifyingToKenId failed");
             elementInfosResult_.clear();
             promise_.set_value();
             return;
@@ -1903,7 +1938,7 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
             info.GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
-            HILOG_DEBUG("VerifyingToKenId failed");
+            HILOG_ERROR("VerifyingToKenId failed");
             elementInfosResult_.clear();
             promise_.set_value();
             return;
@@ -1923,7 +1958,7 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveS
         accessibilityInfoResult_ = info;
         promise_.set_value();
     } else {
-        HILOG_DEBUG("VerifyingToKenId failed");
+        HILOG_ERROR("VerifyingToKenId failed");
         promise_.set_value();
     }
 }

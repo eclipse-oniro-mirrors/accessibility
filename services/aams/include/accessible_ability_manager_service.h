@@ -79,6 +79,10 @@ class AccessibleAbilityManagerService : public SystemAbility, public AccessibleA
     DECLEAR_SYSTEM_ABILITY(AccessibleAbilityManagerService)
 public:
     /* For system ability */
+    void InitHandler();
+    void InitActionHandler();
+    void InitSendEventHandler();
+    void InitChannelHandler();
     void OnStart() override;
     void OnStop() override;
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
@@ -195,6 +199,11 @@ public:
     inline std::shared_ptr<AppExecFwk::EventRunner> &GetMainRunner()
     {
         return runner_;
+    }
+
+    inline std::shared_ptr<AppExecFwk::EventRunner> &GetChannelRunner()
+    {
+        return channelRunner_;
     }
 
     sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
@@ -446,6 +455,9 @@ private:
 
     std::shared_ptr<AppExecFwk::EventRunner> sendEventRunner_;
     std::shared_ptr<AAMSEventHandler> sendEventHandler_;
+
+    std::shared_ptr<AppExecFwk::EventRunner> channelRunner_;
+    std::shared_ptr<AAMSEventHandler> channelHandler_;
 
     int64_t ipcTimeoutNum_ = 0; // count ipc timeout number
 

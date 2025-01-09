@@ -45,7 +45,7 @@ AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, cons
     : clientName_(clientName), accountId_(accountId)
 {
     eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner());
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetChannelRunner());
 }
 
 RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
