@@ -141,6 +141,15 @@ RetError AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, Accessib
     return RET_OK;
 }
 
+RetError AccessibleAbilityClientImpl::GetDefaultFocusedElementIds(const int32_t windowId,
+    std::vector<AccessibilityElementInfo> &elementInfos)
+{
+    HILOG_DEBUG();
+    (void)windowId;
+    (void)elementInfos;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
