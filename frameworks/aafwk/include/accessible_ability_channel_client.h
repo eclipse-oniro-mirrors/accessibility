@@ -125,6 +125,20 @@ public:
         int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId, bool isFilter = false);
 
     /**
+     * @brief Find the node information by window ID.
+     * @param windowId: The window id that the component belongs to.
+     * @param elementId: The unique id of the component ID.
+     * @param mode PREFETCH_PREDECESSORS: Need to make the parent node info also.
+     *              PREFETCH_SIBLINGS: Need to make the sister/brothers node info also.
+     *              PREFETCH_CHILDREN: Need to make the child node info also.
+     *              otherwise: Make the node information by elementId only.
+     * @param elementInfos[out] The components information matched conditions searched.
+     * @return Return RET_OK if search element info successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError SearchDefaultFocusedByWindowId(const int32_t windowId, int64_t elementId,
+        int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId, bool isFilter = false);
+
+    /**
      * @brief Get the window information related with the event
      * @param windowId The window id.
      * @param windowInfo The window information.
