@@ -192,6 +192,23 @@ void MockAccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityId
     return;
 }
 
+void MockAccessibilityElementOperatorImpl::SetSearchDefaultFocusByWindowIdResult(
+    const std::list<AccessibilityElementInfo>& infos, const int32_t requestId)
+{
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
+    std::vector<AccessibilityElementInfo> myInfos(infos.begin(), infos.end());
+    auto iterator = requests_.find(requestId);
+    if (iterator != requests_.end()) {
+        if (iterator->second != nullptr) {
+            iterator->second->SetSearchDefaultFocusByWindowIdResult(myInfos, requestId);
+        }
+        requests_.erase(iterator);
+    } else {
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
+    }
+    return;
+}
+
 void MockAccessibilityElementOperatorImpl::SetSearchElementInfoByTextResult(
     const std::list<AccessibilityElementInfo>& infos, const int32_t requestId)
 {
