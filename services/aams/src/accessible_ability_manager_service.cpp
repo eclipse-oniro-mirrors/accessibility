@@ -51,6 +51,7 @@ namespace {
     const std::string AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
     const std::string AAMS_SEND_EVENT_RUNNER_NAME = "AamsSendEventRunner";
     const std::string AAMS_CHANNEL_RUNNER_NAME = "AamsChannelRunner";
+    const std::string AAMS_CHANNEL_RUNNER_NAME = "AamsGestureRunner";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
@@ -67,7 +68,6 @@ namespace {
     constexpr int32_t INVALID_SHORTCUT_STATE = 2;
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
-    constexpr uint32_t TIME_OUT_OPERATOR = 5000;
     constexpr int32_t REQUEST_ID_MAX = 0xFFFFFFFF;
     constexpr int32_t REQUEST_ID_MIN = 0x0000FFFF;
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
@@ -193,6 +193,17 @@ void AccessibleAbilityManagerService::InitChannelHandler()
         channelHandler_ = std::make_shared<AAMSEventHandler>(channelRunner_);
         if (!channelHandler_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS channel handler failed");
+            return;
+        }
+    }
+}
+
+void AccessibleAbilityManagerService::InitGestureHandler()
+{
+    if (!gestureRunner_) {
+        gestureRunner_ = AppExecFwk::EventRunner::Create(AAMS_GESTURE_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
+        if (!gestureRunner_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS gesture runner failed");
             return;
         }
     }
@@ -546,7 +557,7 @@ bool AccessibleAbilityManagerService::FindFocusedElementByConnection(sptr<Access
     return true;
 }
 
-bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInfo &elementInfo)
+bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout)
 {
     HILOG_DEBUG();
     sptr<AccessibilityWindowConnection> connection = GetRealIdConnection();
@@ -583,7 +594,7 @@ bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInf
         return false;
     }
     elementOperator->SearchElementInfoByAccessibilityId(elementId, GenerateRequestId(), callBack, 0);
-    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(timeout));
     if (waitFocus != ffrt::future_status::ready) {
         ipcTimeoutNum_++;
         HILOG_ERROR("Failed to wait result, number %{public}" PRId64 "", ipcTimeoutNum_);
@@ -1424,7 +1435,7 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
         return RET_OK;
     }
     if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
-        handler_->PostTask([this]() {
+        actionHandler_->PostTask([this]() {
             ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
             }, "TASK_CLEAR_FOCUS");
         SetCurtainScreenUsingStatus(false);

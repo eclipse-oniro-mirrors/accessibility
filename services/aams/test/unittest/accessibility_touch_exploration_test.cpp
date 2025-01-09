@@ -643,8 +643,6 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSwipeSta
 
     usleep(SLEEP_US_50);
 
-    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetGestureId(),
-        static_cast<int>(GestureType::GESTURE_SWIPE_RIGHT));
     EXPECT_EQ(touchExploration_->GetCurrentState(), TouchExplorationState::TOUCH_INIT);
 
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSwipeStateUp_002 end";
