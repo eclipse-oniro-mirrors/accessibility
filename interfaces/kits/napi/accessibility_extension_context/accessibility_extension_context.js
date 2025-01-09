@@ -64,6 +64,11 @@ class AccessibilityExtensionContext extends ExtensionContext {
     console.log('getElements');
     return this.__context_impl__.getElements(windowId, elementId);
   }
+
+  getDefaultFocusedElementIds(windowId) {
+    console.log('getDefaultFocusedElementIds');
+    return this.__context_impl__.getDefaultFocusedElementIds(windowId);
+  }
 }
 
 export default AccessibilityExtensionContext;
