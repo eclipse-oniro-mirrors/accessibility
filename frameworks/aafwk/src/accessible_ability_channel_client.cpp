@@ -283,6 +283,56 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     return RET_OK;
 }
 
+RetError AccessibleAbilityChannelClient::SearchDefaultFocusedByWindowId(int32_t accessibilityWindowId,
+    int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId, bool isFilter)
+{
+    int32_t requestId = GenerateRequestId();
+    HILOG_DEBUG("channelId:%{public}d, windowId:%{public}d, requestId:%{public}d",
+        channelId_, accessibilityWindowId, requestId);
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchDefaultFocusedByWindowId");
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("SearchDefaultFocusedByWindowId Failed to connect to aams [channelId:%{public}d]",
+            channelId_);
+        return RET_ERR_SAMGR;
+    }
+ 
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (elementOperator == nullptr) {
+        HILOG_ERROR("SearchDefaultFocusedByWindowId Failed to create elementOperator.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
+    ElementBasicInfo elementBasicInfo {};
+    elementBasicInfo.windowId = accessibilityWindowId;
+    elementBasicInfo.elementId = elementId;
+    elementBasicInfo.treeId = treeId;
+ 
+    RetError ret = proxy_->SearchDefaultFocusedByWindowId(elementBasicInfo, requestId,
+        elementOperator, mode, isFilter);
+    if (ret != RET_OK) {
+        HILOG_ERROR("searchElement failed. ret: %{public}d, requestId :[%{public}d]",
+            ret, requestId);
+        return ret;
+    }
+ 
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
+ 
+    for (auto &info : elementOperator->elementInfosResult_) {
+        if (info.GetAccessibilityId() == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
+            HILOG_ERROR("SearchElementInfosByAccessibilityId The elementInfo from ace is wrong");
+            return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
+        }
+    }
+    elementInfos = elementOperator->elementInfosResult_;
+    HILOG_DEBUG("Get result successfully from arkUI elementInfos size[%{public}zu]", elementInfos.size());
+    return RET_OK;
+}
+
 RetError AccessibleAbilityChannelClient::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d]", channelId_, windowId);
