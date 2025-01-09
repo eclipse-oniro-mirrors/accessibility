@@ -43,7 +43,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::OUTSIDE_TOUCH, HandleOutsideTouch)                                    \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_CHILDTREEID, HandleSetChildTreeIdAndWinId)                        \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_BELONGTREEID, HandleSetBelongTreeId)                              \
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_PARENTWINDOWID, HandleSetParentWindowId)
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_PARENTWINDOWID, HandleSetParentWindowId)                          \
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_BY_WINDOW_ID, HandleSearchDefaultFocusedByWindowId)
 
 namespace OHOS {
 namespace Accessibility {
@@ -101,6 +102,30 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibility
     int32_t mode = data.ReadInt32();
     bool isFilter = data.ReadBool();
     SearchElementInfoByAccessibilityId(elementId, requestId, callback, mode, isFilter);
+    return NO_ERROR;
+}
+
+ErrCode AccessibilityElementOperatorStub::HandleSearchDefaultFocusedByWindowId(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+ 
+    int32_t windowId = data.ReadInt32();
+    int32_t requestId = data.ReadInt32();
+    sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (remote == nullptr) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+ 
+    sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr");
+        return ERR_INVALID_VALUE;
+    }
+    int32_t mode = data.ReadInt32();
+    bool isFilter = data.ReadBool();
+    SearchDefaultFocusedByWindowId(windowId, requestId, callback, mode, isFilter);
     return NO_ERROR;
 }
 
