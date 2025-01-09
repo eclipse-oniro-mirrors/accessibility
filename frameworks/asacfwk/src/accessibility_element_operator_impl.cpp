@@ -212,6 +212,27 @@ void AccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResu
     }
 }
 
+void AccessibilityElementOperatorImpl::SetSearchDefaultFocusByWindowIdResult(
+    const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
+{
+    HILOG_DEBUG("requestId is %{public}d, infos size is %{public}d", requestId, infos.size());
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
+    std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
+    auto iter = requests_.find(requestId);
+    if (iter != requests_.end()) {
+        if (iter->second != nullptr) {
+            HILOG_DEBUG("isFilter %{public}d", iter->second->GetFilter());
+            if (iter->second->GetFilter()) {
+                SetFiltering(filterInfos);
+            }
+            iter->second->SetSearchDefaultFocusByWindowIdResult(filterInfos, requestId);
+        }
+        requests_.erase(iter);
+    } else {
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
+    }
+}
+
 void AccessibilityElementOperatorImpl::SetFiltering(std::vector<AccessibilityElementInfo> &filterInfos)
 {
     for (auto &info : filterInfos) {
