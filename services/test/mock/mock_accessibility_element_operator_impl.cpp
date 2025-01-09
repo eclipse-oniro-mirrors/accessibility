@@ -56,6 +56,20 @@ void MockAccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(co
     return;
 }
 
+void MockAccessibilityElementOperatorImpl::SearchDefaultFocusedByWindowId(const int32_t windowId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode,
+    bool isFilter)
+{
+    int32_t mRequestId = AddRequest(requestId, callback);
+    int32_t pageId = -1;
+    if (operator_) {
+        operator_->SearchDefaultFocusByWindowId(windowId, mRequestId, operatorCallback_, pageId);
+    } else {
+        HILOG_ERROR("Operator is nullptr");
+    }
+    return;
+}
+
 void MockAccessibilityElementOperatorImpl::SearchElementInfosByText(const int64_t elementId, const std::string& text,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
