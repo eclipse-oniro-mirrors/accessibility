@@ -599,6 +599,34 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityId
     }
 }
 
+void AccessibilitySystemAbilityClientImpl::SetSearchDefaultFocusByWindowIdResult(
+    const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    HILOG_DEBUG("search element requestId[%{public}d]", requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
+    std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
+    if (requestId < 0) {
+        HILOG_ERROR("requestId is invalid");
+        return;
+    }
+    if (callback != nullptr) {
+        if (callback->GetFilter()) {
+            AccessibilityElementOperatorImpl::SetFiltering(filterInfos);
+        }
+        serviceProxy_->RemoveRequestId(requestId);
+        callback->SetSearchDefaultFocusByWindowIdResult(filterInfos, requestId);
+        AccessibilityElementOperatorImpl::EraseCallback(requestId);
+    } else {
+        HILOG_INFO("callback is nullptr");
+    }
+}
+
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByTextResult(
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
