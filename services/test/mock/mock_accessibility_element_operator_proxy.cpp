@@ -46,6 +46,18 @@ void MockAccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(c
     return;
 }
 
+void MockAccessibilityElementOperatorProxy::SearchDefaultFocusedByWindowId(const int32_t windowId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode,
+    bool isFilter)
+{
+    GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy SearchDefaultFocusedByWindowId";
+    testParentWindowId_ = windowId;
+    testChannelRequestId_ = requestId;
+    testChannelMode_ = mode;
+    isFilter_ = isFilter;
+    return;
+}
+
 void MockAccessibilityElementOperatorProxy::SearchElementInfosByText(const int64_t elementId, const std::string& text,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
