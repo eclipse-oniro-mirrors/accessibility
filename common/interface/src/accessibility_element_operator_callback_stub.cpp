@@ -42,7 +42,9 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUSED_INFO, HandleSetFindFocusedElementInfoResult) \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE, HandleSetFocusMoveSearchResult)          \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION, HandleSetExecuteActionResult)        \
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_CURSOR_RESULT, HandleSetCursorPositionResult)
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_CURSOR_RESULT, HandleSetCursorPositionResult)        \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_WINDOW_ID,                                        \
+        HandleSetSearchDefaultFocusByWindowIdResult)
 
 namespace OHOS {
 namespace Accessibility {
@@ -142,6 +144,50 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     }
     reply.WriteInt32(RET_OK);
     SetSearchElementInfoByAccessibilityIdResult(storeData, requestId);
+    return NO_ERROR;
+}
+
+ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchDefaultFocusByWindowIdResult(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    std::vector<AccessibilityElementInfo> storeData;
+    int32_t requestId = data.ReadInt32();
+    uint32_t infoSize = data.ReadUint32();
+    if (infoSize != 0) {
+        size_t rawDataSize = data.ReadUint32();
+        MessageParcel tmpParcel;
+        void *buffer = nullptr;
+        // memory alloced in GetData will be released when tmpParcel destruct
+        if (!GetData(rawDataSize, data.ReadRawData(rawDataSize), buffer)) {
+            reply.WriteInt32(RET_ERR_FAILED);
+            return TRANSACTION_ERR;
+        }
+        
+        if (!tmpParcel.ParseFrom(reinterpret_cast<uintptr_t>(buffer), rawDataSize)) {
+            free(buffer);
+            buffer = nullptr;
+            reply.WriteInt32(RET_ERR_FAILED);
+            return TRANSACTION_ERR;
+        }
+ 
+        if (infoSize < 0 || infoSize > static_cast<uint32_t>(MAX_ALLOW_SIZE)) {
+            reply.WriteInt32(RET_ERR_FAILED);
+            return TRANSACTION_ERR;
+        }
+ 
+        for (size_t i = 0; i < infoSize; i++) {
+            sptr<AccessibilityElementInfoParcel> info =
+                tmpParcel.ReadStrongParcelable<AccessibilityElementInfoParcel>();
+            if (info == nullptr) {
+                reply.WriteInt32(RET_ERR_FAILED);
+                return TRANSACTION_ERR;
+            }
+            storeData.emplace_back(*info);
+        }
+    }
+    reply.WriteInt32(RET_OK);
+    SetSearchDefaultFocusByWindowIdResult(storeData, requestId);
     return NO_ERROR;
 }
 
