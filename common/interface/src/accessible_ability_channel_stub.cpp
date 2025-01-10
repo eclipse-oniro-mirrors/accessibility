@@ -171,7 +171,6 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchDefaultFocusedByWindowId(Messa
         mode = PREFETCH_RECURSIVE_CHILDREN;
     }
     bool isFilter = data.ReadBool();
-    //RetError result = RET_OK;
     RetError result = SearchDefaultFocusedByWindowId(elementBasicInfo, requestId, callback, mode,
         isFilter);
     HILOG_DEBUG("SearchDefaultFocusedByWindowId ret = %{public}d", result);
