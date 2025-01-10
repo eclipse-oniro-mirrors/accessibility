@@ -1792,7 +1792,8 @@ RetError AccessibleAbilityClientImpl::GetDefaultFocusedElementIds(const int32_t 
         return RET_ERR_NO_CONNECTION;
     }
  
-    return channelClient_->SearchDefaultFocusedByWindowId(windowId, ROOT_NONE_ID, GET_SOURCE_MODE, elementInfos, ROOT_TREE_ID);
+    return channelClient_->SearchDefaultFocusedByWindowId(windowId, ROOT_NONE_ID,
+        GET_SOURCE_MODE, elementInfos, ROOT_TREE_ID);
 }
 } // namespace Accessibility
 } // namespace OHOS
