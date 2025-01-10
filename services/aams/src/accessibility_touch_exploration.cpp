@@ -367,7 +367,6 @@ void TouchExploration::SendGestureEventToAA(GestureType gestureId)
 {
     HILOG_INFO("gestureId is %{public}d.", static_cast<int32_t>(gestureId));
 
-
     AccessibilityEventInfo eventInfo {};
     int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
     eventInfo.SetWindowId(windowsId);
