@@ -220,7 +220,7 @@ void NAccessibilityElement::ConvertElementIdVecToJS(
     std::vector<std::int64_t> values;
     for (auto& elementInfo : elementInfos) {
         int64_t elementId = elementInfo.GetAccessibilityId();
-        HILOG_DEBUG("elementId is %{public}ld", elementId);
+        HILOG_DEBUG("elementId is %{public}" PRId64 "", elementId);
         values.emplace_back(elementId);
     }
 
