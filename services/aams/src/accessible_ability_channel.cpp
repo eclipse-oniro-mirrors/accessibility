@@ -131,7 +131,7 @@ RetError AccessibleAbilityChannel::SearchDefaultFocusedByWindowId(const ElementB
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
         RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID, clientName,
             elementOperator, treeId);
-        if (ret != RET_OK || !CheckWinFromAwm(windowId, ret)) {
+        if (ret != RET_OK || !CheckWinFromAwm(windowId)) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", windowId);
             std::vector<AccessibilityElementInfo> infos = {};
             callback->SetSearchDefaultFocusByWindowIdResult(infos, requestId);
