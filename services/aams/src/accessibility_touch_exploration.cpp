@@ -340,18 +340,12 @@ void TouchExploration::HandlePointerEvent(MMI::PointerEvent &event)
 void TouchExploration::SendAccessibilityEventToAA(EventType eventType)
 {
     HILOG_INFO("eventType is 0x%{public}x.", eventType);
-    if (!gestureHandler_) {
-        HILOG_ERROR("gestureHandler is nullptr!");
-        return;
-    }
 
-    gestureHandler_->PostTask([this, eventType]() {
-        AccessibilityEventInfo eventInfo {};
-        eventInfo.SetEventType(eventType);
-        int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
-        eventInfo.SetWindowId(windowsId);
-        Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
-        }, "TASK_SEND_ACCESSIBILITY_EVENT");
+    AccessibilityEventInfo eventInfo {};
+    eventInfo.SetEventType(eventType);
+    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
+    eventInfo.SetWindowId(windowsId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
 }
 
 void TouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
@@ -372,19 +366,14 @@ void TouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
 void TouchExploration::SendGestureEventToAA(GestureType gestureId)
 {
     HILOG_INFO("gestureId is %{public}d.", static_cast<int32_t>(gestureId));
-    if (!gestureHandler_) {
-        HILOG_ERROR("gestureHandler is nullptr!");
-        return;
-    }
 
-    gestureHandler_->PostTask([this, gestureId]() {
-        AccessibilityEventInfo eventInfo {};
-        int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
-        eventInfo.SetWindowId(windowsId);
-        eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
-        eventInfo.SetGestureType(gestureId);
-        Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
-        }, "TASK_SEND_GESTURE_EVENT");
+
+    AccessibilityEventInfo eventInfo {};
+    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
+    eventInfo.SetWindowId(windowsId);
+    eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
+    eventInfo.SetGestureType(gestureId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
 }
 
 void TouchExploration::SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action)
