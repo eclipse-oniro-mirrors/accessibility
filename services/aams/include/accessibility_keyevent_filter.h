@@ -22,6 +22,7 @@
 
 #include "accessibility_event_transmission.h"
 #include "event_handler.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -107,6 +108,7 @@ private:
     std::shared_ptr<KeyEventFilterEventHandler> timeoutHandler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     uint32_t sequenceNum_ = 0;
+    ffrt::mutex mutex_;
 };
 
 class KeyEventFilterEventHandler : public AppExecFwk::EventHandler {
