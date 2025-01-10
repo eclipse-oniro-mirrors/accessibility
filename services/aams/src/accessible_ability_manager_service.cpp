@@ -51,7 +51,7 @@ namespace {
     const std::string AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
     const std::string AAMS_SEND_EVENT_RUNNER_NAME = "AamsSendEventRunner";
     const std::string AAMS_CHANNEL_RUNNER_NAME = "AamsChannelRunner";
-    const std::string AAMS_CHANNEL_RUNNER_NAME = "AamsGestureRunner";
+    const std::string AAMS_GESTURE_RUNNER_NAME = "AamsGestureRunner";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
