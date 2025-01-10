@@ -16,6 +16,7 @@
 #include "accessibleabilitychannelstub_fuzzer.h"
 #include "accessible_ability_channel_stub.h"
 #include "accessibility_ipc_interface_code.h"
+#include "parcel/accessibility_gesture_inject_path_parcel.h"
 #include "securec.h"
 
 namespace OHOS {
@@ -271,12 +272,8 @@ bool FuzzHandleGetWindow(const uint8_t *data, size_t size)
     return true;
 }
 
-bool FuzzHandleGetWindows(const uint8_t *data, size_t size)
+bool FuzzHandleGetWindows()
 {
-    if (data == nullptr || size < DATA_MIN_SIZE) {
-        return false;
-    }
-
     MessageParcel mdata;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
@@ -315,12 +312,20 @@ bool FuzzHandleSendSimulateGesturePath(const uint8_t *data, size_t size)
         return false;
     }
 
+    sptr<AccessibilityGestureInjectPathParcel> path = nullptr;
+    MessageParcel parcelPath;
+    parcelPath.WriteRawData(data, size);
     MessageParcel mdata;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
 
     std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
     mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    path = parcelPath.ReadStrongParcelable<AccessibilityGestureInjectPathParcel>();
+    if (path == nullptr) {
+        return false;
+    }
+    mdata.WriteStrongParcelable(path);
     chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::SEND_SIMULATE_GESTURE_PATH),
         mdata, reply, option);
     return true;
@@ -332,15 +337,24 @@ bool FuzzHandleSetTargetBundleName(const uint8_t *data, size_t size)
         return false;
     }
 
+    size_t positions = 0;
     int32_t bundleNamesSize = 0;
     MessageParcel mdata;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
-
+    GetObject<int32_t>(bundleNamesSize, &data[positions], size - positions);
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    for (size_t i = 0; i < LEN; i++) {
+        positions += GetObject<char>(name[i], data + positions, size - positions);
+    }
+    std::string bundleName(name);
     std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
     mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
     mdata.WriteInt32(bundleNamesSize);
-    mdata.WriteString("test");
+    for (size_t i = 0; i < static_cast<size_t>(bundleNamesSize); i++) {
+        mdata.WriteString(bundleName);
+    }
     chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME),
         mdata, reply, option);
     return true;
@@ -358,7 +372,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     OHOS::Accessibility::FuzzHandleFocusMoveSearch(data, size);
     OHOS::Accessibility::FuzzHandleExecuteAction(data, size);
     OHOS::Accessibility::FuzzHandleGetWindow(data, size);
-    OHOS::Accessibility::FuzzHandleGetWindows(data, size);
+    OHOS::Accessibility::FuzzHandleGetWindows();
     OHOS::Accessibility::FuzzHandleGetWindowsByDisplayId(data, size);
     OHOS::Accessibility::FuzzHandleSendSimulateGesturePath(data, size);
     OHOS::Accessibility::FuzzHandleSetTargetBundleName(data, size);

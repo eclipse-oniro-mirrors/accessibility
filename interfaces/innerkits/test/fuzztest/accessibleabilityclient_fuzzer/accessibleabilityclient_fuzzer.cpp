@@ -373,7 +373,7 @@ static size_t GenerateAccessibilityEventInfo(OHOS::Accessibility::AccessibilityE
     return position;
 }
 
-bool DoSomethingInterestingWithRegisterAbilityListener(const uint8_t* data, size_t size)
+bool DoSomethingInterestingWithRegisterAbilityListener()
 {
     std::shared_ptr<AccessibleAbilityListenerForFuzzTest> listener =
         std::make_shared<AccessibleAbilityListenerForFuzzTest>();
@@ -690,7 +690,7 @@ bool DoSomethingInterestingWithSetCacheMode(const uint8_t* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    OHOS::DoSomethingInterestingWithRegisterAbilityListener(data, size);
+    OHOS::DoSomethingInterestingWithRegisterAbilityListener();
     OHOS::DoSomethingInterestingWithGetFocus(data, size);
     OHOS::DoSomethingInterestingWithGetFocusByElementInfo(data, size);
     OHOS::DoSomethingInterestingWithInjectGesture(data, size);
