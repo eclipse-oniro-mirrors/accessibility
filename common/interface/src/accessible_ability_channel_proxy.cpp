@@ -112,6 +112,59 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
     return static_cast<RetError>(reply.ReadInt32());
 }
 
+RetError AccessibleAbilityChannelProxy::SearchDefaultFocusedByWindowId(const ElementBasicInfo elementBasicInfo,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
+    const int32_t mode, bool isFilter)
+{
+    HILOG_DEBUG();
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return RET_ERR_INVALID_PARAM;
+    }
+ 
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+ 
+    if (!WriteInterfaceToken(data)) {
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(elementBasicInfo.windowId)) {
+        HILOG_ERROR("windowId write error: %{public}d, ", elementBasicInfo.windowId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt64(elementBasicInfo.elementId)) {
+        HILOG_ERROR("elementId write error: %{public}" PRId64 "", elementBasicInfo.elementId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(elementBasicInfo.treeId)) {
+        HILOG_ERROR("treeId write error: %{public}d, ", elementBasicInfo.treeId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("requestId write error: %{public}d, ", requestId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("callback write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(mode)) {
+        HILOG_ERROR("mode write error: %{public}d, ", mode);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteBool(isFilter)) {
+        HILOG_ERROR("isFilter write error: %{public}d, ", isFilter);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_DEFAULTFOCUSED_BY_WINDOW_ID,
+        data, reply, option)) {
+        HILOG_ERROR("fail to find elementInfo by elementId");
+        return RET_ERR_IPC_FAILED;
+    }
+    return static_cast<RetError>(reply.ReadInt32());
+}
+
 RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t accessibilityWindowId,
     const int64_t elementId, const std::string &text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)

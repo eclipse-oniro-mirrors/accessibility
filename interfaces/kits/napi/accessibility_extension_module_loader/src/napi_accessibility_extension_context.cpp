@@ -226,6 +226,11 @@ public:
         GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetElements);
     }
 
+    static napi_value GetDefaultFocusedElementIds(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetDefaultFocusedElementIds);
+    }
+
 private:
     std::weak_ptr<AccessibilityExtensionContext> context_;
 
@@ -799,6 +804,77 @@ private:
             env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
         return result;
     }
+
+    napi_value OnGetDefaultFocusedElementIds(napi_env env, NapiCallbackInfo& info)
+    {
+        HILOG_INFO();
+        int32_t windowId = INVALID_WINDOW_ID;
+        napi_value lastParam = nullptr;
+ 
+        if (info.argc >= ARGS_SIZE_TWO) {
+            if (info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) {
+                HILOG_INFO("argc is more than two, use callback: situation 1");
+                lastParam = info.argv[PARAM1];
+            } else if (info.argv[PARAM0] != nullptr && IsNapiFunction(env, info.argv[PARAM0])) {
+                HILOG_INFO("argc is more than two, use callback: situation 2");
+                lastParam = info.argv[PARAM0];
+            } else {
+                lastParam = nullptr;
+            }
+            if (info.argv[PARAM0] != nullptr && IsNapiNumber(env, info.argv[PARAM0])) {
+                ConvertFromJsValue(env, info.argv[PARAM0], windowId);
+            }
+        } else if (info.argc == ARGS_SIZE_ONE) {
+            if (info.argv[PARAM0] != nullptr && IsNapiNumber(env, info.argv[PARAM0])) {
+                ConvertFromJsValue(env, info.argv[PARAM0], windowId);
+            }
+        } else {
+            HILOG_ERROR("Not enough params");
+        }
+        HILOG_DEBUG("input windowId: %{public}d", windowId);
+        return GetDefaultFocusedElementIdsAsync(env, lastParam, windowId);
+    }
+ 
+    napi_value GetDefaultFocusedElementIdsAsync(napi_env env, napi_value lastParam, int32_t windowId)
+    {
+        auto accessibilityElements = std::make_shared<std::vector<OHOS::Accessibility::AccessibilityElementInfo>>();
+        auto ret = std::make_shared<RetError>(RET_OK);
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, accessibilityElements, ret, windowId] () {
+            auto context = weak.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                *ret = RET_ERR_FAILED;
+                return;
+            }
+ 
+            if (windowId <= 0) {
+                HILOG_ERROR("windowId is error: %{public}d", windowId);
+                *ret = RET_ERR_INVALID_PARAM;
+                return;
+            }
+ 
+            *ret = context->GetDefaultFocusedElementIds(windowId, *accessibilityElements);
+        };
+ 
+        NapiAsyncTask::CompleteCallback complete =
+            [ret, accessibilityElements] (napi_env env, NapiAsyncTask& task, int32_t status) {
+                if (*ret == RET_OK) {
+                    napi_value napiElementIds = nullptr;
+                    napi_create_array(env, &napiElementIds);
+                    NAccessibilityElement::ConvertElementIdVecToJS(env, napiElementIds, *accessibilityElements);
+                    task.Resolve(env, napiElementIds);
+                } else {
+                    HILOG_ERROR("Get GetDefaultFocusedElementIdsAsync failed.");
+                    NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
+                    task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+                }
+        };
+ 
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::GetDefaultFocusedElementIdsAsync",
+            env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
+        return result;
+    }
 };
 } // namespace
 
@@ -828,6 +904,8 @@ napi_value CreateJsAccessibilityExtensionContext(
     BindNativeFunction(env, object, "enableScreenCurtain", moduleName,
         NAccessibilityExtensionContext::EnableScreenCurtain);
     BindNativeFunction(env, object, "getElements", moduleName, NAccessibilityExtensionContext::GetElements);
+    BindNativeFunction(env, object, "getDefaultFocusedElementIds", moduleName,
+        NAccessibilityExtensionContext::GetDefaultFocusedElementIds);
     return object;
 }
 } // namespace Accessibility

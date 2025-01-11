@@ -222,5 +222,17 @@ RetError AccessibilityExtensionContext::GetElements(const int32_t windowId, cons
     }
     return aaClient->GetElements(windowId, elementId, elementInfos);
 }
+
+RetError AccessibilityExtensionContext::GetDefaultFocusedElementIds(const int32_t windowId,
+    std::vector<AccessibilityElementInfo> &elementInfos)
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->GetDefaultFocusedElementIds(windowId, elementInfos);
+}
 } // namespace Accessibility
 } // namespace OHOS

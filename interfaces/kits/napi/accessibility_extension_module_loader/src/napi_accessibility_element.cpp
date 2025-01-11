@@ -211,6 +211,27 @@ void NAccessibilityElement::ConvertElementInfosToJS(
     }
 }
 
+void NAccessibilityElement::ConvertElementIdVecToJS(
+    napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos)
+{
+    HILOG_DEBUG("elementInfo size(%{public}zu)", elementInfos.size());
+
+    size_t index = 0;
+    std::vector<std::int64_t> values;
+    for (auto& elementInfo : elementInfos) {
+        int64_t elementId = elementInfo.GetAccessibilityId();
+        HILOG_DEBUG("elementId is %{public}" PRId64 "", elementId);
+        values.emplace_back(elementId);
+    }
+
+    for (auto& value : values) {
+        napi_value id = nullptr;
+        napi_create_int64(env, value, &id);
+        napi_set_element(env, result, index, id);
+        index++;
+    }
+}
+
 napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_info info)
 {
     HILOG_DEBUG();

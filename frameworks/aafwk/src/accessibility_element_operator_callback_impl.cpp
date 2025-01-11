@@ -51,6 +51,17 @@ void AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoByAccessibili
     }
 }
 
+void AccessibilityElementOperatorCallbackImpl::SetSearchDefaultFocusByWindowIdResult(
+    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
+{
+    HILOG_DEBUG("Response[elementInfoSize:%{public}zu] [requestId:%{public}d]", infos.size(), requestId);
+    elementInfosResult_ = infos;
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
+}
+
 void AccessibilityElementOperatorCallbackImpl::SetFocusMoveSearchResult(const AccessibilityElementInfo &info,
     const int32_t requestId)
 {

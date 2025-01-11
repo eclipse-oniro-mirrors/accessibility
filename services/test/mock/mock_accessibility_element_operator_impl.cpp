@@ -56,6 +56,20 @@ void MockAccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(co
     return;
 }
 
+void MockAccessibilityElementOperatorImpl::SearchDefaultFocusedByWindowId(const int32_t windowId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode,
+    bool isFilter)
+{
+    int32_t mRequestId = AddRequest(requestId, callback);
+    int32_t pageId = -1;
+    if (operator_) {
+        operator_->SearchDefaultFocusByWindowId(windowId, mRequestId, operatorCallback_, pageId);
+    } else {
+        HILOG_ERROR("Operator is nullptr");
+    }
+    return;
+}
+
 void MockAccessibilityElementOperatorImpl::SearchElementInfosByText(const int64_t elementId, const std::string& text,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
@@ -170,6 +184,23 @@ void MockAccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityId
     if (iterator != requests_.end()) {
         if (iterator->second != nullptr) {
             iterator->second->SetSearchElementInfoByAccessibilityIdResult(myInfos, requestId);
+        }
+        requests_.erase(iterator);
+    } else {
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
+    }
+    return;
+}
+
+void MockAccessibilityElementOperatorImpl::SetSearchDefaultFocusByWindowIdResult(
+    const std::list<AccessibilityElementInfo>& infos, const int32_t requestId)
+{
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
+    std::vector<AccessibilityElementInfo> myInfos(infos.begin(), infos.end());
+    auto iterator = requests_.find(requestId);
+    if (iterator != requests_.end()) {
+        if (iterator->second != nullptr) {
+            iterator->second->SetSearchDefaultFocusByWindowIdResult(myInfos, requestId);
         }
         requests_.erase(iterator);
     } else {

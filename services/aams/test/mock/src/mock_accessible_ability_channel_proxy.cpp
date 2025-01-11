@@ -51,6 +51,18 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
     return RET_OK;
 }
 
+RetError AccessibleAbilityChannelProxy::SearchDefaultFocusedByWindowId(const ElementBasicInfo elementBasicInfo,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
+    const int32_t mode, bool isFilter)
+{
+    (void)elementBasicInfo;
+    (void)requestId;
+    (void)callback;
+    (void)mode;
+    (void)isFilter;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t accessibilityWindowId,
     const int64_t elementId, const std::string& text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)

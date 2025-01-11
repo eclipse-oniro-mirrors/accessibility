@@ -60,6 +60,14 @@ private:
     ErrCode HandleSetSearchElementInfoByAccessibilityIdResult(MessageParcel &data, MessageParcel &reply);
 
     /**
+     * @brief Handle the IPC request for the function:SetSearchDefaultFocusByWindowIdResult.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleSetSearchDefaultFocusByWindowIdResult(MessageParcel &data, MessageParcel &reply);
+
+    /**
      * @brief Handle the IPC request for the function:SetSearchElementInfoByTextResult.
      * @param data The data of process communication
      * @param reply The response of IPC request

@@ -48,6 +48,21 @@ public:
         const int32_t mode, bool isFilter = false) = 0;
 
     /**
+     * @brief Searches elementInfo by window id and set the result by callback.
+     * @param elementBasicInfo
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback To transfer the element info to ASAC.
+     * @param mode PREFETCH_PREDECESSORS: Need to make the parent element info also.
+     *             PREFETCH_SIBLINGS: Need to make the sister/brothers element info also.
+     *             PREFETCH_CHILDREN: Need to make the child element info also.
+     *             otherwise: Make the element information by elementId only.
+     * @return Return RET_OK if search elementInfo successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError SearchDefaultFocusedByWindowId(const ElementBasicInfo elementBasicInfo,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
+        const int32_t mode, bool isFilter = false) = 0;
+
+    /**
      * @brief Make the child element information by accessibility ID and filtered by text and
      *        set the result by callback.
      * @param accessibilityWindowId The id of accessibility window.

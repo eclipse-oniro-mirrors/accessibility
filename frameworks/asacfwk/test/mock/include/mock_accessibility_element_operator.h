@@ -27,6 +27,8 @@ public:
     virtual ~MockAccessibilityElementOperator() = default;
     MOCK_METHOD4(SearchElementInfoByAccessibilityId, void(const int64_t elementId,
         const int32_t requestId, AccessibilityElementOperatorCallback& callback, const int32_t mode));
+    MOCK_METHOD4(SearchDefaultFocusByWindowId, void(const int32_t windowId,
+        const int32_t requestId, AccessibilityElementOperatorCallback& callback, const int32_t pageId));
     MOCK_METHOD4(SearchElementInfosByText, void(const int64_t elementId, const std::string& text,
         const int32_t requestId, AccessibilityElementOperatorCallback& callback));
     MOCK_METHOD4(FindFocusedElementInfo, void(const int64_t elementId, const int32_t focusType,

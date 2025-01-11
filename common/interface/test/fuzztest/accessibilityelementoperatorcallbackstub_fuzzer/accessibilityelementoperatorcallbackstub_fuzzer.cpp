@@ -32,6 +32,8 @@ public:
 
     void SetSearchElementInfoByAccessibilityIdResult(const std::vector<AccessibilityElementInfo> &infos,
         const int32_t requestId) override {}
+    void SetSearchDefaultFocusByWindowIdResult(const std::vector<AccessibilityElementInfo> &infos,
+        const int32_t requestId) override {}
     void SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
         const int32_t requestId) override {}
     void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,

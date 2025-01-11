@@ -237,6 +237,8 @@ public:
 
         virtual void SetSearchElementInfoByAccessibilityIdResult(const std::vector<AccessibilityElementInfo> &infos,
             const int32_t requestId) override;
+        virtual void SetSearchDefaultFocusByWindowIdResult(const std::vector<AccessibilityElementInfo> &infos,
+            const int32_t requestId) override;
         virtual void SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
             const int32_t requestId) override;
         virtual void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,

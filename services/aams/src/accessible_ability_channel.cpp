@@ -105,6 +105,61 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
     return syncFuture.get();
 }
 
+RetError AccessibleAbilityChannel::SearchDefaultFocusedByWindowId(const ElementBasicInfo elementBasicInfo,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
+    const int32_t mode, bool isFilter)
+{
+    int32_t windowId = elementBasicInfo.windowId;
+    int64_t elementId = elementBasicInfo.elementId;
+    int32_t treeId = elementBasicInfo.treeId;
+    HILOG_DEBUG("elementId:%{public}" PRId64 " winId: %{public}d treeId: %{public}d", elementId, windowId, treeId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
+ 
+    if (eventHandler_ == nullptr || callback == nullptr) {
+        HILOG_ERROR("eventHandler_ exist: %{public}d, callback exist: %{public}d.", eventHandler_ != nullptr,
+            callback != nullptr);
+        return RET_ERR_NULLPTR;
+    }
+ 
+    int32_t accountId = accountId_;
+    std::string clientName = clientName_;
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
+    eventHandler_->PostTask([accountId, clientName, syncPromise, windowId, elementId, treeId, requestId,
+        callback, mode, isFilter]() {
+        HILOG_DEBUG("search element accountId[%{public}d], name[%{public}s]", accountId, clientName.c_str());
+        sptr<IAccessibilityElementOperator> elementOperator = nullptr;
+        RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID, clientName,
+            elementOperator, treeId);
+        if (ret != RET_OK || !CheckWinFromAwm(windowId)) {
+            HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", windowId);
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchDefaultFocusByWindowIdResult(infos, requestId);
+            syncPromise->set_value(ret);
+            return;
+        }
+ 
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        if (windowId == SCENE_BOARD_WINDOW_ID && awm.IsInnerWindowRootElement(elementId)) {
+            std::vector<AccessibilityElementInfo> infos = {};
+            callback->SetSearchDefaultFocusByWindowIdResult(infos, requestId);
+        } else {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(windowId, treeId,
+                requestId, callback);
+            elementOperator->SearchDefaultFocusedByWindowId(windowId, requestId, callback, mode, isFilter);
+            HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
+        }
+        syncPromise->set_value(RET_OK);
+        }, "SearchElementInfoByAccessibilityId");
+ 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait SearchElementInfoByAccessibilityId result");
+        return RET_ERR_TIME_OUT;
+    }
+    return RET_OK;
+}
+
 RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t accessibilityWindowId,
     const int64_t elementId, const std::string &text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)

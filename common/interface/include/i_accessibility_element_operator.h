@@ -49,6 +49,21 @@ public:
         bool isFliter = false) = 0;
 
     /**
+     * @brief Make the node information by window ID and set the result by callback.
+     * @param windowId: The window id.
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the node info to ASAC and it defined by ASAC.
+     * @param mode PREFETCH_PREDECESSORS: Need to make the parent node info also.
+     *              PREFETCH_SIBLINGS: Need to make the sister/brothers node info also.
+     *              PREFETCH_CHILDREN: Need to make the child node info also.
+     *              otherwise: Make the node information by elementId only.
+     * @sysCap Accessibility
+     */
+    virtual void SearchDefaultFocusedByWindowId(const int32_t windowId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+        bool isFliter = false) = 0;
+
+    /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.
      * @param elementId: The unique id of the component ID.
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.

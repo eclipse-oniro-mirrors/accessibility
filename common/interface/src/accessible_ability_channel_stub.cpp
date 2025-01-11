@@ -51,7 +51,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SET_ON_KEY_PRESS_EVENT_RESULT, HandleSetOnKeyPressEventResult)            \
     SWITCH_CASE(AccessibilityInterfaceCode::SEND_SIMULATE_GESTURE_PATH, HandleSendSimulateGesturePath)                \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME, HandleSetTargetBundleName)                        \
-    SWITCH_CASE(AccessibilityInterfaceCode::GET_CURSOR_POSITION, HandleGetCursorPosition)
+    SWITCH_CASE(AccessibilityInterfaceCode::GET_CURSOR_POSITION, HandleGetCursorPosition)                             \
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_DEFAULTFOCUSED_BY_WINDOW_ID, HandleSearchDefaultFocusedByWindowId)
 
 namespace OHOS {
 namespace Accessibility {
@@ -130,6 +131,51 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
     HILOG_DEBUG("SearchElementInfoByAccessibilityId ret = %{public}d", result);
     reply.WriteInt32(result);
 
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleSearchDefaultFocusedByWindowId(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+ 
+    ElementBasicInfo elementBasicInfo {};
+    elementBasicInfo.windowId = data.ReadInt32();
+    elementBasicInfo.elementId = data.ReadInt64();
+    elementBasicInfo.treeId = data.ReadInt32();
+    int32_t requestId = data.ReadInt32();
+ 
+    sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (remote == nullptr) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        iface_cast<IAccessibilityElementOperatorCallback>(remote);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+ 
+    int32_t mode = data.ReadInt32();
+    if (mode == PREFETCH_RECURSIVE_CHILDREN) {
+        if (!Permission::CheckCallingPermission(OHOS_PERMISSION_QUERY_ACCESSIBILITY_ELEMENT) &&
+            !Permission::IsStartByHdcd()) {
+            HILOG_ERROR("no get element permission");
+            reply.WriteInt32(RET_ERR_NO_CONNECTION);
+            return NO_ERROR;
+        }
+    }
+ 
+    if (mode == GET_SOURCE_MODE) {
+        mode = PREFETCH_RECURSIVE_CHILDREN;
+    }
+    bool isFilter = data.ReadBool();
+    RetError result = SearchDefaultFocusedByWindowId(elementBasicInfo, requestId, callback, mode,
+        isFilter);
+    HILOG_DEBUG("SearchDefaultFocusedByWindowId ret = %{public}d", result);
+    reply.WriteInt32(result);
+ 
     return NO_ERROR;
 }
 

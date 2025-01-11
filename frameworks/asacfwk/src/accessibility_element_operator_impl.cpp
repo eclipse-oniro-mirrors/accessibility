@@ -52,6 +52,22 @@ void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const 
     }
 }
 
+void AccessibilityElementOperatorImpl::SearchDefaultFocusedByWindowId(const int32_t windowId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
+    bool isFilter)
+{
+    int32_t pageId = -1;
+    int32_t mRequestId = AddRequest(requestId, callback);
+    HILOG_DEBUG("search element add requestId[%{public}d], requestId[%{public}d], windowId is [%{public}d]",
+        mRequestId, requestId, windowId);
+    callback->SetIsFilter(isFilter);
+    if (operator_) {
+        operator_->SearchDefaultFocusByWindowId(windowId, mRequestId, operatorCallback_, pageId);
+    } else {
+        HILOG_ERROR("Operator is nullptr");
+    }
+}
+
 void AccessibilityElementOperatorImpl::SearchElementInfosByText(const int64_t elementId,
     const std::string &text, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
@@ -189,6 +205,27 @@ void AccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResu
                 SetFiltering(filterInfos);
             }
             iter->second->SetSearchElementInfoByAccessibilityIdResult(filterInfos, requestId);
+        }
+        requests_.erase(iter);
+    } else {
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
+    }
+}
+
+void AccessibilityElementOperatorImpl::SetSearchDefaultFocusByWindowIdResult(
+    const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
+{
+    HILOG_DEBUG("requestId is %{public}d, infos size is %{public}d", requestId, infos.size());
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
+    std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
+    auto iter = requests_.find(requestId);
+    if (iter != requests_.end()) {
+        if (iter->second != nullptr) {
+            HILOG_DEBUG("isFilter %{public}d", iter->second->GetFilter());
+            if (iter->second->GetFilter()) {
+                SetFiltering(filterInfos);
+            }
+            iter->second->SetSearchDefaultFocusByWindowIdResult(filterInfos, requestId);
         }
         requests_.erase(iter);
     } else {
