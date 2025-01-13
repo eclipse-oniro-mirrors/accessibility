@@ -3108,6 +3108,7 @@ void AccessibleAbilityManagerService::PostDelayUnloadTask()
             return;
         }
         if (!IsNeedUnload()) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
             return;
         }
         int32_t ret = systemAbilityManager->UnloadSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
