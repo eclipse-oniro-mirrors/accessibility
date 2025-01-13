@@ -2086,18 +2086,34 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
             return;
         }
 
-        std::vector<AccessibilityElementInfo> infos = {};
-        if (GetParentElementRecursively(event.GetWindowId(), elementId, infos) == false || infos.size() == 0) {
-            HILOG_ERROR("find parent element failed");
-            return;
-        }
+        int32_t treeId = GetTreeIdBySplitElementId(elementId);
+        // handle seprately because event send by UiExtension children tree may carry the root elemnt of children
+        // tree, whose componentType is also root
+        if (treeId != 0) {
+            // WindowScene
+            //       \
+            // UiExtensionComponent -> try to find the windowId of the event send by its children node
+            //       \
+            //       root -> node that send event, and it's a UiExtensionNode
+            // when elementId is element that at the UiExtension tree, try to get the id of UiExtensionComponent
+            // by GetRootParentId,
+            elementId = GetRootParentId(windowId, treeId);
+        } else {
+            // keep find its parent node, until it's a root node or find its elementId in sceneBoardElementIdMap_
+            // which saves mapping of windowId&root-elementId of the window.
+            std::vector<AccessibilityElementInfo> infos = {};
+            if (GetParentElementRecursively(event.GetWindowId(), elementId, infos) == false || infos.size() == 0) {
+                HILOG_ERROR("find parent element failed");
+                return;
+            }
 
-        if (infos[0].GetComponentType() == "root") {
-            HILOG_ERROR("can not find parent element, has reach root node");
-            return;
-        }
+            if (infos[0].GetComponentType() == "root") {
+                HILOG_ERROR("can not find parent element, has reach root node");
+                return;
+            }
 
-        elementId = infos[0].GetParentNodeId();
+            elementId = infos[0].GetParentNodeId();
+        }
     }
 }
 
