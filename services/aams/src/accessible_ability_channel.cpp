@@ -24,7 +24,6 @@
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    constexpr uint32_t TIME_OUT_OPERATOR = 5000;
     constexpr int32_t WINDOW_ID_INVALID = -1;
     constexpr int64_t ELEMENT_ID_INVALID = -1;
     MMI::InputManager* inputManager_ = MMI::InputManager::GetInstance();

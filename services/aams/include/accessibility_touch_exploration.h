@@ -49,6 +49,7 @@ const int32_t MM_PER_CM = 10;
 const double EPSINON = 0.01;
 const float PIXEL_MULTIPLIER = 0.1f;
 const int32_t DIVIDE_NUM = 2;
+const uint32_t FIND_FOCUS_TIMEOUT = 50;
 #define BIND(func) [this](MMI::PointerEvent& event) { (func(event)); }
 
 /**
@@ -233,7 +234,7 @@ public:
 
     void Clear();
     void HoverEventRunner();
-    void SendDoubleTapAndLongPressDownEvent();
+    bool SendDoubleTapAndLongPressDownEvent();
     void ProcessMultiFingerGesture(TouchExplorationMsg msg);
     void CancelPostEvent(TouchExplorationMsg msg);
 
@@ -329,7 +330,7 @@ private:
     void AddOneFingerSwipeEvent(MMI::PointerEvent &event);
     std::vector<Pointer> GetOneFingerSwipePath();
     int32_t GetSwipeDirection(const int32_t dx, const int32_t dy);
-    void RecordFocusedLocation(MMI::PointerEvent &event);
+    bool RecordFocusedLocation(MMI::PointerEvent &event);
     void OffsetEvent(MMI::PointerEvent &event);
     bool GetBasePointItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId);
     void GetPointOffset(MMI::PointerEvent &event, std::vector<float> &firstPointOffset,
@@ -368,6 +369,7 @@ private:
 
     std::shared_ptr<TouchExplorationEventHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
+    std::shared_ptr<AppExecFwk::EventHandler> gestureHandler_ = nullptr;
     using HandleEventFunc = std::function<void(MMI::PointerEvent &)>;
     std::map<TouchExplorationState, std::map<int32_t, HandleEventFunc>> handleEventFuncMap_ {};
 
