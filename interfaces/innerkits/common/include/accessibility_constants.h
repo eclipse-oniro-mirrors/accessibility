@@ -70,6 +70,7 @@ extern const int32_t PREFETCH_PREDECESSORS;
 extern const int32_t PREFETCH_SIBLINGS;
 extern const int32_t PREFETCH_CHILDREN;
 extern const int32_t PREFETCH_RECURSIVE_CHILDREN;
+extern const int32_t PREFETCH_RECURSIVE_CHILDREN_REDUCED;
 extern const int32_t GET_SOURCE_MODE;
 extern const int32_t UNDEFINED;
 extern const int32_t GET_SOURCE_PREFETCH_MODE;

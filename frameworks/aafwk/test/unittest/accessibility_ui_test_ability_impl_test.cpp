@@ -877,7 +877,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetRootByWindowBatch_001, TestSize.
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     AccessibilityWindowInfo windowInfo {};
     std::vector<AccessibilityElementInfo> elementInfos;
-    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, elementInfos, true), RET_ERR_NULLPTR);
+    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, elementInfos, true, false), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "GetRootByWindowBatch_001 end";
@@ -898,7 +898,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetRootByWindowBatch_002, TestSize.
     }
     AccessibilityWindowInfo windowInfo {};
     std::vector<AccessibilityElementInfo> elementInfos;
-    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, elementInfos, true), RET_OK);
+    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, elementInfos, true, false), RET_OK);
 
     GTEST_LOG_(INFO) << "GetRootByWindowBatch_002 end";
 }

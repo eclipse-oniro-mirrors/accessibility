@@ -145,10 +145,12 @@ public:
      * @brief Obtains elementInfos of the accessible root node in batchs.
      * @param windowInfo The source window info to get root.
      * @param elementInfos ElementInfos of the accessible root node and its recursive subnodes.
+     * @param isFilter Indicates whether to filter nodes.
+     * @param needCut Indicates whether to remove invisible nodes.
      * @return Return RET_OK if obtains elementInfos successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetRootByWindowBatch(const AccessibilityWindowInfo &windowInfo,
-        std::vector<AccessibilityElementInfo>& elementInfos, bool isFilter) override;
+        std::vector<AccessibilityElementInfo>& elementInfos, bool isFilter, bool needCut) override;
 
     /**
      * @brief Get the window information related with the event

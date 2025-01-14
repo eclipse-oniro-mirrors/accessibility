@@ -306,7 +306,7 @@ RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElem
 }
 
 RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWindowInfo &windowInfo,
-    std::vector<AccessibilityElementInfo>& elementInfos, bool isFilter)
+    std::vector<AccessibilityElementInfo>& elementInfos, bool isFilter, bool needCut)
 {
     HILOG_DEBUG();
     return RET_OK;
