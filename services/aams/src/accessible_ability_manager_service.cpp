@@ -217,6 +217,7 @@ void AccessibleAbilityManagerService::OnStart()
     InitActionHandler();
     InitSendEventHandler();
     InitChannelHandler();
+    InitGestureHandler()
 
     SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
 
