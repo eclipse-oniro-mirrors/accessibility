@@ -98,6 +98,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
 
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait SearchElementInfoByAccessibilityId result");
         return RET_ERR_TIME_OUT;
     }
@@ -153,6 +154,7 @@ RetError AccessibleAbilityChannel::SearchDefaultFocusedByWindowId(const ElementB
  
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait SearchElementInfoByAccessibilityId result");
         return RET_ERR_TIME_OUT;
     }
@@ -206,6 +208,7 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
 
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait SearchElementInfosByText result");
         return RET_ERR_TIME_OUT;
     }
@@ -259,6 +262,7 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
     
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait FindFocusedElementInfo result");
         return RET_ERR_TIME_OUT;
     }
@@ -311,6 +315,7 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
     
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait FocusMoveSearch result");
         return RET_ERR_TIME_OUT;
     }
@@ -425,6 +430,7 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
 
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait ExecuteAction result");
         return RET_ERR_TIME_OUT;
     }
@@ -628,6 +634,7 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
     
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait GetCursorPosition result");
         return RET_ERR_TIME_OUT;
     }
