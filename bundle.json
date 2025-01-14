@@ -71,6 +71,7 @@
           "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
           "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
           "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+          "//foundation/barrierfree/accessibility/interfaces/kits/cj:cj_accessibility_ffi",
           "//foundation/barrierfree/accessibility/common/interface:accessibility_interface"
         ],
         "service_group": [
