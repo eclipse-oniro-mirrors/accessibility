@@ -51,6 +51,7 @@ void AccessibleAbilityManagerService::OnStart()
     handler_ = std::make_shared<AAMSEventHandler>(runner_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
+    channelRunner_ = AppExecFwk::EventRunner::Create("AamsChannelRunner", AppExecFwk::ThreadMode::FFRT);
 }
 
 void AccessibleAbilityManagerService::OnStop()
@@ -59,6 +60,7 @@ void AccessibleAbilityManagerService::OnStop()
     Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
     runner_.reset();
     handler_.reset();
+    channelRunner_.reset();
 }
 
 void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
