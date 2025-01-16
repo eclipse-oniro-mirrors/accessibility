@@ -87,7 +87,7 @@ void InputManager::SimulateInputEvent(std::shared_ptr<KeyEvent> keyEvent)
     mockKeyCode = keyEvent->GetKeyCode();
 }
 
-void InputManager::SimulateInputEvent(std::shared_ptr<PointerEvent> pointerEvent, bool isAutoToVirtualScreen = true)
+void InputManager::SimulateInputEvent(std::shared_ptr<PointerEvent> pointerEvent, bool isAutoToVirtualScreen)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(g_mtx);
