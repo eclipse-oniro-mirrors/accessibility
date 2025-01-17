@@ -38,6 +38,10 @@ enum KeyAction : int32_t {
     UNKNOWN = 0xff,
 };
 
+uint32_t ParseResourceIdFromNAPI(napi_env env, napi_value value);
+std::string ParseResourceBundleNameFromNAPI(napi_env env, napi_value value);
+std::string ParseResourceModuleNameFromNAPI(napi_env env, napi_value value);
+void GetResourceFromNAPI(napi_env env, napi_value value, Accessibility::ResourceInfo& resourceInfo);
 std::string GetStringFromNAPI(napi_env env, napi_value value);
 bool ParseBool(napi_env env, bool& param, napi_value args);
 bool ParseString(napi_env env, std::string& param, napi_value args);
@@ -114,6 +118,8 @@ void ConvertStringArrayJSToNAPI(napi_env env, napi_value object,
     napi_value propertyNameValue, bool &hasProperty, std::vector<std::string> &stringArray);
 void ConvertStringArrayJSToNAPICommon(napi_env env, napi_value object, std::vector<std::string> &stringArray);
 void ConvertSpanToJS(napi_env env, napi_value result, const Accessibility::SpanInfo& span);
+void ConvertResourceJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty,
+    Accessibility::ResourceInfo& resourceInfo);
 bool IsColorWithMagic(const std::string& colorStr);
 
 OHOS::Accessibility::ActionType ConvertStringToAccessibleOperationType(const std::string &type);
