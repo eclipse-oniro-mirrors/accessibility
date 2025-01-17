@@ -207,6 +207,42 @@ void AccessibilityEventInfo::SetTimeStamp(int64_t timeStamp)
     HILOG_DEBUG("timeStamp:%{public}" PRId64 "", timeStamp_);
 }
 
+uint32_t AccessibilityEventInfo::GetResourceId() const
+{
+    return resourceId_;
+    HILOG_DEBUG("GetResourceId [%{public}d]", resourceId_);
+}
+ 
+void AccessibilityEventInfo::SetResourceId(const uint32_t &resourceId)
+{
+    resourceId_ = resourceId;
+    HILOG_DEBUG("SetResourceId [%{public}d]", resourceId_);
+}
+ 
+const std::string &AccessibilityEventInfo::GetResourceBundleName() const
+{
+    return resourceBundleName_;
+    HILOG_DEBUG("GetResourceBundleName [%{public}s]", resourceBundleName_.c_str());
+}
+ 
+void AccessibilityEventInfo::SetResourceBundleName(const std::string &bundleName)
+{
+    resourceBundleName_ = bundleName;
+    HILOG_DEBUG("SetResourceBundleName [%{public}s]", resourceBundleName_.c_str());
+}
+ 
+const std::string &AccessibilityEventInfo::GetResourceModuleName() const
+{
+    return resourceModuleName_;
+    HILOG_DEBUG("GetResourceModuleName [%{public}s]", resourceModuleName_.c_str());
+}
+ 
+void AccessibilityEventInfo::SetResourceModuleName(const std::string &moduleName)
+{
+    resourceModuleName_ = moduleName;
+    HILOG_DEBUG("SetResourceModuleName [%{public}s]", resourceModuleName_.c_str());
+}
+
 const std::string &AccessibilityEventInfo::GetBundleName() const
 {
     HILOG_DEBUG("bundleName_[%{public}s]", bundleName_.c_str());

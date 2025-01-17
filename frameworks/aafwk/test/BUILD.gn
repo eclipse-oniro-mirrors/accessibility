@@ -193,6 +193,10 @@ ohos_unittest("accessible_ability_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "resource_management:global_resmgr",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
+    "i18n:intl_util",
   ]
 }
 
