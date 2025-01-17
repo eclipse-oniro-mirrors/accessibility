@@ -1590,7 +1590,7 @@ void ConvertResourceJSToNAPI(napi_env env, napi_value object, napi_value propert
         resourceInfo.bundleName = ParseResourceBundleNameFromNAPI(env, itemValue);
         resourceInfo.moduleName = ParseResourceModuleNameFromNAPI(env, itemValue);
     }
-    HILOG_DEBUG("ConvertResourceJSToNAPI resourceId is %{public}d, bundleName is %{public}s, moduleName is %{public}s",
+    HILOG_DEBUG("resourceId is %{public}d, bundleName is %{public}s, moduleName is %{public}s",
         resourceInfo.resourceId, resourceInfo.bundleName.c_str(), resourceInfo.moduleName.c_str());
 }
 
