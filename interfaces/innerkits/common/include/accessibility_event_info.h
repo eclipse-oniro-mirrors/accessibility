@@ -336,48 +336,48 @@ public:
     void SetTimeStamp(int64_t timeStamp);  // Remained:for send event timestamp
 
     /**
-     * @brief AA get the resourceId of accessibility event is sent from ASAC.
-     * @return The resourceId of accessibility event is sent from ASAC
+     * @brief AA get the resourceId of event is sent from ASAC.
+     * @return The resourceId of event is sent from ASAC
      * @since 3
      * @sysCap Accessibility
      */
     uint32_t GetResourceId() const;
 
     /**
-     * @brief ASAC set the resourceId of accessibility is sent to AA
-     * @param resourceId The resourceId of accessibility event is sent from ASAC
+     * @brief ASAC set the resourceId of is sent to AA
+     * @param resourceId The resourceId of event is sent from ASAC
      * @since 3
      * @sysCap Accessibility
      */
     void SetResourceId(const uint32_t &resourceId);
  
      /**
-     * @brief AA get the moduleName of accessibility event is sent from ASAC.
-     * @return The moduleName of accessibility event is sent from ASAC
+     * @brief AA get the moduleName of event is sent from ASAC.
+     * @return The moduleName of event is sent from ASAC
      * @since 3
      * @sysCap Accessibility
      */
     const std::string &GetResourceModuleName() const;
 
     /**
-     * @brief ASAC set the moduleName of accessibility is sent to AA
-     * @param moduleName The moduleName of accessibility event is sent from ASAC
+     * @brief ASAC set the moduleName of is sent to AA
+     * @param moduleName The moduleName of event is sent from ASAC
      * @since 3
      * @sysCap Accessibility
      */
     void SetResourceModuleName(const std::string &moduleName);
 
      /**
-     * @brief AA get the bundleName of accessibility event is sent from ASAC.
-     * @return The bundleName of accessibility event is sent from ASAC
+     * @brief AA get the bundleName of event is sent from ASAC.
+     * @return The bundleName of event is sent from ASAC
      * @since 3
      * @sysCap Accessibility
      */
     const std::string &GetResourceBundleName() const;
 
     /**
-     * @brief ASAC set the bundleName of accessibility is sent to AA
-     * @param bundleName The bundleName of accessibility event is sent from ASAC
+     * @brief ASAC set the bundleName of is sent to AA
+     * @param bundleName The bundleName of event is sent from ASAC
      * @since 3
      * @sysCap Accessibility
      */
