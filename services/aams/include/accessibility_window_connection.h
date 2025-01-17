@@ -36,6 +36,16 @@ public:
         return proxy_;
     }
 
+    inline void SetProxy(sptr<IAccessibilityElementOperator> proxy)
+    {
+        proxy_ = proxy;
+    }
+
+    inline int GetCardProxySize()
+    {
+        return cardProxy_.Size();
+    }
+
     sptr<IAccessibilityElementOperator> GetCardProxy(const int32_t treeId);
 
     RetError SetCardProxy(const int32_t treeId, sptr<IAccessibilityElementOperator> operation);

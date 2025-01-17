@@ -1074,7 +1074,6 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
             HILOG_WARN("The operation of windowId[%{public}d] has not been registered.", windowId);
             return;
         }
-        accountData->RemoveAccessibilityWindowConnection(windowId);
         StopCallbackWait(windowId);
 
         if (!connection->GetProxy()) {
@@ -1093,6 +1092,13 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
             } else {
                 HILOG_INFO("cannot find remote object. windowId[%{public}d]", windowId);
             }
+        }
+
+        connection->SetProxy(nullptr);
+        RemoveTreeDeathRecipient(windowId, 0, connection);
+        // remove connection when all proxy and children tree proxy deregistered
+        if (connection->GetProxy() == nullptr && connection->GetCardProxySize() == 0) {
+            accountData->RemoveAccessibilityWindowConnection(windowId);
         }
         }, "TASK_DEREGISTER_ELEMENT_OPERATOR");
     return RET_OK;
@@ -1120,14 +1126,10 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
         }
         StopCallbackWait(windowId, treeId);
 
-        if (!connection->GetCardProxy(treeId)) {
-            HILOG_ERROR("proxy is null");
-            return;
-        }
-
-        auto object = connection->GetCardProxy(treeId)->AsObject();
-        if (object) {
-            RemoveTreeDeathRecipient(windowId, treeId, connection);
+        RemoveTreeDeathRecipient(windowId, treeId, connection);
+        // remove connection when all proxy and children tree proxy deregistered
+        if (connection->GetProxy() == nullptr && connection->GetCardProxySize() == 0) {
+            accountData->RemoveAccessibilityWindowConnection(windowId);
         }
         }, "TASK_DEREGISTER_ELEMENT_OPERATOR");
     return RET_OK;
