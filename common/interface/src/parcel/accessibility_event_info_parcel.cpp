@@ -122,6 +122,18 @@ bool AccessibilityEventInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
     int32_t requestFocusElementId = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, requestFocusElementId);
     SetRequestFocusElementId(requestFocusElementId);
+
+    std::string bundleName;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName);
+    SetResourceBundleName(bundleName);
+ 
+    std::string moduleName;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, moduleName);
+    SetResourceModuleName(moduleName);
+ 
+    uint32_t resourceId = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, resourceId);
+    SetResourceId(resourceId);
     return true;
 }
 
@@ -173,6 +185,9 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetTextAnnouncedForAccessibility());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetInspectorKey());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetRequestFocusElementId());
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetResourceBundleName());
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetResourceModuleName());
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, GetResourceId());
     return true;
 }
 
