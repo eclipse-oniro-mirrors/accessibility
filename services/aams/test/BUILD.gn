@@ -1245,6 +1245,9 @@ ohos_unittest("accessibility_screen_touch_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
+    "resource_management:global_resmgr",
+    "bundle_framework:appexecfwk_base",
+    "i18n:intl_util",
   ]
 }
 
