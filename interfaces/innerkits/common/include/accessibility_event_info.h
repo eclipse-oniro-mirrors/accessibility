@@ -336,6 +336,54 @@ public:
     void SetTimeStamp(int64_t timeStamp);  // Remained:for send event timestamp
 
     /**
+     * @brief AA get the resourceId of accessibility event is sent from ASAC.
+     * @return The resourceId of accessibility event is sent from ASAC
+     * @since 3
+     * @sysCap Accessibility
+     */
+    uint32_t GetResourceId() const;
+
+    /**
+     * @brief ASAC set the resourceId of accessibility is sent to AA
+     * @param resourceId The resourceId of accessibility event is sent from ASAC
+     * @since 3
+     * @sysCap Accessibility
+     */
+    void SetResourceId(const uint32_t &resourceId);
+ 
+     /**
+     * @brief AA get the moduleName of accessibility event is sent from ASAC.
+     * @return The moduleName of accessibility event is sent from ASAC
+     * @since 3
+     * @sysCap Accessibility
+     */
+    const std::string &GetResourceModuleName() const;
+
+    /**
+     * @brief ASAC set the moduleName of accessibility is sent to AA
+     * @param moduleName The moduleName of accessibility event is sent from ASAC
+     * @since 3
+     * @sysCap Accessibility
+     */
+    void SetResourceModuleName(const std::string &moduleName);
+
+     /**
+     * @brief AA get the bundleName of accessibility event is sent from ASAC.
+     * @return The bundleName of accessibility event is sent from ASAC
+     * @since 3
+     * @sysCap Accessibility
+     */
+    const std::string &GetResourceBundleName() const;
+
+    /**
+     * @brief ASAC set the bundleName of accessibility is sent to AA
+     * @param bundleName The bundleName of accessibility event is sent from ASAC
+     * @since 3
+     * @sysCap Accessibility
+     */
+    void SetResourceBundleName(const std::string &bundleName);
+
+    /**
      * @brief Gets the bundle name of the event source, that is, the bundle name of the target application.
      * @return Returns the bundle name of the event source.
      * @since 3
@@ -529,6 +577,9 @@ protected:
     std::string textAnnouncedForAccessibility_ = "";
     std::string inspectorKey_ = "";
     int32_t requestFocusElementId_ = -1;
+    uint32_t resourceId_ = 1;
+    std::string resourceModuleName_ = "";
+    std::string resourceBundleName_ = "";
 };
 } // namespace Accessibility
 } // namespace OHOS
