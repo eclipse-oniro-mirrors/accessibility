@@ -230,6 +230,7 @@ public:
     void InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event);
     bool CheckWindowIdEventExist(int32_t windowId);
     bool CheckWindowRegister(int32_t windowId);
+    void GetResourceValue(AccessibilityEventInfo &eventInfo);
 
     // used for arkui windowId 1 map to WMS windowId
     void FindInnerWindowId(const AccessibilityEventInfo &event, int32_t& windowId);
