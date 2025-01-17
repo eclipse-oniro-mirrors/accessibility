@@ -41,6 +41,11 @@
 #include "xcollie_helper.h"
 #include <ipc_skeleton.h>
 #include "transaction/rs_interfaces.h"
+#include "resource_manager.h"
+#include "res_config.h"
+#include "bundle_info.h"
+#include "locale_config.h"
+#include "locale_info.h"
 
 using namespace std;
 
@@ -428,6 +433,8 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
             return RET_ERR_CONNECTION_EXIST;
         }
     }
+
+    GetResourceValue(const_cast<AccessibilityEventInfo&>(uiEvent));
 
     sendEventHandler_->PostTask([this, uiEvent]() {
         HILOG_DEBUG();
@@ -3303,6 +3310,68 @@ void AccessibleAbilityManagerService::OnDataClone()
     } else {
         HILOG_WARN("config_ is nullptr");
     }
+}
+
+void AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &eventInfo)
+{
+    HILOG_DEBUG("BundleName is %{public}s, ModuleName is %{public}s, ResourceId is %{public}d",
+        eventInfo.GetResourceBundleName().c_str(), eventInfo.GetResourceModuleName().c_str(), eventInfo.GetResourceId());
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("get accountData failed");
+        return;
+    }
+    int32_t userId = accountData->GetAccountId();
+
+    AppExecFwk::BundleInfo bundleInfo;
+    sptr<AppExecFwk::IBundleMgr> bundleMgr_;
+    bundleMgr_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
+    bool result = bundleMgr_->GetBundleInfoV9(eventInfo.GetResourceBundleName(),
+        static_cast<int32_t>(AppExecFwk::GetBundleInfoFlag::GET_BUNDLE_INFO_WITH_HAP_MODULE), bundleInfo, userId);
+
+    std::unique_ptr<Global::Resource::ResConfig> resConfig(Global::Resource::CreateResConfig());
+    UErrorCode status = U_ZERO_ERROR;
+    icu::Locale locale = icu::Locale::forLanguageTag(Global::I18n::LocaleConfig::GetSystemLanguage(), status);
+    resConfig->SetLocaleInfo(locale.getLanguage(), locale.getScript(), locale.getCountry());
+
+    std::string hapPath;
+    std::vector<std::string> overlayPaths;
+    int32_t appType = 0;
+    std::shared_ptr<Global::Resource::ResourceManager> resourceManager(Global::Resource::CreateResourceManager(
+        eventInfo.GetResourceBundleName(), eventInfo.GetResourceModuleName(), hapPath, overlayPaths, *resConfig,
+        appType, userId));
+    if (resourceManager == nullptr) {
+        HILOG_ERROR("create Resource manager failed");
+        return;
+    }
+
+    Global::Resource::RState state = resourceManager->UpdateResConfig(*resConfig);
+    if (state != Global::Resource::RState::SUCCESS) {
+        HILOG_ERROR("UpdateResConfig failed! errCode: %{public}d", state);
+        return;
+    }
+
+    for (const auto &hapModuleInfo : bundleInfo.hapModuleInfos) {
+        std::string moduleResPath = hapModuleInfo.hapPath.empty() ? hapModuleInfo.resourcePath : hapModuleInfo.hapPath;
+        HILOG_DEBUG("hapModuleInfo.hapPath is %{public}s", hapModuleInfo.hapPath.c_str());
+        if (moduleResPath.empty()) {
+            HILOG_ERROR("moduleResPath is empty");
+            continue;
+        }
+        if (!resourceManager->AddResource(moduleResPath.c_str())) {
+            HILOG_ERROR("AddResource is failed");
+        }
+    }
+
+    std::string resourceValue;
+    Global::Resource::RState res = resourceManager->GetStringById(eventInfo.GetResourceId(), resourceValue);
+    if (res != Global::Resource::RState::SUCCESS) {
+        HILOG_ERROR("get resource value failed");
+        return;
+    }
+    HILOG_INFO("resource value is %{public}s", resourceValue.c_str());
+    eventInfo.SetTextAnnouncedForAccessibility(resourceValue);
 }
 } // namespace Accessibility
 } // namespace OHOS
