@@ -184,7 +184,10 @@ void ConvertEventTypes(const uint32_t value, std::string &eventTypes)
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility"},
         {EventType::TYPE_PAGE_OPEN, "pageOpen"},
         {EventType::TYPE_PAGE_CLOSE, "pageClose"},
-        {EventType::TYPE_ELEMENT_INFO_CHANGE, "elementInfoChange"}};
+        {EventType::TYPE_ELEMENT_INFO_CHANGE, "elementInfoChange"},
+        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT, "announceForAccessibilityNotInterrupt"},
+        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP,
+            "requestFocusForAccessibilityNotInterrupt"}};
 
     for (auto itr = accessibilityEventTable.begin(); itr != accessibilityEventTable.end(); ++itr) {
         if (value & itr->first) {

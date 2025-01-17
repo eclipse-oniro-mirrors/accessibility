@@ -338,7 +338,10 @@ static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT, "accessibilityFocus"},
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT, "accessibilityFocusClear"},
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility"},
-        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility"}};
+        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility"},
+        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT, "announceForAccessibilityNotInterrupt"},
+        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP,
+            "requestFocusForAccessibilityNotInterrupt"}};
 
     for (std::map<EventType, std::string>::iterator itr = accessibilityEventTable.begin();
          itr != accessibilityEventTable.end(); ++itr) {
@@ -575,7 +578,10 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility"},
         {EventType::TYPE_PAGE_OPEN, "pageOpen"},
         {EventType::TYPE_PAGE_CLOSE, "pageClose"},
-        {EventType::TYPE_ELEMENT_INFO_CHANGE, "elementInfoChange"}};
+        {EventType::TYPE_ELEMENT_INFO_CHANGE, "elementInfoChange"},
+        {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT, "announceForAccessibilityNotInterrupt"},
+        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP,
+            "requestFocusForAccessibilityNotInterrupt"}};
 
     if (a11yEvtTypeTable.find(type) == a11yEvtTypeTable.end()) {
         return "";
@@ -745,7 +751,10 @@ static EventType ConvertStringToEventInfoTypes(std::string type)
         {"accessibilityFocus", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT},
         {"accessibilityFocusClear", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT},
         {"requestFocusForAccessibility", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY},
-        {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY}};
+        {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY},
+        {"announceForAccessibilityNotInterrupt", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT},
+        {"requestFocusForAccessibilityNotInterrupt",
+            EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
