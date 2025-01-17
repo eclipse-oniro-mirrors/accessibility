@@ -215,14 +215,15 @@ void NAccessibilityElement::ConvertElementIdVecToJS(
     napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos)
 {
     HILOG_DEBUG("elementInfo size(%{public}zu)", elementInfos.size());
+    if (elementInfos.size() == 0) {
+        return;
+    }
 
     size_t index = 0;
     std::vector<std::int64_t> values;
-    for (auto& elementInfo : elementInfos) {
-        int64_t elementId = elementInfo.GetAccessibilityId();
-        HILOG_DEBUG("elementId is %{public}" PRId64 "", elementId);
-        values.emplace_back(elementId);
-    }
+    int64_t elementId = elementInfos[0].GetAccessibilityId();
+    HILOG_DEBUG("default focus is %{public}" PRId64 "", elementId);
+    values.emplace_back(elementId);
 
     for (auto& value : values) {
         napi_value id = nullptr;
