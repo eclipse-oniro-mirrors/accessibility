@@ -104,18 +104,6 @@ std::string ParseResourceModuleNameFromNAPI(napi_env env, napi_value value)
     HILOG_DEBUG("get resource moduleName is %{public}s", moduleNameValue.c_str());
     return moduleNameValue;
 }
- 
-void GetResourceFromNAPI(napi_env env, napi_value value, Accessibility::ResourceInfo& resourceInfo)
-{
-    uint32_t id = ParseResourceIdFromNAPI(env, value);
-    std::string bundleName = ParseResourceBundleNameFromNAPI(env, value);
-    std::string moduleName = ParseResourceModuleNameFromNAPI(env, value);
-    resourceInfo.resourceId = id;
-    resourceInfo.bundleName = bundleName;
-    resourceInfo.moduleName = moduleName;
-    HILOG_INFO("lsldebug resourceInfo.resourceId is %{public}d, resourceInfo.bundleName is %{public}s, resourceInfo.moduleName is %{public}s",
-        resourceInfo.resourceId, resourceInfo.bundleName.c_str(), resourceInfo.moduleName.c_str());
-}
 
 std::string GetStringFromNAPI(napi_env env, napi_value value)
 {
