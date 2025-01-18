@@ -230,7 +230,7 @@ public:
     void InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event);
     bool CheckWindowIdEventExist(int32_t windowId);
     bool CheckWindowRegister(int32_t windowId);
-    void GetResource(AccessibilityEventInfo &eventInfo);
+    void GetResourceBundleInfo(AccessibilityEventInfo &eventInfo);
     void GetResourceValue(AccessibilityEventInfo &eventInfo, AppExecFwk::BundleInfo bundleInfo,
         int32_t userId, std::string result);
 
