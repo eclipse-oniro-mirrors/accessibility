@@ -434,7 +434,7 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
         }
     }
 
-    GetResourceValue(const_cast<AccessibilityEventInfo&>(uiEvent));
+    GetResourceBundleInfo(const_cast<AccessibilityEventInfo&>(uiEvent));
 
     sendEventHandler_->PostTask([this, uiEvent]() {
         HILOG_DEBUG();
@@ -3312,7 +3312,7 @@ void AccessibleAbilityManagerService::OnDataClone()
     }
 }
 
-void AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &eventInfo)
+void AccessibleAbilityManagerService::GetResourceBundleInfo(AccessibilityEventInfo &eventInfo)
 {
     HILOG_DEBUG("BundleName is %{public}s, ModuleName is %{public}s, ResourceId is %{public}d",
         eventInfo.GetResourceBundleName().c_str(), eventInfo.GetResourceModuleName().c_str(), eventInfo.GetResourceId());
@@ -3330,6 +3330,15 @@ void AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &e
     bool result = bundleMgr_->GetBundleInfoV9(eventInfo.GetResourceBundleName(),
         static_cast<int32_t>(AppExecFwk::GetBundleInfoFlag::GET_BUNDLE_INFO_WITH_HAP_MODULE), bundleInfo, userId);
 
+    std::string resourceValue;
+    GetResourceValue(eventInfo, bundleInfo, userId, resourceValue);
+    HILOG_INFO("resource value is %{public}s", resourceValue.c_str());
+    eventInfo.SetTextAnnouncedForAccessibility(resourceValue);
+}
+
+void AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &eventInfo, AppExecFwk::BundleInfo bundleInfo,
+    int32_t userId, std::string result)
+{
     std::unique_ptr<Global::Resource::ResConfig> resConfig(Global::Resource::CreateResConfig());
     UErrorCode status = U_ZERO_ERROR;
     icu::Locale locale = icu::Locale::forLanguageTag(Global::I18n::LocaleConfig::GetSystemLanguage(), status);
@@ -3364,14 +3373,11 @@ void AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &e
         }
     }
 
-    std::string resourceValue;
-    Global::Resource::RState res = resourceManager->GetStringById(eventInfo.GetResourceId(), resourceValue);
+    Global::Resource::RState res = resourceManager->GetStringById(eventInfo.GetResourceId(), result);
     if (res != Global::Resource::RState::SUCCESS) {
         HILOG_ERROR("get resource value failed");
         return;
     }
-    HILOG_INFO("resource value is %{public}s", resourceValue.c_str());
-    eventInfo.SetTextAnnouncedForAccessibility(resourceValue);
 }
 } // namespace Accessibility
 } // namespace OHOS
