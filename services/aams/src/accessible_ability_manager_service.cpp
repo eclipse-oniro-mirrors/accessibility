@@ -434,7 +434,10 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
         }
     }
 
-    GetResourceBundleInfo(const_cast<AccessibilityEventInfo&>(uiEvent));
+    RetError res = GetResourceBundleInfo(const_cast<AccessibilityEventInfo&>(uiEvent));
+    if (res != RET_OK) {
+        HILOG_ERROR("Get Resource BundleInfo failed! RetError is %{public}d", res);
+    }
 
     sendEventHandler_->PostTask([this, uiEvent]() {
         HILOG_DEBUG();
@@ -3312,7 +3315,7 @@ void AccessibleAbilityManagerService::OnDataClone()
     }
 }
 
-void AccessibleAbilityManagerService::GetResourceBundleInfo(AccessibilityEventInfo &eventInfo)
+RetError AccessibleAbilityManagerService::GetResourceBundleInfo(AccessibilityEventInfo &eventInfo)
 {
     HILOG_DEBUG("BundleName is %{public}s, ModuleName is %{public}s, ResourceId is %{public}d",
         eventInfo.GetResourceBundleName().c_str(), eventInfo.GetResourceModuleName().c_str(),
@@ -3321,23 +3324,32 @@ void AccessibleAbilityManagerService::GetResourceBundleInfo(AccessibilityEventIn
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     if (accountData == nullptr) {
         HILOG_ERROR("get accountData failed");
-        return;
+        return RET_ERR_NULLPTR;
     }
     int32_t userId = accountData->GetAccountId();
 
     AppExecFwk::BundleInfo bundleInfo;
     sptr<AppExecFwk::IBundleMgr> bundleMgr_;
     bundleMgr_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
+    if (bundleMgr_ == nullptr) {
+        HILOG_ERROR("create bundleMgr_ failed");
+        return RET_ERR_NULLPTR;
+    }
     bool result = bundleMgr_->GetBundleInfoV9(eventInfo.GetResourceBundleName(),
         static_cast<int32_t>(AppExecFwk::GetBundleInfoFlag::GET_BUNDLE_INFO_WITH_HAP_MODULE), bundleInfo, userId);
 
     std::string resourceValue;
-    GetResourceValue(eventInfo, bundleInfo, userId, resourceValue);
+    RetError res = GetResourceValue(eventInfo, bundleInfo, userId, resourceValue);
+    if (res != RET_OK) {
+        HILOG_ERROR("Get Resource Value failed");
+        return res;
+    }
     HILOG_DEBUG("resource value is %{public}s", resourceValue.c_str());
     eventInfo.SetTextAnnouncedForAccessibility(resourceValue);
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &eventInfo,
+RetError AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &eventInfo,
     AppExecFwk::BundleInfo bundleInfo, int32_t userId, std::string &result)
 {
     std::unique_ptr<Global::Resource::ResConfig> resConfig(Global::Resource::CreateResConfig());
@@ -3353,13 +3365,13 @@ void AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &e
         appType, userId));
     if (resourceManager == nullptr) {
         HILOG_ERROR("create Resource manager failed");
-        return;
+        return RET_ERR_NULLPTR;
     }
 
     Global::Resource::RState state = resourceManager->UpdateResConfig(*resConfig);
     if (state != Global::Resource::RState::SUCCESS) {
         HILOG_ERROR("UpdateResConfig failed! errCode: %{public}d", state);
-        return;
+        return RET_ERR_FAILED;
     }
 
     for (const auto &hapModuleInfo : bundleInfo.hapModuleInfos) {
@@ -3377,8 +3389,9 @@ void AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &e
     Global::Resource::RState res = resourceManager->GetStringById(eventInfo.GetResourceId(), result);
     if (res != Global::Resource::RState::SUCCESS) {
         HILOG_ERROR("get resource value failed");
-        return;
+        return RET_ERR_FAILED;
     }
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS
