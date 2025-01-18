@@ -209,8 +209,8 @@ void AccessibilityEventInfo::SetTimeStamp(int64_t timeStamp)
 
 uint32_t AccessibilityEventInfo::GetResourceId() const
 {
-    return resourceId_;
     HILOG_DEBUG("GetResourceId [%{public}d]", resourceId_);
+    return resourceId_;
 }
  
 void AccessibilityEventInfo::SetResourceId(const uint32_t &resourceId)
@@ -221,8 +221,8 @@ void AccessibilityEventInfo::SetResourceId(const uint32_t &resourceId)
  
 const std::string &AccessibilityEventInfo::GetResourceBundleName() const
 {
-    return resourceBundleName_;
     HILOG_DEBUG("GetResourceBundleName [%{public}s]", resourceBundleName_.c_str());
+    return resourceBundleName_;
 }
  
 void AccessibilityEventInfo::SetResourceBundleName(const std::string &bundleName)
@@ -233,8 +233,8 @@ void AccessibilityEventInfo::SetResourceBundleName(const std::string &bundleName
  
 const std::string &AccessibilityEventInfo::GetResourceModuleName() const
 {
-    return resourceModuleName_;
     HILOG_DEBUG("GetResourceModuleName [%{public}s]", resourceModuleName_.c_str());
+    return resourceModuleName_;
 }
  
 void AccessibilityEventInfo::SetResourceModuleName(const std::string &moduleName)
