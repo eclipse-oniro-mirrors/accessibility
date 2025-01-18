@@ -232,7 +232,7 @@ public:
     bool CheckWindowRegister(int32_t windowId);
     void GetResourceBundleInfo(AccessibilityEventInfo &eventInfo);
     void GetResourceValue(AccessibilityEventInfo &eventInfo, AppExecFwk::BundleInfo bundleInfo,
-        int32_t userId, std::string result);
+        int32_t userId, std::string &result);
 
     // used for arkui windowId 1 map to WMS windowId
     void FindInnerWindowId(const AccessibilityEventInfo &event, int32_t& windowId);
