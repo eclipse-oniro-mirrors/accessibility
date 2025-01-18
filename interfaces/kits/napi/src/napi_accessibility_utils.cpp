@@ -1182,6 +1182,10 @@ bool ConvertEventInfoJSToNAPI(
     if (!tmpResult) {
         return false;
     }
+    tmpResult = ConvertEventInfoJSToNAPIPart4(env, object, eventInfo);
+    if (!tmpResult) {
+        return false;
+    }
     return true;
 }
 
@@ -1331,6 +1335,22 @@ bool ConvertEventInfoJSToNAPIPart3(
         eventInfo.SetTextAnnouncedForAccessibility(announceText);
     }
 
+    Accessibility::ResourceInfo resourceInfo;
+    napi_create_string_utf8(env, "textResourceAnnouncedForAccessibility", NAPI_AUTO_LENGTH, &propertyNameValue);
+    ConvertResourceJSToNAPI(env, object, propertyNameValue, hasProperty, resourceInfo);
+    if (hasProperty) {
+        eventInfo.SetResourceBundleName(resourceInfo.bundleName);
+        eventInfo.SetResourceModuleName(resourceInfo.moduleName);
+        eventInfo.SetResourceId(resourceInfo.resourceId);
+    }
+    return true;
+}
+
+bool ConvertEventInfoJSToNAPIPart4(
+    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo)
+{
+    bool hasProperty = false;
+    napi_value propertyNameValue = nullptr;
     Accessibility::ResourceInfo resourceInfo;
     napi_create_string_utf8(env, "textResourceAnnouncedForAccessibility", NAPI_AUTO_LENGTH, &propertyNameValue);
     ConvertResourceJSToNAPI(env, object, propertyNameValue, hasProperty, resourceInfo);
