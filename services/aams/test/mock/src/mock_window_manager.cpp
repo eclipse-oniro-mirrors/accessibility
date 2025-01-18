@@ -37,7 +37,7 @@ WMError WindowManager::GetAccessibilityWindowInfo(std::vector<sptr<Accessibility
     return WMError::WM_OK;
 }
 
-void WindowManager::GetFocusWindowInfo(FocusChangeInfo &info)
+void WindowManager::GetFocusWindowInfo(FocusChangeInfo &info, DisplayId displayId)
 {
     info.windowId_ = 1;
 }
