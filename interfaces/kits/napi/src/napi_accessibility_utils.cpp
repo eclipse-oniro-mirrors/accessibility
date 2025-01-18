@@ -1334,15 +1334,6 @@ bool ConvertEventInfoJSToNAPIPart3(
     if (hasProperty) {
         eventInfo.SetTextAnnouncedForAccessibility(announceText);
     }
-
-    Accessibility::ResourceInfo resourceInfo;
-    napi_create_string_utf8(env, "textResourceAnnouncedForAccessibility", NAPI_AUTO_LENGTH, &propertyNameValue);
-    ConvertResourceJSToNAPI(env, object, propertyNameValue, hasProperty, resourceInfo);
-    if (hasProperty) {
-        eventInfo.SetResourceBundleName(resourceInfo.bundleName);
-        eventInfo.SetResourceModuleName(resourceInfo.moduleName);
-        eventInfo.SetResourceId(resourceInfo.resourceId);
-    }
     return true;
 }
 
