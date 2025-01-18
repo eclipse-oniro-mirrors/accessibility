@@ -3315,7 +3315,8 @@ void AccessibleAbilityManagerService::OnDataClone()
 void AccessibleAbilityManagerService::GetResourceBundleInfo(AccessibilityEventInfo &eventInfo)
 {
     HILOG_DEBUG("BundleName is %{public}s, ModuleName is %{public}s, ResourceId is %{public}d",
-        eventInfo.GetResourceBundleName().c_str(), eventInfo.GetResourceModuleName().c_str(), eventInfo.GetResourceId());
+        eventInfo.GetResourceBundleName().c_str(), eventInfo.GetResourceModuleName().c_str(),
+        eventInfo.GetResourceId());
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     if (accountData == nullptr) {
@@ -3336,8 +3337,8 @@ void AccessibleAbilityManagerService::GetResourceBundleInfo(AccessibilityEventIn
     eventInfo.SetTextAnnouncedForAccessibility(resourceValue);
 }
 
-void AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &eventInfo, AppExecFwk::BundleInfo bundleInfo,
-    int32_t userId, std::string &result)
+void AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &eventInfo,
+    AppExecFwk::BundleInfo bundleInfo, int32_t userId, std::string &result)
 {
     std::unique_ptr<Global::Resource::ResConfig> resConfig(Global::Resource::CreateResConfig());
     UErrorCode status = U_ZERO_ERROR;
