@@ -77,6 +77,8 @@ bool ConvertEventInfoJSToNAPIPart2(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
 bool ConvertEventInfoJSToNAPIPart3(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
+bool ConvertEventInfoJSToNAPIPart4(
+    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
 OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(std::string& type);
 OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME ConvertStringToClickResponseTimeTypes(std::string& type);
 OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME ConvertStringToIgnoreRepeatClickTimeTypes(std::string& type);
