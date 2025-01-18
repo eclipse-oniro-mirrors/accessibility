@@ -28,6 +28,7 @@ ohos_shared_library("config_napi") {
     "../../../../common/log/include",
     "../include",
     "./include",
+    "../../../../common/interface/include",
   ]
 
   defines = [
@@ -47,6 +48,7 @@ ohos_shared_library("config_napi") {
   configs = [ "../../../../resources/config/build:coverage_flags" ]
 
   deps = [
+    "../../../../common/interface:accessibility_interface",
     "../../../innerkits/acfwk:accessibilityconfig",
     "./../../../innerkits/common:accessibility_common",
   ]

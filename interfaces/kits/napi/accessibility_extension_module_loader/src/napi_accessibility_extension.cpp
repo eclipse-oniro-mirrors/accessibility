@@ -27,6 +27,7 @@
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "napi_accessibility_element.h"
+#include "api_reporter_helper.h"
 
 using namespace OHOS::AbilityRuntime;
 using namespace OHOS::AccessibilityNapi;
@@ -161,6 +162,7 @@ sptr<IRemoteObject> NAccessibilityExtension::OnConnect(const AAFwk::Want &want)
 void NAccessibilityExtension::OnAbilityConnected()
 {
     HILOG_INFO();
+    ApiReportHelper reporter("NAccessibilityExtension.OnAbilityConnected");
     uv_loop_s* loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
     if (loop == nullptr) {
@@ -208,6 +210,7 @@ void NAccessibilityExtension::OnAbilityConnected()
 void NAccessibilityExtension::OnAbilityDisconnected()
 {
     HILOG_INFO();
+    ApiReportHelper reporter("NAccessibilityExtension.OnAbilityDisconnected");
     uv_loop_s* loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
     if (loop == nullptr) {

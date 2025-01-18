@@ -21,6 +21,7 @@ config("accessibilityclient_private_config") {
   include_dirs = [
     "${asacfwk_path}/include",
     "../../../common/log/include",
+    "../../../common/interface/include",
   ]
 
   defines = [
