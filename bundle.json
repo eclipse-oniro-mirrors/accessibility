@@ -57,7 +57,9 @@
         "os_account",
         "preferences",
         "power_manager",
-        "data_share"
+        "data_share",
+        "resource_management",
+        "i18n"
       ],
       "third_party": []
     },

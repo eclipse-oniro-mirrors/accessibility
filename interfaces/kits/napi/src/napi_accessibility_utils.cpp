@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_utils.h"
+#include "accessibility_def.h"
 
 #include <cmath>
 #include <iomanip>
@@ -55,6 +56,54 @@ namespace {
 } // namespace
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
+
+uint32_t ParseResourceIdFromNAPI(napi_env env, napi_value value)
+{
+    uint32_t idValue = 0;
+    bool hasProperty = false;
+    napi_value propertyName = nullptr;
+    napi_create_string_utf8(env, "id", NAPI_AUTO_LENGTH, &propertyName);
+    napi_has_property(env, value, propertyName, &hasProperty);
+    if (hasProperty) {
+        napi_value itemValue = nullptr;
+        napi_get_property(env, value, propertyName, &itemValue);
+        napi_get_value_uint32(env, itemValue, &idValue);
+    }
+    HILOG_DEBUG("get resource id is %{public}d", idValue);
+    return idValue;
+}
+ 
+std::string ParseResourceBundleNameFromNAPI(napi_env env, napi_value value)
+{
+    std::string bundleNameValue;
+    bool hasProperty = false;
+    napi_value propertyName = nullptr;
+    napi_create_string_utf8(env, "bundleName", NAPI_AUTO_LENGTH, &propertyName);
+    napi_has_property(env, value, propertyName, &hasProperty);
+    if (hasProperty) {
+        napi_value itemValue = nullptr;
+        napi_get_property(env, value, propertyName, &itemValue);
+        bundleNameValue = GetStringFromNAPI(env, itemValue);
+    }
+    HILOG_DEBUG("get resource bundleName is %{public}s", bundleNameValue.c_str());
+    return bundleNameValue;
+}
+ 
+std::string ParseResourceModuleNameFromNAPI(napi_env env, napi_value value)
+{
+    std::string moduleNameValue;
+    bool hasProperty = false;
+    napi_value propertyName = nullptr;
+    napi_create_string_utf8(env, "moduleName", NAPI_AUTO_LENGTH, &propertyName);
+    napi_has_property(env, value, propertyName, &hasProperty);
+    if (hasProperty) {
+        napi_value itemValue = nullptr;
+        napi_get_property(env, value, propertyName, &itemValue);
+        moduleNameValue = GetStringFromNAPI(env, itemValue);
+    }
+    HILOG_DEBUG("get resource moduleName is %{public}s", moduleNameValue.c_str());
+    return moduleNameValue;
+}
 
 std::string GetStringFromNAPI(napi_env env, napi_value value)
 {
@@ -1142,6 +1191,10 @@ bool ConvertEventInfoJSToNAPI(
     if (!tmpResult) {
         return false;
     }
+    tmpResult = ConvertEventInfoJSToNAPIPart4(env, object, eventInfo);
+    if (!tmpResult) {
+        return false;
+    }
     return true;
 }
 
@@ -1289,6 +1342,22 @@ bool ConvertEventInfoJSToNAPIPart3(
     std::string announceText = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
         eventInfo.SetTextAnnouncedForAccessibility(announceText);
+    }
+    return true;
+}
+
+bool ConvertEventInfoJSToNAPIPart4(
+    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo)
+{
+    bool hasProperty = false;
+    napi_value propertyNameValue = nullptr;
+    Accessibility::ResourceInfo resourceInfo;
+    napi_create_string_utf8(env, "textResourceAnnouncedForAccessibility", NAPI_AUTO_LENGTH, &propertyNameValue);
+    ConvertResourceJSToNAPI(env, object, propertyNameValue, hasProperty, resourceInfo);
+    if (hasProperty) {
+        eventInfo.SetResourceBundleName(resourceInfo.bundleName);
+        eventInfo.SetResourceModuleName(resourceInfo.moduleName);
+        eventInfo.SetResourceId(resourceInfo.resourceId);
     }
     return true;
 }
@@ -1528,6 +1597,21 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<
     // set keys
     SetKeyPropertyPart1(env, result, keyEvent);
     SetKeyPropertyPart2(env, result, keyEvent);
+}
+
+void ConvertResourceJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty,
+    Accessibility::ResourceInfo& resourceInfo)
+{
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value itemValue = nullptr;
+        napi_get_property(env, object, propertyNameValue, &itemValue);
+        resourceInfo.resourceId = ParseResourceIdFromNAPI(env, itemValue);
+        resourceInfo.bundleName = ParseResourceBundleNameFromNAPI(env, itemValue);
+        resourceInfo.moduleName = ParseResourceModuleNameFromNAPI(env, itemValue);
+    }
+    HILOG_DEBUG("resourceId is %{public}d, bundleName is %{public}s, moduleName is %{public}s",
+        resourceInfo.resourceId, resourceInfo.bundleName.c_str(), resourceInfo.moduleName.c_str());
 }
 
 void SetKeyPropertyPart1(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)

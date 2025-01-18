@@ -366,6 +366,12 @@ struct ElementBasicInfo {
     int64_t elementId = -2;
 };
 
+struct ResourceInfo {
+    uint32_t resourceId;
+    std::string bundleName;
+    std::string moduleName;
+};
+
 constexpr int32_t PARAM0 = 0;
 constexpr int32_t PARAM1 = 1;
 constexpr int32_t PARAM2 = 2;
