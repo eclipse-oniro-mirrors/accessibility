@@ -3337,7 +3337,7 @@ void AccessibleAbilityManagerService::GetResourceBundleInfo(AccessibilityEventIn
 }
 
 void AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &eventInfo, AppExecFwk::BundleInfo bundleInfo,
-    int32_t userId, std::string result)
+    int32_t userId, std::string &result)
 {
     std::unique_ptr<Global::Resource::ResConfig> resConfig(Global::Resource::CreateResConfig());
     UErrorCode status = U_ZERO_ERROR;
