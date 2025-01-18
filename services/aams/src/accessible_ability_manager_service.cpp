@@ -3333,7 +3333,7 @@ void AccessibleAbilityManagerService::GetResourceBundleInfo(AccessibilityEventIn
 
     std::string resourceValue;
     GetResourceValue(eventInfo, bundleInfo, userId, resourceValue);
-    HILOG_INFO("resource value is %{public}s", resourceValue.c_str());
+    HILOG_DEBUG("resource value is %{public}s", resourceValue.c_str());
     eventInfo.SetTextAnnouncedForAccessibility(resourceValue);
 }
 
