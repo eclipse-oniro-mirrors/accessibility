@@ -230,8 +230,8 @@ public:
     void InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event);
     bool CheckWindowIdEventExist(int32_t windowId);
     bool CheckWindowRegister(int32_t windowId);
-    void GetResourceBundleInfo(AccessibilityEventInfo &eventInfo);
-    void GetResourceValue(AccessibilityEventInfo &eventInfo, AppExecFwk::BundleInfo bundleInfo,
+    RetError GetResourceBundleInfo(AccessibilityEventInfo &eventInfo);
+    RetError GetResourceValue(AccessibilityEventInfo &eventInfo, AppExecFwk::BundleInfo bundleInfo,
         int32_t userId, std::string &result);
 
     // used for arkui windowId 1 map to WMS windowId
