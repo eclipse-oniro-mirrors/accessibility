@@ -18,6 +18,7 @@
 #include "hilog_wrapper.h"
 #include "ability_manager_client.h"
 #include "accessibility_permission.h"
+#include "api_reporter_helper.h"
 
 using namespace std;
 
@@ -180,6 +181,7 @@ RetError AccessibilityExtensionContext::SetTargetBundleName(const std::vector<st
 RetError AccessibilityExtensionContext::StartAbility(const AAFwk::Want &want)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibilityExtensionContext.StartAbility");
     if (!Permission::IsSystemApp()) {
         HILOG_ERROR("Not system app");
         return RET_ERR_NOT_SYSTEM_APP;

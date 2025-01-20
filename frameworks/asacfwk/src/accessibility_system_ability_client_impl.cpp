@@ -20,6 +20,7 @@
 #include "iservice_registry.h"
 #include "parameter.h"
 #include "system_ability_definition.h"
+#include "api_reporter_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -322,6 +323,7 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(Registrat
 void AccessibilitySystemAbilityClientImpl::ReregisterElementOperator()
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.ReregisterElementOperator");
 
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("serviceProxy_ is null.");
@@ -336,6 +338,7 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
 {
     HILOG_INFO("Deregister windowId[%{public}d] start", windowId);
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.DeregisterElementOperator");
 
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
@@ -355,6 +358,7 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
 RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const int32_t windowId, const int32_t treeId)
 {
     HILOG_INFO("Deregister windowId[%{public}d] treeId[%{public}d] start", windowId, treeId);
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.DeregisterElementOperator");
     std::lock_guard<ffrt::mutex> lock(mutex_);
 
     if (serviceProxy_ == nullptr) {
@@ -368,6 +372,7 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
 RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderEnabled(bool &isEnabled)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.IsScreenReaderEnabled");
     std::lock_guard<ffrt::mutex> lock(mutex_);
     
     if (serviceProxy_ == nullptr) {
@@ -381,6 +386,7 @@ RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderEnabled(bool &isEna
 RetError AccessibilitySystemAbilityClientImpl::IsEnabled(bool &isEnabled)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.IsEnabled");
     std::lock_guard<ffrt::mutex> lock(mutex_);
     isEnabled = stateArray_[AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED];
     return RET_OK;
@@ -390,6 +396,7 @@ RetError AccessibilitySystemAbilityClientImpl::IsTouchExplorationEnabled(bool &i
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.IsTouchExplorationEnabled");
     isEnabled = stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED];
     return RET_OK;
 }
@@ -399,6 +406,7 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.GetAbilityList");
     bool check = false;
     if ((accessibilityAbilityTypes & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN) ||
         (accessibilityAbilityTypes & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_HAPTIC) ||
@@ -419,11 +427,14 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    return serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
+    Accessibility::RetError ret = serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
+    reporter.setResult(ret);
+    return ret;
 }
 
 bool AccessibilitySystemAbilityClientImpl::CheckEventType(EventType eventType)
 {
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.CheckEventType");
     if ((eventType < EventType::TYPE_VIEW_CLICKED_EVENT) ||
         ((eventType >= EventType::TYPE_MAX_NUM) && (eventType != EventType::TYPES_ALL_MASK))) {
         HILOG_ERROR("event type is invalid");
@@ -436,6 +447,7 @@ bool AccessibilitySystemAbilityClientImpl::CheckEventType(EventType eventType)
 RetError AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventType, const int64_t componentId)
 {
     HILOG_DEBUG("componentId[%{public}" PRId64 "], eventType[%{public}d]", componentId, eventType);
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.SendEvent");
     std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!CheckEventType(eventType)) {
         return RET_ERR_INVALID_PARAM;
@@ -453,6 +465,7 @@ RetError AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventTy
 RetError AccessibilitySystemAbilityClientImpl::SendEvent(const AccessibilityEventInfo &event)
 {
     HILOG_DEBUG("EventType[%{public}d]", event.GetEventType());
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.SendEvent");
     std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!CheckEventType(event.GetEventType())) {
         return RET_ERR_INVALID_PARAM;
@@ -469,6 +482,7 @@ RetError AccessibilitySystemAbilityClientImpl::SubscribeStateObserver(
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.SubscribeStateObserver");
     if (eventType >= AccessibilityStateEventType::EVENT_TYPE_MAX) {
         HILOG_ERROR("Input eventType is out of scope");
         return RET_ERR_INVALID_PARAM;
@@ -494,6 +508,7 @@ RetError AccessibilitySystemAbilityClientImpl::UnsubscribeStateObserver(
 {
     HILOG_DEBUG("eventType is [%{public}d]", eventType);
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.UnsubscribeStateObserver");
     if (eventType >= AccessibilityStateEventType::EVENT_TYPE_MAX) {
         HILOG_ERROR("Input eventType is out of scope");
         return RET_ERR_INVALID_PARAM;

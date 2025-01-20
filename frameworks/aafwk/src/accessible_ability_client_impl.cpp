@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,7 +28,7 @@
 #include "iservice_registry.h"
 #include "parameter.h"
 #include "system_ability_definition.h"
-
+#include "api_reporter_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -333,6 +333,7 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
 void AccessibleAbilityClientImpl::OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.OnAccessibilityEvent");
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     {
         std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -350,6 +351,7 @@ void AccessibleAbilityClientImpl::OnAccessibilityEvent(const AccessibilityEventI
 void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence)
 {
     HILOG_DEBUG("sequence[%{public}d]", sequence);
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.OnKeyPressEvent");
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     std::shared_ptr<AccessibleAbilityChannelClient> channel = nullptr;
     {
@@ -373,6 +375,7 @@ void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
 RetError AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG("focusType[%{public}d]", focusType);
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.GetFocus");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -389,13 +392,17 @@ RetError AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, Accessib
         return RET_ERR_NO_CONNECTION;
     }
 
-    return channelClient_->FindFocusedElementInfo(ANY_WINDOW_ID, ROOT_NODE_ID, focusType, elementInfo);
+    Accessibility::RetError ret = channelClient_->FindFocusedElementInfo(
+        ANY_WINDOW_ID, ROOT_NODE_ID, focusType, elementInfo);
+    reporter.setResult(ret);
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo,
     const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG("focusType[%{public}d]", focusType);
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.GetFocusByElementInfo");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -421,12 +428,14 @@ RetError AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityE
     if (ret == RET_OK) {
         elementInfo.SetMainWindowId(sourceInfo.GetMainWindowId());
     }
+    reporter.setResult(ret);
     return ret;
 }
 
 RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.InjectGesture");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -450,12 +459,15 @@ RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<Access
         return RET_ERR_NO_CONNECTION;
     }
 
-    return channelClient_->SendSimulateGesture(gesturePath);
+    Accessibility::RetError ret = channelClient_->SendSimulateGesture(gesturePath);
+    reporter.setResult(ret);
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.GetRoot");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -483,6 +495,7 @@ RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementI
     if (ret == RET_OK) {
         elementInfo.SetMainWindowId(activeWindow);
     }
+    reporter.setResult(ret);
     return ret;
 }
 
@@ -518,6 +531,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowI
 RetError AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     HILOG_DEBUG("windowId[%{public}d]", windowId);
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.GetWindow");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -528,7 +542,9 @@ RetError AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, Accessib
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    return channelClient_->GetWindow(windowId, windowInfo);
+    Accessibility::RetError ret = channelClient_->GetWindow(windowId, windowInfo);
+    reporter.setResult(ret);
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElementInfo>& elementInfos)
@@ -648,6 +664,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWi
 RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.GetWindows");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -658,13 +675,16 @@ RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindow
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    return channelClient_->GetWindows(windows);
+    Accessibility::RetError ret = channelClient_->GetWindows(windows);
+    reporter.setResult(ret);
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG("displayId[%{public}" PRIu64 "]", displayId);
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.GetWindows");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -675,7 +695,9 @@ RetError AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId,
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    return channelClient_->GetWindows(displayId, windows);
+    Accessibility::RetError ret = channelClient_->GetWindows(displayId, windows);
+    reporter.setResult(ret);
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &elementInfo,
@@ -683,6 +705,7 @@ RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &el
 {
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], direction[%{public}d]",
         elementInfo.GetWindowId(), elementInfo.GetAccessibilityId(), direction);
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.GetNext");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -702,6 +725,7 @@ RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &el
     if (ret == RET_OK) {
         nextElementInfo.SetMainWindowId(elementInfo.GetMainWindowId());
     }
+    reporter.setResult(ret);
     return ret;
 }
 
@@ -709,6 +733,7 @@ RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, c
     AccessibilityElementInfo &child)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.GetChildElementInfo");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -732,7 +757,9 @@ RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, c
         return RET_OK;
     }
 
-    return SearchElementInfoFromAce(windowId, childId, cacheMode_, child);
+    Accessibility::RetError ret = SearchElementInfoFromAce(windowId, childId, cacheMode_, child);
+    reporter.setResult(ret);
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &parent,
@@ -815,6 +842,7 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
     const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.GetByContent");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -845,6 +873,7 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
             element.SetMainWindowId(elementInfo.GetMainWindowId());
         }
     }
+    reporter.setResult(ret);
     HILOG_INFO("ret:%{public}d, windowId:%{public}d, text:%{public}s", ret, windowId, text.c_str());
     return ret;
 }
@@ -974,6 +1003,7 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, co
     AccessibilityElementInfo &targetElementInfo)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.GetByElementId");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -999,12 +1029,15 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, co
         return RET_OK;
     }
 
-    return SearchElementInfoByElementId(wid, elementId, cacheMode_, targetElementInfo, treeId);
+    Accessibility::RetError ret = SearchElementInfoByElementId(wid, elementId, cacheMode_, targetElementInfo, treeId);
+    reporter.setResult(ret);
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetCursorPosition(const AccessibilityElementInfo &elementInfo, int32_t &position)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.GetCursorPosition");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -1018,13 +1051,16 @@ RetError AccessibleAbilityClientImpl::GetCursorPosition(const AccessibilityEleme
     int32_t windowId = elementInfo.GetWindowId();
     int64_t elementId = elementInfo.GetAccessibilityId();
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]d", windowId, elementId);
-    return channelClient_->GetCursorPosition(windowId, elementId, position);
+    Accessibility::RetError ret = channelClient_->GetCursorPosition(windowId, elementId, position);
+    reporter.setResult(ret);
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &elementInfo,
     const ActionType action, const std::map<std::string, std::string> &actionArguments)
 {
     HILOG_DEBUG();
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.ExecuteAction");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -1042,23 +1078,29 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
     int32_t windowId = elementInfo.GetWindowId();
     int64_t elementId = elementInfo.GetAccessibilityId();
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d", windowId, elementId, action);
-    return channelClient_->ExecuteAction(windowId, elementId, action,
+    Accessibility::RetError ret = channelClient_->ExecuteAction(windowId, elementId, action,
         const_cast<std::map<std::string, std::string> &>(actionArguments));
+    reporter.setResult(ret);
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::EnableScreenCurtain(bool isEnable)
 {
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.EnableScreenCurtain");
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
 
-    return channelClient_->EnableScreenCurtain(isEnable);
+    Accessibility::RetError ret = channelClient_->EnableScreenCurtain(isEnable);
+    reporter.setResult(ret);
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG("targetBundleNames size[%{public}zu]", targetBundleNames.size());
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.SetTargetBundleName");
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -1069,7 +1111,9 @@ RetError AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std:
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    return channelClient_->SetTargetBundleName(targetBundleNames);
+    Accessibility::RetError ret = channelClient_->SetTargetBundleName(targetBundleNames);
+    reporter.setResult(ret);
+    return ret;
 }
 
 void AccessibleAbilityClientImpl::AccessibleAbilityDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
