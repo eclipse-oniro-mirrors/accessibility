@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,6 @@
 #include "accessibility_utils.h"
 #include "tokenid_kit.h"
 #include "accesstoken_kit.h"
-#include "api_reporter_helper.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
@@ -243,7 +242,6 @@ bool NAccessibilityConfig::IsAvailable(napi_env env, napi_callback_info info)
 napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info info)
 {
     HILOG_DEBUG();
-    ApiReportHelper reporter("NAccessibilityConfig.SubscribeState");
     if (!IsAvailable(env, info)) {
         return nullptr;
     }
@@ -289,11 +287,9 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
         return nullptr;
     }
     if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") == 0) {
-        reporter.setApiName("NAccessibilityConfig.SubscribeState.enabledAccessibilityExtensionListChange");
         enableAbilityListsObservers_->SubscribeObserver(env, args[PARAM1]);
     }
     if (std::strcmp(observerType.c_str(), "installedAccessibilityListChange") == 0) {
-        reporter.setApiName("NAccessibilityConfig.SubscribeState.installedAccessibilityListChange");
         enableAbilityListsObservers_->SubscribeInstallObserver(env, args[PARAM1]);
     }
     return nullptr;
@@ -302,7 +298,6 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
 napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_info info)
 {
     HILOG_DEBUG();
-    ApiReportHelper reporter("NAccessibilityConfig.UnsubscribeState");
     if (!IsAvailable(env, info)) {
         return nullptr;
     }
@@ -341,18 +336,14 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
     }
     if (argc > ARGS_SIZE_TWO - 1 && CheckJsFunction(env, args[PARAM1])) {
         if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") == 0) {
-            reporter.setApiName("NAccessibilityConfig.UnsubscribeState.enabledAccessibilityExtensionListChange");
             enableAbilityListsObservers_->UnsubscribeObserver(env, args[PARAM1]);
         } else {
-            reporter.setApiName("NAccessibilityConfig.UnsubscribeState.installedAccessibilityListChange");
             enableAbilityListsObservers_->UnsubscribeInstallObserver(env, args[PARAM1]);
         }
     } else {
         if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") == 0) {
-            reporter.setApiName("NAccessibilityConfig.UnsubscribeState.enabledAccessibilityExtensionListChange");
             enableAbilityListsObservers_->UnsubscribeObservers();
         } else {
-            reporter.setApiName("NAccessibilityConfig.UnsubscribeState.installedAccessibilityListChange");
             enableAbilityListsObservers_->UnsubscribeInstallObservers();
         }
     }
