@@ -18,7 +18,6 @@ config("accessibility_extension_module_config") {
 
   include_dirs = [
     "../../../../common/log/include",
-    "../../../../common/interface/include",
     "../../../innerkits/acfwk/include",
     "include",
     "../include",
@@ -57,7 +56,6 @@ ohos_shared_library("accessibility_extension_module") {
   configs = [ ":accessibility_extension_module_config" ]
 
   deps = [
-    "../../../../common/interface:accessibility_interface",
     "../../../innerkits/aafwk:accessibleability",
     "./../../../innerkits/common:accessibility_common",
   ]

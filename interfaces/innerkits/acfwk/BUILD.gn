@@ -22,7 +22,6 @@ config("accessibilityconfig_private_config") {
   include_dirs = [
     "${acfwk_path}/include",
     "../../../common/log/include",
-    "../../../common/interface/include",
   ]
 
   defines = [

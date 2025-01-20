@@ -59,8 +59,7 @@
         "power_manager",
         "data_share",
         "resource_management",
-        "i18n",
-	"hiappevent"
+        "i18n"
       ],
       "third_party": []
     },
@@ -75,8 +74,7 @@
           "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
           "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
           "//foundation/barrierfree/accessibility/interfaces/kits/cj:cj_accessibility_ffi",
-          "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-          "//foundation/barrierfree/accessibility/common/etc:api_event_etc"
+          "//foundation/barrierfree/accessibility/common/interface:accessibility_interface"
         ],
         "service_group": [
           "//foundation/barrierfree/accessibility/sa_profile:aams_sa_profile",

@@ -22,7 +22,6 @@ config("accessibleability_private_config") {
   include_dirs = [
     "${aafwk_path}/include",
     "../../../common/log/include",
-    "../../../common/interface/include",
   ]
 
   defines = [

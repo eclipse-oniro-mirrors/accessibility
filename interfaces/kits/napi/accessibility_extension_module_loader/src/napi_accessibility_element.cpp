@@ -26,7 +26,6 @@
 #include "ipc_skeleton.h"
 #include "tokenid_kit.h"
 #include "accesstoken_kit.h"
-#include "api_reporter_helper.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
@@ -237,7 +236,6 @@ void NAccessibilityElement::ConvertElementIdVecToJS(
 napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_info info)
 {
     HILOG_DEBUG();
-    ApiReportHelper reporter("NAccessibilityElement.AttributeNames");
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
     napi_value thisVar = nullptr;
@@ -429,7 +427,6 @@ napi_value NAccessibilityElement::AttributeValueAsync(
 
 void NAccessibilityElement::AttributeValueExecute(napi_env env, void* data)
 {
-    ApiReportHelper reporter("NAccessibilityElement.AttributeValueExecute");
     NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
     if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
@@ -1665,7 +1662,6 @@ void NAccessibilityElement::GetWindowInfoMainWindowId(NAccessibilityElementData 
 
 napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info info)
 {
-    ApiReportHelper reporter("NAccessibilityElement.ActionNames");
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
     napi_value thisVar = nullptr;
