@@ -3220,7 +3220,7 @@ void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId)
 void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t treeId)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    HILOG_INFO("StopCallbackWait start windowId: %{public}d treeId: %{public}d", windowId, treeId);
+    HILOG_DEBUG("StopCallbackWait start windowId: %{public}d treeId: %{public}d", windowId, treeId);
     if (!windowRequestIdMap_.count(windowId)) {
         return;
     }
