@@ -536,7 +536,7 @@ bool ExtraElementInfoParcel::ReadFromParcel(Parcel &parcel)
         mapValueStr, mapValueInt);
 
     if (!ContainerSecurityVerify(parcel, mapValueStr, extraElementValueStr_.max_size())) {
-        HILOG_INFO("extraElementValueStr : ExtraElementInfoParcel verify is false");
+        HILOG_WARN("extraElementValueStr : ExtraElementInfoParcel verify is false");
         return false;
     }
     for (int32_t i = 0; i < mapValueStr; i++) {
@@ -545,13 +545,13 @@ bool ExtraElementInfoParcel::ReadFromParcel(Parcel &parcel)
 
         READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapKey);
         READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapVal);
-        HILOG_INFO("ReadFromParcel: extraElementValueStr's tempMapKey: %{public}s, tempMapVal: %{public}s",
+        HILOG_DEBUG("ReadFromParcel: extraElementValueStr's tempMapKey: %{public}s, tempMapVal: %{public}s",
             tempMapKey.c_str(), tempMapVal.c_str());
         extraElementValueStr_[tempMapKey] = tempMapVal;
     }
 
     if (!ContainerSecurityVerify(parcel, mapValueInt, extraElementValueInt_.max_size())) {
-        HILOG_INFO("extraElementValueInt : ExtraElementInfoParcel verify is false");
+        HILOG_WARN("extraElementValueInt : ExtraElementInfoParcel verify is false");
         return false;
     }
     for (int32_t i = 0; i < mapValueInt; i++) {
@@ -560,7 +560,7 @@ bool ExtraElementInfoParcel::ReadFromParcel(Parcel &parcel)
 
         READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapKey);
         READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, tempMapVal);
-        HILOG_INFO("ReadFromParcel: extraElementValueInt's tempMapKey: %{public}s, tempMapVal: %{public}d",
+        HILOG_DEBUG("ReadFromParcel: extraElementValueInt's tempMapKey: %{public}s, tempMapVal: %{public}d",
             tempMapKey.c_str(), tempMapVal);
         extraElementValueInt_[tempMapKey] = tempMapVal;
     }

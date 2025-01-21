@@ -57,7 +57,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
+    MessageOption option(MessageOption::TF_SYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
