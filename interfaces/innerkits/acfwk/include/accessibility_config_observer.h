@@ -41,19 +41,12 @@ public:
 
     void OnDaltonizationColorFilterConfigChanged();
     void NotifyStateChanged2JS(bool enabled);
-    int NotifyStateChanged(uv_work_t *work);
     void NotifyPropertyChanged2JS(const OHOS::AccessibilityConfig::CaptionProperty &caption);
-    int NotifyPropertyChanged(uv_work_t *work);
     void NotifyStringChanged2JS(const std::string& value);
     void NotifyStringVectorChanged2JS(std::vector<std::string> value);
-    int NotifyStringChanged(uv_work_t *work);
-    int NotifyStringVectorChanged(uv_work_t *work);
     void NotifyIntChanged2JS(int32_t value);
-    int NotifyIntChanged(uv_work_t *work);
     void NotifyUintChanged2JS(uint32_t value);
-    int NotifyUintChanged(uv_work_t *work);
     void NotifyFloatChanged2JS(float value);
-    int NotifyFloatChanged(uv_work_t *work);
 
     napi_env env_ = nullptr;
     napi_ref handlerRef_ = nullptr;
