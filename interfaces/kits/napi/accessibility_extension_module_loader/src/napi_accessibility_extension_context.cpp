@@ -676,13 +676,16 @@ private:
             return CreateJsUndefined(env);
         }
 
-        NapiAsyncTask::CompleteCallback complete =
-        [weak = context_, want](napi_env env, NapiAsyncTask& task, int32_t status) {
+        napi_value lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr :
+            ((info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) ? info.argv[PARAM1] : nullptr);
+        napi_value result = nullptr;
+        std::unique_ptr<NapiAsyncTask> napiAsyncTask = CreateEmptyAsyncTask(env, lastParam, &result);
+        auto asyncTask = [weak = context_, want, env, task = napiAsyncTask.get()]() {
             HILOG_INFO("startAbility begin");
             auto context = weak.lock();
             if (context == nullptr) {
                 HILOG_ERROR("context is released");
-                task.Reject(env, CreateJsError(env,
+                task->Reject(env, CreateJsError(env,
                     static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
                     ERROR_MESSAGE_PARAMETER_ERROR));
                 return;
@@ -691,19 +694,21 @@ private:
             auto ret = std::make_shared<RetError>(RET_OK);
             *ret = context->StartAbility(want);
             if (*ret == RET_OK) {
-                task.Resolve(env, CreateJsUndefined(env));
+                task->Resolve(env, CreateJsUndefined(env));
             } else {
                 HILOG_ERROR("startAbility failed. ret: %{public}d.", *ret);
                 NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
-                task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+                task->Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
             }
         };
-
-        napi_value lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr :
-            ((info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) ? info.argv[PARAM1] : nullptr);
-        napi_value result = nullptr;
-        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnStartAbility",
-            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
+        // NAccessibilityExtensionContext::OnStartAbility
+        if (napi_status::napi_ok != napi_send_event(env, asyncTask, napi_eprio_high)) {
+            napiAsyncTask->Reject(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                ERROR_MESSAGE_SYSTEM_ABNORMALITY));
+        } else {
+            napiAsyncTask.release();
+        }
         return result;
     }
 
