@@ -2102,7 +2102,8 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
         int32_t treeId = GetTreeIdBySplitElementId(elementId);
         // handle seprately because event send by UiExtension children tree may carry the root elemnt of children
         // tree, whose componentType is also root
-        if (treeId != 0) {
+        // deal other eventType like this may lead to performance problem
+        if (treeId != 0 && event.GetEventType() == TYPE_PAGE_CONTENT_UPDATE) {
             // WindowScene
             //       \
             // UiExtensionComponent -> try to find the windowId of the event send by its children node
