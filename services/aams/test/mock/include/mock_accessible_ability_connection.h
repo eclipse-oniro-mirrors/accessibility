@@ -30,6 +30,10 @@ public:
         RetError(const ElementBasicInfo elementBasicInfo, const int32_t requestId,
             const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode, bool isFilter));
 
+    MOCK_METHOD5(SearchDefaultFocusedByWindowId,
+        RetError(const ElementBasicInfo elementBasicInfo, const int32_t requestId,
+            const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode, bool isFilter));
+
     MOCK_METHOD5(SearchElementInfosByText,
         RetError(const int32_t accessibilityWindowId, const int64_t elementId, const std::string& text,
             const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
