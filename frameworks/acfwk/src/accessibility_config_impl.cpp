@@ -1882,6 +1882,7 @@ void AccessibilityConfig::Impl::NotifyDefaultShortKeyMultiConfigs()
 
 void AccessibilityConfig::Impl::NotifyDefaultConfigs()
 {
+    std::lock_guard<ffrt::mutex> lock(configObserversMutex_);
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
         configObservers_.find(CONFIG_HIGH_CONTRAST_TEXT);
     if (it != configObservers_.end()) {
