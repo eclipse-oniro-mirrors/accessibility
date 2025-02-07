@@ -465,9 +465,6 @@ RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<Access
     }
 
     Accessibility::RetError ret = channelClient_->SendSimulateGesture(gesturePath);
-#ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    reporter.setResult(ret);
-#endif // ACCESSIBILITY_EMULATOR_DEFINED
     return ret;
 }
 
@@ -902,9 +899,6 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
             element.SetMainWindowId(elementInfo.GetMainWindowId());
         }
     }
-#ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    reporter.setResult(ret);
-#endif // ACCESSIBILITY_EMULATOR_DEFINED
     HILOG_INFO("ret:%{public}d, windowId:%{public}d, text:%{public}s", ret, windowId, text.c_str());
     return ret;
 }
