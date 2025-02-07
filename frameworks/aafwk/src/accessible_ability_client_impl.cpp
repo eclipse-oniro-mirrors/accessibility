@@ -394,7 +394,7 @@ RetError AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, Accessib
 
     Accessibility::RetError ret = channelClient_->FindFocusedElementInfo(
         ANY_WINDOW_ID, ROOT_NODE_ID, focusType, elementInfo);
-#ifdef ACCESSIBILITY_EMULATOR_DEFINED		
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     return ret;

@@ -350,7 +350,7 @@ std::shared_ptr<EventPeriodExpandableData> ApiEventReporter::CacheEventInfo(std:
 }
 
 void ApiEventReporter::ExecuteThresholdWriteEndEvent(std::string apiName,
-        std::shared_ptr<EventPeriodExpandableData> expandableData, int32_t dataCount)
+    std::shared_ptr<EventPeriodExpandableData> expandableData, int32_t dataCount)
 {
     HILOG_DEBUG("ExecuteThresholdWriteEndEvent enter.");
     HiviewDFX::HiAppEvent::Event event("api_diagnostic", "api_called_stat_cnt", OHOS::HiviewDFX::HiAppEvent::BEHAVIOR);
