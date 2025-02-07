@@ -103,8 +103,7 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
         state |= STATE_GESTURE_ENABLED;
     }
 
-    bool screenReaderState = GetScreenReaderState();
-    if (screenReaderState) {
+    if (screenReaderState_) {
         state |= STATE_SCREENREADER_ENABLED;
     }
     return state;
@@ -521,6 +520,8 @@ void AccessibilityAccountData::SetScreenReaderState(const std::string &name, con
     ErrCode ret = service->PutStringValue(name, state, true);
     if (ret != ERR_OK) {
         HILOG_ERROR("set failed, ret=%{public}d", ret);
+    } else {
+        screenReaderState_ = (state == "1");
     }
 }
 
@@ -534,6 +535,7 @@ bool AccessibilityAccountData::GetScreenReaderState()
     }
     bool screenReaderValue = false;
     service->GetBoolValue(screenReaderKey_, screenReaderValue);
+    screenReaderState_ = screenReaderValue;
     return screenReaderValue;
 }
 
