@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +20,7 @@
 #include "iservice_registry.h"
 #include "parameter.h"
 #include "system_ability_definition.h"
+#include "api_reporter_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -368,6 +369,9 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
 RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderEnabled(bool &isEnabled)
 {
     HILOG_DEBUG();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.IsScreenReaderEnabled");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     std::lock_guard<ffrt::mutex> lock(mutex_);
     
     if (serviceProxy_ == nullptr) {
@@ -419,11 +423,18 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    return serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
+    Accessibility::RetError ret = serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    reporter.setResult(ret);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    return ret;
 }
 
 bool AccessibilitySystemAbilityClientImpl::CheckEventType(EventType eventType)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.CheckEventType");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     if ((eventType < EventType::TYPE_VIEW_CLICKED_EVENT) ||
         ((eventType >= EventType::TYPE_MAX_NUM) && (eventType != EventType::TYPES_ALL_MASK))) {
         HILOG_ERROR("event type is invalid");
@@ -469,6 +480,9 @@ RetError AccessibilitySystemAbilityClientImpl::SubscribeStateObserver(
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.SubscribeStateObserver");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     if (eventType >= AccessibilityStateEventType::EVENT_TYPE_MAX) {
         HILOG_ERROR("Input eventType is out of scope");
         return RET_ERR_INVALID_PARAM;
@@ -494,6 +508,9 @@ RetError AccessibilitySystemAbilityClientImpl::UnsubscribeStateObserver(
 {
     HILOG_DEBUG("eventType is [%{public}d]", eventType);
     std::lock_guard<ffrt::mutex> lock(mutex_);
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.UnsubscribeStateObserver");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     if (eventType >= AccessibilityStateEventType::EVENT_TYPE_MAX) {
         HILOG_ERROR("Input eventType is out of scope");
         return RET_ERR_INVALID_PARAM;

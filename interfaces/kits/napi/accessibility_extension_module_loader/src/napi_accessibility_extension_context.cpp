@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +24,7 @@
 #include "accessibility_utils.h"
 #include "napi_common_want.h"
 #include "napi_common_start_options.h"
+#include "api_reporter_helper.h"
 
 using namespace OHOS::AbilityRuntime;
 using namespace OHOS::AccessibilityNapi;
@@ -560,6 +561,9 @@ private:
 
     napi_value OnGestureInjectSync(napi_env env, NapiCallbackInfo& info)
     {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityExtensionContext.OnGestureInjectSync");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
         HILOG_INFO();
         NAccessibilityErrorCode errCode = NAccessibilityErrorCode::ACCESSIBILITY_OK;
         if (info.argc != ARGS_SIZE_TWO) {
@@ -629,6 +633,9 @@ private:
     napi_value GestureInjectCompleteTask(
         napi_env env, NapiCallbackInfo& info, std::shared_ptr<AccessibilityGestureInjectPath> gesturePath)
     {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityExtensionContext.OnGestureInject");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
         auto ret = std::make_shared<RetError>(RET_OK);
         NapiAsyncTask::ExecuteCallback execute = [weak = context_, gesturePath, ret] () {
             HILOG_INFO("GestureInject begin");

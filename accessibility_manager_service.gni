@@ -90,3 +90,7 @@ if (accessibility_feature_hiviewdfx_hitrace) {
 if (accessibility_feature_hiviewdfx_hisysevent) {
   accessibility_default_defines += [ "OHOS_BUILD_ENABLE_HISYSEVENT" ]
 }
+
+if (product_name != "qemu-arm-linux-min") {
+  accessibility_default_defines += [ "ACCESSIBILITY_EMULATOR_DEFINED" ]
+}
