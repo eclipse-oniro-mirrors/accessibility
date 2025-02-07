@@ -2297,181 +2297,217 @@ void AccessibleAbilityManagerService::UpdateShortKeyRegister()
 
 RetError AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetScreenMagnificationState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetShortKeyState(const bool state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetShortKeyState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetMouseKeyState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetMouseAutoClick(time);
 }
 
 RetError AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetShortkeyTarget(name);
 }
 
 RetError AccessibleAbilityManagerService::SetShortkeyMultiTarget(const std::vector<std::string> &name)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetShortkeyMultiTarget(name);
 }
 
 RetError AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetHighContrastTextState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetDaltonizationState(const bool state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetDaltonizationState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetInvertColorState(const bool state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetInvertColorState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetAnimationOffState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetAudioMonoState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetDaltonizationColorFilter(const uint32_t filter)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetDaltonizationColorFilter(filter);
 }
 
 RetError AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetContentTimeout(time);
 }
 
 RetError AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetBrightnessDiscount(discount);
 }
 
 RetError AccessibleAbilityManagerService::SetAudioBalance(const float balance)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetAudioBalance(balance);
 }
 
 RetError AccessibleAbilityManagerService::SetClickResponseTime(const uint32_t time)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetClickResponseTime(time);
 }
 
 RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickState(const bool state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetIgnoreRepeatClickState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickTime(const uint32_t time)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->SetIgnoreRepeatClickTime(time);
 }
 
 RetError AccessibleAbilityManagerService::GetScreenMagnificationState(bool &state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetScreenMagnificationState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetShortKeyState(bool &state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetShortKeyState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetMouseKeyState(bool &state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetMouseKeyState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetMouseAutoClick(int32_t &time)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetMouseAutoClick(time);
 }
 
 RetError AccessibleAbilityManagerService::GetShortkeyTarget(std::string &name)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetShortkeyTarget(name);
 }
 
 RetError AccessibleAbilityManagerService::GetShortkeyMultiTarget(std::vector<std::string> &name)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetShortkeyMultiTarget(name);
 }
 
 RetError AccessibleAbilityManagerService::GetHighContrastTextState(bool &state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetHighContrastTextState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetDaltonizationState(bool &state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetDaltonizationState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetInvertColorState(bool &state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetInvertColorState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetAnimationOffState(bool &state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetAnimationOffState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetAudioMonoState(bool &state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetAudioMonoState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetDaltonizationColorFilter(uint32_t &type)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetDaltonizationColorFilter(type);
 }
 
 RetError AccessibleAbilityManagerService::GetContentTimeout(uint32_t &timer)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetContentTimeout(timer);
 }
 
 RetError AccessibleAbilityManagerService::GetBrightnessDiscount(float &brightness)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetBrightnessDiscount(brightness);
 }
 
 RetError AccessibleAbilityManagerService::GetAudioBalance(float &balance)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetAudioBalance(balance);
 }
 
 RetError AccessibleAbilityManagerService::GetClickResponseTime(uint32_t &time)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetClickResponseTime(time);
 }
 
 RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickState(bool &state)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetIgnoreRepeatClickState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &time)
 {
+    PostDelayUnloadTask();
     return accessibilitySettings_->GetIgnoreRepeatClickTime(time);
 }
 
