@@ -150,6 +150,7 @@ public:
     static void GetElementInfoAccessibilityPreviousFocusId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityParentId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityChildrenIds(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoAccessibilityScrollable(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);
@@ -200,6 +201,7 @@ private:
     static void GetElementInfoAllAttribute3(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAllAttribute4(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAllAttribute5(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoAllAttribute6(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetExtraElementInfo(NAccessibilityElementData *callbackInfo, napi_value &value, std::string keyStr);
 

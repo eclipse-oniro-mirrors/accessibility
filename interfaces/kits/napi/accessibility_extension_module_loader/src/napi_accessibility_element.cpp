@@ -43,7 +43,7 @@ namespace {
         "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
         "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
         "allAttribute", "clip", "customComponentType", "extraInfo", "accessibilityNextFocusId",
-        "accessibilityPreviousFocusId", "parentId", "childrenIds"};
+        "accessibilityPreviousFocusId", "parentId", "childrenIds", "accessibilityScrollable"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
@@ -115,6 +115,7 @@ namespace {
         {"parentId", &NAccessibilityElement::GetElementInfoAccessibilityParentId},
         {"childrenIds", &NAccessibilityElement::GetElementInfoAccessibilityChildrenIds},
         {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
+        {"accessibilityScrollable", &NAccessibilityElement::GetElementInfoAccessibilityScrollable},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
         {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
@@ -1233,6 +1234,16 @@ void NAccessibilityElement::GetElementInfoAccessibilityChildrenIds(NAccessibilit
     ConvertInt64VecToJS(callbackInfo->env_, value, callbackInfo->accessibilityElement_.elementInfo_->GetChildIds());
 }
 
+void NAccessibilityElement::GetElementInfoAccessibilityScrollable(NAccessibilityElementData *callbackInfo,
+    napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityScrollable(), &value));
+}
+
 void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_object(callbackInfo->env_, &value));
@@ -1242,6 +1253,7 @@ void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData
         GetElementInfoAllAttribute3(callbackInfo, value);
         GetElementInfoAllAttribute4(callbackInfo, value);
         GetElementInfoAllAttribute5(callbackInfo, value);
+        GetElementInfoAllAttribute6(callbackInfo, value);
     } else if (CheckWindowInfoParameter(callbackInfo, value)) {
         GetWindowInfoAllAttribute(callbackInfo, value);
     } else {
@@ -1527,6 +1539,15 @@ void NAccessibilityElement::GetElementInfoAllAttribute5(NAccessibilityElementDat
     GetElementInfoAccessibilityPreviousFocusId(callbackInfo, accessibilityPreviousFocusId);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "accessibilityPreviousFocusId",
         accessibilityPreviousFocusId));
+}
+
+void NAccessibilityElement::GetElementInfoAllAttribute6(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    napi_env env = callbackInfo->env_;
+    napi_value accessibilityScrollable = nullptr;
+    GetElementInfoAccessibilityScrollable(callbackInfo, accessibilityScrollable);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "accessibilityScrollable",
+        accessibilityScrollable));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)

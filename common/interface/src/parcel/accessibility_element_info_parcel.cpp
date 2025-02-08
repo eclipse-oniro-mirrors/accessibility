@@ -175,6 +175,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelFourthPart(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, accessibilityNextFocusId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, accessibilityPreviousFocusId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, innerWindowId_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityScrollable_);
     return true;
 }
 
@@ -300,6 +301,7 @@ bool AccessibilityElementInfoParcel::MarshallingThirdPart(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, accessibilityNextFocusId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, accessibilityPreviousFocusId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, innerWindowId_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityScrollable_);
     return true;
 }
 
