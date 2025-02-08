@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@
 #include "hilog_wrapper.h"
 #include "ability_manager_client.h"
 #include "accessibility_permission.h"
+#include "api_reporter_helper.h"
 
 using namespace std;
 
@@ -180,6 +181,9 @@ RetError AccessibilityExtensionContext::SetTargetBundleName(const std::vector<st
 RetError AccessibilityExtensionContext::StartAbility(const AAFwk::Want &want)
 {
     HILOG_DEBUG();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("AccessibilityExtensionContext.StartAbility");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     if (!Permission::IsSystemApp()) {
         HILOG_ERROR("Not system app");
         return RET_ERR_NOT_SYSTEM_APP;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,6 +27,7 @@
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "napi_accessibility_element.h"
+#include "api_reporter_helper.h"
 
 using namespace OHOS::AbilityRuntime;
 using namespace OHOS::AccessibilityNapi;
@@ -161,6 +162,9 @@ sptr<IRemoteObject> NAccessibilityExtension::OnConnect(const AAFwk::Want &want)
 void NAccessibilityExtension::OnAbilityConnected()
 {
     HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityExtension.OnAbilityConnected");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     uv_loop_s* loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
     if (loop == nullptr) {
@@ -208,6 +212,9 @@ void NAccessibilityExtension::OnAbilityConnected()
 void NAccessibilityExtension::OnAbilityDisconnected()
 {
     HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityExtension.OnAbilityDisconnected");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     uv_loop_s* loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
     if (loop == nullptr) {

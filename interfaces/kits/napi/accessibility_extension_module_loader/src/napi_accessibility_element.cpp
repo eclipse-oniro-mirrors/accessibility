@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,6 +26,7 @@
 #include "ipc_skeleton.h"
 #include "tokenid_kit.h"
 #include "accesstoken_kit.h"
+#include "api_reporter_helper.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
@@ -236,6 +237,9 @@ void NAccessibilityElement::ConvertElementIdVecToJS(
 napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_info info)
 {
     HILOG_DEBUG();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityElement.AttributeNames");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
     napi_value thisVar = nullptr;
@@ -427,6 +431,9 @@ napi_value NAccessibilityElement::AttributeValueAsync(
 
 void NAccessibilityElement::AttributeValueExecute(napi_env env, void* data)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityElement.AttributeValueExecute");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
     if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
@@ -2169,7 +2176,13 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
             callbackInfo->ret_ = RET_ERR_INVALID_PARAM;
             return;
         case FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT:
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+            ApiReportHelper reporter("NAccessibilityElement.FindElementExecute.content");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
         case FindElementCondition::FIND_ELEMENT_CONDITION_TEXT_TYPE:
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+            ApiReportHelper reporter("NAccessibilityElement.FindElementExecute.textType");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
             FindElementByText(callbackInfo);
             break;
         case FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE:

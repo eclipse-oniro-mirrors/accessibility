@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,6 +19,7 @@
 #include "accessibility_state_event.h"
 #include "hilog_wrapper.h"
 #include "accessibility_utils.h"
+#include "api_reporter_helper.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
@@ -78,6 +79,9 @@ napi_value NAccessibilityClient::IsScreenReaderOpenSync(napi_env env, napi_callb
 
 napi_value NAccessibilityClient::IsOpenAccessibilitySync(napi_env env, napi_callback_info info)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.IsOpenAccessibilitySync");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     HILOG_INFO();
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
@@ -96,6 +100,9 @@ napi_value NAccessibilityClient::IsOpenAccessibilitySync(napi_env env, napi_call
 
 napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback_info info)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.IsOpenAccessibility");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     HILOG_INFO();
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
@@ -145,6 +152,9 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
 
 napi_value NAccessibilityClient::IsOpenTouchExplorationSync(napi_env env, napi_callback_info info)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.IsOpenTouchExplorationSync");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     HILOG_INFO();
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
@@ -163,6 +173,9 @@ napi_value NAccessibilityClient::IsOpenTouchExplorationSync(napi_env env, napi_c
 
 napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callback_info info)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.IsOpenTouchExploration");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     HILOG_INFO();
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
     if (callbackInfo == nullptr) {
@@ -338,6 +351,9 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
 
 napi_value NAccessibilityClient::GetAccessibilityExtensionList(napi_env env, napi_callback_info info)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.GetAccessibilityExtensionList");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
@@ -427,6 +443,9 @@ napi_value NAccessibilityClient::GetAccessibilityExtensionListAsync(
 
 napi_value NAccessibilityClient::GetAccessibilityExtensionListSync(napi_env env, napi_callback_info info)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.GetAccessibilityExtensionListSync");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     size_t argc = ARGS_SIZE_THREE;
     napi_value parameters[ARGS_SIZE_THREE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
@@ -552,6 +571,9 @@ void NAccessibilityClient::SendEventComplete(napi_env env, napi_status status, v
 
 napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.SendEvent");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     HILOG_INFO();
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
     if (callbackInfo == nullptr) {
@@ -594,6 +616,9 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
 
 napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callback_info info)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.SendAccessibilityEvent");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     HILOG_INFO();
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
     if (callbackInfo == nullptr) {
@@ -653,6 +678,9 @@ napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callb
 napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.SubscribeState");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
@@ -688,12 +716,21 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
 
     switch (type) {
         case AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED:
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+            reporter.setApiName("NAccessibilityClient.SubscribeState.accessibilityStateChange");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
             accessibilityStateListeners_->SubscribeObserver(env, args[PARAM1]);
             break;
         case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+            reporter.setApiName("NAccessibilityClient.SubscribeState.touchGuideStateChange");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
             touchGuideStateListeners_->SubscribeObserver(env, args[PARAM1]);
             break;
         case AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED:
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+            reporter.setApiName("NAccessibilityClient.SubscribeState.screenReaderStateChange");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
             screenReaderStateListeners_->SubscribeObserver(env, args[PARAM1]);
             break;
         default:
@@ -728,6 +765,9 @@ void NAccessibilityClient::GetAccessibilityStateEventType(
 napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.UnsubscribeState");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
@@ -749,6 +789,9 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
     }
     switch (type) {
         case AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED:
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+            reporter.setApiName("NAccessibilityClient.UnsubscribeState.accessibilityStateChange");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
             if (argc >= ARGS_SIZE_TWO && CheckJsFunction(env, args[PARAM1])) {
                 accessibilityStateListeners_->UnsubscribeObserver(env, args[PARAM1]);
             } else {
@@ -756,6 +799,9 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
             }
             break;
         case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+            reporter.setApiName("NAccessibilityClient.UnsubscribeState.touchGuideStateChange");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
             if (argc >= ARGS_SIZE_TWO && CheckJsFunction(env, args[PARAM1])) {
                 touchGuideStateListeners_->UnsubscribeObserver(env, args[PARAM1]);
             } else {
@@ -763,6 +809,9 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
             }
             break;
         case AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED:
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+            reporter.setApiName("NAccessibilityClient.UnsubscribeState.screenReaderStateChange");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
             if (argc >= ARGS_SIZE_TWO && CheckJsFunction(env, args[PARAM1])) {
                 screenReaderStateListeners_->UnsubscribeObserver(env, args[PARAM1]);
             } else {
@@ -854,6 +903,9 @@ napi_value NAccessibilityClient::AccessibleAbilityConstructor(napi_env env, napi
 napi_value NAccessibilityClient::GetCaptionsManager(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.GetCaptionsManager");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     napi_value result = 0;
     napi_value aaCons = nullptr;
     napi_get_reference_value(env, NAccessibilityClient::aaConsRef_, &aaCons);

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Huawei Device Co., Ltd.
+# Copyright (C) 2022-2025 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -69,6 +69,8 @@ accessibility_data_parcel_src = [
   "src/parcel/accessibility_gesture_inject_path_parcel.cpp",
 ]
 
+accessibility_api_reporter_src = [ "src/api_event_reporter.cpp" ]
+
 ohos_shared_library("accessibility_interface") {
   branch_protector_ret = "pac_ret"
   sanitize = {
@@ -82,6 +84,7 @@ ohos_shared_library("accessibility_interface") {
 
   sources = accessibility_interface_src
   sources += accessibility_data_parcel_src
+  sources += accessibility_api_reporter_src
   configs = [
     ":accessibility_interface_private_config",
     "../../resources/config/build:coverage_flags",
@@ -101,6 +104,11 @@ ohos_shared_library("accessibility_interface") {
     "ipc:ipc_single",
   ]
 
+  if (product_name != "qemu-arm-linux-min") {
+    external_deps += [ "hiappevent:hiappevent_innerapi" ]
+  }
+
+  public_external_deps = [ "e2fsprogs:libext2_uuid" ]
   install_enable = true
 
   subsystem_name = "barrierfree"
