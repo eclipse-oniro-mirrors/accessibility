@@ -1838,6 +1838,20 @@ public:
      */
     void SetInnerWindowId(const int32_t windowId);
 
+    /**
+     * @brief Get the accessibilityScrollable to the element info.
+     * @return accessibilityScrollable status.
+     * @sysCap Accessibility
+     */
+    bool GetAccessibilityScrollable() const;
+
+     /**
+      * @brief Set the accessibilityScrollable to the element info.
+      * @param accessibilityScrollable The accessibilityScrollable of node.
+      * @sysCap Accessibility
+      */
+    void SetAccessibilityScrollable(const bool accessibilityScrollable);
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1923,6 +1937,7 @@ protected:
     std::string accessibilityNextFocusInspectorKey_ = "";
     int32_t innerWindowId_ = -1;
     std::string customComponentType_ = "";
+    bool accessibilityScrollable_ = true;
 };
 } // namespace Accessibility
 } // namespace OHOS

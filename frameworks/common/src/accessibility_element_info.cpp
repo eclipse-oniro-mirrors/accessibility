@@ -1162,5 +1162,15 @@ void AccessibilityElementInfo::SetAccessibilityNextFocusInspectorKey(const
 {
     accessibilityNextFocusInspectorKey_ = accessibilityNextFocusInspectorKey;
 }
+
+bool AccessibilityElementInfo::GetAccessibilityScrollable() const
+{
+    return accessibilityScrollable_;
+}
+
+void AccessibilityElementInfo::SetAccessibilityScrollable(const bool accessibilityScrollable)
+{
+    accessibilityScrollable_ = accessibilityScrollable;
+}
 } // namespace Accessibility
 } // namespace OHOS
