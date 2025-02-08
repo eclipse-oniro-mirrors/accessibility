@@ -57,6 +57,7 @@ namespace {
     const std::string AAMS_SEND_EVENT_RUNNER_NAME = "AamsSendEventRunner";
     const std::string AAMS_CHANNEL_RUNNER_NAME = "AamsChannelRunner";
     const std::string AAMS_GESTURE_RUNNER_NAME = "AamsGestureRunner";
+    const std::string AAMS_HOVER_ENTER_RUNNER_NAME = "AamsHoverEnterRunner";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
@@ -214,6 +215,25 @@ void AccessibleAbilityManagerService::InitGestureHandler()
     }
 }
 
+void AccessibleAbilityManagerService::InitHoverEnterHandler()
+{
+    if (!hoverEnterRunner_) {
+        hoverEnterRunner_ = AppExecFwk::EventRunner::Create(AAMS_HOVER_ENTER_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
+        if (!hoverEnterRunner_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS hoverEnter runner failed");
+            return;
+        }
+    }
+
+    if (!hoverEnterHandler_) {
+        hoverEnterHandler_ = std::make_shared<AAMSEventHandler>(hoverEnterRunner_);
+        if (!hoverEnterHandler_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS hoverEnter handler failed");
+            return;
+        }
+    }
+}
+
 void AccessibleAbilityManagerService::OnStart()
 {
     HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
@@ -223,6 +243,7 @@ void AccessibleAbilityManagerService::OnStart()
     InitSendEventHandler();
     InitChannelHandler();
     InitGestureHandler();
+    InitHoverEnterHandler();
 
     SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
 
@@ -415,19 +436,24 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
 
 RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
 {
+    EventType eventType = uiEvent.GetEventType();
+    if (eventType == TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT ||
+        eventType == TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT) {
+        return RET_OK;
+    }
+
     HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d] windowId[%{public}d] compnentId: %{public}" PRId64 " "
         "elementId: %{public}" PRId64 " winId: %{public}d innerWinId: %{public}d treeId: %{public}d",
         uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId(), uiEvent.GetAccessibilityId(),
         uiEvent.GetElementInfo().GetAccessibilityId(), uiEvent.GetElementInfo().GetWindowId(),
         uiEvent.GetElementInfo().GetInnerWindowId(), uiEvent.GetElementInfo().GetBelongTreeId());
-    if (!sendEventHandler_) {
+    if (!sendEventHandler_ || !hoverEnterHandler_) {
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
     }
     if (flag) {
         if (VerifyingToKenId(uiEvent.GetElementInfo().GetWindowId(),
             uiEvent.GetElementInfo().GetAccessibilityId()) == RET_OK) {
-            HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
             return RET_ERR_CONNECTION_EXIST;
@@ -439,7 +465,7 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
         HILOG_ERROR("Get Resource BundleInfo failed! RetError is %{public}d", res);
     }
 
-    sendEventHandler_->PostTask([this, uiEvent]() {
+    auto sendEventTask = [this, uiEvent]() {
         HILOG_DEBUG();
         UpdateAccessibilityWindowStateByEvent(uiEvent);
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -455,7 +481,14 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
                 ability.second->OnAccessibilityEvent(const_cast<AccessibilityEventInfo&>(uiEvent));
             }
         }
-        }, "TASK_SEND_EVENT");
+    };
+
+    if (eventType == TYPE_VIEW_HOVER_ENTER_EVENT) {
+        hoverEnterHandler_->PostTask(sendEventTask, "TASK_SEND_EVENT");
+    } else {
+        sendEventHandler_->PostTask(sendEventTask, "TASK_SEND_EVENT");
+    }
+
     return RET_OK;
 }
 

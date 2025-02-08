@@ -85,6 +85,7 @@ public:
     void InitSendEventHandler();
     void InitChannelHandler();
     void InitGestureHandler();
+    void InitHoverEnterHandler();
     void OnStart() override;
     void OnStop() override;
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
@@ -472,6 +473,9 @@ private:
     std::shared_ptr<AAMSEventHandler> channelHandler_;
 
     std::shared_ptr<AppExecFwk::EventRunner> gestureRunner_;
+
+    std::shared_ptr<AppExecFwk::EventRunner> hoverEnterRunner_;
+    std::shared_ptr<AAMSEventHandler> hoverEnterHandler_;
 
     int64_t ipcTimeoutNum_ = 0; // count ipc timeout number
 
