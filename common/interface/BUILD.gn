@@ -103,7 +103,7 @@ ohos_shared_library("accessibility_interface") {
     "input:libmmi-client",
     "ipc:ipc_single",
   ]
-  
+
   if(product_name != "qemu-arm-linux-min") {
     external_deps += [ "hiappevent:hiappevent_innerapi" ]
   }

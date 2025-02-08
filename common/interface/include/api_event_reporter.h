@@ -42,7 +42,7 @@ struct ApiEventConfig {
 };
 
 struct EventPeriodExpandableData {
-    std::vector<int64_t> runtime;
+    std::vector<int64_t> runTime;
     int64_t sumTime;
     int64_t successCount;
 };
