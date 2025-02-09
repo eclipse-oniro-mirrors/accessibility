@@ -61,7 +61,8 @@
         "resource_management",
         "i18n",
         "hiappevent",
-        "e2fsprogs"
+        "e2fsprogs",
+        "resource_schedule_service"
       ],
       "third_party": []
     },

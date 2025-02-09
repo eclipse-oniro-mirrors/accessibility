@@ -25,6 +25,10 @@
 #include "hilog_wrapper.h"
 #include "key_event.h"
 #include "input_event.h"
+#ifdef ACCESSIBILITY_WATCH_FEATURE
+#include "res_type.h"
+#include "res_sched_client.h"
+#endif
 
 namespace OHOS {
 namespace Accessibility {
@@ -353,6 +357,23 @@ AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
     HILOG_DEBUG();
     eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner());
+#ifdef ACCESSIBILITY_WATCH_FEATURE
+    eventHandler_->PostTask([] {
+        auto pid = getpid();
+        auto tid = gettid();
+        uint32_t qosLevel = 7;
+        std::string strBundleName = "accessibility";
+        std::string strPid = std::to_string(pid);
+        std::string strTid = std::to_string(tid);
+        std::string strQos = std::to_string(qosLevel);
+        std::unordered_map<std::string, std::string> mapPayLoad;
+        mapPayLoad["pid"] = strPid;
+        mapPayLoad[strTid] = strQos;
+        mapPayLoad["bundleName"] = strBundleName;
+        uint32_t type = OHOS::ResourceSchedule::ResType::RES_TYPE_THREAD_QOS_CHANGE;
+        OHOS::ResourceSchedule::ResSchedClient::GetInstance().ReportData(type, 0, mapPayLoad);
+    });
+#endif
 }
 
 AccessibilityInputEventConsumer::~AccessibilityInputEventConsumer()
