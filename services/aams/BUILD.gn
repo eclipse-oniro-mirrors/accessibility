@@ -154,6 +154,10 @@ ohos_shared_library("accessibleabilityms") {
     external_deps += [ "hisysevent:libhisysevent" ]
   }
 
+  if (accessibility_watch_feature) {
+    external_deps += [ "resource_schedule_service:ressched_client" ]
+  }
+
   install_enable = true
 
   subsystem_name = "barrierfree"
