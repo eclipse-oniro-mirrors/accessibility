@@ -441,10 +441,6 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
 RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
 {
     EventType eventType = uiEvent.GetEventType();
-    if (eventType == TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT ||
-        eventType == TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT) {
-        return RET_OK;
-    }
 
     HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d] windowId[%{public}d] compnentId: %{public}" PRId64 " "
         "elementId: %{public}" PRId64 " winId: %{public}d innerWinId: %{public}d treeId: %{public}d",
