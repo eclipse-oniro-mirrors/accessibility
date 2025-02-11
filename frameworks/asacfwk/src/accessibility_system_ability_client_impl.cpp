@@ -424,9 +424,6 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
         return RET_ERR_SAMGR;
     }
     Accessibility::RetError ret = serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
-#ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    reporter.setResult(ret);
-#endif // ACCESSIBILITY_EMULATOR_DEFINED
     return ret;
 }
 

@@ -29,9 +29,18 @@ public:
         apiName_ = name;
     }
 
+    ApiReportHelper(const std::string &name, int32_t thresholdValue)
+    {
+        beginTime_ = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+        apiName_ = name;
+        thresholdValue_ = thresholdValue;
+    }
+
     ~ApiReportHelper()
     {
-        Accessibility::ApiEventReporter::GetInstance().ThresholdWriteEndEvent(result_, apiName_, beginTime_);
+        Accessibility::ApiEventReporter::GetInstance().ThresholdWriteEndEvent(result_, apiName_,
+            beginTime_, thresholdValue_);
     }
 
     void setResult(int result)
@@ -44,7 +53,8 @@ public:
         apiName_ = name;
     }
 private:
-    int64_t beginTime_;
+    int64_t beginTime_ = 0;
+    int32_t thresholdValue_ = 1000;
     int result_ = 0;
     std::string apiName_;
 };

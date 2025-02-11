@@ -52,7 +52,8 @@ class ApiEventReporter : public Singleton<ApiEventReporter> {
 public:
     int64_t AddProcessor();
     void WriteEndEvent(int result, int errCode, std::string apiName, int64_t beginTime);
-    void ThresholdWriteEndEvent(int result, std::string apiName, int64_t beginTime);
+    void ThresholdWriteEndEvent(int result, std::string apiName, int64_t beginTime,
+        int32_t thresholdValue);
     int64_t GetCurrentTime();
     void ClearCacheData();
 
@@ -75,8 +76,7 @@ private:
     static std::string g_fileContent;
     static std::mutex g_apiOperationMutex;
     static int64_t g_processorId;
-    static const int32_t EVENT_THRESHOLD_VALUE;
-    static const int64_t NULLPTR_PROCCESSORID;
+    static const int64_t NULLPTR_PROCCESSORID = 0;
     std::unordered_map<std::string, std::shared_ptr<EventPeriodExpandableData>> m_thresholdData;
 };
 }  // namespace Accessibility
