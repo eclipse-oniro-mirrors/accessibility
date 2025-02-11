@@ -858,7 +858,7 @@ RetError AccessibleAbilityClientImpl::GetChildrenWork(const int32_t windowId, st
         RetError ret = SearchElementInfoFromAce(windowId, childId, cacheMode_, child);
         if (ret != RET_OK) {
             HILOG_ERROR("Get element info from ace failed");
-            return ret;
+            continue;
         }
         children.emplace_back(child);
     }
