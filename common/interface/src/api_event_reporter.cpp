@@ -32,10 +32,7 @@ namespace OHOS {
 namespace Accessibility {
 // Global variables for caching file content and mutex
 std::string ApiEventReporter::g_fileContent = "";
-int64_t ApiEventReporter::g_processorId = -1;
-const int64_t ApiEventReporter::NULLPTR_PROCCESSORID = 0;
 std::mutex ApiEventReporter::g_apiOperationMutex;
-const int32_t ApiEventReporter::EVENT_THRESHOLD_VALUE = 1000;
 constexpr size_t UUID_CHAR_ARRAY_LENGTH = 37;
 
 ApiEventReporter::ApiEventReporter()

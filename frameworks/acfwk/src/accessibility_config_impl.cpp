@@ -1090,7 +1090,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetShortkeyMultiTarget(std::v
 {
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetShortkeyMultiTarget", REPORTER_THRESHOLD_VALUE);
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetShortkeyMultiTarget",
+        REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
@@ -1321,7 +1322,8 @@ Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationColorFilter(c
 {
     HILOG_INFO("type = [%{public}u]", static_cast<uint32_t>(type));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.SetDaltonizationColorFilter", REPORTER_THRESHOLD_VALUE);
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.SetDaltonizationColorFilter",
+        REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
@@ -1504,7 +1506,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetHighContrastTextState(bool
 {
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetHighContrastTextState", REPORTER_THRESHOLD_VALUE);
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetHighContrastTextState",
+        REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
@@ -1542,7 +1545,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetDaltonizationColorFilter(D
 {
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetDaltonizationColorFilter", REPORTER_THRESHOLD_VALUE);
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetDaltonizationColorFilter",
+        REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
@@ -1679,7 +1683,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickState(boo
 {
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetIgnoreRepeatClickState", REPORTER_THRESHOLD_VALUE);
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetIgnoreRepeatClickState",
+        REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
@@ -1698,7 +1703,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickTime(IGNO
 {
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetIgnoreRepeatClickTime", REPORTER_THRESHOLD_VALUE);
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetIgnoreRepeatClickTime",
+        REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");

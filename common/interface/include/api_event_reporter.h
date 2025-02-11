@@ -75,7 +75,7 @@ private:
         std::shared_ptr<EventPeriodExpandableData> expandableData, int32_t dataCount);
     static std::string g_fileContent;
     static std::mutex g_apiOperationMutex;
-    static int64_t g_processorId;
+    static int64_t g_processorId = -1;
     static const int64_t NULLPTR_PROCCESSORID = 0;
     std::unordered_map<std::string, std::shared_ptr<EventPeriodExpandableData>> m_thresholdData;
 };
