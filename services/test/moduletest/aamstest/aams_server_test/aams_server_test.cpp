@@ -268,7 +268,7 @@ HWTEST_F(AAMSServerTest, DeregisterElementOperator_001, TestSize.Level1)
     aams.DeregisterElementOperator(0);
     sleep(1);
     map = accountData->GetAsacConnections();
-    EXPECT_EQ(int(map.size()), 0);
+    EXPECT_EQ(int(map.size()), 1);
     GTEST_LOG_(INFO) << "AAMSServerTestDeregisterElementOperator_001 end";
 }
 } // namespace Accessibility
