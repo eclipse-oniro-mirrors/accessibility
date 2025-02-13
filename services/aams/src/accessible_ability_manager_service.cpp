@@ -354,6 +354,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
 void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
 {
     HILOG_INFO("systemAbilityId:%{public}d removed!", systemAbilityId);
+    Utils::RecordOnRemoveSystemAbility(systemAbilityId);
     if (!handler_) {
         HILOG_DEBUG("Event handler is nullptr.");
         return;

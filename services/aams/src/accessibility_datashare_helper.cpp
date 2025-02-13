@@ -78,6 +78,7 @@ std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key,
         }
         resultSet = dataShareHelper_->Query(uri, predicates, columns);
         if (resultSet == nullptr) {
+            Utils::RecordDatashareInteraction(A11yDatashareValueType::GET);
             break;
         }
         resultSet->GetRowCount(count);

@@ -433,6 +433,7 @@ std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilit
     std::vector<AccessibilityWindowInfo> windows;
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
     if (err != Rosen::WMError::WM_OK) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_WINDOW_INFO_FAILED);
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
         return windows;
     }
@@ -459,6 +460,7 @@ bool AccessibilityWindowManager::GetAccessibilityWindow(int32_t windowId, Access
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
     if (err != Rosen::WMError::WM_OK) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_WINDOW_INFO_FAILED);
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
         return false;
     }
