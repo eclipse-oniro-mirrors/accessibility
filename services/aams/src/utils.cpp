@@ -311,6 +311,47 @@ void Utils::RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode
 #endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
+void Utils::RecordOnRemoveSystemAbility(int32_t systemAbilityId, const std::string &bundleName,
+    const std::string &abilityName)
+{
+    std::ostringstream oss;
+    oss << "OnRemoveSystemAbility systemAbilityId is: " << systemAbilityId
+        << ", bundleName: " << bundleName << ", abilityName: " << abilityName << ";";
+    std::string info = oss.str();
+    HILOG_DEBUG("accessibility function is unavailable: %{public}s", info.c_str());
+#ifdef OHOS_BUILD_ENABLE_HISYSEVENT
+    int32_t ret = HiSysEventWrite(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "UNAVAILABLE",
+        OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+        "MSG", info);
+    if (ret != 0) {
+        HILOG_ERROR("Write OnRemoveSystemAbility error, ret:%{public}d", ret);
+    }
+#endif //OHOS_BUILD_ENABLE_HISYSEVENT
+}
+
+void Utils::RecordDatashareInteraction(A11yDatashareValueType type, const std::string &businessName,
+    const std::string &bundleName, const std::string &abilityName)
+{
+    std::ostringstream oss;
+    oss << "datashare interaction failed, type is: " << static_cast<uint32_t>(type)
+        << ", businessName: " << businessName << ", bundleName: " << bundleName
+        << ", abilityName: " << abilityName << ";";
+    std::string info = oss.str();
+    HILOG_DEBUG("accessibility function is unavailable: %{public}s", info.c_str());
+#ifdef OHOS_BUILD_ENABLE_HISYSEVENT
+    int32_t ret = HiSysEventWrite(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "UNAVAILABLE",
+        OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+        "MSG", info);
+    if (ret != 0) {
+        HILOG_ERROR("Write RecordDatashareInteraction error, ret:%{public}d", ret);
+    }
+#endif //OHOS_BUILD_ENABLE_HISYSEVENT
+}
+
 std::string Utils::TransferUnavailableEventToString(A11yUnavailableEvent type)
 {
     std::string event;
