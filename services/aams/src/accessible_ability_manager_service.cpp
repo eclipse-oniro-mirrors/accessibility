@@ -1353,24 +1353,31 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
     switch (targetAbilityValue) {
         case HIGH_CONTRAST_TEXT:
             state = accountData->GetConfig()->GetHighContrastTextState();
+            Utils::RecordEnableShortkeyAbilityEvent("HIGH_CONTRAST_TEXT", !state);
             return SetHighContrastTextState(!state) == RET_OK;
         case INVERT_COLOR:
             state = accountData->GetConfig()->GetInvertColorState();
+            Utils::RecordEnableShortkeyAbilityEvent("INVERT_COLOR", !state);
             return SetInvertColorState(!state) == RET_OK;
         case ANIMATION_OFF:
             state = accountData->GetConfig()->GetAnimationOffState();
+            Utils::RecordEnableShortkeyAbilityEvent("ANIMATION_OFF", !state);
             return SetAnimationOffState(!state) == RET_OK;
         case SCREEN_MAGNIFICATION:
             state = accountData->GetConfig()->GetScreenMagnificationState();
+            Utils::RecordEnableShortkeyAbilityEvent("SCREEN_MAGNIFICATION", !state);
             return SetScreenMagnificationState(!state) == RET_OK;
         case AUDIO_MONO:
             state = accountData->GetConfig()->GetAudioMonoState();
+            Utils::RecordEnableShortkeyAbilityEvent("AUDIO_MONO", !state);
             return SetAudioMonoState(!state) == RET_OK;
         case MOUSE_KEY:
             state = accountData->GetConfig()->GetMouseKeyState();
+            Utils::RecordEnableShortkeyAbilityEvent("MOUSE_KEY", !state);
             return SetMouseKeyState(!state) == RET_OK;
         case CAPTION_STATE:
             state = accountData->GetConfig()->GetCaptionState();
+            Utils::RecordEnableShortkeyAbilityEvent("CAPTION_STATE", !state);
             return SetCaptionState(!state) == RET_OK;
         default:
             return false;
@@ -2630,9 +2637,14 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::str
     RetError enableState = accountData->EnableAbility(targetAbility, capabilities);
     if (enableState == RET_ERR_CONNECTION_EXIST) {
         HILOG_DEBUG();
+        Utils::RecordEnableShortkeyAbilityEvent(targetAbility, false);
         return InnerDisableAbility(targetAbility) == RET_OK;
+    } else if (enableState == RET_OK) {
+        Utils::RecordEnableShortkeyAbilityEvent(targetAbility, true);
+        return true;
+    } else {
+        return false;
     }
-    return enableState == RET_OK;
 }
 
 void AccessibleAbilityManagerService::OnShortKeyProcess()
@@ -2673,7 +2685,6 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
     if (shortkeyMultiTarget.size() == 0) {
         EnableShortKeyTargetAbility();
     } else if (shortkeyMultiTarget.size() == 1) {
-        Utils::RecordEnableShortkeyAbilityEvent(shortkeyMultiTarget[0]);
         EnableShortKeyTargetAbility(shortkeyMultiTarget[0]);
     } else {
         // dialog

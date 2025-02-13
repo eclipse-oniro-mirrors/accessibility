@@ -406,16 +406,20 @@ void Utils::RecordStartingA11yEvent(const std::string &name)
 #endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
-void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name)
+void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name, const bool &enableState)
 {
     std::string MSG_NAME = "enable single targets";
-    HILOG_DEBUG("starting RecordEnableShortkeyAbilityEvent enable single targets: %{public}s", name.c_str());
+    std::ostringstream oss;
+    std::string enableStateValue = enableState ? "on" : "off";
+    oss << "targets name: " << name.c_str() << ", state:" << enableStateValue.c_str() << ";";
+    HILOG_DEBUG("RecordEnableShortkeyAbilityEvent enable single targets: %{public}s, enableState: %{public}s",
+        name.c_str(), enableStateValue.c_str());
 #ifdef OHOS_BUILD_ENABLE_HISYSEVENT
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
         "ENABLE_SHORTKEY_ABILITY_SINGLE",
         OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
-        "MSG_NAME", MSG_NAME, "MSG_VALUE", name);
+        "MSG_NAME", MSG_NAME, "MSG_VALUE", oss.c_str());
     if (ret != 0) {
         HILOG_ERROR("Write HiSysEvent RecordEnableShortkeyAbilityEvent error, ret:%{public}d", ret);
     }
