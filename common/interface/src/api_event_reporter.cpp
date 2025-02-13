@@ -33,9 +33,7 @@ namespace Accessibility {
 // Global variables for caching file content and mutex
 std::string ApiEventReporter::g_fileContent = "";
 int64_t ApiEventReporter::g_processorId = -1;
-const int64_t ApiEventReporter::NULLPTR_PROCCESSORID = 0;
 std::mutex ApiEventReporter::g_apiOperationMutex;
-const int32_t ApiEventReporter::EVENT_THRESHOLD_VALUE = 1000;
 constexpr size_t UUID_CHAR_ARRAY_LENGTH = 37;
 
 ApiEventReporter::ApiEventReporter()
@@ -313,16 +311,19 @@ int64_t ApiEventReporter::GetCurrentTime()
     return time;
 }
 
-void ApiEventReporter::ThresholdWriteEndEvent(int result, std::string apiName, int64_t beginTime)
+void ApiEventReporter::ThresholdWriteEndEvent(int result, std::string apiName, int64_t beginTime,
+    int32_t thresholdValue)
 {
     auto expandableData = CacheEventInfo(apiName, beginTime, result);
     if (expandableData == nullptr) {
         return;
     }
     int32_t dataCount = static_cast<int32_t>(expandableData->runTime.size());
-    if (dataCount < EVENT_THRESHOLD_VALUE) {
+    if (dataCount < thresholdValue) {
         return;
     }
+    HILOG_INFO("ThresholdWriteEndEvent apiName: %{public}s, dataCount: %{public}d",
+        apiName.c_str(), dataCount);
     ExecuteThresholdWriteEndEvent(apiName, expandableData, dataCount);
 }
 

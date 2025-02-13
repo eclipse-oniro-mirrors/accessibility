@@ -44,6 +44,7 @@ std::shared_ptr<StateListenerImpl> NAccessibilityClient::screenReaderStateListen
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED);
 std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityClient::captionListeners_ =
     std::make_shared<NAccessibilityConfigObserverImpl>();
+constexpr int32_t REPORTER_THRESHOLD_VALUE = 3000;
 
 napi_ref NAccessibilityClient::aaConsRef_;
 napi_ref NAccessibilityClient::aaStyleConsRef_;
@@ -304,6 +305,9 @@ void NAccessibilityClient::GetAbilityListComplete(napi_env env, napi_status stat
 
 napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info info)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.GetAbilityList");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
@@ -572,7 +576,7 @@ void NAccessibilityClient::SendEventComplete(napi_env env, napi_status status, v
 napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info)
 {
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    ApiReportHelper reporter("NAccessibilityClient.SendEvent");
+    ApiReportHelper reporter("NAccessibilityClient.SendEvent", REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     HILOG_INFO();
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
@@ -617,7 +621,7 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
 napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callback_info info)
 {
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    ApiReportHelper reporter("NAccessibilityClient.SendAccessibilityEvent");
+    ApiReportHelper reporter("NAccessibilityClient.SendAccessibilityEvent", REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     HILOG_INFO();
     NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();

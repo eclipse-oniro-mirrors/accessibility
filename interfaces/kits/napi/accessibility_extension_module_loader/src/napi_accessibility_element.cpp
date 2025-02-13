@@ -1690,6 +1690,9 @@ void NAccessibilityElement::GetWindowInfoMainWindowId(NAccessibilityElementData 
 
 napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info info)
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityElement.ActionNames");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
     napi_value thisVar = nullptr;
