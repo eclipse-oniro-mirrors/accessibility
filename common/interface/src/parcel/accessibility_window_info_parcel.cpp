@@ -47,6 +47,19 @@ bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
     }
     boundsInScreen_ = *boundsInScreen;
 
+    int32_t touchHotAreasSize = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, touchHotAreasSize);
+    std::vector<Rect> touchHotAreas {};
+    for (int i = 0; i < touchHotAreasSize; i++) {
+        sptr<RectParcel> hotAreaRectParcel = parcel.ReadStrongParcelable<RectParcel>();
+        if (hotAreaRectParcel == nullptr) {
+            HILOG_ERROR("ReadStrongParcelable hotAreaRect failed.");
+            return false;
+        }
+        touchHotAreas.push_back(*hotAreaRectParcel);
+    }
+    touchHotAreas_ = touchHotAreas;
+
     return true;
 }
 // LCOV_EXCL_STOP
@@ -65,6 +78,11 @@ bool AccessibilityWindowInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mainWindowId_);
     RectParcel rectParcel(boundsInScreen_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &rectParcel);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, touchHotAreas_.size());
+    for (const auto &hotArea : touchHotAreas_) {
+        RectParcel hotAreaRectParcel(hotArea);
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &hotAreaRectParcel);
+    }
 
     return true;
 };
