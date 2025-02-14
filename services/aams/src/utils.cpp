@@ -419,7 +419,7 @@ void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name, const bool
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
         "ENABLE_SHORTKEY_ABILITY_SINGLE",
         OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
-        "MSG_NAME", MSG_NAME, "MSG_VALUE", oss.c_str());
+        "MSG_NAME", MSG_NAME, "MSG_VALUE", oss.str());
     if (ret != 0) {
         HILOG_ERROR("Write HiSysEvent RecordEnableShortkeyAbilityEvent error, ret:%{public}d", ret);
     }
