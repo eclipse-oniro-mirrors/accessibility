@@ -1752,6 +1752,20 @@ public:
      */
     void SetMainWindowId(const int32_t windowId);
 
+    /**
+     * @brief Get the windowId to the element info.
+     * @return innerWindowId.
+     * @sysCap Accessibility
+     */
+     int32_t GetInnerWindowId() const;
+
+     /**
+      * @brief Set the windowId to the element info.
+      * @param windowId The innerWindowId of node.
+      * @sysCap Accessibility
+      */
+     void SetInnerWindowId(const int32_t windowId);
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1830,6 +1844,7 @@ protected:
     bool isActive_ = true;
     bool accessibilityVisible_ = true;
     int32_t mainWindowId_ = -1; // same widowId in uiview
+    int32_t innerWindowId_ = -1;
 };
 } // namespace Accessibility
 } // namespace OHOS
