@@ -2200,14 +2200,20 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
             callbackInfo->ret_ = RET_ERR_INVALID_PARAM;
             return;
         case FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT:
+            {
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-            ApiReportHelper reporter("NAccessibilityElement.FindElementExecute.content");
+                ApiReportHelper reporter("NAccessibilityElement.FindElementExecute.content");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
+                FindElementByText(callbackInfo);
+            }
+            break;
         case FindElementCondition::FIND_ELEMENT_CONDITION_TEXT_TYPE:
+            {
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-            ApiReportHelper reporter("NAccessibilityElement.FindElementExecute.textType");
+                ApiReportHelper reporterText("NAccessibilityElement.FindElementExecute.textType");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
-            FindElementByText(callbackInfo);
+                FindElementByText(callbackInfo);
+            }
             break;
         case FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE:
             {

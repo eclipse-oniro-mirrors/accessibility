@@ -12,6 +12,7 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
+import("../../../accessibility_manager_service.gni")
 
 asacfwk_path = "../../../frameworks/asacfwk"
 
@@ -28,6 +29,8 @@ config("accessibilityclient_private_config") {
     "AAMS_LOG_TAG = \"accessibility_asacfwk\"",
     "AAMS_LOG_DOMAIN = 0xD001D02",
   ]
+
+  defines += accessibility_default_defines
 
   if (build_variant == "user") {
     defines += [ "RELEASE_VERSION" ]
