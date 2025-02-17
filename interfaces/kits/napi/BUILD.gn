@@ -12,6 +12,7 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
+import("../../../accessibility_manager_service.gni")
 
 ohos_shared_library("accessibility_napi") {
   branch_protector_ret = "pac_ret"
@@ -34,6 +35,8 @@ ohos_shared_library("accessibility_napi") {
     "AAMS_LOG_TAG = \"accessibility_napi\"",
     "AAMS_LOG_DOMAIN = 0xD001D10",
   ]
+
+  defines += accessibility_default_defines
 
   if (build_variant == "user") {
     defines += [ "RELEASE_VERSION" ]
