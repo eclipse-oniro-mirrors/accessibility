@@ -1998,7 +1998,12 @@ void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(cons
     HILOG_DEBUG("windowId is %{public}d", event.GetWindowId());
     int32_t windowId = event.GetWindowId();
     if (windowId == 1) {
-        FindInnerWindowId(event, windowId);
+        int32_t innerWindowId = event.GetElementInfo().GetInnerWindowId();
+        if (innerWindowId > 0) {
+            windowId = innerWindowId;
+        } else {
+            FindInnerWindowId(event, windowId);
+        }
     }
 
     const_cast<AccessibilityEventInfo&>(event).SetElementMainWindowId(windowId);

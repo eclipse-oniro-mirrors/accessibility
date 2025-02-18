@@ -136,6 +136,16 @@ void AccessibilityElementInfo::SetMainWindowId(const int32_t windowId)
     mainWindowId_ = windowId;
 }
 
+int32_t AccessibilityElementInfo::GetInnerWindowId() const
+{
+    return innerWindowId_;
+}
+
+void AccessibilityElementInfo::SetInnerWindowId(const int32_t windowId)
+{
+    innerWindowId_ = windowId;
+}
+
 int64_t AccessibilityElementInfo::GetParentNodeId() const
 {
     return parentId_;
