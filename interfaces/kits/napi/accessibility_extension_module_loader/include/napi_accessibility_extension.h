@@ -139,9 +139,7 @@ private:
         const std::shared_ptr<AccessibilityElementInfo> &elementInfo);
 
     bool GetSrcPathAndModuleName(std::string& srcPath, std::string& moduleName);
-    void OnAccessibilityEventCompleteCallback(uv_work_t* work, int status);
     int OnAccessibilityEventExec(uv_work_t *work, uv_loop_t *loop);
-    void OnKeyPressEventCompleteCallback(uv_work_t* work, int status);
     int OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loop);
 
     napi_env env_ = nullptr;
