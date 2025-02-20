@@ -299,7 +299,9 @@ void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &ch
     }
 
     isConnected_ = true;
+#ifndef ACCESSIBILITY_WATCH_FEATURE
     std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_WINDOW_REGIST));
+#endif // ACCESSIBILITY_WATCH_FEATURE
     if (listener) {
         listener->OnAbilityConnected();
     }
