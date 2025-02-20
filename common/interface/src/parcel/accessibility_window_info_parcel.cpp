@@ -59,6 +59,7 @@ bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
         touchHotAreas.push_back(*hotAreaRectParcel);
     }
     touchHotAreas_ = touchHotAreas;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint64, parcel, displayId_);
 
     return true;
 }
@@ -83,6 +84,7 @@ bool AccessibilityWindowInfoParcel::Marshalling(Parcel &parcel) const
         RectParcel hotAreaRectParcel(hotArea);
         WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &hotAreaRectParcel);
     }
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint64, parcel, displayId_);
 
     return true;
 };
