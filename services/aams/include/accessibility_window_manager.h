@@ -24,6 +24,7 @@
 #include "ffrt.h"
 #include "singleton.h"
 #include "window_manager.h"
+#include "safe_map.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -74,6 +75,13 @@ public:
     void OnWindowUpdate(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos, Rosen::WindowUpdateType type);
 
     bool IsInnerWindowRootElement(int64_t elementId);
+
+    void InsertTreeIdWindowIdPair(int32_t treeId, int32_t windowId);
+
+    void RemoveTreeIdWindowIdPair(int32_t treeId);
+
+    // return 0 when not found
+    int32_t FindTreeIdWindowIdPair(int32_t treeId);
 
     std::map<int32_t, AccessibilityWindowInfo> a11yWindows_ {};
     int32_t activeWindowId_ = INVALID_WINDOW_ID;
@@ -150,6 +158,7 @@ private:
     sptr<AccessibilityWindowListener> windowListener_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
     ffrt::recursive_mutex interfaceMutex_; // mutex for interface to make sure AccessibilityWindowManager thread-safe
+    SafeMap<int32_t, int32_t> windowTreeIdMap_; // map for tree id to window id
 };
 } // namespace Accessibility
 } // namespace OHOS

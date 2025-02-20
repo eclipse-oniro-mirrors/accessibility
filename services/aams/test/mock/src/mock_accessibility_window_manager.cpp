@@ -203,5 +203,22 @@ int32_t AccessibilityWindowManager::GetActiveWindowId()
 {
     return activeWindowId_;
 }
+
+void AccessibilityWindowManager::InsertTreeIdWindowIdPair(int32_t treeId, int32_t windowId)
+{
+    (void)treeId;
+    (void)windowId;
+}
+
+void AccessibilityWindowManager::RemoveTreeIdWindowIdPair(int32_t treeId)
+{
+    (void)treeId;
+}
+
+int32_t AccessibilityWindowManager::FindTreeIdWindowIdPair(int32_t treeId)
+{
+    (void)treeId;
+    return 0;
+}
 } // namespace Accessibility
 } // namespace OHOS

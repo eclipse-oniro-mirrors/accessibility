@@ -1028,6 +1028,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
     HILOG_INFO("get treeId element and treeid - treeId: %{public}d parameter.elementId[%{public}" PRId64 "]"
         "element[%{public}" PRId64 "]",
         treeIdSingle, parameter.elementId, nodeId);
+    Singleton<AccessibilityWindowManager>::GetInstance().InsertTreeIdWindowIdPair(treeIdSingle, parameter.windowId);
 
     if (!handler_) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
@@ -1175,6 +1176,7 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
         if (connection->GetProxy() == nullptr && connection->GetCardProxySize() == 0) {
             accountData->RemoveAccessibilityWindowConnection(windowId);
         }
+        Singleton<AccessibilityWindowManager>::GetInstance().RemoveTreeIdWindowIdPair(treeId);
         }, "TASK_DEREGISTER_ELEMENT_OPERATOR");
     return RET_OK;
 }
@@ -2127,6 +2129,12 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
     HILOG_DEBUG();
     auto mapTable = Singleton<AccessibilityWindowManager>::GetInstance().sceneBoardElementIdMap_.GetAllPairs();
     int64_t elementId = event.GetAccessibilityId();
+    int tmpWindowId = Singleton<AccessibilityWindowManager>::GetInstance().
+        FindTreeIdWindowIdPair(GetTreeIdBySplitElementId(elementId));
+    if (event.GetEventType() != TYPE_PAGE_CONTENT_UPDATE && tmpWindowId != 0) {
+        windowId = tmpWindowId;
+        return;
+    }
     while (1) {
         for (auto iter = mapTable.begin(); iter != mapTable.end(); iter++) {
             if (elementId == iter->second) {
