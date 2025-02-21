@@ -46,12 +46,14 @@ PowerErrors PowerMgrClient::ShutDownDevice(const std::string& reason)
     return PowerErrors::ERR_OK;
 }
 
-PowerErrors PowerMgrClient::SuspendDevice(SuspendDeviceType reason, bool suspendImmed)
+PowerErrors PowerMgrClient::SuspendDevice(
+    SuspendDeviceType reason, bool suspendImmed, const std::string& apiVersion)
 {
     return PowerErrors::ERR_OK;
 }
 
-PowerErrors PowerMgrClient::WakeupDevice(WakeupDeviceType reason, const std::string& detail)
+PowerErrors PowerMgrClient::WakeupDevice(
+    WakeupDeviceType reason, const std::string& detail, const std::string& apiVersion)
 {
     return PowerErrors::ERR_OK;
 }
@@ -66,7 +68,7 @@ bool PowerMgrClient::IsRunningLockTypeSupported(RunningLockType type)
     return true;
 }
 
-PowerErrors PowerMgrClient::ForceSuspendDevice()
+PowerErrors PowerMgrClient::ForceSuspendDevice(const std::string& apiVersion)
 {
     return PowerErrors::ERR_OK;
 }
