@@ -28,7 +28,7 @@
 #ifdef ACCESSIBILITY_WATCH_FEATURE
 #include "res_type.h"
 #include "res_sched_client.h"
-#endif
+#endif // ACCESSIBILITY_WATCH_FEATURE
 
 namespace OHOS {
 namespace Accessibility {
@@ -373,7 +373,7 @@ AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
         uint32_t type = OHOS::ResourceSchedule::ResType::RES_TYPE_THREAD_QOS_CHANGE;
         OHOS::ResourceSchedule::ResSchedClient::GetInstance().ReportData(type, 0, mapPayLoad);
     });
-#endif
+#endif // ACCESSIBILITY_WATCH_FEATURE
 }
 
 AccessibilityInputEventConsumer::~AccessibilityInputEventConsumer()
