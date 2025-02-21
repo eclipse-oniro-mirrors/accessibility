@@ -47,6 +47,9 @@ public:
     MOCK_METHOD3(GetSceneBoardInnerWinId, void(int32_t windowId, int64_t elementId, int32_t& innerWid));
     MOCK_METHOD1(GetFocusedWindowId, RetError(int32_t &focusedWindowId));
     MOCK_METHOD0(GetActiveWindowId, int32_t());
+    MOCK_METHOD0(InsertTreeIdWindowIdPair, void(int32_t treeId, int32_t windowId));
+    MOCK_METHOD0(RemoveTreeIdWindowIdPair, void(int32_t treeId));
+    MOCK_METHOD0(FindTreeIdWindowIdPair, int32_t(int32_t treeId));
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -1165,5 +1165,20 @@ bool AccessibilityWindowManager::IsInnerWindowRootElement(int64_t elementId)
     }
     return false;
 }
+
+void AccessibilityWindowManager::InsertTreeIdWindowIdPair(int32_t treeId, int32_t windowId)
+{
+    windowTreeIdMap_.EnsureInsert(treeId, windowId);
+}
+
+void AccessibilityWindowManager::RemoveTreeIdWindowIdPair(int32_t treeId)
+{
+    windowTreeIdMap_.Erase(treeId);
+}
+
+int32_t AccessibilityWindowManager::FindTreeIdWindowIdPair(int32_t treeId)
+{
+    return windowTreeIdMap_.ReadVal(treeId);
+}
 } // namespace Accessibility
 } // namespace OHOS
