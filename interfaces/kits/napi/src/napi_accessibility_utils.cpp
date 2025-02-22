@@ -389,7 +389,7 @@ static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility"},
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility"},
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT, "announceForAccessibilityNotInterrupt"},
-        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP,
+        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT,
             "requestFocusForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"}};
 
@@ -630,7 +630,7 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_PAGE_CLOSE, "pageClose"},
         {EventType::TYPE_ELEMENT_INFO_CHANGE, "elementInfoChange"},
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT, "announceForAccessibilityNotInterrupt"},
-        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP,
+        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT,
             "requestFocusForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"}};
 
@@ -805,7 +805,7 @@ static EventType ConvertStringToEventInfoTypes(std::string type)
         {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY},
         {"announceForAccessibilityNotInterrupt", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT},
         {"requestFocusForAccessibilityNotInterrupt",
-            EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP},
+            EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
         {"scrolling", EventType::TYPE_VIEW_SCROLLING_EVENT}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
