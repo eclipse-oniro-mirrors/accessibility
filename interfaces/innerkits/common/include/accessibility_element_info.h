@@ -30,7 +30,8 @@ static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
     "SideBarContainerStates",
     "ListItemIndex",
     "ToggleType",
-    "BindSheet"
+    "BindSheet",
+    "hasRegisteredHover"
 };
 
 /*
