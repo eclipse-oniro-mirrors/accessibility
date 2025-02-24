@@ -28,6 +28,8 @@
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
+#include "rwlock.h"
+#include "safe_map.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -459,7 +461,7 @@ private:
     };
 
     bool GetCacheElementInfo(const int32_t windowId,
-        const int64_t elementId, AccessibilityElementInfo &elementInfo) const;
+        const int64_t elementId, AccessibilityElementInfo &elementInfo);
     void SetCacheElementInfo(const int32_t windowId,
         const std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
     RetError SearchElementInfoByElementId(const int32_t windowId, const int64_t elementId,
@@ -478,7 +480,7 @@ private:
     std::shared_ptr<AccessibleAbilityChannelClient> channelClient_ = nullptr;
     uint32_t cacheMode_ = 0;
     int32_t cacheWindowId_ = -1;
-    std::map<int64_t, AccessibilityElementInfo> cacheElementInfos_;
+    SafeMap<int64_t, AccessibilityElementInfo> cacheElementInfos_;
     ffrt::mutex mutex_;
     std::atomic<bool> isConnected_ = false;
     // used for query element info in batch
@@ -487,6 +489,7 @@ private:
 
     ffrt::condition_variable proxyConVar_;
     ffrt::mutex conVarMutex_;
+    Utils::RWLock rwLock_;
 };
 } // namespace Accessibility
 } // namespace OHOS
