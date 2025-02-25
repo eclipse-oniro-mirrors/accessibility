@@ -42,6 +42,8 @@ AccessibilityCommonEvent::AccessibilityCommonEvent()
         &AccessibilityCommonEvent::HandlePackageRemoved;
     handleEventFunc_[EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED] =
         &AccessibilityCommonEvent::HandlePackageChanged;
+    handleEventFunc_[EventFwk::CommonEventSupport::COMMON_EVENT_DATA_SHARE_READY] =
+        &AccessibilityCommonEvent::HandleDataShareReady;
 
     for (auto it = handleEventFunc_.begin(); it != handleEventFunc_.end(); ++it) {
         HILOG_DEBUG("Add event: %{public}s", it->first.c_str());
@@ -196,6 +198,30 @@ void AccessibilityCommonEvent::HandlePackageChanged(const EventFwk::CommonEventD
         return;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
+}
+
+void AccessibilityCommonEvent::HandleDataShareReady(const EventFwk::CommonEventData &data) const
+{
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("get accountData failed");
+        return;
+    }
+
+    auto config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_WARN("config is nullptr");
+        return;
+    }
+
+    if (config->GetInitializeState()) {
+        HILOG_INFO("datashare no need reInit.");
+        return;
+    }
+
+    HILOG_INFO("reInit datashare.");
+    config->Init();
 }
 } // namespace Accessibility
 } // namespace OHOS

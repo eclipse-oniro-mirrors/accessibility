@@ -987,7 +987,7 @@ void AccessibilitySettingsConfig::Init()
     if (datashare_ == nullptr) {
         return;
     }
-    datashare_->Initialize(POWER_MANAGER_SERVICE_ID);
+    RetError ret = datashare_->Initialize(POWER_MANAGER_SERVICE_ID);
     InitCaption();
     InitSetting();
 
@@ -995,7 +995,10 @@ void AccessibilitySettingsConfig::Init()
     if (systemDatashare_ == nullptr) {
         return;
     }
-    systemDatashare_->Initialize(POWER_MANAGER_SERVICE_ID);
+    RetError systemRet = systemDatashare_->Initialize(POWER_MANAGER_SERVICE_ID);
+    if (ret == RET_OK && systemRet == RET_OK) {
+        isInitialized_ = true;
+    }
 }
 
 void AccessibilitySettingsConfig::ClearData()
@@ -1144,5 +1147,16 @@ void AccessibilitySettingsConfig::OnDataClone()
     service->PutBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, true);
     service->PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
 }
+
+bool AccessibilitySettingsConfig::GetInitializeState()
+{
+    return isInitialized_;
+}
+
+void AccessibilitySettingsConfig::SetInitializeState(bool isInitialized)
+{
+    isInitialized_ = isInitialized;
+}
+
 } // namespace Accessibility
 } // namespace OHOS

@@ -49,7 +49,7 @@ public:
     RetError PutBoolValue(const std::string& key, bool value, bool needNotify = true);
     RetError PutFloatValue(const std::string& key, float value, bool needNotify = true);
 
-    void Initialize(int32_t systemAbilityId);
+    RetError Initialize(int32_t systemAbilityId);
 
     sptr<AccessibilitySettingObserver> CreateObserver(const std::string& key,
         AccessibilitySettingObserver::UpdateFunc& func);

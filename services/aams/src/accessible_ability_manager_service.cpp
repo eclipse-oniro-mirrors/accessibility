@@ -379,6 +379,21 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
             isReady_ = false;
             SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
         }
+
+        if (systemAbilityId == DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID) {
+            sptr<AccessibilityAccountData> accountData =
+                Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+            if (accountData == nullptr) {
+                HILOG_ERROR("get accountData failed");
+                return;
+            }
+            auto config = accountData->GetConfig();
+            if (config == nullptr) {
+                HILOG_ERROR("config is nullptr");
+                return;
+            }
+            config->SetInitializeState(false);
+        }
         }, "OnRemoveSystemAbility");
 }
 
