@@ -162,7 +162,7 @@ RetError AccessibilityDatashareHelper::PutStringValue(const std::string& key, co
             HILOG_DEBUG("no data exist, insert one row");
             auto ret = dataShareHelper_->Insert(uri, bucket);
             if (ret <= 0) {
-                rtn = static_cast<RetError>(ret);
+                rtn = RET_ERR_FAILED;
             }
             HILOG_INFO("helper insert %{public}s ret(%{public}d).", key.c_str(), static_cast<int>(ret));
         }
