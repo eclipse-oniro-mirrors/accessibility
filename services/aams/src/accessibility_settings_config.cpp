@@ -974,7 +974,6 @@ RetError AccessibilitySettingsConfig::SetConfigState(const std::string& key, boo
     }
     auto ret = datashare_->PutBoolValue(key, value);
     if (ret != RET_OK) {
-        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetConfigState");
         HILOG_ERROR("set configState failed");
     }
     return ret;
