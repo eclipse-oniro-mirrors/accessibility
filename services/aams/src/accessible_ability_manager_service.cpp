@@ -1141,10 +1141,13 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
 
         connection->SetProxy(nullptr);
         RemoveTreeDeathRecipient(windowId, 0, connection);
-        // remove connection when all proxy and children tree proxy deregistered
-        if (connection->GetProxy() == nullptr && connection->GetCardProxySize() == 0) {
-            accountData->RemoveAccessibilityWindowConnection(windowId);
+
+        std::vector<int32_t> treeIds {};
+        connection->GetAllTreeId(treeIds);
+        for (int32_t treeId : treeIds) {
+            RemoveTreeDeathRecipient(windowId, treeId, connection);
         }
+        accountData->RemoveAccessibilityWindowConnection(windowId);
         }, "TASK_DEREGISTER_ELEMENT_OPERATOR");
     return RET_OK;
 }
