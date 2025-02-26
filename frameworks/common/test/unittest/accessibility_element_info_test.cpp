@@ -1563,5 +1563,96 @@ HWTEST_F(AccessibilityElementInfoTest, SetMainWindowId_001, TestSize.Level1)
     EXPECT_TRUE(elementInfo_->GetMainWindowId() == 1);
     GTEST_LOG_(INFO) << "SetMainWindowId_001 end";
 }
+
+/**
+ * @tc.number: SetCustomComponentType_001
+ * @tc.name: SetCustomComponentType
+ * @tc.desc: Test function SetCustomComponentType, GetCustomComponentType
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetCustomComponentType_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetCustomComponentType_001 start";
+    elementInfo_->SetCustomComponentType("Button");
+    EXPECT_TRUE(elementInfo_->GetCustomComponentType() == "Button");
+    GTEST_LOG_(INFO) << "SetCustomComponentType_001 end";
+}
+ 
+/**
+ * @tc.number: SetCustomComponentType_002
+ * @tc.name: SetCustomComponentType
+ * @tc.desc: Test function SetCustomComponentType, GetCustomComponentType
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetCustomComponentType_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetCustomComponentType_002 start";
+    elementInfo_->SetCustomComponentType("Pictures");
+    EXPECT_TRUE(elementInfo_->GetCustomComponentType() == "Pictures");
+    GTEST_LOG_(INFO) << "SetCustomComponentType_002 end";
+}
+ 
+/**
+ * @tc.number: SetCustomComponentType_003
+ * @tc.name: SetCustomComponentType
+ * @tc.desc: Test function SetCustomComponentType, GetCustomComponentType
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetCustomComponentType_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetCustomComponentType_003 start";
+    elementInfo_->SetCustomComponentType("");
+    EXPECT_TRUE(elementInfo_->GetCustomComponentType() == "");
+    GTEST_LOG_(INFO) << "SetCustomComponentType_003 end";
+}
+ 
+/**
+ * @tc.number: SetAccessibilityNextFocusId_001
+ * @tc.name: SetAccessibilityNextFocusId
+ * @tc.desc: Test function SetAccessibilityNextFocusId, GetAccessibilityNextFocusId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityNextFocusId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityNextFocusId_001 start";
+    elementInfo_->SetAccessibilityNextFocusId(0);
+    EXPECT_TRUE(elementInfo_->GetAccessibilityNextFocusId() == 0);
+    GTEST_LOG_(INFO) << "SetAccessibilityNextFocusId_001 end";
+}
+ 
+/**
+ * @tc.number: SetAccessibilityNextFocusId_002
+ * @tc.name: SetAccessibilityNextFocusId
+ * @tc.desc: Test function SetAccessibilityNextFocusId, GetAccessibilityNextFocusId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityNextFocusId_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityNextFocusId_002 start";
+    elementInfo_->SetAccessibilityNextFocusId(10);
+    EXPECT_TRUE(elementInfo_->GetAccessibilityNextFocusId() == 10);
+    GTEST_LOG_(INFO) << "SetAccessibilityNextFocusId_002 end";
+}
+ 
+/**
+ * @tc.number: SetAccessibilityPreviousFocusId_001
+ * @tc.name: SetAccessibilityPreviousFocusId
+ * @tc.desc: Test function SetAccessibilityPreviousFocusId, GetAccessibilityPreviousFocusId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityPreviousFocusId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityPreviousFocusId_001 start";
+    elementInfo_->SetAccessibilityPreviousFocusId(0);
+    EXPECT_TRUE(elementInfo_->GetAccessibilityPreviousFocusId() == 0);
+    GTEST_LOG_(INFO) << "SetAccessibilityPreviousFocusId_001 end";
+}
+ 
+/**
+ * @tc.number: SetAccessibilityPreviousFocusId_002
+ * @tc.name: SetAccessibilityPreviousFocusId
+ * @tc.desc: Test function SetAccessibilityPreviousFocusId, GetAccessibilityPreviousFocusId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityPreviousFocusId_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityPreviousFocusId_002 start";
+    elementInfo_->SetAccessibilityPreviousFocusId(10);
+    EXPECT_TRUE(elementInfo_->GetAccessibilityPreviousFocusId() == 10);
+    GTEST_LOG_(INFO) << "SetAccessibilityPreviousFocusId_002 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
