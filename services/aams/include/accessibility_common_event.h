@@ -60,6 +60,7 @@ private:
     void HandlePackageRemoved(const EventFwk::CommonEventData &data) const;
     void HandlePackageChanged(const EventFwk::CommonEventData &data) const;
     void HandlePackageAdd(const EventFwk::CommonEventData &data) const;
+    void HandleDataShareReady(const EventFwk::CommonEventData &data) const;
 
     typedef void (AccessibilityCommonEvent::*HandleEventFunc)(const EventFwk::CommonEventData &) const;
     std::map<std::string, EventHandle> eventHandles_;

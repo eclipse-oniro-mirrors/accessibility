@@ -72,5 +72,10 @@ void AccessibilityCommonEvent::HandlePackageChanged(const EventFwk::CommonEventD
 {
     (void)data;
 }
+
+void AccessibilityCommonEvent::HandleDataShareReady(const EventFwk::CommonEventData &data) const
+{
+    (void)data;
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -196,17 +196,17 @@ RetError AccessibilityDatashareHelper::PutFloatValue(const std::string& key, flo
     return PutStringValue(key, std::to_string(value), needNotify);
 }
 
-void AccessibilityDatashareHelper::Initialize(int32_t systemAbilityId)
+RetError AccessibilityDatashareHelper::Initialize(int32_t systemAbilityId)
 {
     auto systemAbilityManager = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (systemAbilityManager == nullptr) {
         HILOG_ERROR("get sam return nullptr");
-        return;
+        return RET_ERR_NULLPTR;
     }
     auto remoteObj = systemAbilityManager->GetSystemAbility(systemAbilityId);
     if (remoteObj == nullptr) {
         HILOG_ERROR("Get remoteObj return nullptr, systemAbilityId=%{public}d", systemAbilityId);
-        return;
+        return RET_ERR_NULLPTR;
     }
     remoteObj_ = remoteObj;
     switch (type_) {
@@ -228,8 +228,10 @@ void AccessibilityDatashareHelper::Initialize(int32_t systemAbilityId)
     dataShareHelper_ = CreateDatashareHelper();
     if (dataShareHelper_ == nullptr) {
         HILOG_ERROR("create dataShareHelper_ failed");
+        return RET_ERR_NULLPTR;
     }
 #endif
+    return RET_OK;
 }
 
 sptr<AccessibilitySettingObserver> AccessibilityDatashareHelper::CreateObserver(const std::string& key,
@@ -322,7 +324,7 @@ std::shared_ptr<DataShare::DataShareHelper> AccessibilityDatashareHelper::Create
     std::pair<int, std::shared_ptr<DataShare::DataShareHelper>> ret = DataShare::DataShareHelper::Create(remoteObj_,
         uriProxyStr_, SETTINGS_DATA_EXT_URI);
     HILOG_INFO("create helper ret = %{public}d, uri=%{public}s", ret.first, uriProxyStr_.c_str());
-    if (ret.second == nullptr) {
+    if (ret.first != DataShare::E_OK || ret.second == nullptr) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::READ_EVENT, A11yError::ERROR_READ_FAILED);
         return nullptr;
     }
