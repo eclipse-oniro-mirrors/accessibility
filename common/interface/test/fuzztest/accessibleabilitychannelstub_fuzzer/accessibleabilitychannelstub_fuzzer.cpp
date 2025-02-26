@@ -363,8 +363,8 @@ bool FuzzHandleSendSimulateGesturePath(const uint8_t *data, size_t size)
         return false;
     }
     AccessibilityGesturePosition point { positionX, positionY };
-    gesturePath.AddPosition(point);
-    gesturePath.SetDurationTime(durationTime);
+    gesturePath->AddPosition(point);
+    gesturePath->SetDurationTime(durationTime);
     sptr<AccessibilityGestureInjectPathParcel> path = new(
         std::nothrow) AccessibilityGestureInjectPathParcel(*gesturePath);
     if (path == nullptr) {
