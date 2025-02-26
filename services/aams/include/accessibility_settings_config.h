@@ -150,7 +150,7 @@ private:
     std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
     std::shared_ptr<AccessibilityDatashareHelper> systemDatashare_ = nullptr;
     ffrt::mutex interfaceMutex_;
-    bool isInitialized_;
+    bool isInitialized_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS
