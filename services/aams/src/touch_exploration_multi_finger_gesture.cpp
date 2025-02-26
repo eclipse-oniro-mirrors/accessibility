@@ -260,13 +260,13 @@ void TouchExploration::GetPointOffset(MMI::PointerEvent &event, std::vector<floa
         return;
     }
 
-    MMI::PointerEvent::PointerItem pointerF = {};
-    MMI::PointerEvent::PointerItem pointerS = {};
+    MMI::PointerEvent::PointerItem pointerF {};
+    MMI::PointerEvent::PointerItem pointerS {};
     event.GetPointerItem(pIds[0], pointerF);
     event.GetPointerItem(pIds[1], pointerS);
 
-    MMI::PointerEvent::PointerItem basePointerF = {};
-    MMI::PointerEvent::PointerItem basePointerS = {};
+    MMI::PointerEvent::PointerItem basePointerF {};
+    MMI::PointerEvent::PointerItem basePointerS {};
     if (GetBasePointItem(basePointerF, pIds[0]) && GetBasePointItem(basePointerS, pIds[1])) {
         firstPointOffset.push_back(pointerF.GetDisplayX() - basePointerF.GetDisplayX());
         firstPointOffset.push_back(pointerF.GetDisplayY() - basePointerF.GetDisplayY());
@@ -309,10 +309,7 @@ bool TouchExploration::IsDragGestureAccept(MMI::PointerEvent &event)
     float firstYCos = GetAngleCos(firstOffsetX, firstOffsetY, false);
     float secondXCos = GetAngleCos(secondOffsetX, secondOffsetY, true);
     float secondYCos = GetAngleCos(secondOffsetX, secondOffsetY, false);
-    if ((firstXCos * secondXCos + firstYCos * secondYCos) < MAX_DRAG_GESTURE_COSINE) {
-        return false;
-    }
-    return true;
+    return (firstXCos * secondXCos + firstYCos * secondYCos) >= MAX_DRAG_GESTURE_COSINE;
 }
 
 void TouchExploration::SendDragDownEventToMultimodal(MMI::PointerEvent event)
@@ -322,7 +319,7 @@ void TouchExploration::SendDragDownEventToMultimodal(MMI::PointerEvent event)
     int32_t xPointDown = 0;
     int32_t yPointDown = 0;
     int64_t actionTime = 0;
-    MMI::PointerEvent::PointerItem basePointerIterm = {};
+    MMI::PointerEvent::PointerItem basePointerIterm {};
 
     for (auto &baseEvent : receivedPointerEvents_) {
         if ((baseEvent.GetPointerId() == event.GetPointerId()) &&
@@ -335,7 +332,7 @@ void TouchExploration::SendDragDownEventToMultimodal(MMI::PointerEvent event)
         }
     }
 
-    MMI::PointerEvent::PointerItem pointer = {};
+    MMI::PointerEvent::PointerItem pointer {};
     event.GetPointerItem(draggingPid_, pointer);
     pointer.SetDisplayX(xPointDown);
     pointer.SetDisplayY(yPointDown);
@@ -407,7 +404,7 @@ void TouchExploration::SendUpForDragDownEvent()
         HILOG_ERROR("dragging down event is null!");
         return;
     }
-    MMI::PointerEvent::PointerItem pointerItem = {};
+    MMI::PointerEvent::PointerItem pointerItem {};
     draggingDownEvent_->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
     draggingDownEvent_->GetPointerItem(draggingDownEvent_->GetPointerId(), pointerItem);
     pointerItem.SetPressed(false);
@@ -456,8 +453,8 @@ void TouchExploration::HandleTwoFingersDragStateMove(MMI::PointerEvent &event)
     int32_t miniZoomPointerDistance = static_cast<int32_t>(MINI_POINTER_DISTANCE_DIP * 1);
 #endif
 
-    MMI::PointerEvent::PointerItem pointerF = {};
-    MMI::PointerEvent::PointerItem pointerS = {};
+    MMI::PointerEvent::PointerItem pointerF {};
+    MMI::PointerEvent::PointerItem pointerS {};
     event.GetPointerItem(pIds[0], pointerF);
     event.GetPointerItem(pIds[1], pointerS);
     float xPointF = pointerF.GetDisplayX();
@@ -469,7 +466,7 @@ void TouchExploration::HandleTwoFingersDragStateMove(MMI::PointerEvent &event)
     double duration = hypot(offsetX, offsetY);
     if (duration > miniZoomPointerDistance) {
         // Adjust this event's location.
-        MMI::PointerEvent::PointerItem pointer = {};
+        MMI::PointerEvent::PointerItem pointer {};
         event.GetPointerItem(event.GetPointerId(), pointer);
         pointer.SetDisplayX(pointer.GetDisplayX() + offsetX / DIVIDE_NUM);
         pointer.SetDisplayY(pointer.GetDisplayY() + offsetY / DIVIDE_NUM);

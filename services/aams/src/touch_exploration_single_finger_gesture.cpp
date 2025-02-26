@@ -174,9 +174,9 @@ bool TouchExploration::OnPointerEvent(MMI::PointerEvent &event)
 
     MMI::PointerEvent::PointerItem pointerIterm;
     std::vector<int32_t> pIds = event.GetPointerIds();
-    for (auto& pid : pIds) {
-        if (!event.GetPointerItem(pid, pointerIterm)) {
-            HILOG_ERROR("get pointerItem(%{public}d) failed", pid);
+    for (auto& pId : pIds) {
+        if (!event.GetPointerItem(pId, pointerIterm)) {
+            HILOG_ERROR("get pointerItem(%{public}d) failed", pId);
             return false;
         }
         if (pointerIterm.GetToolType() == MMI::PointerEvent::TOOL_TYPE_PEN) {
@@ -244,7 +244,7 @@ void TouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
         return;
     }
 
-    MMI::PointerEvent::PointerItem pointerIterm = {};
+    MMI::PointerEvent::PointerItem pointerIterm {};
     event.GetPointerItem(event.GetPointerId(), pointerIterm);
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN) {
         SendAccessibilityEventToAA(EventType::TYPE_TOUCH_BEGIN);
@@ -298,11 +298,11 @@ void TouchExploration::SendScreenWakeUpEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     // Send move event to wake up the screen and prevent the screen from turning off.
-    MMI::PointerEvent::PointerItem pointerItem = {};
-    for (auto& pid : event.GetPointerIds()) {
-        event.GetPointerItem(pid, pointerItem);
+    MMI::PointerEvent::PointerItem pointerItem {};
+    for (auto& pId : event.GetPointerIds()) {
+        event.GetPointerItem(pId, pointerItem);
         pointerItem.SetPressed(false);
-        event.RemovePointerItem(pid);
+        event.RemovePointerItem(pId);
         event.AddPointerItem(pointerItem);
     }
     SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
@@ -358,7 +358,7 @@ void TouchExploration::HandlePassingThroughState(MMI::PointerEvent &event)
 {
     SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
 
-    MMI::PointerEvent::PointerItem pointerIterm = {};
+    MMI::PointerEvent::PointerItem pointerIterm {};
     event.GetPointerItem(event.GetPointerId(), pointerIterm);
 
     // the last finger is lifted
@@ -370,7 +370,7 @@ void TouchExploration::HandlePassingThroughState(MMI::PointerEvent &event)
 
 void TouchExploration::HandleInvalidState(MMI::PointerEvent &event)
 {
-    MMI::PointerEvent::PointerItem pointerIterm = {};
+    MMI::PointerEvent::PointerItem pointerIterm {};
     event.GetPointerItem(event.GetPointerId(), pointerIterm);
 
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_MOVE) {
@@ -391,7 +391,7 @@ void TouchExploration::HandleCancelEvent(MMI::PointerEvent &event)
     }
     SendEventToMultimodal(event, ChangeAction::HOVER_CANCEL);
 
-    MMI::PointerEvent::PointerItem pointerIterm = {};
+    MMI::PointerEvent::PointerItem pointerIterm {};
     event.GetPointerItem(event.GetPointerId(), pointerIterm);
 
     // the last finger is lifted
@@ -493,7 +493,7 @@ void TouchExploration::HandleOneFingerSwipeStateDown(MMI::PointerEvent &event)
 void TouchExploration::AddOneFingerSwipeEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    MMI::PointerEvent::PointerItem pointerIterm = {};
+    MMI::PointerEvent::PointerItem pointerIterm {};
     event.GetPointerItem(event.GetPointerId(), pointerIterm);
 
     if (receivedPointerEvents_.empty()) {
@@ -502,7 +502,7 @@ void TouchExploration::AddOneFingerSwipeEvent(MMI::PointerEvent &event)
     }
 
     MMI::PointerEvent preMoveEvent = receivedPointerEvents_.back();
-    MMI::PointerEvent::PointerItem preMovePointerIterm = {};
+    MMI::PointerEvent::PointerItem preMovePointerIterm {};
     preMoveEvent.GetPointerItem(preMoveEvent.GetPointerId(), preMovePointerIterm);
     float offsetX = preMovePointerIterm.GetDisplayX() - pointerIterm.GetDisplayX();
     float offsetY = preMovePointerIterm.GetDisplayY() - pointerIterm.GetDisplayY();
@@ -622,7 +622,7 @@ void TouchExploration::HandleOneFingerSwipeStateMove(MMI::PointerEvent &event)
 bool TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    AccessibilityElementInfo focusedElementInfo = {};
+    AccessibilityElementInfo focusedElementInfo {};
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(focusedElementInfo,
         FIND_FOCUS_TIMEOUT);
     if (!ret) {
@@ -630,7 +630,7 @@ bool TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
         return false;
     }
 
-    MMI::PointerEvent::PointerItem pointer = {};
+    MMI::PointerEvent::PointerItem pointer {};
     event.GetPointerItem(event.GetPointerId(), pointer);
     offsetX_ = (focusedElementInfo.GetRectInScreen().GetLeftTopXScreenPostion() +
         focusedElementInfo.GetRectInScreen().GetRightBottomXScreenPostion()) / DIVIDE_NUM - pointer.GetDisplayX();
@@ -732,7 +732,7 @@ void TouchExploration::OffsetEvent(MMI::PointerEvent &event)
         return;
     }
 
-    MMI::PointerEvent::PointerItem pointer = {};
+    MMI::PointerEvent::PointerItem pointer {};
     event.GetPointerItem(event.GetPointerId(), pointer);
     pointer.SetDisplayX(offsetX_ + pointer.GetDisplayX());
     pointer.SetDisplayY(offsetY_ + pointer.GetDisplayY());
@@ -759,7 +759,7 @@ void TouchExploration::HandleOneFingerDoubleTapAndLongPressState(MMI::PointerEve
     OffsetEvent(event);
     SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
 
-    MMI::PointerEvent::PointerItem pointer = {};
+    MMI::PointerEvent::PointerItem pointer {};
     event.GetPointerItem(event.GetPointerId(), pointer);
     if ((event.GetPointerIds().size() == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) &&
         (!pointer.IsPressed())) {
