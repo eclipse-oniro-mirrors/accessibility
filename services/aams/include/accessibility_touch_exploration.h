@@ -27,6 +27,7 @@
 #include "accessible_ability_manager_service.h"
 #include "accessibility_def.h"
 #include "event_handler.h"
+#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -250,6 +251,7 @@ public:
     /* Set current state */
     inline void SetCurrentState(TouchExplorationState state)
     {
+        HILOG_INFO("currentState is changed from %{public}d to %{public}d.", currentState_, state);
         currentState_ = state;
     }
 
