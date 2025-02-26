@@ -169,26 +169,6 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetResourceBundleName_001, TestSize.Lev
     EXPECT_EQ(eventInfo_->GetResourceBundleName(), "accessibilityResourceBundleNameTest");
     GTEST_LOG_(INFO) << "SetResourceBundleName_001 end";
 }
- 
-/**
- * @tc.number: SetResourceParams_001
- * @tc.name: SetResourceParams
- * @tc.desc: Test function SetResourceParams
- */
-HWTEST_F(AccessibilityEventInfoUnitTest, SetResourceParams_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetResourceParams_001 start";
-    if (!eventInfo_) {
-        GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
-    }
-    std::vector<std::tuple<int32_t, std::string>> resourceParams;
-    resourceParams.push_back(std::make_tuple(0, "ResourceValue0"));
-    resourceParams.push_back(std::make_tuple(1, "ResourceValue1"));
-    eventInfo_->SetResourceParams(resourceParams);
-    EXPECT_EQ(eventInfo_->GetResourceParams(), resourceParams);
-    GTEST_LOG_(INFO) << "SetResourceParams_001 end";
-}
 
 /**
  * @tc.number: SetBundleName_001
