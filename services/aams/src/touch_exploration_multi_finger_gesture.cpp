@@ -631,7 +631,7 @@ void TouchExploration::HandleMultiFingersTapStateUp(MMI::PointerEvent &event)
     uint32_t pointerSize = event.GetPointerIds().size();
     if (pointerSize == static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
         SetCurrentState(TouchExplorationState::TOUCH_INIT);
-    } else {;
+    } else {
         SetCurrentState(TouchExplorationState::INVALID);
     }
 }
