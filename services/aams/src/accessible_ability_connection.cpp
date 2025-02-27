@@ -235,14 +235,8 @@ bool AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element
     HILOG_DEBUG("bundleName[%{public}s], abilityName [%{public}s], accountId [%{public}d]",
         bundleName.c_str(), abilityName.c_str(), accountId_);
 
-    auto bundleMgr = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
-    if (!bundleMgr) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
-        HILOG_ERROR("get bundleMgr failed");
-        return false;
-    }
-    int uid = bundleMgr->GetUidByBundleName(bundleName, accountId_);
+    int uid = Singleton<AccessibilityResourceBundleManager>::GetInstance().GetUidByBundleName(
+        bundleName, abilityName, accountId_);
     HILOG_DEBUG("uid is %{public}d ", uid);
 
     auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();

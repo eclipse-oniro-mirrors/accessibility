@@ -41,12 +41,14 @@
 #include "system_ability.h"
 #include "window_manager.h"
 #include "accessibility_short_key.h"
+#include "accessibility_resource_bundle_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
 class AccessibilityAccountData;
 class TouchEventInjector;
 class AccessibilitySettings;
+class AccessibilityResourceBundleManager;
 
 enum CallBackID {
     STATE_CALLBACK,

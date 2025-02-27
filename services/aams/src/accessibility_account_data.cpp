@@ -28,6 +28,7 @@
 #include "utils.h"
 #include "system_ability_definition.h"
 #include "os_account_manager.h"
+#include "accessibility_resource_bundle_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -684,13 +685,8 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryInstalledAbilityInfo");
 #endif // OHOS_BUILD_ENABLE_HITRACE
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
-    sptr<AppExecFwk::IBundleMgr> bms = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
-    if (!bms) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_PACKAGE_INFO_FAILED);
-        HILOG_ERROR("GetBundleMgrProxy failed.");
-        return false;
-    }
-    bool ret = bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
+    bool ret = Singleton<AccessibilityResourceBundleManager>::GetInstance().QueryExtensionAbilityInfos(
+        AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     if (!ret) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_PACKAGE_INFO_FAILED);
         HILOG_ERROR("Query extension ability information failed.");

@@ -3439,14 +3439,13 @@ RetError AccessibleAbilityManagerService::GetResourceBundleInfo(AccessibilityEve
     int32_t userId = accountData->GetAccountId();
 
     AppExecFwk::BundleInfo bundleInfo;
-    sptr<AppExecFwk::IBundleMgr> bundleMgr_;
-    bundleMgr_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
-    if (bundleMgr_ == nullptr) {
-        HILOG_ERROR("create bundleMgr_ failed");
-        return RET_ERR_NULLPTR;
-    }
-    bool result = bundleMgr_->GetBundleInfoV9(eventInfo.GetResourceBundleName(),
+    ErrCode ret =
+        Singleton<AccessibilityResourceBundleManager>::GetInstance().GetBundleInfoV9(eventInfo.GetResourceBundleName(),
         static_cast<int32_t>(AppExecFwk::GetBundleInfoFlag::GET_BUNDLE_INFO_WITH_HAP_MODULE), bundleInfo, userId);
+    if (ret != ERR_OK) {
+        HILOG_ERROR("get BundleInfo failed!");
+        return RET_ERR_FAILED;
+    }
 
     std::string resourceValue;
     RetError res = GetResourceValue(eventInfo, bundleInfo, userId, resourceValue);
