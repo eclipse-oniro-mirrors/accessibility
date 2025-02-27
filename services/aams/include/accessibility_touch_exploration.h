@@ -27,6 +27,7 @@
 #include "accessible_ability_manager_service.h"
 #include "accessibility_def.h"
 #include "event_handler.h"
+#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -50,6 +51,7 @@ const double EPSINON = 0.01;
 const float PIXEL_MULTIPLIER = 0.1f;
 const int32_t DIVIDE_NUM = 2;
 const uint32_t FIND_FOCUS_TIMEOUT = 50;
+const float COMPLEX_UNIT_MM_CONVERSION = 1.0f / 25.4f;
 #define BIND(func) [this](MMI::PointerEvent& event) { (func(event)); }
 
 /**
@@ -250,6 +252,7 @@ public:
     /* Set current state */
     inline void SetCurrentState(TouchExplorationState state)
     {
+        HILOG_INFO("currentState is changed from %{public}d to %{public}d.", currentState_, state);
         currentState_ = state;
     }
 
@@ -364,7 +367,7 @@ private:
 
     inline float CalculateMoveThreshold(int dpi)
     {
-        return dpi * (1.0f / 25.4f) * MM_PER_CM;
+        return dpi * COMPLEX_UNIT_MM_CONVERSION * MM_PER_CM;
     }
 
     std::shared_ptr<TouchExplorationEventHandler> handler_ = nullptr;

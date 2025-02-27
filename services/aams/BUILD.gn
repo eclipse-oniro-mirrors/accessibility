@@ -63,14 +63,15 @@ accessibleabilityms_files = [
   "${services_path}/src/accessibility_screen_touch.cpp",
   "${services_path}/src/accessibility_short_key.cpp",
   "${services_path}/src/accessibility_touchEvent_injector.cpp",
-  "${services_path}/src/accessibility_touch_exploration.cpp",
   "${services_path}/src/accessibility_window_manager.cpp",
-  "${services_path}/src/utils.cpp",
   "${services_path}/src/accessibility_dumper.cpp",
   "${services_path}/src/accessibility_setting_observer.cpp",
   "${services_path}/src/accessibility_setting_provider.cpp",
   "${services_path}/src/accessibility_short_key_dialog.cpp",
   "${services_path}/src/accessibility_datashare_helper.cpp",
+  "${services_path}/src/touch_exploration_multi_finger_gesture.cpp",
+  "${services_path}/src/touch_exploration_single_finger_gesture.cpp",
+  "${services_path}/src/utils.cpp",
 ]
 
 ohos_shared_library("accessibleabilityms") {
