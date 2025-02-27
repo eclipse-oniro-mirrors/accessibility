@@ -186,7 +186,7 @@ void ConvertEventTypes(const uint32_t value, std::string &eventTypes)
         {EventType::TYPE_PAGE_CLOSE, "pageClose"},
         {EventType::TYPE_ELEMENT_INFO_CHANGE, "elementInfoChange"},
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT, "announceForAccessibilityNotInterrupt"},
-        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP,
+        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT,
             "requestFocusForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"}};
 
