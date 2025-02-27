@@ -65,6 +65,7 @@ accessibleabilityms_files = [
   "${services_path}/src/accessibility_touchEvent_injector.cpp",
   "${services_path}/src/accessibility_window_manager.cpp",
   "${services_path}/src/accessibility_dumper.cpp",
+  "${services_path}/src/accessibility_resource_bundle_manager.cpp",
   "${services_path}/src/accessibility_setting_observer.cpp",
   "${services_path}/src/accessibility_setting_provider.cpp",
   "${services_path}/src/accessibility_short_key_dialog.cpp",

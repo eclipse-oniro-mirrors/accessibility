@@ -116,6 +116,7 @@ ohos_unittest("accessible_ability_test") {
     "../../../services/aams/src/accessibility_display_manager.cpp",
     "../../../services/aams/src/accessibility_dumper.cpp",
     "../../../services/aams/src/accessibility_power_manager.cpp",
+    "../../../services/aams/src/accessibility_resource_bundle_manager.cpp",
     "../../../services/aams/src/accessibility_setting_observer.cpp",
     "../../../services/aams/src/accessibility_settings.cpp",
     "../../../services/aams/src/accessibility_settings_config.cpp",
