@@ -83,7 +83,7 @@ std::vector<std::string> CArrStringToVector(CArrString cArrStr)
     if (cArrStr.head == nullptr || cArrStr.size <= 0) {
         return vec;
     }
-    for (size_t i = 0; i < cArrStr.size; i++) {
+    for (size_t i = 0; i < static_cast<size_t>(cArrStr.size); i++) {
         if (cArrStr.head[i] != nullptr) {
             vec.emplace_back(cArrStr.head[i]);
         }
@@ -171,7 +171,7 @@ CArrAccessibilityAbilityInfo ConvertArrAccAbilityInfo2CArr(std::vector<Accessibi
     RetError &errCode)
 {
     CArrAccessibilityAbilityInfo cArrAbility;
-    cArrAbility.size = abilityList.size();
+    cArrAbility.size = static_cast<int64_t>(abilityList.size());
     if (cArrAbility.size == 0) {
         return cArrAbility;
     }
