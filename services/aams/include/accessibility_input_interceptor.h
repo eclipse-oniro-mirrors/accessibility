@@ -22,6 +22,7 @@
 
 #include "accessibility_event_transmission.h"
 #include "accessibility_mouse_key.h"
+#include "accessibility_zoom_gesture.h"
 #include "event_handler.h"
 #include "ffrt.h"
 #include "i_input_event_consumer.h"
@@ -78,6 +79,9 @@ public:
     void OnMoveMouse(int32_t offsetX, int32_t offsetY) override;
     void SetAvailableFunctions(uint32_t availableFunctions);
 
+    // flag = true shield zoom gesture | flag = false restore zoom gesture
+    void ShieldZoomGesture(bool flag);
+
 private:
     AccessibilityInputInterceptor();
     static sptr<AccessibilityInputInterceptor> instance_;
@@ -99,6 +103,8 @@ private:
     std::shared_ptr<AccessibilityInputEventConsumer> inputEventConsumer_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
     ffrt::mutex mutex_;
+
+    sptr<AccessibilityZoomGesture> zoomGesture_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
