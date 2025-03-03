@@ -186,7 +186,10 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
             HILOG_ERROR("zoomGesture is null");
             return;
         }
+        zoomGesture_ = zoomGesture;
         SetNextEventTransmitter(header, current, zoomGesture);
+    } else {
+        zoomGesture_ = nullptr;
     }
 
     if (availableFunctions_& FEATURE_TOUCH_EXPLORATION) {
@@ -291,6 +294,7 @@ void AccessibilityInputInterceptor::DestroyTransmitters()
         pointerEventTransmitters_->DestroyEvents();
         Singleton<AccessibleAbilityManagerService>::GetInstance().SetTouchEventInjector(nullptr);
         pointerEventTransmitters_= nullptr;
+        zoomGesture_ = nullptr;
     }
     if (keyEventTransmitters_ != nullptr) {
         keyEventTransmitters_->DestroyEvents();
@@ -350,6 +354,14 @@ void AccessibilityInputInterceptor::SetNextEventTransmitter(sptr<EventTransmissi
         header = next;
     }
     current = next;
+}
+
+void AccessibilityInputInterceptor::ShieldZoomGesture(bool flag)
+{
+    if (!zoomGesture_) {
+        return;
+    }
+    zoomGesture_->ShieldZoomGesture(flag);
 }
 
 AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()

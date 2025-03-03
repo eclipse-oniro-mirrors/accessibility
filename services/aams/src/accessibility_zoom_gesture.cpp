@@ -106,6 +106,11 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("state_ is %{public}d.", state_);
 
+    if (shieldZoomGestureFlag_) {
+        EventTransmission::OnPointerEvent(event);
+        return true;
+    }
+
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN ||
         event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) {
         HILOG_INFO("PointerAction: %{public}d.", event.GetPointerAction());
@@ -891,6 +896,16 @@ void AccessibilityZoomGesture::DestroyEvents()
     HILOG_INFO();
     Clear();
     EventTransmission::DestroyEvents();
+}
+
+void AccessibilityZoomGesture::ShieldZoomGesture(bool state)
+{
+    shieldZoomGestureFlag_ = state;
+    HILOG_INFO("ShieldZoomGesture state = %{public}d", state);
+    if (state) {
+        Clear();
+        OffZoom();
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

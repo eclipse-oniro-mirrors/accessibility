@@ -169,5 +169,42 @@ void AccessibilityDisplayManager::UnregisterDisplayListener()
         handler_ = nullptr;
     }
 }
+
+void AccessibilityDisplayManager::RegisterDisplayModeListener()
+{
+    HILOG_DEBUG();
+    if (displayModeListener_) {
+        HILOG_DEBUG("Display mode listener is already registed!");
+        return;
+    }
+    displayModeListener_ = new(std::nothrow) DisplayModeListener();
+    if (!displayModeListener_) {
+        HILOG_ERROR("Create display mode listener fail!");
+        return;
+    }
+    Rosen::DisplayManager::GetInstance().RegisterDisplayModeListener(displayModeListener_);
+}
+
+void AccessibilityDisplayManager::UnregisterDisplayModeListener()
+{
+    HILOG_DEBUG();
+    if (displayModeListener_) {
+        Rosen::DisplayManager::GetInstance().UnregisterDisplayModeListener(displayModeListener_);
+        displayModeListener_ = nullptr;
+    }
+}
+
+void AccessibilityDisplayManager::DisplayModeListener::OnDisplayModeChanged(Rosen::FoldDisplayMode displayMode)
+{
+    auto interceptor = AccessibilityInputInterceptor::GetInstance();
+    if (interceptor == nullptr) {
+        HILOG_WARN("interceptior is null");
+    }
+    if (displayMode == Rosen::FoldDisplayMode::MAIN) {
+        interceptor->ShieldZoomGesture(true);
+    } else if (displayMode == Rosen::FoldDisplayMode::FULL) {
+        interceptor->ShieldZoomGesture(false);
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS
