@@ -13,9 +13,14 @@
 
 import("//build/ohos.gni")
 import("//build/ohos/sa_profile/sa_profile.gni")
+import("//foundation/barrierfree/accessibility/accessibility_manager_service.gni")
 
 ohos_sa_profile("aams_sa_profile") {
-  sources = [ "801.json" ]
+  if (!accessibility_dynamic_support) {
+    sources = [ "801.json" ]
+  } else {
+    sources = [ "801_dynamic.json" ]
+  }
 
   part_name = "accessibility"
 }

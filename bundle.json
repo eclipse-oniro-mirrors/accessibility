@@ -20,7 +20,8 @@
     ],
     "features": [
       "accessibility_feature_coverage",
-      "accessibility_watch_feature"
+      "accessibility_watch_feature",
+      "accessibility_dynamic_support"
     ],
     "adapted_system_type": [
       "standard"

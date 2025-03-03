@@ -21,6 +21,7 @@ declare_args() {
   accessibility_watch_feature = false
   accessibility_feature_hiviewdfx_hitrace = true
   accessibility_feature_hiviewdfx_hisysevent = true
+  accessibility_dynamic_support = false
   if (defined(global_parts_info) &&
       !defined(global_parts_info.powermgr_display_manager)) {
     accessibility_feature_display_manager = false
