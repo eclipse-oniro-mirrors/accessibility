@@ -255,7 +255,7 @@ int32_t SystemAbilityManagerProxy::GetRunningSaExtensionInfoList(const std::stri
 {
     return -1;
 };
-sptr<IRemoteObject> SystemAbilityManagerProxy::Recompute(int32_t systemAbilityId, int32_t code)
+sptr<IRemoteObject> SystemAbilityManagerProxy::GetLocalAbilityManagerProxy(int32_t systemAbilityId)
 {
     return nullptr;
 }
