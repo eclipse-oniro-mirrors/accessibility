@@ -55,6 +55,7 @@ KeyEventFilter::~KeyEventFilter()
 {
     HILOG_DEBUG();
 
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     eventMaps_.clear();
 }
 
@@ -97,6 +98,7 @@ void KeyEventFilter::ClearServiceKeyEvents(AccessibleAbilityConnection &connecti
 {
     HILOG_DEBUG();
 
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = eventMaps_.begin(); iter != eventMaps_.end(); iter++) {
         if (iter->first.GetRefPtr() != &connection) {
             continue;
@@ -134,6 +136,7 @@ void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
             }
             processingEvent->usedCount_++;
 
+            std::lock_guard<ffrt::mutex> lock(mutex_);
             if (eventMaps_.find(iter->second) == eventMaps_.end()) {
                 std::vector<std::shared_ptr<ProcessingEvent>> processingEvens;
                 eventMaps_.insert(std::make_pair(iter->second, processingEvens));
@@ -156,6 +159,7 @@ bool KeyEventFilter::RemoveProcessingEvent(std::shared_ptr<ProcessingEvent> even
 {
     HILOG_DEBUG();
 
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     bool haveEvent = false;
     for (auto iter = eventMaps_.begin(); iter != eventMaps_.end(); iter++) {
         for (auto val = iter->second.begin(); val != iter->second.end(); val++) {
@@ -179,12 +183,17 @@ std::shared_ptr<KeyEventFilter::ProcessingEvent> KeyEventFilter::FindProcessingE
 
     std::shared_ptr<ProcessingEvent> processingEvent = nullptr;
 
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = eventMaps_.begin(); iter != eventMaps_.end(); iter++) {
         if (iter->first.GetRefPtr() != &connection) {
             continue;
         }
 
         for (auto val = iter->second.begin(); val != iter->second.end(); val++) {
+            if ((*val) == nullptr) {
+                HILOG_ERROR("connection is null");
+                continue;
+            }
             if ((*val)->seqNum_ != sequenceNum) {
                 continue;
             }
@@ -203,6 +212,7 @@ void KeyEventFilter::DestroyEvents()
 {
     HILOG_DEBUG();
 
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     timeoutHandler_->RemoveAllEvents();
     eventMaps_.clear();
     EventTransmission::DestroyEvents();
