@@ -152,10 +152,6 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
         GTEST_LOG_(INFO) << "null pointer";
     }
 
-    MMI::PointerEvent::PointerItem pointer = {};
-    pointer.SetPointerId(1);
-    event->SetPointerId(1);
-    event->AddPointerItem(pointer);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_CANCEL);
 
