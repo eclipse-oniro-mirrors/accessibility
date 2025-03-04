@@ -20,10 +20,12 @@
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "utils.h"
-#include <cinttypes>
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string SCB_SCENE_PANEL = "SCBScenePanel";
+}
 
 AccessibilityWindowManager::AccessibilityWindowManager()
 {
@@ -35,7 +37,7 @@ bool AccessibilityWindowManager::Init()
     HILOG_DEBUG("deinit before start");
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryWindowInfo");
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
-    Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
+    Rosen::WMError err = OHOS::Rosen::WindowManagerLite::GetInstance().GetAccessibilityWindowInfo(windowInfos);
     if (err != Rosen::WMError::WM_OK) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_WINDOW_INFO_FAILED);
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
@@ -83,7 +85,6 @@ void AccessibilityWindowManager::WinDeInit()
     HILOG_DEBUG();
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     a11yWindows_.clear();
-    subWindows_.clear();
     sceneBoardElementIdMap_.Clear();
     activeWindowId_ = INVALID_WINDOW_ID;
 }
@@ -108,13 +109,13 @@ void AccessibilityWindowManager::RegisterWindowListener(const std::shared_ptr<Ap
         HILOG_ERROR("Create window listener fail!");
         return;
     }
-    OHOS::Rosen::WindowManager::GetInstance().RegisterWindowUpdateListener(windowListener_);
+    OHOS::Rosen::WindowManagerLite::GetInstance().RegisterWindowUpdateListener(windowListener_);
 }
 
 void AccessibilityWindowManager::DeregisterWindowListener()
 {
     if (windowListener_) {
-        OHOS::Rosen::WindowManager::GetInstance().UnregisterWindowUpdateListener(windowListener_);
+        OHOS::Rosen::WindowManagerLite::GetInstance().UnregisterWindowUpdateListener(windowListener_);
         windowListener_ = nullptr;
         eventHandler_ = nullptr;
     }
@@ -251,6 +252,7 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
     accWindowInfo.SetScaleX(windowInfo->scaleX_);
     accWindowInfo.SetScaleY(windowInfo->scaleY_);
     accWindowInfo.SetWindowId(windowInfo->wid_);
+    accWindowInfo.SetMainWindowId(windowInfo->wid_);
     accWindowInfo.SetWindowType(static_cast<uint32_t>(windowInfo->type_));
     accWindowInfo.SetWindowMode(static_cast<uint32_t>(windowInfo->mode_));
     accWindowInfo.SetAccessibilityWindowType(ConvertWindowType(windowInfo->type_));
@@ -258,7 +260,7 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
     accWindowInfo.SetWindowLayer(windowInfo->layer_);
     if (static_cast<int32_t>(windowInfo->type_) == 1 && (static_cast<int32_t>(windowInfo->windowRect_.width_) == 0 ||
         static_cast<int32_t>(windowInfo->windowRect_.height_) == 0)) {
-        HILOG_ERROR("invalid window parameters, windowId(%{public}d), posX(%{public}d, posY(%{public}d))",
+        HILOG_WARN("invalid window parameters, windowId(%{public}d), posX(%{public}d, posY(%{public}d))",
             windowInfo->wid_, windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_);
     } else {
         Rect bound;
@@ -278,6 +280,7 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
     accWindowInfo.SetInnerWid(windowInfo->innerWid_);
     if (accWindowInfo.GetWindowId() == SCENE_BOARD_WINDOW_ID) {
         accWindowInfo.SetWindowId(windowInfo->innerWid_);
+        accWindowInfo.SetMainWindowId(windowInfo->innerWid_);
         HILOG_DEBUG("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
     }
     HILOG_DEBUG("bundle name is [%{public}s] , touchHotAreas size(%{public}zu)",
@@ -324,6 +327,11 @@ bool AccessibilityWindowManager::IsSceneBoard(const sptr<Rosen::AccessibilityWin
     return false;
 }
 
+bool AccessibilityWindowManager::IsScenePanel(const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
+{
+    return windowInfo->bundleName_.find(SCB_SCENE_PANEL) != std::string::npos;
+}
+
 AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInfo(
     const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
 {
@@ -340,7 +348,7 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
 
 void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEvent)
 {
-    HILOG_DEBUG("windowId is %{public}d", windowId);
+    HILOG_INFO("windowId is %{public}d, activeWindowId_: %{public}d", windowId, activeWindowId_);
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     if (windowId == INVALID_WINDOW_ID) {
         ClearOldActiveWindow();
@@ -378,6 +386,13 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEv
     HILOG_DEBUG("activeWindowId is %{public}d", activeWindowId_);
 }
 
+int32_t AccessibilityWindowManager::GetActiveWindowId()
+{
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
+    HILOG_DEBUG("activeWindowId_ is %{public}d", activeWindowId_);
+    return activeWindowId_;
+}
+
 void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
 {
     HILOG_DEBUG("windowId is %{public}d", windowId);
@@ -407,15 +422,14 @@ std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilit
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
     std::vector<AccessibilityWindowInfo> windows;
-    Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
-    HILOG_DEBUG("windowInfos size[%{public}zu]", windowInfos.size());
+    Rosen::WMError err = OHOS::Rosen::WindowManagerLite::GetInstance().GetAccessibilityWindowInfo(windowInfos);
     if (err != Rosen::WMError::WM_OK) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_WINDOW_INFO_FAILED);
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
         return windows;
     }
     for (auto &info : windowInfos) {
         if (info == nullptr) {
-            HILOG_DEBUG("info is nullptr");
             continue;
         }
         AccessibilityWindowInfo tmpWindowInfo;
@@ -434,8 +448,9 @@ bool AccessibilityWindowManager::GetAccessibilityWindow(int32_t windowId, Access
     HILOG_DEBUG("start windowId(%{public}d)", windowId);
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
-    Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
+    Rosen::WMError err = OHOS::Rosen::WindowManagerLite::GetInstance().GetAccessibilityWindowInfo(windowInfos);
     if (err != Rosen::WMError::WM_OK) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_WINDOW_INFO_FAILED);
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
         return false;
     }
@@ -445,8 +460,12 @@ bool AccessibilityWindowManager::GetAccessibilityWindow(int32_t windowId, Access
         }
 
         int32_t realWidId = GetRealWindowId(info);
-        if (info != nullptr && a11yWindows_.count(realWidId)) {
+        if (a11yWindows_.count(realWidId)) {
             UpdateAccessibilityWindowInfo(a11yWindows_[realWidId], info);
+        } else {
+            AccessibilityWindowInfo tmpWindowInfo;
+            UpdateAccessibilityWindowInfo(tmpWindowInfo, info);
+            a11yWindows_[realWidId] = tmpWindowInfo;
         }
     }
     if (a11yWindows_.count(windowId)) {
@@ -788,9 +807,8 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
-    auto oldA11yWindows_ = a11yWindows_;
-    HILOG_DEBUG("WindowUpdateAll info size(%{public}zu), oldA11yWindows_ size(%{public}zu)",
-        infos.size(), oldA11yWindows_.size());
+    int32_t oldActiveWindowId = activeWindowId_;
+    HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
     WinDeInit();
     for (auto &window : infos) {
         if (window == nullptr) {
@@ -801,7 +819,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         if (!a11yWindows_.count(realWid)) {
             auto a11yWindowInfo = CreateAccessibilityWindowInfo(window);
             a11yWindows_.emplace(realWid, a11yWindowInfo);
-            HILOG_DEBUG("WindowUpdateAll a11yWindowInfo size(%{public}s)", a11yWindowInfo.GetBundleName().c_str());
+            HILOG_DEBUG("a11yWindowInfo bundleName(%{public}s)", a11yWindowInfo.GetBundleName().c_str());
         }
         if (IsSceneBoard(window)) {
             subWindows_.insert(realWid);
@@ -809,7 +827,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         }
 
         // IsScenePanel for recent-task window
-        if (a11yWindows_[realWid].IsFocused()) {
+        if (a11yWindows_[realWid].IsFocused() || IsScenePanel(window)) {
             SetActiveWindow(realWid);
         }
 
@@ -835,7 +853,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     for (auto it = oldA11yWindows_.begin(); it != oldA11yWindows_.end(); ++it) {
         WindowUpdateTypeEvent(it->first, WINDOW_UPDATE_REMOVED);
     }
-    HILOG_DEBUG("WindowUpdateAll a11yWindowInfo_ size(%{public}zu)", a11yWindows_.size());
+    HILOG_INFO("WindowUpdateAll end activeWindowId_: %{public}d", activeWindowId_);
 }
 
 void AccessibilityWindowManager::ClearOldActiveWindow()
@@ -957,31 +975,31 @@ void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int64
 
 void AccessibilityWindowManager::SceneBoardElementIdMap::InsertPair(const int32_t windowId, const int64_t elementId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     windowElementMap_[windowId] = elementId;
 }
 
 void AccessibilityWindowManager::SceneBoardElementIdMap::RemovePair(const int32_t windowId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     windowElementMap_.erase(windowId);
 }
 
 bool AccessibilityWindowManager::SceneBoardElementIdMap::CheckWindowIdPair(const int32_t windowId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     return windowElementMap_.count(windowId);
 }
 
 void AccessibilityWindowManager::SceneBoardElementIdMap::Clear()
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     windowElementMap_.clear();
 }
 
 std::map<int32_t, int64_t> AccessibilityWindowManager::SceneBoardElementIdMap::GetAllPairs()
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     return windowElementMap_;
 }
 
@@ -990,7 +1008,7 @@ RetError AccessibilityWindowManager::GetFocusedWindowId(int32_t &focusedWindowId
     HILOG_DEBUG();
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryFocusedWindowInfo");
     Rosen::FocusChangeInfo focusedWindowInfo;
-    OHOS::Rosen::WindowManager::GetInstance().GetFocusWindowInfo(focusedWindowInfo);
+    OHOS::Rosen::WindowManagerLite::GetInstance().GetFocusWindowInfo(focusedWindowInfo);
     if (focusedWindowInfo.windowId_ == INVALID_WINDOW_ID) {
         return RET_ERR_INVALID_PARAM;
     }
