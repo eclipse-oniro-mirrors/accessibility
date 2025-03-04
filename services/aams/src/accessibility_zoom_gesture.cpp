@@ -887,7 +887,7 @@ void AccessibilityZoomGesture::OnScale(float scaleSpan)
 void AccessibilityZoomGesture::Clear()
 {
     HILOG_DEBUG();
-    ClearCacheEventsAndMsg();
+    SendCacheEventsToNext();
     TransferState(READY_STATE);
 }
 
