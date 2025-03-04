@@ -25,7 +25,7 @@ AccessibilityWindowConnection::AccessibilityWindowConnection(const int32_t windo
     windowId_ = windowId;
     proxy_ = connection;
     accountId_ = accountId;
-    cardProxy_[0] = connection;
+    cardProxy_.EnsureInsert(0, connection);
 }
 
 AccessibilityWindowConnection::AccessibilityWindowConnection(const int32_t windowId, const int32_t treeId,
@@ -33,8 +33,8 @@ AccessibilityWindowConnection::AccessibilityWindowConnection(const int32_t windo
 {
     windowId_ = windowId;
     treeId_ = treeId;
-    cardProxy_[treeId] = connection;
     accountId_ = accountId;
+    cardProxy_.EnsureInsert(treeId, connection);
 }
 
 AccessibilityWindowConnection::~AccessibilityWindowConnection()
@@ -48,61 +48,59 @@ RetError AccessibilityWindowConnection::SetCardProxy(const int32_t treeId,
         HILOG_DEBUG("SetCardProxy : operation is nullptr");
         return RET_ERR_FAILED;
     }
-    cardProxy_[treeId] = operation;
+    cardProxy_.EnsureInsert(treeId, operation);
     return RET_OK;
 }
 
 sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetCardProxy(const int32_t treeId)
 {
-    auto iter = cardProxy_.find(treeId);
-    if (iter != cardProxy_.end()) {
-        HILOG_DEBUG("GetCardProxy : operation is ok");
-        return cardProxy_[treeId];
-    }
-    HILOG_DEBUG("GetCardProxy : operation is no");
-    return nullptr;
+    sptr<IAccessibilityElementOperator> connection = nullptr;
+    bool ret = cardProxy_.Find(treeId, connection);
+    HILOG_DEBUG("GetCardProxy : operation is %{public}d", connection != nullptr);
+    return connection;
 }
 
 RetError AccessibilityWindowConnection::SetTokenIdMap(const int32_t treeId,
     const uint32_t tokenId)
 {
     HILOG_DEBUG("treeId : %{public}d", treeId);
-    tokenIdMap_[treeId] = tokenId;
+    tokenIdMap_.EnsureInsert(treeId, tokenId);
     return RET_OK;
 }
 
 uint32_t AccessibilityWindowConnection::GetTokenIdMap(const int32_t treeId)
 {
     HILOG_DEBUG("treeId : %{public}d", treeId);
-    return tokenIdMap_[treeId];
+    return tokenIdMap_.ReadVal(treeId);
 }
 
 void AccessibilityWindowConnection::GetAllTreeId(std::vector<int32_t> &treeIds)
 {
-    for (auto &treeId: cardProxy_) {
-        treeIds.emplace_back(treeId.first);
-    }
+    auto getAllTreeIdFunc = [&treeIds](const int32_t treeId, sptr<IAccessibilityElementOperator> connection) {
+        treeIds.emplace_back(treeId);
+    };
+    cardProxy_.Iterate(getAllTreeIdFunc);
 }
 
 RetError AccessibilityWindowConnection::GetRootParentId(int32_t treeId, int64_t &elementId)
 {
-    auto iter = treeIdParentId_.find(treeId);
-    if (iter != treeIdParentId_.end()) {
-        elementId = iter->second;
-        return RET_OK;
-    }
-    return RET_ERR_FAILED;
+    bool ret = treeIdParentId_.Find(treeId, elementId);
+    return ret == true ? RET_OK : RET_ERR_FAILED;
 }
 
 RetError AccessibilityWindowConnection::SetRootParentId(const int32_t treeId, const int64_t elementId)
 {
-    treeIdParentId_[treeId] = elementId;
+    treeIdParentId_.EnsureInsert(treeId, elementId);
     return RET_OK;
 }
 
 void AccessibilityWindowConnection::EraseProxy(const int32_t treeId)
 {
-    cardProxy_.erase(treeId);
+    sptr<IAccessibilityElementOperator> connection = nullptr;
+    bool ret = cardProxy_.Find(treeId, connection);
+    if (ret) {
+        cardProxy_.Erase(treeId);
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS
