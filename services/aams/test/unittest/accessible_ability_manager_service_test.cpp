@@ -30,6 +30,9 @@
 #include "mock_accessible_ability_manager_service_state_observer_stub.h"
 #include "mock_bundle_manager.h"
 #include "system_ability_definition.h"
+#include "accesstoken_kit.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -44,6 +47,7 @@ namespace {
     constexpr float AUDIO_BALANCE_VALUE = 0.1f;
     constexpr int32_t ACTIVE_WINDOW_VALUE = 2;
     constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
+    constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     const std::string DEVICE_PROVISIONED = "device_provisioned";
 } // namespace
 
@@ -63,9 +67,34 @@ public:
     void RegisterAbilityConnectionClient(const sptr<IRemoteObject>& obj);
 };
 
+void AddPermission()
+{
+    const char *perms[] = {
+        OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str(),
+        OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str(),
+        OHOS_PERMISSION_MANAGE_SECURE_SETTINGS.c_str(),
+        OHOS_PERMISSION_MANAGE_SETTINGS.c_str()
+    };
+    NativeTokenInfoParams infoInstance = {
+        .dcapsNum = 0,
+        .permsNum = 4,
+        .aclsNum = 0,
+        .dcaps = nullptr,
+        .perms = perms,
+        .acls = nullptr,
+        .processName = "com.accessibility.accessibleAbilityManagerServiceUnitTest",
+        .aplStr = "normal",
+    };
+    uint64_t tokenId = GetAccessTokenId(&infoInstance);
+    auto ret = SetSelfTokenID(tokenId);
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest AddPermission SetSelfTokenID ret: " << ret;
+    Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
+}
+
 void AccessibleAbilityManagerServiceUnitTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest SetUpTestCase";
+    AddPermission();
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
 }
@@ -1522,7 +1551,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnShortKeyProcess_002, TestSiz
     }
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
-    EXPECT_EQ(accountData->GetConfig()->GetShortKeyTimeout(), SHORT_KEY_TIMEOUT_BEFORE_USE);
+    EXPECT_EQ(accountData->GetConfig()->GetShortKeyTimeout(), SHORT_KEY_TIMEOUT_AFTER_USE);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_002 end";
 }
 
@@ -1549,7 +1578,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnShortKeyProcess_003, TestSiz
     }
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
-    EXPECT_EQ(accountData->GetConfig()->GetShortKeyTimeout(), SHORT_KEY_TIMEOUT_BEFORE_USE);
+    EXPECT_EQ(accountData->GetConfig()->GetShortKeyTimeout(), SHORT_KEY_TIMEOUT_AFTER_USE);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_OnShortKeyProcess_003 end";
 }
 
