@@ -93,12 +93,12 @@ void AddPermission()
 void AccessibilitySettingsConfigTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest SetUpTestCase";
+    AddPermission();
 }
 
 void AccessibilitySettingsConfigTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest TearDownTestCase";
-    AddPermission();
 }
 
 void AccessibilitySettingsConfigTest::SetUp()
