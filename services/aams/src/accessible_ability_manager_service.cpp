@@ -15,6 +15,7 @@
 
 #include "accessible_ability_manager_service.h"
 
+#include <algorithm>
 #include <cinttypes>
 #include <new>
 #include <string>
@@ -1048,7 +1049,6 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
     HILOG_INFO("get treeId element and treeid - treeId: %{public}d parameter.elementId[%{public}" PRId64 "]"
         "element[%{public}" PRId64 "]",
         treeIdSingle, parameter.elementId, nodeId);
-    Singleton<AccessibilityWindowManager>::GetInstance().InsertTreeIdWindowIdPair(treeIdSingle, parameter.windowId);
 
     if (!handler_) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
@@ -2157,28 +2157,29 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
     int64_t elementId = event.GetAccessibilityId();
     int tmpWindowId = Singleton<AccessibilityWindowManager>::GetInstance().
         FindTreeIdWindowIdPair(GetTreeIdBySplitElementId(elementId));
-    if (event.GetEventType() != TYPE_PAGE_CONTENT_UPDATE && tmpWindowId != 0) {
+    if (tmpWindowId != 0) {
         windowId = tmpWindowId;
         return;
     }
     while (1) {
-        for (auto iter = mapTable.begin(); iter != mapTable.end(); iter++) {
-            if (elementId == iter->second) {
-                windowId = iter->first;
-                HILOG_DEBUG("inner windowId %{public}d", windowId);
-                return;
-            }
+        auto iter = std::find_if(mapTable.begin(), mapTable.end(),
+            [elementId] (const std::pair<int32_t, int64_t>& p) {
+                return elementId == p.second;
+            });
+        if (iter != mapTable.end()) {
+            windowId = iter->first;
+            break;
         }
         if (event.GetWindowId() == 1 && elementId == 0) {
             HILOG_INFO("parent elementId is 0");
-            return;
+            break;
         }
 
         int32_t treeId = GetTreeIdBySplitElementId(elementId);
         // handle seprately because event send by UiExtension children tree may carry the root elemnt of children
         // tree, whose componentType is also root
         // deal other eventType like this may lead to performance problem
-        if (treeId != 0 && event.GetEventType() == TYPE_PAGE_CONTENT_UPDATE) {
+        if (treeId != 0) {
             // WindowScene
             //       \
             // UiExtensionComponent -> try to find the windowId of the event send by its children node
@@ -2193,17 +2194,19 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
             std::vector<AccessibilityElementInfo> infos = {};
             if (GetParentElementRecursively(event.GetWindowId(), elementId, infos) == false || infos.size() == 0) {
                 HILOG_ERROR("find parent element failed");
-                return;
+                break;
             }
 
             if (infos[0].GetComponentType() == "root") {
                 HILOG_ERROR("can not find parent element, has reach root node");
-                return;
+                break;
             }
 
             elementId = infos[0].GetParentNodeId();
         }
     }
+    int originTreeId = GetTreeIdBySplitElementId(event.GetAccessibilityId());
+    Singleton<AccessibilityWindowManager>::GetInstance().InsertTreeIdWindowIdPair(originTreeId, windowId);
 }
 
 void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(const AccessibilityEventInfo &event)
