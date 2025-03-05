@@ -32,6 +32,11 @@ enum class A11yUnavailableEvent : uint32_t {
     QUERY_EVENT,
 };
 
+enum class A11yDatashareValueType : uint32_t {
+    GET,
+    UPDATE,
+};
+
 enum class A11yError : uint32_t {
     ERROR_NEED_REPORT_BASE = 1000, // error code > 1000 means need report
     ERROR_READ_FAILED,
@@ -61,8 +66,12 @@ public:
     static void VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut);
     static void StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult);
     static int32_t GetUserIdByCallingUid();
-    static void RecordEnableShortkeyAbilityEvent(const std::string &name);
+    static void RecordEnableShortkeyAbilityEvent(const std::string &name, const bool &enableState);
     static void RecordOnZoomGestureEvent(const std::string &state);
+    static void RecordOnRemoveSystemAbility(int32_t systemAbilityId,
+        const std::string &bundleName = "", const std::string &abilityName = "");
+    static void RecordDatashareInteraction(A11yDatashareValueType type, const std::string &businessName = "",
+        const std::string &bundleName = "", const std::string &abilityName = "");
 
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);
