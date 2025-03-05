@@ -56,6 +56,7 @@ enum CallBackID {
 };
 
 constexpr int REQUEST_ID_INIT = 65535;
+constexpr int32_t TREE_ID_MAX = 0x00001FFF;
 
 const std::map<std::string, int32_t> AccessibilityConfigTable = {
     {"HIGH_CONTRAST_TEXT", HIGH_CONTRAST_TEXT},
@@ -78,6 +79,10 @@ class AccessibleAbilityManagerService : public SystemAbility, public AccessibleA
     DECLEAR_SYSTEM_ABILITY(AccessibleAbilityManagerService)
 public:
     /* For system ability */
+    void InitHandler();
+    void InitActionHandler();
+    void InitSendEventHandler();
+    void InitChannelHandler();
     void OnStart() override;
     void OnStop() override;
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
@@ -193,6 +198,11 @@ public:
     inline std::shared_ptr<AppExecFwk::EventRunner> &GetMainRunner()
     {
         return runner_;
+    }
+
+    inline std::shared_ptr<AppExecFwk::EventRunner> &GetChannelRunner()
+    {
+        return channelRunner_;
     }
 
     sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
@@ -421,6 +431,9 @@ private:
     void OnScreenMagnificationTypeChanged();
     void RegisterScreenMagnificationType();
 
+    int32_t ApplyTreeId();
+    void RecycleTreeId(int32_t treeId);
+
     bool isReady_ = false;
     bool isPublished_ = false;
     std::map<int32_t, bool> dependentServicesStatus_;
@@ -442,6 +455,12 @@ private:
     std::shared_ptr<AppExecFwk::EventRunner> sendEventRunner_;
     std::shared_ptr<AAMSEventHandler> sendEventHandler_;
 
+    std::shared_ptr<AppExecFwk::EventRunner> channelRunner_;
+    std::shared_ptr<AAMSEventHandler> channelHandler_;
+    
+    std::shared_ptr<AppExecFwk::EventRunner> hoverEnterRunner_;
+    std::shared_ptr<AAMSEventHandler> hoverEnterHandler_;
+
     int64_t ipcTimeoutNum_ = 0; // count ipc timeout number
 
     sptr<IRemoteObject::DeathRecipient> stateObserversDeathRecipient_ = nullptr;
@@ -461,6 +480,10 @@ private:
 
     std::map<int32_t, std::map<int32_t, std::set<int32_t>>> windowRequestIdMap_ {}; // windowId->treeId->requestId
     std::map<int32_t, sptr<IAccessibilityElementOperatorCallback>> requestIdMap_ {}; // requestId->callback
+
+    std::bitset<TREE_ID_MAX> treeIdPool_;
+    int32_t preTreeId_ = -1;
+    ffrt::mutex treeIdPoolMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
