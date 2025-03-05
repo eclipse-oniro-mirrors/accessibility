@@ -18,6 +18,8 @@
 
 #include "i_accessibility_element_operator.h"
 #include "hilog_wrapper.h"
+#include "ffrt.h"
+#include "safe_map.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -32,6 +34,16 @@ public:
     inline sptr<IAccessibilityElementOperator> GetProxy()
     {
         return proxy_;
+    }
+
+    inline void SetProxy(sptr<IAccessibilityElementOperator> proxy)
+    {
+        proxy_ = proxy;
+    }
+
+    inline int GetCardProxySize()
+    {
+        return cardProxy_.Size();
     }
 
     sptr<IAccessibilityElementOperator> GetCardProxy(const int32_t treeId);
@@ -54,10 +66,10 @@ private:
     int32_t windowId_;
     int32_t accountId_;
     int32_t treeId_ = 0;
-    std::map<int32_t, sptr<IAccessibilityElementOperator>> cardProxy_;
+    SafeMap<int32_t, sptr<IAccessibilityElementOperator>> cardProxy_;
     sptr<IAccessibilityElementOperator> proxy_;
-    std::map<int32_t, uint32_t> tokenIdMap_;
-    std::map<int32_t, int64_t> treeIdParentId_;
+    SafeMap<int32_t, uint32_t> tokenIdMap_;
+    SafeMap<int32_t, int64_t> treeIdParentId_;
 };
 } // namespace Accessibility
 } // namespace OHOS
