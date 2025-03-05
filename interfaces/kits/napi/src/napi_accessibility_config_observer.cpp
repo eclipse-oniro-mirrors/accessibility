@@ -104,10 +104,8 @@ void NAccessibilityConfigObserver::OnDaltonizationColorFilterConfigChanged()
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     DALTONIZATION_TYPE type = Normal;
     RetError ret = instance.GetDaltonizationColorFilter(type);
+    NotifyStringChanged2JS(ConvertDaltonizationTypeToString(type));
     if (ret == RET_OK) {
-        NotifyStringChanged2JS(ConvertDaltonizationTypeToString(type));
-    } else {
-        NotifyStringChanged2JS(ConvertDaltonizationTypeToString(type));
         HILOG_ERROR("get DaltonizationColorFilter failed: %{public}d", ret);
     }
 }
