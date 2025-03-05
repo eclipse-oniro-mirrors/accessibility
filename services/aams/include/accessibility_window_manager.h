@@ -18,13 +18,12 @@
 
 #include <map>
 #include <memory>
-#include <mutex>
 #include <set>
 #include "accessibility_window_info.h"
 #include "event_handler.h"
-#include "singleton.h"
-#include "window_manager.h"
 #include "ffrt.h"
+#include "singleton.h"
+#include "window_manager_lite.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -46,6 +45,7 @@ public:
     void RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void DeregisterWindowListener();
     void SetActiveWindow(int32_t windowId, bool isSendEvent = true);
+    int32_t GetActiveWindowId();
     void SetAccessibilityFocusedWindow(int32_t windowId);
     std::vector<AccessibilityWindowInfo> GetAccessibilityWindows();
     bool GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window);
@@ -56,6 +56,7 @@ public:
     int64_t GetSceneBoardElementId(const int32_t windowId, const int64_t elementId);
     int32_t GetRealWindowId(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     bool IsSceneBoard(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
+    bool IsScenePanel(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
 
     // used for batch query, provide window and element id translation
     void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId);
@@ -87,7 +88,7 @@ public:
         void Clear();
     private:
         std::map<int32_t, int64_t> windowElementMap_;
-        std::mutex mapMutex_;
+        ffrt::mutex mapMutex_;
     };
     SceneBoardElementIdMap sceneBoardElementIdMap_ = {};
 
