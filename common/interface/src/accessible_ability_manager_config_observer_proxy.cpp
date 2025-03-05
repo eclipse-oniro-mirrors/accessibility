@@ -43,7 +43,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnConfigStateChanged(const uin
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -77,7 +77,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnAudioBalanceChanged(const fl
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -111,7 +111,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnBrightnessDiscountChanged(co
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -145,7 +145,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnContentTimeoutChanged(const 
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -179,7 +179,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChan
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -213,7 +213,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnMouseAutoClickChanged(const 
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -247,7 +247,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyTargetChanged(const 
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -282,7 +282,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyMultiTargetChanged(
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -316,7 +316,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnClickResponseTimeChanged(con
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -350,7 +350,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnIgnoreRepeatClickTimeChanged
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");

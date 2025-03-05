@@ -18,12 +18,13 @@
 
 #include <map>
 #include <memory>
+#include <mutex>
 #include <set>
 #include "accessibility_window_info.h"
 #include "event_handler.h"
-#include "ffrt.h"
 #include "singleton.h"
-#include "window_manager_lite.h"
+#include "window_manager.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -44,8 +45,8 @@ public:
     int32_t ConvertToRealWindowId(int32_t windowId, int32_t focusType);
     void RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void DeregisterWindowListener();
-    void SetActiveWindow(int32_t windowId, bool isSendEvent = true);
     int32_t GetActiveWindowId();
+    void SetActiveWindow(int32_t windowId, bool isSendEvent = true);
     void SetAccessibilityFocusedWindow(int32_t windowId);
     std::vector<AccessibilityWindowInfo> GetAccessibilityWindows();
     bool GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window);
