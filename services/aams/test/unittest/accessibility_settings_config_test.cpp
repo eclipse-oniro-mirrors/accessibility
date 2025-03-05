@@ -17,6 +17,9 @@
 #include "accessibility_settings_config.h"
 #include "mock_preferences.h"
 #include "system_ability_definition.h"
+#include "accesstoken_kit.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -63,9 +66,34 @@ public:
     void TearDown() override;
 };
 
+void AddPermission()
+{
+    const char *perms[] = {
+        OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str(),
+        OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str(),
+        OHOS_PERMISSION_MANAGE_SECURE_SETTINGS.c_str(),
+        OHOS_PERMISSION_MANAGE_SETTINGS.c_str()
+    };
+    NativeTokenInfoParams infoInstance = {
+        .dcapsNum = 0,
+        .permsNum = 4,
+        .aclsNum = 0,
+        .dcaps = nullptr,
+        .perms = perms,
+        .acls = nullptr,
+        .processName = "com.accessibility.accessibilitySettingsConfigTest",
+        .aplStr = "normal",
+    };
+    uint64_t tokenId = GetAccessTokenId(&infoInstance);
+    auto ret = SetSelfTokenID(tokenId);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest AddPermission SetSelfTokenID ret: " << ret;
+    Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
+}
+
 void AccessibilitySettingsConfigTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest SetUpTestCase";
+    AddPermission();
 }
 
 void AccessibilitySettingsConfigTest::TearDownTestCase()
@@ -75,7 +103,7 @@ void AccessibilitySettingsConfigTest::TearDownTestCase()
 
 void AccessibilitySettingsConfigTest::SetUp()
 {
-    int32_t accountId = 1;
+    int32_t accountId = 100;
     settingConfig_ = std::make_shared<AccessibilitySettingsConfig>(accountId);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest SetUp";
 }
