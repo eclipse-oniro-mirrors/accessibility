@@ -215,7 +215,6 @@ HWTEST_F(AccessibilityCommonEventUnitTest, AccessibilityCommonEvent_Unittest_Han
     Want want1;
     want1.SetAction(CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED);
     want1.SetBundle(BUNDLE_NAME);
-    want1.SetParam("userId", -1);
     data1.SetWant(want1);
     CommonEventManager::PublishCommonEvent(data1);
     sleep(SLEEP_TIME);
@@ -232,7 +231,7 @@ HWTEST_F(AccessibilityCommonEventUnitTest, AccessibilityCommonEvent_Unittest_Han
     sleep(SLEEP_TIME);
     packages.clear();
     AccessibilityAbilityHelper::GetInstance().GetPackages(packages);
-    EXPECT_EQ(1, packages.size());
+    EXPECT_EQ(0, packages.size());
 
     GTEST_LOG_(INFO) << "AccessibilityCommonEvent_Unittest_HandlePackageRemoved_001 end";
 }
@@ -251,7 +250,6 @@ HWTEST_F(AccessibilityCommonEventUnitTest, AccessibilityCommonEvent_Unittest_Han
     Want want;
     want.SetAction(CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED);
     want.SetBundle(BUNDLE_NAME);
-    want.SetParam("userId", -1);
     data.SetWant(want);
     CommonEventManager::PublishCommonEvent(data);
     sleep(SLEEP_TIME);

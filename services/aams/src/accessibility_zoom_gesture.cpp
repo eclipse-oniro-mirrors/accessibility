@@ -460,7 +460,7 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event, ZOOM_FOC
     }
 
     float scaleSpan = (span - lastSpan_) * scaleRatio_;
-    if (scaleSpan != 0) {
+    if (abs(scaleSpan) > EPS) {
         OnScale(scaleSpan);
         lastSpan_ = span;
     }

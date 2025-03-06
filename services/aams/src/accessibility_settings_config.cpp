@@ -80,6 +80,7 @@ namespace {
     constexpr int INVALID_MASTER_MONO_VALUE = -1;
     constexpr int AUDIO_BALANCE_STEP = 5;
     constexpr float INVALID_MASTER_BALANCE_VALUE = 2.0;
+    constexpr float EPS = 1e-6;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -92,6 +93,7 @@ RetError AccessibilitySettingsConfig::SetEnabled(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(ACCESSIBILITY, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetEnabled");
         HILOG_ERROR("set accessibility failed");
         return ret;
     }
@@ -104,6 +106,7 @@ RetError AccessibilitySettingsConfig::SetTouchGuideState(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(TOUCH_GUIDE_STATE, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetTouchGuideState");
         HILOG_ERROR("set eventTouchGuideState_ failed");
         return ret;
     }
@@ -116,6 +119,7 @@ RetError AccessibilitySettingsConfig::SetGestureState(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(GESTURE_KEY, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetGestureState");
         HILOG_ERROR("set gesturesSimulation_ failed");
         return ret;
     }
@@ -128,6 +132,7 @@ RetError AccessibilitySettingsConfig::SetKeyEventObserverState(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(KEYEVENT_OBSERVER, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetKeyEventObserverState");
         HILOG_ERROR("set filteringKeyEvents_ failed");
         return ret;
     }
@@ -140,6 +145,7 @@ RetError AccessibilitySettingsConfig::SetCaptionState(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(CAPTION_KEY, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetCaptionState");
         HILOG_ERROR("set isCaptionState_ failed");
         return ret;
     }
@@ -166,6 +172,7 @@ RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(SHORTCUT_ENABLED, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetShortKeyState");
         HILOG_ERROR("set isShortKeyState_ failed");
         return ret;
     }
@@ -178,6 +185,7 @@ RetError AccessibilitySettingsConfig::SetShortKeyOnLockScreenState(const bool st
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(SHORTCUT_ENABLED_ON_LOCK_SCREEN, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetShortKeyOnLockScreenState");
         HILOG_ERROR("set isShortKeyEnabledOnLockScreen_ failed");
         return ret;
     }
@@ -195,6 +203,7 @@ RetError AccessibilitySettingsConfig::SetShortKeyTimeout(const int32_t time)
 
     auto ret = datashare_->PutIntValue(SHORTCUT_TIMEOUT, static_cast<int32_t>(time));
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetShortKeyTimeout");
         HILOG_ERROR("set shortKeyTimeout_ failed");
         return ret;
     }
@@ -209,7 +218,12 @@ RetError AccessibilitySettingsConfig::SetStartToHosState(const bool state)
         HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return datashare_->PutBoolValue("AccessibilityStartFromAtoHos", state);
+    auto ret = datashare_->PutBoolValue("AccessibilityStartFromAtoHos", state);
+    if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetStartToHosState");
+        HILOG_ERROR("set startToHosState failed");
+    }
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
@@ -217,6 +231,7 @@ RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(MOUSEKEY, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetMouseKeyState");
         HILOG_ERROR("set isMouseKeyState_ failed");
         return ret;
     }
@@ -234,6 +249,7 @@ RetError AccessibilitySettingsConfig::SetMouseAutoClick(const int32_t time)
 
     auto ret = datashare_->PutIntValue("MouseAutoClick", time);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetMouseAutoClick");
         HILOG_ERROR("set mouseAutoClick_ failed");
         return ret;
     }
@@ -251,6 +267,7 @@ RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 
     auto ret = datashare_->PutStringValue("ShortkeyTarget", name);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetShortkeyTarget");
         HILOG_ERROR("set shortkeyTarget_ failed");
         return ret;
     }
@@ -277,6 +294,7 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<s
     Utils::VectorToString(std::vector<std::string>(targets.begin(), targets.end()), stringOut);
     auto ret = datashare_->PutStringValue(SHORTCUT_SERVICE, stringOut);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetShortkeyMultiTarget");
         HILOG_ERROR("set shortkeyMultiTarget_ failed");
         return ret;
     }
@@ -304,6 +322,7 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTargetInPkgRemove(const st
         }
     }
     if (rtn != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetShortkeyMultiTargetInPkgRemove");
         HILOG_ERROR("set shortkeyMultiTarget_ failed");
         shortkeyMultiTarget_.push_back(name);
     }
@@ -315,6 +334,7 @@ RetError AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(HIGH_CONTRAST_TEXT_KEY, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetHighContrastTextState");
         HILOG_ERROR("set highContrastTextState_ failed");
         return ret;
     }
@@ -327,6 +347,7 @@ RetError AccessibilitySettingsConfig::SetInvertColorState(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(INVERT_COLOR_KEY, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetInvertColorState");
         HILOG_ERROR("set invertColorState_ failed");
         return ret;
     }
@@ -339,6 +360,7 @@ RetError AccessibilitySettingsConfig::SetAnimationOffState(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(ANIMATION_OFF_KEY, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetAnimationOffState");
         HILOG_ERROR("set animationOffState_ failed");
         return ret;
     }
@@ -351,6 +373,7 @@ RetError AccessibilitySettingsConfig::SetAudioMonoState(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(AUDIO_MONO_KEY, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetAudioMonoState");
         HILOG_ERROR("set audioMonoState_ failed");
         return ret;
     }
@@ -363,6 +386,7 @@ RetError AccessibilitySettingsConfig::SetDaltonizationState(const bool state)
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(DALTONIZATION_STATE, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetDaltonizationState");
         HILOG_ERROR("set daltonizationState_ failed");
         return ret;
     }
@@ -390,6 +414,7 @@ RetError AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t
     }
     auto ret = datashare_->PutIntValue(DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(daltonizationColorFilter));
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetDaltonizationColorFilter");
         HILOG_ERROR("set daltonizationColorFilter_ failed");
         return ret;
     }
@@ -408,6 +433,7 @@ RetError AccessibilitySettingsConfig::SetContentTimeout(const uint32_t time)
 
     auto ret = datashare_->PutIntValue(CONTENT_TIMEOUT_KEY, static_cast<int32_t>(time));
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetContentTimeout");
         HILOG_ERROR("set contentTimeout_ failed");
         return ret;
     }
@@ -425,6 +451,7 @@ RetError AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount
 
     auto ret = datashare_->PutFloatValue(BRIGHTNESS_DISCOUNT_KEY, discount);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetBrightnessDiscount");
         HILOG_ERROR("set brightnessDiscount_ failed");
         return ret;
     }
@@ -443,6 +470,7 @@ RetError AccessibilitySettingsConfig::SetAudioBalance(const float balance)
     float audioBalance = round(balance * AUDIO_BALANCE_STEP) / AUDIO_BALANCE_STEP;
     auto ret = datashare_->PutFloatValue(AUDIO_BALANCE_KEY, audioBalance);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetAudioBalance");
         HILOG_ERROR("set audioBalance_ failed");
         return ret;
     }
@@ -466,6 +494,7 @@ RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
     }
     auto ret = datashare_->PutIntValue(CLICK_RESPONCE_TIME, clickResponseTime);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetClickResponseTime");
         HILOG_ERROR("set clickResponseTime_ failed");
         return ret;
     }
@@ -478,6 +507,7 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(IGNORE_REPEAT_CLICK_SWITCH, state);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetIgnoreRepeatClickState");
         HILOG_ERROR("set ignoreRepeatClickState_ failed");
         return ret;
     }
@@ -507,6 +537,7 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t ti
     }
     auto ret = datashare_->PutIntValue(IGNORE_REPEAT_CLICK_TIME, ignoreRepeatClickTime);
     if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetIgnoreRepeatClickTime");
         HILOG_ERROR("set ignoreRepeatClickTime_ failed");
         return ret;
     }
@@ -522,12 +553,32 @@ RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConf
         return RET_ERR_NULLPTR;
     }
 
-    datashare_->PutStringValue(FONT_FAMILY, captionProperty_.GetFontFamily());
-    datashare_->PutIntValue(FONT_COLOR, static_cast<int32_t>(captionProperty_.GetFontColor()));
-    datashare_->PutStringValue(FONT_EDGE_TYPE, captionProperty_.GetFontEdgeType());
-    datashare_->PutIntValue(BACKGROUND_COLOR, static_cast<int32_t>(captionProperty_.GetBackgroundColor()));
-    datashare_->PutIntValue(WINDOW_COLOR, static_cast<int32_t>(captionProperty_.GetWindowColor()));
-    datashare_->PutIntValue(FONT_SCALE, captionProperty_.GetFontScale());
+    auto fontFamilyRet = datashare_->PutStringValue(FONT_FAMILY, captionProperty_.GetFontFamily());
+    if (fontFamilyRet != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetCaptionProperty.fontFamily");
+    }
+    auto fontColorRet = datashare_->PutIntValue(FONT_COLOR, static_cast<int32_t>(captionProperty_.GetFontColor()));
+    if (fontColorRet != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetCaptionProperty.fontColor");
+    }
+    auto fontEdgeTypeRet = datashare_->PutStringValue(FONT_EDGE_TYPE, captionProperty_.GetFontEdgeType());
+    if (fontEdgeTypeRet != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetCaptionProperty.fontEdgeType");
+    }
+    auto backgroundColorRet = datashare_->PutIntValue(BACKGROUND_COLOR, static_cast<int32_t>(
+        captionProperty_.GetBackgroundColor()));
+    if (backgroundColorRet != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetCaptionProperty.backgroundColor");
+    }
+    auto windowColorRet = datashare_->PutIntValue(WINDOW_COLOR, static_cast<int32_t>(
+        captionProperty_.GetWindowColor()));
+    if (windowColorRet != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetCaptionProperty.windowColor");
+    }
+    auto fontScaleRet = datashare_->PutIntValue(FONT_SCALE, captionProperty_.GetFontScale());
+    if (fontScaleRet != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetCaptionProperty.fontScale");
+    }
     return RET_OK;
 }
 
@@ -678,7 +729,12 @@ RetError AccessibilitySettingsConfig::SetEnabledAccessibilityServices(const std:
     }
     std::string stringOut = "";
     Utils::VectorToString(enabledAccessibilityServices_, stringOut);
-    return datashare_->PutStringValue(ENABLED_ACCESSIBILITY_SERVICES, stringOut);
+    auto ret = datashare_->PutStringValue(ENABLED_ACCESSIBILITY_SERVICES, stringOut);
+    if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetEnabledAccessibilityServices");
+        HILOG_ERROR("set enabledAccessibilityServices failed");
+    }
+    return ret;
 }
 
 const std::vector<std::string> AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
@@ -916,7 +972,11 @@ RetError AccessibilitySettingsConfig::SetConfigState(const std::string& key, boo
     if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
-    return datashare_->PutBoolValue(key, value);
+    auto ret = datashare_->PutBoolValue(key, value);
+    if (ret != RET_OK) {
+        HILOG_ERROR("set configState failed");
+    }
+    return ret;
 }
 
 void AccessibilitySettingsConfig::Init()
@@ -955,16 +1015,18 @@ void AccessibilitySettingsConfig::CloneAudioState()
         SetAudioMonoState(monoValue == 1);
         ret = systemDatashare_->PutIntValue(AUDIO_MONO_KEY, INVALID_MASTER_MONO_VALUE);
         if (ret != RET_OK) {
+            Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "CloneAudioState.monoValue");
             HILOG_ERROR("reset monoValue in system table failed");
         }
     }
  
     float audioBalance = static_cast<float>(systemDatashare_->GetFloatValue(AUDIO_BALANCE_KEY,
         INVALID_MASTER_BALANCE_VALUE));
-    if (audioBalance != INVALID_MASTER_BALANCE_VALUE) {
+    if (abs(audioBalance - INVALID_MASTER_BALANCE_VALUE) > EPS) {
         SetAudioBalance(audioBalance);
         ret = systemDatashare_->PutFloatValue(AUDIO_BALANCE_KEY, INVALID_MASTER_BALANCE_VALUE);
         if (ret != RET_OK) {
+            Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "CloneAudioState.audioBalance");
             HILOG_ERROR("reset audioBalance in system table failed");
         }
     }
@@ -1075,6 +1137,7 @@ void AccessibilitySettingsConfig::OnDataClone()
         SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
     if (isScreenReaderEnabled) {
         ErrCode ret = service->PutBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, true, true);
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "OnDataClone.screenReader");
         HILOG_INFO("set screenReader state, ret = %{public}d", ret);
     }
     service->PutBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, true);

@@ -20,6 +20,11 @@
 
 namespace OHOS {
 namespace Accessibility {
+
+namespace {
+    constexpr int32_t TOUCH_HOT_AREA_MAX_SIZE = 1024;
+}
+
 AccessibilityWindowInfoParcel::AccessibilityWindowInfoParcel(const AccessibilityWindowInfo &accessibilityWindowInfo)
     : AccessibilityWindowInfo(accessibilityWindowInfo)
 {
@@ -46,6 +51,23 @@ bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
     }
     boundsInScreen_ = *boundsInScreen;
 
+    int32_t touchHotAreasSize = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, touchHotAreasSize);
+    if (touchHotAreasSize > TOUCH_HOT_AREA_MAX_SIZE) {
+        return false;
+    }
+    std::vector<Rect> touchHotAreas {};
+    for (int i = 0; i < touchHotAreasSize; i++) {
+        sptr<RectParcel> hotAreaRectParcel = parcel.ReadStrongParcelable<RectParcel>();
+        if (hotAreaRectParcel == nullptr) {
+            HILOG_ERROR("ReadStrongParcelable hotAreaRect failed.");
+            return false;
+        }
+        touchHotAreas.push_back(*hotAreaRectParcel);
+    }
+    touchHotAreas_ = touchHotAreas;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint64, parcel, displayId_);
+
     return true;
 }
 
@@ -63,6 +85,12 @@ bool AccessibilityWindowInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mainWindowId_);
     RectParcel rectParcel(boundsInScreen_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &rectParcel);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, touchHotAreas_.size());
+    for (const auto &hotArea : touchHotAreas_) {
+        RectParcel hotAreaRectParcel(hotArea);
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &hotAreaRectParcel);
+    }
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint64, parcel, displayId_);
 
     return true;
 };

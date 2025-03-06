@@ -103,7 +103,7 @@ int AccessibilityDumper::DumpAccessibilityWindowInfo(std::string& dumpInfo) cons
     }
 
     oss << std::endl << "active window id: " <<
-        Singleton<AccessibilityWindowManager>::GetInstance().activeWindowId_ << std::endl;
+        Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId() << std::endl;
     oss << "accessibility focused window id: " <<
         Singleton<AccessibilityWindowManager>::GetInstance().a11yFocusedWindowId_ << std::endl;
 

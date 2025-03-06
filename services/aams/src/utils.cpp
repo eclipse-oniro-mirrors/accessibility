@@ -307,6 +307,43 @@ void Utils::RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode
     }
 }
 
+void Utils::RecordOnRemoveSystemAbility(int32_t systemAbilityId, const std::string &bundleName,
+    const std::string &abilityName)
+{
+    std::ostringstream oss;
+    oss << "OnRemoveSystemAbility systemAbilityId is: " << systemAbilityId
+        << ", bundleName: " << bundleName << ", abilityName: " << abilityName << ";";
+    std::string info = oss.str();
+    HILOG_DEBUG("accessibility function is unavailable: %{public}s", info.c_str());
+    int32_t ret = HiSysEventWrite(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "UNAVAILABLE",
+        OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+        "MSG", info);
+    if (ret != 0) {
+        HILOG_ERROR("Write OnRemoveSystemAbility error, ret:%{public}d", ret);
+    }
+}
+
+void Utils::RecordDatashareInteraction(A11yDatashareValueType type, const std::string &businessName,
+    const std::string &bundleName, const std::string &abilityName)
+{
+    std::ostringstream oss;
+    oss << "datashare interaction failed, type is: " << static_cast<uint32_t>(type)
+        << ", businessName: " << businessName << ", bundleName: " << bundleName
+        << ", abilityName: " << abilityName << ";";
+    std::string info = oss.str();
+    HILOG_DEBUG("accessibility function is unavailable: %{public}s", info.c_str());
+    int32_t ret = HiSysEventWrite(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "UNAVAILABLE",
+        OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+        "MSG", info);
+    if (ret != 0) {
+        HILOG_ERROR("Write RecordDatashareInteraction error, ret:%{public}d", ret);
+    }
+}
+
 std::string Utils::TransferUnavailableEventToString(A11yUnavailableEvent type)
 {
     std::string event;
@@ -357,15 +394,19 @@ void Utils::RecordStartingA11yEvent(const std::string &name)
     }
 }
 
-void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name)
+void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name, const bool &enableState)
 {
     std::string MSG_NAME = "enable single targets";
-    HILOG_DEBUG("starting RecordEnableShortkeyAbilityEvent enable single targets: %{public}s", name.c_str());
+    std::ostringstream oss;
+    std::string enableStateValue = enableState ? "on" : "off";
+    oss << "targets name: " << name.c_str() << ", state:" << enableStateValue.c_str() << ";";
+    HILOG_DEBUG("RecordEnableShortkeyAbilityEvent enable single targets: %{public}s, enableState: %{public}s",
+        name.c_str(), enableStateValue.c_str());
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
         "ENABLE_SHORTKEY_ABILITY_SINGLE",
         OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
-        "MSG_NAME", MSG_NAME, "MSG_VALUE", name);
+        "MSG_NAME", MSG_NAME, "MSG_VALUE", oss.str());
     if (ret != 0) {
         HILOG_ERROR("Write HiSysEvent RecordEnableShortkeyAbilityEvent error, ret:%{public}d", ret);
     }

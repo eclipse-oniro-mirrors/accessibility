@@ -71,6 +71,7 @@ std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key,
         }
         resultSet = dataShareHelper_->Query(uri, predicates, columns);
         if (resultSet == nullptr) {
+            Utils::RecordDatashareInteraction(A11yDatashareValueType::GET);
             break;
         }
         resultSet->GetRowCount(count);
@@ -151,6 +152,9 @@ RetError AccessibilityDatashareHelper::PutStringValue(const std::string& key, co
         if (dataShareHelper_->Update(uri, predicates, bucket) <= 0) {
             HILOG_DEBUG("no data exist, insert one row");
             auto ret = dataShareHelper_->Insert(uri, bucket);
+            if (ret <= 0) {
+                rtn = RET_ERR_FAILED;
+            }
             HILOG_INFO("helper insert %{public}s ret(%{public}d).", key.c_str(), static_cast<int>(ret));
         }
         if (needNotify) {

@@ -24,6 +24,9 @@
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string SCB_SCENE_PANEL = "SCBScenePanel";
+}
 
 AccessibilityWindowManager::AccessibilityWindowManager()
 {
@@ -324,6 +327,11 @@ bool AccessibilityWindowManager::IsSceneBoard(const sptr<Rosen::AccessibilityWin
     return false;
 }
 
+bool AccessibilityWindowManager::IsScenePanel(const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
+{
+    return windowInfo->bundleName_.find(SCB_SCENE_PANEL) != std::string::npos;
+}
+
 AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInfo(
     const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
 {
@@ -376,6 +384,13 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEv
         }
     }
     HILOG_DEBUG("activeWindowId is %{public}d", activeWindowId_);
+}
+
+int32_t AccessibilityWindowManager::GetActiveWindowId()
+{
+    std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
+    HILOG_DEBUG("activeWindowId_ is %{public}d", activeWindowId_);
+    return activeWindowId_;
 }
 
 void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
@@ -957,31 +972,31 @@ void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int64
 
 void AccessibilityWindowManager::SceneBoardElementIdMap::InsertPair(const int32_t windowId, const int64_t elementId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     windowElementMap_[windowId] = elementId;
 }
 
 void AccessibilityWindowManager::SceneBoardElementIdMap::RemovePair(const int32_t windowId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     windowElementMap_.erase(windowId);
 }
 
 bool AccessibilityWindowManager::SceneBoardElementIdMap::CheckWindowIdPair(const int32_t windowId)
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     return windowElementMap_.count(windowId);
 }
 
 void AccessibilityWindowManager::SceneBoardElementIdMap::Clear()
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     windowElementMap_.clear();
 }
 
 std::map<int32_t, int64_t> AccessibilityWindowManager::SceneBoardElementIdMap::GetAllPairs()
 {
-    std::lock_guard<std::mutex> lock(mapMutex_);
+    std::lock_guard<ffrt::mutex> lock(mapMutex_);
     return windowElementMap_;
 }
 

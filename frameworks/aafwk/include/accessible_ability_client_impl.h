@@ -360,7 +360,7 @@ public:
         std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false);
     RetError SearchElementInfoRecursiveByWinid(const int32_t windowId, const int64_t elementId,
         uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId, bool isFilter = false,
-        AccessibilityElementInfo *parentInfo = nullptr);
+        uint64_t parentIndex = 0);
     RetError SearchElementInfoRecursiveByContent(const int32_t windowId, const int64_t elementId,
         uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, const std::string text, int32_t treeId,
         bool isFilter = false);
