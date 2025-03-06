@@ -31,7 +31,9 @@ static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
     "ListItemIndex",
     "ToggleType",
     "BindSheet",
-    "hasRegisteredHover"
+    "hasRegisteredHover",
+    "direction",
+    "expandedState"
 };
 
 /*
