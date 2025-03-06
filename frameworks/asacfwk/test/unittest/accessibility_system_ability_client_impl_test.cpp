@@ -686,6 +686,75 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSearchElementInfoByAccessi
 }
 
 /**
+ * @tc.number: SetSearchDefaultFocusByWindowIdResult_001
+ * @tc.name: SetSearchDefaultFocusByWindowIdResult
+ * @tc.desc: Test function SetSearchDefaultFocusByWindowIdResult(success)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSearchDefaultFocusByWindowIdResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchDefaultFocusByWindowIdResult_001 start";
+    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(true);
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "SetSearchDefaultFocusByWindowIdResult_001"
+            "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
+    EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+    int32_t requestId = REQUEST_ID;
+    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+    std::list<AccessibilityElementInfo> infos;
+    impl_->SetSearchDefaultFocusByWindowIdResult(infos, requestId);
+    EXPECT_EQ(0, infos.size());
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetSearchDefaultFocusByWindowIdResult_001 end";
+}
+
+ /**
+ * @tc.number: SetSearchDefaultFocusByWindowIdResult_002
+ * @tc.name: SetSearchDefaultFocusByWindowIdResult
+ * @tc.desc: Test function SetSearchDefaultFocusByWindowIdResult(no operator)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSearchDefaultFocusByWindowIdResult_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchDefaultFocusByWindowIdResult_002 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    int32_t requestId = REQUEST_ID;
+    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+    std::list<AccessibilityElementInfo> infos;
+    impl_->SetSearchDefaultFocusByWindowIdResult(infos, requestId);
+    EXPECT_EQ(0, infos.size());
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetSearchDefaultFocusByWindowIdResult_002 end";
+}
+
+/**
+ * @tc.number: SetSearchDefaultFocusByWindowIdResult_003
+ * @tc.name: SetSearchDefaultFocusByWindowIdResult
+ * @tc.desc: Test function SetSearchDefaultFocusByWindowIdResult(invalid requestId)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSearchDefaultFocusByWindowIdResult_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchDefaultFocusByWindowIdResult_003 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    std::list<AccessibilityElementInfo> infos;
+    impl_->SetSearchDefaultFocusByWindowIdResult(infos, -1);
+    EXPECT_EQ(0, infos.size());
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SetSearchDefaultFocusByWindowIdResult_003 end";
+}
+
+/**
  * @tc.number: SetSearchElementInfoByTextResult_001
  * @tc.name: SetSearchElementInfoByTextResult
  * @tc.desc: Test function SetSearchElementInfoByTextResult(success)
@@ -1011,6 +1080,25 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetAccessibilityState_001, Te
     EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetAccessibilityState_001 end";
+}
+
+/**
+ * @tc.number: GetAccessibilityState_001
+ * @tc.name: GetAccessibilityState
+ * @tc.desc: Test function GetAccessibilityState
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetAccessibilityState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetAccessibilityState_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get SetAccessibilityState impl_";
+        return;
+    }
+    impl_->SetAccessibilityState(0);
+    EXPECT_EQ(0, impl_->GetAccessibilityState());
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "GetAccessibilityState_001 end";
 }
 
 /**

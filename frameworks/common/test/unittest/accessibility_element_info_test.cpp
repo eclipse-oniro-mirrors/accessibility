@@ -1468,6 +1468,36 @@ HWTEST_F(AccessibilityElementInfoTest, SetExtraElement_001, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetExtraElementInfo_001
+ * @tc.name: SetExtraElementInfo
+ * @tc.desc: Test function SetExtraElementInfo, GetExtraElementInfo
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetExtraElementInfo_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetExtraElementInfo_001 start";
+    ExtraElementInfo extraElementInfo {};
+    extraElementInfo.SetExtraElementInfo("Column", 1);
+    elementInfo_->SetExtraElement(extraElementInfo);
+    EXPECT_TRUE(elementInfo_->GetExtraElement().GetExtraElementInfoValueInt().size() == 1);
+    GTEST_LOG_(INFO) << "SetExtraElementInfo_001 end";
+}
+
+ /**
+ * @tc.number: SetExtraElementInfo_002
+ * @tc.name: SetExtraElementInfo
+ * @tc.desc: Test function SetExtraElementInfo, GetExtraElementInfo
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetExtraElementInfo_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetExtraElementInfo_002 start";
+    ExtraElementInfo extraElementInfo {};
+    extraElementInfo.SetExtraElementInfo("abcd", 1);
+    elementInfo_->SetExtraElement(extraElementInfo);
+    EXPECT_TRUE(elementInfo_->GetExtraElement().GetExtraElementInfoValueInt().size() == 0);
+    GTEST_LOG_(INFO) << "SetExtraElementInfo_002 end";
+}
+
+/**
  * @tc.number: SetNavDestinationId_001
  * @tc.name: SetNavDestinationId
  * @tc.desc: Test function SetNavDestinationId, GetNavDestinationId
