@@ -64,6 +64,8 @@
     "build": {
       "group_type": {
         "base_group": [
+          "//foundation/barrierfree/accessibility/interfaces/kits/ani:aniaccessibility",
+          "//foundation/barrierfree/accessibility/interfaces/kits/ani:accessibility_ani_abc_etc",
           "//foundation/barrierfree/accessibility/interfaces/kits/napi:napi_packages"
         ],
         "fwk_group": [
@@ -78,10 +80,6 @@
           "//foundation/barrierfree/accessibility/sa_profile:accessibility_cfg",
           "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
           "//foundation/barrierfree/accessibility/services/etc:ohos.para.dac"
-        ],
-        "ani_group": [
-          "//foundation/barrierfree/accessibility/interfaces/kits/ani:aniaccessibility",
-          "//foundation/barrierfree/accessibility/interfaces/kits/ani:accessibility_ani_abc_etc"
         ]
       },
       "inner_api": [
