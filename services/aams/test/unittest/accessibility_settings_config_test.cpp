@@ -48,6 +48,7 @@ namespace {
     const std::string CONFIG_IGNOREREPEATCLICKSTATE = "ignoreRepeatClickState";
     const std::string CONFIG_SHORTCUT_ON_LOCK_SCREEN = "shortcutOnLockScreen";
     const std::string CONFIG_SHORTCUT_TIMEOUT = "shortcutTimeout";
+    const std::string SCREENREADER_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
 } // namespace
 
 class AccessibilitySettingsConfigTest : public testing::Test {
@@ -1019,10 +1020,9 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_R
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_RemoveEnabledAccessibilityService_001 start";
     settingConfig_->Init();
-    const std::string name = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
-    settingConfig_->RemoveEnabledAccessibilityService(name);
-    settingConfig_->AddEnabledAccessibilityService(name);
-    RetError rtn = settingConfig_->RemoveEnabledAccessibilityService(name);
+    settingConfig_->RemoveEnabledAccessibilityService(SCREENREADER_NAME);
+    settingConfig_->AddEnabledAccessibilityService(SCREENREADER_NAME);
+    RetError rtn = settingConfig_->RemoveEnabledAccessibilityService(SCREENREADER_NAME);
 
     EXPECT_EQ(rtn, RET_OK);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_RemoveEnabledAccessibilityService_001 end";
