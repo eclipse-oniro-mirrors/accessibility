@@ -48,6 +48,7 @@ namespace {
     const std::string CONFIG_IGNOREREPEATCLICKSTATE = "ignoreRepeatClickState";
     const std::string CONFIG_SHORTCUT_ON_LOCK_SCREEN = "shortcutOnLockScreen";
     const std::string CONFIG_SHORTCUT_TIMEOUT = "shortcutTimeout";
+    const std::string ENABLE_ABILITY_NAME = "HIGH_CONTRAST_TEXT";
 } // namespace
 
 class AccessibilitySettingsConfigTest : public testing::Test {
@@ -990,6 +991,71 @@ HWTEST_F(AccessibilitySettingsConfigTest,
     int32_t ret = settingConfig_->SetShortkeyMultiTargetInPkgRemove(name);
     EXPECT_EQ(ret, RET_ERR_NULLPTR);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetScreenMagnificationType_001
+ * @tc.name: SetScreenMagnificationType
+ * @tc.desc: Test function SetScreenMagnificationType GetScreenMagnificationType
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetScreenMagnificationType_001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationType_001 start";
+    settingConfig_->Init();
+    uint32_t screenMagnificationType = 0;
+    settingConfig_->SetScreenMagnificationType(screenMagnificationType);
+
+    EXPECT_EQ(settingConfig_->GetScreenMagnificationType(), 0);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationType_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_RemoveEnabledAccessibilityService_001
+ * @tc.name: RemoveEnabledAccessibilityService
+ * @tc.desc: Test function AddEnabledAccessibilityService RemoveEnabledAccessibilityService
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_RemoveEnabledAccessibilityService_001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_RemoveEnabledAccessibilityService_001 start";
+    settingConfig_->Init();
+    settingConfig_->RemoveEnabledAccessibilityService(ENABLE_ABILITY_NAME);
+    settingConfig_->AddEnabledAccessibilityService(ENABLE_ABILITY_NAME);
+    RetError rtn = settingConfig_->RemoveEnabledAccessibilityService(ENABLE_ABILITY_NAME);
+
+    EXPECT_EQ(rtn, RET_OK);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_RemoveEnabledAccessibilityService_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_OnDataClone_001
+ * @tc.name: OnDataClone
+ * @tc.desc: Test function OnDataClone
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_OnDataClone_001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_OnDataClone start";
+    settingConfig_->Init();
+    settingConfig_->OnDataClone();
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_OnDataClone end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetInitializeState_001
+ * @tc.name: SetInitializeState
+ * @tc.desc: Test function SetInitializeState GetInitializeState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetInitializeState_001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInitializeState_001 start";
+    settingConfig_->Init();
+    settingConfig_->SetInitializeState(false);
+
+    EXPECT_EQ(settingConfig_->GetInitializeState(), 0);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInitializeState_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
