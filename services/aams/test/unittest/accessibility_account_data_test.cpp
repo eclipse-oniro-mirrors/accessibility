@@ -1881,5 +1881,39 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddAbil
     EXPECT_EQ(0, static_cast<int>(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddAbility001 end";
 }
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_GetAbilityAutoStartStateKey001
+ * @tc.name: GetAbilityAutoStartStateKey
+ * @tc.desc: Check the GetAbilityAutoStartStateKey.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbilityAutoStartStateKey001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilityAutoStartStateKey001 start";
+    const int32_t accountId = 1;
+    const std::string bundleName = "test";
+    const std::string abilityName = "HIGH_CONTRAST_TEXT";
+    
+    EXPECT_TRUE(!Utils::GetAbilityAutoStartStateKey(bundleName, abilityName, accountId).empty());
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilityAutoStartStateKey001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_StringToVector001
+ * @tc.name: StringToVector
+ * @tc.desc: Check the StringToVector.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_StringToVector001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_StringToVector001 start";
+
+    const std::string abilityName = "HIGH_CONTRAST_TEXT,INVERT_COLOR,SCREEN_MAGNIFICATION";
+    std::vector<std::string> enabledAccessibilityServices = {};
+    Utils::StringToVector(abilityName, enabledAccessibilityServices);
+    EXPECT_TRUE(!enabledAccessibilityServices.empty());
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_StringToVector001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
