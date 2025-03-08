@@ -209,7 +209,7 @@ void AccessibleAbilityManagerService::OnStart()
     if (!hoverEnterRunner_) {
         hoverEnterRunner_ = AppExecFwk::EventRunner::Create(AAMS_HOVER_ENTER_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
         if (!hoverEnterRunner_) {
-            HILOG_ERROR("AccessibleAbilityManagerService::Onstart failed: create AAMS hoverEnter runner failed");
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS hoverEnter runner failed");
             return;
         }
     }
@@ -217,7 +217,7 @@ void AccessibleAbilityManagerService::OnStart()
     if (!hoverEnterHandler_) {
         hoverEnterHandler_ = std::make_shared<AAMSEventHandler>(hoverEnterRunner_);
         if (!hoverEnterHandler_) {
-            HILOG_ERROR("AccessibleAbilityManagerService::Onstart failed: create AAMS hoverEnter handler failed");
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS hoverEnter handler failed");
             return;
         }
     }
