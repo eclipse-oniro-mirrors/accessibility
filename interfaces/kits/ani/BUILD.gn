@@ -57,15 +57,15 @@ ohos_shared_library("ACCESSIBILITYNativeModule") {
 
 generate_static_abc("accessibility_ani_abc") {
   arktsconfig = "./arktsconfig.json"
-  dst_file = "$target_out_dir/@ohos.accessibility.d.abc"
-  out_puts = [ "$target_out_dir/@ohos.accessibility.d.abc" ]
+  dst_file = "$target_out_dir/accessibility.abc"
+  out_puts = [ "$target_out_dir/accessibility.abc" ]
 
   is_boot_abc = "True"
-  device_dst_file = "/system/framework/@ohos.accessibility.d.abc"
+  device_dst_file = "/system/framework/accessibility.abc"
 }
 
 ohos_prebuilt_etc("accessibility_ani_abc_etc") {
-  source = "$target_out_dir/@ohos.accessibility.d.abc"
+  source = "$target_out_dir/accessibility.abc"
   module_install_dir = "framework"
   part_name = "accessibility"
   subsystem_name = "barrierfree"
