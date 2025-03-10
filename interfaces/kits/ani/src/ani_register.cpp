@@ -33,14 +33,14 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
         return (ani_status)INVALID_ANI_VERSION;
     }
 
-    static const char *className = "L@ohos/accessibility/d/accessibility;";
+    static const char *className = "L@ohos/accessibility/accessibility;";
     ani_class cls;
     if (env->FindClass(className, &cls) != ANI_OK) {
         HILOG_ERROR("class not found: %{public}s", className);
         return (ani_status)CLASS_NOT_FOUND;
     }
 
-    static const char *globalClassName = "L@ohos/accessibility/d/ETSGLOBAL;";
+    static const char *globalClassName = "L@ohos/accessibility/ETSGLOBAL;";
     ani_class globalCls;
     if (env->FindClass(globalClassName, &globalCls) != ANI_OK) {
         HILOG_ERROR("Cannot bind native methods to %{public}s", className);
