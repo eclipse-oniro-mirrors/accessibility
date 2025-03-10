@@ -1759,11 +1759,11 @@ public:
      */
     int32_t GetInnerWindowId() const;
 
-     /**
-      * @brief Set the windowId to the element info.
-      * @param windowId The innerWindowId of node.
-      * @sysCap Accessibility
-      */
+    /**
+    * @brief Set the windowId to the element info.
+    * @param windowId The innerWindowId of node.
+    * @sysCap Accessibility
+    */
     void SetInnerWindowId(const int32_t windowId);
 
 protected:
