@@ -61,7 +61,7 @@ generate_static_abc("accessibility_ani_abc") {
   out_puts = [ "$target_out_dir/@ohos.accessibility.d.abc" ]
 
   is_boot_abc = "True"
-  device_dst_file = "system/framework/@ohos.accessibility.d.abc"
+  device_dst_file = "/system/framework/@ohos.accessibility.d.abc"
 }
 
 ohos_prebuilt_etc("accessibility_ani_abc_etc") {
