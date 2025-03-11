@@ -240,7 +240,8 @@ void TouchExploration::SendAccessibilityEventToAA(EventType eventType)
 
 void TouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
 {
-    if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_1)) {
+    if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_1) ||
+        event.GetPointerId() >= SIMULATE_POINTER_ID) {
         return;
     }
 
