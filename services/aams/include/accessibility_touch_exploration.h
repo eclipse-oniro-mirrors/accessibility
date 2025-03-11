@@ -52,6 +52,7 @@ const float PIXEL_MULTIPLIER = 0.1f;
 const int32_t DIVIDE_NUM = 2;
 const uint32_t FIND_FOCUS_TIMEOUT = 50;
 const float COMPLEX_UNIT_MM_CONVERSION = 1.0f / 25.4f;
+const int32_t SIMULATE_POINTER_ID = 10000;
 #define BIND(func) [this](MMI::PointerEvent& event) { (func(event)); }
 
 /**
