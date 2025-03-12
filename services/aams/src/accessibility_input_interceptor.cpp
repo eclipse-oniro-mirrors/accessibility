@@ -238,6 +238,7 @@ void AccessibilityInputInterceptor::CreateKeyEventTransmitters()
 
 void AccessibilityInputInterceptor::UpdateInterceptor()
 {
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG();
     if (!inputManager_) {
         HILOG_ERROR("inputManger is null.");
