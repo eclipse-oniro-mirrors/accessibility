@@ -37,7 +37,7 @@ public:
         std::vector<AccessibilityAbilityInfo> &infos));
     MOCK_METHOD3(RegisterElementOperator,
         RetError(const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation, bool isApp));
-    MOCK_METHOD3(RegisterElementOperator, RetError(Registration parameter,
+    MOCK_METHOD3(RegisterElementOperator, RetError(RegistrationPara parameter,
         const sptr<IAccessibilityElementOperator>& operation, bool isApp));
     MOCK_METHOD1(DeregisterElementOperator, RetError(const int32_t windowId));
     MOCK_METHOD2(DeregisterElementOperator, RetError(const int32_t windowId, const int32_t treeId));
@@ -109,4 +109,4 @@ public:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // MOCK_ACCESSIBLE_ABILITY_MANAGER_SERVICE_H
+#endif // MOCK_ACCESSIBLE_ABILITY_MANAGER_SERVICE_H

@@ -18,7 +18,7 @@
 
 #include "accessibility_element_info.h"
 #include "accessibility_event_info.h"
-#include "i_accessible_ability_channel.h"
+#include "iaccessible_ability_channel.h"
 #include "iremote_broker.h"
 #include "key_event.h"
 

@@ -17,7 +17,7 @@
 #define ACCESSIBLE_ABILITY_CLIENT_STUB_H
 
 #include <map>
-#include "i_accessible_ability_client.h"
+#include "iaccessible_ability_client.h"
 #include "iremote_stub.h"
 
 namespace OHOS {

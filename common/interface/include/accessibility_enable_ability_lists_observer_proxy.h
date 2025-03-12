@@ -16,7 +16,7 @@
 #ifndef ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_PROXY_H
 #define ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_PROXY_H
 
-#include "i_accessibility_enable_ability_lists_observer.h"
+#include "iaccessibility_enable_ability_lists_observer.h"
 #include "iremote_proxy.h"
 
 namespace OHOS {

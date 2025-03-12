@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,290 +40,280 @@ public:
     AccessibleAbilityManagerServiceStubFuzzTest() = default;
     ~AccessibleAbilityManagerServiceStubFuzzTest() = default;
 
-    RetError SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag) override
+    ErrCode SendEvent(const AccessibilityEventInfoParcel& eventInfoParcel, int32_t flag) override
     {
         return RET_OK;
     }
 
-    uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) override
-    {
-        return 0;
-    }
-
-    uint32_t RegisterCaptionObserver(const sptr<IAccessibleAbilityManagerCaptionObserver> &callback) override
-    {
-        return 0;
-    }
-
-    void RegisterEnableAbilityListsObserver(const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override
-    {
-    }
-
-    RetError GetAbilityList(
-        const uint32_t abilityTypes, const int32_t stateType, std::vector<AccessibilityAbilityInfo> &infos) override
+    ErrCode RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback,
+        uint32_t &state) override
     {
         return RET_OK;
     }
 
-    RetError RegisterElementOperator(
-        const int32_t windowId, const sptr<IAccessibilityElementOperator> &operation, bool isApp = false) override
+    ErrCode RegisterCaptionObserver(const sptr<IAccessibleAbilityManagerCaptionObserver> &callback) override
     {
         return RET_OK;
     }
 
-    RetError RegisterElementOperator(
-        Registration parameter, const sptr<IAccessibilityElementOperator> &operation, bool isApp = false) override
+    ErrCode RegisterEnableAbilityListsObserver(const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override
     {
         return RET_OK;
     }
 
-    RetError DeregisterElementOperator(const int32_t windowId) override
+    ErrCode GetAbilityList(
+        uint32_t abilityTypes, int32_t stateType, std::vector<AccessibilityAbilityInfoParcel>& infos) override
     {
         return RET_OK;
     }
 
-    RetError DeregisterElementOperator(const int32_t windowId, const int32_t treeId) override
+    ErrCode RegisterElementOperatorByWindowId(
+        const int32_t windowId, const sptr<IAccessibilityElementOperator> &elementOperation) override
     {
         return RET_OK;
     }
 
-    RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption) override
-    {
-        return RET_OK;
-    }
-    bool GetEnabledState() override
-    {
-        return true;
-    }
-    RetError GetCaptionState(bool &state) override
-    {
-        return RET_OK;
-    }
-    bool GetTouchGuideState() override
-    {
-        return true;
-    }
-    bool GetGestureState() override
-    {
-        return true;
-    }
-    bool GetKeyEventObserverState() override
-    {
-        return true;
-    }
-    bool GetScreenReaderState() override
-    {
-        return true;
-    }
-
-    RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override
-    {
-        return RET_OK;
-    }
-    RetError SetCaptionState(const bool state) override
+    ErrCode RegisterElementOperatorByParameter(
+        const RegistrationPara& parameter, const sptr<IAccessibilityElementOperator>& elementOperation) override
     {
         return RET_OK;
     }
 
-    RetError EnableAbility(const std::string &name, const uint32_t capabilities) override
-    {
-        return RET_OK;
-    }
-    RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override
-    {
-        return RET_OK;
-    }
-    RetError DisableAbility(const std::string &name) override
-    {
-        return RET_OK;
-    }
-    int32_t GetActiveWindow() override
-    {
-        return 0;
-    }
-
-    RetError EnableUITestAbility(const sptr<IRemoteObject> &obj) override
-    {
-        return RET_OK;
-    }
-    RetError DisableUITestAbility() override
+    ErrCode DeregisterElementOperatorByWindowId(const int32_t windowId) override
     {
         return RET_OK;
     }
 
-    RetError SetScreenMagnificationState(const bool state) override
-    {
-        return RET_OK;
-    }
-    RetError SetShortKeyState(const bool state) override
-    {
-        return RET_OK;
-    }
-    RetError SetMouseKeyState(const bool state) override
-    {
-        return RET_OK;
-    }
-    RetError SetMouseAutoClick(const int32_t time) override
-    {
-        return RET_OK;
-    }
-    RetError SetShortkeyTarget(const std::string &name) override
-    {
-        return RET_OK;
-    }
-    RetError SetShortkeyMultiTarget(const std::vector<std::string> &name) override
-    {
-        return RET_OK;
-    }
-    RetError SetHighContrastTextState(const bool state) override
-    {
-        return RET_OK;
-    }
-    RetError SetInvertColorState(const bool state) override
-    {
-        return RET_OK;
-    }
-    RetError SetAnimationOffState(const bool state) override
-    {
-        return RET_OK;
-    }
-    RetError SetAudioMonoState(const bool state) override
-    {
-        return RET_OK;
-    }
-    RetError SetDaltonizationState(const bool state) override
-    {
-        return RET_OK;
-    }
-    RetError SetDaltonizationColorFilter(const uint32_t filter) override
-    {
-        return RET_OK;
-    }
-    RetError SetContentTimeout(const uint32_t time) override
-    {
-        return RET_OK;
-    }
-    RetError SetBrightnessDiscount(const float discount) override
-    {
-        return RET_OK;
-    }
-    RetError SetAudioBalance(const float balance) override
-    {
-        return RET_OK;
-    }
-    RetError SetClickResponseTime(const uint32_t time) override
-    {
-        return RET_OK;
-    }
-    RetError SetIgnoreRepeatClickState(const bool state) override
-    {
-        return RET_OK;
-    }
-    RetError SetIgnoreRepeatClickTime(const uint32_t time) override
+    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId) override
     {
         return RET_OK;
     }
 
-    RetError GetScreenMagnificationState(bool &state) override
+    ErrCode GetCaptionProperty(CaptionPropertyParcel &caption) override
     {
         return RET_OK;
     }
-    RetError GetShortKeyState(bool &state) override
+    ErrCode GetCaptionState(bool &state) override
     {
         return RET_OK;
     }
-    RetError GetMouseKeyState(bool &state) override
+    ErrCode GetScreenReaderState(bool &state) override
     {
         return RET_OK;
     }
-    RetError GetMouseAutoClick(int32_t &time) override
+
+    ErrCode SetCaptionProperty(const CaptionPropertyParcel &caption) override
     {
         return RET_OK;
     }
-    RetError GetShortkeyTarget(std::string &name) override
+    ErrCode SetCaptionState(bool state) override
     {
         return RET_OK;
     }
-    RetError GetShortkeyMultiTarget(std::vector<std::string> &name) override
+
+    ErrCode EnableAbility(const std::string &name, const uint32_t capabilities) override
     {
         return RET_OK;
     }
-    RetError GetHighContrastTextState(bool &state) override
+    ErrCode GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override
     {
         return RET_OK;
     }
-    RetError GetInvertColorState(bool &state) override
+    ErrCode DisableAbility(const std::string &name) override
     {
         return RET_OK;
     }
-    RetError GetAnimationOffState(bool &state) override
+    ErrCode GetActiveWindow(int32_t &windowId) override
     {
         return RET_OK;
     }
-    RetError GetAudioMonoState(bool &state) override
+
+    ErrCode EnableUITestAbility(const sptr<IRemoteObject> &obj) override
     {
         return RET_OK;
     }
-    RetError GetDaltonizationState(bool &state) override
+    ErrCode DisableUITestAbility() override
     {
         return RET_OK;
     }
-    RetError GetDaltonizationColorFilter(uint32_t &type) override
+
+    ErrCode SetScreenMagnificationState(bool state) override
     {
         return RET_OK;
     }
-    RetError GetContentTimeout(uint32_t &timer) override
+    ErrCode SetShortKeyState(bool state) override
     {
         return RET_OK;
     }
-    RetError GetBrightnessDiscount(float &brightness) override
+    ErrCode SetMouseKeyState(bool state) override
     {
         return RET_OK;
     }
-    RetError GetAudioBalance(float &balance) override
+    ErrCode SetMouseAutoClick(int32_t time) override
     {
         return RET_OK;
     }
-    RetError GetClickResponseTime(uint32_t &time) override
+    ErrCode SetShortkeyTarget(const std::string &name) override
     {
         return RET_OK;
     }
-    RetError GetIgnoreRepeatClickState(bool &state) override
+    ErrCode SetShortkeyMultiTarget(const std::vector<std::string> &name) override
     {
         return RET_OK;
     }
-    RetError GetIgnoreRepeatClickTime(uint32_t &time) override
+    ErrCode SetHighContrastTextState(bool state) override
     {
         return RET_OK;
     }
-    void GetAllConfigs(AccessibilityConfigData &configData) override
-    {
-    }
-    void GetRealWindowAndElementId(int32_t &windowId, int64_t &elementId) override
-    {
-    }
-    void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t &innerWid) override
-    {
-    }
-    RetError GetFocusedWindowId(int32_t &focusedWindowId) override
+    ErrCode SetInvertColorState(bool state) override
     {
         return RET_OK;
     }
-    uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override
+    ErrCode SetAnimationOffState(bool state) override
     {
-        return 0;
+        return RET_OK;
+    }
+    ErrCode SetAudioMonoState(bool state) override
+    {
+        return RET_OK;
+    }
+    ErrCode SetDaltonizationState(bool state) override
+    {
+        return RET_OK;
+    }
+    ErrCode SetDaltonizationColorFilter(uint32_t filter) override
+    {
+        return RET_OK;
+    }
+    ErrCode SetContentTimeout(uint32_t time) override
+    {
+        return RET_OK;
+    }
+    ErrCode SetBrightnessDiscount(float discount) override
+    {
+        return RET_OK;
+    }
+    ErrCode SetAudioBalance(float balance) override
+    {
+        return RET_OK;
+    }
+    ErrCode SetClickResponseTime(uint32_t time) override
+    {
+        return RET_OK;
+    }
+    ErrCode SetIgnoreRepeatClickState(bool state) override
+    {
+        return RET_OK;
+    }
+    ErrCode SetIgnoreRepeatClickTime(uint32_t time) override
+    {
+        return RET_OK;
+    }
+
+    ErrCode GetScreenMagnificationState(bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetShortKeyState(bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetMouseKeyState(bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetMouseAutoClick(int32_t &time) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetShortkeyTarget(std::string &name) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetShortkeyMultiTarget(std::vector<std::string> &name) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetHighContrastTextState(bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetInvertColorState(bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetAnimationOffState(bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetAudioMonoState(bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetDaltonizationState(bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetDaltonizationColorFilter(uint32_t &type) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetContentTimeout(uint32_t &timer) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetBrightnessDiscount(float &brightness) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetAudioBalance(float &balance) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetClickResponseTime(uint32_t &time) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetIgnoreRepeatClickState(bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetIgnoreRepeatClickTime(uint32_t &time) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetAllConfigs(AccessibilityConfigData& configData, CaptionPropertyParcel& caption) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetRealWindowAndElementId(int32_t &windowId, int64_t &elementId) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t &innerWid) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetFocusedWindowId(int32_t &focusedWindowId) override
+    {
+        return RET_OK;
+    }
+    ErrCode RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override
+    {
+        return RET_OK;
     }
     void PostDelayUnloadTask() override
     {
     }
-    void RemoveRequestId(int32_t requestId) override
+    ErrCode RemoveRequestId(int32_t requestId) override
     {
+        return RET_OK;
     }
-    int64_t GetRootParentId(int32_t windowsId, int32_t treeId) override
+    ErrCode GetRootParentId(int32_t windowsId, int32_t treeId, int64_t &parentId) override
     {
         return 0;
     }
-    RetError GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds) override
+    ErrCode GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds) override
     {
         return RET_OK;
     }

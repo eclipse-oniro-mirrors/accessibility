@@ -16,7 +16,7 @@
 #ifndef ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_STUB_H
 #define ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_STUB_H
 
-#include "i_accessibility_enable_ability_lists_observer.h"
+#include "iaccessibility_enable_ability_lists_observer.h"
 #include "iremote_stub.h"
 
 namespace OHOS {
