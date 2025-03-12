@@ -111,10 +111,7 @@ void StateListener::NotifyETS(ani_env *env, bool state, ani_ref fnRef)
     callbackInfo->env_ = env;
     callbackInfo->fnRef_ = fnRef;
     auto task = [callbackInfo]() {
-        if (callbackInfo == nullptr) {
-            return;
-        }
-
+        HILOG_INFO("notify state changed to ets");
         ani_env *tmpEnv = callbackInfo->env_;
         ani_size nr_refs = ANI_SCOPE_SIZE;
         tmpEnv->CreateLocalScope(nr_refs);

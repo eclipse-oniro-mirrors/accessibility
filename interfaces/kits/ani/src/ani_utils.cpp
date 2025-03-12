@@ -445,13 +445,18 @@ void ANIUtils::ConvertEventInfoIntFields(ani_env *env, ani_object eventObject,
 bool ANIUtils::SendEventToMainThread(const std::function<void()> func)
 {
     if (func == nullptr) {
+        HILOG_ERROR("func is nullptr!");
         return false;
     }
-    std::shared_ptr<OHOS::AppExecFwk::EventRunner> runner = OHOS::AppExecFwk::EventRunner::GetMainEventRunner();
-    if (!runner) {
-        return false;
+
+    if (!mainHandler) {
+        std::shared_ptr<OHOS::AppExecFwk::EventRunner> runner = OHOS::AppExecFwk::EventRunner::GetMainEventRunner();
+        if (!runner) {
+            HILOG_ERROR("get main event runner failed!");
+            return false;
+        }
+        mainHandler = std::make_shared<OHOS::AppExecFwk::EventHandler>(runner);
     }
-    std::shared_ptr<OHOS::AppExecFwk::EventHandler> handler = std::make_shared<OHOS::AppExecFwk::EventHandler>(runner);
-    handler->PostTask(func, "", 0, OHOS::AppExecFwk::EventQueue::Priority::HIGH, {});
+    mainHandler->PostTask(func, "", 0, OHOS::AppExecFwk::EventQueue::Priority::HIGH, {});
     return true;
 }

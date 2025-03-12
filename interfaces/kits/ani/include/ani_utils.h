@@ -25,6 +25,8 @@
 #include "event_handler.h"
 #include "event_runner.h"
 
+static thread_local std::shared_ptr<OHOS::AppExecFwk::EventHandler> mainHandler;
+
 class ANIUtils {
 public:
     static std::string ANIStringToStdString(ani_env *env, ani_string ani_str);
