@@ -302,7 +302,7 @@ public:
     {
         return RET_OK;
     }
-    void PostDelayUnloadTask() override
+    void PostDelayUnloadTask()
     {
     }
     ErrCode RemoveRequestId(int32_t requestId) override
@@ -312,10 +312,6 @@ public:
     ErrCode GetRootParentId(int32_t windowsId, int32_t treeId, int64_t &parentId) override
     {
         return 0;
-    }
-    ErrCode GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds) override
-    {
-        return RET_OK;
     }
 };
 
