@@ -358,6 +358,7 @@ void ApiEventReporter::ExecuteThresholdWriteEndEvent(std::string apiName,
     event.AddParam("trans_id", std::string(""));
     event.AddParam("api_name", apiName);
     event.AddParam("sdk_name", std::string("AccessibilityKit"));
+    event.AddParam("call_times", dataCount);
     event.AddParam("success_times", expandableData->successCount);
     event.AddParam("max_cost_time", *max_element(expandableData->runTime.begin(), expandableData->runTime.end()));
     event.AddParam("min_cost_time", *min_element(expandableData->runTime.begin(), expandableData->runTime.end()));
