@@ -21,13 +21,13 @@
 #include <vector>
 
 #include "accessibility_caption.h"
-#include "i_accessibility_enable_ability_lists_observer.h"
+#include "iaccessibility_enable_ability_lists_observer.h"
 #include "accessibility_settings_config.h"
 #include "accessibility_window_connection.h"
 #include "accessible_ability_connection.h"
-#include "i_accessible_ability_manager_caption_observer.h"
-#include "i_accessible_ability_manager_config_observer.h"
-#include "i_accessible_ability_manager_state_observer.h"
+#include "iaccessible_ability_manager_caption_observer.h"
+#include "iaccessible_ability_manager_config_observer.h"
+#include "iaccessible_ability_manager_state_observer.h"
 #include "element_name.h"
 #include "accessibility_setting_provider.h"
 #include "os_account_info.h"

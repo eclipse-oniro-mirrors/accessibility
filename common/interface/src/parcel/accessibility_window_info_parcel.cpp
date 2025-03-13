@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -94,15 +94,16 @@ bool AccessibilityWindowInfoParcel::Marshalling(Parcel &parcel) const
 };
 
 // LCOV_EXCL_START
-sptr<AccessibilityWindowInfoParcel> AccessibilityWindowInfoParcel::Unmarshalling(Parcel &parcel)
+AccessibilityWindowInfoParcel *AccessibilityWindowInfoParcel::Unmarshalling(Parcel &parcel)
 {
-    sptr<AccessibilityWindowInfoParcel> info = new(std::nothrow) AccessibilityWindowInfoParcel();
+    AccessibilityWindowInfoParcel *info = new(std::nothrow) AccessibilityWindowInfoParcel();
     if (info == nullptr) {
         HILOG_ERROR("Failed to create info.");
         return nullptr;
     }
     if (!info->ReadFromParcel(parcel)) {
         HILOG_ERROR("ReadFromParcel failed.");
+        delete info;
         info = nullptr;
         return nullptr;
     }

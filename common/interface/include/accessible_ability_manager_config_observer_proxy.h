@@ -16,7 +16,7 @@
 #ifndef ACCESSIBLE_ABILITY_MANAGER_CONFIG_OBSERVER_PROXY_H
 #define ACCESSIBLE_ABILITY_MANAGER_CONFIG_OBSERVER_PROXY_H
 
-#include "i_accessible_ability_manager_config_observer.h"
+#include "iaccessible_ability_manager_config_observer.h"
 #include "iremote_proxy.h"
 
 namespace OHOS {

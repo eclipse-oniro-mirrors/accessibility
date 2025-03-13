@@ -631,54 +631,6 @@ HWTEST_F(MockA11yManagerServiceUnitTest, SetCaptionState_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: MockA11yManagerServiceUnitTest_GetEnabledState_001
- * @tc.name: GetEnabledState
- * @tc.desc: Test function GetEnabledState
- */
-HWTEST_F(MockA11yManagerServiceUnitTest, GetEnabledState_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_GetEnabledState_001 start";
-    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledState());
-    GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_GetEnabledState_001 end";
-}
-
-/**
- * @tc.number: MockA11yManagerServiceUnitTest_GetTouchGuideState_001
- * @tc.name: GetTouchGuideState
- * @tc.desc: Test function GetTouchGuideState
- */
-HWTEST_F(MockA11yManagerServiceUnitTest, GetTouchGuideState_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_GetTouchGuideState_001 start";
-    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchGuideState());
-    GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_GetTouchGuideState_001 end";
-}
-
-/**
- * @tc.number: MockA11yManagerServiceUnitTest_GetGestureState_001
- * @tc.name: GetGestureState
- * @tc.desc: Test function GetGestureState
- */
-HWTEST_F(MockA11yManagerServiceUnitTest, GetGestureState_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_GetGestureState_001 start";
-    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetGestureState());
-    GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_GetGestureState_001 end";
-}
-
-/**
- * @tc.number: MockA11yManagerServiceUnitTest_GetKeyEventObserverState_001
- * @tc.name: GetKeyEventObserverState
- * @tc.desc: Test function GetKeyEventObserverState
- */
-HWTEST_F(MockA11yManagerServiceUnitTest, GetKeyEventObserverState_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_GetKeyEventObserverState_001 start";
-    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetKeyEventObserverState());
-    GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_GetKeyEventObserverState_001 end";
-}
-
-/**
  * @tc.number: MockA11yManagerServiceUnitTest_GetActiveWindow_001
  * @tc.name: GetActiveWindow
  * @tc.desc: Test function GetActiveWindow
@@ -792,10 +744,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, EnableAbility_001, TestSize.Level1)
 }
 
 /*
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_DisableAbility_001
- * @tc.name: DisableAbility
- * @tc.desc: Test function DisableAbility
- */
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_DisableAbility_001
+* @tc.name: DisableAbility
+* @tc.desc: Test function DisableAbility
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, DisableAbility_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_001 start";
@@ -805,10 +757,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, DisableAbility_001, TestSize.Level1)
 }
 
 /*
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_GetEnabledAbilities_001
- * @tc.name: GetEnabledAbilities
- * @tc.desc: Test function GetEnabledAbilities
- */
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_GetEnabledAbilities_001
+* @tc.name: GetEnabledAbilities
+* @tc.desc: Test function GetEnabledAbilities
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, GetEnabledAbilities_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetEnabledAbilities_001 start";
@@ -819,10 +771,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, GetEnabledAbilities_001, TestSize.Level
 }
 
 /*
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_001
- * @tc.name: EnableUITestAbility
- * @tc.desc: Test function EnableUITestAbility
- */
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_001
+* @tc.name: EnableUITestAbility
+* @tc.desc: Test function EnableUITestAbility
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, EnableUITestAbility_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_EnableUITestAbility_001 start";
@@ -832,10 +784,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, EnableUITestAbility_001, TestSize.Level
 }
 
 /*
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_DisableUITestAbility_001
- * @tc.name: DisableUITestAbility
- * @tc.desc: Test function DisableUITestAbility
- */
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_DisableUITestAbility_001
+* @tc.name: DisableUITestAbility
+* @tc.desc: Test function DisableUITestAbility
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, DisableUITestAbility_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_001 start";
@@ -862,10 +814,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, RegisterCaptionObserver_001, TestSize.L
 }
 
 /*
- * @tc.number: MockA11yManagerServiceUnitTest_Unittest_RegisterConfigObserver_001
- * @tc.name: RegisterConfigObserver
- * @tc.desc: Test function RegisterConfigObserver
- */
+* @tc.number: MockA11yManagerServiceUnitTest_Unittest_RegisterConfigObserver_001
+* @tc.name: RegisterConfigObserver
+* @tc.desc: Test function RegisterConfigObserver
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, RegisterConfigObserver_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_Unittest_RegisterConfigObserver_001 start";
@@ -880,10 +832,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, RegisterConfigObserver_001, TestSize.Le
 }
 
 /*
- * @tc.number: MockA11yManagerServiceUnitTest_Unittest_RegisterEnableAbilityListsObserver_001
- * @tc.name: RegisterEnableAbilityListsObserver
- * @tc.desc: Test function RegisterEnableAbilityListsObserver
- */
+* @tc.number: MockA11yManagerServiceUnitTest_Unittest_RegisterEnableAbilityListsObserver_001
+* @tc.name: RegisterEnableAbilityListsObserver
+* @tc.desc: Test function RegisterEnableAbilityListsObserver
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, RegisterEnableAbilityListsObserver_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_Unittest_RegisterEnableAbilityListsObserver_001 start";
@@ -1029,10 +981,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, RegisterCaptionObserver_003, TestSize.L
 }
 
 /*
- * @tc.number: MockA11yManagerServiceUnitTest_Unittest_RegisterEnableAbilityListsObserver_002
- * @tc.name: RegisterEnableAbilityListsObserver
- * @tc.desc: Test function RegisterEnableAbilityListsObserver
- */
+* @tc.number: MockA11yManagerServiceUnitTest_Unittest_RegisterEnableAbilityListsObserver_002
+* @tc.name: RegisterEnableAbilityListsObserver
+* @tc.desc: Test function RegisterEnableAbilityListsObserver
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, RegisterEnableAbilityListsObserver_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_Unittest_RegisterEnableAbilityListsObserver_002 start";
@@ -1047,10 +999,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, RegisterEnableAbilityListsObserver_002,
 }
 
 /*
- * @tc.number: MockA11yManagerServiceUnitTest_Unittest_RegisterEnableAbilityListsObserver_003
- * @tc.name: RegisterEnableAbilityListsObserver
- * @tc.desc: Test function RegisterEnableAbilityListsObserver
- */
+* @tc.number: MockA11yManagerServiceUnitTest_Unittest_RegisterEnableAbilityListsObserver_003
+* @tc.name: RegisterEnableAbilityListsObserver
+* @tc.desc: Test function RegisterEnableAbilityListsObserver
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, RegisterEnableAbilityListsObserver_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_Unittest_RegisterEnableAbilityListsObserver_003 start";
@@ -1153,10 +1105,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, EnableAbility_002, TestSize.Level1)
 }
 
 /*
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_GetEnabledAbilities_002
- * @tc.name: GetEnabledAbilities
- * @tc.desc: Test function GetEnabledAbilities
- */
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_GetEnabledAbilities_002
+* @tc.name: GetEnabledAbilities
+* @tc.desc: Test function GetEnabledAbilities
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, GetEnabledAbilities_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetEnabledAbilities_002 start";
@@ -1169,10 +1121,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, GetEnabledAbilities_002, TestSize.Level
 }
 
 /*
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_DisableAbility_002
- * @tc.name: DisableAbility
- * @tc.desc: Test function DisableAbility
- */
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_DisableAbility_002
+* @tc.name: DisableAbility
+* @tc.desc: Test function DisableAbility
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, DisableAbility_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_002 start";
@@ -1184,10 +1136,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, DisableAbility_002, TestSize.Level1)
 }
 
 /*
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_002
- * @tc.name: EnableUITestAbility
- * @tc.desc: Test function EnableUITestAbility
- */
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_002
+* @tc.name: EnableUITestAbility
+* @tc.desc: Test function EnableUITestAbility
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, EnableUITestAbility_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_EnableUITestAbility_002 start";
@@ -1199,10 +1151,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, EnableUITestAbility_002, TestSize.Level
 }
 
 /*
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_DisableUITestAbility_002
- * @tc.name: DisableUITestAbility
- * @tc.desc: Test function DisableUITestAbility
- */
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_DisableUITestAbility_002
+* @tc.name: DisableUITestAbility
+* @tc.desc: Test function DisableUITestAbility
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, DisableUITestAbility_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_002 start";
@@ -1273,10 +1225,10 @@ HWTEST_F(MockA11yManagerServiceUnitTest, PackageAdd_002, TestSize.Level1)
 }
 
 /*
- * @tc.number: MockA11yManagerServiceUnitTest_Unittest_RegisterConfigObserver_002
- * @tc.name: RegisterConfigObserver
- * @tc.desc: Test function RegisterConfigObserver
- */
+* @tc.number: MockA11yManagerServiceUnitTest_Unittest_RegisterConfigObserver_002
+* @tc.name: RegisterConfigObserver
+* @tc.desc: Test function RegisterConfigObserver
+*/
 HWTEST_F(MockA11yManagerServiceUnitTest, RegisterConfigObserver_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_Unittest_RegisterConfigObserver_002 start";
@@ -1698,9 +1650,9 @@ HWTEST_F(MockA11yManagerServiceUnitTest, SetDaltonizationState_002, TestSize.Lev
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     bool state = true;
     EXPECT_NE(RET_OK,
-     Singleton<AccessibleAbilityManagerService>::GetInstance().SetDaltonizationState(state));
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetDaltonizationState(state));
     EXPECT_NE(RET_OK,
-     Singleton<AccessibleAbilityManagerService>::GetInstance().GetDaltonizationState(state));
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetDaltonizationState(state));
     GTEST_LOG_(INFO) << "MockA11yManagerServiceUnitTest_SetDaltonizationState_002 end";
 }
 

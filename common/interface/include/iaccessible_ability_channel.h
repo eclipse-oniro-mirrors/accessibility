@@ -22,7 +22,7 @@
 
 #include "accessibility_gesture_inject_path.h"
 #include "accessibility_window_info.h"
-#include "i_accessibility_element_operator_callback.h"
+#include "iaccessibility_element_operator_callback.h"
 #include "iremote_broker.h"
 
 namespace OHOS {

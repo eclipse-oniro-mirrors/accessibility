@@ -19,7 +19,7 @@
 #include "accessible_ability_channel_stub.h"
 #include "event_handler.h"
 #include "ffrt_inner.h"
-#include "i_accessibility_element_operator.h"
+#include "iaccessibility_element_operator.h"
 #include "key_event.h"
 
 namespace OHOS {

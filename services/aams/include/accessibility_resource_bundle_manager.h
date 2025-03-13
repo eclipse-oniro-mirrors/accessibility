@@ -22,7 +22,7 @@
 #include "locale_config.h"
 #include "locale_info.h"
 #include "bundlemgr/bundle_mgr_interface.h"
-#include "i_accessible_ability_manager_service.h"
+#include "iaccessible_ability_manager_service.h"
 #include "iremote_object.h"
 #include "ffrt.h"
   

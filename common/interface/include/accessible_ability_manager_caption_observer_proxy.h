@@ -16,7 +16,7 @@
 #ifndef ACCESSIBLE_ABILITY_MANAGER_CAPTION_OBSERVER_PROXY_H
 #define ACCESSIBLE_ABILITY_MANAGER_CAPTION_OBSERVER_PROXY_H
 
-#include "i_accessible_ability_manager_caption_observer.h"
+#include "iaccessible_ability_manager_caption_observer.h"
 #include "iremote_proxy.h"
 
 namespace OHOS {

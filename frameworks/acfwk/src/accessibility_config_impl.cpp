@@ -256,8 +256,8 @@ bool AccessibilityConfig::Impl::RegisterToService()
             HILOG_ERROR("Create captionObserver_ failed.");
             return false;
         }
-        uint32_t ret = serviceProxy_->RegisterCaptionObserver(captionObserver_);
-        if (ret != 0) {
+        ErrCode ret = serviceProxy_->RegisterCaptionObserver(captionObserver_);
+        if (ret != ERR_OK) {
             captionObserver_ = nullptr;
             HILOG_ERROR("Register captionObserver failed.");
             return false;
@@ -279,8 +279,8 @@ bool AccessibilityConfig::Impl::RegisterToService()
             HILOG_ERROR("Create configObserver_ failed.");
             return false;
         }
-        uint32_t ret = serviceProxy_->RegisterConfigObserver(configObserver_);
-        if (ret != 0) {
+        ErrCode ret = serviceProxy_->RegisterConfigObserver(configObserver_);
+        if (ret != ERR_OK) {
             configObserver_ = nullptr;
             HILOG_ERROR("Register configObserver failed.");
             return false;
@@ -355,7 +355,8 @@ Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(const std::stri
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->EnableAbility(name, capabilities);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->EnableAbility(name,
+        capabilities));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -373,7 +374,7 @@ Accessibility::RetError AccessibilityConfig::Impl::DisableAbility(const std::str
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->DisableAbility(name);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->DisableAbility(name));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -390,7 +391,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsState(bool &state)
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->GetCaptionState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetCaptionState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -408,7 +409,9 @@ Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsProperty(CaptionPr
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->GetCaptionProperty(caption);
+    CaptionPropertyParcel captionParcel(caption);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(
+        GetServiceProxy()->GetCaptionProperty(captionParcel));
     HILOG_INFO();
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -427,7 +430,9 @@ Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsProperty(const Cap
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetCaptionProperty(caption);
+    CaptionPropertyParcel captionParcel(caption);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetCaptionProperty(
+        captionParcel));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -445,7 +450,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsState(const bool s
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetCaptionState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetCaptionState(state));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -571,7 +576,8 @@ Accessibility::RetError AccessibilityConfig::Impl::SetScreenMagnificationState(c
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetScreenMagnificationState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetScreenMagnificationState(
+        state));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -589,7 +595,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetShortKeyState(const bool s
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetShortKeyState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetShortKeyState(state));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -607,7 +613,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetMouseKeyState(const bool s
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetMouseKeyState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetMouseKeyState(state));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -626,7 +632,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetScreenMagnificationState(b
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetScreenMagnificationState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetScreenMagnificationState(
+        state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -645,7 +652,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetShortKeyState(bool &state)
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetShortKeyState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetShortKeyState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -664,7 +671,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetMouseKeyState(bool &state)
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetMouseKeyState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetMouseKeyState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -1003,7 +1010,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetMouseAutoClick(const int32
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetMouseAutoClick(time);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetMouseAutoClick(time));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1021,7 +1028,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetShortkeyTarget(const std::
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetShortkeyTarget(name);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetShortkeyTarget(name));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1040,7 +1047,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetShortkeyMultiTarget(const 
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetShortkeyMultiTarget(name);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetShortkeyMultiTarget(name));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1051,15 +1058,14 @@ Accessibility::RetError AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &ti
 {
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetMouseAutoClick",
-        REPORTER_THRESHOLD_VALUE);
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetMouseAutoClick", REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetMouseAutoClick(time);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetMouseAutoClick(time));
     HILOG_INFO("time = [%{public}d]", time);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -1078,7 +1084,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetShortkeyTarget(std::string
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetShortkeyTarget(name);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetShortkeyTarget(name));
     HILOG_INFO("name = [%{public}s]", name.c_str());
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -1098,7 +1104,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetShortkeyMultiTarget(std::v
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetShortkeyMultiTarget(name);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetShortkeyMultiTarget(name));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1275,7 +1281,8 @@ Accessibility::RetError AccessibilityConfig::Impl::SetHighContrastTextState(cons
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetHighContrastTextState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetHighContrastTextState(
+        state));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1293,7 +1300,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetInvertColorState(const boo
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetInvertColorState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetInvertColorState(state));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1311,7 +1318,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationState(const b
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetDaltonizationState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetDaltonizationState(state));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1330,7 +1337,8 @@ Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationColorFilter(c
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetDaltonizationColorFilter(type);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetDaltonizationColorFilter(
+        type));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1348,7 +1356,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetContentTimeout(const uint3
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetContentTimeout(timer);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetContentTimeout(timer));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1366,7 +1374,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetAnimationOffState(const bo
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetAnimationOffState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetAnimationOffState(state));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1384,7 +1392,8 @@ Accessibility::RetError AccessibilityConfig::Impl::SetBrightnessDiscount(const f
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetBrightnessDiscount(brightness);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetBrightnessDiscount(
+        brightness));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1402,7 +1411,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetAudioMonoState(const bool 
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetAudioMonoState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetAudioMonoState(state));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1420,7 +1429,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetAudioBalance(const float b
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetAudioBalance(balance);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetAudioBalance(balance));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1438,7 +1447,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetClickResponseTime(const CL
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetClickResponseTime(time);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetClickResponseTime(time));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1457,7 +1466,8 @@ Accessibility::RetError AccessibilityConfig::Impl::SetIgnoreRepeatClickState(con
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetIgnoreRepeatClickState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetIgnoreRepeatClickState(
+        state));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1476,7 +1486,8 @@ Accessibility::RetError AccessibilityConfig::Impl::SetIgnoreRepeatClickTime(cons
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = GetServiceProxy()->SetIgnoreRepeatClickTime(time);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetIgnoreRepeatClickTime(
+        time));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1494,7 +1505,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetInvertColorState(bool &sta
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetInvertColorState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetInvertColorState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -1514,7 +1525,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetHighContrastTextState(bool
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetHighContrastTextState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetHighContrastTextState(
+        state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -1533,7 +1545,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetDaltonizationState(bool &s
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetDaltonizationState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetDaltonizationState(state));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1554,7 +1566,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetDaltonizationColorFilter(D
     }
 
     uint32_t filterType = 0;
-    Accessibility::RetError ret = GetServiceProxy()->GetDaltonizationColorFilter(filterType);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetDaltonizationColorFilter(
+        filterType));
     type = static_cast<DALTONIZATION_TYPE>(filterType);
     HILOG_INFO("type = [%{public}u]", static_cast<uint32_t>(type));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
@@ -1574,7 +1587,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetContentTimeout(uint32_t &t
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetContentTimeout(timer);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetContentTimeout(timer));
     HILOG_INFO("timer = [%{public}u]", timer);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -1593,8 +1606,9 @@ Accessibility::RetError AccessibilityConfig::Impl::GetAnimationOffState(bool &st
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetAnimationOffState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetAnimationOffState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1612,7 +1626,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetBrightnessDiscount(float &
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetBrightnessDiscount(brightness);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetBrightnessDiscount(
+        brightness));
     HILOG_INFO("brightness = [%{public}f]", brightness);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -1631,7 +1646,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetAudioMonoState(bool &state
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetAudioMonoState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetAudioMonoState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -1650,7 +1665,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetAudioBalance(float &balanc
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetAudioBalance(balance);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetAudioBalance(balance));
     HILOG_INFO("balance = [%{public}f]", balance);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -1670,9 +1685,11 @@ Accessibility::RetError AccessibilityConfig::Impl::GetClickResponseTime(CLICK_RE
     }
 
     uint32_t responseTime = 0;
-    Accessibility::RetError ret = GetServiceProxy()->GetClickResponseTime(responseTime);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetClickResponseTime(
+        responseTime));
     time = static_cast<CLICK_RESPONSE_TIME>(responseTime);
     HILOG_INFO("click response time = [%{public}u]", time);
+
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1691,7 +1708,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickState(boo
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = GetServiceProxy()->GetIgnoreRepeatClickState(state);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetIgnoreRepeatClickState(
+        state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -1712,7 +1730,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickTime(IGNO
     }
 
     uint32_t ignoreRepeatClickTime = 0;
-    Accessibility::RetError ret = GetServiceProxy()->GetIgnoreRepeatClickTime(ignoreRepeatClickTime);
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetIgnoreRepeatClickTime(
+        ignoreRepeatClickTime));
     time = static_cast<IGNORE_REPEAT_CLICK_TIME>(ignoreRepeatClickTime);
     HILOG_INFO("ignore repeat click time = [%{public}u]", time);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
@@ -2102,10 +2121,12 @@ uint32_t AccessibilityConfig::Impl::InvertDaltonizationColorInAtoHos(uint32_t fi
 void AccessibilityConfig::Impl::InitConfigValues()
 {
     Accessibility::AccessibilityConfigData configData;
+    CaptionProperty caption = {};
+    CaptionPropertyParcel captionParcel(caption);
     if (serviceProxy_ == nullptr) {
         return;
     }
-    serviceProxy_->GetAllConfigs(configData);
+    serviceProxy_->GetAllConfigs(configData, captionParcel);
     highContrastText_ = configData.highContrastText_;
     invertColor_ = configData.invertColor_;
     animationOff_ = configData.animationOff_;
@@ -2122,10 +2143,10 @@ void AccessibilityConfig::Impl::InitConfigValues()
     audioBalance_ = configData.audioBalance_;
     shortkeyTarget_ = configData.shortkeyTarget_;
     shortkeyMultiTarget_ = configData.shortkeyMultiTarget_;
-    captionProperty_ = configData.captionProperty_;
     clickResponseTime_ = configData.clickResponseTime_;
     ignoreRepeatClickTime_ = configData.ignoreRepeatClickTime_;
     ignoreRepeatClickState_ = configData.ignoreRepeatClickState_;
+    captionProperty_ = static_cast<CaptionProperty>(captionParcel);
     NotifyDefaultConfigs();
     HILOG_DEBUG("ConnectToService Success");
 }

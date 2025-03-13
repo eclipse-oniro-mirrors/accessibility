@@ -54,35 +54,37 @@ int MockAccessibleAbilityManagerServiceStub::OnRemoteRequest(
     return 0;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
+ErrCode MockAccessibleAbilityManagerServiceStub::SendEvent(const AccessibilityEventInfoParcel& eventInfoParcel,
+    int32_t flag)
 {
-    (void)uiEvent;
+    (void)eventInfoParcel;
     (void)flag;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetCaptionProperty(
-    const AccessibilityConfig::CaptionProperty &caption)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetCaptionProperty(
+    const CaptionPropertyParcel &caption)
 {
     captionProperty_ = caption;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetCaptionState(const bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetCaptionState(bool state)
 {
     captionState_ = state;
     return RET_OK;
 }
 
-uint32_t MockAccessibleAbilityManagerServiceStub::RegisterStateObserver(
-    const sptr<IAccessibleAbilityManagerStateObserver> &callback)
+ErrCode MockAccessibleAbilityManagerServiceStub::RegisterStateObserver(
+    const sptr<IAccessibleAbilityManagerStateObserver>& observer, uint32_t& state)
 {
-    (void)callback;
-    return 0;
+    (void)observer;
+    (void)state;
+    return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
-    std::vector<AccessibilityAbilityInfo> &infos)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+    std::vector<AccessibilityAbilityInfoParcel>& infos)
 {
     (void)abilityTypes;
     (void)stateType;
@@ -90,83 +92,62 @@ RetError MockAccessibleAbilityManagerServiceStub::GetAbilityList(const uint32_t 
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::RegisterElementOperator(
-    int32_t windowId, const sptr<IAccessibilityElementOperator> &operation, bool isApp)
+ErrCode MockAccessibleAbilityManagerServiceStub::RegisterElementOperatorByWindowId(
+    int32_t windowId, const sptr<IAccessibilityElementOperator> &elementOperator)
 {
     (void)windowId;
-    (void)operation;
-    (void)isApp;
+    (void)elementOperator;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::RegisterElementOperator(Registration parameter,
-    const sptr<IAccessibilityElementOperator> &operation, bool isApp)
+ErrCode MockAccessibleAbilityManagerServiceStub::RegisterElementOperatorByParameter(const RegistrationPara& parameter,
+    const sptr<IAccessibilityElementOperator>& elementOperator)
 {
     (void)parameter;
-    (void)operation;
-    (void)isApp;
+    (void)elementOperator;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::DeregisterElementOperator(const int32_t windowId)
+ErrCode MockAccessibleAbilityManagerServiceStub::DeregisterElementOperatorByWindowId(int32_t windowId)
 {
     (void)windowId;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::DeregisterElementOperator(const int32_t windowId,
-    const int32_t treeId)
+ErrCode MockAccessibleAbilityManagerServiceStub::DeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId,
+    int32_t treeId)
 {
     (void)windowId;
     (void)treeId;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetCaptionProperty(CaptionPropertyParcel& caption)
 {
-    caption = captionProperty_;
+    (void)caption;
     return RET_OK;
 }
 
-uint32_t MockAccessibleAbilityManagerServiceStub::RegisterCaptionObserver(
-    const sptr<IAccessibleAbilityManagerCaptionObserver> &callback)
+ErrCode MockAccessibleAbilityManagerServiceStub::RegisterCaptionObserver(
+    const sptr<IAccessibleAbilityManagerCaptionObserver> &observer)
 {
-    captionObserver_ = callback;
-    return 0;
+    captionObserver_ = observer;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetEnabledState()
-{
-    return true;
-}
-
-RetError MockAccessibleAbilityManagerServiceStub::GetCaptionState(bool &state)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetCaptionState(bool &state)
 {
     state = captionState_;
     return RET_OK;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetTouchGuideState()
+ErrCode MockAccessibleAbilityManagerServiceStub::GetScreenReaderState(bool &state)
 {
-    return true;
+    (void)state;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetScreenReaderState()
-{
-    return true;
-}
-
-bool MockAccessibleAbilityManagerServiceStub::GetGestureState()
-{
-    return true;
-}
-
-bool MockAccessibleAbilityManagerServiceStub::GetKeyEventObserverState()
-{
-    return true;
-}
-
-RetError MockAccessibleAbilityManagerServiceStub::EnableAbility(const std::string &name, const uint32_t capabilities)
+ErrCode MockAccessibleAbilityManagerServiceStub::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     (void)name;
     (void)capabilities;
@@ -178,119 +159,120 @@ RetError MockAccessibleAbilityManagerServiceStub::EnableAbility(const std::strin
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
 {
     (void)enabledAbilities;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::DisableAbility(const std::string &name)
+ErrCode MockAccessibleAbilityManagerServiceStub::DisableAbility(const std::string &name)
 {
     (void)name;
     return RET_OK;
 }
 
-int32_t MockAccessibleAbilityManagerServiceStub::GetActiveWindow()
+ErrCode MockAccessibleAbilityManagerServiceStub::GetActiveWindow(int32_t& windowId)
 {
-    return 0;
+    (void)windowId;
+    return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::EnableUITestAbility(const sptr<IRemoteObject> &obj)
+ErrCode MockAccessibleAbilityManagerServiceStub::EnableUITestAbility(const sptr<IRemoteObject> &obj)
 {
     (void)obj;
     return RET_ERR_IPC_FAILED;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::DisableUITestAbility()
+ErrCode MockAccessibleAbilityManagerServiceStub::DisableUITestAbility()
 {
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetScreenMagnificationState(const bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetScreenMagnificationState(bool state)
 {
     screenMagnifier_ = state;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetShortKeyState(const bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetShortKeyState(bool state)
 {
     shortkey_ = state;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetMouseKeyState(const bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetMouseKeyState(bool state)
 {
     mouseKey_ = state;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetMouseAutoClick(const int32_t time)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetMouseAutoClick(int32_t time)
 {
     mouseAutoClick_ = time;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetShortkeyTarget(const std::string &name)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetShortkeyTarget(const std::string &name)
 {
     shortkeyTarget_ = name;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetShortkeyMultiTarget(const std::vector<std::string> &name)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetShortkeyMultiTarget(const std::vector<std::string> &name)
 {
     shortkeyMultiTarget_ = name;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetHighContrastTextState(const bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetHighContrastTextState(bool state)
 {
     highContrastText_ = state;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetInvertColorState(const bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetInvertColorState(bool state)
 {
     invertColor_ = state;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetAnimationOffState(const bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetAnimationOffState(bool state)
 {
     animationOff_ = state;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetAudioMonoState(const bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetAudioMonoState(bool state)
 {
     audioMono_ = state;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetDaltonizationState(const bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetDaltonizationState(bool state)
 {
     daltonizationState_ = state;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetDaltonizationColorFilter(const uint32_t filter)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetDaltonizationColorFilter(uint32_t filter)
 {
     daltonizationColorFilter_ = filter;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetContentTimeout(const uint32_t time)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetContentTimeout(uint32_t time)
 {
     contentTimeout_ = time;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetBrightnessDiscount(const float discount)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetBrightnessDiscount(float discount)
 {
     brightnessDiscount_ = discount;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetAudioBalance(const float balance)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetAudioBalance(float balance)
 {
     audioBalance_ = balance;
 
@@ -310,133 +292,134 @@ RetError MockAccessibleAbilityManagerServiceStub::SetAudioBalance(const float ba
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetClickResponseTime(const uint32_t time)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetClickResponseTime(uint32_t time)
 {
     clickResponseTime_ = time;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetIgnoreRepeatClickState(const bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetIgnoreRepeatClickState(bool state)
 {
     ignoreRepeatClickState_ = state;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetIgnoreRepeatClickTime(const uint32_t time)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetIgnoreRepeatClickTime(uint32_t time)
 {
     ignoreRepeatClickTime_ = time;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetScreenMagnificationState(bool &state)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetScreenMagnificationState(bool &state)
 {
     state = screenMagnifier_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetShortKeyState(bool &state)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetShortKeyState(bool &state)
 {
     state = shortkey_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetMouseKeyState(bool &state)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetMouseKeyState(bool &state)
 {
     state = mouseKey_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetMouseAutoClick(int32_t &time)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetMouseAutoClick(int32_t &time)
 {
     time = mouseAutoClick_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetShortkeyTarget(std::string &name)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetShortkeyTarget(std::string &name)
 {
     name = shortkeyTarget_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetShortkeyMultiTarget(std::vector<std::string> &name)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetShortkeyMultiTarget(std::vector<std::string> &name)
 {
     name = shortkeyMultiTarget_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetHighContrastTextState(bool &state)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetHighContrastTextState(bool &state)
 {
     state = highContrastText_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetInvertColorState(bool &state)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetInvertColorState(bool &state)
 {
     state = invertColor_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetAnimationOffState(bool &state)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetAnimationOffState(bool &state)
 {
     state = animationOff_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetAudioMonoState(bool &state)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetAudioMonoState(bool &state)
 {
     state = audioMono_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetDaltonizationState(bool &state)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetDaltonizationState(bool &state)
 {
     state = daltonizationState_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetDaltonizationColorFilter(uint32_t &type)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetDaltonizationColorFilter(uint32_t &type)
 {
     type = daltonizationColorFilter_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetContentTimeout(uint32_t &timer)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetContentTimeout(uint32_t &timer)
 {
     timer = contentTimeout_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetBrightnessDiscount(float &brightness)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetBrightnessDiscount(float &brightness)
 {
     brightness = brightnessDiscount_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetAudioBalance(float &balance)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetAudioBalance(float &balance)
 {
     balance = audioBalance_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetClickResponseTime(uint32_t &time)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetClickResponseTime(uint32_t &time)
 {
     time = clickResponseTime_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetIgnoreRepeatClickState(bool &state)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetIgnoreRepeatClickState(bool &state)
 {
     state = ignoreRepeatClickState_;
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetIgnoreRepeatClickTime(uint32_t &time)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetIgnoreRepeatClickTime(uint32_t &time)
 {
     time = ignoreRepeatClickTime_;
     return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::GetAllConfigs(AccessibilityConfigData &configData)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetAllConfigs(AccessibilityConfigData& configData,
+    CaptionPropertyParcel& caption)
 {
     configData.highContrastText_ = true;
     configData.invertColor_ = true;
@@ -457,53 +440,53 @@ void MockAccessibleAbilityManagerServiceStub::GetAllConfigs(AccessibilityConfigD
     configData.clickResponseTime_ = 1;
     configData.ignoreRepeatClickState_ = false;
     configData.ignoreRepeatClickTime_ = 1;
+    (void)caption;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::RegisterEnableAbilityListsObserver(
+ErrCode MockAccessibleAbilityManagerServiceStub::RegisterEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
 {
     abilityObserver_ = observer;
-    return;
+    return RET_OK;
 }
 
-uint32_t MockAccessibleAbilityManagerServiceStub::RegisterConfigObserver(
-    const sptr<IAccessibleAbilityManagerConfigObserver> &callback)
+ErrCode MockAccessibleAbilityManagerServiceStub::RegisterConfigObserver(
+    const sptr<IAccessibleAbilityManagerConfigObserver> &observer)
 {
-    observer_ = callback;
-    return 0;
+    observer_ = observer;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
 {
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
+ErrCode MockAccessibleAbilityManagerServiceStub::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
     int32_t& innerWid)
 {
+    return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetFocusedWindowId(int32_t &focusedWindowId)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetFocusedWindowId(int32_t &focusedWindowId)
 {
     focusedWindowId = 1;
     return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::RemoveRequestId(int32_t requestId)
+ErrCode MockAccessibleAbilityManagerServiceStub::RemoveRequestId(int32_t requestId)
 {
     (void)requestId;
+    return RET_OK;
 }
 
-int64_t MockAccessibleAbilityManagerServiceStub::GetRootParentId(int32_t windowId, int32_t treeId)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetRootParentId(int32_t windowId, int32_t treeId,
+    int64_t& parentId)
 {
     (void)windowId;
     (void)treeId;
-    return 0;
-}
-
-RetError MockAccessibleAbilityManagerServiceStub::GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds)
-{
-    (void)windowId;
-    (void)treeIds;
+    (void)parentId;
     return RET_OK;
 }
 } // namespace Accessibility

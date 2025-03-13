@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -55,15 +55,16 @@ bool AccessibilityGestureInjectPathParcel::Marshalling(Parcel &parcel) const
     return true;
 }
 
-sptr<AccessibilityGestureInjectPathParcel> AccessibilityGestureInjectPathParcel::Unmarshalling(Parcel &parcel)
+AccessibilityGestureInjectPathParcel *AccessibilityGestureInjectPathParcel::Unmarshalling(Parcel &parcel)
 {
-    sptr<AccessibilityGestureInjectPathParcel> path = new(std::nothrow) AccessibilityGestureInjectPathParcel();
+    AccessibilityGestureInjectPathParcel *path = new(std::nothrow) AccessibilityGestureInjectPathParcel();
     if (path == nullptr) {
         HILOG_ERROR("Failed to create path.");
         return nullptr;
     }
     if (!path->ReadFromParcel(parcel)) {
         HILOG_ERROR("ReadFromParcel AccessibilityGestureInjectPathParcel failed.");
+        delete path;
         path = nullptr;
         return nullptr;
     }

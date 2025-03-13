@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,8 +48,13 @@
 #include "bundle_info.h"
 #include "locale_config.h"
 #include "locale_info.h"
+#include "accesstoken_kit.h"
+#include "tokenid_kit.h"
+#include "accessibility_caption.h"
 
 using namespace std;
+using namespace OHOS::Security::AccessToken;
+using namespace OHOS::AccessibilityConfig;
 
 namespace OHOS {
 namespace Accessibility {
@@ -460,10 +465,11 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
     return RET_OK;
 }
 
-RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag)
+ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoParcel &eventInfoParcel,
+    const int32_t flag)
 {
+    AccessibilityEventInfo uiEvent = static_cast<AccessibilityEventInfo>(eventInfoParcel);
     EventType eventType = uiEvent.GetEventType();
-
     HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d] windowId[%{public}d] compnentId: %{public}" PRId64 " "
         "elementId: %{public}" PRId64 " winId: %{public}d innerWinId: %{public}d treeId: %{public}d",
         uiEvent.GetEventType(), uiEvent.GetGestureType(), uiEvent.GetWindowId(), uiEvent.GetAccessibilityId(),
@@ -514,13 +520,13 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
     return RET_OK;
 }
 
-uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
-    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver)
+ErrCode AccessibleAbilityManagerService::RegisterStateObserver(
+    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver, uint32_t &state)
 {
     HILOG_DEBUG();
     if (!stateObserver || !handler_) {
         HILOG_ERROR("parameters check failed!");
-        return 0;
+        return ERR_INVALID_DATA;
     }
     XCollieHelper timer(TIMER_REGISTER_STATE_OBSERVER, XCOLLIE_TIMEOUT);
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -528,54 +534,55 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
         stateObserversDeathRecipient_ = new(std::nothrow) StateCallbackDeathRecipient();
         if (!stateObserversDeathRecipient_) {
             HILOG_ERROR("stateObserversDeathRecipient_ is null");
-            return 0;
+            return ERR_INVALID_DATA;
         }
     }
 
     if (!stateObserver->AsObject()) {
         HILOG_ERROR("object is null");
-        return 0;
+        return ERR_INVALID_DATA;
     }
 
     stateObserver->AsObject()->AddDeathRecipient(stateObserversDeathRecipient_);
     stateObservers_.AddStateObserver(stateObserver);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData == nullptr) {
-        return 0;
+        return ERR_INVALID_DATA;
     }
 
-    return accountData->GetAccessibilityState();
+    state = accountData->GetAccessibilityState();
+    return ERR_OK;
 }
 
-void AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
+ErrCode AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
 {
     HILOG_DEBUG("real windowId %{public}d", windowId);
     if (!handler_) {
-        return;
+        return ERR_INVALID_DATA;
     }
 
-    ffrt::promise<void> syncPromise;
+    ffrt::promise<ErrCode> syncPromise;
     ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([&, this]() {
         Singleton<AccessibilityWindowManager>::GetInstance().GetRealWindowAndElementId(windowId, elementId);
-        syncPromise.set_value();
+        syncPromise.set_value(ERR_OK);
         }, "GET_REAL_WINDOW_AND_ELEMENT_ID");
     return syncFuture.get();
 }
 
-void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
+ErrCode AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
     int32_t& innerWid)
 {
     HILOG_DEBUG("real windowId %{public}d", windowId);
     if (!handler_) {
-        return;
+        return ERR_INVALID_DATA;
     }
 
-    ffrt::promise<void> syncPromise;
+    ffrt::promise<ErrCode> syncPromise;
     ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([&, this]() {
         Singleton<AccessibilityWindowManager>::GetInstance().GetSceneBoardInnerWinId(windowId, elementId, innerWid);
-        syncPromise.set_value();
+        syncPromise.set_value(ERR_OK);
         }, "GET_SCENE_BOARD_INNER_WINDOW_ID");
     return syncFuture.get();
 }
@@ -636,29 +643,17 @@ bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInf
     int64_t elementId = GetFocusElementId();
     sptr<IAccessibilityElementOperator> elementOperator = nullptr;
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (accountData == nullptr) {
-        HILOG_ERROR("GetCurrentAccountData failed");
-        return false;
-    }
+    RETURN_FALSE_IF_NULL(accountData);
     int32_t realId =
         Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, FOCUS_TYPE_INVALID);
     connection = accountData->GetAccessibilityWindowConnection(realId);
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
-    if (connection == nullptr) {
-        HILOG_ERROR("connection is nullptr");
-        return false;
-    }
+    RETURN_FALSE_IF_NULL(connection);
     sptr<ElementOperatorCallbackImpl> callBack = new(std::nothrow) ElementOperatorCallbackImpl();
-    if (callBack == nullptr) {
-        HILOG_ERROR("Failed to create callBack.");
-        return false;
-    }
+    RETURN_FALSE_IF_NULL(callBack);
     ffrt::future<void> promiseFuture = callBack->promise_.get_future();
     GetElementOperatorConnection(connection, elementId, elementOperator);
-    if (elementOperator == nullptr) {
-        HILOG_ERROR("elementOperator is nullptr");
-        return false;
-    }
+    RETURN_FALSE_IF_NULL(elementOperator);
     elementOperator->SearchElementInfoByAccessibilityId(elementId, GenerateRequestId(), callBack, 0);
     ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(timeout));
     if (waitFocus != ffrt::future_status::ready) {
@@ -760,7 +755,7 @@ int64_t AccessibleAbilityManagerService::GetFocusElementId()
     return focusElementId_;
 }
 
-uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
+ErrCode AccessibleAbilityManagerService::RegisterCaptionObserver(
     const sptr<IAccessibleAbilityManagerCaptionObserver> &callback)
 {
     HILOG_DEBUG();
@@ -808,53 +803,53 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
     return syncFuture.get();
 }
 
-void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
+ErrCode AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
 {
     HILOG_DEBUG();
     if (!observer || !actionHandler_) {
         HILOG_ERROR("Parameters check failed!");
-        return;
+        return ERR_INVALID_DATA;
     }
     XCollieHelper timer(TIMER_REGISTER_ENABLEABILITY_OBSERVER, XCOLLIE_TIMEOUT);
-    std::shared_ptr<ffrt::promise<void>> syncPromisePtr = std::make_shared<ffrt::promise<void>>();
+    std::shared_ptr<ffrt::promise<ErrCode>> syncPromisePtr = std::make_shared<ffrt::promise<ErrCode>>();
     ffrt::future syncFuture = syncPromisePtr->get_future();
     actionHandler_->PostTask([this, syncPromisePtr, observer]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Account data is null");
-            syncPromisePtr->set_value();
+            syncPromisePtr->set_value(ERR_INVALID_DATA);
             return;
         }
         if (!enableAbilityListsObserverDeathRecipient_) {
             enableAbilityListsObserverDeathRecipient_ = new(std::nothrow) EnableAbilityListsObserverDeathRecipient();
             if (!enableAbilityListsObserverDeathRecipient_) {
                 HILOG_ERROR("enableAbilityListsObserverDeathRecipient_ is null");
-                syncPromisePtr->set_value();
+                syncPromisePtr->set_value(ERR_INVALID_DATA);
                 return;
             }
         }
         if (!observer->AsObject()) {
             HILOG_ERROR("object is null");
-            syncPromisePtr->set_value();
+            syncPromisePtr->set_value(ERR_OK);
             return;
         }
         observer->AsObject()->AddDeathRecipient(enableAbilityListsObserverDeathRecipient_);
         accountData->AddEnableAbilityListsObserver(observer);
-        syncPromisePtr->set_value();
+        syncPromisePtr->set_value(ERR_OK);
         }, "TASK_REGISTER_ENABLE_ABILITY_LISTS_OBSERVER");
 
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait RegisterEnableAbilityListsObserver result");
-        return;
+        return ERR_TRANSACTION_FAILED;
     }
     return syncFuture.get();
 }
 
-RetError AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
-    std::vector<AccessibilityAbilityInfo> &infos)
+ErrCode AccessibleAbilityManagerService::GetAbilityList(uint32_t abilityTypes, int32_t stateType,
+    std::vector<AccessibilityAbilityInfoParcel>& infos)
 {
     HILOG_DEBUG("abilityTypes(%{public}d) stateType(%{public}d)", abilityTypes, stateType);
     if (!handler_ || (stateType > ABILITY_STATE_INSTALLED) || (stateType < ABILITY_STATE_ENABLE)) {
@@ -878,7 +873,8 @@ RetError AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityT
         for (auto &ability : abilities) {
             if (abilityTypes == AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL ||
                 (ability.GetAccessibilityAbilityType() & abilityTypes)) {
-                infos.push_back(ability);
+                AccessibilityAbilityInfoParcel info(ability);
+                infos.push_back(info);
             }
         }
         HILOG_DEBUG("infos count is %{public}zu", infos.size());
@@ -887,12 +883,23 @@ RetError AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityT
     return syncFuture.get();
 }
 
-RetError AccessibleAbilityManagerService::RegisterElementOperator(
-    const int32_t windowId, const sptr<IAccessibilityElementOperator> &operation, bool isApp)
+bool AccessibleAbilityManagerService::IsApp() const
+{
+    HILOG_DEBUG();
+
+    AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
+    if (tokenType == TOKEN_HAP) {
+        HILOG_DEBUG("caller is an application");
+        return true;
+    }
+    return false;
+}
+
+ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByWindowId(
+    const int32_t windowId, const sptr<IAccessibilityElementOperator> &elementOperator)
 {
     if (!handler_) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
@@ -900,15 +907,11 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
     if (CheckCallingUid() != RET_OK) {
         return RET_ERR_SAMGR;
     }
+    bool isApp = IsApp();
     handler_->PostTask([=]() {
         HILOG_INFO("Register windowId[%{public}d]", windowId);
-#ifdef OHOS_BUILD_ENABLE_HITRACE
-        HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
-#endif // OHOS_BUILD_ENABLE_HITRACE
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
-            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-                A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
             HILOG_ERROR("Get current account data failed!!");
             return;
         }
@@ -919,7 +922,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
         }
         DeleteConnectionAndDeathRecipient(windowId, oldConnection);
         sptr<AccessibilityWindowConnection> connection =
-            new(std::nothrow) AccessibilityWindowConnection(windowId, operation, currentAccountId_);
+            new(std::nothrow) AccessibilityWindowConnection(windowId, elementOperator, currentAccountId_);
         if (!connection) {
             Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
                 A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
@@ -930,7 +933,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
         accountData->AddAccessibilityWindowConnection(windowId, connection);
 
         IsCheckWindowIdEventExist(windowId);
-        if (operation && operation->AsObject()) {
+        if (elementOperator && elementOperator->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
                 new(std::nothrow) InteractionOperationDeathRecipient(windowId, currentAccountId_);
             if (!deathRecipient) {
@@ -940,9 +943,9 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
                 return;
             }
 
-            bool result = operation->AsObject()->AddDeathRecipient(deathRecipient);
+            bool result = elementOperator->AsObject()->AddDeathRecipient(deathRecipient);
             interactionOperationDeathRecipients_[windowId] = deathRecipient;
-            HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
+            HILOG_DEBUG("The result of adding elementOperator's death recipient is %{public}d", result);
         }
         }, "TASK_REGISTER_ELEMENT_OPERATOR");
     return RET_OK;
@@ -951,12 +954,13 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
 void AccessibleAbilityManagerService::IsCheckWindowIdEventExist(const int32_t windowId)
 {
     if (CheckWindowIdEventExist(windowId)) {
-        SendEvent(windowFocusEventMap_[windowId]);
+        AccessibilityEventInfoParcel eventInfoParcel(windowFocusEventMap_[windowId]);
+        SendEvent(eventInfoParcel, 0);
         windowFocusEventMap_.erase(windowId);
     }
 }
 
-RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const Registration &parameter,
+RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const RegistrationPara &parameter,
     const int32_t treeId, const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation,
     const uint32_t tokenId, bool isApp)
 {
@@ -1033,8 +1037,8 @@ void AccessibleAbilityManagerService::RecycleTreeId(int32_t treeId)
     }
 }
 
-RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration parameter,
-    const sptr<IAccessibilityElementOperator> &operation, bool isApp)
+ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByParameter(const RegistrationPara& parameter,
+    const sptr<IAccessibilityElementOperator>& elementOperator)
 {
     if (CheckCallingUid() != RET_OK) {
         return RET_ERR_SAMGR;
@@ -1047,28 +1051,28 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
     uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     int64_t nodeId = parameter.elementId;
     HILOG_INFO("get treeId element and treeid - treeId: %{public}d parameter.elementId[%{public}" PRId64 "]"
-        "element[%{public}" PRId64 "]",
-        treeIdSingle, parameter.elementId, nodeId);
+        "element[%{public}" PRId64 "]", treeIdSingle, parameter.elementId, nodeId);
 
     if (!handler_) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
+    bool isApp = IsApp();
     handler_->PostTask([=]() {
         HILOG_INFO("Register windowId[%{public}d]", parameter.windowId);
 #ifdef OHOS_BUILD_ENABLE_HITRACE
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
 #endif // OHOS_BUILD_ENABLE_HITRACE
-        if (RET_OK != RegisterElementOperatorChildWork(parameter, treeIdSingle, nodeId, operation, tokenId, isApp)) {
+        if (RET_OK != RegisterElementOperatorChildWork(parameter, treeIdSingle, nodeId, elementOperator,
+            tokenId, isApp)) {
             return;
         }
         if (CheckWindowIdEventExist(parameter.windowId)) {
-            SendEvent(windowFocusEventMap_[parameter.windowId]);
+            AccessibilityEventInfoParcel eventInfoParcel(windowFocusEventMap_[parameter.windowId]);
+            SendEvent(eventInfoParcel, 0);
             windowFocusEventMap_.erase(parameter.windowId);
         }
-        if (operation && operation->AsObject()) {
+        if (elementOperator && elementOperator->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
                 new(std::nothrow) InteractionOperationDeathRecipient(parameter.windowId, treeIdSingle,
                     currentAccountId_);
@@ -1078,9 +1082,9 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
                 HILOG_ERROR("Create interactionOperationDeathRecipient failed");
                 return;
             }
-            bool result = operation->AsObject()->AddDeathRecipient(deathRecipient);
+            bool result = elementOperator->AsObject()->AddDeathRecipient(deathRecipient);
             interactionOperationDeathMap_[parameter.windowId][treeIdSingle] = deathRecipient;
-            HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
+            HILOG_DEBUG("The result of adding elementOperator's death recipient is %{public}d", result);
         }
         }, "TASK_REGISTER_ELEMENT_OPERATOR");
     return RET_OK;
@@ -1120,7 +1124,7 @@ void AccessibleAbilityManagerService::DeleteConnectionAndDeathRecipient(
     }
 }
 
-RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId)
+ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(int32_t windowId)
 {
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -1172,7 +1176,8 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
     return RET_OK;
 }
 
-RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId, const int32_t treeId)
+ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId,
+    const int32_t treeId)
 {
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -1230,125 +1235,97 @@ void AccessibleAbilityManagerService::RemoveTreeDeathRecipient(const int32_t win
     }
 }
 
-RetError AccessibleAbilityManagerService::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
+bool AccessibleAbilityManagerService::IsSystemApp() const
 {
+    HILOG_DEBUG();
+
+    AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
+    if (tokenType != TOKEN_HAP) {
+        HILOG_INFO("Caller is not a application.");
+        return true;
+    }
+    uint64_t accessTokenId = IPCSkeleton::GetCallingFullTokenID();
+    bool isSystemApplication = TokenIdKit::IsSystemAppByFullTokenID(accessTokenId);
+    return isSystemApplication;
+}
+
+bool AccessibleAbilityManagerService::CheckPermission(const std::string &permission) const
+{
+    HILOG_DEBUG();
+    uint32_t callerToken = IPCSkeleton::GetCallingTokenID();
+    int result = TypePermissionState::PERMISSION_GRANTED;
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
+    if (tokenType == TOKEN_INVALID) {
+        HILOG_WARN("AccessToken type invalid!");
+        return false;
+    } else {
+        result = AccessTokenKit::VerifyAccessToken(callerToken, permission);
+    }
+    if (result == TypePermissionState::PERMISSION_DENIED) {
+        HILOG_WARN("AccessTokenID denied!");
+        return false;
+    }
+    HILOG_DEBUG("tokenType %{private}d dAccessTokenID:%{private}u, permission:%{private}s matched!",
+        tokenType, callerToken, permission.c_str());
+    return true;
+}
+
+ErrCode AccessibleAbilityManagerService::GetCaptionProperty(CaptionPropertyParcel &caption)
+{
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetCaptionProperty(caption);
 }
 
-RetError AccessibleAbilityManagerService::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
+ErrCode AccessibleAbilityManagerService::SetCaptionProperty(const CaptionPropertyParcel &caption)
 {
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetCaptionProperty(caption);
 }
 
-RetError AccessibleAbilityManagerService::SetCaptionState(const bool state)
+ErrCode AccessibleAbilityManagerService::SetCaptionState(const bool state)
 {
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetCaptionState(state);
 }
 
-bool AccessibleAbilityManagerService::GetEnabledState()
+ErrCode AccessibleAbilityManagerService::GetCaptionState(bool &state)
 {
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return false;
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
     }
-
-    ffrt::promise<bool> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(false);
-            return;
-        }
-        bool result = accountData->GetConfig()->GetEnabledState();
-        syncPromise.set_value(result);
-        }, "TASK_GET_ENABLE_STATE");
-    return syncFuture.get();
-}
-
-RetError AccessibleAbilityManagerService::GetCaptionState(bool &state)
-{
     return accessibilitySettings_->GetCaptionState(state);
 }
 
-bool AccessibleAbilityManagerService::GetTouchGuideState()
+ErrCode AccessibleAbilityManagerService::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return false;
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
     }
-
-    ffrt::promise<bool> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(false);
-            return;
-        }
-        bool result = accountData->GetConfig()->GetTouchGuideState();
-        syncPromise.set_value(result);
-        }, "TASK_GET_TOUCH_GUIDE_STATE");
-    return syncFuture.get();
-}
-
-bool AccessibleAbilityManagerService::GetGestureState()
-{
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return false;
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
     }
-
-    ffrt::promise<bool> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(false);
-            return;
-        }
-        bool result = accountData->GetConfig()->GetGestureState();
-        syncPromise.set_value(result);
-        }, "TASK_GET_GESTURE_STATE");
-    return syncFuture.get();
-}
-
-bool AccessibleAbilityManagerService::GetKeyEventObserverState()
-{
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return false;
-    }
-
-    ffrt::promise<bool> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(false);
-            return;
-        }
-        bool result = accountData->GetConfig()->GetKeyEventObserverState();
-        syncPromise.set_value(result);
-        }, "TASK_GET_KEY_EVENT_OBSERVER_STATE");
-    return syncFuture.get();
-}
-
-RetError AccessibleAbilityManagerService::EnableAbility(const std::string &name, const uint32_t capabilities)
-{
-    HILOG_DEBUG();
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -1379,44 +1356,45 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
         case HIGH_CONTRAST_TEXT:
             state = accountData->GetConfig()->GetHighContrastTextState();
             Utils::RecordEnableShortkeyAbilityEvent("HIGH_CONTRAST_TEXT", !state);
-            return SetHighContrastTextState(!state) == RET_OK;
+            return accessibilitySettings_->SetHighContrastTextState(!state) == RET_OK;
         case INVERT_COLOR:
             state = accountData->GetConfig()->GetInvertColorState();
             Utils::RecordEnableShortkeyAbilityEvent("INVERT_COLOR", !state);
-            return SetInvertColorState(!state) == RET_OK;
+            return accessibilitySettings_->SetInvertColorState(!state) == RET_OK;
         case ANIMATION_OFF:
             state = accountData->GetConfig()->GetAnimationOffState();
             Utils::RecordEnableShortkeyAbilityEvent("ANIMATION_OFF", !state);
-            return SetAnimationOffState(!state) == RET_OK;
+            return accessibilitySettings_->SetAnimationOffState(!state) == RET_OK;
         case SCREEN_MAGNIFICATION:
             state = accountData->GetConfig()->GetScreenMagnificationState();
             Utils::RecordEnableShortkeyAbilityEvent("SCREEN_MAGNIFICATION", !state);
-            return SetScreenMagnificationState(!state) == RET_OK;
+            return accessibilitySettings_->SetScreenMagnificationState(!state) == RET_OK;
         case AUDIO_MONO:
             state = accountData->GetConfig()->GetAudioMonoState();
             Utils::RecordEnableShortkeyAbilityEvent("AUDIO_MONO", !state);
-            return SetAudioMonoState(!state) == RET_OK;
+            return accessibilitySettings_->SetAudioMonoState(!state) == RET_OK;
         case MOUSE_KEY:
             state = accountData->GetConfig()->GetMouseKeyState();
             Utils::RecordEnableShortkeyAbilityEvent("MOUSE_KEY", !state);
-            return SetMouseKeyState(!state) == RET_OK;
+            return accessibilitySettings_->SetMouseKeyState(!state) == RET_OK;
         case CAPTION_STATE:
             state = accountData->GetConfig()->GetCaptionState();
             Utils::RecordEnableShortkeyAbilityEvent("CAPTION_STATE", !state);
-            return SetCaptionState(!state) == RET_OK;
+            return accessibilitySettings_->SetCaptionState(!state) == RET_OK;
         default:
             return false;
     }
 }
 
-bool AccessibleAbilityManagerService::GetScreenReaderState()
+ErrCode AccessibleAbilityManagerService::GetScreenReaderState(bool &state)
 {
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
-        return false;
+        return ERR_INVALID_DATA;
     }
-    return accountData->GetScreenReaderState();
+    state = accountData->GetScreenReaderState();
+    return ERR_OK;
 }
 
 RetError AccessibleAbilityManagerService::InnerEnableAbility(const std::string &name, const uint32_t capabilities)
@@ -1437,7 +1415,7 @@ RetError AccessibleAbilityManagerService::InnerEnableAbility(const std::string &
     return accountData->EnableAbility(name, capabilities);
 }
 
-RetError AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
+ErrCode AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
 {
     HILOG_DEBUG();
     if (!handler_) {
@@ -1474,9 +1452,17 @@ RetError AccessibleAbilityManagerService::SetCurtainScreenUsingStatus(bool isEna
     return RET_OK;
 }
 
-RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name)
+ErrCode AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     HILOG_INFO();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -1530,9 +1516,13 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
     return RET_OK;
 }
 
-RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject> &obj)
+ErrCode AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject> &obj)
 {
     HILOG_DEBUG();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -1570,9 +1560,13 @@ RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemote
     return syncFuture.get();
 }
 
-RetError AccessibleAbilityManagerService::DisableUITestAbility()
+ErrCode AccessibleAbilityManagerService::DisableUITestAbility()
 {
     HILOG_DEBUG();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -1610,10 +1604,11 @@ RetError AccessibleAbilityManagerService::DisableUITestAbility()
     return syncFuture.get();
 }
 
-int32_t AccessibleAbilityManagerService::GetActiveWindow()
+ErrCode AccessibleAbilityManagerService::GetActiveWindow(int32_t &windowId)
 {
     HILOG_DEBUG();
-    return Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
+    windowId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
+    return ERR_OK;
 }
 
 bool AccessibleAbilityManagerService::Init()
@@ -1675,9 +1670,10 @@ void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemo
     }
 
     if (treeId_ > 0) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(windowId_, treeId_);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowIdAndTreeId(
+            windowId_, treeId_);
     } else {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(windowId_);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowId(windowId_);
     }
 }
 
@@ -2187,7 +2183,7 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
             //       root -> node that send event, and it's a UiExtensionNode
             // when elementId is element that at the UiExtension tree, try to get the id of UiExtensionComponent
             // by GetRootParentId,
-            elementId = GetRootParentId(windowId, treeId);
+            elementId = GetRootParentId(windowId, treeId, elementId);
         } else {
             // keep find its parent node, until it's a root node or find its elementId in sceneBoardElementIdMap_
             // which saves mapping of windowId&root-elementId of the window.
@@ -2373,239 +2369,414 @@ void AccessibleAbilityManagerService::UpdateShortKeyRegister()
     }
 }
 
-RetError AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
+ErrCode AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetScreenMagnificationState(state);
 }
 
-RetError AccessibleAbilityManagerService::SetShortKeyState(const bool state)
+ErrCode AccessibleAbilityManagerService::SetShortKeyState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetShortKeyState(state);
 }
 
-RetError AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
+ErrCode AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetMouseKeyState(state);
 }
 
-RetError AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
+ErrCode AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetMouseAutoClick(time);
 }
 
-RetError AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
+ErrCode AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetShortkeyTarget(name);
 }
 
-RetError AccessibleAbilityManagerService::SetShortkeyMultiTarget(const std::vector<std::string> &name)
+ErrCode AccessibleAbilityManagerService::SetShortkeyMultiTarget(const std::vector<std::string> &name)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetShortkeyMultiTarget(name);
 }
 
-RetError AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
+ErrCode AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetHighContrastTextState(state);
 }
 
-RetError AccessibleAbilityManagerService::SetDaltonizationState(const bool state)
+ErrCode AccessibleAbilityManagerService::SetDaltonizationState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetDaltonizationState(state);
 }
 
-RetError AccessibleAbilityManagerService::SetInvertColorState(const bool state)
+ErrCode AccessibleAbilityManagerService::SetInvertColorState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetInvertColorState(state);
 }
 
-RetError AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
+ErrCode AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetAnimationOffState(state);
 }
 
-RetError AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
+ErrCode AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetAudioMonoState(state);
 }
 
-RetError AccessibleAbilityManagerService::SetDaltonizationColorFilter(const uint32_t filter)
+ErrCode AccessibleAbilityManagerService::SetDaltonizationColorFilter(const uint32_t filter)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetDaltonizationColorFilter(filter);
 }
 
-RetError AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
+ErrCode AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetContentTimeout(time);
 }
 
-RetError AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount)
+ErrCode AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetBrightnessDiscount(discount);
 }
 
-RetError AccessibleAbilityManagerService::SetAudioBalance(const float balance)
+ErrCode AccessibleAbilityManagerService::SetAudioBalance(const float balance)
 {
     PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetAudioBalance(balance);
 }
 
-RetError AccessibleAbilityManagerService::SetClickResponseTime(const uint32_t time)
+ErrCode AccessibleAbilityManagerService::SetClickResponseTime(const uint32_t time)
 {
     PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetClickResponseTime(time);
 }
 
-RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickState(const bool state)
+ErrCode AccessibleAbilityManagerService::SetIgnoreRepeatClickState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetIgnoreRepeatClickState(state);
 }
 
-RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickTime(const uint32_t time)
+ErrCode AccessibleAbilityManagerService::SetIgnoreRepeatClickTime(const uint32_t time)
 {
     PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->SetIgnoreRepeatClickTime(time);
 }
 
-RetError AccessibleAbilityManagerService::GetScreenMagnificationState(bool &state)
+ErrCode AccessibleAbilityManagerService::GetScreenMagnificationState(bool &state)
 {
     PostDelayUnloadTask();
     return accessibilitySettings_->GetScreenMagnificationState(state);
 }
 
-RetError AccessibleAbilityManagerService::GetShortKeyState(bool &state)
+ErrCode AccessibleAbilityManagerService::GetShortKeyState(bool &state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetShortKeyState(state);
 }
 
-RetError AccessibleAbilityManagerService::GetMouseKeyState(bool &state)
+ErrCode AccessibleAbilityManagerService::GetMouseKeyState(bool &state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetMouseKeyState(state);
 }
 
-RetError AccessibleAbilityManagerService::GetMouseAutoClick(int32_t &time)
+ErrCode AccessibleAbilityManagerService::GetMouseAutoClick(int32_t &time)
 {
     PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     return accessibilitySettings_->GetMouseAutoClick(time);
 }
 
-RetError AccessibleAbilityManagerService::GetShortkeyTarget(std::string &name)
+ErrCode AccessibleAbilityManagerService::GetShortkeyTarget(std::string &name)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetShortkeyTarget(name);
 }
 
-RetError AccessibleAbilityManagerService::GetShortkeyMultiTarget(std::vector<std::string> &name)
+ErrCode AccessibleAbilityManagerService::GetShortkeyMultiTarget(std::vector<std::string> &name)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetShortkeyMultiTarget(name);
 }
 
-RetError AccessibleAbilityManagerService::GetHighContrastTextState(bool &state)
+ErrCode AccessibleAbilityManagerService::GetHighContrastTextState(bool &state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetHighContrastTextState(state);
 }
 
-RetError AccessibleAbilityManagerService::GetDaltonizationState(bool &state)
+ErrCode AccessibleAbilityManagerService::GetDaltonizationState(bool &state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetDaltonizationState(state);
 }
 
-RetError AccessibleAbilityManagerService::GetInvertColorState(bool &state)
+ErrCode AccessibleAbilityManagerService::GetInvertColorState(bool &state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetInvertColorState(state);
 }
 
-RetError AccessibleAbilityManagerService::GetAnimationOffState(bool &state)
+ErrCode AccessibleAbilityManagerService::GetAnimationOffState(bool &state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetAnimationOffState(state);
 }
 
-RetError AccessibleAbilityManagerService::GetAudioMonoState(bool &state)
+ErrCode AccessibleAbilityManagerService::GetAudioMonoState(bool &state)
 {
     PostDelayUnloadTask();
     return accessibilitySettings_->GetAudioMonoState(state);
 }
 
-RetError AccessibleAbilityManagerService::GetDaltonizationColorFilter(uint32_t &type)
+ErrCode AccessibleAbilityManagerService::GetDaltonizationColorFilter(uint32_t &type)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetDaltonizationColorFilter(type);
 }
 
-RetError AccessibleAbilityManagerService::GetContentTimeout(uint32_t &timer)
+ErrCode AccessibleAbilityManagerService::GetContentTimeout(uint32_t &timer)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetContentTimeout(timer);
 }
 
-RetError AccessibleAbilityManagerService::GetBrightnessDiscount(float &brightness)
+ErrCode AccessibleAbilityManagerService::GetBrightnessDiscount(float &brightness)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetBrightnessDiscount(brightness);
 }
 
-RetError AccessibleAbilityManagerService::GetAudioBalance(float &balance)
+ErrCode AccessibleAbilityManagerService::GetAudioBalance(float &balance)
 {
     PostDelayUnloadTask();
     return accessibilitySettings_->GetAudioBalance(balance);
 }
 
-RetError AccessibleAbilityManagerService::GetClickResponseTime(uint32_t &time)
+ErrCode AccessibleAbilityManagerService::GetClickResponseTime(uint32_t &time)
 {
     PostDelayUnloadTask();
     return accessibilitySettings_->GetClickResponseTime(time);
 }
 
-RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickState(bool &state)
+ErrCode AccessibleAbilityManagerService::GetIgnoreRepeatClickState(bool &state)
 {
     PostDelayUnloadTask();
     return accessibilitySettings_->GetIgnoreRepeatClickState(state);
 }
 
-RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &time)
+ErrCode AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &time)
 {
     PostDelayUnloadTask();
     return accessibilitySettings_->GetIgnoreRepeatClickTime(time);
 }
 
-void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &configData)
+ErrCode AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData& configData,
+    CaptionPropertyParcel& caption)
 {
     HILOG_DEBUG();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+
     XCollieHelper timer(TIMER_GET_ALL_CONFIG, XCOLLIE_TIMEOUT);
-    std::shared_ptr<ffrt::promise<void>> syncPromise = std::make_shared<ffrt::promise<void>>();
+    std::shared_ptr<ffrt::promise<ErrCode>> syncPromise = std::make_shared<ffrt::promise<ErrCode>>();
     std::shared_ptr<AccessibilityConfigData> config = std::make_shared<AccessibilityConfigData>();
-    if (syncPromise == nullptr || config == nullptr) {
+    std::shared_ptr<CaptionProperty> captionInfo = std::make_shared<CaptionProperty>(caption);
+    if (syncPromise == nullptr || config == nullptr || captionInfo == nullptr) {
         HILOG_WARN("create syncPromise or config failed");
-        return;
+        return ERR_INVALID_DATA;
     }
     ffrt::future syncFuture = syncPromise->get_future();
-    actionHandler_->PostTask([this, syncPromise, config]() {
+    actionHandler_->PostTask([this, syncPromise, config, captionInfo]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise->set_value();
+            syncPromise->set_value(ERR_INVALID_DATA);
             return;
         }
 
@@ -2625,14 +2796,14 @@ void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &con
         config->audioBalance_ = accountData->GetConfig()->GetAudioBalance();
         config->shortkeyTarget_ = accountData->GetConfig()->GetShortkeyTarget();
         config->shortkeyMultiTarget_ = accountData->GetConfig()->GetShortkeyMultiTarget();
-        config->captionProperty_ = accountData->GetConfig()->GetCaptionProperty();
-        syncPromise->set_value();
+        *captionInfo = accountData->GetConfig()->GetCaptionProperty();
+        syncPromise->set_value(ERR_OK);
         }, "TASK_GET_ALL_CONFIGS");
 
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait GetAllConfigs result");
-        return;
+        return ERR_TRANSACTION_FAILED;
     }
     configData = *config;
     return syncFuture.get();
@@ -2749,7 +2920,7 @@ bool AccessibleAbilityManagerService::DisableShortKeyTargetAbility()
     return InnerDisableAbility(targetAbility) == RET_OK;
 }
 
-uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
+ErrCode AccessibleAbilityManagerService::RegisterConfigObserver(
     const sptr<IAccessibleAbilityManagerConfigObserver> &callback)
 {
     HILOG_DEBUG();
@@ -2972,7 +3143,7 @@ void AccessibleAbilityManagerService::StateObservers::Clear()
     observersList_.clear();
 }
 
-RetError AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWindowId)
+ErrCode AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWindowId)
 {
     HILOG_DEBUG();
     return Singleton<AccessibilityWindowManager>::GetInstance().GetFocusedWindowId(focusedWindowId);
@@ -3303,7 +3474,7 @@ void AccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t tre
     }
 }
 
-void AccessibleAbilityManagerService::RemoveRequestId(int32_t requestId)
+ErrCode AccessibleAbilityManagerService::RemoveRequestId(int32_t requestId)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("RemoveRequestId requestId: %{public}d", requestId);
@@ -3321,6 +3492,7 @@ void AccessibleAbilityManagerService::RemoveRequestId(int32_t requestId)
             }
         }
     }
+    return ERR_OK;
 }
 
 void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId)
@@ -3362,29 +3534,16 @@ void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t
     }
 }
 
-int64_t AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId)
+ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId)
 {
-    HILOG_INFO("aa search treeParent from aams, windowId: %{public}d, treeId: %{public}d", windowId, treeId);
-    int64_t elementId = 0;
+    HILOG_INFO("aa search treeParent from aams,  windowId: %{public}d, treeId: %{public}d", windowId, treeId);
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
     if (!connection) {
         HILOG_WARN("The operator of windowId[%{public}d] has not been registered.", windowId);
         return RET_ERR_NO_CONNECTION;
     }
-    connection->GetRootParentId(treeId, elementId);
-    return elementId;
-}
-
-RetError AccessibleAbilityManagerService::GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds)
-{
-    HILOG_DEBUG();
-    sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
-    if (!connection) {
-        HILOG_WARN("The operator of windowId[%{public}d] has not been registered.", windowId);
-        return RET_ERR_NO_CONNECTION;
-    }
-    connection->GetAllTreeId(treeIds);
-    return RET_OK;
+    connection->GetRootParentId(treeId, parentId);
+    return ERR_OK;
 }
 
 int32_t AccessibleAbilityManagerService::GenerateRequestId()

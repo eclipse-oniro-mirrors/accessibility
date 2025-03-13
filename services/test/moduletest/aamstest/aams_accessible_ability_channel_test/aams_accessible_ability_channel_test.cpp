@@ -83,7 +83,7 @@ void AamsAccessibleAbilityChannelTest::TearDown()
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()->OnAccountSwitched();
     // Deregister ElementOperator
-    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowId(0);
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
         if (aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
@@ -154,7 +154,7 @@ void AamsAccessibleAbilityChannelTest::AddAccessibilityWindowConnection()
         new MockAccessibilityElementOperatorImpl(windowId, nullptr, *mockCallback);
     sptr<MockAccessibilityElementOperatorProxy> proxy = new MockAccessibilityElementOperatorProxy(stub);
     proxy_ = proxy;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(windowId, proxy, true);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(windowId, proxy);
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
         if (aams.GetMainRunner()->GetEventQueue()->IsIdle()) {

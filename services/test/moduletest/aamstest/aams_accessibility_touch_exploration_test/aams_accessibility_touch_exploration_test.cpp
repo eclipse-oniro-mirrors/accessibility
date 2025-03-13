@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Huawei Device Co., Ltd.
+ * Copyright (C) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -515,7 +515,7 @@ void AamsTouchExplorationTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest TearDown";
 
-    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowId(0);
     sleep(SLEEP_TIME_3);
     aastub_ = nullptr;
     interceptorId_ = nullptr;
@@ -589,8 +589,8 @@ void AamsTouchExplorationTest::AddAccessibilityWindowConnection()
     sptr<AccessibilityElementOperatorStub> stub =
         new MockAccessibilityElementOperatorImpl(windowId, nullptr, *mockCallback);
     sptr<IAccessibilityElementOperator> proxy = new MockAccessibilityElementOperatorProxy(stub);
-    GTEST_LOG_(INFO) << "aams  RegisterElementOperator";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(windowId, proxy, true);
+    GTEST_LOG_(INFO) << "aams  RegisterElementOperatorByWindowId";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(windowId, proxy);
 }
 
 /**

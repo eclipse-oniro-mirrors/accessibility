@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2024 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -109,7 +109,7 @@ void AamsInjectorTest::TearDown()
     GTEST_LOG_(INFO) << "TouchEventInjectorTest TearDown";
     aacs_ = nullptr;
     aastub_ = nullptr;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowId(0);
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
         if (aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
@@ -134,8 +134,8 @@ void AamsInjectorTest::AddAccessibilityWindowConnection()
     sptr<AccessibilityElementOperatorStub> stub =
         new MockAccessibilityElementOperatorImpl(windowId, nullptr, *mockCallback);
     sptr<IAccessibilityElementOperator> proxy = new MockAccessibilityElementOperatorProxy(stub);
-    GTEST_LOG_(INFO) << "aams  RegisterElementOperator";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(windowId, proxy, true);
+    GTEST_LOG_(INFO) << "aams  RegisterElementOperatorByWindowId";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(windowId, proxy);
 }
 
 /**

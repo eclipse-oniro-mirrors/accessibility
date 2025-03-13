@@ -22,7 +22,7 @@
 #include "accessible_ability_manager_state_observer_stub.h"
 #include "ffrt.h"
 #include "ffrt_inner.h"
-#include "i_accessible_ability_manager_service.h"
+#include "iaccessible_ability_manager_service.h"
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"

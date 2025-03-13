@@ -17,7 +17,7 @@
 #define ACCESSIBLE_ABILITY_CHANNEL_PROXY_H
 
 #include "accessibility_ipc_interface_code.h"
-#include "i_accessible_ability_channel.h"
+#include "iaccessible_ability_channel.h"
 #include "iremote_proxy.h"
 
 namespace OHOS {

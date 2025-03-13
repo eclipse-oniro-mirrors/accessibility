@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -93,63 +93,59 @@ public:
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
     void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
     int Dump(int fd, const std::vector<std::u16string>& args) override;
-    void PostDelayUnloadTask() override;
+    void PostDelayUnloadTask();
 
 public:
     /* For AccessibleAbilityManagerServiceStub */
-    RetError SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t flag = 0) override;
+    ErrCode SendEvent(const AccessibilityEventInfoParcel& eventInfoParcel, int32_t flag) override;
 
     RetError VerifyingToKenId(const int32_t windowId, const int64_t elementId);
 
-    uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) override;
+    ErrCode RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback,
+        uint32_t &state) override;
 
-    uint32_t RegisterCaptionObserver(const sptr<IAccessibleAbilityManagerCaptionObserver> &callback) override;
+    ErrCode RegisterCaptionObserver(const sptr<IAccessibleAbilityManagerCaptionObserver> &callback) override;
 
-    void RegisterEnableAbilityListsObserver(
+    ErrCode RegisterEnableAbilityListsObserver(
         const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override;
 
-    RetError GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
-        std::vector<AccessibilityAbilityInfo> &infos) override;
+    ErrCode GetAbilityList(uint32_t abilityTypes, int32_t stateType,
+        std::vector<AccessibilityAbilityInfoParcel>& infos) override;
 
-    RetError RegisterElementOperator(const int32_t windowId,
-        const sptr<IAccessibilityElementOperator> &operation, bool isApp) override;
+    ErrCode RegisterElementOperatorByWindowId(const int32_t windowId,
+        const sptr<IAccessibilityElementOperator> &elementOperator) override;
 
-    RetError RegisterElementOperator(Registration parameter,
-        const sptr<IAccessibilityElementOperator> &operation, bool isApp) override;
+    ErrCode RegisterElementOperatorByParameter(const RegistrationPara& parameter,
+        const sptr<IAccessibilityElementOperator>& elementOperator) override;
 
-    RetError DeregisterElementOperator(const int32_t windowId) override;
+    ErrCode DeregisterElementOperatorByWindowId(const int32_t windowId) override;
 
-    RetError DeregisterElementOperator(const int32_t windowId, const int32_t treeId) override;
+    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId) override;
 
-    RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption) override;
-    RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
-    RetError SetCaptionState(const bool state) override;
+    ErrCode GetCaptionProperty(CaptionPropertyParcel &caption) override;
+    ErrCode SetCaptionProperty(const CaptionPropertyParcel &caption) override;
+    ErrCode SetCaptionState(const bool state) override;
 
-    bool GetEnabledState() override;
-    RetError GetCaptionState(bool &state) override;
-    bool GetTouchGuideState() override;
-    bool GetGestureState() override;
-    bool GetKeyEventObserverState() override;
+    ErrCode GetCaptionState(bool &state) override;
 
-    RetError EnableAbility(const std::string &name, const uint32_t capabilities) override;
-    RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
+    ErrCode EnableAbility(const std::string &name, const uint32_t capabilities) override;
+    ErrCode GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
     RetError SetCurtainScreenUsingStatus(bool isEnable);
-    RetError DisableAbility(const std::string &name) override;
-    RetError EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
-    RetError DisableUITestAbility() override;
-    int32_t GetActiveWindow() override;
-    void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
-    void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
+    ErrCode DisableAbility(const std::string &name) override;
+    ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
+    ErrCode DisableUITestAbility() override;
+    ErrCode GetActiveWindow(int32_t &windowId) override;
+    ErrCode GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
+    ErrCode GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
     bool FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout = TIME_OUT_OPERATOR);
     bool ExecuteActionOnAccessibilityFocused(const ActionType &action);
-    RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
+    ErrCode GetFocusedWindowId(int32_t &focusedWindowId) override;
     void SetFocusWindowId(const int32_t focusWindowId);
     void SetFocusElementId(const int64_t focusElementId);
     int32_t GetFocusWindowId();
     int64_t GetFocusElementId();
     static int32_t GetTreeIdBySplitElementId(const int64_t elementId);
-    int64_t GetRootParentId(int32_t windowId, int32_t treeId) override;
-    RetError GetAllTreeId(int32_t windowId, std::vector<int32_t> &treeIds) override;
+    ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId) override;
     void SetTokenIdMapAndRootParentId(const sptr<AccessibilityWindowConnection> connection,
         const int32_t treeId, const int64_t nodeId, const uint32_t tokenId);
     void RemoveTreeDeathRecipient(const int32_t windowId, const int32_t treeId,
@@ -157,7 +153,7 @@ public:
     int32_t GenerateRequestId();
     void GetElementOperatorConnection(sptr<AccessibilityWindowConnection> &connection,
         const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
-    bool GetScreenReaderState() override;
+    ErrCode GetScreenReaderState(bool &state) override;
 private:
     int32_t focusWindowId_ = -1;
     int64_t focusElementId_ = -1;
@@ -269,47 +265,46 @@ public:
 
         friend class AccessibleAbilityManagerService;
     };
+    ErrCode SetScreenMagnificationState(const bool state) override;
+    ErrCode SetShortKeyState(const bool state) override;
+    ErrCode SetMouseKeyState(const bool state) override;
+    ErrCode SetMouseAutoClick(const int32_t time) override;
+    ErrCode SetShortkeyTarget(const std::string &name) override;
+    ErrCode SetShortkeyMultiTarget(const std::vector<std::string> &name) override;
+    ErrCode SetHighContrastTextState(const bool state) override;
+    ErrCode SetInvertColorState(const bool state) override;
+    ErrCode SetAnimationOffState(const bool state) override;
+    ErrCode SetAudioMonoState(const bool state) override;
+    ErrCode SetDaltonizationState(const bool state) override;
+    ErrCode SetDaltonizationColorFilter(const uint32_t filter) override;
+    ErrCode SetContentTimeout(const uint32_t time) override;
+    ErrCode SetBrightnessDiscount(const float discount) override;
+    ErrCode SetAudioBalance(const float balance) override;
+    ErrCode SetClickResponseTime(const uint32_t time) override;
+    ErrCode SetIgnoreRepeatClickState(const bool state) override;
+    ErrCode SetIgnoreRepeatClickTime(const uint32_t time) override;
 
-    RetError SetScreenMagnificationState(const bool state) override;
-    RetError SetShortKeyState(const bool state) override;
-    RetError SetMouseKeyState(const bool state) override;
-    RetError SetMouseAutoClick(const int32_t time) override;
-    RetError SetShortkeyTarget(const std::string &name) override;
-    RetError SetShortkeyMultiTarget(const std::vector<std::string> &name) override;
-    RetError SetHighContrastTextState(const bool state) override;
-    RetError SetInvertColorState(const bool state) override;
-    RetError SetAnimationOffState(const bool state) override;
-    RetError SetAudioMonoState(const bool state) override;
-    RetError SetDaltonizationState(const bool state) override;
-    RetError SetDaltonizationColorFilter(const uint32_t filter) override;
-    RetError SetContentTimeout(const uint32_t time) override;
-    RetError SetBrightnessDiscount(const float discount) override;
-    RetError SetAudioBalance(const float balance) override;
-    RetError SetClickResponseTime(const uint32_t time) override;
-    RetError SetIgnoreRepeatClickState(const bool state) override;
-    RetError SetIgnoreRepeatClickTime(const uint32_t time) override;
+    ErrCode GetScreenMagnificationState(bool &state) override;
+    ErrCode GetShortKeyState(bool &state) override;
+    ErrCode GetMouseKeyState(bool &state) override;
+    ErrCode GetMouseAutoClick(int32_t &time) override;
+    ErrCode GetShortkeyTarget(std::string &name) override;
+    ErrCode GetShortkeyMultiTarget(std::vector<std::string> &name) override;
+    ErrCode GetHighContrastTextState(bool &state) override;
+    ErrCode GetInvertColorState(bool &state) override;
+    ErrCode GetAnimationOffState(bool &state) override;
+    ErrCode GetAudioMonoState(bool &state) override;
+    ErrCode GetDaltonizationState(bool &state) override;
+    ErrCode GetDaltonizationColorFilter(uint32_t &type) override;
+    ErrCode GetContentTimeout(uint32_t &timer) override;
+    ErrCode GetBrightnessDiscount(float &brightness) override;
+    ErrCode GetAudioBalance(float &balance) override;
+    ErrCode GetClickResponseTime(uint32_t &time) override;
+    ErrCode GetIgnoreRepeatClickState(bool &state) override;
+    ErrCode GetIgnoreRepeatClickTime(uint32_t &time) override;
+    ErrCode GetAllConfigs(AccessibilityConfigData& configData, CaptionPropertyParcel& caption) override;
 
-    RetError GetScreenMagnificationState(bool &state) override;
-    RetError GetShortKeyState(bool &state) override;
-    RetError GetMouseKeyState(bool &state) override;
-    RetError GetMouseAutoClick(int32_t &time) override;
-    RetError GetShortkeyTarget(std::string &name) override;
-    RetError GetShortkeyMultiTarget(std::vector<std::string> &name) override;
-    RetError GetHighContrastTextState(bool &state) override;
-    RetError GetInvertColorState(bool &state) override;
-    RetError GetAnimationOffState(bool &state) override;
-    RetError GetAudioMonoState(bool &state) override;
-    RetError GetDaltonizationState(bool &state) override;
-    RetError GetDaltonizationColorFilter(uint32_t &type) override;
-    RetError GetContentTimeout(uint32_t &timer) override;
-    RetError GetBrightnessDiscount(float &brightness) override;
-    RetError GetAudioBalance(float &balance) override;
-    RetError GetClickResponseTime(uint32_t &time) override;
-    RetError GetIgnoreRepeatClickState(bool &state) override;
-    RetError GetIgnoreRepeatClickTime(uint32_t &time) override;
-    void GetAllConfigs(AccessibilityConfigData &configData) override;
-
-    uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
+    ErrCode RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
     void UpdateConfigState();
     void UpdateAudioBalance();
     void UpdateBrightnessDiscount();
@@ -324,18 +319,21 @@ public:
     void UpdateInputFilter();
     void AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
         sptr<IAccessibilityElementOperatorCallback> callback);
-    void RemoveRequestId(int32_t requestId) override;
+    ErrCode RemoveRequestId(int32_t requestId) override;
     void OnDataClone();
 
 private:
     void StopCallbackWait(int32_t windowId);
     void StopCallbackWait(int32_t windowId, int32_t treeId);
     RetError CheckCallingUid();
+    bool IsApp() const;
+    bool IsSystemApp() const;
+    bool CheckPermission(const std::string &permission) const;
     sptr<AccessibilityWindowConnection> GetRealIdConnection();
     bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
         AccessibilityElementInfo &elementInfo);
     bool SetTargetAbility(const int32_t targetAbilityValue);
-    RetError RegisterElementOperatorChildWork(const Registration &parameter, const int32_t treeId,
+    RetError RegisterElementOperatorChildWork(const RegistrationPara &parameter, const int32_t treeId,
         const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation,
         const uint32_t tokenId, bool isApp);
     void IsCheckWindowIdEventExist(const int32_t windowId);
