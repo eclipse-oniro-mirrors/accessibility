@@ -41,6 +41,7 @@ public:
     static OHOS::Accessibility::TextMoveUnit ConvertStringToTextMoveUnit(const std::string &type);
     static NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode);
     static void ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg);
+    static ani_object CreateBoolObject(ani_env *env, ani_boolean value);
     static ani_int ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObject,
         OHOS::Accessibility::AccessibilityEventInfo &eventInfo);
     static void ConvertEventInfoStringFields(ani_env *env, ani_object eventObject,
