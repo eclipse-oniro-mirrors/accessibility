@@ -315,9 +315,35 @@ void ANIUtils::ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
     ani_string errMsgStr;
     env->String_NewUTF8(errMsg.message.c_str(), 17U, &errMsgStr);
     ani_object errorObject;
-    env->Object_New(cls, ctor, &errorObject, errCode, errMsgStr);
+    if (env->Object_New(cls, ctor, &errorObject, errCode, errMsgStr) != ANI_OK) {
+        HILOG_ERROR("create BusinessError object failed");
+        return;
+    }
     env->ThrowError(static_cast<ani_error>(errorObject));
     return;
+}
+
+ani_object ANIUtils::CreateBoolObject(ani_env *env, ani_boolean value)
+{
+    static const char *boolClsName = "Lstd/core/Boolean;";
+    ani_class cls {};
+    if (env->FindClass(boolClsName, &cls) != ANI_OK) {
+        HILOG_ERROR("find class Boolean failed");
+        return nullptr;
+    }
+
+    ani_method ctor;
+    if (env->Class_FindMethod(cls, "<ctor>", "Z:V", &ctor) != ANI_OK) {
+        HILOG_ERROR("find method Boolean.constructor failed");
+        return nullptr;
+    }
+
+    ani_object boolObject;
+    if (env->Object_New(cls, ctor, &boolObject, value) != ANI_OK) {
+        HILOG_ERROR("create Boolean object failed");
+        return nullptr;
+    }
+    return boolObject;
 }
 
 ani_int ANIUtils::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObject,

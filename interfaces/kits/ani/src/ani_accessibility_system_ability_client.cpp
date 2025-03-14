@@ -116,7 +116,11 @@ void StateListener::NotifyETS(ani_env *env, bool state, ani_ref fnRef)
         ani_size nr_refs = ANI_SCOPE_SIZE;
         tmpEnv->CreateLocalScope(nr_refs);
         auto fnObj = reinterpret_cast<ani_fn_object>(callbackInfo->fnRef_);
-        ani_boolean state = callbackInfo->state_;
+        ani_object state = ANIUtils::CreateBoolObject(tmpEnv, static_cast<ani_boolean>(callbackInfo->state_));
+        if (state == nullptr) {
+            HILOG_ERROR("create boolean object failed");
+            return;
+        }
         std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(state)};
         ani_ref result;
         tmpEnv->FunctionalObject_Call(fnObj, 1, args.data(), &result);
