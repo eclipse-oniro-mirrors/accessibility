@@ -14,14 +14,14 @@
  */
 
 export class BusinessError extends Error {
-    constructor(code: int, message : string){
+    constructor(code: int, message: string){
         super(message)
         this.code = code;
     }
     code: int;
 }
 
-type AsyncCallback = (err: BusinessError) => void;
+type AsyncCallback<T> = (err: BusinessError, data: T) => void;
 
 native function sendAccessibilityEventSync(event: accessibility.EventInfo): int;
 
@@ -52,6 +52,8 @@ export namespace accessibility {
     export type observerType = 'accessibilityStateChange' | 'touchGuideStateChange';
 
     export native function isOpenTouchGuideSync(): boolean;
+
+    export native function isOpenAccessibilitySync(): boolean;
 
     export native function on(type: observerType, callback: ((parameter: boolean) => void)): void;
 
@@ -93,13 +95,13 @@ export namespace accessibility {
         customId?: string;
     }
 
-    export function sendAccessibilityEvent(event: EventInfo, callback:AsyncCallback): void {
+    export function sendAccessibilityEvent(event: EventInfo, callback:AsyncCallback<void>): void {
         let p1 = taskpool.execute(sendAccessibilityEventSync, event);
         p1.then((code: NullishType) => {
             let codeInt = code as int;
             let message = errMap.get(code as int) ?? '';
             let err: BusinessError = new BusinessError(codeInt, message);
-            callback(err);
+            callback(err, undefined);
         });
     }
 

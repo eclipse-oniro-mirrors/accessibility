@@ -56,7 +56,8 @@ ohos_shared_library("ACCESSIBILITYNativeModule") {
 }
 
 generate_static_abc("accessibility_ani_abc") {
-  arktsconfig = "./arktsconfig.json"
+  base_url = "./ets"
+  files = [ "./ets/@ohos.accessibility.ets" ]
   dst_file = "$target_out_dir/accessibility.abc"
   out_puts = [ "$target_out_dir/accessibility.abc" ]
 

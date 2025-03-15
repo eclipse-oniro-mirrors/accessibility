@@ -21,9 +21,10 @@
 
 constexpr int32_t INVALID_ANI_VERSION = 1;
 constexpr int32_t CLASS_NOT_FOUND = 2;
-constexpr int32_t BIND_METHOD_FAILED = 3;
+constexpr int32_t NAMESPACE_NOT_FOUND = 3;
+constexpr int32_t BIND_METHOD_FAILED = 4;
 
-bool BindMethod(ani_env *env, ani_class cls, ani_class globalCls);
+bool BindMethod(ani_env *env, ani_namespace cls, ani_class globalCls);
 
 ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
 {
@@ -33,21 +34,21 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
         return (ani_status)INVALID_ANI_VERSION;
     }
 
-    static const char *className = "L@ohos/accessibility/accessibility;";
-    ani_class cls;
-    if (env->FindClass(className, &cls) != ANI_OK) {
-        HILOG_ERROR("class not found: %{public}s", className);
-        return (ani_status)CLASS_NOT_FOUND;
+    static const char *nsName = "L@ohos/accessibility/accessibility;";
+    ani_namespace ns;
+    if (env->FindNamespace(nsName, &ns) != ANI_OK) {
+        HILOG_ERROR("namespace not found: %{public}s", nsName);
+        return (ani_status)NAMESPACE_NOT_FOUND;
     }
 
     static const char *globalClassName = "L@ohos/accessibility/ETSGLOBAL;";
     ani_class globalCls;
     if (env->FindClass(globalClassName, &globalCls) != ANI_OK) {
-        HILOG_ERROR("Cannot bind native methods to %{public}s", className);
+        HILOG_ERROR("class not found: %{public}s", globalClassName);
         return (ani_status)CLASS_NOT_FOUND;
     }
 
-    if (!BindMethod(env, cls, globalCls)) {
+    if (!BindMethod(env, ns, globalCls)) {
         HILOG_ERROR("bind method failed");
         return (ani_status)BIND_METHOD_FAILED;
     }
@@ -59,14 +60,23 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
     return ANI_OK;
 }
 
-bool BindMethod(ani_env *env, ani_class cls, ani_class globalCls)
+bool BindMethod(ani_env *env, ani_namespace ns, ani_class globalCls)
 {
     std::array methods = {
         ani_native_function {"isOpenTouchGuideSync", nullptr, reinterpret_cast<void *>(
             ANIAccessibilityClient::IsOpenTouchGuideSync)},
     };
 
-    if (env->Class_BindNativeMethods(cls, methods.data(), methods.size()) != ANI_OK) {
+    if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
+        return false;
+    };
+
+    methods = {
+        ani_native_function {"isOpenAccessibilitySync", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityClient::IsOpenAccessibilitySync)},
+    };
+
+    if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
         return false;
     };
 
@@ -74,7 +84,7 @@ bool BindMethod(ani_env *env, ani_class cls, ani_class globalCls)
         ani_native_function {"on", nullptr, reinterpret_cast<void *>(ANIAccessibilityClient::SubscribeState)},
     };
 
-    if (env->Class_BindNativeMethods(cls, methods.data(), methods.size()) != ANI_OK) {
+    if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
         return false;
     };
 
@@ -83,7 +93,7 @@ bool BindMethod(ani_env *env, ani_class cls, ani_class globalCls)
             ANIAccessibilityClient::UnsubscribeState)},
     };
 
-    if (env->Class_BindNativeMethods(cls, methods.data(), methods.size()) != ANI_OK) {
+    if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
         return false;
     };
 
@@ -91,7 +101,7 @@ bool BindMethod(ani_env *env, ani_class cls, ani_class globalCls)
         ani_native_function {"offAll", nullptr, reinterpret_cast<void *>(ANIAccessibilityClient::UnsubscribeStateAll)},
     };
 
-    if (env->Class_BindNativeMethods(cls, methods.data(), methods.size()) != ANI_OK) {
+    if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
         return false;
     };
 

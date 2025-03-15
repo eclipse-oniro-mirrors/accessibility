@@ -57,12 +57,11 @@ private:
 
 class ANIAccessibilityClient {
 public:
-    static ani_boolean IsOpenTouchGuideSync([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_object object);
-    static void SubscribeState(ani_env *env, [[maybe_unused]] ani_object object, ani_string type,
-        ani_object callback);
-    static void UnsubscribeState(ani_env *env, [[maybe_unused]] ani_object object, ani_string type,
-        ani_object callback);
-    static void UnsubscribeStateAll(ani_env *env, [[maybe_unused]] ani_object object, ani_string type);
+    static ani_boolean IsOpenTouchGuideSync([[maybe_unused]] ani_env *env);
+    static ani_boolean IsOpenAccessibilitySync([[maybe_unused]] ani_env *env);
+    static void SubscribeState(ani_env *env, ani_string type, ani_object callback);
+    static void UnsubscribeState(ani_env *env, ani_string type, ani_object callback);
+    static void UnsubscribeStateAll(ani_env *env, ani_string type);
     static ani_int SendAccessibilityEvent(ani_env *env, [[maybe_unused]] ani_object object, ani_object eventObject);
 
     static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;

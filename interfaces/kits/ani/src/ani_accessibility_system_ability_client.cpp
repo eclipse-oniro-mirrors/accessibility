@@ -82,12 +82,15 @@ void StateListenerImpl::UnsubscribeObserver(ani_env *env, ani_object observer)
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
             HILOG_INFO("UnsubscribeObserver Observer exist");
+            env->GlobalReference_Delete((*iter)->fnRef_);
+            env->GlobalReference_Delete(fnRef);
             observers_.erase(iter);
             return;
         } else {
             iter++;
         }
     }
+    env->GlobalReference_Delete(fnRef);
     HILOG_WARN("UnsubscribeObserver Observer not exist");
 }
 
@@ -95,6 +98,9 @@ void StateListenerImpl::UnsubscribeObservers()
 {
     HILOG_INFO();
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto iter = observers_.begin(); iter != observers_.end();) {
+        (*iter)->env_->GlobalReference_Delete((*iter)->fnRef_);
+    }
     observers_.clear();
 }
 
@@ -136,8 +142,7 @@ void StateListener::OnStateChanged(const bool state)
     NotifyETS(env_, state, fnRef_);
 }
 
-void ANIAccessibilityClient::SubscribeState(ani_env *env, [[maybe_unused]] ani_object object, ani_string type,
-    ani_object callback)
+void ANIAccessibilityClient::SubscribeState(ani_env *env, ani_string type, ani_object callback)
 {
     std::string eventType = ANIUtils::ANIStringToStdString(env, type);
     if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
@@ -150,8 +155,7 @@ void ANIAccessibilityClient::SubscribeState(ani_env *env, [[maybe_unused]] ani_o
     }
 }
 
-void ANIAccessibilityClient::UnsubscribeState(ani_env *env, [[maybe_unused]] ani_object object, ani_string type,
-    ani_object callback)
+void ANIAccessibilityClient::UnsubscribeState(ani_env *env, ani_string type, ani_object callback)
 {
     std::string eventType = ANIUtils::ANIStringToStdString(env, type);
     if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
@@ -164,7 +168,7 @@ void ANIAccessibilityClient::UnsubscribeState(ani_env *env, [[maybe_unused]] ani
     }
 }
 
-void ANIAccessibilityClient::UnsubscribeStateAll(ani_env *env, [[maybe_unused]] ani_object object, ani_string type)
+void ANIAccessibilityClient::UnsubscribeStateAll(ani_env *env, ani_string type)
 {
     std::string eventType = ANIUtils::ANIStringToStdString(env, type);
     if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
@@ -177,8 +181,7 @@ void ANIAccessibilityClient::UnsubscribeStateAll(ani_env *env, [[maybe_unused]] 
     }
 }
 
-ani_boolean ANIAccessibilityClient::IsOpenTouchGuideSync([[maybe_unused]] ani_env *env,
-    [[maybe_unused]] ani_object object)
+ani_boolean ANIAccessibilityClient::IsOpenTouchGuideSync([[maybe_unused]] ani_env *env)
 {
     auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
     if (asaClient == nullptr) {
@@ -194,7 +197,25 @@ ani_boolean ANIAccessibilityClient::IsOpenTouchGuideSync([[maybe_unused]] ani_en
         return false;
     }
 
-    accessibilityStateListeners_->OnStateChanged(true);
+    return status;
+}
+
+ani_boolean ANIAccessibilityClient::IsOpenAccessibilitySync([[maybe_unused]] ani_env *env)
+{
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient == nullptr) {
+        HILOG_ERROR("asaClient is nullptr!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        return false;
+    }
+    bool status = false;
+    auto ret = asaClient->IsEnabled(status);
+    if (ret != RET_OK) {
+        HILOG_ERROR("get accessibility state failed!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return false;
+    }
+
     return status;
 }
 
