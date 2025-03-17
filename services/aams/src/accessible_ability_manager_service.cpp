@@ -982,6 +982,12 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
         } else {
             HILOG_DEBUG("parentAamsOper is nullptr");
         }
+
+        auto cardOper = parentConnection->GetCardProxy(treeId);
+        if (cardOper == nullptr) {
+            parentConnection->SetCardProxy(treeId, operation);
+            SetTokenIdMapAndRootParentId(parentConnection, treeId, nodeId, tokenId);
+        }
     } else {
         return RET_ERR_NO_CONNECTION;
     }
