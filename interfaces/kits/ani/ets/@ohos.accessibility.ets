@@ -14,7 +14,7 @@
  */
 
 export class AccessibilityError extends Error {
-    constructor(code: int, message: string){
+    constructor(code: int, message: string) {
         super(message)
         this.code = code;
     }
