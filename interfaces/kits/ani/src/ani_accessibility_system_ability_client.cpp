@@ -82,7 +82,6 @@ void StateListenerImpl::UnsubscribeObserver(ani_env *env, ani_object observer)
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
             HILOG_INFO("UnsubscribeObserver Observer exist");
-            env->GlobalReference_Delete((*iter)->fnRef_);
             env->GlobalReference_Delete(fnRef);
             observers_.erase(iter);
             return;
@@ -151,7 +150,7 @@ void ANIAccessibilityClient::SubscribeState(ani_env *env, ani_string type, ani_o
         touchGuideStateListeners_->SubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
     }
 }
 
@@ -164,7 +163,7 @@ void ANIAccessibilityClient::UnsubscribeState(ani_env *env, ani_string type, ani
         touchGuideStateListeners_->UnsubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("UnsubscribeState eventType[%{public}s] is error", eventType.c_str());
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
     }
 }
 
@@ -177,7 +176,7 @@ void ANIAccessibilityClient::UnsubscribeStateAll(ani_env *env, ani_string type)
         touchGuideStateListeners_->UnsubscribeObservers();
     } else {
         HILOG_ERROR("UnsubscribeStateAll eventType[%{public}s] is error", eventType.c_str());
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
     }
 }
 
@@ -186,14 +185,14 @@ ani_boolean ANIAccessibilityClient::IsOpenTouchGuideSync([[maybe_unused]] ani_en
     auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
     if (asaClient == nullptr) {
         HILOG_ERROR("asaClient is nullptr!");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
         return false;
     }
     bool status = false;
     auto ret = asaClient->IsTouchExplorationEnabled(status);
     if (ret != RET_OK) {
         HILOG_ERROR("get touch guide state failed!");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
         return false;
     }
 
@@ -205,14 +204,14 @@ ani_boolean ANIAccessibilityClient::IsOpenAccessibilitySync([[maybe_unused]] ani
     auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
     if (asaClient == nullptr) {
         HILOG_ERROR("asaClient is nullptr!");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
         return false;
     }
     bool status = false;
     auto ret = asaClient->IsEnabled(status);
     if (ret != RET_OK) {
         HILOG_ERROR("get accessibility state failed!");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
         return false;
     }
 

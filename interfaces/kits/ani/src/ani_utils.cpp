@@ -298,17 +298,17 @@ NAccessibilityErrMsg ANIUtils::QueryRetMsg(RetError errorCode)
     }
 }
 
-void ANIUtils::ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
+void ANIUtils::ThrowAccessibilityError(ani_env *env, NAccessibilityErrMsg errMsg)
 {
-    static const char *errorClsName = "Laccessibility/BusinessError;";
+    static const char *errorClsName = "Laccessibility/AccessibilityError;";
     ani_class cls {};
     if (env->FindClass(errorClsName, &cls) != ANI_OK) {
-        HILOG_ERROR("find class BusinessError failed");
+        HILOG_ERROR("find class AccessibilityError failed");
         return;
     }
     ani_method ctor;
     if (env->Class_FindMethod(cls, "<ctor>", nullptr, &ctor) != ANI_OK) {
-        HILOG_ERROR("find method BusinessError.constructor failed");
+        HILOG_ERROR("find method AccessibilityError.constructor failed");
         return;
     }
     ani_int errCode = static_cast<ani_int>(errMsg.errCode);
@@ -316,7 +316,7 @@ void ANIUtils::ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
     env->String_NewUTF8(errMsg.message.c_str(), 17U, &errMsgStr);
     ani_object errorObject;
     if (env->Object_New(cls, ctor, &errorObject, errCode, errMsgStr) != ANI_OK) {
-        HILOG_ERROR("create BusinessError object failed");
+        HILOG_ERROR("create AccessibilityError object failed");
         return;
     }
     env->ThrowError(static_cast<ani_error>(errorObject));

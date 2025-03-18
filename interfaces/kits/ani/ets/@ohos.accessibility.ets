@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-export class BusinessError extends Error {
+export class AccessibilityError extends Error {
     constructor(code: int, message: string){
         super(message)
         this.code = code;
@@ -21,7 +21,7 @@ export class BusinessError extends Error {
     code: int;
 }
 
-type AsyncCallback<T> = (err: BusinessError, data: T) => void;
+type AccessibilityCallback<T> = (err: AccessibilityError, data?: T) => void;
 
 native function sendAccessibilityEventSync(event: accessibility.EventInfo): int;
 
@@ -95,23 +95,23 @@ export namespace accessibility {
         customId?: string;
     }
 
-    export function sendAccessibilityEvent(event: EventInfo, callback:AsyncCallback<void>): void {
+    export function sendAccessibilityEvent(event: EventInfo, callback:AccessibilityCallback<void>): void {
         let p1 = taskpool.execute(sendAccessibilityEventSync, event);
         p1.then((code: NullishType) => {
             let codeInt = code as int;
             let message = errMap.get(code as int) ?? '';
-            let err: BusinessError = new BusinessError(codeInt, message);
-            callback(err, undefined);
+            let err: AccessibilityError = new AccessibilityError(codeInt, message);
+            callback(err);
         });
     }
 
     export function sendAccessibilityEvent(event: EventInfo): Promise<void> {
-        let p = new Promise<void> ((resolve: (v: undefined) => void, reject: (error: BusinessError) => void): void => {
+        let p = new Promise<void> ((resolve: (v: undefined) => void, reject: (error: AccessibilityError) => void): void => {
             let p1 = taskpool.execute(sendAccessibilityEventSync, event);
             p1.then((code :NullishType) => {
                 let codeInt = code as int;
                 let message = errMap.get(code as int) ?? '';
-                let err: BusinessError = new BusinessError(codeInt, message);
+                let err: AccessibilityError = new AccessibilityError(codeInt, message);
                 if(err.code != 0){
                     reject(err);
                 }
