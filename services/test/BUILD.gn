@@ -156,6 +156,7 @@ ohos_moduletest("aams_accessibility_touch_exploration_test") {
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -263,6 +264,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -375,6 +377,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -479,6 +482,7 @@ ohos_moduletest("aams_server_test") {
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -584,6 +588,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -694,6 +699,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
