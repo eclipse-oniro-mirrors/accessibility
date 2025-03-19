@@ -66,6 +66,7 @@
         "base_group": [
           "//foundation/barrierfree/accessibility/interfaces/kits/ani:aniaccessibility",
           "//foundation/barrierfree/accessibility/interfaces/kits/ani:accessibility_ani_abc_etc",
+          "//foundation/barrierfree/accessibility/interfaces/kits/ani:AccessibilityExtensionAbility_ani_abc_etc",
           "//foundation/barrierfree/accessibility/interfaces/kits/napi:napi_packages"
         ],
         "fwk_group": [
