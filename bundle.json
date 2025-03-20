@@ -77,7 +77,6 @@
           "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
           "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
           "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-          "//foundation/barrierfree/accessibility/interfaces/kits/cj:cj_accessibility_ffi",
           "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
           "//foundation/barrierfree/accessibility/common/etc:api_event_etc"
         ],
@@ -147,6 +146,13 @@
               "accessibility_window_info.h"
             ],
             "header_base": "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include"
+          }
+        },
+        {
+          "name": "//foundation/barrierfree/accessibility/interfaces/kits/cj:cj_accessibility_ffi",
+          "header": {
+            "header_files": [],
+            "header_base": "//foundation/barrierfree/accessibility/interfaces/kits/cj/include"
           }
         }
       ],
