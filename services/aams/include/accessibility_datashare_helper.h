@@ -37,11 +37,12 @@ class AccessibilityDatashareHelper {
 public:
     AccessibilityDatashareHelper(DATASHARE_TYPE type, int32_t accountID);
     ~AccessibilityDatashareHelper();
-    std::string GetStringValue(const std::string& key, const std::string& defaultValue);
-    int32_t GetIntValue(const std::string& key, const int32_t& defaultValue);
-    int64_t GetLongValue(const std::string& key, const int64_t& defaultValue);
-    bool GetBoolValue(const std::string& key, const bool& defaultValue);
-    float GetFloatValue(const std::string& key, const float& defaultValue);
+    std::string GetStringValue(const std::string& key, const std::string& defaultValue,
+        const bool readOnlyFlag = false);
+    int32_t GetIntValue(const std::string& key, const int32_t& defaultValue, const bool readOnlyFlag = false);
+    int64_t GetLongValue(const std::string& key, const int64_t& defaultValue, const bool readOnlyFlag = false);
+    bool GetBoolValue(const std::string& key, const bool& defaultValue, const bool readOnlyFlag = false);
+    float GetFloatValue(const std::string& key, const float& defaultValue, const bool readOnlyFlag = false);
 
     RetError PutStringValue(const std::string& key, const std::string& value, bool needNotify = true);
     RetError PutIntValue(const std::string& key, int32_t value, bool needNotify = true);

@@ -61,7 +61,8 @@ AccessibilityDatashareHelper::~AccessibilityDatashareHelper()
 #endif
 }
 
-std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key, const std::string& defaultValue)
+std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key, const std::string& defaultValue,
+    const bool readOnlyFlag)
 {
     std::string resultStr = defaultValue;
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
@@ -83,9 +84,11 @@ std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key,
         }
         resultSet->GetRowCount(count);
         if (count == 0) {
-            RetError ret = PutStringValue(key, defaultValue);
-            if (ret != RET_OK) {
-                HILOG_WARN("put default key failed key = %{public}s", key.c_str());
+            if (!readOnlyFlag) {
+                RetError ret = PutStringValue(key, defaultValue);
+                if (ret != RET_OK) {
+                    HILOG_WARN("put default key failed key = %{public}s", key.c_str());
+                }
             }
             break;
         }
@@ -104,36 +107,40 @@ std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key,
     return resultStr;
 }
 
-int64_t AccessibilityDatashareHelper::GetLongValue(const std::string& key, const int64_t& defaultValue)
+int64_t AccessibilityDatashareHelper::GetLongValue(const std::string& key, const int64_t& defaultValue,
+    const bool readOnlyFlag)
 {
     int64_t result = defaultValue;
-    std::string valueStr = GetStringValue(key, std::to_string(result));
+    std::string valueStr = GetStringValue(key, std::to_string(result), readOnlyFlag);
     if (valueStr != "") {
         result = static_cast<int64_t>(std::strtoll(valueStr.c_str(), nullptr, DECIMAL_NOTATION));
     }
     return result;
 }
 
-int32_t AccessibilityDatashareHelper::GetIntValue(const std::string& key, const int32_t& defaultValue)
+int32_t AccessibilityDatashareHelper::GetIntValue(const std::string& key, const int32_t& defaultValue,
+    const bool readOnlyFlag)
 {
-    int64_t valueLong = GetLongValue(key, defaultValue);
+    int64_t valueLong = GetLongValue(key, defaultValue, readOnlyFlag);
     return static_cast<int32_t>(valueLong);
 }
 
-bool AccessibilityDatashareHelper::GetBoolValue(const std::string& key, const bool& defaultValue)
+bool AccessibilityDatashareHelper::GetBoolValue(const std::string& key, const bool& defaultValue,
+    const bool readOnlyFlag)
 {
     bool result = defaultValue;
-    std::string valueStr = GetStringValue(key, result ? "1" : "0");
+    std::string valueStr = GetStringValue(key, result ? "1" : "0", readOnlyFlag);
     if (valueStr != "") {
         result = (valueStr == "1" || valueStr == "true");
     }
     return result;
 }
 
-float AccessibilityDatashareHelper::GetFloatValue(const std::string& key, const float& defaultValue)
+float AccessibilityDatashareHelper::GetFloatValue(const std::string& key, const float& defaultValue,
+    const bool readOnlyFlag)
 {
     float result = defaultValue;
-    std::string valueStr = GetStringValue(key, std::to_string(result));
+    std::string valueStr = GetStringValue(key, std::to_string(result), readOnlyFlag);
     if (valueStr != "") {
         result = std::stof(valueStr);
     }
