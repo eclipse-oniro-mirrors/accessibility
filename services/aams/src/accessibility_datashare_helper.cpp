@@ -86,9 +86,7 @@ std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key,
         if (count == 0) {
             if (!readOnlyFlag) {
                 RetError ret = PutStringValue(key, defaultValue);
-                if (ret != RET_OK) {
-                    HILOG_WARN("put default key failed key = %{public}s", key.c_str());
-                }
+                HILOG_INFO("put default key %{public}s", key.c_str());
             }
             break;
         }
