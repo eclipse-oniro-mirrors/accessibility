@@ -22,6 +22,7 @@ group("fuzztest") {
   testonly = true
 
   deps = [
+    "accessibilityapireporter_fuzzer:fuzztest",
     "accessibilityelementoperatorcallbackstub_fuzzer:fuzztest",
     "accessibilityelementoperatorstub_fuzzer:fuzztest",
     "accessibilityenableabilitylistsobserverstub_fuzzer:fuzztest",

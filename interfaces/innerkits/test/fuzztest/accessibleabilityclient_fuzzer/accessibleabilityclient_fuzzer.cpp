@@ -684,6 +684,82 @@ bool DoSomethingInterestingWithSetCacheMode(const uint8_t* data, size_t size)
 
     return true;
 }
+
+bool FuzzWithSearchElementInfoByAccessibilityId(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    int32_t windowId = 0;
+    int64_t elementId = 0;
+    uint32_t mode = 0;
+    bool isFilter = false;
+
+    startPos += GetObject<int32_t>(windowId, &data[startPos], size - startPos);
+    startPos += GetObject<int64_t>(elementId, &data[startPos], size - startPos);
+
+    OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
+    GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+
+    startPos += GetObject<uint32_t>(mode, &data[startPos], size - startPos);
+    startPos += GetObject<bool>(isFilter, &data[startPos], size - startPos);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->SearchElementInfoByAccessibilityId(
+        windowId, elementId, mode, sourceElementInfo, isFilter);
+
+    return true;
+}
+
+bool FuzzWithGetRootByWindowBatch(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    bool isFilter = false;
+    bool needCut = false;
+
+    OHOS::Accessibility::AccessibilityWindowInfo windowInfo;
+    GenerateAccessibilityWindowInfo(windowInfo, &data[startPos], size - startPos);
+    std::vector<OHOS::Accessibility::AccessibilityElementInfo> infos;
+    OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
+    GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+    infos.push_back(sourceElementInfo);
+
+    startPos += GetObject<bool>(isFilter, &data[startPos], size - startPos);
+    startPos += GetObject<bool>(needCut, &data[startPos], size - startPos);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetRootByWindowBatch(
+        windowInfo, infos, isFilter, needCut);
+
+    return true;
+}
+
+bool FuzzWithGetRootBatch(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    std::vector<OHOS::Accessibility::AccessibilityElementInfo> infos;
+    OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
+    GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+    infos.push_back(sourceElementInfo);
+
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetRootBatch(infos);
+
+    return true;
+}
+
+bool FuzzWithConnect()
+{
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->Connect();
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->Disconnect();
+
+    return true;
+}
 } // namespace OHOS
 
 /* Fuzzer entry point */
@@ -708,5 +784,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DoSomethingInterestingWithExecuteAction(data, size);
     OHOS::DoSomethingInterestingWithSetTargetBundleName(data, size);
     OHOS::DoSomethingInterestingWithSetCacheMode(data, size);
+    OHOS::FuzzWithSearchElementInfoByAccessibilityId(data, size);
+    OHOS::FuzzWithGetRootByWindowBatch(data, size);
+    OHOS::FuzzWithGetRootBatch(data, size);
+    OHOS::FuzzWithConnect();
     return 0;
 }

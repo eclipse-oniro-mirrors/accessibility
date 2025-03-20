@@ -21,11 +21,12 @@
 #include "token_setproc.h"
 
 namespace OHOS {
-const int PERMS_NUM = 11;
+const int PERMS_NUM = 2;
 
 AddAAMSTokenFuzzer::AddAAMSTokenFuzzer()
 {
     const char *perms[PERMS_NUM] = {
+        "ohos.permission.READ_ACCESSIBILITY_CONFIG",
         "ohos.permission.WRITE_ACCESSIBILITY_CONFIG",
     };
 

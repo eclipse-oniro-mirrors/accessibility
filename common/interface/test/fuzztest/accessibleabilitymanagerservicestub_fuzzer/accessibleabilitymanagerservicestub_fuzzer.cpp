@@ -18,6 +18,7 @@
 #include "accessibility_ipc_interface_code.h"
 #include "accessible_ability_manager_service_stub.h"
 #include "securec.h"
+#include "addaamstoken_fuzzer.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -338,10 +339,14 @@ bool OnRemoteRequestSvcFuzzTest(const uint8_t *data, size_t size)
 bool HandleSetDaltonizationStateTest(const uint8_t *data, size_t size)
 {
     MessageParcel datas;
-    bool isSetDaltonizationState = data[0] % DEVISOR_TWO;
     std::u16string descriptor = AccessibleAbilityManagerServiceStubFuzzTest::GetDescriptor();
-    datas.WriteInterfaceToken(descriptor);
-    datas.WriteBool(isSetDaltonizationState);
+    if (!datas.WriteInterfaceToken(descriptor)) {
+        return false;
+    }
+    bool isSetDaltonizationState = data[0] % DEVISOR_TWO;
+    if (!datas.WriteBool(isSetDaltonizationState)) {
+        return false;
+    }
     MessageParcel reply;
     MessageOption option;
     AccessibleAbilityManagerServiceStubFuzzTest serviceStub;
@@ -350,8 +355,51 @@ bool HandleSetDaltonizationStateTest(const uint8_t *data, size_t size)
         static_cast<uint32_t>(AccessibilityInterfaceCode::SET_DALTONIZATION_STATE), datas, reply, option);
     return true;
 }
+
+bool HandleRemoveRequestIdTest(const uint8_t *data, size_t size)
+{
+    MessageParcel request;
+    std::u16string descriptor = AccessibleAbilityManagerServiceStub::GetDescriptor();
+    if (!request.WriteInterfaceToken(descriptor)) {
+        return false;
+    }
+    int32_t requestId = static_cast<int32_t>(*data);
+    if (!request.WriteInt32(requestId)) {
+        return false;
+    }
+
+    MessageParcel reply;
+    MessageOption option;
+    AccessibleAbilityManagerServiceStubFuzzTest serviceStub;
+    serviceStub.OnRemoteRequest(
+        static_cast<uint32_t>(AccessibilityInterfaceCode::REMOVE_REQUEST_ID), request, reply, option);
+    return true;
+}
+
+bool HandleGetScreenReaderStateTest(const uint8_t *data, size_t size)
+{
+    MessageParcel datas;
+    std::u16string descriptor = AccessibleAbilityManagerServiceStubFuzzTest::GetDescriptor();
+    if (!datas.WriteInterfaceToken(descriptor)) {
+        return false;
+    }
+    MessageParcel reply;
+    MessageOption option;
+    AccessibleAbilityManagerServiceStubFuzzTest serviceStub;
+
+    serviceStub.OnRemoteRequest(
+        static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SCREEN_READER_STATE), datas, reply, option);
+    return true;
+}
 } // namespace Accessibility
 } // namespace OHOS
+
+/* Fuzzer entry point */
+extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
+{
+    OHOS::AddAAMSTokenFuzzer token;
+    return 0;
+}
 
 // Fuzzer entry point.
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
@@ -367,5 +415,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     OHOS::Accessibility::OnRemoteRequestSvcFuzzTest(data, size);
     OHOS::Accessibility::HandleSetDaltonizationStateTest(data, size);
+    OHOS::Accessibility::HandleGetScreenReaderStateTest(data, size);
+    OHOS::Accessibility::HandleRemoveRequestIdTest(data, size);
     return 0;
 }
