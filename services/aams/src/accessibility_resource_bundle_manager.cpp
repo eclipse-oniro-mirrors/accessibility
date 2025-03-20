@@ -109,7 +109,7 @@ int AccessibilityResourceBundleManager::GetUidByBundleName(const std::string &bu
             ret = false;
             break;
         }
-    } while(0);
+    } while (0);
     if (ret == false) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
             A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
@@ -137,7 +137,7 @@ bool AccessibilityResourceBundleManager::QueryExtensionAbilityInfos(
             ret = false;
             break;
         }
-    } while(0);
+    } while (0);
     if (ret == false) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT,
             A11yError::ERROR_QUERY_PACKAGE_INFO_FAILED);
