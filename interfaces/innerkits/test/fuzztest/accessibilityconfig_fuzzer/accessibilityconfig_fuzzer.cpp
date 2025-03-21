@@ -272,6 +272,7 @@ void DoSomethingInterestingGetConfigFirstPart(OHOS::AccessibilityConfig::Accessi
     OHOS::AccessibilityConfig::CaptionProperty propertyForGet;
     GenerateCaptionProperty(propertyForGet, &data[startPos], size - startPos);
     abConfig.GetCaptionsProperty(propertyForGet);
+    CheckCaptionProperty(propertyForGet, data, size);
 }
 
 void DoSomethingInterestingGetConfigSecondPart(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,

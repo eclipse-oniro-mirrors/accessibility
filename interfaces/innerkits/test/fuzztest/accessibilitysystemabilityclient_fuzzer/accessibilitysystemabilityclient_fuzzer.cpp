@@ -193,7 +193,6 @@ void CheckEventInfoFuzzTest(AccessibilityEventInfo &eventInfo)
     eventInfo.GetResourceId();
     eventInfo.GetResourceBundleName();
     eventInfo.GetResourceModuleName();
-    eventInfo.GetResourceParams();
     eventInfo.GetBundleName();
     eventInfo.GetNotificationContent();
     eventInfo.GetTextAnnouncedForAccessibility();
