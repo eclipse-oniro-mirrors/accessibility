@@ -147,10 +147,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetClickResponseTime_001 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
@@ -169,10 +166,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetClickResponseTime_002 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
@@ -191,10 +185,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetClickResponseTime_003 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
@@ -214,10 +205,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetIgnoreRepeatClickState_001 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
@@ -237,10 +225,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetIgnoreRepeatClickState_002 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
@@ -260,10 +245,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetIgnoreRepeatClickTime_001 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_SHORTEST);
@@ -284,10 +266,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetIgnoreRepeatClickTime_002 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_MEDIUM);
@@ -308,10 +287,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetIgnoreRepeatClickTime_003 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
@@ -331,9 +307,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_001 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (screenTouch_ == nullptr || event == nullptr) {
-        GTEST_LOG_(INFO) << "null pointer";
-    }
+    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(0);
@@ -354,9 +329,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_002 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (screenTouch_ == nullptr || event == nullptr) {
-        GTEST_LOG_(INFO) << "null pointer";
-    }
+    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(0);
@@ -377,9 +351,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_003 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (screenTouch_ == nullptr || event == nullptr) {
-        GTEST_LOG_(INFO) << "null pointer";
-    }
+    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(screenTouch_ != nullptr);
 
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     EXPECT_EQ(screenTouch_->OnPointerEvent(*event), false);
@@ -396,9 +369,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_004 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (screenTouch_ == nullptr || event == nullptr) {
-        GTEST_LOG_(INFO) << "null pointer";
-    }
+    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(1);
@@ -422,9 +394,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_005 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (screenTouch_ == nullptr || event == nullptr) {
-        GTEST_LOG_(INFO) << "null pointer";
-    }
+    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(1);
@@ -448,9 +419,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_006 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (screenTouch_ == nullptr || event == nullptr) {
-        GTEST_LOG_(INFO) << "null pointer";
-    }
+    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(1);
@@ -474,9 +444,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_007 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (screenTouch_ == nullptr || event == nullptr) {
-        GTEST_LOG_(INFO) << "null pointer";
-    }
+    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(1);
@@ -500,9 +469,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_008 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (screenTouch_ == nullptr || event == nullptr) {
-        GTEST_LOG_(INFO) << "null pointer";
-    }
+    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(1);
@@ -526,9 +494,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_009 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (screenTouch_ == nullptr || event == nullptr) {
-        GTEST_LOG_(INFO) << "null pointer";
-    }
+    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(0);
@@ -556,19 +523,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_001 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent(TIMESTAMP_1500 * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -602,19 +564,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_002 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent((lastUpTime_ + TIMESTAMP_1500) * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -646,19 +603,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_003 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_SHORTEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent((lastUpTime_ + TIMESTAMP_1500) * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -692,19 +644,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_004 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent((lastUpTime_ + TIMESTAMP_1200) * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -730,19 +677,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_005 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent((lastUpTime_ + TIMESTAMP_1200) * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -774,19 +716,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_006 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent((lastUpTime_ + TIMESTAMP_1200) * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -812,19 +749,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_007 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent((lastUpTime_ + TIMESTAMP_1500) * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -870,19 +802,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_008 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent((lastUpTime_ + TIMESTAMP_1500) * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -932,19 +859,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_009 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent((lastUpTime_ + TIMESTAMP_1200) * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -982,19 +904,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_010 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -1050,19 +967,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_011 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -1110,19 +1022,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_012 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(0);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -1170,18 +1077,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_001 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent(TIMESTAMP_1500 * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -1213,18 +1115,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_002 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent(TIMESTAMP_1500 * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -1258,18 +1155,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_003 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent(TIMESTAMP_1500 * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -1301,18 +1193,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_004 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent(TIMESTAMP_1500 * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -1340,18 +1227,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_005 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent(TIMESTAMP_1500 * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -1385,18 +1267,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_006 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent(TIMESTAMP_1500 * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -1424,18 +1301,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_007 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
     point.SetPointerId(0);
@@ -1477,18 +1349,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_008 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
     point.SetPointerId(0);
@@ -1530,18 +1397,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_009 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
     point.SetPointerId(0);
@@ -1583,18 +1445,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_010 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -1648,18 +1505,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_011 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -1713,18 +1565,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_012 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -1778,18 +1625,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_013 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -1841,18 +1683,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_014 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -1904,18 +1741,13 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_015 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
     accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -1966,19 +1798,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_001 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent((lastUpTime_ + TIMESTAMP_1500) * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -2013,19 +1840,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_002 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_MEDIUM);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent((lastUpTime_ + TIMESTAMP_1500) * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -2060,19 +1882,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_003 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_MEDIUM);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     auto eventDown = SetPointerEvent((lastUpTime_ + TIMESTAMP_1500) * US_TO_MS, MMI::PointerEvent::POINTER_ACTION_DOWN);
     screenTouch_->OnPointerEvent(*eventDown);
 
@@ -2107,19 +1924,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_004 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -2176,19 +1988,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_005 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_MEDIUM);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -2245,19 +2052,14 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_006 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
     accountData->GetConfig()->SetIgnoreRepeatClickState(true);
     accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_MEDIUM);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    if (screenTouch_ == nullptr) {
-        return;
-    }
-
+    EXPECT_TRUE(screenTouch_ != nullptr);
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem firstPoint = {};
     firstPoint.SetPointerId(0);
@@ -2315,10 +2117,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest,
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealClickResponseTime_001 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetClickResponseTime(900);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
@@ -2338,10 +2137,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest,
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealIgnoreRepeatClickTime_001 start";
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     accountData->GetConfig()->SetIgnoreRepeatClickTime(2000);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
@@ -2360,6 +2156,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Sen
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SendInterceptedEvent_001 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     screenTouch_->SendInterceptedEvent();
+    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector().size(), 0);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SendInterceptedEvent_001 end";
 }
 } // namespace Accessibility
