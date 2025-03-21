@@ -49,7 +49,7 @@ void MockAccessibilitySettingProvider::DeleteInstance()
     HILOG_DEBUG("start.");
 }
 
-RetError MockAccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value)
+RetError MockAccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value, const bool readOnlyFlag)
 {
     HILOG_DEBUG("start.");
     (void)key;
@@ -57,7 +57,7 @@ RetError MockAccessibilitySettingProvider::GetIntValue(const std::string& key, i
     return RET_OK;
 }
 
-RetError MockAccessibilitySettingProvider::GetLongValue(const std::string& key, int64_t& value)
+RetError MockAccessibilitySettingProvider::GetLongValue(const std::string& key, int64_t& value, const bool readOnlyFlag)
 {
     HILOG_DEBUG("start.");
     (void)key;
@@ -65,7 +65,7 @@ RetError MockAccessibilitySettingProvider::GetLongValue(const std::string& key, 
     return RET_OK;
 }
 
-RetError MockAccessibilitySettingProvider::GetBoolValue(const std::string& key, bool& value)
+RetError MockAccessibilitySettingProvider::GetBoolValue(const std::string& key, bool& value, const bool readOnlyFlag)
 {
     HILOG_DEBUG("start.");
     (void)key;
@@ -73,7 +73,7 @@ RetError MockAccessibilitySettingProvider::GetBoolValue(const std::string& key, 
     return RET_OK;
 }
 
-RetError MockAccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value)
+RetError MockAccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value, const bool readOnlyFlag)
 {
     HILOG_DEBUG("start.");
     (void)key;
@@ -131,7 +131,8 @@ RetError MockAccessibilitySettingProvider::UnregisterObserver(const std::string&
     return RET_OK;
 }
 
-RetError MockAccessibilitySettingProvider::GetStringValue(const std::string& key, std::string& value)
+RetError MockAccessibilitySettingProvider::GetStringValue(const std::string& key, std::string& value,
+    const bool readOnlyFlag)
 {
     HILOG_DEBUG("start.");
     (void)key;

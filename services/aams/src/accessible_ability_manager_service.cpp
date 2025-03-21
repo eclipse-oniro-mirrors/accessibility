@@ -2902,9 +2902,9 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
     }
     bool oobeState = false;
     bool userSetupState = false;
-    service->GetBoolValue(DEVICE_PROVISIONED, oobeState);
+    service->GetBoolValue(DEVICE_PROVISIONED, oobeState, true);
     if (accountData->GetConfig()->GetDbHandle()) {
-        userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
+        userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false, true);
     }
     if (oobeState && userSetupState) {
         int32_t shortKeyTimeout = accountData->GetConfig()->GetShortKeyTimeout();
@@ -3297,9 +3297,9 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
         }
         bool oobeState = false;
         bool userSetupState = false;
-        service->GetBoolValue(DEVICE_PROVISIONED, oobeState);
+        service->GetBoolValue(DEVICE_PROVISIONED, oobeState, true);
         if (accountData->GetConfig()->GetDbHandle() != nullptr) {
-            userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false);
+            userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false, true);
         }
         if (accountData->GetAccountId() == DEFAULT_ACCOUNT_ID && (oobeState == false || userSetupState == false)) {
             InitializeShortKeyState();

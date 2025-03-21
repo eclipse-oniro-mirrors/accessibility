@@ -31,11 +31,11 @@ public:
     AccessibilitySettingProvider();
     ~AccessibilitySettingProvider();
     void DeleteInstance();
-    RetError GetStringValue(const std::string& key, std::string& value);
-    RetError GetIntValue(const std::string& key, int32_t& value);
-    RetError GetLongValue(const std::string& key, int64_t& value);
-    RetError GetBoolValue(const std::string& key, bool& value);
-    RetError GetFloatValue(const std::string& key, float& value);
+    RetError GetStringValue(const std::string& key, std::string& value, const bool readOnlyFlag = false);
+    RetError GetIntValue(const std::string& key, int32_t& value, const bool readOnlyFlag = false);
+    RetError GetLongValue(const std::string& key, int64_t& value, const bool readOnlyFlag = false);
+    RetError GetBoolValue(const std::string& key, bool& value, const bool readOnlyFlag = false);
+    RetError GetFloatValue(const std::string& key, float& value, const bool readOnlyFlag = false);
     RetError PutStringValue(const std::string& key, const std::string& value, bool needNotify = true);
     RetError PutIntValue(const std::string& key, int32_t value, bool needNotify = true);
     RetError PutLongValue(const std::string& key, int64_t value, bool needNotify = true);

@@ -62,33 +62,34 @@ void AccessibilitySettingProvider::DeleteInstance()
     instance_ = nullptr;
 }
 
-RetError AccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value)
+RetError AccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value, const bool readOnlyFlag)
 {
-    value = AccessibilityDatashareHelper::GetIntValue(key, 0);
+    value = AccessibilityDatashareHelper::GetIntValue(key, 0, readOnlyFlag);
     return RET_OK;
 }
 
-RetError AccessibilitySettingProvider::GetLongValue(const std::string& key, int64_t& value)
+RetError AccessibilitySettingProvider::GetLongValue(const std::string& key, int64_t& value, const bool readOnlyFlag)
 {
-    value = AccessibilityDatashareHelper::GetLongValue(key, 0);
+    value = AccessibilityDatashareHelper::GetLongValue(key, 0, readOnlyFlag);
     return RET_OK;
 }
 
-RetError AccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value)
+RetError AccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value, const bool readOnlyFlag)
 {
-    value = AccessibilityDatashareHelper::GetFloatValue(key, 0);
+    value = AccessibilityDatashareHelper::GetFloatValue(key, 0, readOnlyFlag);
     return RET_OK;
 }
 
-RetError AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool& value)
+RetError AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool& value, const bool readOnlyFlag)
 {
-    value = AccessibilityDatashareHelper::GetBoolValue(key, 0);
+    value = AccessibilityDatashareHelper::GetBoolValue(key, 0, readOnlyFlag);
     return RET_OK;
 }
 
-RetError AccessibilitySettingProvider::GetStringValue(const std::string& key, std::string& value)
+RetError AccessibilitySettingProvider::GetStringValue(const std::string& key, std::string& value,
+    const bool readOnlyFlag)
 {
-    value = AccessibilityDatashareHelper::GetStringValue(key, "");
+    value = AccessibilityDatashareHelper::GetStringValue(key, "", readOnlyFlag);
     return RET_OK;
 }
 

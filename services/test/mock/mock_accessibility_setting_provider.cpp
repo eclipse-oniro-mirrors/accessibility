@@ -47,28 +47,28 @@ void AccessibilitySettingProvider::DeleteInstance()
 {
 }
 
-RetError AccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value)
+RetError AccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value, const bool readOnlyFlag)
 {
     (void)key;
     (void)value;
     return RET_OK;
 }
 
-RetError AccessibilitySettingProvider::GetLongValue(const std::string& key, int64_t& value)
+RetError AccessibilitySettingProvider::GetLongValue(const std::string& key, int64_t& value, const bool readOnlyFlag)
 {
     (void)key;
     (void)value;
     return RET_OK;
 }
 
-RetError AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool& value)
+RetError AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool& value, const bool readOnlyFlag)
 {
     (void)key;
     (void)value;
     return RET_OK;
 }
 
-RetError AccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value)
+RetError AccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value, const bool readOnlyFlag)
 {
     (void)key;
     (void)value;
@@ -121,7 +121,8 @@ RetError AccessibilitySettingProvider::UnregisterObserver(const std::string& key
     return RET_OK;
 }
 
-RetError AccessibilitySettingProvider::GetStringValue(const std::string& key, std::string& value)
+RetError AccessibilitySettingProvider::GetStringValue(const std::string& key, std::string& value,
+    const bool readOnlyFlag)
 {
     (void)key;
     (void)value;
