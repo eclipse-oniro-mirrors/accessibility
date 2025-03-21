@@ -120,6 +120,9 @@ static void CreateEventInfoFirstPart(AccessibilityEventInfo &eventInfo, const ui
     int32_t pageId = 0;
     position += GetObject<int32_t>(pageId, &data[position], size - position);
     eventInfo.SetPageId(pageId);
+    int32_t int32Data = 0;
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    eventInfo.SetElementMainWindowId(int32Data);
 }
 
 static void CreateEventInfoSecondPart(AccessibilityEventInfo &eventInfo, const uint8_t* data, size_t size,
@@ -170,11 +173,46 @@ static void CreateEventInfoSecondPart(AccessibilityEventInfo &eventInfo, const u
     eventInfo.SetNotificationContent(notificationContent);
 }
 
+void CheckEventInfoFuzzTest(AccessibilityEventInfo &eventInfo)
+{
+    eventInfo.GetViewId();
+    eventInfo.GetAccessibilityId();
+    eventInfo.GetWindowId();
+    eventInfo.GetCurrentIndex();
+    eventInfo.GetBeginIndex();
+    eventInfo.GetEndIndex();
+    eventInfo.GetComponentType();
+    eventInfo.GetBeforeText();
+    eventInfo.GetContentList();
+    eventInfo.GetLatestContent();
+    eventInfo.GetDescription();
+    eventInfo.GetItemCounts();
+    eventInfo.GetWindowContentChangeTypes();
+    eventInfo.GetWindowChangeTypes();
+    eventInfo.GetTimeStamp();
+    eventInfo.GetResourceId();
+    eventInfo.GetResourceBundleName();
+    eventInfo.GetResourceModuleName();
+    eventInfo.GetResourceParams();
+    eventInfo.GetBundleName();
+    eventInfo.GetNotificationContent();
+    eventInfo.GetTextAnnouncedForAccessibility();
+    eventInfo.GetInspectorKey();
+    eventInfo.GetTextMovementStep();
+    eventInfo.GetTriggerAction();
+    eventInfo.GetGestureType();
+    eventInfo.GetNotificationInfo();
+    eventInfo.GetPageId();
+    eventInfo.GetElementInfo();
+    eventInfo.GetRequestFocusElementId();
+}
+
 static size_t CreateEventInfo(AccessibilityEventInfo &eventInfo, const uint8_t* data, size_t size)
 {
     size_t position = 0;
     CreateEventInfoFirstPart(eventInfo, data, size, position);
     CreateEventInfoSecondPart(eventInfo, data, size, position);
+    CheckEventInfoFuzzTest(eventInfo);
     return position;
 }
 

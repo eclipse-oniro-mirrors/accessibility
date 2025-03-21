@@ -109,7 +109,7 @@ static size_t GenerateCaptionProperty(
         position += GetObject<char>(name[i], &data[position], size - position);
     }
     std::string type(name);
-    property.SetFontFamily(type);
+    property.SetFontEdgeType(type);
 
     return position;
 }
@@ -207,6 +207,26 @@ void DoSomethingInterestingGetAbility(OHOS::AccessibilityConfig::AccessibilityCo
     abConfig.UnsubscribeEnableAbilityListsObserver(eObserver);
 }
 
+static void CheckCaptionProperty(
+    OHOS::AccessibilityConfig::CaptionProperty &captionProperty, const uint8_t* data, size_t size)
+{
+    size_t position = 0;
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string property(name);
+    captionProperty.CheckProperty(property);
+
+    captionProperty.GetBackgroundColor();
+    captionProperty.GetFontScale();
+    captionProperty.GetFontColor();
+    captionProperty.GetFontEdgeType();
+    captionProperty.GetWindowColor();
+    captionProperty.GetFontFamily();
+}
+
 void DoSomethingInterestingGetConfigFirstPart(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
     const uint8_t* data, size_t size, size_t& startPos)
 {
@@ -249,17 +269,6 @@ void DoSomethingInterestingGetConfigFirstPart(OHOS::AccessibilityConfig::Accessi
     startPos += GetObject<float>(tempFloat, &data[startPos], size - startPos);
     abConfig.GetAudioBalance(tempFloat);
 
-    char name[LEN + 1];
-    name[LEN] = END_CHAR;
-    for (size_t i = 0; i < LEN; i++) {
-        startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
-    }
-    std::string nameStrForGet(name);
-    abConfig.GetShortkeyTarget(nameStrForGet);
-
-    std::vector<std::string> multiTargetName = {nameStrForGet};
-    abConfig.GetShortkeyMultiTarget(multiTargetName);
-    
     OHOS::AccessibilityConfig::CaptionProperty propertyForGet;
     GenerateCaptionProperty(propertyForGet, &data[startPos], size - startPos);
     abConfig.GetCaptionsProperty(propertyForGet);
@@ -282,6 +291,16 @@ void DoSomethingInterestingGetConfigSecondPart(OHOS::AccessibilityConfig::Access
     OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME ignoreTime =
         static_cast<OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME>(tempUint32);
     abConfig.GetIgnoreRepeatClickTime(ignoreTime);
+
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    for (size_t i = 0; i < LEN; i++) {
+        startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
+    }
+    std::string nameStrForGet(name);
+    abConfig.GetShortkeyTarget(nameStrForGet);
+    std::vector<std::string> multiTargetName = {nameStrForGet};
+    abConfig.GetShortkeyMultiTarget(multiTargetName);
 }
 
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
