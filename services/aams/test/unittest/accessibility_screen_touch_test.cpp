@@ -307,7 +307,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_001 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(event != nullptr);
     EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
@@ -329,7 +329,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_002 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(event != nullptr);
     EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
@@ -351,7 +351,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_003 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(event != nullptr);
     EXPECT_TRUE(screenTouch_ != nullptr);
 
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
@@ -369,7 +369,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_004 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(event != nullptr);
     EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
@@ -394,7 +394,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_005 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(event != nullptr);
     EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
@@ -419,7 +419,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_006 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(event != nullptr);
     EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
@@ -444,7 +444,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_007 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(event != nullptr);
     EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
@@ -469,7 +469,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_008 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(event != nullptr);
     EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
@@ -494,7 +494,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_009 start";
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    EXPECT_TRUE(accountData != nullptr);
+    EXPECT_TRUE(event != nullptr);
     EXPECT_TRUE(screenTouch_ != nullptr);
 
     MMI::PointerEvent::PointerItem pointer = {};
