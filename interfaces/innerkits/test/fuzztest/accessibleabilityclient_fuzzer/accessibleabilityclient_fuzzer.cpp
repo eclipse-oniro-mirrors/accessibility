@@ -126,6 +126,9 @@ static void GenerateAccessibilityElementInfoP1(OHOS::Accessibility::Accessibilit
     sourceElementInfo.SetAccessibilityId(int64Data);
 
     position += GetObject<int64_t>(int64Data, &data[position], size - position);
+    sourceElementInfo.SetComponentId(int64Data);
+
+    position += GetObject<int64_t>(int64Data, &data[position], size - position);
     sourceElementInfo.SetParent(int64Data);
 
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
@@ -157,6 +160,9 @@ static void GenerateAccessibilityElementInfoP1(OHOS::Accessibility::Accessibilit
 
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceElementInfo.SetItemCounts(int32Data);
+
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceElementInfo.SetTriggerAction(static_cast<OHOS::Accessibility::ActionType>(int32Data));
 
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceElementInfo.SetTextMovementStep(static_cast<OHOS::Accessibility::TextMoveUnit>(int32Data));
@@ -261,6 +267,9 @@ static void GenerateAccessibilityElementInfoP3(OHOS::Accessibility::Accessibilit
     position += GenerateGridItemInfo(gridItem, &data[position], size - position);
     sourceElementInfo.SetGridItem(gridItem);
 
+    OHOS::Accessibility::GridItemInfo otherGridItem;
+    otherGridItem.SetGridItemInfo(gridItem);
+
     int32_t int32Data = 0;
     char name[LEN + 1];
     name[LEN] = END_CHAR;
@@ -276,6 +285,75 @@ static void GenerateAccessibilityElementInfoP3(OHOS::Accessibility::Accessibilit
     }
 }
 
+static void GenerateAccessibilityElementInfoP4(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
+    const uint8_t* data, size_t size, size_t& position)
+{
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    std::vector<std::string> contentList;
+    for (size_t count = 0; count < VEC_SIZE; count++) {
+        char name[LEN + 1];
+        name[LEN] = END_CHAR;
+        for (size_t i = 0; i < LEN; i++) {
+            position += GetObject<char>(name[i], &data[position], size - position);
+        }
+        std::string content(name);
+        contentList.push_back(content);
+    }
+    sourceElementInfo.SetContentList(contentList);
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string latestContent(name);
+    sourceElementInfo.SetLatestContent(latestContent);
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string pagePath(name);
+    sourceElementInfo.SetPagePath(pagePath);
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string accessibilityText(name);
+    sourceElementInfo.SetAccessibilityText(accessibilityText);
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string textType(name);
+    sourceElementInfo.SetTextType(textType);
+}
+
+static void GenerateAccessibilityElementInfoP5(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
+    const uint8_t* data, size_t size, size_t& position)
+{
+    float offset = 0.0;
+    position += GetObject<float>(offset, &data[position], size - position);
+    sourceElementInfo.SetOffset(offset);
+
+    int32_t iChildTreeId = 0;
+    int32_t iChildWindowId = 0;
+    position += GetObject<int32_t>(iChildTreeId, &data[position], size - position);
+    position += GetObject<int32_t>(iChildWindowId, &data[position], size - position);
+    sourceElementInfo.SetChildTreeIdAndWinId(iChildTreeId, iChildWindowId);
+
+    int32_t int32Data = 0;
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceElementInfo.SetBelongTreeId(int32Data);
+
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceElementInfo.SetParentWindowId(int32Data);
+
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceElementInfo.SetMainWindowId(int32Data);
+
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceElementInfo.SetInnerWindowId(int32Data);
+}
+
 static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
     const uint8_t* data, size_t size)
 {
@@ -283,6 +361,8 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
     GenerateAccessibilityElementInfoP1(sourceElementInfo, data, size, position);
     GenerateAccessibilityElementInfoP2(sourceElementInfo, data, size, position);
     GenerateAccessibilityElementInfoP3(sourceElementInfo, data, size, position);
+    GenerateAccessibilityElementInfoP4(sourceElementInfo, data, size, position);
+    GenerateAccessibilityElementInfoP5(sourceElementInfo, data, size, position);
     return position;
 }
 
@@ -314,10 +394,41 @@ static size_t GenerateAccessibilityWindowInfo(OHOS::Accessibility::Accessibility
     sourceWindowInfo.SetActive(data[position++] & 0x01);
     sourceWindowInfo.SetFocused(data[position++] & 0x01);
     sourceWindowInfo.SetAccessibilityFocused(data[position++] & 0x01);
+    sourceWindowInfo.SetDecorEnable(data[position++] & 0x01);
+
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceWindowInfo.SetInnerWid(int32Data);
+
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceWindowInfo.SetMainWindowId(int32Data);
+
+    int64_t int64Data = 0;
+    position += GetObject<int64_t>(int64Data, &data[position], size - position);
+    sourceWindowInfo.SetUiNodeId(int32Data);
+
+    float floatData = 0.0;
+    position += GetObject<float>(floatData, &data[position], size - position);
+    sourceWindowInfo.SetScaleVal(floatData);
+
+    position += GetObject<float>(floatData, &data[position], size - position);
+    sourceWindowInfo.SetScaleX(floatData);
+
+    position += GetObject<float>(floatData, &data[position], size - position);
+    sourceWindowInfo.SetScaleY(floatData);
+
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string bundleName(name);
+    sourceWindowInfo.SetBundleName(bundleName);
 
     OHOS::Accessibility::Rect bounds;
     position += GenerateRect(bounds, &data[position], size - position);
     sourceWindowInfo.SetRectInScreen(bounds);
+    std::vector<OHOS::Accessibility::Rect> touchHotAreas = {bounds};
+    sourceWindowInfo.SetTouchHotAreas(touchHotAreas);
     return position;
 }
 
@@ -437,6 +548,8 @@ bool DoSomethingInterestingWithInjectGesture(const uint8_t* data, size_t size)
     GetObject<int64_t>(int64Data, &data[startPos], size - startPos);
     gesturePath->SetDurationTime(int64Data);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->InjectGesture(gesturePath);
+    gesturePath->GetDurationTime();
+    gesturePath->GetPositions();
     return true;
 }
 
@@ -684,6 +797,435 @@ bool DoSomethingInterestingWithSetCacheMode(const uint8_t* data, size_t size)
 
     return true;
 }
+
+bool FuzzWithSearchElementInfoByAccessibilityId(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    int32_t windowId = 0;
+    int64_t elementId = 0;
+    uint32_t mode = 0;
+    bool isFilter = false;
+
+    startPos += GetObject<int32_t>(windowId, &data[startPos], size - startPos);
+    startPos += GetObject<int64_t>(elementId, &data[startPos], size - startPos);
+
+    OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
+    GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+
+    startPos += GetObject<uint32_t>(mode, &data[startPos], size - startPos);
+    startPos += GetObject<bool>(isFilter, &data[startPos], size - startPos);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->SearchElementInfoByAccessibilityId(
+        windowId, elementId, mode, sourceElementInfo, isFilter);
+
+    return true;
+}
+
+static bool CheckGenerateAccessibilityWindowInfo(OHOS::Accessibility::AccessibilityWindowInfo &sourceWindowInfo)
+{
+    sourceWindowInfo.GetAccessibilityWindowType();
+    sourceWindowInfo.GetWindowLayer();
+    sourceWindowInfo.GetWindowId();
+    sourceWindowInfo.GetRectInScreen();
+    sourceWindowInfo.IsActive();
+    sourceWindowInfo.IsFocused();
+    sourceWindowInfo.IsAccessibilityFocused();
+    sourceWindowInfo.GetDisplayId();
+    sourceWindowInfo.GetWindowType();
+    sourceWindowInfo.GetWindowMode();
+    sourceWindowInfo.IsDecorEnable();
+    sourceWindowInfo.GetInnerWid();
+    sourceWindowInfo.GetUiNodeId();
+    sourceWindowInfo.GetScaleVal();
+    sourceWindowInfo.GetScaleX();
+    sourceWindowInfo.GetScaleY();
+    sourceWindowInfo.GetBundleName();
+    sourceWindowInfo.GetTouchHotAreas();
+    sourceWindowInfo.GetMainWindowId();
+    return true;
+}
+
+static bool CheckGenerateAccessibilityElementInfoP1(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
+    const uint8_t* data, size_t size, size_t& position)
+{
+    int32_t index = 0;
+    position += GetObject<int32_t>(index, &data[position], size - position);
+    sourceElementInfo.GetChildId(index);
+    sourceElementInfo.GetAccessibilityText();
+    sourceElementInfo.GetTextType();
+    sourceElementInfo.GetOffset();
+    sourceElementInfo.GetPageId();
+    sourceElementInfo.GetTextMovementStep();
+    sourceElementInfo.GetItemCounts();
+    sourceElementInfo.GetTriggerAction();
+    sourceElementInfo.GetLatestContent();
+    sourceElementInfo.GetChildTreeId();
+    sourceElementInfo.GetChildWindowId();
+    sourceElementInfo.GetBelongTreeId();
+    sourceElementInfo.GetParentWindowId();
+
+    std::vector<std::string> contentList;
+    for (size_t count = 0; count < VEC_SIZE; count++) {
+        char name[LEN + 1];
+        name[LEN] = END_CHAR;
+        for (size_t i = 0; i < LEN; i++) {
+            position += GetObject<char>(name[i], &data[position], size - position);
+        }
+        std::string content(name);
+        contentList.push_back(content);
+    }
+    sourceElementInfo.GetContentList(contentList);
+
+    int64_t int64Data = 0;
+    for (size_t i = 0; i < VEC_SIZE; i++) {
+        position += GetObject<int64_t>(int64Data, &data[position], size - position);
+        sourceElementInfo.RemoveChild(int64Data);
+    }
+
+    return true;
+}
+
+static bool CheckGenerateAccessibilityElementInfoP2(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo)
+{
+    sourceElementInfo.GetChildCount();
+    sourceElementInfo.GetChildIds();
+    sourceElementInfo.GetActionList();
+    sourceElementInfo.GetTextLengthLimit();
+    sourceElementInfo.GetMainWindowId();
+    sourceElementInfo.GetInnerWindowId();
+    sourceElementInfo.GetParentNodeId();
+    sourceElementInfo.GetRectInScreen();
+    sourceElementInfo.IsCheckable();
+    sourceElementInfo.IsChecked();
+    sourceElementInfo.IsFocusable();
+    sourceElementInfo.IsFocused();
+    sourceElementInfo.IsVisible();
+    sourceElementInfo.HasAccessibilityFocus();
+    sourceElementInfo.IsSelected();
+    sourceElementInfo.IsClickable();
+    sourceElementInfo.IsLongClickable();
+    sourceElementInfo.IsEnabled();
+    sourceElementInfo.IsPassword();
+    sourceElementInfo.IsScrollable();
+    sourceElementInfo.GetCurrentIndex();
+    sourceElementInfo.GetBeginIndex();
+    sourceElementInfo.GetEndIndex();
+    sourceElementInfo.GetInputType();
+    sourceElementInfo.GetInspectorKey();
+    sourceElementInfo.GetPagePath();
+    sourceElementInfo.IsValidElement();
+    sourceElementInfo.IsEditable();
+    sourceElementInfo.IsPluraLineSupported();
+    sourceElementInfo.IsPopupSupported();
+    sourceElementInfo.IsDeletable();
+    sourceElementInfo.IsEssential();
+    sourceElementInfo.IsGivingHint();
+    sourceElementInfo.GetBundleName();
+    sourceElementInfo.GetComponentType();
+    sourceElementInfo.GetContent();
+    sourceElementInfo.GetSelectedBegin();
+    sourceElementInfo.GetSelectedEnd();
+    sourceElementInfo.GetHint();
+    sourceElementInfo.GetDescriptionInfo();
+    sourceElementInfo.GetComponentResourceId();
+    sourceElementInfo.GetLiveRegion();
+    sourceElementInfo.GetContentInvalid();
+    sourceElementInfo.GetError();
+    sourceElementInfo.GetLabeledAccessibilityId();
+    sourceElementInfo.GetRange();
+    sourceElementInfo.GetGrid();
+    sourceElementInfo.GetGridItem();
+
+    return true;
+}
+
+static bool CheckGenerateAccessibilityElementInfoP3(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
+    const uint8_t* data, size_t size, size_t& position)
+{
+    int32_t int32Data = 0;
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    for (size_t count = 0; count < VEC_SIZE; count++) {
+        position += GetObject<int32_t>(int32Data, &data[position], size - position);
+        for (size_t i = 0; i < LEN; i++) {
+            position += GetObject<char>(name[i], &data[position], size - position);
+        }
+        std::string description(name);
+        OHOS::Accessibility::AccessibleAction action(
+            static_cast<OHOS::Accessibility::ActionType>(int32Data), description);
+        sourceElementInfo.DeleteAction(action);
+    }
+
+    for (size_t count = 0; count < VEC_SIZE; count++) {
+        position += GetObject<int32_t>(int32Data, &data[position], size - position);
+        for (size_t i = 0; i < LEN; i++) {
+            position += GetObject<char>(name[i], &data[position], size - position);
+        }
+        std::string description(name);
+        OHOS::Accessibility::AccessibleAction action(
+            static_cast<OHOS::Accessibility::ActionType>(int32Data), description);
+        sourceElementInfo.AddAction(action);
+        OHOS::Accessibility::ActionType actionType = action.GetActionType();
+        sourceElementInfo.DeleteAction(actionType);
+    }
+
+    sourceElementInfo.DeleteAllActions();
+    return true;
+}
+
+static bool CheckGridItemInfo()
+{
+    OHOS::Accessibility::GridItemInfo gridItem;
+    gridItem.GetColumnIndex();
+    gridItem.GetRowIndex();
+    gridItem.GetColumnSpan();
+    gridItem.GetRowSpan();
+    gridItem.IsHeading();
+    gridItem.IsSelected();
+    return true;
+}
+
+bool FuzzWithGetRootByWindowBatch(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    bool isFilter = false;
+    bool needCut = false;
+
+    OHOS::Accessibility::AccessibilityWindowInfo windowInfo;
+    GenerateAccessibilityWindowInfo(windowInfo, &data[startPos], size - startPos);
+    std::vector<OHOS::Accessibility::AccessibilityElementInfo> infos;
+    OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
+    GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+    infos.push_back(sourceElementInfo);
+
+    startPos += GetObject<bool>(isFilter, &data[startPos], size - startPos);
+    startPos += GetObject<bool>(needCut, &data[startPos], size - startPos);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetRootByWindowBatch(
+        windowInfo, infos, isFilter, needCut);
+
+    CheckGenerateAccessibilityWindowInfo(windowInfo);
+    CheckGenerateAccessibilityElementInfoP1(sourceElementInfo, &data[startPos], size - startPos, startPos);
+    CheckGenerateAccessibilityElementInfoP2(sourceElementInfo);
+    CheckGenerateAccessibilityElementInfoP3(sourceElementInfo, &data[startPos], size - startPos, startPos);
+    CheckGridItemInfo();
+    return true;
+}
+
+bool FuzzWithGetRootBatch(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    std::vector<OHOS::Accessibility::AccessibilityElementInfo> infos;
+    OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
+    GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+    infos.push_back(sourceElementInfo);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetRootBatch(infos);
+
+    return true;
+}
+
+bool FuzzWithConnect()
+{
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->Connect();
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->Disconnect();
+
+    return true;
+}
+
+static void FuzzWithExtraElementInfoFirstPart(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
+    const uint8_t* data, size_t size, size_t& position)
+{
+    OHOS::Accessibility::ExtraElementInfo extraElementInfo;
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string keyStr(name);
+    std::string valueStr(name);
+    extraElementInfo.SetExtraElementInfo(keyStr, valueStr);
+
+    int32_t int32Data = 0;
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    extraElementInfo.SetExtraElementInfo(keyStr, int32Data);
+
+    extraElementInfo.GetExtraElementInfoValueStr();
+    extraElementInfo.GetExtraElementInfoValueInt();
+
+    sourceElementInfo.SetExtraElement(extraElementInfo);
+    sourceElementInfo.GetExtraElement();
+    sourceElementInfo.GetAccessibilityLevel();
+
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceElementInfo.SetZIndex(int32Data);
+    sourceElementInfo.GetZIndex();
+
+    float floatData = 0.0;
+    position += GetObject<float>(floatData, &data[position], size - position);
+    sourceElementInfo.SetOpacity(floatData);
+    sourceElementInfo.GetOpacity();
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string backgroundColor(name);
+    sourceElementInfo.SetBackgroundColor(backgroundColor);
+    sourceElementInfo.GetBackgroundColor();
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string backgroundImage(name);
+    sourceElementInfo.SetBackgroundImage(backgroundImage);
+    sourceElementInfo.GetBackgroundImage();
+}
+
+static void FuzzWithExtraElementInfoSecondPart(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
+    const uint8_t* data, size_t size, size_t& position)
+{
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string blur(name);
+    sourceElementInfo.SetBlur(blur);
+    sourceElementInfo.GetBlur();
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string hitTestBehavior(name);
+    sourceElementInfo.SetHitTestBehavior(hitTestBehavior);
+    sourceElementInfo.GetHitTestBehavior();
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string customComponentType(name);
+    sourceElementInfo.SetCustomComponentType(customComponentType);
+    sourceElementInfo.GetCustomComponentType();
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string accessibilityNextFocusInspectorKey(name);
+    sourceElementInfo.SetAccessibilityNextFocusInspectorKey(accessibilityNextFocusInspectorKey);
+    sourceElementInfo.GetAccessibilityNextFocusInspectorKey();
+}
+
+static void FuzzWithExtraElementInfoThirdPart(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
+    const uint8_t* data, size_t size, size_t& position)
+{
+    int64_t int64Data = 0;
+    position += GetObject<int64_t>(int64Data, &data[position], size - position);
+    sourceElementInfo.SetNavDestinationId(int64Data);
+    sourceElementInfo.GetNavDestinationId();
+
+    position += GetObject<int64_t>(int64Data, &data[position], size - position);
+    sourceElementInfo.SetAccessibilityNextFocusId(int64Data);
+    sourceElementInfo.GetAccessibilityNextFocusId();
+
+    position += GetObject<int64_t>(int64Data, &data[position], size - position);
+    sourceElementInfo.SetAccessibilityPreviousFocusId(int64Data);
+    sourceElementInfo.GetAccessibilityPreviousFocusId();
+
+    bool boolData = false;
+    position += GetObject<bool>(boolData, &data[position], size - position);
+    sourceElementInfo.SetIsActive(boolData);
+    sourceElementInfo.GetIsActive();
+
+    position += GetObject<bool>(boolData, &data[position], size - position);
+    sourceElementInfo.SetAccessibilityVisible(boolData);
+    sourceElementInfo.GetAccessibilityVisible();
+
+    position += GetObject<bool>(boolData, &data[position], size - position);
+    sourceElementInfo.SetClip(boolData);
+    sourceElementInfo.GetClip();
+
+    position += GetObject<bool>(boolData, &data[position], size - position);
+    sourceElementInfo.SetAccessibilityScrollable(boolData);
+    sourceElementInfo.GetAccessibilityScrollable();
+}
+
+bool FuzzWithExtraElementInfo(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
+    FuzzWithExtraElementInfoFirstPart(sourceElementInfo, data, size, position);
+    FuzzWithExtraElementInfoSecondPart(sourceElementInfo, data, size, position);
+    FuzzWithExtraElementInfoThirdPart(sourceElementInfo, data, size, position);
+
+    return true;
+}
+
+bool FuzzWithSpanInfo(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    OHOS::Accessibility::SpanInfo span;
+    int32_t int32Data = 0;
+    size_t position = 0;
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    span.SetSpanId(int32Data);
+    span.GetSpanId();
+
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string spanText(name);
+    span.SetSpanText(spanText);
+    span.GetSpanText();
+
+    OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
+    std::vector<OHOS::Accessibility::SpanInfo> spanList;
+    spanList.push_back(span);
+    sourceElementInfo.SetSpanList(spanList);
+    sourceElementInfo.GetSpanList();
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string accessibilityText(name);
+    span.SetAccessibilityText(accessibilityText);
+    span.GetAccessibilityText();
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string accessibilityDescription(name);
+    span.SetAccessibilityDescription(accessibilityDescription);
+    span.GetAccessibilityDescription();
+
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string accessibilityLevel(name);
+    span.SetAccessibilityLevel(accessibilityLevel);
+    span.GetAccessibilityLevel();
+
+    sourceElementInfo.AddSpan(span);
+
+    return true;
+}
 } // namespace OHOS
 
 /* Fuzzer entry point */
@@ -708,5 +1250,11 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DoSomethingInterestingWithExecuteAction(data, size);
     OHOS::DoSomethingInterestingWithSetTargetBundleName(data, size);
     OHOS::DoSomethingInterestingWithSetCacheMode(data, size);
+    OHOS::FuzzWithSearchElementInfoByAccessibilityId(data, size);
+    OHOS::FuzzWithGetRootByWindowBatch(data, size);
+    OHOS::FuzzWithGetRootBatch(data, size);
+    OHOS::FuzzWithConnect();
+    OHOS::FuzzWithExtraElementInfo(data, size);
+    OHOS::FuzzWithSpanInfo(data, size);
     return 0;
 }

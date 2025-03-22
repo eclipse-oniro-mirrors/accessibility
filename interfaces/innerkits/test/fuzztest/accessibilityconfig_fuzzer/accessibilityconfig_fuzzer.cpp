@@ -109,12 +109,12 @@ static size_t GenerateCaptionProperty(
         position += GetObject<char>(name[i], &data[position], size - position);
     }
     std::string type(name);
-    property.SetFontFamily(type);
+    property.SetFontEdgeType(type);
 
     return position;
 }
 
-void DoSomethingInterestingSetConfig(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
+void DoSomethingInterestingSetConfigFirstPart(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
     const uint8_t* data, size_t size, size_t& startPos)
 {
     abConfig.SetScreenMagnificationState(data[startPos++] & 0x01);
@@ -152,9 +152,28 @@ void DoSomethingInterestingSetConfig(OHOS::AccessibilityConfig::AccessibilityCon
     std::string nameStr(name);
     abConfig.SetShortkeyTarget(nameStr);
 
+    std::vector<std::string> multiTargetName = {nameStr};
+    abConfig.SetShortkeyMultiTarget(multiTargetName);
+
     OHOS::AccessibilityConfig::CaptionProperty property;
     startPos += GenerateCaptionProperty(property, &data[startPos], size - startPos);
     abConfig.SetCaptionsProperty(property);
+}
+
+void DoSomethingInterestingSetConfigSecondPart(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
+    const uint8_t* data, size_t size, size_t& startPos)
+{
+    uint32_t ResponseTime = 0;
+    startPos += GetObject<uint32_t>(ResponseTime, &data[startPos], size - startPos);
+    abConfig.SetClickResponseTime(static_cast<OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME>(ResponseTime));
+
+    bool state = false;
+    startPos += GetObject<bool>(state, &data[startPos], size - startPos);
+    abConfig.SetIgnoreRepeatClickState(state);
+
+    uint32_t ignoreTime = 0;
+    startPos += GetObject<uint32_t>(ignoreTime, &data[startPos], size - startPos);
+    abConfig.SetIgnoreRepeatClickTime(static_cast<OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME>(ignoreTime));
 }
 
 void DoSomethingInterestingGetAbility(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
@@ -188,7 +207,27 @@ void DoSomethingInterestingGetAbility(OHOS::AccessibilityConfig::AccessibilityCo
     abConfig.UnsubscribeEnableAbilityListsObserver(eObserver);
 }
 
-void DoSomethingInterestingGetConfig(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
+static void CheckCaptionProperty(
+    OHOS::AccessibilityConfig::CaptionProperty &captionProperty, const uint8_t* data, size_t size)
+{
+    size_t position = 0;
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
+    std::string property(name);
+    captionProperty.CheckProperty(property);
+
+    captionProperty.GetBackgroundColor();
+    captionProperty.GetFontScale();
+    captionProperty.GetFontColor();
+    captionProperty.GetFontEdgeType();
+    captionProperty.GetWindowColor();
+    captionProperty.GetFontFamily();
+}
+
+void DoSomethingInterestingGetConfigFirstPart(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
     const uint8_t* data, size_t size, size_t& startPos)
 {
     bool flag = data[startPos++] & 0x01;
@@ -230,6 +269,30 @@ void DoSomethingInterestingGetConfig(OHOS::AccessibilityConfig::AccessibilityCon
     startPos += GetObject<float>(tempFloat, &data[startPos], size - startPos);
     abConfig.GetAudioBalance(tempFloat);
 
+    OHOS::AccessibilityConfig::CaptionProperty propertyForGet;
+    GenerateCaptionProperty(propertyForGet, &data[startPos], size - startPos);
+    abConfig.GetCaptionsProperty(propertyForGet);
+    CheckCaptionProperty(propertyForGet, data, size);
+}
+
+void DoSomethingInterestingGetConfigSecondPart(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
+    const uint8_t* data, size_t size, size_t& startPos)
+{
+    uint32_t tempUint32 = 0;
+    startPos += GetObject<uint32_t>(tempUint32, &data[startPos], size - startPos);
+    OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME ResponseTime =
+        static_cast<OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME>(tempUint32);
+    abConfig.GetClickResponseTime(ResponseTime);
+
+    bool state = false;
+    startPos += GetObject<bool>(state, &data[startPos], size - startPos);
+    abConfig.GetIgnoreRepeatClickState(state);
+
+    startPos += GetObject<uint32_t>(tempUint32, &data[startPos], size - startPos);
+    OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME ignoreTime =
+        static_cast<OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME>(tempUint32);
+    abConfig.GetIgnoreRepeatClickTime(ignoreTime);
+
     char name[LEN + 1];
     name[LEN] = END_CHAR;
     for (size_t i = 0; i < LEN; i++) {
@@ -237,10 +300,8 @@ void DoSomethingInterestingGetConfig(OHOS::AccessibilityConfig::AccessibilityCon
     }
     std::string nameStrForGet(name);
     abConfig.GetShortkeyTarget(nameStrForGet);
-
-    OHOS::AccessibilityConfig::CaptionProperty propertyForGet;
-    GenerateCaptionProperty(propertyForGet, &data[startPos], size - startPos);
-    abConfig.GetCaptionsProperty(propertyForGet);
+    std::vector<std::string> multiTargetName = {nameStrForGet};
+    abConfig.GetShortkeyMultiTarget(multiTargetName);
 }
 
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
@@ -252,9 +313,11 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     auto &abConfig = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     (void)abConfig.InitializeContext();
     size_t startPos = 0;
-    DoSomethingInterestingSetConfig(abConfig, data, size, startPos);
+    DoSomethingInterestingSetConfigFirstPart(abConfig, data, size, startPos);
+    DoSomethingInterestingSetConfigSecondPart(abConfig, data, size, startPos);
     DoSomethingInterestingGetAbility(abConfig, data, size, startPos);
-    DoSomethingInterestingGetConfig(abConfig, data, size, startPos);
+    DoSomethingInterestingGetConfigFirstPart(abConfig, data, size, startPos);
+    DoSomethingInterestingGetConfigSecondPart(abConfig, data, size, startPos);
     abConfig.UnInitializeContext();
 
     return true;
