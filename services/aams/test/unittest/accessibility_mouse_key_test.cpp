@@ -83,14 +83,9 @@ void AccessibilityMouseKeyUnitTest::OnKeyEventPresss(MMI::KeyEvent &event, const
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointerEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnPointerEvent_001 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnPointerEvent_001 event is null";
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
@@ -109,14 +104,9 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointer
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointerEvent_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnPointerEvent_002 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnPointerEvent_002 event is null";
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
@@ -135,13 +125,9 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointer
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_001 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     OnKeyEventPresss(*event, MMI::KeyEvent::KEYCODE_NUMPAD_1);
     OnKeyEventPresss(*event, MMI::KeyEvent::KEYCODE_NUMPAD_2);
@@ -165,13 +151,9 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_002 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
     MMI::KeyEvent::KeyItem item;
@@ -191,15 +173,11 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_003 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
+
     // mouse event
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_003 event is null";
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
@@ -208,9 +186,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 
     // press '/' key
     std::shared_ptr<MMI::KeyEvent> event3 = MMI::KeyEvent::Create();
-    if (!event3) {
-        return;
-    }
+    EXPECT_TRUE(event3 != nullptr);
     event3->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
     event3->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
@@ -221,9 +197,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 
     // press '5' key
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();
-    if (!event2) {
-        return;
-    }
+    EXPECT_TRUE(event2 != nullptr);
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item3;
@@ -247,15 +221,12 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_004 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
+
     // mouse event
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_004 event is null";
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
+
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
@@ -264,9 +235,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 
     // press '-' key
     std::shared_ptr<MMI::KeyEvent> event4 = MMI::KeyEvent::Create();
-    if (!event4) {
-        return;
-    }
+    EXPECT_TRUE(event4 != nullptr);
     event4->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_SUBTRACT);
     event4->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
@@ -277,9 +246,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 
     // press '5' key
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();
-    if (!event2) {
-        return;
-    }
+    EXPECT_TRUE(event2 != nullptr);
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item4;
@@ -303,15 +270,12 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_005, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_005 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
+
     // mouse event
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_005 event is null";
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
+
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
@@ -320,9 +284,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 
     // press '*' key
     std::shared_ptr<MMI::KeyEvent> event5 = MMI::KeyEvent::Create();
-    if (!event5) {
-        return;
-    }
+    EXPECT_TRUE(event5 != nullptr);
     event5->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_MULTIPLY);
     event5->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
@@ -333,9 +295,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 
     // press '5' key
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();
-    if (!event2) {
-        return;
-    }
+    EXPECT_TRUE(event2 != nullptr);
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item5;
@@ -359,15 +319,11 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_006, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_006 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
+
     // mouse event
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_006 event is null";
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
@@ -376,9 +332,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 
     // press '/' key
     std::shared_ptr<MMI::KeyEvent> event6 = MMI::KeyEvent::Create();
-    if (!event6) {
-        return;
-    }
+    EXPECT_TRUE(event6 != nullptr);
     event6->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
     event6->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
@@ -389,9 +343,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 
     // press '+' key
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();
-    if (!event2) {
-        return;
-    }
+    EXPECT_TRUE(event2 != nullptr);
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_ADD);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item2;
@@ -415,13 +367,9 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_007, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_007 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     // presss 1
@@ -448,13 +396,9 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_008, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_008 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     // presss left ctrl
@@ -481,13 +425,10 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_009, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_009 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     // presss 1
@@ -519,13 +460,9 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_010, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_010 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     // presss left ctrl
@@ -557,13 +494,10 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_011, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_011 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
+
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     // presss left ctrl
@@ -595,13 +529,9 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_012, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_012 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
     MMI::KeyEvent::KeyItem item;
@@ -620,13 +550,9 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_013, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_013 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_ != nullptr);
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
     MMI::KeyEvent::KeyItem item;
     event->AddKeyItem(item);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();

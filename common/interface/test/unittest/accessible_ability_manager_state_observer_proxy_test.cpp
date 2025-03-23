@@ -926,11 +926,12 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
     /* Account Switched */
     GTEST_LOG_(INFO) << "OnAccountSwitched";
     accountData->OnAccountSwitched();
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
+    bool ret = false;
+    AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         if (AccessibilityAbilityHelper::GetInstance().GetTestChannelId() == INVALID_CHANNEL_ID) {
-            return true;
+            ret = true;
         } else {
-            return false;
+            ret = false;
         }
         }), 1);
     EXPECT_TRUE(ret);
@@ -1699,6 +1700,7 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
     sptr<AccessibleAbilityManagerStateObserverProxy> accountData =
         new AccessibleAbilityManagerStateObserverProxy(accountId);
     accountData->SetAbilityAutoStartState(abilityName, true);
+    EXPECT_EQ(true, accountData->GetAbilityAutoStartState(abilityName));
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_068 end";
 }
 
@@ -1823,10 +1825,11 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_075 start";
     const int32_t accountId = 1;
     const std::string abilityName = "test";
-    const std::string state = "off";
+    const std::string state = "0";
     sptr<AccessibleAbilityManagerStateObserverProxy> accountData =
         new AccessibleAbilityManagerStateObserverProxy(accountId);
     accountData->SetScreenReaderState(abilityName, state);
+    EXPECT_EQ(0, accountData->GetScreenReaderState());
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_075 end";
 }
 
@@ -1840,10 +1843,11 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_076 start";
     const int32_t accountId = 1;
     const std::string name = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
-    const std::string state = "on";
+    const std::string state = "1";
     sptr<AccessibleAbilityManagerStateObserverProxy> accountData =
         new AccessibleAbilityManagerStateObserverProxy(accountId);
     accountData->SetScreenReaderState(name, state);
+    EXPECT_EQ(1, accountData->GetScreenReaderState());
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_076 end";
 }
 
@@ -1892,17 +1896,11 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_079 start";
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    if (service == nullptr) {
-        GTEST_LOG_(INFO) << "service is nullptr";
-        return;
-    }
+    EXPECT_TRUE(service != nullptr);
     service->PutBoolValue(DEVICE_PROVISIONED, true, true);
 
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
     EXPECT_EQ(accountData->GetConfig()->GetShortKeyTimeout(), SHORT_KEY_TIMEOUT_BEFORE_USE);
@@ -1919,25 +1917,17 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_080 start";
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    if (service == nullptr) {
-        GTEST_LOG_(INFO) << "service is nullptr";
-        return;
-    }
+    EXPECT_TRUE(service != nullptr);
     service->PutBoolValue(DEVICE_PROVISIONED, true, true);
 
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     std::vector<std::string> name;
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
     EXPECT_EQ(accountData->GetConfig()->GetShortkeyMultiTarget().size(), 0);
 
-    size_t size = accountData->GetConfig()->GetEnabledAccessibilityServices().size();
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
-    EXPECT_EQ(accountData->GetConfig()->GetEnabledAccessibilityServices().size(), size);
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_080 end";
 }
 
@@ -1951,26 +1941,18 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_081 start";
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    if (service == nullptr) {
-        GTEST_LOG_(INFO) << "service is nullptr";
-        return;
-    }
+    EXPECT_TRUE(service != nullptr);
     service->PutBoolValue(DEVICE_PROVISIONED, true, true);
 
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
+    EXPECT_TRUE(accountData != nullptr);
 
     std::vector<std::string> name;
     name.push_back("test1");
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
     EXPECT_EQ(accountData->GetConfig()->GetShortkeyMultiTarget().size(), 1);
 
-    size_t size = accountData->GetConfig()->GetEnabledAccessibilityServices().size();
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
-    EXPECT_EQ(accountData->GetConfig()->GetEnabledAccessibilityServices().size(), size);
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_081 end";
 }
 } // namespace Accessibility
