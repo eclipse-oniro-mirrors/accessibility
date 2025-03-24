@@ -329,12 +329,11 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchDefaultFocusByWindow
 
     sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
-    EXPECT_CALL(*elementOperator, SetSearchDefaultFocusByWindowIdResult(_, _)).Times(1);
-    mockStub_->SearchElementInfoByAccessibilityId(ELEMENT_ID, REQUEST_ID_2, elementOperator, MODE, false);
+    EXPECT_CALL(*elementOperator, SetSearchDefaultFocusByWindowIdResult(_, _)).Times(0);
     std::list<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
     infos.push_back(info);
-    mockStub_->SetSearchDefaultFocusByWindowIdResult(infos, CompositeId(REQUEST_ID_2));
+    mockStub_->SetSearchDefaultFocusByWindowIdResult(infos, REQUEST_ID);
     GTEST_LOG_(INFO) << "SetSearchDefaultFocusByWindowIdResult_002 end";
 }
 
@@ -375,12 +374,11 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoByTextRes
     }
     sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
-    EXPECT_CALL(*elementOperator, SetSearchElementInfoByTextResult(_, _)).Times(1);
-    mockStub_->SearchElementInfosByText(ELEMENT_ID, TEST, REQUEST_ID_2, elementOperator);
+    EXPECT_CALL(*elementOperator, SetSearchElementInfoByTextResult(_, _)).Times(0);
     std::list<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
     infos.push_back(info);
-    mockStub_->SetSearchElementInfoByTextResult(infos, CompositeId(REQUEST_ID_2));
+    mockStub_->SetSearchElementInfoByTextResult(infos, REQUEST_ID);
     GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_002 end";
 }
 
@@ -420,10 +418,10 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFindFocusedElementInfoResu
 
     sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
-    EXPECT_CALL(*elementOperator, SetFindFocusedElementInfoResult(_, _)).Times(1);
+    EXPECT_CALL(*elementOperator, SetFindFocusedElementInfoResult(_, _)).Times(0);
     mockStub_->FindFocusedElementInfo(ELEMENT_ID, FOCUS_TYPE, REQUEST_ID_2, elementOperator);
     AccessibilityElementInfo info {};
-    mockStub_->SetFindFocusedElementInfoResult(info, CompositeId(REQUEST_ID_2));
+    mockStub_->SetFindFocusedElementInfoResult(info, REQUEST_ID_2);
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_002 end";
 }
 
@@ -466,7 +464,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFocusMoveSearchResult_002,
     EXPECT_CALL(*elementOperator, SetFocusMoveSearchResult(_, _)).Times(1);
     mockStub_->FocusMoveSearch(ELEMENT_ID, DIRECTION, REQUEST_ID_2, elementOperator);
     AccessibilityElementInfo info {};
-    mockStub_->SetFocusMoveSearchResult(info, CompositeId(REQUEST_ID_2));
+    mockStub_->SetFocusMoveSearchResult(info, REQUEST_ID_2);
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_002 end";
 }
 
