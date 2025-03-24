@@ -67,7 +67,7 @@ CArrString VectorToCArrString(std::vector<std::string> &vec, RetError &errCode)
 
     if (temp != vec.size()) {
         for (size_t j = temp; j > 0; j--) {
-            delete result[j - 1];
+            delete[] result[j - 1];
             result[j - 1] = nullptr;
         }
         delete[] result;
