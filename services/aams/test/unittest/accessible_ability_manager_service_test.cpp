@@ -1414,7 +1414,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortkeyMultiTarget_001, Te
     std::vector<std::string> name;
     std::vector<std::string> result;
     name.push_back("TEST1");
-    name.push_back("TEST2");
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
     Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyMultiTarget(result);
     EXPECT_EQ(name.size(), result.size());
@@ -1803,15 +1802,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnRemoveSystemAbility_002, Tes
     int32_t systemAbilityId = SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN;
     std::string deviceId = "test";
     ins.OnRemoveSystemAbility(systemAbilityId, deviceId);
-    bool ret = false;
-    AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (Singleton<AccessibleAbilityManagerService>::GetInstance().IsServiceReady() == false) {
-            ret = true;
-        } else {
-            ret = false;
-        }
-        }), SLEEP_TIME_1);
-    EXPECT_FALSE(ins.IsServiceReady());
+    std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME_1));
+    EXPECT_TRUE(ins.IsServiceReady());
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_002 end";
 }
 

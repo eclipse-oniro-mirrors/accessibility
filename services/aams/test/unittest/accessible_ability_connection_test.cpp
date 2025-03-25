@@ -129,14 +129,13 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
         EXPECT_EQ(1, accountData_->GetEnabledAbilities().size());
         IPCObjectProxy* proxy = static_cast<IPCObjectProxy*>(obj_.GetRefPtr());
         proxy->SendObituary();
-        bool ret = false;
-        AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
+        bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
             size_t count = accountData_->GetEnabledAbilities().size();
             auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
             if (count == 0) {
-                ret = true;
+                return true;
             } else {
-                ret = false;
+                return false;
             }
             }), 1);
         EXPECT_TRUE(ret);

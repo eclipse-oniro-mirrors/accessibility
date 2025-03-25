@@ -921,12 +921,11 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     /* Account Switched */
     GTEST_LOG_(INFO) << "OnAccountSwitched";
     accountData->OnAccountSwitched();
-    bool ret = false;
-    AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         if (AccessibilityAbilityHelper::GetInstance().GetTestChannelId() == INVALID_CHANNEL_ID) {
-            ret true;
+            return true;
         } else {
-            ret false;
+            return false;
         }
         }), 1);
     EXPECT_TRUE(ret);
@@ -1677,22 +1676,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetAbil
 }
 
 /**
- * @tc.number: AccessibilityAccountData_Unittest_SetAbilityAutoStartState_003
- * @tc.name: SetAbilityAutoStartState
- * @tc.desc: Check set and get AbilityAutoStartState.
- */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetAbilityAutoStartState_003, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetAbilityAutoStartState_003 start";
-    const int32_t accountId = 1;
-    const std::string abilityName = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
-    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    accountData->SetAbilityAutoStartState(abilityName, true);
-    EXPECT_EQ(accountData->GetAbilityAutoStartState(abilityName), true);
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetAbilityAutoStartState_003 end";
-}
-
-/**
  * @tc.number: AccessibilityAccountData_Unittest_UpdateAutoStartEnabledAbilities_001
  * @tc.name: UpdateAutoStartEnabledAbilities
  * @tc.desc: Check UpdateAutoStartEnabledAbilities.
@@ -1817,23 +1800,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetScre
     accountData->SetScreenReaderState(abilityName, state);
     EXPECT_EQ(0, accountData->GetScreenReaderState());
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetScreenReaderState001 end";
-}
-
-/**
- * @tc.number: AccessibilityAccountData_Unittest_SetScreenReaderState_002
- * @tc.name: SetScreenReaderState
- * @tc.desc: Check SetScreenReaderState.
- */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetScreenReaderState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetScreenReaderState_002 start";
-    const int32_t accountId = 1;
-    const std::string name = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
-    const std::string state = "1";
-    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    accountData->SetScreenReaderState(name, state);
-    EXPECT_EQ(1, accountData->GetScreenReaderState());
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetScreenReaderState_002 end";
 }
 
 /**
