@@ -1196,6 +1196,8 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(int
         std::vector<int32_t> treeIds {};
         connection->GetAllTreeId(treeIds);
         for (int32_t treeId : treeIds) {
+            RecycleTreeId(treeId);
+            StopCallbackWait(windowId, treeId);
             RemoveTreeDeathRecipient(windowId, treeId, connection);
         }
         accountData->RemoveAccessibilityWindowConnection(windowId);
