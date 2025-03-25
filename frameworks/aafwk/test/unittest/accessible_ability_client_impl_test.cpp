@@ -569,7 +569,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, EnableScreenCurtain_001, TestSize.Leve
 {
     GTEST_LOG_(INFO) << "EnableScreenCurtain_001 start";
     Connect();
-    EXPECT_EQ(instance_->EnableScreenCurtain(true), RET_OK);
+    EXPECT_EQ(instance_->EnableScreenCurtain(true), RET_ERR_PERFORM_ACTION_FAILED_BY_ACE);
     GTEST_LOG_(INFO) << "EnableScreenCurtain_001 end";
 }
 

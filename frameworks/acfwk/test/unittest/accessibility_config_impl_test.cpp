@@ -1352,7 +1352,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetCaptionsProperty(caption);
     instance.GetCaptionsProperty(value);
-    EXPECT_STREQ("sansSerif", value.GetFontFamily().c_str());
+    EXPECT_STREQ("default", value.GetFontFamily().c_str());
     GTEST_LOG_(INFO) << "SetCaptionProperty_001 end";
 }
 

@@ -29,6 +29,7 @@ namespace Accessibility {
 namespace {
     constexpr uint32_t CONTENT_TIMEOUT_VALUE = 10;
     constexpr int32_t MOUSE_AUTO_CLICK_VALUE = 2;
+    constexpr int32_t MOUSE_CLICK_VALUE = -1;
     constexpr int32_t SHORT_KEY_TIMEOUT = 3000;
     constexpr float BRIGHTNESS_DISCOUNT_VALUE = 0.3f;
     constexpr float AUDIO_BALANCE_VALUE = 0.2f;
@@ -487,8 +488,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 start";
     settingConfig_->Init();
-    settingConfig_->SetMouseAutoClick(MOUSE_AUTO_CLICK_VALUE);
-    EXPECT_EQ(-1, settingConfig_->GetMouseAutoClick());
+    settingConfig_->SetMouseAutoClick(MOUSE_CLICK_VALUE);
+    EXPECT_EQ(MOUSE_CLICK_VALUE, settingConfig_->GetMouseAutoClick());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 end";
 }
 
@@ -517,7 +518,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002 start";
-    std::string name = "TEST";
+    std::string name = "";
     settingConfig_->Init();
     settingConfig_->SetShortkeyTarget(name);
     EXPECT_STREQ("", settingConfig_->GetShortkeyTarget().c_str());

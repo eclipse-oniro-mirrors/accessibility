@@ -970,6 +970,7 @@ void AccessibilitySettingsConfig::InitCapability()
 RetError AccessibilitySettingsConfig::SetConfigState(const std::string& key, bool value)
 {
     if (!datashare_) {
+        HILOG_ERROR("wza datashare_ is nullptr");
         return RET_ERR_NULLPTR;
     }
     auto ret = datashare_->PutBoolValue(key, value);
