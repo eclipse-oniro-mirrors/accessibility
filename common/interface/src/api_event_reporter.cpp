@@ -319,11 +319,11 @@ void ApiEventReporter::ThresholdWriteEndEvent(int result, std::string apiName, i
         return;
     }
     int32_t dataCount = static_cast<int32_t>(expandableData->runTime.size());
-    if (dataCount < thresholdValue) {
+    HILOG_DEBUG("ThresholdWriteEndEvent apiName: %{public}s, dataCount: %{public}d,
+        thresholdValue: %{public}d", apiName.c_str(), dataCount, thresholdValue);
+    if (dataCount % thresholdValue != 0) {
         return;
     }
-    HILOG_INFO("ThresholdWriteEndEvent apiName: %{public}s, dataCount: %{public}d",
-        apiName.c_str(), dataCount);
     ExecuteThresholdWriteEndEvent(apiName, expandableData, dataCount);
 }
 
