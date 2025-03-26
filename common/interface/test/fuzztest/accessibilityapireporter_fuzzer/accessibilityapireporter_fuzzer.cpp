@@ -50,7 +50,9 @@ bool ApiEventRepoterFuzzTest(const uint8_t* databuffer, size_t size)
     }
     std::string ApiName(name);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    ApiReportHelper reporter(ApiName, REPORTER_THRESHOLD_VALUE);
+    for (int32_t i = 0 ; i < REPORTER_THRESHOLD_VALUE; i++) {
+        ApiReportHelper reporter(ApiName, REPORTER_THRESHOLD_VALUE);
+    }
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     return true;
 }

@@ -25,7 +25,7 @@ namespace Accessibility {
 namespace {
 constexpr size_t FOO_MAX_LEN = 1024;
 constexpr size_t U32_AT_SIZE = 4;
-constexpr size_t BASE_CODE = 800;
+constexpr size_t BASE_CODE = 1;
 constexpr size_t MESSAGE_SIZE = SERVICE_CODE_END - SEND_EVENT;
 constexpr size_t FUZZ_NUM1 = 1;
 constexpr size_t FUZZ_NUM2 = 2;
@@ -350,9 +350,9 @@ bool HandleSetDaltonizationStateTest(const uint8_t *data, size_t size)
     MessageParcel reply;
     MessageOption option;
     AccessibleAbilityManagerServiceStubFuzzTest serviceStub;
+    uint32_t TRANSACTION_CODE = 0x30;
 
-    serviceStub.OnRemoteRequest(
-        static_cast<uint32_t>(AccessibilityInterfaceCode::SET_DALTONIZATION_STATE), datas, reply, option);
+    serviceStub.OnRemoteRequest(TRANSACTION_CODE, datas, reply, option);
     return true;
 }
 
@@ -371,12 +371,12 @@ bool HandleRemoveRequestIdTest(const uint8_t *data, size_t size)
     MessageParcel reply;
     MessageOption option;
     AccessibleAbilityManagerServiceStubFuzzTest serviceStub;
-    serviceStub.OnRemoteRequest(
-        static_cast<uint32_t>(AccessibilityInterfaceCode::REMOVE_REQUEST_ID), request, reply, option);
+    uint32_t TRANSACTION_CODE = 0x61;
+    serviceStub.OnRemoteRequest(TRANSACTION_CODE, request, reply, option);
     return true;
 }
 
-bool HandleGetScreenReaderStateTest(const uint8_t *data, size_t size)
+bool HandleGetScreenReaderStateTest()
 {
     MessageParcel datas;
     std::u16string descriptor = AccessibleAbilityManagerServiceStubFuzzTest::GetDescriptor();
@@ -386,9 +386,9 @@ bool HandleGetScreenReaderStateTest(const uint8_t *data, size_t size)
     MessageParcel reply;
     MessageOption option;
     AccessibleAbilityManagerServiceStubFuzzTest serviceStub;
+    uint32_t TRANSACTION_CODE = 0x63;
 
-    serviceStub.OnRemoteRequest(
-        static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SCREEN_READER_STATE), datas, reply, option);
+    serviceStub.OnRemoteRequest(TRANSACTION_CODE, datas, reply, option);
     return true;
 }
 } // namespace Accessibility
@@ -415,7 +415,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     OHOS::Accessibility::OnRemoteRequestSvcFuzzTest(data, size);
     OHOS::Accessibility::HandleSetDaltonizationStateTest(data, size);
-    OHOS::Accessibility::HandleGetScreenReaderStateTest(data, size);
+    OHOS::Accessibility::HandleGetScreenReaderStateTest();
     OHOS::Accessibility::HandleRemoveRequestIdTest(data, size);
     return 0;
 }
