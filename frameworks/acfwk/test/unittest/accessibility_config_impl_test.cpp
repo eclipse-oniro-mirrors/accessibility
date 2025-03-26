@@ -1740,8 +1740,6 @@ HWTEST_F(AccessibilityConfigImplTest, ConfigNotify_001, TestSize.Level1)
     }
     instance.SetAudioBalance(balance);
     sleep(1);
-    instance.SetAudioBalance(balance);
-    sleep(1);
     for (int32_t index = 0; index < static_cast<int32_t>(CONFIG_ID_MAX); index ++) {
         instance.UnsubscribeConfigObserver(static_cast<CONFIG_ID>(index), observer);
     }
@@ -1766,6 +1764,7 @@ HWTEST_F(AccessibilityConfigImplTest, ConfigNotify_002, TestSize.Level1)
     }
     instance.SetAudioBalance(balance);
     sleep(1);
+    EXPECT_EQ(Accessibility::RET_OK, instance.GetAudioBalance(balance));
     GTEST_LOG_(INFO) << "ConfigNotify_002 end";
 }
 
@@ -1785,6 +1784,7 @@ HWTEST_F(AccessibilityConfigImplTest, ConfigNotify_003, TestSize.Level1)
     }
     instance.SetAudioBalance(balance);
     sleep(1);
+    EXPECT_EQ(Accessibility::RET_OK, instance.GetAudioBalance(balance));
     GTEST_LOG_(INFO) << "ConfigNotify_003 end";
 }
 
@@ -1800,7 +1800,8 @@ HWTEST_F(AccessibilityConfigImplTest, SubscribeConfigObserver_001, TestSize.Leve
     std::shared_ptr<AccessibilityConfigObserver> observer = nullptr;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
-    instance.SubscribeConfigObserver(CONFIG_HIGH_CONTRAST_TEXT, observer);
+    EXPECT_EQ(Accessibility::RET_OK,
+        instance.SubscribeConfigObserver(CONFIG_HIGH_CONTRAST_TEXT, observer));
     GTEST_LOG_(INFO) << "SubscribeConfigObserver_001 end";
 }
 
@@ -1816,7 +1817,8 @@ HWTEST_F(AccessibilityConfigImplTest, UnsubscribeConfigObserver_001, TestSize.Le
     std::shared_ptr<AccessibilityConfigObserver> observer = nullptr;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
-    instance.UnsubscribeConfigObserver(CONFIG_HIGH_CONTRAST_TEXT, observer);
+    EXPECT_EQ(Accessibility::RET_OK,
+        instance.UnsubscribeConfigObserver(CONFIG_HIGH_CONTRAST_TEXT, observer));
     GTEST_LOG_(INFO) << "UnsubscribeConfigObserver_001 end";
 }
 
@@ -1832,7 +1834,8 @@ HWTEST_F(AccessibilityConfigImplTest, UnsubscribeConfigObserver_002, TestSize.Le
     std::shared_ptr<AccessibilityConfigObserver> observer = nullptr;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
-    instance.UnsubscribeConfigObserver(CONFIG_ID_MAX, observer);
+    EXPECT_EQ(Accessibility::RET_OK,
+        instance.UnsubscribeConfigObserver(CONFIG_ID_MAX, observer));
     GTEST_LOG_(INFO) << "UnsubscribeConfigObserver_002 end";
 }
 
@@ -1849,7 +1852,8 @@ HWTEST_F(AccessibilityConfigImplTest, SubscribeEnableAbilityListsObserver_001, T
         std::make_shared<MockAccessibilityEnableAbilityListsObserverImpl>();
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
-    instance.SubscribeEnableAbilityListsObserver(observer);
+    EXPECT_EQ(Accessibility::RET_OK,
+        instance.SubscribeEnableAbilityListsObserver(observer));
     GTEST_LOG_(INFO) << "SubscribeEnableAbilityListsObserver_001 end";
 }
 
@@ -1867,6 +1871,8 @@ HWTEST_F(AccessibilityConfigImplTest, UnsubscribeEnableAbilityListsObserver_001,
     instance.InitializeContext();
     instance.SubscribeEnableAbilityListsObserver(observer);
     instance.UnsubscribeEnableAbilityListsObserver(observer);
+    EXPECT_EQ(Accessibility::RET_OK,
+        instance.UnsubscribeEnableAbilityListsObserver(observer));
     GTEST_LOG_(INFO) << "UnsubscribeEnableAbilityListsObserver_001 end";
 }
 

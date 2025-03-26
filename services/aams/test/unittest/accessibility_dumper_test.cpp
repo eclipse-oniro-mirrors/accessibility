@@ -126,15 +126,9 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_004, Tes
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_004 start";
     sptr<AccessibilityAccountData> currentAccount =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!currentAccount) {
-        GTEST_LOG_(ERROR) << "Account data is nullptr";
-        return;
-    }
+    EXPECT_TRUE(currentAccount != nullptr);
     std::shared_ptr<AccessibilitySettingsConfig> config = currentAccount->GetConfig();
-    if (!config) {
-        GTEST_LOG_(ERROR) << "Config is nullptr";
-        return;
-    }
+    EXPECT_TRUE(config != nullptr);
     config->SetCaptionState(true);
 
     std::string cmdUser("-u");
@@ -162,16 +156,10 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_005, Tes
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> currentAccount =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!currentAccount) {
-        GTEST_LOG_(ERROR) << "Account data is nullptr";
-        return;
-    }
+    EXPECT_TRUE(currentAccount != nullptr);
     sptr<AccessibleAbilityConnection> connection =
         new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo);
-    if (!connection) {
-        GTEST_LOG_(ERROR) << "Connection is nullptr";
-        return;
-    }
+    EXPECT_TRUE(connection != nullptr);
     currentAccount->AddConnectedAbility(connection);
 
     std::string cmdClient("-c");
@@ -259,16 +247,10 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_008, Tes
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> currentAccount =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!currentAccount) {
-        GTEST_LOG_(ERROR) << "Account data is nullptr";
-        return;
-    }
+    EXPECT_TRUE(currentAccount != nullptr);
     sptr<AccessibleAbilityConnection> connection =
         new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo);
-    if (!connection) {
-        GTEST_LOG_(ERROR) << "Connection is nullptr";
-        return;
-    }
+    EXPECT_TRUE(connection != nullptr);
     currentAccount->AddConnectedAbility(connection);
 
     std::string cmdClient("-c");
