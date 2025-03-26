@@ -1109,7 +1109,7 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
