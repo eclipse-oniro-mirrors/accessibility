@@ -83,7 +83,7 @@ void AddPermission()
         .perms = perms,
         .acls = nullptr,
         .processName = "com.accessibility.accessibleAbilityManagerServiceUnitTest",
-        .aplStr = "normal",
+        .aplStr = "system_basic",
     };
     uint64_t tokenId = GetAccessTokenId(&infoInstance);
     auto ret = SetSelfTokenID(tokenId);
