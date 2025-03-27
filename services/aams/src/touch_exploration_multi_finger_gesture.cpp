@@ -345,6 +345,19 @@ void TouchExploration::SendDragDownEventToMultimodal(MMI::PointerEvent event)
     draggingDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
 }
 
+bool TouchExploration::IsRealMove(MMI::PointerEvent &event)
+{
+    std::vector<float> firstPointOffset;
+    std::vector<float> secondPointOffset;
+    GetPointOffset(event, firstPointOffset, secondPointOffset);
+    if (firstPointOffset.size() != SCREEN_AXIS_NUM || secondPointOffset.size() != SCREEN_AXIS_NUM) {
+        return false;
+    }
+
+    return (hypot(firstPointOffset[0], firstPointOffset[1]) >= TOUCH_SLOP &&
+        hypot(secondPointOffset[0], secondPointOffset[1]) >= TOUCH_SLOP);
+}
+
 void TouchExploration::HandleTwoFingersDownStateMove(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
@@ -369,6 +382,10 @@ void TouchExploration::HandleTwoFingersDownStateMove(MMI::PointerEvent &event)
             Clear();
             SendScreenWakeUpEvent(event);
             SetCurrentState(TouchExplorationState::INVALID);
+            return;
+        }
+        if (!IsRealMove(event)) {
+            HILOG_DEBUG("not a move");
             return;
         }
         if (IsDragGestureAccept(event)) {
