@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -55,7 +55,7 @@ public:
      * @param parcel
      * @return Read AccessibleActionParcel from parcel data
      */
-    static AccessibleActionParcel *Unmarshalling(Parcel &parcel);
+    static sptr<AccessibleActionParcel> Unmarshalling(Parcel &parcel);
 };
 
 /**
@@ -92,7 +92,7 @@ public:
      * @brief Used for IPC communication
      * @param parcel
      */
-    static RangeInfoParcel *Unmarshalling(Parcel &parcel);
+    static sptr<RangeInfoParcel> Unmarshalling(Parcel &parcel);
 };
 
 /**
@@ -139,7 +139,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    static GridInfoParcel *Unmarshalling(Parcel &parcel);
+    static sptr<GridInfoParcel> Unmarshalling(Parcel &parcel);
 };
 
 class ExtraElementInfoParcel : public ExtraElementInfo, public Parcelable {
@@ -176,7 +176,7 @@ public:
      * @param parcel
      * @sysCap Accessibility
      */
-    static ExtraElementInfoParcel *Unmarshalling(Parcel &parcel);
+    static sptr<ExtraElementInfoParcel> Unmarshalling(Parcel &parcel);
 };
 
 class GridItemInfoParcel : public GridItemInfo, public Parcelable {
@@ -218,7 +218,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    static GridItemInfoParcel *Unmarshalling(Parcel &parcel);
+    static sptr<GridItemInfoParcel> Unmarshalling(Parcel &parcel);
 };
 
 class RectParcel : public Rect, public Parcelable {
@@ -260,7 +260,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    static RectParcel *Unmarshalling(Parcel &parcel);
+    static sptr<RectParcel> Unmarshalling(Parcel &parcel);
 };
 
 /*
@@ -295,7 +295,7 @@ public:
      * @brief Used for IPC communication
      * @param parcel
      */
-    static SpanInfoParcel *Unmarshalling(Parcel &parcel);
+    static sptr<SpanInfoParcel> Unmarshalling(Parcel &parcel);
 };
 
 /*
@@ -343,7 +343,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    static AccessibilityElementInfoParcel *Unmarshalling(Parcel &parcel);
+    static sptr<AccessibilityElementInfoParcel> Unmarshalling(Parcel &parcel);
 
 private:
      /**

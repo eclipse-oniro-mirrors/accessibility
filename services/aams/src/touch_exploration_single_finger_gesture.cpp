@@ -235,8 +235,7 @@ void TouchExploration::SendAccessibilityEventToAA(EventType eventType)
     eventInfo.SetEventType(eventType);
     int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
     eventInfo.SetWindowId(windowsId);
-    AccessibilityEventInfoParcel eventInfoParcel(eventInfo);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfoParcel, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
 }
 
 void TouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
@@ -264,8 +263,7 @@ void TouchExploration::SendGestureEventToAA(GestureType gestureId)
     eventInfo.SetWindowId(windowsId);
     eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
     eventInfo.SetGestureType(gestureId);
-    AccessibilityEventInfoParcel eventInfoParcel(eventInfo);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfoParcel, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
 }
 
 void TouchExploration::SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action)

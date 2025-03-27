@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -1345,7 +1345,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetCaptionProperty_001 start";
 
     CaptionProperty caption;
-    caption.SetFontFamily("default");
+    caption.SetFontFamily("sansSerif");
     CaptionProperty value;
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();

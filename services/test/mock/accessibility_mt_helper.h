@@ -20,7 +20,7 @@
 #include "accessibility_def.h"
 #include "ffrt.h"
 #include "hilog/log.h"
-#include "iaccessible_ability_channel.h"
+#include "i_accessible_ability_channel.h"
 #include "iremote_object.h"
 
 namespace OHOS {

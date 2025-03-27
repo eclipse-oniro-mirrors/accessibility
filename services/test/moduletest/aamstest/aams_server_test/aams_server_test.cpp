@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -107,13 +107,10 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTestSendEvent_001 start";
     // make an event
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    int32_t tempWindowId = aams.GetFocusWindowId();
-    AccessibilityEventInfo evtInf(tempWindowId, WINDOW_UPDATE_ACTIVE);
-    evtInf.SetEventType(EventType::TYPE_WINDOW_UPDATE);
-    AccessibilityEventInfoParcel evtInfParcel(evtInf);
+    AccessibilityEventInfo eventInfo;
+    eventInfo.SetEventType(EventType::TYPE_WINDOW_UPDATE);
     // aams send event
-    aams.SendEvent(evtInfParcel, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
     sleep(1);
     // check aa proxy
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetTestEventType(), int(EventType::TYPE_WINDOW_UPDATE));
@@ -129,7 +126,7 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTestGetAbilityList_001 start";
-    std::vector<AccessibilityAbilityInfoParcel> infos;
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     auto ret = aams.GetAbilityList(0, AbilityStateType::ABILITY_STATE_ENABLE, infos);
     EXPECT_EQ(RET_OK, ret);
@@ -147,7 +144,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_001, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTestGetAbilityList_002 start";
-    std::vector<AccessibilityAbilityInfoParcel> infos;
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
     Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
         AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, AbilityStateType::ABILITY_STATE_ENABLE, infos);
     EXPECT_EQ(infos.size(), 0);
@@ -177,7 +174,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
 
     // ABILITY_STATE_DISABLE
     int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
-    std::vector<AccessibilityAbilityInfoParcel> infos;
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
     Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
         AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType, infos);
     EXPECT_EQ(infos.size(), 1);
@@ -194,7 +191,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTestGetAbilityList_004 start";
     int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
-    std::vector<AccessibilityAbilityInfoParcel> infos;
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
     Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
         AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType, infos);
     EXPECT_EQ(infos.size(), 1);
@@ -210,7 +207,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_004, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_005, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTestGetAbilityList_005 start";
-    std::vector<AccessibilityAbilityInfoParcel> infos;
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
     Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
         AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN,
         AbilityStateType::ABILITY_STATE_INSTALLED, infos);
@@ -219,60 +216,60 @@ HWTEST_F(AAMSServerTest, GetAbilityList_005, TestSize.Level1)
 }
 
 /**
- * @tc.number: AAMS_moduletest_RegisterElementOperatorByWindowId_001
- * @tc.name: RegisterElementOperatorByWindowId
- * @tc.desc: Test function RegisterElementOperatorByWindowId
+ * @tc.number: AAMS_moduletest_RegisterElementOperator_001
+ * @tc.name: RegisterElementOperator
+ * @tc.desc: Test function RegisterElementOperator
  * Register a ElementOperator and check account data and event detail.
  */
-HWTEST_F(AAMSServerTest, RegisterElementOperatorByWindowId_001, TestSize.Level1)
+HWTEST_F(AAMSServerTest, RegisterElementOperator_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AAMSServerTestRegisterElementOperatorByWindowId_001 start";
+    GTEST_LOG_(INFO) << "AAMSServerTestRegisterElementOperator_001 start";
 
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     auto accountData = aams.GetCurrentAccountData();
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
-    EXPECT_EQ(RET_OK, aams.RegisterElementOperatorByWindowId(0, nullptr));
+    EXPECT_EQ(RET_OK, aams.RegisterElementOperator(0, nullptr, true));
     sleep(1);
-    GTEST_LOG_(INFO) << "RegisterElementOperatorByWindowId OK";
+    GTEST_LOG_(INFO) << "RegisterElementOperator OK";
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
-    aams.DeregisterElementOperatorByWindowId(0);
-    GTEST_LOG_(INFO) << "AAMSServerTestRegisterElementOperatorByWindowId_001 end";
+    aams.DeregisterElementOperator(0);
+    GTEST_LOG_(INFO) << "AAMSServerTestRegisterElementOperator_001 end";
 }
 
 /**
- * @tc.number: AAMS_moduletest_DeregisterElementOperatorByWindowId_001
- * @tc.name: DeregisterElementOperatorByWindowId
- * @tc.desc: Test function DeregisterElementOperatorByWindowId
+ * @tc.number: AAMS_moduletest_DeregisterElementOperator_001
+ * @tc.name: DeregisterElementOperator
+ * @tc.desc: Test function DeregisterElementOperator
  * Deregister a ElementOperator and check account data and event detail.
  */
-HWTEST_F(AAMSServerTest, DeregisterElementOperatorByWindowId_001, TestSize.Level1)
+HWTEST_F(AAMSServerTest, DeregisterElementOperator_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AAMSServerTestDeregisterElementOperatorByWindowId_001 start";
+    GTEST_LOG_(INFO) << "AAMSServerTestDeregisterElementOperator_001 start";
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     auto accountData = aams.GetCurrentAccountData();
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
-    aams.RegisterElementOperatorByWindowId(0, nullptr);
+    aams.RegisterElementOperator(0, nullptr, true);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
     // wrong windowId
-    aams.DeregisterElementOperatorByWindowId(1);
+    aams.DeregisterElementOperator(1);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
     // true windowId
-    aams.DeregisterElementOperatorByWindowId(0);
+    aams.DeregisterElementOperator(0);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
-    GTEST_LOG_(INFO) << "AAMSServerTestDeregisterElementOperatorByWindowId_001 end";
+    GTEST_LOG_(INFO) << "AAMSServerTestDeregisterElementOperator_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

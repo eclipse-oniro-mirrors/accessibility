@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -45,7 +45,7 @@ public:
      * @param parcel Indicates the Parcel object into which the sequenceable object has been marshaled.
      * @return Return a sequenceable object of AccessibilityAbilityInfo.
      */
-    static AccessibilityAbilityInfoParcel *Unmarshalling(Parcel &parcel);
+    static sptr<AccessibilityAbilityInfoParcel> Unmarshalling(Parcel &parcel);
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -826,7 +826,7 @@ void AccessibleAbilityManagerService::IsCheckWindowIdEventExist(const int32_t wi
     }
 }
 
-RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const RegistrationPara &parameter,
+RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const Registration &parameter,
     const int32_t treeId, const int64_t nodeId, const sptr<IA11yRegisterElementElementOperator> &operation,
     const uint32_t tokenId, bool isApp)
 {
@@ -876,7 +876,7 @@ void AccessibleAbilityManagerService::SetTokenIdMapAndRootParentId(
     connection->SetRootParentId(treeId, nodeId);
 }
 
-RetError AccessibleAbilityManagerService::RegisterElementOperator(RegistrationPara parameter,
+RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration parameter,
     const sptr<IA11yRegisterElementElementOperator> &operation, bool isApp)
 {
     if (CheckCallingUid() != RET_OK) {

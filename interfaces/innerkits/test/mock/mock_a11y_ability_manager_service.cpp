@@ -125,7 +125,7 @@ RetError A11yManagerService::RegisterElementOperator(
     return RET_OK;
 }
 
-RetError A11yManagerService::RegisterElementOperator(RegistrationPara parameter,
+RetError A11yManagerService::RegisterElementOperator(Registration parameter,
     const sptr<IA11yElementOperator> &operation, bool isApp)
 {
     (void)parameter;

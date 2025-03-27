@@ -16,7 +16,7 @@
 #ifndef ACCESSIBLE_ABILITY_MANAGER_STATE_OBSERVER_STUB_H
 #define ACCESSIBLE_ABILITY_MANAGER_STATE_OBSERVER_STUB_H
 
-#include "iaccessible_ability_manager_state_observer.h"
+#include "i_accessible_ability_manager_state_observer.h"
 #include "iremote_stub.h"
 
 namespace OHOS {

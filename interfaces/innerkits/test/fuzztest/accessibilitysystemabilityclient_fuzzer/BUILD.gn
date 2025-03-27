@@ -30,7 +30,6 @@ ohos_fuzztest("AccessibilitySystemAbilityClientFuzzTest") {
   ]
   sources = [ "accessibilitysystemabilityclient_fuzzer.cpp" ]
   deps = [
-    "../../../../../common/interface:accessibility_interface",
     "../../../asacfwk:accessibilityclient",
     "../../../common:accessibility_common",
   ]

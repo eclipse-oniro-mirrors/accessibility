@@ -17,6 +17,10 @@
 
 namespace OHOS {
 namespace Accessibility {
+AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
+{}
+AccessibleAbilityManagerServiceStub::~AccessibleAbilityManagerServiceStub()
+{}
 int AccessibleAbilityManagerServiceStub::OnRemoteRequest(
     uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option)
 {
@@ -25,6 +29,43 @@ int AccessibleAbilityManagerServiceStub::OnRemoteRequest(
     (void)reply;
     (void)option;
     return true;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSendEvent(MessageParcel& data, MessageParcel& reply)
+{
+    (void)data;
+    (void)reply;
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback(MessageParcel& data, MessageParcel& reply)
+{
+    (void)data;
+    (void)reply;
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetAbilityList(MessageParcel& data, MessageParcel& reply)
+{
+    (void)data;
+    (void)reply;
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementOperator(
+    MessageParcel& data, MessageParcel& reply)
+{
+    (void)data;
+    (void)reply;
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleDeregisterAccessibilityElementOperator(
+    MessageParcel& data, MessageParcel& reply)
+{
+    (void)data;
+    (void)reply;
+    return NO_ERROR;
 }
 } // namespace Accessibility
 } // namespace OHOS

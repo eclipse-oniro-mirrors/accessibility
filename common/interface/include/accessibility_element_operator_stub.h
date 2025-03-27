@@ -16,7 +16,7 @@
 #ifndef ACCESSIBILITY_ELEMENT_OPERATOR_STUB_H
 #define ACCESSIBILITY_ELEMENT_OPERATOR_STUB_H
 
-#include "iaccessibility_element_operator.h"
+#include "i_accessibility_element_operator.h"
 #include "iremote_stub.h"
 
 namespace OHOS {

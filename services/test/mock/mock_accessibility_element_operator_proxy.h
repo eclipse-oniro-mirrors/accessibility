@@ -17,7 +17,7 @@
 #define MOCK_ACCESSIBILITY_ELEMENT_OPERATOR_PROXY_H
 
 #include "accessibility_ipc_interface_code.h"
-#include "iaccessibility_element_operator.h"
+#include "i_accessibility_element_operator.h"
 #include "iremote_proxy.h"
 
 namespace OHOS {
