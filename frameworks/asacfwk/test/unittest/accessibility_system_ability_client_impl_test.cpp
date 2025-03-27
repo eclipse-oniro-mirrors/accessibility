@@ -1346,6 +1346,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, LoadSystemAbilityFail_001, Te
         return;
     }
     impl_->LoadSystemAbilityFail();
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "LoadSystemAbilityFail_001 end";
 }
@@ -1365,6 +1366,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, Init_001, TestSize.Level1)
     }
     impl_->LoadSystemAbilityFail();
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "Init_001 end";
 }
@@ -1484,6 +1486,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSplicElementIdTreeId_001, 
     }
     int64_t elementId = 0;
     impl_->SetSplicElementIdTreeId(1, elementId);
+    EXPECT_NE(elementId, 0);
     GTEST_LOG_(INFO) << "SetSplicElementIdTreeId_001 end";
 }
 
