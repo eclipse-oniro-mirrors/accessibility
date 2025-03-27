@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+# Copyright (C) 2022-2024 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -108,8 +108,6 @@ ohos_unittest("accessibility_account_data_test") {
     "ability_runtime:abilitykit_native",
     "ability_runtime:dataobs_manager",
     "ability_runtime:extension_manager",
-    "access_token:libaccesstoken_sdk",
-    "access_token:libtokenid_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
@@ -221,7 +219,6 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "access_token:libaccesstoken_sdk",
     "access_token:libnativetoken",
     "access_token:libtoken_setproc",
-    "access_token:libtokenid_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
@@ -260,7 +257,6 @@ ohos_unittest("accessibility_touch_exploration_test") {
     "../../../common/interface/src/accessibility_element_operator_callback_stub.cpp",
     "../../../common/interface/src/accessible_ability_channel_stub.cpp",
     "../../../common/interface/src/parcel/accessibility_element_info_parcel.cpp",
-    "../../../common/interface/src/parcel/accessibility_event_info_parcel.cpp",
     "../../../common/interface/src/parcel/accessibility_gesture_inject_path_parcel.cpp",
     "../../../common/interface/src/parcel/accessibility_window_info_parcel.cpp",
     "../../test/mock/mock_common_event_data.cpp",
@@ -300,10 +296,7 @@ ohos_unittest("accessibility_touch_exploration_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../common/interface:accessibility_interface",
-    "../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:want",
@@ -781,8 +774,6 @@ ohos_unittest("accessible_ability_connection_test") {
     "ability_runtime:abilitykit_native",
     "ability_runtime:dataobs_manager",
     "ability_runtime:extension_manager",
-    "access_token:libaccesstoken_sdk",
-    "access_token:libtokenid_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
@@ -903,10 +894,7 @@ ohos_unittest("accessibility_dumper_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../common/interface:accessibility_interface",
-    "../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:want",
@@ -1081,10 +1069,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [
-    "../../../common/interface:accessibility_interface",
-    "../../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:want",
@@ -1185,8 +1170,6 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "ability_runtime:abilitykit_native",
     "ability_runtime:dataobs_manager",
     "ability_runtime:extension_manager",
-    "access_token:libaccesstoken_sdk",
-    "access_token:libtokenid_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
@@ -1222,20 +1205,16 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
 ohos_unittest("accessibility_screen_touch_test") {
   module_out_path = module_output_path
   sources = [
-    "../../../common/interface/src/accessibility_element_operator_callback_stub.cpp",
-    "../../../common/interface/src/accessible_ability_channel_stub.cpp",
-    "../../../common/interface/src/parcel/accessibility_element_info_parcel.cpp",
-    "../../../common/interface/src/parcel/accessibility_gesture_inject_path_parcel.cpp",
-    "../../../common/interface/src/parcel/accessibility_window_info_parcel.cpp",
     "../../test/mock/mock_common_event_data.cpp",
     "../../test/mock/mock_common_event_manager.cpp",
     "../../test/mock/mock_common_event_subscribe_info.cpp",
     "../../test/mock/mock_common_event_subscriber.cpp",
     "../../test/mock/mock_matching_skill.cpp",
-    "../src/accessibility_circle_drawing_manager.cpp",
+    "../src/accessibility_account_data.cpp",
     "../src/accessibility_datashare_helper.cpp",
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
+    "../src/accessibility_input_interceptor.cpp",
     "../src/accessibility_keyevent_filter.cpp",
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
@@ -1249,23 +1228,20 @@ ohos_unittest("accessibility_screen_touch_test") {
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
     "../src/accessibility_window_connection.cpp",
+    "../src/accessibility_window_manager.cpp",
     "../src/accessibility_zoom_gesture.cpp",
+    "../src/accessible_ability_channel.cpp",
+    "../src/accessible_ability_connection.cpp",
+    "../src/accessible_ability_manager_service.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/touch_exploration_multi_finger_gesture.cpp",
     "../src/touch_exploration_single_finger_gesture.cpp",
     "../src/utils.cpp",
-    "mock/src/mock_accessibility_account_data.cpp",
+    "mock/src/mock_accessibility_circle_drawing_manager.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
-    "mock/src/mock_accessibility_input_interceptor.cpp",
     "mock/src/mock_accessibility_settings_config.cpp",
-    "mock/src/mock_accessibility_window_manager.cpp",
-    "mock/src/mock_accessible_ability_channel_proxy.cpp",
-    "mock/src/mock_accessible_ability_client_proxy.cpp",
     "mock/src/mock_accessible_ability_client_stub_impl.cpp",
-    "mock/src/mock_accessible_ability_connection.cpp",
-    "mock/src/mock_accessible_ability_manager_service.cpp",
-    "mock/src/mock_accessible_ability_manager_service_stub.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessibility_screen_touch_test.cpp",
   ]
@@ -1605,7 +1581,6 @@ ohos_unittest("accessibility_settings_config_test") {
     "access_token:libaccesstoken_sdk",
     "access_token:libnativetoken",
     "access_token:libtoken_setproc",
-    "access_token:libtokenid_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",

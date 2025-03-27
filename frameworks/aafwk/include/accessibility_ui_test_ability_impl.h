@@ -17,7 +17,7 @@
 #define ACCESSIBILITY_UI_TEST_ABILITY_IMPL_H
 
 #include "accessibility_ui_test_ability.h"
-#include "iaccessible_ability_manager_service.h"
+#include "i_accessible_ability_manager_service.h"
 
 namespace OHOS {
 namespace Accessibility {

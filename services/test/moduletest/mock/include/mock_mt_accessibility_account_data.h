@@ -65,6 +65,7 @@ public:
     MOCK_METHOD1(SetEnaSetTouchGuideStatebled, bool(const bool state));
     MOCK_METHOD1(SetGestureState, bool(const bool state));
     MOCK_METHOD1(SetKeyEventObserverState, bool(const bool state));
+    MOCK_METHOD0(GetEnabledState, bool());
     MOCK_METHOD0(GetTouchGuideState, bool());
     MOCK_METHOD0(GetGestureState, bool());
     MOCK_METHOD0(GetKeyEventObserverState, bool());

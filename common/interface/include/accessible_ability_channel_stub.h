@@ -16,7 +16,7 @@
 #ifndef ACCESSIBLE_ABILITY_CHANNEL_STUB_H
 #define ACCESSIBLE_ABILITY_CHANNEL_STUB_H
 
-#include "iaccessible_ability_channel.h"
+#include "i_accessible_ability_channel.h"
 #include "iremote_stub.h"
 
 namespace OHOS {

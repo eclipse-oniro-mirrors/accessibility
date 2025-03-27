@@ -492,8 +492,7 @@ RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementI
         return RET_ERR_NO_CONNECTION;
     }
 
-    int32_t activeWindow = INVALID_WINDOW_ID;
-    serviceProxy_->GetActiveWindow(activeWindow);
+    int32_t activeWindow = serviceProxy_->GetActiveWindow();
     HILOG_DEBUG("activeWindow[%{public}d]", activeWindow);
     if (GetCacheElementInfo(activeWindow, ROOT_NONE_ID, elementInfo)) {
         HILOG_DEBUG("get element info from cache");
@@ -581,8 +580,7 @@ RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElem
         return RET_ERR_SAMGR;
     }
 
-    int32_t windowId = 0;
-    serviceProxy_->GetActiveWindow(windowId);
+    int32_t windowId = serviceProxy_->GetActiveWindow();
     int64_t elementId = ROOT_NONE_ID;
     RetError ret = SearchElementInfoRecursiveByWinid(windowId, elementId, PREFETCH_RECURSIVE_CHILDREN,
         elementInfos, ROOT_TREE_ID);
@@ -892,10 +890,8 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
     if (text != "") { // find element condition is null, so we will search all element info
         ret = channelClient_->SearchElementInfosByText(windowId, elementId, text, elementInfos);
         if (elementInfos.empty()) {
-            int32_t activeWindowId = 0;
-            serviceProxy_->GetActiveWindow(activeWindowId);
-            ret = SearchElementInfoRecursiveByContent(activeWindowId, elementId, GET_SOURCE_MODE, elementInfos, text,
-                ROOT_TREE_ID);
+            ret = SearchElementInfoRecursiveByContent(serviceProxy_->GetActiveWindow(),
+                elementId, GET_SOURCE_MODE, elementInfos, text, ROOT_TREE_ID);
         }
     } else {
         ret = SearchElementInfoRecursiveByWinid(windowId, elementId, GET_SOURCE_MODE, elementInfos, treeId);
@@ -1012,7 +1008,7 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     }
     RetError ret = RET_ERR_FAILED;
     if ((parentElementId == ROOT_PARENT_ELEMENT_ID) && (parentWindowId > 0)) {
-        serviceProxy_->GetRootParentId(windowId, treeId, parentElementId);
+        parentElementId = serviceProxy_->GetRootParentId(windowId, treeId);
         if (parentElementId > 0) {
             treeId = (static_cast<uint64_t>(parentElementId) >> ELEMENT_MOVE_BIT);
             HILOG_DEBUG("find root parentId and search parentElementId [%{public}" PRId64 "] treeId[%{public}d]",
@@ -1054,9 +1050,7 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, co
     }
 
     int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
-    int32_t wid = 0;
-    serviceProxy_->GetActiveWindow(wid);
-    wid = windowId > 0 ? windowId : wid;
+    int32_t wid = windowId > 0 ? windowId : serviceProxy_->GetActiveWindow();
     HILOG_DEBUG("window:[%{public}d],treeId:%{public}d,elementId:%{public}" PRId64 "",
         wid, treeId, elementId);
     if (GetCacheElementInfo(wid, elementId, targetElementInfo)) {
@@ -1357,8 +1351,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
         return RET_ERR_SAMGR;
     }
 
-    int32_t windowId = 0;
-    serviceProxy_->GetActiveWindow(windowId);
+    int32_t windowId = serviceProxy_->GetActiveWindow();
     HILOG_DEBUG("windowId[%{public}d]", windowId);
     std::vector<AccessibilityElementInfo> elementInfos {};
 
@@ -1401,7 +1394,7 @@ RetError AccessibleAbilityClientImpl::Connect()
         return RET_ERR_SAMGR;
     }
 
-    return static_cast<RetError>(serviceProxy_->EnableUITestAbility(this->AsObject()));
+    return serviceProxy_->EnableUITestAbility(this->AsObject());
 }
 
 RetError AccessibleAbilityClientImpl::Disconnect()
@@ -1412,7 +1405,7 @@ RetError AccessibleAbilityClientImpl::Disconnect()
         HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
     }
-    return static_cast<RetError>(serviceProxy_->DisableUITestAbility());
+    return serviceProxy_->DisableUITestAbility();
 }
 
 void AccessibleAbilityClientImpl::SetConnectionState(bool state)
@@ -1879,13 +1872,13 @@ RetError AccessibleAbilityClientImpl::GetDefaultFocusedElementIds(const int32_t 
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
     }
-
+ 
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-
+ 
     return channelClient_->SearchDefaultFocusedByWindowId(windowId, ROOT_NONE_ID,
         GET_SOURCE_MODE, elementInfos, ROOT_TREE_ID);
 }

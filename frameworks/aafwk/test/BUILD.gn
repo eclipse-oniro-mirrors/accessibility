@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+# Copyright (C) 2022-2023 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -107,6 +107,7 @@ ohos_unittest("accessible_ability_test") {
   sources = [
     "../../../common/interface/src/accessibility_element_operator_callback_stub.cpp",
     "../../../common/interface/src/accessible_ability_client_stub.cpp",
+    "../../../common/interface/src/accessible_ability_manager_service_proxy.cpp",
     "../../../common/interface/src/parcel/accessibility_ability_info_parcel.cpp",
     "../../../common/interface/src/parcel/accessibility_caption_parcel.cpp",
     "../../../common/interface/src/parcel/accessibility_element_info_parcel.cpp",
@@ -172,8 +173,6 @@ ohos_unittest("accessible_ability_test") {
     "ability_runtime:abilitykit_native",
     "ability_runtime:dataobs_manager",
     "ability_runtime:extension_manager",
-    "access_token:libaccesstoken_sdk",
-    "access_token:libtokenid_sdk",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",

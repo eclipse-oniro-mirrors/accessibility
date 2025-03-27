@@ -125,7 +125,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
     return RET_OK;
 }
 
-RetError AccessibleAbilityManagerService::RegisterElementOperator(RegistrationPara parameter,
+RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration parameter,
     const sptr<IAccessibilityElementOperator> &operation, bool isApp)
 {
     (void)parameter;
@@ -657,4 +657,4 @@ void AccessibleAbilityManagerService::OnDataClone()
 {
 }
 } // namespace Accessibility
-} // namespace OHOS
+} // namespace OHOS

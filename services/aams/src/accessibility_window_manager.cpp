@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -378,18 +378,17 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEv
         }
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
         AccessibilityEventInfo evtInf(activeWindowId_, WINDOW_UPDATE_ACTIVE);
-        AccessibilityEventInfoParcel evtInfParcel(evtInf);
         int32_t winId = windowId;
         if (sceneBoardElementIdMap_.CheckWindowIdPair(windowId)) {
             winId = SCENE_BOARD_WINDOW_ID;
         }
-        SetEventInfoBundleName(evtInfParcel);
+        SetEventInfoBundleName(evtInf);
         if (aams.CheckWindowRegister(winId)) {
             HILOG_DEBUG("send active event, windowId: %{public}d", winId);
-            aams.SendEvent(evtInfParcel, 0);
+            aams.SendEvent(evtInf);
         } else {
             HILOG_DEBUG("wait for window register to process event, windowId: %{public}d", winId);
-            aams.InsertWindowIdEventPair(winId, evtInfParcel);
+            aams.InsertWindowIdEventPair(winId, evtInf);
         }
     }
     HILOG_DEBUG("activeWindowId is %{public}d", activeWindowId_);
@@ -648,8 +647,7 @@ void AccessibilityWindowManager::WindowUpdateAdded(const std::vector<sptr<Rosen:
             sceneBoardElementIdMap_.InsertPair(realWidId, windowInfo->uiNodeId_);
         }
         AccessibilityEventInfo evtInfAdded(realWidId, WINDOW_UPDATE_ADDED);
-        AccessibilityEventInfoParcel evtInfParcel(evtInfAdded);
-        Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfParcel, 0);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfAdded);
         if (a11yWindows_[realWidId].IsFocused()) {
             SetActiveWindow(realWidId);
         }
@@ -681,8 +679,7 @@ void AccessibilityWindowManager::WindowUpdateRemoved(const std::vector<sptr<Rose
         subWindows_.erase(realWidId);
         sceneBoardElementIdMap_.RemovePair(realWidId);
         AccessibilityEventInfo evtInfRemoved(realWidId, WINDOW_UPDATE_REMOVED);
-        AccessibilityEventInfoParcel evtInfParcel(evtInfRemoved);
-        aams.SendEvent(evtInfParcel, 0);
+        aams.SendEvent(evtInfRemoved);
     }
 }
 
@@ -710,8 +707,7 @@ void AccessibilityWindowManager::WindowUpdateFocused(const std::vector<sptr<Rose
         }
         SetActiveWindow(realWidId);
         AccessibilityEventInfo evtInfFocused(realWidId, WINDOW_UPDATE_FOCUSED);
-        AccessibilityEventInfoParcel evtInfParcel(evtInfFocused);
-        aams.SendEvent(evtInfParcel, 0);
+        aams.SendEvent(evtInfFocused);
     }
 }
 
@@ -732,8 +728,7 @@ void AccessibilityWindowManager::WindowUpdateBounds(const std::vector<sptr<Rosen
         }
 
         AccessibilityEventInfo evtInfBounds(realWidId, WINDOW_UPDATE_BOUNDS);
-        AccessibilityEventInfoParcel evtInfParcel(evtInfBounds);
-        aams.SendEvent(evtInfParcel, 0);
+        aams.SendEvent(evtInfBounds);
     }
 }
 
@@ -777,8 +772,7 @@ void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Ros
             UpdateAccessibilityWindowInfo(a11yWindows_[realWidId], windowInfo);
         }
         AccessibilityEventInfo evtInfProperty(realWidId, WINDOW_UPDATE_PROPERTY);
-        AccessibilityEventInfoParcel evtInfParcel(evtInfProperty);
-        aams.SendEvent(evtInfParcel, 0);
+        aams.SendEvent(evtInfProperty);
     }
 }
 
@@ -787,8 +781,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEventAdded(const int32_t realWi
 {
     AccessibilityEventInfo evtInfAdded(realWidId, WINDOW_UPDATE_ADDED);
     SetEventInfoBundleNameOld(evtInfAdded, realWidId, oldA11yWindows_);
-    AccessibilityEventInfoParcel evtInfParcel(evtInfAdded);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfParcel, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfAdded);
     if (a11yWindows_[realWidId].IsFocused()) {
         SetActiveWindow(realWidId);
     }
@@ -806,8 +799,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEventRemoved(const int32_t real
 
     AccessibilityEventInfo evtInfRemoved(realWidId, WINDOW_UPDATE_REMOVED);
     SetEventInfoBundleNameOld(evtInfRemoved, realWidId, oldA11yWindows_);
-    AccessibilityEventInfoParcel evtInfParcel(evtInfRemoved);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfParcel, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfRemoved);
 }
 
 void AccessibilityWindowManager::WindowUpdateTypeEventBounds(const int32_t realWidId,
@@ -815,8 +807,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEventBounds(const int32_t realW
 {
     AccessibilityEventInfo evtInfBounds(realWidId, WINDOW_UPDATE_BOUNDS);
     SetEventInfoBundleNameOld(evtInfBounds, realWidId, oldA11yWindows_);
-    AccessibilityEventInfoParcel evtInfParcel(evtInfBounds);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfParcel, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfBounds);
 }
 
 void AccessibilityWindowManager::WindowUpdateTypeEventFocused(const int32_t realWidId,
@@ -825,8 +816,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEventFocused(const int32_t real
     SetActiveWindow(realWidId);
     AccessibilityEventInfo evtInfFocused(realWidId, WINDOW_UPDATE_FOCUSED);
     SetEventInfoBundleNameOld(evtInfFocused, realWidId, oldA11yWindows_);
-    AccessibilityEventInfoParcel evtInfParcel(evtInfFocused);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfParcel, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfFocused);
 }
 
 void AccessibilityWindowManager::WindowUpdateTypeEventProperty(const int32_t realWidId,
@@ -834,8 +824,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEventProperty(const int32_t rea
 {
     AccessibilityEventInfo evtInfProperty(realWidId, WINDOW_UPDATE_PROPERTY);
     SetEventInfoBundleNameOld(evtInfProperty, realWidId, oldA11yWindows_);
-    AccessibilityEventInfoParcel evtInfParcel(evtInfProperty);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfParcel, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfProperty);
 }
 
 void AccessibilityWindowManager::WindowUpdateTypeEventLayer(const int32_t realWidId,
@@ -843,8 +832,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEventLayer(const int32_t realWi
 {
     AccessibilityEventInfo evtInfLayer(realWidId, WINDOW_UPDATE_LAYER);
     SetEventInfoBundleNameOld(evtInfLayer, realWidId, oldA11yWindows_);
-    AccessibilityEventInfoParcel evtInfParcel(evtInfLayer);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfParcel, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfLayer);
 }
 
 void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId,
@@ -1003,8 +991,7 @@ void AccessibilityWindowManager::ClearAccessibilityFocused()
     // Send event
     AccessibilityEventInfo eventInfo(TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT);
     eventInfo.SetWindowId(a11yFocusedWindowId_);
-    AccessibilityEventInfoParcel eventInfoParcel(eventInfo);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfoParcel, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
 }
 
 int64_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowId, const int64_t elementId)

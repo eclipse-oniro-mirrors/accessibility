@@ -16,7 +16,7 @@
 #ifndef ACCESSIBILITY_WINDOW_CONNECTION_H
 #define ACCESSIBILITY_WINDOW_CONNECTION_H
 
-#include "iaccessibility_element_operator.h"
+#include "i_accessibility_element_operator.h"
 #include "hilog_wrapper.h"
 #include "ffrt.h"
 #include "safe_map.h"

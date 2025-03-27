@@ -28,7 +28,6 @@ namespace {
     constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     constexpr int32_t SA_CONNECT_TIMEOUT = 500; // ms
-    constexpr int32_t ABILITY_SIZE_MAX = 10000;
 } // namespaces
 
 static ffrt::mutex g_Mutex;
@@ -221,8 +220,7 @@ void AccessibilitySystemAbilityClientImpl::Init()
     if (serviceProxy_ == nullptr) {
         return;
     }
-    uint32_t stateType = 0;
-    serviceProxy_->RegisterStateObserver(stateObserver_, stateType);
+    uint32_t stateType = serviceProxy_->RegisterStateObserver(stateObserver_);
     if (stateType & STATE_ACCESSIBILITY_ENABLED) {
         stateArray_[AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED] = true;
     }
@@ -287,7 +285,7 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
         return RET_ERR_NULLPTR;
     }
     elementOperators_[windowId] = aamsInteractionOperator;
-    return static_cast<RetError>(serviceProxy_->RegisterElementOperatorByWindowId(windowId, aamsInteractionOperator));
+    return serviceProxy_->RegisterElementOperator(windowId, aamsInteractionOperator);
 }
 
 RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(Registration parameter,
@@ -319,14 +317,7 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(Registrat
         return RET_ERR_NULLPTR;
     }
     elementOperators_[parameter.windowId] = aamsInteractionOperator;
-    RegistrationPara registrationPara {
-        .windowId = parameter.windowId,
-        .parentWindowId = parameter.parentWindowId,
-        .parentTreeId = parameter.parentTreeId,
-        .elementId = parameter.elementId,
-    };
-    return static_cast<RetError>(serviceProxy_->RegisterElementOperatorByParameter(registrationPara,
-        aamsInteractionOperator));
+    return serviceProxy_->RegisterElementOperator(parameter, aamsInteractionOperator);
 }
 
 void AccessibilitySystemAbilityClientImpl::ReregisterElementOperator()
@@ -338,7 +329,7 @@ void AccessibilitySystemAbilityClientImpl::ReregisterElementOperator()
         return;
     }
     for (auto iter = elementOperators_.begin(); iter != elementOperators_.end(); iter++) {
-        serviceProxy_->RegisterElementOperatorByWindowId(iter->first, iter->second);
+        serviceProxy_->RegisterElementOperator(iter->first, iter->second);
     }
 }
 
@@ -359,7 +350,7 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
         HILOG_WARN("Not find windowID[%{public}d]", windowId);
         return RET_ERR_NO_REGISTER;
     }
-    return static_cast<RetError>(serviceProxy_->DeregisterElementOperatorByWindowId(windowId));
+    return serviceProxy_->DeregisterElementOperator(windowId);
 }
 
 RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const int32_t windowId, const int32_t treeId)
@@ -372,7 +363,7 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
         return RET_ERR_SAMGR;
     }
 
-    return static_cast<RetError>(serviceProxy_->DeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId));
+    return serviceProxy_->DeregisterElementOperator(windowId, treeId);
 }
 
 RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderEnabled(bool &isEnabled)
@@ -387,7 +378,7 @@ RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderEnabled(bool &isEna
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    serviceProxy_->GetScreenReaderState(isEnabled);
+    isEnabled = serviceProxy_->GetScreenReaderState();
     return RET_OK;
 }
 
@@ -432,16 +423,7 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    std::vector<AccessibilityAbilityInfoParcel> infosParcel = {};
-    RetError ret = static_cast<RetError>(serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType,
-        infosParcel));
-    if (infosParcel.size() < 0 || infosParcel.size() > ABILITY_SIZE_MAX) {
-        HILOG_ERROR("abilityInfoSize is invalid");
-        return RET_ERR_INVALID_PARAM;
-    }
-    for (auto& infoParcel : infosParcel) {
-        infos.push_back(infoParcel);
-    }
+    Accessibility::RetError ret = serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
     return ret;
 }
 
@@ -473,8 +455,7 @@ RetError AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventTy
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    AccessibilityEventInfoParcel eventInfoParcel(event);
-    return static_cast<RetError>(serviceProxy_->SendEvent(eventInfoParcel, 1));
+    return serviceProxy_->SendEvent(event);
 }
 
 RetError AccessibilitySystemAbilityClientImpl::SendEvent(const AccessibilityEventInfo &event)
@@ -488,8 +469,7 @@ RetError AccessibilitySystemAbilityClientImpl::SendEvent(const AccessibilityEven
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    AccessibilityEventInfoParcel eventInfoParcel(event);
-    return static_cast<RetError>(serviceProxy_->SendEvent(eventInfoParcel, 1));
+    return serviceProxy_->SendEvent(event);
 }
 
 RetError AccessibilitySystemAbilityClientImpl::SubscribeStateObserver(
@@ -581,12 +561,7 @@ RetError AccessibilitySystemAbilityClientImpl::GetEnabledAbilities(std::vector<s
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    RetError ret = static_cast<RetError>(serviceProxy_->GetEnabledAbilities(enabledAbilities));
-    if (enabledAbilities.size() < 0 || enabledAbilities.size() > ABILITY_SIZE_MAX) {
-        HILOG_ERROR("dev_num is invalid");
-        return RET_ERR_INVALID_PARAM;
-    }
-    return ret;
+    return serviceProxy_->GetEnabledAbilities(enabledAbilities);
 }
 
 void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChanged(const uint32_t stateType)
@@ -662,7 +637,7 @@ void AccessibilitySystemAbilityClientImpl::SetSearchDefaultFocusByWindowIdResult
         callback->SetSearchDefaultFocusByWindowIdResult(filterInfos, requestId);
         AccessibilityElementOperatorImpl::EraseCallback(requestId);
     } else {
-        HILOG_ERROR("callback is nullptr");
+        HILOG_INFO("callback is nullptr");
     }
 }
 
@@ -842,7 +817,7 @@ RetError AccessibilitySystemAbilityClientImpl::GetFocusedWindowId(int32_t &focus
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    return static_cast<RetError>(serviceProxy_->GetFocusedWindowId(focusedWindowId));
+    return serviceProxy_->GetFocusedWindowId(focusedWindowId);
 }
 
 void AccessibilitySystemAbilityClientImpl::AccessibilityLoadCallback::OnLoadSystemAbilitySuccess(

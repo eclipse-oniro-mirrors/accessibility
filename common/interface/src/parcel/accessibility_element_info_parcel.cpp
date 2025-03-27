@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -319,17 +319,15 @@ bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
     return true;
 }
 
-AccessibilityElementInfoParcel *AccessibilityElementInfoParcel::Unmarshalling(Parcel& parcel)
+sptr<AccessibilityElementInfoParcel> AccessibilityElementInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    AccessibilityElementInfoParcel *accessibilityInfo = new(std::nothrow) AccessibilityElementInfoParcel();
+    sptr<AccessibilityElementInfoParcel> accessibilityInfo = new(std::nothrow) AccessibilityElementInfoParcel();
     if (accessibilityInfo == nullptr) {
         HILOG_ERROR("Failed to create accessibilityInfo.");
         return nullptr;
     }
     if (!accessibilityInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete accessibilityInfo;
-        accessibilityInfo = nullptr;
         return nullptr;
     }
     return accessibilityInfo;
@@ -357,17 +355,15 @@ bool AccessibleActionParcel::Marshalling(Parcel &parcel) const
     return true;
 }
 
-AccessibleActionParcel *AccessibleActionParcel::Unmarshalling(Parcel& parcel)
+sptr<AccessibleActionParcel> AccessibleActionParcel::Unmarshalling(Parcel& parcel)
 {
-    AccessibleActionParcel *accessibleOperation = new(std::nothrow) AccessibleActionParcel();
+    sptr<AccessibleActionParcel> accessibleOperation = new(std::nothrow) AccessibleActionParcel();
     if (accessibleOperation == nullptr) {
         HILOG_ERROR("Failed to create accessibleOperation.");
         return nullptr;
     }
     if (!accessibleOperation->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete accessibleOperation;
-        accessibleOperation = nullptr;
         return nullptr;
     }
     return accessibleOperation;
@@ -396,17 +392,15 @@ bool RangeInfoParcel::Marshalling(Parcel &parcel) const
     return true;
 }
 
-RangeInfoParcel *RangeInfoParcel::Unmarshalling(Parcel& parcel)
+sptr<RangeInfoParcel> RangeInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    RangeInfoParcel *rangeInfo = new(std::nothrow) RangeInfoParcel();
+    sptr<RangeInfoParcel> rangeInfo = new(std::nothrow) RangeInfoParcel();
     if (rangeInfo == nullptr) {
         HILOG_ERROR("Failed to create rangeInfo.");
         return nullptr;
     }
     if (!rangeInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete rangeInfo;
-        rangeInfo = nullptr;
         return nullptr;
     }
     return rangeInfo;
@@ -435,17 +429,15 @@ bool GridInfoParcel::Marshalling(Parcel &parcel) const
     return true;
 }
 
-GridInfoParcel *GridInfoParcel::Unmarshalling(Parcel& parcel)
+sptr<GridInfoParcel> GridInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    GridInfoParcel *grid = new(std::nothrow) GridInfoParcel();
+    sptr<GridInfoParcel> grid = new(std::nothrow) GridInfoParcel();
     if (grid == nullptr) {
         HILOG_ERROR("Failed to create grid.");
         return nullptr;
     }
     if (!grid->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete grid;
-        grid = nullptr;
         return nullptr;
     }
     return grid;
@@ -480,17 +472,15 @@ bool GridItemInfoParcel::Marshalling(Parcel &parcel) const
     return true;
 }
 
-GridItemInfoParcel *GridItemInfoParcel::Unmarshalling(Parcel& parcel)
+sptr<GridItemInfoParcel> GridItemInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    GridItemInfoParcel *gridItem = new(std::nothrow) GridItemInfoParcel();
+    sptr<GridItemInfoParcel> gridItem = new(std::nothrow) GridItemInfoParcel();
     if (gridItem == nullptr) {
         HILOG_ERROR("Failed to create gridItem.");
         return nullptr;
     }
     if (!gridItem->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete gridItem;
-        gridItem = nullptr;
         return nullptr;
     }
     return gridItem;
@@ -519,17 +509,15 @@ bool RectParcel::Marshalling(Parcel &parcel) const
     return true;
 }
 
-RectParcel *RectParcel::Unmarshalling(Parcel& parcel)
+sptr<RectParcel> RectParcel::Unmarshalling(Parcel& parcel)
 {
-    RectParcel *rect = new(std::nothrow) RectParcel();
+    sptr<RectParcel> rect = new(std::nothrow) RectParcel();
     if (rect == nullptr) {
         HILOG_ERROR("Failed to create rect.");
         return nullptr;
     }
     if (!rect->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete rect;
-        rect = nullptr;
         return nullptr;
     }
     return rect;
@@ -607,17 +595,15 @@ bool ExtraElementInfoParcel::Marshalling(Parcel &parcel) const
     return true;
 }
 
-ExtraElementInfoParcel *ExtraElementInfoParcel::Unmarshalling(Parcel &parcel)
+sptr<ExtraElementInfoParcel> ExtraElementInfoParcel::Unmarshalling(Parcel &parcel)
 {
-    ExtraElementInfoParcel *extraElementInfo = new(std::nothrow) ExtraElementInfoParcel();
+    sptr<ExtraElementInfoParcel> extraElementInfo = new(std::nothrow) ExtraElementInfoParcel();
     if (extraElementInfo == nullptr) {
         HILOG_ERROR("Failed to create extraElementInfo.");
         return nullptr;
     }
     if (!extraElementInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete extraElementInfo;
-        extraElementInfo = nullptr;
         return nullptr;
     }
     return extraElementInfo;
@@ -648,17 +634,15 @@ bool SpanInfoParcel::Marshalling(Parcel &parcel) const
     return true;
 }
 
-SpanInfoParcel *SpanInfoParcel::Unmarshalling(Parcel& parcel)
+sptr<SpanInfoParcel> SpanInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    SpanInfoParcel *spanInfo = new(std::nothrow) SpanInfoParcel();
+    sptr<SpanInfoParcel> spanInfo = new(std::nothrow) SpanInfoParcel();
     if (spanInfo == nullptr) {
         HILOG_ERROR("Failed to create spanInfo.");
         return nullptr;
     }
     if (!spanInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete spanInfo;
-        spanInfo = nullptr;
         return nullptr;
     }
     return spanInfo;

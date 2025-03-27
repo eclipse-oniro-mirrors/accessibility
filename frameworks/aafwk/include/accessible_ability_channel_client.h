@@ -17,7 +17,7 @@
 #define ACCESSIBLE_ABILITY_CHANNEL_CLIENT_H
 
 #include <atomic>
-#include "iaccessible_ability_channel.h"
+#include "i_accessible_ability_channel.h"
 
 namespace OHOS {
 namespace Accessibility {

@@ -11,15 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/config/components/idl_tool/idl.gni")
 import("//build/ohos.gni")
-
-idl_gen_interface("accessible_ability_manager_service_interface") {
-  sources = [ "IAccessibleAbilityManagerService.idl" ]
-  sources_common = [ "AccessibilityIpcTypes.idl" ]
-  subsystem_name = "barrierfree"
-  part_name = "accessibility"
-}
 
 config("accessibility_interface_private_config") {
   visibility = [ ":*" ]
@@ -44,10 +36,7 @@ config("accessibility_interface_private_config") {
 }
 
 config("accessibility_interface_public_config") {
-  include_dirs = [
-    "${target_gen_dir}",
-    "include",
-  ]
+  include_dirs = [ "include" ]
 }
 
 accessibility_interface_src = [
@@ -63,10 +52,12 @@ accessibility_interface_src = [
   "src/accessible_ability_client_stub.cpp",
   "src/accessible_ability_manager_caption_observer_proxy.cpp",
   "src/accessible_ability_manager_caption_observer_stub.cpp",
-  "src/accessible_ability_manager_config_observer_proxy.cpp",
-  "src/accessible_ability_manager_config_observer_stub.cpp",
+  "src/accessible_ability_manager_service_proxy.cpp",
+  "src/accessible_ability_manager_service_stub.cpp",
   "src/accessible_ability_manager_state_observer_proxy.cpp",
   "src/accessible_ability_manager_state_observer_stub.cpp",
+  "src/accessible_ability_manager_config_observer_proxy.cpp",
+  "src/accessible_ability_manager_config_observer_stub.cpp",
 ]
 
 accessibility_data_parcel_src = [
@@ -74,8 +65,8 @@ accessibility_data_parcel_src = [
   "src/parcel/accessibility_caption_parcel.cpp",
   "src/parcel/accessibility_element_info_parcel.cpp",
   "src/parcel/accessibility_event_info_parcel.cpp",
-  "src/parcel/accessibility_gesture_inject_path_parcel.cpp",
   "src/parcel/accessibility_window_info_parcel.cpp",
+  "src/parcel/accessibility_gesture_inject_path_parcel.cpp",
 ]
 
 accessibility_api_reporter_src = [ "src/api_event_reporter.cpp" ]
@@ -91,14 +82,9 @@ ohos_shared_library("accessibility_interface") {
     debug = false
   }
 
-  output_values =
-      get_target_outputs(":accessible_ability_manager_service_interface")
   sources = accessibility_interface_src
   sources += accessibility_data_parcel_src
   sources += accessibility_api_reporter_src
-  sources += filter_include(output_values, [ "*proxy.cpp" ])
-  sources += filter_include(output_values, [ "*stub.cpp" ])
-  sources += filter_include(output_values, [ "*types.cpp" ])
   configs = [
     ":accessibility_interface_private_config",
     "../../resources/config/build:coverage_flags",
@@ -106,10 +92,7 @@ ohos_shared_library("accessibility_interface") {
 
   public_configs = [ ":accessibility_interface_public_config" ]
 
-  deps = [
-    ":accessible_ability_manager_service_interface",
-    "../../interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "access_token:libaccesstoken_sdk",

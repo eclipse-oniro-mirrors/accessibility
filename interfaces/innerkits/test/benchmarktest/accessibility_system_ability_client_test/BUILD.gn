@@ -22,7 +22,6 @@ ohos_benchmarktest("BenchmarkTestForAccessibilitySystemAbilityClient") {
   }
   sources = [ "accessibility_system_ability_client_test.cpp" ]
   deps = [
-    "../../../../../common/interface:accessibility_interface",
     "../../../asacfwk:accessibilityclient",
     "../../../common:accessibility_common",
   ]
