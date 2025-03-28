@@ -596,6 +596,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFiltering_001, TestSize.Le
     }
     std::vector<AccessibilityElementInfo> filterInfos;
     mockStub_->SetFiltering(filterInfos);
+    EXPECT_NE(mockStub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "SetFiltering_001 end";
 }
 
