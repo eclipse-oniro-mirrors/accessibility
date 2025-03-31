@@ -43,7 +43,8 @@ static void WaitUntilTaskFinished()
     const uint32_t maxRetryNum = TEST_NUM_THOUSAND;
     const uint32_t sleepTime = TEST_NUM_THOUSAND;
     uint32_t count = 0;
-    auto handler = Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
+    auto handler = std::make_shared<AppExecFwk::EventHandler>(
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner());
     std::atomic<bool> taskCalled(false);
     auto func = [&taskCalled]() { taskCalled.store(true); };
     if (handler->PostTask(func)) {
