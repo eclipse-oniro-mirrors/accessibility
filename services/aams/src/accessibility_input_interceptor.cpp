@@ -53,7 +53,7 @@ AccessibilityInputInterceptor::AccessibilityInputInterceptor()
 
     inputManager_ = MMI::InputManager::GetInstance();
     eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner());
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner());
 }
 
 AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
@@ -369,7 +369,7 @@ AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
 {
     HILOG_DEBUG();
     eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner());
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner());
 #ifdef ACCESSIBILITY_WATCH_FEATURE
     eventHandler_->PostTask([] {
         auto pid = getpid();
