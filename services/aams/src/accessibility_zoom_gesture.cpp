@@ -50,7 +50,7 @@ AccessibilityZoomGesture::AccessibilityZoomGesture()
     HILOG_DEBUG();
 
     zoomGestureEventHandler_ = std::make_shared<ZoomGestureEventHandler>(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner(), *this);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner(), *this);
 
     tapDistance_ = TAP_MIN_DISTANCE;
 
