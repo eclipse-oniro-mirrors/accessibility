@@ -785,5 +785,14 @@ void TouchExploration::Clear()
     multiFingerSwipeRoute_.clear();
     multiFingerSwipePrePoint_.clear();
 }
+
+void TouchExploration::DestroyEvents()
+{
+    HILOG_INFO();
+    Clear();
+    handler_->RemoveAllEvents();
+    SetCurrentState(TouchExplorationState::TOUCH_INIT);
+    EventTransmission::DestroyEvents();
+}
 } // namespace Accessibility
 } // namespace OHOS
