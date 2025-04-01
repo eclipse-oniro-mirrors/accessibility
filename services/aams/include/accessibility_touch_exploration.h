@@ -235,6 +235,7 @@ public:
     ~TouchExploration() {}
     void StartUp();
 
+    void DestroyEvents() override;
     void Clear();
     void HoverEventRunner();
     bool SendDoubleTapAndLongPressDownEvent();

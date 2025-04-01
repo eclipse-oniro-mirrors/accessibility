@@ -121,9 +121,16 @@ void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunc
         return;
     }
     availableFunctions_ = availableFunctions;
-    DestroyTransmitters();
-    CreateTransmitters();
-    UpdateInterceptor();
+
+    if (!eventHandler_) {
+        HILOG_ERROR("eventHandler is empty!");
+        return;
+    }
+    eventHandler_->PostTask([this] {
+        DestroyTransmitters();
+        CreateTransmitters();
+        UpdateInterceptor();
+    });
 }
 
 void AccessibilityInputInterceptor::CreateTransmitters()
