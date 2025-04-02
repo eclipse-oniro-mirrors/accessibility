@@ -38,7 +38,7 @@ KeyEventFilter::KeyEventFilter()
 {
     HILOG_DEBUG();
 
-    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
+    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;

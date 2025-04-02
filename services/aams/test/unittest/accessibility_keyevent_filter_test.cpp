@@ -401,7 +401,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ClearServiceKeyEvents_0
     EXPECT_EQ(MMI::KeyEvent::KEYCODE_VOLUME_DOWN, AccessibilityAbilityHelper::GetInstance().GetKeyCode());
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-        if (aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
+        if (aams.GetInputManagerRunner()->GetEventQueue()->IsIdle()) {
             return true;
         } else {
             return false;

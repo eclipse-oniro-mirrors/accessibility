@@ -147,7 +147,7 @@ TouchExploration::TouchExploration()
 
 void TouchExploration::StartUp()
 {
-    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
+    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;
@@ -784,6 +784,15 @@ void TouchExploration::Clear()
     multiFingerSwipeDirection_ = -1;
     multiFingerSwipeRoute_.clear();
     multiFingerSwipePrePoint_.clear();
+}
+
+void TouchExploration::DestroyEvents()
+{
+    HILOG_INFO();
+    Clear();
+    handler_->RemoveAllEvents();
+    SetCurrentState(TouchExplorationState::TOUCH_INIT);
+    EventTransmission::DestroyEvents();
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -30,7 +30,7 @@ AccessibilityMouseAutoclick::AccessibilityMouseAutoclick()
     HILOG_DEBUG();
 
     std::shared_ptr<AppExecFwk::EventRunner> runner =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
     if (!runner) {
         HILOG_ERROR("get runner failed");
         return;
