@@ -989,9 +989,9 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByWindowId(
 void AccessibleAbilityManagerService::IsCheckWindowIdEventExist(const int32_t windowId)
 {
     if (CheckWindowIdEventExist(windowId)) {
-        AccessibilityEventInfoParcel eventInfoParcel(windowFocusEventMap_[windowId]);
+        AccessibilityEventInfoParcel eventInfoParcel(windowFocusEventMap_.ReadVal(windowId));
         SendEvent(eventInfoParcel, 0);
-        windowFocusEventMap_.erase(windowId);
+        windowFocusEventMap_.Erase(windowId);
     }
 }
 
@@ -1109,9 +1109,9 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByParameter(cons
             return;
         }
         if (CheckWindowIdEventExist(parameter.windowId)) {
-            AccessibilityEventInfoParcel eventInfoParcel(windowFocusEventMap_[parameter.windowId]);
+            AccessibilityEventInfoParcel eventInfoParcel(windowFocusEventMap_.ReadVal(parameter.windowId));
             SendEvent(eventInfoParcel, 0);
-            windowFocusEventMap_.erase(parameter.windowId);
+            windowFocusEventMap_.Erase(parameter.windowId);
         }
         if (elementOperator && elementOperator->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
@@ -3195,12 +3195,13 @@ ErrCode AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWind
 void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
 {
     HILOG_DEBUG("insert event, windowId: %{public}d", windowId);
-    windowFocusEventMap_[windowId] = event;
+    windowFocusEventMap_.EnsureInsert(windowId, event);
 }
 
 bool AccessibleAbilityManagerService::CheckWindowIdEventExist(int32_t windowId)
 {
-    return windowFocusEventMap_.count(windowId);
+    AccessibilityEventInfo eventInfo;
+    return windowFocusEventMap_.Find(windowId, eventInfo);
 }
 
 bool AccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)

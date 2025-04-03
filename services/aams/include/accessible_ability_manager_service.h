@@ -503,7 +503,7 @@ private:
     std::shared_ptr<AccessibilitySettings> accessibilitySettings_ = nullptr;
     std::shared_ptr<AccessibilityShortKey> accessibilityShortKey_ = nullptr;
     std::vector<std::string> removedAutoStartAbilities_ {};
-    std::map<int32_t, AccessibilityEventInfo> windowFocusEventMap_ {};
+    SafeMap<int32_t, AccessibilityEventInfo> windowFocusEventMap_ {};
 
     std::map<int32_t, std::map<int32_t, std::set<int32_t>>> windowRequestIdMap_ {}; // windowId->treeId->requestId
     std::map<int32_t, sptr<IAccessibilityElementOperatorCallback>> requestIdMap_ {}; // requestId->callback
