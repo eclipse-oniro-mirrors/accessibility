@@ -20,11 +20,11 @@
 #include "hilog_wrapper.h"
 
 constexpr int32_t INVALID_ANI_VERSION = 1;
-constexpr int32_t CLASS_NOT_FOUND = 2;
+constexpr int32_t MODULE_NOT_FOUND = 2;
 constexpr int32_t NAMESPACE_NOT_FOUND = 3;
 constexpr int32_t BIND_METHOD_FAILED = 4;
 
-bool BindMethod(ani_env *env, ani_namespace cls, ani_class globalCls);
+bool BindMethod(ani_env *env, ani_namespace cls, ani_module mod);
 
 ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
 {
@@ -41,14 +41,14 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
         return (ani_status)NAMESPACE_NOT_FOUND;
     }
 
-    static const char *globalClassName = "L@ohos/accessibility/ETSGLOBAL;";
-    ani_class globalCls;
-    if (env->FindClass(globalClassName, &globalCls) != ANI_OK) {
-        HILOG_ERROR("class not found: %{public}s", globalClassName);
-        return (ani_status)CLASS_NOT_FOUND;
+    static const char *moduleName = "L@ohos/accessibility;";
+    ani_module mod;
+    if (env->FindModule(moduleName, &mod) != ANI_OK) {
+        HILOG_ERROR("module not found: %{public}s", moduleName);
+        return (ani_status)MODULE_NOT_FOUND;
     }
 
-    if (!BindMethod(env, ns, globalCls)) {
+    if (!BindMethod(env, ns, mod)) {
         HILOG_ERROR("bind method failed");
         return (ani_status)BIND_METHOD_FAILED;
     }
@@ -60,7 +60,7 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
     return ANI_OK;
 }
 
-bool BindMethod(ani_env *env, ani_namespace ns, ani_class globalCls)
+bool BindMethod(ani_env *env, ani_namespace ns, ani_module mod)
 {
     std::array methods = {
         ani_native_function {"isOpenTouchGuideSync", nullptr, reinterpret_cast<void *>(
@@ -110,7 +110,7 @@ bool BindMethod(ani_env *env, ani_namespace ns, ani_class globalCls)
             reinterpret_cast<void *>(ANIAccessibilityClient::SendAccessibilityEvent)},
     };
 
-    if (env->Class_BindNativeMethods(globalCls, methods.data(), methods.size()) != ANI_OK) {
+    if (env->Module_BindNativeFunctions(mod, methods.data(), methods.size()) != ANI_OK) {
         return false;
     };
 
