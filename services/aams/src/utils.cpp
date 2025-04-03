@@ -23,6 +23,7 @@
 #include "hilog_wrapper.h"
 #include "nlohmann/json.hpp"
 #include "ipc_skeleton.h"
+#include "parameters.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -49,6 +50,9 @@ namespace {
     const std::string CAPABILITIES_JSON_VALUE_ZOOM = "zoom";
     const std::string CAPABILITIES_JSON_VALUE_GESTURE = "gesture";
 
+    const std::string FOLD_SCREEN_TYPE = system::GetParameter("const.window.foldscreen.type", "0,0,0,0");
+    const bool IS_WIDE_FOLD = (FOLD_SCREEN_TYPE == "4,2,0,0");
+    const bool IS_BIG_FOLD = (FOLD_SCREEN_TYPE == "1,2,0,0");
     const int32_t STRING_LEN_MAX = 10240;
     constexpr int32_t BASE_USER_RANGE = 200000;
     constexpr int32_t INVALID_ID = -1;
@@ -507,6 +511,16 @@ int32_t Utils::GetUserIdByCallingUid()
         return INVALID_USER_ID;
     }
     return (uid / BASE_USER_RANGE);
+}
+
+bool Utils::isWideFold()
+{
+    return IS_WIDE_FOLD;
+}
+
+bool Utils::isBigFold()
+{
+    return IS_BIG_FOLD;
 }
 } // namespace Accessibility
 } // namespace OHOS

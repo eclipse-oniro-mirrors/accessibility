@@ -751,14 +751,14 @@ void AccessibilityZoomGesture::ZoomGestureEventHandler::ProcessEvent(const AppEx
     }
 }
 
-void AccessibilityZoomGesture::GetWindowParam()
+void AccessibilityZoomGesture::GetWindowParam(bool needRefresh)
 {
     HILOG_DEBUG();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
     OHOS::Rosen::DisplayOrientation currentOrientation = displayMgr.GetOrientation();
-    if ((currentScreen != screenId_) || (currentOrientation != orientation_)) {
+    if (needRefresh || (currentScreen != screenId_) || (currentOrientation != orientation_)) {
         HILOG_INFO("display id or orientation changed.");
         screenId_ = currentScreen;
         orientation_ = currentOrientation;

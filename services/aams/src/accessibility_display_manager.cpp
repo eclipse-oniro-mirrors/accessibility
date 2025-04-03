@@ -16,6 +16,7 @@
 #include "accessibility_display_manager.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -199,11 +200,23 @@ void AccessibilityDisplayManager::DisplayModeListener::OnDisplayModeChanged(Rose
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
     if (interceptor == nullptr) {
         HILOG_WARN("interceptior is null");
+        return;
     }
-    if (displayMode == Rosen::FoldDisplayMode::MAIN) {
-        interceptor->ShieldZoomGesture(true);
-    } else if (displayMode == Rosen::FoldDisplayMode::FULL) {
-        interceptor->ShieldZoomGesture(false);
+
+    if (Utils::isWideFold()) {
+        if (displayMode == Rosen::FoldDisplayMode::MAIN) {
+            interceptor->ShieldZoomGesture(true);
+        } else if (displayMode == Rosen::FoldDisplayMode::FULL) {
+            interceptor->ShieldZoomGesture(false);
+        } else {
+            HILOG_DEBUG("other display mode.");
+        }
+        return;
+    }
+
+    if (Utils::isBigFold()) {
+        interceptor->RefreshDisplayInfo();
+        return;
     }
 }
 } // namespace Accessibility
