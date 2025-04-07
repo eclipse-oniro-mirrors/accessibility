@@ -106,7 +106,6 @@ namespace {
     const std::string TIMER_GET_ALL_CONFIG = "accessibility:getAllConfig";
     const std::string TIMER_REGISTER_CONFIG_OBSERVER = "accessibility:registerConfigObserver";
     constexpr int32_t XCOLLIE_TIMEOUT = 6; // s
-    const std::string FOLD_SCREEN_TYPE = system::GetParameter("const.window.foldscreen.type", "0,0,0,0");
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -322,7 +321,7 @@ void AccessibleAbilityManagerService::OnStop()
         Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
         Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
         Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
-        if (FOLD_SCREEN_TYPE == "4,2,0,0") {
+        if (Utils::isWideFold() || Utils::isBigFold()) {
             Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayModeListener();
         }
 
@@ -1660,7 +1659,7 @@ bool AccessibleAbilityManagerService::Init()
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
-    if (FOLD_SCREEN_TYPE == "4,2,0,0") {
+    if (Utils::isWideFold() || Utils::isBigFold()) {
         Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayModeListener();
     }
     bool result = Singleton<AccessibilityWindowManager>::GetInstance().Init();

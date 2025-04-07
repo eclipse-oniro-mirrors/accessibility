@@ -372,6 +372,14 @@ void AccessibilityInputInterceptor::ShieldZoomGesture(bool flag)
     zoomGesture_->ShieldZoomGesture(flag);
 }
 
+void AccessibilityInputInterceptor::RefreshDisplayInfo()
+{
+    if (!zoomGesture_) {
+        return;
+    }
+    zoomGesture_->GetWindowParam(true);
+}
+
 AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
 {
     HILOG_DEBUG();

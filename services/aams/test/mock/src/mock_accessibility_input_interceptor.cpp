@@ -103,6 +103,9 @@ void AccessibilityInputInterceptor::ShieldZoomGesture(bool flag)
     (void)flag;
 }
 
+void AccessibilityInputInterceptor::RefreshDisplayInfo()
+{}
+
 AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
 {}
 

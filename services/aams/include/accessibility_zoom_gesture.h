@@ -47,6 +47,7 @@ public:
     void DestroyEvents() override;
     // flag = true shield zoom gesture | flag = false restore zoom gesture
     void ShieldZoomGesture(bool state);
+    void GetWindowParam(bool needRefresh = false);
 
 private:
     class ZoomGestureEventHandler : public AppExecFwk::EventHandler {
@@ -84,7 +85,6 @@ private:
         std::shared_ptr<MMI::PointerEvent> secondEvent);
     float CalcSeparationDistance(std::shared_ptr<MMI::PointerEvent> firstEvent,
         std::shared_ptr<MMI::PointerEvent> secondEvent);
-    void GetWindowParam();
     void OnZoom(int32_t centerX, int32_t centerY);
     void OffZoom();
     void OnScroll(float offsetX, float offsetY);
