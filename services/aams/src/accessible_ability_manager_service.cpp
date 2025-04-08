@@ -3675,6 +3675,10 @@ RetError AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInf
     AppExecFwk::BundleInfo bundleInfo, int32_t userId, std::string &result)
 {
     std::unique_ptr<Global::Resource::ResConfig> resConfig(Global::Resource::CreateResConfig());
+    if (resConfig == nullptr) {
+        HILOG_ERROR("create resConfig failed");
+        return RET_ERR_NULLPTR;
+    }
     UErrorCode status = U_ZERO_ERROR;
     icu::Locale locale = icu::Locale::forLanguageTag(Global::I18n::LocaleConfig::GetSystemLanguage(), status);
     resConfig->SetLocaleInfo(locale.getLanguage(), locale.getScript(), locale.getCountry());
