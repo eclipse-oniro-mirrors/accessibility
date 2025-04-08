@@ -2235,7 +2235,12 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
             break;
         case FindElementCondition::FIND_ELEMENT_CONDITION_ELEMENT_ID:
             {
-                int64_t elementId = std::stoll(callbackInfo->condition_);
+                int64_t elementId = 0;
+                if (!ConvertStringToInt64(callbackInfo->condition_, elementId)) {
+                    HILOG_ERROR("condition id convert failed");
+                    callbackInfo->ret_ = RET_ERR_INVALID_PARAM;
+                    return;
+                }
                 int32_t windowId = callbackInfo->accessibilityElement_.elementInfo_->GetWindowId();
                 HILOG_DEBUG("elementId is %{public}" PRId64 " windowId: %{public}d", elementId, windowId);
                 callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetByElementId(
