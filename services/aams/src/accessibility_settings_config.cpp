@@ -281,8 +281,11 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<s
     std::set<std::string> targets;
     std::copy_if(name.begin(), name.end(), std::inserter(targets, targets.end()),
         [&targets](const std::string &target) {
-            targets.insert(target);
-            return true;
+            if (targets.find(target) == targets.end()) {
+                targets.insert(target);
+                return true;
+            }
+            return false;
         });
     std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     if (!datashare_) {
