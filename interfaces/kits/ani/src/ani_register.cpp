@@ -24,7 +24,7 @@ constexpr int32_t MODULE_NOT_FOUND = 2;
 constexpr int32_t NAMESPACE_NOT_FOUND = 3;
 constexpr int32_t BIND_METHOD_FAILED = 4;
 
-bool BindMethod(ani_env *env, ani_namespace cls, ani_module mod);
+static bool BindMethod(ani_env *env, ani_namespace cls, ani_module mod);
 
 ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
 {
@@ -60,7 +60,7 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
     return ANI_OK;
 }
 
-bool BindMethod(ani_env *env, ani_namespace ns, ani_module mod)
+static bool BindMethod(ani_env *env, ani_namespace ns, ani_module mod)
 {
     std::array methods = {
         ani_native_function {"isOpenTouchGuideSync", nullptr, reinterpret_cast<void *>(
