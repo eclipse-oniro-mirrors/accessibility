@@ -143,7 +143,7 @@ std::shared_ptr<MMI::PointerEvent> TouchExplorationTest::CreateTouchEvent(int32_
  * @tc.name: HandleInitStateDown
  * @tc.desc: Test func HandleInitStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleInitStateDown_001 start";
 
@@ -165,7 +165,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateDown_001
  * @tc.name: HandleInitStateDown
  * @tc.desc: Test func HandleInitStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateDown_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateDown_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleInitStateDown_002 start";
 
@@ -196,7 +196,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateDown_002
  * @tc.name: HandleInitStateUp
  * @tc.desc: Test func HandleInitStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateUp_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateUp_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleInitStateUp_001 start";
 
@@ -220,7 +220,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateUp_001, 
  * @tc.name: HandleInitStateUp
  * @tc.desc: Test func HandleInitStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateUp_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateUp_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleInitStateUp_002 start";
 
@@ -251,7 +251,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateUp_002, 
  * @tc.name: HandleInitStateMove
  * @tc.desc: Test func HandleInitStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateMove_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateMove_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleInitStateMove_001 start";
 
@@ -275,7 +275,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInitStateMove_001
  * @tc.name: HandlePassingThroughState
  * @tc.desc: Test func HandlePassingThroughState.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandlePassingThroughState_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandlePassingThroughState_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandlePassingThroughState_001 start";
 
@@ -299,7 +299,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandlePassingThroughSta
  * @tc.name: HandlePassingThroughState
  * @tc.desc: Test func HandlePassingThroughState.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandlePassingThroughState_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandlePassingThroughState_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandlePassingThroughState_002 start";
 
@@ -323,7 +323,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandlePassingThroughSta
  * @tc.name: HandleInvalidState
  * @tc.desc: Test func HandleInvalidState.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInvalidState_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInvalidState_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleInvalidState_001 start";
 
@@ -346,7 +346,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInvalidState_001,
  * @tc.name: HandleInvalidState
  * @tc.desc: Test func HandleInvalidState.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInvalidState_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInvalidState_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleInvalidState_002 start";
 
@@ -369,7 +369,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleInvalidState_002,
  * @tc.name: HandleCancelEvent
  * @tc.desc: Test func HandleCancelEvent.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleCancelEvent_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleCancelEvent_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleCancelEvent_001 start";
 
@@ -392,7 +392,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleCancelEvent_001, 
  * @tc.name: HandleOneFingerDownStateDown
  * @tc.desc: Test func HandleOneFingerDownStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerDownStateDown_001 start";
 
@@ -415,7 +415,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStat
  * @tc.name: HandleOneFingerDownStateUp
  * @tc.desc: Test func HandleOneFingerDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStateUp_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStateUp_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerDownStateUp_001 start";
 
@@ -438,7 +438,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStat
  * @tc.name: HandleOneFingerDownStateMove
  * @tc.desc: Test func HandleOneFingerDownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStateMove_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStateMove_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerDownStateMove_001 start";
 
@@ -466,7 +466,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStat
  * @tc.name: HandleOneFingerDownStateMove
  * @tc.desc: Test func HandleOneFingerDownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStateMove_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStateMove_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerDownStateMove_002 start";
 
@@ -494,7 +494,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerDownStat
  * @tc.name: HandleOneFingerLongPressStateDown
  * @tc.desc: Test func HandleOneFingerLongPressStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerLongPressStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerLongPressStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerLongPressStateDown_001 start";
 
@@ -515,7 +515,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerLongPres
  * @tc.name: HandleOneFingerLongPressStateUp
  * @tc.desc: Test func HandleOneFingerLongPressStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerLongPressStateUp_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerLongPressStateUp_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerLongPressStateUp_001 start";
 
@@ -538,7 +538,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerLongPres
  * @tc.name: HandleOneFingerLongPressStateMove
  * @tc.desc: Test func HandleOneFingerLongPressStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerLongPressStateMove_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerLongPressStateMove_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerLongPressStateMove_001 start";
 
@@ -561,7 +561,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerLongPres
  * @tc.name: HandleOneFingerSwipeStateDown
  * @tc.desc: Test func HandleOneFingerSwipeStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSwipeStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSwipeStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSwipeStateDown_001 start";
 
@@ -582,7 +582,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSwipeSta
  * @tc.name: HandleOneFingerSwipeStateUp
  * @tc.desc: Test func HandleOneFingerSwipeStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSwipeStateUp_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSwipeStateUp_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSwipeStateUp_001 start";
 
@@ -615,7 +615,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSwipeSta
  * @tc.name: HandleOneFingerSwipeStateUp
  * @tc.desc: Test func HandleOneFingerSwipeStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSwipeStateUp_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSwipeStateUp_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSwipeStateUp_002 start";
 
@@ -653,7 +653,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSwipeSta
  * @tc.name: HandleOneFingerSingleTapStateDown
  * @tc.desc: Test func HandleOneFingerSingleTapStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapStateDown_001 start";
 
@@ -686,7 +686,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTa
  * @tc.name: HandleOneFingerSingleTapStateDown
  * @tc.desc: Test func HandleOneFingerSingleTapStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapStateDown_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapStateDown_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapStateDown_002 start";
 
@@ -719,7 +719,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTa
  * @tc.name: HandleOneFingerSingleTapThenDownStateDown
  * @tc.desc: Test func HandleOneFingerSingleTapThenDownStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateDown_001 start";
 
@@ -740,7 +740,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTa
  * @tc.name: HandleOneFingerSingleTapThenDownStateUp
  * @tc.desc: Test func HandleOneFingerSingleTapThenDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateUp_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateUp_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateUp_001 start";
 
@@ -761,7 +761,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTa
  * @tc.name: HandleOneFingerSingleTapThenDownStateMove
  * @tc.desc: Test func HandleOneFingerSingleTapThenDownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateMove_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateMove_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateMove_001 start";
 
@@ -801,7 +801,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTa
  * @tc.name: HandleOneFingerSingleTapThenDownStateMove
  * @tc.desc: Test func HandleOneFingerSingleTapThenDownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateMove_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateMove_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleOneFingerSingleTapThenDownStateMove_002 start";
 
@@ -841,7 +841,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleOneFingerSingleTa
  * @tc.name: HandleTwoFingersDownStateDown
  * @tc.desc: Test func HandleTwoFingersDownStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDownStateDown_001 start";
 
@@ -862,7 +862,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownSta
  * @tc.name: HandleTwoFingersDownStateDown
  * @tc.desc: Test func HandleTwoFingersDownStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateDown_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateDown_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDownStateDown_002 start";
 
@@ -894,7 +894,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownSta
  * @tc.name: HandleTwoFingersDownStateDown
  * @tc.desc: Test func HandleTwoFingersDownStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateDown_003, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateDown_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDownStateDown_003 start";
 
@@ -935,7 +935,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownSta
  * @tc.name: HandleTwoFingersDownStateUp
  * @tc.desc: Test func HandleTwoFingersDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateUp_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateUp_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDownStateUp_001 start";
 
@@ -964,7 +964,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownSta
  * @tc.name: HandleTwoFingersDownStateUp
  * @tc.desc: Test func HandleTwoFingersDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateUp_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateUp_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDownStateUp_002 start";
 
@@ -985,7 +985,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownSta
  * @tc.name: HandleTwoFingersDownStateUp
  * @tc.desc: Test func HandleTwoFingersDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateUp_003, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateUp_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDownStateUp_003 start";
 
@@ -1017,7 +1017,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownSta
  * @tc.name: HandleTwoFingersDownStateMove
  * @tc.desc: Test func HandleTwoFingersDownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateMove_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateMove_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDownStateMove_001 start";
 
@@ -1056,7 +1056,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownSta
  * @tc.name: HandleTwoFingersDownStateMove
  * @tc.desc: Test func HandleTwoFingersDownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateMove_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateMove_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDownStateMove_002 start";
 
@@ -1104,7 +1104,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownSta
  * @tc.name: HandleTwoFingersDownStateMove
  * @tc.desc: Test func HandleTwoFingersDownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateMove_003, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownStateMove_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDownStateMove_003 start";
 
@@ -1154,7 +1154,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDownSta
  * @tc.name: HandleTwoFingersDragStateDown
  * @tc.desc: Test func HandleTwoFingersDragStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDragStateDown_001 start";
 
@@ -1175,7 +1175,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragSta
  * @tc.name: HandleTwoFingersDragStateDown
  * @tc.desc: Test func HandleTwoFingersDragStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateDown_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateDown_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDragStateDown_002 start";
 
@@ -1204,7 +1204,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragSta
  * @tc.name: HandleTwoFingersDragStateUp
  * @tc.desc: Test func HandleTwoFingersDragStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateUp_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateUp_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDragStateUp_001 start";
 
@@ -1225,7 +1225,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragSta
  * @tc.name: HandleTwoFingersDragStateUp
  * @tc.desc: Test func HandleTwoFingersDragStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateUp_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateUp_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDragStateUp_002 start";
 
@@ -1254,7 +1254,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragSta
  * @tc.name: HandleTwoFingersDragStateMove
  * @tc.desc: Test func HandleTwoFingersDragStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateMove_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateMove_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDragStateMove_001 start";
 
@@ -1275,7 +1275,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragSta
  * @tc.name: HandleTwoFingersDragStateMove
  * @tc.desc: Test func HandleTwoFingersDragStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateMove_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragStateMove_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersDragStateMove_002 start";
 
@@ -1334,7 +1334,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersDragSta
  * @tc.name: HandleMultiFingersTapStateDown
  * @tc.desc: Test func HandleMultiFingersTapStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersTapStateDown_001 start";
 
@@ -1355,7 +1355,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapSt
  * @tc.name: HandleMultiFingersTapStateDown
  * @tc.desc: Test func HandleMultiFingersTapStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateDown_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateDown_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersTapStateDown_002 start";
 
@@ -1387,7 +1387,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapSt
  * @tc.name: HandleMultiFingersTapStateDown
  * @tc.desc: Test func HandleMultiFingersTapStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateDown_003, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateDown_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersTapStateDown_003 start";
 
@@ -1441,7 +1441,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapSt
  * @tc.name: HandleMultiFingersTapStateUp
  * @tc.desc: Test func HandleMultiFingersTapStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateUp_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateUp_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersTapStateUp_001 start";
 
@@ -1462,7 +1462,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapSt
  * @tc.name: HandleMultiFingersTapStateUp
  * @tc.desc: Test func HandleMultiFingersTapStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateUp_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateUp_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersTapStateUp_002 start";
 
@@ -1491,7 +1491,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapSt
  * @tc.name: HandleMultiFingersTapStateMove
  * @tc.desc: Test func HandleMultiFingersTapStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateMove_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateMove_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersTapStateMove_001 start";
 
@@ -1520,7 +1520,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapSt
  * @tc.name: HandleMultiFingersTapStateMove
  * @tc.desc: Test func HandleMultiFingersTapStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateMove_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateMove_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersTapStateMove_002 start";
 
@@ -1569,7 +1569,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapSt
  * @tc.name: HandleMultiFingersTapStateMove
  * @tc.desc: Test func HandleMultiFingersTapStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateMove_003, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapStateMove_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersTapStateMove_003 start";
 
@@ -1618,7 +1618,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersTapSt
  * @tc.name: HandleMultiFingersContinueDownStateDown
  * @tc.desc: Test func HandleMultiFingersContinueDownStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersContinueDownStateDown_001 start";
 
@@ -1639,7 +1639,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersConti
  * @tc.name: HandleMultiFingersContinueDownStateUp
  * @tc.desc: Test func HandleMultiFingersContinueDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_001 start";
 
@@ -1660,7 +1660,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersConti
  * @tc.name: HandleMultiFingersContinueDownStateUp
  * @tc.desc: Test func HandleMultiFingersContinueDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_002 start";
 
@@ -1689,7 +1689,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersConti
  * @tc.name: HandleMultiFingersContinueDownStateUp
  * @tc.desc: Test func HandleMultiFingersContinueDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_003, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_003 start";
 
@@ -1721,7 +1721,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersConti
  * @tc.name: HandleMultiFingersContinueDownStateUp
  * @tc.desc: Test func HandleMultiFingersContinueDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_004, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_004, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_004 start";
 
@@ -1742,7 +1742,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersConti
  * @tc.name: HandleMultiFingersContinueDownStateUp
  * @tc.desc: Test func HandleMultiFingersContinueDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_005, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_005, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersContinueDownStateUp_005 start";
 
@@ -1763,7 +1763,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersConti
  * @tc.name: HandleMultiFingersContinueDownStateMove
  * @tc.desc: Test func HandleMultiFingersContinueDownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateMove_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateMove_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersContinueDownStateMove_001 start";
 
@@ -1816,7 +1816,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersConti
  * @tc.name: HandleMultiFingersContinueDownStateMove
  * @tc.desc: Test func HandleMultiFingersContinueDownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateMove_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersContinueDownStateMove_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleMultiFingersContinueDownStateMove_002 start";
 
@@ -1874,7 +1874,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleMultiFingersConti
  * @tc.name: HandleTwoFingersUnknownStateDown
  * @tc.desc: Test func HandleTwoFingersUnknownStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknownStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknownStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersUnknownStateDown_001 start";
 
@@ -1895,7 +1895,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknown
  * @tc.name: HandleTwoFingersUnknownStateDown
  * @tc.desc: Test func HandleTwoFingersUnknownStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknownStateDown_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknownStateDown_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersUnknownStateDown_002 start";
 
@@ -1924,7 +1924,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknown
  * @tc.name: HandleTwoFingersUnknownStateUp
  * @tc.desc: Test func HandleTwoFingersUnknownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknownStateUp_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknownStateUp_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersUnknownStateUp_001 start";
 
@@ -1945,7 +1945,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknown
  * @tc.name: HandleTwoFingersUnknownStateUp
  * @tc.desc: Test func HandleTwoFingersUnknownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknownStateUp_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknownStateUp_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersUnknownStateUp_002 start";
 
@@ -1974,7 +1974,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknown
  * @tc.name: HandleTwoFingersUnknownStateMove
  * @tc.desc: Test func HandleTwoFingersUnknownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknownStateMove_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknownStateMove_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleTwoFingersUnknownStateMove_001 start";
 
@@ -1995,7 +1995,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleTwoFingersUnknown
  * @tc.name: HandleThreeFingersDownStateDown
  * @tc.desc: Test func HandleThreeFingersDownStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleThreeFingersDownStateDown_001 start";
 
@@ -2016,7 +2016,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownS
  * @tc.name: HandleThreeFingersDownStateDown
  * @tc.desc: Test func HandleThreeFingersDownStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateDown_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateDown_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleThreeFingersDownStateDown_002 start";
 
@@ -2051,7 +2051,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownS
  * @tc.name: HandleThreeFingersDownStateDown
  * @tc.desc: Test func HandleThreeFingersDownStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateDown_003, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateDown_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleThreeFingersDownStateDown_003 start";
 
@@ -2100,7 +2100,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownS
  * @tc.name: HandleThreeFingersDownStateUp
  * @tc.desc: Test func HandleThreeFingersDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateUp_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateUp_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleThreeFingersDownStateUp_001 start";
 
@@ -2132,7 +2132,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownS
  * @tc.name: HandleThreeFingersDownStateUp
  * @tc.desc: Test func HandleThreeFingersDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateUp_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateUp_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleThreeFingersDownStateUp_002 start";
 
@@ -2153,7 +2153,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownS
  * @tc.name: HandleThreeFingersDownStateUp
  * @tc.desc: Test func HandleThreeFingersDownStateUp.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateUp_003, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateUp_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleThreeFingersDownStateUp_003 start";
 
@@ -2188,7 +2188,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownS
  * @tc.name: HandleThreeFingersDownStateMove
  * @tc.desc: Test func HandleThreeFingersDownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateMove_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateMove_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleThreeFingersDownStateMove_001 start";
 
@@ -2242,7 +2242,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownS
  * @tc.name: HandleThreeFingersDownStateMove
  * @tc.desc: Test func HandleThreeFingersDownStateMove.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateMove_002, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownStateMove_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleThreeFingersDownStateMove_002 start";
 
@@ -2294,7 +2294,7 @@ HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersDownS
  * @tc.name: HandleThreeFingersSwipeStateDown
  * @tc.desc: Test func HandleThreeFingersSwipeStateDown.
  */
-HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersSwipeStateDown_001, TestSize.Level1)
+HWTEST_F(TouchExplorationTest, TouchExploration_Unittest_HandleThreeFingersSwipeStateDown_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "TouchExploration_Unittest_HandleThreeFingersSwipeStateDown_001 start";
 

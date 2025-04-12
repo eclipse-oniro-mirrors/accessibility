@@ -598,7 +598,7 @@ void AamsTouchExplorationTest::AddAccessibilityWindowConnection()
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the event that two fingers moving in same directions in dragging state.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent001, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent001 starts";
 
@@ -639,7 +639,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the event that move slowly with one finger.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent002, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent002 starts";
 
@@ -675,7 +675,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the GESTURE_SWIPE_LEFT_THEN_RIGHT gesture.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent003, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent003 starts";
 
@@ -707,7 +707,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the GESTURE_SWIPE_DOWN_THEN_UP gesture.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent004, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent004, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent004 starts";
 
@@ -743,7 +743,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the GESTURE_SWIPE_RIGHT_THEN_LEFT gesture.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent005, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent005, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent005 starts";
 
@@ -779,7 +779,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the GESTURE_SWIPE_UP_THEN_DOWN gesture.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent006, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent006, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent006 starts";
 
@@ -815,7 +815,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the UP gesture.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent007, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent007, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent007 starts";
 
@@ -849,7 +849,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the single tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent008, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent008, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent008 starts";
 
@@ -880,7 +880,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the double tap and long press event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent009, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent009, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent009 starts";
 
@@ -925,7 +925,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the double-tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent010, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent010, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent010 starts";
 
@@ -966,7 +966,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the two finger tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent011, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent011, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent011 starts";
 
@@ -1001,7 +1001,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the two finger double tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent012, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent012, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent012 starts";
 
@@ -1034,7 +1034,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the two finger triple tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent013, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent013, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent013 starts";
 
@@ -1067,7 +1067,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the two finger double tap and hold event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent014, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent014, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent014 starts";
 
@@ -1100,7 +1100,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the two finger triple tap and hold event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent015, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent015, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent015 starts";
 
@@ -1133,7 +1133,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the two finger move event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent016, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent016, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent016 starts";
 
@@ -1171,7 +1171,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the one finger tap and then two finger tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent017, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent017, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent017 starts";
 
@@ -1209,7 +1209,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the two finger tap and then one finger tap event, expect do not recognize as any gesture.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent018, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent018, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent018 starts";
 
@@ -1241,7 +1241,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the one finger tap and then two finger tap event, interval > 300ms, expect two gesture event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent019, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent019, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent019 starts";
 
@@ -1283,7 +1283,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the three finger single tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent020, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent020, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent020 starts";
 
@@ -1323,7 +1323,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the four finger single tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent021, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent021, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent021 starts";
 
@@ -1365,7 +1365,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the three finger double tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent022, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent022, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent022 starts";
 
@@ -1401,7 +1401,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the three finger double tap and hold event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent023, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent023, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent023 starts";
 
@@ -1437,7 +1437,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the three finger triple tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent024, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent024, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent024 starts";
 
@@ -1473,7 +1473,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the three finger triple tap and hold event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent025, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent025, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent025 starts";
 
@@ -1509,7 +1509,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the four finger double tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent026, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent026, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent026 starts";
 
@@ -1547,7 +1547,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the four finger double tap event and hold.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent027, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent027, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent027 starts";
 
@@ -1585,7 +1585,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the four finger triple tap event.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent028, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent028, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent028 starts";
 
@@ -1623,7 +1623,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the four finger tri[le tap event and hold.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent029, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent029, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent029 starts";
 
@@ -1661,7 +1661,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the three finger swipe down.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent030, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent030, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent030 starts";
 
@@ -1705,7 +1705,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the four finger swipe down.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent031, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent031, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent031 starts";
 
@@ -1753,7 +1753,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the three finger swipe up.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent032, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent032, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent032 starts";
 
@@ -1797,7 +1797,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the three finger swipe left.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent033, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent033, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent033 starts";
 
@@ -1841,7 +1841,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the three finger swipe right.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent034, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent034, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent034 starts";
 
@@ -1885,7 +1885,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the four finger swipe up.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent035, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent035, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent035 starts";
 
@@ -1933,7 +1933,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the four finger swipe left.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent036, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent036, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent036 starts";
 
@@ -1981,7 +1981,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
  * @tc.name:OnPointerEvent
  * @tc.desc: Check the four finger swipe right.
  */
-HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent037, TestSize.Level1)
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent037, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent037 starts";
 
