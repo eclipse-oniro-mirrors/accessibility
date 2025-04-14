@@ -43,17 +43,19 @@ MockAccessibilityElementOperatorImpl::MockAccessibilityElementOperatorImpl(int32
 MockAccessibilityElementOperatorImpl::~MockAccessibilityElementOperatorImpl()
 {}
 
-void MockAccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int64_t elementId,
+RetError MockAccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int64_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode,
     bool isFilter)
 {
+    RetError ret = RET_OK;
     int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {
-        operator_->SearchElementInfoByAccessibilityId(elementId, mRequestId, operatorCallback_, mode);
+        ret = operator_->SearchElementInfoByAccessibilityId(elementId, mRequestId, operatorCallback_, mode);
     } else {
         HILOG_ERROR("Operator is nullptr");
+        return RET_ERR_NULLPTR;
     }
-    return;
+    return ret;
 }
 
 void MockAccessibilityElementOperatorImpl::SearchDefaultFocusedByWindowId(const int32_t windowId,
