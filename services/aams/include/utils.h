@@ -66,6 +66,7 @@ public:
     static void VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut);
     static void StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult);
     static int32_t GetUserIdByCallingUid();
+    static bool GetBundleNameByCallingUid(std::string &bundleName);
     static void RecordEnableShortkeyAbilityEvent(const std::string &name, const bool &enableState);
     static void RecordOnZoomGestureEvent(const std::string &state);
     static void RecordOnRemoveSystemAbility(int32_t systemAbilityId,

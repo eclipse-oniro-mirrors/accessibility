@@ -104,6 +104,16 @@ RetError AccessibleAbilityChannelProxy::EnableScreenCurtain(bool isEnable)
     return RET_OK;
 }
 
+RetError AccessibleAbilityChannelProxy::HoldRunningLock()
+{
+    return RET_OK;
+}
+ 
+RetError AccessibleAbilityChannelProxy::UnholdRunningLock()
+{
+    return RET_OK;
+}
+
 RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
