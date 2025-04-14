@@ -47,6 +47,8 @@ public:
         const int32_t action, const std::map<std::string, std::string>& actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD1(EnableScreenCurtain, RetError(bool isEnable));
+    MOCK_METHOD0(HoldRunningLock, RetError());
+    MOCK_METHOD0(UnholdRunningLock, RetError());
     MOCK_METHOD4(GetCursorPosition, RetError(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD2(GetWindow, RetError(const int32_t windowId, AccessibilityWindowInfo &windowInfo));

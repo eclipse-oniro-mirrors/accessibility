@@ -297,6 +297,20 @@ public:
      */
     virtual RetError GetDefaultFocusedElementIds(const int32_t windowId,
         std::vector<AccessibilityElementInfo> &elementInfos) = 0;
+
+    /**
+     * @brief Hold running lock to prevent screen turning off automatically.
+     * @param null.
+     * @return Return RET_OK if hold running lock successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError HoldRunningLock() = 0;
+ 
+    /**
+     * @brief Unhold running lock to prevent screen turning off automatically
+     * @param null.
+     * @return Return RET_OK if Unhold running lock successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError UnholdRunningLock() = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

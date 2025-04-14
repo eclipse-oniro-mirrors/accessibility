@@ -58,7 +58,9 @@ namespace Accessibility {
         SET_TARGET_BUNDLE_NAME,
         GET_CURSOR_POSITION,
         SEARCH_DEFAULTFOCUSED_BY_WINDOW_ID,
-
+        HOLD_RUNNING_LOCK,
+        UNHOLD_RUNNING_LOCK,
+        
         INIT = 500,
         DISCONNECT,
         ON_ACCESSIBILITY_EVENT,

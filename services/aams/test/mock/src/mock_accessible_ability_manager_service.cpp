@@ -226,6 +226,16 @@ RetError AccessibleAbilityManagerService::SetCurtainScreenUsingStatus(bool isEna
     return RET_OK;
 }
 
+RetError AccessibleAbilityManagerService::HoldRunningLock()
+{
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::UnholdRunningLock()
+{
+    return RET_OK;
+}
+
 ErrCode AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     (void)name;
@@ -622,6 +632,11 @@ void AccessibleAbilityManagerService::SetFocusWindowId(const int32_t focusWindow
 void AccessibleAbilityManagerService::SetFocusElementId(const int64_t focusElementId)
 {
     (void)focusElementId;
+}
+
+void AccessibleAbilityManagerService::UnholdRunningLockByBundleName(std::string &bundleName)
+{
+    (void)bundleName;
 }
 
 int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t elementId)

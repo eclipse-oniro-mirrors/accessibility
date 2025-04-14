@@ -377,6 +377,8 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
             accountData->RemoveInstalledAbility("ohos.uitest");
         }
 
+        std::string bundleName = sharedElementName->GetBundleName();
+        aams.UnholdRunningLockByBundleName(bundleName);
         accountData->UpdateAbilities();
         aams.UpdateAccessibilityManagerService();
         }, "OnRemoteDied");

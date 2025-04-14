@@ -232,6 +232,16 @@ public:
         GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetDefaultFocusedElementIds);
     }
 
+    static napi_value HoldRunningLock(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnHoldRunningLock);
+    }
+
+    static napi_value UnholdRunningLock(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnUnholdRunningLock);
+    }
+
 private:
     std::weak_ptr<AccessibilityExtensionContext> context_;
 
@@ -887,6 +897,56 @@ private:
             env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
         return result;
     }
+
+    napi_value OnHoldRunningLock(napi_env env, NapiCallbackInfo& info)
+    {
+        HILOG_INFO();
+        if (info.argc > ARGS_SIZE_ZERO) {
+            HILOG_ERROR("argc is more than zero");
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return CreateJsUndefined(env);
+        }
+ 
+        auto context = context_.lock();
+        RetError ret = context->HoldRunningLock();
+        if (ret != RET_OK) {
+            HILOG_ERROR("result error, ret %{public}d", ret);
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return CreateJsUndefined(env);
+        }
+ 
+        HILOG_INFO("OnHoldRunningLock success");
+        return CreateJsUndefined(env);
+    }
+
+    napi_value OnUnholdRunningLock(napi_env env, NapiCallbackInfo& info)
+    {
+        HILOG_INFO();
+        if (info.argc > ARGS_SIZE_ZERO) {
+            HILOG_ERROR("argc is more than zero");
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return CreateJsUndefined(env);
+        }
+ 
+        auto context = context_.lock();
+        RetError ret = context->UnholdRunningLock();
+        if (ret != RET_OK) {
+            HILOG_ERROR("result error, ret %{public}d", ret);
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return CreateJsUndefined(env);
+        }
+ 
+        HILOG_INFO("OnUnholdRunningLock success");
+        return CreateJsUndefined(env);
+    }
 };
 } // namespace
 
@@ -918,6 +978,10 @@ napi_value CreateJsAccessibilityExtensionContext(
     BindNativeFunction(env, object, "getElements", moduleName, NAccessibilityExtensionContext::GetElements);
     BindNativeFunction(env, object, "getDefaultFocusedElementIds", moduleName,
         NAccessibilityExtensionContext::GetDefaultFocusedElementIds);
+    BindNativeFunction(env, object, "holdRunningLockSync", moduleName,
+        NAccessibilityExtensionContext::HoldRunningLock);
+    BindNativeFunction(env, object, "unholdRunningLockSync", moduleName,
+        NAccessibilityExtensionContext::UnholdRunningLock);
     return object;
 }
 } // namespace Accessibility

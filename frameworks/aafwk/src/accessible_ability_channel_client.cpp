@@ -225,6 +225,26 @@ RetError AccessibleAbilityChannelClient::EnableScreenCurtain(bool isEnable)
     return  proxy_->EnableScreenCurtain(isEnable) ? RET_OK : RET_ERR_PERFORM_ACTION_FAILED_BY_ACE;
 }
 
+RetError AccessibleAbilityChannelClient::HoldRunningLock()
+{
+    HILOG_INFO("[channelId:%{public}d]", channelId_);
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("HoldRunningLock Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return RET_ERR_SAMGR;
+    }
+    return proxy_->HoldRunningLock();
+}
+
+RetError AccessibleAbilityChannelClient::UnholdRunningLock()
+{
+    HILOG_INFO("[channelId:%{public}d]", channelId_);
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("UnholdRunningLock Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return RET_ERR_SAMGR;
+    }
+    return proxy_->UnholdRunningLock();
+}
+
 RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId,
     int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId,
     bool isFilter)

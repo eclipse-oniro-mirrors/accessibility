@@ -1889,5 +1889,41 @@ RetError AccessibleAbilityClientImpl::GetDefaultFocusedElementIds(const int32_t 
     return channelClient_->SearchDefaultFocusedByWindowId(windowId, ROOT_NONE_ID,
         GET_SOURCE_MODE, elementInfos, ROOT_TREE_ID);
 }
+
+RetError AccessibleAbilityClientImpl::HoldRunningLock()
+{
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.HoldRunningLock");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    Accessibility::RetError ret = channelClient_->HoldRunningLock();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    reporter.setResult(ret);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    return ret;
+}
+
+RetError AccessibleAbilityClientImpl::UnholdRunningLock()
+{
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("AccessibleAbilityClientImpl.UnholdRunningLock");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    Accessibility::RetError ret = channelClient_->UnholdRunningLock();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    reporter.setResult(ret);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    return ret;
+}
 } // namespace Accessibility
 } // namespace OHOS

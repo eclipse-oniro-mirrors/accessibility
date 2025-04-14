@@ -14,11 +14,15 @@
  */
 
 #include "accessibility_power_manager.h"
+#include "running_lock.h"
 #include "display_power_mgr_client.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string HOLD_LOCK_NAME = "AccessibilityWakeLock";
+}
 AccessibilityPowerManager::AccessibilityPowerManager()
 {
 }
@@ -43,6 +47,60 @@ bool AccessibilityPowerManager::RefreshActivity()
     HILOG_DEBUG();
     return PowerMgr::PowerMgrClient::GetInstance().RefreshActivity(
         OHOS::PowerMgr::UserActivityType::USER_ACTIVITY_TYPE_TOUCH);
+}
+
+bool AccessibilityPowerManager::InitRunningLock()
+{
+    wakeLock_ = PowerMgr::PowerMgrClient::GetInstance().CreateRunningLock(
+        HOLD_LOCK_NAME, PowerMgr::RunningLockType::RUNNINGLOCK_SCREEN);
+    if (wakeLock_ == nullptr) {
+        HILOG_INFO("CreateRunningLock InitRunningLock failed.");
+        return false;
+    }
+    HILOG_INFO("CreateRunningLock InitRunningLock.");
+    return true;
+}
+
+std::set<std::string> AccessibilityPowerManager::GetWakeLockAbilities()
+{
+    std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
+    return wakeLockAbilities_;
+}
+
+bool AccessibilityPowerManager::HoldRunningLock(std::string &bundleName)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
+    if (wakeLock_ == nullptr) {
+        if (!InitRunningLock()) {
+            return false;
+        }
+    }
+
+    if (!wakeLockAbilities_.count(bundleName)) {
+        wakeLockAbilities_.insert(bundleName);
+    }
+    wakeLock_->Lock();
+    HILOG_DEBUG("wakeLock_ Lock success.");
+    return true;
+}
+
+bool AccessibilityPowerManager::UnholdRunningLock(std::string &bundleName)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
+    if (wakeLock_ == nullptr) {
+        HILOG_ERROR("wakeLock_ is null.");
+        return false;
+    }
+
+    wakeLockAbilities_.erase(bundleName);
+    if (wakeLockAbilities_.empty()) {
+        wakeLock_->UnLock();
+        wakeLock_ = nullptr;
+        HILOG_DEBUG("wakeLock_ unLock success.");
+    }
+    return true;
 }
 } // namespace Accessibility
 } // namespace OHOS

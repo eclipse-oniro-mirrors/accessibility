@@ -1334,7 +1334,10 @@ ohos_unittest("accessibility_mouse_key_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
+  deps = [
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common"
+  ]
 
   external_deps = [
     "ability_base:zuri",
@@ -1352,6 +1355,7 @@ ohos_unittest("accessibility_mouse_key_test") {
     "googletest:gtest_main",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
+    "i18n:intl_util",
     "init:libbegetutil",
     "input:libmmi-client",
     "os_account:os_account_innerkits",

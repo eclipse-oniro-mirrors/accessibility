@@ -325,6 +325,47 @@ RetError AccessibleAbilityChannelProxy::EnableScreenCurtain(bool isEnable)
     return static_cast<RetError>(reply.ReadInt32());
 }
 
+RetError AccessibleAbilityChannelProxy::HoldRunningLock()
+{
+    HILOG_DEBUG();
+ 
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+ 
+    if (!WriteInterfaceToken(data)) {
+        return RET_ERR_IPC_FAILED;
+    }
+ 
+    if (!SendTransactCmd(AccessibilityInterfaceCode::HOLD_RUNNING_LOCK,
+        data, reply, option)) {
+        HILOG_ERROR("fail to hold the running lock");
+        return RET_ERR_IPC_FAILED;
+    }
+ 
+    return static_cast<RetError>(reply.ReadInt32());
+}
+ 
+RetError AccessibleAbilityChannelProxy::UnholdRunningLock()
+{
+    HILOG_DEBUG();
+ 
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+ 
+    if (!WriteInterfaceToken(data)) {
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::UNHOLD_RUNNING_LOCK,
+        data, reply, option)) {
+        HILOG_ERROR("fail to unhold the running lock");
+        return RET_ERR_IPC_FAILED;
+    }
+ 
+    return static_cast<RetError>(reply.ReadInt32());
+}
+
 RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
