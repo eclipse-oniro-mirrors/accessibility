@@ -33,7 +33,7 @@ bool MockAccessibilityElementOperatorProxy::WriteInterfaceToken(MessageParcel& d
     return true;
 }
 
-void MockAccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int64_t elementId,
+RetError MockAccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int64_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode,
     bool isFilter)
 {
@@ -43,7 +43,7 @@ void MockAccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(c
     testChannelRequestId_ = requestId;
     testChannelMode_ = mode;
     isFilter_ = isFilter;
-    return;
+    return RET_OK;
 }
 
 void MockAccessibilityElementOperatorProxy::SearchDefaultFocusedByWindowId(const int32_t windowId,
