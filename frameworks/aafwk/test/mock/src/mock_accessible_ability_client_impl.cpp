@@ -259,6 +259,18 @@ RetError AccessibleAbilityClientImpl::EnableScreenCurtain(bool isEnable)
     return RET_OK;
 }
 
+RetError AccessibleAbilityClientImpl::HoldRunningLock()
+{
+    HILOG_DEBUG();
+    return RET_OK;
+}
+
+RetError AccessibleAbilityClientImpl::UnholdRunningLock()
+{
+    HILOG_DEBUG();
+    return RET_OK;
+}
+
 RetError AccessibleAbilityClientImpl::GetCursorPosition(const AccessibilityElementInfo &elementInfo,
     int32_t &cursorPosition)
 {
