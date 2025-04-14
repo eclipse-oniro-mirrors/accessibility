@@ -156,6 +156,20 @@ public:
     virtual RetError EnableScreenCurtain(bool isEnable) override;
 
     /**
+     * @brief Hold running lock to prevent screen turning off automatically.
+     * @param null.
+     * @return Return RET_OK if hold running lock successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError HoldRunningLock() override;
+ 
+    /**
+     * @brief Unhold running lock to prevent screen turning off automatically
+     * @param null.
+     * @return Return RET_OK if Unhold running lock successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError UnholdRunningLock() override;
+
+    /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
      * @param windows The information of windows.

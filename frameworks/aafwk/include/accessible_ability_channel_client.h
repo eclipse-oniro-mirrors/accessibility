@@ -102,6 +102,20 @@ public:
     RetError EnableScreenCurtain(bool isEnable);
 
     /**
+     * @brief Hold running lock to prevent screen turning off automatically.
+     * @param null.
+     * @return Return RET_OK if hold running lock successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError HoldRunningLock();
+ 
+    /**
+     * @brief Unhold running lock to prevent screen turning off automatically
+     * @param null.
+     * @return Return RET_OK if Unhold running lock successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError UnholdRunningLock();
+
+    /**
      * @brief To return the result of cursor position.
      * @param accessibilityWindowId The window id that the component belongs to.
      * @param elementId: The unique id of the component ID.
