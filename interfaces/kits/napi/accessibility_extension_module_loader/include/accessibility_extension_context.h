@@ -180,6 +180,19 @@ public:
     RetError GetDefaultFocusedElementIds(const int32_t windowId,
         std::vector<AccessibilityElementInfo> &elementInfos);
 
+    /**
+    * @brief Hold running lock to prevent screen turning off automatically.
+    * @param null.
+    * @return RetError ERR_OK on success, others on failure.
+    */
+    RetError HoldRunningLock();
+
+    /**
+    * @brief Unhold running lock.
+    * @param null.
+    * @return RetError ERR_OK on success, others on failure.
+    */
+    RetError UnholdRunningLock();
 private:
     static int illegalRequestCode_;
 };
