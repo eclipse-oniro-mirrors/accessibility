@@ -50,7 +50,7 @@ bool AccessibilityElementOperatorProxy::SendTransactCmd(AccessibilityInterfaceCo
     return true;
 }
 
-void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int64_t elementId,
+RetError AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int64_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
     bool isFilter)
 {
@@ -61,43 +61,44 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
-        return;
+        return RET_ERR_FAILED;
     }
 
     if (!data.WriteInt64(elementId)) {
         HILOG_ERROR("connection write parcelable element id failed");
-        return;
+        return RET_ERR_FAILED;
     }
 
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("connection write parcelable request id failed");
-        return;
+        return RET_ERR_FAILED;
     }
 
     if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
-        return;
+        return RET_ERR_NULLPTR;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("connection write parcelable callback failed");
-        return;
+        return RET_ERR_FAILED;
     }
 
     if (!data.WriteInt32(mode)) {
         HILOG_ERROR("connection write parcelable mode failed");
-        return;
+        return RET_ERR_FAILED;
     }
 
     if (!data.WriteBool(isFilter)) {
         HILOG_ERROR("connection write parcelable isFilter failed");
-        return;
+        return RET_ERR_FAILED;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_BY_ACCESSIBILITY_ID,
         data, reply, option)) {
         HILOG_ERROR("search element info by accessibility id failed");
-        return;
+        return RET_ERR_FAILED;
     }
+    return RET_OK;
 }
 
 void AccessibilityElementOperatorProxy::SearchDefaultFocusedByWindowId(const int32_t windowId,
