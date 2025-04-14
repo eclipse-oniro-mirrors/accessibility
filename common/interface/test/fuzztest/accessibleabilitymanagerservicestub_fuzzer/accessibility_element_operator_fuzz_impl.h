@@ -20,7 +20,7 @@
 class AccessibilityElementOperatorFuzzImpl : public OHOS::Accessibility::AccessibilityElementOperator {
 public:
     virtual ~AccessibilityElementOperatorFuzzImpl() = default;
-    void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
+    RetError SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
         OHOS::Accessibility::AccessibilityElementOperatorCallback &callback, const int32_t mode) override
     {
     }
