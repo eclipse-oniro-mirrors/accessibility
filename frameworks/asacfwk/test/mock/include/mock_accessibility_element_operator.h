@@ -25,7 +25,7 @@ class MockAccessibilityElementOperator : public AccessibilityElementOperator {
 public:
     MockAccessibilityElementOperator() = default;
     virtual ~MockAccessibilityElementOperator() = default;
-    MOCK_METHOD4(SearchElementInfoByAccessibilityId, void(const int64_t elementId,
+    MOCK_METHOD4(SearchElementInfoByAccessibilityId, RetError(const int64_t elementId,
         const int32_t requestId, AccessibilityElementOperatorCallback& callback, const int32_t mode));
     MOCK_METHOD4(SearchDefaultFocusByWindowId, void(const int32_t windowId,
         const int32_t requestId, AccessibilityElementOperatorCallback& callback, const int32_t pageId));
