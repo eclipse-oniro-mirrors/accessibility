@@ -16,6 +16,7 @@
 #include "accessibility_utils.h"
 #include "accessibility_def.h"
 
+#include <charconv>
 #include <cmath>
 #include <iomanip>
 #include <regex>
@@ -2065,6 +2066,12 @@ void ConvertInt64VecToJS(napi_env env, napi_value &result, std::vector<std::int6
         napi_set_element(env, result, index, id);
         index++;
     }
+}
+
+bool ConvertStringToInt64(std::string &str, int64_t &value)
+{
+    auto [ptr, errCode] = std::from_chars(str.data(), str.data() + str.size(), value);
+    return errCode == std::errc{} && ptr == str.data() + str.size();
 }
 } // namespace AccessibilityNapi
 } // namespace OHOS

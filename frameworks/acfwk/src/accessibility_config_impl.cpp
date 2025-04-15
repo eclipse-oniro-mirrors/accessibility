@@ -258,6 +258,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
         }
         ErrCode ret = serviceProxy_->RegisterCaptionObserver(captionObserver_);
         if (ret != ERR_OK) {
+            delete captionObserver_;
             captionObserver_ = nullptr;
             HILOG_ERROR("Register captionObserver failed.");
             return false;
@@ -281,6 +282,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
         }
         ErrCode ret = serviceProxy_->RegisterConfigObserver(configObserver_);
         if (ret != ERR_OK) {
+            delete configObserver_;
             configObserver_ = nullptr;
             HILOG_ERROR("Register configObserver failed.");
             return false;
