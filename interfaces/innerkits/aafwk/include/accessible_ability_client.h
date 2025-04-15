@@ -24,9 +24,49 @@
 #include "accessibility_window_info.h"
 #include "accessible_ability_listener.h"
 #include "iremote_object.h"
+#include "hilog_wrapper.h"
+#include "accessibility_utils.h"
+#include "napi/native_api.h"
+#include "napi/native_node_api.h"
 
 namespace OHOS {
 namespace Accessibility {
+struct DisconnectCallback {
+    DisconnectCallback(napi_env env, napi_ref ref) : handlerRef_(ref), env_(env) {};
+    ~DisconnectCallback() {};
+    static napi_handle_scope TmpOpenScope(napi_env env)
+    {
+        napi_handle_scope scope = nullptr;
+        NAPI_CALL(env, napi_open_handle_scope(env, &scope));
+        return scope;
+    }
+
+    void NotifyJS()
+    {
+        HILOG_INFO();
+        auto task = [this]() {
+            napi_env tmpEnv = env_;
+            auto closeScope = [tmpEnv](napi_handle_scope scope) {
+                napi_close_handle_scope(tmpEnv, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scope(TmpOpenScope(env_), closeScope);
+            napi_value handler = nullptr;
+            napi_value callResult = nullptr;
+            napi_value jsEvent = nullptr;
+            napi_get_reference_value(env_, handlerRef_, &handler);
+            napi_value undefined = nullptr;
+            napi_get_undefined(env_, &undefined);
+            napi_call_function(env_, undefined, handler, 0, &jsEvent, &callResult);
+        };
+        if (napi_send_event(env_, task, napi_eprio_high) != napi_status::napi_ok) {
+            HILOG_ERROR("failed to send event");
+        }
+    }
+
+    napi_ref handlerRef_ = nullptr;
+    napi_env env_ = nullptr;
+};
+
 class AccessibleAbilityClient : public virtual RefBase {
 public:
     /**
@@ -311,6 +351,25 @@ public:
      * @return Return RET_OK if Unhold running lock successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError UnholdRunningLock() = 0;
+
+    /**
+     * @brief Register Disconnect Callback.
+     * @param callback The callback.
+     * @return Return RET_OK if Register Disconnect Callback successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError RegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback) = 0;
+
+    /**
+     * @brief UnRegister Disconnect Callback.
+     * @return Return RET_OK if  unRegister callback successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError UnRegisterDisconnectCallback() = 0;
+
+    /**
+     * @brief Notify disconnect.
+     * @return Return RET_OK if notifyDisconnect successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError NotifyDisconnect() = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS
