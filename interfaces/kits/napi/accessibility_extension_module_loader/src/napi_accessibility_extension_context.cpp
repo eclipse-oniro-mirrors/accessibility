@@ -132,6 +132,22 @@ static bool IsNapiNumber(napi_env env, napi_value param)
     return true;
 }
 
+static bool IsNapiString(napi_env env, napi_value param)
+{
+    napi_valuetype valuetype = napi_null;
+    napi_status status = napi_typeof(env, param, &valuetype);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
+        return false;
+    }
+
+    if (valuetype != napi_string) {
+        HILOG_ERROR("Wrong argument type. string expected.");
+        return false;
+    }
+    return true;
+}
+
 static void GetLastParamForTwo(napi_env env, NapiCallbackInfo& info, napi_value& lastParam,
     bool& isAccessibilityFocus)
 {
@@ -240,6 +256,21 @@ public:
     static napi_value UnholdRunningLock(napi_env env, napi_callback_info info)
     {
         GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnUnholdRunningLock);
+    }
+
+    static napi_value RegisterCallback(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnRegisterCallback);
+    }
+
+    static napi_value UnRegisterCallback(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnUnRegisterCallback);
+    }
+
+    static napi_value NotifyDisconnect(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnNotifyDisconnect);
     }
 
 private:
@@ -947,6 +978,65 @@ private:
         HILOG_INFO("OnUnholdRunningLock success");
         return CreateJsUndefined(env);
     }
+
+    napi_value OnRegisterCallback(napi_env env, NapiCallbackInfo &info)
+    {
+        HILOG_INFO();
+        std::string type;
+        napi_ref ref = nullptr;
+
+        if (info.argc >= ARGS_SIZE_TWO) {
+            if (info.argv[PARAM0] != nullptr && IsNapiString(env, info.argv[PARAM0])) {
+                ConvertFromJsValue(env, info.argv[PARAM0], type);
+            }
+            if (info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) {
+                napi_create_reference(env, info.argv[PARAM1], 1, &ref);
+            } else {
+                HILOG_ERROR("argc one is not function");
+            }
+        } else {
+            HILOG_ERROR("Not enough params");
+        }
+
+        if (type == "preDisconnect" && ref != nullptr) {
+            std::shared_ptr<DisconnectCallback> callback = std::make_shared<DisconnectCallback>(env, ref);
+            context_.lock()->RegisterDisconnectCallback(callback);
+        }        
+        return nullptr;
+    }
+
+    napi_value OnUnRegisterCallback(napi_env env, NapiCallbackInfo &info)
+    {
+        HILOG_INFO();
+        std::string type;
+        napi_ref ref = nullptr;
+
+        if (info.argc >= ARGS_SIZE_ONE) {
+            if (info.argv[PARAM0] != nullptr && IsNapiString(env, info.argv[PARAM0])) {
+                ConvertFromJsValue(env, info.argv[PARAM0], type);
+            }
+            if (info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) {
+                napi_create_reference(env, info.argv[PARAM1], 1, &ref);
+            } else {
+                HILOG_ERROR("argc one is not function");
+            }
+        } else {
+            HILOG_ERROR("Not enough params");
+        }
+
+        if (type == "preDisconnect" && ref != nullptr) {
+            std::shared_ptr<DisconnectCallback> callback = std::make_shared<DisconnectCallback>(env, ref);
+            context_.lock()->UnRegisterDisconnectCallback();
+        }        
+        return nullptr;
+    }
+
+    napi_value OnNotifyDisconnect(napi_env env, NapiCallbackInfo &info)
+    {
+        HILOG_INFO();
+        RetError ret = context_.lock()->NotifyDisconnect();
+        return nullptr;
+    }
 };
 } // namespace
 
@@ -982,6 +1072,12 @@ napi_value CreateJsAccessibilityExtensionContext(
         NAccessibilityExtensionContext::HoldRunningLock);
     BindNativeFunction(env, object, "unholdRunningLockSync", moduleName,
         NAccessibilityExtensionContext::UnholdRunningLock);
+    BindNativeFunction(env, object, "on", moduleName,
+        NAccessibilityExtensionContext::RegisterCallback);
+    BindNativeFunction(env, object, "off", moduleName,
+        NAccessibilityExtensionContext::UnRegisterCallback);
+    BindNativeFunction(env, object, "notifyDisconnect", moduleName,
+        NAccessibilityExtensionContext::NotifyDisconnect);
     return object;
 }
 } // namespace Accessibility
