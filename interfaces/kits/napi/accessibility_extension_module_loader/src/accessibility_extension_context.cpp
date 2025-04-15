@@ -260,5 +260,38 @@ RetError AccessibilityExtensionContext::UnholdRunningLock()
     }
     return aaClient->UnholdRunningLock();
 }
+
+RetError AccessibilityExtensionContext::RegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback)
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->RegisterDisconnectCallback(callback);
+}
+
+RetError AccessibilityExtensionContext::UnRegisterDisconnectCallback()
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->UnRegisterDisconnectCallback();
+}
+
+RetError AccessibilityExtensionContext::NotifyDisconnect()
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->NotifyDisconnect();
+}
 } // namespace Accessibility
 } // namespace OHOS
