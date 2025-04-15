@@ -74,6 +74,9 @@ public:
 
     void OnAbilityConnectDoneSync(const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject);
     void OnAbilityDisconnectDoneSync(const AppExecFwk::ElementName &element);
+    bool GetIsRegisterDisconnectCallback() const;
+    void SetIsRegisterDisconnectCallback(bool isRegister);
+    void NotifyDisconnect();
 
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -102,6 +105,7 @@ private:
     AccessibilityAbilityInfo abilityInfo_ {};
     AppExecFwk::ElementName elementName_ {};
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
+    bool isRegisterDisconnectCallback_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS
