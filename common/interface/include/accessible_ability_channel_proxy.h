@@ -199,6 +199,19 @@ public:
      */
     virtual RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 
+    /**
+     * @brief Set is register disconnectCallback.
+     * @param targetBundleNames The isRegister state
+     * @return Return RET_OK if sets isRegister callback successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError SetIsRegisterDisconnectCallback(bool isRegister) override;
+
+    /**
+     * @brief Notify disconnect.
+     * @return Return RET_OK if notifyDisconnect successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError NotifyDisconnect() override;
+
 private:
     /**
      * @brief Write the descriptor of IPC.
