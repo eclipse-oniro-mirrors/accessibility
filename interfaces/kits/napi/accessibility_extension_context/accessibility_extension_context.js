@@ -79,6 +79,21 @@ class AccessibilityExtensionContext extends ExtensionContext {
     console.log('unholdRunningLockSync');
     return this.__context_impl__.unholdRunningLockSync();
   }
+
+  on(type, callback) {
+    console.log('on');
+    return this.__context_impl__.on(type, callback);
+  }
+
+  off(type, callback) {
+    console.log('off');
+    return this.__context_impl__.off(type, callback);
+  }
+
+  notifyDisconnect() {
+    console.log('notifyDisconnect');
+    return this.__context_impl__.notifyDisconnect();
+  }
 }
 
 export default AccessibilityExtensionContext;
