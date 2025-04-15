@@ -196,7 +196,7 @@ public:
 
     /**
      * @brief Set is register disconnectCallback.
-     * @param The isRegister state
+     * @param isRegister The isRegister state
      * @return Return RET_OK if sets isRegister callback successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError SetIsRegisterDisconnectCallback(bool isRegister) = 0;
