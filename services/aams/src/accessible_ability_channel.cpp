@@ -90,7 +90,8 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
             int64_t realElementId = awm.GetSceneBoardElementId(windowId, elementId);
             Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(windowId, treeId,
                 requestId, callback);
-            RetError ret = elementOperator->SearchElementInfoByAccessibilityId(realElementId, requestId, callback, mode, isFilter);
+            RetError ret = elementOperator->SearchElementInfoByAccessibilityId(realElementId, requestId,
+                callback, mode, isFilter);
             if (ret != RET_OK) {
                 HILOG_ERROR("SearchElementInfoByAccessibilityId IPC Failed.");
                 return;
