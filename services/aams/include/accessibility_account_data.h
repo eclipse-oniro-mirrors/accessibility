@@ -285,6 +285,9 @@ public:
     bool GetAbilityAutoStartState(const std::string &name);
     void GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value);
     void OnTouchGuideStateChanged();
+    const sptr<AccessibleAbilityConnection> GetWaitDisConnectAbility(const std::string &uri);
+    void AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection);
+    void RemoveWaitDisconnectAbility(const std::string &uri);
 
 private:
     /**
@@ -349,6 +352,7 @@ private:
     uint32_t connectCounter_ = 1;
     AccessibilityAbility connectedA11yAbilities_;  // key: bundleName/abilityName
     AccessibilityAbility connectingA11yAbilities_;  // key: bundleName/abilityName
+    AccessibilityAbility waitDisconnectA11yAbilities_;  // key: bundleName/abilityName
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     ffrt::mutex enableAbilityListObserversMutex_; // mutex for enableAbilityListsObservers_
     std::map<int32_t, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
