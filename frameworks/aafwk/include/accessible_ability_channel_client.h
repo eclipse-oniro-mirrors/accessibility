@@ -205,6 +205,19 @@ public:
      */
     RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames);
 
+    /**
+     * @brief Set is register disconnectCallback.
+     * @param The isRegister state
+     * @return Return RET_OK if sets isRegister callback successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError SetIsRegisterDisconnectCallback(bool isRegister);
+
+    /**
+     * @brief Notify disconnect.
+     * @return Return RET_OK if notifyDisconnect successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError NotifyDisconnect();
+
 private:
     int32_t GenerateRequestId();
 
