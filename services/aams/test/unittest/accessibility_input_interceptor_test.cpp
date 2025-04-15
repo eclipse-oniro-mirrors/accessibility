@@ -19,7 +19,7 @@
 #include "accessibility_ut_helper.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
-#include "mock_accessible_ability_manager_service.h"
+#include "accessible_ability_manager_service.h"
 #include "mock_bundle_manager.h"
 #include "mock_input_manager.h"
 

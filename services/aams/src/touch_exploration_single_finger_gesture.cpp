@@ -147,7 +147,7 @@ TouchExploration::TouchExploration()
 
 void TouchExploration::StartUp()
 {
-    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
+    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;

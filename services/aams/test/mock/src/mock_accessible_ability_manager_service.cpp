@@ -49,6 +49,7 @@ void AccessibleAbilityManagerService::OnStart()
     GTEST_LOG_(INFO) << "###AccessibleAbilityManagerService::OnStart";
     runner_ = AppExecFwk::EventRunner::Create("AccessibleAbilityManagerService", AppExecFwk::ThreadMode::FFRT);
     handler_ = std::make_shared<AAMSEventHandler>(runner_);
+    inputManagerRunner_ = AppExecFwk::EventRunner::Create("AamsInputManagerRunner", AppExecFwk::ThreadMode::FFRT);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
     channelRunner_ = AppExecFwk::EventRunner::Create("AamsChannelRunner", AppExecFwk::ThreadMode::FFRT);
@@ -61,6 +62,7 @@ void AccessibleAbilityManagerService::OnStop()
     runner_.reset();
     handler_.reset();
     channelRunner_.reset();
+    inputManagerRunner_.reset();
 }
 
 void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)

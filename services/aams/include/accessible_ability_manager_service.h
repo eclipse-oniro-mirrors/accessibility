@@ -86,6 +86,7 @@ public:
     void InitActionHandler();
     void InitSendEventHandler();
     void InitChannelHandler();
+    void InitInputManagerHandler();
     void InitGestureHandler();
     void InitHoverEnterHandler();
     void InitRegisterHandler();
@@ -206,6 +207,11 @@ public:
     inline std::shared_ptr<AppExecFwk::EventRunner> &GetChannelRunner()
     {
         return channelRunner_;
+    }
+
+    inline std::shared_ptr<AppExecFwk::EventRunner> &GetInputManagerRunner()
+    {
+        return inputManagerRunner_;
     }
 
     inline std::shared_ptr<AppExecFwk::EventRunner> &GetGestureRunner()
@@ -473,6 +479,7 @@ private:
     std::shared_ptr<AppExecFwk::EventRunner> channelRunner_;
     std::shared_ptr<AAMSEventHandler> channelHandler_;
 
+    std::shared_ptr<AppExecFwk::EventRunner> inputManagerRunner_;
     std::shared_ptr<AppExecFwk::EventRunner> gestureRunner_;
 
     std::shared_ptr<AppExecFwk::EventRunner> hoverEnterRunner_;

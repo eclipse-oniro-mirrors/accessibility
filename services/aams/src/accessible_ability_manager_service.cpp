@@ -63,6 +63,7 @@ namespace {
     const std::string AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
     const std::string AAMS_SEND_EVENT_RUNNER_NAME = "AamsSendEventRunner";
     const std::string AAMS_CHANNEL_RUNNER_NAME = "AamsChannelRunner";
+    const std::string AAMS_INPUT_MANAGER_RUNNER_NAME = "AamsInputManagerRunner";
     const std::string AAMS_GESTURE_RUNNER_NAME = "AamsGestureRunner";
     const std::string AAMS_HOVER_ENTER_RUNNER_NAME = "AamsHoverEnterRunner";
     const std::string AAMS_REGISTER_RUNNER_NAME = "AamsRegisterRunner";
@@ -217,6 +218,18 @@ void AccessibleAbilityManagerService::InitChannelHandler()
     }
 }
 
+void AccessibleAbilityManagerService::InitInputManagerHandler()
+{
+    if (!inputManagerRunner_) {
+        inputManagerRunner_ = AppExecFwk::EventRunner::Create(AAMS_INPUT_MANAGER_RUNNER_NAME,
+            AppExecFwk::ThreadMode::FFRT);
+        if (!inputManagerRunner_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS input manager runner failed");
+            return;
+        }
+    }
+}
+
 void AccessibleAbilityManagerService::InitGestureHandler()
 {
     if (!gestureRunner_) {
@@ -274,6 +287,7 @@ void AccessibleAbilityManagerService::OnStart()
     InitActionHandler();
     InitSendEventHandler();
     InitChannelHandler();
+    InitInputManagerHandler();
     InitGestureHandler();
     InitHoverEnterHandler();
     InitRegisterHandler();

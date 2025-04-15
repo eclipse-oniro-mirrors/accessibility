@@ -236,6 +236,7 @@ public:
     void StartUp();
 
     void Clear();
+    void DestroyEvents() override;
     void HoverEventRunner();
     bool SendDoubleTapAndLongPressDownEvent();
     void ProcessMultiFingerGesture(TouchExplorationMsg msg);
