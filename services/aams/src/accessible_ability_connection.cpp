@@ -205,20 +205,68 @@ void AccessibleAbilityConnection::Disconnect()
     }
     abilityClient_->Disconnect(connectionId_);
 
-    if (deathRecipient_ == nullptr || !abilityClient_->AsObject() ||
-        !abilityClient_->AsObject()->RemoveDeathRecipient(deathRecipient_)) {
-        HILOG_ERROR("Failed to add death recipient");
-    }
+    if (isRegisterDisconnectCallback_) {
+        int32_t accountId = accountId_;
+        std::string clientName = Utils::GetUri(elementName_);
 
-    auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
-    if (!abilityManagerClient) {
-        HILOG_ERROR("abilityManagerClient is nullptr");
-        return;
+        eventHandler_->PostTask([this, accountId, clientName]() {
+            if (deathRecipient_ == nullptr || !abilityClient_->AsObject() ||
+                !abilityClient_->AsObject()->RemoveDeathRecipient(deathRecipient_)) {
+                HILOG_ERROR("Failed to add death recipient");
+            }
+
+            auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
+            if (!abilityManagerClient) {
+                HILOG_ERROR("abilityManagerClient is nullptr");
+                return;
+            }
+
+            if (abilityManagerClient->DisconnectAbility(this) != ERR_OK) {
+                HILOG_ERROR("Disconnect failed!");
+                return;
+            }
+            auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
+            accountData->RemoveWaitDisconnectAbility(clientName);
+        }, "DISCONNECT_" + elementName_.GetBundleName(), WAIT_NOTIFY_DISCONNECT_TIMEOUT);
+    } else {
+        if (deathRecipient_ == nullptr || !abilityClient_->AsObject() ||
+            !abilityClient_->AsObject()->RemoveDeathRecipient(deathRecipient_)) {
+            HILOG_ERROR("Failed to add death recipient");
+        }
+
+        auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
+        if (!abilityManagerClient) {
+            HILOG_ERROR("abilityManagerClient is nullptr");
+            return;
+        }
+
+        if (abilityManagerClient->DisconnectAbility(this) != ERR_OK) {
+            HILOG_ERROR("Disconnect failed!");
+            return;
+        }
     }
-    if (abilityManagerClient->DisconnectAbility(this) != ERR_OK) {
-        HILOG_ERROR("Disconnect failed!");
-        return;
-    }
+}
+
+void AccessibleAbilityConnection::NotifyDisconnect()
+{
+    HILOG_INFO();
+    eventHandler_->RemoveTask("DISCONNECT_" + elementName_.GetBundleName());
+    eventHandler_->PostTask([this]() {
+        if (deathRecipient_ == nullptr || !abilityClient_->AsObject() ||
+            !abilityClient_->AsObject()->RemoveDeathRecipient(deathRecipient_)) {
+            HILOG_ERROR("Failed to add death recipient");
+        }
+
+        auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
+        if (!abilityManagerClient) {
+            HILOG_ERROR("abilityManagerClient is nullptr");
+            return;
+        }
+        if (abilityManagerClient->DisconnectAbility(this) != ERR_OK) {
+            HILOG_ERROR("Disconnect failed!");
+            return;
+        }
+    }, "DISCONNECT_" + elementName_.GetBundleName());
 }
 
 bool AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element)
@@ -382,6 +430,16 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         accountData->UpdateAbilities();
         aams.UpdateAccessibilityManagerService();
         }, "OnRemoteDied");
+}
+
+bool AccessibleAbilityConnection::GetIsRegisterDisconnectCallback() const
+{
+    return isRegisterDisconnectCallback_;
+}
+
+void AccessibleAbilityConnection::SetIsRegisterDisconnectCallback(bool isRegister)
+{
+    isRegisterDisconnectCallback_ = isRegister;
 }
 } // namespace Accessibility
 } // namespace OHOS
