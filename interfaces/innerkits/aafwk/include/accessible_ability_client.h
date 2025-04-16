@@ -63,6 +63,22 @@ struct DisconnectCallback {
         }
     }
 
+    bool operator==(const DisconnectCallback& otherCallback) const {
+        if (env_ != otherCallback.env_) {
+            return false;
+        }
+        napi_value item = nullptr;
+        napi_get_reference_value(env_, handlerRef_, &item);
+        napi_value otherItem = nullptr;
+        napi_get_reference_value(otherCallback.env_, otherCallback.handlerRef_, &otherItem);
+        bool equalFlag = false;
+        napi_status status = napi_strict_equals(env_, item, otherItem, &equalFlag);
+        if (status == napi_ok && equalFlag) {
+            return true;
+        }
+        return false;
+    }
+
     napi_ref handlerRef_ = nullptr;
     napi_env env_ = nullptr;
 };

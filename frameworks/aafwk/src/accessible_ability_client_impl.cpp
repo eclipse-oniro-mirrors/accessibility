@@ -315,7 +315,7 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
     {
         isConnected_ = false;
         Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
-        if (!callback_) {
+        if (callbackList_.empty()) {
             // Delete death recipient
             if (channelClient_ && channelClient_->GetRemote()) {
                 HILOG_ERROR("Remove death recipient");
@@ -325,14 +325,16 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
             // Remove channel
             channelClient_ = nullptr;
             listener_ = nullptr;
+        } else {
+            isDisconnectCallbackExecute_ = true;
         }
     }
 
     if (listener) {
         listener->OnAbilityDisconnected();
     }
-    if (callback_) {
-        callback_->NotifyJS();
+    for (auto &callback : callbackList_) {
+        callback->NotifyJS();
     }
 }
 
@@ -1934,10 +1936,18 @@ RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr
 {
     HILOG_INFO();
     if (callback == nullptr) {
-        HILOG_INFO("callback_ IS NULLPTR");
+        HILOG_INFO("callback IS NULLPTR");
         return RET_ERR_INVALID_PARAM;
     } else {
-        callback_ = callback;
+        bool exists = false;
+        for (auto &cb : callbackList_) {
+            if (cb == callback) {
+                exists = true;
+            }
+        }
+        if (!exists) {
+            callbackList_.push_back(callback);
+        }
     }
     if (channelClient_ == nullptr) {
         HILOG_ERROR("the channel is invalid.");
@@ -1954,7 +1964,7 @@ RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback()
         HILOG_ERROR("the channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    callback_ = nullptr;
+    callbackList_.clear();
     channelClient_->SetIsRegisterDisconnectCallback(false);
     return RET_OK;
 }
@@ -1962,7 +1972,14 @@ RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback()
 RetError AccessibleAbilityClientImpl::NotifyDisconnect()
 {
     HILOG_INFO();
-    callback_ = nullptr;
+    if (callbackList_.empty()) {
+        HILOG_INFO("callbackList_ is empty");
+        return RET_OK;
+    }
+    if (!isDisconnectCallbackExecute_) {
+        HILOG_INFO("callback has not executed");
+        return RET_OK;
+    }
 
     // NotifyDisconnect and Delete death recipient
     if (channelClient_ && channelClient_->GetRemote()) {
