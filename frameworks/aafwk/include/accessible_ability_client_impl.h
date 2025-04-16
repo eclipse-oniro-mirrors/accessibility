@@ -524,7 +524,7 @@ private:
     ffrt::mutex conVarMutex_;
     Utils::RWLock rwLock_;
     std::vector<std::shared_ptr<DisconnectCallback>> callbackList_;
-    bool isDisconnetCallbackExecute_ = false;
+    bool isDisconnectCallbackExecute_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS
