@@ -91,14 +91,12 @@ HWTEST_F(AccessibleAbilityChannelClientTest, GetRemote_001, TestSize.Level1)
 HWTEST_F(AccessibleAbilityChannelClientTest, SetOnKeyPressEventResult, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetOnKeyPressEventResult_001 start";
-
     if (!instance_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityChannelClient instance_";
-        return;
+    } else {
+        instance_->SetOnKeyPressEventResult(true, SEQUENCE);
+        EXPECT_NE(instance_.get(), nullptr);
     }
-
-    instance_->SetOnKeyPressEventResult(true, SEQUENCE);
-    EXPECT_NE(instance_.get(), nullptr);
     GTEST_LOG_(INFO) << "SetOnKeyPressEventResult_001 end";
 }
 

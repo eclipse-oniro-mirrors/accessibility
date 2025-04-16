@@ -71,9 +71,9 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, RegisterElementOperator_0
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->RegisterElementOperator(WINDOW_ID, nullptr));
     }
-    EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->RegisterElementOperator(WINDOW_ID, nullptr));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "RegisterElementOperator_001 end";
 }
@@ -89,10 +89,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, RegisterElementOperator_0
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::shared_ptr<AccessibilityElementOperator> mockOperator
+            = std::make_shared<MockAccessibilityElementOperator>();
+        EXPECT_EQ(RET_ERR_SAMGR, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
     }
-    std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
-    EXPECT_EQ(RET_ERR_SAMGR, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "RegisterElementOperator_002 end";
 }
@@ -110,10 +111,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, RegisterElementOperator_0
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::shared_ptr<AccessibilityElementOperator> mockOperator
+            = std::make_shared<MockAccessibilityElementOperator>();
+        EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
     }
-    std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
-    EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "RegisterElementOperator_003 end";
 }
@@ -131,11 +133,12 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, RegisterElementOperator_0
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::shared_ptr<AccessibilityElementOperator> mockOperator
+            = std::make_shared<MockAccessibilityElementOperator>();
+        EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+        EXPECT_EQ(RET_ERR_CONNECTION_EXIST, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
     }
-    std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
-    EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    EXPECT_EQ(RET_ERR_CONNECTION_EXIST, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "RegisterElementOperator_004 end";
 }
@@ -151,9 +154,9 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, DeregisterElementOperator
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EXPECT_EQ(RET_ERR_SAMGR, impl_->DeregisterElementOperator(WINDOW_ID));
     }
-    EXPECT_EQ(RET_ERR_SAMGR, impl_->DeregisterElementOperator(WINDOW_ID));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "DeregisterElementOperator_001 end";
 }
@@ -171,11 +174,12 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, DeregisterElementOperator
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::shared_ptr<AccessibilityElementOperator> mockOperator
+            = std::make_shared<MockAccessibilityElementOperator>();
+        EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+        EXPECT_EQ(RET_OK, impl_->DeregisterElementOperator(WINDOW_ID));
     }
-    std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
-    EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    EXPECT_EQ(RET_OK, impl_->DeregisterElementOperator(WINDOW_ID));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "DeregisterElementOperator_002 end";
 }
@@ -191,12 +195,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, GetAbilityList_001, TestS
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::vector<AccessibilityAbilityInfo> infos {};
+        auto ret = impl_->GetAbilityList(ACCESSIBILITY_ABILITY_TYPE_ALL, ABILITY_STATE_INVALID, infos);
+        EXPECT_EQ(RET_ERR_INVALID_PARAM, ret);
     }
-
-    std::vector<AccessibilityAbilityInfo> infos {};
-    auto ret = impl_->GetAbilityList(ACCESSIBILITY_ABILITY_TYPE_ALL, ABILITY_STATE_INVALID, infos);
-    EXPECT_EQ(RET_ERR_INVALID_PARAM, ret);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "GetAbilityList_001 end";
 }
@@ -212,12 +215,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, GetAbilityList_002, TestS
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::vector<AccessibilityAbilityInfo> infos {};
+        auto ret = impl_->GetAbilityList(ACCESSIBILITY_ABILITY_TYPE_ALL, ABILITY_STATE_ENABLE, infos);
+        EXPECT_EQ(RET_ERR_SAMGR, ret);
     }
-
-    std::vector<AccessibilityAbilityInfo> infos {};
-    auto ret = impl_->GetAbilityList(ACCESSIBILITY_ABILITY_TYPE_ALL, ABILITY_STATE_ENABLE, infos);
-    EXPECT_EQ(RET_ERR_SAMGR, ret);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "GetAbilityList_002 end";
 }
@@ -235,12 +237,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, GetAbilityList_003, TestS
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::vector<AccessibilityAbilityInfo> infos {};
+        auto ret = impl_->GetAbilityList(ACCESSIBILITY_ABILITY_TYPE_ALL, ABILITY_STATE_ENABLE, infos);
+        EXPECT_EQ(RET_OK, ret);
     }
-
-    std::vector<AccessibilityAbilityInfo> infos {};
-    auto ret = impl_->GetAbilityList(ACCESSIBILITY_ABILITY_TYPE_ALL, ABILITY_STATE_ENABLE, infos);
-    EXPECT_EQ(RET_OK, ret);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "GetAbilityList_003 end";
 }
@@ -256,11 +257,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, IsEnabled_001, TestSize.L
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        bool isEnable = false;
+        impl_->IsEnabled(isEnable);
+        EXPECT_FALSE(isEnable);
     }
-    bool isEnable = false;
-    impl_->IsEnabled(isEnable);
-    EXPECT_FALSE(isEnable);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "IsEnabled_001 end";
 }
@@ -276,11 +277,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, IsTouchExplorationEnabled
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        bool isEnable = false;
+        impl_->IsTouchExplorationEnabled(isEnable);
+        EXPECT_FALSE(isEnable);
     }
-    bool isEnable = false;
-    impl_->IsTouchExplorationEnabled(isEnable);
-    EXPECT_FALSE(isEnable);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "IsTouchExplorationEnabled_001 end";
 }
@@ -296,9 +297,9 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SendEvent_001, TestSize.L
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(TYPE_VIEW_LONG_CLICKED_EVENT, COMPONENT_ID));
     }
-    EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(TYPE_VIEW_LONG_CLICKED_EVENT, COMPONENT_ID));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SendEvent_001 end";
 }
@@ -314,9 +315,9 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SendEvent_002, TestSize.L
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SendEvent(TYPE_VIEW_INVALID, COMPONENT_ID));
     }
-    EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SendEvent(TYPE_VIEW_INVALID, COMPONENT_ID));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SendEvent_002 end";
 }
@@ -334,9 +335,9 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SendEvent_003, TestSize.L
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EXPECT_EQ(RET_OK, impl_->SendEvent(TYPE_VIEW_LONG_CLICKED_EVENT, COMPONENT_ID));
     }
-    EXPECT_EQ(RET_OK, impl_->SendEvent(TYPE_VIEW_LONG_CLICKED_EVENT, COMPONENT_ID));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SendEvent_003 end";
 }
@@ -352,11 +353,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SendEvent_004, TestSize.L
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        AccessibilityEventInfo event {};
+        event.SetEventType(TYPE_VIEW_LONG_CLICKED_EVENT);
+        EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(event));
     }
-    AccessibilityEventInfo event {};
-    event.SetEventType(TYPE_VIEW_LONG_CLICKED_EVENT);
-    EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(event));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SendEvent_004 end";
 }
@@ -372,11 +373,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SendEvent_005, TestSize.L
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        AccessibilityEventInfo event {};
+        event.SetEventType(TYPE_VIEW_INVALID);
+        EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SendEvent(event));
     }
-    AccessibilityEventInfo event {};
-    event.SetEventType(TYPE_VIEW_INVALID);
-    EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SendEvent(event));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SendEvent_005 end";
 }
@@ -394,11 +395,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SendEvent_006, TestSize.L
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        AccessibilityEventInfo event {};
+        event.SetEventType(TYPE_VIEW_LONG_CLICKED_EVENT);
+        EXPECT_EQ(RET_OK, impl_->SendEvent(event));
     }
-    AccessibilityEventInfo event {};
-    event.SetEventType(TYPE_VIEW_LONG_CLICKED_EVENT);
-    EXPECT_EQ(RET_OK, impl_->SendEvent(event));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SendEvent_006 end";
 }
@@ -414,11 +415,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SendEvent_007, TestSize.L
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        AccessibilityEventInfo event {};
+        event.SetEventType(TYPE_VIEW_FOCUSED_EVENT);
+        EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(event));
     }
-    AccessibilityEventInfo event {};
-    event.SetEventType(TYPE_VIEW_FOCUSED_EVENT);
-    EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(event));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SendEvent_007 end";
 }
@@ -434,9 +435,9 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SubscribeStateObserver_00
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SubscribeStateObserver(nullptr, EVENT_TOUCH_GUIDE_STATE_CHANGED));
     }
-    EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SubscribeStateObserver(nullptr, EVENT_TOUCH_GUIDE_STATE_CHANGED));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SubscribeStateObserver_001 end";
 }
@@ -452,9 +453,9 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SubscribeStateObserver_00
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SubscribeStateObserver(nullptr, EVENT_TYPE_MAX));
     }
-    EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SubscribeStateObserver(nullptr, EVENT_TYPE_MAX));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SubscribeStateObserver_002 end";
 }
@@ -470,9 +471,9 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, UnsubscribeStateObserver_
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->UnsubscribeStateObserver(nullptr, EVENT_TYPE_MAX));
     }
-    EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->UnsubscribeStateObserver(nullptr, EVENT_TYPE_MAX));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "UnsubscribeStateObserver_001 end";
 }
@@ -488,9 +489,9 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, UnsubscribeStateObserver_
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->UnsubscribeStateObserver(nullptr, EVENT_KEVEVENT_STATE_CHANGED));
     }
-    EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->UnsubscribeStateObserver(nullptr, EVENT_KEVEVENT_STATE_CHANGED));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "UnsubscribeStateObserver_002 end";
 }
@@ -508,10 +509,10 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, ResetService_001, TestSiz
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        impl_->ResetService(nullptr);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    impl_->ResetService(nullptr);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "ResetService_001 end";
 }
@@ -529,11 +530,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, ResetService_002, TestSiz
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        wptr<IRemoteObject> object;
+        impl_->ResetService(object);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    wptr<IRemoteObject> object;
-    impl_->ResetService(object);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "ResetService_002 end";
 }
@@ -549,12 +550,12 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, OnAccessibleAbilityManage
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        uint32_t stateType = STATE_ACCESSIBILITY_ENABLED | STATE_EXPLORATION_ENABLED |
+            STATE_KEYEVENT_ENABLED | STATE_GESTURE_ENABLED;
+        impl_->OnAccessibleAbilityManagerStateChanged(stateType);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    uint32_t stateType = STATE_ACCESSIBILITY_ENABLED | STATE_EXPLORATION_ENABLED |
-        STATE_KEYEVENT_ENABLED | STATE_GESTURE_ENABLED;
-    impl_->OnAccessibleAbilityManagerStateChanged(stateType);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "OnAccessibleAbilityManagerStateChanged_001 end";
 }
@@ -570,10 +571,10 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, OnAccessibleAbilityManage
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        impl_->OnAccessibleAbilityManagerStateChanged(0);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    impl_->OnAccessibleAbilityManagerStateChanged(0);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "OnAccessibleAbilityManagerStateChanged_002 end";
 }
@@ -589,10 +590,10 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, GetEnabledAbilities_001, 
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::vector<std::string> enabledAbilities;
+        EXPECT_EQ(RET_ERR_SAMGR, impl_->GetEnabledAbilities(enabledAbilities));
     }
-    std::vector<std::string> enabledAbilities;
-    EXPECT_EQ(RET_ERR_SAMGR, impl_->GetEnabledAbilities(enabledAbilities));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "GetEnabledAbilities_001 end";
 }
@@ -610,10 +611,10 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, GetEnabledAbilities_002, 
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::vector<std::string> enabledAbilities;
+        EXPECT_EQ(RET_OK, impl_->GetEnabledAbilities(enabledAbilities));
     }
-    std::vector<std::string> enabledAbilities;
-    EXPECT_EQ(RET_OK, impl_->GetEnabledAbilities(enabledAbilities));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "GetEnabledAbilities_002 end";
 }
@@ -632,15 +633,15 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetSearchElementInfoByAcc
     if (!impl_) {
         GTEST_LOG_(INFO) << "SetSearchElementInfoByAccessibilityIdResult_001"
             "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
+        EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+        int32_t requestId = REQUEST_ID;
+        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+        std::list<AccessibilityElementInfo> infos;
+        impl_->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
+        EXPECT_EQ(0, infos.size());
     }
-    std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
-    EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    int32_t requestId = REQUEST_ID;
-    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-    std::list<AccessibilityElementInfo> infos;
-    impl_->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
-    EXPECT_EQ(0, infos.size());
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetSearchElementInfoByAccessibilityIdResult_001 end";
 }
@@ -656,13 +657,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetSearchElementInfoByAcc
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        int32_t requestId = REQUEST_ID;
+        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+        std::list<AccessibilityElementInfo> infos;
+        impl_->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
+        EXPECT_EQ(0, infos.size());
     }
-    int32_t requestId = REQUEST_ID;
-    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-    std::list<AccessibilityElementInfo> infos;
-    impl_->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
-    EXPECT_EQ(0, infos.size());
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetSearchElementInfoByAccessibilityIdResult_002 end";
 }
@@ -678,11 +679,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetSearchElementInfoByAcc
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::list<AccessibilityElementInfo> infos;
+        impl_->SetSearchElementInfoByAccessibilityIdResult(infos, -1);
+        EXPECT_EQ(0, infos.size());
     }
-    std::list<AccessibilityElementInfo> infos;
-    impl_->SetSearchElementInfoByAccessibilityIdResult(infos, -1);
-    EXPECT_EQ(0, infos.size());
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetSearchElementInfoByAccessibilityIdResult_003 end";
 }
@@ -700,15 +701,15 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetSearchElementInfoByTex
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get SetSearchElementInfoByTextResult_001 impl_";
-        return;
+    } else {
+        std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
+        EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+        int32_t requestId = REQUEST_ID;
+        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+        std::list<AccessibilityElementInfo> infos;
+        impl_->SetSearchElementInfoByTextResult(infos, requestId);
+        EXPECT_EQ(0, infos.size());
     }
-    std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
-    EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    int32_t requestId = REQUEST_ID;
-    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-    std::list<AccessibilityElementInfo> infos;
-    impl_->SetSearchElementInfoByTextResult(infos, requestId);
-    EXPECT_EQ(0, infos.size());
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_001 end";
 }
@@ -724,13 +725,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetSearchElementInfoByTex
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        int32_t requestId = REQUEST_ID;
+        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+        std::list<AccessibilityElementInfo> infos;
+        impl_->SetSearchElementInfoByTextResult(infos, requestId);
+        EXPECT_EQ(0, infos.size());
     }
-    int32_t requestId = REQUEST_ID;
-    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-    std::list<AccessibilityElementInfo> infos;
-    impl_->SetSearchElementInfoByTextResult(infos, requestId);
-    EXPECT_EQ(0, infos.size());
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_002 end";
 }
@@ -746,11 +747,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetSearchElementInfoByTex
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::list<AccessibilityElementInfo> infos;
+        impl_->SetSearchElementInfoByTextResult(infos, -1);
+        EXPECT_EQ(0, infos.size());
     }
-    std::list<AccessibilityElementInfo> infos;
-    impl_->SetSearchElementInfoByTextResult(infos, -1);
-    EXPECT_EQ(0, infos.size());
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_003 end";
 }
@@ -769,14 +770,14 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFindFocusedElementInfo
     if (!impl_) {
         GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_001"
             "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
+        EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+        int32_t requestId = REQUEST_ID;
+        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+        AccessibilityElementInfo info;
+        impl_->SetFindFocusedElementInfoResult(info, requestId);
     }
-    std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
-    EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    int32_t requestId = REQUEST_ID;
-    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-    AccessibilityElementInfo info;
-    impl_->SetFindFocusedElementInfoResult(info, requestId);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_001 end";
 }
@@ -792,13 +793,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFindFocusedElementInfo
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        int32_t requestId = REQUEST_ID;
+        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+        AccessibilityElementInfo info;
+        impl_->SetFindFocusedElementInfoResult(info, requestId);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    int32_t requestId = REQUEST_ID;
-    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-    AccessibilityElementInfo info;
-    impl_->SetFindFocusedElementInfoResult(info, requestId);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_002 end";
 }
@@ -814,11 +815,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFindFocusedElementInfo
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        AccessibilityElementInfo info;
+        impl_->SetFindFocusedElementInfoResult(info, -1);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    AccessibilityElementInfo info;
-    impl_->SetFindFocusedElementInfoResult(info, -1);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_003 end";
 }
@@ -836,14 +837,14 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFocusMoveSearchResult_
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_001 Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
+        EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+        int32_t requestId = REQUEST_ID;
+        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+        AccessibilityElementInfo info;
+        impl_->SetFocusMoveSearchResult(info, requestId);
     }
-    std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
-    EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    int32_t requestId = REQUEST_ID;
-    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-    AccessibilityElementInfo info;
-    impl_->SetFocusMoveSearchResult(info, requestId);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_001 end";
 }
@@ -859,13 +860,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFocusMoveSearchResult_
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        int32_t requestId = REQUEST_ID;
+        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+        AccessibilityElementInfo info;
+        impl_->SetFocusMoveSearchResult(info, requestId);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    int32_t requestId = REQUEST_ID;
-    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-    AccessibilityElementInfo info;
-    impl_->SetFocusMoveSearchResult(info, requestId);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_002 end";
 }
@@ -881,11 +882,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFocusMoveSearchResult_
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        AccessibilityElementInfo info;
+        impl_->SetFocusMoveSearchResult(info, -1);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    AccessibilityElementInfo info;
-    impl_->SetFocusMoveSearchResult(info, -1);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_003 end";
 }
@@ -903,13 +904,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetExecuteActionResult_00
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
         GTEST_LOG_(INFO) << "SetExecuteActionResult_001 Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
+        EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+        int32_t requestId = REQUEST_ID;
+        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+        impl_->SetExecuteActionResult(true, requestId);
     }
-    std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
-    EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    int32_t requestId = REQUEST_ID;
-    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-    impl_->SetExecuteActionResult(true, requestId);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetExecuteActionResult_001 end";
 }
@@ -925,12 +926,12 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetExecuteActionResult_00
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        int32_t requestId = REQUEST_ID;
+        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+        impl_->SetExecuteActionResult(true, requestId);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    int32_t requestId = REQUEST_ID;
-    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-    impl_->SetExecuteActionResult(true, requestId);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetExecuteActionResult_002 end";
 }
@@ -946,10 +947,10 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetExecuteActionResult_00
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        impl_->SetExecuteActionResult(true, -1);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    impl_->SetExecuteActionResult(true, -1);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetExecuteActionResult_003 end";
 }
@@ -965,13 +966,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetCursorPositionResult_0
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        int32_t cursorPosition = 0;
+        int32_t requestId = REQUEST_ID;
+        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
+        impl_->SetCursorPositionResult(cursorPosition, requestId);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    int32_t cursorPosition = 0;
-    int32_t requestId = REQUEST_ID;
-    requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-    impl_->SetCursorPositionResult(cursorPosition, requestId);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetCursorPositionResult_001 end";
 }
@@ -987,11 +988,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetCursorPositionResult_0
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        int32_t cursorPosition = 0;
+        impl_->SetCursorPositionResult(cursorPosition, -1);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    int32_t cursorPosition = 0;
-    impl_->SetCursorPositionResult(cursorPosition, -1);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetCursorPositionResult_001 end";
 }
@@ -1007,10 +1008,10 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetAccessibilityState_001
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get SetAccessibilityState impl_";
-        return;
+    } else {
+        impl_->SetAccessibilityState(0);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    impl_->SetAccessibilityState(0);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetAccessibilityState_001 end";
 }
@@ -1026,13 +1027,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeI
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfoResult impl_";
-        return;
+    } else {
+        AccessibilityElementInfo elementInfo;
+        int32_t requestId = -1;
+        int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_ACCESSIBILITY_ID;
+        impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    AccessibilityElementInfo elementInfo;
-    int32_t requestId = -1;
-    int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_ACCESSIBILITY_ID;
-    impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_001 end";
 }
@@ -1048,13 +1049,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeI
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfoResult impl_";
-        return;
+    } else {
+        AccessibilityElementInfo elementInfo;
+        int32_t requestId = -1;
+        int32_t requestCode = FIND_FOCUS;
+        impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    AccessibilityElementInfo elementInfo;
-    int32_t requestId = -1;
-    int32_t requestCode = FIND_FOCUS;
-    impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_002 end";
 }
@@ -1070,13 +1071,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeI
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfoResult impl_";
-        return;
+    } else {
+        AccessibilityElementInfo elementInfo;
+        int32_t requestId = -1;
+        int32_t requestCode = FIND_FOCUS_SEARCH;
+        impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    AccessibilityElementInfo elementInfo;
-    int32_t requestId = -1;
-    int32_t requestCode = FIND_FOCUS_SEARCH;
-    impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_003 end";
 }
@@ -1092,13 +1093,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeI
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfoResult impl_";
-        return;
+    } else {
+        AccessibilityElementInfo elementInfo;
+        int32_t requestId = -1;
+        int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_TEXT;
+        impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    AccessibilityElementInfo elementInfo;
-    int32_t requestId = -1;
-    int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_TEXT;
-    impl_->SetFindAccessibilityNodeInfoResult(elementInfo, requestId, requestCode);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfoResult_004 end";
 }
@@ -1114,13 +1115,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeI
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfosResult_001 impl_";
-        return;
+    } else {
+        std::list<AccessibilityElementInfo> elementInfos;
+        int32_t requestId = -1;
+        int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_ACCESSIBILITY_ID;
+        impl_->SetFindAccessibilityNodeInfosResult(elementInfos, requestId, requestCode);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    std::list<AccessibilityElementInfo> elementInfos;
-    int32_t requestId = -1;
-    int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_ACCESSIBILITY_ID;
-    impl_->SetFindAccessibilityNodeInfosResult(elementInfos, requestId, requestCode);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfosResult_001 end";
 }
@@ -1136,13 +1137,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeI
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfosResult_002 impl_";
-        return;
+    } else {
+        std::list<AccessibilityElementInfo> elementInfos;
+        int32_t requestId = -1;
+        int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_TEXT;
+        impl_->SetFindAccessibilityNodeInfosResult(elementInfos, requestId, requestCode);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    std::list<AccessibilityElementInfo> elementInfos;
-    int32_t requestId = -1;
-    int32_t requestCode = FIND_ACCESSIBILITY_NODE_BY_TEXT;
-    impl_->SetFindAccessibilityNodeInfosResult(elementInfos, requestId, requestCode);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfosResult_002 end";
 }
@@ -1158,13 +1159,13 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeI
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfosResult_003 impl_";
-        return;
+    } else {
+        std::list<AccessibilityElementInfo> elementInfos;
+        int32_t requestId = -1;
+        int32_t requestCode = FIND_FOCUS_SEARCH;
+        impl_->SetFindAccessibilityNodeInfosResult(elementInfos, requestId, requestCode);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    std::list<AccessibilityElementInfo> elementInfos;
-    int32_t requestId = -1;
-    int32_t requestCode = FIND_FOCUS_SEARCH;
-    impl_->SetFindAccessibilityNodeInfosResult(elementInfos, requestId, requestCode);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfosResult_003 end";
 }
@@ -1180,11 +1181,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, GetFocusedWindowId_001, T
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        int32_t windowId = 0;
+        impl_->GetFocusedWindowId(windowId);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    int32_t windowId = 0;
-    impl_->GetFocusedWindowId(windowId);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "GetFocusedWindowId_001 end";
 }
@@ -1200,9 +1201,9 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, LoadAccessibilityService_
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EXPECT_EQ(false, impl_->LoadAccessibilityService());
     }
-    EXPECT_EQ(false, impl_->LoadAccessibilityService());
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "LoadAccessibilityService_001 end";
 }
@@ -1218,11 +1219,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, LoadSystemAbilitySuccess_
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        sptr<IRemoteObject> object;
+        impl_->LoadSystemAbilitySuccess(object);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    sptr<IRemoteObject> object;
-    impl_->LoadSystemAbilitySuccess(object);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "LoadSystemAbilitySuccess_001 end";
 }
@@ -1238,10 +1239,10 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, LoadSystemAbilitySuccess_
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        impl_->LoadSystemAbilitySuccess(nullptr);
+        EXPECT_NE(impl_.get(), nullptr);
     }
-    impl_->LoadSystemAbilitySuccess(nullptr);
-    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "LoadSystemAbilitySuccess_002 end";
 }
@@ -1257,9 +1258,9 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, LoadSystemAbilityFail_001
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        impl_->LoadSystemAbilityFail();
     }
-    impl_->LoadSystemAbilityFail();
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "LoadSystemAbilityFail_001 end";
 }
@@ -1275,10 +1276,10 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, Init_001, TestSize.Level1
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        impl_->LoadSystemAbilityFail();
+        impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     }
-    impl_->LoadSystemAbilityFail();
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "Init_001 end";
 }
@@ -1294,11 +1295,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, CheckEventType_001, TestS
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EventType eventType = TYPE_VIEW_INVALID;
+        EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SendEvent(eventType, 0));
+        impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     }
-    EventType eventType = TYPE_VIEW_INVALID;
-    EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SendEvent(eventType, 0));
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "CheckEventType_001 end";
 }
@@ -1314,11 +1315,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, CheckEventType_002, TestS
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EventType eventType = TYPE_MAX_NUM;
+        EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SendEvent(eventType, 0));
+        impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     }
-    EventType eventType = TYPE_MAX_NUM;
-    EXPECT_EQ(RET_ERR_INVALID_PARAM, impl_->SendEvent(eventType, 0));
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "CheckEventType_002 end";
 }
@@ -1334,11 +1335,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, CheckEventType_003, TestS
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EventType eventType = TYPE_VIEW_FOCUSED_EVENT;
+        EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(eventType, 0));
+        impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     }
-    EventType eventType = TYPE_VIEW_FOCUSED_EVENT;
-    EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(eventType, 0));
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "CheckEventType_003 end";
 }
@@ -1354,11 +1355,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, CheckEventType_004, TestS
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EventType eventType = TYPE_PAGE_STATE_UPDATE;
+        EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(eventType, 0));
+        impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     }
-    EventType eventType = TYPE_PAGE_STATE_UPDATE;
-    EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(eventType, 0));
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "CheckEventType_004 end";
 }
@@ -1374,11 +1375,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, CheckEventType_005, TestS
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        EventType eventType = TYPE_VIEW_SCROLLED_EVENT;
+        EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(eventType, 0));
+        impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     }
-    EventType eventType = TYPE_VIEW_SCROLLED_EVENT;
-    EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(eventType, 0));
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "CheckEventType_005 end";
 }
@@ -1394,10 +1395,11 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, SetSplicElementIdTreeId_0
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        int64_t elementId = 0;
+        impl_->SetSplicElementIdTreeId(1, elementId);
     }
-    int64_t elementId = 0;
-    impl_->SetSplicElementIdTreeId(1, elementId);
+    impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetSplicElementIdTreeId_001 end";
 }
 
@@ -1412,18 +1414,19 @@ HWTEST_F(MockAccessibilitySystemAbilityClientImplTest, GetTreeIdAndElementIdBySp
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
+    } else {
+        int64_t splitElementId;
+        int32_t splitTreeId;
+
+        impl_->GetTreeIdAndElementIdBySplitElementId(-1, splitElementId, splitTreeId);
+        EXPECT_EQ(splitElementId, -1);
+        EXPECT_EQ(splitTreeId, -1);
+
+        impl_->GetTreeIdAndElementIdBySplitElementId(1, splitElementId, splitTreeId);
+        EXPECT_EQ(splitElementId, 1);
+        EXPECT_EQ(splitTreeId, 0);
     }
-    int64_t splitElementId;
-    int32_t splitTreeId;
-
-    impl_->GetTreeIdAndElementIdBySplitElementId(-1, splitElementId, splitTreeId);
-    EXPECT_EQ(splitElementId, -1);
-    EXPECT_EQ(splitTreeId, -1);
-
-    impl_->GetTreeIdAndElementIdBySplitElementId(1, splitElementId, splitTreeId);
-    EXPECT_EQ(splitElementId, 1);
-    EXPECT_EQ(splitTreeId, 0);
+    impl_ = nullptr;
     GTEST_LOG_(INFO) << "GetTreeIdAndElementIdBySplitElementId_001 end";
 }
 } // namespace Accessibility

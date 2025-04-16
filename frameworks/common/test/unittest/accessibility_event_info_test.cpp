@@ -22,6 +22,27 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
+constexpr int64_t TIMESTAMP = 6000;
+constexpr uint32_t RESOURCE_ID = 12345;
+constexpr int64_t SOURCE_ID = 1001;
+constexpr int32_t WINDOW_ID = 1002;
+constexpr int32_t CURRENT_INDEX = 1;
+constexpr int32_t BEGIN_INDEX = 1;
+constexpr int32_t END_INDEX = 1;
+constexpr int32_t ITEM_COUNTS = 1;
+constexpr int32_t REQUEST_FOCUS_ELEMENT_ID = 1;
+const std::string RESOURCE_MODULE_NAME = "accessibilityResourceModuleNameTest";
+const std::string RESOURCE_BUNDLE_NAME = "accessibilityResourceBundleNameTest";
+const std::string BUNDLE_NAME = "accessibilityBundleNameTest";
+const std::string NOTIFICATION_CONTENT = "notificationContent";
+const std::string COMPONENT_TYPE = "text";
+const std::string BEFORE_TEXT = "accessibility";
+const std::string LATEST_CONTENT = "lastContext";
+const std::string DESCRIPTION = "descripion";
+const std::string TEXT_ANNOUNCED_FOR_ACCESSIBILITY = "textAnnouncedForAccessibility";
+const std::string INSPECTOR_KEY = "inspectorKey";
+const std::vector<std::string> CONTENT_LIST = {"content1", "content2"};
+
 class AccessibilityEventInfoUnitTest : public ::testing::Test {
 public:
     AccessibilityEventInfoUnitTest()
@@ -61,10 +82,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetWindowChangeTypes_001, TestSize.Leve
     GTEST_LOG_(INFO) << "SetWindowChangeTypes_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetWindowChangeTypes(WindowUpdateType::WINDOW_UPDATE_ACTIVE);
+        EXPECT_EQ(eventInfo_->GetWindowChangeTypes(), WindowUpdateType::WINDOW_UPDATE_ACTIVE);
     }
-    eventInfo_->SetWindowChangeTypes(WindowUpdateType::WINDOW_UPDATE_ACTIVE);
-    EXPECT_EQ(eventInfo_->GetWindowChangeTypes(), WindowUpdateType::WINDOW_UPDATE_ACTIVE);
     GTEST_LOG_(INFO) << "SetWindowChangeTypes_001 end";
 }
 
@@ -78,10 +99,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetEventType_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetEventType_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetEventType(EventType::TYPE_PAGE_CONTENT_UPDATE);
+        EXPECT_EQ(eventInfo_->GetEventType(), EventType::TYPE_PAGE_CONTENT_UPDATE);
     }
-    eventInfo_->SetEventType(EventType::TYPE_PAGE_CONTENT_UPDATE);
-    EXPECT_EQ(eventInfo_->GetEventType(), EventType::TYPE_PAGE_CONTENT_UPDATE);
     GTEST_LOG_(INFO) << "SetEventType_001 end";
 }
 
@@ -95,10 +116,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetWindowContentChangeTypes_001, TestSi
     GTEST_LOG_(INFO) << "SetWindowContentChangeTypes_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetWindowContentChangeTypes(WindowsContentChangeTypes::CONTENT_CHANGE_TYPE_TEXT);
+        EXPECT_EQ(eventInfo_->GetWindowContentChangeTypes(), WindowsContentChangeTypes::CONTENT_CHANGE_TYPE_TEXT);
     }
-    eventInfo_->SetWindowContentChangeTypes(WindowsContentChangeTypes::CONTENT_CHANGE_TYPE_TEXT);
-    EXPECT_EQ(eventInfo_->GetWindowContentChangeTypes(), WindowsContentChangeTypes::CONTENT_CHANGE_TYPE_TEXT);
     GTEST_LOG_(INFO) << "SetWindowContentChangeTypes_001 end";
 }
 
@@ -112,10 +133,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetTimeStamp_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetTimeStamp_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetTimeStamp(TIMESTAMP);
+        EXPECT_EQ(eventInfo_->GetTimeStamp(), TIMESTAMP);
     }
-    eventInfo_->SetTimeStamp(6000);
-    EXPECT_EQ(eventInfo_->GetTimeStamp(), 6000);
     GTEST_LOG_(INFO) << "SetTimeStamp_001 end";
 }
 
@@ -129,10 +150,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetResourceId_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetResourceId_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetResourceId(RESOURCE_ID);
+        EXPECT_EQ(eventInfo_->GetResourceId(), RESOURCE_ID);
     }
-    eventInfo_->SetResourceId(12345);
-    EXPECT_EQ(eventInfo_->GetResourceId(), 12345);
     GTEST_LOG_(INFO) << "SetResourceId_001 end";
 }
  
@@ -146,10 +167,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetResourceModuleName_001, TestSize.Lev
     GTEST_LOG_(INFO) << "SetResourceModuleName_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetResourceModuleName(RESOURCE_MODULE_NAME);
+        EXPECT_EQ(eventInfo_->GetResourceModuleName(), RESOURCE_MODULE_NAME);
     }
-    eventInfo_->SetResourceModuleName("accessibilityResourceModuleNameTest");
-    EXPECT_EQ(eventInfo_->GetResourceModuleName(), "accessibilityResourceModuleNameTest");
     GTEST_LOG_(INFO) << "SetResourceModuleName_001 end";
 }
  
@@ -163,10 +184,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetResourceBundleName_001, TestSize.Lev
     GTEST_LOG_(INFO) << "SetResourceBundleName_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetResourceBundleName(RESOURCE_BUNDLE_NAME);
+        EXPECT_EQ(eventInfo_->GetResourceBundleName(), RESOURCE_BUNDLE_NAME);
     }
-    eventInfo_->SetResourceBundleName("accessibilityResourceBundleNameTest");
-    EXPECT_EQ(eventInfo_->GetResourceBundleName(), "accessibilityResourceBundleNameTest");
     GTEST_LOG_(INFO) << "SetResourceBundleName_001 end";
 }
 
@@ -180,11 +201,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetBundleName_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetBundleName_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetBundleName(BUNDLE_NAME);
+        EXPECT_EQ(eventInfo_->GetBundleName(), BUNDLE_NAME);
     }
-    std::string bundleName = "accessibilityTest";
-    eventInfo_->SetBundleName(bundleName);
-    EXPECT_EQ(eventInfo_->GetBundleName(), bundleName);
     GTEST_LOG_(INFO) << "SetBundleName_001 end";
 }
 
@@ -198,11 +218,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetNotificationContent_001, TestSize.Le
     GTEST_LOG_(INFO) << "SetNotificationContent_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetNotificationContent(NOTIFICATION_CONTENT);
+        EXPECT_EQ(eventInfo_->GetNotificationContent(), NOTIFICATION_CONTENT);
     }
-    std::string content = "notificationContent";
-    eventInfo_->SetNotificationContent(content);
-    EXPECT_EQ(eventInfo_->GetNotificationContent(), content);
     GTEST_LOG_(INFO) << "SetNotificationContent_001 end";
 }
 
@@ -216,10 +235,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetTextMovementStep_001, TestSize.Level
     GTEST_LOG_(INFO) << "SetTextMovementStep_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetTextMovementStep(TextMoveUnit::STEP_LINE);
+        EXPECT_EQ(eventInfo_->GetTextMovementStep(), TextMoveUnit::STEP_LINE);
     }
-    eventInfo_->SetTextMovementStep(TextMoveUnit::STEP_LINE);
-    EXPECT_EQ(eventInfo_->GetTextMovementStep(), TextMoveUnit::STEP_LINE);
     GTEST_LOG_(INFO) << "SetTextMovementStep_001 end";
 }
 
@@ -233,10 +252,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetTriggerAction_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetTriggerAction_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetTriggerAction(ActionType::ACCESSIBILITY_ACTION_CLICK);
+        EXPECT_EQ(eventInfo_->GetTriggerAction(), ActionType::ACCESSIBILITY_ACTION_CLICK);
     }
-    eventInfo_->SetTriggerAction(ActionType::ACCESSIBILITY_ACTION_CLICK);
-    EXPECT_EQ(eventInfo_->GetTriggerAction(), ActionType::ACCESSIBILITY_ACTION_CLICK);
     GTEST_LOG_(INFO) << "SetTriggerAction_001 end";
 }
 
@@ -250,10 +269,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetNotificationInfo_001, TestSize.Level
     GTEST_LOG_(INFO) << "SetNotificationInfo_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetNotificationInfo(NotificationCategory::CATEGORY_CALL);
+        EXPECT_EQ(eventInfo_->GetNotificationInfo(), NotificationCategory::CATEGORY_CALL);
     }
-    eventInfo_->SetNotificationInfo(NotificationCategory::CATEGORY_CALL);
-    EXPECT_EQ(eventInfo_->GetNotificationInfo(), NotificationCategory::CATEGORY_CALL);
     GTEST_LOG_(INFO) << "SetNotificationInfo_001 end";
 }
 
@@ -267,10 +286,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetGestureType_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetGestureType_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetGestureType(GestureType::GESTURE_SWIPE_UP);
+        EXPECT_EQ(eventInfo_->GetGestureType(), GestureType::GESTURE_SWIPE_UP);
     }
-    eventInfo_->SetGestureType(GestureType::GESTURE_SWIPE_UP);
-    EXPECT_EQ(eventInfo_->GetGestureType(), GestureType::GESTURE_SWIPE_UP);
     GTEST_LOG_(INFO) << "SetGestureType_001 end";
 }
 
@@ -284,10 +303,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetPageId_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetPageId_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetPageId(1);
+        EXPECT_EQ(eventInfo_->GetPageId(), 1);
     }
-    eventInfo_->SetPageId(1);
-    EXPECT_EQ(eventInfo_->GetPageId(), 1);
     GTEST_LOG_(INFO) << "SetPageId_001 end";
 }
 
@@ -301,11 +320,11 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetSource_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetSource_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetSource(SOURCE_ID);
+        EXPECT_EQ(eventInfo_->GetViewId(), SOURCE_ID);
+        EXPECT_EQ(eventInfo_->GetAccessibilityId(), SOURCE_ID);
     }
-    eventInfo_->SetSource(1001);
-    EXPECT_EQ(eventInfo_->GetViewId(), 1001);
-    EXPECT_EQ(eventInfo_->GetAccessibilityId(), 1001);
     GTEST_LOG_(INFO) << "SetSource_001 end";
 }
 
@@ -319,10 +338,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetWindowId_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetWindowId_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetWindowId(WINDOW_ID);
+        EXPECT_EQ(eventInfo_->GetWindowId(), WINDOW_ID);
     }
-    eventInfo_->SetWindowId(1002);
-    EXPECT_EQ(eventInfo_->GetWindowId(), 1002);
     GTEST_LOG_(INFO) << "SetWindowId_001 end";
 }
 
@@ -336,10 +355,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetCurrentIndex_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetCurrentIndex_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetCurrentIndex(CURRENT_INDEX);
+        EXPECT_EQ(eventInfo_->GetCurrentIndex(), CURRENT_INDEX);
     }
-    eventInfo_->SetCurrentIndex(1);
-    EXPECT_EQ(eventInfo_->GetCurrentIndex(), 1);
     GTEST_LOG_(INFO) << "SetCurrentIndex_001 end";
 }
 
@@ -353,10 +372,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetBeginIndex_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetBeginIndex_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetBeginIndex(BEGIN_INDEX);
+        EXPECT_EQ(eventInfo_->GetBeginIndex(), BEGIN_INDEX);
     }
-    eventInfo_->SetBeginIndex(1);
-    EXPECT_EQ(eventInfo_->GetBeginIndex(), 1);
     GTEST_LOG_(INFO) << "SetBeginIndex_001 end";
 }
 
@@ -370,10 +389,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetEndIndex_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetEndIndex_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetEndIndex(END_INDEX);
+        EXPECT_EQ(eventInfo_->GetEndIndex(), END_INDEX);
     }
-    eventInfo_->SetEndIndex(1);
-    EXPECT_EQ(eventInfo_->GetEndIndex(), 1);
     GTEST_LOG_(INFO) << "SetEndIndex_001 end";
 }
 
@@ -387,10 +406,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetItemCounts_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetItemCounts_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetItemCounts(ITEM_COUNTS);
+        EXPECT_EQ(eventInfo_->GetItemCounts(), ITEM_COUNTS);
     }
-    eventInfo_->SetItemCounts(1);
-    EXPECT_EQ(eventInfo_->GetItemCounts(), 1);
     GTEST_LOG_(INFO) << "SetItemCounts_001 end";
 }
 
@@ -404,11 +423,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetComponentType_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetComponentType_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetComponentType(COMPONENT_TYPE);
+        EXPECT_EQ(eventInfo_->GetComponentType(), COMPONENT_TYPE);
     }
-    std::string componentType = "text";
-    eventInfo_->SetComponentType(componentType);
-    EXPECT_EQ(eventInfo_->GetComponentType(), componentType);
     GTEST_LOG_(INFO) << "SetComponentType_001 end";
 }
 
@@ -422,11 +440,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetBeforeText_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetBeforeText_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetBeforeText(BEFORE_TEXT);
+        EXPECT_EQ(eventInfo_->GetBeforeText(), BEFORE_TEXT);
     }
-    std::string text = "accessibility";
-    eventInfo_->SetBeforeText(text);
-    EXPECT_EQ(eventInfo_->GetBeforeText(), text);
     GTEST_LOG_(INFO) << "SetBeforeText_001 end";
 }
 
@@ -440,11 +457,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetLatestContent_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetLatestContent_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetLatestContent(LATEST_CONTENT);
+        EXPECT_EQ(eventInfo_->GetLatestContent(), LATEST_CONTENT);
     }
-    std::string context = "lastContext";
-    eventInfo_->SetLatestContent(context);
-    EXPECT_EQ(eventInfo_->GetLatestContent(), context);
     GTEST_LOG_(INFO) << "SetLatestContent_001 end";
 }
 
@@ -458,11 +474,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetDescription_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetDescription_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetDescription(DESCRIPTION);
+        EXPECT_EQ(eventInfo_->GetDescription(), DESCRIPTION);
     }
-    std::string descripion = "descripion";
-    eventInfo_->SetDescription(descripion);
-    EXPECT_EQ(eventInfo_->GetDescription(), descripion);
     GTEST_LOG_(INFO) << "SetDescription_001 end";
 }
 
@@ -476,11 +491,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetTextAnnouncedForAccessibility_001, T
     GTEST_LOG_(INFO) << "SetTextAnnouncedForAccessibility_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetTextAnnouncedForAccessibility(TEXT_ANNOUNCED_FOR_ACCESSIBILITY);
+        EXPECT_EQ(eventInfo_->GetTextAnnouncedForAccessibility(), TEXT_ANNOUNCED_FOR_ACCESSIBILITY);
     }
-    std::string textAnnouncedForAccessibility = "textAnnouncedForAccessibility";
-    eventInfo_->SetTextAnnouncedForAccessibility(textAnnouncedForAccessibility);
-    EXPECT_EQ(eventInfo_->GetTextAnnouncedForAccessibility(), textAnnouncedForAccessibility);
     GTEST_LOG_(INFO) << "SetTextAnnouncedForAccessibility_001 end";
 }
 
@@ -494,11 +508,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetInspectorKey_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetInspectorKey_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetInspectorKey(INSPECTOR_KEY);
+        EXPECT_EQ(eventInfo_->GetInspectorKey(), INSPECTOR_KEY);
     }
-    std::string inspectorKey = "inspectorKey";
-    eventInfo_->SetInspectorKey(inspectorKey);
-    EXPECT_EQ(eventInfo_->GetInspectorKey(), inspectorKey);
     GTEST_LOG_(INFO) << "SetInspectorKey_001 end";
 }
 
@@ -512,11 +525,10 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetRequestFocusElementId_001, TestSize.
     GTEST_LOG_(INFO) << "SetRequestFocusElementId_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
+    } else {
+        eventInfo_->SetRequestFocusElementId(REQUEST_FOCUS_ELEMENT_ID);
+        EXPECT_EQ(eventInfo_->GetRequestFocusElementId(), REQUEST_FOCUS_ELEMENT_ID);
     }
-    int32_t requestFocusElementId = 1;
-    eventInfo_->SetRequestFocusElementId(requestFocusElementId);
-    EXPECT_EQ(eventInfo_->GetRequestFocusElementId(), requestFocusElementId);
     GTEST_LOG_(INFO) << "SetRequestFocusElementId_001 end";
 }
 
@@ -530,21 +542,17 @@ HWTEST_F(AccessibilityEventInfoUnitTest, AddContent_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "AddContent_001 start";
     if (!eventInfo_) {
         GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
-    }
-    std::string content1 = "content1";
-    eventInfo_->AddContent(content1);
-    std::string content2 = "content2";
-    eventInfo_->AddContent(content2);
-    std::vector<std::string> contentLs = eventInfo_->GetContentList();
-    int32_t index = 0;
-    for (auto &content : contentLs) {
-        if (!index) {
-            EXPECT_EQ(content, content1);
-        } else {
-            EXPECT_EQ(content, content2);
+    } else {
+        for (auto &content : CONTENT_LIST) {
+            eventInfo_->AddContent(content);
         }
-        index++;
+        std::vector<std::string> contentList = eventInfo_->GetContentList();
+        EXPECT_FALSE(contentList.empty());
+        EXPECT_EQ(contentList.size(), CONTENT_LIST.size());
+        int32_t index = 0;
+        for (auto &content : contentList) {
+            EXPECT_EQ(content, CONTENT_LIST[index++]);
+        }
     }
     GTEST_LOG_(INFO) << "AddContent_001 end";
 }

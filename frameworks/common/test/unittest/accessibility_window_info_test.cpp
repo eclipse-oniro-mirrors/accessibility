@@ -64,10 +64,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetAccessibilityWindowType_001, TestSi
     GTEST_LOG_(INFO) << "SetAccessibilityWindowType_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetAccessibilityWindowType(AccessibilityWindowType::TYPE_APPLICATION);
+        EXPECT_EQ(windowInfo_->GetAccessibilityWindowType(), AccessibilityWindowType::TYPE_APPLICATION);
     }
-    windowInfo_->SetAccessibilityWindowType(AccessibilityWindowType::TYPE_APPLICATION);
-    EXPECT_EQ(windowInfo_->GetAccessibilityWindowType(), AccessibilityWindowType::TYPE_APPLICATION);
     GTEST_LOG_(INFO) << "SetAccessibilityWindowType_001 end";
 }
 
@@ -81,10 +81,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetWindowLayer_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetWindowLayer_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetWindowLayer(1);
+        EXPECT_EQ(windowInfo_->GetWindowLayer(), 1);
     }
-    windowInfo_->SetWindowLayer(1);
-    EXPECT_EQ(windowInfo_->GetWindowLayer(), 1);
     GTEST_LOG_(INFO) << "SetWindowLayer_001 end";
 }
 
@@ -98,10 +98,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetWindowId_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetWindowId_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetWindowId(1);
+        EXPECT_EQ(windowInfo_->GetWindowId(), 1);
     }
-    windowInfo_->SetWindowId(1);
-    EXPECT_EQ(windowInfo_->GetWindowId(), 1);
     GTEST_LOG_(INFO) << "SetWindowId_001 end";
 }
 
@@ -115,15 +115,15 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetRectInScreen_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetRectInScreen_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        Rect boundParam(1, 1, 2, 2);
+        windowInfo_->SetRectInScreen(boundParam);
+        Rect boundRet = windowInfo_->GetRectInScreen();
+        EXPECT_EQ(boundRet.GetLeftTopXScreenPostion(), 1);
+        EXPECT_EQ(boundRet.GetLeftTopYScreenPostion(), 1);
+        EXPECT_EQ(boundRet.GetRightBottomXScreenPostion(), 2);
+        EXPECT_EQ(boundRet.GetRightBottomYScreenPostion(), 2);
     }
-    Rect boundParam(1, 1, 2, 2);
-    windowInfo_->SetRectInScreen(boundParam);
-    Rect boundRet = windowInfo_->GetRectInScreen();
-    EXPECT_EQ(boundRet.GetLeftTopXScreenPostion(), 1);
-    EXPECT_EQ(boundRet.GetLeftTopYScreenPostion(), 1);
-    EXPECT_EQ(boundRet.GetRightBottomXScreenPostion(), 2);
-    EXPECT_EQ(boundRet.GetRightBottomYScreenPostion(), 2);
     GTEST_LOG_(INFO) << "SetRectInScreen_001 end";
 }
 
@@ -137,10 +137,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetActive_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetActive_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetActive(true);
+        EXPECT_TRUE(windowInfo_->IsActive());
     }
-    windowInfo_->SetActive(true);
-    EXPECT_TRUE(windowInfo_->IsActive());
     GTEST_LOG_(INFO) << "SetActive_001 end";
 }
 
@@ -154,10 +154,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetFocused_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetFocused_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetFocused(true);
+        EXPECT_TRUE(windowInfo_->IsFocused());
     }
-    windowInfo_->SetFocused(true);
-    EXPECT_TRUE(windowInfo_->IsFocused());
     GTEST_LOG_(INFO) << "SetFocused_001 end";
 }
 
@@ -171,10 +171,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetAccessibilityFocused_001, TestSize.
     GTEST_LOG_(INFO) << "SetAccessibilityFocused_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetAccessibilityFocused(true);
+        EXPECT_TRUE(windowInfo_->IsAccessibilityFocused());
     }
-    windowInfo_->SetAccessibilityFocused(true);
-    EXPECT_TRUE(windowInfo_->IsAccessibilityFocused());
     GTEST_LOG_(INFO) << "SetAccessibilityFocused_001 end";
 }
 
@@ -188,10 +188,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetDisplayId_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetDisplayId_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetDisplayId(100);
+        EXPECT_EQ(windowInfo_->GetDisplayId(), 100);
     }
-    windowInfo_->SetDisplayId(100);
-    EXPECT_EQ(windowInfo_->GetDisplayId(), 100);
     GTEST_LOG_(INFO) << "SetDisplayId_001 end";
 }
 
@@ -205,10 +205,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetWindowType_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetWindowType_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetWindowType(1);
+        EXPECT_EQ(windowInfo_->GetWindowType(), 1);
     }
-    windowInfo_->SetWindowType(1);
-    EXPECT_EQ(windowInfo_->GetWindowType(), 1);
     GTEST_LOG_(INFO) << "SetWindowType_001 end";
 }
 
@@ -222,11 +222,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetWindowMode_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetWindowMode_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetWindowMode(1);
+        EXPECT_EQ(windowInfo_->GetWindowMode(), 1);
     }
-    GTEST_LOG_(INFO) << "SetWindowMode_001 begin";
-    windowInfo_->SetWindowMode(1);
-    EXPECT_EQ(windowInfo_->GetWindowMode(), 1);
     GTEST_LOG_(INFO) << "SetWindowMode_001 end";
 }
 
@@ -240,10 +239,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetDecorEnable_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetDecorEnable_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetDecorEnable(true);
+        EXPECT_TRUE(windowInfo_->IsDecorEnable());
     }
-    windowInfo_->SetDecorEnable(true);
-    EXPECT_TRUE(windowInfo_->IsDecorEnable());
     GTEST_LOG_(INFO) << "SetDecorEnable_001 end";
 }
 
@@ -257,10 +256,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetInnerWid_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetInnerWid_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetInnerWid(INNER_WINDOW_ID);
+        EXPECT_EQ(windowInfo_->GetInnerWid(), INNER_WINDOW_ID);
     }
-    windowInfo_->SetInnerWid(INNER_WINDOW_ID);
-    EXPECT_EQ(windowInfo_->GetInnerWid(), INNER_WINDOW_ID);
     GTEST_LOG_(INFO) << "GetInnerWid_001 end";
 }
 
@@ -274,10 +273,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetUiNodeId_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetUiNodeId_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetUiNodeId(UI_NODE_ID);
+        EXPECT_EQ(windowInfo_->GetUiNodeId(), UI_NODE_ID);
     }
-    windowInfo_->SetUiNodeId(UI_NODE_ID);
-    EXPECT_EQ(windowInfo_->GetUiNodeId(), UI_NODE_ID);
     GTEST_LOG_(INFO) << "GetUiNodeId_001 end";
 }
 
@@ -291,10 +290,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetScaleVal_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetScaleVal_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetScaleVal(1.1);
+        EXPECT_FLOAT_EQ(windowInfo_->GetScaleVal(), 1.1f);
     }
-    windowInfo_->SetScaleVal(1.1);
-    EXPECT_FLOAT_EQ(windowInfo_->GetScaleVal(), 1.1f);
     GTEST_LOG_(INFO) << "GetScaleVal_001 end";
 }
 
@@ -308,10 +307,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetScaleX_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetScaleX_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetScaleX(1.1);
+        EXPECT_FLOAT_EQ(windowInfo_->GetScaleX(), 1.1f);
     }
-    windowInfo_->SetScaleX(1.1);
-    EXPECT_FLOAT_EQ(windowInfo_->GetScaleX(), 1.1f);
     GTEST_LOG_(INFO) << "GetScaleX_001 end";
 }
 
@@ -325,10 +324,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetScaleY_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetScaleY_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetScaleY(1.1);
+        EXPECT_FLOAT_EQ(windowInfo_->GetScaleY(), 1.1f);
     }
-    windowInfo_->SetScaleY(1.1);
-    EXPECT_FLOAT_EQ(windowInfo_->GetScaleY(), 1.1f);
     GTEST_LOG_(INFO) << "GetScaleY_001 end";
 }
 
@@ -342,10 +341,10 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetMainWindowId_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetMainWindowId_001 start";
     if (!windowInfo_) {
         GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
+    } else {
+        windowInfo_->SetMainWindowId(1);
+        EXPECT_EQ(windowInfo_->GetMainWindowId(), 1);
     }
-    windowInfo_->SetMainWindowId(1);
-    EXPECT_EQ(windowInfo_->GetMainWindowId(), 1);
     GTEST_LOG_(INFO) << "SetMainWindowId_001 end";
 }
 } // namespace Accessibility
