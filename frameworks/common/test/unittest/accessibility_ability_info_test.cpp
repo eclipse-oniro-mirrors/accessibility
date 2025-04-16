@@ -86,11 +86,11 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, SetPackageName_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetPackageName_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        std::string packageName = "packageName";
+        abilityInfo_->SetPackageName(packageName);
+        EXPECT_STREQ(abilityInfo_->GetPackageName().c_str(), packageName.c_str());
     }
-    std::string packageName = "packageName";
-    abilityInfo_->SetPackageName(packageName);
-    EXPECT_STREQ(abilityInfo_->GetPackageName().c_str(), packageName.c_str());
     GTEST_LOG_(INFO) << "SetPackageName_001 end";
 }
 
@@ -104,10 +104,10 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, SetAccessibilityAbilityType_001, Test
     GTEST_LOG_(INFO) << "SetAccessibilityAbilityType_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        abilityInfo_->SetAccessibilityAbilityType(1);
+        EXPECT_EQ(abilityInfo_->GetAccessibilityAbilityType(), 1);
     }
-    abilityInfo_->SetAccessibilityAbilityType(1);
-    EXPECT_EQ(abilityInfo_->GetAccessibilityAbilityType(), 1);
     GTEST_LOG_(INFO) << "SetAccessibilityAbilityType_001 end";
 }
 
@@ -121,10 +121,10 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, SetCapabilityValues_001, TestSize.Lev
     GTEST_LOG_(INFO) << "SetCapabilityValues_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        abilityInfo_->SetCapabilityValues(1);
+        EXPECT_EQ(abilityInfo_->GetCapabilityValues(), 1);
     }
-    abilityInfo_->SetCapabilityValues(1);
-    EXPECT_EQ(abilityInfo_->GetCapabilityValues(), 1);
     GTEST_LOG_(INFO) << "SetCapabilityValues_001 end";
 }
 
@@ -138,10 +138,10 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, SetEventTypes_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetEventTypes_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        abilityInfo_->SetEventTypes(1);
+        EXPECT_EQ(abilityInfo_->GetEventTypes(), 1);
     }
-    abilityInfo_->SetEventTypes(1);
-    EXPECT_EQ(abilityInfo_->GetEventTypes(), 1);
     GTEST_LOG_(INFO) << "SetEventTypes_001 end";
 }
 
@@ -155,9 +155,9 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, IsImportant_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "IsImportant_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        EXPECT_TRUE(!(abilityInfo_->IsImportant()));
     }
-    EXPECT_TRUE(!(abilityInfo_->IsImportant()));
     GTEST_LOG_(INFO) << "IsImportant_001 end";
 }
 
@@ -171,9 +171,9 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, NeedHide_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "NeedHide_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        EXPECT_TRUE(!(abilityInfo_->NeedHide()));
     }
-    EXPECT_TRUE(!(abilityInfo_->NeedHide()));
     GTEST_LOG_(INFO) << "NeedHide_001 end";
 }
 
@@ -187,9 +187,9 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetLabel_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetLabel_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        EXPECT_STREQ(abilityInfo_->GetLabel().c_str(), "label");
     }
-    EXPECT_STREQ(abilityInfo_->GetLabel().c_str(), "label");
     GTEST_LOG_(INFO) << "GetLabel_001 end";
 }
 
@@ -203,9 +203,9 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetDescription_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetDescription_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        EXPECT_STREQ(abilityInfo_->GetDescription().c_str(), "description");
     }
-    EXPECT_STREQ(abilityInfo_->GetDescription().c_str(), "description");
     GTEST_LOG_(INFO) << "GetDescription_001 end";
 }
 
@@ -219,10 +219,10 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetId_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetId_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        std::string id = "bundleName/name";
+        EXPECT_STREQ(abilityInfo_->GetId().c_str(), id.c_str());
     }
-    std::string id = "bundleName/name";
-    EXPECT_STREQ(abilityInfo_->GetId().c_str(), id.c_str());
     GTEST_LOG_(INFO) << "GetId_001 end";
 }
 
@@ -236,9 +236,9 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetName_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetName_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        EXPECT_STREQ(abilityInfo_->GetName().c_str(), "name");
     }
-    EXPECT_STREQ(abilityInfo_->GetName().c_str(), "name");
     GTEST_LOG_(INFO) << "GetName_001 end";
 }
 
@@ -252,9 +252,9 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetModuleName_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetModuleName_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        EXPECT_STREQ(abilityInfo_->GetModuleName().c_str(), "moduleName");
     }
-    EXPECT_STREQ(abilityInfo_->GetModuleName().c_str(), "moduleName");
     GTEST_LOG_(INFO) << "GetModuleName_001 end";
 }
 
@@ -268,18 +268,18 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, SetFilterBundleNames_001, TestSize.Le
     GTEST_LOG_(INFO) << "SetFilterBundleNames_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
-    }
-    std::vector<std::string> names = {"BundleName1", "BundleName2"};
-    abilityInfo_->SetFilterBundleNames(names);
-    int32_t index = 0;
-    for (auto &name : abilityInfo_->GetFilterBundleNames()) {
-        if (!index) {
-            EXPECT_STREQ(name.c_str(), "BundleName1");
-        } else {
-            EXPECT_STREQ(name.c_str(), "BundleName2");
+    } else {
+        std::vector<std::string> names = {"BundleName1", "BundleName2"};
+        abilityInfo_->SetFilterBundleNames(names);
+        int32_t index = 0;
+        for (auto &name : abilityInfo_->GetFilterBundleNames()) {
+            if (!index) {
+                EXPECT_STREQ(name.c_str(), "BundleName1");
+            } else {
+                EXPECT_STREQ(name.c_str(), "BundleName2");
+            }
+            index++;
         }
-        index++;
     }
     GTEST_LOG_(INFO) << "SetFilterBundleNames_001 end";
 }
@@ -294,9 +294,9 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetSettingsAbility_001, TestSize.Leve
     GTEST_LOG_(INFO) << "GetSettingsAbility_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        EXPECT_STREQ(abilityInfo_->GetSettingsAbility().c_str(), "settingsAbility");
     }
-    EXPECT_STREQ(abilityInfo_->GetSettingsAbility().c_str(), "settingsAbility");
     GTEST_LOG_(INFO) << "GetSettingsAbility_001 end";
 }
 
@@ -310,9 +310,9 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetStaticCapabilityValues_001, TestSi
     GTEST_LOG_(INFO) << "GetStaticCapabilityValues_001 start";
     if (!abilityInfo_) {
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
-        return;
+    } else {
+        EXPECT_EQ(abilityInfo_->GetStaticCapabilityValues(), 1);
     }
-    EXPECT_EQ(abilityInfo_->GetStaticCapabilityValues(), 1);
     GTEST_LOG_(INFO) << "GetStaticCapabilityValues_001 end";
 }
 } // namespace Accessibility
