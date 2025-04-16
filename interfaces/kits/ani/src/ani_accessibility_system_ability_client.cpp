@@ -218,8 +218,7 @@ ani_boolean ANIAccessibilityClient::IsOpenAccessibilitySync([[maybe_unused]] ani
     return status;
 }
 
-ani_int ANIAccessibilityClient::SendAccessibilityEvent(ani_env *env, [[maybe_unused]] ani_object object,
-    ani_object eventObject)
+ani_int ANIAccessibilityClient::SendAccessibilityEvent(ani_env *env, ani_object eventObject)
 {
     AccessibilityEventInfo eventInfo {};
 
