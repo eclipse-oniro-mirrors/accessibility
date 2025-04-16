@@ -352,7 +352,6 @@ public:
 
     /**
      * @brief unRegister disconnect callback
-     * @param callback The disconnect callback.
      * @return Return RET_OK if unRegister disconnect callback successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError UnRegisterDisconnectCallback() override;
@@ -524,7 +523,8 @@ private:
     ffrt::condition_variable proxyConVar_;
     ffrt::mutex conVarMutex_;
     Utils::RWLock rwLock_;
-    std::shared_ptr<DisconnectCallback> callback_;
+    std::vector<std::shared_ptr<DisconnectCallback>> callbackList_;
+    bool isDisconnetCallbackExecute_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

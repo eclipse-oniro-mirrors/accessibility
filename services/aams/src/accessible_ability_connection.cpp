@@ -210,17 +210,18 @@ void AccessibleAbilityConnection::Disconnect()
         std::string clientName = Utils::GetUri(elementName_);
 
         eventHandler_->PostTask([this, accountId, clientName]() {
-            InnerDisconnect();
+            DisconnectAbility();
             auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
             accountData->RemoveWaitDisconnectAbility(clientName);
         }, "DISCONNECT_" + elementName_.GetBundleName(), WAIT_NOTIFY_DISCONNECT_TIMEOUT);
     } else {
-        InnerDisconnect();
+        DisconnectAbility();
     }
 }
 
-void AccessibleAbilityConnection::InnerDisconnect()
+void AccessibleAbilityConnection::DisconnectAbility()
 {
+    HILOG_INFO();
     if (deathRecipient_ == nullptr || !abilityClient_->AsObject() ||
         !abilityClient_->AsObject()->RemoveDeathRecipient(deathRecipient_)) {
         HILOG_ERROR("Failed to add death recipient");
@@ -231,7 +232,6 @@ void AccessibleAbilityConnection::InnerDisconnect()
         HILOG_ERROR("abilityManagerClient is nullptr");
         return;
     }
-
     if (abilityManagerClient->DisconnectAbility(this) != ERR_OK) {
         HILOG_ERROR("Disconnect failed!");
         return;
@@ -242,9 +242,7 @@ void AccessibleAbilityConnection::NotifyDisconnect()
 {
     HILOG_INFO();
     eventHandler_->RemoveTask("DISCONNECT_" + elementName_.GetBundleName());
-    eventHandler_->PostTask([this]() {
-        InnerDisconnect();
-    }, "DISCONNECT_" + elementName_.GetBundleName());
+    DisconnectAbility();
 }
 
 bool AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element)
