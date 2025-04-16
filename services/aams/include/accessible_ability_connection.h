@@ -97,7 +97,6 @@ private:
 
     bool IsWantedEvent(int32_t eventType);
     void InitAbilityClient(const sptr<IRemoteObject> &remoteObject);
-    void InnerDisconnect();
 
     int32_t accountId_ = -1;
     int32_t connectionId_ = -1;
