@@ -30,9 +30,9 @@ public:
     ElementOperatorImplFuzzTest() = default;
     ~ElementOperatorImplFuzzTest() = default;
 
-    void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
+    RetError SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
-        bool isFilter) override {}
+        bool isFilter) override { return RET_OK; }
     void SearchDefaultFocusedByWindowId(const int32_t windowId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
         bool isFilter = false) override {};

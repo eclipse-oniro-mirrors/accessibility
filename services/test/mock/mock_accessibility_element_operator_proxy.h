@@ -50,7 +50,7 @@ public:
      *              otherwise: Make the node information by elementId only.
      * @sysCap Accessibility
      */
-    void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
+    RetError SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode, bool isFilter) override;
 
     /**

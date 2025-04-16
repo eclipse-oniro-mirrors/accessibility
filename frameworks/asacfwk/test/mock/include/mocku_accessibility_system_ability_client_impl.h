@@ -25,7 +25,7 @@ class MockAccessibilitySystemAbilityClientImpl : public AccessibilitySystemAbili
 public:
     MockAccessibilitySystemAbilityClientImpl() = default;
     virtual ~MockAccessibilitySystemAbilityClientImpl() = default;
-    MOCK_METHOD4(SearchElementInfoByAccessibilityId, void(const int64_t elementId,
+    MOCK_METHOD4(SearchElementInfoByAccessibilityId, RetError(const int64_t elementId,
         const int32_t requestId, AccessibilityElementOperatorCallback& callback, const int32_t mode));
     MOCK_METHOD4(SearchElementInfosByText, void(const int64_t elementId, const std::string& text,
         const int32_t requestId, AccessibilityElementOperatorCallback& callback));

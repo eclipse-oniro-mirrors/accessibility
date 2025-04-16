@@ -39,9 +39,9 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
 class ElementOperatorForFuzzTest : public AccessibilityElementOperator {
 public:
     virtual ~ElementOperatorForFuzzTest() = default;
-    void SearchElementInfoByAccessibilityId(const int64_t elementId,
+    RetError SearchElementInfoByAccessibilityId(const int64_t elementId,
         const int32_t requestId, AccessibilityElementOperatorCallback &callback,
-        const int32_t mode) override {}
+        const int32_t mode) override { return RET_OK; }
     void SearchDefaultFocusByWindowId(const int32_t windowId,
         const int32_t requestId, AccessibilityElementOperatorCallback &callback,
         const int32_t pageId) override {}

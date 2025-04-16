@@ -39,7 +39,7 @@ bool AccessibilityElementOperatorProxy::SendTransactCmd(AccessibilityInterfaceCo
     return true;
 }
 
-void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int64_t elementId,
+RetError AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int64_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
     bool isFilter)
 {
@@ -48,6 +48,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
     (void)callback;
     (void)mode;
     (void)isFilter;
+    return RET_OK;
 }
 
 void AccessibilityElementOperatorProxy::SearchDefaultFocusedByWindowId(const int32_t windowId,

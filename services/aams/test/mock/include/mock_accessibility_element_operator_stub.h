@@ -28,7 +28,7 @@ public:
 
     MOCK_METHOD4(OnRemoteRequest, int(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option));
     MOCK_METHOD5(SearchElementInfoByAccessibilityId,
-        void(const int64_t elementId, const int32_t requestId,
+        RetError(const int64_t elementId, const int32_t requestId,
             const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode, bool isFilter));
     MOCK_METHOD5(SearchDefaultFocusedByWindowId,
         void(const int32_t windowId, const int32_t requestId,

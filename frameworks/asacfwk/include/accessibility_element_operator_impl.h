@@ -57,7 +57,7 @@ public:
      *              PREFETCH_CHILDREN: Need to make the child node info also.
      *              otherwise: Make the node information by elementId only.
      */
-    virtual void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
+    virtual RetError SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
         bool isFilter = false) override;
 

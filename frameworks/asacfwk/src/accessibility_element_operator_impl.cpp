@@ -37,19 +37,22 @@ AccessibilityElementOperatorImpl::~AccessibilityElementOperatorImpl()
     HILOG_DEBUG();
 }
 
-void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int64_t elementId,
+RetError AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int64_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
     bool isFilter)
 {
+    RetError ret = RET_OK;
     int32_t mRequestId = AddRequest(requestId, callback);
     HILOG_DEBUG("search element add requestId[%{public}d], elementId[%{public}" PRId64 "], requestId[%{public}d]",
         mRequestId, elementId, requestId);
     callback->SetIsFilter(isFilter);
     if (operator_) {
-        operator_->SearchElementInfoByAccessibilityId(elementId, mRequestId, operatorCallback_, mode);
+        ret = operator_->SearchElementInfoByAccessibilityId(elementId, mRequestId, operatorCallback_, mode);
     } else {
         HILOG_ERROR("Operator is nullptr");
+        return RET_ERR_NULLPTR;
     }
+    return ret;
 }
 
 void AccessibilityElementOperatorImpl::SearchDefaultFocusedByWindowId(const int32_t windowId,
