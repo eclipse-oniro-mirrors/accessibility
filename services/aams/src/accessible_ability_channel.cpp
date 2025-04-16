@@ -831,11 +831,11 @@ RetError AccessibleAbilityChannel::NotifyDisconnect()
         return RET_ERR_NULLPTR;
     }
     sptr<AccessibleAbilityConnection> clientConnection = accountData->GetWaitDisConnectAbility(clientName_);
-    accountData->RemoveWaitDisconnectAbility(clientName_);
     if (clientConnection == nullptr) {
         HILOG_ERROR("GetConnection failed, clientName: %{public}s", clientName_.c_str());
         return RET_ERR_NULLPTR;
     }
+    accountData->RemoveWaitDisconnectAbility(clientName_);
     clientConnection->NotifyDisconnect();
     return RET_OK;
 }
