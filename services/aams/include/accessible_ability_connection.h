@@ -77,6 +77,7 @@ public:
     bool GetIsRegisterDisconnectCallback() const;
     void SetIsRegisterDisconnectCallback(bool isRegister);
     void NotifyDisconnect();
+    void DisconnectAbility();
 
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
