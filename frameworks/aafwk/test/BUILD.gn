@@ -97,6 +97,7 @@ ohos_unittest("accessibility_ui_test_ability_impl_test") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "samgr:dynamic_cache",
     "samgr:samgr_proxy",
   ]
 }
