@@ -61,12 +61,11 @@ HWTEST_F(AccessibilityWindowInfoParcelTest, Window_Info_Marshalling_001, TestSiz
     GTEST_LOG_(INFO) << "Window_Info_Marshalling_001 start";
     if (!windowInfoParcel_) {
         GTEST_LOG_(INFO) << "captionPropertyParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        bool ret = windowInfoParcel_->Marshalling(parcel);
+        EXPECT_EQ(ret, true);
     }
-
-    Parcel parcel;
-    bool ret = windowInfoParcel_->Marshalling(parcel);
-    EXPECT_EQ(ret, true);
     GTEST_LOG_(INFO) << "Window_Info_Marshalling_001 end";
 }
 
@@ -80,12 +79,11 @@ HWTEST_F(AccessibilityWindowInfoParcelTest, Window_Info_Unmarshalling_001, TestS
     GTEST_LOG_(INFO) << "Window_Info_Unmarshalling_001 start";
     if (!windowInfoParcel_) {
         GTEST_LOG_(INFO) << "windowInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<AccessibilityWindowInfoParcel> windowInfoParcel = windowInfoParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, windowInfoParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<AccessibilityWindowInfoParcel> windowInfoParcel = windowInfoParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, windowInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Window_Info_Unmarshalling_001 end";
 }
 
@@ -99,11 +97,10 @@ HWTEST_F(AccessibilityWindowInfoParcelTest, Window_Info_Parcel__001, TestSize.Le
     GTEST_LOG_(INFO) << "Window_Info_Parcel__001 start";
     if (!windowInfoParcel_) {
         GTEST_LOG_(INFO) << "windowInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        EXPECT_EQ(false, windowInfoParcel_->ReadFromParcel(parcel));
     }
-
-    Parcel parcel;
-    EXPECT_EQ(false, windowInfoParcel_->ReadFromParcel(parcel));
     GTEST_LOG_(INFO) << "Window_Info_Parcel__001 end";
 }
 } // namespace Accessibility

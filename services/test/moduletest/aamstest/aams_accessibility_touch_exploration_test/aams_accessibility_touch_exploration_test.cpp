@@ -617,20 +617,17 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool flag = OnPointerEventOnePointsTest1(points, point1, point2, point3, point4);
     if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent001 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // event type
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
+
+        // action type
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_DOWN);
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_UP);
     }
-
-    sleep(1);
-
-    // event type
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
-
-    // action type
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_DOWN);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_UP);
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent001 ENDs";
 }
 
@@ -649,24 +646,21 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent002 inputEventConsumer is null";
-        return;
+    } else {
+        inputEventConsumer->OnInputEvent(event);
+
+        sleep(1);
+        event = CreateMoveEvent(1, 1);
+        inputEventConsumer->OnInputEvent(event);
+        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, 1);
+        inputEventConsumer->OnInputEvent(event);
+
+        sleep(1);
+        // action type
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_HOVER_MOVE);
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_HOVER_EXIT);
     }
-    inputEventConsumer->OnInputEvent(event);
-
-    sleep(1);
-
-    event = CreateMoveEvent(1, 1);
-    inputEventConsumer->OnInputEvent(event);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    sleep(1);
-
-    // action type
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_HOVER_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_HOVER_EXIT);
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent002 ENDs";
 }
 
@@ -694,7 +688,6 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
 
     sleep(1);
-
     // gesture type
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
         static_cast<int32_t>(GestureType::GESTURE_SWIPE_LEFT_THEN_RIGHT));
@@ -726,15 +719,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
     if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent003 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gesture type
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_SWIPE_DOWN_THEN_UP));
     }
-
-    sleep(1);
-
-    // gesture type
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_SWIPE_DOWN_THEN_UP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent004 ENDs";
 }
 
@@ -762,15 +752,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
     if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent005 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gesture type
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_SWIPE_RIGHT_THEN_LEFT));
     }
-
-    sleep(1);
-
-    // gesture type
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_SWIPE_RIGHT_THEN_LEFT));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent005 ENDs";
 }
 
@@ -798,15 +785,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
     if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent006 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gesture type
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_SWIPE_UP_THEN_DOWN));
     }
-
-    sleep(1);
-
-    // gesture type
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_SWIPE_UP_THEN_DOWN));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent006 ENDs";
 }
 
@@ -832,15 +816,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool flag = OnPointerEventOnePointsTest7(points, point1, point2, point3);
     if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent007 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gesture type
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_SWIPE_UP));
     }
-
-    sleep(1);
-
-    // gesture type
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_SWIPE_UP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent007 ENDs";
 }
 
@@ -859,19 +840,15 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent009 inputEventConsumer is null";
-        return;
+    } else {
+        inputEventConsumer->OnInputEvent(event);
+        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, 1);
+        inputEventConsumer->OnInputEvent(event);
+        sleep(1);
+        // action type
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_HOVER_EXIT);
     }
-    inputEventConsumer->OnInputEvent(event);
-
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    sleep(1);
-
-    // action type
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_HOVER_EXIT);
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent008 ends";
 }
 
@@ -898,25 +875,23 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent009 inputEventConsumer is null";
-        return;
+    } else {
+        inputEventConsumer->OnInputEvent(event);
+        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 40, 0, 1);
+        inputEventConsumer->OnInputEvent(event);
+        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 200, 0, 1);
+        inputEventConsumer->OnInputEvent(event);
+        sleep(SLEEP_TIME_3);
+        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
+        inputEventConsumer->OnInputEvent(event);
+
+        sleep(1);
+        // event type
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2), EventType::TYPE_TOUCH_BEGIN);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3), EventType::TYPE_TOUCH_END);
     }
-    inputEventConsumer->OnInputEvent(event);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 40, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 200, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-    sleep(SLEEP_TIME_3);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    sleep(1);
-
-    // event type
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3), EventType::TYPE_TOUCH_END);
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent009 ends";
 }
 
@@ -943,21 +918,19 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent010 inputEventConsumer is null";
-        return;
+    } else {
+        inputEventConsumer->OnInputEvent(event);
+        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
+        inputEventConsumer->OnInputEvent(event);
+        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 100, 0, 1);
+        inputEventConsumer->OnInputEvent(event);
+        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
+        inputEventConsumer->OnInputEvent(event);
+
+        sleep(1);
+        // action type
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), POINTER_ACTION_INVALID);
     }
-    inputEventConsumer->OnInputEvent(event);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 100, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    sleep(1);
-
-    // action type
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), POINTER_ACTION_INVALID);
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent010 ends";
 }
 
@@ -981,18 +954,14 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = TwoFingerTapEventProduce(points, point1, point2, TAP_TIMES_1, false);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0011 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // event type
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), GestureType::GESTURE_TWO_FINGER_SINGLE_TAP);
     }
-
-    sleep(1);
-
-    // event type
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), GestureType::GESTURE_TWO_FINGER_SINGLE_TAP);
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent011 ends";
 }
 
@@ -1017,15 +986,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = TwoFingerTapEventProduce(points, point1, point2, TAP_TIMES_2, false);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0011 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent012 ends";
 }
 
@@ -1050,15 +1016,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = TwoFingerTapEventProduce(points, point1, point2, TAP_TIMES_3, false);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0011 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent013 ends";
 }
 
@@ -1083,15 +1046,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = TwoFingerTapEventProduce(points, point1, point2, TAP_TIMES_2, true);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0014 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP_AND_HOLD));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP_AND_HOLD));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent014 ends";
 }
 
@@ -1116,15 +1076,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = TwoFingerTapEventProduce(points, point1, point2, TAP_TIMES_3, true);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0015 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP_AND_HOLD));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP_AND_HOLD));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent015 ends";
 }
 
@@ -1153,16 +1110,13 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = TwoFingerMoveEventProduce(points, point1, point2, point3, point4);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0016 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // action type
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_DOWN);
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_UP);
     }
-
-    sleep(1);
-
-    // action type
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_DOWN);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_UP);
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent016 ends";
 }
 
@@ -1187,20 +1141,16 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = OneFingerTapAndTwoFingerTapEventProduce(points, point1, point2, false);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0017 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // event type
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2), EventType::TYPE_TOUCH_BEGIN);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3), EventType::TYPE_TOUCH_END);
+        // action type
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
     }
-
-    sleep(1);
-
-    // event type
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3), EventType::TYPE_TOUCH_END);
-
-    // action type
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent017 ends";
 }
 
@@ -1225,14 +1175,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = TwoFingerTapAndOneFingerTapEventProduce(points, point1, point2);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0018 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_INVALID));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), static_cast<int32_t>(GestureType::GESTURE_INVALID));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent018 ends";
 }
 
@@ -1257,24 +1205,19 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = OneFingerTapAndTwoFingerTapEventProduce(points, point1, point2, true);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0019 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // event type
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2), EventType::TYPE_TOUCH_BEGIN);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3), EventType::TYPE_TOUCH_END);
+        // action type
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
+        EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_HOVER_EXIT);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), GestureType::GESTURE_TWO_FINGER_SINGLE_TAP);
     }
-
-    sleep(1);
-
-    // event type
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3), EventType::TYPE_TOUCH_END);
-
-    // action type
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_HOVER_EXIT);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), GestureType::GESTURE_TWO_FINGER_SINGLE_TAP);
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent019 ends";
 }
 
@@ -1302,19 +1245,15 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapEventProduce(points, pointVec, 1, false);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0020 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // event type
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SINGLE_TAP));
     }
-
-    sleep(1);
-
-    // event type
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SINGLE_TAP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent020 ends";
 }
 
@@ -1344,19 +1283,15 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapEventProduce(points, pointVec, 1, false);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0021 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // event type
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SINGLE_TAP));
     }
-
-    sleep(1);
-
-    // event type
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(0), EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1), EventType::TYPE_TOUCH_END);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SINGLE_TAP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent021 ends";
 }
 
@@ -1384,15 +1319,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapEventProduce(points, pointVec, 2, false);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0022 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent022 ends";
 }
 
@@ -1420,15 +1352,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapEventProduce(points, pointVec, 2, true);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0023 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP_AND_HOLD));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP_AND_HOLD));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent023 ends";
 }
 
@@ -1456,15 +1385,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapEventProduce(points, pointVec, 3, false);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0024 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent024 ends";
 }
 
@@ -1492,15 +1418,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapEventProduce(points, pointVec, 3, true);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0025 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP_AND_HOLD));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP_AND_HOLD));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent025 ends";
 }
 
@@ -1530,15 +1453,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapEventProduce(points, pointVec, 2, false);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0026 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent026 ends";
 }
 
@@ -1568,15 +1488,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapEventProduce(points, pointVec, 2, true);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0027 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP_AND_HOLD));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP_AND_HOLD));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent027 ends";
 }
 
@@ -1606,15 +1523,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapEventProduce(points, pointVec, 3, false);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0028 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_LE(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_LE(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent028 ends";
 }
 
@@ -1644,15 +1558,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapEventProduce(points, pointVec, 3, true);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0029 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP_AND_HOLD));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP_AND_HOLD));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent029 ends";
 }
 
@@ -1688,15 +1599,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0030 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_DOWN));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_DOWN));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent030 ends";
 }
 
@@ -1736,15 +1644,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0031 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_DOWN));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_DOWN));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent031 ends";
 }
 
@@ -1780,15 +1685,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0032 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_UP));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_UP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent032 ends";
 }
 
@@ -1824,15 +1726,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0033 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_LEFT));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_LEFT));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent033 ends";
 }
 
@@ -1868,15 +1767,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0034 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_RIGHT));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_RIGHT));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent034 ends";
 }
 
@@ -1916,15 +1812,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0035 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_UP));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_UP));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent035 ends";
 }
 
@@ -1964,15 +1857,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0036 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_LEFT));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_LEFT));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent036 ends";
 }
 
@@ -2012,15 +1902,12 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
     bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
     if (!eventProduceRst) {
         GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0037 inputEventConsumer is null";
-        return;
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_RIGHT));
     }
-
-    sleep(1);
-
-    // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_RIGHT));
-
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent037 ends";
 }
 } // namespace Accessibility
