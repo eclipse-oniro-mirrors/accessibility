@@ -688,8 +688,12 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     }
 
     if (GetWaitDisConnectAbility(name)) {
-        HILOG_ERROR("qc123 The ability[%{public}s] is disconnecting: ", name.c_str());
-        return RET_ERR_CONNECTION_EXIST;
+        HILOG_INFO("The ability[%{public}s] is disconnecting: ", name.c_str());
+        sptr<AccessibleAbilityConnection> connection = GetWaitDisConnectAbility(name);
+        if (connection != nullptr) {
+            connection->DisconnectAbility();
+        }
+        RemoveWaitDisconnectAbility(name);
     }
 
 #ifdef OHOS_BUILD_ENABLE_HITRACE
