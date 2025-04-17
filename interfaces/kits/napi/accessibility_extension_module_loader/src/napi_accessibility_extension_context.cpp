@@ -1001,7 +1001,7 @@ private:
         if (type == "preDisconnect" && ref != nullptr) {
             std::shared_ptr<DisconnectCallback> callback = std::make_shared<DisconnectCallback>(env, ref);
             context_.lock()->RegisterDisconnectCallback(callback);
-        }        
+        }
         return nullptr;
     }
 
@@ -1024,10 +1024,10 @@ private:
             HILOG_ERROR("Not enough params");
         }
 
-        if (type == "preDisconnect" && ref != nullptr) {
+        if (type == "preDisconnect") {
             std::shared_ptr<DisconnectCallback> callback = std::make_shared<DisconnectCallback>(env, ref);
-            context_.lock()->UnRegisterDisconnectCallback();
-        }        
+            context_.lock()->UnRegisterDisconnectCallback(callback);
+        }
         return nullptr;
     }
 
