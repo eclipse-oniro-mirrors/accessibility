@@ -52,6 +52,8 @@ public:
         std::vector<AccessibilityWindowInfo> &windows));
     MOCK_METHOD2(SetOnKeyPressEventResult, void(const bool handled, const int32_t sequence));
     MOCK_METHOD1(SendSimulateGesture, RetError(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath));
+    MOCK_METHOD1(SetIsRegisterDisconnectCallback, RetError(bool isRegister));
+    MOCK_METHOD0(NotifyDisconnect, RetError());
 };
 
 class MockAccessibleAbilityConnection : public AccessibleAbilityConnection {
@@ -93,6 +95,10 @@ public:
     MOCK_METHOD0(Disconnect, void());
     MOCK_METHOD1(Connect, void(const AppExecFwk::ElementName& element));
     MOCK_METHOD0(GetChannelId, int32_t());
+    MOCK_METHOD0(GetIsRegisterDisconnectCallback, bool());
+    MOCK_METHOD1(SetIsRegisterDisconnectCallback, bool(bool isRegister));
+    MOCK_METHOD0(NotifyDisconnect, void());
+    MOCK_METHOD0(DisconnectAbility, void());
 };
 } // namespace Accessibility
 } // namespace OHOS

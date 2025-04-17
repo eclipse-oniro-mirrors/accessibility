@@ -321,5 +321,18 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
     (void)callback;
     return RET_OK;
 }
+
+RetError AccessibleAbilityChannel::SetIsRegisterDisconnectCallback(bool isRegister)
+{
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilitychannel SetIsRegisterDisconnectCallback";
+    (void)isRegister;
+    return RET_OK;
+}
+
+RetError NotifyDisconnect()
+{
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilitychannel NotifyDisconnect";
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS
