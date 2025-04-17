@@ -315,7 +315,7 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
     {
         isConnected_ = false;
         Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
-        if (callbackList_.empty()) {
+        if (callbackSet_.empty()) {
             // Delete death recipient
             if (channelClient_ && channelClient_->GetRemote()) {
                 HILOG_ERROR("Remove death recipient");
@@ -333,7 +333,7 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
     if (listener) {
         listener->OnAbilityDisconnected();
     }
-    for (auto &callback : callbackList_) {
+    for (auto &callback : callbackSet_) {
         callback->NotifyJS();
     }
 }
@@ -1939,15 +1939,7 @@ RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr
         HILOG_INFO("callback IS NULLPTR");
         return RET_ERR_INVALID_PARAM;
     } else {
-        bool exists = false;
-        for (auto &cb : callbackList_) {
-            if (cb == callback) {
-                exists = true;
-            }
-        }
-        if (!exists) {
-            callbackList_.push_back(callback);
-        }
+        callbackSet_.insert(callback);
     }
     if (channelClient_ == nullptr) {
         HILOG_ERROR("the channel is invalid.");
@@ -1957,23 +1949,27 @@ RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr
     return RET_OK;
 }
 
-RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback()
+RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback)
 {
     HILOG_INFO();
     if (channelClient_ == nullptr) {
         HILOG_ERROR("the channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    callbackList_.clear();
-    channelClient_->SetIsRegisterDisconnectCallback(false);
+    if (callback->handlerRef_ == nullptr) {
+        callbackSet_.clear();
+    } else {
+        callbackSet_.erase(callback);
+    }
+    channelClient_->SetIsRegisterDisconnectCallback(!callbackSet_.empty());
     return RET_OK;
 }
 
 RetError AccessibleAbilityClientImpl::NotifyDisconnect()
 {
     HILOG_INFO();
-    if (callbackList_.empty()) {
-        HILOG_INFO("callbackList_ is empty");
+    if (callbackSet_.empty()) {
+        HILOG_INFO("callbackSet_ is empty");
         return RET_OK;
     }
     if (!isDisconnectCallbackExecute_) {
