@@ -68,6 +68,7 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
     const std::string ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
+    const std::string IGNORE_REPEAT_CLICK_RECONFIRM = "accessibility_ignore_repeat_click_reconfirm";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -515,6 +516,18 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state
         return ret;
     }
     ignoreRepeatClickState_ = state;
+    return ret;
+}
+
+RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickReconfirm(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(IGNORE_REPEAT_CLICK_RECONFIRM, state);
+    if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetIgnoreRepeatClickReconfirm");
+        HILOG_ERROR("set ignoreRepeatClickReconfirm failed");
+        return ret;
+    }
     return ret;
 }
 
@@ -1115,6 +1128,7 @@ void AccessibilitySettingsConfig::OnDataClone()
 
     InitSetting();
     SetDefaultShortcutKeyService();
+    SetIgnoreRepeatClickReconfirm(ignoreRepeatClickState_);
 
     if (isShortKeyState_) {
         SetShortKeyOnLockScreenState(true);

@@ -60,6 +60,7 @@ public:
     RetError SetIgnoreRepeatClickState(const bool state);
     RetError SetIgnoreRepeatClickTime(const uint32_t time);
     RetError SetStartToHosState(const bool state);
+    RetError SetIgnoreRepeatClickReconfirm(const bool state);
 
     bool GetEnabledState() const;
     bool GetTouchGuideState() const;

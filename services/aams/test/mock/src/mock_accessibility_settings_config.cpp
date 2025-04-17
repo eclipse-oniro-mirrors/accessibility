@@ -438,6 +438,11 @@ RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickReconfirm(const bool state)
+{
+    return RET_OK;
+}
+
 const std::vector<std::string> AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
 {
     return enabledAccessibilityServices_;

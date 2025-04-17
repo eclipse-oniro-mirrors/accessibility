@@ -620,6 +620,7 @@ void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpd
     }
     if (atoHosValue.ignoreRepeatClickState) {
         accountData->GetConfig()->SetIgnoreRepeatClickState(atoHosValue.ignoreRepeatClickState);
+        accountData->GetConfig()->SetIgnoreRepeatClickReconfirm(true);
     }
     if (atoHosValue.shortcutEnabled) {
         accountData->GetConfig()->SetShortKeyState(atoHosValue.shortcutEnabled);
