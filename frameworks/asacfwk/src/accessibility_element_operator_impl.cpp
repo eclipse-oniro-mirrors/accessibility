@@ -215,7 +215,7 @@ void AccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResu
 void AccessibilityElementOperatorImpl::SetSearchDefaultFocusByWindowIdResult(
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
-    HILOG_DEBUG("requestId is %{public}d, infos size is %{public}d", requestId, infos.size());
+    HILOG_DEBUG("requestId is %{public}d, infos size is %{public}zu", requestId, infos.size());
     std::lock_guard<ffrt::mutex> lock(requestsMutex_);
     std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
     auto iter = requests_.find(requestId);
