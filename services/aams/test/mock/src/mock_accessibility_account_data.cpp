@@ -532,5 +532,28 @@ AccountSA::OsAccountType AccessibilityAccountData::GetAccountType()
 {
     return AccountSA::OsAccountType::PRIVATE;
 }
+
+sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetWaitDisConnectAbility(const std::string &uri)
+{
+    return waitDisconnectA11yAbilities_.GetAccessibilityAbilityByUri(uri);
+}
+
+void AccessibilityAccountData::AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection)
+{
+    if (!connection) {
+        HILOG_ERROR("connection is nullptr");
+        return;
+    }
+    if (connection->GetIsRegisterDisconnectCallback()) {
+        HILOG_INFO();
+        std::string uri = Utils::GetUri(connection->GetElementName());
+        waitDisconnectA11yAbilities_.AddAccessibilityAbility(uri, connection);
+    }
+}
+
+void AccessibilityAccountData::RemoveWaitDisconnectAbility(const std::string &uri)
+{
+    waitDisconnectA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
+}
 } // namespace Accessibility
 } // namespace OHOS
