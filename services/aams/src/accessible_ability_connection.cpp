@@ -213,7 +213,7 @@ void AccessibleAbilityConnection::Disconnect()
             DisconnectAbility();
             auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
             accountData->RemoveWaitDisconnectAbility(clientName);
-        }, "DISCONNECT_" + elementName_.GetBundleName(), WAIT_NOTIFY_DISCONNECT_TIMEOUT);
+            }, "DISCONNECT_" + elementName_.GetBundleName(), WAIT_NOTIFY_DISCONNECT_TIMEOUT);
     } else {
         DisconnectAbility();
     }

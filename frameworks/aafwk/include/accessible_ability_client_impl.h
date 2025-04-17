@@ -346,15 +346,15 @@ public:
     /**
      * @brief register disconnect callback
      * @param callback The disconnect callback.
-     * @return Return RET_OK if register disconnect callback successfully, otherwise refer to the RetError for the failure.
+     * @return Return RET_OK if register callback successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError RegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback) override;
 
     /**
      * @brief unRegister disconnect callback
-     * @return Return RET_OK if unRegister disconnect callback successfully, otherwise refer to the RetError for the failure.
+     * @return Return RET_OK if unRegister callback successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError UnRegisterDisconnectCallback() override;
+    virtual RetError UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback) override;
 
     /**
      * @brief notify disconnect
@@ -523,7 +523,7 @@ private:
     ffrt::condition_variable proxyConVar_;
     ffrt::mutex conVarMutex_;
     Utils::RWLock rwLock_;
-    std::vector<std::shared_ptr<DisconnectCallback>> callbackList_;
+    std::set<std::shared_ptr<DisconnectCallback>> callbackSet_;
     bool isDisconnectCallbackExecute_ = false;
 };
 } // namespace Accessibility
