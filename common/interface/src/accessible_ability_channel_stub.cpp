@@ -55,7 +55,7 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME, HandleSetTargetBundleName)                        \
     SWITCH_CASE(AccessibilityInterfaceCode::GET_CURSOR_POSITION, HandleGetCursorPosition)                             \
     SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_DEFAULTFOCUSED_BY_WINDOW_ID, HandleSearchDefaultFocusedByWindowId) \
-    SWITCH_CASE(
+    SWITCH_CASE(                                                                                                      \
         AccessibilityInterfaceCode::SET_IS_REGISTER_DISCONNECT_CALLBACK, HandleSetIsRegisterDisconnectCallback)       \
     SWITCH_CASE(AccessibilityInterfaceCode::NOTIFY_DISCONNECT, HandleNotifyDisconnect)
 
