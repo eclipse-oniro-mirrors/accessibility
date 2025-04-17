@@ -25,7 +25,6 @@
 #include "accessible_ability_listener.h"
 #include "iremote_object.h"
 #include "hilog_wrapper.h"
-#include "accessibility_utils.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 
@@ -63,7 +62,8 @@ struct DisconnectCallback {
         }
     }
 
-    bool operator==(const DisconnectCallback& otherCallback) const {
+    bool operator==(const DisconnectCallback& otherCallback) const
+    {
         if (env_ != otherCallback.env_) {
             return false;
         }
@@ -371,15 +371,15 @@ public:
     /**
      * @brief Register Disconnect Callback.
      * @param callback The callback.
-     * @return Return RET_OK if Register Disconnect Callback successfully, otherwise refer to the RetError for the failure.
+     * @return Return RET_OK if Register Callback successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError RegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback) = 0;
 
     /**
      * @brief UnRegister Disconnect Callback.
-     * @return Return RET_OK if  unRegister callback successfully, otherwise refer to the RetError for the failure.
+     * @return Return RET_OK if unRegister callback successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError UnRegisterDisconnectCallback() = 0;
+    virtual RetError UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback) = 0;
 
     /**
      * @brief Notify disconnect.
