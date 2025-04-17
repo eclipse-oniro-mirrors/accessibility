@@ -272,7 +272,7 @@ RetError AccessibilityExtensionContext::RegisterDisconnectCallback(std::shared_p
     return aaClient->RegisterDisconnectCallback(callback);
 }
 
-RetError AccessibilityExtensionContext::UnRegisterDisconnectCallback()
+RetError AccessibilityExtensionContext::UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
@@ -280,7 +280,7 @@ RetError AccessibilityExtensionContext::UnRegisterDisconnectCallback()
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return aaClient->UnRegisterDisconnectCallback();
+    return aaClient->UnRegisterDisconnectCallback(callback);
 }
 
 RetError AccessibilityExtensionContext::NotifyDisconnect()

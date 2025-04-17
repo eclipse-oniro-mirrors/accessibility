@@ -360,17 +360,21 @@ const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetWaitDisConn
 
 void AccessibilityAccountData::AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection)
 {
+    HILOG_INFO();
     if (!connection) {
         HILOG_ERROR("connection is nullptr");
         return;
     }
-
-    std::string uri = Utils::GetUri(connection->GetElementName());
-    waitDisconnectA11yAbilities_.AddAccessibilityAbility(uri, connection);
+    if (connection->GetIsRegisterDisconnectCallback()) {
+        HILOG_INFO();
+        std::string uri = Utils::GetUri(connection->GetElementName());
+        waitDisconnectA11yAbilities_.AddAccessibilityAbility(uri, connection);
+    }
 }
 
 void AccessibilityAccountData::RemoveWaitDisconnectAbility(const std::string &uri)
 {
+    HILOG_INFO();
     waitDisconnectA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 
@@ -983,9 +987,7 @@ void AccessibilityAccountData::UpdateAbilities()
         } else {
             HILOG_DEBUG("not in enabledAbilites list .");
             if (connection) {
-                if (connection->GetIsRegisterDisconnectCallback()) {
-                    AddWaitDisconnectAbility(connection);
-                }
+                AddWaitDisconnectAbility(connection);
                 RemoveConnectedAbility(connection->GetElementName());
                 connection->Disconnect();
             }

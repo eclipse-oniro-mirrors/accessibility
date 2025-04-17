@@ -198,15 +198,15 @@ public:
     /**
     * @brief Register Disconnect Callback.
     * @param callback.
-    * @return Return RET_OK if Register Disconnect Callback successfully, otherwise refer to the RetError for the failure.
+    * @return Return RET_OK if Register callback successfully, otherwise refer to the RetError for the failure.
     */
     RetError RegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback);
 
     /**
     * @brief UnRegister Disconnect Callback.
-    * @return Return RET_OK if UnRegister Disconnect Callback successfully, otherwise refer to the RetError for the failure.
+    * @return Return RET_OK if UnRegister callback successfully, otherwise refer to the RetError for the failure.
     */
-    RetError UnRegisterDisconnectCallback();
+    RetError UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback);
 
     /**
     * @brief Notify Disconnect.
