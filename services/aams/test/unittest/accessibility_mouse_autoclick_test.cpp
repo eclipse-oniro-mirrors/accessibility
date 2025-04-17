@@ -79,18 +79,15 @@ void AccessibilityMouseAutoclickUnitTest::TearDown()
 HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_001 start";
-    if (!mouseAutoclick_) {
-        return;
-    }
+    EXPECT_TRUE(mouseAutoclick_ != nullptr);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        return;
-    }
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
+
+    sptr<AccessibilityAccountData> accountData
+        = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    EXPECT_TRUE(accountData != nullptr);
+
     accountData->GetConfig()->SetMouseAutoClick(DELAY_TIME);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
@@ -112,18 +109,15 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
 HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_002 start";
-    if (!mouseAutoclick_) {
-        return;
-    }
+    EXPECT_TRUE(mouseAutoclick_ != nullptr);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        return;
-    }
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
+
+    sptr<AccessibilityAccountData> accountData
+        = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    EXPECT_TRUE(accountData != nullptr);
+
     accountData->GetConfig()->SetMouseAutoClick(DELAY_TIME);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
@@ -154,18 +148,15 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
 HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_003 start";
-    if (!mouseAutoclick_) {
-        return;
-    }
+    EXPECT_TRUE(mouseAutoclick_ != nullptr);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        return;
-    }
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
+
+    sptr<AccessibilityAccountData> accountData
+        = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    EXPECT_TRUE(accountData != nullptr);
+
     accountData->GetConfig()->SetMouseAutoClick(DELAY_TIME);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
@@ -190,13 +181,11 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
 HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_004 start";
-    if (!mouseAutoclick_) {
-        return;
-    }
+    EXPECT_TRUE(mouseAutoclick_ != nullptr);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
+
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
     MMI::PointerEvent::PointerItem item;
@@ -215,13 +204,11 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
 HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_005, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_005 start";
-    if (!mouseAutoclick_) {
-        return;
-    }
+    EXPECT_TRUE(mouseAutoclick_ != nullptr);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
+
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
@@ -240,13 +227,11 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
 HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_006, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_006 start";
-    if (!mouseAutoclick_) {
-        return;
-    }
+    EXPECT_TRUE(mouseAutoclick_ != nullptr);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event != nullptr);
+
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
     MMI::PointerEvent::PointerItem item;

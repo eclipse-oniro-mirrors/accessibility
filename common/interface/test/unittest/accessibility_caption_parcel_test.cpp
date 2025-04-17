@@ -61,12 +61,11 @@ HWTEST_F(AccessibilityCaptionParcelTest, Caption_Marshalling_001, TestSize.Level
     GTEST_LOG_(INFO) << "Caption_Marshalling_001 start";
     if (!captionPropertyParcel_) {
         GTEST_LOG_(INFO) << "captionPropertyParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        bool ret = captionPropertyParcel_->Marshalling(parcel);
+        EXPECT_EQ(ret, true);
     }
-
-    Parcel parcel;
-    bool ret = captionPropertyParcel_->Marshalling(parcel);
-    EXPECT_EQ(ret, true);
     GTEST_LOG_(INFO) << "Caption_Marshalling_001 end";
 }
 
@@ -80,12 +79,11 @@ HWTEST_F(AccessibilityCaptionParcelTest, Caption_Unmarshalling_001, TestSize.Lev
     GTEST_LOG_(INFO) << "Caption_Unmarshalling_001 start";
     if (!captionPropertyParcel_) {
         GTEST_LOG_(INFO) << "captionPropertyParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<CaptionPropertyParcel> captionParcel = captionPropertyParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, captionParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<CaptionPropertyParcel> captionParcel = captionPropertyParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, captionParcel == nullptr);
     GTEST_LOG_(INFO) << "Caption_Unmarshalling_001 end";
 }
 } // namespace Accessibility

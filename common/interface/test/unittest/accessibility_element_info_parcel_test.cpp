@@ -105,12 +105,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Element_Info_Marshalling_001, TestS
     GTEST_LOG_(INFO) << "Element_Info_Marshalling_001 start";
     if (!elementInfoParcel_) {
         GTEST_LOG_(INFO) << "elementInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        bool ret = elementInfoParcel_->Marshalling(parcel);
+        EXPECT_EQ(ret, true);
     }
-
-    Parcel parcel;
-    bool ret = elementInfoParcel_->Marshalling(parcel);
-    EXPECT_EQ(ret, true);
     GTEST_LOG_(INFO) << "Element_Info_Marshalling_001 end";
 }
 
@@ -124,12 +123,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Element_Info_Unmarshalling_001, Tes
     GTEST_LOG_(INFO) << "Element_Info_Unmarshalling_001 start";
     if (!elementInfoParcel_) {
         GTEST_LOG_(INFO) << "elementInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<AccessibilityElementInfoParcel> elementInfoParcel = elementInfoParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, elementInfoParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<AccessibilityElementInfoParcel> elementInfoParcel = elementInfoParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, elementInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Element_Info_Unmarshalling_001 end";
 }
 
@@ -143,12 +141,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Rect_Marshalling_001, TestSize.Leve
     GTEST_LOG_(INFO) << "Rect_Marshalling_001 start";
     if (!rectParcel_) {
         GTEST_LOG_(INFO) << "rectParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        bool ret = rectParcel_->Marshalling(parcel);
+        EXPECT_EQ(ret, true);
     }
-
-    Parcel parcel;
-    bool ret = rectParcel_->Marshalling(parcel);
-    EXPECT_EQ(ret, true);
     GTEST_LOG_(INFO) << "Rect_Marshalling_001 end";
 }
 
@@ -162,12 +159,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Rect_Unmarshalling_001, TestSize.Le
     GTEST_LOG_(INFO) << "Rect_Unmarshalling_001 start";
     if (!rectParcel_) {
         GTEST_LOG_(INFO) << "rectParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<RectParcel> rectParcel = rectParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, rectParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<RectParcel> rectParcel = rectParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, rectParcel == nullptr);
     GTEST_LOG_(INFO) << "Rect_Unmarshalling_001 end";
 }
 
@@ -181,12 +177,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Grid_Item_Info_Marshalling_001, Tes
     GTEST_LOG_(INFO) << "Grid_Item_Info_Marshalling_001 start";
     if (!gridItemInfoParcel_) {
         GTEST_LOG_(INFO) << "gridItemInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        bool ret = gridItemInfoParcel_->Marshalling(parcel);
+        EXPECT_EQ(ret, true);
     }
-
-    Parcel parcel;
-    bool ret = gridItemInfoParcel_->Marshalling(parcel);
-    EXPECT_EQ(ret, true);
     GTEST_LOG_(INFO) << "Grid_Item_Info_Marshalling_001 end";
 }
 
@@ -200,12 +195,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Grid_Item_Info_Unmarshalling_001, T
     GTEST_LOG_(INFO) << "Grid_Item_Info_Unmarshalling_001 start";
     if (!gridItemInfoParcel_) {
         GTEST_LOG_(INFO) << "gridItemInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<GridItemInfoParcel> gridItemInfoParcel = gridItemInfoParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, gridItemInfoParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<GridItemInfoParcel> gridItemInfoParcel = gridItemInfoParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, gridItemInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Grid_Item_Info_Unmarshalling_001 end";
 }
 
@@ -219,12 +213,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Action_Marshalling_001, TestSize.Le
     GTEST_LOG_(INFO) << "Action_Marshalling_001 start";
     if (!actionParcel_) {
         GTEST_LOG_(INFO) << "actionParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        bool ret = actionParcel_->Marshalling(parcel);
+        EXPECT_EQ(ret, true);
     }
-
-    Parcel parcel;
-    bool ret = actionParcel_->Marshalling(parcel);
-    EXPECT_EQ(ret, true);
     GTEST_LOG_(INFO) << "Action_Marshalling_001 end";
 }
 
@@ -238,12 +231,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Action_Unmarshalling_001, TestSize.
     GTEST_LOG_(INFO) << "Action_Unmarshalling_001 start";
     if (!actionParcel_) {
         GTEST_LOG_(INFO) << "actionParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<AccessibleActionParcel> actionParcel = actionParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, actionParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<AccessibleActionParcel> actionParcel = actionParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, actionParcel == nullptr);
     GTEST_LOG_(INFO) << "Action_Unmarshalling_001 end";
 }
 
@@ -257,12 +249,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Range_Info_Marshalling_001, TestSiz
     GTEST_LOG_(INFO) << "Range_Info_Marshalling_001 start";
     if (!rangeInfoParcel_) {
         GTEST_LOG_(INFO) << "rangeInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        bool ret = rangeInfoParcel_->Marshalling(parcel);
+        EXPECT_EQ(ret, true);
     }
-
-    Parcel parcel;
-    bool ret = rangeInfoParcel_->Marshalling(parcel);
-    EXPECT_EQ(ret, true);
     GTEST_LOG_(INFO) << "Range_Info_Marshalling_001 end";
 }
 
@@ -276,12 +267,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Range_Info_Unmarshalling_001, TestS
     GTEST_LOG_(INFO) << "Range_Info_Unmarshalling_001 start";
     if (!rangeInfoParcel_) {
         GTEST_LOG_(INFO) << "rangeInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<RangeInfoParcel> rangeInfoParcel = rangeInfoParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, rangeInfoParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<RangeInfoParcel> rangeInfoParcel = rangeInfoParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, rangeInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Range_Info_Unmarshalling_001 end";
 }
 
@@ -295,12 +285,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Grid_Info_Marshalling_001, TestSize
     GTEST_LOG_(INFO) << "Grid_Info_Marshalling_001 start";
     if (!gridInfoParcel_) {
         GTEST_LOG_(INFO) << "gridInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        bool ret = gridInfoParcel_->Marshalling(parcel);
+        EXPECT_EQ(ret, true);
     }
-
-    Parcel parcel;
-    bool ret = gridInfoParcel_->Marshalling(parcel);
-    EXPECT_EQ(ret, true);
     GTEST_LOG_(INFO) << "Grid_Info_Marshalling_001 end";
 }
 
@@ -314,12 +303,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Grid_Info_Unmarshalling_001, TestSi
     GTEST_LOG_(INFO) << "Grid_Info_Unmarshalling_001 start";
     if (!gridInfoParcel_) {
         GTEST_LOG_(INFO) << "gridInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<GridInfoParcel> gridInfoParcel = gridInfoParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, gridInfoParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<GridInfoParcel> gridInfoParcel = gridInfoParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, gridInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Grid_Info_Unmarshalling_001 end";
 }
 
@@ -333,11 +321,10 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Extra_Element_Info_Parcel__001, Tes
     GTEST_LOG_(INFO) << "Extra_Element_Info_Parcel__001 start";
     if (!extraElementInfoParcel_) {
         GTEST_LOG_(INFO) << "extraElementInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        EXPECT_EQ(false, extraElementInfoParcel_->ReadFromParcel(parcel));
     }
-
-    Parcel parcel;
-    EXPECT_EQ(false, extraElementInfoParcel_->ReadFromParcel(parcel));
     GTEST_LOG_(INFO) << "Extra_Element_Info_Parcel__001 end";
 }
 
@@ -351,12 +338,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Extra_Element_Info_Parcel__002, Tes
     GTEST_LOG_(INFO) << "Extra_Element_Info_Parcel__002 start";
     if (!extraElementInfoParcel_) {
         GTEST_LOG_(INFO) << "extraElementInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<ExtraElementInfoParcel> extraElementInfoParcel = extraElementInfoParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, extraElementInfoParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<ExtraElementInfoParcel> extraElementInfoParcel = extraElementInfoParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, extraElementInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Extra_Element_Info_Parcel__002 end";
 }
 
@@ -370,11 +356,10 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Span_Info_Parcel__001, TestSize.Lev
     GTEST_LOG_(INFO) << "Span_Info_Parcel__001 start";
     if (!spanInfoParcel_) {
         GTEST_LOG_(INFO) << "spanInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        EXPECT_EQ(false, spanInfoParcel_->ReadFromParcel(parcel));
     }
-
-    Parcel parcel;
-    EXPECT_EQ(false, spanInfoParcel_->ReadFromParcel(parcel));
     GTEST_LOG_(INFO) << "Span_Info_Parcel__001 end";
 }
 
@@ -388,12 +373,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Span_Info_Marshalling_001, TestSize
     GTEST_LOG_(INFO) << "Span_Info_Marshalling_001 start";
     if (!spanInfoParcel_) {
         GTEST_LOG_(INFO) << "spanInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        bool ret = spanInfoParcel_->Marshalling(parcel);
+        EXPECT_EQ(ret, true);
     }
-
-    Parcel parcel;
-    bool ret = spanInfoParcel_->Marshalling(parcel);
-    EXPECT_EQ(ret, true);
     GTEST_LOG_(INFO) << "Span_Info_Marshalling_001 end";
 }
 
@@ -407,12 +391,11 @@ HWTEST_F(AccessibilityElementInfoParcelTest, Span_Info_Unmarshalling__001, TestS
     GTEST_LOG_(INFO) << "Span_Info_Unmarshalling__001 start";
     if (!spanInfoParcel_) {
         GTEST_LOG_(INFO) << "spanInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<SpanInfoParcel> spanInfoParcel = spanInfoParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, spanInfoParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<SpanInfoParcel> spanInfoParcel = spanInfoParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, spanInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Span_Info_Unmarshalling__001 end";
 }
 } // namespace Accessibility

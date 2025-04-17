@@ -76,12 +76,11 @@ HWTEST_F(AccessibilityAbilityInfoParcelTest, Marshalling_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "Marshalling_001 start";
     if (!abilityInfoParcel_) {
         GTEST_LOG_(INFO) << "abilityInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        bool ret = abilityInfoParcel_->Marshalling(parcel);
+        EXPECT_EQ(ret, true);
     }
-
-    Parcel parcel;
-    bool ret = abilityInfoParcel_->Marshalling(parcel);
-    EXPECT_EQ(ret, true);
     GTEST_LOG_(INFO) << "Marshalling_001 end";
 }
 
@@ -95,12 +94,12 @@ HWTEST_F(AccessibilityAbilityInfoParcelTest, Unmarshalling_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "Unmarshalling_001 start";
     if (!abilityInfoParcel_) {
         GTEST_LOG_(INFO) << "abilityInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<AccessibilityAbilityInfoParcel> infoParcel = abilityInfoParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, infoParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<AccessibilityAbilityInfoParcel> infoParcel = abilityInfoParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, infoParcel == nullptr);
+    GTEST_LOG_(INFO) << "Unmarshalling_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

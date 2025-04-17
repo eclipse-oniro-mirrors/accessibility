@@ -124,8 +124,8 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_003, Tes
 HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_004 start";
-    sptr<AccessibilityAccountData> currentAccount =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    sptr<AccessibilityAccountData> currentAccount
+        = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     EXPECT_TRUE(currentAccount != nullptr);
     std::shared_ptr<AccessibilitySettingsConfig> config = currentAccount->GetConfig();
     EXPECT_TRUE(config != nullptr);
@@ -154,11 +154,11 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_005, Tes
     initParams.name = "test";
     initParams.description = "for dumper-ut";
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
-    sptr<AccessibilityAccountData> currentAccount =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    sptr<AccessibilityAccountData> currentAccount
+        = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     EXPECT_TRUE(currentAccount != nullptr);
-    sptr<AccessibleAbilityConnection> connection =
-        new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection
+        = new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo);
     EXPECT_TRUE(connection != nullptr);
     currentAccount->AddConnectedAbility(connection);
 
@@ -182,24 +182,24 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_006, Tes
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_006 start";
     const int32_t accountId = 1;
     const int32_t windowId = 1;
-    sptr<AccessibilityAccountData> currentAccount =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    sptr<AccessibilityAccountData> currentAccount
+        = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     if (!currentAccount) {
         GTEST_LOG_(ERROR) << "Account data is nullptr";
-        return;
+    } else {
+        sptr<AccessibilityWindowConnection> operationConnection
+            = new AccessibilityWindowConnection(windowId, nullptr, accountId);
+        /* add asacConnections */
+        currentAccount->AddAccessibilityWindowConnection(windowId, operationConnection);
+
+        std::string cmdWindow("-w");
+        std::vector<std::u16string> args;
+        args.emplace_back(Str8ToStr16(cmdWindow));
+        int ret = dumper_->Dump(fd_, args);
+        EXPECT_GE(ret, -1);
+
+        currentAccount->RemoveAccessibilityWindowConnection(windowId);
     }
-    sptr<AccessibilityWindowConnection> operationConnection =
-        new AccessibilityWindowConnection(windowId, nullptr, accountId);
-    /* add asacConnections */
-    currentAccount->AddAccessibilityWindowConnection(windowId, operationConnection);
-
-    std::string cmdWindow("-w");
-    std::vector<std::u16string> args;
-    args.emplace_back(Str8ToStr16(cmdWindow));
-    int ret = dumper_->Dump(fd_, args);
-    EXPECT_GE(ret, -1);
-
-    currentAccount->RemoveAccessibilityWindowConnection(windowId);
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_006 end";
 }
 
@@ -211,23 +211,23 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_006, Tes
 HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_007, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_007 start";
-    sptr<AccessibilityAccountData> currentAccount =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    sptr<AccessibilityAccountData> currentAccount
+        = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
 
     std::shared_ptr<AccessibilitySettingsConfig> config = currentAccount->GetConfig();
     if (!config) {
         GTEST_LOG_(ERROR) << "Config is nullptr";
-        return;
-    }
-    config->SetCaptionState(true);
+    } else {
+        config->SetCaptionState(true);
 
-    std::string cmdUser("-u");
-    std::vector<std::u16string> args;
-    args.emplace_back(Str8ToStr16(cmdUser));
-    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(true);
-    int ret = dumper_->Dump(fd_, args);
-    EXPECT_GE(ret, -1);
-    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(false);
+        std::string cmdUser("-u");
+        std::vector<std::u16string> args;
+        args.emplace_back(Str8ToStr16(cmdUser));
+        AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(true);
+        int ret = dumper_->Dump(fd_, args);
+        EXPECT_GE(ret, -1);
+        AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(false);
+    }
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_007 end";
 }
 
@@ -275,25 +275,25 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_009, Tes
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_009 start";
     const int32_t accountId = 1;
     const int32_t windowId = 1;
-    sptr<AccessibilityAccountData> currentAccount =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    sptr<AccessibilityAccountData> currentAccount
+        = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     if (!currentAccount) {
         GTEST_LOG_(ERROR) << "Account data is nullptr";
-        return;
-    }
-    sptr<AccessibilityWindowConnection> operationConnection =
-        new AccessibilityWindowConnection(windowId, nullptr, accountId);
-    /* add asacConnections */
-    currentAccount->AddAccessibilityWindowConnection(windowId, operationConnection);
+    } else {
+        sptr<AccessibilityWindowConnection> operationConnection
+            = new AccessibilityWindowConnection(windowId, nullptr, accountId);
+        /* add asacConnections */
+        currentAccount->AddAccessibilityWindowConnection(windowId, operationConnection);
 
-    std::string cmdWindow("-w");
-    std::vector<std::u16string> args;
-    args.emplace_back(Str8ToStr16(cmdWindow));
-    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(true);
-    int ret = dumper_->Dump(fd_, args);
-    EXPECT_GE(ret, -1);
-    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(false);
-    currentAccount->RemoveAccessibilityWindowConnection(windowId);
+        std::string cmdWindow("-w");
+        std::vector<std::u16string> args;
+        args.emplace_back(Str8ToStr16(cmdWindow));
+        AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(true);
+        int ret = dumper_->Dump(fd_, args);
+        EXPECT_GE(ret, -1);
+        AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(false);
+        currentAccount->RemoveAccessibilityWindowConnection(windowId);
+    }
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_009 end";
 }
 } // namespace Accessibility

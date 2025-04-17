@@ -65,12 +65,11 @@ HWTEST_F(AccessibilityEventInfoParcelTest, Event_Info_Marshalling_001, TestSize.
     GTEST_LOG_(INFO) << "Event_Info_Marshalling_001 start";
     if (!eventInfoParcel_) {
         GTEST_LOG_(INFO) << "eventInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        bool ret = eventInfoParcel_->Marshalling(parcel);
+        EXPECT_EQ(ret, true);
     }
-
-    Parcel parcel;
-    bool ret = eventInfoParcel_->Marshalling(parcel);
-    EXPECT_EQ(ret, true);
     GTEST_LOG_(INFO) << "Event_Info_Marshalling_001 end";
 }
 
@@ -84,12 +83,11 @@ HWTEST_F(AccessibilityEventInfoParcelTest, Event_Info_Unmarshalling_001, TestSiz
     GTEST_LOG_(INFO) << "Event_Info_Unmarshalling_001 start";
     if (!eventInfoParcel_) {
         GTEST_LOG_(INFO) << "eventInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<AccessibilityEventInfoParcel> eventInfoParcel = eventInfoParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, eventInfoParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<AccessibilityEventInfoParcel> eventInfoParcel = eventInfoParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, eventInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Event_Info_Unmarshalling_001 end";
 }
 
@@ -103,12 +101,11 @@ HWTEST_F(AccessibilityEventInfoParcelTest, Element_Info_Unmarshalling_001, TestS
     GTEST_LOG_(INFO) << "Element_Info_Unmarshalling_001 start";
     if (!elementInfoParcel_) {
         GTEST_LOG_(INFO) << "elementInfoParcel_ is null";
-        return;
+    } else {
+        Parcel parcel;
+        sptr<AccessibilityElementInfoParcel> elementInfoParcel = elementInfoParcel_->Unmarshalling(parcel);
+        EXPECT_EQ(true, elementInfoParcel == nullptr);
     }
-
-    Parcel parcel;
-    sptr<AccessibilityElementInfoParcel> elementInfoParcel = elementInfoParcel_->Unmarshalling(parcel);
-    EXPECT_EQ(true, elementInfoParcel == nullptr);
     GTEST_LOG_(INFO) << "Element_Info_Unmarshalling_001 end";
 }
 } // namespace Accessibility
