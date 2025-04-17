@@ -208,7 +208,14 @@ void AccessibleAbilityConnection::Disconnect()
     if (isRegisterDisconnectCallback_) {
         int32_t accountId = accountId_;
         std::string clientName = Utils::GetUri(elementName_);
-
+        if (!eventHandler_) {
+            HILOG_ERROR("eventHanlder_ is nullptr");
+            auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
+            if (accountData != nullptr) {
+                accountData->RemoveConnectingA11yAbility(clientName);
+            }
+            return;
+        }
         eventHandler_->PostTask([this, accountId, clientName]() {
             DisconnectAbility();
             auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
@@ -241,6 +248,14 @@ void AccessibleAbilityConnection::DisconnectAbility()
 void AccessibleAbilityConnection::NotifyDisconnect()
 {
     HILOG_INFO();
+    if (!eventHandler_) {
+        HILOG_ERROR("eventHanlder_ is nullptr");
+        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
+        if (accountData != nullptr) {
+            accountData->RemoveConnectingA11yAbility(Utils::GetUri(elementName_));
+        }
+        return;
+    }
     eventHandler_->RemoveTask("DISCONNECT_" + elementName_.GetBundleName());
     DisconnectAbility();
 }

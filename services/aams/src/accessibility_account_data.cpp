@@ -694,7 +694,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     if (GetWaitDisConnectAbility(name)) {
         HILOG_INFO("The ability[%{public}s] is disconnecting: ", name.c_str());
         sptr<AccessibleAbilityConnection> connection = GetWaitDisConnectAbility(name);
-        if (connection != nullptr) {
+        if (connection != nullptr && connection->GetIsRegisterDisconnectCallback()) {
             connection->DisconnectAbility();
         }
         RemoveWaitDisconnectAbility(name);
