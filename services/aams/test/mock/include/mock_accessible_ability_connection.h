@@ -96,7 +96,7 @@ public:
     MOCK_METHOD1(Connect, void(const AppExecFwk::ElementName& element));
     MOCK_METHOD0(GetChannelId, int32_t());
     MOCK_METHOD0(GetIsRegisterDisconnectCallback, bool());
-    MOCK_METHOD1(SetIsRegisterDisconnectCallback, bool(bool isRegister));
+    MOCK_METHOD1(SetIsRegisterDisconnectCallback, void(bool isRegister));
     MOCK_METHOD0(NotifyDisconnect, void());
     MOCK_METHOD0(DisconnectAbility, void());
 };

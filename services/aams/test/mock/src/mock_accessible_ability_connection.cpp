@@ -329,10 +329,31 @@ RetError AccessibleAbilityChannel::SetIsRegisterDisconnectCallback(bool isRegist
     return RET_OK;
 }
 
-RetError NotifyDisconnect()
+RetError AccessibleAbilityChannel::NotifyDisconnect()
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilitychannel NotifyDisconnect";
     return RET_OK;
+}
+
+bool AccessibleAbilityConnection::GetIsRegisterDisconnectCallback()
+{
+    return false;
+}
+
+void AccessibleAbilityConnection::SetIsRegisterDisconnectCallback(bool isRegister)
+{
+    (void)isRegister;
+    return;
+}
+
+void AccessibleAbilityConnection::NotifyDisconnect()
+{
+    return;
+}
+
+void AccessibleAbilityConnection::DisconnectAbility()
+{
+    return;
 }
 } // namespace Accessibility
 } // namespace OHOS
