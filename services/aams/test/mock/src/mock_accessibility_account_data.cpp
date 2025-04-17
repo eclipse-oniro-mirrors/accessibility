@@ -533,13 +533,15 @@ AccountSA::OsAccountType AccessibilityAccountData::GetAccountType()
     return AccountSA::OsAccountType::PRIVATE;
 }
 
-sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetWaitDisConnectAbility(const std::string &uri)
+const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetWaitDisConnectAbility(
+    const std::string &elementName)
 {
-    return waitDisconnectA11yAbilities_.GetAccessibilityAbilityByUri(uri);
+    return waitDisconnectA11yAbilities_.GetAccessibilityAbilityByName(elementName);
 }
 
 void AccessibilityAccountData::AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection)
 {
+    HILOG_INFO();
     if (!connection) {
         HILOG_ERROR("connection is nullptr");
         return;
@@ -553,6 +555,7 @@ void AccessibilityAccountData::AddWaitDisconnectAbility(sptr<AccessibleAbilityCo
 
 void AccessibilityAccountData::RemoveWaitDisconnectAbility(const std::string &uri)
 {
+    HILOG_INFO();
     waitDisconnectA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 } // namespace Accessibility
