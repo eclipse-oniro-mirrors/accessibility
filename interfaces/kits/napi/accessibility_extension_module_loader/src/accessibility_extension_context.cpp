@@ -238,5 +238,27 @@ RetError AccessibilityExtensionContext::GetDefaultFocusedElementIds(const int32_
     }
     return aaClient->GetDefaultFocusedElementIds(windowId, elementInfos);
 }
+
+RetError AccessibilityExtensionContext::HoldRunningLock()
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->HoldRunningLock();
+}
+
+RetError AccessibilityExtensionContext::UnholdRunningLock()
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->UnholdRunningLock();
+}
 } // namespace Accessibility
 } // namespace OHOS
