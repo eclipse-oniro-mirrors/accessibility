@@ -18,7 +18,9 @@
 
 #include <set>
 #include "singleton.h"
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "power_mgr_client.h"
+#endif
 #include "ffrt.h"
 #include "accessibility_account_data.h"
 
