@@ -132,6 +132,7 @@ ohos_shared_library("accessibleabilityms") {
     "input:libmmi-client",
     "ipc:ipc_single",
     "os_account:os_account_innerkits",
+    "power_manager:powermgr_client",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
