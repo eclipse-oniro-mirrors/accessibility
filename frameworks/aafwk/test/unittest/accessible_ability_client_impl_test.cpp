@@ -574,6 +574,32 @@ HWTEST_F(AccessibleAbilityClientImplTest, EnableScreenCurtain_001, TestSize.Leve
 }
 
 /**
+ * @tc.number: HoldRunningLock_001
+ * @tc.name: HoldRunningLock
+ * @tc.desc: Test function HoldRunningLock
+*/
+HWTEST_F(AccessibleAbilityClientImplTest, HoldRunningLock_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "HoldRunningLock_001 start";
+    Connect();
+    EXPECT_EQ(instance_->HoldRunningLock(), RET_OK);
+    GTEST_LOG_(INFO) << "HoldRunningLock_001 end";
+}
+
+/**
+ * @tc.number: UnholdRunningLock_001
+ * @tc.name: UnholdRunningLock
+ * @tc.desc: Test function UnholdRunningLock
+*/
+HWTEST_F(AccessibleAbilityClientImplTest, UnholdRunningLock_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "UnholdRunningLock_001 start";
+    Connect();
+    EXPECT_EQ(instance_->UnholdRunningLock(), RET_OK);
+    GTEST_LOG_(INFO) << "UnholdRunningLock_001 end";
+}
+
+/**
  * @tc.number: GetByElementId_001
  * @tc.name: GetByElementId
  * @tc.desc: Test function GetByElementId
