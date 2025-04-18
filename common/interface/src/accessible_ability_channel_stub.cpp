@@ -354,7 +354,6 @@ ErrCode AccessibleAbilityChannelStub::HandleUnholdRunningLock(MessageParcel &dat
         return RET_ERR_NOT_SYSTEM_APP;
     }
  
-
     RetError result = UnholdRunningLock();
     reply.WriteInt32(static_cast<int32_t>(result));
     return NO_ERROR;
