@@ -92,4 +92,4 @@ public:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // MOCK_ACCESSIBLE_ABILITY_CONNECTION_H
+#endif // MOCK_ACCESSIBLE_ABILITY_CONNECTION_H

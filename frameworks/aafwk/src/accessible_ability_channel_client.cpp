@@ -492,5 +492,25 @@ RetError AccessibleAbilityChannelClient::SetTargetBundleName(const std::vector<s
         return RET_ERR_SAMGR;
     }
 }
+
+RetError AccessibleAbilityChannelClient::SetIsRegisterDisconnectCallback(bool isRegister)
+{
+    HILOG_INFO("[channelId:%{public}d]", channelId_);
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("SetIsRegisterDisconnectCallback Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return RET_ERR_SAMGR;
+    }
+    return proxy_->SetIsRegisterDisconnectCallback(isRegister);
+}
+
+RetError AccessibleAbilityChannelClient::NotifyDisconnect()
+{
+    HILOG_INFO("[channelId:%{public}d]", channelId_);
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("NotifyDisconnect Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return RET_ERR_SAMGR;
+    }
+    return proxy_->NotifyDisconnect();
+}
 } // namespace Accessibility
 } // namespace OHOS

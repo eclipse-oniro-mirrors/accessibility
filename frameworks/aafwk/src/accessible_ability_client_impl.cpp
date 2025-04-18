@@ -311,24 +311,30 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
 {
     HILOG_DEBUG("channelId[%{public}d]", channelId);
 
-    std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
+    std::shared_ptr<AccessibleAbilityListener> listener = listener_;
     {
         isConnected_ = false;
         Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
-        // Delete death recipient
-        if (channelClient_ && channelClient_->GetRemote()) {
-            HILOG_ERROR("Remove death recipient");
-            channelClient_->GetRemote()->RemoveDeathRecipient(deathRecipient_);
-        }
+        if (callbackSet_.empty()) {
+            // Delete death recipient
+            if (channelClient_ && channelClient_->GetRemote()) {
+                HILOG_ERROR("Remove death recipient");
+                channelClient_->GetRemote()->RemoveDeathRecipient(deathRecipient_);
+            }
 
-        // Remove channel
-        channelClient_ = nullptr;
-        listener = listener_;
-        listener_ = nullptr;
+            // Remove channel
+            channelClient_ = nullptr;
+            listener_ = nullptr;
+        } else {
+            isDisconnectCallbackExecute_ = true;
+        }
     }
 
     if (listener) {
         listener->OnAbilityDisconnected();
+    }
+    for (auto &callback : callbackSet_) {
+        callback->NotifyJS();
     }
 }
 
@@ -1924,6 +1930,64 @@ RetError AccessibleAbilityClientImpl::UnholdRunningLock()
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     return ret;
+}
+
+RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback)
+{
+    HILOG_INFO();
+    if (callback == nullptr) {
+        HILOG_INFO("callback IS NULLPTR");
+        return RET_ERR_INVALID_PARAM;
+    } else {
+        callbackSet_.insert(callback);
+    }
+    if (channelClient_ == nullptr) {
+        HILOG_ERROR("the channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+    channelClient_->SetIsRegisterDisconnectCallback(true);
+    return RET_OK;
+}
+
+RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback)
+{
+    HILOG_INFO();
+    if (channelClient_ == nullptr) {
+        HILOG_ERROR("the channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+    if (callback->handlerRef_ == nullptr) {
+        callbackSet_.clear();
+    } else {
+        callbackSet_.erase(callback);
+    }
+    channelClient_->SetIsRegisterDisconnectCallback(!callbackSet_.empty());
+    return RET_OK;
+}
+
+RetError AccessibleAbilityClientImpl::NotifyDisconnect()
+{
+    HILOG_INFO();
+    if (callbackSet_.empty()) {
+        HILOG_INFO("callbackSet_ is empty");
+        return RET_OK;
+    }
+    if (!isDisconnectCallbackExecute_) {
+        HILOG_INFO("callback has not executed");
+        return RET_OK;
+    }
+
+    // NotifyDisconnect and Delete death recipient
+    if (channelClient_ && channelClient_->GetRemote()) {
+        channelClient_->NotifyDisconnect();
+        HILOG_ERROR("Remove death recipient");
+        channelClient_->GetRemote()->RemoveDeathRecipient(deathRecipient_);
+    }
+
+    // Remove channel
+    channelClient_ = nullptr;
+
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -532,5 +532,49 @@ AccountSA::OsAccountType AccessibilityAccountData::GetAccountType()
 {
     return AccountSA::OsAccountType::PRIVATE;
 }
+
+sptr<AccessibleAbilityConnection> AccessibilityAccountData::AccessibilityAbility::GetAccessibilityAbilityByName(
+    const std::string& elementName)
+{
+    HILOG_DEBUG("elementName is %{public}s", elementName.c_str());
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto& connection : connectionMap_) {
+        std::string::size_type index = connection.first.find(elementName);
+        if (index == std::string::npos) {
+            continue;
+        } else {
+            HILOG_DEBUG("uri %{private}s ", connection.first.c_str());
+            return connection.second;
+        }
+    }
+
+    return nullptr;
+}
+
+const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetWaitDisConnectAbility(
+    const std::string &elementName)
+{
+    return waitDisconnectA11yAbilities_.GetAccessibilityAbilityByName(elementName);
+}
+
+void AccessibilityAccountData::AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection)
+{
+    HILOG_INFO();
+    if (!connection) {
+        HILOG_ERROR("connection is nullptr");
+        return;
+    }
+    if (connection->GetIsRegisterDisconnectCallback()) {
+        HILOG_INFO();
+        std::string uri = Utils::GetUri(connection->GetElementName());
+        waitDisconnectA11yAbilities_.AddAccessibilityAbility(uri, connection);
+    }
+}
+
+void AccessibilityAccountData::RemoveWaitDisconnectAbility(const std::string &uri)
+{
+    HILOG_INFO();
+    waitDisconnectA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
+}
 } // namespace Accessibility
 } // namespace OHOS

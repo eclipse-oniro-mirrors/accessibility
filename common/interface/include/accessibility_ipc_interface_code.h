@@ -65,6 +65,7 @@ namespace Accessibility {
         DISCONNECT,
         ON_ACCESSIBILITY_EVENT,
         ON_KEY_PRESS_EVENT,
+        EXECUTE_DISCONNECT_CALLBACK,
 
         ON_PROPERTY_CHANGED = 600,
 
@@ -149,6 +150,8 @@ namespace Accessibility {
         REMOVE_REQUEST_ID,
         SERVICE_CODE_END,
         GET_SCREEN_READER_STATE,
+        SET_IS_REGISTER_DISCONNECT_CALLBACK,
+        NOTIFY_DISCONNECT,
 
         ON_STATE_CHANGED = 900,
     };

@@ -54,7 +54,10 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SEND_SIMULATE_GESTURE_PATH, HandleSendSimulateGesturePath)                \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME, HandleSetTargetBundleName)                        \
     SWITCH_CASE(AccessibilityInterfaceCode::GET_CURSOR_POSITION, HandleGetCursorPosition)                             \
-    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_DEFAULTFOCUSED_BY_WINDOW_ID, HandleSearchDefaultFocusedByWindowId)
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_DEFAULTFOCUSED_BY_WINDOW_ID, HandleSearchDefaultFocusedByWindowId) \
+    SWITCH_CASE(                                                                                                      \
+        AccessibilityInterfaceCode::SET_IS_REGISTER_DISCONNECT_CALLBACK, HandleSetIsRegisterDisconnectCallback)       \
+    SWITCH_CASE(AccessibilityInterfaceCode::NOTIFY_DISCONNECT, HandleNotifyDisconnect)
 
 namespace OHOS {
 namespace Accessibility {
@@ -501,6 +504,37 @@ ErrCode AccessibleAbilityChannelStub::HandleSetTargetBundleName(MessageParcel &d
         targetBundleNames.emplace_back(temp);
     }
     RetError result = SetTargetBundleName(targetBundleNames);
+    reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleSetIsRegisterDisconnectCallback(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    if (!Permission::IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+
+    bool isRegister = data.ReadBool();
+    RetError result = SetIsRegisterDisconnectCallback(isRegister);
+    reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleNotifyDisconnect(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    if (!Permission::IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+
+    RetError result = NotifyDisconnect();
     reply.WriteInt32(result);
     return NO_ERROR;
 }

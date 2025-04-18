@@ -80,6 +80,7 @@ ohos_shared_library("accessibleability") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_single",
+    "napi:ace_napi",
     "samgr:samgr_proxy",
   ]
 

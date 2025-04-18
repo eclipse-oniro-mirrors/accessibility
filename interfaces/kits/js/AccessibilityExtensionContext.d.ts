@@ -14,6 +14,7 @@
  */
 
 import type { AsyncCallback } from '../basic';
+import type { Callback } from './@ohos.base';
 import ExtensionContext from './ExtensionContext';
 import type accessibility from '../@ohos.accessibility';
 import type { GesturePath } from '../@ohos.accessibility.GesturePath';
@@ -357,6 +358,42 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
    * @since 20
    */
   unholdRunningLockSync(): void;
+
+  /**
+   * Register accessibilityExtensionAbility disconnect callback.
+   *
+   * @param { 'preDisconnect' } type Indicates the accessibilityExtensionAbility pre disconnect.
+   * @param { Callback<void> } callback Indicates the callback function.
+   * @throws { BusinessError } 202 - Permission verification failed. A non-system application calls a system API.
+   * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified. 2. Incorrect parameter types. 3.Parameter verification failed.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 20
+   */
+  on(type: 'preDisconnect', callback: Callback<void>): void;
+
+  /**
+   * Unregister accessibilityExtensionAbility disconnect callback.
+   *
+   * @param { 'preDisconnect' } type Indicates the accessibilityExtensionAbility pre disconnect.
+   * @param { Callback<void> } callback Indicates the callback function.
+   * @throws { BusinessError } 202 - Permission verification failed. A non-system application calls a system API.
+   * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified. 2. Incorrect parameter types. 3.Parameter verification failed.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 20
+   */
+  off(type: 'preDisconnect', callback?: Callback<void>): void;
+  
+  /**
+   * Notify accessibility when accessibilityExtensionAbility is ready to disconnect.
+   *
+   * @throws { BusinessError } 202 - Permission verification failed. A non-system application calls a system API.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 20
+   */
+  notifyDisconnect(): void;
 }
 
 /**
