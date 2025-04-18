@@ -101,6 +101,22 @@ private:
     ErrCode HandleEnableScreenCurtain(MessageParcel &data, MessageParcel &reply);
 
     /**
+     * @brief Handle the IPC request for the function:HandleHoldRunningLock.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleHoldRunningLock(MessageParcel &data, MessageParcel &reply);
+
+    /**
+     * @brief Handle the IPC request for the function:HandleUnholdRunningLock.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleUnholdRunningLock(MessageParcel &data, MessageParcel &reply);
+
+    /**
      * @brief Handle the IPC request for the function:HandleGetWindow.
      * @param data The data of process communication
      * @param reply The response of IPC request

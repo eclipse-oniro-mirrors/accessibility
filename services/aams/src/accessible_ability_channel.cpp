@@ -380,6 +380,22 @@ RetError AccessibleAbilityChannel::EnableScreenCurtain(bool isEnable)
     return aams.SetCurtainScreenUsingStatus(isEnable);
 }
 
+RetError AccessibleAbilityChannel::HoldRunningLock()
+{
+    HILOG_DEBUG();
+    auto& aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.PostDelayUnloadTask();
+    return aams.HoldRunningLock();
+}
+
+RetError AccessibleAbilityChannel::UnholdRunningLock()
+{
+    HILOG_DEBUG();
+    auto& aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.PostDelayUnloadTask();
+    return aams.UnholdRunningLock();
+}
+
 RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)

@@ -50,6 +50,10 @@ public:
 
     RetError EnableScreenCurtain(bool isEnable) override;
 
+    RetError HoldRunningLock() override;
+ 
+    RetError UnholdRunningLock() override;
+
     RetError ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;

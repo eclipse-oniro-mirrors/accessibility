@@ -16,8 +16,13 @@
 #ifndef ACCESSIBILITY_POWER_MANAGER_H
 #define ACCESSIBILITY_POWER_MANAGER_H
 
+#include <set>
 #include "singleton.h"
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "power_mgr_client.h"
+#endif
+#include "ffrt.h"
+#include "accessibility_account_data.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -26,6 +31,13 @@ class AccessibilityPowerManager {
 public:
     bool DiscountBrightness(const float discount);
     bool RefreshActivity();
+    bool InitRunningLock();
+    bool HoldRunningLock(const std::string &bundleName);
+    bool UnholdRunningLock(const std::string &bundleName = "");
+    std::set<std::string> GetWakeLockAbilities();
+private:
+    std::shared_ptr<PowerMgr::RunningLock> wakeLock_ { nullptr };
+    ffrt::mutex powerWakeLockMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

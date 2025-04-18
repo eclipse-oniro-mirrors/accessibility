@@ -1058,6 +1058,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "../src/accessibility_window_connection.cpp",
     "../src/accessible_ability_channel.cpp",
     "../src/accessible_ability_connection.cpp",
+    "../src/accessibility_power_manager.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/utils.cpp",
     "mock/src/mock_accessibility_element_operator_proxy.cpp",
@@ -1099,6 +1100,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "common_event_service:cesfwk_innerkits",
     "data_share:datashare_common",
     "data_share:datashare_consumer",
+    "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "googletest:gmock_main",
@@ -1120,6 +1122,10 @@ ohos_unittest("accessible_ability_channel_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (accessibility_feature_power_manager) {
+    external_deps += [ "power_manager:powermgr_client" ]
+  }
 }
 
 ################################################################################
@@ -1334,7 +1340,10 @@ ohos_unittest("accessibility_mouse_key_test") {
     "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [ "../../../interfaces/innerkits/common:accessibility_common" ]
+  deps = [
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common"
+  ]
 
   external_deps = [
     "ability_base:zuri",
@@ -1352,6 +1361,7 @@ ohos_unittest("accessibility_mouse_key_test") {
     "googletest:gtest_main",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
+    "i18n:intl_util",
     "init:libbegetutil",
     "input:libmmi-client",
     "os_account:os_account_innerkits",

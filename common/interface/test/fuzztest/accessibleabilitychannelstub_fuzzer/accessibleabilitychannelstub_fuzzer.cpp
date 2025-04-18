@@ -71,6 +71,14 @@ public:
     {
         return RET_OK;
     }
+    RetError HoldRunningLock() override
+    {
+        return RET_OK;
+    }
+    RetError UnholdRunningLock() override
+    {
+        return RET_OK;
+    }
     RetError GetCursorPosition(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override
     {
@@ -312,6 +320,38 @@ bool FuzzHandleGetWindows()
     return true;
 }
 
+bool FuzzHandleHoldRunningLock()
+{
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+ 
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    if (chanImp == nullptr) {
+        return false;
+    }
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::HOLD_RUNNING_LOCK),
+        mdata, reply, option);
+    return true;
+}
+
+bool FuzzHandleUnholdRunningLock()
+{
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+ 
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    if (chanImp == nullptr) {
+        return false;
+    }
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::UNHOLD_RUNNING_LOCK),
+        mdata, reply, option);
+    return true;
+}
+
 bool FuzzHandleGetWindowsByDisplayId(const uint8_t *data, size_t size)
 {
     if (data == nullptr || size < DATA_MIN_SIZE) {
@@ -422,5 +462,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     OHOS::Accessibility::FuzzHandleGetWindowsByDisplayId(data, size);
     OHOS::Accessibility::FuzzHandleSendSimulateGesturePath(data, size);
     OHOS::Accessibility::FuzzHandleSetTargetBundleName(data, size);
+    OHOS::Accessibility::FuzzHandleHoldRunningLock();
+    OHOS::Accessibility::FuzzHandleUnholdRunningLock();
     return 0;
 }

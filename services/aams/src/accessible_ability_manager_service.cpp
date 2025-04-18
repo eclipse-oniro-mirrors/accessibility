@@ -1481,6 +1481,50 @@ RetError AccessibleAbilityManagerService::SetCurtainScreenUsingStatus(bool isEna
     return RET_OK;
 }
 
+RetError AccessibleAbilityManagerService::HoldRunningLock()
+{
+    HILOG_DEBUG();
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+    std::string bundleName = "";
+    if (!Utils::GetBundleNameByCallingUid(bundleName)) {
+        return RET_ERR_FAILED;
+    }
+    if (!Singleton<AccessibilityPowerManager>::GetInstance().HoldRunningLock(bundleName)) {
+        HILOG_ERROR("Failed to hold running lock.");
+        return RET_ERR_FAILED;
+    }
+#endif
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::UnholdRunningLock()
+{
+    HILOG_DEBUG();
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+    std::string bundleName = "";
+    if (!Utils::GetBundleNameByCallingUid(bundleName)) {
+        return RET_ERR_FAILED;
+    }
+    auto &powerManager = Singleton<AccessibilityPowerManager>::GetInstance();
+    if (!powerManager.UnholdRunningLock(bundleName)) {
+        HILOG_ERROR("Failed to unhold running lock.");
+        return RET_ERR_FAILED;
+    }
+#endif
+    return RET_OK;
+}
+
+void AccessibleAbilityManagerService::UnholdRunningLockByBundleName(std::string &bundleName)
+{
+    HILOG_DEBUG();
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+    auto &powerManager = Singleton<AccessibilityPowerManager>::GetInstance();
+    if (!powerManager.UnholdRunningLock(bundleName)) {
+        HILOG_ERROR("UnholdRunningLockByBundleName failed.");
+    }
+#endif
+}
+
 ErrCode AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     HILOG_INFO();

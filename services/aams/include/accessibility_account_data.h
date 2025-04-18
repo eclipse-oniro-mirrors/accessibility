@@ -265,6 +265,8 @@ public:
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
     const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> GetConfigCallbacks();
     void SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer);
+    std::set<std::string> GetWakeLockAbilities();
+    void SetWakeLockAbilities(const std::string alterType, const std::string bundleName = "");
 
     void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
     void UpdateImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities);
@@ -360,6 +362,8 @@ private:
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> configCallbacks_;
     ffrt::mutex configCallbacksMutex_; // mutex for vector configCallbacks_
     std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
+    std::set<std::string> wakeLockAbilities_ {};
+    ffrt::mutex wakeLockMutex_;
 };
 
 class AccessibilityAccountDataMap {

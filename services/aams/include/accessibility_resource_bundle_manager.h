@@ -42,6 +42,8 @@ public:
     bool QueryExtensionAbilityInfos(const AppExecFwk::ExtensionAbilityType &extensionType, const int32_t &userId,
         std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos);
 
+    sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
+
 public:
     ffrt::mutex bundleMutex_;
 
@@ -56,7 +58,6 @@ private:
     };
 
     void OnBundleManagerDied(const wptr<IRemoteObject> &remote);
-    sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
 
     sptr<AppExecFwk::IBundleMgr> bundleManager_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> bundleManagerDeathRecipient_ = nullptr;

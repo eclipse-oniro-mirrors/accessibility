@@ -283,6 +283,18 @@ public:
     virtual RetError EnableScreenCurtain(bool isEnable) override;
 
     /**
+     * @brief Hold running lock to prevent screen turning off automatically.
+     * @return Return RET_OK if hold running lock successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError HoldRunningLock() override;
+
+    /**
+     * @brief Unhold running lock to prevent screen turning off automatically
+     * @return Return RET_OK if Unhold running lock successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError UnholdRunningLock() override;
+
+    /**
      * @brief To return the result of cursor position.
      * @param elementInfo The source info to cursor position.
      * @param position: The position of the cursor to get.
