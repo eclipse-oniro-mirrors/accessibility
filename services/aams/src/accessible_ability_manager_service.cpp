@@ -1519,10 +1519,8 @@ void AccessibleAbilityManagerService::UnholdRunningLockByBundleName(std::string 
     HILOG_DEBUG();
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
     auto &powerManager = Singleton<AccessibilityPowerManager>::GetInstance();
-    if (powerManager.GetWakeLockAbilities().count(bundleName)) {
-        if (!powerManager.UnholdRunningLock(bundleName)) {
-            HILOG_ERROR("UnholdRunningLockByBundleName failed.");
-        }
+    if (!powerManager.UnholdRunningLock(bundleName)) {
+        HILOG_ERROR("UnholdRunningLockByBundleName failed.");
     }
 #endif
 }
