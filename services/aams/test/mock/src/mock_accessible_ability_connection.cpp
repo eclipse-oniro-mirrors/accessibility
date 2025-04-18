@@ -335,7 +335,7 @@ RetError AccessibleAbilityChannel::NotifyDisconnect()
     return RET_OK;
 }
 
-bool AccessibleAbilityConnection::GetIsRegisterDisconnectCallback()
+bool AccessibleAbilityConnection::GetIsRegisterDisconnectCallback() const
 {
     return false;
 }
