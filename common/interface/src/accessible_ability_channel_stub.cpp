@@ -45,6 +45,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH, HandleFocusMoveSearch)                                 \
     SWITCH_CASE(AccessibilityInterfaceCode::PERFORM_ACTION, HandleExecuteAction)                                      \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_CURTAIN_SCREEN, HandleEnableScreenCurtain)                            \
+    SWITCH_CASE(AccessibilityInterfaceCode::HOLD_RUNNING_LOCK, HandleHoldRunningLock)                                 \
+    SWITCH_CASE(AccessibilityInterfaceCode::UNHOLD_RUNNING_LOCK, HandleUnholdRunningLock)                             \
     SWITCH_CASE(AccessibilityInterfaceCode::GET_WINDOW, HandleGetWindow)                                              \
     SWITCH_CASE(AccessibilityInterfaceCode::GET_WINDOWS, HandleGetWindows)                                            \
     SWITCH_CASE(AccessibilityInterfaceCode::GET_WINDOWS_BY_DISPLAY_ID, HandleGetWindowsByDisplayId)                   \
@@ -324,6 +326,37 @@ ErrCode AccessibleAbilityChannelStub::HandleEnableScreenCurtain(MessageParcel &d
     bool isEnable = data.ReadBool();
     RetError result = EnableScreenCurtain(isEnable);
     reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleHoldRunningLock(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+ 
+    if (!Permission::IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+ 
+    RetError result = HoldRunningLock();
+    reply.WriteInt32(static_cast<int32_t>(result));
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleUnholdRunningLock(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+ 
+    if (!Permission::IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+ 
+
+    RetError result = UnholdRunningLock();
+    reply.WriteInt32(static_cast<int32_t>(result));
     return NO_ERROR;
 }
 
