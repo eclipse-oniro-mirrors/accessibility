@@ -14,11 +14,16 @@
  */
 
 #include "accessibility_power_manager.h"
+#include "running_lock.h"
 #include "display_power_mgr_client.h"
 #include "hilog_wrapper.h"
+#include "accessible_ability_manager_service.h"
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string HOLD_LOCK_NAME = "AccessibilityWakeLock";
+}
 AccessibilityPowerManager::AccessibilityPowerManager()
 {
 }
@@ -43,6 +48,76 @@ bool AccessibilityPowerManager::RefreshActivity()
     HILOG_DEBUG();
     return PowerMgr::PowerMgrClient::GetInstance().RefreshActivity(
         OHOS::PowerMgr::UserActivityType::USER_ACTIVITY_TYPE_TOUCH);
+}
+
+bool AccessibilityPowerManager::InitRunningLock()
+{
+    wakeLock_ = PowerMgr::PowerMgrClient::GetInstance().CreateRunningLock(
+        HOLD_LOCK_NAME, PowerMgr::RunningLockType::RUNNINGLOCK_SCREEN);
+    if (wakeLock_ == nullptr) {
+        HILOG_INFO("CreateRunningLock InitRunningLock failed.");
+        return false;
+    }
+    HILOG_INFO("CreateRunningLock InitRunningLock.");
+    return true;
+}
+
+bool AccessibilityPowerManager::HoldRunningLock(const std::string &bundleName)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
+    if (wakeLock_ == nullptr) {
+        if (!InitRunningLock()) {
+            return false;
+        }
+    }
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("get accountData failed");
+        return false;
+    }
+    if (!accountData->GetWakeLockAbilities().count(bundleName)) {
+        accountData->SetWakeLockAbilities("INSERT", bundleName);
+    }
+    wakeLock_->Lock();
+    HILOG_DEBUG("wakeLock_ Lock success.");
+    return true;
+}
+
+bool AccessibilityPowerManager::UnholdRunningLock(const std::string &bundleName)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
+    if (wakeLock_ == nullptr) {
+        HILOG_ERROR("wakeLock_ is null.");
+        return false;
+    }
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("get accountData failed");
+        return false;
+    }
+ 
+    if (bundleName == "") {
+        accountData->SetWakeLockAbilities("CLEAR");
+        wakeLock_->UnLock();
+        wakeLock_ = nullptr;
+        HILOG_DEBUG("wakeLock_ unLock success.");
+    } else {
+        if (!accountData->GetWakeLockAbilities().count(bundleName)) {
+            HILOG_DEBUG("bundleName: %{public}s not found, UnholdRunningLock error.", bundleName.c_str());
+            return false;
+        }
+        accountData->SetWakeLockAbilities("ERASE", bundleName);
+        if (accountData->GetWakeLockAbilities().empty()) {
+            wakeLock_->UnLock();
+            wakeLock_ = nullptr;
+            HILOG_DEBUG("bundleName: %{public}s erased, wakeLock_ unLock success.", bundleName.c_str());
+        }
+    }
+    return true;
 }
 } // namespace Accessibility
 } // namespace OHOS
