@@ -23,6 +23,9 @@
 #include "hilog_wrapper.h"
 #include "nlohmann/json.hpp"
 #include "ipc_skeleton.h"
+#include "bundle_info.h"
+#include "bundlemgr/bundle_mgr_interface.h"
+#include "accessibility_resource_bundle_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -507,6 +510,28 @@ int32_t Utils::GetUserIdByCallingUid()
         return INVALID_USER_ID;
     }
     return (uid / BASE_USER_RANGE);
+}
+
+bool Utils::GetBundleNameByCallingUid(std::string &bundleName)
+{
+    int32_t uid = IPCSkeleton::GetCallingUid();
+    if (uid <= INVALID_ID) {
+        return false;
+    }
+    AccessibilityResourceBundleManager *bundleManager = new(std::nothrow) AccessibilityResourceBundleManager();
+    sptr<AppExecFwk::IBundleMgr> bundleMgr = bundleManager->GetBundleMgrProxy();
+    if (bundleMgr == nullptr) {
+        HILOG_ERROR("bundleMgr is nullptr");
+        return false;
+    }
+    if (!bundleMgr->GetBundleNameForUid(uid, bundleName)) {
+        HILOG_ERROR("bundleMgr GetBundleNameForUid failed.");
+        return false;
+    }
+    HILOG_DEBUG("GetCallingUid:%{public}d, getBundleNameByUid:%{public}s", uid, bundleName.c_str());
+    delete bundleManager;
+    bundleManager = nullptr;
+    return true;
 }
 } // namespace Accessibility
 } // namespace OHOS
