@@ -337,6 +337,26 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
    * @since 16
    */
   getElements(windowId: number, elementId?: number): Promise<Array<AccessibilityElement>>;
+
+  /**
+   * Hold running lock to prevent screen turning off automatically.
+   *
+   * @throws { BusinessError } 202 - Permission verification failed. A non-system application calls a system API.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 20
+   */
+  holdRunningLockSync(): void;
+
+  /**
+   * Unhold running lock.
+   *
+   * @throws { BusinessError } 202 - Permission verification failed. A non-system application calls a system API.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 20
+   */
+  unholdRunningLockSync(): void;
 }
 
 /**
