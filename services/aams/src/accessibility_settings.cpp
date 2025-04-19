@@ -683,11 +683,6 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
         accountData->GetConfig()->SetDaltonizationColorFilter(static_cast<uint32_t>(atoHosValue.displayDaltonizer));
         UpdateDaltonizationColorFilter();
     }
-    if (atoHosValue.shortcutTimeout == 1) {
-        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-    } else if (atoHosValue.shortcutTimeout == 0) {
-        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
-    }
     
     if (atoHosValue.isScreenReaderEnabled) {
         uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
