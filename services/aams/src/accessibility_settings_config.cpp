@@ -57,7 +57,8 @@ namespace {
     const std::string WINDOW_COLOR = "accessibility_window_color";
     const std::string FONT_SCALE = "accessibility_font_scale";
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
-    const std::string SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
+    const std::string SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen"; // HMOS key
+    const std::string SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen"; // AOS key
     const std::string SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const std::string SCREENREADER_TAG = "screenreader";
@@ -81,6 +82,7 @@ namespace {
     constexpr int AUDIO_BALANCE_STEP = 5;
     constexpr float INVALID_MASTER_BALANCE_VALUE = 2.0;
     constexpr float EPS = 1e-6;
+    constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -187,9 +189,7 @@ RetError AccessibilitySettingsConfig::SetShortKeyOnLockScreenState(const bool st
     if (ret != RET_OK) {
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetShortKeyOnLockScreenState");
         HILOG_ERROR("set isShortKeyEnabledOnLockScreen_ failed");
-        return ret;
     }
-    isShortKeyEnabledOnLockScreen_ = state;
     return ret;
 }
 
@@ -602,7 +602,11 @@ bool AccessibilitySettingsConfig::GetShortKeyState() const
 
 bool AccessibilitySettingsConfig::GetShortKeyOnLockScreenState() const
 {
-    return isShortKeyEnabledOnLockScreen_;
+    if (!datashare_) {
+        HILOG_ERROR("datashare is nullptr!");
+        return false;
+    }
+    return datashare_->GetBoolValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN, false);
 }
 
 int32_t AccessibilitySettingsConfig::GetShortKeyTimeout() const
@@ -883,14 +887,30 @@ void AccessibilitySettingsConfig::InitCaption()
 void AccessibilitySettingsConfig::InitShortKeyConfig()
 {
     isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, true);
-    bool isShortKeyEnabledOnLockScreen = datashare_->GetBoolValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN, true);
+    bool isShortKeyEnabledOnLockScreen = datashare_->GetBoolValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN, false);
+    int isShortKeyOnLockScreen = datashare_->GetIntValue(SHORTCUT_ON_LOCK_SCREEN,
+        INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
     shortKeyTimeout_ = static_cast<int32_t>(datashare_->GetIntValue(SHORTCUT_TIMEOUT, SHORT_KEY_TIMEOUT_BEFORE_USE));
-    // for AOS to HMOS
+    bool shortKeyOnLockScreenAutoOn = false;
+
     if (shortKeyTimeout_ == 1) {
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+        if (isShortKeyOnLockScreen == INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
+            shortKeyOnLockScreenAutoOn = true;
+            SetShortKeyOnLockScreenState(true);
+        }
     } else if (shortKeyTimeout_ == 0) {
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
+
+    if (isShortKeyOnLockScreen != INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
+        SetShortKeyOnLockScreenState(isShortKeyOnLockScreen == 1);
+    } else if (!shortKeyOnLockScreenAutoOn) {
+        SetShortKeyOnLockScreenState(isShortKeyEnabledOnLockScreen);
+    }
+
+    auto ret = datashare_->PutIntValue(SHORTCUT_ON_LOCK_SCREEN, INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
+    HILOG_INFO("reset shortcut on lock screen ret = %{public}d", ret);
 
     shortkeyTarget_ = datashare_->GetStringValue("ShortkeyTarget", "none");
 
@@ -916,11 +936,6 @@ void AccessibilitySettingsConfig::InitShortKeyConfig()
     bool cloneOrUpgradeFlag = false;
     service->GetBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, cloneOrUpgradeFlag);
     if (cloneOrUpgradeFlag && (accountId_ != DEFAULT_ACCOUNT_ID)) {
-        if (isShortKeyState_) {
-            SetShortKeyOnLockScreenState(true);
-        } else {
-            SetShortKeyOnLockScreenState(false);
-        }
         SetDefaultShortcutKeyService();
         service->PutBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, false);
     }
@@ -1110,26 +1125,15 @@ void AccessibilitySettingsConfig::OnDataClone()
 {
     HILOG_INFO();
 
-    bool isShortkeyEnabled = GetShortKeyState();
-    bool isShortkeyEnabledOnLockScreen = GetShortKeyOnLockScreenState();
-
     InitSetting();
     SetDefaultShortcutKeyService();
 
-    if (isShortKeyState_) {
-        SetShortKeyOnLockScreenState(true);
-    } else {
-        SetShortKeyOnLockScreenState(false);
-    }
-
-    if (isShortkeyEnabled != GetShortKeyState()) {
-        SetShortKeyState(isShortkeyEnabled);
-        SetShortKeyState(!isShortkeyEnabled);
-    }
-    if (isShortkeyEnabledOnLockScreen != GetShortKeyOnLockScreenState()) {
-        SetShortKeyOnLockScreenState(isShortkeyEnabledOnLockScreen);
-        SetShortKeyOnLockScreenState(!isShortkeyEnabledOnLockScreen);
-    }
+    bool isShortkeyEnabled = GetShortKeyState();
+    bool isShortkeyEnabledOnLockScreen = GetShortKeyOnLockScreenState();
+    SetShortKeyState(!isShortkeyEnabled);
+    SetShortKeyState(isShortkeyEnabled);
+    SetShortKeyOnLockScreenState(!isShortkeyEnabledOnLockScreen);
+    SetShortKeyOnLockScreenState(isShortkeyEnabledOnLockScreen);
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
 
     std::shared_ptr<AccessibilitySettingProvider> service =
