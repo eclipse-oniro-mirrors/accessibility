@@ -340,5 +340,25 @@ RetError AccessibleAbilityClientImpl::GetElements(const int32_t windowId, const 
     (void)elementInfos;
     return RET_OK;
 }
+
+RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback)
+{
+    HILOG_DEBUG();
+    (void)callback;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback)
+{
+    HILOG_DEBUG();
+    (void)callback;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityClientImpl::NotifyDisconnect()
+{
+    HILOG_DEBUG();
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

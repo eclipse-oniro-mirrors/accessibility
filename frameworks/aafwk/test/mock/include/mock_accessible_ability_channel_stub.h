@@ -58,6 +58,8 @@ public:
     MOCK_METHOD2(SetOnKeyPressEventResult, void(const bool handled, const int32_t sequence));
     MOCK_METHOD1(SendSimulateGesture, RetError(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath));
     MOCK_METHOD1(SetTargetBundleName, RetError(const std::vector<std::string> &targetBundleNames));
+    MOCK_METHOD1(SetIsRegisterDisconnectCallback, RetError(bool isRegister));
+    MOCK_METHOD0(NotifyDisconnect, RetError());
 };
 } // namespace Accessibility
 } // namespace OHOS

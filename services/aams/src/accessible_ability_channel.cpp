@@ -808,5 +808,36 @@ bool AccessibleAbilityChannel::CheckWinFromAwm(const int32_t windowId)
     }
     return false;
 }
+
+RetError AccessibleAbilityChannel::SetIsRegisterDisconnectCallback(bool isRegister)
+{
+    HILOG_INFO();
+    sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
+    if (clientConnection == nullptr) {
+        HILOG_ERROR("GetConnection failed, clientName: %{public}s", clientName_.c_str());
+        return RET_ERR_NULLPTR;
+    }
+    clientConnection->SetIsRegisterDisconnectCallback(isRegister);
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannel::NotifyDisconnect()
+{
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    sptr<AccessibleAbilityConnection> clientConnection = accountData->GetWaitDisConnectAbility(clientName_);
+    if (clientConnection == nullptr) {
+        HILOG_ERROR("GetConnection failed, clientName: %{public}s", clientName_.c_str());
+        return RET_ERR_NULLPTR;
+    }
+    accountData->RemoveWaitDisconnectAbility(clientName_);
+    clientConnection->NotifyDisconnect();
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

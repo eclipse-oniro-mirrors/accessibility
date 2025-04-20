@@ -22,6 +22,7 @@
 #include "accessibility_event_info.h"
 #include "accessibility_gesture_inject_path.h"
 #include "accessibility_window_info.h"
+#include "accessible_ability_client.h"
 #include "extension_context.h"
 #include "want.h"
 
@@ -191,6 +192,25 @@ public:
     * @return RetError ERR_OK on success, others on failure.
     */
     RetError UnholdRunningLock();
+
+    /**
+    * @brief Register Disconnect Callback.
+    * @param callback.
+    * @return Return RET_OK if Register callback successfully, otherwise refer to the RetError for the failure.
+    */
+    RetError RegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback);
+
+    /**
+    * @brief UnRegister Disconnect Callback.
+    * @return Return RET_OK if UnRegister callback successfully, otherwise refer to the RetError for the failure.
+    */
+    RetError UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback);
+
+    /**
+    * @brief Notify Disconnect.
+    * @return Return RET_OK if NotifyDisconnect successfully, otherwise refer to the RetError for the failure.
+    */
+    RetError NotifyDisconnect();
 private:
     static int illegalRequestCode_;
 };

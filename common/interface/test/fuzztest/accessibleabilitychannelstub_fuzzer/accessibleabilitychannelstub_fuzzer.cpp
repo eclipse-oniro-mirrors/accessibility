@@ -105,6 +105,14 @@ public:
     {
         return RET_OK;
     }
+    RetError SetIsRegisterDisconnectCallback(bool isRegister) override
+    {
+        return RET_OK;
+    }
+    RetError NotifyDisconnect() override
+    {
+        return RET_OK;
+    }
 };
 
 template<class T>

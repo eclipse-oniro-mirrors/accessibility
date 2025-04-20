@@ -658,5 +658,50 @@ RetError AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<st
     }
     return static_cast<RetError>(reply.ReadInt32());
 }
+
+RetError AccessibleAbilityChannelProxy::SetIsRegisterDisconnectCallback(bool isRegister)
+{
+    HILOG_DEBUG();
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteBool(isRegister)) {
+        HILOG_ERROR("isRegister write error: %{public}d, ", isRegister);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_IS_REGISTER_DISCONNECT_CALLBACK,
+        data, reply, option)) {
+        HILOG_ERROR("fail to SetIsRegisterDisconnectCallback");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    return static_cast<RetError>(reply.ReadInt32());
+}
+
+RetError AccessibleAbilityChannelProxy::NotifyDisconnect()
+{
+    HILOG_DEBUG();
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::NOTIFY_DISCONNECT,
+        data, reply, option)) {
+        HILOG_ERROR("fail to notify disconnect");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    return static_cast<RetError>(reply.ReadInt32());
+}
 } // namespace Accessibility
 } // namespace OHOS
