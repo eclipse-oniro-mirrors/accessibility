@@ -60,6 +60,7 @@ enum CallBackID {
 constexpr int REQUEST_ID_INIT = 65535;
 constexpr int32_t TREE_ID_MAX = 0x00001FFF;
 constexpr uint32_t TIME_OUT_OPERATOR = 5000;
+constexpr int32_t WAIT_NOTIFY_DISCONNECT_TIMEOUT = 30 * 1000; // 30s
 
 const std::map<std::string, int32_t> AccessibilityConfigTable = {
     {"HIGH_CONTRAST_TEXT", HIGH_CONTRAST_TEXT},

@@ -179,6 +179,19 @@ RetError AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<st
     return RET_OK;
 }
 
+RetError AccessibleAbilityChannelProxy::SetIsRegisterDisconnectCallback(bool isRegister)
+{
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy SetIsRegisterDisconnectCallback";
+    (void)isRegister;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannelProxy::NotifyDisconnect()
+{
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy NotifyDisconnect";
+    return RET_OK;
+}
+
 MockAccessibleAbilityChannelProxy::MockAccessibleAbilityChannelProxy(const sptr<IRemoteObject>& object)
     : AccessibleAbilityChannelProxy(object)
 {}

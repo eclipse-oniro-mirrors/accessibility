@@ -175,5 +175,16 @@ RetError AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<st
     (void)targetBundleNames;
     return RET_OK;
 }
+
+RetError AccessibleAbilityChannelProxy::SetIsRegisterDisconnectCallback(bool isRegister)
+{
+    (void)isRegister;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannelProxy::NotifyDisconnect()
+{
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

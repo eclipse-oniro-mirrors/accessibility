@@ -357,6 +357,32 @@ const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAcco
     return connectionMap;
 }
 
+const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetWaitDisConnectAbility(
+    const std::string &elementName)
+{
+    return waitDisconnectA11yAbilities_.GetAccessibilityAbilityByName(elementName);
+}
+
+void AccessibilityAccountData::AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection)
+{
+    HILOG_INFO();
+    if (!connection) {
+        HILOG_ERROR("connection is nullptr");
+        return;
+    }
+    if (connection->GetIsRegisterDisconnectCallback()) {
+        HILOG_INFO();
+        std::string uri = Utils::GetUri(connection->GetElementName());
+        waitDisconnectA11yAbilities_.AddAccessibilityAbility(uri, connection);
+    }
+}
+
+void AccessibilityAccountData::RemoveWaitDisconnectAbility(const std::string &uri)
+{
+    HILOG_INFO();
+    waitDisconnectA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
+}
+
 const std::map<int32_t, sptr<AccessibilityWindowConnection>> AccessibilityAccountData::GetAsacConnections()
 {
     HILOG_DEBUG("GetAsacConnections start.");
@@ -669,6 +695,16 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
         HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
         return RET_ERR_CONNECTION_EXIST;
     }
+
+    if (GetWaitDisConnectAbility(name)) {
+        HILOG_INFO("The ability[%{public}s] is disconnecting: ", name.c_str());
+        sptr<AccessibleAbilityConnection> connection = GetWaitDisConnectAbility(name);
+        if (connection != nullptr && connection->GetIsRegisterDisconnectCallback()) {
+            connection->DisconnectAbility();
+        }
+        RemoveWaitDisconnectAbility(name);
+    }
+
 #ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableAbility:" + name);
 #endif // OHOS_BUILD_ENABLE_HITRACE
@@ -956,6 +992,7 @@ void AccessibilityAccountData::UpdateAbilities()
         } else {
             HILOG_DEBUG("not in enabledAbilites list .");
             if (connection) {
+                AddWaitDisconnectAbility(connection);
                 RemoveConnectedAbility(connection->GetElementName());
                 connection->Disconnect();
             }
