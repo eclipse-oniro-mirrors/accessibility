@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+#define private public
+#define protected public
 #include <gtest/gtest.h>
 #include <unistd.h>
 #include "accessibility_touch_exploration.h"
@@ -30,6 +32,8 @@
 #include "mock_accessibility_element_operator_impl.h"
 #include "mock_accessibility_element_operator_proxy.h"
 #include "mock_input_manager.h"
+#undef private
+#undef protected
 
 using namespace testing;
 using namespace testing::ext;
@@ -484,7 +488,21 @@ void AamsTouchExplorationTest::TearDownTestCase()
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest TearDownTestCase";
     AccessibilityHelper::GetInstance().SetGestureId(0);
     AccessibilityHelper::GetInstance().GetEventType().clear();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
+    AccessibilityCommonHelper::GetInstance().SetIsServicePublished(false);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().runner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().handler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().actionRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().actionHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().sendEventRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().sendEventHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().channelRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().channelHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().inputManagerRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().gestureRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().registerRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().registerHandler_.reset();
 }
 
 void AamsTouchExplorationTest::SetUp()

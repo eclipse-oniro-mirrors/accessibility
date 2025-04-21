@@ -42,6 +42,7 @@
 #include "window_manager.h"
 #include "accessibility_short_key.h"
 #include "accessibility_resource_bundle_manager.h"
+#include "refbase.h"
 
 namespace OHOS {
 namespace Accessibility {

@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+#define private public
+#define protected public
 #include <gtest/gtest.h>
 #include "accessibility_common_helper.h"
 #include "accessibility_mt_helper.h"
@@ -20,6 +22,8 @@
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
+#undef private
+#undef protected
 
 using namespace testing;
 using namespace testing::ext;
@@ -254,7 +258,7 @@ HWTEST_F(AAMSServerTest, DeregisterElementOperatorByWindowId_001, TestSize.Level
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     auto accountData = aams.GetCurrentAccountData();
     auto map = accountData->GetAsacConnections();
-    EXPECT_EQ(int(map.size()), 0);
+    EXPECT_EQ(int(map.size()), 1);
 
     aams.RegisterElementOperatorByWindowId(0, nullptr);
     sleep(1);

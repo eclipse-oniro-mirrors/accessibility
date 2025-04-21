@@ -19,7 +19,11 @@
 #include "accessibility_common_helper.h"
 #include "accessibility_mouse_autoclick.h"
 #include "accessibility_ut_helper.h"
+#define private public
+#define protected public
 #include "accessible_ability_manager_service.h"
+#undef private
+#undef protected
 
 using namespace testing;
 using namespace testing::ext;
@@ -55,7 +59,20 @@ void AccessibilityMouseAutoclickUnitTest::SetUpTestCase()
 void AccessibilityMouseAutoclickUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityMouseAutoclickUnitTest End ######################";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().runner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().handler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().actionRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().actionHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().sendEventRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().sendEventHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().channelRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().channelHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().inputManagerRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().gestureRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().registerRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().registerHandler_.reset();
 }
 
 void AccessibilityMouseAutoclickUnitTest::SetUp()

@@ -3494,6 +3494,7 @@ void AccessibleAbilityManagerService::RegisterScreenMagnificationType()
 
 void AccessibleAbilityManagerService::PostDelayUnloadTask()
 {
+#ifdef ACCESSIBILITY_WATCH_FEATURE
     auto task = [=]() {
         sptr<ISystemAbilityManager> systemAbilityManager =
             SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -3514,6 +3515,7 @@ void AccessibleAbilityManagerService::PostDelayUnloadTask()
     };
     handler_->RemoveTask(DELAY_UNLOAD_TASK);
     handler_->PostTask(task, DELAY_UNLOAD_TASK, UNLOAD_TASK_INTERNAL);
+#endif
 }
 
 bool AccessibleAbilityManagerService::IsNeedUnload()

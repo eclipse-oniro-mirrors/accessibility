@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+#define private public
+#define protected public
 #include <gtest/gtest.h>
 #include "accessibility_common_helper.h"
 #include "accessibility_display_manager.h"
@@ -31,6 +33,8 @@
 #include "mock_accessibility_element_operator_impl.h"
 #include "mock_accessibility_element_operator_proxy.h"
 #include "mock_input_manager.h"
+#undef private
+#undef protected
 
 using namespace testing;
 using namespace testing::ext;
@@ -70,7 +74,21 @@ void AamsInjectorTest::SetUpTestCase()
 void AamsInjectorTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AamsInjectorTest TearDownTestCase";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
+    AccessibilityCommonHelper::GetInstance().SetIsServicePublished(false);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().runner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().handler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().actionRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().actionHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().sendEventRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().sendEventHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().channelRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().channelHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().inputManagerRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().gestureRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().registerRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().registerHandler_.reset();
 }
 
 void AamsInjectorTest::SetUp()
