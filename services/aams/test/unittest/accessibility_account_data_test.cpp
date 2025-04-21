@@ -21,7 +21,11 @@
 #include "accessibility_element_operator_proxy.h"
 #include "accessibility_element_operator_stub.h"
 #include "accessibility_ut_helper.h"
+#define private public
+#define protected public
 #include "accessible_ability_manager_service.h"
+#undef private
+#undef protected
 #include "mock_accessibility_element_operator_proxy.h"
 #include "mock_accessibility_element_operator_stub.h"
 #include "mock_accessible_ability_client_stub_impl.h"
@@ -66,7 +70,20 @@ void AccessibilityAccountDataTest::SetUpTestCase()
 void AccessibilityAccountDataTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountDataTest TearDownTestCase";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().runner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().handler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().actionRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().actionHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().sendEventRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().sendEventHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().channelRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().channelHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().inputManagerRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().gestureRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterHandler_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().registerRunner_.reset();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().registerHandler_.reset();
 }
 
 void AccessibilityAccountDataTest::SetUp()
