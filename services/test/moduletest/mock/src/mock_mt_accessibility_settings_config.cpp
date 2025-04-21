@@ -412,6 +412,11 @@ RetError MockAccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool s
     return RET_OK;
 }
 
+RetError MockAccessibilitySettingsConfig::SetIgnoreRepeatClickReconfirm(const bool state)
+{
+    return RET_OK;
+}
+
 RetError MockAccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t time)
 {
     HILOG_DEBUG("start.");
