@@ -35,6 +35,7 @@ namespace {
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     const int32_t DATASHARE_DEFAULT_TIMEOUT = 2 * 1000; // ms
+    const int32_t INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
 }
 
 void AccessibilitySettings::RegisterSettingsHandler(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
@@ -624,9 +625,21 @@ void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpd
     }
     if (atoHosValue.shortcutEnabled) {
         accountData->GetConfig()->SetShortKeyState(atoHosValue.shortcutEnabled);
-        accountData->GetConfig()->SetShortKeyOnLockScreenState(true);
-    } else {
-        accountData->GetConfig()->SetShortKeyOnLockScreenState(false);
+    }
+    bool shortKeyOnLockScreenAutoOn = false;
+    if (atoHosValue.shortcutTimeout == 1) {
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+        if (atoHosValue.shortcutOnLockScreen == INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
+            shortKeyOnLockScreenAutoOn = true;
+            accountData->GetConfig()->SetShortKeyOnLockScreenState(true);
+        }
+    } else if (atoHosValue.shortcutTimeout == 0) {
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
+    }
+    if (atoHosValue.shortcutOnLockScreen != INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
+        accountData->GetConfig()->SetShortKeyOnLockScreenState(atoHosValue.shortcutOnLockScreen == 1);
+    } else if (!shortKeyOnLockScreenAutoOn) {
+        accountData->GetConfig()->SetShortKeyOnLockScreenState(atoHosValue.shortcutEnabledOnLockScreen);
     }
     if (atoHosValue.screenMagnificationState) {
         accountData->GetConfig()->SetScreenMagnificationState(atoHosValue.screenMagnificationState);
@@ -670,11 +683,6 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
     if (atoHosValue.displayDaltonizer != 0) {
         accountData->GetConfig()->SetDaltonizationColorFilter(static_cast<uint32_t>(atoHosValue.displayDaltonizer));
         UpdateDaltonizationColorFilter();
-    }
-    if (atoHosValue.shortcutTimeout == 1) {
-        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-    } else if (atoHosValue.shortcutTimeout == 0) {
-        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
     
     if (atoHosValue.isScreenReaderEnabled) {

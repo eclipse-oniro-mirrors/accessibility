@@ -51,6 +51,7 @@ struct ConfigValueAtoHosUpdate {
     int displayDaltonizer = 0;
     bool shortcutEnabled = false;
     bool shortcutEnabledOnLockScreen = false;
+    int shortcutOnLockScreen = 0;
     int shortcutTimeout = 0;
     bool screenMagnificationState = false;
 };

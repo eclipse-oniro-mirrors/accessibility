@@ -39,6 +39,7 @@ namespace {
     constexpr int DEFAULT_ACCOUNT_ID = 100;
     constexpr int SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     constexpr int SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
+    constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
@@ -54,6 +55,7 @@ namespace {
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
     const std::string ACCESSIBILITY_SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
     const std::string ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
+    const std::string ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen";
     const std::string ACCESSIBILITY_SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
@@ -632,7 +634,10 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     value.displayDaltonizer = config_->GetDbHandle()->GetIntValue(ACCESSIBILITY_DISPLAY_DALTONIZER, 0);
     value.shortcutEnabled = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED, true);
     value.shortcutEnabledOnLockScreen = config_->GetDbHandle()->GetBoolValue(
-        ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, true);
+        ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, false);
+    value.shortcutOnLockScreen = config_->GetDbHandle()->GetIntValue(
+        ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN, INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
+    config_->GetDbHandle()->PutIntValue(ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN, INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
     value.shortcutTimeout = config_->GetDbHandle()->GetIntValue(ACCESSIBILITY_SHORTCUT_TIMEOUT,
         SHORT_KEY_TIMEOUT_BEFORE_USE);
     value.clickResponseTime = config_->GetDbHandle()->GetIntValue(CLICK_RESPONSE_TIME, 0);
