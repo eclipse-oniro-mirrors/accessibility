@@ -842,11 +842,6 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
         children.emplace_back(elementInfos.front());
     }
     ret = GetChildrenWork(windowId, childIds, children);
-    if (!children.empty()) {
-        for (auto &child : children) {
-            child.SetMainWindowId(parent.GetMainWindowId());
-        }
-    }
     return ret;
 }
 
