@@ -938,7 +938,10 @@ void AccessibilitySettingsConfig::InitShortKeyConfig()
     enabledAccessibilityServices_ = {};
     Utils::StringToVector(tmpString, enabledAccessibilityServices_);
     CloneShortkeyService(isScreenReaderEnabledOriginal);
+}
 
+void AccessibilitySettingsConfig::InitPrivacySpaceConfig()
+{
     // Initialization of the private space after cloning or upgrade
     std::shared_ptr<AccessibilitySettingProvider> service = AccessibilitySettingProvider::GetInstance(
         POWER_MANAGER_SERVICE_ID);
@@ -950,6 +953,7 @@ void AccessibilitySettingsConfig::InitShortKeyConfig()
     service->GetBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, cloneOrUpgradeFlag);
     if (cloneOrUpgradeFlag && (accountId_ != DEFAULT_ACCOUNT_ID)) {
         SetDefaultShortcutKeyService();
+        SetIgnoreRepeatClickReconfirm(ignoreRepeatClickState_);
         service->PutBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, false);
     }
 }
