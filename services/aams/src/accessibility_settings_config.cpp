@@ -19,6 +19,7 @@
 #include "utils.h"
 #include "accessibility_setting_provider.h"
 #include "accessible_ability_manager_service.h"
+#include "accessibility_account_data.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -1161,6 +1162,9 @@ void AccessibilitySettingsConfig::OnDataClone()
         SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
     if (isScreenReaderEnabled) {
         ErrCode ret = service->PutBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, true, true);
+        sptr<AccessibilityAccountData> accountData =
+            Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+        accountData->screenReaderState_ = true;
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "OnDataClone.screenReader");
         HILOG_INFO("set screenReader state, ret = %{public}d", ret);
     }
