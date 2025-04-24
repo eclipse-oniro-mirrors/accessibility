@@ -556,16 +556,8 @@ void AccessibilityAccountData::SetScreenReaderState(const std::string &name, con
 
 bool AccessibilityAccountData::GetScreenReaderState()
 {
-    HILOG_DEBUG();
-    std::shared_ptr<AccessibilitySettingProvider> service =
-        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-    if (service == nullptr) {
-        return false;
-    }
-    bool screenReaderValue = false;
-    service->GetBoolValue(screenReaderKey_, screenReaderValue);
-    screenReaderState_ = screenReaderValue;
-    return screenReaderValue;
+    HILOG_DEBUG("screen reader sstate is %{public}d", screenReaderState_);
+    return screenReaderState_;
 }
 
 bool AccessibilityAccountData::GetDefaultUserScreenReaderState()
