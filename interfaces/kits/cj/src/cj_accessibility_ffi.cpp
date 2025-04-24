@@ -35,14 +35,12 @@ bool FfiAccIsOpenAccessibility(int32_t *errorCode)
     if (asaClient == nullptr) {
         *errorCode = ERR_INPUT_INVALID;
         HILOG_ERROR("AccessibilitySystemAbilityClient instance is nullptr.");
-        return status;
     }
     auto ret = asaClient->IsEnabled(status);
     if (ret != RET_OK) {
         *errorCode = ERR_INPUT_INVALID;
         HILOG_ERROR("FfiAccIsOpenAccessibility called failed.");
     }
-    return status;
 }
 
 bool FfiAccIsOpenTouchGuide(int32_t *errorCode)

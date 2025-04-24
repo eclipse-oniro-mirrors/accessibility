@@ -45,8 +45,6 @@ public:
 
     virtual bool OnPointerEvent(MMI::PointerEvent &event) override;
     void DestroyEvents() override;
-    // flag = true shield zoom gesture | flag = false restore zoom gesture
-    void ShieldZoomGesture(bool state);
 
 private:
     class ZoomGestureEventHandler : public AppExecFwk::EventHandler {
@@ -118,8 +116,6 @@ private:
     std::shared_ptr<MMI::PointerEvent> longPressDownEvent_ = nullptr;
     std::shared_ptr<ZoomGestureEventHandler> zoomGestureEventHandler_ = nullptr;
     std::vector<std::shared_ptr<MMI::PointerEvent>> cacheEvents_;
-    
-    std::atomic<bool> shieldZoomGestureFlag_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

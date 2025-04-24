@@ -86,8 +86,10 @@ public:
     void InitActionHandler();
     void InitSendEventHandler();
     void InitChannelHandler();
+    void InitInputManagerHandler();
     void InitGestureHandler();
     void InitHoverEnterHandler();
+    void InitRegisterHandler();
     void OnStart() override;
     void OnStop() override;
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
@@ -209,6 +211,11 @@ public:
     inline std::shared_ptr<AppExecFwk::EventRunner> &GetChannelRunner()
     {
         return channelRunner_;
+    }
+
+    inline std::shared_ptr<AppExecFwk::EventRunner> &GetInputManagerRunner()
+    {
+        return inputManagerRunner_;
     }
 
     inline std::shared_ptr<AppExecFwk::EventRunner> &GetGestureRunner()
@@ -471,13 +478,17 @@ private:
     std::shared_ptr<AppExecFwk::EventRunner> sendEventRunner_;
     std::shared_ptr<AAMSEventHandler> sendEventHandler_;
 
+    std::shared_ptr<AppExecFwk::EventRunner> inputManagerRunner_;
+    std::shared_ptr<AppExecFwk::EventRunner> gestureRunner_;
+
     std::shared_ptr<AppExecFwk::EventRunner> channelRunner_;
     std::shared_ptr<AAMSEventHandler> channelHandler_;
 
-    std::shared_ptr<AppExecFwk::EventRunner> gestureRunner_;
-
     std::shared_ptr<AppExecFwk::EventRunner> hoverEnterRunner_;
     std::shared_ptr<AAMSEventHandler> hoverEnterHandler_;
+
+    std::shared_ptr<AppExecFwk::EventRunner> registerRunner_;
+    std::shared_ptr<AAMSEventHandler> registerHandler_;
 
     int64_t ipcTimeoutNum_ = 0; // count ipc timeout number
 

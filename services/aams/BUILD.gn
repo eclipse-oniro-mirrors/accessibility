@@ -119,42 +119,28 @@ ohos_shared_library("accessibleabilityms") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_consumer",
+    "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "hicollie:libhicollie",
     "hilog:libhilog",
+    "hisysevent:libhisysevent",
+    "hitrace:hitrace_meter",
     "i18n:intl_util",
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_single",
     "os_account:os_account_innerkits",
+    "power_manager:powermgr_client",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "window_manager:libdm",
+    "window_manager:libwm_lite",
   ]
-
-  if (accessibility_feature_power_manager) {
-    external_deps += [ "power_manager:powermgr_client" ]
-  }
-
-  if (accessibility_feature_display_manager) {
-    external_deps += [ "display_manager:displaymgr" ]
-  }
-
-  if (accessibility_feature_data_share) {
-    external_deps += [ "data_share:datashare_consumer" ]
-  }
-
-  if (accessibility_feature_hiviewdfx_hitrace) {
-    external_deps += [ "hitrace:hitrace_meter" ]
-  }
-
-  if (accessibility_feature_hiviewdfx_hisysevent) {
-    external_deps += [ "hisysevent:libhisysevent" ]
-  }
 
   if (accessibility_watch_feature) {
     external_deps += [ "resource_schedule_service:ressched_client" ]

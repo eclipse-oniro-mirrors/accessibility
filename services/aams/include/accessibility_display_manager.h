@@ -45,9 +45,6 @@ public:
     void RegisterDisplayListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void UnregisterDisplayListener();
 
-    void RegisterDisplayModeListener();
-    void UnregisterDisplayModeListener();
-
 private:
     class DisplayListener : public Rosen::DisplayManager::IDisplayListener {
     public:
@@ -59,16 +56,7 @@ private:
         virtual void OnChange(Rosen::DisplayId dId) override {}
     };
 
-    class DisplayModeListener : public Rosen::DisplayManager::IDisplayModeListener {
-    public:
-        explicit DisplayModeListener() {}
-        ~DisplayModeListener() = default;
-
-        void OnDisplayModeChanged(Rosen::FoldDisplayMode displayMode);
-    };
-
     sptr<DisplayListener> listener_ = nullptr;
-    sptr<DisplayModeListener> displayModeListener_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> handler_ = nullptr;
 };
 } // namespace Accessibility

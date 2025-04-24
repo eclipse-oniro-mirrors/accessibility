@@ -38,9 +38,11 @@ enum KeyAction : int32_t {
     UNKNOWN = 0xff,
 };
 
-uint32_t ParseResourceIdFromNAPI(napi_env env, napi_value value);
-std::string ParseResourceBundleNameFromNAPI(napi_env env, napi_value value);
-std::string ParseResourceModuleNameFromNAPI(napi_env env, napi_value value);
+napi_status ParseResourceIdFromNAPI(napi_env env, napi_value, uint32_t &idValue);
+napi_status ParseResourceBundleNameFromNAPI(napi_env env, napi_value, std::string &bundleNameValue);
+napi_status ParseResourceModuleNameFromNAPI(napi_env env, napi_value, std::string &moduleNameValue);
+napi_status ParseResourceParamsFromNAPI(napi_env env, napi_value,
+    std::vector<std::tuple<int32_t, std::string>> &resourceParamsValue);
 std::string GetStringFromNAPI(napi_env env, napi_value value);
 bool ParseBool(napi_env env, bool& param, napi_value args);
 bool ParseString(napi_env env, std::string& param, napi_value args);
@@ -107,6 +109,7 @@ void ConvertStringVecToJS(napi_env env, napi_value &result, std::vector<std::str
 void ConvertInt64VecToJS(napi_env env, napi_value &result, std::vector<std::int64_t> values);
 void ConvertJSToEventTypes(napi_env env, napi_value arrayValue, uint32_t &eventTypes);
 bool ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capabilities);
+bool ConvertStringToInt64(std::string &str, int64_t &value);
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue);
 uint32_t GetColorValue(napi_env env, napi_value value);
 uint32_t ConvertColorStringToNumer(std::string colorStr);
@@ -152,7 +155,7 @@ struct StateCallbackInfo: public AccessibilityCallbackInfo {
     std::string stringValue_;
     uint32_t uint32Value_;
     int32_t int32Value_;
-    float   floatValue_;
+    double doubleValue_;
     std::vector<std::string> stringVector_;
 };
 

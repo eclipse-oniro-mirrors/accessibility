@@ -109,8 +109,6 @@ public:
 
     void Init();
     void ClearData();
-    bool GetInitializeState();
-    void SetInitializeState(bool isInitialized);
 private:
     void InitCaption();
     void InitCapability();
@@ -150,7 +148,6 @@ private:
     std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
     std::shared_ptr<AccessibilityDatashareHelper> systemDatashare_ = nullptr;
     ffrt::mutex interfaceMutex_;
-    bool isInitialized_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

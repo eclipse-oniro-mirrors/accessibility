@@ -16,9 +16,7 @@
 #include "accessibility_account_data.h"
 
 #include <any>
-#ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
-#endif // OHOS_BUILD_ENABLE_HITRACE
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 #include "accessibility_display_manager.h"
 #endif
@@ -472,6 +470,10 @@ void AccessibilityAccountData::SetScreenReaderExtInAllAccounts(const bool state)
     std::vector<int32_t> accountIds = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAllAccountIds();
     for (auto accountId : accountIds) {
         auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
+        if (accountData == nullptr) {
+            HILOG_WARN("accountData is nullptr, accountId = %{public}d", accountId);
+            continue;
+        }
         std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
         if (config == nullptr) {
             HILOG_WARN("config is nullptr, accountId = %{public}d", accountId);
@@ -532,10 +534,12 @@ bool AccessibilityAccountData::GetScreenReaderState()
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
         return false;
     }
     bool screenReaderValue = false;
     service->GetBoolValue(screenReaderKey_, screenReaderValue);
+    HILOG_INFO("screenReader state is [%{public}d]", screenReaderValue);
     screenReaderState_ = screenReaderValue;
     return screenReaderValue;
 }
@@ -664,9 +668,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
         HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
         return RET_ERR_CONNECTION_EXIST;
     }
-#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableAbility:" + name);
-#endif // OHOS_BUILD_ENABLE_HITRACE
 
     enabledAbilities_.push_back(name);
     SetAbilityAutoStartState(name, true);
@@ -681,9 +683,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
 bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 {
     HILOG_DEBUG("start.");
-#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryInstalledAbilityInfo");
-#endif // OHOS_BUILD_ENABLE_HITRACE
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
     bool ret = Singleton<AccessibilityResourceBundleManager>::GetInstance().QueryExtensionAbilityInfos(
         AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
