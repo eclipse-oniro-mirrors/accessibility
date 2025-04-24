@@ -315,7 +315,7 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
     {
         isConnected_ = false;
         Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
-        if (callbackSet_.empty()) {
+        if (callbackList_.empty()) {
             // Delete death recipient
             if (channelClient_ && channelClient_->GetRemote()) {
                 HILOG_ERROR("Remove death recipient");
@@ -333,7 +333,8 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
     if (listener) {
         listener->OnAbilityDisconnected();
     }
-    for (auto &callback : callbackSet_) {
+    std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
+    for (auto &callback : callbackList_) {
         callback->NotifyJS();
     }
 }
@@ -1933,38 +1934,62 @@ RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr
     if (callback == nullptr) {
         HILOG_INFO("callback IS NULLPTR");
         return RET_ERR_INVALID_PARAM;
-    } else {
-        callbackSet_.insert(callback);
     }
+    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
     if (channelClient_ == nullptr) {
         HILOG_ERROR("the channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    channelClient_->SetIsRegisterDisconnectCallback(true);
+    std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
+    if (callbackList_.empty()) {
+        callbackList_.push_back(callback);
+        return channelClient_->SetIsRegisterDisconnectCallback(true);
+    }
+    bool exist = false;
+    for (auto &cb : callbackList_) {
+        if (*cb == *callback) {
+            exist = true;
+        }
+    }
+    if (!exist) {
+        callbackList_.push_back(callback);
+    }
     return RET_OK;
 }
 
 RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback)
 {
     HILOG_INFO();
+    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
     if (channelClient_ == nullptr) {
         HILOG_ERROR("the channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
+    std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
     if (callback->handlerRef_ == nullptr) {
-        callbackSet_.clear();
+        callbackList_.clear();
     } else {
-        callbackSet_.erase(callback);
+        for (auto it = callbackList_.begin(); it != callbackList_.end();) {
+            if (**it == *callback) {
+                HILOG_INFO("UnRegister exist callback");
+                it = callbackList_.erase(it);
+            } else {
+                ++it;
+            }
+        }
     }
-    channelClient_->SetIsRegisterDisconnectCallback(!callbackSet_.empty());
+    if (callbackList_.empty()) {
+        return channelClient_->SetIsRegisterDisconnectCallback(false);
+    }
     return RET_OK;
 }
 
 RetError AccessibleAbilityClientImpl::NotifyDisconnect()
 {
     HILOG_INFO();
-    if (callbackSet_.empty()) {
-        HILOG_INFO("callbackSet_ is empty");
+    std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
+    if (callbackList_.empty()) {
+        HILOG_INFO("callbackList_ is empty");
         return RET_OK;
     }
     if (!isDisconnectCallbackExecute_) {
@@ -1972,6 +1997,7 @@ RetError AccessibleAbilityClientImpl::NotifyDisconnect()
         return RET_OK;
     }
 
+    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
     // NotifyDisconnect and Delete death recipient
     if (channelClient_ && channelClient_->GetRemote()) {
         channelClient_->NotifyDisconnect();
