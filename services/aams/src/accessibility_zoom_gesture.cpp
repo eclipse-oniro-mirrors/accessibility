@@ -50,7 +50,7 @@ AccessibilityZoomGesture::AccessibilityZoomGesture()
     HILOG_DEBUG();
 
     zoomGestureEventHandler_ = std::make_shared<ZoomGestureEventHandler>(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner(), *this);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner(), *this);
 
     tapDistance_ = TAP_MIN_DISTANCE;
 
@@ -105,11 +105,6 @@ bool AccessibilityZoomGesture::IsTapOnInputMethod(MMI::PointerEvent &event)
 bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("state_ is %{public}d.", state_);
-
-    if (shieldZoomGestureFlag_) {
-        EventTransmission::OnPointerEvent(event);
-        return true;
-    }
 
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN ||
         event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) {
@@ -896,16 +891,6 @@ void AccessibilityZoomGesture::DestroyEvents()
     HILOG_INFO();
     Clear();
     EventTransmission::DestroyEvents();
-}
-
-void AccessibilityZoomGesture::ShieldZoomGesture(bool state)
-{
-    shieldZoomGestureFlag_ = state;
-    HILOG_INFO("ShieldZoomGesture state = %{public}d", state);
-    if (state) {
-        Clear();
-        OffZoom();
-    }
 }
 } // namespace Accessibility
 } // namespace OHOS

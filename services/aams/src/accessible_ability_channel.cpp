@@ -73,7 +73,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
         RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID, clientName,
             elementOperator, treeId);
-        if (ret != RET_OK || !CheckWinFromAwm(windowId)) {
+        if (ret != RET_OK || !CheckWinFromAwm(windowId, ret)) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", windowId);
             std::vector<AccessibilityElementInfo> infos = {};
             callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
@@ -98,7 +98,6 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
 
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait SearchElementInfoByAccessibilityId result");
         return RET_ERR_TIME_OUT;
     }
@@ -131,7 +130,7 @@ RetError AccessibleAbilityChannel::SearchDefaultFocusedByWindowId(const ElementB
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
         RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID, clientName,
             elementOperator, treeId);
-        if (ret != RET_OK || !CheckWinFromAwm(windowId)) {
+        if (ret != RET_OK || !CheckWinFromAwm(windowId, ret)) {
             HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", windowId);
             std::vector<AccessibilityElementInfo> infos = {};
             callback->SetSearchDefaultFocusByWindowIdResult(infos, requestId);
@@ -154,7 +153,6 @@ RetError AccessibleAbilityChannel::SearchDefaultFocusedByWindowId(const ElementB
  
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait SearchElementInfoByAccessibilityId result");
         return RET_ERR_TIME_OUT;
     }
@@ -208,7 +206,6 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
 
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait SearchElementInfosByText result");
         return RET_ERR_TIME_OUT;
     }
@@ -262,7 +259,6 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
     
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait FindFocusedElementInfo result");
         return RET_ERR_TIME_OUT;
     }
@@ -315,7 +311,6 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
     
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait FocusMoveSearch result");
         return RET_ERR_TIME_OUT;
     }
@@ -430,7 +425,6 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
 
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait ExecuteAction result");
         return RET_ERR_TIME_OUT;
     }
@@ -634,7 +628,6 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
     
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait GetCursorPosition result");
         return RET_ERR_TIME_OUT;
     }
@@ -779,12 +772,16 @@ RetError AccessibleAbilityChannel::GetElementOperator(
     return RET_OK;
 }
 
-bool AccessibleAbilityChannel::CheckWinFromAwm(const int32_t windowId)
+bool AccessibleAbilityChannel::CheckWinFromAwm(const int32_t windowId, const int32_t getElementOperatorResult)
 {
-    std::vector<AccessibilityWindowInfo> windowsFromAwm =
+    HILOG_DEBUG("CheckWinFromAwm window: %{public}d, ConnectResult: [%{public}d]", windowId, getElementOperatorResult);
+    if (windowId == SCENE_BOARD_WINDOW_ID && getElementOperatorResult == RET_OK) {
+        return true;
+    }
+    std::vector<AccessibilityWindowInfo> windows =
         Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
-    if (!windowsFromAwm.empty()) {
-        for (const auto& window: windowsFromAwm) {
+    if (!windows.empty()) {
+        for (const auto& window: windows) {
             if (windowId == window.GetWindowId()) {
                 return true;
             }

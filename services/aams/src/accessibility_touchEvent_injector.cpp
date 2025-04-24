@@ -17,7 +17,6 @@
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "utils.h"
-#include <cinttypes>
 
 namespace OHOS {
 namespace Accessibility {
@@ -58,7 +57,7 @@ void TouchInjectHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &eve
 
 TouchEventInjector::TouchEventInjector()
 {
-    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
+    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;

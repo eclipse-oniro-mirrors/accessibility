@@ -47,12 +47,11 @@ constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONG = 1000; // ms
 constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONGEST = 1300; // ms
 
 constexpr uint32_t CIRCLE_ANGLE = 360;
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 constexpr uint32_t START_ANGLE_PORTRAIT = -90;
 constexpr uint32_t START_ANGLE_LANDSCAPE = 180;
 constexpr uint32_t START_ANGLE_PORTRAIT_INVERTED = 90;
 constexpr uint32_t START_ANGLE_LANDSCAPE_INVERTED = 0;
-#endif
+
 constexpr uint32_t NUMBER_10 = 10;
 
 constexpr float TOUCH_SLOP = 8.0f;
@@ -109,7 +108,7 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
 
     lastUpTime_ = lastUpTime;
 
-    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
+    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;
@@ -221,11 +220,11 @@ void AccessibilityScreenTouch::ConversionCoordinates(int32_t originalX, int32_t 
 
 void AccessibilityScreenTouch::HandleCoordinates(MMI::PointerEvent::PointerItem &pointerItem)
 {
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     int32_t originalX = pointerItem.GetDisplayX();
     int32_t originalY = pointerItem.GetDisplayY();
 
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     switch (ROTATE_POLICY) {
         case WINDOW_ROTATE:
             ConversionCoordinates(originalX, originalY);
@@ -257,6 +256,11 @@ void AccessibilityScreenTouch::HandleCoordinates(MMI::PointerEvent::PointerItem 
             ConversionCoordinates(originalX, originalY);
             break;
     }
+#else
+    HILOG_WARN("display manager is not enable");
+    circleCenterPhysicalX_ = originalX;
+    circleCenterPhysicalY_ = originalY;
+    startAngle_ = START_ANGLE_PORTRAIT;
 #endif
 }
 
