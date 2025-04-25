@@ -29,6 +29,10 @@ using namespace OHOS::AccessibilityConfig;
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int ROUND_STEP = 10;
+}
+
 napi_handle_scope TmpOpenScope(napi_env env)
 {
     napi_handle_scope scope = nullptr;
@@ -44,9 +48,12 @@ void NAccessibilityConfigObserver::OnConfigChangedExtra(const ConfigValue &value
     if (configId_ == CONFIG_CONTENT_TIMEOUT) {
         NotifyIntChanged2JS(static_cast<int32_t>(value.contentTimeout));
     } else if (configId_ == CONFIG_BRIGHTNESS_DISCOUNT) {
-        NotifyFloatChanged2JS(value.brightnessDiscount);
+        NotifyDoubleChanged2JS(static_cast<double>(value.brightnessDiscount));
     } else if (configId_ == CONFIG_AUDIO_BALANCE) {
-        NotifyFloatChanged2JS(value.audioBalance);
+        float audioBalance = value.audioBalance;
+        double value = static_cast<double>(audioBalance);
+        value = round(value * ROUND_STEP) / ROUND_STEP;
+        NotifyDoubleChanged2JS(value);
     } else if (configId_ ==  CONFIG_HIGH_CONTRAST_TEXT) {
         NotifyStateChanged2JS(value.highContrastText);
     } else if (configId_ ==  CONFIG_DALTONIZATION_STATE) {
@@ -152,7 +159,7 @@ void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::Accessib
 {
     HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(configId_));
 
-    CaptionCallbackInfo *callbackInfo = new(std::nothrow) CaptionCallbackInfo();
+    std::shared_ptr<CaptionCallbackInfo> callbackInfo = std::make_shared<CaptionCallbackInfo>();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
@@ -358,7 +365,7 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
     }
 }
 
-void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
+void NAccessibilityConfigObserver::NotifyDoubleChanged2JS(double value)
 {
     HILOG_INFO("id = [%{public}d] value = [%{public}f]", static_cast<int32_t>(configId_), value);
 
@@ -367,7 +374,7 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
-    callbackInfo->floatValue_ = value;
+    callbackInfo->doubleValue_ = value;
     callbackInfo->env_ = env_;
     callbackInfo->ref_ = handlerRef_;
     auto task = [callbackInfo] () {
@@ -381,7 +388,11 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
         std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
             OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
         napi_value jsEvent = nullptr;
-        napi_create_double(callbackInfo->env_, double(callbackInfo->floatValue_), &jsEvent);
+        napi_create_double(callbackInfo->env_, callbackInfo->doubleValue_, &jsEvent);
+        if (jsEvent == nullptr) {
+            HILOG_ERROR("napi_create_object fail.");
+            return;
+        }
 
         napi_value handler = nullptr;
         napi_value callResult = nullptr;
@@ -391,6 +402,7 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
         napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
         int32_t result;
         napi_get_value_int32(callbackInfo->env_, callResult, &result);
+        HILOG_INFO("NotifyDoubleChanged2JSInner napi_call_function result[%{public}d]", result);
     };
     if (napi_send_event(env_, task, napi_eprio_high) != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
