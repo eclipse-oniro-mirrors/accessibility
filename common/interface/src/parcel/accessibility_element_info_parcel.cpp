@@ -160,7 +160,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelFourthPart(Parcel &parcel)
 
     for (int32_t i = 0; i < spanListSize; i++) {
         sptr<SpanInfoParcel> spanList = parcel.ReadStrongParcelable<SpanInfoParcel>();
-        if (spanList == nullptr) {
+        if (!spanList) {
             HILOG_ERROR("ReadStrongParcelable<spanList> failed");
             return false;
         }
@@ -172,9 +172,9 @@ bool AccessibilityElementInfoParcel::ReadFromParcelFourthPart(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, clip_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mainWindowId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, customComponentType_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, innerWindowId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, accessibilityNextFocusId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, accessibilityPreviousFocusId_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, innerWindowId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityScrollable_);
     return true;
 }
@@ -298,9 +298,9 @@ bool AccessibilityElementInfoParcel::MarshallingThirdPart(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, clip_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mainWindowId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, customComponentType_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, innerWindowId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, accessibilityNextFocusId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, accessibilityPreviousFocusId_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, innerWindowId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityScrollable_);
     return true;
 }
