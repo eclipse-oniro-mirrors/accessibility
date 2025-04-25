@@ -27,6 +27,7 @@
 #include "hilog_wrapper.h"
 #include "api_event_reporter.h"
 #include "uuid.h"
+#include <sys/stat.h>
 
 namespace OHOS {
 namespace Accessibility {
@@ -58,9 +59,12 @@ bool ApiEventReporter::IsAppEventProccessorValid()
 
 bool ApiEventReporter::LoadConfigurationFile(const std::string &configFile)
 {
+    if (!IsValidPath(configFile)) {
+        return false;
+    }
     std::ifstream file(configFile);
     if (!file.is_open()) {
-        perror("Unable to open api operation config file!");
+        HILOG_ERROR("Unable to open api operation config file!");
         return false;
     }
 
@@ -224,7 +228,7 @@ void ApiEventReporter::ParseApiOperationManagement(std::istringstream &stream, A
 
 int64_t ApiEventReporter::AddProcessor()
 {
-    HILOG_DEBUG("AddProcessor enter.");
+    HILOG_INFO("AddProcessor enter.");
     std::lock_guard<std::mutex> lock(g_apiOperationMutex);
     ApiReportConfig reportConfig;
     ApiEventConfig eventConfig;
@@ -322,8 +326,7 @@ void ApiEventReporter::ThresholdWriteEndEvent(int result, std::string apiName, i
     if (dataCount < thresholdValue) {
         return;
     }
-    HILOG_INFO("ThresholdWriteEndEvent apiName: %{public}s, dataCount: %{public}d",
-        apiName.c_str(), dataCount);
+    HILOG_INFO("ThresholdWriteEndEvent begin, apiname: %{public}s, dataCount: %{public}d", apiName.c_str(), dataCount);
     ExecuteThresholdWriteEndEvent(apiName, expandableData, dataCount);
 }
 
@@ -358,10 +361,15 @@ void ApiEventReporter::ExecuteThresholdWriteEndEvent(std::string apiName,
     event.AddParam("trans_id", std::string(""));
     event.AddParam("api_name", apiName);
     event.AddParam("sdk_name", std::string("AccessibilityKit"));
-    event.AddParam("call_times", dataCount);
     event.AddParam("success_times", expandableData->successCount);
-    event.AddParam("max_cost_time", *max_element(expandableData->runTime.begin(), expandableData->runTime.end()));
-    event.AddParam("min_cost_time", *min_element(expandableData->runTime.begin(), expandableData->runTime.end()));
+    int64_t maxElement = 0;
+    int64_t minElement = 0;
+    if (!expandableData->runTime.empty()) {
+        maxElement = *max_element(expandableData->runTime.begin(), expandableData->runTime.end());
+        minElement = *min_element(expandableData->runTime.begin(), expandableData->runTime.end());
+    }
+    event.AddParam("max_cost_time", maxElement);
+    event.AddParam("min_cost_time", minElement);
     event.AddParam("total_cost_time", expandableData->sumTime);
     if (!IsAppEventProccessorValid()) {
         HILOG_ERROR("ExecuteThresholdWriteEndEvent processorid invalid!");
@@ -373,6 +381,29 @@ void ApiEventReporter::ExecuteThresholdWriteEndEvent(std::string apiName,
     expandableData->runTime.clear();
     expandableData->successCount = 0;
     expandableData->sumTime = 0;
+}
+
+bool ApiEventReporter::IsValidPath(const std::string& filePath)
+{
+    std::string realFilePath;
+    if (!IsReal(filePath, realFilePath)) {
+        return false;
+    }
+    struct stat st;
+    if (stat(realFilePath.c_str(), &st)) {
+        return false;
+    }
+    return true;
+}
+
+bool ApiEventReporter::IsReal(const std::string& file, std::string& realFile)
+{
+    char realPath[PATH_MAX];
+    if (realpath(file.c_str(), realPath) == nullptr) {
+        return false;
+    }
+    realFile = std::string(realPath);
+    return true;
 }
 }  // namespace Accessibility
 }  // namespace OHOS
