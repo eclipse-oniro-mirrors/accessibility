@@ -44,15 +44,6 @@ bool AccessibilityConfig::InitializeContext()
     return pImpl_->InitializeContext();
 }
 
-void AccessibilityConfig::UnInitializeContext()
-{
-    if (!pImpl_) {
-        HILOG_ERROR("pImpl_ is nullptr");
-        return;
-    }
-    pImpl_->UnInitializeContext();
-}
-
 Accessibility::RetError AccessibilityConfig::SubscribeConfigObserver(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer, const bool retFlag)
 {
