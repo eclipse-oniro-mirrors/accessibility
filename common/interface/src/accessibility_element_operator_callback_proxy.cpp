@@ -139,7 +139,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchDefaultFocusByWindowIdR
     if (infos.size() != 0) {
         MessageParcel tmpParcel;
         tmpParcel.SetMaxCapacity(MAX_RAWDATA_SIZE);
-        // when set pracel's max capacity, it won't alloc memory immediately
+        // when set pracel's max capacity, it won't allocate memory immediately
         // MessageParcel will expand memory dynamiclly
         for (const auto &info : infos) {
             AccessibilityElementInfoParcel infoParcel(info);
