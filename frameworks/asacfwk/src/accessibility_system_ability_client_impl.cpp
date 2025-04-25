@@ -53,7 +53,7 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     if (retSysParam >= 0 && !std::strcmp(value, "true")) {
-        HILOG_ERROR("accessibility service is ready");
+        HILOG_ERROR("accessibility service is ready.");
         if (!ConnectToService()) {
             HILOG_ERROR("Failed to connect to aams service");
             return;
@@ -131,7 +131,7 @@ void AccessibilitySystemAbilityClientImpl::OnParameterChanged(const char *key, c
     }
 
     if (!context) {
-        HILOG_WARN("accessibility.config.ready context NULL");
+        HILOG_ERROR("accessibility.config.ready context NULL");
         return;
     }
 
@@ -423,8 +423,7 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
-    return ret;
+    return serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
 }
 
 bool AccessibilitySystemAbilityClientImpl::CheckEventType(EventType eventType)
@@ -637,7 +636,7 @@ void AccessibilitySystemAbilityClientImpl::SetSearchDefaultFocusByWindowIdResult
         callback->SetSearchDefaultFocusByWindowIdResult(filterInfos, requestId);
         AccessibilityElementOperatorImpl::EraseCallback(requestId);
     } else {
-        HILOG_INFO("callback is nullptr");
+        HILOG_ERROR("callback is nullptr");
     }
 }
 
