@@ -37,7 +37,6 @@ public:
     ~Impl();
 
     bool InitializeContext();
-    void UnInitializeContext();
 
     Accessibility::RetError SubscribeConfigObserver(const CONFIG_ID id,
         const std::shared_ptr<AccessibilityConfigObserver> &observer, const bool retFlag);
