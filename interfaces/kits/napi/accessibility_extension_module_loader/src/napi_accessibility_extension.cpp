@@ -291,7 +291,7 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
         RetError ret = RET_ERR_FAILED;
         AccessibilityElementInfo accessibilityElementInfo;
         if ((eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY ||
-            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT) &&
+            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP) &&
             inspectorKey != "") {
             ret = aaClient->SearchElementInfoByInspectorKey(inspectorKey, accessibilityElementInfo);
         }
@@ -401,17 +401,75 @@ napi_status SetEventInfoStrProperty(napi_env env, const char *property, std::str
     return napi_set_named_property(env, napiEventInfo, property, nValue);
 }
 
+int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t *loop)
+{
+    if (loop == nullptr || work == nullptr) {
+        return RET_ERR_FAILED;
+    }
+    int ret = uv_queue_work_with_qos(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
+            napi_env env = data->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(data->env_), closeScope);
+            napi_value napiEventInfo = nullptr;
+            napi_create_object(data->env_, &napiEventInfo);
+
+            do {
+                if (SetEventInfoStrProperty(data->env_, "eventType", data->eventType_, napiEventInfo) != napi_ok) {
+                    GET_AND_THROW_LAST_ERROR((data->env_));
+                    break;
+                }
+                if (SetNapiEventInfoIntProperty(data->env_, "timeStamp", data->timeStamp_, napiEventInfo) != napi_ok) {
+                    GET_AND_THROW_LAST_ERROR((data->env_));
+                    break;
+                }
+                if (SetNapiEventInfoIntProperty(data->env_, "elementId", data->elementId_, napiEventInfo) != napi_ok) {
+                    GET_AND_THROW_LAST_ERROR((data->env_));
+                    break;
+                }
+                if (SetEventInfoStrProperty(data->env_, "textAnnouncedForAccessibility",
+                    data->textAnnouncedForAccessibility_, napiEventInfo) != napi_ok) {
+                    GET_AND_THROW_LAST_ERROR((data->env_));
+                    break;
+                }
+
+                ConvertAccessibilityElementToJS(data->env_, napiEventInfo, data->element_);
+                napi_value argv[] = {napiEventInfo};
+                data->extension_->CallObjectMethod("onAccessibilityEvent", argv, 1);
+            } while (0);
+            if (data != nullptr) {
+                delete data;
+                data = nullptr;
+            }
+            if (work != nullptr) {
+                delete work;
+                work = nullptr;
+            }
+        },
+        uv_qos_user_initiated);
+    return ret;
+}
+
 void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
 {
     HILOG_INFO();
     std::string strType = "";
     ConvertEventTypeToString(eventInfo, strType);
     if (strType.empty()) {
+        HILOG_DEBUG("eventType is invalid.");
         return;
     }
-
-    auto callbackInfo = std::make_shared<AccessibilityEventInfoCallbackInfo>();
+    uv_loop_s* loop = nullptr;
+    napi_get_uv_event_loop(env_, &loop);
+    AccessibilityEventInfoCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityEventInfoCallbackInfo();
     if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
         return;
     }
     std::shared_ptr<AccessibilityElement> element = GetElement(eventInfo);
@@ -422,42 +480,114 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
     callbackInfo->element_ = element;
     callbackInfo->elementId_ = eventInfo.GetRequestFocusElementId();
     callbackInfo->textAnnouncedForAccessibility_ = eventInfo.GetTextAnnouncedForAccessibility();
-    auto task = [callbackInfo]() {
-        napi_env env = callbackInfo->env_;
-        auto closeScope = [env](napi_handle_scope scope) { napi_close_handle_scope(env, scope); };
-        std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(callbackInfo->env_), closeScope);
-        napi_value napiEventInfo = nullptr;
-        napi_create_object(callbackInfo->env_, &napiEventInfo);
-        if (!SetEventInfoStrProperty(callbackInfo->env_, "eventType", callbackInfo->eventType_, napiEventInfo)) {
-            GET_AND_THROW_LAST_ERROR((callbackInfo->env_));
-            return;
-        }
-        if (!SetNapiEventInfoIntProperty(callbackInfo->env_, "timeStamp", callbackInfo->timeStamp_, napiEventInfo)) {
-            GET_AND_THROW_LAST_ERROR((callbackInfo->env_));
-            return;
-        }
-        if (!SetNapiEventInfoIntProperty(callbackInfo->env_, "elementId", callbackInfo->elementId_, napiEventInfo)) {
-            GET_AND_THROW_LAST_ERROR((callbackInfo->env_));
-            return;
-        }
-        if (SetEventInfoStrProperty(callbackInfo->env_, "textAnnouncedForAccessibility",
-            callbackInfo->textAnnouncedForAccessibility_, napiEventInfo) != napi_ok) {
-            GET_AND_THROW_LAST_ERROR((callbackInfo->env_));
-            return;
-        }
-        ConvertAccessibilityElementToJS(callbackInfo->env_, napiEventInfo, callbackInfo->element_);
-        napi_value argv[] = {napiEventInfo};
-        callbackInfo->extension_->CallObjectMethod("onAccessibilityEvent", argv, 1);
-    };
-    if (napi_send_event(env_, task, napi_eprio_high) != napi_status::napi_ok) {
-        HILOG_ERROR("failed to send event");
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create data.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
     }
+    work->data = static_cast<void*>(callbackInfo);
+
+    if (OnAccessibilityEventExec(work, loop)) {
+        HILOG_ERROR("Failed to execute OnAccessibilityEvent work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
+}
+
+void NAccessibilityExtension::OnAccessibilityEventCompleteCallback(uv_work_t* work, int status)
+{
+    AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
+    napi_env env = data->env_;
+    auto closeScope = [env](napi_handle_scope scope) {
+        napi_close_handle_scope(env, scope);
+    };
+    std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(data->env_), closeScope);
+    napi_value napiEventInfo = nullptr;
+    napi_create_object(data->env_, &napiEventInfo);
+
+    napi_value nType = nullptr;
+    NAPI_CALL_RETURN_VOID(data->env_, napi_create_string_utf8(data->env_, data->eventType_.c_str(),
+        NAPI_AUTO_LENGTH, &nType));
+    NAPI_CALL_RETURN_VOID(data->env_, napi_set_named_property(data->env_, napiEventInfo, "eventType", nType));
+    HILOG_DEBUG("eventType[%{public}s]", data->eventType_.c_str());
+
+    napi_value nTimeStamp = nullptr;
+    NAPI_CALL_RETURN_VOID(data->env_, napi_create_int64(data->env_, data->timeStamp_, &nTimeStamp));
+    NAPI_CALL_RETURN_VOID(data->env_, napi_set_named_property(data->env_, napiEventInfo, "timeStamp", nTimeStamp));
+
+    ConvertAccessibilityElementToJS(data->env_, napiEventInfo, data->element_);
+    napi_value argv[] = {napiEventInfo};
+    data->extension_->CallObjectMethod("onAccessibilityEvent", argv, 1);
+    delete data;
+    data = nullptr;
+    delete work;
+    work = nullptr;
+}
+
+int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loop)
+{
+    if (loop == nullptr || work == nullptr) {
+        HILOG_ERROR("loop or work is nullptr.");
+        return RET_ERR_FAILED;
+    }
+    int ret = uv_queue_work_with_qos(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
+            napi_env env = data->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                OpenScope(data->env_), closeScope);
+            napi_value napiEventInfo = nullptr;
+            if (napi_create_object(data->env_, &napiEventInfo) != napi_ok) {
+                HILOG_ERROR("Create keyEvent object failed.");
+                data->syncPromise_.set_value(false);
+                delete data;
+                data = nullptr;
+                delete work;
+                work = nullptr;
+                return;
+            }
+            ConvertKeyEventToJS(data->env_, napiEventInfo, data->keyEvent_);
+            napi_value argv[] = {napiEventInfo};
+            napi_value nativeResult = data->extension_->CallObjectMethod("onKeyEvent", argv, 1);
+
+            // Unwrap result
+            bool result = false;
+            if (!ConvertFromJsValue(data->env_, nativeResult, result)) {
+                HILOG_ERROR("ConvertFromJsValue failed");
+                data->syncPromise_.set_value(false);
+                delete data;
+                data = nullptr;
+                delete work;
+                work = nullptr;
+                return;
+            }
+            HILOG_INFO("OnKeyPressEvent result = %{public}d", result);
+            data->syncPromise_.set_value(result);
+            delete data;
+            data = nullptr;
+            delete work;
+            work = nullptr;
+        },
+        uv_qos_user_initiated);
+    return ret;
 }
 
 bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent)
 {
     HILOG_INFO();
-    std::shared_ptr<KeyEventCallbackInfo> callbackInfo = std::make_shared<KeyEventCallbackInfo>();
+    uv_loop_s* loop = nullptr;
+    napi_get_uv_event_loop(env_, &loop);
+    KeyEventCallbackInfo *callbackInfo = new(std::nothrow) KeyEventCallbackInfo();
     if (!callbackInfo) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return false;
@@ -465,40 +595,68 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
     callbackInfo->env_ = env_;
     callbackInfo->keyEvent_ = MMI::KeyEvent::Clone(keyEvent);
     callbackInfo->extension_ = this;
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create data.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return false;
+    }
+    work->data = static_cast<void*>(callbackInfo);
     ffrt::future syncFuture = callbackInfo->syncPromise_.get_future();
 
-    auto task = [callbackInfo]() {
-        napi_env env = callbackInfo->env_;
-        auto closeScope = [env](napi_handle_scope scope) {
-            napi_close_handle_scope(env, scope);
-        };
-        std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
-            OpenScope(callbackInfo->env_), closeScope);
-        napi_value napiEventInfo = nullptr;
-        if (napi_create_object(callbackInfo->env_, &napiEventInfo) != napi_ok) {
-            HILOG_ERROR("Create keyEvent object failed.");
-            callbackInfo->syncPromise_.set_value(false);
-            return;
-        }
-        ConvertKeyEventToJS(callbackInfo->env_, napiEventInfo, callbackInfo->keyEvent_);
-        napi_value argv[] = {napiEventInfo};
-        napi_value nativeResult = callbackInfo->extension_->CallObjectMethod("onKeyEvent", argv, 1);
-
-        // Unwrap result
-        bool result = false;
-        if (!ConvertFromJsValue(callbackInfo->env_, nativeResult, result)) {
-            HILOG_ERROR("ConvertFromJsValue failed");
-            callbackInfo->syncPromise_.set_value(false);
-            return;
-        }
-        callbackInfo->syncPromise_.set_value(result);
-    };
-    if (napi_send_event(env_, task, napi_eprio_immediate) != napi_status::napi_ok) {
-        HILOG_ERROR("failed to send event");
+    if (OnKeyPressEventExec(work, loop)) {
+        HILOG_ERROR("Failed to execute OnKeyPressEvent work queue");
+        callbackInfo->syncPromise_.set_value(false);
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
     }
     bool callbackResult = syncFuture.get();
     HILOG_INFO("OnKeyPressEvent callbackResult = %{public}d", callbackResult);
     return callbackResult;
+}
+
+void NAccessibilityExtension::OnKeyPressEventCompleteCallback(uv_work_t* work, int status)
+{
+    KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
+    napi_env env = data->env_;
+    auto closeScope = [env](napi_handle_scope scope) {
+        napi_close_handle_scope(env, scope);
+    };
+    std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(data->env_), closeScope);
+    napi_value napiEventInfo = nullptr;
+    if (napi_create_object(data->env_, &napiEventInfo) != napi_ok) {
+        HILOG_ERROR("Create keyEvent object failed.");
+        data->syncPromise_.set_value(false);
+        delete data;
+        data = nullptr;
+        delete work;
+        work = nullptr;
+        return;
+    }
+    ConvertKeyEventToJS(data->env_, napiEventInfo, data->keyEvent_);
+    napi_value argv[] = {napiEventInfo};
+    napi_value napiResult = data->extension_->CallObjectMethod("onKeyEvent", argv, 1);
+
+    // Unwrap result
+    bool result = false;
+    if (!ConvertFromJsValue(data->env_, napiResult, result)) {
+        HILOG_ERROR("ConvertFromJsValue failed");
+        data->syncPromise_.set_value(false);
+        delete data;
+        data = nullptr;
+        delete work;
+        work = nullptr;
+        return;
+    }
+    HILOG_INFO("OnKeyPressEvent result = %{public}d", result);
+    data->syncPromise_.set_value(result);
+    delete data;
+    data = nullptr;
+    delete work;
+    work = nullptr;
 }
 
 napi_value NAccessibilityExtension::CallObjectMethod(const char* name, napi_value* argv, size_t argc)
