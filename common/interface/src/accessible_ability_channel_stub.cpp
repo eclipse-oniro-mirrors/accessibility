@@ -318,7 +318,7 @@ ErrCode AccessibleAbilityChannelStub::HandleEnableScreenCurtain(MessageParcel &d
     if (!Permission::IsSystemApp()) {
         HILOG_WARN("Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
-        return NO_ERROR;
+        return RET_ERR_NOT_SYSTEM_APP;
     }
 
     bool isEnable = data.ReadBool();
