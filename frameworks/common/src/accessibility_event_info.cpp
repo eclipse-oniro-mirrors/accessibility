@@ -243,6 +243,18 @@ void AccessibilityEventInfo::SetResourceModuleName(const std::string &moduleName
     HILOG_DEBUG("SetResourceModuleName [%{public}s]", resourceModuleName_.c_str());
 }
 
+const std::vector<std::tuple<int32_t, std::string>> &AccessibilityEventInfo::GetResourceParams() const
+{
+    HILOG_DEBUG("Get ResourceParams");
+    return resourceParams_;
+}
+ 
+void AccessibilityEventInfo::SetResourceParams(const std::vector<std::tuple<int32_t, std::string>> &resourceParams)
+{
+    resourceParams_ = resourceParams;
+    HILOG_DEBUG("Set ResourceParams");
+}
+
 const std::string &AccessibilityEventInfo::GetBundleName() const
 {
     HILOG_DEBUG("bundleName_[%{public}s]", bundleName_.c_str());
