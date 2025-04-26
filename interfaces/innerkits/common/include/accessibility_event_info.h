@@ -596,7 +596,7 @@ protected:
     uint32_t resourceId_ = 0;
     std::string resourceModuleName_ = "";
     std::string resourceBundleName_ = "";
-    const std::vector<std::tuple<int32_t, std::string>> resourceParams_ {};
+    std::vector<std::tuple<int32_t, std::string>> resourceParams_ {};
 };
 } // namespace Accessibility
 } // namespace OHOS
