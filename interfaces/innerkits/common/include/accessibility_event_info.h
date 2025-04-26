@@ -397,7 +397,7 @@ public:
      * @since 16
      * @sysCap Accessibility
      */
-    void SetResourceParams(const std::vector<std::tuple<int32_t, std::string>> &resourceParams) const;
+    void SetResourceParams(const std::vector<std::tuple<int32_t, std::string>> &resourceParams);
 
     /**
      * @brief Gets the bundle name of the event source, that is, the bundle name of the target application.
