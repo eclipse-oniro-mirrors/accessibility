@@ -90,7 +90,7 @@ static std::unordered_map<EventType, std::string> eventTypeMap = { { EventType::
     { EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT, "textSelectionUpdate" },
     { EventType::TYPE_VIEW_SCROLLED_EVENT, "scroll" },
     { EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY, "requestFocusForAccessibility" },
-    { EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility" }};
+    { EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY, "announceForAccessibility" } };
 static auto rEventTypeMap = ReverseMap(eventTypeMap);
 
 static std::unordered_map<ActionType, std::string> actionMap = {
