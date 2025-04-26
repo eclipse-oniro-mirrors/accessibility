@@ -896,7 +896,7 @@ RetError AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityT
 RetError AccessibleAbilityManagerService::RegisterElementOperator(
     const int32_t windowId, const sptr<IAccessibilityElementOperator> &operation, bool isApp)
 {
-    if (!registerhandler_) {
+    if (!registerHandler_) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
             A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
         HILOG_ERROR("handler_ is nullptr.");
@@ -907,7 +907,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
         return RET_ERR_SAMGR;
     }
 
-    registerhandler_->PostTask([=]() {
+    registerHandler_->PostTask([=]() {
         HILOG_INFO("Register windowId[%{public}d]", windowId);
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1055,13 +1055,13 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
         "element[%{public}" PRId64 "]",
         treeIdSingle, parameter.elementId, nodeId);
 
-    if (!registerhandler_) {
+    if (!registerHandler_) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
             A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
-    registerhandler_->PostTask([=]() {
+    registerHandler_->PostTask([=]() {
         HILOG_INFO("Register windowId[%{public}d]", parameter.windowId);
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
         if (RET_OK != RegisterElementOperatorChildWork(parameter, treeIdSingle, nodeId, operation, tokenId, isApp)) {
@@ -1125,12 +1125,12 @@ void AccessibleAbilityManagerService::DeleteConnectionAndDeathRecipient(
 
 RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId)
 {
-    if (!registerhandler_) {
-        HILOG_ERROR("registerhandler_ is nullptr.");
+    if (!registerHandler_) {
+        HILOG_ERROR("registerHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
-    registerhandler_->PostTask([=]() {
+    registerHandler_->PostTask([=]() {
         HILOG_INFO("Deregister windowId[%{public}d]", windowId);
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -1177,12 +1177,12 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
 
 RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId, const int32_t treeId)
 {
-    if (!registerhandler_) {
-        HILOG_ERROR("registerhandler_ is nullptr.");
+    if (!registerHandler_) {
+        HILOG_ERROR("registerHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
 
-    registerhandler_->PostTask([=]() {
+    registerHandler_->PostTask([=]() {
         HILOG_INFO("Deregister windowId[%{public}d], treeId[%{public}d] start", windowId, treeId);
         RecycleTreeId(treeId);
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();

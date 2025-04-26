@@ -47,7 +47,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     HILOG_INFO("ResultCode is %{public}d", resultCode);
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
-        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance.GetAccountData(accountId_);
+        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
         if (accountData != nullptr) {
             accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
             return;

@@ -812,7 +812,7 @@ RetError AccessibilitySettings::GetShortkeyTarget(std::string &name)
         return RET_ERR_NULLPTR;
     }
     ffrt::future syncFuture = syncPromise->get_future();
-    auto tmpName = std::make_shared<bool>(name);
+    auto tmpName = std::make_shared<std::string>(name);
     handler_->PostTask([this, syncPromise, tmpName]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =

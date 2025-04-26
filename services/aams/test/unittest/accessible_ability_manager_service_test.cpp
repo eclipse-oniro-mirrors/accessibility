@@ -72,8 +72,6 @@ void AddPermission()
     const char *perms[] = {
         OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str(),
         OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str(),
-        OHOS_PERMISSION_MANAGE_SECURE_SETTINGS.c_str(),
-        OHOS_PERMISSION_MANAGE_SETTINGS.c_str()
     };
     NativeTokenInfoParams infoInstance = {
         .dcapsNum = 0,

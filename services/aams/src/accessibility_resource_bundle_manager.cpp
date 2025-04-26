@@ -99,7 +99,7 @@ int AccessibilityResourceBundleManager::GetUidByBundleName(const std::string &bu
     bool ret = true;
     std::lock_guard<ffrt::mutex> lock(bundleMutex_);
     sptr<AppExecFwk::IBundleMgr> bundleMgr = GetBundleMgrProxy();
-    resutl = bundleMgr->GetUidByBundleName(bundleName, userId);
+    result = bundleMgr->GetUidByBundleName(bundleName, userId);
     do {
         if (bundleMgr == nullptr) {
             ret = false;

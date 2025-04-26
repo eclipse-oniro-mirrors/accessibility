@@ -340,6 +340,7 @@ private:
     void GetPointOffset(MMI::PointerEvent &event, std::vector<float> &firstPointOffset,
         std::vector<float> &secondPointOffset);
     float GetAngleCos(float offsetX, float offsetY, bool isGetX);
+    bool IsRealMove(MMI::PointerEvent &event);
     bool IsDragGestureAccept(MMI::PointerEvent &event);
     void SendAccessibilityEventToAA(EventType eventType);
     void SendTouchEventToAA(MMI::PointerEvent &event);

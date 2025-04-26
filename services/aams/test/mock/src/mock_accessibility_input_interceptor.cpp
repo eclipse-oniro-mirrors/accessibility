@@ -98,11 +98,6 @@ void AccessibilityInputInterceptor::SetNextEventTransmitter(
     (void)next;
 }
 
-void AccessibilityInputInterceptor::ShieldZoomGesture(bool flag)
-{
-    (void)flag;
-}
-
 AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
 {}
 

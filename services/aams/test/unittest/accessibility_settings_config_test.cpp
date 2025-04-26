@@ -73,8 +73,6 @@ void AddPermission()
     const char *perms[] = {
         OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str(),
         OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str(),
-        OHOS_PERMISSION_MANAGE_SECURE_SETTINGS.c_str(),
-        OHOS_PERMISSION_MANAGE_SETTINGS.c_str()
     };
     NativeTokenInfoParams infoInstance = {
         .dcapsNum = 0,
@@ -1041,22 +1039,6 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_O
     settingConfig_->Init();
     settingConfig_->OnDataClone();
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_OnDataClone end";
-}
-
-/**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetInitializeState_001
- * @tc.name: SetInitializeState
- * @tc.desc: Test function SetInitializeState GetInitializeState
- */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetInitializeState_001,
-    TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInitializeState_001 start";
-    settingConfig_->Init();
-    settingConfig_->SetInitializeState(false);
-
-    EXPECT_EQ(settingConfig_->GetInitializeState(), 0);
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInitializeState_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

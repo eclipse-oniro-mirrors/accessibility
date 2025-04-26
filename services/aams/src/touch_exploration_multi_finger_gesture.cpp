@@ -349,7 +349,7 @@ bool TouchExploration::IsRealMove(MMI::PointerEvent &event)
 {
     std::vector<float> firstPointOffset;
     std::vector<float> secondPointOffset;
-    GetPointOffset(event, firstOffsetX, secondPointOffset);
+    GetPointOffset(event, firstPointOffset, secondPointOffset);
     if (firstPointOffset.size() != SCREEN_AXIS_NUM || secondPointOffset.size() != SCREEN_AXIS_NUM) {
         return false;
     }
@@ -897,7 +897,7 @@ bool TouchExploration::GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::Poi
         HILOG_ERROR("get base pointEvent(%{public}d) failed", pId);
         return false;
     }
-    multiFingerSwipePrePoint_[pId]->GetPointerItem(pId, basePointerIterm);
+    multiFingerSwipePrePoint_[pId]->GetPointerItem(pId, basePointerItem);
     return true;
 }
 
