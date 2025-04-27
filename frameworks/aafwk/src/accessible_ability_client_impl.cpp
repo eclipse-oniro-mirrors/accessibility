@@ -1938,7 +1938,7 @@ RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr
 {
     HILOG_INFO();
     if (callback == nullptr) {
-        HILOG_INFO("callback IS NULLPTR");
+        HILOG_ERROR("callback is nullptr");
         return RET_ERR_INVALID_PARAM;
     }
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
@@ -1953,6 +1953,9 @@ RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr
     }
     bool exist = false;
     for (auto &cb : callbackList_) {
+        if (cb == nullptr) {
+            continue;
+        }
         if (*cb == *callback) {
             exist = true;
         }
@@ -1966,6 +1969,10 @@ RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr
 RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback)
 {
     HILOG_INFO();
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr");
+        return RET_ERR_INVALID_PARAM;
+    }
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
     if (channelClient_ == nullptr) {
         HILOG_ERROR("the channel is invalid.");
@@ -1976,6 +1983,9 @@ RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_p
         callbackList_.clear();
     } else {
         for (auto it = callbackList_.begin(); it != callbackList_.end();) {
+            if (*it == nullptr) {
+                continue;
+            }
             if (**it == *callback) {
                 HILOG_INFO("UnRegister exist callback");
                 it = callbackList_.erase(it);
