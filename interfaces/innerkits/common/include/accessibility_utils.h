@@ -38,10 +38,10 @@ enum KeyAction : int32_t {
     UNKNOWN = 0xff,
 };
 
-napi_status ParseResourceIdFromNAPI(napi_env env, napi_value, uint32_t &idValue);
-napi_status ParseResourceBundleNameFromNAPI(napi_env env, napi_value, std::string &bundleNameValue);
-napi_status ParseResourceModuleNameFromNAPI(napi_env env, napi_value, std::string &moduleNameValue);
-napi_status ParseResourceParamsFromNAPI(napi_env env, napi_value,
+napi_status ParseResourceIdFromNAPI(napi_env env, napi_value value, uint32_t &idValue);
+napi_status ParseResourceBundleNameFromNAPI(napi_env env, napi_value value, std::string &bundleNameValue);
+napi_status ParseResourceModuleNameFromNAPI(napi_env env, napi_value value, std::string &moduleNameValue);
+napi_status ParseResourceParamsFromNAPI(napi_env env, napi_value value,
     std::vector<std::tuple<int32_t, std::string>> &resourceParamsValue);
 std::string GetStringFromNAPI(napi_env env, napi_value value);
 bool ParseBool(napi_env env, bool& param, napi_value args);

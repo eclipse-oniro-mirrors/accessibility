@@ -1498,7 +1498,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
     uint64_t elementInfosCountAdded = 0;
     uint64_t elementInfosCount = elementInfos.size();
     for (auto info : vecElementInfos) {
-        if ((info.GetParentNodeId() == ROOT_PARENT_ELEMENT_ID) && parentIndex >=0 && parentIndex < elementInfos.size()) {
+        if (info.GetParentNodeId() == ROOT_PARENT_ELEMENT_ID && parentIndex >=0 && parentIndex < elementInfos.size()) {
             elementInfos[parentIndex].AddChild(info.GetAccessibilityId());
             info.SetParent(elementInfos[parentIndex].GetAccessibilityId());
             HILOG_DEBUG("Give the father a child. %{public}" PRId64 ",Give the child a father.  %{public}" PRId64 "",
