@@ -521,8 +521,9 @@ private:
     ffrt::condition_variable proxyConVar_;
     ffrt::mutex conVarMutex_;
     Utils::RWLock rwLock_;
-    std::set<std::shared_ptr<DisconnectCallback>> callbackSet_;
+    std::list<std::shared_ptr<DisconnectCallback>> callbackList_;
     bool isDisconnectCallbackExecute_ = false;
+    ffrt::mutex callbackListMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
