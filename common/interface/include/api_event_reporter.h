@@ -78,6 +78,8 @@ private:
     static int64_t g_processorId;
     static const int64_t NULLPTR_PROCCESSORID = 0;
     std::unordered_map<std::string, std::shared_ptr<EventPeriodExpandableData>> m_thresholdData;
+    static bool IsValidPath(const std::string& filePath);
+    static bool IsReal(const std::string& file, std::string& realFile);
 };
 }  // namespace Accessibility
 }  // namespace OHOS

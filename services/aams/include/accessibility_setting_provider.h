@@ -16,6 +16,7 @@
 #ifndef ACCESSIBILITY_SETTING_PROVIDER_H
 #define ACCESSIBILITY_SETTING_PROVIDER_H
 
+#include "datashare_helper.h"
 #include "errors.h"
 #include "mutex"
 #include "accessibility_setting_observer.h"

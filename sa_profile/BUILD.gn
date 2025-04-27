@@ -26,7 +26,11 @@ ohos_sa_profile("aams_sa_profile") {
 }
 
 ohos_prebuilt_etc("accessibility_cfg") {
-  source = "accessibility.cfg"
+  if (!accessibility_dynamic_support) {
+    source = "accessibility.cfg"
+  } else {
+    source = "accessibility_dynamic.cfg"
+  }
   relative_install_dir = "init"
   subsystem_name = "barrierfree"
   part_name = "accessibility"

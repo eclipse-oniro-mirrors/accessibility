@@ -16,9 +16,7 @@
 #include "accessible_ability_channel_client.h"
 
 #include <cinttypes>
-#ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
-#endif // OHOS_BUILD_ENABLE_HITRACE
 #include "accessibility_element_operator_callback_impl.h"
 #include "hilog_wrapper.h"
 
@@ -56,9 +54,7 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     int64_t elementId, int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
-#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "FindFocusedElement");
-#endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_ == nullptr) {
         HILOG_ERROR("FindFocusedElementInfo Failed to connect to aams [channelId:%{public}d]",
             channelId_);
@@ -123,9 +119,7 @@ RetError AccessibleAbilityChannelClient::SendSimulateGesture(
 RetError AccessibleAbilityChannelClient::GetCursorPosition(
     int32_t accessibilityWindowId, int64_t elementId, int32_t &position)
 {
-#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "GetCursorPosition");
-#endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_ == nullptr) {
         HILOG_ERROR("GetCursorPosition Failed to connect to aams [channelId:%{public}d]",
             channelId_);
@@ -161,9 +155,7 @@ RetError AccessibleAbilityChannelClient::GetCursorPosition(
 RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId,
     int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments)
 {
-#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "ExecuteAction");
-#endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_ == nullptr) {
         HILOG_ERROR("ExecuteAction Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
@@ -222,7 +214,7 @@ RetError AccessibleAbilityChannelClient::EnableScreenCurtain(bool isEnable)
         HILOG_ERROR("EnableScreenCurtain Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
     }
-    return  proxy_->EnableScreenCurtain(isEnable) ? RET_OK : RET_ERR_PERFORM_ACTION_FAILED_BY_ACE;
+    return  proxy_->EnableScreenCurtain(isEnable);
 }
 
 RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId,
@@ -232,9 +224,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     int32_t requestId = GenerateRequestId();
     HILOG_DEBUG("channelId:%{public}d, elementId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
         channelId_, elementId, accessibilityWindowId, requestId);
-#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
-#endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_ == nullptr) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]",
             channelId_);
@@ -311,20 +301,20 @@ RetError AccessibleAbilityChannelClient::SearchDefaultFocusedByWindowId(int32_t 
     RetError ret = proxy_->SearchDefaultFocusedByWindowId(elementBasicInfo, requestId,
         elementOperator, mode, isFilter);
     if (ret != RET_OK) {
-        HILOG_ERROR("searchElement failed. ret: %{public}d, requestId :[%{public}d]",
+        HILOG_ERROR("search default focus failed. ret: %{public}d, requestId :[%{public}d]",
             ret, requestId);
         return ret;
     }
  
     ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
-        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to wait result");
+        HILOG_ERROR("SearchDefaultFocusedByWindowId Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
  
     for (auto &info : elementOperator->elementInfosResult_) {
         if (info.GetAccessibilityId() == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
-            HILOG_ERROR("SearchElementInfosByAccessibilityId The elementInfo from ace is wrong");
+            HILOG_ERROR("SearchDefaultFocusedByWindowId The elementInfo from ace is wrong");
             return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
         }
     }
@@ -336,9 +326,7 @@ RetError AccessibleAbilityChannelClient::SearchDefaultFocusedByWindowId(int32_t 
 RetError AccessibleAbilityChannelClient::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d]", channelId_, windowId);
-#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER(HITRACE_TAG_ACCESSIBILITY_MANAGER);
-#endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_ == nullptr) {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
@@ -349,9 +337,7 @@ RetError AccessibleAbilityChannelClient::GetWindow(const int32_t windowId, Acces
 RetError AccessibleAbilityChannelClient::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
-#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER(HITRACE_TAG_ACCESSIBILITY_MANAGER);
-#endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_) {
         return proxy_->GetWindows(windows);
     } else {
@@ -364,9 +350,7 @@ RetError AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows) const
 {
     HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}" PRIu64 "]", channelId_, displayId);
-#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "GetWindowsByDisplayId");
-#endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_) {
         return proxy_->GetWindowsByDisplayId(displayId, windows);
     } else {
@@ -379,9 +363,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
     int64_t elementId, const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
-#ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementByText");
-#endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_ == nullptr) {
         HILOG_ERROR("SearchElementInfosByText Failed to connect to aams [channelId:%{public}d]",
             channelId_);

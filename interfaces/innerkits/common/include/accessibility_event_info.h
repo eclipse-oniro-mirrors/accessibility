@@ -338,7 +338,7 @@ public:
     /**
      * @brief AA get the resourceId of event is sent from ASAC.
      * @return The resourceId of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     uint32_t GetResourceId() const;
@@ -346,7 +346,7 @@ public:
     /**
      * @brief ASAC set the resourceId of is sent to AA
      * @param resourceId The resourceId of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     void SetResourceId(const uint32_t &resourceId);
@@ -354,7 +354,7 @@ public:
      /**
      * @brief AA get the moduleName of event is sent from ASAC.
      * @return The moduleName of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     const std::string &GetResourceModuleName() const;
@@ -362,7 +362,7 @@ public:
     /**
      * @brief ASAC set the moduleName of is sent to AA
      * @param moduleName The moduleName of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     void SetResourceModuleName(const std::string &moduleName);
@@ -370,7 +370,7 @@ public:
      /**
      * @brief AA get the bundleName of event is sent from ASAC.
      * @return The bundleName of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     const std::string &GetResourceBundleName() const;
@@ -378,15 +378,31 @@ public:
     /**
      * @brief ASAC set the bundleName of is sent to AA
      * @param bundleName The bundleName of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     void SetResourceBundleName(const std::string &bundleName);
 
     /**
+     * @brief AA get the resourceParams of event is send from ASAC.
+     * @return The resourceParams of event is send from ASAC
+     * @since 16
+     * @sysCap Accessibility
+     */
+    const std::vector<std::tuple<int32_t, std::string>> &GetResourceParams() const;
+
+    /**
+     * @brief ASAC set the resourceParams of is send to ASAC.
+     * @return resourceParams The resourceParams of event is send from ASAC
+     * @since 16
+     * @sysCap Accessibility
+     */
+    void SetResourceParams(const std::vector<std::tuple<int32_t, std::string>> &resourceParams);
+
+    /**
      * @brief Gets the bundle name of the event source, that is, the bundle name of the target application.
      * @return Returns the bundle name of the event source.
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     const std::string &GetBundleName() const;
@@ -577,9 +593,10 @@ protected:
     std::string textAnnouncedForAccessibility_ = "";
     std::string inspectorKey_ = "";
     int32_t requestFocusElementId_ = -1;
-    uint32_t resourceId_ = 1;
+    uint32_t resourceId_ = 0;
     std::string resourceModuleName_ = "";
     std::string resourceBundleName_ = "";
+    std::vector<std::tuple<int32_t, std::string>> resourceParams_ {};
 };
 } // namespace Accessibility
 } // namespace OHOS

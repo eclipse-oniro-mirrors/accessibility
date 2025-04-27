@@ -113,11 +113,6 @@ public:
     bool InitializeContext();
 
     /**
-     * @brief UnInitialize the run context.
-     */
-    void UnInitializeContext();
-
-    /**
      * @brief Subscribes to accessibility config value.
      * @param id  the config id which is observed.
      * @param observer Indicates the observer for listening to accessibility

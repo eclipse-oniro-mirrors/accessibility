@@ -46,7 +46,7 @@ public:
     void NotifyStringVectorChanged2JS(std::vector<std::string> value);
     void NotifyIntChanged2JS(int32_t value);
     void NotifyUintChanged2JS(uint32_t value);
-    void NotifyFloatChanged2JS(float value);
+    void NotifyDoubleChanged2JS(double value);
 
     napi_env env_ = nullptr;
     napi_ref handlerRef_ = nullptr;

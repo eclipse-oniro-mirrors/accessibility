@@ -134,6 +134,19 @@ bool AccessibilityEventInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
     uint32_t resourceId = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, resourceId);
     SetResourceId(resourceId);
+
+    int32_t paramsSize = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, paramsSize);
+    int32_t paramsType;
+    std::string params;
+    if (!ContainerSecurityVerify(parcel, paramsSize, resourceParams_.max_size())) {
+        return false;
+    }
+    for (int32_t i = 0 ; i < paramsSize; i++) {
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, paramsType);
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, params);
+        resourceParams_.emplace_back(std::make_tuple(paramsType, params));
+    }
     return true;
 }
 
@@ -188,6 +201,12 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetResourceBundleName());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetResourceModuleName());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, GetResourceId());
+    auto resourceParams = GetResourceParams();
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, resourceParams.size());
+    for (auto &params : resourceParams) {
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, std::get<0>(params));
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, std::get<1>(params));
+    }
     return true;
 }
 

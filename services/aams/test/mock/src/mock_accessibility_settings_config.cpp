@@ -467,15 +467,5 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
 void AccessibilitySettingsConfig::OnDataClone()
 {
 }
-
-bool AccessibilitySettingsConfig::GetInitializeState()
-{
-    return isInitialized_;
-}
-
-void AccessibilitySettingsConfig::SetInitializeState(bool isInitialized)
-{
-    isInitialized_ = isInitialized;
-}
 } // namespace Accessibility
 } // namespace OHOS

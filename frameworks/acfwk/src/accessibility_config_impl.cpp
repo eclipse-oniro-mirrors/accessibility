@@ -63,17 +63,6 @@ bool AccessibilityConfig::Impl::InitializeContext()
     return isInitialized_;
 }
 
-void AccessibilityConfig::Impl::UnInitializeContext()
-{
-    HILOG_DEBUG();
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Context UnInitializeContext failed");
-        return;
-    }
-    sptr<IRemoteObject> object = serviceProxy_->AsObject();
-    ResetService(object);
-}
-
 void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *value, void *context)
 {
     if (key == nullptr || std::strcmp(key, SYSTEM_PARAMETER_AAMS_NAME.c_str())) {
@@ -1051,8 +1040,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &ti
 {
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetMouseAutoClick",
-        REPORTER_THRESHOLD_VALUE);
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.GetMouseAutoClick", REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
@@ -2106,6 +2094,8 @@ void AccessibilityConfig::Impl::InitConfigValues()
         return;
     }
     serviceProxy_->GetAllConfigs(configData);
+
+    std::lock_guard<ffrt::mutex> lock(configObserversMutex_);
     highContrastText_ = configData.highContrastText_;
     invertColor_ = configData.invertColor_;
     animationOff_ = configData.animationOff_;
@@ -2183,7 +2173,6 @@ void AccessibilityConfig::Impl::NotifyDefaultShortKeyMultiConfigs()
 
 void AccessibilityConfig::Impl::NotifyDefaultConfigs()
 {
-    std::lock_guard<ffrt::mutex> lock(configObserversMutex_);
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
         configObservers_.find(CONFIG_HIGH_CONTRAST_TEXT);
     if (it != configObservers_.end()) {

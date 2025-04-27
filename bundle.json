@@ -1,5 +1,5 @@
 {
-  "name": "@ohos/accessibility",
+  "name": "@ohsh/accessibility",
   "description": "The accessibility framework provides a standard mechanism for exchanging information between applications and assistive applications.",
   "version": "4.0",
   "repository": "",

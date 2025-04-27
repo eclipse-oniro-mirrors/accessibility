@@ -65,8 +65,6 @@ extern const std::string HTML_ITEM_UNKOWN;
 extern const std::string OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG;
 extern const std::string OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG;
 extern const std::string OHOS_PERMISSION_QUERY_ACCESSIBILITY_ELEMENT;
-extern const std::string OHOS_PERMISSION_MANAGE_SECURE_SETTINGS;
-extern const std::string OHOS_PERMISSION_MANAGE_SETTINGS;
 
 extern const int32_t PREFETCH_PREDECESSORS;
 extern const int32_t PREFETCH_SIBLINGS;

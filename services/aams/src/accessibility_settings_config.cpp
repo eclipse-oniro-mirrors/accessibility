@@ -218,7 +218,7 @@ RetError AccessibilitySettingsConfig::SetStartToHosState(const bool state)
         HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
     }
-    auto ret = datashare_->PutBoolValue("AccessibilityStartToHos", state);
+    auto ret = datashare_->PutBoolValue("AccessibilityStartFromAtoHos", state);
     if (ret != RET_OK) {
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetStartToHosState");
         HILOG_ERROR("set startToHosState failed");
@@ -281,8 +281,11 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<s
     std::set<std::string> targets;
     std::copy_if(name.begin(), name.end(), std::inserter(targets, targets.end()),
         [&targets](const std::string &target) {
-            targets.insert(target);
-            return true;
+            if (targets.find(target) == targets.end()) {
+                targets.insert(target);
+                return true;
+            }
+            return false;
         });
     std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     if (!datashare_) {
@@ -782,11 +785,11 @@ bool AccessibilitySettingsConfig::GetStartToHosState()
 {
     HILOG_DEBUG();
     if (!datashare_) {
-        return RET_ERR_NULLPTR;
+        return false;
     }
 
     bool value = true;
-    value = datashare_->GetBoolValue("AccessibilityStartToHos", true);
+    value = datashare_->GetBoolValue("AccessibilityStartFromAtoHos", true);
     return value;
 }
 
@@ -970,7 +973,6 @@ void AccessibilitySettingsConfig::InitCapability()
 RetError AccessibilitySettingsConfig::SetConfigState(const std::string& key, bool value)
 {
     if (!datashare_) {
-        HILOG_ERROR("wza datashare_ is nullptr");
         return RET_ERR_NULLPTR;
     }
     auto ret = datashare_->PutBoolValue(key, value);
@@ -987,7 +989,7 @@ void AccessibilitySettingsConfig::Init()
     if (datashare_ == nullptr) {
         return;
     }
-    RetError ret = datashare_->Initialize(POWER_MANAGER_SERVICE_ID);
+    datashare_->Initialize(POWER_MANAGER_SERVICE_ID);
     InitCaption();
     InitSetting();
 
@@ -995,10 +997,7 @@ void AccessibilitySettingsConfig::Init()
     if (systemDatashare_ == nullptr) {
         return;
     }
-    RetError systemRet = systemDatashare_->Initialize(POWER_MANAGER_SERVICE_ID);
-    if (ret == RET_OK && systemRet == RET_OK) {
-        isInitialized_ = true;
-    }
+    systemDatashare_->Initialize(POWER_MANAGER_SERVICE_ID);
 }
 
 void AccessibilitySettingsConfig::ClearData()
@@ -1147,16 +1146,5 @@ void AccessibilitySettingsConfig::OnDataClone()
     service->PutBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, true);
     service->PutBoolValue(ACCESSIBILITY_CLONE_FLAG, false);
 }
-
-bool AccessibilitySettingsConfig::GetInitializeState()
-{
-    return isInitialized_;
-}
-
-void AccessibilitySettingsConfig::SetInitializeState(bool isInitialized)
-{
-    isInitialized_ = isInitialized;
-}
-
 } // namespace Accessibility
 } // namespace OHOS

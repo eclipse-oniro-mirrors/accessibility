@@ -27,7 +27,6 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilityResourceBundleManager::AccessibilityResourceBundleManager()
 {
-    bundleManager_ = Singleton<AccessibilityResourceBundleManager>::GetInstance().GetBundleMgrProxy();
 }
  
 AccessibilityResourceBundleManager::~AccessibilityResourceBundleManager()
@@ -67,7 +66,11 @@ sptr<AppExecFwk::IBundleMgr> AccessibilityResourceBundleManager::GetBundleMgrPro
             return nullptr;
         }
     }
- 
+
+    if (!bundleManager_) {
+        HILOG_ERROR("bundleManager_ is nullptr");
+        return nullptr;
+    }
     bundleManager_->AsObject()->AddDeathRecipient(bundleManagerDeathRecipient_);
     return bundleManager_;
 }
@@ -92,29 +95,56 @@ ErrCode AccessibilityResourceBundleManager::GetBundleInfoV9(const std::string& b
 int AccessibilityResourceBundleManager::GetUidByBundleName(const std::string &bundleName,
     const std::string &abilityName, const int userId)
 {
+    int result = -1;
+    bool ret = true;
     std::lock_guard<ffrt::mutex> lock(bundleMutex_);
     sptr<AppExecFwk::IBundleMgr> bundleMgr = GetBundleMgrProxy();
-    if (!bundleMgr) {
+    result = bundleMgr->GetUidByBundleName(bundleName, userId);
+    do {
+        if (bundleMgr == nullptr) {
+            ret = false;
+            break;
+        }
+        if (result == -1) {
+            ret = false;
+            break;
+        }
+    } while (0);
+    if (ret == false) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
             A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
         HILOG_ERROR("get bundleMgr failed");
         return ERR_INVALID_VALUE;
     }
-    return bundleMgr->GetUidByBundleName(bundleName, userId);
+    return result;
 }
  
 bool AccessibilityResourceBundleManager::QueryExtensionAbilityInfos(
     const AppExecFwk::ExtensionAbilityType &extensionType, const int32_t &userId,
     std::vector<AppExecFwk::ExtensionAbilityInfo> &extensionInfos)
 {
+    bool result = true;
+    bool ret = true;
     std::lock_guard<ffrt::mutex> lock(bundleMutex_);
     sptr<AppExecFwk::IBundleMgr> bundleMgr = GetBundleMgrProxy();
-    if (!bundleMgr) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_PACKAGE_INFO_FAILED);
+    result = bundleMgr->QueryExtensionAbilityInfos(extensionType, userId, extensionInfos);
+    do {
+        if (bundleMgr == nullptr) {
+            ret = false;
+            break;
+        }
+        if (result == false) {
+            ret = false;
+            break;
+        }
+    } while(0);
+    if (ret == false) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT,
+            A11yError::ERROR_QUERY_PACKAGE_INFO_FAILED);
         HILOG_ERROR("get bundleMgr failed");
         return false;
     }
-    return bundleMgr->QueryExtensionAbilityInfos(extensionType, userId, extensionInfos);
+    return result;
 }
  
 void AccessibilityResourceBundleManager::BundleManagerDeathRecipient::OnRemoteDied(
@@ -126,7 +156,7 @@ void AccessibilityResourceBundleManager::BundleManagerDeathRecipient::OnRemoteDi
 void AccessibilityResourceBundleManager::OnBundleManagerDied(const wptr<IRemoteObject> &remote)
 {
     HILOG_INFO("OnBundleManagerDied ");
-    if (bundleManager_->AsObject() == nullptr) {
+    if (!bundleManager_) {
         HILOG_ERROR("bundleManager_ is nullptr");
         return;
     }

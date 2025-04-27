@@ -15,9 +15,7 @@
 
 #include "utils.h"
 
-#ifdef OHOS_BUILD_ENABLE_HISYSEVENT
 #include <hisysevent.h>
-#endif //OHOS_BUILD_ENABLE_HISYSEVENT
 
 #include "bundle_mgr_client.h"
 #include "hilog_wrapper.h"
@@ -299,7 +297,6 @@ void Utils::RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode
         << ", bundleName: " << bundleName << ", abilityName: " << abilityName << ";";
     std::string info = oss.str();
     HILOG_DEBUG("accessibility function is unavailable: %{public}s", info.c_str());
-#ifdef OHOS_BUILD_ENABLE_HISYSEVENT
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
         "UNAVAILABLE",
@@ -308,7 +305,6 @@ void Utils::RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode
     if (ret != 0) {
         HILOG_ERROR("Write HiSysEvent error, ret:%{public}d", ret);
     }
-#endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
 void Utils::RecordOnRemoveSystemAbility(int32_t systemAbilityId, const std::string &bundleName,
@@ -319,7 +315,6 @@ void Utils::RecordOnRemoveSystemAbility(int32_t systemAbilityId, const std::stri
         << ", bundleName: " << bundleName << ", abilityName: " << abilityName << ";";
     std::string info = oss.str();
     HILOG_DEBUG("accessibility function is unavailable: %{public}s", info.c_str());
-#ifdef OHOS_BUILD_ENABLE_HISYSEVENT
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
         "UNAVAILABLE",
@@ -328,7 +323,6 @@ void Utils::RecordOnRemoveSystemAbility(int32_t systemAbilityId, const std::stri
     if (ret != 0) {
         HILOG_ERROR("Write OnRemoveSystemAbility error, ret:%{public}d", ret);
     }
-#endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
 void Utils::RecordDatashareInteraction(A11yDatashareValueType type, const std::string &businessName,
@@ -340,7 +334,6 @@ void Utils::RecordDatashareInteraction(A11yDatashareValueType type, const std::s
         << ", abilityName: " << abilityName << ";";
     std::string info = oss.str();
     HILOG_DEBUG("accessibility function is unavailable: %{public}s", info.c_str());
-#ifdef OHOS_BUILD_ENABLE_HISYSEVENT
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
         "UNAVAILABLE",
@@ -349,7 +342,6 @@ void Utils::RecordDatashareInteraction(A11yDatashareValueType type, const std::s
     if (ret != 0) {
         HILOG_ERROR("Write RecordDatashareInteraction error, ret:%{public}d", ret);
     }
-#endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
 std::string Utils::TransferUnavailableEventToString(A11yUnavailableEvent type)
@@ -377,7 +369,6 @@ void Utils::RecordStartingA11yEvent(uint32_t flag)
     std::ostringstream oss;
     oss << "starting accessibility: " << "event: " << "system" << ", id: " << flag << ";";
     HILOG_DEBUG("starting accessibility: %{public}s", oss.str().c_str());
-#ifdef OHOS_BUILD_ENABLE_HISYSEVENT
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
         "STARTING_FUNCTION",
@@ -386,7 +377,6 @@ void Utils::RecordStartingA11yEvent(uint32_t flag)
     if (ret != 0) {
         HILOG_ERROR("Write HiSysEvent error, ret:%{public}d", ret);
     }
-#endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
 void Utils::RecordStartingA11yEvent(const std::string &name)
@@ -394,7 +384,6 @@ void Utils::RecordStartingA11yEvent(const std::string &name)
     std::ostringstream oss;
     oss << "starting accessibility: " << "event: " << "extension" << ", name: " << name << ";";
     HILOG_DEBUG("starting accessibility: %{public}s", oss.str().c_str());
-#ifdef OHOS_BUILD_ENABLE_HISYSEVENT
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
         "STARTING_FUNCTION",
@@ -403,7 +392,6 @@ void Utils::RecordStartingA11yEvent(const std::string &name)
     if (ret != 0) {
         HILOG_ERROR("Write HiSysEvent error, ret:%{public}d", ret);
     }
-#endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
 void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name, const bool &enableState)
@@ -414,7 +402,6 @@ void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name, const bool
     oss << "targets name: " << name.c_str() << ", state:" << enableStateValue.c_str() << ";";
     HILOG_DEBUG("RecordEnableShortkeyAbilityEvent enable single targets: %{public}s, enableState: %{public}s",
         name.c_str(), enableStateValue.c_str());
-#ifdef OHOS_BUILD_ENABLE_HISYSEVENT
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
         "ENABLE_SHORTKEY_ABILITY_SINGLE",
@@ -423,14 +410,12 @@ void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name, const bool
     if (ret != 0) {
         HILOG_ERROR("Write HiSysEvent RecordEnableShortkeyAbilityEvent error, ret:%{public}d", ret);
     }
-#endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
 void Utils::RecordOnZoomGestureEvent(const std::string &state)
 {
     std::string MSG_NAME = "on zoom gesture state";
     HILOG_DEBUG("starting RecordOnZoomGestureEvent on zoom gesture state: %{public}s", state.c_str());
-#ifdef OHOS_BUILD_ENABLE_HISYSEVENT
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
         "ZOOM_GESTURE_ACTION",
@@ -439,7 +424,6 @@ void Utils::RecordOnZoomGestureEvent(const std::string &state)
     if (ret != 0) {
         HILOG_ERROR("Write HiSysEvent RecordOnZoomGestureEvent error, ret:%{public}d", ret);
     }
-#endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
 void Utils::VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut)

@@ -64,7 +64,7 @@ public:
      */
     virtual RetError SearchDefaultFocusedByWindowId(const ElementBasicInfo elementBasicInfo,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-        const int32_t mode, bool isFilter) override;
+        const int32_t mode, bool isFilter = false) override;
 
     /**
      * @brief Make the child element information by accessibility ID and filtered by text and

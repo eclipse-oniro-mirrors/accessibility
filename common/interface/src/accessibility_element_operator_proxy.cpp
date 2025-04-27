@@ -115,7 +115,7 @@ void AccessibilityElementOperatorProxy::SearchDefaultFocusedByWindowId(const int
     }
  
     if (!data.WriteInt32(windowId)) {
-        HILOG_ERROR("connection write parcelable element id failed");
+        HILOG_ERROR("connection write parcelable window id failed");
         return;
     }
  

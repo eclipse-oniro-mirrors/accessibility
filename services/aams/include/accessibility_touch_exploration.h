@@ -336,10 +336,11 @@ private:
     int32_t GetSwipeDirection(const int32_t dx, const int32_t dy);
     bool RecordFocusedLocation(MMI::PointerEvent &event);
     void OffsetEvent(MMI::PointerEvent &event);
-    bool GetBasePointItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId);
+    bool GetBasePointItem(MMI::PointerEvent::PointerItem &basePointerItem, int32_t pId);
     void GetPointOffset(MMI::PointerEvent &event, std::vector<float> &firstPointOffset,
         std::vector<float> &secondPointOffset);
     float GetAngleCos(float offsetX, float offsetY, bool isGetX);
+    bool IsRealMove(MMI::PointerEvent &event);
     bool IsDragGestureAccept(MMI::PointerEvent &event);
     void SendAccessibilityEventToAA(EventType eventType);
     void SendTouchEventToAA(MMI::PointerEvent &event);
@@ -357,7 +358,7 @@ private:
     void HandleMultiFingersContinueDownStateUp(MMI::PointerEvent &event, uint32_t fingerNum);
     void HandleMultiFingersContinueDownStateMove(MMI::PointerEvent &event, uint32_t fingerNum);
     void StoreMultiFingerSwipeBaseDownPoint();
-    bool GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId);
+    bool GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerItem, int32_t pId);
     bool SaveMultiFingerSwipeGesturePointerInfo(MMI::PointerEvent &event);
     bool RecognizeMultiFingerSwipePath(const std::vector<Pointer> &path);
     GestureType GetMultiFingerSwipeGestureId(uint32_t fingerNum);

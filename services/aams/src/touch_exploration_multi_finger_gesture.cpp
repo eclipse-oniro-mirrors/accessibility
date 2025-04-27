@@ -239,12 +239,12 @@ void TouchExploration::HandleTwoFingersDownStateUp(MMI::PointerEvent &event)
     }
 }
 
-bool TouchExploration::GetBasePointItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId)
+bool TouchExploration::GetBasePointItem(MMI::PointerEvent::PointerItem &basePointerItem, int32_t pId)
 {
     HILOG_DEBUG();
     for (auto rIter = receivedPointerEvents_.rbegin(); rIter != receivedPointerEvents_.rend(); ++rIter) {
         if ((rIter->GetPointerId() == pId) && (rIter->GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN)) {
-            rIter->GetPointerItem(pId, basePointerIterm);
+            rIter->GetPointerItem(pId, basePointerItem);
             return true;
         }
     }
@@ -319,14 +319,14 @@ void TouchExploration::SendDragDownEventToMultimodal(MMI::PointerEvent event)
     int32_t xPointDown = 0;
     int32_t yPointDown = 0;
     int64_t actionTime = 0;
-    MMI::PointerEvent::PointerItem basePointerIterm {};
+    MMI::PointerEvent::PointerItem basePointerItem {};
 
     for (auto &baseEvent : receivedPointerEvents_) {
         if ((baseEvent.GetPointerId() == event.GetPointerId()) &&
             (baseEvent.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN)) {
-            baseEvent.GetPointerItem(event.GetPointerId(), basePointerIterm);
-            xPointDown = basePointerIterm.GetDisplayX();
-            yPointDown = basePointerIterm.GetDisplayY();
+            baseEvent.GetPointerItem(event.GetPointerId(), basePointerItem);
+            xPointDown = basePointerItem.GetDisplayX();
+            yPointDown = basePointerItem.GetDisplayY();
             actionTime = baseEvent.GetActionTime();
             break;
         }
@@ -345,21 +345,34 @@ void TouchExploration::SendDragDownEventToMultimodal(MMI::PointerEvent event)
     draggingDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
 }
 
+bool TouchExploration::IsRealMove(MMI::PointerEvent &event)
+{
+    std::vector<float> firstPointOffset;
+    std::vector<float> secondPointOffset;
+    GetPointOffset(event, firstPointOffset, secondPointOffset);
+    if (firstPointOffset.size() != SCREEN_AXIS_NUM || secondPointOffset.size() != SCREEN_AXIS_NUM) {
+        return false;
+    }
+
+    return (hypot(firstPointOffset[0], firstPointOffset[1]) >= TOUCH_SLOP &&
+        hypot(secondPointOffset[0], secondPointOffset[1]) >= TOUCH_SLOP);
+}
+
 void TouchExploration::HandleTwoFingersDownStateMove(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
 
-    MMI::PointerEvent::PointerItem pointerIterm;
-    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+    MMI::PointerEvent::PointerItem pointerItem;
+    event.GetPointerItem(event.GetPointerId(), pointerItem);
 
-    MMI::PointerEvent::PointerItem basePointerIterm;
-    if (!GetBasePointItem(basePointerIterm, event.GetPointerId())) {
+    MMI::PointerEvent::PointerItem basePointerItem;
+    if (!GetBasePointItem(basePointerItem, event.GetPointerId())) {
         HILOG_ERROR("get base point item failed, pid = %{public}d.", event.GetPointerId());
         return;
     }
 
-    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
-    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    int32_t offsetX = pointerItem.GetDisplayX() - basePointerItem.GetDisplayX();
+    int32_t offsetY = pointerItem.GetDisplayY() - basePointerItem.GetDisplayY();
     if (hypot(offsetX, offsetY) > TOUCH_SLOP * static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
         HILOG_DEBUG("cancel two-finger tap gesture because finger move");
         CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
@@ -369,6 +382,10 @@ void TouchExploration::HandleTwoFingersDownStateMove(MMI::PointerEvent &event)
             Clear();
             SendScreenWakeUpEvent(event);
             SetCurrentState(TouchExplorationState::INVALID);
+            return;
+        }
+        if (!IsRealMove(event)) {
+            HILOG_DEBUG("not a move");
             return;
         }
         if (IsDragGestureAccept(event)) {
@@ -643,17 +660,17 @@ void TouchExploration::HandleMultiFingersTapStateMove(MMI::PointerEvent &event, 
 
     receivedPointerEvents_.push_back(event);
 
-    MMI::PointerEvent::PointerItem pointerIterm;
-    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+    MMI::PointerEvent::PointerItem pointerItem;
+    event.GetPointerItem(event.GetPointerId(), pointerItem);
 
-    MMI::PointerEvent::PointerItem basePointerIterm;
-    if (!GetBasePointItem(basePointerIterm, event.GetPointerId())) {
+    MMI::PointerEvent::PointerItem basePointerItem;
+    if (!GetBasePointItem(basePointerItem, event.GetPointerId())) {
         HILOG_ERROR("get base point item failed, pid = %{public}d.", event.GetPointerId());
         return;
     }
 
-    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
-    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    int32_t offsetX = pointerItem.GetDisplayX() - basePointerItem.GetDisplayX();
+    int32_t offsetY = pointerItem.GetDisplayY() - basePointerItem.GetDisplayY();
     if (hypot(offsetX, offsetY) > TOUCH_SLOP * (fingerNum - 1)) {
         CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
         Clear();
@@ -706,17 +723,17 @@ void TouchExploration::HandleMultiFingersContinueDownStateMove(MMI::PointerEvent
 {
     receivedPointerEvents_.push_back(event);
 
-    MMI::PointerEvent::PointerItem pointerIterm;
-    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+    MMI::PointerEvent::PointerItem pointerItem;
+    event.GetPointerItem(event.GetPointerId(), pointerItem);
 
-    MMI::PointerEvent::PointerItem basePointerIterm;
-    if (!GetBasePointItem(basePointerIterm, event.GetPointerId())) {
+    MMI::PointerEvent::PointerItem basePointerItem;
+    if (!GetBasePointItem(basePointerItem, event.GetPointerId())) {
         HILOG_ERROR("get base point item failed, pid = %{public}d.", event.GetPointerId());
         return;
     }
 
-    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
-    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    int32_t offsetX = pointerItem.GetDisplayX() - basePointerItem.GetDisplayX();
+    int32_t offsetY = pointerItem.GetDisplayY() - basePointerItem.GetDisplayY();
     if (hypot(offsetX, offsetY) > TOUCH_SLOP * fingerNum) {
         Clear();
         CancelMultiFingerTapEvent();
@@ -821,12 +838,12 @@ void TouchExploration::StoreMultiFingerSwipeBaseDownPoint()
     for (auto& event : receivedPointerEvents_) {
         if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN) {
             Pointer mp;
-            MMI::PointerEvent::PointerItem pointerIterm;
+            MMI::PointerEvent::PointerItem pointerItem;
             std::vector<Pointer> mpVec;
             int32_t pId = event.GetPointerId();
-            event.GetPointerItem(pId, pointerIterm);
-            mp.px_ = static_cast<float>(pointerIterm.GetDisplayX());
-            mp.py_ = static_cast<float>(pointerIterm.GetDisplayY());
+            event.GetPointerItem(pId, pointerItem);
+            mp.px_ = static_cast<float>(pointerItem.GetDisplayX());
+            mp.py_ = static_cast<float>(pointerItem.GetDisplayY());
             mpVec.push_back(mp);
             multiFingerSwipeRoute_.insert(std::make_pair(pId, mpVec));
             multiFingerSwipePrePoint_[event.GetPointerId()] = std::make_shared<MMI::PointerEvent>(event);
@@ -838,17 +855,17 @@ void TouchExploration::HandleThreeFingersDownStateMove(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
 
-    MMI::PointerEvent::PointerItem pointerIterm;
-    event.GetPointerItem(event.GetPointerId(), pointerIterm);
+    MMI::PointerEvent::PointerItem pointerItem;
+    event.GetPointerItem(event.GetPointerId(), pointerItem);
 
-    MMI::PointerEvent::PointerItem basePointerIterm;
-    if (!GetBasePointItem(basePointerIterm, event.GetPointerId())) {
+    MMI::PointerEvent::PointerItem basePointerItem;
+    if (!GetBasePointItem(basePointerItem, event.GetPointerId())) {
         HILOG_ERROR("get base point item failed, pid = %{public}d.", event.GetPointerId());
         return;
     }
 
-    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
-    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    int32_t offsetX = pointerItem.GetDisplayX() - basePointerItem.GetDisplayX();
+    int32_t offsetY = pointerItem.GetDisplayY() - basePointerItem.GetDisplayY();
     if (hypot(offsetX, offsetY) > TOUCH_SLOP * static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
         CancelPostEvent(TouchExplorationMsg::WAIT_ANOTHER_FINGER_DOWN_MSG);
         CancelPostEvent(TouchExplorationMsg::THREE_FINGER_SINGLE_TAP_MSG);
@@ -873,32 +890,32 @@ void TouchExploration::HandleThreeFingersSwipeStateDown(MMI::PointerEvent &event
     SetCurrentState(TouchExplorationState::INVALID);
 }
 
-bool TouchExploration::GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId)
+bool TouchExploration::GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerItem, int32_t pId)
 {
     HILOG_DEBUG();
     if (multiFingerSwipePrePoint_.count(pId) == 0 || !multiFingerSwipePrePoint_[pId]) {
         HILOG_ERROR("get base pointEvent(%{public}d) failed", pId);
         return false;
     }
-    multiFingerSwipePrePoint_[pId]->GetPointerItem(pId, basePointerIterm);
+    multiFingerSwipePrePoint_[pId]->GetPointerItem(pId, basePointerItem);
     return true;
 }
 
 bool TouchExploration::SaveMultiFingerSwipeGesturePointerInfo(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    MMI::PointerEvent::PointerItem pointerIterm;
+    MMI::PointerEvent::PointerItem pointerItem;
     int32_t pId = event.GetPointerId();
-    event.GetPointerItem(pId, pointerIterm);
+    event.GetPointerItem(pId, pointerItem);
 
-    MMI::PointerEvent::PointerItem basePointerIterm;
-    if (!GetMultiFingerSwipeBasePointerItem(basePointerIterm, pId)) {
+    MMI::PointerEvent::PointerItem basePointerItem;
+    if (!GetMultiFingerSwipeBasePointerItem(basePointerItem, pId)) {
         HILOG_WARN("get base point item failed, pid = %{public}d.", pId);
         return true;
     }
 
-    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
-    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    int32_t offsetX = pointerItem.GetDisplayX() - basePointerItem.GetDisplayX();
+    int32_t offsetY = pointerItem.GetDisplayY() - basePointerItem.GetDisplayY();
     if (abs(offsetX) > mMinPixelsBetweenSamplesX_ || abs(offsetY) > mMinPixelsBetweenSamplesY_) {
         if (multiFingerSwipeDirection_ != GetSwipeDirection(offsetX, offsetY)) {
             Clear();
@@ -912,8 +929,8 @@ bool TouchExploration::SaveMultiFingerSwipeGesturePointerInfo(MMI::PointerEvent 
         }
 
         Pointer mp;
-        mp.px_ = static_cast<float>(pointerIterm.GetDisplayX());
-        mp.py_ = static_cast<float>(pointerIterm.GetDisplayY());
+        mp.px_ = static_cast<float>(pointerItem.GetDisplayX());
+        mp.py_ = static_cast<float>(pointerItem.GetDisplayY());
         multiFingerSwipeRoute_[pId].push_back(mp);
         multiFingerSwipePrePoint_[pId] = std::make_shared<MMI::PointerEvent>(event);
     }
@@ -1065,16 +1082,16 @@ void TouchExploration::HandleFourFingersDownStateMove(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
 
-    MMI::PointerEvent::PointerItem pointerIterm;
-    event.GetPointerItem(event.GetPointerId(), pointerIterm);
-    MMI::PointerEvent::PointerItem basePointerIterm;
-    if (!GetBasePointItem(basePointerIterm, event.GetPointerId())) {
+    MMI::PointerEvent::PointerItem pointerItem;
+    event.GetPointerItem(event.GetPointerId(), pointerItem);
+    MMI::PointerEvent::PointerItem basePointerItem;
+    if (!GetBasePointItem(basePointerItem, event.GetPointerId())) {
         HILOG_ERROR("get base point item failed, pid = %{public}d.", event.GetPointerId());
         return;
     }
 
-    int32_t offsetX = pointerIterm.GetDisplayX() - basePointerIterm.GetDisplayX();
-    int32_t offsetY = pointerIterm.GetDisplayY() - basePointerIterm.GetDisplayY();
+    int32_t offsetX = pointerItem.GetDisplayX() - basePointerItem.GetDisplayX();
+    int32_t offsetY = pointerItem.GetDisplayY() - basePointerItem.GetDisplayY();
     if (hypot(offsetX, offsetY) > TOUCH_SLOP * static_cast<uint32_t>(PointerCount::POINTER_COUNT_4)) {
         CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_SINGLE_TAP_MSG);
         CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_LONG_PRESS_MSG);

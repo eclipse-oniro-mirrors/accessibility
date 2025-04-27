@@ -111,7 +111,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     HILOG_DEBUG();
     std::vector<AccessibilityElementInfo> storeData;
     int32_t requestId = data.ReadInt32();
-    size_t infoSize = data.ReadUint32();
+    uint32_t infoSize = data.ReadUint32();
     if (infoSize != 0) {
         size_t rawDataSize = data.ReadUint32();
         MessageParcel tmpParcel;
@@ -123,11 +123,13 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
         }
 
         if (!tmpParcel.ParseFrom(reinterpret_cast<uintptr_t>(buffer), rawDataSize)) {
+            free(buffer);
+            buffer = nullptr;
             reply.WriteInt32(RET_ERR_FAILED);
             return TRANSACTION_ERR;
         }
 
-        if (infoSize < 0 || infoSize > MAX_ALLOW_SIZE) {
+        if (infoSize < 0 || infoSize > static_cast<uint32_t>(MAX_ALLOW_SIZE)) {
             reply.WriteInt32(RET_ERR_FAILED);
             return TRANSACTION_ERR;
         }
@@ -160,11 +162,13 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchDefaultFocusByW
         void *buffer = nullptr;
         // memory alloced in GetData will be released when tmpParcel destruct
         if (!GetData(rawDataSize, data.ReadRawData(rawDataSize), buffer)) {
+            HILOG_ERROR("get data failed!");
             reply.WriteInt32(RET_ERR_FAILED);
             return TRANSACTION_ERR;
         }
         
         if (!tmpParcel.ParseFrom(reinterpret_cast<uintptr_t>(buffer), rawDataSize)) {
+            HILOG_ERROR("parse data from buffer failed!");
             free(buffer);
             buffer = nullptr;
             reply.WriteInt32(RET_ERR_FAILED);
@@ -172,6 +176,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchDefaultFocusByW
         }
  
         if (infoSize < 0 || infoSize > static_cast<uint32_t>(MAX_ALLOW_SIZE)) {
+            HILOG_ERROR("The infoSize is abnormal");
             reply.WriteInt32(RET_ERR_FAILED);
             return TRANSACTION_ERR;
         }
@@ -180,6 +185,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchDefaultFocusByW
             sptr<AccessibilityElementInfoParcel> info =
                 tmpParcel.ReadStrongParcelable<AccessibilityElementInfoParcel>();
             if (info == nullptr) {
+                HILOG_ERROR("info is nullptr!");
                 reply.WriteInt32(RET_ERR_FAILED);
                 return TRANSACTION_ERR;
             }

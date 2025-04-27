@@ -268,7 +268,7 @@ enum EventType : uint32_t {
     TYPE_PAGE_OPEN = 0x20000000,
     TYPE_ELEMENT_INFO_CHANGE = 0x40000000,
     TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT = 0x40000001,
-    TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT = 0x40000002,
+    TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP = 0x40000002,
     TYPE_VIEW_SCROLLING_EVENT = 0x40000003,
     TYPE_MAX_NUM = 0x80000000,
     TYPES_ALL_MASK = 0xFFFFFFFF,
@@ -371,6 +371,7 @@ struct ResourceInfo {
     uint32_t resourceId;
     std::string bundleName;
     std::string moduleName;
+    std::vector<std::tuple<int32_t, std::string>> params;
 };
 
 constexpr int32_t PARAM0 = 0;
@@ -420,4 +421,20 @@ struct NAccessibilityErrMsg {
     NAccessibilityErrorCode errCode;
     std::string message;
 };
+
+#define RETURN_FALSE_IF_NULL(sptr)                     \
+    do {                                               \
+        if ((sptr) == nullptr) {                       \
+            HILOG_ERROR("%s is nullptr!", #sptr);      \
+            return false;                              \
+        }                                              \
+    } while (0)
+
+#define RETURN_IF_NULL(sptr)                           \
+    do {                                               \
+        if ((sptr) == nullptr) {                       \
+            HILOG_ERROR("%s is nullptr!", #sptr);      \
+            return;                              \
+        }                                              \
+    } while (0)
 #endif // ACCESSIBILITY_DEFINE_H
