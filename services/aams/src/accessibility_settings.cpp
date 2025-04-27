@@ -780,7 +780,7 @@ RetError AccessibilitySettings::GetMouseAutoClick(int32_t &time)
         return RET_ERR_NULLPTR;
     }
     ffrt::future syncFuture = syncPromise->get_future();
-    auto tmpTime = std::make_shared<bool>(time);
+    auto tmpTime = std::make_shared<int32_t>(time);
     handler_->PostTask([this, syncPromise, tmpTime]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -1038,7 +1038,7 @@ RetError AccessibilitySettings::GetDaltonizationColorFilter(uint32_t &type)
         return RET_ERR_NULLPTR;
     }
     ffrt::future syncFuture = syncPromise->get_future();
-    auto tmpType = std::make_shared<bool>(type);
+    auto tmpType = std::make_shared<uint32_t>(type);
     handler_->PostTask([this, syncPromise, tmpType]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -1070,7 +1070,7 @@ RetError AccessibilitySettings::GetContentTimeout(uint32_t &timer)
         return RET_ERR_NULLPTR;
     }
     ffrt::future syncFuture = syncPromise->get_future();
-    auto tmpTimer = std::make_shared<bool>(timer);
+    auto tmpTimer = std::make_shared<uint32_t>(timer);
     handler_->PostTask([this, syncPromise, tmpTimer]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -1102,7 +1102,7 @@ RetError AccessibilitySettings::GetBrightnessDiscount(float &brightness)
         return RET_ERR_NULLPTR;
     }
     ffrt::future syncFuture = syncPromise->get_future();
-    auto tmpBrightness = std::make_shared<bool>(brightness);
+    auto tmpBrightness = std::make_shared<float>(brightness);
     handler_->PostTask([this, syncPromise, tmpBrightness]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -1134,7 +1134,7 @@ RetError AccessibilitySettings::GetAudioBalance(float &balance)
         return RET_ERR_NULLPTR;
     }
     ffrt::future syncFuture = syncPromise->get_future();
-    auto tmpBalance = std::make_shared<bool>(balance);
+    auto tmpBalance = std::make_shared<float>(balance);
     handler_->PostTask([this, syncPromise, tmpBalance]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -1166,7 +1166,7 @@ RetError AccessibilitySettings::GetClickResponseTime(uint32_t &time)
         return RET_ERR_NULLPTR;
     }
     ffrt::future syncFuture = syncPromise->get_future();
-    auto tmpTime = std::make_shared<bool>(time);
+    auto tmpTime = std::make_shared<uint32_t>(time);
     handler_->PostTask([this, syncPromise, tmpTime]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
@@ -1230,7 +1230,7 @@ RetError AccessibilitySettings::GetIgnoreRepeatClickTime(uint32_t &time)
         return RET_ERR_NULLPTR;
     }
     ffrt::future syncFuture = syncPromise->get_future();
-    auto tmpTime = std::make_shared<bool>(time);
+    auto tmpTime = std::make_shared<uint32_t>(time);
     handler_->PostTask([this, syncPromise, tmpTime]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =

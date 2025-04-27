@@ -956,8 +956,8 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
 void AccessibleAbilityManagerService::IsCheckWindowIdEventExist(const int32_t windowId)
 {
     if (CheckWindowIdEventExist(windowId)) {
-        SendEvent(windowFocusEventMap_[windowId]);
-        windowFocusEventMap_.erase(windowId);
+        SendEvent(windowFocusEventMap_.ReadVal(windowId));
+        windowFocusEventMap_.Erase(windowId);
     }
 }
 
@@ -1068,8 +1068,8 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(Registration p
             return;
         }
         if (CheckWindowIdEventExist(parameter.windowId)) {
-            SendEvent(windowFocusEventMap_[parameter.windowId]);
-            windowFocusEventMap_.erase(parameter.windowId);
+            SendEvent(windowFocusEventMap_.ReadVal(parameter.windowId));
+            windowFocusEventMap_.Erase(parameter.windowId);
         }
         if (operation && operation->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
@@ -2985,12 +2985,13 @@ RetError AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWin
 void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
 {
     HILOG_DEBUG("insert event, windowId: %{public}d", windowId);
-    windowFocusEventMap_[windowId] = event;
+    windowFocusEventMap_.EnsureInsert(windowId, event);
 }
 
 bool AccessibleAbilityManagerService::CheckWindowIdEventExist(int32_t windowId)
 {
-    return windowFocusEventMap_.count(windowId);
+    AccessibilityEventInfo eventInfo;
+    return windowFocusEventMap_.Find(windowId, eventInfo);
 }
 
 bool AccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)
@@ -3518,7 +3519,19 @@ RetError AccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInf
         }
     }
 
-    Global::Resource::RState res = resourceManager->GetStringById(eventInfo.GetResourceId(), result);
+    std::vector<std::tuple<Global::Resource::ResourceManager::NapiValueType, std::string>> arg;
+    for (auto &param : eventInfo.GetResourceParams()) {
+        HILOG_DEBUG("resource param valueType is %{public}d, value is %{public}s",
+            std::get<0>(param), (std::get<1>(param)).c_str());
+        if (std::get<0>(param) == 0) {
+            arg.emplace_back(std::make_tuple(Global::Resource::ResourceManager::NapiValueType::NAPI_NUMBER,
+                std::get<1>(param)));
+        } else if (std::get<0>(param) == 1) {
+            arg.emplace_back(std::make_tuple(Global::Resource::ResourceManager::NapiValueType::NAPI_STRING,
+                std::get<1>(param)));
+        }
+    }
+    Global::Resource::RState res = resourceManager->GetStringFormatById(eventInfo.GetResourceId(), result, arg);
     if (res != Global::Resource::RState::SUCCESS) {
         HILOG_ERROR("get resource value failed");
         return RET_ERR_FAILED;
