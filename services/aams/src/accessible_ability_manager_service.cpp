@@ -140,11 +140,7 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
 void AccessibleAbilityManagerService::InitHandler()
 {
     if (!runner_) {
-#ifdef ACCESSIBILITY_WATCH_FEATURE
-        runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
-#else
         runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME, AppExecFwk::ThreadMode::FFRT);
-#endif
         if (!runner_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS runner failed");
             return;
@@ -220,8 +216,12 @@ void AccessibleAbilityManagerService::InitChannelHandler()
 void AccessibleAbilityManagerService::InitInputManagerHandler()
 {
     if (!inputManagerRunner_) {
+#ifdef ACCESSIBILITY_WATCH_FEATURE
+        inputManagerRunner_ = AppExecFwk::EventRunner::Create(AAMS_INPUT_MANAGER_RUNNER_NAME);
+#else
         inputManagerRunner_ = AppExecFwk::EventRunner::Create(AAMS_INPUT_MANAGER_RUNNER_NAME,
             AppExecFwk::ThreadMode::FFRT);
+#endif
         if (!inputManagerRunner_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS input manager runner failed");
             return;
