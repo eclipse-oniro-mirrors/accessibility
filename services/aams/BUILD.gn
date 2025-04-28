@@ -136,6 +136,7 @@ ohos_shared_library("accessibleabilityms") {
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "window_manager:libdm",
+    "graphic_2d:librender_service_base"
   ]
 
   if (accessibility_feature_power_manager) {

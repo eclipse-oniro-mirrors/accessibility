@@ -94,6 +94,9 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
                 callback, mode, isFilter);
             if (ret != RET_OK) {
                 HILOG_ERROR("SearchElementInfoByAccessibilityId IPC Failed.");
+                std::vector<AccessibilityElementInfo> infos = {};
+                callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
+                syncPromise->set_value(ret);
                 return;
             }
             HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
