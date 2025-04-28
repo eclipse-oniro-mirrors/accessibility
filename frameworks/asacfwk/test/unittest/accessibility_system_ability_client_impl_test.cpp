@@ -285,6 +285,23 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, IsTouchExplorationEnabled_001
 }
 
 /**
+ * @tc.number: IsScreenReaderEnabled_001
+ * @tc.name: IsScreenReaderEnabled
+ * @tc.desc: Test function IsScreenReaderEnabled
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, IsScreenReaderEnabled_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "IsScreenReaderEnabled_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    ASSERT_TRUE(impl_);
+    bool isEnable = false;
+    impl_->IsScreenReaderEnabled(isEnable);
+    EXPECT_FALSE(isEnable);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "IsScreenReaderEnabled_001 end";
+}
+
+/**
  * @tc.number: SendEvent_001
  * @tc.name: SendEvent
  * @tc.desc: Test function SendEvent(proxy is null)
@@ -1249,16 +1266,12 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFindAccessibilityNodeInfos
 {
     GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfosResult_003 start";
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get SetFindAccessibilityNodeInfosResult_003 impl_";
-        return;
-    } else {
-        std::list<AccessibilityElementInfo> elementInfos;
-        int32_t requestId = -1;
-        int32_t requestCode = FIND_FOCUS_SEARCH;
-        impl_->SetFindAccessibilityNodeInfosResult(elementInfos, requestId, requestCode);
-        EXPECT_NE(impl_.get(), nullptr);
-    }
+    ASSERT_TRUE(impl_);
+    std::list<AccessibilityElementInfo> elementInfos;
+    int32_t requestId = -1;
+    int32_t requestCode = FIND_FOCUS_SEARCH;
+    impl_->SetFindAccessibilityNodeInfosResult(elementInfos, requestId, requestCode);
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindAccessibilityNodeInfosResult_003 end";
 }
