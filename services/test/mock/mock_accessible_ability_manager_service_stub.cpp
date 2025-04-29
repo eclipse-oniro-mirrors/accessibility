@@ -92,8 +92,8 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetAbilityList(const uint32_t a
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::RegisterElementOperatorByWindowId(
-    int32_t windowId, const sptr<IAccessibilityElementOperator> &elementOperator)
+ErrCode MockAccessibleAbilityManagerServiceStub::RegisterElementOperatorByWindowId(int32_t windowId,
+    const sptr<IAccessibilityElementOperator> &elementOperator)
 {
     (void)windowId;
     (void)elementOperator;
