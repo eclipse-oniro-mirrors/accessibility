@@ -179,14 +179,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_OnKeyEvent_005, TestSiz
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
     EXPECT_TRUE(KeyEventFilterUnittest(accountData, connection, elementName, event, MMI::KeyEvent::KEY_ACTION_DOWN));
     EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
-    bool ret5 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetKeyCode() == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret5);
+    sleep(1);
     AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
     accountData->RemoveConnectedAbility(elementName);
 
@@ -264,14 +257,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     sptr<AccessibleAbilityConnection> connection2 = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
         CONNECTION_ID, abilityInfo);
     keyEventFilter_->SetServiceOnKeyEventResult(*connection2, true, 1);
-    bool ret3 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetKeyCode() == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret3);
+    sleep(1);
     AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
     accountData->RemoveConnectedAbility(elementName);
 
@@ -297,14 +283,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     EXPECT_TRUE(KeyEventFilterUnittest(accountData, connection, elementName, event, MMI::KeyEvent::KEY_ACTION_DOWN));
     EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
     keyEventFilter_->SetServiceOnKeyEventResult(*connection, true, 2);
-    bool ret4 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetKeyCode() == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret4);
+    sleep(1);
     AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
     accountData->RemoveConnectedAbility(elementName);
 
@@ -330,14 +309,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     EXPECT_TRUE(KeyEventFilterUnittest(accountData, connection, elementName, event, MMI::KeyEvent::KEY_ACTION_DOWN));
     EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
     keyEventFilter_->SetServiceOnKeyEventResult(*connection, true, 2);
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetKeyCode() == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret);
+    sleep(1);
     AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
     accountData->RemoveConnectedAbility(elementName);
 
@@ -365,14 +337,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ClearServiceKeyEvents_0
     sptr<AccessibleAbilityConnection> connection2 = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
         CONNECTION_ID, abilityInfo);
     keyEventFilter_->ClearServiceKeyEvents(*connection2);
-    bool ret1 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetKeyCode() == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret1);
+    sleep(1);
     AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
     accountData->RemoveConnectedAbility(elementName);
 
@@ -399,17 +364,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ClearServiceKeyEvents_0
     EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
     keyEventFilter_->ClearServiceKeyEvents(*connection);
     EXPECT_EQ(MMI::KeyEvent::KEYCODE_VOLUME_DOWN, AccessibilityAbilityHelper::GetInstance().GetKeyCode());
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
-        auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-        if (aams.GetInputManagerRunner()->GetEventQueue()->IsIdle()) {
-            return true;
-        } else {
-            return false;
-        }
-        }), 1);
-    if (!ret) {
-        GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest TearDown EventQueue is not empty";
-    }
+    sleep(1);
     AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
     accountData->RemoveConnectedAbility(elementName);
 

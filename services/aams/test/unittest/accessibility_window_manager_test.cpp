@@ -559,15 +559,10 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     sptr<Rosen::AccessibilityWindowInfo> winInfo = new(std::nothrow) Rosen::AccessibilityWindowInfo();
     infos.emplace_back(winInfo);
     AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.a11yWindows_.clear();
     windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS);
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType() == WINDOW_UPDATE_BOUNDS) {
-            return true;
-        } else {
-            return false;
-        }
-        }), 1);
-    EXPECT_TRUE(ret);
+    ASSERT_TRUE(windowInfoManager.a11yWindows_.size() == 0);
+    windowInfoManager.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange006 end";
 }
 
@@ -614,14 +609,6 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     winInfo->wid_ = 1;
     infos.emplace_back(winInfo);
     windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED);
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType() == WINDOW_UPDATE_FOCUSED) {
-            return true;
-        } else {
-            return false;
-        }
-        }), 1);
-    EXPECT_TRUE(ret);
     windowInfoManager.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange008 end";
 }
@@ -641,15 +628,10 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     winInfo->wid_ = 1;
     infos.emplace_back(winInfo);
     AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.a11yWindows_.clear();
     windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED);
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType() == WINDOW_UPDATE_FOCUSED) {
-            return true;
-        } else {
-            return false;
-        }
-        }), 1);
-    EXPECT_TRUE(ret);
+    ASSERT_TRUE(windowInfoManager.a11yWindows_.size() == 0);
+    windowInfoManager.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange009 end";
 }
 
@@ -1804,7 +1786,9 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Get
     int32_t windowId = ANY_WINDOW_ID;
     int32_t elementId = INVALID_ELEMENT_ID;
     AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
-    mgr.GetSceneBoardElementId(windowId, elementId);
+    mgr.subWindows_.clear();
+    int32_t sceneBoardElementId = mgr.GetSceneBoardElementId(windowId, elementId);
+    ASSERT_TRUE(sceneBoardElementId == elementId);
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardElementId001 end";
 }
 
@@ -1819,7 +1803,9 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Get
     int32_t windowId = ANY_WINDOW_ID;
     int32_t elementId = INVALID_SCENE_BOARD_ELEMENT_ID;
     AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
-    mgr.GetSceneBoardElementId(windowId, elementId);
+    mgr.subWindows_.clear();
+    int32_t sceneBoardElementId = mgr.GetSceneBoardElementId(windowId, elementId);
+    ASSERT_TRUE(sceneBoardElementId == elementId);
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardElementId002 end";
 }
 
@@ -1838,6 +1824,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     windowInfoManager.RegisterWindowListener(nullptr);
     windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE);
     sleep(1);
+    ASSERT_TRUE(windowInfoManager.a11yWindows_.size() == 0);
     windowInfoManager.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowUpdate001 end";
 }

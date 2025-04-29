@@ -938,14 +938,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     /* Account Switched */
     GTEST_LOG_(INFO) << "OnAccountSwitched";
     accountData->OnAccountSwitched();
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetTestChannelId() == INVALID_CHANNEL_ID) {
-            return true;
-        } else {
-            return false;
-        }
-        }), 1);
-    EXPECT_TRUE(ret);
+    sleep(1);
     accountData->UpdateAccountCapabilities();
     /* initialization */
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());

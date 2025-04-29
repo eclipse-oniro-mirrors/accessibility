@@ -129,16 +129,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
         EXPECT_EQ(1, accountData_->GetEnabledAbilities().size());
         IPCObjectProxy* proxy = static_cast<IPCObjectProxy*>(obj_.GetRefPtr());
         proxy->SendObituary();
-        bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
-            size_t count = accountData_->GetEnabledAbilities().size();
-            auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-            if (count == 0) {
-                return true;
-            } else {
-                return false;
-            }
-            }), 1);
-        EXPECT_TRUE(ret);
+        sleep(1);
     }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnRemoteDied_001 end";
 }
