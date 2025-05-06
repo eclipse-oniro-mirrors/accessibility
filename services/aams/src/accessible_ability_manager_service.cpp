@@ -1194,6 +1194,7 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(int
         if (object) {
             auto iter = interactionOperationDeathRecipients_.find(windowId);
             if (iter != interactionOperationDeathRecipients_.end()) {
+                HILOG_DEBUG("delete death recipient, window id = %{public}d", windowId);
                 sptr<IRemoteObject::DeathRecipient> deathRecipient = iter->second;
                 bool result = object->RemoveDeathRecipient(deathRecipient);
                 HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
