@@ -17,7 +17,6 @@
 #include "running_lock.h"
 #include "display_power_mgr_client.h"
 #include "hilog_wrapper.h"
-#include "accessible_ability_manager_service.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -71,14 +70,8 @@ bool AccessibilityPowerManager::HoldRunningLock(const std::string &bundleName)
             return false;
         }
     }
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        HILOG_ERROR("get accountData failed");
-        return false;
-    }
-    if (!accountData->GetWakeLockAbilities().count(bundleName)) {
-        accountData->SetWakeLockAbilities("INSERT", bundleName);
+    if (!wakeLockAbilities_.count(bundleName)) {
+        wakeLockAbilities_.insert(bundleName);
     }
     wakeLock_->Lock();
     HILOG_DEBUG("wakeLock_ Lock success.");
@@ -90,28 +83,23 @@ bool AccessibilityPowerManager::UnholdRunningLock(const std::string &bundleName)
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
     if (wakeLock_ == nullptr) {
-        HILOG_ERROR("wakeLock_ is null.");
-        return false;
+        if (!InitRunningLock()) {
+            return false;
+        }
     }
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        HILOG_ERROR("get accountData failed");
-        return false;
-    }
- 
+
     if (bundleName == "") {
-        accountData->SetWakeLockAbilities("CLEAR");
+        wakeLockAbilities_.clear();
         wakeLock_->UnLock();
         wakeLock_ = nullptr;
         HILOG_DEBUG("wakeLock_ unLock success.");
     } else {
-        if (!accountData->GetWakeLockAbilities().count(bundleName)) {
+        if (!wakeLockAbilities_.count(bundleName)) {
             HILOG_DEBUG("bundleName: %{public}s not found, UnholdRunningLock error.", bundleName.c_str());
             return false;
         }
-        accountData->SetWakeLockAbilities("ERASE", bundleName);
-        if (accountData->GetWakeLockAbilities().empty()) {
+        wakeLockAbilities_.erase(bundleName);
+        if (wakeLockAbilities_.empty()) {
             wakeLock_->UnLock();
             wakeLock_ = nullptr;
             HILOG_DEBUG("bundleName: %{public}s erased, wakeLock_ unLock success.", bundleName.c_str());

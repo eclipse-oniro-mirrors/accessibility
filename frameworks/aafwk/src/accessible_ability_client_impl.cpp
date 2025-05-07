@@ -1949,7 +1949,11 @@ RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr
     std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
     if (callbackList_.empty()) {
         callbackList_.push_back(callback);
-        return channelClient_->SetIsRegisterDisconnectCallback(true);
+        auto ret = channelClient_->SetIsRegisterDisconnectCallback(true);
+        if (ret != RET_OK) {
+            callbackList_.clear();
+        }
+        return ret;
     }
     bool exist = false;
     for (auto &cb : callbackList_) {

@@ -127,7 +127,6 @@ void AccessibilityAccountData::OnAccountSwitched()
 
     connectedA11yAbilities_.Clear();
     enabledAbilities_.clear();
-    wakeLockAbilities_.clear();
     Singleton<AccessibilityPowerManager>::GetInstance().UnholdRunningLock();
     std::lock_guard lock(asacConnectionsMutex_);
     asacConnections_.clear();
@@ -1331,26 +1330,6 @@ int32_t AccessibilityAccountData::AccessibilityAbility::GetSizeByUri(const std::
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
     return connectionMap_.count(uri);
-}
-
-std::set<std::string> AccessibilityAccountData::GetWakeLockAbilities()
-{
-    std::lock_guard<ffrt::mutex> lock(wakeLockMutex_);
-    return wakeLockAbilities_;
-}
-
-void AccessibilityAccountData::SetWakeLockAbilities(const std::string alterType, const std::string bundleName)
-{
-    std::lock_guard<ffrt::mutex> lock(wakeLockMutex_);
-    if (alterType == "INSERT") {
-        wakeLockAbilities_.insert(bundleName);
-    } else if (alterType == "ERASE") {
-        wakeLockAbilities_.erase(bundleName);
-    } else if (alterType == "CLEAR") {
-        wakeLockAbilities_.clear();
-    } else {
-        HILOG_ERROR("SetWakeLockAbilities alterType is error.");
-    }
 }
 
 sptr<AccessibilityAccountData> AccessibilityAccountDataMap::AddAccountData(
