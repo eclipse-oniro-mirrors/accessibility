@@ -1013,7 +1013,6 @@ private:
             napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
             return CreateJsUndefined(env);
         }
-        HILOG_INFO("SUCCESS");
         return CreateJsUndefined(env);
     }
 
@@ -1053,7 +1052,6 @@ private:
             napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
             return CreateJsUndefined(env);
         }
-        HILOG_INFO("SUCCESS");
         return CreateJsUndefined(env);
     }
 
@@ -1066,7 +1064,6 @@ private:
             napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
             return CreateJsUndefined(env);
         }
-        HILOG_INFO("SUCCESS");
         return CreateJsUndefined(env);
     }
 };
