@@ -27,6 +27,8 @@ std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::accessibilityStateLis
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED);
 std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::touchGuideStateListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED);
+std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::screenReaderStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED);
 
 void StateListenerImpl::SubscribeToFramework()
 {
@@ -148,6 +150,8 @@ void ANIAccessibilityClient::SubscribeState(ani_env *env, ani_string type, ani_o
         accessibilityStateListeners_->SubscribeObserver(env, callback);
     } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
         touchGuideStateListeners_->SubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "screenReaderStateChange") == 0) {
+        screenReaderStateListeners_->SubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
         ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
@@ -161,6 +165,8 @@ void ANIAccessibilityClient::UnsubscribeState(ani_env *env, ani_string type, ani
         accessibilityStateListeners_->UnsubscribeObserver(env, callback);
     } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
         touchGuideStateListeners_->UnsubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "screenReaderStateChange") == 0) {
+        screenReaderStateListeners_->UnsubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("UnsubscribeState eventType[%{public}s] is error", eventType.c_str());
         ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
@@ -174,6 +180,8 @@ void ANIAccessibilityClient::UnsubscribeStateAll(ani_env *env, ani_string type)
         accessibilityStateListeners_->UnsubscribeObservers();
     } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
         touchGuideStateListeners_->UnsubscribeObservers();
+    } else if (std::strcmp(eventType.c_str(), "screenReaderStateChange") == 0) {
+        screenReaderStateListeners_->UnsubscribeObservers();
     } else {
         HILOG_ERROR("UnsubscribeStateAll eventType[%{public}s] is error", eventType.c_str());
         ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
