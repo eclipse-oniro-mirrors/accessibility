@@ -443,6 +443,11 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickReconfirm(const bool s
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetZoomGestureEnabledReconfirm(const bool state)
+{
+    return RET_OK;
+}
+
 const std::vector<std::string> AccessibilitySettingsConfig::GetEnabledAccessibilityServices()
 {
     return enabledAccessibilityServices_;
