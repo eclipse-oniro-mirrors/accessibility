@@ -71,6 +71,7 @@ namespace {
     const std::string ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
     const std::string ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
     const std::string IGNORE_REPEAT_CLICK_RECONFIRM = "accessibility_ignore_repeat_click_reconfirm";
+    const std::string ZOOM_GESTURE_ENABLED_RECONFIRM = "accessibility_zoom_gesture_enabled_reconfirm";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -532,6 +533,18 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickReconfirm(const bool s
     return ret;
 }
 
+RetError AccessibilitySettingsConfig::SetZoomGestureEnabledReconfirm(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(ZOOM_GESTURE_ENABLED_RECONFIRM, state);
+    if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetZoomGestureEnabledReconfirm");
+        HILOG_ERROR("set zoomGestureEnabledReconfirm failed");
+        return ret;
+    }
+    return ret;
+}
+
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t time)
 {
     HILOG_DEBUG("ignoreRepeatClickTime = [%{public}u]", time);
@@ -955,6 +968,7 @@ void AccessibilitySettingsConfig::InitPrivacySpaceConfig()
     if (cloneOrUpgradeFlag && (accountId_ != DEFAULT_ACCOUNT_ID)) {
         SetDefaultShortcutKeyService();
         SetIgnoreRepeatClickReconfirm(ignoreRepeatClickState_);
+        SetZoomGestureEnabledReconfirm(isScreenMagnificationState_);
         service->PutBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, false);
     }
 }
@@ -1146,7 +1160,8 @@ void AccessibilitySettingsConfig::OnDataClone()
     InitSetting();
     SetDefaultShortcutKeyService();
     SetIgnoreRepeatClickReconfirm(ignoreRepeatClickState_);
-
+    SetZoomGestureEnabledReconfirm(isScreenMagnificationState_);
+    
     bool isShortkeyEnabled = GetShortKeyState();
     bool isShortkeyEnabledOnLockScreen = GetShortKeyOnLockScreenState();
     SetShortKeyState(!isShortkeyEnabled);

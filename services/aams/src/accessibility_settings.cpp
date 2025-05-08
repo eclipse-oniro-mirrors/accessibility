@@ -643,6 +643,7 @@ void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpd
     }
     if (atoHosValue.screenMagnificationState) {
         accountData->GetConfig()->SetScreenMagnificationState(atoHosValue.screenMagnificationState);
+        accountData->GetConfig()->SetZoomGestureEnabledReconfirm(true);
     }
     UpdateConfigState();
 }
