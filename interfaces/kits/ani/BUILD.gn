@@ -15,7 +15,13 @@ import("//build/config/components/ets_frontend/ets2abc_config.gni")
 import("//build/ohos.gni")
 
 group("aniaccessibility") {
-  deps = [ ":ACCESSIBILITYNativeModule" ]
+  deps = [
+    ":ACCESSIBILITYNativeModule",
+    ":accessibility_ani_abc_etc",
+    "accessibility_extension:AccessibilityExtensionAbility_ani_abc_etc",
+    "accessibility_config:AccessibilityConfig",
+    "accessibility_config:accessibility_config_ani_abc_etc",
+  ]
 }
 
 ohos_shared_library("ACCESSIBILITYNativeModule") {
@@ -65,28 +71,10 @@ generate_static_abc("accessibility_ani_abc") {
   device_dst_file = "/system/framework/accessibility.abc"
 }
 
-generate_static_abc("AccessibilityExtensionAbility_ani_abc") {
-  base_url = "./ets"
-  files = [ "./ets/@ohos.application.AccessibilityExtensionAbility.ets" ]
-  dst_file = "$target_out_dir/AccessibilityExtensionAbility.abc"
-  out_puts = [ "$target_out_dir/AccessibilityExtensionAbility.abc" ]
-
-  is_boot_abc = "True"
-  device_dst_file = "/system/framework/AccessibilityExtensionAbility.abc"
-}
-
 ohos_prebuilt_etc("accessibility_ani_abc_etc") {
   source = "$target_out_dir/accessibility.abc"
   module_install_dir = "framework"
   part_name = "accessibility"
   subsystem_name = "barrierfree"
   deps = [ ":accessibility_ani_abc" ]
-}
-
-ohos_prebuilt_etc("AccessibilityExtensionAbility_ani_abc_etc") {
-  source = "$target_out_dir/AccessibilityExtensionAbility.abc"
-  module_install_dir = "framework"
-  part_name = "accessibility"
-  subsystem_name = "barrierfree"
-  deps = [ ":AccessibilityExtensionAbility_ani_abc" ]
 }

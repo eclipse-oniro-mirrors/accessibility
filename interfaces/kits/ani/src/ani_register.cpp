@@ -55,6 +55,7 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
 
     ANIAccessibilityClient::accessibilityStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::touchGuideStateListeners_->SubscribeToFramework();
+    ANIAccessibilityClient::screenReaderStateListeners_->SubscribeToFramework();
 
     *result = ANI_VERSION_1;
     return ANI_OK;
@@ -124,6 +125,9 @@ ANI_EXPORT ani_status ANI_Destructor(ani_vm *vm)
     }
     if (ANIAccessibilityClient::touchGuideStateListeners_) {
         ANIAccessibilityClient::touchGuideStateListeners_->UnsubscribeFromFramework();
+    }
+    if (ANIAccessibilityClient::screenReaderStateListeners_) {
+        ANIAccessibilityClient::screenReaderStateListeners_->UnsubscribeFromFramework();
     }
 
     return ANI_OK;

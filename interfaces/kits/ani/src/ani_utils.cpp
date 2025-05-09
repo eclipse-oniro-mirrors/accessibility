@@ -300,7 +300,7 @@ NAccessibilityErrMsg ANIUtils::QueryRetMsg(RetError errorCode)
 
 void ANIUtils::ThrowAccessibilityError(ani_env *env, NAccessibilityErrMsg errMsg)
 {
-    static const char *errorClsName = "Laccessibility/AccessibilityError;";
+    static const char *errorClsName = "L@ohos/accessibility/AccessibilityError;";
     ani_class cls {};
     if (env->FindClass(errorClsName, &cls) != ANI_OK) {
         HILOG_ERROR("find class AccessibilityError failed");

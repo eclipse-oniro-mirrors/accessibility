@@ -66,6 +66,7 @@ public:
 
     static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;
     static std::shared_ptr<StateListenerImpl> touchGuideStateListeners_;
+    static std::shared_ptr<StateListenerImpl> screenReaderStateListeners_;
 
 private:
     ANIAccessibilityClient() = default;
