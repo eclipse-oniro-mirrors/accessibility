@@ -459,7 +459,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         }
         if (SetEventInfoStrProperty(callbackInfo->env_, "extraInfo",
             callbackInfo->extraInfo_, napiEventInfo) != napi_ok) {
-            GET_AND_THROW_LAST_ERROR((data->env_));
+            GET_AND_THROW_LAST_ERROR((callbackInfo->env_));
             break;
         }
         ConvertAccessibilityElementToJS(callbackInfo->env_, napiEventInfo, callbackInfo->element_);
