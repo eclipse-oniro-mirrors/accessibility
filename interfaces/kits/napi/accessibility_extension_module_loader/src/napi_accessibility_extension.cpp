@@ -401,6 +401,17 @@ napi_status SetEventInfoStrProperty(napi_env env, const char *property, std::str
     return napi_set_named_property(env, napiEventInfo, property, nValue);
 }
 
+std::string NAccessibilityExtension::GetEventExtraInfo(const AccessibilityEventInfo& eventInfo)
+{
+    std::map<std::string, std::string> mapValIsStr = eventInfo.GetExtraEvent().GetExtraEventInfoValueStr();
+    nlohmann::json extraInfoValue;
+    for (auto &iterStr : mapValIsStr) {
+        extraInfoValue[iterStr.first] = iterStr.second;
+    }
+    HILOG_DEBUG("GetEventExtraInfo extraInfoValue is [%{public}s]", extraInfoValue.dump().c_str());
+    return extraInfoValue.dump().c_str();
+}
+
 void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
 {
     HILOG_INFO();
@@ -422,6 +433,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
     callbackInfo->element_ = element;
     callbackInfo->elementId_ = eventInfo.GetRequestFocusElementId();
     callbackInfo->textAnnouncedForAccessibility_ = eventInfo.GetTextAnnouncedForAccessibility();
+    callbackInfo->extraInfo_ = GetEventExtraInfo(eventInfo);
     auto task = [callbackInfo]() {
         napi_env env = callbackInfo->env_;
         auto closeScope = [env](napi_handle_scope scope) { napi_close_handle_scope(env, scope); };
@@ -444,6 +456,10 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
             callbackInfo->textAnnouncedForAccessibility_, napiEventInfo) != napi_ok) {
             GET_AND_THROW_LAST_ERROR((callbackInfo->env_));
             return;
+        }
+        if (SetEventInfoStrProperty(data->env_, "extraInfo", data->extraInfo_, napiEventInfo) != napi_ok) {
+            GET_AND_THROW_LAST_ERROR((data->env_));
+            break;
         }
         ConvertAccessibilityElementToJS(callbackInfo->env_, napiEventInfo, callbackInfo->element_);
         napi_value argv[] = {napiEventInfo};
