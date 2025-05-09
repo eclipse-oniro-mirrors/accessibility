@@ -21,6 +21,11 @@
 
 namespace OHOS {
 namespace Accessibility {
+static std::set<std::string> EXTRA_EVENTINFO_SET = {
+    "addText",
+    "removeText"
+};
+
 void AccessibilityMemo::SetSource(const int64_t componentId)
 {
     HILOG_DEBUG("componentId[%{public}" PRId64 "]", componentId);

@@ -97,7 +97,6 @@ public:
      * @brief Used for IPC communication
      * @param parcel
      * @return true: Write parcel data successfully; otherwise is not.
-     * @since 3
      * @sysCap Accessibility
      */
     bool MarshallingFirstPart(Parcel &parcel) const;
@@ -106,7 +105,6 @@ public:
      * @brief Used for IPC communication
      * @param parcel
      * @return true: Write parcel data successfully; otherwise is not.
-     * @since 3
      * @sysCap Accessibility
      */
     bool MarshallingSecondPart(Parcel &parcel) const;

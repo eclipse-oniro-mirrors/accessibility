@@ -22,11 +22,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-static std::set<std::string> EXTRA_EVENTINFO_SET = {
-    "addText",
-    "removeText"
-};
-
 /*
 * The class supply the content information about the event.
 * The SetXxx() API is almost supplied to ACE to set the information.

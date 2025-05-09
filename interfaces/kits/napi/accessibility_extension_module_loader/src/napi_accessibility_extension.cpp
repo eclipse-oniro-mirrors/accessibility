@@ -457,7 +457,8 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
             GET_AND_THROW_LAST_ERROR((callbackInfo->env_));
             return;
         }
-        if (SetEventInfoStrProperty(data->env_, "extraInfo", data->extraInfo_, napiEventInfo) != napi_ok) {
+        if (SetEventInfoStrProperty(callbackInfo->env_, "extraInfo",
+            callbackInfo->extraInfo_, napiEventInfo) != napi_ok) {
             GET_AND_THROW_LAST_ERROR((data->env_));
             break;
         }
