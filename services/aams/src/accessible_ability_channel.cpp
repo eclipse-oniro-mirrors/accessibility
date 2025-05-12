@@ -20,6 +20,10 @@
 #include "accessible_ability_connection.h"
 #include "hilog_wrapper.h"
 #include "transaction/rs_interfaces.h"
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+#include "accessibility_power_manager.h"
+#endif
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -391,17 +395,44 @@ RetError AccessibleAbilityChannel::EnableScreenCurtain(bool isEnable)
 RetError AccessibleAbilityChannel::HoldRunningLock()
 {
     HILOG_DEBUG();
-    auto& aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    aams.PostDelayUnloadTask();
-    return aams.HoldRunningLock();
+    if (!Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
+        OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        HILOG_WARN("HoldRunningLock permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+    std::string bundleName = "";
+    if (!Utils::GetBundleNameByCallingUid(bundleName)) {
+        return RET_ERR_FAILED;
+    }
+    if (!Singleton<AccessibilityPowerManager>::GetInstance().HoldRunningLock(bundleName)) {
+        HILOG_ERROR("Failed to hold running lock.");
+        return RET_ERR_FAILED;
+    }
+#endif
+    return RET_OK;
 }
 
 RetError AccessibleAbilityChannel::UnholdRunningLock()
 {
     HILOG_DEBUG();
-    auto& aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    aams.PostDelayUnloadTask();
-    return aams.UnholdRunningLock();
+    if (!Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
+        OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        HILOG_WARN("HoldRunningLock permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+    std::string bundleName = "";
+    if (!Utils::GetBundleNameByCallingUid(bundleName)) {
+        return RET_ERR_FAILED;
+    }
+    auto &powerManager = Singleton<AccessibilityPowerManager>::GetInstance();
+    if (!powerManager.UnholdRunningLock(bundleName)) {
+        HILOG_ERROR("Failed to unhold running lock.");
+        return RET_ERR_FAILED;
+    }
+#endif
+    return RET_OK;
 }
 
 RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,

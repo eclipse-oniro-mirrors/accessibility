@@ -416,8 +416,13 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
             accountData->RemoveInstalledAbility("ohos.uitest");
         }
 
-        std::string bundleName = sharedElementName->GetBundleName();
-        aams.UnholdRunningLockByBundleName(bundleName);
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+    std::string bundleName = sharedElementName->GetBundleName();
+    auto &powerManager = Singleton<AccessibilityPowerManager>::GetInstance();
+    if (!powerManager.UnholdRunningLock(bundleName)) {
+        HILOG_DEBUG("OnRemoteDied UnholdRunningLock failed.");
+    }
+#endif
         accountData->UpdateAbilities();
         aams.UpdateAccessibilityManagerService();
         }, "OnRemoteDied");
