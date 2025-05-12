@@ -87,8 +87,6 @@ public:
     MOCK_METHOD1(PackageRemoved, void(const std::string& bundleName));
     MOCK_METHOD1(PackageAdd, void(const std::string& bundleName));
     MOCK_METHOD0(UpdateAccessibilityManagerService, void());
-    MOCK_METHOD0(HoldRunningLock, void());
-    MOCK_METHOD0(UnholdRunningLock, void());
     MOCK_METHOD1(GetCaptionState, ErrCode(bool &state));
     MOCK_METHOD1(GetScreenReaderState, ErrCode(bool &state));
     MOCK_METHOD1(SetTouchGuideState, bool(const bool state));
@@ -105,6 +103,7 @@ public:
     MOCK_METHOD1(RemoveRequestId, ErrCode(int32_t requestId));
     MOCK_METHOD3(GetRootParentId, ErrCode(int32_t windowId, int32_t treeId, int64_t &parentId));
     MOCK_METHOD2(GetAllTreeId, RetError(int32_t windowId, std::vector<int32_t> &treeIds));
+    MOCK_METHOD1(CheckPermission, bool(const std::string &permission));
 };
 } // namespace Accessibility
 } // namespace OHOS
