@@ -355,5 +355,15 @@ void AccessibleAbilityConnection::DisconnectAbility()
 {
     return;
 }
+
+RetError AccessibleAbilityChannel::HoldRunningLock()
+{
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannel::UnholdRunningLock()
+{
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS
