@@ -21,6 +21,9 @@
 
 #include "ability_manager_client.h"
 #include "accessible_ability_manager_service.h"
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+#include "accessibility_power_manager.h"
+#endif
 #include "hilog_wrapper.h"
 #include "utils.h"
 
