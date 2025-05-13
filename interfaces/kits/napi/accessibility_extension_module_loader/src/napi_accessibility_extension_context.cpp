@@ -32,6 +32,10 @@ using namespace OHOS::AccessibilityNapi;
 namespace OHOS {
 namespace Accessibility {
 namespace {
+const std::string ERROR_MESSAGE_PARAMETER_ERROR = "Parameter error. Possible causes:"
+    "1. Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.";
+const std::string ERROR_MESSAGE_SYSTEM_ABNORMALITY = "System abnormality";
+
 static void ConvertAccessibilityWindowInfoToJS(
     napi_env env, napi_value result, const AccessibilityWindowInfo& accessibilityWindowInfo)
 {

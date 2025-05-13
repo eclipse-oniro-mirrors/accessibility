@@ -63,22 +63,6 @@ constexpr int32_t TREE_ID_MAX = 0x00001FFF;
 constexpr uint32_t TIME_OUT_OPERATOR = 5000;
 constexpr int32_t WAIT_NOTIFY_DISCONNECT_TIMEOUT = 30 * 1000; // 30s
 
-const std::map<std::string, int32_t> AccessibilityConfigTable = {
-    {"HIGH_CONTRAST_TEXT", HIGH_CONTRAST_TEXT},
-    {"INVERT_COLOR", INVERT_COLOR},
-    {"DALTONIZATION_COLOR_FILTER", DALTONIZATION_COLOR_FILTER},
-    {"CONTENT_TIMEOUT", CONTENT_TIMEOUT},
-    {"ANIMATION_OFF", ANIMATION_OFF},
-    {"BRIGHTNESS_DISCOUNT", BRIGHTNESS_DISCOUNT},
-    {"AUDIO_MONO", AUDIO_MONO},
-    {"AUDIO_BALANCE", AUDIO_BALANCE},
-    {"MOUSE_KEY", MOUSE_KEY},
-    {"CAPTION_STATE", CAPTION_STATE},
-    {"CAPTION_STYLE", CAPTION_STYLE},
-    {"SCREEN_MAGNIFICATION", SCREEN_MAGNIFICATION},
-    {"MOUSE_AUTOCLICK", MOUSE_AUTOCLICK}
-};
-
 class AccessibleAbilityManagerService : public SystemAbility, public AccessibleAbilityManagerServiceStub {
     DECLARE_SINGLETON(AccessibleAbilityManagerService)
     DECLEAR_SYSTEM_ABILITY(AccessibleAbilityManagerService)
