@@ -23,18 +23,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
-    "CheckboxGroupSelectedStatus",
-    "Row",
-    "Column",
-    "SideBarContainerStates",
-    "ListItemIndex",
-    "ToggleType",
-    "BindSheet",
-    "hasRegisteredHover",
-    "direction",
-    "expandedState"
-};
 
 /*
 * class define the action on Accessibility info

@@ -1842,96 +1842,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateConfigState_001, TestSiz
 }
 
 /**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_UpdateAudioBalance_001
- * @tc.name: UpdateAudioBalance
- * @tc.desc: Test function UpdateAudioBalance
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateAudioBalance_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateAudioBalance_001 start";
-    sptr<MockAccessibleAbilityManagerConfigObserverStub> stub = new MockAccessibleAbilityManagerConfigObserverStub();
-    sptr<IAccessibleAbilityManagerConfigObserver> state = new MockAccessibleAbilityManagerConfigObserverProxy(stub);
-
-    uint32_t ret = Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterConfigObserver(state);
-    EXPECT_EQ(ret, 0);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAudioBalance();
-    EXPECT_NE(stub_.GetRefPtr(), nullptr);
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateAudioBalance_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_UpdateBrightnessDiscount_001
- * @tc.name: UpdateBrightnessDiscount
- * @tc.desc: Test function UpdateBrightnessDiscount
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateBrightnessDiscount_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateBrightnessDiscount_001 start";
-    sptr<MockAccessibleAbilityManagerConfigObserverStub> stub = new MockAccessibleAbilityManagerConfigObserverStub();
-    sptr<IAccessibleAbilityManagerConfigObserver> state = new MockAccessibleAbilityManagerConfigObserverProxy(stub);
-
-    uint32_t ret = Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterConfigObserver(state);
-    EXPECT_EQ(ret, 0);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateBrightnessDiscount();
-    EXPECT_NE(stub_.GetRefPtr(), nullptr);
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateBrightnessDiscount_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_UpdateContentTimeout_001
- * @tc.name: UpdateContentTimeout
- * @tc.desc: Test function UpdateContentTimeout
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateContentTimeout_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateContentTimeout_001 start";
-    sptr<MockAccessibleAbilityManagerConfigObserverStub> stub = new MockAccessibleAbilityManagerConfigObserverStub();
-    sptr<IAccessibleAbilityManagerConfigObserver> state = new MockAccessibleAbilityManagerConfigObserverProxy(stub);
-
-    uint32_t ret = Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterConfigObserver(state);
-    EXPECT_EQ(ret, 0);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateContentTimeout();
-    EXPECT_NE(stub_.GetRefPtr(), nullptr);
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateContentTimeout_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_UpdateDaltonizationColorFilter_001
- * @tc.name: UpdateDaltonizationColorFilter
- * @tc.desc: Test function UpdateDaltonizationColorFilter
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateDaltonizationColorFilter_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateDaltonizationColorFilter_001 start";
-    sptr<MockAccessibleAbilityManagerConfigObserverStub> stub = new MockAccessibleAbilityManagerConfigObserverStub();
-    sptr<IAccessibleAbilityManagerConfigObserver> state = new MockAccessibleAbilityManagerConfigObserverProxy(stub);
-
-    uint32_t ret = Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterConfigObserver(state);
-    EXPECT_EQ(ret, 0);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateDaltonizationColorFilter();
-    EXPECT_NE(stub_.GetRefPtr(), nullptr);
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateDaltonizationColorFilter_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_UpdateMouseAutoClick_001
- * @tc.name: UpdateMouseAutoClick
- * @tc.desc: Test function UpdateMouseAutoClick
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateMouseAutoClick_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateMouseAutoClick_001 start";
-    sptr<MockAccessibleAbilityManagerConfigObserverStub> stub = new MockAccessibleAbilityManagerConfigObserverStub();
-    sptr<IAccessibleAbilityManagerConfigObserver> state = new MockAccessibleAbilityManagerConfigObserverProxy(stub);
-
-    uint32_t ret = Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterConfigObserver(state);
-    EXPECT_EQ(ret, 0);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateMouseAutoClick();
-    EXPECT_NE(stub_.GetRefPtr(), nullptr);
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateMouseAutoClick_001 end";
-}
-
-/**
  * @tc.number: AccessibleAbility_ManagerService_UnitTest_UpdateShortkeyTarget_001
  * @tc.name: UpdateShortkeyTarget
  * @tc.desc: Test function UpdateShortkeyTarget
@@ -1947,42 +1857,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateShortkeyTarget_001, Test
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortkeyTarget();
     EXPECT_NE(stub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateShortkeyTarget_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_UpdateClickResponseTime_001
- * @tc.name: UpdateClickResponseTime
- * @tc.desc: Test function UpdateClickResponseTime
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateClickResponseTime_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateClickResponseTime_001 start";
-    sptr<MockAccessibleAbilityManagerConfigObserverStub> stub = new MockAccessibleAbilityManagerConfigObserverStub();
-    sptr<IAccessibleAbilityManagerConfigObserver> state = new MockAccessibleAbilityManagerConfigObserverProxy(stub);
-
-    uint32_t ret = Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterConfigObserver(state);
-    EXPECT_EQ(ret, 0);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateClickResponseTime();
-    EXPECT_NE(stub_.GetRefPtr(), nullptr);
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateClickResponseTime_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_UpdateIgnoreRepeatClickTime_001
- * @tc.name: UpdateIgnoreRepeatClickTime
- * @tc.desc: Test function UpdateIgnoreRepeatClickTime
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateIgnoreRepeatClickTime_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateIgnoreRepeatClickTime_001 start";
-    sptr<MockAccessibleAbilityManagerConfigObserverStub> stub = new MockAccessibleAbilityManagerConfigObserverStub();
-    sptr<IAccessibleAbilityManagerConfigObserver> state = new MockAccessibleAbilityManagerConfigObserverProxy(stub);
-
-    uint32_t ret = Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterConfigObserver(state);
-    EXPECT_EQ(ret, 0);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateIgnoreRepeatClickTime();
-    EXPECT_NE(stub_.GetRefPtr(), nullptr);
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateIgnoreRepeatClickTime_001 end";
 }
 
 /**

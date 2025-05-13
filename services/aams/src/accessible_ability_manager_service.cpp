@@ -106,6 +106,22 @@ namespace {
     const std::string TIMER_GET_ALL_CONFIG = "accessibility:getAllConfig";
     const std::string TIMER_REGISTER_CONFIG_OBSERVER = "accessibility:registerConfigObserver";
     constexpr int32_t XCOLLIE_TIMEOUT = 6; // s
+
+    static const std::map<std::string, int32_t> AccessibilityConfigTable = {
+        {"HIGH_CONTRAST_TEXT", HIGH_CONTRAST_TEXT},
+        {"INVERT_COLOR", INVERT_COLOR},
+        {"DALTONIZATION_COLOR_FILTER", DALTONIZATION_COLOR_FILTER},
+        {"CONTENT_TIMEOUT", CONTENT_TIMEOUT},
+        {"ANIMATION_OFF", ANIMATION_OFF},
+        {"BRIGHTNESS_DISCOUNT", BRIGHTNESS_DISCOUNT},
+        {"AUDIO_MONO", AUDIO_MONO},
+        {"AUDIO_BALANCE", AUDIO_BALANCE},
+        {"MOUSE_KEY", MOUSE_KEY},
+        {"CAPTION_STATE", CAPTION_STATE},
+        {"CAPTION_STYLE", CAPTION_STYLE},
+        {"SCREEN_MAGNIFICATION", SCREEN_MAGNIFICATION},
+        {"MOUSE_AUTOCLICK", MOUSE_AUTOCLICK}
+    };
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -3075,31 +3091,6 @@ void AccessibleAbilityManagerService::UpdateConfigState()
     return accessibilitySettings_->UpdateConfigState();
 }
 
-void AccessibleAbilityManagerService::UpdateAudioBalance()
-{
-    return accessibilitySettings_->UpdateAudioBalance();
-}
-
-void AccessibleAbilityManagerService::UpdateBrightnessDiscount()
-{
-    return accessibilitySettings_->UpdateBrightnessDiscount();
-}
-
-void AccessibleAbilityManagerService::UpdateContentTimeout()
-{
-    return accessibilitySettings_->UpdateContentTimeout();
-}
-
-void AccessibleAbilityManagerService::UpdateDaltonizationColorFilter()
-{
-    return accessibilitySettings_->UpdateDaltonizationColorFilter();
-}
-
-void AccessibleAbilityManagerService::UpdateMouseAutoClick()
-{
-    return accessibilitySettings_->UpdateMouseAutoClick();
-}
-
 void AccessibleAbilityManagerService::UpdateShortkeyTarget()
 {
     return accessibilitySettings_->UpdateShortkeyTarget();
@@ -3108,16 +3099,6 @@ void AccessibleAbilityManagerService::UpdateShortkeyTarget()
 void AccessibleAbilityManagerService::UpdateShortkeyMultiTarget()
 {
     return accessibilitySettings_->UpdateShortkeyMultiTarget();
-}
-
-void AccessibleAbilityManagerService::UpdateClickResponseTime()
-{
-    return accessibilitySettings_->UpdateClickResponseTime();
-}
-
-void AccessibleAbilityManagerService::UpdateIgnoreRepeatClickTime()
-{
-    return accessibilitySettings_->UpdateIgnoreRepeatClickTime();
 }
 
 void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
