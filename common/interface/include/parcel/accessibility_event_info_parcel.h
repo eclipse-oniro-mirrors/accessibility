@@ -21,6 +21,43 @@
 
 namespace OHOS {
 namespace Accessibility {
+class ExtraEventInfoParcel : public ExtraEventInfo, public Parcelable {
+public:
+    /**
+     * @brief Construct
+     * @sysCap Accessibility
+     */
+    ExtraEventInfoParcel() = default;
+ 
+    /**
+     * @brief Construct
+     * @param extraEventInfo The object of ExtraEventInfo.
+     * @sysCap Accessibility
+     */
+    explicit ExtraEventInfoParcel(const ExtraEventInfo &extraEventInfo);
+ 
+    /**
+     * @brief Used for IPC communication
+     * @param parcel
+     * @sysCap Accessibility
+     */
+    bool ReadFromParcel(Parcel &parcel);
+ 
+    /**
+     * @brief Used for IPC communication
+     * @param parcel
+     * @sysCap Accessibility
+     */
+    virtual bool Marshalling(Parcel &parcel) const override;
+ 
+    /**
+     * @brief Used for IPC communication
+     * @param parcel
+     * @sysCap Accessibility
+     */
+    static ExtraEventInfoParcel *Unmarshalling(Parcel &parcel);
+};
+
 class AccessibilityEventInfoParcel : public AccessibilityEventInfo, public Parcelable {
 public:
     /**
@@ -55,6 +92,24 @@ public:
      * @sysCap Accessibility
      */
     bool Marshalling(Parcel &parcel) const override;
+
+    /**
+     * @brief Used for IPC communication
+     * @param parcel
+     * @return true: Write parcel data successfully; otherwise is not.
+     * @since 3
+     * @sysCap Accessibility
+     */
+    bool MarshallingFirstPart(Parcel &parcel) const;
+ 
+    /**
+     * @brief Used for IPC communication
+     * @param parcel
+     * @return true: Write parcel data successfully; otherwise is not.
+     * @since 3
+     * @sysCap Accessibility
+     */
+    bool MarshallingSecondPart(Parcel &parcel) const;
 
     /**
      * @brief Used for IPC communication

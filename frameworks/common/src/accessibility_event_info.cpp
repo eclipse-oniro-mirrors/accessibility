@@ -21,6 +21,13 @@
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    static std::set<std::string> EXTRA_EVENTINFO_SET = {
+        "addText",
+        "removeText"
+    };
+}
+
 void AccessibilityMemo::SetSource(const int64_t componentId)
 {
     HILOG_DEBUG("componentId[%{public}" PRId64 "]", componentId);
@@ -157,6 +164,39 @@ int32_t AccessibilityMemo::GetItemCounts() const
 {
     HILOG_DEBUG("itemCounts_[%{public}d]", itemCounts_);
     return itemCounts_;
+}
+
+ExtraEventInfo::ExtraEventInfo(const std::map<std::string, std::string> extraEventValueStr)
+{
+    extraEventValueStr_ = extraEventValueStr;
+}
+
+RetError ExtraEventInfo::SetExtraEventInfo(const std::string keyStr, const std::string valueStr)
+{
+    auto extraElementInfoIter = EXTRA_EVENTINFO_SET.find(keyStr);
+    if (extraElementInfoIter != EXTRA_EVENTINFO_SET.end()) {
+        extraEventValueStr_[keyStr] = valueStr;
+        HILOG_DEBUG("SetExtraEventInfo: size is extraEventValueStr : [%{public}zu]",
+            extraEventValueStr_.size());
+    } else {
+        return RET_ERR_FAILED;
+    }
+    return RET_OK;
+}
+
+const std::map<std::string, std::string> &ExtraEventInfo::GetExtraEventInfoValueStr() const
+{
+    return extraEventValueStr_;
+}
+
+void AccessibilityEventInfo::SetExtraEvent(const ExtraEventInfo &extraEventInfo)
+{
+    extraEventInfo_ = extraEventInfo;
+}
+
+const ExtraEventInfo &AccessibilityEventInfo::GetExtraEvent() const
+{
+    return extraEventInfo_;
 }
 
 EventType AccessibilityEventInfo::GetEventType() const
