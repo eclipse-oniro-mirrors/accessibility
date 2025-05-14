@@ -141,6 +141,7 @@ private:
     bool GetSrcPathAndModuleName(std::string& srcPath, std::string& moduleName);
     int OnAccessibilityEventExec(uv_work_t *work, uv_loop_t *loop);
     int OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loop);
+    std::string GetEventExtraInfo(const AccessibilityEventInfo& eventInfo);
 
     napi_env env_ = nullptr;
     AbilityRuntime::JsRuntime& jsRuntime_;
@@ -165,6 +166,7 @@ struct AccessibilityEventInfoCallbackInfo : public ExtensionCallbackInfo {
     std::shared_ptr<AccessibilityElement> element_ = nullptr;
     int64_t elementId_ = 0;
     std::string textAnnouncedForAccessibility_ = "";
+    std::string extraInfo_ = "";
 };
 
 napi_handle_scope OpenScope(napi_env env);
