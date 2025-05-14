@@ -948,9 +948,8 @@ private:
         RetError ret = context->HoldRunningLock();
         if (ret != RET_OK) {
             HILOG_ERROR("result error, ret %{public}d", ret);
-            napi_throw(env, CreateJsError(env,
-                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
-                ERROR_MESSAGE_PARAMETER_ERROR));
+            NAccessibilityErrMsg errMsg = QueryRetMsg(ret);
+            napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
             return CreateJsUndefined(env);
         }
  
@@ -973,9 +972,8 @@ private:
         RetError ret = context->UnholdRunningLock();
         if (ret != RET_OK) {
             HILOG_ERROR("result error, ret %{public}d", ret);
-            napi_throw(env, CreateJsError(env,
-                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
-                ERROR_MESSAGE_PARAMETER_ERROR));
+            NAccessibilityErrMsg errMsg = QueryRetMsg(ret);
+            napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
             return CreateJsUndefined(env);
         }
  

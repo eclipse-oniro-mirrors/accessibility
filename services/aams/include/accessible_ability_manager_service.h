@@ -119,8 +119,6 @@ public:
     ErrCode EnableAbility(const std::string &name, const uint32_t capabilities) override;
     ErrCode GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
     RetError SetCurtainScreenUsingStatus(bool isEnable);
-    RetError HoldRunningLock();
-    RetError UnholdRunningLock();
     ErrCode DisableAbility(const std::string &name) override;
     ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
     ErrCode DisableUITestAbility() override;
@@ -132,7 +130,6 @@ public:
     ErrCode GetFocusedWindowId(int32_t &focusedWindowId) override;
     void SetFocusWindowId(const int32_t focusWindowId);
     void SetFocusElementId(const int64_t focusElementId);
-    void UnholdRunningLockByBundleName(std::string &bundleName);
     int32_t GetFocusWindowId();
     int64_t GetFocusElementId();
     static int32_t GetTreeIdBySplitElementId(const int64_t elementId);
@@ -317,6 +314,7 @@ public:
         sptr<IAccessibilityElementOperatorCallback> callback);
     ErrCode RemoveRequestId(int32_t requestId) override;
     void OnDataClone();
+    bool CheckPermission(const std::string &permission) const;
 
 private:
     void StopCallbackWait(int32_t windowId);
@@ -324,7 +322,6 @@ private:
     RetError CheckCallingUid();
     bool IsApp() const;
     bool IsSystemApp() const;
-    bool CheckPermission(const std::string &permission) const;
     sptr<AccessibilityWindowConnection> GetRealIdConnection();
     bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
         AccessibilityElementInfo &elementInfo);

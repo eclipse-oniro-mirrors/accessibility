@@ -76,7 +76,6 @@ bool AccessibilityPowerManager::HoldRunningLock(std::string &bundleName)
             return false;
         }
     }
-
     if (!wakeLockAbilities_.count(bundleName)) {
         wakeLockAbilities_.insert(bundleName);
     }
@@ -90,15 +89,27 @@ bool AccessibilityPowerManager::UnholdRunningLock(std::string &bundleName)
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
     if (wakeLock_ == nullptr) {
-        HILOG_ERROR("wakeLock_ is null.");
-        return false;
+        if (!InitRunningLock()) {
+            return false;
+        }
     }
 
-    wakeLockAbilities_.erase(bundleName);
-    if (wakeLockAbilities_.empty()) {
+    if (bundleName == "") {
+        wakeLockAbilities_.clear();
         wakeLock_->UnLock();
         wakeLock_ = nullptr;
         HILOG_DEBUG("wakeLock_ unLock success.");
+    } else {
+        if (!wakeLockAbilities_.count(bundleName)) {
+            HILOG_DEBUG("bundleName: %{public}s not in holdRunningLock status.", bundleName.c_str());
+            return true;
+        }
+        wakeLockAbilities_.erase(bundleName);
+        if (wakeLockAbilities_.empty()) {
+            wakeLock_->UnLock();
+            wakeLock_ = nullptr;
+            HILOG_DEBUG("bundleName: %{public}s erased, wakeLock_ unLock success.", bundleName.c_str());
+        }
     }
     return true;
 }
