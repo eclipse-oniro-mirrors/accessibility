@@ -63,7 +63,8 @@
         "i18n",
         "hiappevent",
         "e2fsprogs",
-        "resource_schedule_service"
+        "resource_schedule_service",
+        "user_status_awareness"
       ],
       "third_party": []
     },
