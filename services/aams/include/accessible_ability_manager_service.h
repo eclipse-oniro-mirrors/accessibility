@@ -75,7 +75,6 @@ public:
     void InitInputManagerHandler();
     void InitGestureHandler();
     void InitHoverEnterHandler();
-    void InitRegisterHandler();
     void OnStart() override;
     void OnStop() override;
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
@@ -470,9 +469,6 @@ private:
 
     std::shared_ptr<AppExecFwk::EventRunner> hoverEnterRunner_;
     std::shared_ptr<AAMSEventHandler> hoverEnterHandler_;
-
-    std::shared_ptr<AppExecFwk::EventRunner> registerRunner_;
-    std::shared_ptr<AAMSEventHandler> registerHandler_;
 
     int64_t ipcTimeoutNum_ = 0; // count ipc timeout number
 

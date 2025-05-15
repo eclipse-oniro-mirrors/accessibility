@@ -120,8 +120,6 @@ void AccessibleAbilityManagerServiceUnitTest::TearDownTestCase()
     Singleton<AccessibleAbilityManagerService>::GetInstance().gestureRunner_.reset();
     Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterRunner_.reset();
     Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterHandler_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().registerRunner_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().registerHandler_.reset();
 }
 
 void AccessibleAbilityManagerServiceUnitTest::SetUp()
