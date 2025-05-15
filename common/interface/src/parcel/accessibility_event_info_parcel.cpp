@@ -238,18 +238,15 @@ ExtraEventInfoParcel::ExtraEventInfoParcel(const ExtraEventInfo &extraEventInfo)
  
 bool ExtraEventInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    int32_t mapValueStr = 0;
     int32_t mapValueInt = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mapValueStr);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mapValueInt);
-    HILOG_DEBUG("ReadFromParcel: size is map, mapValueStr: %{public}d, mapValueInt: %{public}d",
-        mapValueStr, mapValueInt);
+    HILOG_DEBUG("ReadFromParcel: size is map, mapValueInt: %{public}d", mapValueInt);
  
-    if (!ContainerSecurityVerify(parcel, mapValueStr, extraEventValueStr_.max_size())) {
+    if (!ContainerSecurityVerify(parcel, mapValueInt, extraEventValueStr_.max_size())) {
         HILOG_WARN("extraEventValueStr : ExtraEventInfoParcel verify is false");
         return false;
     }
-    for (int32_t i = 0; i < mapValueStr; i++) {
+    for (int32_t i = 0; i < mapValueInt; i++) {
         std::string tempMapKey;
         std::string tempMapVal;
         READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapKey);
