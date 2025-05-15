@@ -41,6 +41,8 @@ ohos_fuzztest("AccessibleAbilityManagerServiceStubFuzzTest") {
     "access_token:libaccesstoken_sdk",
     "access_token:libnativetoken",
     "access_token:libtoken_setproc",
+    "cJSON:cjson_static",
+    "selinux_adapter:librestorecon",
     "c_utils:utils",
     "input:libmmi-client",
     "ipc:ipc_single",
