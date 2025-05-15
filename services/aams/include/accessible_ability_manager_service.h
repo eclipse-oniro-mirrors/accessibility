@@ -438,6 +438,10 @@ private:
     void OnScreenMagnificationTypeChanged();
     void RegisterScreenMagnificationType();
 
+    void OnVoiceRecognitionChanged();
+    void RegisterVoiceRecognitionState();
+    void UpdateVoiceRecognitionState();
+
     int32_t ApplyTreeId();
     void RecycleTreeId(int32_t treeId);
 
@@ -497,6 +501,9 @@ private:
     std::bitset<TREE_ID_MAX> treeIdPool_;
     int32_t preTreeId_ = -1;
     ffrt::mutex treeIdPoolMutex_;
+
+    bool isSubscribeMSDPCallback_ = false;
+    ffrt::mutex subscribeMSDPMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
