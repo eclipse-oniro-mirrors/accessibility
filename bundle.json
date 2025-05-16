@@ -63,7 +63,9 @@
         "i18n",
         "hiappevent",
         "e2fsprogs",
-        "resource_schedule_service"
+        "resource_schedule_service",
+        "cJSON",
+        "selinux_adapter"
       ],
       "third_party": []
     },

@@ -237,6 +237,39 @@ protected:
     int32_t itemCounts_ = 0;
 };
 
+class ExtraEventInfo {
+public:
+    /**
+     * @brief Construct
+     */
+    ExtraEventInfo() {}
+ 
+    /**
+     * @brief Construct
+     * @param extraEventValueStr The map of extraEvent.
+     * @sysCap Accessibility
+     */
+    ExtraEventInfo(const std::map<std::string, std::string> extraEventValueStr);
+ 
+    /**
+     * @brief Copy the ExtraEventInfo
+     * @param keyStr The key of extraEventValueStr.
+     * @param valueStr The val of extraEventValueStr.
+     * @sysCap Accessibility
+     */
+    RetError SetExtraEventInfo(const std::string keyStr, const std::string valueStr);
+ 
+    /**
+     * @brief Gets the map of extraEventValueStr.
+     * @return The extraEventValueStr map.
+     * @sysCap Accessibility
+     */
+    const std::map<std::string, std::string> &GetExtraEventInfoValueStr() const;
+
+protected:
+    std::map<std::string, std::string> extraEventValueStr_ = {};
+};
+
 /*
 * The class define the event types and supply the api to
 * get/set the property of event. and it triggered by UI
@@ -561,6 +594,10 @@ public:
 
     void SetElementMainWindowId(const int32_t windowId);
 
+    void SetExtraEvent(const ExtraEventInfo &extraEventInfo);
+ 
+    const ExtraEventInfo &GetExtraEvent() const;
+
 protected:
     EventType eventType_ = TYPE_VIEW_INVALID;
     std::string bundleName_ = "";
@@ -574,6 +611,7 @@ protected:
     int32_t pageId_ = 0;
     std::string notificationContent_ = "";
     AccessibilityElementInfo elementInfo_ {};
+    ExtraEventInfo extraEventInfo_ {};
     std::string textAnnouncedForAccessibility_ = "";
     std::string inspectorKey_ = "";
     int32_t requestFocusElementId_ = -1;

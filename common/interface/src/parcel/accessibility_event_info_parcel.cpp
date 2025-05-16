@@ -134,6 +134,12 @@ bool AccessibilityEventInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
     uint32_t resourceId = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, resourceId);
     SetResourceId(resourceId);
+
+    sptr<ExtraEventInfoParcel> extraEventInfo = parcel.ReadStrongParcelable<ExtraEventInfoParcel>();
+    if (extraEventInfo == nullptr) {
+        return false;
+    }
+    extraEventInfo_ = *extraEventInfo;
     return true;
 }
 
@@ -151,7 +157,7 @@ bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
     return true;
 }
 
-bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
+bool AccessibilityEventInfoParcel::MarshallingFirstPart(Parcel &parcel) const
 {
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, static_cast<uint32_t>(eventType_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, static_cast<uint32_t>(gestureType_));
@@ -191,6 +197,24 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
     return true;
 }
 
+bool AccessibilityEventInfoParcel::MarshallingSecondPart(Parcel &parcel) const
+{
+    ExtraEventInfoParcel extraEventInfoParcel(extraEventInfo_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &extraEventInfoParcel);
+    return true;
+}
+
+bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
+{
+    if (!MarshallingFirstPart(parcel)) {
+        return false;
+    }
+    if (!MarshallingSecondPart(parcel)) {
+        return false;
+    }
+    return true;
+}
+
 AccessibilityEventInfoParcel *AccessibilityEventInfoParcel::Unmarshalling(Parcel& parcel)
 {
     AccessibilityEventInfoParcel *accessibilityEventInfo = new(std::nothrow) AccessibilityEventInfoParcel();
@@ -205,6 +229,64 @@ AccessibilityEventInfoParcel *AccessibilityEventInfoParcel::Unmarshalling(Parcel
         return nullptr;
     }
     return accessibilityEventInfo;
+}
+
+ExtraEventInfoParcel::ExtraEventInfoParcel(const ExtraEventInfo &extraEventInfo)
+    : ExtraEventInfo(extraEventInfo)
+{
+}
+ 
+bool ExtraEventInfoParcel::ReadFromParcel(Parcel &parcel)
+{
+    int32_t mapValueInt = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mapValueInt);
+    HILOG_DEBUG("ReadFromParcel: size is map, mapValueInt: %{public}d", mapValueInt);
+ 
+    if (!ContainerSecurityVerify(parcel, mapValueInt, extraEventValueStr_.max_size())) {
+        HILOG_WARN("extraEventValueStr : ExtraEventInfoParcel verify is false");
+        return false;
+    }
+    for (int32_t i = 0; i < mapValueInt; i++) {
+        std::string tempMapKey;
+        std::string tempMapVal;
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapKey);
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapVal);
+        HILOG_DEBUG("ReadFromParcel: extraEventValueStr's tempMapKey: %{public}s, tempMapVal: %{public}s",
+            tempMapKey.c_str(), tempMapVal.c_str());
+        extraEventValueStr_[tempMapKey] = tempMapVal;
+    }
+ 
+    return true;
+}
+
+bool ExtraEventInfoParcel::Marshalling(Parcel &parcel) const
+{
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, extraEventValueStr_.size());
+    for (auto iterStr = extraEventValueStr_.begin(); iterStr != extraEventValueStr_.end(); ++iterStr) {
+        std::string tempMapKey;
+        std::string tempMapVal;
+        tempMapKey = iterStr->first;
+        tempMapVal = iterStr->second;
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapKey);
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, tempMapVal);
+    }
+    return true;
+}
+ 
+ExtraEventInfoParcel *ExtraEventInfoParcel::Unmarshalling(Parcel &parcel)
+{
+    ExtraEventInfoParcel *extraEventInfo = new(std::nothrow) ExtraEventInfoParcel();
+    if (extraEventInfo == nullptr) {
+        HILOG_ERROR("Failed to create extraEventInfo.");
+        return nullptr;
+    }
+    if (!extraEventInfo->ReadFromParcel(parcel)) {
+        HILOG_ERROR("read from parcel failed");
+        delete extraEventInfo;
+        extraEventInfo = nullptr;
+        return nullptr;
+    }
+    return extraEventInfo;
 }
 } // namespace Accessibility
 } // namespace OHOS
