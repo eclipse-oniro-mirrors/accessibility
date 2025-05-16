@@ -160,6 +160,5 @@ void AccessibilitySettingsManager::SendRequestToSetting(const sptr<IRemoteObject
     auto replyCode = reply.ReadInt32();
     HILOG_INFO("sendRequest ret=%{public}d, replyCode=%{public}d", ret, replyCode);
 }
-
 } // namespace Accessibility
 } // namespace OHOS
