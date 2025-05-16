@@ -52,7 +52,9 @@
 #include "tokenid_kit.h"
 #include "accessibility_caption.h"
 #include "accessibility_settings_connection.h"
+#ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
 #include "user_status_client.h"
+#endif // ACCESSIBILITY_USER_STATUS_AWARENESS
 
 using namespace std;
 using namespace OHOS::Security::AccessToken;
@@ -143,7 +145,9 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     dependentServicesStatus_[SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN] = false;
     dependentServicesStatus_[WINDOW_MANAGER_SERVICE_ID] = false;
     dependentServicesStatus_[DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID] = false;
+    #ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
     dependentServicesStatus_[MSDP_USER_STATUS_SERVICE_ID] = false;
+    #endif // ACCESSIBILITY_USER_STATUS_AWARENESS
 
     accessibilitySettings_ = std::make_shared<AccessibilitySettings>();
     accessibilityShortKey_ = std::make_shared<AccessibilityShortKey>();
@@ -323,7 +327,9 @@ void AccessibleAbilityManagerService::OnStart()
     AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
     AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
+    #ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
     AddSystemAbilityListener(MSDP_USER_STATUS_SERVICE_ID);
+    #endif // ACCESSIBILITY_USER_STATUS_AWARENESS
 
     accessibilitySettings_->RegisterSettingsHandler(handler_);
 }
@@ -3450,6 +3456,7 @@ void AccessibleAbilityManagerService::RegisterScreenMagnificationType()
 void AccessibleAbilityManagerService::UpdateVoiceRecognitionState()
 {
     HILOG_INFO();
+    #ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
     {
         std::lock_guard<ffrt::mutex> lock(subscribeMSDPMutex_);
         if (isSubscribeMSDPCallback_) {
@@ -3460,11 +3467,13 @@ void AccessibleAbilityManagerService::UpdateVoiceRecognitionState()
         }
     }
     OnVoiceRecognitionChanged();
+    #endif // ACCESSIBILITY_USER_STATUS_AWARENESS
 }
 
 void AccessibleAbilityManagerService::OnVoiceRecognitionChanged()
 {
     HILOG_INFO();
+    #ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData == nullptr) {
         HILOG_ERROR("accountData is nullptr");
@@ -3508,6 +3517,7 @@ void AccessibleAbilityManagerService::OnVoiceRecognitionChanged()
         HILOG_INFO("userstatusClient.Unsubscribe");
         return;
     }
+    #endif // ACCESSIBILITY_USER_STATUS_AWARENESS
 }
 
 void AccessibleAbilityManagerService::RegisterVoiceRecognitionState()
