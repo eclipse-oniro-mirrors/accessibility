@@ -3501,7 +3501,7 @@ void AccessibleAbilityManagerService::OnVoiceRecognitionChanged()
             int32_t callbackId, std::shared_ptr<Msdp::UserStatusAwareness::UserStatusData> userStatusData) {
             HILOG_INFO("voice recognition callback, Id: %{public}d, GetFeature: %{public}d, GetResult: %{public}d",
                 callbackId, userStatusData->GetFeature(), userStatusData->GetResult());
-            // 通知到设置
+
             AccessibilitySettingsManager::GetInstance().VoiceRecognize(userStatusData->GetResult());
         };
         int32_t ret = userstatusClient.SubscribeCallback(FEATURE_VOICE_RECOGNITION, func);
