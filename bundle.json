@@ -64,6 +64,8 @@
         "hiappevent",
         "e2fsprogs",
         "resource_schedule_service",
+        "cJSON",
+        "selinux_adapter",
         "user_status_awareness"
       ],
       "third_party": []
