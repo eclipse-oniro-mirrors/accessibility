@@ -120,6 +120,7 @@ ohos_unittest("accessible_ability_test") {
     "../../../services/aams/src/accessibility_setting_observer.cpp",
     "../../../services/aams/src/accessibility_settings.cpp",
     "../../../services/aams/src/accessibility_settings_config.cpp",
+    "../../../services/aams/src/accessibility_settings_connection.cpp",
     "../../../services/aams/src/accessible_ability_manager_service.cpp",
     "../../../services/aams/src/accessible_ability_manager_service_event_handler.cpp",
     "../../../services/aams/src/utils.cpp",
@@ -202,6 +203,10 @@ ohos_unittest("accessible_ability_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (accessibility_user_status_awareness) {
+    external_deps += [ "user_status_awareness:user_status_client" ]
+  }
 }
 
 ###############################################################################
