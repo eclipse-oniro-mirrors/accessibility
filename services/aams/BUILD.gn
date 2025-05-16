@@ -139,7 +139,6 @@ ohos_shared_library("accessibleabilityms") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "graphic_2d:librender_service_base",
-    "user_status_awareness:user_status_client",
   ]
 
   if (accessibility_feature_power_manager) {
@@ -164,6 +163,10 @@ ohos_shared_library("accessibleabilityms") {
 
   if (accessibility_watch_feature) {
     external_deps += [ "resource_schedule_service:ressched_client" ]
+  }
+
+  if (accessibility_user_status_awareness) {
+    external_deps += [ "user_status_awareness:user_status_client" ]
   }
 
   install_enable = true
