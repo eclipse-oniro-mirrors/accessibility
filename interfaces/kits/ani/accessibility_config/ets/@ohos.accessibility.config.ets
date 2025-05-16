@@ -21,10 +21,10 @@ export namespace config {
     let highContrastText: HighContrastTextConfig =  new HighContrastTextConfig();
 
     export class HighContrastTextConfig {
-        native function setSync(value: boolean): void;
-        native function getSync(): boolean;
+        native setSync(value: boolean): void;
+        native getSync(): boolean;
 
-        function set(value: boolean): Promise<void> {
+        set(value: boolean): Promise<void> {
             return new Promise<void>((resolve, reject): void => {
                 taskpool.execute((): void => {
                     return this.setSync(value);
@@ -38,7 +38,7 @@ export namespace config {
             });
         }
 
-        function set(value: boolean, callback:(err: AccessibilityError) => void): void {
+        set(value: boolean, callback:(err: AccessibilityError) => void): void {
             taskpool.execute((): void => {
                 return this.setSync(value);
             })
@@ -50,7 +50,7 @@ export namespace config {
             });
         }
 
-        function get(): Promise<boolean> {
+        get(): Promise<boolean> {
             return new Promise<boolean>((resolve, reject): void => {
                 taskpool.execute((): boolean => {
                     return this.getSync();
@@ -64,7 +64,7 @@ export namespace config {
             });
         }
 
-        function get(callback:(err: AccessibilityError, data: boolean) => void): void {
+        get(callback:(err: AccessibilityError, data: boolean) => void): void {
             taskpool.execute((): boolean => {
                 return this.getSync();
             })
