@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_SETTINGS_CONNECTION_H
-#define ACCESSIBILITY_SETTINGS_CONNECTION_H
+#ifndef EXTENSION_ABILITY_CONNECTION_H
+#define EXTENSION_ABILITY_CONNECTION_H
 
 #include <condition_variable>
 #include "ability_connect_callback_stub.h"
@@ -23,7 +23,7 @@ namespace OHOS {
 namespace Accessibility {
 using namespace OHOS::AppExecFwk;
 
-class AccessibilitySettingsConnection : public AAFwk::AbilityConnectionStub {
+class ExtensionAbilityConnection : public AAFwk::AbilityConnectionStub {
 public:
     void OnAbilityConnectDone(const AppExecFwk::ElementName &element, const sptr <IRemoteObject> &remoteObject,
         int32_t resultCode) override;
@@ -39,24 +39,24 @@ private:
     bool waitFlag_ = false;
 };
 
-class AccessibilitySettingsManager {
+class ExtensionAbilityManager {
 public:
-    static AccessibilitySettingsManager &GetInstance();
+    static ExtensionAbilityManager &GetInstance();
 
     void VoiceRecognize(int32_t soundType);
 
-    AccessibilitySettingsManager(const AccessibilitySettingsManager&) = delete;
+    ExtensionAbilityManager(const ExtensionAbilityManager&) = delete;
 
-    AccessibilitySettingsManager(AccessibilitySettingsManager&&) = delete;
+    ExtensionAbilityManager(ExtensionAbilityManager&&) = delete;
 
-    AccessibilitySettingsManager& operator=(const AccessibilitySettingsManager&) = delete;
+    ExtensionAbilityManager& operator=(const ExtensionAbilityManager&) = delete;
 
-    AccessibilitySettingsManager& operator=(AccessibilitySettingsManager&&) = delete;
+    ExtensionAbilityManager& operator=(ExtensionAbilityManager&&) = delete;
 
 private:
-    AccessibilitySettingsManager();
+    ExtensionAbilityManager();
 
-    ~AccessibilitySettingsManager() = default;
+    ~ExtensionAbilityManager() = default;
 
     int32_t ConnectSettingsExtService();
 
@@ -68,8 +68,8 @@ private:
 
     void SendRequestToSetting(const sptr<IRemoteObject> &remoteObject, const std::string &message);
 
-    sptr <AccessibilitySettingsConnection> connection_;
+    sptr <ExtensionAbilityConnection> connection_;
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_SETTINGS_CONNECTION_H
+#endif // EXTENSION_ABILITY_CONNECTION_H

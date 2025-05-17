@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "accessibility_settings_connection.h"
+#include "extension_ability_manager.h"
 
 #include <string>
 #include "message_parcel.h"
@@ -28,13 +28,13 @@ const int64_t WAIT_INTERVAL = 5000; // 5s
 constexpr int32_t DEFAULT_USER_ID = -1;
 const std::string SETTINGS_BUNDLE_NAME = "com.huawei.hmos.settings";
 const std::string SERVICE_EXTENSION_ABILITY_NAME = "SettingsExtService";
-const std::string VOICE_RECOGNITION = "voiceRecognition";
 const std::string METHOD_KEY = "method";
 const std::string EXTRA_KEY = "extra";
+const std::string METHOD_VOICE_RECOGNITION = "voiceRecognition";
 const std::string EXTRA_VALUE_KEY = "soundType";
 constexpr int32_t SETTINGS_VOICE_RECOGNITION_CODE = 7;
 
-void AccessibilitySettingsConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
+void ExtensionAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
 {
     HILOG_INFO("on ability connected done");
@@ -53,7 +53,7 @@ void AccessibilitySettingsConnection::OnAbilityConnectDone(const AppExecFwk::Ele
     cv_.notify_all();
 }
 
-void AccessibilitySettingsConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
+void ExtensionAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
 {
     HILOG_INFO("on ability disconnected done");
     std::unique_lock<std::mutex> lock(mutex_);
@@ -61,7 +61,7 @@ void AccessibilitySettingsConnection::OnAbilityDisconnectDone(const AppExecFwk::
     remoteObject_ = nullptr;
 }
 
-sptr<IRemoteObject> AccessibilitySettingsConnection::GetRemoteObject()
+sptr<IRemoteObject> ExtensionAbilityConnection::GetRemoteObject()
 {
     std::unique_lock<std::mutex> lock(mutex_);
     if (!cv_.wait_for(lock, std::chrono::milliseconds(WAIT_INTERVAL), [this]() { return waitFlag_; })) {
@@ -71,18 +71,18 @@ sptr<IRemoteObject> AccessibilitySettingsConnection::GetRemoteObject()
     return remoteObject_;
 }
 
-AccessibilitySettingsManager::AccessibilitySettingsManager()
+ExtensionAbilityManager::ExtensionAbilityManager()
 {
-    connection_ = sptr<AccessibilitySettingsConnection> (new (std::nothrow) AccessibilitySettingsConnection());
+    connection_ = sptr<ExtensionAbilityConnection> (new (std::nothrow) ExtensionAbilityConnection());
 }
 
-AccessibilitySettingsManager& AccessibilitySettingsManager::GetInstance()
+ExtensionAbilityManager& ExtensionAbilityManager::GetInstance()
 {
-    static AccessibilitySettingsManager instance;
+    static ExtensionAbilityManager instance;
     return instance;
 }
 
-void AccessibilitySettingsManager::VoiceRecognize(int32_t soundType)
+void ExtensionAbilityManager::VoiceRecognize(int32_t soundType)
 {
     HILOG_INFO("called, soundType=%{public}d", soundType);
     sptr<IRemoteObject> remote = GetRemoteObject();
@@ -95,7 +95,7 @@ void AccessibilitySettingsManager::VoiceRecognize(int32_t soundType)
     DisconnectSettingsExtService();
 }
 
-int32_t AccessibilitySettingsManager::ConnectSettingsExtService()
+int32_t ExtensionAbilityManager::ConnectSettingsExtService()
 {
     HILOG_INFO("called");
     AAFwk::Want want;
@@ -105,7 +105,7 @@ int32_t AccessibilitySettingsManager::ConnectSettingsExtService()
     return ret;
 }
 
-void AccessibilitySettingsManager::DisconnectSettingsExtService()
+void ExtensionAbilityManager::DisconnectSettingsExtService()
 {
     auto disconnectResult = AAFwk::ExtensionManagerClient::GetInstance().DisconnectAbility(connection_);
     if (disconnectResult != ERR_OK) {
@@ -113,7 +113,7 @@ void AccessibilitySettingsManager::DisconnectSettingsExtService()
     }
 }
 
-sptr<IRemoteObject> AccessibilitySettingsManager::GetRemoteObject()
+sptr<IRemoteObject> ExtensionAbilityManager::GetRemoteObject()
 {
     int32_t connectResult = ConnectSettingsExtService();
     if (connectResult != ERR_OK) {
@@ -124,19 +124,19 @@ sptr<IRemoteObject> AccessibilitySettingsManager::GetRemoteObject()
     return connection_->GetRemoteObject();
 }
 
-std::string AccessibilitySettingsManager::CreateJsonMessage(int32_t soundType)
+std::string ExtensionAbilityManager::CreateJsonMessage(int32_t soundType)
 {
     nlohmann::json jsonMessageObj;
     nlohmann::json jsonExtraValue;
 
     jsonExtraValue[EXTRA_VALUE_KEY] = soundType;
-    jsonMessageObj[METHOD_KEY] = VOICE_RECOGNITION;
+    jsonMessageObj[METHOD_KEY] = METHOD_VOICE_RECOGNITION;
     jsonMessageObj[EXTRA_KEY] = jsonExtraValue;
 
     return jsonMessageObj.dump();
 }
 
-void AccessibilitySettingsManager::SendRequestToSetting(const sptr<IRemoteObject> &remoteObject,
+void ExtensionAbilityManager::SendRequestToSetting(const sptr<IRemoteObject> &remoteObject,
     const std::string &message)
 {
     if (message.empty()) {

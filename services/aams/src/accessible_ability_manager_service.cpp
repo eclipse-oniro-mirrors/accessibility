@@ -51,7 +51,7 @@
 #include "accesstoken_kit.h"
 #include "tokenid_kit.h"
 #include "accessibility_caption.h"
-#include "accessibility_settings_connection.h"
+#include "extension_ability_manager.h"
 #ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
 #include "user_status_client.h"
 #endif // ACCESSIBILITY_USER_STATUS_AWARENESS
@@ -3502,7 +3502,7 @@ void AccessibleAbilityManagerService::OnVoiceRecognitionChanged()
             HILOG_INFO("voice recognition callback, Id: %{public}d, GetFeature: %{public}d, GetResult: %{public}d",
                 callbackId, userStatusData->GetFeature(), userStatusData->GetResult());
 
-            AccessibilitySettingsManager::GetInstance().VoiceRecognize(userStatusData->GetResult());
+            ExtensionAbilityManager::GetInstance().VoiceRecognize(userStatusData->GetResult());
         };
         int32_t ret = userstatusClient.SubscribeCallback(FEATURE_VOICE_RECOGNITION, func);
         userstatusClient.Subscribe(FEATURE_VOICE_RECOGNITION, {});
