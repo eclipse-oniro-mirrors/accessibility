@@ -51,10 +51,7 @@
 #include "accesstoken_kit.h"
 #include "tokenid_kit.h"
 #include "accessibility_caption.h"
-#include "extension_ability_manager.h"
-#ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
-#include "user_status_client.h"
-#endif // ACCESSIBILITY_USER_STATUS_AWARENESS
+#include "msdp_manager.h"
 
 using namespace std;
 using namespace OHOS::Security::AccessToken;
@@ -100,7 +97,6 @@ namespace {
     constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     constexpr int32_t WINDOW_ID_INVALID = -1;
-    constexpr int32_t FEATURE_VOICE_RECOGNITION = 17;
     constexpr int64_t ELEMENT_ID_INVALID = -1;
     enum SCREENREADER_STATE : int32_t {
         UNINIT = -1,
@@ -3456,24 +3452,19 @@ void AccessibleAbilityManagerService::RegisterScreenMagnificationType()
 void AccessibleAbilityManagerService::UpdateVoiceRecognitionState()
 {
     HILOG_INFO();
-    #ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
     {
         std::lock_guard<ffrt::mutex> lock(subscribeMSDPMutex_);
         if (isSubscribeMSDPCallback_) {
-            auto &userstatusClient = Msdp::UserStatusAwareness::UserStatusClient::GetInstance();
-            userstatusClient.Unsubscribe(FEATURE_VOICE_RECOGNITION);
-            isSubscribeMSDPCallback_ = false;
+            MsdpManager::UnSubscribeVoiceRecognition();
             HILOG_INFO("userstatusClient.Unsubscribe");
         }
     }
     OnVoiceRecognitionChanged();
-    #endif // ACCESSIBILITY_USER_STATUS_AWARENESS
 }
 
 void AccessibleAbilityManagerService::OnVoiceRecognitionChanged()
 {
     HILOG_INFO();
-    #ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData == nullptr) {
         HILOG_ERROR("accountData is nullptr");
@@ -3493,31 +3484,22 @@ void AccessibleAbilityManagerService::OnVoiceRecognitionChanged()
 
     bool voiceRecognitionEnabled = config->GetDbHandle()->GetBoolValue(VOICE_RECOGNITION_KEY, false);
     std::string voiceRecognitionTypes = config->GetDbHandle()->GetStringValue(VOICE_RECOGNITION_TYPES, "");
-    auto &userstatusClient = Msdp::UserStatusAwareness::UserStatusClient::GetInstance();
 
     std::lock_guard<ffrt::mutex> lock(subscribeMSDPMutex_);
     if (!isSubscribeMSDPCallback_ && voiceRecognitionEnabled && !voiceRecognitionTypes.empty()) {
-        std::function<void(int32_t, std::shared_ptr<Msdp::UserStatusAwareness::UserStatusData>)> func = [ = ](
-            int32_t callbackId, std::shared_ptr<Msdp::UserStatusAwareness::UserStatusData> userStatusData) {
-            HILOG_INFO("voice recognition callback, Id: %{public}d, GetFeature: %{public}d, GetResult: %{public}d",
-                callbackId, userStatusData->GetFeature(), userStatusData->GetResult());
-
-            ExtensionAbilityManager::GetInstance().VoiceRecognize(userStatusData->GetResult());
-        };
-        int32_t ret = userstatusClient.SubscribeCallback(FEATURE_VOICE_RECOGNITION, func);
-        userstatusClient.Subscribe(FEATURE_VOICE_RECOGNITION, {});
-        isSubscribeMSDPCallback_ = true;
-        HILOG_INFO("userstatusClient.SubscribeCallback RET: %{public}d", ret);
+        if (MsdpManager::SubscribeVoiceRecognition() > 0) {
+            isSubscribeMSDPCallback_ = true;
+        } else {
+            HILOG_ERROR("SubscribeVoiceRecognition error: %{public}d", ret);
+        }
         return;
     }
 
     if (isSubscribeMSDPCallback_ && (!voiceRecognitionEnabled || voiceRecognitionTypes.empty())) {
-        userstatusClient.Unsubscribe(FEATURE_VOICE_RECOGNITION);
+        MsdpManager::UnSubscribeVoiceRecognition();
         isSubscribeMSDPCallback_ = false;
-        HILOG_INFO("userstatusClient.Unsubscribe");
         return;
     }
-    #endif // ACCESSIBILITY_USER_STATUS_AWARENESS
 }
 
 void AccessibleAbilityManagerService::RegisterVoiceRecognitionState()
