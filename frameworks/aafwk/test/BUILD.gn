@@ -120,7 +120,6 @@ ohos_unittest("accessible_ability_test") {
     "../../../services/aams/src/accessibility_setting_observer.cpp",
     "../../../services/aams/src/accessibility_settings.cpp",
     "../../../services/aams/src/accessibility_settings_config.cpp",
-    "../../../services/aams/src/extension_ability_manager.cpp",
     "../../../services/aams/src/msdp_manager.cpp",
     "../../../services/aams/src/accessible_ability_manager_service.cpp",
     "../../../services/aams/src/accessible_ability_manager_service_event_handler.cpp",

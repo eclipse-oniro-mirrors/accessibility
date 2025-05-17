@@ -3490,7 +3490,7 @@ void AccessibleAbilityManagerService::OnVoiceRecognitionChanged()
         if (MsdpManager::SubscribeVoiceRecognition() > 0) {
             isSubscribeMSDPCallback_ = true;
         } else {
-            HILOG_ERROR("SubscribeVoiceRecognition error: %{public}d", ret);
+            HILOG_ERROR("SubscribeVoiceRecognition error");
         }
         return;
     }
