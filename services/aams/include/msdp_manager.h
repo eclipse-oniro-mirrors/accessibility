@@ -16,6 +16,8 @@
 #ifndef MSDP_MANAGER_H
 #define MSDP_MANAGER_H
 
+#include <cstdint>
+
 namespace OHOS {
 namespace Accessibility {
 class MsdpManager {
