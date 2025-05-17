@@ -68,6 +68,7 @@ accessibleabilityms_files = [
   "${services_path}/src/accessibility_resource_bundle_manager.cpp",
   "${services_path}/src/accessibility_setting_observer.cpp",
   "${services_path}/src/accessibility_setting_provider.cpp",
+  "${services_path}/src/msdp_manager.cpp",
   "${services_path}/src/accessibility_short_key_dialog.cpp",
   "${services_path}/src/accessibility_datashare_helper.cpp",
   "${services_path}/src/touch_exploration_multi_finger_gesture.cpp",
@@ -137,7 +138,7 @@ ohos_shared_library("accessibleabilityms") {
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "window_manager:libdm",
-    "graphic_2d:librender_service_base"
+    "graphic_2d:librender_service_base",
   ]
 
   if (accessibility_feature_power_manager) {
@@ -162,6 +163,10 @@ ohos_shared_library("accessibleabilityms") {
 
   if (accessibility_watch_feature) {
     external_deps += [ "resource_schedule_service:ressched_client" ]
+  }
+
+  if (accessibility_user_status_awareness) {
+    external_deps += [ "user_status_awareness:user_status_client" ]
   }
 
   install_enable = true

@@ -51,6 +51,7 @@
 #include "accesstoken_kit.h"
 #include "tokenid_kit.h"
 #include "accessibility_caption.h"
+#include "msdp_manager.h"
 
 using namespace std;
 using namespace OHOS::Security::AccessToken;
@@ -76,6 +77,8 @@ namespace {
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
+    const std::string VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
+    const std::string VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
     const std::string DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
     const std::string USER_SETUP_COMPLETED = "user_setup_complete";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
@@ -138,6 +141,9 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     dependentServicesStatus_[SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN] = false;
     dependentServicesStatus_[WINDOW_MANAGER_SERVICE_ID] = false;
     dependentServicesStatus_[DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID] = false;
+    #ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
+    dependentServicesStatus_[MSDP_USER_STATUS_SERVICE_ID] = false;
+    #endif // ACCESSIBILITY_USER_STATUS_AWARENESS
 
     accessibilitySettings_ = std::make_shared<AccessibilitySettings>();
     accessibilityShortKey_ = std::make_shared<AccessibilityShortKey>();
@@ -297,6 +303,9 @@ void AccessibleAbilityManagerService::OnStart()
     AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
     AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
+    #ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
+    AddSystemAbilityListener(MSDP_USER_STATUS_SERVICE_ID);
+    #endif // ACCESSIBILITY_USER_STATUS_AWARENESS
 
     accessibilitySettings_->RegisterSettingsHandler(handler_);
 }
@@ -389,6 +398,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         PostDelayUnloadTask();
         RegisterScreenMagnificationState();
         RegisterScreenMagnificationType();
+        RegisterVoiceRecognitionState();
         }, "OnAddSystemAbility");
 }
 
@@ -1926,9 +1936,11 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     }
     UpdateAllSetting();
     UpdateAutoStartAbilities();
+    UpdateVoiceRecognitionState();
     RegisterShortKeyEvent();
     RegisterScreenMagnificationState();
     RegisterScreenMagnificationType();
+    RegisterVoiceRecognitionState();
 }
 
 void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
@@ -3417,6 +3429,82 @@ void AccessibleAbilityManagerService::RegisterScreenMagnificationType()
         }, "REGISTER_SCREEN_ZOOM_TYPE_OBSERVER");
 }
 
+void AccessibleAbilityManagerService::UpdateVoiceRecognitionState()
+{
+    HILOG_INFO();
+    {
+        std::lock_guard<ffrt::mutex> lock(subscribeMSDPMutex_);
+        if (isSubscribeMSDPCallback_) {
+            MsdpManager::UnSubscribeVoiceRecognition();
+            HILOG_INFO("userstatusClient.Unsubscribe");
+        }
+    }
+    OnVoiceRecognitionChanged();
+}
+
+void AccessibleAbilityManagerService::OnVoiceRecognitionChanged()
+{
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    bool voiceRecognitionEnabled = config->GetDbHandle()->GetBoolValue(VOICE_RECOGNITION_KEY, false);
+    std::string voiceRecognitionTypes = config->GetDbHandle()->GetStringValue(VOICE_RECOGNITION_TYPES, "");
+
+    std::lock_guard<ffrt::mutex> lock(subscribeMSDPMutex_);
+    if (!isSubscribeMSDPCallback_ && voiceRecognitionEnabled && !voiceRecognitionTypes.empty()) {
+        int32_t ret = MsdpManager::SubscribeVoiceRecognition();
+        isSubscribeMSDPCallback_ = true;
+        HILOG_INFO("SubscribeVoiceRecognition ret: %{public}d", ret);
+        return;
+    }
+
+    if (isSubscribeMSDPCallback_ && (!voiceRecognitionEnabled || voiceRecognitionTypes.empty())) {
+        MsdpManager::UnSubscribeVoiceRecognition();
+        isSubscribeMSDPCallback_ = false;
+        return;
+    }
+}
+
+void AccessibleAbilityManagerService::RegisterVoiceRecognitionState()
+{
+    HILOG_INFO();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().OnVoiceRecognitionChanged();
+        };
+
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(VOICE_RECOGNITION_KEY, func);
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(VOICE_RECOGNITION_TYPES, func);
+        }
+        }, "REGISTER_VOICE_RECOGNITION");
+}
+
 void AccessibleAbilityManagerService::PostDelayUnloadTask()
 {
 #ifdef ACCESSIBILITY_WATCH_FEATURE
@@ -3607,6 +3695,7 @@ void AccessibleAbilityManagerService::OnDataClone()
         UpdateAllSetting();
         UpdateAutoStartAbilities();
         UpdateInputFilter();
+        UpdateVoiceRecognitionState();
         HILOG_INFO("accessibility reload config.");
     } else {
         HILOG_WARN("config_ is nullptr");

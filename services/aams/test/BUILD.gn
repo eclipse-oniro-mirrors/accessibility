@@ -69,6 +69,7 @@ ohos_unittest("accessibility_account_data_test") {
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_settings.cpp",
+    "../src/msdp_manager.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
@@ -140,6 +141,10 @@ ohos_unittest("accessibility_account_data_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (accessibility_user_status_awareness) {
+    external_deps += [ "user_status_awareness:user_status_client" ]
+  }
 }
 
 ################################################################################
@@ -179,6 +184,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "../src/accessibility_setting_provider.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
+    "../src/msdp_manager.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
     "../src/accessibility_window_connection.cpp",
@@ -255,6 +261,10 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (accessibility_user_status_awareness) {
+    external_deps += [ "user_status_awareness:user_status_client" ]
+  }
 }
 
 ################################################################################
@@ -745,6 +755,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
+    "../src/msdp_manager.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
     "../src/accessibility_window_connection.cpp",
@@ -824,6 +835,10 @@ ohos_unittest("accessible_ability_connection_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (accessibility_user_status_awareness) {
+    external_deps += [ "user_status_awareness:user_status_client" ]
+  }
 }
 
 ################################################################################
@@ -1162,6 +1177,7 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_setting_provider.cpp",
     "../src/accessibility_settings.cpp",
+    "../src/msdp_manager.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
@@ -1233,6 +1249,10 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (accessibility_user_status_awareness) {
+    external_deps += [ "user_status_awareness:user_status_client" ]
+  }
 }
 
 ################################################################################
@@ -1593,6 +1613,7 @@ ohos_unittest("accessibility_settings_config_test") {
     "../src/accessibility_setting_provider.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
+    "../src/msdp_manager.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
@@ -1662,6 +1683,10 @@ ohos_unittest("accessibility_settings_config_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (accessibility_user_status_awareness) {
+    external_deps += [ "user_status_awareness:user_status_client" ]
+  }
 }
 
 ################################################################################
