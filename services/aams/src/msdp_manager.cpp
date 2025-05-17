@@ -27,6 +27,7 @@ const int32_t FEATURE_VOICE_RECOGNITION = 17;
 int32_t MsdpManager::SubscribeVoiceRecognition()
 {
     HILOG_INFO();
+    int32_t ret = 0;
     #ifdef ACCESSIBILITY_USER_STATUS_AWARENESS
     std::function<void(int32_t, std::shared_ptr<Msdp::UserStatusAwareness::UserStatusData>)> func = [ = ](
         int32_t callbackId, std::shared_ptr<Msdp::UserStatusAwareness::UserStatusData> userStatusData) {
@@ -36,11 +37,11 @@ int32_t MsdpManager::SubscribeVoiceRecognition()
         ExtensionAbilityManager::GetInstance().VoiceRecognize(userStatusData->GetResult());
     };
     auto &userstatusClient = Msdp::UserStatusAwareness::UserStatusClient::GetInstance();
-    int32_t ret = userstatusClient.SubscribeCallback(FEATURE_VOICE_RECOGNITION, func);
+    ret = userstatusClient.SubscribeCallback(FEATURE_VOICE_RECOGNITION, func);
     userstatusClient.Subscribe(FEATURE_VOICE_RECOGNITION, {});
     HILOG_INFO("userstatusClient.SubscribeCallback RET: %{public}d", ret);
-    return ret;
     #endif // ACCESSIBILITY_USER_STATUS_AWARENESS
+    return ret;
 }
 
 void MsdpManager::UnSubscribeVoiceRecognition()

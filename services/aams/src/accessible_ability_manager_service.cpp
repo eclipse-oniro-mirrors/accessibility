@@ -3487,11 +3487,9 @@ void AccessibleAbilityManagerService::OnVoiceRecognitionChanged()
 
     std::lock_guard<ffrt::mutex> lock(subscribeMSDPMutex_);
     if (!isSubscribeMSDPCallback_ && voiceRecognitionEnabled && !voiceRecognitionTypes.empty()) {
-        if (MsdpManager::SubscribeVoiceRecognition() > 0) {
-            isSubscribeMSDPCallback_ = true;
-        } else {
-            HILOG_ERROR("SubscribeVoiceRecognition error");
-        }
+        int32_t ret = MsdpManager::SubscribeVoiceRecognition();
+        isSubscribeMSDPCallback_ = true;
+        HILOG_INFO("SubscribeVoiceRecognition ret: %{public}d", ret);
         return;
     }
 
