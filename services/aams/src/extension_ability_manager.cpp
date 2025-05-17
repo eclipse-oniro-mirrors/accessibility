@@ -49,7 +49,6 @@ void ExtensionAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementN
     HILOG_INFO("got remoteObject");
     std::unique_lock<std::mutex> lock(mutex_);
     remoteObject_ = remoteObject;
-    waitFlag_ = true;
     cv_.notify_all();
 }
 
@@ -57,14 +56,13 @@ void ExtensionAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Eleme
 {
     HILOG_INFO("on ability disconnected done");
     std::unique_lock<std::mutex> lock(mutex_);
-    waitFlag_ = false;
     remoteObject_ = nullptr;
 }
 
 sptr<IRemoteObject> ExtensionAbilityConnection::GetRemoteObject()
 {
     std::unique_lock<std::mutex> lock(mutex_);
-    if (!cv_.wait_for(lock, std::chrono::milliseconds(WAIT_INTERVAL), [this]() { return waitFlag_; })) {
+    if (!cv_.wait_for(lock, std::chrono::milliseconds(WAIT_INTERVAL), [this]() { return remoteObject_ != nullptr; })) {
         HILOG_ERROR("wait for remote object timeout");
         return nullptr;
     }
@@ -139,6 +137,10 @@ std::string ExtensionAbilityManager::CreateJsonMessage(int32_t soundType)
 void ExtensionAbilityManager::SendRequestToSetting(const sptr<IRemoteObject> &remoteObject,
     const std::string &message)
 {
+    if (remoteObject == nullptr) {
+        HILOG_ERROR("remoteObject is nullptr!");
+        return;
+    }
     if (message.empty()) {
         HILOG_ERROR("send message is empty!");
         return;
@@ -150,10 +152,6 @@ void ExtensionAbilityManager::SendRequestToSetting(const sptr<IRemoteObject> &re
 
     if (!data.WriteString16(Str8ToStr16(message))) {
         HILOG_ERROR("write message failed!");
-        return;
-    }
-    if (remoteObject == nullptr) {
-        HILOG_ERROR("remoteObject is nullptr!");
         return;
     }
     int32_t ret = remoteObject->SendRequest(SETTINGS_VOICE_RECOGNITION_CODE, data, reply, option);
