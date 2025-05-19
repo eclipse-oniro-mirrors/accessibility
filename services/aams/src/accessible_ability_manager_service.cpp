@@ -3456,6 +3456,7 @@ void AccessibleAbilityManagerService::UpdateVoiceRecognitionState()
         std::lock_guard<ffrt::mutex> lock(subscribeMSDPMutex_);
         if (isSubscribeMSDPCallback_) {
             MsdpManager::UnSubscribeVoiceRecognition();
+            isSubscribeMSDPCallback_ = false;
             HILOG_INFO("userstatusClient.Unsubscribe");
         }
     }
