@@ -120,15 +120,11 @@ HWTEST_F(AccessibilityDatashareHelperTest, AccessibilityDatashareHelper_Unittest
     GTEST_LOG_(INFO) << "AccessibilityDatashareHelper_Unittest_GetLongValue_001 start";
     sptr<AccessibilityAccountData> currentAccount =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!currentAccount) {
-        GTEST_LOG_(ERROR) << "Account data is nullptr";
-        return;
-    }
+    EXPECT_TRUE(currentAccount);
+
     std::shared_ptr<AccessibilitySettingsConfig> config = currentAccount->GetConfig();
-    if (!config) {
-        GTEST_LOG_(ERROR) << "Config is nullptr";
-        return;
-    }
+    EXPECT_TRUE(config);
+    
     config->GetLongValue(true);
     std::string cmdUser("-u");
     std::vector<std::u16string> args;
@@ -154,16 +150,12 @@ HWTEST_F(AccessibilityDatashareHelperTest, AccessibilityDumper_Unittest_GetLongV
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> currentAccount =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!currentAccount) {
-        GTEST_LOG_(ERROR) << "Account data is nullptr";
-        return;
-    }
+    EXPECT_TRUE(currentAccount);
+
     sptr<AccessibleAbilityConnection> connection =
         new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo);
-    if (!connection) {
-        GTEST_LOG_(ERROR) << "Connection is nullptr";
-        return;
-    }
+    EXPECT_TRUE(connection);
+
     currentAccount->AddConnectedAbility(connection);
     std::string cmdClient("-c");
     std::vector<std::u16string> args;
@@ -186,10 +178,8 @@ HWTEST_F(AccessibilityDatashareHelperTest, AccessibilityDatashareHelper_Unittest
     const int32_t windowId = 1;
     sptr<AccessibilityAccountData> currentAccount =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!currentAccount) {
-        GTEST_LOG_(ERROR) << "Account data is nullptr";
-        return;
-    }
+    EXPECT_TRUE(currentAccount);
+
     sptr<AccessibilityWindowConnection> operationConnection =
         new AccessibilityWindowConnection(windowId, nullptr, accountId);
     currentAccount->AddAccessibilityWindowConnection(windowId, operationConnection);
@@ -214,10 +204,8 @@ HWTEST_F(AccessibilityDatashareHelperTest, AccessibilityDatashareHelper_Unittest
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
 
     std::shared_ptr<AccessibilitySettingsConfig> config = currentAccount->GetConfig();
-    if (!config) {
-        GTEST_LOG_(ERROR) << "Config is nullptr";
-        return;
-    }
+    XPECT_TRUE(config);
+
     config->SetCaptionState(true);
     std::string cmdUser("-u");
     std::vector<std::u16string> args;
@@ -245,16 +233,12 @@ HWTEST_F(AccessibilityDatashareHelperTest, AccessibilityDatashareHelper_Unittest
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> currentAccount =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!currentAccount) {
-        GTEST_LOG_(ERROR) << "Account data is nullptr";
-        return;
-    }
+    EXPECT_TRUE(currentAccount);
+
     sptr<AccessibleAbilityConnection> connection =
         new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo);
-    if (!connection) {
-        GTEST_LOG_(ERROR) << "Connection is nullptr";
-        return;
-    }
+    EXPECT_TRUE(connection);
+    
     currentAccount->AddConnectedAbility(connection);
     std::string cmdClient("-c");
     std::vector<std::u16string> args;
@@ -279,10 +263,8 @@ HWTEST_F(AccessibilityDatashareHelperTest, AccessibilityDatashareHelper_Unittest
     const int32_t windowId = 1;
     sptr<AccessibilityAccountData> currentAccount =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!currentAccount) {
-        GTEST_LOG_(ERROR) << "Account data is nullptr";
-        return;
-    }
+    EXPECT_TRUE(currentAccount);
+    
     sptr<AccessibilityWindowConnection> operationConnection =
         new AccessibilityWindowConnection(windowId, nullptr, accountId);
     currentAccount->AddAccessibilityWindowConnection(windowId, operationConnection);

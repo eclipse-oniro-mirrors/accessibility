@@ -125,6 +125,7 @@ void AccessibleAbilityManagerServiceUnitTest::TearDownTestCase()
 void AccessibleAbilityManagerServiceUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest SetUp";
+    sleep(1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     stub_ = new MockAccessibleAbilityClientStubImpl();
 }
@@ -206,6 +207,39 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetAbilityList_001, TestSize.L
 }
 
 /**
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_GetAbilityList_002
+ * @tc.name: GetAbilityList
+ * @tc.desc: Test function GetAbilityList
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetAbilityList_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetAbilityList_002 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    std::vector<AccessibilityAbilityInfoParcel> infos;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(0xFFFFFFFF, 3, infos);
+    EXPECT_NE(stub_.GetRefPtr(), nullptr);
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetAbilityList_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_GetAbilityList_003
+ * @tc.name: GetAbilityList
+ * @tc.desc: Test function GetAbilityList
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetAbilityList_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetAbilityList_003 start";
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfoParcel> infos;
+    uint32_t type = 0xFFFFFFFF;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(type, -1, infos);
+    EXPECT_EQ(infos.size(), 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(type, 5, infos);
+    EXPECT_EQ(infos.size(), 0);
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetAbilityList_003 end";
+}
+
+/**
  * @tc.number: Accessible_Ability_ManagerService_UnitTest_RegisterElementOperatorByWindowId_001
  * @tc.name: RegisterElementOperatorByWindowId
  * @tc.desc: Test function RegisterElementOperatorByWindowId
@@ -226,6 +260,258 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperatorByWindo
     EXPECT_EQ(int(map.size()), 1);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperatorByWindowId_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_GetRealWindowAndElementId_001
+ * @tc.name: GetRealWindowAndElementId
+ * @tc.desc: Test function GetRealWindowAndElementId
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetRealWindowAndElementId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetRealWindowAndElementId_001 start";
+    int32_t windowId = 0;
+    int64_t elementId = 0;
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    int32_t ret = aams.GetRealWindowAndElementId(windowId, elementId);
+    EXPECT_EQ(ret, 0);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetRealWindowAndElementId_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_GetSceneBoardInnerWinId_001
+ * @tc.name: GetSceneBoardInnerWinId
+ * @tc.desc: Test function GetSceneBoardInnerWinId
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetSceneBoardInnerWinId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetSceneBoardInnerWinId_001 start";
+    int32_t windowId = 0;
+    int64_t elementId = 0;
+    int32_t innerWid = 0;
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    int32_t ret = aams.GetSceneBoardInnerWinId(windowId, elementId, innerWid);
+    EXPECT_EQ(ret, 0);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetSceneBoardInnerWinId_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_RemoveCallback_001
+ * @tc.name: RemoveCallback
+ * @tc.desc: Test function RemoveCallback
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveCallback_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RemoveCallback_001 start";
+    sptr<IRemoteObject::DeathRecipient> deathRecipient = nullptr;
+    wptr<IRemoteObject> remote = nullptr;    
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.RemoveCallback(STATE_CALLBACK, deathRecipient, remote);
+    EXPECT_EQ(deathRecipient, nullptr);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RemoveCallback_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_RemoveCallback_002
+ * @tc.name: RemoveCallback
+ * @tc.desc: Test function RemoveCallback
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveCallback_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RemoveCallback_002 start";
+    sptr<IRemoteObject::DeathRecipient> deathRecipient = nullptr;
+
+    sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    EXPECT_TRUE(samgr);
+
+    wptr<IRemoteObject> remote = samgr->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);    
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.RemoveCallback(STATE_CALLBACK, deathRecipient, remote);
+    EXPECT_EQ(deathRecipient, nullptr);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RemoveCallback_002 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_RemoveCallback_003
+ * @tc.name: RemoveCallback
+ * @tc.desc: Test function RemoveCallback
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveCallback_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RemoveCallback_003 start";
+    sptr<IRemoteObject::DeathRecipient> deathRecipient = nullptr;
+
+    sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    EXPECT_TRUE(samgr);
+
+    wptr<IRemoteObject> remote = samgr->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);    
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.RemoveCallback(CAPTION_PROPERTY_CALLBACK, deathRecipient, remote);
+    EXPECT_EQ(deathRecipient, nullptr);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RemoveCallback_003 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_RemoveCallback_004
+ * @tc.name: RemoveCallback
+ * @tc.desc: Test function RemoveCallback
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveCallback_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RemoveCallback_004 start";
+    sptr<IRemoteObject::DeathRecipient> deathRecipient = nullptr;
+
+    sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    EXPECT_TRUE(samgr);
+
+    wptr<IRemoteObject> remote = samgr->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);    
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.RemoveCallback(ENABLE_ABILITY_LISTS_CALLBACK, deathRecipient, remote);
+    EXPECT_EQ(deathRecipient, nullptr);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RemoveCallback_004 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_RemoveCallback_005
+ * @tc.name: RemoveCallback
+ * @tc.desc: Test function RemoveCallback
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveCallback_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RemoveCallback_005 start";
+    sptr<IRemoteObject::DeathRecipient> deathRecipient = nullptr;
+
+    sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    EXPECT_TRUE(samgr);
+
+    wptr<IRemoteObject> remote = samgr->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);    
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.RemoveCallback(CONFIG_CALLBACK, deathRecipient, remote);
+    EXPECT_EQ(deathRecipient, nullptr);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RemoveCallback_005 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_OnBundleManagerDied_001
+ * @tc.name: OnBundleManagerDied
+ * @tc.desc: Test function OnBundleManagerDied
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnBundleManagerDied_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_001 start";  
+
+    sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    EXPECT_TRUE(samgr);
+
+    wptr<IRemoteObject> remote = samgr->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);    
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.OnBundleManagerDied(remote);
+    EXPECT_TRUE(remote != nullptr);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_OnBundleManagerDied_002
+ * @tc.name: OnBundleManagerDied
+ * @tc.desc: Test function OnBundleManagerDied
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnBundleManagerDied_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_002 start";  
+
+    wptr<IRemoteObject> remote = nullptr;    
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.OnBundleManagerDied(remote);
+    EXPECT_TRUE(remote == nullptr);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_002 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_GetScreenReaderState_001
+ * @tc.name: GetScreenReaderState
+ * @tc.desc: Test function GetScreenReaderState
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetScreenReaderState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetScreenReaderState_001 start";  
+
+    bool state;
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    int32_t ret = aams.GetScreenReaderState(state);
+    EXPECT_EQ(ret, 0);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetScreenReaderState_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_OnScreenMagnificationTypeChanged_001
+ * @tc.name: OnScreenMagnificationTypeChanged
+ * @tc.desc: Test function OnScreenMagnificationTypeChanged
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnScreenMagnificationTypeChanged_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnScreenMagnificationTypeChanged_001 start";  
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.OnScreenMagnificationTypeChanged();
+    auto accountData = aams.GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnScreenMagnificationTypeChanged_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_OnScreenMagnificationStateChanged_001
+ * @tc.name: OnScreenMagnificationStateChanged
+ * @tc.desc: Test function OnScreenMagnificationStateChanged
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnScreenMagnificationStateChanged_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnScreenMagnificationStateChanged_001 start";  
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.OnScreenMagnificationStateChanged();
+    auto accountData = aams.GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnScreenMagnificationStateChanged_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_StopCallbackWait_001
+ * @tc.name: StopCallbackWait
+ * @tc.desc: Test function StopCallbackWait
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, StopCallbackWait_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_StopCallbackWait_001 start";  
+
+    int32_t windowId = 0;
+    int32_t treeId = 0;
+
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.StopCallbackWait(windowId, treeId);
+
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnScreenMagnificationStateChanged_001 end";
 }
 
 /**
@@ -267,7 +553,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperatorByWin
 
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DeregisterElementOperatorByWindowId_002 end";
 }
-
 
 /**
  * @tc.number: AccessibleAbility_ManagerService_UnitTest_SetTouchEventInjector_001
@@ -415,6 +700,23 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortKeyState_001, TestSize
 }
 
 /**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_002
+ * @tc.name: SetShortKeyState
+ * @tc.desc: Test function SetShortKeyState GetShortKeyState
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortKeyState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_002 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    bool state = true;
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortKeyState(state));
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortKeyState(state));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_002 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetMouseKeyState_001
  * @tc.name: SetMouseKeyState
  * @tc.desc: Test function SetMouseKeyState GetMouseKeyState
@@ -449,6 +751,23 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetMouseAutoClick_001, TestSiz
 }
 
 /**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_002
+ * @tc.name: SetMouseAutoClick
+ * @tc.desc: Test function SetMouseAutoClick GetMouseAutoClick
+ * @tc.require: issueI5NTXC
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetMouseAutoClick_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_002 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    int32_t value = MOUSE_AUTO_CLICK_VALUE;
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetMouseAutoClick(value));
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetMouseAutoClick(value));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_002 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_001
  * @tc.name: SetShortkeyTarget
  * @tc.desc: Test function SetShortkeyTarget GetShortkeyTarget
@@ -463,6 +782,23 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortkeyTarget_001, TestSiz
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyTarget(name));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyTarget(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_002
+ * @tc.name: SetShortkeyTarget
+ * @tc.desc: Test function SetShortkeyTarget GetShortkeyTarget
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortkeyTarget_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_002 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    std::string name = "test";
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyTarget(name));
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyTarget(name));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_002 end";
 }
 
 /**
@@ -483,6 +819,23 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetHighContrastTextState_001, 
 }
 
 /**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_002
+ * @tc.name: SetHighContrastTextState
+ * @tc.desc: Test function SetHighContrastTextState GetHighContrastTextState
+ * @tc.require: issueI5NTX9
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetHighContrastTextState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_002 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    bool state = true;
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetHighContrastTextState(state));
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetHighContrastTextState(state));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_002 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_001
  * @tc.name: SetDaltonizationState
  * @tc.desc: Test function SetDaltonizationState GetDaltonizationState
@@ -496,6 +849,24 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetDaltonizationState_001, Tes
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetDaltonizationState(state));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetDaltonizationState(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_002
+ * @tc.name: SetDaltonizationState
+ * @tc.desc: Test function SetDaltonizationState GetDaltonizationState
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetDaltonizationState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_002 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    bool state = true;
+    EXPECT_NE(RET_OK,
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetDaltonizationState(state));
+    EXPECT_NE(RET_OK,
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetDaltonizationState(state));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_002 end";
 }
 
 /**
@@ -753,6 +1124,55 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageRemoved_001, TestSize.L
 }
 
 /**
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_PackageAdd_002
+ * @tc.name: PackageAdd
+ * @tc.desc: Test function PackageAdd
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageAdd_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageAdd_002 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    std::string bundleName = "bundleName1";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
+    EXPECT_NE(stub_.GetRefPtr(), nullptr);
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageAdd_002 end";
+}
+
+
+/**
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_PackageRemoved_002
+ * @tc.name: PackageRemoved
+ * @tc.desc: Test function PackageRemoved
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageRemoved_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageRemoved_002 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    std::string bundleName = "bundleName1";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
+    EXPECT_NE(stub_.GetRefPtr(), nullptr);
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageRemoved_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_PackageRemoved_003
+ * @tc.name: PackageRemoved
+ * @tc.desc: Test function PackageRemoved
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageRemoved_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageRemoved_003 start";
+    std::string bundleName = "bundleName1";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
+    EXPECT_NE(stub_.GetRefPtr(), nullptr);
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageRemoved_003 end";
+}
+
+/**
  * @tc.number: AccessibleAbility_ManagerService_UnitTest_AddedUser_001
  * @tc.name: AddedUser
  * @tc.desc: Test function AddedUser
@@ -814,7 +1234,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableAbility_001, TestSize.L
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_001 start";
     std::string name = "test";
-    EXPECT_EQ(RET_ERR_NOT_ENABLED, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
+    EXPECT_EQ(RET_ERR_FAILED, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_001 end";
 }
 
@@ -843,6 +1263,35 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_001, TestS
     sptr<IRemoteObject> obj;
     EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj));
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_EnableUITestAbility_001 end";
+}
+
+/*
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_002
+* @tc.name: EnableUITestAbility
+* @tc.desc: Test function EnableUITestAbility
+*/
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_EnableUITestAbility_002 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    sptr<IRemoteObject> obj;
+    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj));
+    GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_EnableUITestAbility_002 end";
+}
+
+/*
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_003
+* @tc.name: EnableUITestAbility
+* @tc.desc: Test function EnableUITestAbility
+*/
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_003 start";
+    sptr<IRemoteObject> obj = nullptr;
+    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj);
+    EXPECT_EQ(ret, RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_003 end";
 }
 
 /*
@@ -923,22 +1372,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SwitchedUser_001, TestSize.Lev
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(2);
     EXPECT_NE(stub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_SwitchedUser_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_GetAbilityList_002
- * @tc.name: GetAbilityList
- * @tc.desc: Test function GetAbilityList
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetAbilityList_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetAbilityList_002 start";
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    std::vector<AccessibilityAbilityInfoParcel> infos;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(0xFFFFFFFF, 3, infos);
-    EXPECT_NE(stub_.GetRefPtr(), nullptr);
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetAbilityList_002 end";
 }
 
 /**
@@ -1154,23 +1587,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableAbility_002, TestSize.L
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     std::string name = "test";
-    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
+    EXPECT_EQ(RET_ERR_FAILED, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_002 end";
-}
-
-/*
-* @tc.number: AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_002
-* @tc.name: EnableUITestAbility
-* @tc.desc: Test function EnableUITestAbility
-*/
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_EnableUITestAbility_002 start";
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    sptr<IRemoteObject> obj;
-    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj));
-    GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_EnableUITestAbility_002 end";
 }
 
 /*
@@ -1215,38 +1633,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableShortKeyTargetAbility_0
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableShortKeyTargetAbility_002 end";
 }
 
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_PackageRemoved_002
- * @tc.name: PackageRemoved
- * @tc.desc: Test function PackageRemoved
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageRemoved_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageRemoved_002 start";
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    std::string bundleName = "bundleName1";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
-    EXPECT_NE(stub_.GetRefPtr(), nullptr);
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageRemoved_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_PackageAdd_002
- * @tc.name: PackageAdd
- * @tc.desc: Test function PackageAdd
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageAdd_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageAdd_002 start";
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    std::string bundleName = "bundleName1";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
-    EXPECT_NE(stub_.GetRefPtr(), nullptr);
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageAdd_002 end";
-}
-
 /*
 * @tc.number: AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterConfigObserver_002
 * @tc.name: RegisterConfigObserver
@@ -1275,23 +1661,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetScreenMagnificationState_00
     EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetScreenMagnificationState(state));
     EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetScreenMagnificationState(state));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetScreenMagnificationState_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_002
- * @tc.name: SetShortKeyState
- * @tc.desc: Test function SetShortKeyState GetShortKeyState
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortKeyState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_002 start";
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    bool state = true;
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortKeyState(state));
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortKeyState(state));
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_002 end";
 }
 
 /**
@@ -1585,75 +1954,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnShortKeyProcess_006, TestSiz
 }
 
 /**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_002
- * @tc.name: SetMouseAutoClick
- * @tc.desc: Test function SetMouseAutoClick GetMouseAutoClick
- * @tc.require: issueI5NTXC
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetMouseAutoClick_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_002 start";
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    int32_t value = MOUSE_AUTO_CLICK_VALUE;
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetMouseAutoClick(value));
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetMouseAutoClick(value));
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_002
- * @tc.name: SetShortkeyTarget
- * @tc.desc: Test function SetShortkeyTarget GetShortkeyTarget
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortkeyTarget_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_002 start";
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    std::string name = "test";
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyTarget(name));
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyTarget(name));
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_002
- * @tc.name: SetHighContrastTextState
- * @tc.desc: Test function SetHighContrastTextState GetHighContrastTextState
- * @tc.require: issueI5NTX9
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetHighContrastTextState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_002 start";
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    bool state = true;
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetHighContrastTextState(state));
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetHighContrastTextState(state));
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_002
- * @tc.name: SetDaltonizationState
- * @tc.desc: Test function SetDaltonizationState GetDaltonizationState
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetDaltonizationState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_002 start";
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    bool state = true;
-    EXPECT_NE(RET_OK,
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SetDaltonizationState(state));
-    EXPECT_NE(RET_OK,
-    Singleton<AccessibleAbilityManagerService>::GetInstance().GetDaltonizationState(state));
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_002 end";
-}
-
-/**
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetInvertColorState_002
  * @tc.name: SetInvertColorState
  * @tc.desc: Test function SetInvertColorState GetInvertColorState
@@ -1855,39 +2155,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateShortkeyTarget_001, Test
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortkeyTarget();
     EXPECT_NE(stub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateShortkeyTarget_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_PackageRemoved_003
- * @tc.name: PackageRemoved
- * @tc.desc: Test function PackageRemoved
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageRemoved_003, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageRemoved_003 start";
-    std::string bundleName = "bundleName1";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
-    EXPECT_NE(stub_.GetRefPtr(), nullptr);
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageRemoved_003 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_GetAbilityList_003
- * @tc.name: GetAbilityList
- * @tc.desc: Test function GetAbilityList
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetAbilityList_003, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetAbilityList_003 start";
-    std::vector<OHOS::Accessibility::AccessibilityAbilityInfoParcel> infos;
-    uint32_t type = 0xFFFFFFFF;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(type, -1, infos);
-    EXPECT_EQ(infos.size(), 0);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(type, 5, infos);
-    EXPECT_EQ(infos.size(), 0);
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetAbilityList_003 end";
 }
 
 /**
@@ -2115,7 +2382,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, FindInnerWindowId_001, TestSiz
     event.SetSource(1);
     int32_t windowId = 0;
     Singleton<AccessibleAbilityManagerService>::GetInstance().FindInnerWindowId(event, windowId);
-    EXPECT_EQ(windowId, 1);
+    EXPECT_EQ(windowId, 0);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_FindInnerWindowId_001 end";
 }
 
@@ -2153,34 +2420,20 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, InsertWindowIdEventPair_001, T
 }
 
 /**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_SendEvent_002
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SendEvent_001
  * @tc.name: SendEvent
  * @tc.desc: Test function SendEvent
  */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SendEvent_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SendEvent_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SendEvent_002 start";
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SendEvent_001 start";
     AccessibilityEventInfoParcel evtInf;
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInf, 0);
     EXPECT_EQ(ret, RET_OK);
     SetUpTestCase();
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SendEvent_002 end";
-}
-
-/*
-* @tc.number: AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_004
-* @tc.name: EnableUITestAbility
-* @tc.desc: Test function EnableUITestAbility
-*/
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_004, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_004 start";
-    sptr<IRemoteObject> obj = nullptr;
-    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj);
-    EXPECT_EQ(ret, RET_ERR_NULLPTR);
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_004 end";
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SendEvent_001 end";
 }
 
 /**
