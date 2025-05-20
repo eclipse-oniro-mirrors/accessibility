@@ -184,8 +184,8 @@ void cAbilityfree(CAccessibilityAbilityInfo *cAbility)
     free(cAbility->abilityTypes_.head);
     cAbility->abilityTypes_.head = nullptr;
     free(cAbility->capabilities_.head);
-    free(cAbility[j].eventTypes_.head);
-    cAbility[j].eventTypes_.head = nullptr;
+    free(cAbility.eventTypes_.head);
+    cAbility.eventTypes_.head = nullptr;
 }
 
 CArrAccessibilityAbilityInfo ConvertArrAccAbilityInfo2CArr(std::vector<AccessibilityAbilityInfo> &abilityList,
