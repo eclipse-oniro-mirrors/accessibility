@@ -181,7 +181,10 @@ void TouchExploration::ProcessMultiFingerGesture(TouchExplorationMsg msg)
         }
     } else if (gestureType == GestureType::GESTURE_INVALID) {
         if (GetCurrentState() == TouchExplorationState::TWO_FINGERS_DOWN) {
-            SetCurrentState(TouchExplorationState::TWO_FINGERS_UNKNOWN);
+            for (auto& event : receivedPointerEvents_) {
+                SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
+            }
+            SetCurrentState(TouchExplorationState::PASSING_THROUGH);
             return;
         }
         Clear();
