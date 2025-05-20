@@ -27,7 +27,7 @@ namespace Accessibility {
 namespace Utils {
 char *MallocCString(const std::string &origin, RetError &errCode)
 {
-    if (origin.empty()) {
+    if (origin.empty() || errCode == RET_ERR_FAILED) {
         return nullptr;
     }
     auto len = origin.length() + 1;
@@ -42,7 +42,7 @@ char *MallocCString(const std::string &origin, RetError &errCode)
 
 CArrString VectorToCArrString(std::vector<std::string> &vec, RetError &errCode)
 {
-    if (vec.size() == 0) {
+    if (vec.size() == 0 || errCode == RET_ERR_FAILED) {
         return { nullptr, 0 };
     }
     char **result = new char *[vec.size()];
@@ -167,6 +167,27 @@ CAccessibilityAbilityInfo ConvertAccAbilityInfo2C(AccessibilityAbilityInfo &abil
     return cAbility;
 }
 
+void cAbilityfree(CAccessibilityAbilityInfo *cAbility)
+{
+    free(cAbility->id_);
+    cAbility->id_ = nullptr;
+    free(cAbility->name_);
+    cAbility->name_ = nullptr;
+    free(cAbility->bundleName_);
+    cAbility->bundleName_ = nullptr;
+    free(cAbility->description_);
+    cAbility->description_ = nullptr;
+    free(cAbility->label_);
+    cAbility->label_ = nullptr;
+    free(cAbility->targetBundleNames_.head);
+    cAbility->targetBundleNames_.head = nullptr;
+    free(cAbility->abilityTypes_.head);
+    cAbility->abilityTypes_.head = nullptr;
+    free(cAbility->capabilities_.head);
+    free(cAbility[j].eventTypes_.head);
+    cAbility[j].eventTypes_.head = nullptr;
+}
+
 CArrAccessibilityAbilityInfo ConvertArrAccAbilityInfo2CArr(std::vector<AccessibilityAbilityInfo> &abilityList,
     RetError &errCode)
 {
@@ -188,28 +209,11 @@ CArrAccessibilityAbilityInfo ConvertArrAccAbilityInfo2CArr(std::vector<Accessibi
     for (auto i = 0; i < cArrAbility.size; ++i) {
         cAbility[i] = ConvertAccAbilityInfo2C(abilityList[i], errCode);
         if (errCode != RET_OK) {
-            for (auto j = i; j >= 0; j--) {
-                free(cAbility[j].id_);
-                cAbility[j].id_ = nullptr;
-                free(cAbility[j].name_); 
-                cAbility[j].name_ = nullptr;
-                free(cAbility[j].bundleName_);
-                cAbility[j].bundleName_ = nullptr;
-                free(cAbility[j].description_);
-                cAbility[j].description_ = nullptr;
-                free(cAbility[j].label_);
-                cAbility[j].label_ = nullptr;
-                free(cAbility[j].targetBundleNames_.head);
-                cAbility[j].targetBundleNames_.head = nullptr;
-                free(cAbility[j].abilityTypes_.head);
-                cAbility[j].abilityTypes_.head = nullptr;
-                free(cAbility[j].capabilities_.head);
-                cAbility[j].capabilities_.head = nullptr;
-                free(cAbility[j].eventTypes_.head);
-                cAbility[j].eventTypes_.head = nullptr;
-                free(cAbility[j]);
-                cAbility[j] = nullptr;
+            for (auto j = 0; j < i; j++) {
+                cAbilityfree(&cAbility[j]);         
             }
+            free(cAbility);
+            cAbility = nullptr;
             HILOG_ERROR("ConvertAccAbilityInfo2C failed.");
             return cArrAbility;
         }
