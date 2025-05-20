@@ -188,6 +188,28 @@ CArrAccessibilityAbilityInfo ConvertArrAccAbilityInfo2CArr(std::vector<Accessibi
     for (auto i = 0; i < cArrAbility.size; ++i) {
         cAbility[i] = ConvertAccAbilityInfo2C(abilityList[i], errCode);
         if (errCode != RET_OK) {
+            for (auto j = i; j >= 0; j--) {
+                free(cAbility[j].id_);
+                cAbility[j].id_ = nullptr;
+                free(cAbility[j].name_); 
+                cAbility[j].name_ = nullptr;
+                free(cAbility[j].bundleName_);
+                cAbility[j].bundleName_ = nullptr;
+                free(cAbility[j].description_);
+                cAbility[j].description_ = nullptr;
+                free(cAbility[j].label_);
+                cAbility[j].label_ = nullptr;
+                free(cAbility[j].targetBundleNames_.head);
+                cAbility[j].targetBundleNames_.head = nullptr;
+                free(cAbility[j].abilityTypes_.head);
+                cAbility[j].abilityTypes_.head = nullptr;
+                free(cAbility[j].capabilities_.head);
+                cAbility[j].capabilities_.head = nullptr;
+                free(cAbility[j].eventTypes_.head);
+                cAbility[j].eventTypes_.head = nullptr;
+                free(cAbility[j]);
+                cAbility[j] = nullptr;
+            }
             HILOG_ERROR("ConvertAccAbilityInfo2C failed.");
             return cArrAbility;
         }
