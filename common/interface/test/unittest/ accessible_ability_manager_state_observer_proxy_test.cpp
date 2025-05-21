@@ -1841,18 +1841,12 @@
      GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_079 start";
      std::shared_ptr<AccessibilitySettingProvider> service =
          AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-     if (service == nullptr) {
-         GTEST_LOG_(INFO) << "service is nullptr";
-         return;
-     }
+     EXPECT_TRUE(service != nullptr);
      service->PutBoolValue(DEVICE_PROVISIONED, true, true);
  
      auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-     if (accountData == nullptr) {
-         GTEST_LOG_(INFO) << "accountData is nullptr";
-         return;
-     }
- 
+     EXPECT_TRUE(accountData != nullptr);
+
      Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
      EXPECT_EQ(accountData->GetConfig()->GetShortKeyTimeout(), SHORT_KEY_TIMEOUT_BEFORE_USE);
      GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_079 end";
@@ -1868,17 +1862,11 @@
      GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_080 start";
      std::shared_ptr<AccessibilitySettingProvider> service =
          AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-     if (service == nullptr) {
-         GTEST_LOG_(INFO) << "service is nullptr";
-         return;
-     }
+     EXPECT_TRUE(service != nullptr);
      service->PutBoolValue(DEVICE_PROVISIONED, true, true);
  
      auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-     if (accountData == nullptr) {
-         GTEST_LOG_(INFO) << "accountData is nullptr";
-         return;
-     }
+     EXPECT_TRUE(accountData != nullptr);
  
      std::vector<std::string> name;
      Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyMultiTarget(name);
@@ -1900,17 +1888,11 @@
      GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_081 start";
      std::shared_ptr<AccessibilitySettingProvider> service =
          AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
-     if (service == nullptr) {
-         GTEST_LOG_(INFO) << "service is nullptr";
-         return;
-     }
+     EXPECT_TRUE(service != nullptr);
      service->PutBoolValue(DEVICE_PROVISIONED, true, true);
  
      auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-     if (accountData == nullptr) {
-         GTEST_LOG_(INFO) << "accountData is nullptr";
-         return;
-     }
+     EXPECT_TRUE(accountData != nullptr);
  
      std::vector<std::string> name;
      name.push_back("test1");

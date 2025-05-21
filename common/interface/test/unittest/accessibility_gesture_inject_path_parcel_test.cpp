@@ -59,11 +59,8 @@ public:
 HWTEST_F(AccessibilityGestureInjectPathParcelTest, Gesture_Info_Marshalling_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Gesture_Info_Marshalling_001 start";
-    if (!GesturgestureInfoParcel_e_Info) {
-        GTEST_LOG_(INFO) << "captionPropertyParcel_ is null";
-        return;
-    }
-
+    EXPECT_TRUE(GesturgestureInfoParcel_e_Info);
+   
     Parcel parcel;
     bool ret = GesturgestureInfoParcel_e_Info->Marshalling(parcel);
     EXPECT_EQ(ret, true);
@@ -78,10 +75,7 @@ HWTEST_F(AccessibilityGestureInjectPathParcelTest, Gesture_Info_Marshalling_001,
 HWTEST_F(AccessibilityGestureInjectPathParcelTest, Gesture_Info_Unmarshalling_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Gesture_Info_Unmarshalling_001 start";
-    if (!GesturgestureInfoParcel_e_Info) {
-        GTEST_LOG_(INFO) << "GesturgestureInfoParcel_e_Info is null";
-        return;
-    }
+    EXPECT_TRUE(GesturgestureInfoParcel_e_Info);    
 
     Parcel parcel;
     sptr<AccessibilityGestureInjectPathParcel> gestureInfoParcel = GesturgestureInfoParcel_e_Info->Unmarshalling(parcel);

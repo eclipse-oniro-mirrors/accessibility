@@ -87,10 +87,7 @@ HWTEST_F(
 HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetSearchElementInfoByTextResult_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorCallbackImpl instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -108,10 +105,7 @@ HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetSearchElementInfoByTex
 HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetFindFocusedElementInfoResult_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorCallbackImpl instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -129,10 +123,7 @@ HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetFindFocusedElementInfo
 HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetFocusMoveSearchResult_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorCallbackImpl instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -150,10 +141,7 @@ HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetFocusMoveSearchResult_
 HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetExecuteActionResult_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetExecuteActionResult_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorCallbackImpl instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -172,11 +160,7 @@ HWTEST_F(
     AccessibilityElementOperatorCallbackImplTest, SetSearchElementInfoByAccessibilityIdResult_0011, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetSearchElementInfoByAccessibilityIdResult_0011 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorCallbackImpl instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -194,10 +178,7 @@ HWTEST_F(
 HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetSearchElementInfoByTextResult_0011, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_0011 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorCallbackImpl instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -215,10 +196,7 @@ HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetSearchElementInfoByTex
 HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetFindFocusedElementInfoResult_0011, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_0011 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorCallbackImpl instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -236,10 +214,7 @@ HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetFindFocusedElementInfo
 HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetFocusMoveSearchResult_0011, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_0011 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorCallbackImpl instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -257,10 +232,7 @@ HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetFocusMoveSearchResult_
 HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetExecuteActionResult_0011, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetExecuteActionResult_0011 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorCallbackImpl instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};

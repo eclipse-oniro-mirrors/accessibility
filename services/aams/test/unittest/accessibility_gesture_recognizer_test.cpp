@@ -83,14 +83,11 @@ void AccessAccessibilityGestureRecognizerTest::OnPointerEventPresss(MMI::KeyEven
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_GetDoubleTapMoveThreshold_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_GetDoubleTapMoveThreshold_001 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_GetDoubleTapMoveThreshold_001 event is null";
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
@@ -109,14 +106,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_GetDoubleTapMoveThreshold_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_GetDoubleTapMoveThreshold_002 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_GetDoubleTapMoveThreshold_002 event is null";
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
@@ -134,13 +128,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_001 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     OnPointerEventPresss(*event, MMI::KeyEvent::KEYCODE_NUMPAD_1);
     OnPointerEventPresss(*event, MMI::KeyEvent::KEYCODE_NUMPAD_2);
@@ -163,13 +155,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_002 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
     MMI::KeyEvent::KeyItem item;
@@ -188,23 +178,19 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_003 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_003 event is null";
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
     event->AddPointerItem(item);
     mouseKey_->GetDoubleTapMoveThreshold(*event);
     std::shared_ptr<MMI::KeyEvent> event3 = MMI::KeyEvent::Create();
-    if (!event3) {
-        return;
-    }
+    EXPECT_TRUE(event3);
+
     event3->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
     event3->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
@@ -213,9 +199,8 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
     event3->AddKeyItem(item1);
     mouseKey_->OnPointerEvent(*event3);
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();
-    if (!event2) {
-        return;
-    }
+    EXPECT_TRUE(event2);
+
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item3;
@@ -238,23 +223,19 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_004 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_004 event is null";
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
     event->AddPointerItem(item);
     mouseKey_->GetDoubleTapMoveThreshold(*event);
     std::shared_ptr<MMI::KeyEvent> event4 = MMI::KeyEvent::Create();
-    if (!event4) {
-        return;
-    }
+    EXPECT_TRUE(event4);
+
     event4->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_SUBTRACT);
     event4->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
@@ -263,9 +244,8 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
     event4->AddKeyItem(item1);
     mouseKey_->OnPointerEvent(*event4);
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();
-    if (!event2) {
-        return;
-    }
+    EXPECT_TRUE(event2);
+
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item4;
@@ -288,23 +268,19 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_005, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_005 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_005 event is null";
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
     event->AddPointerItem(item);
     mouseKey_->GetDoubleTapMoveThreshold(*event);
     std::shared_ptr<MMI::KeyEvent> event5 = MMI::KeyEvent::Create();
-    if (!event5) {
-        return;
-    }
+    EXPECT_TRUE(event5);
+
     event5->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_MULTIPLY);
     event5->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
@@ -313,9 +289,8 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
     event5->AddKeyItem(item1);
     mouseKey_->OnPointerEvent(*event5);
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();
-    if (!event2) {
-        return;
-    }
+    EXPECT_TRUE(event2);
+
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item5;
@@ -338,23 +313,19 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_006, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_006 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_006 event is null";
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
     event->AddPointerItem(item);
     mouseKey_->GetDoubleTapMoveThreshold(*event);
     std::shared_ptr<MMI::KeyEvent> event6 = MMI::KeyEvent::Create();
-    if (!event6) {
-        return;
-    }
+    EXPECT_TRUE(event6);
+
     event6->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
     event6->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
@@ -363,9 +334,8 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
     event6->AddKeyItem(item1);
     mouseKey_->OnPointerEvent(*event6);
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();
-    if (!event2) {
-        return;
-    }
+    EXPECT_TRUE(event2);
+
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_ADD);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item2;
@@ -388,13 +358,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_007, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_007 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item;
@@ -418,13 +386,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_008, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_008 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item;
@@ -448,13 +414,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_009, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_009 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item;
@@ -482,13 +446,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_010, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_010 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+    
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item;
@@ -516,13 +478,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_011, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_011 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+    
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item;
@@ -550,13 +510,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_012, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_012 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+    
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
     MMI::KeyEvent::KeyItem item;
@@ -574,13 +532,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_013, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_OnPointerEvent_013 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+    
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     MMI::KeyEvent::KeyItem item;
     event->AddKeyItem(item);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
@@ -596,13 +552,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerTest, AccessAccessibilityGestureRec
 HWTEST_F(AccessAccessibilityGestureRecognizerUnitTest, AccessAccessibilityGestureRecognizer_Unittest_HandleTouchMoveEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_HandleTouchMoveEvent_001 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+    
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     // presss 1
@@ -629,13 +583,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerUnitTest, AccessAccessibilityGestur
 HWTEST_F(AccessAccessibilityGestureRecognizerUnitTest, AccessAccessibilityGestureRecognizer_Unittest_HandleTouchMoveEvent_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_HandleTouchMoveEvent_002 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+    
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     // presss left ctrl
@@ -662,13 +614,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerUnitTest, AccessAccessibilityGestur
 HWTEST_F(AccessAccessibilityGestureRecognizerUnitTest, AccessAccessibilityGestureRecognizer_Unittest_HandleTouchMoveEvent_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_HandleTouchMoveEvent_003 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+    
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     // presss 1
@@ -700,13 +650,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerUnitTest, AccessAccessibilityGestur
 HWTEST_F(AccessAccessibilityGestureRecognizerUnitTest, AccessAccessibilityGestureRecognizer_Unittest_HandleTouchMoveEvent_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_HandleTouchMoveEvent_004 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+    
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     // presss left ctrl
@@ -738,13 +686,11 @@ HWTEST_F(AccessAccessibilityGestureRecognizerUnitTest, AccessAccessibilityGestur
 HWTEST_F(AccessAccessibilityGestureRecognizerUnitTest, AccessAccessibilityGestureRecognizer_Unittest_HandleTouchMoveEvent_005, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessAccessibilityGestureRecognizer_Unittest_HandleTouchMoveEvent_005 start";
-    if (!mouseKey_) {
-        return;
-    }
+    EXPECT_TRUE(mouseKey_);
+    
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
-        return;
-    }
+    EXPECT_TRUE(event);
+
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     // presss left ctrl

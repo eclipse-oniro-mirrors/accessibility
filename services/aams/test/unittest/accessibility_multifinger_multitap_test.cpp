@@ -79,11 +79,8 @@ HWTEST_F(MultiFingerGestureHandlerTest, IsTapGesture_001, TestSize.Level1)
 HWTEST_F(MultiFingerGestureHandlerTest, ProcessMultiFingerGestureTypeEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ProcessMultiFingerGestureTypeEvent_001 start";
+    EXPECT_TRUE(instance_);
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     EXPECT_EQ(instance_->ProcessMultiFingerGestureTypeEvent(listener), RET_ERR_INVALID_PARAM);
 
@@ -99,10 +96,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, ProcessMultiFingerGestureTypeEvent_002, 
 {
     GTEST_LOG_(INFO) << "ProcessMultiFingerGestureTypeEvent_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
     EXPECT_EQ(instance_->ProcessMultiFingerGestureTypeEvent(listener), RET_ERR_NULLPTR);
@@ -120,10 +114,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, ProcessMultiFingerGestureTypeEvent_003, 
 {
     GTEST_LOG_(INFO) << "ProcessMultiFingerGestureTypeEvent_003 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
     EXPECT_EQ(instance_->ProcessMultiFingerGestureTypeEvent(listener), RET_OK);
 
@@ -139,10 +130,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, ProcessMultiFingerGestureEvent_001, Test
 {
     GTEST_LOG_(INFO) << "ProcessMultiFingerGestureEvent_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     EXPECT_EQ(RET_OK, instance_->ProcessMultiFingerGestureEvent());
 
     GTEST_LOG_(INFO) << "ProcessMultiFingerGestureEvent_001 end";
@@ -157,10 +145,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, ProcessEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ProcessEvent_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     EXPECT_EQ(instance_->ProcessEvent(), RET_OK);
 
     GTEST_LOG_(INFO) << "ProcessEvent_001 end";
@@ -175,10 +160,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, AccessibilityMultiTapGestureRecognizer_0
 {
     GTEST_LOG_(INFO) << "AccessibilityMultiTapGestureRecognizer_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo elementInfo {};
     EXPECT_EQ(instance_->AccessibilityMultiTapGestureRecognizer(FOCUS_TYPE, elementInfo), RET_ERR_NULLPTR);
@@ -196,10 +178,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, AccessibilityMultiTapGestureRecognizer_0
 {
     GTEST_LOG_(INFO) << "AccessibilityMultiTapGestureRecognizer_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityElementInfo elementInfo {};
     EXPECT_EQ(instance_->AccessibilityMultiTapGestureRecognizer(FOCUS_TYPE, elementInfo), RET_OK);
 
@@ -215,10 +194,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelTwoFingerEvent_001, TestSize.Level
 {
     GTEST_LOG_(INFO) << "CancelTwoFingerEvent_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo sourceInfo {};
     AccessibilityElementInfo elementInfo {};
@@ -237,10 +213,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelTwoFingerEvent_002, TestSize.Level
 {
     GTEST_LOG_(INFO) << "CancelTwoFingerEvent_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityElementInfo sourceInfo {};
     AccessibilityElementInfo elementInfo {};
     EXPECT_EQ(instance_->CancelTwoFingerEvent(sourceInfo, FOCUS_TYPE, elementInfo), RET_OK);
@@ -257,10 +230,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelThreeFingerEvent_001, TestSize.Lev
 {
     GTEST_LOG_(INFO) << "CancelThreeFingerEvent_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo sourceInfo {};
     AccessibilityElementInfo elementInfo {};
@@ -279,10 +249,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelThreeFingerEvent_002, TestSize.Lev
 {
     GTEST_LOG_(INFO) << "CancelThreeFingerEvent_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityElementInfo sourceInfo {};
     AccessibilityElementInfo elementInfo {};
     EXPECT_EQ(instance_->CancelThreeFingerEvent(sourceInfo, FOCUS_TYPE, elementInfo), RET_OK);
@@ -299,10 +266,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelTapAndHoldGestureEvent_001, TestSi
 {
     GTEST_LOG_(INFO) << "CancelTapAndHoldGestureEvent_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
     EXPECT_EQ(instance_->CancelTapAndHoldGestureEvent(gesturePath), RET_ERR_NULLPTR);
@@ -320,10 +284,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelTapAndHoldGestureEvent_002, TestSi
 {
     GTEST_LOG_(INFO) << "CancelTapAndHoldGestureEvent_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
     EXPECT_EQ(instance_->CancelTapAndHoldGestureEvent(gesturePath), RET_OK);
 
@@ -339,10 +300,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelHoldGestureEvent_001, TestSize.Lev
 {
     GTEST_LOG_(INFO) << "CancelHoldGestureEvent_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo elementInfo {};
     EXPECT_EQ(instance_->CancelHoldGestureEvent(elementInfo), RET_ERR_NULLPTR);
@@ -360,10 +318,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelHoldGestureEvent_002, TestSize.Lev
 {
     GTEST_LOG_(INFO) << "CancelHoldGestureEvent_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityElementInfo elementInfo {};
     EXPECT_EQ(instance_->CancelHoldGestureEvent(elementInfo), RET_OK);
 
@@ -379,10 +334,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelAllPenddingEvent_001, TestSize.Lev
 {
     GTEST_LOG_(INFO) << "CancelAllPenddingEvent_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityWindowInfo windowInfo {};
     AccessibilityElementInfo elementInfo {};
@@ -401,10 +353,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelAllPenddingEvent_002, TestSize.Lev
 {
     GTEST_LOG_(INFO) << "CancelAllPenddingEvent_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityWindowInfo windowInfo {};
     AccessibilityElementInfo elementInfo {};
     EXPECT_EQ(instance_->CancelAllPenddingEvent(windowInfo, elementInfo), RET_OK);
@@ -421,10 +370,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelGesture_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "CancelGesture_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityWindowInfo winInfo {};
     EXPECT_EQ(instance_->CancelGesture(WINDOW_ID, winInfo), RET_ERR_NULLPTR);
@@ -441,10 +387,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, CancelGesture_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "CancelGesture_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityWindowInfo winInfo {};
     EXPECT_EQ(instance_->CancelGesture(WINDOW_ID, winInfo), RET_OK);
     GTEST_LOG_(INFO) << "CancelGesture_002 end";
@@ -459,10 +402,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, ParamCheck_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ParamCheck_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     std::vector<AccessibilityWindowInfo> res {};
     EXPECT_EQ(instance_->ParamCheck(res), RET_ERR_NULLPTR);
@@ -479,10 +419,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, ParamCheck_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ParamCheck_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     std::vector<AccessibilityWindowInfo> res {};
     EXPECT_EQ(instance_->ParamCheck(res), RET_OK);
     GTEST_LOG_(INFO) << "ParamCheck_002 end";
@@ -497,10 +434,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, ParamCheck_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ParamCheck_003 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     std::vector<AccessibilityWindowInfo> res {};
     EXPECT_EQ(instance_->ParamCheck(DISPLAY_ID, res), RET_ERR_NULLPTR);
@@ -517,10 +451,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, ParamCheck_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ParamCheck_004 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     std::vector<AccessibilityWindowInfo> res {};
     EXPECT_EQ(instance_->ParamCheck(DISPLAY_ID, res), RET_OK);
     GTEST_LOG_(INFO) << "ParamCheck_004 end";
@@ -535,10 +466,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, GetLastFirstPointUpTime_001, TestSize.Le
 {
     GTEST_LOG_(INFO) << "GetLastFirstPointUpTime_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo nextElementInfo {};
     AccessibilityElementInfo elementInfo {};
@@ -558,10 +486,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, GetLastFirstPointUpTime_002, TestSize.Le
 {
     GTEST_LOG_(INFO) << "GetLastFirstPointUpTime_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityElementInfo nextElementInfo {};
     AccessibilityElementInfo elementInfo {};
     FocusMoveDirection direction = DIRECTION_INVALID;
@@ -579,10 +504,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, IsDoubelTapSlopConditionMatch_001, TestS
 {
     GTEST_LOG_(INFO) << "IsDoubelTapSlopConditionMatch_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo parent {};
     AccessibilityElementInfo child {};
@@ -602,10 +524,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, IsDoubelTapSlopConditionMatch_002, TestS
 {
     GTEST_LOG_(INFO) << "IsDoubelTapSlopConditionMatch_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityElementInfo parent {};
     AccessibilityElementInfo child {};
     int32_t index = 1;
@@ -623,10 +542,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, GetPointerItemWithFingerNum_001, TestSiz
 {
     GTEST_LOG_(INFO) << "GetPointerItemWithFingerNum_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo parent {};
     std::vector<AccessibilityElementInfo> elementInfos {};
@@ -645,10 +561,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, GetPointerItemWithFingerNum_002, TestSiz
 {
     GTEST_LOG_(INFO) << "GetPointerItemWithFingerNum_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityElementInfo parent {};
     std::vector<AccessibilityElementInfo> elementInfos {};
     EXPECT_EQ(instance_->GetPointerItemWithFingerNum(parent, TEST, elementInfos), RET_OK);
@@ -665,10 +578,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, IsMultiFingerDoubleTap_001, TestSize.Lev
 {
     GTEST_LOG_(INFO) << "IsMultiFingerDoubleTap_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityEventInfo eventInfo {};
     AccessibilityElementInfo elementInfo {};
@@ -687,10 +597,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, IsMultiFingerDoubleTap_002, TestSize.Lev
 {
     GTEST_LOG_(INFO) << "IsMultiFingerDoubleTap_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityEventInfo eventInfo {};
     AccessibilityElementInfo elementInfo {};
     EXPECT_EQ(instance_->IsMultiFingerDoubleTap(eventInfo, elementInfo), RET_OK);
@@ -707,10 +614,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, HanleFirstTouchDownEvent_001, TestSize.L
 {
     GTEST_LOG_(INFO) << "HanleFirstTouchDownEvent_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo child {};
     AccessibilityElementInfo parent {};
@@ -729,10 +633,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, HanleFirstTouchDownEvent_002, TestSize.L
 {
     GTEST_LOG_(INFO) << "HanleFirstTouchDownEvent_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityElementInfo child {};
     AccessibilityElementInfo parent {};
     EXPECT_EQ(instance_->HanleFirstTouchDownEvent(child, parent), RET_OK);
@@ -749,10 +650,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, HandleMultiTapEvent_001, TestSize.Level1
 {
     GTEST_LOG_(INFO) << "HandleMultiTapEvent_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo elementInfo {};
     ActionType action = ACCESSIBILITY_ACTION_INVALID;
@@ -772,10 +670,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, HandleMultiTapEvent_002, TestSize.Level1
 {
     GTEST_LOG_(INFO) << "HandleMultiTapEvent_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityElementInfo elementInfo {};
     ActionType action = ACCESSIBILITY_ACTION_INVALID;
     std::map<std::string, std::string> actionArguments {};
@@ -793,10 +688,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, HandleContinueTouchDownEvent_001, TestSi
 {
     GTEST_LOG_(INFO) << "HandleContinueTouchDownEvent_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     std::vector<std::string> targetBundleNames;
     EXPECT_EQ(instance_->HandleContinueTouchDownEvent(targetBundleNames), RET_ERR_NULLPTR);
@@ -814,10 +706,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, HandleContinueTouchDownEvent_002, TestSi
 {
     GTEST_LOG_(INFO) << "HandleContinueTouchDownEvent_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     std::vector<std::string> targetBundleNames;
     EXPECT_EQ(instance_->HandleContinueTouchDownEvent(targetBundleNames), RET_OK);
 
@@ -833,10 +722,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, storeBaseDownPoint_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "storeBaseDownPoint_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityElementInfo parent;
     std::vector<AccessibilityElementInfo> children;
     EXPECT_EQ(instance_->storeBaseDownPoint(parent, children), RET_OK);
@@ -853,10 +739,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, GetSwipeDirection_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetSwipeDirection_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     instance_->GetSwipeDirection(CACHE_MODE);
     EXPECT_EQ(CACHE_MODE, AccessibilityAbilityUtHelper::IsTapGesture().GetCacheMode());
 
@@ -872,10 +755,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, SaveMoveGesturePointerInfo_001, TestSize
 {
     GTEST_LOG_(INFO) << "SaveMoveGesturePointerInfo_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     std::vector<AccessibilityElementInfo> elementInfos;
     EXPECT_EQ(instance_->SaveMoveGesturePointerInfo(elementInfos), RET_ERR_NULLPTR);
@@ -893,10 +773,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, SaveMoveGesturePointerInfo_002, TestSize
 {
     GTEST_LOG_(INFO) << "SaveMoveGesturePointerInfo_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     std::vector<AccessibilityElementInfo> elementInfos;
     EXPECT_EQ(instance_->SaveMoveGesturePointerInfo(elementInfos), RET_OK);
 
@@ -912,10 +789,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, GetBasePointItem_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetBasePointItem_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityAbilityUtHelper::IsTapGesture().SetAbilityClientNullFlag(true);
     AccessibilityWindowInfo windowInfo {};
     std::vector<AccessibilityElementInfo> elementInfos;
@@ -934,10 +808,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, GetBasePointItem_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetBasePointItem_002 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandler instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     AccessibilityWindowInfo windowInfo {};
     std::vector<AccessibilityElementInfo> elementInfos;
     EXPECT_EQ(instance_->GetBasePointItem(windowInfo, elementInfos, true), RET_OK);
@@ -957,10 +828,8 @@ HWTEST_F(MultiFingerGestureHandlerTest, HandleMultiFingerMoveEvent_001, TestSize
     const int32_t windowId = 1;
     sptr<AccessibilityAccountData> currentAccount =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!currentAccount) {
-        GTEST_LOG_(ERROR) << "Account data is nullptr";
-        return;
-    }
+
+    EXPECT_TRUE(currentAccount);
     sptr<AccessibilityWindowConnection> operationConnection =
         new AccessibilityWindowConnection(windowId, nullptr, accountId);
     currentAccount->AddAccessibilityWindowConnection(windowId, operationConnection);
@@ -985,10 +854,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, HandleMultiFingerMoveEvent_001, TestSize
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
 
     std::shared_ptr<AccessibilitySettingsConfig> config = currentAccount->GetConfig();
-    if (!config) {
-        GTEST_LOG_(ERROR) << "Config is nullptr";
-        return;
-    }
+    EXPECT_TRUE(config);
     config->SetCaptionState(true);
     std::string cmdUser("-u");
     std::vector<std::u16string> args;
@@ -1008,10 +874,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, HandleMultiFingerMoveEvent_001, TestSize
 HWTEST_F(MultiFingerGestureHandlerTest, StoreUpPointInPointerRoute_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "StoreUpPointInPointerRoute_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandlerTest instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -1029,10 +892,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, StoreUpPointInPointerRoute_001, TestSize
 HWTEST_F(MultiFingerGestureHandlerTest, recognizeGesturePath_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "recognizeGesturePath_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandlerTest instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -1050,10 +910,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, recognizeGesturePath_001, TestSize.Level
 HWTEST_F(MultiFingerGestureHandlerTest, GetMoveGestureId_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetMoveGestureId_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandlerTest instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -1073,10 +930,7 @@ HWTEST_F(
 {
     GTEST_LOG_(INFO) << "IsMoveGestureRecognize_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandlerTest instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -1094,10 +948,7 @@ HWTEST_F(
 HWTEST_F(MultiFingerGestureHandlerTest, HandleMultiFingerTouchUpEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "HandleMultiFingerTouchUpEvent_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandlerTest instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
 
     std::vector<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
@@ -1116,10 +967,7 @@ HWTEST_F(MultiFingerGestureHandlerTest, OnPointerEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "OnPointerEvent_001 start";
 
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get MultiFingerGestureHandlerTest instance_";
-        return;
-    }
+    EXPECT_TRUE(instance_);
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     EXPECT_EQ(instance_->OnPointerEvent(listener), RET_ERR_INVALID_PARAM);
 

@@ -94,10 +94,8 @@ void AccessibilitySettingObserverTest::RegisterAbilityConnectionClient(const spt
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "current account data is null";
-        return;
-    }
+    EXPECT_TRUE(accountData);
+
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection =
         new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
