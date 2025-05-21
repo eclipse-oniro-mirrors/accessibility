@@ -222,7 +222,7 @@ CArrAccessibilityAbilityInfo ConvertArrAccAbilityInfo2CArr(std::vector<Accessibi
         errCode = RET_ERR_NULLPTR;
         return cArrAbility;
     }
-    memset_s(cAbility, mallocSize, 0, mallocSize)
+    memset_s(cAbility, mallocSize, 0, mallocSize);
     for (auto i = 0; i < cArrAbility.size; ++i) {
         cAbility[i] = ConvertAccAbilityInfo2C(abilityList[i], errCode);
         if (errCode != RET_OK) {
