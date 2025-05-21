@@ -181,28 +181,28 @@ void FreecAbility(CAccessibilityAbilityInfo *cAbility)
     cAbility->label_ = nullptr;
     for (auto i = 0; i < cAbility->targetBundleNames_.size; i++)
     {
-        free(cAbility->targetBundleNames_.head[i])
+        free(cAbility->targetBundleNames_.head[i]);
     }
     free(cAbility->targetBundleNames_.head);
     cAbility->targetBundleNames_.head = nullptr;
 
     for (auto i = 0; i < cAbility->abilityTypes_.size; i++)
     {
-        free(cAbility->abilityTypes_.head[i])
+        free(cAbility->abilityTypes_.head[i]);
     }
     free(cAbility->abilityTypes_.head);
     cAbility->abilityTypes_.head = nullptr;
 
     for (auto i = 0; i < cAbility->capabilities_.size; i++)
     {
-        free(cAbility->capabilities_.head[i])
+        free(cAbility->capabilities_.head[i]);
     }
     free(cAbility->capabilities_.head);
     cAbility->capabilities_.head = nullptr;
 
     for (auto i = 0; i < cAbility->eventTypes_.size; i++)
     {
-        free(cAbility->eventTypes_.head[i])
+        free(cAbility->eventTypes_.head[i]);
     }
     free(cAbility->eventTypes_.head);
     cAbility->eventTypes_.head = nullptr;
