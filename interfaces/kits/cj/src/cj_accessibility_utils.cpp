@@ -167,7 +167,7 @@ CAccessibilityAbilityInfo ConvertAccAbilityInfo2C(AccessibilityAbilityInfo &abil
     return cAbility;
 }
 
-void cAbilityfree(CAccessibilityAbilityInfo *cAbility)
+void FreecAbility(CAccessibilityAbilityInfo *cAbility)
 {
     free(cAbility->id_);
     cAbility->id_ = nullptr;
@@ -210,7 +210,7 @@ CArrAccessibilityAbilityInfo ConvertArrAccAbilityInfo2CArr(std::vector<Accessibi
         cAbility[i] = ConvertAccAbilityInfo2C(abilityList[i], errCode);
         if (errCode != RET_OK) {
             for (auto j = 0; j < i; j++) {
-                cAbilityfree(&cAbility[j]);         
+                FreecAbility(&cAbility[j]);         
             }
             free(cAbility);
             cAbility = nullptr;
