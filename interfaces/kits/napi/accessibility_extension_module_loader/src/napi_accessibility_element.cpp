@@ -284,6 +284,8 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
     napi_create_string_utf8(env, "AttributeNames", NAPI_AUTO_LENGTH, &resource);
     if (resource == nullptr) {
         HILOG_ERROR("resource is nullptr.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
         return nullptr;
     }
     napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
