@@ -184,6 +184,7 @@ void TouchExploration::ProcessMultiFingerGesture(TouchExplorationMsg msg)
             for (auto& event : receivedPointerEvents_) {
                 SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
             }
+            Clear();
             SetCurrentState(TouchExplorationState::PASSING_THROUGH);
             return;
         }
