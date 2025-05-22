@@ -27,7 +27,7 @@ namespace Accessibility {
 namespace Utils {
 char *MallocCString(const std::string &origin, RetError &errCode)
 {
-    if (origin.empty()) {
+    if (origin.empty() || errCode == RET_ERR_FAILED) {
         return nullptr;
     }
     auto len = origin.length() + 1;
@@ -42,7 +42,7 @@ char *MallocCString(const std::string &origin, RetError &errCode)
 
 CArrString VectorToCArrString(std::vector<std::string> &vec, RetError &errCode)
 {
-    if (vec.size() == 0) {
+    if (vec.size() == 0 || errCode == RET_ERR_FAILED) {
         return { nullptr, 0 };
     }
     char **result = new char *[vec.size()];
@@ -167,6 +167,43 @@ CAccessibilityAbilityInfo ConvertAccAbilityInfo2C(AccessibilityAbilityInfo &abil
     return cAbility;
 }
 
+void FreecAbility(CAccessibilityAbilityInfo *cAbility)
+{
+    free(cAbility->id_);
+    cAbility->id_ = nullptr;
+    free(cAbility->name_);
+    cAbility->name_ = nullptr;
+    free(cAbility->bundleName_);
+    cAbility->bundleName_ = nullptr;
+    free(cAbility->description_);
+    cAbility->description_ = nullptr;
+    free(cAbility->label_);
+    cAbility->label_ = nullptr;
+    for (auto i = 0; i < cAbility->targetBundleNames_.size; i++) {
+        free(cAbility->targetBundleNames_.head[i]);
+    }
+    free(cAbility->targetBundleNames_.head);
+    cAbility->targetBundleNames_.head = nullptr;
+
+    for (auto i = 0; i < cAbility->abilityTypes_.size; i++) {
+        free(cAbility->abilityTypes_.head[i]);
+    }
+    free(cAbility->abilityTypes_.head);
+    cAbility->abilityTypes_.head = nullptr;
+
+    for (auto i = 0; i < cAbility->capabilities_.size; i++) {
+        free(cAbility->capabilities_.head[i]);
+    }
+    free(cAbility->capabilities_.head);
+    cAbility->capabilities_.head = nullptr;
+
+    for (auto i = 0; i < cAbility->eventTypes_.size; i++) {
+        free(cAbility->eventTypes_.head[i]);
+    }
+    free(cAbility->eventTypes_.head);
+    cAbility->eventTypes_.head = nullptr;
+}
+
 CArrAccessibilityAbilityInfo ConvertArrAccAbilityInfo2CArr(std::vector<AccessibilityAbilityInfo> &abilityList,
     RetError &errCode)
 {
@@ -181,13 +218,15 @@ CArrAccessibilityAbilityInfo ConvertArrAccAbilityInfo2CArr(std::vector<Accessibi
         errCode = RET_ERR_NULLPTR;
         return cArrAbility;
     }
-    if (memset_s(cAbility, mallocSize, 0, mallocSize) != EOK) {
-        errCode = RET_ERR_FAILED;
-        return cArrAbility;
-    }
+    memset_s(cAbility, mallocSize, 0, mallocSize);
     for (auto i = 0; i < cArrAbility.size; ++i) {
         cAbility[i] = ConvertAccAbilityInfo2C(abilityList[i], errCode);
         if (errCode != RET_OK) {
+            for (auto j = 0; j < i; j++) {
+                FreecAbility(&cAbility[j]);         
+            }
+            free(cAbility);
+            cAbility = nullptr;
             HILOG_ERROR("ConvertAccAbilityInfo2C failed.");
             return cArrAbility;
         }
