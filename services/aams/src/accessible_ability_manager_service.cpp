@@ -1889,7 +1889,10 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         HILOG_WARN("The account is current account id.");
         return;
     }
-    OffZoomGesture();
+    if (inputInterceptor_ && inputInterceptor_->GetZoomState() == ACCESSIBILITY_ZOOM_STATE::ZOOMIN_STATE) {
+        HILOG_INFO("off zoom gesture when switch user");
+        OffZoomGesture();
+    }
 
     std::map<std::string, uint32_t> importantEnabledAbilities;
     SCREENREADER_STATE screenReaderState = SCREENREADER_STATE::UNINIT;

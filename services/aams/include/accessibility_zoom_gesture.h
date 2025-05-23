@@ -48,6 +48,10 @@ public:
     // flag = true shield zoom gesture | flag = false restore zoom gesture
     void ShieldZoomGesture(bool state);
     void GetWindowParam(bool needRefresh = false);
+    inline ACCESSIBILITY_ZOOM_STATE GetZoomState()
+    {
+        return state_;
+    }
 
 private:
     class ZoomGestureEventHandler : public AppExecFwk::EventHandler {
