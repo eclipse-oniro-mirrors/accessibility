@@ -82,6 +82,13 @@ public:
     // flag = true shield zoom gesture | flag = false restore zoom gesture
     void ShieldZoomGesture(bool flag);
     void RefreshDisplayInfo();
+    inline ACCESSIBILITY_ZOOM_STATE GetZoomState()
+    {
+        if (zoomGesture_) {
+            return zoomGesture_->GetZoomState();
+        }
+        return READY_STATE;
+    }
 
 private:
     AccessibilityInputInterceptor();
