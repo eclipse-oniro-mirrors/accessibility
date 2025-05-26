@@ -108,6 +108,7 @@ ohos_unittest("accessible_ability_test") {
   sources = [
     "../../../common/interface/src/accessibility_element_operator_callback_stub.cpp",
     "../../../common/interface/src/accessible_ability_client_stub.cpp",
+    "../../../common/interface/src/api_event_reporter.cpp",
     "../../../common/interface/src/parcel/accessibility_ability_info_parcel.cpp",
     "../../../common/interface/src/parcel/accessibility_caption_parcel.cpp",
     "../../../common/interface/src/parcel/accessibility_element_info_parcel.cpp",
@@ -182,6 +183,7 @@ ohos_unittest("accessible_ability_test") {
     "data_share:datashare_common",
     "data_share:datashare_consumer",
     "display_manager:displaymgr",
+    "e2fsprogs:libext2_uuid",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "googletest:gmock_main",
@@ -203,6 +205,10 @@ ohos_unittest("accessible_ability_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (product_name != "qemu-arm-linux-min") {
+    external_deps += [ "hiappevent:hiappevent_innerapi" ]
+  }
 
   if (accessibility_user_status_awareness) {
     external_deps += [ "user_status_awareness:user_status_client" ]

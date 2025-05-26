@@ -42,7 +42,6 @@ config("accessibilityconfig_public_config") {
 }
 
 acfwk_src = [
-  "${acfwk_path}/../../interfaces/kits/napi/src/napi_accessibility_config_observer.cpp",
   "${acfwk_path}/src/accessibility_config_impl.cpp",
   "${acfwk_path}/src/accessibility_config.cpp",
 ]
@@ -80,7 +79,6 @@ ohos_shared_library("accessibilityconfig") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_single",
-    "napi:ace_napi",
     "samgr:samgr_proxy",
   ]
   innerapi_tags = [ "platformsdk" ]

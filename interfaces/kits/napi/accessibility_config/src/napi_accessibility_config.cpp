@@ -35,7 +35,7 @@ namespace {
     constexpr int ROUND_STEP = 10;
 }
 
-napi_handle_scope TmpOpenScope(napi_env env)
+static napi_handle_scope TmpOpenScope(napi_env env)
 {
     napi_handle_scope scope = nullptr;
     NAPI_CALL(env, napi_open_handle_scope(env, &scope));

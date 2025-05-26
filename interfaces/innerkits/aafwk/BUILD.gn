@@ -46,6 +46,7 @@ aafwk_files = [
   "${aafwk_path}/src/accessibility_ui_test_ability_impl.cpp",
   "${aafwk_path}/src/accessible_ability_channel_client.cpp",
   "${aafwk_path}/src/accessible_ability_client_impl.cpp",
+  "../../../common/interface/src/api_event_reporter.cpp",
 ]
 
 ohos_shared_library("accessibleability") {
@@ -74,6 +75,7 @@ ohos_shared_library("accessibleability") {
 
   external_deps = [
     "c_utils:utils",
+    "e2fsprogs:libext2_uuid",
     "ffrt:libffrt",
     "hilog:libhilog",
     "init:libbeget_proxy",
@@ -86,6 +88,10 @@ ohos_shared_library("accessibleability") {
 
   if (accessibility_feature_hiviewdfx_hitrace) {
     external_deps += [ "hitrace:hitrace_meter" ]
+  }
+
+  if (product_name != "qemu-arm-linux-min") {
+    external_deps += [ "hiappevent:hiappevent_innerapi" ]
   }
 
   install_enable = true

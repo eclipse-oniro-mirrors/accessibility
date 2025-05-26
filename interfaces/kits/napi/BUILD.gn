@@ -43,9 +43,11 @@ ohos_shared_library("accessibility_napi") {
   }
 
   sources = [
+    "./src/napi_accessibility_utils.cpp",
     "./src/napi_accessibility_event_info.cpp",
     "./src/napi_accessibility_system_ability_client.cpp",
     "./src/native_module.cpp",
+    "./accessibility_config/src/napi_accessibility_config_observer.cpp",
   ]
 
   configs = [ "../../../resources/config/build:coverage_flags" ]
@@ -59,11 +61,16 @@ ohos_shared_library("accessibility_napi") {
 
   external_deps = [
     "c_utils:utils",
+    "e2fsprogs:libext2_uuid",
     "ffrt:libffrt",
     "hilog:libhilog",
     "input:libmmi-client",
     "napi:ace_napi",
   ]
+
+  if (product_name != "qemu-arm-linux-min") {
+    external_deps += [ "hiappevent:hiappevent_innerapi" ]
+  }
 
   relative_install_dir = "module"
   subsystem_name = "barrierfree"

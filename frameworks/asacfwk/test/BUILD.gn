@@ -46,6 +46,7 @@ ohos_unittest("asac_unit_test") {
     "../../../services/test/mock/mock_bundle_manager.cpp",
     "../../../services/test/mock/mock_parameter.c",
     "../../../services/test/mock/mock_service_registry.cpp",
+    "../../../common/interface/src/api_event_reporter.cpp",
     "../../aafwk/src/accessibility_element_operator_callback_impl.cpp",
     "../src/accessibility_element_operator_impl.cpp",
     "../src/accessibility_system_ability_client_impl.cpp",
@@ -75,6 +76,7 @@ ohos_unittest("asac_unit_test") {
     "c_utils:utils",
     "data_share:datashare_common",
     "data_share:datashare_consumer",
+    "e2fsprogs:libext2_uuid",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "googletest:gmock_main",
@@ -85,6 +87,10 @@ ohos_unittest("asac_unit_test") {
     "samgr:dynamic_cache",
     "samgr:samgr_proxy",
   ]
+
+  if (product_name != "qemu-arm-linux-min") {
+    external_deps += [ "hiappevent:hiappevent_innerapi" ]
+  }
 }
 
 ###############################################################################

@@ -44,6 +44,7 @@ config("accessibilityclient_public_config") {
 asacfwk_src = [
   "${asacfwk_path}/src/accessibility_system_ability_client_impl.cpp",
   "${asacfwk_path}/src/accessibility_element_operator_impl.cpp",
+  "../../../common/interface/src/api_event_reporter.cpp",
 ]
 
 ohos_shared_library("accessibilityclient") {
@@ -72,6 +73,7 @@ ohos_shared_library("accessibilityclient") {
 
   external_deps = [
     "c_utils:utils",
+    "e2fsprogs:libext2_uuid",
     "ffrt:libffrt",
     "hilog:libhilog",
     "init:libbeget_proxy",
@@ -79,6 +81,11 @@ ohos_shared_library("accessibilityclient") {
     "ipc:ipc_single",
     "samgr:samgr_proxy",
   ]
+
+  if (product_name != "qemu-arm-linux-min") {
+    external_deps += [ "hiappevent:hiappevent_innerapi" ]
+  }
+
   innerapi_tags = [ "platformsdk" ]
   install_enable = true
 
