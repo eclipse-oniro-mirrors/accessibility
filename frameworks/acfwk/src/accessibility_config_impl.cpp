@@ -1464,9 +1464,6 @@ Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickTime(IGNO
         ignoreRepeatClickTime));
     time = static_cast<IGNORE_REPEAT_CLICK_TIME>(ignoreRepeatClickTime);
     HILOG_INFO("ignore repeat click time = [%{public}u]", time);
-#ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    reporter.setResult(ret);
-#endif // ACCESSIBILITY_EMULATOR_DEFINED
     return ret;
 }
 

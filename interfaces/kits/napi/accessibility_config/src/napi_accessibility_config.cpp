@@ -33,6 +33,9 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr int ROUND_STEP = 10;
+    constexpr int32_t REPORTER_THRESHOLD_VALUE = 10;
+    constexpr int32_t SET_FLAG = 0;
+    constexpr int32_t GET_FLAG = 1;
 }
 
 static napi_handle_scope TmpOpenScope(napi_env env)
@@ -139,8 +142,14 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
             NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
             auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
             if (callbackInfo->capabilities_ != 0) {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+                Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.EnableAbility", REPORTER_THRESHOLD_VALUE);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
                 callbackInfo->ret_ = instance.EnableAbility(
                     callbackInfo->abilityName_, callbackInfo->capabilities_);
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+                reporter.setResult(callbackInfo->ret_);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
             }
         }, NAccessibilityConfig::AsyncWorkComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
@@ -191,7 +200,13 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
             NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
             auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
             if (callbackInfo) {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.DisableAbility", REPORTER_THRESHOLD_VALUE);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
                 callbackInfo->ret_ = instance.DisableAbility(callbackInfo->abilityName_);
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+                reporter.setResult(callbackInfo->ret_);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
             }
         }, NAccessibilityConfig::AsyncWorkComplete,
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
@@ -421,6 +436,56 @@ void NAccessibilityConfig::SetScreenTouchConfigExecute(NAccessibilityConfigData*
     }
 }
 
+static std::string GetConfigApiTag(OHOS::AccessibilityConfig::CONFIG_ID configId, int32_t flag)
+{
+    if (flag > 1) {
+        return "";
+    }
+    static std::map<OHOS::AccessibilityConfig::CONFIG_ID, std::vector<std::string>> configApiMap = {
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT,
+            {"AccessibilityConfig.Impl.SetHighContrastTextState", "AccessibilityConfig.Impl.GetHighContrastTextState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_STATE,
+            {"AccessibilityConfig.Impl.SetDaltonizationState", "AccessibilityConfig.Impl.GetDaltonizationState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR,
+            {"AccessibilityConfig.Impl.SetInvertColorState", "AccessibilityConfig.Impl.GetInvertColorState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF,
+            {"AccessibilityConfig.Impl.SetAnimationOffState", "AccessibilityConfig.Impl.GetAnimationOffState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION,
+            {"AccessibilityConfig.Impl.SetScreenMagnificationState",
+                "AccessibilityConfig.Impl.GetScreenMagnificationState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO,
+            {"AccessibilityConfig.Impl.SetAudioMonoState", "AccessibilityConfig.Impl.GetAudioMonoState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY,
+            {"AccessibilityConfig.Impl.SetMouseKeyState", "AccessibilityConfig.Impl.GetMouseKeyState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY,
+            {"AccessibilityConfig.Impl.SetShortKeyState", "AccessibilityConfig.Impl.GetShortKeyState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE,
+            {"AccessibilityConfig.Impl.SetCaptionsState", "AccessibilityConfig.Impl.GetCaptionsState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT,
+            {"AccessibilityConfig.Impl.SetContentTimeout", "AccessibilityConfig.Impl.GetContentTimeout"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK,
+            {"AccessibilityConfig.Impl.SetMouseAutoClick", "AccessibilityConfig.Impl.GetMouseAutoClick"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE,
+            {"AccessibilityConfig.Impl.SetAudioBalance", "AccessibilityConfig.Impl.GetAudioBalance"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT,
+            {"AccessibilityConfig.Impl.SetBrightnessDiscount", "AccessibilityConfig.Impl.GetBrightnessDiscount"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET,
+            {"AccessibilityConfig.Impl.SetShortkeyTarget", "AccessibilityConfig.Impl.GetShortkeyTarget"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_MULTI_TARGET,
+            {"AccessibilityConfig.Impl.SetShortkeyMultiTarget", "AccessibilityConfig.Impl.GetShortkeyMultiTarget"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE,
+            {"AccessibilityConfig.Impl.SetCaptionsProperty", "AccessibilityConfig.Impl.GetCaptionsProperty"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER,
+            {"AccessibilityConfig.Impl.SetDaltonizationColorFilter",
+                "AccessibilityConfig.Impl.GetDaltonizationColorFilter"}}};
+    auto iter = configApiMap.find(configId);
+    if (iter == configApiMap.end()) {
+        return flag == 0 ? "AccessibilityConfig.Impl.Setter" : "AccessibilityConfig.Impl.Getter";
+    } else {
+        return iter->second[flag];
+    }
+}
+
 void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
 {
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
@@ -431,6 +496,9 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
 
     HILOG_DEBUG("callbackInfo->id_ = %{public}d", callbackInfo->id_);
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    Accessibility::ApiReportHelper reporter(GetConfigApiTag(callbackInfo->id_, SET_FLAG), REPORTER_THRESHOLD_VALUE);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
 
     if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT) {
         callbackInfo->ret_ = instance.SetHighContrastTextState(callbackInfo->boolConfig_);
@@ -468,7 +536,9 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
         auto filter = ConvertStringToDaltonizationTypes(callbackInfo->stringConfig_);
         callbackInfo->ret_ = instance.SetDaltonizationColorFilter(filter);
     }
-
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    reporter.setResult(callbackInfo->ret_);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     SetScreenTouchConfigExecute(callbackInfo);
 }
 
@@ -581,6 +651,9 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
     }
 
     HILOG_DEBUG("callbackInfo->id_ = %{public}d", callbackInfo->id_);
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    Accessibility::ApiReportHelper reporter(GetConfigApiTag(callbackInfo->id_, GET_FLAG), REPORTER_THRESHOLD_VALUE);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT) {
         callbackInfo->ret_ = instance.GetHighContrastTextState(callbackInfo->boolConfig_);
@@ -621,7 +694,9 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
         callbackInfo->ret_ = instance.GetDaltonizationColorFilter(type);
         callbackInfo->stringConfig_ = ConvertDaltonizationTypeToString(type);
     }
-
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    reporter.setResult(callbackInfo->ret_);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     GetScreenTouchConfigExecute(callbackInfo);
 }
 
@@ -891,7 +966,9 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
         napi_throw(env, err);
         return nullptr;
     }
-
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.SubscribeConfigObserver");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     configObservers_->SubscribeObserver(env, obj->GetConfigId(), parameters[PARAM0]);
     return nullptr;
 }
@@ -920,6 +997,9 @@ napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_ca
         napi_throw(env, err);
         return nullptr;
     }
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.UnsubscribeConfigObserver");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     if (argc >= ARGS_SIZE_ONE && CheckJsFunction(env, parameters[PARAM0])) {
         configObservers_->UnsubscribeObserver(env, obj->GetConfigId(), parameters[PARAM0]);
     } else {
@@ -999,12 +1079,18 @@ int EnableAbilityListsObserver::OnEnableAbilityListsStateChangedWork(uv_work_t *
 
 void EnableAbilityListsObserverImpl::SubscribeToFramework()
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.SubscribeEnableAbilityListsObserver");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SubscribeEnableAbilityListsObserver(shared_from_this());
 }
 
 void EnableAbilityListsObserverImpl::UnsubscribeFromFramework()
 {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.UnsubscribeEnableAbilityListsObserver");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     HILOG_INFO("UnsubscribeFromFramework");
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.UnsubscribeEnableAbilityListsObserver(shared_from_this());
