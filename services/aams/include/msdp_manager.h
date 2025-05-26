@@ -17,13 +17,98 @@
 #define MSDP_MANAGER_H
 
 #include <cstdint>
+#include <functional>
+#include <map>
+#include <vector>
+#include <sstream>
+#include "nocopyable.h"
+#include "string_ex.h"
+#include "parcel.h"
 
 namespace OHOS {
 namespace Accessibility {
+class UserStatusData : public Parcelable {
+public:
+    UserStatusData();
+    virtual ~UserStatusData();
+
+    uint32_t GetFeature() const;
+    void SetFeature(uint32_t feature);
+
+    std::string GetStatus() const;
+    void SetStatus(const std::string &status);
+
+    int32_t GetResult() const;
+    void SetResult(int32_t result);
+
+    int32_t GetErrorCode() const;
+    void SetErrorCode(int32_t errorCode);
+
+    std::vector<std::string> GetResultApps() const;
+    void SetResultApps(const std::vector<std::string>);
+
+    std::string GetHpeDeviceId() const;
+    void SetHpeDeviceId(const std::string &hpeDeviceId);
+
+    int32_t GetCoordinateX() const;
+    void SetCoordinateX(int32_t coordinateX);
+
+    int32_t GetCoordinateY() const;
+    void SetCoordinateY(int32_t coordinateY);
+
+    int32_t GetPointerAction() const;
+    void SetPointerAction(int32_t pointerAction);
+
+    int32_t GetOrientation() const;
+    void SetOrientation(int32_t orientation);
+
+    virtual std::string Dump();
+    virtual std::shared_ptr<UserStatusData> Unmarshalling(Parcel &parcel);
+    static int32_t UnMarshallingFeature(Parcel &parcel);
+    bool Marshalling(Parcel &parcel) const override;
+    bool WriteTimeTunnelData(Parcel &parcel) const;
+
+protected:
+    std::string DumpBaseData();
+    uint32_t feature_ { 0 };
+    int32_t result_ { 0 };
+    int32_t errorCode_ { 0 };
+    std::string status_;
+    int32_t coordinateX_ { 0 };
+    int32_t coordinateY_ { 0 };
+    int32_t pointerAction_ { 0 };
+    int32_t orientation_ { 0 };
+    virtual bool ReadFromParcel(Parcel &parcel);
+
+private:
+    std::vector<std::string> resultApps_;
+    std::string hpeDeviceId_;
+};
+
+using UserStatusDataCallbackFunc = std::function<void(int32_t, std::shared_ptr<UserStatusData>)>;
+
 class MsdpManager {
 public:
-    static int32_t SubscribeVoiceRecognition();
-    static void UnSubscribeVoiceRecognition();
+    static MsdpManager &GetInstance();
+
+    int32_t SubscribeVoiceRecognition();
+
+    void UnSubscribeVoiceRecognition();
+
+    MsdpManager(const MsdpManager&) = delete;
+
+    MsdpManager(MsdpManager&&) = delete;
+
+    MsdpManager& operator=(const MsdpManager&) = delete;
+
+    MsdpManager& operator=(MsdpManager&&) = delete;
+
+private:
+    MsdpManager();
+
+    ~MsdpManager();
+
+    void* handle_;
 };
 } // namespace Accessibility
 } // namespace OHOS
