@@ -270,27 +270,6 @@ std::string RandomUuid()
     return std::string(uuidChars);
 }
 
-void ApiEventReporter::WriteEndEvent(int result, int errCode, std::string apiName, int64_t beginTime)
-{
-    HILOG_DEBUG("WriteEndEvent enter.");
-    std::string transId = std::string("traceId_") + RandomUuid();
-    int64_t endTime = GetCurrentTime();
-    
-    HiviewDFX::HiAppEvent::Event event("api_diagnostic", "api_exec_end", OHOS::HiviewDFX::HiAppEvent::BEHAVIOR);
-    event.AddParam("trans_id", transId);
-    event.AddParam("api_name", apiName);
-    event.AddParam("sdk_name", std::string("AccessibilityKit"));
-    event.AddParam("begin_time", beginTime);
-    event.AddParam("end_time", endTime);
-    event.AddParam("result", result);
-    event.AddParam("error_code", errCode);
-    if (!IsAppEventProccessorValid()) {
-        HILOG_ERROR("WriteEndEvent processorid invalid!");
-        return;
-    }
-    HiviewDFX::HiAppEvent::Write(event);
-}
-
 void ApiEventReporter::ClearCacheData()
 {
     for (auto it : m_thresholdData) {

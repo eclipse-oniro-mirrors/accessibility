@@ -51,7 +51,6 @@ class ApiEventReporter : public Singleton<ApiEventReporter> {
     DECLARE_SINGLETON(ApiEventReporter);
 public:
     int64_t AddProcessor();
-    void WriteEndEvent(int result, int errCode, std::string apiName, int64_t beginTime);
     void ThresholdWriteEndEvent(int result, std::string apiName, int64_t beginTime,
         int32_t thresholdValue);
     int64_t GetCurrentTime();

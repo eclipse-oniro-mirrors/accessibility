@@ -25,13 +25,6 @@
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 
-
-namespace OHOS {
-namespace Accessibility {
-napi_handle_scope TmpOpenScope(napi_env env);
-} // namespace Accessibility
-} // namespace OHOS
-
 struct EnableAbilityListsObserver {
     EnableAbilityListsObserver(napi_env env, napi_ref callback) : env_(env), callback_(callback) {};
     void OnEnableAbilityListsStateChanged();

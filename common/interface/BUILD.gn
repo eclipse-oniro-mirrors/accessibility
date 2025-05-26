@@ -78,8 +78,6 @@ accessibility_data_parcel_src = [
   "src/parcel/accessibility_window_info_parcel.cpp",
 ]
 
-accessibility_api_reporter_src = [ "src/api_event_reporter.cpp" ]
-
 ohos_shared_library("accessibility_interface") {
   branch_protector_ret = "pac_ret"
   sanitize = {
@@ -95,7 +93,6 @@ ohos_shared_library("accessibility_interface") {
       get_target_outputs(":accessible_ability_manager_service_interface")
   sources = accessibility_interface_src
   sources += accessibility_data_parcel_src
-  sources += accessibility_api_reporter_src
   sources += filter_include(output_values, [ "*proxy.cpp" ])
   sources += filter_include(output_values, [ "*stub.cpp" ])
   sources += filter_include(output_values, [ "*types.cpp" ])
@@ -115,16 +112,11 @@ ohos_shared_library("accessibility_interface") {
     "access_token:libaccesstoken_sdk",
     "access_token:libtokenid_sdk",
     "c_utils:utils",
-    "e2fsprogs:libext2_uuid",
     "ffrt:libffrt",
     "hilog:libhilog",
     "input:libmmi-client",
     "ipc:ipc_single",
   ]
-
-  if (product_name != "qemu-arm-linux-min") {
-    external_deps += [ "hiappevent:hiappevent_innerapi" ]
-  }
 
   install_enable = true
 
