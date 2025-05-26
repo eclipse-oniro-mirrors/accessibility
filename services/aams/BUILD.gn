@@ -163,10 +163,6 @@ ohos_shared_library("accessibleabilityms") {
     external_deps += [ "resource_schedule_service:ressched_client" ]
   }
 
-  if (accessibility_user_status_awareness) {
-    external_deps += [ "user_status_awareness:user_status_client" ]
-  }
-
   install_enable = true
 
   subsystem_name = "barrierfree"
