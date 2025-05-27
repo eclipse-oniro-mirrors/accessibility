@@ -30,7 +30,8 @@ static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
     "BindSheet",
     "hasRegisteredHover",
     "direction",
-    "expandedState"
+    "expandedState",
+    "componentTypeDescription"
 };
 }
 void AccessibilityElementInfo::SetComponentId(const int64_t componentId)
