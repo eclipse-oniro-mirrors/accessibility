@@ -141,7 +141,6 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     dependentServicesStatus_[SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN] = false;
     dependentServicesStatus_[WINDOW_MANAGER_SERVICE_ID] = false;
     dependentServicesStatus_[DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID] = false;
-    dependentServicesStatus_[MSDP_USER_STATUS_SERVICE_ID] = false;
 
     accessibilitySettings_ = std::make_shared<AccessibilitySettings>();
     accessibilityShortKey_ = std::make_shared<AccessibilityShortKey>();
@@ -301,7 +300,6 @@ void AccessibleAbilityManagerService::OnStart()
     AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
     AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
-    AddSystemAbilityListener(MSDP_USER_STATUS_SERVICE_ID);
 
     accessibilitySettings_->RegisterSettingsHandler(handler_);
 }
