@@ -163,10 +163,6 @@ ohos_moduletest("aams_accessibility_touch_exploration_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
-
-  if (accessibility_user_status_awareness) {
-    external_deps += [ "user_status_awareness:user_status_client" ]
-  }
 }
 
 ################################################################################
@@ -278,10 +274,6 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
-
-  if (accessibility_user_status_awareness) {
-    external_deps += [ "user_status_awareness:user_status_client" ]
-  }
 }
 
 ################################################################################
@@ -392,10 +384,6 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
-
-  if (accessibility_user_status_awareness) {
-    external_deps += [ "user_status_awareness:user_status_client" ]
-  }
 }
 
 ################################################################################
@@ -504,10 +492,6 @@ ohos_moduletest("aams_server_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
-
-  if (accessibility_user_status_awareness) {
-    external_deps += [ "user_status_awareness:user_status_client" ]
-  }
 }
 
 ################################################################################
@@ -617,10 +601,6 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
-
-  if (accessibility_user_status_awareness) {
-    external_deps += [ "user_status_awareness:user_status_client" ]
-  }
 }
 
 ################################################################################
@@ -735,10 +715,6 @@ ohos_moduletest("aams_common_event_registry_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
-
-  if (accessibility_user_status_awareness) {
-    external_deps += [ "user_status_awareness:user_status_client" ]
-  }
 }
 
 ################################################################################

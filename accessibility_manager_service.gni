@@ -22,7 +22,6 @@ declare_args() {
   accessibility_feature_hiviewdfx_hitrace = true
   accessibility_feature_hiviewdfx_hisysevent = true
   accessibility_dynamic_support = false
-  accessibility_user_status_awareness = false
   if (defined(global_parts_info) &&
       !defined(global_parts_info.powermgr_display_manager)) {
     accessibility_feature_display_manager = false
@@ -50,10 +49,6 @@ declare_args() {
       !defined(global_parts_info.hiviewdfx_hisysevent)) {
     accessibility_feature_hiviewdfx_hisysevent = false
   }
-
-  if (defined(global_parts_info) && defined(global_parts_info.msdp_user_status_awareness)) {
-    accessibility_user_status_awareness = true
-  }
 }
 
 print(
@@ -66,8 +61,6 @@ print(
     "accessibility_feature_hiviewdfx_hitrace = ${accessibility_feature_hiviewdfx_hitrace}")
 print(
     "accessibility_feature_hiviewdfx_hisysevent = ${accessibility_feature_hiviewdfx_hisysevent}")
-print(
-    "accessibility_user_status_awareness = ${accessibility_user_status_awareness}")
 
 accessibility_default_defines = []
 
@@ -101,8 +94,4 @@ if (accessibility_feature_hiviewdfx_hisysevent) {
 
 if (product_name != "qemu-arm-linux-min") {
   accessibility_default_defines += [ "ACCESSIBILITY_EMULATOR_DEFINED" ]
-}
-
-if (accessibility_user_status_awareness) {
-  accessibility_default_defines += [ "ACCESSIBILITY_USER_STATUS_AWARENESS" ]
 }
