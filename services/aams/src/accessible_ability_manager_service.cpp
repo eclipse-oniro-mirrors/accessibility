@@ -1564,6 +1564,11 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
         HILOG_ERROR("RemoveEnabledAbility failed");
         return ret;
     }
+
+    auto result = MMI::InputManager::GetInstance()->SwitchTouchTracking(false);
+    if (result != RET_OK) {
+        HILOG_ERROR("Failed to disable the MMI rule.");
+    }
     accountData->SetAbilityAutoStartState(name, false);
     accountData->RemoveConnectingA11yAbility(name);
     accountData->UpdateAbilities();
