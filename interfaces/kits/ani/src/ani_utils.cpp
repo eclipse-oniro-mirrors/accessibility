@@ -19,8 +19,10 @@
 #include <vector>
 #include "hilog_wrapper.h"
 #include "ani_utils.h"
+#include <ani_signature_builder.h>
 
 using namespace OHOS::Accessibility;
+using namespace arkts::ani_signature;
 
 std::string ANIUtils::ANIStringToStdString(ani_env *env, ani_string ani_str)
 {
@@ -97,13 +99,16 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
 
     fieldValue.clear();
     ani_class arrayCls;
-    const char *arrayClassName = "Lescompat/Array;";
-    if (env->FindClass(arrayClassName, &arrayCls) != ANI_OK) {
+    Type arrayClass = Builder::BuildClass("escompat.Array");
+    if (env->FindClass(arrayClass.Descriptor().c_str(), &arrayCls) != ANI_OK) {
         return false;
     }
 
     ani_method arrayLengthMethod;
-    if (env->Class_FindMethod(arrayCls, "length", ":Lstd/core/Object;", &arrayLengthMethod) != ANI_OK) {
+    SignatureBuilder objectBuilder{};
+    objectBuilder.SetReturnClass("std.core.Object");
+    std::string objectBuilderDescriptor = objectBuilder.BuildSignatureDescriptor();
+    if (env->Class_FindMethod(arrayCls, "length", objectBuilderDescriptor.c_str(), &arrayLengthMethod) != ANI_OK) {
         return false;
     }
 
@@ -119,7 +124,7 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
     }
 
     ani_method arrayPopMethod;
-    if (env->Class_FindMethod(arrayCls, "pop", ":Lstd/core/Object;", &arrayPopMethod) != ANI_OK) {
+    if (env->Class_FindMethod(arrayCls, "pop", objectBuilderDescriptor.c_str(), &arrayPopMethod) != ANI_OK) {
         return false;
     }
 
@@ -300,14 +305,15 @@ NAccessibilityErrMsg ANIUtils::QueryRetMsg(RetError errorCode)
 
 void ANIUtils::ThrowAccessibilityError(ani_env *env, NAccessibilityErrMsg errMsg)
 {
-    static const char *errorClsName = "L@ohos/accessibility/AccessibilityError;";
+    Type errorClass = Builder::BuildClass("@ohos.accessibility.AccessibilityError");
     ani_class cls {};
-    if (env->FindClass(errorClsName, &cls) != ANI_OK) {
+    if (env->FindClass(errorClass.Descriptor().c_str(), &cls) != ANI_OK) {
         HILOG_ERROR("find class AccessibilityError failed");
         return;
     }
     ani_method ctor;
-    if (env->Class_FindMethod(cls, "<ctor>", nullptr, &ctor) != ANI_OK) {
+    std::string ctorName = Builder::BuildConstructorName();
+    if (env->Class_FindMethod(cls, ctorName.c_str(), nullptr, &ctor) != ANI_OK) {
         HILOG_ERROR("find method AccessibilityError.constructor failed");
         return;
     }
@@ -325,15 +331,18 @@ void ANIUtils::ThrowAccessibilityError(ani_env *env, NAccessibilityErrMsg errMsg
 
 ani_object ANIUtils::CreateBoolObject(ani_env *env, ani_boolean value)
 {
-    static const char *boolClsName = "Lstd/core/Boolean;";
+    Type boolClass = Builder::BuildClass("std.core.Boolean");
     ani_class cls {};
-    if (env->FindClass(boolClsName, &cls) != ANI_OK) {
+    if (env->FindClass(boolClass.Descriptor().c_str(), &cls) != ANI_OK) {
         HILOG_ERROR("find class Boolean failed");
         return nullptr;
     }
 
     ani_method ctor;
-    if (env->Class_FindMethod(cls, "<ctor>", "Z:V", &ctor) != ANI_OK) {
+    std::string ctorName = Builder::BuildConstructorName();
+    SignatureBuilder sb{};
+    sb.AddBoolean();
+    if (env->Class_FindMethod(cls, ctorName.c_str(), sb.BuildSignatureDescriptor().c_str(), &ctor) != ANI_OK) {
         HILOG_ERROR("find method Boolean.constructor failed");
         return nullptr;
     }
