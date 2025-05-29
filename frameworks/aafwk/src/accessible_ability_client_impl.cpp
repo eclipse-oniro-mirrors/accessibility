@@ -1536,12 +1536,12 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
         if ((elementInfos[i].GetChildWindowId() > 0) &&
             (elementInfos[i].GetChildWindowId() != elementInfos[i].GetWindowId())) {
             ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetChildWindowId(),
-                elementId, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, i);
+                ROOT_NONE_ID, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, i);
             HILOG_INFO("ChildWindowId %{public}d}. ret:%{public}d, GetChildTreeId %{public}d",
                 elementInfos[i].GetChildWindowId(), ret, elementInfos[i].GetChildTreeId());
         } else if (elementInfos[i].GetChildTreeId() > 0 && elementInfos[i].GetChildTreeId() != treeId) {
             ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetWindowId(),
-                elementId, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, i);
+                ROOT_NONE_ID, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, i);
             HILOG_INFO("windowId %{public}d}.treeId:%{public}d. ret:%{public}d",
                 elementInfos[i].GetWindowId(), elementInfos[i].GetChildTreeId(), ret);
         }
