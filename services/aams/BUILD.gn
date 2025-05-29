@@ -128,6 +128,7 @@ ohos_shared_library("accessibleabilityms") {
     "hicollie:libhicollie",
     "hilog:libhilog",
     "i18n:intl_util",
+    "init:libbeget_proxy",
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_single",

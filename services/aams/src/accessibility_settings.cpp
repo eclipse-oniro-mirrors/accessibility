@@ -44,6 +44,42 @@ void AccessibilitySettings::RegisterSettingsHandler(const std::shared_ptr<AppExe
     handler_ = handler;
 }
 
+void AccessibilitySettings::OnParameterChanged(const char *key, const char *value, void *context)
+{
+    if (!key || !value || !context) {
+        return;
+    }
+    std::string strKey(key);
+    std::string strValue(value);
+    if (strKey != GRAPHIC_ANIMATION_SCALE_NAME && strKey != ARKUI_ANIMATION_SCALE_NAME) {
+        return;
+    }
+    AccessibilitySettings *settingsPtr = static_cast<AccessibilitySettings *>(context);
+    if (!settingsPtr) {
+        return;
+    }
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        return;
+    }
+    bool state = accountData->GetConfig()->GetAnimationOffState();
+    HILOG_INFO("on param changed, %{public}s %{public}d", strValue.c_str(), state);
+    if (strValue == "0" && !state) {
+        accountData->GetConfig()->SetAnimationOffState(true);
+        settingsPtr->UpdateConfigState();
+    } else if (strValue != "0" && state) {
+        accountData->GetConfig()->SetAnimationOffState(true);
+        settingsPtr->UpdateConfigState();
+    }
+}
+
+void AccessibilitySettings::RegisterParamWatcher()
+{
+    WatchParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), &OnParameterChanged, this);
+    WatchParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), &OnParameterChanged, this);
+}
+
 RetError AccessibilitySettings::SetScreenMagnificationState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");

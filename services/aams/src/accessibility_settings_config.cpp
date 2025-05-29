@@ -20,6 +20,7 @@
 #include "accessibility_setting_provider.h"
 #include "accessible_ability_manager_service.h"
 #include "accessibility_account_data.h"
+#include "parameters.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -72,6 +73,8 @@ namespace {
     const std::string ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
     const std::string IGNORE_REPEAT_CLICK_RECONFIRM = "accessibility_ignore_repeat_click_reconfirm";
     const std::string ZOOM_GESTURE_ENABLED_RECONFIRM = "accessibility_zoom_gesture_enabled_reconfirm";
+    const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
+    const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -973,6 +976,21 @@ void AccessibilitySettingsConfig::InitPrivacySpaceConfig()
     }
 }
 
+void AccessibilitySettingsConfig::InitAnimationOffConfig()
+{
+    animationOffState_ = datashare_->GetBoolValue(ANIMATION_OFF_KEY, true);
+    std::string graphicState = system::GetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
+    std::string arkuiState = system::GetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
+    bool state = (graphicState == "0" && arkuiState == "0");
+    if (animationOffState_) {
+        system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "0");
+        system::SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "0");
+    } else if (!animationOffState_) {
+        system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
+        system::SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
+    }
+}
+
 void AccessibilitySettingsConfig::InitSetting()
 {
     HILOG_DEBUG();
@@ -981,10 +999,11 @@ void AccessibilitySettingsConfig::InitSetting()
     }
 
     InitShortKeyConfig();
+    InitPrivacySpaceConfig();
+    InitAnimationOffConfig();
     CloneAudioState();
     isScreenMagnificationState_ = datashare_->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
     isMouseKeyState_= datashare_->GetBoolValue(MOUSEKEY, false);
-    animationOffState_ = datashare_->GetBoolValue(ANIMATION_OFF_KEY, false);
     invertColorState_ = datashare_->GetBoolValue(INVERT_COLOR_KEY, false);
     highContrastTextState_ = datashare_->GetBoolValue(HIGH_CONTRAST_TEXT_KEY, false);
     daltonizationState_ = datashare_->GetBoolValue(DALTONIZATION_STATE, false);

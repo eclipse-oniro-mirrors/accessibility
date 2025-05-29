@@ -71,8 +71,6 @@ namespace {
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
-    const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
-    const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
@@ -393,6 +391,9 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         RegisterScreenMagnificationState();
         RegisterScreenMagnificationType();
         RegisterVoiceRecognitionState();
+        if (accessibilitySettings_) {
+            accessibilitySettings_->RegisterParamWatcher();
+        }
         }, "OnAddSystemAbility");
 }
 
