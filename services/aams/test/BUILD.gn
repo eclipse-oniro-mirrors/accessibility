@@ -835,6 +835,7 @@ ohos_unittest("accessibility_display_manager_test") {
   sources = [
     "../src/accessibility_display_manager.cpp",
     "../src/utils.cpp",
+    "../src/accessibility_resource_bundle_manager.cpp",
     "unittest/accessibility_display_manager_test.cpp",
   ]
   sources += aams_mock_distributeddatamgr_src
