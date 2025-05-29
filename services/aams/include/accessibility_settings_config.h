@@ -117,6 +117,7 @@ private:
     void InitCaption();
     void InitCapability();
     void InitPrivacySpaceConfig();
+    void InitAnimationOffConfig();
     RetError SetConfigState(const std::string& key, bool value);
 
     int32_t accountId_;

@@ -28,6 +28,8 @@ public:
     ~AccessibilitySettings() = default;
 
     void RegisterSettingsHandler(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
+    void RegisterParamWatcher();
+    static void OnParameterChanged(const char *key, const char *value, void *context);
 
     RetError SetScreenMagnificationState(const bool state);
     RetError SetShortKeyState(const bool state);
