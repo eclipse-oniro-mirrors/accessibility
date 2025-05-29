@@ -893,6 +893,7 @@ ohos_unittest("accessibility_dumper_test") {
     "../src/accessibility_dumper.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/utils.cpp",
+    "../src/accessibility_resource_bundle_manager.cpp",
     "mock/src/mock_accessibility_account_data.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
