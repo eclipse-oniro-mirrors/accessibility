@@ -1349,6 +1349,7 @@ ohos_unittest("accessibility_mouse_key_test") {
   sources = [
     "../src/accessibility_mouse_key.cpp",
     "../src/utils.cpp",
+    "../src/accessibility_resource_bundle_manager.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
     "unittest/accessibility_mouse_key_test.cpp",
   ]
