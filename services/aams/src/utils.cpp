@@ -532,13 +532,16 @@ bool Utils::GetBundleNameByCallingUid(std::string &bundleName)
     if (uid <= INVALID_ID) {
         return false;
     }
-    AccessibilityResourceBundleManager *bundleManager = new(std::nothrow) AccessibilityResourceBundleManager();
-    sptr<AppExecFwk::IBundleMgr> bundleMgr = bundleManager->GetBundleMgrProxy();
+    sptr<AppExecFwk::IBundleMgr> bundleMgr = Singleton<AccessibilityResourceBundleManager>::GetInstance(
+        ).GetBundleMgrProxy();
     if (bundleMgr == nullptr) {
         HILOG_ERROR("bundleMgr is nullptr");
         return false;
     }
-    bundleMgr->GetBundleNameForUid(uid, bundleName);
+    if (!bundleMgr->GetBundleNameForUid(uid, bundleName)) {
+        HILOG_ERROR("bundleMgr GetBundleNameForUid failed.");
+        return false;
+    }
     HILOG_DEBUG("GetCallingUid:%{public}d, getBundleNameByUid:%{public}s", uid, bundleName.c_str());
     return true;
 }
