@@ -978,7 +978,7 @@ void AccessibilitySettingsConfig::InitPrivacySpaceConfig()
 
 void AccessibilitySettingsConfig::InitAnimationOffConfig()
 {
-    animationOffState_ = datashare_->GetBoolValue(ANIMATION_OFF_KEY, true);
+    animationOffState_ = datashare_->GetBoolValue(ANIMATION_OFF_KEY, false);
     std::string graphicState = system::GetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
     std::string arkuiState = system::GetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
     bool state = (graphicState == "0" && arkuiState == "0");
