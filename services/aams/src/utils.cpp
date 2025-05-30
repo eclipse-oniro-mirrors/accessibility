@@ -540,5 +540,11 @@ bool Utils::GetBundleNameByCallingUid(std::string &bundleName)
     HILOG_DEBUG("GetCallingUid:%{public}d, getBundleNameByUid:%{public}s", uid, bundleName.c_str());
     return true;
 }
+
+bool Utils::IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect)
+{
+    return (posX >= rect.posX_ && posY >= rect.posY_ && posX <= rect.posX_ + static_cast<int32_t>(rect.width_) &&
+        posY <= rect.posY_ + static_cast<int32_t>(rect.height_));
+}
 } // namespace Accessibility
 } // namespace OHOS

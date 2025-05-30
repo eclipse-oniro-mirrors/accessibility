@@ -663,5 +663,45 @@ ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32
 void AccessibleAbilityManagerService::OnDataClone()
 {
 }
+
+uint32_t AccessibleAbilityManagerService::GetMagnificationType()
+{
+    return FULL_SCREEN_MAGNIFICATION;
+}
+
+uint32_t AccessibleAbilityManagerService::GetMagnificationMode()
+{
+    return FULL_SCREEN_MAGNIFICATION;
+}
+
+void AccessibleAbilityManagerService::SetMagnificationMode(int32_t mode)
+{
+    (void)mode;
+}
+
+float AccessibleAbilityManagerService::GetMagnificationScale()
+{
+    return DEFAULT_SCALE;
+}
+
+void AccessibleAbilityManagerService::SetMagnificationScale(float scale)
+{
+    (void)scale;
+}
+
+std::shared_ptr<MagnificationManager> AccessibleAbilityManagerService::GetMagnificationMgr()
+{
+    return nullptr;
+}
+
+std::shared_ptr<WindowMagnificationManager> AccessibleAbilityManagerService::GetWindowMagnificationManager()
+{
+    return nullptr;
+}
+
+std::shared_ptr<FullScreenMagnificationManager> AccessibleAbilityManagerService::GetFullScreenMagnificationManager()
+{
+    return nullptr;
+}
 } // namespace Accessibility
 } // namespace OHOS

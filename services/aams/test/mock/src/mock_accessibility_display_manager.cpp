@@ -24,7 +24,6 @@ namespace Accessibility {
 constexpr int32_t DEFAULT_DPI = 540;
 constexpr int32_t DEFAULT_WIDTH = 1260;
 constexpr int32_t DEFAULT_HEIGHT = 2720;
-constexpr float DEFAULT_SCALE = 2.0f;
 constexpr float NORMAL_SCALE = 1.0f;
 
 AccessibilityDisplayManager::AccessibilityDisplayManager()

@@ -19,6 +19,7 @@
 #include "accessibility_ability_info.h"
 #include "element_name.h"
 #include "extension_ability_info.h"
+#include "window.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -75,6 +76,7 @@ public:
         const std::string &bundleName = "", const std::string &abilityName = "");
     static bool isWideFold();
     static bool isBigFold();
+    static bool IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect);
 
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);

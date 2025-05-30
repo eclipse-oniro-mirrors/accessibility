@@ -26,7 +26,7 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr uint32_t DEFAULT_COLOR = 0xff000000;
-    const int32_t DEFAULT_SCALE = 100;
+    const int32_t DEFAULT_FONT_SCALE = 100;
     const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const int32_t DEFAULT_ACCOUNT_ID = 100;
@@ -87,7 +87,6 @@ namespace {
     constexpr int INVALID_MASTER_MONO_VALUE = -1;
     constexpr int AUDIO_BALANCE_STEP = 5;
     constexpr float INVALID_MASTER_BALANCE_VALUE = 2.0;
-    constexpr float EPS = 1e-6;
     constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
@@ -891,7 +890,7 @@ void AccessibilitySettingsConfig::InitCaption()
     std::string fontFamliy = datashare_->GetStringValue(FONT_FAMILY, "default");
     HILOG_DEBUG("fontFamily = %{public}s.", fontFamliy.c_str());
 
-    int32_t fontScale =  static_cast<int32_t>(datashare_->GetIntValue(FONT_SCALE, DEFAULT_SCALE));
+    int32_t fontScale =  static_cast<int32_t>(datashare_->GetIntValue(FONT_SCALE, DEFAULT_FONT_SCALE));
     HILOG_DEBUG("fontScale = %{public}d.", fontScale);
 
     uint32_t fontColor = static_cast<uint32_t>(datashare_->GetIntValue(FONT_COLOR, DEFAULT_COLOR));

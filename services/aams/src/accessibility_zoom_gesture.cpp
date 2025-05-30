@@ -22,6 +22,7 @@
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "accessibility_power_manager.h"
 #endif
+#include "magnification_menu_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -32,23 +33,18 @@ namespace {
     constexpr int32_t MULTI_TAP_TIMER = 250; // ms
     constexpr int32_t LONG_PRESS_TIMER = 300; // ms
     constexpr float DOUBLE_TAP_SLOP = 100.0f;
-    constexpr float HALF = 0.5f;
     constexpr uint32_t DOUBLE = 2;
     constexpr uint32_t TRIPLE_TAP_COUNT = 3;
-    constexpr float DEFAULT_SCALE = 2.0f;
     constexpr float NORMAL_SCALE = 1.0f;
-    constexpr float MAX_SCALE = 8.0f;
-    constexpr uint32_t INPUT_METHOD_WINDOW_TYPE = 2105;
-    constexpr float EPS = 1e-6;
     constexpr float MIN_SCROLL_SPAN = 2.0f;
     constexpr float MIN_SCALE_SPAN = 2.0f;
     constexpr float DEFAULT_ANCHOR = 0.5f;
 } // namespace
 
-AccessibilityZoomGesture::AccessibilityZoomGesture()
+AccessibilityZoomGesture::AccessibilityZoomGesture(
+    std::shared_ptr<FullScreenMagnificationManager> fullScreenManager) : fullScreenManager_(fullScreenManager)
 {
     HILOG_DEBUG();
-
     zoomGestureEventHandler_ = std::make_shared<ZoomGestureEventHandler>(
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner(), *this);
 
@@ -122,11 +118,6 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
         return false;
     }
 
-    if (IsTapOnInputMethod(event)) {
-        EventTransmission::OnPointerEvent(event);
-        return true;
-    }
-
     switch (state_) {
         case READY_STATE:
             CacheEvents(event);
@@ -138,6 +129,9 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
             break;
         case SLIDING_STATE:
             RecognizeInSlidingState(event);
+            break;
+        case MENU_SLIDING_STATE:
+            RecognizeInMenuSlidingState(event);
             break;
         default:
             break;
@@ -201,6 +195,12 @@ void AccessibilityZoomGesture::SendCacheEventsToNext()
 
     size_t cacheEventsNum = 0;
     size_t cacheEventsTotalNum = cacheEventsTmp.size();
+
+    if (fullScreenManager_ == nullptr) {
+        HILOG_ERROR("fullScreenManager_ is nullptr.");
+        return;
+    }
+    
     for (auto &pointerEvent : cacheEventsTmp) {
         cacheEventsNum++;
         action = pointerEvent->GetPointerAction();
@@ -212,10 +212,24 @@ void AccessibilityZoomGesture::SendCacheEventsToNext()
         }
         if (isStartNewAction) {
             OnPointerEvent(*pointerEvent);
-        } else {
-            pointerEvent->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
-            EventTransmission::OnPointerEvent(*pointerEvent);
+            continue;
         }
+        if (state_ != READY_STATE) {
+            MMI::PointerEvent::PointerItem pointer {};
+            pointerEvent->GetPointerItem(pointerEvent->GetPointerId(), pointer);
+            PointerPos coordinates  = fullScreenManager_->ConvertCoordinates(pointer.GetDisplayX(),
+                pointer.GetDisplayY());
+            if (gestureType_ != INVALID_GESTURE_TYPE) {
+                coordinates = fullScreenManager_->ConvertGesture(gestureType_, coordinates);
+            }
+            pointer.SetDisplayX(coordinates.posX);
+            pointer.SetDisplayY(coordinates.posY);
+            pointerEvent->RemovePointerItem(pointerEvent->GetPointerId());
+            pointerEvent->AddPointerItem(pointer);
+            pointerEvent->SetZOrder(10000); // 10000 is magnification window zorder
+        }
+        pointerEvent->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
+        EventTransmission::OnPointerEvent(*pointerEvent);
     }
 }
 
@@ -249,7 +263,7 @@ void AccessibilityZoomGesture::RecognizeInReadyState(MMI::PointerEvent &event)
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            if ((pointerCount == POINTER_COUNT_1) && IsUpValid()) {
+            if ((pointerCount == POINTER_COUNT_1) && IsUpValid() && !(IsTapOnInputMethod(event))) {
                 isTripleTaps = IsTripleTaps();
             } else {
                 SendCacheEventsToNext();
@@ -280,20 +294,33 @@ void AccessibilityZoomGesture::RecognizeInZoomStateDownEvent(MMI::PointerEvent &
 {
     HILOG_DEBUG();
 
+    if (fullScreenManager_ == nullptr) {
+        HILOG_ERROR("fullScreenManager_ is nullptr.");
+        return;
+    }
+    gestureType_ = INVALID_GESTURE_TYPE;
     std::vector<int32_t> pointerIdList = event.GetPointerIds();
     size_t pointerCount = pointerIdList.size();
     zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
     if (pointerCount == POINTER_COUNT_1) {
         isLongPress_ = false;
+        MMI::PointerEvent::PointerItem pointerItem;
+        event.GetPointerItem(event.GetPointerId(), pointerItem);
+        gestureType_ = fullScreenManager_->CheckTapOnHotArea(pointerItem.GetDisplayX(), pointerItem.GetDisplayY());
+        isTapOnMenu_ = Singleton<MagnificationMenuManager>::GetInstance().IsTapOnMenu(pointerItem.GetDisplayX(),
+            pointerItem.GetDisplayY());
         std::shared_ptr<MMI::PointerEvent> pointerEvent = std::make_shared<MMI::PointerEvent>(event);
         longPressDownEvent_ = pointerEvent;
         downPid_ = event.GetPointerId();
         if (IsDownValid()) {
-            zoomGestureEventHandler_->SendEvent(MULTI_TAP_MSG, 0, MULTI_TAP_TIMER);
+            if (!isTapOnMenu_) {
+                zoomGestureEventHandler_->SendEvent(MULTI_TAP_MSG, 0, MULTI_TAP_TIMER);
+            }
         } else {
             SendCacheEventsToNext();
         }
     } else if (pointerCount == POINTER_COUNT_2) {
+        gestureType_ = INVALID_GESTURE_TYPE;
         if (isLongPress_ || IsKnuckles(event)) {
             HILOG_INFO("not transferState sliding.");
             SendCacheEventsToNext();
@@ -330,8 +357,13 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
             if (downPid_ == event.GetPointerId()) {
                 isLongPress_ = false;
             }
-            if ((pointerCount == POINTER_COUNT_1) && IsUpValid()) {
-                isTripleTaps = IsTripleTaps();
+            if ((pointerCount == POINTER_COUNT_1) && IsUpValid() && !(IsTapOnInputMethod(event))) {
+                if (isTapOnMenu_) {
+                    Singleton<MagnificationMenuManager>::GetInstance().OnMenuTap();
+                    ClearCacheEventsAndMsg();
+                } else {
+                    isTripleTaps = IsTripleTaps();
+                }
             } else {
                 SendCacheEventsToNext();
             }
@@ -339,6 +371,9 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
         case MMI::PointerEvent::POINTER_ACTION_MOVE:
             if ((pointerCount == POINTER_COUNT_1) && !IsLongPress() && IsMoveValid()) {
                 HILOG_DEBUG("move valid.");
+            } else if (isTapOnMenu_ && (!IsMoveValid() || IsLongPress())) {
+                TransferState(MENU_SLIDING_STATE);
+                ClearCacheEventsAndMsg();
             } else {
                 SendCacheEventsToNext();
                 HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
@@ -372,14 +407,62 @@ void AccessibilityZoomGesture::RecognizeInSlidingState(MMI::PointerEvent &event)
     }
 
     HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
+
+    if (fullScreenManager_ == nullptr) {
+        HILOG_ERROR("fullScreenManager_ is nullptr.");
+        return;
+    }
+
     switch (action) {
         case MMI::PointerEvent::POINTER_ACTION_UP:
             if (pointerCount == POINTER_COUNT_1) {
                 TransferState(ZOOMIN_STATE);
+                fullScreenManager_->PersistScale();
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_CANCEL:
             TransferState(ZOOMIN_STATE);
+            fullScreenManager_->PersistScale();
+            break;
+        default:
+            break;
+    }
+}
+
+void AccessibilityZoomGesture::RecognizeInMenuSlidingState(MMI::PointerEvent &event)
+{
+    HILOG_INFO();
+    int32_t action = event.GetPointerAction();
+    switch (action) {
+        case MMI::PointerEvent::POINTER_ACTION_MOVE:
+            if (isTapOnMenu_) {
+                ClearCacheEventsAndMsg();
+                if (lastSlidingEvent_ == nullptr) {
+                    lastSlidingEvent_ = std::make_shared<MMI::PointerEvent>(event);
+                }
+                MMI::PointerEvent::PointerItem lastSlidingItem;
+                lastSlidingEvent_->GetPointerItem(lastSlidingEvent_->GetPointerId(), lastSlidingItem);
+
+                MMI::PointerEvent::PointerItem currentItem;
+                event.GetPointerItem(event.GetPointerId(), currentItem);
+
+                int32_t deltaX = currentItem.GetDisplayX() - lastSlidingItem.GetDisplayX();
+                int32_t deltaY = currentItem.GetDisplayY() - lastSlidingItem.GetDisplayY();
+                Singleton<MagnificationMenuManager>::GetInstance().MoveMenuWindow(deltaX, deltaY);
+
+                lastSlidingEvent_ = std::make_shared<MMI::PointerEvent>(event);
+            } else {
+                if (lastSlidingEvent_ != nullptr) {
+                    lastSlidingEvent_ = nullptr;
+                }
+            }
+            break;
+        case MMI::PointerEvent::POINTER_ACTION_UP:
+            lastSlidingEvent_ = nullptr;
+            isTapOnMenu_ = false;
+            Singleton<MagnificationMenuManager>::GetInstance().AttachToEdge();
+            TransferState(ZOOMIN_STATE);
+            ClearCacheEventsAndMsg();
             break;
         default:
             break;
@@ -463,7 +546,7 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event, ZOOM_FOC
         return;
     }
 
-    float scaleSpan = (span - lastSpan_) * scaleRatio_;
+    float scaleSpan = span - lastSpan_;
     if (abs(scaleSpan) > EPS) {
         OnScale(scaleSpan);
         lastSpan_ = span;
@@ -773,115 +856,60 @@ void AccessibilityZoomGesture::GetWindowParam(bool needRefresh)
 #endif
 }
 
+void AccessibilityZoomGesture::StartMagnificationInteract()
+{
+    HILOG_INFO();
+    TransferState(ZOOMIN_STATE);
+}
+
 void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
 {
     HILOG_INFO();
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    GetWindowParam();
-    if (screenWidth_ == 0 || screenHeight_ == 0) {
-        HILOG_ERROR("screen param invalid.");
+    centerX_ = anchorX;
+    centerX_ = anchorY;
+    if (fullScreenManager_ == nullptr) {
+        HILOG_ERROR("fullScreenManager_ is nullptr.");
         return;
     }
-    anchorPointX_ = static_cast<float>(anchorX);
-    anchorPointY_ = static_cast<float>(anchorY);
-
-    float x = anchorPointX_ / screenWidth_;
-    float y = anchorPointY_ / screenHeight_;
-    scaleRatio_ = DEFAULT_SCALE;
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-    Utils::RecordOnZoomGestureEvent("on");
-    displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
-#else
-    HILOG_INFO("not support zoom");
-    return;
-#endif
+    fullScreenManager_->EnableMagnification(anchorX, anchorY);
+    Singleton<MagnificationMenuManager>::GetInstance().ShowMenuWindow(1);
 }
 
 void AccessibilityZoomGesture::OffZoom()
 {
     HILOG_INFO();
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-    uint64_t currentScreen = displayMgr.GetDefaultDisplayId();
-    Utils::RecordOnZoomGestureEvent("off");
-    displayMgr.SetDisplayScale(currentScreen, NORMAL_SCALE, NORMAL_SCALE, DEFAULT_ANCHOR, DEFAULT_ANCHOR);
-#else
-    HILOG_INFO("not support zoom");
-    return;
-#endif
+    Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+    if (fullScreenManager_ == nullptr) {
+        HILOG_ERROR("fullScreenManager_ is nullptr.");
+        return;
+    }
+    fullScreenManager_->DisableMagnification();
 }
 
 void AccessibilityZoomGesture::OnScroll(float offsetX, float offsetY)
 {
     HILOG_DEBUG("offsetX:%{public}f, offsetY:%{public}f.", offsetX, offsetY);
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    GetWindowParam();
-    if (screenWidth_ == 0 || screenHeight_ == 0) {
-        HILOG_ERROR("screen param invalid.");
+
+    if (fullScreenManager_ == nullptr) {
+        HILOG_ERROR("fullScreenManager_ is nullptr.");
         return;
     }
+    fullScreenManager_->MoveMagnification(static_cast<int32_t>(offsetX), static_cast<int32_t>(offsetY));
 
-    if (abs(scaleRatio_) < EPS) {
-        HILOG_ERROR("scaleRatio_ param invalid.");
-        return;
-    }
-    anchorPointX_ -= (offsetX * DOUBLE / scaleRatio_);
-    anchorPointY_ -= (offsetY * DOUBLE / scaleRatio_);
-
-    if (anchorPointX_ < 0) {
-        anchorPointX_ = 0;
-    }
-    if (anchorPointX_ > screenWidth_) {
-        anchorPointX_ = screenWidth_;
-    }
-    if (anchorPointY_ < 0) {
-        anchorPointY_ = 0;
-    }
-    if (anchorPointY_ > screenHeight_) {
-        anchorPointY_ = screenHeight_;
-    }
-
-    float x = anchorPointX_ / screenWidth_;
-    float y = anchorPointY_ / screenHeight_;
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-    displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
     AccessibilityPowerManager &powerMgr = Singleton<AccessibilityPowerManager>::GetInstance();
     powerMgr.RefreshActivity();
-#endif
-#else
-    HILOG_INFO("not support zoom");
-    return;
 #endif
 }
 
 void AccessibilityZoomGesture::OnScale(float scaleSpan)
 {
     HILOG_DEBUG();
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    GetWindowParam();
-    if (screenWidth_ == 0 || screenHeight_ == 0 || abs(screenSpan_) < EPS) {
-        HILOG_ERROR("screen param invalid.");
+    if (fullScreenManager_ == nullptr) {
+        HILOG_ERROR("fullScreenManager_ is nullptr.");
         return;
     }
-
-    float ratio = scaleSpan / screenSpan_;
-    scaleRatio_ = scaleRatio_ + ratio;
-    if (scaleRatio_ > MAX_SCALE) {
-        scaleRatio_ = MAX_SCALE;
-    }
-    if (scaleRatio_ < DEFAULT_SCALE) {
-        scaleRatio_ = DEFAULT_SCALE;
-    }
-
-    float x = anchorPointX_ / screenWidth_;
-    float y = anchorPointY_ / screenHeight_;
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-    displayMgr.SetDisplayScale(screenId_, scaleRatio_, scaleRatio_, x, y);
-#else
-    HILOG_INFO("not support zoom");
-    return;
-#endif
+    fullScreenManager_->SetScale(scaleSpan);
 }
 
 void AccessibilityZoomGesture::Clear()

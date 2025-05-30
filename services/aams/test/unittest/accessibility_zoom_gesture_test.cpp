@@ -19,6 +19,7 @@
 #include "accessibility_ut_helper.h"
 #include "accessibility_zoom_gesture.h"
 #include "accessible_ability_manager_service.h"
+#include "full_screen_magnification_manager.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -60,7 +61,8 @@ void AccessibilityZoomGestureUnitTest::TearDownTestCase()
 void AccessibilityZoomGestureUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    zoomGesture_ = std::make_shared<AccessibilityZoomGesture>();
+    std::shared_ptr<FullScreenMagnificationManager> manager = std::make_shared<FullScreenMagnificationManager>();
+    zoomGesture_ = std::make_shared<AccessibilityZoomGesture>(manager);
 }
 
 void AccessibilityZoomGestureUnitTest::TearDown()

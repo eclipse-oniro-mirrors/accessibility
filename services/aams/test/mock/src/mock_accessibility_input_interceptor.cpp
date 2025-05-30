@@ -121,5 +121,10 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerE
 {
     (void)pointerEvent;
 }
+
+void AccessibilityInputInterceptor::StartMagnificationInteract(uint32_t mode)
+{
+    (void)mode;
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -121,6 +121,15 @@ private:
         AccessibilityWindowManager &windInfoMgr_;
     };
 
+    class WindowRotationChangeListener : public Rosen::IWindowRotationChangeListener {
+    public:
+        explicit WindowRotationChangeListener();
+        ~WindowRotationChangeListener() = default;
+
+        virtual void OnRotationChange(const Rosen::RotationChangeInfo& rotationChangeInfo,
+            Rosen::RotationChangeResult& rotationChangeResult) override;
+    };
+
     bool CompareRect(const Rect &rectAccessibility, const Rosen::Rect &rectWindow);
     bool EqualFocus(const Accessibility::AccessibilityWindowInfo &accWindowInfo,
         const sptr<Rosen::AccessibilityWindowInfo> &windowInfo);

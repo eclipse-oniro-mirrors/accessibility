@@ -390,6 +390,8 @@ constexpr int32_t CODE_SUCCESS = 0;
 constexpr int32_t CODE_FAILED = -1;
 constexpr int32_t CHAE_BUFFER_MAX = 1024;
 constexpr int32_t US_TO_MS = 1000;
+constexpr float COMPLEX_UNIT_MM_CONVERSION = 1.0f / 25.4f;
+constexpr int32_t MM_PER_CM = 10;
 
 enum class NAccessibilityErrorCode : int32_t {
     ACCESSIBILITY_OK = 0,

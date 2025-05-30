@@ -43,6 +43,7 @@
 #include "accessibility_short_key.h"
 #include "accessibility_resource_bundle_manager.h"
 #include "refbase.h"
+#include "magnification_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -315,6 +316,16 @@ public:
     void OnDataClone();
     bool CheckPermission(const std::string &permission) const;
 
+    // for magnification
+    uint32_t GetMagnificationType();
+    uint32_t GetMagnificationMode();
+    void SetMagnificationMode(int32_t mode);
+    float GetMagnificationScale();
+    void SetMagnificationScale(float scale);
+    std::shared_ptr<MagnificationManager> GetMagnificationMgr();
+    std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
+    std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
+
 private:
     void StopCallbackWait(int32_t windowId);
     void StopCallbackWait(int32_t windowId, int32_t treeId);
@@ -443,6 +454,7 @@ private:
 
     int32_t ApplyTreeId();
     void RecycleTreeId(int32_t treeId);
+    std::shared_ptr<AccessibilityDatashareHelper> GetCurrentAcountDatashareHelper();
 
     bool isReady_ = false;
     bool isPublished_ = false;
@@ -500,6 +512,7 @@ private:
 
     bool isSubscribeMSDPCallback_ = false;
     ffrt::mutex subscribeMSDPMutex_;
+    std::shared_ptr<MagnificationManager> magnificationManager_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
