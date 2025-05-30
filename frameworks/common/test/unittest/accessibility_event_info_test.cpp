@@ -591,5 +591,20 @@ HWTEST_F(AccessibilityEventInfoUnitTest, AccessibilityEventInfo_001, TestSize.Le
     EXPECT_EQ(eventInfo->GetWindowChangeTypes(), WINDOW_UPDATE_FOCUSED);
     GTEST_LOG_(INFO) << "AccessibilityEventInfo_001 end";
 }
+
+/**
+ * @tc.number: SetExtraEvent_001
+ * @tc.name: SetExtraEvent
+ * @tc.desc: Test function SetExtraEvent, GetExtraEvent
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, SetExtraEvent_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetExtraEvent_001 start";
+    ExtraEventInfo extraEventInfo {};
+    extraEventInfo.SetExtraEventInfo("addText", "1");
+    eventInfo_->SetExtraEvent(extraEventInfo);
+    EXPECT_TRUE(eventInfo_->GetExtraEvent().GetExtraEventInfoValueStr().size() == 1);
+    GTEST_LOG_(INFO) << "SetExtraEvent_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

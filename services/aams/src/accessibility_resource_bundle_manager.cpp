@@ -91,7 +91,26 @@ ErrCode AccessibilityResourceBundleManager::GetBundleInfoV9(const std::string& b
     }
     return ERR_OK;
 }
- 
+
+bool AccessibilityResourceBundleManager::GetBundleNameByUid(const int uid, std::string &bundleName)
+{
+    bool ret = true;
+    std::lock_guard<ffrt::mutex> lock(bundleMutex_);
+    sptr<AppExecFwk::IBundleMgr> bundleMgr = GetBundleMgrProxy();
+    do {
+        if (bundleMgr == nullptr) {
+            ret = false;
+            break;
+        }
+        ret = bundleMgr->GetBundleNameForUid(uid, bundleName);
+    } while (0);
+    if (ret == false) {
+        HILOG_ERROR("GetBundleNameByUid failed");
+        return false;
+    }
+    return ret;
+}
+
 int AccessibilityResourceBundleManager::GetUidByBundleName(const std::string &bundleName,
     const std::string &abilityName, const int userId)
 {
