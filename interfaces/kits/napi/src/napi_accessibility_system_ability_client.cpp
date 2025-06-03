@@ -224,6 +224,24 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
     return promise;
 }
 
+napi_value NAccessibilityClient::GetTouchModeSync(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv = nullptr;
+    napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+    ACCESSIBILITY_NAPI_ASSERT(env, argc == ARGS_SIZE_ZERO, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    ACCESSIBILITY_NAPI_ASSERT(env, asaClient != nullptr, OHOS::Accessibility::RET_ERR_NULLPTR);
+    std::string touchMode = "";
+    napi_value touchModeValue = nullptr;
+    asaClient->GetTouchMode(touchMode);
+    ACCESSIBILITY_NAPI_ASSERT(env, !touchMode.empty(), OHOS::Accessibility::RET_ERR_FAILED);
+    napi_create_string_utf8(env, touchMode.c_str(), NAPI_AUTO_LENGTH, &touchModeValue);
+    return touchModeValue;
+}
+
 void NAccessibilityClient::Completefunction(napi_env env, std::string type, void* data)
 {
     NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);

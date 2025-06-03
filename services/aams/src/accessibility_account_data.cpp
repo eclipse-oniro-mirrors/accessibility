@@ -60,6 +60,7 @@ namespace {
     const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const std::string ACCESSIBILITY_TOUCH_GUIDE_ENABLED = "enableTouchGuideMode";
+    const std::string SCREEN_READER_SINGLE_CLICK_MODE = "screen_reader_single_click_mode";
     const std::string ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
 } // namespace
 
@@ -108,6 +109,9 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
 
     if (screenReaderState_) {
         state |= STATE_SCREENREADER_ENABLED;
+    }
+    if (isSingleClickMode_) {
+        state |= STATE_SINGLE_CLICK_MODE_ENABLED;
     }
     return state;
 }
@@ -735,6 +739,34 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     return true;
 }
 
+void AccessibilityAccountData::InitScreenReaderStateObserver()
+{
+    if (!config_) {
+        HILOG_ERROR("config is nullptr!");
+    }
+    if (!config_->GetDbHandle()) {
+        HILOG_ERROR("helper is null!");
+        return;
+    }
+
+    AccessibilitySettingObserver::UpdateFunc callback = [this](const std::string& state) {
+        OnTouchGuideStateChanged();
+    };
+    RetError ret = config_->GetDbHandle()->RegisterObserver(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, callback);
+    if (ret != RET_OK) {
+        HILOG_ERROR("register touch guide observer failed, ret = %{public}d", ret);
+    }
+
+    isSingleClickMode_ = config_->GetDbHandle()->GetBoolValue(SCREEN_READER_SINGLE_CLICK_MODE, false, true);
+    AccessibilitySettingObserver::UpdateFunc func = [this](const std::string& state) {
+        OnSingleClickModeChanged();
+    };
+    ret = config_->GetDbHandle()->RegisterObserver(SCREEN_READER_SINGLE_CLICK_MODE, func);
+    if (ret != RET_OK) {
+        HILOG_ERROR("register touch mode observer failed, ret = %{public}d", ret);
+    }
+}
+
 void AccessibilityAccountData::Init()
 {
     HILOG_DEBUG("Init start.");
@@ -749,17 +781,7 @@ void AccessibilityAccountData::Init()
         HILOG_ERROR("get account type failed for accountId [%{public}d]", id_);
     }
 
-    if (config_->GetDbHandle() == nullptr) {
-        HILOG_ERROR("helper is null!");
-        return;
-    }
-    AccessibilitySettingObserver::UpdateFunc callback = [this](const std::string& state) {
-        OnTouchGuideStateChanged();
-    };
-    RetError ret = config_->GetDbHandle()->RegisterObserver(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, callback);
-    if (ret != RET_OK) {
-        HILOG_ERROR("register touch guide observer failed, ret = %{public}d", ret);
-    }
+    InitScreenReaderStateObserver();
 
     std::shared_ptr<AccessibilitySettingProvider> service =
         AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
@@ -781,7 +803,7 @@ void AccessibilityAccountData::Init()
     AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string& state) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnDataClone();
     };
-    ret = service->RegisterObserver(ACCESSIBILITY_CLONE_FLAG, func);
+    RetError ret = service->RegisterObserver(ACCESSIBILITY_CLONE_FLAG, func);
     if (ret != RET_OK) {
         HILOG_WARN("register clone observer failed %{public}d.", ret);
     }
@@ -1170,6 +1192,22 @@ void AccessibilityAccountData::OnTouchGuideStateChanged()
         Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(
             ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
     }
+}
+
+void AccessibilityAccountData::OnSingleClickModeChanged()
+{
+    if (!config_) {
+        HILOG_ERROR("config is nullptr!");
+        return;
+    }
+    if (!config_->GetDbHandle()) {
+        HILOG_ERROR("helper is nullptr!");
+        return;
+    }
+
+    isSingleClickMode_ = config_->GetDbHandle()->GetBoolValue(SCREEN_READER_SINGLE_CLICK_MODE, false, true);
+    HILOG_INFO("screen reader single click mode = %{public}d", isSingleClickMode_);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityState();
 }
 
 void AccessibilityAccountData::AccessibilityAbility::AddAccessibilityAbility(const std::string& uri,
