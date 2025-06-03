@@ -104,7 +104,7 @@ public:
      * @param touchMode 'singleTouchMode': single click mode; 'doubleTouchMode': double click mode;
      *                  'none": touch exploration is not enabled.
      */
-     virtual void GetTouchMode(std::string &touchMode) override;
+    virtual void GetTouchMode(std::string &touchMode) override;
 
     /**
      * @brief Queries the list of accessibility abilities.
