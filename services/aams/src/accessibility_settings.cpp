@@ -69,7 +69,7 @@ void AccessibilitySettings::OnParameterChanged(const char *key, const char *valu
         accountData->GetConfig()->SetAnimationOffState(true);
         settingsPtr->UpdateConfigState();
     } else if (strValue != "0" && state) {
-        accountData->GetConfig()->SetAnimationOffState(true);
+        accountData->GetConfig()->SetAnimationOffState(false);
         settingsPtr->UpdateConfigState();
     }
 }
