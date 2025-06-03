@@ -29,6 +29,7 @@
 #include "input_manager.h"
 #include "key_event.h"
 #include "pointer_event.h"
+#include "window_magnification_gesture.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -82,13 +83,7 @@ public:
     // flag = true shield zoom gesture | flag = false restore zoom gesture
     void ShieldZoomGesture(bool flag);
     void RefreshDisplayInfo();
-    inline ACCESSIBILITY_ZOOM_STATE GetZoomState()
-    {
-        if (zoomGesture_) {
-            return zoomGesture_->GetZoomState();
-        }
-        return READY_STATE;
-    }
+    void StartMagnificationInteract(uint32_t mode);
 
 private:
     AccessibilityInputInterceptor();
@@ -101,6 +96,8 @@ private:
         const sptr<EventTransmission> &next);
     void UpdateInterceptor();
     void DestroyInterceptor();
+    void CreateMagnificationGesture(sptr<EventTransmission> &header, sptr<EventTransmission> &current);
+    void ClearMagnificationGesture();
 
     sptr<EventTransmission> pointerEventTransmitters_ = nullptr;
     sptr<EventTransmission> keyEventTransmitters_ = nullptr;
@@ -113,6 +110,8 @@ private:
     ffrt::mutex mutex_;
 
     sptr<AccessibilityZoomGesture> zoomGesture_ = nullptr;
+    sptr<WindowMagnificationGesture> windowMagnificationGesture_ = nullptr;
+    bool needInteractMagnification_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

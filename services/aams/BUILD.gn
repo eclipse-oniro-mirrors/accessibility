@@ -74,6 +74,11 @@ accessibleabilityms_files = [
   "${services_path}/src/touch_exploration_multi_finger_gesture.cpp",
   "${services_path}/src/touch_exploration_single_finger_gesture.cpp",
   "${services_path}/src/utils.cpp",
+  "${services_path}/src/magnification_manager.cpp",
+  "${services_path}/src/window_magnification_manager.cpp",
+  "${services_path}/src/window_magnification_gesture.cpp",
+  "${services_path}/src/magnification_menu_manager.cpp",
+  "${services_path}/src/full_screen_magnification_manager.cpp",
 ]
 
 ohos_shared_library("accessibleabilityms") {

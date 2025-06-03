@@ -20,13 +20,15 @@
 #include "event_handler.h"
 #include "pointer_event.h"
 #include "dm_common.h"
+#include "full_screen_magnification_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
 enum ACCESSIBILITY_ZOOM_STATE {
     READY_STATE,
     ZOOMIN_STATE,
-    SLIDING_STATE
+    SLIDING_STATE,
+    MENU_SLIDING_STATE
 };
 
 enum ACCESSIBILITY_ZOOM_GESTURE_MSG : uint32_t {
@@ -40,7 +42,7 @@ struct ZOOM_FOCUS_COORDINATE {
 
 class AccessibilityZoomGesture : public EventTransmission {
 public:
-    AccessibilityZoomGesture();
+    AccessibilityZoomGesture(std::shared_ptr<FullScreenMagnificationManager> fullScreenManager);
     ~AccessibilityZoomGesture() = default;
 
     virtual bool OnPointerEvent(MMI::PointerEvent &event) override;
@@ -48,6 +50,7 @@ public:
     // flag = true shield zoom gesture | flag = false restore zoom gesture
     void ShieldZoomGesture(bool state);
     void GetWindowParam(bool needRefresh = false);
+    void StartMagnificationInteract();
     inline ACCESSIBILITY_ZOOM_STATE GetZoomState()
     {
         return state_;
@@ -73,6 +76,7 @@ private:
     void RecognizeInZoomStateDownEvent(MMI::PointerEvent &event);
     void RecognizeInZoomState(MMI::PointerEvent &event);
     void RecognizeInSlidingState(MMI::PointerEvent &event);
+    void RecognizeInMenuSlidingState(MMI::PointerEvent &event);
     void RecognizeScroll(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE &coordinate);
     void RecognizeScale(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE &coordinate);
     void CalcFocusCoordinate(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE &coordinate);
@@ -109,6 +113,8 @@ private:
     uint32_t screenHeight_ = 0;
     float anchorPointX_ = 0.0f;
     float anchorPointY_ = 0.0f;
+    int32_t centerX_ = 0;
+    int32_t centerY_ = 0;
     float scaleRatio_ = 2.0f;
     int32_t downPid_ = -1;
     ACCESSIBILITY_ZOOM_STATE state_ = READY_STATE;
@@ -120,10 +126,14 @@ private:
     std::shared_ptr<MMI::PointerEvent> lastUpEvent_ = nullptr;
     std::shared_ptr<MMI::PointerEvent> currentMoveEvent_ = nullptr;
     std::shared_ptr<MMI::PointerEvent> longPressDownEvent_ = nullptr;
+    std::shared_ptr<MMI::PointerEvent> lastSlidingEvent_ = nullptr;
     std::shared_ptr<ZoomGestureEventHandler> zoomGestureEventHandler_ = nullptr;
     std::vector<std::shared_ptr<MMI::PointerEvent>> cacheEvents_;
+    std::shared_ptr<FullScreenMagnificationManager> fullScreenManager_ = nullptr;
     
     std::atomic<bool> shieldZoomGestureFlag_ = false;
+    bool isTapOnMenu_ = false;
+    uint32_t gestureType_ = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS
