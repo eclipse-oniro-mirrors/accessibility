@@ -238,6 +238,9 @@ void AccessibilitySystemAbilityClientImpl::Init()
     if (stateType & STATE_SCREENREADER_ENABLED) {
         stateArray_[AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED] = true;
     }
+    if (stateType & STATE_SINGLE_CLICK_MODE_ENABLED) {
+        stateArray_[AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED] = true;
+    }
 }
 
 void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject> &remote)
@@ -405,6 +408,24 @@ RetError AccessibilitySystemAbilityClientImpl::IsTouchExplorationEnabled(bool &i
     std::lock_guard<ffrt::mutex> lock(mutex_);
     isEnabled = stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED];
     return RET_OK;
+}
+
+void AccessibilitySystemAbilityClientImpl::GetTouchMode(std::string &touchMode)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    bool isTouchExploration = stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED];
+    if (!isTouchExploration) {
+        touchMode = "none";
+        return;
+    }
+
+    bool isSingleClickMode = stateArray_[AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED];
+    if (isSingleClickMode) {
+        touchMode = "singleTouchMode";
+    } else {
+        touchMode = "doubleTouchMode";
+    }
 }
 
 RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t accessibilityAbilityTypes,
@@ -608,6 +629,8 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED,
         !!(stateType & STATE_SCREENREADER_ENABLED));
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED,
+        !!(stateType & STATE_SINGLE_CLICK_MODE_ENABLED));
 }
 
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityIdResult(

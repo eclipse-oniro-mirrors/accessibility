@@ -265,6 +265,11 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     return;
 }
 
+void AccessibleAbilityManagerService::UpdateAccessibilityState()
+{
+    return;
+}
+
 void AccessibleAbilityManagerService::UpdateShortKeyRegister()
 {
     return;

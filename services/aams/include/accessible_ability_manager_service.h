@@ -309,6 +309,7 @@ public:
     void UpdateIgnoreRepeatClickTime();
 
     void UpdateInputFilter();
+    void UpdateAccessibilityState();
     void AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
         sptr<IAccessibilityElementOperatorCallback> callback);
     ErrCode RemoveRequestId(int32_t requestId) override;
@@ -413,7 +414,6 @@ private:
     void OutsideTouch(int32_t windowId);
     void UpdateAccessibilityWindowStateByEvent(const AccessibilityEventInfo &event);
 
-    void UpdateAccessibilityState();
     void UpdateCaptionProperty();
     void UpdateSettingsInAtoHosTask();
     void UpdateSettingsInAtoHos();

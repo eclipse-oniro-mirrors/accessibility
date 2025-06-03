@@ -286,6 +286,7 @@ public:
     bool GetAbilityAutoStartState(const std::string &name);
     void GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value);
     void OnTouchGuideStateChanged();
+    void OnSingleClickModeChanged();
     const sptr<AccessibleAbilityConnection> GetWaitDisConnectAbility(const std::string &uri);
     void AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection);
     void RemoveWaitDisconnectAbility(const std::string &uri);
@@ -321,6 +322,8 @@ private:
      */
     void UpdateMagnificationCapability();
 
+    void InitScreenReaderStateObserver();
+
     class AccessibilityAbility {
     public:
         AccessibilityAbility() = default;
@@ -349,6 +352,7 @@ private:
     bool isScreenMagnification_ = false;
     bool isFilteringKeyEvents_ = false;
     bool isGesturesSimulation_ = false;
+    bool isSingleClickMode_ = false;
     std::string screenReaderAbilityName_ = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     std::string screenReaderKey_ = "accessibility_screenreader_enabled";
     uint32_t connectCounter_ = 1;

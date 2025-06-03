@@ -110,6 +110,13 @@ public:
     virtual RetError IsTouchExplorationEnabled(bool &isEnabled) = 0;
 
     /**
+     * @brief Get touch exploration mode.
+     * @param touchMode 'singleTouchMode': single click mode; 'doubleTouchMode': double click mode;
+     *                  'none": touch exploration is not enabled.
+     */
+     virtual void GetTouchMode(std::string &touchMode) = 0;
+
+    /**
      * @brief Queries the list of accessibility abilities.
      * @param accessibilityAbilityTypes Indicates the accessibility type specified by AccessibilityAbilityTypes.
      * @param stateType Indicates the accessibility ability status.
