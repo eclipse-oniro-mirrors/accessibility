@@ -307,7 +307,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveCallback_001, TestSize.L
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RemoveCallback_001 start";
     sptr<IRemoteObject::DeathRecipient> deathRecipient = nullptr;
-    wptr<IRemoteObject> remote = nullptr;    
+    wptr<IRemoteObject> remote = nullptr;
 
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     aams.RemoveCallback(STATE_CALLBACK, deathRecipient, remote);
@@ -329,7 +329,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveCallback_002, TestSize.L
     sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     EXPECT_TRUE(samgr);
 
-    wptr<IRemoteObject> remote = samgr->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);    
+    wptr<IRemoteObject> remote = samgr->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
 
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     aams.RemoveCallback(STATE_CALLBACK, deathRecipient, remote);
@@ -411,7 +411,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveCallback_005, TestSize.L
  */
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnBundleManagerDied_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_001 start";  
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_001 start";
 
     sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     EXPECT_TRUE(samgr);
@@ -432,9 +432,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnBundleManagerDied_001, TestS
  */
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnBundleManagerDied_002, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_002 start";  
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_002 start";
 
-    wptr<IRemoteObject> remote = nullptr;    
+    wptr<IRemoteObject> remote = nullptr;
 
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     aams.OnBundleManagerDied(remote);
@@ -450,7 +450,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnBundleManagerDied_002, TestS
  */
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetScreenReaderState_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetScreenReaderState_001 start";  
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetScreenReaderState_001 start";
 
     bool state;
 
@@ -468,7 +468,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetScreenReaderState_001, Test
  */
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnScreenMagnificationTypeChanged_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnScreenMagnificationTypeChanged_001 start";  
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnScreenMagnificationTypeChanged_001 start";
 
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     aams.OnScreenMagnificationTypeChanged();
@@ -485,7 +485,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnScreenMagnificationTypeChang
  */
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnScreenMagnificationStateChanged_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnScreenMagnificationStateChanged_001 start";  
+    GTEST_LOG_(INFO) <<
+        "AccessibleAbilityManagerServiceUnitTest_Unittest_OnScreenMagnificationStateChanged_001 start";
 
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     aams.OnScreenMagnificationStateChanged();
@@ -502,7 +503,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnScreenMagnificationStateChan
  */
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, StopCallbackWait_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_StopCallbackWait_001 start";  
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_StopCallbackWait_001 start";
 
     int32_t windowId = 0;
     int32_t treeId = 0;
@@ -510,8 +511,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, StopCallbackWait_001, TestSize
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     aams.StopCallbackWait(windowId, treeId);
 
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnScreenMagnificationStateChanged_001 end";
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_StopCallbackWait_001 end";
 }
 
 /**
