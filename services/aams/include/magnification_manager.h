@@ -31,14 +31,13 @@ public:
     void OnMagnificationTypeChanged(uint32_t magnificationType);
     void OnModeChanged(uint32_t mode);
     void DisableMagnification();
-    void SetMagnificationState(bool isEnabled);
+    void TriggerMagnification(uint32_t type, uint32_t mode);
     bool GetMagnificationState();
     void RefreshWindowParam();
 private:
     std::shared_ptr<WindowMagnificationManager> windowMagnificationManager_ = nullptr;
     std::shared_ptr<FullScreenMagnificationManager> fullScreenMagnificationManager_ = nullptr;
     uint32_t currentMode_ = 0;
-    bool isMagnificationEnabled_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

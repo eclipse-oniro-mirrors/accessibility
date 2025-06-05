@@ -30,6 +30,9 @@ MagnificationManager::MagnificationManager()
 std::shared_ptr<WindowMagnificationManager> MagnificationManager::GetWindowMagnificationManager()
 {
     HILOG_DEBUG();
+    if (currentMode_ == 0) {
+        currentMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
+    }
     if (windowMagnificationManager_ == nullptr) {
         windowMagnificationManager_ = std::make_shared<WindowMagnificationManager>();
     }
@@ -39,6 +42,9 @@ std::shared_ptr<WindowMagnificationManager> MagnificationManager::GetWindowMagni
 std::shared_ptr<FullScreenMagnificationManager> MagnificationManager::GetFullScreenMagnificationManager()
 {
     HILOG_DEBUG();
+    if (currentMode_ == 0) {
+        currentMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
+    }
     if (fullScreenMagnificationManager_ == nullptr) {
         fullScreenMagnificationManager_ = std::make_shared<FullScreenMagnificationManager>();
     }
@@ -56,7 +62,9 @@ void MagnificationManager::OnMagnificationTypeChanged(uint32_t magnificationType
         GetFullScreenMagnificationManager();
     }
 
-    currentMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
+    if (currentMode_ == 0) {
+        currentMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
+    }
     Singleton<MagnificationMenuManager>::GetInstance().SetCurrentType(magnificationType);
     if (magnificationType == SWITCH_MAGNIFICATION) {
         if (windowMagnificationManager_ != nullptr && windowMagnificationManager_->isMagnificationWindowShow()) {
@@ -130,25 +138,51 @@ void MagnificationManager::OnModeChanged(uint32_t mode)
 void MagnificationManager::DisableMagnification()
 {
     HILOG_INFO();
+    auto interceptor = AccessibilityInputInterceptor::GetInstance();
     Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
     if (windowMagnificationManager_ != nullptr && windowMagnificationManager_->isMagnificationWindowShow()) {
         windowMagnificationManager_->DisableWindowMagnification();
-        return;
+        interceptor->DisableGesture(WINDOW_MAGNIFICATION);
     }
     if (fullScreenMagnificationManager_ != nullptr && fullScreenMagnificationManager_->isMagnificationWindowShow()) {
         fullScreenMagnificationManager_->DisableMagnification();
-        return;
+        interceptor->DisableGesture(FULL_SCREEN_MAGNIFICATION);
     }
 }
 
-void MagnificationManager::SetMagnificationState(bool isEnabled)
+void MagnificationManager::TriggerMagnification(uint32_t type, uint32_t mode)
 {
-    isMagnificationEnabled_ = isEnabled;
+    HILOG_INFO("type = %{public}d, mode = %{public}d", type, mode);
+    if (mode == WINDOW_MAGNIFICATION) {
+        if (windowMagnificationManager_ != nullptr) {
+            windowMagnificationManager_->ShowWindowMagnification();
+        }
+    }
+
+    if (mode == FULL_SCREEN_MAGNIFICATION) {
+        if (fullScreenMagnificationManager_ != nullptr) {
+            fullScreenMagnificationManager_->ShowMagnification();
+        }
+    }
+
+    if (type == SWITCH_MAGNIFICATION) {
+        Singleton<MagnificationMenuManager>::GetInstance().ShowMenuWindow(mode);
+    }
+
+    auto interceptor = AccessibilityInputInterceptor::GetInstance();
+    interceptor->EnableGesture(mode);
 }
 
 bool MagnificationManager::GetMagnificationState()
 {
-    return isMagnificationEnabled_;
+    if (currentMode_ == WINDOW_MAGNIFICATION && windowMagnificationManager_ != nullptr) {
+        return windowMagnificationManager_->isMagnificationWindowShow();
+    }
+
+    if (currentMode_ == FULL_SCREEN_MAGNIFICATION && fullScreenMagnificationManager_ != nullptr) {
+        return fullScreenMagnificationManager_->isMagnificationWindowShow();
+    }
+    return false;
 }
 
 void MagnificationManager::RefreshWindowParam()

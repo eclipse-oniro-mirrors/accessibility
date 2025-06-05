@@ -124,6 +124,10 @@ public:
     {
         return RET_OK;
     }
+    ErrCode SetMagnificationState(const bool state) override
+    {
+        return RET_OK;
+    }
     ErrCode GetActiveWindow(int32_t &windowId) override
     {
         return RET_OK;

@@ -51,7 +51,6 @@ void MagnificationMenuManager::DeleteInstance()
 MagnificationMenuManager::MagnificationMenuManager()
 {
     HILOG_DEBUG();
-    GetWindowParam();
     manager_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMgr();
 }
 
@@ -71,6 +70,7 @@ MagnificationMenuManager::~MagnificationMenuManager()
 void MagnificationMenuManager::CreateMenuWindow()
 {
     HILOG_DEBUG();
+    GetWindowParam();
     menuRect_ = {(screenWidth_ - menuSize_ - margin_), (screenHeight_ - menuSize_ - margin_), menuSize_, menuSize_};
     sptr<Rosen::WindowOption> windowOption = new(std::nothrow) Rosen::WindowOption();
     windowOption->SetWindowType(Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU);
@@ -121,7 +121,7 @@ void MagnificationMenuManager::ShowMenuWindow(uint32_t mode)
 {
     HILOG_DEBUG();
     currentType_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationType();
-    meunMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
+    menuMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
     if (currentType_ != SWITCH_MAGNIFICATION) {
         HILOG_WARN("no need show menu.");
         return;
@@ -170,7 +170,7 @@ void MagnificationMenuManager::MoveMenuWindow(int32_t deltaX, int32_t deltaY)
     menuRect_.posX_ = menuPosX;
     menuRect_.posY_ = menuPosY;
     
-    AdjustMeunPosition();
+    AdjustMenuPosition();
     menuWindow_->MoveTo(menuRect_.posX_, menuRect_.posY_);
 }
 
@@ -210,23 +210,23 @@ void MagnificationMenuManager::OnMenuTap()
     }
     DisableMenuWindow();
     ChangeMode();
-    manager_->OnModeChanged(meunMode_);
-    ShowMenuWindow(meunMode_);
+    manager_->OnModeChanged(menuMode_);
+    ShowMenuWindow(menuMode_);
 }
 
 void MagnificationMenuManager::ChangeMode()
 {
-    if (meunMode_ == WINDOW_MAGNIFICATION) {
-        meunMode_ = FULL_SCREEN_MAGNIFICATION;
+    if (menuMode_ == WINDOW_MAGNIFICATION) {
+        menuMode_ = FULL_SCREEN_MAGNIFICATION;
         return;
     }
-    if (meunMode_ == FULL_SCREEN_MAGNIFICATION) {
-        meunMode_ = WINDOW_MAGNIFICATION;
+    if (menuMode_ == FULL_SCREEN_MAGNIFICATION) {
+        menuMode_ = WINDOW_MAGNIFICATION;
         return;
     }
 }
 
-void MagnificationMenuManager::AdjustMeunPosition()
+void MagnificationMenuManager::AdjustMenuPosition()
 {
     if (menuRect_.posX_ < margin_) {
         menuRect_.posX_ = margin_;
@@ -294,7 +294,7 @@ void MagnificationMenuManager::RefreshWindowParam()
     if (isMenuShown_) {
         DisableMenuWindow();
         GetWindowParam();
-        ShowMenuWindow(meunMode_);
+        ShowMenuWindow(menuMode_);
     } else {
         GetWindowParam();
     }

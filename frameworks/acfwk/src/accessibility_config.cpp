@@ -93,6 +93,12 @@ Accessibility::RetError AccessibilityConfig::DisableAbility(const std::string &n
     return pImpl_->DisableAbility(name);
 }
 
+Accessibility::RetError AccessibilityConfig::SetMagnificationState(const bool state)
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->SetMagnificationState(state);
+}
+
 Accessibility::RetError AccessibilityConfig::SetScreenMagnificationState(const bool state)
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)

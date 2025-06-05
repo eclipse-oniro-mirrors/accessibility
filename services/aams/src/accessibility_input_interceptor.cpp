@@ -442,6 +442,30 @@ void AccessibilityInputInterceptor::StartMagnificationInteract(uint32_t mode)
     needInteractMagnification_ = true;
 }
 
+void AccessibilityInputInterceptor::DisableGesture(uint32_t mode)
+{
+    HILOG_DEBUG("mode = %{public}d", mode);
+    if (mode == FULL_SCREEN_MAGNIFICATION && zoomGesture_ != nullptr) {
+        zoomGesture_->DisableGesture();
+    } else if (mode == WINDOW_MAGNIFICATION && windowMagnificationGesture_ != nullptr) {
+        windowMagnificationGesture_->DisableGesture();
+    } else {
+        HILOG_WARN("invalid mode.");
+    }
+}
+
+void AccessibilityInputInterceptor::EnableGesture(uint32_t mode)
+{
+    HILOG_DEBUG("mode = %{public}d", mode);
+    if (mode == FULL_SCREEN_MAGNIFICATION && zoomGesture_ != nullptr) {
+        zoomGesture_->StartMagnificationInteract();
+    } else if (mode == WINDOW_MAGNIFICATION && windowMagnificationGesture_ != nullptr) {
+        windowMagnificationGesture_->StartMagnificationInteract();
+    } else {
+        HILOG_WARN("invalid mode.");
+    }
+}
+
 AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
 {
     HILOG_DEBUG();

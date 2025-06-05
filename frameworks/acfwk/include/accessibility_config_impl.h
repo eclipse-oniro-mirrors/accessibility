@@ -51,6 +51,7 @@ public:
 
     Accessibility::RetError EnableAbility(const std::string &name, const uint32_t capabilities);
     Accessibility::RetError DisableAbility(const std::string &name);
+    Accessibility::RetError SetMagnificationState(const bool state);
 
     Accessibility::RetError SetScreenMagnificationState(const bool state);
     Accessibility::RetError SetShortKeyState(const bool state);

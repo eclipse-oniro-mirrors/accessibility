@@ -126,5 +126,15 @@ void AccessibilityInputInterceptor::StartMagnificationInteract(uint32_t mode)
 {
     (void)mode;
 }
+
+void AccessibilityInputInterceptor::DisableGesture(uint32_t mode)
+{
+    (void)mode;
+}
+
+void AccessibilityInputInterceptor::EnableGesture(uint32_t mode)
+{
+    (void)mode;
+}
 } // namespace Accessibility
 } // namespace OHOS

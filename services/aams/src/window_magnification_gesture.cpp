@@ -845,6 +845,12 @@ void WindowMagnificationGesture::StartMagnificationInteract()
     SetGestureState(MagnificationGestureState::ZOOMIN_STATE, SWITCH_MENU);
 }
 
+void WindowMagnificationGesture::DisableGesture()
+{
+    HILOG_DEBUG();
+    SetGestureState(MagnificationGestureState::READY_STATE, SWITCH_MENU);
+}
+
 bool WindowMagnificationGesture::IsTapOnInputMethod(MMI::PointerEvent &event)
 {
     int32_t pointerCount = event.GetPointerCount();

@@ -171,6 +171,12 @@ ErrCode MockAccessibleAbilityManagerServiceStub::DisableAbility(const std::strin
     return RET_OK;
 }
 
+ErrCode MockAccessibleAbilityManagerServiceStub::SetMagnificationState(const bool state)
+{
+    (void)state;
+    return RET_OK;
+}
+
 ErrCode MockAccessibleAbilityManagerServiceStub::GetActiveWindow(int32_t& windowId)
 {
     (void)windowId;

@@ -368,6 +368,19 @@ Accessibility::RetError AccessibilityConfig::Impl::DisableAbility(const std::str
     return ret;
 }
 
+Accessibility::RetError AccessibilityConfig::Impl::SetMagnificationState(const bool state)
+{
+    HILOG_INFO("state = [%{public}d]", state);
+    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(
+        GetServiceProxy()->SetMagnificationState(state));
+    return ret;
+}
+
 Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsState(bool &state)
 {
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);

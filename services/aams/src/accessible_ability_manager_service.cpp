@@ -1579,6 +1579,45 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
     return RET_OK;
 }
 
+ErrCode AccessibleAbilityManagerService::SetMagnificationState(const bool state)
+{
+    HILOG_INFO("state = %{public}d", state);
+    bool currentState = GetMagnificationState();
+    uint32_t type = GetMagnificationType();
+    uint32_t mode = GetMagnificationMode();
+
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+
+    if (state && !currentState) {
+        HILOG_ERROR("magnificaiton is not enabled.");
+        return RET_ERR_ENABLE_MAGNIFICATION;
+    }
+
+    if (magnificationManager_ == nullptr) {
+        HILOG_ERROR("magnificationManager_ is nullptr.");
+        return RET_ERR_ENABLE_MAGNIFICATION;
+    }
+
+    if (state == magnificationManager_->GetMagnificationState()) {
+        HILOG_ERROR("no need change state.");
+        return RET_OK;
+    }
+
+    if (state) {
+        magnificationManager_->TriggerMagnification(type, mode);
+    } else {
+        magnificationManager_->DisableMagnification();
+    }
+    return RET_OK;
+}
+
 ErrCode AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject> &obj)
 {
     HILOG_DEBUG();
@@ -3800,6 +3839,21 @@ std::shared_ptr<AccessibilityDatashareHelper> AccessibleAbilityManagerService::G
     }
 
     return config->GetDbHandle();
+}
+
+bool AccessibleAbilityManagerService::GetMagnificationState()
+{
+    HILOG_DEBUG();
+    bool magnificationState = false;
+    shared_ptr<AccessibilityDatashareHelper> helper = GetCurrentAcountDatashareHelper();
+    if (helper == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return magnificationState;
+    }
+
+    magnificationState =
+        static_cast<uint32_t>(helper->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false));
+    return magnificationState;
 }
 
 uint32_t AccessibleAbilityManagerService::GetMagnificationType()

@@ -214,6 +214,47 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
     return promise;
 }
 
+napi_value NAccessibilityConfig::SetMagnificationState(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value parameters[ARGS_SIZE_TWO] = {0};
+    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
+
+    if (argc != ARGS_SIZE_TWO - 1) {
+        HILOG_ERROR("invalid param");
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+    }
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        napi_value err = CreateBusinessError(env, errCode);
+        napi_throw(env, err);
+        return ConfigCreateJsUndefined(env);
+    }
+
+    bool state = false;
+    bool ret = ParseBool(env, state, parameters[PARAM0]);
+    if (!ret) {
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        HILOG_ERROR("invalid param");
+    }
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        napi_value err = CreateBusinessError(env, errCode);
+        napi_throw(env, err);
+        return ConfigCreateJsUndefined(env);
+    }
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    OHOS::Accessibility::RetError result = instance.SetMagnificationState(state);
+    if (result != OHOS::Accessibility::RET_OK) {
+        napi_value err = CreateBusinessError(env, result);
+        napi_throw(env, err);
+    }
+    return ConfigCreateJsUndefined(env);
+}
+
 bool NAccessibilityConfig::CheckReadPermission(const std::string &permission)
 {
     HILOG_DEBUG();

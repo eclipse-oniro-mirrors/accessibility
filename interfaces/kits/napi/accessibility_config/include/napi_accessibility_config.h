@@ -119,12 +119,19 @@ public:
     static napi_value DisableAbility(napi_env env, napi_callback_info info);
     static napi_value SubscribeState(napi_env env, napi_callback_info info);
     static napi_value UnsubscribeState(napi_env env, napi_callback_info info);
+    static napi_value SetMagnificationState(napi_env env, napi_callback_info info);
     static napi_value SetConfig(napi_env env, napi_callback_info info);
     static napi_value GetConfig(napi_env env, napi_callback_info info);
     static napi_value SubscribeConfigObserver(napi_env env, napi_callback_info info);
     static napi_value UnSubscribeConfigObserver(napi_env env, napi_callback_info info);
     static std::shared_ptr<NAccessibilityConfigObserverImpl> configObservers_;
     static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers_;
+    static inline napi_value ConfigCreateJsUndefined(napi_env env)
+    {
+        napi_value result = nullptr;
+        napi_get_undefined(env, &result);
+        return result;
+    }
 private:
     static void AsyncWorkComplete(napi_env env, napi_status status, void* data);
     static void SetConfigExecute(napi_env env, void* data);
