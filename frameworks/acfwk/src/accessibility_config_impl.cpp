@@ -76,13 +76,12 @@ void AccessibilityConfig::Impl::UnInitializeContext()
 
 void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *value, void *context)
 {
-    if (key == nullptr || std::strcmp(key, SYSTEM_PARAMETER_AAMS_NAME.c_str())) {
+    if (!key || !value || !context) {
         return;
     }
-    if (value == nullptr || std::strcmp(value, "true")) {
-        return;
-    }
-    if (context == nullptr) {
+    std::string strKey(key);
+    std::string strValue(value);
+    if (strKey != SYSTEM_PARAMETER_AAMS_NAME || strValue != "true") {
         return;
     }
     Impl* implPtr = static_cast<Impl*>(context);
