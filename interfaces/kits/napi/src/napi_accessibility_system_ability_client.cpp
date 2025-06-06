@@ -933,7 +933,7 @@ void StateListener::NotifyJS(napi_env env, std::string mode, napi_ref handlerRef
         napi_value handler = nullptr;
         napi_value callResult = nullptr;
         napi_value jsEvent = nullptr;
-        napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringValue_, NAPI_AUTO_LENGTH, &jsEvent);
+        napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringValue_.c_str(), NAPI_AUTO_LENGTH, &jsEvent);
         napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
         napi_value undefined = nullptr;
         napi_get_undefined(callbackInfo->env_, &undefined);
