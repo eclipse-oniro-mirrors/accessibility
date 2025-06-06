@@ -644,7 +644,7 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
     HILOG_DEBUG("stateType[%{public}d}", stateType);
     SetAccessibilityState(stateType);
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    // the notification os the single click mode must be earlier than the notification of the touch exploration state;
+    // the notification of the single click mode must be earlier than the notification of the touch exploration state;
     NotifyTouchModeChanged(!!(stateType & STATE_EXPLORATION_ENABLED), !!(stateType & STATE_SINGLE_CLICK_MODE_ENABLED));
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED,

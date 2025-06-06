@@ -860,7 +860,7 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
                 touchGuideStateListeners_->UnsubscribeObserver(env, args[PARAM1]);
             } else {
                 touchModeListeners_->UnsubscribeObservers();
-                touchGuideStateListeners_->UnsubscribeObserver();
+                touchGuideStateListeners_->UnsubscribeObservers();
             }
             break;
         default:
