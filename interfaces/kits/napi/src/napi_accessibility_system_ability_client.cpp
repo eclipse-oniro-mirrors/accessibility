@@ -42,6 +42,8 @@ std::shared_ptr<StateListenerImpl> NAccessibilityClient::touchGuideStateListener
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED);
 std::shared_ptr<StateListenerImpl> NAccessibilityClient::screenReaderStateListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED);
+std::shared_ptr<StateListenerImpl> NAccessibilityClient::touchModeListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED);
 std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityClient::captionListeners_ =
     std::make_shared<NAccessibilityConfigObserverImpl>();
 constexpr int32_t REPORTER_THRESHOLD_VALUE = 3000;
@@ -755,6 +757,13 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
             screenReaderStateListeners_->SubscribeObserver(env, args[PARAM1]);
             break;
+        case AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED:
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+            reporter.setApiName("NAccessibilityClient.SubscribeState.touchModeChange");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+            touchModeListeners_->SubscribeObserver(env, args[PARAM1]);
+            touchGuideStateListeners_->SubscribeObserver(env, args[PARAM1], false);
+            break;
         default:
             break;
     }
@@ -776,6 +785,8 @@ void NAccessibilityClient::GetAccessibilityStateEventType(
                 type = AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED;
             } else if (std::strcmp(eventType.c_str(), "screenReaderStateChange") == 0) {
                 type = AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED;
+            } else if (std::strcmp(eventType.c_str(), "touchModeChange") == 0) {
+                type = AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED;
             } else {
                 HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
                 errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
@@ -840,6 +851,18 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
                 screenReaderStateListeners_->UnsubscribeObservers();
             }
             break;
+        case AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED:
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+            reporter.setApiName("NAccessibilityClient.UnsubscribeState.touchModeChange");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+            if (argc >= ARGS_SIZE_TWO && CheckJsFunction(env, args[PARAM1])) {
+                touchModeListeners_->UnsubscribeObserver(env, args[PARAM1]);
+                touchGuideStateListeners_->UnsubscribeObserver(env, args[PARAM1]);
+            } else {
+                touchModeListeners_->UnsubscribeObservers();
+                touchGuideStateListeners_->UnsubscribeObserver();
+            }
+            break;
         default:
             break;
     }
@@ -884,9 +907,51 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
     }
 }
 
+void StateListener::NotifyJS(napi_env env, std::string mode, napi_ref handlerRef)
+{
+    HILOG_INFO("mode = [%{public}s]", mode.c_str());
+    
+    std::shared_ptr<StateCallbackInfo> callbackInfo = std::make_shared<StateCallbackInfo>();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("Failed to create callbackInfo");
+        return;
+    }
+    callbackInfo->stringValue_ = mode;
+    callbackInfo->env_ = env;
+    callbackInfo->ref_ = handlerRef;
+    auto task = [callbackInfo]() {
+        if (callbackInfo == nullptr) {
+            return;
+        }
+
+        napi_env tmpEnv = callbackInfo->env_;
+        auto closeScope = [tmpEnv](napi_handle_scope scope) {
+            napi_close_handle_scope(tmpEnv, scope);
+        };
+        std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scope(
+            OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
+        napi_value handler = nullptr;
+        napi_value callResult = nullptr;
+        napi_value jsEvent = nullptr;
+        napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringValue_, NAPI_AUTO_LENGTH, &jsEvent);
+        napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+        napi_value undefined = nullptr;
+        napi_get_undefined(callbackInfo->env_, &undefined);
+        napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
+    };
+    if (napi_send_event(env, task, napi_eprio_high) != napi_status::napi_ok) {
+        HILOG_ERROR("failed to send event");
+    }
+}
+
 void StateListener::OnStateChanged(const bool state)
 {
     NotifyJS(env_, state, handlerRef_);
+}
+
+void StateListener::OnStateChanged(const std::string mode)
+{
+    NotifyJS(env_, mode, handlerRef_);
 }
 
 void NAccessibilityClient::DefineJSCaptionsManager(napi_env env)
@@ -1455,8 +1520,23 @@ void StateListenerImpl::OnStateChanged(const bool state)
 {
     HILOG_INFO();
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    std::string touchMode = "";
+    if (type_ == AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED) {
+        for (auto &observer : observers_) {
+            touchMode = state ? "singleTouchMode" : "doubleTouchMode";
+            observer->OnStateChanged(touchMode);
+        }
+        return;
+    }
+
     for (auto &observer : observers_) {
-        observer->OnStateChanged(state);
+        if (observer->isBoolObserver_) {
+            observer->OnStateChanged(state);
+        } else if (!state) {
+            // notify the touch mode change
+            touchMode = "none";
+            observer->OnStateChanged(touchMode);
+        }
     }
 }
 
@@ -1490,7 +1570,7 @@ void StateListenerImpl::DeleteObserverReference(napi_env env, std::shared_ptr<St
     }
 }
 
-void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
+void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer, bool isBoolObserver)
 {
     HILOG_INFO();
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -1505,7 +1585,7 @@ void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
 
     napi_ref ref;
     napi_create_reference(env, observer, 1, &ref);
-    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, ref);
+    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, ref, isBoolObserver);
 
     observers_.emplace_back(stateListener);
     HILOG_INFO("observer size%{public}zu", observers_.size());

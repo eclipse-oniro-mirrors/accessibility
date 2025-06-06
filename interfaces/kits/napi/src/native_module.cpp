@@ -37,6 +37,9 @@ static void Cleanup(void *data)
     if (NAccessibilityClient::screenReaderStateListeners_) {
         NAccessibilityClient::screenReaderStateListeners_->UnsubscribeFromFramework();
     }
+    if (NAccessibilityClient::touchModeListeners_) {
+        NAccessibilityClient::touchModeListeners_->UnsubscribeFromFramework();
+    }
     if (NAccessibilityClient::captionListeners_) {
         NAccessibilityClient::captionListeners_->UnsubscribeFromFramework();
     }
@@ -74,6 +77,7 @@ static napi_value Init(napi_env env, napi_value exports)
     NAccessibilityClient::accessibilityStateListeners_->SubscribeToFramework();
     NAccessibilityClient::touchGuideStateListeners_->SubscribeToFramework();
     NAccessibilityClient::screenReaderStateListeners_->SubscribeToFramework();
+    NAccessibilityClient::touchModeListeners_->SubscribeToFramework();
     NAccessibilityClient::captionListeners_->SubscribeToFramework();
     napi_status status = napi_add_env_cleanup_hook(env, Cleanup, &NAccessibilityClient::accessibilityStateListeners_);
     if (status != napi_ok) {

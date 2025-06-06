@@ -594,6 +594,35 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
     HILOG_DEBUG("end");
 }
 
+void AccessibilitySystemAbilityClientImpl::NotifyTouchModeChanged(bool touchExplorationState, bool isSingleTouchMode)
+{
+    HILOG_DEBUG("touchExplorationState = %{public}d, isSingleTouchMode = %{public}d", touchExplorationState,
+        isSingleTouchMode);
+    
+    bool originalTouchMode = stateArray_[EVENT_TOUCH_MODE_CHANGED];
+    stateArray_[EVENT_TOUCH_MODE_CHANGED] = isSingleTouchMode;
+
+    if (!touchExplorationState) {
+        HILOG_DEBUG("touch guide state is false");
+        return;
+    }
+
+    if ((originalTouchMode == isSingleTouchMode) &&
+        (stateArray_[EVENT_TOUCH_GUIDE_STATE_CHANGED] == touchExplorationState)) {
+        HILOG_DEBUG("touch mode is not changed");
+        return;
+    }
+
+    StateObserverVector &observers = stateObserversArray_[EVENT_TOUCH_MODE_CHANGED];
+    for (auto &observer : observers) {
+        if (observer) {
+            observer->OnStateChanged(isSingleTouchMode);
+        } else {
+            HILOG_ERROR("touch mode observer is null!");
+        }
+    }
+}
+
 RetError AccessibilitySystemAbilityClientImpl::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
 {
     HILOG_DEBUG();
@@ -615,6 +644,9 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
     HILOG_DEBUG("stateType[%{public}d}", stateType);
     SetAccessibilityState(stateType);
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    // the notification os the single click mode must be earlier than the notification of the touch exploration state;
+    NotifyTouchModeChanged(!!(stateType & STATE_EXPLORATION_ENABLED), !!(stateType & STATE_SINGLE_CLICK_MODE_ENABLED));
+
     NotifyStateChanged(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED,
         !!(stateType & STATE_ACCESSIBILITY_ENABLED));
     
@@ -629,8 +661,6 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED,
         !!(stateType & STATE_SCREENREADER_ENABLED));
-    NotifyStateChanged(AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED,
-        !!(stateType & STATE_SINGLE_CLICK_MODE_ENABLED));
 }
 
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityIdResult(
