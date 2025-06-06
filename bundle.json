@@ -65,13 +65,15 @@
         "e2fsprogs",
         "resource_schedule_service",
         "cJSON",
-        "selinux_adapter"
+        "selinux_adapter",
+        "runtime_core"
       ],
       "third_party": []
     },
     "build": {
       "group_type": {
         "base_group": [
+          "//foundation/barrierfree/accessibility/interfaces/kits/ani:ani_packages",
           "//foundation/barrierfree/accessibility/interfaces/kits/napi:napi_packages"
         ],
         "fwk_group": [
