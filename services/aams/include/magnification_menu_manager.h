@@ -56,7 +56,7 @@ private:
     void CreateMenuWindow();
     void LoadMenuBgImage(uint32_t mode);
     void ChangeMode();
-    void AdjustMeunPosition();
+    void AdjustMenuPosition();
     std::shared_ptr<Media::PixelMap> DecodePixelMap(const std::string& pathName,
         const Media::AllocatorType& allocatorType);
     //menu window
@@ -78,7 +78,7 @@ private:
     uint32_t screenHeight_ = 0;
     Rosen::DisplayOrientation orientation_ = Rosen::DisplayOrientation::UNKNOWN;
 
-    uint32_t meunMode_ = 0;
+    uint32_t menuMode_ = 0;
     uint32_t currentType_ = 0;
     bool isMenuShown_ = false;
 };

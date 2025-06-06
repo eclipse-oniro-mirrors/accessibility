@@ -862,6 +862,12 @@ void AccessibilityZoomGesture::StartMagnificationInteract()
     TransferState(ZOOMIN_STATE);
 }
 
+void AccessibilityZoomGesture::DisableGesture()
+{
+    HILOG_INFO();
+    TransferState(READY_STATE);
+}
+
 void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
 {
     HILOG_INFO();

@@ -51,6 +51,7 @@ public:
     void ShieldZoomGesture(bool state);
     void GetWindowParam(bool needRefresh = false);
     void StartMagnificationInteract();
+    void DisableGesture();
     inline ACCESSIBILITY_ZOOM_STATE GetZoomState()
     {
         return state_;

@@ -122,6 +122,7 @@ public:
     ErrCode DisableAbility(const std::string &name) override;
     ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
     ErrCode DisableUITestAbility() override;
+    ErrCode SetMagnificationState(const bool state) override;
     ErrCode GetActiveWindow(int32_t &windowId) override;
     ErrCode GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
     ErrCode GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
@@ -318,6 +319,7 @@ public:
     bool CheckPermission(const std::string &permission) const;
 
     // for magnification
+    bool GetMagnificationState();
     uint32_t GetMagnificationType();
     uint32_t GetMagnificationMode();
     void SetMagnificationMode(int32_t mode);

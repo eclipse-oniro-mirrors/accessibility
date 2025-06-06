@@ -68,6 +68,7 @@ public:
     ErrCode GetEnabledAbilities(std::vector<std::string>& enabledAbilities) override;
 
     ErrCode DisableAbility(const std::string& name) override;
+    ErrCode SetMagnificationState(const bool state) override;
     ErrCode GetActiveWindow(int32_t& windowId) override;
 
     ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj) override;

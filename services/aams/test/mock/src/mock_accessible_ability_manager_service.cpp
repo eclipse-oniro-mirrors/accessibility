@@ -243,6 +243,12 @@ ErrCode AccessibleAbilityManagerService::DisableUITestAbility()
     return RET_OK;
 }
 
+ErrCode AccessibleAbilityManagerService::SetMagnificationState(const bool state)
+{
+    (void)state;
+    return RET_OK;
+}
+
 ErrCode AccessibleAbilityManagerService::GetActiveWindow(int32_t &windowId)
 {
     (void)windowId;

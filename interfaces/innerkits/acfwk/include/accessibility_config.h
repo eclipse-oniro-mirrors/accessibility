@@ -167,6 +167,13 @@ public:
     Accessibility::RetError DisableAbility(const std::string &name);
 
     /**
+     * @brief Trigger screen magnification with a shortcut key
+     * @param state The state of screen magnification to trigger.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError SetMagnificationState(const bool state);
+
+    /**
      * @brief Set whether to enable the magnification function
      * @param state true:enable magnification function; false:disable magnification function
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.

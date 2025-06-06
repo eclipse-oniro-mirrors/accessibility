@@ -634,6 +634,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("off", NAccessibilityConfig::UnsubscribeState),
         DECLARE_NAPI_FUNCTION("enableAbility", NAccessibilityConfig::EnableAbility),
         DECLARE_NAPI_FUNCTION("disableAbility", NAccessibilityConfig::DisableAbility),
+        DECLARE_NAPI_FUNCTION("setMagnificationState", NAccessibilityConfig::SetMagnificationState),
         DECLARE_NAPI_STATIC_PROPERTY("highContrastText", InitHighContrastText(env)),
         DECLARE_NAPI_STATIC_PROPERTY("invertColor", InitInvertColor(env)),
         DECLARE_NAPI_STATIC_PROPERTY("daltonizationState", InitDaltonizationState(env)),

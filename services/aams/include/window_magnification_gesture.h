@@ -94,6 +94,7 @@ public:
     void SendCacheEventsToNext();
     void ShieldZoomGesture(bool state);
     void StartMagnificationInteract();
+    void DisableGesture();
 
     /* Set current magnification gesture state */
     inline void SetGestureState(MagnificationGestureState state, int32_t action)

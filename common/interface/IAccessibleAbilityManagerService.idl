@@ -41,6 +41,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void EnableAbility([in] String name, [in] unsigned int capabilities);
     void GetEnabledAbilities([out] String[] enabledAbilities);
     void DisableAbility([in] String name);
+    void SetMagnificationState([in] boolean state);
     void GetActiveWindow([out] int windowId);
     void EnableUITestAbility([in] IRemoteObject obj);
     void DisableUITestAbility();

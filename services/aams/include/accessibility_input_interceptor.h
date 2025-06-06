@@ -84,6 +84,8 @@ public:
     void ShieldZoomGesture(bool flag);
     void RefreshDisplayInfo();
     void StartMagnificationInteract(uint32_t mode);
+    void EnableGesture(uint32_t mode);
+    void DisableGesture(uint32_t mode);
 
 private:
     AccessibilityInputInterceptor();
