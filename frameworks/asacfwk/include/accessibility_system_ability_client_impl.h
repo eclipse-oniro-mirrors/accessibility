@@ -308,6 +308,8 @@ private:
      */
     void NotifyStateChanged(uint32_t eventType, bool value);
 
+    void NotifyTouchModeChanged(bool touchExplorationState, bool isSingleTouchMode);
+
     /**
      * @brief Check the event type is valid or not.
      * @param eventType The data of event type.

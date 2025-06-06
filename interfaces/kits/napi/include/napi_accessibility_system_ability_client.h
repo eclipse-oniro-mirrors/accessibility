@@ -35,12 +35,16 @@ napi_handle_scope TmpOpenScope(napi_env env);
 
 const uint32_t START_WORK_ARGS_SIZE = 2;
 struct StateListener {
-    StateListener(napi_env env, napi_ref ref) : handlerRef_(ref), env_(env) {};
+    StateListener(napi_env env, napi_ref ref, bool isBoolObserver = true) : handlerRef_(ref), env_(env),
+        isBoolObserver_(isBoolObserver) {};
     static void NotifyJS(napi_env env, bool state, napi_ref handlerRef);
+    static void NotifyJS(napi_env env, std::string mode, napi_ref handlerRef);
     void OnStateChanged(const bool state);
+    void OnStateChanged(const std::string mode);
 
     napi_ref handlerRef_ = nullptr;
     napi_env env_ = nullptr;
+    bool isBoolObserver_ = true;
 };
 
 class StateListenerImpl : public OHOS::Accessibility::AccessibilityStateObserver,
@@ -50,7 +54,7 @@ public:
     void OnStateChanged(const bool state) override;
     void SubscribeToFramework();
     void UnsubscribeFromFramework();
-    void SubscribeObserver(napi_env env, napi_value observer);
+    void SubscribeObserver(napi_env env, napi_value observer, bool isBoolObserver = true);
     void UnsubscribeObserver(napi_env env, napi_value observer);
     void UnsubscribeObservers();
 
@@ -141,6 +145,7 @@ public:
     static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;
     static std::shared_ptr<StateListenerImpl> touchGuideStateListeners_;
     static std::shared_ptr<StateListenerImpl> screenReaderStateListeners_;
+    static std::shared_ptr<StateListenerImpl> touchModeListeners_;
     static std::shared_ptr<NAccessibilityConfigObserverImpl> captionListeners_;
 
 private:
