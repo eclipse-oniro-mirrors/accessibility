@@ -1945,6 +1945,9 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         defaultConfigCallbacks_ = accountData->GetConfigCallbacks();
         screenReaderState = accountData->GetDefaultUserScreenReaderState() ?
             SCREENREADER_STATE::ON : SCREENREADER_STATE::OFF;
+        if (screenReaderState == SCREENREADER_STATE::ON) {
+            ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
+        }
         accountData->GetImportantEnabledAbilities(importantEnabledAbilities);
         accountData->OnAccountSwitched();
         UpdateAccessibilityManagerService();
