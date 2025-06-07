@@ -1233,7 +1233,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickState_002, TestSize.Le
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetIgnoreRepeatClickState(state);
     instance.GetIgnoreRepeatClickState(value);
-    EXPECT_FLASE(true == value);
+    EXPECT_FALSE(true == value);
     GTEST_LOG_(INFO) << "SetIgnoreRepeatClickState_002 end";
 }
 
