@@ -74,8 +74,8 @@ public:
         const std::string &bundleName = "", const std::string &abilityName = "");
     static void RecordDatashareInteraction(A11yDatashareValueType type, const std::string &businessName = "",
         const std::string &bundleName = "", const std::string &abilityName = "");
-    static bool isWideFold();
-    static bool isBigFold();
+    static bool IsWideFold();
+    static bool IsBigFold();
     static bool IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect);
 
 private:

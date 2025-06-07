@@ -47,7 +47,7 @@ public:
     void PersistScale();
     PointerPos ConvertGesture(uint32_t type, PointerPos coordinates);
     uint32_t CheckTapOnHotArea(int32_t posX, int32_t posY);
-    inline bool isMagnificationWindowShow()
+    inline bool IsMagnificationWindowShow()
     {
         return isMagnificationWindowShow_;
     }

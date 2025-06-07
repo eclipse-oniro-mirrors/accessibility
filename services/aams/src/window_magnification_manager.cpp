@@ -224,9 +224,11 @@ void WindowMagnificationManager::GetWindowParam()
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     screenId_ = displayMgr.GetDefaultDisplayId();
     orientation_ = displayMgr.GetOrientation();
-   
-    HILOG_INFO("display id or orientation changed.");
     sptr<Rosen::Display> display = displayMgr.GetDisplay(screenId_);
+    if (display == nullptr) {
+        HILOG_ERROR("display is nullptr.");
+        return;
+    }
     screenWidth_ = static_cast<uint32_t>(display->GetWidth());
     screenHeight_ = static_cast<uint32_t>(display->GetHeight());
     HILOG_INFO("screenWidth_ = %{public}d, screenHeight_ = %{public}d.", screenWidth_, screenHeight_);
@@ -245,6 +247,9 @@ void WindowMagnificationManager::InitMagnificationParam()
 
 bool WindowMagnificationManager::IsTapOnHotArea(int32_t posX, int32_t posY)
 {
+    if (!isMagnificationWindowShow_) {
+        return false;
+    }
     Rosen::Rect innerRect = {windowRect_.posX_ + static_cast<int32_t>(hotAreaWidth_),
         windowRect_.posY_ + static_cast<int32_t>(hotAreaWidth_),
         windowRect_.width_ - static_cast<uint32_t>(2 * hotAreaWidth_),
@@ -259,12 +264,6 @@ bool WindowMagnificationManager::IsTapOnHotArea(int32_t posX, int32_t posY)
 void WindowMagnificationManager::RefreshWindowParam()
 {
     HILOG_DEBUG();
-    if (orientation_ == Singleton<AccessibilityDisplayManager>::GetInstance().GetOrientation()) {
-        HILOG_INFO("no need refresh window param.");
-        return;
-    }
-
-    HILOG_INFO("need refresh window param.");
     int32_t centerX = windowRect_.posX_;
     int32_t centerY = windowRect_.posY_;
     if (isMagnificationWindowShow_) {

@@ -118,6 +118,12 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
         return false;
     }
 
+    if (event.GetPointerId() == SCROLL_SHOT_POINTER_ID) {
+        HILOG_DEBUG("scrollshot injected.");
+        EventTransmission::OnPointerEvent(event);
+        return false;
+    }
+
     switch (state_) {
         case READY_STATE:
             CacheEvents(event);
@@ -142,7 +148,6 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
 void AccessibilityZoomGesture::TransferState(ACCESSIBILITY_ZOOM_STATE state)
 {
     HILOG_DEBUG("old state= %{public}d, new state= %{public}d", state_, state);
-
     state_ = state;
 }
 
@@ -214,7 +219,7 @@ void AccessibilityZoomGesture::SendCacheEventsToNext()
             OnPointerEvent(*pointerEvent);
             continue;
         }
-        if (state_ != READY_STATE) {
+        if (state_ != READY_STATE && fullScreenManager_->IsMagnificationWindowShow()) {
             MMI::PointerEvent::PointerItem pointer {};
             pointerEvent->GetPointerItem(pointerEvent->GetPointerId(), pointer);
             PointerPos coordinates  = fullScreenManager_->ConvertCoordinates(pointer.GetDisplayX(),

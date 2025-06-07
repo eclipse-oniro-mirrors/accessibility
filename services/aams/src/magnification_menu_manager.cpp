@@ -274,6 +274,10 @@ void MagnificationMenuManager::GetWindowParam()
     OHOS::Rosen::DisplayOrientation currentOrientation = displayMgr.GetOrientation();
     orientation_ = currentOrientation;
     sptr<OHOS::Rosen::Display> display = displayMgr.GetDisplay(screenId_);
+    if (display == nullptr) {
+        HILOG_ERROR("display is nullptr.");
+        return;
+    }
     screenWidth_ = static_cast<uint32_t>(display->GetWidth());
     screenHeight_ = static_cast<uint32_t>(display->GetHeight());
     screenRect_ = {0, 0, screenWidth_, screenHeight_};
@@ -285,12 +289,6 @@ void MagnificationMenuManager::GetWindowParam()
 void MagnificationMenuManager::RefreshWindowParam()
 {
     HILOG_DEBUG();
-    if (orientation_ == Singleton<AccessibilityDisplayManager>::GetInstance().GetOrientation()) {
-        HILOG_INFO("no need refresh window param.");
-        return;
-    }
-
-    HILOG_INFO("need refresh window param.");
     if (isMenuShown_) {
         DisableMenuWindow();
         GetWindowParam();

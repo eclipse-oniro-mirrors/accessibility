@@ -37,12 +37,14 @@ void WindowMagnificationGesture::InitGestureFuncMap()
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleReadyStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleReadyStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleReadyStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleReadyStateCancel)},
             }
         },
         {MagnificationGestureState::READY_STATE_ONE_FINGER_DOWN, {
             {MMI::PointerEvent::POINTER_ACTION_DOWN, BIND(HandleReadyStateOneFingerDownStateDown)},
             {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleReadyStateOneFingerDownStateUp)},
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleReadyStateOneFingerDownStateMove)},
+            {MMI::PointerEvent::POINTER_ACTION_CANCEL, BIND(HandleReadyStateOneFingerDownStatCancel)},
             }
         },
         {MagnificationGestureState::READY_STATE_ONE_FINGER_TAP, {
@@ -179,8 +181,17 @@ bool WindowMagnificationGesture::OnPointerEvent(MMI::PointerEvent &event)
 bool WindowMagnificationGesture::needBypassPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("shieldZoomGestureFlag %{public}d.", shieldZoomGestureFlag_);
-    return shieldZoomGestureFlag_ ||
-        (event.GetSourceType() != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
+    if (shieldZoomGestureFlag_) {
+        return true;
+    }
+    if (event.GetSourceType() != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
+        return true;
+    }
+    if (event.GetPointerId() == SCROLL_SHOT_POINTER_ID) {
+        HILOG_DEBUG("scrollshot injected.");
+        return true;
+    }
+    return false;
 }
 
 void WindowMagnificationGesture::OnPointerEventExcute(MMI::PointerEvent &event)
@@ -234,7 +245,7 @@ void WindowMagnificationGesture::HandlePassingThroughState(MMI::PointerEvent &ev
     // the last finger is lifted
     if ((event.GetPointerCount() == static_cast<int32_t>(PointerCountSize::POINTER_SIZE_1)) &&
         (!pointerItem.IsPressed())) {
-        if (windowMagnificationManager_ != nullptr && windowMagnificationManager_->isMagnificationWindowShow()) {
+        if (windowMagnificationManager_ != nullptr && windowMagnificationManager_->IsMagnificationWindowShow()) {
             SetGestureState(MagnificationGestureState::ZOOMIN_STATE, event.GetPointerAction());
         } else {
             SetGestureState(MagnificationGestureState::READY_STATE, event.GetPointerAction());
@@ -245,6 +256,10 @@ void WindowMagnificationGesture::HandlePassingThroughState(MMI::PointerEvent &ev
 void WindowMagnificationGesture::HandleReadyStateDown(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
+    if (IsKnuckles(event)) {
+        SendEventToMultimodal(event, true, false);
+        return;
+    }
     int32_t size = event.GetPointerCount();
     lastDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
     if (size == static_cast<int32_t>(PointerCountSize::POINTER_SIZE_1)) {
@@ -277,6 +292,18 @@ void WindowMagnificationGesture::HandleReadyStateMove(MMI::PointerEvent &event)
     HILOG_DEBUG();
     SendEventToMultimodal(event, false, false);
     SetGestureState(MagnificationGestureState::PASSING_THROUGH, event.GetPointerAction());
+}
+
+void WindowMagnificationGesture::HandleReadyStateCancel(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+    SendEventToMultimodal(event, false, false);
+    if (windowMagnificationManager_ != nullptr &&
+        windowMagnificationManager_->IsMagnificationWindowShow()) {
+        SetGestureState(MagnificationGestureState::ZOOMIN_STATE, event.GetPointerAction());
+    } else {
+        SetGestureState(MagnificationGestureState::READY_STATE, event.GetPointerAction());
+    }
 }
 
 void WindowMagnificationGesture::HandleReadyStateOneFingerDownStateDown(MMI::PointerEvent &event)
@@ -347,6 +374,12 @@ void WindowMagnificationGesture::HandleReadyStateOneFingerDownStateMove(MMI::Poi
     }
 }
 
+void WindowMagnificationGesture::HandleReadyStateOneFingerDownStatCancel(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+    HandleReadyStateCancel(event);
+}
+
 void WindowMagnificationGesture::HandleReadyStateOneFingerTapDown(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
@@ -374,7 +407,10 @@ void WindowMagnificationGesture::HandleReadyStateOneFingerTapDown(MMI::PointerEv
 void WindowMagnificationGesture::HandleZoomInStateDown(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-
+    if (IsKnuckles(event)) {
+        SendEventToMultimodal(event, true, false);
+        return;
+    }
     if (windowMagnificationManager_ == nullptr) {
         HILOG_ERROR("windowMagnificationManager_ is nullptr.");
         return;
@@ -781,7 +817,7 @@ void WindowMagnificationGesture::OnTripleTap(int32_t centerX, int32_t centerY)
         return;
     }
 
-    if (windowMagnificationManager_->isMagnificationWindowShow()) {
+    if (windowMagnificationManager_->IsMagnificationWindowShow()) {
         windowMagnificationManager_->DisableWindowMagnification();
         Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
         isSingleTapOnWindow_ = false;
@@ -880,6 +916,23 @@ bool WindowMagnificationGesture::IsTapOnInputMethod(MMI::PointerEvent &event)
         }
     }
     HILOG_DEBUG("have no input method window.");
+    return false;
+}
+
+bool WindowMagnificationGesture::IsKnuckles(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    std::vector<int32_t> pointerIdList = event.GetPointerIds();
+    for (int32_t pointerId : pointerIdList) {
+        MMI::PointerEvent::PointerItem item;
+        event.GetPointerItem(pointerId, item);
+        int32_t toolType = item.GetToolType();
+        if (toolType == MMI::PointerEvent::TOOL_TYPE_KNUCKLE) {
+            HILOG_INFO("is knuckle event.");
+            return true;
+        }
+    }
     return false;
 }
 } // namespace Accessibility
