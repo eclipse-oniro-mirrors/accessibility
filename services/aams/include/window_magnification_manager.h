@@ -42,7 +42,7 @@ public:
 
     void OnMagnificationModeChanged(uint32_t magnificationMode);
 
-    inline bool isMagnificationWindowShow()
+    inline bool IsMagnificationWindowShow()
     {
         return isMagnificationWindowShow_;
     }

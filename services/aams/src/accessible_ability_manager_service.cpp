@@ -321,7 +321,7 @@ void AccessibleAbilityManagerService::OnStop()
         Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
         Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
         Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
-        if (Utils::isWideFold() || Utils::isBigFold()) {
+        if (Utils::IsWideFold() || Utils::IsBigFold()) {
             Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayModeListener();
         }
 
@@ -1719,7 +1719,7 @@ bool AccessibleAbilityManagerService::Init()
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
-    if (Utils::isWideFold() || Utils::isBigFold()) {
+    if (Utils::IsWideFold() || Utils::IsBigFold()) {
         Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayModeListener();
     }
     bool result = Singleton<AccessibilityWindowManager>::GetInstance().Init();

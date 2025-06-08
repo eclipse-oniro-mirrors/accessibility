@@ -230,19 +230,22 @@ void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmi
             HILOG_ERROR("get windowMagnification manager failed.");
             return;
         }
-        sptr<AccessibilityZoomGesture> zoomGesture =
-            new(std::nothrow) AccessibilityZoomGesture(fullScreenMagnificationManager);
-        if (!zoomGesture) {
-            HILOG_ERROR("zoomGesture create error.");
-            return;
+
+        if (zoomGesture_ == nullptr) {
+            sptr<AccessibilityZoomGesture> zoomGesture =
+                new(std::nothrow) AccessibilityZoomGesture(fullScreenMagnificationManager);
+            if (zoomGesture == nullptr) {
+                HILOG_ERROR("zoomGesture create error.");
+                return;
+            }
+            zoomGesture_ = zoomGesture;
         }
-        zoomGesture_ = zoomGesture;
+
         if (needInteractMagnification_) {
             zoomGesture_->StartMagnificationInteract();
             needInteractMagnification_ = false;
         }
-        SetNextEventTransmitter(header, current, zoomGesture);
-        windowMagnificationGesture_ = nullptr;
+        SetNextEventTransmitter(header, current, zoomGesture_);
     } else if (magnificationMode == WINDOW_MAGNIFICATION) {
         std::shared_ptr<WindowMagnificationManager> windowMagnificationManager =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetWindowMagnificationManager();
@@ -250,19 +253,21 @@ void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmi
             HILOG_ERROR("get windowMagnification manager failed.");
             return;
         }
-        sptr<WindowMagnificationGesture> windowMagnificationGesture =
-            new(std::nothrow) WindowMagnificationGesture(windowMagnificationManager);
-        if (!windowMagnificationGesture) {
-            HILOG_ERROR("windowMagnificationGesture create error.");
-            return;
+
+        if (windowMagnificationGesture_ == nullptr) {
+            sptr<WindowMagnificationGesture> windowMagnificationGesture =
+                new(std::nothrow) WindowMagnificationGesture(windowMagnificationManager);
+            if (windowMagnificationGesture == nullptr) {
+                HILOG_ERROR("windowMagnificationGesture create error.");
+                return;
+            }
+            windowMagnificationGesture_ = windowMagnificationGesture;
         }
-        windowMagnificationGesture_ = windowMagnificationGesture;
         if (needInteractMagnification_) {
             windowMagnificationGesture_->StartMagnificationInteract();
             needInteractMagnification_ = false;
         }
-        SetNextEventTransmitter(header, current, windowMagnificationGesture);
-        zoomGesture_ = nullptr;
+        SetNextEventTransmitter(header, current, windowMagnificationGesture_);
     } else {
         HILOG_WARN("invalid magnificationMode");
         ClearMagnificationGesture();

@@ -516,12 +516,12 @@ int32_t Utils::GetUserIdByCallingUid()
     return (uid / BASE_USER_RANGE);
 }
 
-bool Utils::isWideFold()
+bool Utils::IsWideFold()
 {
     return IS_WIDE_FOLD;
 }
 
-bool Utils::isBigFold()
+bool Utils::IsBigFold()
 {
     return IS_BIG_FOLD;
 }

@@ -142,9 +142,11 @@ private:
     void HandleReadyStateDown(MMI::PointerEvent &event);
     void HandleReadyStateUp(MMI::PointerEvent &event);
     void HandleReadyStateMove(MMI::PointerEvent &event);
+    void HandleReadyStateCancel(MMI::PointerEvent &event);
     void HandleReadyStateOneFingerDownStateDown(MMI::PointerEvent &event);
     void HandleReadyStateOneFingerDownStateUp(MMI::PointerEvent &event);
     void HandleReadyStateOneFingerDownStateMove(MMI::PointerEvent &event);
+    void HandleReadyStateOneFingerDownStatCancel(MMI::PointerEvent &event);
     void HandleReadyStateOneFingerTapDown(MMI::PointerEvent &event);
 
     void HandleZoomInStateDown(MMI::PointerEvent &event);
@@ -172,6 +174,7 @@ private:
     void OnTripleTap(int32_t centerX, int32_t centerY);
     void SendEventToMultimodal(MMI::PointerEvent event, bool needTransfer, bool needResetTime);
     bool IsTapOnInputMethod(MMI::PointerEvent &event);
+    bool IsKnuckles(MMI::PointerEvent &event);
     inline float CalculateMoveThreshold(int dpi)
     {
         return dpi * COMPLEX_UNIT_MM_CONVERSION * MM_PER_CM;

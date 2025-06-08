@@ -197,13 +197,12 @@ void AccessibilityDisplayManager::UnregisterDisplayModeListener()
 
 void AccessibilityDisplayManager::DisplayModeListener::OnDisplayModeChanged(Rosen::FoldDisplayMode displayMode)
 {
-    auto interceptor = AccessibilityInputInterceptor::GetInstance();
-    if (interceptor == nullptr) {
-        HILOG_WARN("interceptior is null");
-        return;
-    }
-
-    if (Utils::isWideFold()) {
+    if (Utils::IsWideFold()) {
+        auto interceptor = AccessibilityInputInterceptor::GetInstance();
+        if (interceptor == nullptr) {
+            HILOG_ERROR("interceptior is null");
+            return;
+        }
         if (displayMode == Rosen::FoldDisplayMode::MAIN) {
             interceptor->ShieldZoomGesture(true);
         } else if (displayMode == Rosen::FoldDisplayMode::FULL) {
@@ -214,8 +213,14 @@ void AccessibilityDisplayManager::DisplayModeListener::OnDisplayModeChanged(Rose
         return;
     }
 
-    if (Utils::isBigFold()) {
-        interceptor->RefreshDisplayInfo();
+    if (Utils::IsBigFold()) {
+        HILOG_DEBUG("IsBigFold");
+        auto manager = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMgr();
+        if (manager == nullptr) {
+            HILOG_ERROR("manager is null");
+            return;
+        }
+        manager->RefreshWindowParam();
         return;
     }
 }

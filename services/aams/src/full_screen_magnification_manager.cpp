@@ -215,6 +215,10 @@ void FullScreenMagnificationManager::GetWindowParam()
     OHOS::Rosen::DisplayOrientation currentOrientation = displayMgr.GetOrientation();
     orientation_ = currentOrientation;
     sptr<Rosen::Display> display = displayMgr.GetDisplay(screenId_);
+    if (display == nullptr) {
+        HILOG_ERROR("display is nullptr.");
+        return;
+    }
     screenWidth_ = static_cast<uint32_t>(display->GetWidth());
     screenHeight_ = static_cast<uint32_t>(display->GetHeight());
     HILOG_INFO("screenWidth_ = %{public}d, screenHeight_ = %{public}d.", screenWidth_, screenHeight_);
@@ -230,10 +234,6 @@ void FullScreenMagnificationManager::GetWindowParam()
 void FullScreenMagnificationManager::RefreshWindowParam()
 {
     HILOG_INFO();
-    if (orientation_ == Singleton<AccessibilityDisplayManager>::GetInstance().GetOrientation()) {
-        HILOG_INFO("no need refresh window param.");
-        return;
-    }
     int32_t centerX = sourceRect_.posX_;
     int32_t centerY = sourceRect_.posY_;
     if (isMagnificationWindowShow_) {
@@ -265,7 +265,8 @@ PointerPos FullScreenMagnificationManager::ConvertGesture(uint32_t type, Pointer
     PointerPos point = {posX, posY};
 
     if (type == BOTTOM_BACK_GESTURE) {
-        int32_t offsetY = screenHeight_ - (sourceRect_.posY_ + static_cast<int32_t>(sourceRect_.height_));
+        int32_t offsetY = static_cast<int32_t>(screenHeight_) -
+            (sourceRect_.posY_ + static_cast<int32_t>(sourceRect_.height_));
         point.posY = posY + offsetY;
         return point;
     }
@@ -276,7 +277,8 @@ PointerPos FullScreenMagnificationManager::ConvertGesture(uint32_t type, Pointer
     }
 
     if (type == RIGHT_BACK_GESTURE) {
-        int32_t offsetX = screenWidth_ - (sourceRect_.posX_ + static_cast<int32_t>(sourceRect_.width_));
+        int32_t offsetX = static_cast<int32_t>(screenWidth_) -
+            (sourceRect_.posX_ + static_cast<int32_t>(sourceRect_.width_));
         point.posX = posX + offsetX;
         return point;
     }
