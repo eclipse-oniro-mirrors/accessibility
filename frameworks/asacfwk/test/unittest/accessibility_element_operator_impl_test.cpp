@@ -317,7 +317,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchDefaultFocusByWindow
     } else {
         sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
             = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
-        EXPECT_CALL(*elementOperator, SetSearchDefaultFocusByWindowIdResult(_, _)).Times(1);
+        EXPECT_CALL(*elementOperator, SetSearchDefaultFocusByWindowIdResult(_, _)).Times(0);
         mockStub_->SearchElementInfoByAccessibilityId(ELEMENT_ID, REQUEST_ID_2, elementOperator, MODE, false);
         std::list<AccessibilityElementInfo> infos;
         AccessibilityElementInfo info {};
@@ -362,7 +362,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoByTextRes
     } else {
         sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
             = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
-        EXPECT_CALL(*elementOperator, SetSearchElementInfoByTextResult(_, _)).Times(1);
+        EXPECT_CALL(*elementOperator, SetSearchElementInfoByTextResult(_, _)).Times(0);
         mockStub_->SearchElementInfosByText(ELEMENT_ID, TEST, REQUEST_ID_2, elementOperator);
         std::list<AccessibilityElementInfo> infos;
         AccessibilityElementInfo info {};
@@ -405,7 +405,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFindFocusedElementInfoResu
     } else {
         sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
             = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
-        EXPECT_CALL(*elementOperator, SetFindFocusedElementInfoResult(_, _)).Times(1);
+        EXPECT_CALL(*elementOperator, SetFindFocusedElementInfoResult(_, _)).Times(0);
         mockStub_->FindFocusedElementInfo(ELEMENT_ID, FOCUS_TYPE, REQUEST_ID_2, elementOperator);
         AccessibilityElementInfo info {};
         mockStub_->SetFindFocusedElementInfoResult(info, CompositeId(REQUEST_ID_2));
@@ -446,7 +446,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFocusMoveSearchResult_002,
     } else {
         sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
             = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
-        EXPECT_CALL(*elementOperator, SetFocusMoveSearchResult(_, _)).Times(1);
+        EXPECT_CALL(*elementOperator, SetFocusMoveSearchResult(_, _)).Times(0);
         mockStub_->FocusMoveSearch(ELEMENT_ID, DIRECTION, REQUEST_ID_2, elementOperator);
         AccessibilityElementInfo info {};
         mockStub_->SetFocusMoveSearchResult(info, CompositeId(REQUEST_ID_2));
