@@ -75,6 +75,7 @@ private:
     void AdjustSourceWindowPosition();
     void CalculateAnchorOffset();
     void GetWindowParam();
+    PointerPos GetRectCenter(Rosen::Rect rect);
 
     Rosen::Rect sourceRect_;
     Rosen::Rect windowRect_;
