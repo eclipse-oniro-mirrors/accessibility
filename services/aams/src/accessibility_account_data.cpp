@@ -705,10 +705,6 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableAbility:" + name);
 #endif // OHOS_BUILD_ENABLE_HITRACE
 
-    auto result = MMI::InputManager::GetInstance()->SwitchTouchTracking(true);
-    if (result != RET_OK) {
-        HILOG_ERROR("Failed to enable the MMI rule.");
-    }
     enabledAbilities_.push_back(name);
     SetAbilityAutoStartState(name, true);
     if (name == screenReaderAbilityName_) {
