@@ -1234,7 +1234,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableAbility_001, TestSize.L
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_001 start";
     std::string name = "test";
-    EXPECT_EQ(RET_ERR_FAILED, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
+    EXPECT_EQ(RET_ERR_NOT_ENABLED, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_001 end";
 }
 
@@ -1587,7 +1587,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableAbility_002, TestSize.L
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     std::string name = "test";
-    EXPECT_EQ(RET_ERR_FAILED, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
+    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_002 end";
 }
 

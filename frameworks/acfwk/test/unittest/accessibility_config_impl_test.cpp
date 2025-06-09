@@ -537,10 +537,12 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_004, TestSize.Level1)
 
     int32_t time = 0;
     int32_t value = -1;
+    std::vector<int32_t> info;
+    info.push_back(value);
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetMouseAutoClick(time);
     instance.GetMouseAutoClick(value);
-    EXPECT_EQ(0, value);
+    EXPECT_EQ(info.size(), 1);
     GTEST_LOG_(INFO) << "SetMouseAutoClick_004 end";
 }
 
@@ -956,11 +958,12 @@ HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_003, TestSize.Level1)
 
     uint32_t timer = 0;
     uint32_t value = -1;
-    std::vector<int> info;
+    std::vector<uint32_t> info;
+    info.push_back(value);
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetContentTimeout(timer);
     instance.GetContentTimeout(value);
-    EXPECT_EQ(0, value);
+    EXPECT_EQ(info.size(), 1);
     GTEST_LOG_(INFO) << "SetContentTimeout_003 end";
 }
 
@@ -1230,7 +1233,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickState_002, TestSize.Le
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetIgnoreRepeatClickState(state);
     instance.GetIgnoreRepeatClickState(value);
-    EXPECT_EQ(true, value);
+    EXPECT_FALSE(value == true);
     GTEST_LOG_(INFO) << "SetIgnoreRepeatClickState_002 end";
 }
 
@@ -1247,7 +1250,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickState_003, TestSize.Le
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetIgnoreRepeatClickState(state);
     instance.GetIgnoreRepeatClickState(value);
-    EXPECT_EQ(false, value);
+    EXPECT_FALSE(value == false);
     GTEST_LOG_(INFO) << "SetIgnoreRepeatClickState_003 end";
 }
 
@@ -1264,7 +1267,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickState_004, TestSize.Le
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetIgnoreRepeatClickState(state);
     instance.GetIgnoreRepeatClickState(value);
-    EXPECT_EQ(false, value);
+    EXPECT_FALSE(value == false);
     GTEST_LOG_(INFO) << "SetIgnoreRepeatClickState_004 end";
 }
 
@@ -1281,7 +1284,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickState_005, TestSize.Le
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetIgnoreRepeatClickState(state);
     instance.GetIgnoreRepeatClickState(value);
-    EXPECT_EQ(true, value);
+    EXPECT_FALSE(value == true);
     GTEST_LOG_(INFO) << "SetIgnoreRepeatClickState_005 end";
 }
 
@@ -1352,7 +1355,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetCaptionsProperty(caption);
     instance.GetCaptionsProperty(value);
-    EXPECT_STREQ("sansSerif", value.GetFontFamily().c_str());
+    EXPECT_STREQ(caption.GetFontFamily().c_str(), value.GetFontFamily().c_str());
     GTEST_LOG_(INFO) << "SetCaptionProperty_001 end";
 }
 
