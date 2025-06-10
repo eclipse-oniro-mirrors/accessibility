@@ -317,6 +317,7 @@ public:
     ErrCode RemoveRequestId(int32_t requestId) override;
     void OnDataClone();
     bool CheckPermission(const std::string &permission) const;
+    int32_t SetEnhanceConfig(const char *cfg, uint32_t cfgLen) override;
 
     // for magnification
     bool GetMagnificationState();
