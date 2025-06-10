@@ -495,5 +495,10 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetRootParentId(int32_t windowI
     (void)parentId;
     return RET_OK;
 }
+
+int32_t MockAccessibleAbilityManagerServiceStub::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
+{
+    return 0;
+}
 } // namespace Accessibility
 } // namespace OHOS
