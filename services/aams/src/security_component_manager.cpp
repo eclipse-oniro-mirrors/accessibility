@@ -15,8 +15,6 @@
  
 #include "security_component_manager.h"
 #include "hilog_wrapper.h"
-#include "sec_comp_enhance_kit.h"
-#include "sec_comp_enhance_adapter.h"
 #include "accessibility_element_info.h"
  
 namespace OHOS {
@@ -75,22 +73,3 @@ std::map<std::string, std::string> SecurityComponentManager::GenerateActionArgum
 }
 } // namespace Accessibility
 } // namespace OHOS
-
-
-    std::map<std::string, std::string> actionArguments = {};
-    AccessibilityElementInfo focusedElementInfo {};
-    bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(focusedElementInfo);
-    if (!ret) {
-        HILOG_ERROR("find focused element failed.");
-        return false;
-    }
-    actionArguments = SecurityComponentManager::GenerateActionArgumentsWithHMAC(action,
-        focusedElementInfo.GetUniqueId(), focusedElementInfo.GetBundleName(), args);
-
-
-int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
-{
-    HILOG_INFO();
-    int32_t result = SecurityComponentManager::SetEnhanceConfig(cfg, cfgLen);
-    return result;
-}

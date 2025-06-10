@@ -52,6 +52,7 @@
 #include "tokenid_kit.h"
 #include "accessibility_caption.h"
 #include "msdp_manager.h"
+#include "security_component_manager.h"
 
 using namespace std;
 using namespace OHOS::Security::AccessToken;
@@ -740,6 +741,14 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         return false;
     }
     std::map<std::string, std::string> actionArguments {};
+    AccessibilityElementInfo focusedElementInfo {};
+    bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(focusedElementInfo);
+    if (!ret) {
+        HILOG_ERROR("find focused element failed.");
+        return false;
+    }
+    actionArguments = SecurityComponentManager::GenerateActionArgumentsWithHMAC(action,
+        focusedElementInfo.GetUniqueId(), focusedElementInfo.GetBundleName(), actionArguments);
     sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl();
     if (actionCallback == nullptr) {
         HILOG_ERROR("Failed to create actionCallback.");
@@ -3947,6 +3956,13 @@ std::shared_ptr<FullScreenMagnificationManager> AccessibleAbilityManagerService:
         return nullptr;
     }
     return magnificationManager_->GetFullScreenMagnificationManager();
+}
+
+int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
+{
+    HILOG_INFO();
+    int32_t result = SecurityComponentManager::SetEnhanceConfig(cfg, cfgLen);
+    return result;
 }
 } // namespace Accessibility
 } // namespace OHOS
