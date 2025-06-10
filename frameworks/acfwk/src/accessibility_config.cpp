@@ -338,5 +338,12 @@ Accessibility::RetError AccessibilityConfig::GetIgnoreRepeatClickTime(IGNORE_REP
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
     return pImpl_->GetIgnoreRepeatClickTime(time);
 }
+
+Accessibility::RetError AccessibilityConfig::SetEnhanceConfig(uint8_t *cfg, uint32_t cfgLen) const
+{
+    HILOG_INFO();
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->SetEnhanceConfig(cfg, cfgLen);
+}
 } // Accessibility
 } // OHOS
