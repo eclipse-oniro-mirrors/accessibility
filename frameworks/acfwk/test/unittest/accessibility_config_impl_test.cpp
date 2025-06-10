@@ -1942,5 +1942,18 @@ HWTEST_F(AccessibilityConfigImplTest, SetMagnificationState_001, TestSize.Level1
     EXPECT_EQ(Accessibility::RET_OK, instance.SetMagnificationState(false));
     GTEST_LOG_(INFO) << "SetMagnificationState_001 end";
 }
+
+/**
+ * @tc.number: SetEnhanceConfig_001
+ * @tc.name: SetEnhanceConfig_001
+ * @tc.desc: Test function SetEnhanceConfig
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetEnhanceConfig_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetEnhanceConfig_001 start";
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    EXPECT_NE(Accessibility::RET_OK, instance.SetEnhanceConfig(nullptr, 0));
+    GTEST_LOG_(INFO) << "SetEnhanceConfig_001 end";
+}
 } // namespace AccessibilityConfig
 } // namespace OHOS
