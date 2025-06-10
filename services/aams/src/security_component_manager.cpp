@@ -16,6 +16,10 @@
 #include "security_component_manager.h"
 #include "hilog_wrapper.h"
 #include "accessibility_element_info.h"
+#ifndef ACCESSIBILITY_SECURITY_COMPONENT
+#include "sec_comp_enhance_kit.h"
+#include "sec_comp_enhance_adapter.h"
+#endif // ACCESSIBILITY_SECURITY_COMPONENT
  
 namespace OHOS {
 namespace Accessibility {
@@ -25,6 +29,10 @@ const uint32_t TIMEOUT = 50;
  
 int32_t SecurityComponentManager::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
 {
+    #ifndef ACCESSIBILITY_SECURITY_COMPONENT
+    return RET_OK;
+    #endif // ACCESSIBILITY_SECURITY_COMPONENT
+
     int32_t result = Security::SecurityComponent::SecCompEnhanceKit::SetEnhanceCfg((uint8_t *)cfg, cfgLen);
     HILOG_INFO("SetEnhanceCfg result: %{public}d", result);
     return result;
@@ -34,6 +42,10 @@ std::map<std::string, std::string> SecurityComponentManager::GenerateActionArgum
     int64_t uniqueId, std::string bundleName, const std::map<std::string, std::string> &arguments)
 {
     HILOG_INFO("actionType: %{public}d", action);
+    #ifndef ACCESSIBILITY_SECURITY_COMPONENT
+    return arguments;
+    #endif // ACCESSIBILITY_SECURITY_COMPONENT
+
     std::map<std::string, std::string> actionArguments(arguments);
     if (action != ACCESSIBILITY_ACTION_CLICK) {
         return actionArguments;

@@ -18,8 +18,6 @@
  
 #include <string>
 #include "accessibility_def.h"
-#include "sec_comp_enhance_kit.h"
-#include "sec_comp_enhance_adapter.h"
  
 namespace OHOS {
 namespace Accessibility {

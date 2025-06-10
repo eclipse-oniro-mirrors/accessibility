@@ -144,7 +144,6 @@ ohos_shared_library("accessibleabilityms") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "graphic_2d:librender_service_base",
-    "security_component_manager:libsecurity_component_sdk",
   ]
 
   if (accessibility_feature_power_manager) {
@@ -169,6 +168,10 @@ ohos_shared_library("accessibleabilityms") {
 
   if (accessibility_watch_feature) {
     external_deps += [ "resource_schedule_service:ressched_client" ]
+  }
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
   }
 
   install_enable = true

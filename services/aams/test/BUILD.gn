@@ -148,6 +148,10 @@ ohos_unittest("accessibility_account_data_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
 }
 
 ################################################################################
@@ -271,6 +275,10 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
 }
 
 ################################################################################
@@ -877,6 +885,10 @@ ohos_unittest("accessible_ability_connection_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
 }
 
 ################################################################################
@@ -1322,6 +1334,10 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
 }
 
 ################################################################################
@@ -1776,6 +1792,10 @@ ohos_unittest("accessibility_settings_config_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
 }
 
 ################################################################################
