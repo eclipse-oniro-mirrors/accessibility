@@ -131,7 +131,9 @@ void MagnificationManager::OnModeChanged(uint32_t mode)
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetMagnificationMode(static_cast<int32_t>(mode));
     currentMode_ = mode;
-    interceptor->StartMagnificationInteract(mode);
+    if (needShow) {
+        interceptor->StartMagnificationInteract(mode);
+    }
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
 }
 

@@ -42,6 +42,7 @@ void WindowMagnificationManager::CreateMagnificationWindow(int32_t posX, int32_t
     windowOption->SetWindowType(Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION);
     windowOption->SetWindowMode(Rosen::WindowMode::WINDOW_MODE_FLOATING);
     windowOption->SetWindowRect(windowRect_);
+    windowOption->SetFocusable(false);
     window_ = Rosen::Window::Create(WINDOW_NAME, windowOption);
     if (window_ == nullptr) {
         HILOG_ERROR("create failed.");
@@ -264,13 +265,12 @@ bool WindowMagnificationManager::IsTapOnHotArea(int32_t posX, int32_t posY)
 void WindowMagnificationManager::RefreshWindowParam()
 {
     HILOG_DEBUG();
-    int32_t centerX = windowRect_.posX_;
-    int32_t centerY = windowRect_.posY_;
     if (isMagnificationWindowShow_) {
+        PointerPos center = GetRectCenter(windowRect_);
         HILOG_INFO("need refresh window param.");
         DisableWindowMagnification();
         GetWindowParam();
-        EnableWindowMagnification(centerX, centerY);
+        EnableWindowMagnification(center.posX, center.posY);
     } else {
         GetWindowParam();
     }
@@ -325,6 +325,14 @@ PointerPos WindowMagnificationManager::ConvertCenterToTopLeft(int32_t centerX, i
     PointerPos point = {0, 0};
     point.posX = centerX - (windowWidth_ / DIVISOR_TWO);
     point.posY = centerY - (windowHeight_ / DIVISOR_TWO);
+    return point;
+}
+
+PointerPos WindowMagnificationManager::GetRectCenter(Rosen::Rect rect)
+{
+    PointerPos point = {0, 0};
+    point.posX = rect.posX_ + static_cast<int32_t>(rect.width_ / DIVISOR_TWO);
+    point.posY = rect.posY_ + static_cast<int32_t>(rect.height_ / DIVISOR_TWO);
     return point;
 }
 

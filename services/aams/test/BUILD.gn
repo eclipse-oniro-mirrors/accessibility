@@ -880,6 +880,9 @@ ohos_unittest("accessible_ability_connection_test") {
 ohos_unittest("accessibility_display_manager_test") {
   module_out_path = module_output_path
   sources = [
+    "../../../frameworks/common/src/accessibility_constants.cpp",
+    "../../../frameworks/common/src/accessibility_event_info.cpp",
+    "../../../frameworks/common/src/accessibility_window_info.cpp",
     "../src/accessibility_display_manager.cpp",
     "../src/utils.cpp",
     "../src/accessibility_resource_bundle_manager.cpp",
@@ -1809,13 +1812,13 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "../src/magnification_manager.cpp",
     "../src/window_magnification_gesture.cpp",
     "../src/magnification_menu_manager.cpp",
-    "../src/full_screen_magnification_manager.cpp",
     "../src/window_magnification_manager.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
     "mock/src/mock_accessibility_display_manager.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
     "mock/src/mock_accessible_ability_client_stub_impl.cpp",
     "mock/src/mock_accessible_ability_manager_service.cpp",
+    "mock/src/mock_full_screen_magnification_manager.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessibility_zoom_gesture_test.cpp",
   ]
