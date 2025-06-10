@@ -714,5 +714,10 @@ std::shared_ptr<FullScreenMagnificationManager> AccessibleAbilityManagerService:
 {
     return nullptr;
 }
+
+int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
+{
+    return 0;
+}
 } // namespace Accessibility
 } // namespace OHOS
