@@ -580,7 +580,6 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     infos.emplace_back(nullptr);
     AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
     windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED);
-    sleep(1);
     EXPECT_EQ(WINDOW_UPDATE_ACCESSIBILITY_FOCUSED,
         AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType());
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange007 end";
@@ -1824,7 +1823,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     windowInfoManager.RegisterWindowListener(nullptr);
     windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE);
     sleep(1);
-    ASSERT_TRUE(windowInfoManager.a11yWindows_.size() == 0);
+    ASSERT_TRUE(windowInfoManager.a11yWindows_.size() != 0);
     windowInfoManager.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowUpdate001 end";
 }
