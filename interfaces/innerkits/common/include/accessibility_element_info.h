@@ -1843,6 +1843,20 @@ public:
       */
     void SetAccessibilityScrollable(const bool accessibilityScrollable);
 
+    /**
+     * @brief Get the uniqueId of the element info.
+     * @return uniqueId.
+     * @sysCap Accessibility
+     */
+    int64_t GetUniqueId() const;
+
+    /**
+     * @brief Set the uniqueId to the element info.
+     * @param uniqueId The uniqueId of node.
+     * @sysCap Accessibility
+     */
+    void SetUniqueId(const int64_t uniqueId);
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1929,6 +1943,7 @@ protected:
     int32_t innerWindowId_ = -1;
     std::string customComponentType_ = "";
     bool accessibilityScrollable_ = true;
+    int64_t uniqueId_ = -1;
 };
 } // namespace Accessibility
 } // namespace OHOS
