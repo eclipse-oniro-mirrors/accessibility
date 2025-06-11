@@ -743,12 +743,10 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     std::map<std::string, std::string> actionArguments {};
     AccessibilityElementInfo focusedElementInfo {};
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(focusedElementInfo);
-    if (!ret) {
-        HILOG_ERROR("find focused element failed.");
-        return false;
+    if (ret) {
+        actionArguments = SecurityComponentManager::GenerateActionArgumentsWithHMAC(action,
+            focusedElementInfo.GetUniqueId(), focusedElementInfo.GetBundleName(), actionArguments);
     }
-    actionArguments = SecurityComponentManager::GenerateActionArgumentsWithHMAC(action,
-        focusedElementInfo.GetUniqueId(), focusedElementInfo.GetBundleName(), actionArguments);
     sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl();
     if (actionCallback == nullptr) {
         HILOG_ERROR("Failed to create actionCallback.");
