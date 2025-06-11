@@ -318,6 +318,10 @@ public:
     {
         return 0;
     }
+    int32_t SetEnhanceConfig(const char *cfg, uint32_t cfgLen) override
+    {
+        return 0;
+    }
 };
 
 uint32_t GetU32Data(const uint8_t *ptr)

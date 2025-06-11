@@ -78,6 +78,7 @@ ohos_moduletest("aams_accessibility_touch_exploration_test") {
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/msdp_manager.cpp",
+    "../aams/src/security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -169,6 +170,10 @@ ohos_moduletest("aams_accessibility_touch_exploration_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
 }
 
 ################################################################################
@@ -194,6 +199,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/msdp_manager.cpp",
+    "../aams/src/security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -286,6 +292,10 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
 }
 
 ################################################################################
@@ -311,6 +321,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/msdp_manager.cpp",
+    "../aams/src/security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -402,6 +413,10 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
 }
 
 ################################################################################
@@ -427,6 +442,7 @@ ohos_moduletest("aams_server_test") {
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/msdp_manager.cpp",
+    "../aams/src/security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -516,6 +532,10 @@ ohos_moduletest("aams_server_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
 }
 
 ################################################################################
@@ -541,6 +561,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/msdp_manager.cpp",
+    "../aams/src/security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -631,6 +652,10 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
 }
 
 ################################################################################
@@ -656,6 +681,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
     "../aams/src/msdp_manager.cpp",
+    "../aams/src/security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -751,6 +777,10 @@ ohos_moduletest("aams_common_event_registry_test") {
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
 }
 
 ################################################################################

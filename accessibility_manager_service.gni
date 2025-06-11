@@ -22,6 +22,7 @@ declare_args() {
   accessibility_feature_hiviewdfx_hitrace = true
   accessibility_feature_hiviewdfx_hisysevent = true
   accessibility_dynamic_support = false
+  security_component_enable = false
   if (defined(global_parts_info) &&
       !defined(global_parts_info.powermgr_display_manager)) {
     accessibility_feature_display_manager = false
@@ -48,6 +49,11 @@ declare_args() {
   if (defined(global_parts_info) &&
       !defined(global_parts_info.hiviewdfx_hisysevent)) {
     accessibility_feature_hiviewdfx_hisysevent = false
+  }
+
+  if (!defined(global_parts_info) ||
+      defined(global_parts_info.security_security_component_manager)) {
+    security_component_enable = true
   }
 }
 
@@ -94,4 +100,8 @@ if (accessibility_feature_hiviewdfx_hisysevent) {
 
 if (product_name != "qemu-arm-linux-min") {
   accessibility_default_defines += [ "ACCESSIBILITY_EMULATOR_DEFINED" ]
+}
+
+if (security_component_enable) {
+  accessibility_default_defines += [ "ACCESSIBILITY_SECURITY_COMPONENT" ]
 }

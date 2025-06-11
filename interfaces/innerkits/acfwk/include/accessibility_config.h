@@ -455,6 +455,14 @@ public:
      */
     Accessibility::RetError GetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_TIME &time) const;
 
+    /**
+     * @brief set security component key
+     * @param cfg The value of the key
+     * @param cfgLen The length of the key
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError SetEnhanceConfig(uint8_t *cfg, uint32_t cfgLen) const;
+
 private:
     class Impl;
     std::unique_ptr<Impl> pImpl_;

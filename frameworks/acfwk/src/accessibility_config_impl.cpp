@@ -2001,5 +2001,21 @@ void AccessibilityConfig::Impl::AccessibilityLoadCallback::OnLoadSystemAbilityFa
         config_->LoadSystemAbilityFail();
     }
 }
+
+Accessibility::RetError AccessibilityConfig::Impl::SetEnhanceConfig(uint8_t *cfg, uint32_t cfgLen)
+{
+    HILOG_INFO();
+    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    if (cfg == nullptr || cfgLen <= 0) {
+        HILOG_ERROR("SecCompEnhance cfg info is empty");
+        return Accessibility::RET_ERR_NULLPTR;
+    }
+ 
+    if (GetServiceProxy() == nullptr) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_NULLPTR;
+    }
+    return static_cast<Accessibility::RetError>(GetServiceProxy()->SetEnhanceConfig((char *)cfg, cfgLen));
+}
 } // namespace AccessibilityConfig
 } // namespace OHOS

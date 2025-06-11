@@ -1684,5 +1684,18 @@ HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityPreviousFocusId_002, Test
     EXPECT_TRUE(elementInfo_->GetAccessibilityPreviousFocusId() == 10);
     GTEST_LOG_(INFO) << "SetAccessibilityPreviousFocusId_002 end";
 }
+
+/**
+ * @tc.number: SetUniqueId_001
+ * @tc.name: SetUniqueId
+ * @tc.desc: Test function SetUniqueId, GetUniqueId
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetUniqueId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetUniqueId_001 start";
+    elementInfo_->SetUniqueId(1);
+    EXPECT_EQ(elementInfo_->GetUniqueId(), 1);
+    GTEST_LOG_(INFO) << "SetUniqueId_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

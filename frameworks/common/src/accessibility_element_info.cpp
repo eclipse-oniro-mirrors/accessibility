@@ -1187,5 +1187,15 @@ void AccessibilityElementInfo::SetAccessibilityScrollable(const bool accessibili
 {
     accessibilityScrollable_ = accessibilityScrollable;
 }
+
+int64_t AccessibilityElementInfo::GetUniqueId() const
+{
+    return uniqueId_;
+}
+
+void AccessibilityElementInfo::SetUniqueId(const int64_t uniqueId)
+{
+    uniqueId_ = uniqueId;
+}
 } // namespace Accessibility
 } // namespace OHOS

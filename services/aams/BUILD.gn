@@ -69,6 +69,7 @@ accessibleabilityms_files = [
   "${services_path}/src/accessibility_setting_observer.cpp",
   "${services_path}/src/accessibility_setting_provider.cpp",
   "${services_path}/src/msdp_manager.cpp",
+  "${services_path}/src/security_component_manager.cpp",
   "${services_path}/src/accessibility_short_key_dialog.cpp",
   "${services_path}/src/accessibility_datashare_helper.cpp",
   "${services_path}/src/touch_exploration_multi_finger_gesture.cpp",
@@ -167,6 +168,10 @@ ohos_shared_library("accessibleabilityms") {
 
   if (accessibility_watch_feature) {
     external_deps += [ "resource_schedule_service:ressched_client" ]
+  }
+
+  if (security_component_enable) {
+    external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
   }
 
   install_enable = true

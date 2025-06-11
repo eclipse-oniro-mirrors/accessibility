@@ -94,6 +94,7 @@ public:
     Accessibility::RetError GetClickResponseTime(CLICK_RESPONSE_TIME &time);
     Accessibility::RetError GetIgnoreRepeatClickState(bool &state);
     Accessibility::RetError GetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_TIME &time);
+    Accessibility::RetError SetEnhanceConfig(uint8_t *cfg, uint32_t cfgLen);
 
     void ResetService(const wptr<IRemoteObject> &remote);
     void OnAccessibleAbilityManagerCaptionPropertyChanged(const CaptionProperty &property);
