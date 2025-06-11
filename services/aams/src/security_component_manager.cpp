@@ -29,12 +29,11 @@ const uint32_t TIMEOUT = 50;
  
 int32_t SecurityComponentManager::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
 {
-    #ifndef ACCESSIBILITY_SECURITY_COMPONENT
-    return RET_OK;
-    #endif // ACCESSIBILITY_SECURITY_COMPONENT
-
-    int32_t result = Security::SecurityComponent::SecCompEnhanceKit::SetEnhanceCfg((uint8_t *)cfg, cfgLen);
+    int32_t result = RET_OK;
+    #ifdef ACCESSIBILITY_SECURITY_COMPONENT
+    result = Security::SecurityComponent::SecCompEnhanceKit::SetEnhanceCfg((uint8_t *)cfg, cfgLen);
     HILOG_INFO("SetEnhanceCfg result: %{public}d", result);
+    #endif // ACCESSIBILITY_SECURITY_COMPONENT
     return result;
 }
  
@@ -44,8 +43,7 @@ std::map<std::string, std::string> SecurityComponentManager::GenerateActionArgum
     HILOG_INFO("actionType: %{public}d", action);
     #ifndef ACCESSIBILITY_SECURITY_COMPONENT
     return arguments;
-    #endif // ACCESSIBILITY_SECURITY_COMPONENT
-
+    #else
     std::map<std::string, std::string> actionArguments(arguments);
     if (action != ACCESSIBILITY_ACTION_CLICK) {
         return actionArguments;
@@ -82,6 +80,7 @@ std::map<std::string, std::string> SecurityComponentManager::GenerateActionArgum
     actionArguments["timeStamp"] = timeStamp;
     HILOG_INFO("result: %{public}d, strEnHanceData: %{public}s", result, strEnHanceData.c_str());
     return actionArguments;
+    #endif // ACCESSIBILITY_SECURITY_COMPONENT
 }
 } // namespace Accessibility
 } // namespace OHOS
