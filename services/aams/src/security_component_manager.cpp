@@ -16,7 +16,7 @@
 #include "security_component_manager.h"
 #include "hilog_wrapper.h"
 #include "accessibility_element_info.h"
-#ifndef ACCESSIBILITY_SECURITY_COMPONENT
+#ifdef ACCESSIBILITY_SECURITY_COMPONENT
 #include "sec_comp_enhance_kit.h"
 #include "sec_comp_enhance_adapter.h"
 #endif // ACCESSIBILITY_SECURITY_COMPONENT
