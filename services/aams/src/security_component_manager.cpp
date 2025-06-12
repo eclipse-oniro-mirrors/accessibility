@@ -76,8 +76,8 @@ std::map<std::string, std::string> SecurityComponentManager::GenerateActionArgum
     }
     std::vector<uint8_t> vecEnHanceData(enHanceData, enHanceData + enHanceDataLen);
     std::string strEnHanceData(vecEnHanceData.begin(), vecEnHanceData.end());
-    actionArguments["HMAC"] = strEnHanceData;
-    actionArguments["timeStamp"] = timeStamp;
+    actionArguments[ACTION_ARGU_CLICK_ENHANCE_DATA] = strEnHanceData;
+    actionArguments[ACTION_ARGU_CLICK_TIMESTAMP] = timeStamp;
     HILOG_INFO("result: %{public}d, strEnHanceData: %{public}s", result, strEnHanceData.c_str());
     return actionArguments;
     #endif // ACCESSIBILITY_SECURITY_COMPONENT
