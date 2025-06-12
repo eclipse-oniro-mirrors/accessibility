@@ -2013,9 +2013,10 @@ Accessibility::RetError AccessibilityConfig::Impl::SetEnhanceConfig(uint8_t *cfg
  
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
-        return Accessibility::RET_ERR_NULLPTR;
+        return Accessibility::RET_ERR_SAMGR;
     }
-    return static_cast<Accessibility::RetError>(GetServiceProxy()->SetEnhanceConfig((char *)cfg, cfgLen));
+    return static_cast<Accessibility::RetError>(GetServiceProxy()->SetEnhanceConfig(reinterpret_cast<char*>(cfg),
+        cfgLen));
 }
 } // namespace AccessibilityConfig
 } // namespace OHOS
