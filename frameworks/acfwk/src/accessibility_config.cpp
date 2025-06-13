@@ -342,6 +342,10 @@ Accessibility::RetError AccessibilityConfig::GetIgnoreRepeatClickTime(IGNORE_REP
 Accessibility::RetError AccessibilityConfig::SetEnhanceConfig(uint8_t *cfg, uint32_t cfgLen) const
 {
     HILOG_INFO();
+    if (cfg == nullptr || cfgLen <= 0) {
+        HILOG_ERROR("SecCompEnhance cfg info is empty");
+        return Accessibility::RET_ERR_INVALID_PARAM;
+    }
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
     return pImpl_->SetEnhanceConfig(cfg, cfgLen);
 }

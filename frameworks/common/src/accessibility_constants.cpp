@@ -34,6 +34,8 @@ const std::string ACTION_ARGU_HTML_ELEMENT = "htmlItem";
 const std::string ACTION_ARGU_SET_TEXT = "setText";
 const std::string ACTION_ARGU_MOVE_UNIT = "textMoveUnit";
 const std::string ACTION_ARGU_SPAN_ID = "spanId";
+const std::string ACTION_ARGU_CLICK_ENHANCE_DATA = "enhanceData";
+const std::string ACTION_ARGU_CLICK_TIMESTAMP = "timeStamp";
 
 // HtmlItemType
 const std::string HTML_ITEM_INVALID = "invalid";
