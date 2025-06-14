@@ -75,6 +75,8 @@ namespace {
     const std::string ZOOM_GESTURE_ENABLED_RECONFIRM = "accessibility_zoom_gesture_enabled_reconfirm";
     const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
+    const std::string FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
+    const std::string FLASH_REMINDER_ENABLED = "accessibility_reminder_function_enabled";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
