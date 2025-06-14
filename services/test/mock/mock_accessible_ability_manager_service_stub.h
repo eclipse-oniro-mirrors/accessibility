@@ -71,6 +71,7 @@ public:
     ErrCode SetMagnificationState(const bool state) override;
     ErrCode GetActiveWindow(int32_t& windowId) override;
 
+    ErrCode CheckExtensionAbilityPermission(std::string& processName) override;
     ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
     ErrCode DisableUITestAbility() override;
 

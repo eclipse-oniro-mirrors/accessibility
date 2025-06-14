@@ -120,6 +120,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
     int32_t mode = data.ReadInt32();
     if (mode == PREFETCH_RECURSIVE_CHILDREN) {
         if (!Permission::CheckCallingPermission(OHOS_PERMISSION_QUERY_ACCESSIBILITY_ELEMENT) &&
+            !Permission::CheckCallingPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY) &&
             !Permission::IsStartByHdcd()) {
             HILOG_ERROR("no get element permission");
             reply.WriteInt32(RET_ERR_NO_CONNECTION);
@@ -165,6 +166,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchDefaultFocusedByWindowId(Messa
     int32_t mode = data.ReadInt32();
     if (mode == PREFETCH_RECURSIVE_CHILDREN) {
         if (!Permission::CheckCallingPermission(OHOS_PERMISSION_QUERY_ACCESSIBILITY_ELEMENT) &&
+            !Permission::CheckCallingPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY) &&
             !Permission::IsStartByHdcd()) {
             HILOG_ERROR("no get element permission");
             reply.WriteInt32(RET_ERR_NO_CONNECTION);

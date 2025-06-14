@@ -77,7 +77,8 @@ void AddPermission()
         OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str(),
         OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str(),
         OHOS_PERMISSION_MANAGE_SECURE_SETTINGS.c_str(),
-        OHOS_PERMISSION_MANAGE_SETTINGS.c_str()
+        OHOS_PERMISSION_MANAGE_SETTINGS.c_str(),
+        OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY.c_str()
     };
     NativeTokenInfoParams infoInstance = {
         .dcapsNum = 0,
@@ -1250,6 +1251,35 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetEnabledAbilities_001, TestS
     EXPECT_EQ(RET_OK,
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledAbilities(enabledAbilities));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetEnabledAbilities_001 end";
+}
+
+/*
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_CheckExtensionAbilityPermission_001
+* @tc.name: CheckExtensionAbilityPermission
+* @tc.desc: Test function CheckExtensionAbilityPermission
+*/
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, CheckExtensionAbilityPermission_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_001 start";
+    std::string processName = "";
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().CheckExtensionAbilityPermission(
+        processName));
+    GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_001 end";
+}
+
+/*
+* @tc.number: AccessibleAbility_ManagerService_UnitTest_CheckExtensionAbilityPermission_002
+* @tc.name: CheckExtensionAbilityPermission
+* @tc.desc: Test function CheckExtensionAbilityPermission
+*/
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, CheckExtensionAbilityPermission_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_002 start";
+    AddPermission();
+    std::string processName = "";
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().CheckExtensionAbilityPermission(
+        processName));
+    GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_002 end";
 }
 
 /*

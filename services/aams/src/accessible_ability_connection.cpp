@@ -413,11 +413,7 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         }
         accountData->RemoveConnectedAbility(*sharedElementName);
         accountData->RemoveEnabledAbility(uri);
-
-        std::string uiTestUri = Utils::GetUri("ohos.uitest", "uitestability");
-        if (uri == uiTestUri) {
-            accountData->RemoveInstalledAbility("ohos.uitest");
-        }
+        accountData->RemoveInstalledAbility(sharedElementName->GetBundleName());
 
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
     std::string bundleName = sharedElementName->GetBundleName();

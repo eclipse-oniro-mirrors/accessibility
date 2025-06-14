@@ -53,6 +53,7 @@
 #include "accessibility_caption.h"
 #include "msdp_manager.h"
 #include "security_component_manager.h"
+#include "accessibility_permission.h"
 
 using namespace std;
 using namespace OHOS::Security::AccessToken;
@@ -69,8 +70,6 @@ namespace {
     const std::string AAMS_GESTURE_RUNNER_NAME = "AamsGestureRunner";
     const std::string AAMS_HOVER_ENTER_RUNNER_NAME = "AamsHoverEnterRunner";
     const std::string AAMS_REGISTER_RUNNER_NAME = "AamsRegisterRunner";
-    const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
-    const std::string UI_TEST_ABILITY_NAME = "uitestability";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
@@ -1621,6 +1620,26 @@ ErrCode AccessibleAbilityManagerService::SetMagnificationState(const bool state)
     return RET_OK;
 }
 
+ErrCode AccessibleAbilityManagerService::CheckExtensionAbilityPermission(std::string& processName)
+{
+    bool ret = Permission::CheckCallingPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY);
+    auto id = IPCSkeleton::GetCallingTokenID();
+    Security::AccessToken::NativeTokenInfo info;
+    auto result = Security::AccessToken::AccessTokenKit::GetNativeTokenInfo(id, info);
+    if (result != 0) {
+        HILOG_ERROR("get native token info failed!");
+        return RET_ERR_TOKEN_ID;
+    }
+
+    processName = info.processName;
+    if ((processName.compare("hdcd") != 0) && (!ret)) {
+        HILOG_ERROR("permission check failed, processName = %{public}s", processName.c_str());
+        return RET_ERR_NO_PERMISSION;
+    }
+
+    return RET_OK;
+}
+
 ErrCode AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject> &obj)
 {
     HILOG_DEBUG();
@@ -1638,9 +1657,15 @@ ErrCode AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteO
         return RET_ERR_NULLPTR;
     }
 
+    std::string processName = "";
+    auto ret = CheckExtensionAbilityPermission(processName);
+    if (ret != RET_OK) {
+        return ret;
+    }
+
     ffrt::promise<RetError> syncPromise;
     ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, obj]() {
+    handler_->PostTask([this, &syncPromise, obj, processName]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -1648,7 +1673,7 @@ ErrCode AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteO
             syncPromise.set_value(RET_ERR_NULLPTR);
             return;
         }
-        std::string uiTestUri = Utils::GetUri(UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
+        std::string uiTestUri = Utils::GetUri(processName, processName);
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(uiTestUri);
         if (connection) {
             HILOG_ERROR("connection is existed!!");
@@ -1657,7 +1682,7 @@ ErrCode AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteO
         }
 
         std::function<void()> addUITestClientFunc = std::bind(&AccessibilityAccountData::AddUITestClient, accountData,
-            obj, UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
+            obj, processName, processName);
         handler_->PostTask(addUITestClientFunc, "AddUITestClient");
         accountData->AddEnabledAbility(uiTestUri);
         syncPromise.set_value(RET_OK);
@@ -1677,9 +1702,15 @@ ErrCode AccessibleAbilityManagerService::DisableUITestAbility()
         return RET_ERR_NULLPTR;
     }
 
+    std::string processName = "";
+    auto ret = CheckExtensionAbilityPermission(processName);
+    if (ret != RET_OK) {
+        return ret;
+    }
+
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     ffrt::future syncFuture = syncPromise->get_future();
-    handler_->PostTask([this, syncPromise]() {
+    handler_->PostTask([this, syncPromise, processName]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -1687,7 +1718,7 @@ ErrCode AccessibleAbilityManagerService::DisableUITestAbility()
             syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
-        std::string uiTestUri = Utils::GetUri(UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
+        std::string uiTestUri = Utils::GetUri(processName, processName);
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(uiTestUri);
         if (!connection) {
             HILOG_ERROR("connection is not existed!!");
@@ -1695,7 +1726,7 @@ ErrCode AccessibleAbilityManagerService::DisableUITestAbility()
             return;
         }
         std::function<void()> removeUITestClientFunc =
-            std::bind(&AccessibilityAccountData::RemoveUITestClient, accountData, connection, UI_TEST_BUNDLE_NAME);
+            std::bind(&AccessibilityAccountData::RemoveUITestClient, accountData, connection, processName);
         handler_->PostTask(removeUITestClientFunc, "RemoveUITestClient");
         accountData->RemoveEnabledAbility(uiTestUri);
         syncPromise->set_value(RET_OK);

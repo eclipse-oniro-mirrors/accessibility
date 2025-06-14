@@ -119,6 +119,7 @@ public:
     ErrCode EnableAbility(const std::string &name, const uint32_t capabilities) override;
     ErrCode GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
     RetError SetCurtainScreenUsingStatus(bool isEnable);
+    ErrCode CheckExtensionAbilityPermission(std::string& processName) override;
     ErrCode DisableAbility(const std::string &name) override;
     ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
     ErrCode DisableUITestAbility() override;

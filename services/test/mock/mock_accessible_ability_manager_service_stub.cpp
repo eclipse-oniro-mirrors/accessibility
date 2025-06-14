@@ -183,6 +183,12 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetActiveWindow(int32_t& window
     return RET_OK;
 }
 
+ErrCode MockAccessibleAbilityManagerServiceStub::CheckExtensionAbilityPermission(std::string& processName)
+{
+    (void)processName;
+    return RET_OK;
+}
+
 ErrCode MockAccessibleAbilityManagerServiceStub::EnableUITestAbility(const sptr<IRemoteObject> &obj)
 {
     (void)obj;

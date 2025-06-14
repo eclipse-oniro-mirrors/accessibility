@@ -226,6 +226,12 @@ RetError AccessibleAbilityManagerService::SetCurtainScreenUsingStatus(bool isEna
     return RET_OK;
 }
 
+ErrCode AccessibleAbilityManagerService::CheckExtensionAbilityPermission(std::string& processName)
+{
+    (void)processName;
+    return RET_OK;
+}
+
 ErrCode AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     (void)name;
