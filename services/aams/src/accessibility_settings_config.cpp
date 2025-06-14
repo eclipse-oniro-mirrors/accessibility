@@ -1023,7 +1023,7 @@ void AccessibilitySettingsConfig::InitSetting()
     ignoreRepeatClickTime_ = static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0));
     SetIgnoreRepeatClickTime(ignoreRepeatClickTime_);
     datashare_->GetStringValue(FLASH_REMINDER_SWITCH_KEY, "0");
-    datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "");
+    datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "DEFAULT");
 }
 
 void AccessibilitySettingsConfig::InitCapability()
