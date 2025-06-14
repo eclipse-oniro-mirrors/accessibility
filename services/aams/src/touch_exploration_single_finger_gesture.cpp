@@ -737,8 +737,17 @@ void TouchExploration::OffsetEvent(MMI::PointerEvent &event)
 
     MMI::PointerEvent::PointerItem pointer {};
     event.GetPointerItem(event.GetPointerId(), pointer);
-    pointer.SetDisplayX(offsetX_ + pointer.GetDisplayX());
-    pointer.SetDisplayY(offsetY_ + pointer.GetDisplayY());
+    int32_t x = offsetX_ + pointer.GetDisplayX();
+    int32_t y = offsetY_ + pointer.GetDisplayY();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    int32_t displayWidth = displayMgr.GetWidth();
+    int32_t displayHeight = displayMgr.GetHeight();
+    x = x < 0 ? 0 : (x >= displayWidth ? displayWidth - 1 : x);
+    y = y < 0 ? 0 : (y >= displayHeight ? displayHeight - 1 : y);
+#endif
+    pointer.SetDisplayX(x);
+    pointer.SetDisplayY(y);
     event.RemovePointerItem(event.GetPointerId());
     event.AddPointerItem(pointer);
 }
