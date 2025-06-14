@@ -183,7 +183,7 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetActiveWindow(int32_t& window
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::CheckExtensionAbilityPermission(std::string& processName)
+ErrCode MockAccessibleAbilityManagerServiceStub::CheckExtensionAbilityPermission(std::string& processName)
 {
     (void)processName;
     return RET_OK;
