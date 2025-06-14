@@ -132,7 +132,10 @@ public:
     {
         return RET_OK;
     }
-
+    ErrCode CheckExtensionAbilityPermission(std::string& processName) override
+    {
+        return RET_OK;
+    }
     ErrCode EnableUITestAbility(const sptr<IRemoteObject> &obj) override
     {
         return RET_OK;
