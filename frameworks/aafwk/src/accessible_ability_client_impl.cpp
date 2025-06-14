@@ -261,6 +261,17 @@ RetError AccessibleAbilityClientImpl::RegisterAbilityListener(
         return RET_ERR_REGISTER_EXIST;
     }
 
+    if (CheckServiceProxy() == false) {
+        HILOG_ERROR("failed to connect to aams!");
+        return RET_ERR_SAMGR;
+    }
+    std::string processName = "";
+    auto ret = serviceProxy_->CheckExtensionAbilityPermission(processName);
+    if (ret != 0) {
+        HILOG_ERROR("check permission failed!");
+        return static_cast<RetError>(ret);
+    }
+
     listener_ = listener;
     return RET_OK;
 }

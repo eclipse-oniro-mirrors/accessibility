@@ -49,8 +49,6 @@ namespace A11yRegisterElement {
 namespace {
     const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
     const std::string AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
-    const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
-    const std::string UI_TEST_ABILITY_NAME = "uitestability";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "a11yRegisterElement.config.ready";
     const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";

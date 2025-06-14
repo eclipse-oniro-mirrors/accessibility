@@ -43,6 +43,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void DisableAbility([in] String name);
     void SetMagnificationState([in] boolean state);
     void GetActiveWindow([out] int windowId);
+    void CheckExtensionAbilityPermission([inout] String processName);
     void EnableUITestAbility([in] IRemoteObject obj);
     void DisableUITestAbility();
     void SetScreenMagnificationState([in] boolean state);
