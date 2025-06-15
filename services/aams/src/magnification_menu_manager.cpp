@@ -120,6 +120,7 @@ void MagnificationMenuManager::LoadMenuBgImage(uint32_t mode)
 void MagnificationMenuManager::ShowMenuWindow(uint32_t mode)
 {
     HILOG_DEBUG();
+    GetWindowParam();
     currentType_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationType();
     menuMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
     if (currentType_ != SWITCH_MAGNIFICATION) {
@@ -291,7 +292,6 @@ void MagnificationMenuManager::RefreshWindowParam()
     HILOG_DEBUG();
     if (isMenuShown_) {
         DisableMenuWindow();
-        GetWindowParam();
         ShowMenuWindow(menuMode_);
     } else {
         GetWindowParam();

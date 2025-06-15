@@ -99,6 +99,7 @@ void WindowMagnificationManager::DrawRuoundRectFrame()
 void WindowMagnificationManager::EnableWindowMagnification(int32_t centerX, int32_t centerY)
 {
     HILOG_INFO("centerX = %{public}d, centerY = %{public}d.", centerX, centerY);
+    GetWindowParam();
     if (window_ == nullptr) {
         HILOG_ERROR("window is null. need create.");
         CreateMagnificationWindow(centerX, centerY);
@@ -269,7 +270,6 @@ void WindowMagnificationManager::RefreshWindowParam()
         PointerPos center = GetRectCenter(windowRect_);
         HILOG_INFO("need refresh window param.");
         DisableWindowMagnification();
-        GetWindowParam();
         EnableWindowMagnification(center.posX, center.posY);
     } else {
         GetWindowParam();

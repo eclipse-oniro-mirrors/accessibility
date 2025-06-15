@@ -113,7 +113,7 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
     }
 
     int32_t sourceType = event.GetSourceType();
-    if (sourceType != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
+    if (state_ == READY_STATE && sourceType != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
         EventTransmission::OnPointerEvent(event);
         return false;
     }

@@ -85,6 +85,7 @@ void FullScreenMagnificationManager::DrawRuoundRectFrame()
 void FullScreenMagnificationManager::EnableMagnification(int32_t centerX, int32_t centerY)
 {
     HILOG_INFO("centerX = %{public}d, centerY = %{public}d.", centerX, centerY);
+    GetWindowParam();
     if (window_ == nullptr) {
         HILOG_ERROR("window is null. need create.");
         CreateMagnificationWindow();
@@ -239,7 +240,6 @@ void FullScreenMagnificationManager::RefreshWindowParam()
     int32_t centerY = sourceRect_.posY_;
     if (isMagnificationWindowShow_) {
         DisableMagnification();
-        GetWindowParam();
         EnableMagnification(centerX, centerY);
     } else {
         GetWindowParam();

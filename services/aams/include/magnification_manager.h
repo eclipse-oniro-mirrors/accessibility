@@ -34,6 +34,10 @@ public:
     void TriggerMagnification(uint32_t type, uint32_t mode);
     bool GetMagnificationState();
     void RefreshWindowParam();
+    inline void ResetCurrentMode()
+    {
+        currentMode_ = 0;
+    }
 private:
     std::shared_ptr<WindowMagnificationManager> windowMagnificationManager_ = nullptr;
     std::shared_ptr<FullScreenMagnificationManager> fullScreenMagnificationManager_ = nullptr;
