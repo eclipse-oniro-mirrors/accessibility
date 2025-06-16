@@ -68,6 +68,11 @@ sptr<IRemoteObject> AccessibleAbilityClientImpl::GetRemoteObject()
     return nullptr;
 }
 
+RetError AccessibleAbilityClientImpl::CheckExtensionAbilityPermission()
+{
+    return RET_OK;
+}
+
 RetError AccessibleAbilityClientImpl::RegisterAbilityListener(
     const std::shared_ptr<AccessibleAbilityListener> &listener)
 {
