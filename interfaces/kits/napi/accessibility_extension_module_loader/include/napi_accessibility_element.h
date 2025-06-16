@@ -82,6 +82,7 @@ public:
     static napi_value FindElement(napi_env env, napi_callback_info info);
     static napi_value ErrorOperation(NAccessibilityElementData *callbackInfo);
     static napi_value GetCursorPosition(napi_env env, napi_callback_info info);
+    static napi_value ExecuteAction(napi_env env, napi_callback_info info);
 
     // Element info
     static void GetElementInfoComponentId(NAccessibilityElementData *callbackInfo, napi_value &value);

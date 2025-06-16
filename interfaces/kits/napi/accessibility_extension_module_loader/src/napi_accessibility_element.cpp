@@ -127,6 +127,31 @@ namespace {
         {"windowId", &NAccessibilityElement::GetWindowInfoWindowId},
         {"mainWindowId", &NAccessibilityElement::GetWindowInfoMainWindowId},
     };
+
+    const std::vector<std::string> ACTION_NAMES = {
+        "accessibilityFocus",      //AccessibilityAction.ACCESSIBILLITY_FOCUS=0
+        "clearAccessibilityFocus", //AccessibilityAction.CLEAR_ACCESSIBILLITY_FOCUS=1
+        "focus",                   //AccessibilityAction.FOCUS=2
+        "clearFocus",              //AccessibilityAction.CLEAR_FOCUS=3
+        "click",                   //AccessibilityAction.CLICK=4
+        "longClick",               //AccessibilityAction.LONG_CLICK=5
+        "cut",                     //AccessibilityAction.CUT=6
+        "copy",                    //AccessibilityAction.COPY=7
+        "paste",                   //AccessibilityAction.PASTE=8
+        "select",                  //AccessibilityAction.SELECT=9
+        "setText",                 //AccessibilityAction.SET_TEXT=10
+        "scrollForward",           //AccessibilityAction.SCROLL_FORWARD=11
+        "scrollBackward",          //AccessibilityAction.SCROLL_BACKWARD=12
+        "setSelection",            //AccessibilityAction.SET_SELECTION=13
+        "setCursorPosition",       //AccessibilityAction.SET_CURSOR_POSITION=14
+        "home",                    //AccessibilityAction.HOME=15
+        "back",                    //AccessibilityAction.BACK=16
+        "recentTask",              //AccessibilityAction.RECENT_TASK=17
+        "notificationCenter",      //AccessibilityAction.NOTIFICATION_CENTER=18
+        "controlCenter",           //AccessibilityAction.CONTROL_CENTER=19
+        "common",                  //AccessibilityAction.COMMON=20
+        "spanClick"                //AccessibilityAction.SPAN_CLICK=21
+    };
 } // namespace
 
 napi_ref NAccessibilityElement::consRef_ = nullptr;
@@ -141,6 +166,7 @@ void NAccessibilityElement::DefineJSAccessibilityElement(napi_env env)
         DECLARE_NAPI_FUNCTION("performAction", NAccessibilityElement::PerformAction),
         DECLARE_NAPI_FUNCTION("getCursorPosition", NAccessibilityElement::GetCursorPosition),
         DECLARE_NAPI_FUNCTION("findElement", NAccessibilityElement::FindElement),
+        DECLARE_NAPI_FUNCTION("executeAction", NAccessibilityElement::ExecuteAction),
     };
 
     napi_value constructor = nullptr;
@@ -1861,6 +1887,42 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
         return nullptr;
     }
     return PerformActionAsync(env, argc, argv, actionName, accessibilityElement);
+}
+
+napi_value NAccessibilityElement::ExecuteAction(napi_env env, napi_callback_info info)
+{
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value argv[ARGS_SIZE_TWO] = {0};
+    napi_value thisVar = nullptr;
+    void* data = nullptr;
+    napi_status status = napi_get_cb_info(env, info, &argc, argv, &thisVar, &data);
+    if (status != napi_ok) {
+        HILOG_ERROR("Failed to get cb info");
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_FAILED);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    HILOG_DEBUG("argc = %{public}zu", argc);
+
+    AccessibilityElement* accessibilityElement = UnrapAccessibilityElement(env, thisVar);
+    if (!accessibilityElement) {
+        return nullptr;
+    }
+
+    int32_t action = -1;
+    NAccessibilityErrorCode errCode = NAccessibilityErrorCode::ACCESSIBILITY_OK;
+    if (argc != ARGS_SIZE_TWO || !ParseInt32(env, action, argv[PARAM0]) ||
+        action < 0 || action >= ACTION_NAMES.size()) {
+        HILOG_ERROR("parameter is invalid: argc=%{public}zu, action=%{public}zu", argc, action);
+        errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
+        delete accessibilityElement;
+        accessibilityElement = nullptr;
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
+        return nullptr;
+    }
+    return PerformActionAsync(env, argc, argv, ACTION_NAMES.at(action), accessibilityElement);
 }
 
 AccessibilityElement* NAccessibilityElement::UnrapAccessibilityElement(napi_env env, napi_value thisVar)
