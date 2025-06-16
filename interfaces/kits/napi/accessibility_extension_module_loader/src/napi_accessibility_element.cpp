@@ -129,8 +129,8 @@ namespace {
     };
 
     const std::vector<std::string> ACTION_NAMES = {
-        "accessibilityFocus",      //AccessibilityAction.ACCESSIBILLITY_FOCUS=0
-        "clearAccessibilityFocus", //AccessibilityAction.CLEAR_ACCESSIBILLITY_FOCUS=1
+        "accessibilityFocus",      //AccessibilityAction.ACCESSIBILITY_FOCUS=0
+        "clearAccessibilityFocus", //AccessibilityAction.CLEAR_ACCESSIBILITY_FOCUS=1
         "focus",                   //AccessibilityAction.FOCUS=2
         "clearFocus",              //AccessibilityAction.CLEAR_FOCUS=3
         "click",                   //AccessibilityAction.CLICK=4
