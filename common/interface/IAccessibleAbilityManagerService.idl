@@ -24,6 +24,8 @@ interface OHOS.Accessibility.IAccessibilityEnableAbilityListsObserver;
 interface OHOS.Accessibility.IAccessibilityElementOperator;
 interface OHOS.Accessibility.IAccessibleAbilityManagerConfigObserver;
 sequenceable OHOS.IRemoteObject;
+rawdata OHOS.Accessibility.AccessibilitySecCompRawdata;
+
 interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     [oneway] void SendEvent([in] AccessibilityEventInfoParcel eventInfoParcel, [in] int flag);
     void RegisterStateObserver([in] IAccessibleAbilityManagerStateObserver observer, [out] unsigned int state);
@@ -90,5 +92,5 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void RemoveRequestId([in] int requestId);
     void GetRootParentId([in] int windowsId, [in] int treeId, [out] long parentId);
     void GetScreenReaderState([out] boolean state);
-    void SetEnhanceConfig([in] CString cfg, [in] unsigned int cfgLen);
+    void SetEnhanceConfig([in] AccessibilitySecCompRawdata rawData);
 }
