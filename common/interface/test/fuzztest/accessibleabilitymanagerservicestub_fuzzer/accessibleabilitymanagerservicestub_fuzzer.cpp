@@ -321,7 +321,7 @@ public:
     {
         return 0;
     }
-    int32_t SetEnhanceConfig(const char *cfg, uint32_t cfgLen) override
+    int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override
     {
         return 0;
     }
