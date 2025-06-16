@@ -259,4 +259,14 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::GetLocalAbilityManagerProxy(int32
 {
     return nullptr;
 }
+
+int32_t SystemAbilityManagerProxy::UnloadProcess(const std::vector<std::u16string>& processList)
+{
+    return -1;
+}
+
+int32_t SystemAbilityManagerProxy::GetLruIdleSystemAbilityProc(std::vector<IdleProcessInfo>& processInfos)
+{
+    return -1;
+}
 }
