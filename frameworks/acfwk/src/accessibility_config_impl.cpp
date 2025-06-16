@@ -2015,8 +2015,10 @@ Accessibility::RetError AccessibilityConfig::Impl::SetEnhanceConfig(uint8_t *cfg
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    return static_cast<Accessibility::RetError>(GetServiceProxy()->SetEnhanceConfig(reinterpret_cast<char*>(cfg),
-        cfgLen));
+    AccessibilitySecCompRawdata rawData;
+    rawData.size = cfgLen;
+    rawData.data = cfg;
+    return static_cast<Accessibility::RetError>(GetServiceProxy()->SetEnhanceConfig(rawData));
 }
 } // namespace AccessibilityConfig
 } // namespace OHOS
