@@ -52,7 +52,6 @@
 #include "tokenid_kit.h"
 #include "accessibility_caption.h"
 #include "msdp_manager.h"
-#include "security_component_manager.h"
 #include "accessibility_permission.h"
 
 using namespace std;
@@ -740,7 +739,7 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     AccessibilityElementInfo focusedElementInfo {};
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(focusedElementInfo);
     if (ret) {
-        actionArguments = SecurityComponentManager::GenerateActionArgumentsWithHMAC(action,
+        actionArguments = AccessibilitySecurityComponentManager::GenerateActionArgumentsWithHMAC(action,
             focusedElementInfo.GetUniqueId(), focusedElementInfo.GetBundleName(), actionArguments);
     }
     sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl();
@@ -3982,10 +3981,10 @@ std::shared_ptr<FullScreenMagnificationManager> AccessibleAbilityManagerService:
     return magnificationManager_->GetFullScreenMagnificationManager();
 }
 
-int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
+int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
 {
     HILOG_INFO();
-    int32_t result = SecurityComponentManager::SetEnhanceConfig(cfg, cfgLen);
+    int32_t result = AccessibilitySecurityComponentManager::SetEnhanceConfig(rawData);
     return result;
 }
 } // namespace Accessibility
