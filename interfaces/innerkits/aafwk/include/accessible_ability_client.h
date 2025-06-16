@@ -294,6 +294,13 @@ public:
     * @param position: The position of the cursor to get.
     */
     virtual RetError GetCursorPosition(const AccessibilityElementInfo &elementInfo, int32_t &position) = 0;
+
+    /**
+     * @brief Check the permission of the extension ability.
+     * @return Return RET_OK if the ability has the permission.
+     */
+    virtual RetError CheckExtensionAbilityPermission() = 0;
+
     /**
      * @brief Register ability listener.
      * @param listener The listener to add.

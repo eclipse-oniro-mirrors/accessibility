@@ -50,6 +50,12 @@ RetError AccessibilityUITestAbilityImpl::RegisterAbilityListener(
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
+
+    auto ret = aaClient->CheckExtensionAbilityPermission();
+    if (ret != RET_OK) {
+        HILOG_ERROR("extension ability permission check failed!");
+        return ret;
+    }
     return aaClient->RegisterAbilityListener(listener);
 }
 

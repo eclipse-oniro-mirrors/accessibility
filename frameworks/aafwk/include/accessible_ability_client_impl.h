@@ -63,6 +63,12 @@ public:
     virtual sptr<IRemoteObject> GetRemoteObject() override;
 
     /**
+     * @brief Check the permission of the extension ability.
+     * @return Return RET_OK if the ability has the permission.
+     */
+    virtual RetError CheckExtensionAbilityPermission() override;
+
+    /**
      * @brief Register ability listener.
      * @param listener The listener to add.
      * @return Return RET_OK if registers listener successfully, otherwise refer to the RetError for the failure.

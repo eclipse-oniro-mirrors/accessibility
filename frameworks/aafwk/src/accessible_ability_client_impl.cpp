@@ -251,16 +251,9 @@ sptr<IRemoteObject> AccessibleAbilityClientImpl::GetRemoteObject()
     return this->AsObject();
 }
 
-RetError AccessibleAbilityClientImpl::RegisterAbilityListener(
-    const std::shared_ptr<AccessibleAbilityListener> &listener)
+RetError AccessibleAbilityClientImpl::CheckExtensionAbilityPermission()
 {
     HILOG_DEBUG();
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
-    if (listener_) {
-        HILOG_DEBUG("listener already exists.");
-        return RET_ERR_REGISTER_EXIST;
-    }
-
     if (CheckServiceProxy() == false) {
         HILOG_ERROR("failed to connect to aams!");
         return RET_ERR_SAMGR;
@@ -270,6 +263,18 @@ RetError AccessibleAbilityClientImpl::RegisterAbilityListener(
     if (ret != 0) {
         HILOG_ERROR("check permission failed!");
         return static_cast<RetError>(ret);
+    }
+    return RET_OK;
+}
+
+RetError AccessibleAbilityClientImpl::RegisterAbilityListener(
+    const std::shared_ptr<AccessibleAbilityListener> &listener)
+{
+    HILOG_DEBUG();
+    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    if (listener_) {
+        HILOG_DEBUG("listener already exists.");
+        return RET_ERR_REGISTER_EXIST;
     }
 
     listener_ = listener;
