@@ -502,7 +502,7 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetRootParentId(int32_t windowI
     return RET_OK;
 }
 
-int32_t MockAccessibleAbilityManagerServiceStub::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
+int32_t MockAccessibleAbilityManagerServiceStub::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
 {
     return 0;
 }
