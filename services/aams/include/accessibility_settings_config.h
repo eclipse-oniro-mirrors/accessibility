@@ -25,6 +25,9 @@
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string NIGHT_MODE_STATE_OFF = "0";
+}
 
 class AccessibilitySettingsConfig final {
 public:
@@ -62,6 +65,7 @@ public:
     RetError SetStartToHosState(const bool state);
     RetError SetIgnoreRepeatClickReconfirm(const bool state);
     RetError SetZoomGestureEnabledReconfirm(const bool state);
+    RetError SetColorModeState(const std::string &name = NIGHT_MODE_STATE_OFF);
 
     bool GetEnabledState() const;
     bool GetTouchGuideState() const;

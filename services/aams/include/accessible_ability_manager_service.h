@@ -341,6 +341,7 @@ private:
     bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
         AccessibilityElementInfo &elementInfo);
     bool SetTargetAbility(const int32_t targetAbilityValue);
+    bool SetHighContrastTextAbility(bool state);
     RetError RegisterElementOperatorChildWork(const RegistrationPara &parameter, const int32_t treeId,
         const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation,
         const uint32_t tokenId, bool isApp);

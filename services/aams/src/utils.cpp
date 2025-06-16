@@ -27,6 +27,8 @@
 #include "bundle_info.h"
 #include "bundlemgr/bundle_mgr_interface.h"
 #include "accessibility_resource_bundle_manager.h"
+#include "app_mgr_client.h"
+#include "configuration.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -514,6 +516,25 @@ int32_t Utils::GetUserIdByCallingUid()
         return INVALID_USER_ID;
     }
     return (uid / BASE_USER_RANGE);
+}
+
+bool Utils::UpdateColorModeConfiguration(int32_t &accountId)
+{
+    HILOG_DEBUG();
+    auto appMgrClient = std::make_unique<AppExecFwk::AppMgrClient>();
+    if (appMgrClient == nullptr) {
+        HILOG_ERROR("create appMgrClient failed");
+        return false;
+    }
+    AppExecFwk::Configuration configuration;
+    configuration.AddItem(AAFwk::GlobalConfigurationKey::SYSTEM_COLORMODE,
+        AppExecFwk::ConfigurationInner::COLOR_MODE_LIGHT);
+    AppExecFwk::AppMgrResultCode status = appMgrClient->UpdateConfiguration(configuration, accountId);
+    if (status != AppExecFwk::AppMgrResultCode::RESULT_OK) {
+        HILOG_ERROR("UpdateConfiguration: Update configuration failed.");
+        return false;
+    }
+    return true;
 }
 
 bool Utils::IsWideFold()
