@@ -30,12 +30,12 @@ const uint32_t TIMEOUT = 50;
 int32_t AccessibilitySecurityComponentManager::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
 {
     HILOG_INFO();
-#ifndef ACCESSIBILITY_SECURITY_COMPONENT
+#ifdef ACCESSIBILITY_SECURITY_COMPONENT
     int32_t result = Security::SecurityComponent::SecCompEnhanceKit::SetEnhanceCfg(rawData.data, rawData.size);
     HILOG_INFO("SetEnhanceCfg result: %{public}d", result);
     return result;
 #else
-    return 0;
+    return RET_OK;
 #endif // ACCESSIBILITY_SECURITY_COMPONENT
 }
  
