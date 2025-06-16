@@ -1391,7 +1391,7 @@ ErrCode AccessibleAbilityManagerService::EnableAbility(const std::string &name, 
     return syncFuture.get();
 }
 
-bool SetHighContrastTextAbility(bool state)
+bool AccessibleAbilityManagerService::SetHighContrastTextAbility(bool state)
 {
     HILOG_DEBUG();
     Utils::RecordEnableShortkeyAbilityEvent("HIGH_CONTRAST_TEXT", !state);
