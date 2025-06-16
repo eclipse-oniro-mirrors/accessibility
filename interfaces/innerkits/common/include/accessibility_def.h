@@ -374,6 +374,12 @@ struct ResourceInfo {
     std::string moduleName;
 };
 
+struct AccessibilitySecCompPoint {
+    int64_t uniqueId;
+    std::string bundleName;
+    int64_t timeStamp;
+};
+
 constexpr int32_t PARAM0 = 0;
 constexpr int32_t PARAM1 = 1;
 constexpr int32_t PARAM2 = 2;
