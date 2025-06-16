@@ -575,10 +575,8 @@ int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loo
             if (napi_create_object(data->env_, &napiEventInfo) != napi_ok) {
                 HILOG_ERROR("Create keyEvent object failed.");
                 data->syncPromise_.set_value(false);
-                delete data;
-                data = nullptr;
-                delete work;
-                work = nullptr;
+                DELETE_AND_NULLIFY(data);
+                DELETE_AND_NULLIFY(work);
                 return;
             }
             ConvertKeyEventToJS(data->env_, napiEventInfo, data->keyEvent_);
@@ -593,18 +591,14 @@ int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loo
                 !ConvertFromJsValue(data->env_, accessibilityNativeResult, accessibilityResult)) {
                 HILOG_ERROR("ConvertFromJsValue failed");
                 data->syncPromise_.set_value(false);
-                delete data;
-                data = nullptr;
-                delete work;
-                work = nullptr;
+                DELETE_AND_NULLIFY(data);
+                DELETE_AND_NULLIFY(work);
                 return;
             }
             HILOG_INFO("OnKeyPressEvent result = %{public}d", result);
             data->syncPromise_.set_value(result);
-            delete data;
-            data = nullptr;
-            delete work;
-            work = nullptr;
+            DELETE_AND_NULLIFY(data);
+            DELETE_AND_NULLIFY(work);
         },
         uv_qos_user_initiated);
     return ret;

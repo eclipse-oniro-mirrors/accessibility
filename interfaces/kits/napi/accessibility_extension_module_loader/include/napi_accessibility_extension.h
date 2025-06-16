@@ -175,6 +175,14 @@ struct AccessibilityEventTypeCallbackInfo : public AccessibilityEventInfoCallbac
     AccessibilityEventType AccessibilityEventType_ = TYPE_ERROR;
 };
 
+#define DELETE_AND_NULLIFY(ptr) \
+    do { \
+        if (ptr) { \
+            delete ptr; \
+            ptr = nullptr; \
+        } \
+    } while (0)
+
 napi_handle_scope OpenScope(napi_env env);
 } // namespace Accessibility
 } // namespace OHOS
