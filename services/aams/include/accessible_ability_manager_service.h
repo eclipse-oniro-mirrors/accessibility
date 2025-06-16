@@ -44,6 +44,7 @@
 #include "accessibility_resource_bundle_manager.h"
 #include "refbase.h"
 #include "magnification_manager.h"
+#include "accessibility_security_component_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -318,7 +319,7 @@ public:
     ErrCode RemoveRequestId(int32_t requestId) override;
     void OnDataClone();
     bool CheckPermission(const std::string &permission) const;
-    int32_t SetEnhanceConfig(const char *cfg, uint32_t cfgLen) override;
+    int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override;
 
     // for magnification
     bool GetMagnificationState();
