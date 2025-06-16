@@ -321,9 +321,6 @@ void AccessibleAbilityManagerService::OnStop()
         Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
         Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
         Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
-        if (Utils::IsWideFold() || Utils::IsBigFold()) {
-            Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayModeListener();
-        }
 
         currentAccountId_ = -1;
         a11yAccountsData_.Clear();
@@ -1598,7 +1595,7 @@ ErrCode AccessibleAbilityManagerService::SetMagnificationState(const bool state)
     }
 
     if (state && !currentState) {
-        HILOG_ERROR("magnificaiton is not enabled.");
+        HILOG_ERROR("magnification is not enabled.");
         return RET_ERR_ENABLE_MAGNIFICATION;
     }
 
@@ -1751,11 +1748,8 @@ bool AccessibleAbilityManagerService::Init()
 {
     HILOG_DEBUG();
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
-    Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
+    Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(magnificationManager_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
-    if (Utils::IsWideFold() || Utils::IsBigFold()) {
-        Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayModeListener();
-    }
     bool result = Singleton<AccessibilityWindowManager>::GetInstance().Init();
     HILOG_DEBUG("wms init result is %{public}d", result);
 
@@ -3398,6 +3392,7 @@ void AccessibleAbilityManagerService::OffZoomGesture()
         return;
     }
     magnificationManager_->DisableMagnification();
+    magnificationManager_->ResetCurrentMode();
 }
 
 void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()

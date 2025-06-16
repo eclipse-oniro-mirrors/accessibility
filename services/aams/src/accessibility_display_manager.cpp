@@ -145,15 +145,14 @@ void AccessibilityDisplayManager::SetDisplayScale(const uint64_t screenId,
 }
 
 void AccessibilityDisplayManager::RegisterDisplayListener(
-    const std::shared_ptr<AppExecFwk::EventHandler> &handler)
+    const std::shared_ptr<MagnificationManager> &manager)
 {
     HILOG_DEBUG();
     if (listener_) {
         HILOG_DEBUG("Display listener is already registed!");
         return;
     }
-    handler_ = handler;
-    listener_ = new(std::nothrow) DisplayListener();
+    listener_ = new(std::nothrow) DisplayListener(manager);
     if (!listener_) {
         HILOG_ERROR("Create display listener fail!");
         return;
@@ -167,7 +166,100 @@ void AccessibilityDisplayManager::UnregisterDisplayListener()
     if (listener_) {
         Rosen::DisplayManager::GetInstance().UnregisterDisplayListener(listener_);
         listener_ = nullptr;
-        handler_ = nullptr;
+    }
+}
+
+void AccessibilityDisplayManager::DisplayListener::OnChange(Rosen::DisplayId dId)
+{
+    HILOG_INFO();
+    if (manager_ == nullptr) {
+        manager_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMgr();
+    }
+    if (manager_ == nullptr) {
+        HILOG_ERROR("manager_ is nullptr.");
+        return;
+    }
+
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    OHOS::Rosen::DisplayOrientation currentOrientation = displayMgr.GetOrientation();
+    OHOS::Rosen::FoldDisplayMode currentMode = displayMgr.GetFoldDisplayMode();
+    if (orientation_ == currentOrientation && displayMode_ == currentMode) {
+        HILOG_INFO("no need fresh.");
+        return;
+    }
+
+    if (Utils::IsWideFold()) {
+        OnChangeForWideFold(currentOrientation, currentMode);
+        return;
+    }
+
+    if (Utils::IsBigFold()) {
+        OnChangeForBigFold(currentOrientation, currentMode);
+        return;
+    }
+    OnChangeDefault(currentOrientation);
+#else
+    HILOG_INFO("not support");
+#endif
+}
+
+void AccessibilityDisplayManager::DisplayListener::OnChangeForWideFold(
+    OHOS::Rosen::DisplayOrientation currentOrientation,
+    OHOS::Rosen::FoldDisplayMode currentMode)
+{
+    HILOG_DEBUG("currentOrientation = %{public}d, currentMode = %{public}d",
+        currentOrientation, currentMode);
+    auto interceptor = AccessibilityInputInterceptor::GetInstance();
+    if (interceptor == nullptr) {
+        HILOG_INFO("interceptor is null");
+        return;
+    }
+    if (currentMode == Rosen::FoldDisplayMode::MAIN) {
+        HILOG_INFO("FoldDisplayMode MAIN");
+        interceptor->ShieldZoomGesture(true);
+        displayMode_ = currentMode;
+        return;
+    }
+    if (currentMode == Rosen::FoldDisplayMode::FULL) {
+        HILOG_INFO("FoldDisplayMode FULL");
+        interceptor->ShieldZoomGesture(false);
+        displayMode_ = currentMode;
+        if (orientation_ != currentOrientation) {
+            HILOG_INFO("need refresh");
+            orientation_ = currentOrientation;
+            manager_->RefreshWindowParam();
+        }
+    }
+}
+
+void AccessibilityDisplayManager::DisplayListener::OnChangeForBigFold(
+    OHOS::Rosen::DisplayOrientation currentOrientation,
+    OHOS::Rosen::FoldDisplayMode currentMode)
+{
+    HILOG_DEBUG("currentOrientation = %{public}d, currentMode = %{public}d",
+        currentOrientation, currentMode);
+    if (displayMode_ != currentMode) {
+        HILOG_INFO("need refresh");
+        manager_->RefreshWindowParam();
+        displayMode_ = currentMode;
+    }
+
+    if (orientation_ != currentOrientation) {
+        HILOG_INFO("need refresh");
+        orientation_ = currentOrientation;
+        manager_->RefreshWindowParam();
+    }
+}
+
+void AccessibilityDisplayManager::DisplayListener::OnChangeDefault(
+    OHOS::Rosen::DisplayOrientation currentOrientation)
+{
+    HILOG_DEBUG("currentOrientation = %{public}d", currentOrientation);
+    if (orientation_ != currentOrientation) {
+        HILOG_INFO("need refresh");
+        orientation_ = currentOrientation;
+        manager_->RefreshWindowParam();
     }
 }
 

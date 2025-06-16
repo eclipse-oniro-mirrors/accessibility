@@ -22,6 +22,7 @@
 #include "dm_common.h"
 #include "event_handler.h"
 #include "singleton.h"
+#include "magnification_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -42,7 +43,7 @@ public:
     Rosen::FoldStatus GetFoldStatus();
     void SetDisplayScale(const uint64_t screenId, float scaleX, float scaleY, float pivotX, float pivotY);
 
-    void RegisterDisplayListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
+    void RegisterDisplayListener(const std::shared_ptr<MagnificationManager> &manager);
     void UnregisterDisplayListener();
 
     void RegisterDisplayModeListener();
@@ -51,12 +52,23 @@ public:
 private:
     class DisplayListener : public Rosen::DisplayManager::IDisplayListener {
     public:
-        explicit DisplayListener() {}
+        explicit DisplayListener(const std::shared_ptr<MagnificationManager> &manager)
+            : manager_(manager) {}
         ~DisplayListener() = default;
 
         virtual void OnCreate(Rosen::DisplayId dId) override {}
         virtual void OnDestroy(Rosen::DisplayId dId) override {}
-        virtual void OnChange(Rosen::DisplayId dId) override {}
+        virtual void OnChange(Rosen::DisplayId dId) override;
+
+        void OnChangeForWideFold(OHOS::Rosen::DisplayOrientation currentOrientation,
+            OHOS::Rosen::FoldDisplayMode currentMode);
+        void OnChangeForBigFold(OHOS::Rosen::DisplayOrientation currentOrientation,
+            OHOS::Rosen::FoldDisplayMode currentMode);
+        void OnChangeDefault(OHOS::Rosen::DisplayOrientation currentOrientation);
+        OHOS::Rosen::DisplayOrientation orientation_ = OHOS::Rosen::DisplayOrientation::UNKNOWN;
+        OHOS::Rosen::FoldDisplayMode displayMode_ = Rosen::FoldDisplayMode::UNKNOWN;
+    private:
+        std::shared_ptr<MagnificationManager> manager_ = nullptr;
     };
 
     class DisplayModeListener : public Rosen::DisplayManager::IDisplayModeListener {

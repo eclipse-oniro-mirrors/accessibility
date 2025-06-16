@@ -246,6 +246,7 @@ void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmi
             needInteractMagnification_ = false;
         }
         SetNextEventTransmitter(header, current, zoomGesture_);
+        windowMagnificationGesture_ = nullptr;
     } else if (magnificationMode == WINDOW_MAGNIFICATION) {
         std::shared_ptr<WindowMagnificationManager> windowMagnificationManager =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetWindowMagnificationManager();
@@ -268,6 +269,7 @@ void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmi
             needInteractMagnification_ = false;
         }
         SetNextEventTransmitter(header, current, windowMagnificationGesture_);
+        zoomGesture_ = nullptr;
     } else {
         HILOG_WARN("invalid magnificationMode");
         ClearMagnificationGesture();

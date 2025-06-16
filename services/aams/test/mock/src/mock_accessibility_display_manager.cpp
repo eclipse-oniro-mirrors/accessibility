@@ -151,15 +151,14 @@ void AccessibilityDisplayManager::SetDisplayScale(const uint64_t screenId,
 }
 
 void AccessibilityDisplayManager::RegisterDisplayListener(
-    const std::shared_ptr<AppExecFwk::EventHandler> &handler)
+    const std::shared_ptr<MagnificationManager> &manager)
 {
     HILOG_DEBUG();
     if (listener_) {
         HILOG_DEBUG("Display listener is already registed!");
         return;
     }
-    handler_ = handler;
-    listener_ = new(std::nothrow) DisplayListener();
+    listener_ = new(std::nothrow) DisplayListener(manager);
     if (!listener_) {
         HILOG_ERROR("Create display listener fail!");
         return;
