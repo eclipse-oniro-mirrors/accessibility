@@ -1197,5 +1197,15 @@ void AccessibilityElementInfo::SetUniqueId(const int64_t uniqueId)
 {
     uniqueId_ = uniqueId;
 }
+
+const std::string &AccessibilityElementInfo::GetOriginalText() const
+{
+    return originalText_;
+}
+
+void AccessibilityElementInfo::SetOriginalText(const std::string &originalText)
+{
+    originalText_ = originalText;
+}
 } // namespace Accessibility
 } // namespace OHOS
