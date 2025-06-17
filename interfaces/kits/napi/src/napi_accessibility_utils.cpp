@@ -662,8 +662,8 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
 AccessibilityEventType CovertStringToAccessibilityEventType(const std::string &eventType)
 {
     static const std::map<const std::string, AccessibilityEventType> eventTypeTable = {
-        {"accessibilityFocus", AccessibilityEventType::TYPE_ACCESSIBILLITY_FOCUS},
-        {"accessibilityFocusClear", AccessibilityEventType::TYPE_ACCESSIBILLITY_FOCUS_CLEAR},
+        {"accessibilityFocus", AccessibilityEventType::TYPE_ACCESSIBILITY_FOCUS},
+        {"accessibilityFocusClear", AccessibilityEventType::TYPE_ACCESSIBILITY_FOCUS_CLEAR},
         {"click", AccessibilityEventType::TYPE_CLICK},
         {"longClick", AccessibilityEventType::TYPE_LONG_CLICK},
         {"select", AccessibilityEventType::TYPE_SELECT},

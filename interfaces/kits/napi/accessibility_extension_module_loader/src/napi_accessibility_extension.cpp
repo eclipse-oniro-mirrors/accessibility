@@ -36,6 +36,13 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr int64_t VIRTUAL_COMPONENT_ID = -1;
+    template <typename T>
+    void DeleteAndNullify(T*& ptr) {
+        if (ptr) {
+            delete ptr;
+            ptr = nullptr;
+        }
+    }
 }
 NAccessibilityExtension* NAccessibilityExtension::Create(const std::unique_ptr<AbilityRuntime::Runtime>& runtime)
 {
@@ -575,14 +582,15 @@ int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loo
             if (napi_create_object(data->env_, &napiEventInfo) != napi_ok) {
                 HILOG_ERROR("Create keyEvent object failed.");
                 data->syncPromise_.set_value(false);
-                DELETE_AND_NULLIFY(data);
-                DELETE_AND_NULLIFY(work);
+                DeleteAndNullify(data);
+                DeleteAndNullify(work);
                 return;
             }
             ConvertKeyEventToJS(data->env_, napiEventInfo, data->keyEvent_);
             napi_value argv[] = {napiEventInfo};
             napi_value nativeResult = data->extension_->CallObjectMethod("onKeyEvent", argv, 1);
-            napi_value accessibilityNativeResult = data->extension_->CallObjectMethod("onAccessibilityKeyEvent", argv, 1);
+            napi_value accessibilityNativeResult =
+                data->extension_->CallObjectMethod("onAccessibilityKeyEvent", argv, 1);
 
             // Unwrap result
             bool result = false;
@@ -591,14 +599,14 @@ int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loo
                 !ConvertFromJsValue(data->env_, accessibilityNativeResult, accessibilityResult)) {
                 HILOG_ERROR("ConvertFromJsValue failed");
                 data->syncPromise_.set_value(false);
-                DELETE_AND_NULLIFY(data);
-                DELETE_AND_NULLIFY(work);
+                DeleteAndNullify(data);
+                DeleteAndNullify(work);
                 return;
             }
             HILOG_INFO("OnKeyPressEvent result = %{public}d", result);
             data->syncPromise_.set_value(result);
-            DELETE_AND_NULLIFY(data);
-            DELETE_AND_NULLIFY(work);
+            DeleteAndNullify(data);
+            DeleteAndNullify(work);
         },
         uv_qos_user_initiated);
     return ret;
