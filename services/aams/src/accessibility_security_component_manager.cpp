@@ -39,8 +39,9 @@ int32_t AccessibilitySecurityComponentManager::SetEnhanceConfig(const Accessibil
 #endif // ACCESSIBILITY_SECURITY_COMPONENT
 }
  
-std::map<std::string, std::string> AccessibilitySecurityComponentManager::GenerateActionArgumentsWithHMAC(const ActionType &action,
-    int64_t uniqueId, std::string bundleName, const std::map<std::string, std::string> &arguments)
+std::map<std::string, std::string> AccessibilitySecurityComponentManager::GenerateActionArgumentsWithHMAC(
+    const ActionType &action, int64_t uniqueId, std::string bundleName,
+    const std::map<std::string, std::string> &arguments)
 {
     HILOG_INFO("actionType: %{public}d", action);
 #ifndef ACCESSIBILITY_SECURITY_COMPONENT
