@@ -37,7 +37,8 @@ namespace Accessibility {
 namespace {
     constexpr int64_t VIRTUAL_COMPONENT_ID = -1;
     template <typename T>
-    void DeleteAndNullify(T*& ptr) {
+    void DeleteAndNullify(T*& ptr)
+    {
         if (ptr) {
             delete ptr;
             ptr = nullptr;
