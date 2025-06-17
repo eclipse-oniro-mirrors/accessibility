@@ -17,7 +17,6 @@
 #define ACCESSIBILITY_SEC_COMP_RAWDATA_H
 
 #include "securec.h"
-#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
