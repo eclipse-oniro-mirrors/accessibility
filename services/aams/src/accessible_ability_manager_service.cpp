@@ -1399,18 +1399,20 @@ bool AccessibleAbilityManagerService::SetHighContrastTextAbility(bool state)
     if (result != RET_OK) {
         return false;
     }
-    if (state == false) {
-        int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
-        if (!Utils::UpdateColorModeConfiguration(accountId)) {
-            return false;
-        }
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            return false;
-        }
-        accountData->GetConfig()->SetColorModeState();
+    if (state == true) {
+        return true;
     }
+
+    int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
+    if (!Utils::UpdateColorModeConfiguration(accountId)) {
+        return false;
+    }
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
+    accountData->GetConfig()->SetColorModeState(A11yDarkModeType::DEFAULT_DARK_MODE_STATE);
     return true;
 }
 
