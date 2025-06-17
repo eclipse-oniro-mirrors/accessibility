@@ -43,7 +43,7 @@ namespace {
         "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
         "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
         "allAttribute", "clip", "customComponentType", "extraInfo", "accessibilityNextFocusId",
-        "accessibilityPreviousFocusId", "parentId", "childrenIds", "accessibilityScrollable", "originalText"};
+        "accessibilityPreviousFocusId", "parentId", "childrenIds", "accessibilityScrollable"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
