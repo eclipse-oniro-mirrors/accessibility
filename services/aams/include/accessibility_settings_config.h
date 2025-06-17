@@ -26,6 +26,12 @@
 namespace OHOS {
 namespace Accessibility {
 
+enum class A11yDarkModeType : uint32_t {
+    DEFAULT_DARK_MODE_STATE,
+    DARK_MODE_OPEN_ALL_DAY,
+    DARK_MODE_TIMED_ON
+};
+
 class AccessibilitySettingsConfig final {
 public:
     explicit AccessibilitySettingsConfig(int id);
@@ -62,6 +68,7 @@ public:
     RetError SetStartToHosState(const bool state);
     RetError SetIgnoreRepeatClickReconfirm(const bool state);
     RetError SetZoomGestureEnabledReconfirm(const bool state);
+    RetError SetColorModeState(const A11yDarkModeType &type);
 
     bool GetEnabledState() const;
     bool GetTouchGuideState() const;

@@ -117,10 +117,12 @@ ohos_shared_library("accessibleabilityms") {
   external_deps = [
     "ability_base:want",
     "ability_base:zuri",
+    "ability_base:configuration",
     "ability_runtime:ability_connect_callback_stub",
     "ability_runtime:ability_manager",
     "ability_runtime:abilitykit_native",
     "ability_runtime:extension_manager",
+    "ability_runtime:app_manager",
     "access_token:libaccesstoken_sdk",
     "access_token:libtokenid_sdk",
     "bundle_framework:appexecfwk_core",

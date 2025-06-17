@@ -549,6 +549,24 @@ RetError AccessibilitySettingsConfig::SetZoomGestureEnabledReconfirm(const bool 
     return ret;
 }
 
+RetError AccessibilitySettingsConfig::SetColorModeState(const A11yDarkModeType &type)
+{
+    uint32_t darkModeValue = static_cast<uint32_t>(type);
+    HILOG_DEBUG("name = [%{public}d]", darkModeValue);
+    if (!systemDatashare_) {
+        HILOG_ERROR("systemDatashare_ is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+ 
+    auto ret = systemDatashare_->PutStringValue("settings.uiappearance.darkmode_mode",
+        std::to_string(darkModeValue), true);
+    if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetColorModeState");
+        HILOG_ERROR("set SetColorModeState failed");
+    }
+    return ret;
+}
+
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t time)
 {
     HILOG_DEBUG("ignoreRepeatClickTime = [%{public}u]", time);

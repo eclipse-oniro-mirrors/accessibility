@@ -1391,6 +1391,31 @@ ErrCode AccessibleAbilityManagerService::EnableAbility(const std::string &name, 
     return syncFuture.get();
 }
 
+bool AccessibleAbilityManagerService::SetHighContrastTextAbility(bool state)
+{
+    HILOG_DEBUG();
+    Utils::RecordEnableShortkeyAbilityEvent("HIGH_CONTRAST_TEXT", !state);
+    RetError result = accessibilitySettings_->SetHighContrastTextState(!state);
+    if (result != RET_OK) {
+        return false;
+    }
+    if (state == true) {
+        return true;
+    }
+
+    int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
+    if (!Utils::UpdateColorModeConfiguration(accountId)) {
+        return false;
+    }
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
+    accountData->GetConfig()->SetColorModeState(A11yDarkModeType::DEFAULT_DARK_MODE_STATE);
+    return true;
+}
+
 bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbilityValue)
 {
     HILOG_DEBUG();
@@ -1405,8 +1430,7 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
     switch (targetAbilityValue) {
         case HIGH_CONTRAST_TEXT:
             state = accountData->GetConfig()->GetHighContrastTextState();
-            Utils::RecordEnableShortkeyAbilityEvent("HIGH_CONTRAST_TEXT", !state);
-            return accessibilitySettings_->SetHighContrastTextState(!state) == RET_OK;
+            return SetHighContrastTextAbility(state);
         case INVERT_COLOR:
             state = accountData->GetConfig()->GetInvertColorState();
             Utils::RecordEnableShortkeyAbilityEvent("INVERT_COLOR", !state);
