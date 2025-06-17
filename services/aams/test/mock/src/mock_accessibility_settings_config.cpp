@@ -453,9 +453,9 @@ const std::vector<std::string> AccessibilitySettingsConfig::GetEnabledAccessibil
     return enabledAccessibilityServices_;
 }
 
-RetError AccessibilitySettingsConfig::SetColorModeState(const std::string &name)
+RetError AccessibilitySettingsConfig::SetColorModeState(const A11yDarkModeType &type)
 {
-    (void)name;
+    (void)type;
     return RET_OK;
 }
 
