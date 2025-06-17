@@ -80,7 +80,7 @@ std::map<std::string, std::string> AccessibilitySecurityComponentManager::Genera
     std::vector<uint8_t> vecEnHanceData(enHanceData, enHanceData + enHanceDataLen);
     std::string strEnHanceData(vecEnHanceData.begin(), vecEnHanceData.end());
     actionArguments[ACTION_ARGU_CLICK_ENHANCE_DATA] = strEnHanceData;
-    actionArguments[ACTION_ARGU_CLICK_TIMESTAMP] = timeStamp;
+    actionArguments[ACTION_ARGU_CLICK_TIMESTAMP] = timeStr;
     return actionArguments;
 #endif // ACCESSIBILITY_SECURITY_COMPONENT
 }
