@@ -17,6 +17,7 @@
 #define ACCESSIBILITY_SEC_COMP_RAWDATA_H
 
 #include "securec.h"
+#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -26,10 +27,17 @@ public:
     uint32_t size = 0;
     uint8_t* data = nullptr;
 
+    ~AccessibilitySecCompRawdata() {
+        if (isCopy_ && data != nullptr) {
+            delete[] data;
+        }
+    }
+
     int32_t RawDataCpy(const void* readData)
     {
         if ((size == 0) || (size >= MAX_RAW_DATA_SIZE)) {
             return -1;
+
         }
         uint8_t* buffer = new (std::nothrow) uint8_t[size];
         if (buffer == nullptr) {
@@ -41,8 +49,11 @@ public:
             return -1;
         }
         data = buffer;
+        isCopy_ = true;
         return 0;
     }
+private:
+    bool isCopy_ = false;
 };
 }  // namespace Accessibility
 }  // namespace OHOS
