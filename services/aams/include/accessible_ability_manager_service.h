@@ -435,6 +435,7 @@ private:
     void UpdateSettingsInAtoHos();
     void UpdateAutoStartAbilities();
     void UpdateAllSetting();
+    void UpdateCriticalState();
 
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
     void RemoveSavedConfigCallback(const wptr<IRemoteObject>& callback);
