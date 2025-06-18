@@ -327,8 +327,8 @@ void WindowMagnificationManager::PersistScale()
 PointerPos WindowMagnificationManager::ConvertCenterToTopLeft(int32_t centerX, int32_t centerY)
 {
     PointerPos point = {0, 0};
-    point.posX = centerX - (static_cast<int32_t>(windowWidth_) / static_cast<float>(DIVISOR_TWO));
-    point.posY = centerY - (static_cast<int32_t>(windowHeight_) / static_cast<float>(DIVISOR_TWO));
+    point.posX = centerX - static_cast<int32_t>(windowWidth_ / static_cast<float>(DIVISOR_TWO));
+    point.posY = centerY - static_cast<int32_t>(windowHeight_ / static_cast<float>(DIVISOR_TWO));
     return point;
 }
 
