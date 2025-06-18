@@ -53,6 +53,7 @@ std::shared_ptr<FullScreenMagnificationManager> MagnificationManager::GetFullScr
 
 void MagnificationManager::OnMagnificationTypeChanged(uint32_t magnificationType)
 {
+    HILOG_INFO("magnificationType = %{public}d, currentMode_ = %{public}d", magnificationType, currentMode_);
     if (windowMagnificationManager_ == nullptr) {
         HILOG_DEBUG("GetWindowMagnificationManager");
         GetWindowMagnificationManager();
@@ -109,6 +110,10 @@ void MagnificationManager::OnModeChanged(uint32_t mode)
     }
 
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
+    if (interceptor == nullptr) {
+        HILOG_ERROR("interceptor is nullptr.");
+        return;
+    }
     bool needShow = false;
     if (mode == WINDOW_MAGNIFICATION) {
         HILOG_INFO("disable full screen magnification.");

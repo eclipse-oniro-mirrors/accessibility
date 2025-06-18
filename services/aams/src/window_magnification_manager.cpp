@@ -104,6 +104,7 @@ void WindowMagnificationManager::EnableWindowMagnification(int32_t centerX, int3
 {
     HILOG_INFO("centerX = %{public}d, centerY = %{public}d.", centerX, centerY);
     GetWindowParam();
+    InitMagnificationParam();
     if (window_ == nullptr) {
         HILOG_ERROR("window is null. need create.");
         CreateMagnificationWindow(centerX, centerY);
@@ -129,9 +130,16 @@ void WindowMagnificationManager::ShowWindowMagnification()
     EnableWindowMagnification(centerX, centerY);
 }
 
-void WindowMagnificationManager::DisableWindowMagnification()
+void WindowMagnificationManager::DisableWindowMagnification(bool needClear)
 {
     HILOG_INFO();
+    if (needClear && surfaceNode_ != nullptr) {
+        HILOG_DEBUG("claer surfaceNode");
+        surfaceNode_->SetVisible(false);
+        surfaceNode_->ClearChildren();
+        Rosen::RSTransaction::FlushImplicitTransaction();
+    }
+
     if (window_ != nullptr) {
         window_->Hide();
         window_->Destroy();

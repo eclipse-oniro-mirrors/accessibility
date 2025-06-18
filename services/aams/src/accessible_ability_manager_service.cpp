@@ -2002,7 +2002,12 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         }
         accountData->GetImportantEnabledAbilities(importantEnabledAbilities);
         accountData->OnAccountSwitched();
-        UpdateAccessibilityManagerService();
+        accountData->UpdateAccountCapabilities();
+        if (inputInterceptor_ != nullptr) {
+            inputInterceptor_->SetAvailableFunctions(0);
+        }
+        UpdateAccessibilityState();
+        UpdateShortKeyRegister();
     }
     currentAccountId_ = accountId;
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -3964,8 +3969,7 @@ float AccessibleAbilityManagerService::GetMagnificationScale()
         return magnificationScale;
     }
 
-    magnificationScale =
-        static_cast<uint32_t>(helper->GetFloatValue(SCREEN_MAGNIFICATION_SCALE, DEFAULT_SCALE));
+    magnificationScale = helper->GetFloatValue(SCREEN_MAGNIFICATION_SCALE, DEFAULT_SCALE);
     return magnificationScale;
 }
 

@@ -55,7 +55,7 @@ public:
     void DrawRuoundRectFrame();
     void EnableWindowMagnification(int32_t centerX, int32_t centerY);
     void ShowWindowMagnification();
-    void DisableWindowMagnification();
+    void DisableWindowMagnification(bool needClear = false);
     void SetScale(float deltaSpan);
     void MoveMagnificationWindow(int32_t deltaX, int32_t deltaY);
     void InitMagnificationParam();
