@@ -39,6 +39,10 @@ void WindowMagnificationManager::CreateMagnificationWindow(int32_t posX, int32_t
     HILOG_DEBUG();
     windowRect_ = GetWindowRectFromPointer(posX, posY);
     sptr<Rosen::WindowOption> windowOption = new(std::nothrow) Rosen::WindowOption();
+    if (windowOption == nullptr) {
+        HILOG_ERROR("windowOption is null.");
+        return;
+    }
     windowOption->SetWindowType(Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION);
     windowOption->SetWindowMode(Rosen::WindowMode::WINDOW_MODE_FLOATING);
     windowOption->SetWindowRect(windowRect_);
@@ -305,9 +309,9 @@ void WindowMagnificationManager::FixSourceCenter(bool needFix)
     if (needFix) {
         isFixSourceCenter_ = needFix;
         float sourceCenterX = (sourceRect_.posX_ + sourceRect_.posX_ +
-            static_cast<int32_t>(sourceRect_.width_)) / DIVISOR_TWO;
+            static_cast<int32_t>(sourceRect_.width_)) / static_cast<float>(DIVISOR_TWO);
         float sourceCenterY = (sourceRect_.posY_ + sourceRect_.posY_ +
-            static_cast<int32_t>(sourceRect_.height_)) / DIVISOR_TWO;
+            static_cast<int32_t>(sourceRect_.height_)) / static_cast<float>(DIVISOR_TWO);
         fixedSourceCenter_ = {static_cast<int32_t>(sourceCenterX), static_cast<int32_t>(sourceCenterY)};
     } else {
         fixedSourceCenter_ = {0, 0};
@@ -323,8 +327,8 @@ void WindowMagnificationManager::PersistScale()
 PointerPos WindowMagnificationManager::ConvertCenterToTopLeft(int32_t centerX, int32_t centerY)
 {
     PointerPos point = {0, 0};
-    point.posX = centerX - (windowWidth_ / DIVISOR_TWO);
-    point.posY = centerY - (windowHeight_ / DIVISOR_TWO);
+    point.posX = centerX - static_cast<int32_t>(windowWidth_ / static_cast<float>(DIVISOR_TWO));
+    point.posY = centerY - static_cast<int32_t>(windowHeight_ / static_cast<float>(DIVISOR_TWO));
     return point;
 }
 
@@ -358,10 +362,12 @@ Rosen::Rect WindowMagnificationManager::GetSourceRectFromPointer(int32_t centerX
     int32_t y = centerY - static_cast<int32_t>(sourceRect.height_ / DIVISOR_TWO);
 
     x = (x < 0) ? 0 : x;
-    x = (x + bound.width) > screenWidth_ ? static_cast<int32_t>(screenWidth_ - bound.width) : x;
+    x = (x + static_cast<int32_t>(bound.width)) > screenWidth_ ? static_cast<int32_t>(
+        screenWidth_ - bound.width) : x;
 
     y = (y < 0) ? 0 : y;
-    y = (y + bound.height) > screenHeight_ ? static_cast<int32_t>(screenHeight_ - bound.height) : y;
+    y = (y + static_cast<int32_t>(bound.height)) > screenHeight_ ? static_cast<int32_t>(
+        screenHeight_ - bound.height) : y;
 
     sourceRect.posX_ = x;
     sourceRect.posY_ = y;
@@ -375,10 +381,12 @@ Rosen::Rect WindowMagnificationManager::GetWindowRectFromPointer(int32_t centerX
     int32_t y = centerY - static_cast<int32_t>(windowHeight_ / DIVISOR_TWO);
 
     x = (x < 0) ? 0 : x;
-    x = (x + windowWidth_) > screenWidth_ ? static_cast<int32_t>(screenWidth_ - windowWidth_) : x;
+    x = (x + static_cast<int32_t>(windowWidth_)) > static_cast<int32_t>(
+        screenWidth_) ? static_cast<int32_t>(screenWidth_ - windowWidth_) : x;
 
     y = (y < 0) ? 0 : y;
-    y = (y + windowHeight_) > screenHeight_ ? static_cast<int32_t>(screenHeight_ - windowHeight_) : y;
+    y = (y + static_cast<int32_t>(windowHeight_)) > screenHeight_ ? static_cast<int32_t>(
+        screenHeight_ - windowHeight_) : y;
 
     windowRect.posX_ = x;
     windowRect.posY_ = y;

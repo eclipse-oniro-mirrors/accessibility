@@ -77,9 +77,9 @@ private:
     void GetWindowParam();
     PointerPos GetRectCenter(Rosen::Rect rect);
 
-    Rosen::Rect sourceRect_;
-    Rosen::Rect windowRect_;
-    Rosen::Rect screenRect_;
+    Rosen::Rect sourceRect_ = {0, 0, 0, 0};
+    Rosen::Rect windowRect_ = {0, 0, 0, 0};
+    Rosen::Rect screenRect_ = {0, 0, 0, 0};
 
     sptr<Rosen::Window> window_ = nullptr;
     std::shared_ptr<Rosen::RSSurfaceNode> surfaceNode_;

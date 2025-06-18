@@ -68,8 +68,8 @@ private:
     std::shared_ptr<Rosen::RSImage> rosenImage_ = nullptr;
     std::shared_ptr<MagnificationManager> manager_ = nullptr;
 
-    Rosen::Rect menuRect_;
-    Rosen::Rect screenRect_;
+    Rosen::Rect menuRect_ = {0, 0, 0, 0};
+    Rosen::Rect screenRect_ = {0, 0, 0, 0};
 
     uint32_t menuSize_ = 150;
     int32_t margin_ = 50;
