@@ -943,7 +943,12 @@ void AccessibilityZoomGesture::ShieldZoomGesture(bool state)
     HILOG_INFO("ShieldZoomGesture state = %{public}d", state);
     if (state) {
         Clear();
-        OffZoom();
+        Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+        if (fullScreenManager_ == nullptr) {
+            HILOG_ERROR("fullScreenManager_ is nullptr.");
+            return;
+        }
+        fullScreenManager_->DisableMagnification(true);
     }
 }
 } // namespace Accessibility

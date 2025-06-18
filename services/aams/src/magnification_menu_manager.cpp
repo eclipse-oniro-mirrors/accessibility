@@ -146,6 +146,12 @@ void MagnificationMenuManager::ShowMenuWindow(uint32_t mode)
 void MagnificationMenuManager::DisableMenuWindow()
 {
     HILOG_DEBUG();
+    if (surfaceNode_ != nullptr) {
+        surfaceNode_->SetVisible(false);
+        surfaceNode_->ClearChildren();
+        Rosen::RSTransaction::FlushImplicitTransaction();
+    }
+
     isMenuShown_ = false;
     if (menuWindow_ != nullptr) {
         menuWindow_->Hide();

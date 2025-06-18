@@ -216,6 +216,8 @@ void WindowMagnificationGesture::DestroyEvents()
 {
     HILOG_DEBUG();
     SendCacheEventsToNext();
+    ResetTapCount();
+    SetGestureState(MagnificationGestureState::READY_STATE, HANDLER);
 }
 
 void WindowMagnificationGesture::CancelPostEvent(MagnificationGestureMsg msg)
@@ -867,7 +869,8 @@ void WindowMagnificationGesture::ShieldZoomGesture(bool state)
     if (state) {
         Clear();
         if (windowMagnificationManager_ != nullptr) {
-            windowMagnificationManager_->DisableWindowMagnification();
+            windowMagnificationManager_->DisableWindowMagnification(true);
+            SetGestureState(MagnificationGestureState::READY_STATE, HANDLER);
         }
         Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
         isSingleTapOnWindow_ = false;

@@ -39,7 +39,7 @@ public:
     void DrawRuoundRectFrame();
     void EnableMagnification(int32_t centerX, int32_t centerY);
     void ShowMagnification();
-    void DisableMagnification();
+    void DisableMagnification(bool needClear = false);
     PointerPos ConvertCoordinates(int32_t posX, int32_t posY);
     void RefreshWindowParam();
     void SetScale(float scaleSpan);
