@@ -99,8 +99,7 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
 
     fieldValue.clear();
     ani_class arrayCls;
-    Type arrayClass = Builder::BuildClass("escompat.Array");
-    if (env->FindClass(arrayClass.Descriptor().c_str(), &arrayCls) != ANI_OK) {
+    if (env->FindClass(Builder::BuildClass("escompat.Array").Descriptor().c_str(), &arrayCls) != ANI_OK) {
         return false;
     }
 
