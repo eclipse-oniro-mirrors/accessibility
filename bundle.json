@@ -67,7 +67,8 @@
         "cJSON",
         "selinux_adapter",
         "runtime_core",
-        "security_component_manager"
+        "security_component_manager",
+        "memmgr"
       ],
       "third_party": []
     },

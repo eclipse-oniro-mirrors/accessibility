@@ -206,6 +206,7 @@ ohos_unittest("accessible_ability_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "memmgr:memmgrclient",
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "resource_management:global_resmgr",

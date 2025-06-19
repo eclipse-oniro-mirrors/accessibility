@@ -140,6 +140,7 @@ ohos_shared_library("accessibleabilityms") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_single",
+    "memmgr:memmgrclient",
     "os_account:os_account_innerkits",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",

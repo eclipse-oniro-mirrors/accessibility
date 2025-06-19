@@ -125,14 +125,12 @@ bool AccessibleAbilityClientImpl::InitAccessibilityServiceProxy()
             return true;
         }
     } else {
-#ifdef ACCESSIBILITY_WATCH_FEATURE
         if (LoadAccessibilityService() == false) {
             HILOG_ERROR("LoadSystemAbilityService failed.");
             return false;
         } else {
             return true;
         }
-#endif // ACCESSIBILITY_WATCH_FEATURE
     }
     return false;
 }
@@ -158,14 +156,10 @@ void AccessibleAbilityClientImpl::OnParameterChanged(const char *key, const char
 
 bool AccessibleAbilityClientImpl::CheckServiceProxy()
 {
-#ifndef ACCESSIBILITY_WATCH_FEATURE
-    return serviceProxy_ != nullptr;
-#else
     if (serviceProxy_ != nullptr || LoadAccessibilityService() == true) {
         return true;
     }
     return false;
-#endif // ACCESSIBILITY_WATCH_FEATURE
 }
 
 RetError AccessibleAbilityClientImpl::CheckConnection()
