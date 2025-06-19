@@ -721,7 +721,7 @@ std::shared_ptr<FullScreenMagnificationManager> AccessibleAbilityManagerService:
     return nullptr;
 }
 
-int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
+int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
 {
     return 0;
 }

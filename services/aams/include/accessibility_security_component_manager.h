@@ -13,27 +13,22 @@
  * limitations under the License.
  */
  
-#ifndef SECURITY_COMPONENT_MANAGER_H
-#define SECURITY_COMPONENT_MANAGER_H
+#ifndef ACCESSIBILITY_SECURITY_COMPONENT_MANAGER_H
+#define ACCESSIBILITY_SECURITY_COMPONENT_MANAGER_H
  
 #include <string>
 #include "accessibility_def.h"
+#include "accessibility_sec_comp_rawdata.h"
  
 namespace OHOS {
 namespace Accessibility {
- 
-struct SecCompPoint {
-    int64_t uniqueId;
-    std::string bundleName;
-    int64_t timeStamp;
-};
- 
-class SecurityComponentManager {
+
+class AccessibilitySecurityComponentManager {
 public:
-    static int32_t SetEnhanceConfig(const char *cfg, uint32_t cfgLen);
+    static int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData);
     static std::map<std::string, std::string> GenerateActionArgumentsWithHMAC(const ActionType &action,
         int64_t uniqueId, std::string bundleName, const std::map<std::string, std::string> &arguments);
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // SECURITY_COMPONENT_MANAGER_H
+#endif // ACCESSIBILITY_SECURITY_COMPONENT_MANAGER_H
