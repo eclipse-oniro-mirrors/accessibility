@@ -40,14 +40,14 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
     Namespace accessibilityNamespace = Builder::BuildNamespace("@ohos.accessibility.accessibility");
     ani_namespace ns;
     if (env->FindNamespace(accessibilityNamespace.Descriptor().c_str(), &ns) != ANI_OK) {
-        HILOG_ERROR("accessibility namespace not found");
+        HILOG_ERROR("namespace accessibility not found");
         return (ani_status)NAMESPACE_NOT_FOUND;
     }
 
     Module accessibilityModule = Builder::BuildModule("@ohos.accessibility");
     ani_module mod;
     if (env->FindModule(accessibilityModule.Descriptor().c_str(), &mod) != ANI_OK) {
-        HILOG_ERROR("accessibility module not found");
+        HILOG_ERROR("module accessibility not found");
         return (ani_status)MODULE_NOT_FOUND;
     }
 
