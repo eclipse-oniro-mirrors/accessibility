@@ -28,8 +28,7 @@ public:
 
     ~AccessibilitySecCompRawdata()
     {
-        if (isCopy_ && data != nullptr)
-        {
+        if (isCopy_ && data != nullptr) {
             delete[] data;
         }
     }

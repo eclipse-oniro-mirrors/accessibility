@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "accessibility_security_component_manager.h"
 #include "hilog_wrapper.h"
 #include "accessibility_element_info.h"
@@ -20,12 +20,11 @@
 #include "sec_comp_enhance_kit.h"
 #include "sec_comp_enhance_adapter.h"
 #endif // ACCESSIBILITY_SECURITY_COMPONENT
- 
+
 namespace OHOS {
 namespace Accessibility {
- 
-constexpr uint32_t MAX_HMAC_SIZE = 64;
-const uint32_t TIMEOUT = 50;
+
+constexpr uint32_t MAX_HMAC_SIZE = 160;
 
 int32_t AccessibilitySecurityComponentManager::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
 {
@@ -38,7 +37,7 @@ int32_t AccessibilitySecurityComponentManager::SetEnhanceConfig(const Accessibil
     return RET_OK;
 #endif // ACCESSIBILITY_SECURITY_COMPONENT
 }
- 
+
 std::map<std::string, std::string> AccessibilitySecurityComponentManager::GenerateActionArgumentsWithHMAC(
     const ActionType &action, int64_t uniqueId, std::string bundleName,
     const std::map<std::string, std::string> &arguments)
@@ -51,21 +50,21 @@ std::map<std::string, std::string> AccessibilitySecurityComponentManager::Genera
     if (action != ACCESSIBILITY_ACTION_CLICK) {
         return actionArguments;
     }
- 
+
     std::unique_ptr<AccessibilitySecCompPoint> point = std::make_unique<AccessibilitySecCompPoint>();
     if (point == nullptr) {
         HILOG_ERROR("create point failed");
         return actionArguments;
     }
- 
+
     int64_t timeStamp = std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::system_clock::now().time_since_epoch()).count();
     std::string timeStr = std::to_string(timeStamp);
- 
+
     point->uniqueId = uniqueId;
-    point->bundleName = bundleName;
+    memcpy_s(point->bundleName, MAX_BUNDLE_NAME_LEN, bundleName.c_str(), bundleName.size());
     point->timeStamp = timeStamp;
- 
+
     uint32_t dataLen = sizeof(*point);
     uint8_t outBuf[MAX_HMAC_SIZE + 1] = { 0 };
     uint8_t *enHanceData = reinterpret_cast<uint8_t *>(&outBuf[0]);
