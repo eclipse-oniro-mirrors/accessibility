@@ -26,8 +26,10 @@ public:
     uint32_t size = 0;
     uint8_t* data = nullptr;
 
-    ~AccessibilitySecCompRawdata() {
-        if (isCopy_ && data != nullptr) {
+    ~AccessibilitySecCompRawdata()
+    {
+        if (isCopy_ && data != nullptr)
+        {
             delete[] data;
         }
     }
@@ -36,7 +38,6 @@ public:
     {
         if ((size == 0) || (size >= MAX_RAW_DATA_SIZE)) {
             return -1;
-
         }
         uint8_t* buffer = new (std::nothrow) uint8_t[size];
         if (buffer == nullptr) {
