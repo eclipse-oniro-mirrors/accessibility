@@ -441,6 +441,14 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
 {
     HILOG_DEBUG("ExecuteAction elementId:%{public}" PRId64 " winId:%{public}d, action:%{public}d, requestId:%{public}d",
         elementId, accessibilityWindowId, action, requestId);
+    if (actionArguments.find("sysapi_check_perm") != actionArguments.end()) {
+        if (!Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
+            OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+            HILOG_WARN("system api permission denied.");
+            return RET_ERR_NO_PERMISSION;
+        }
+    }
+
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (eventHandler_ == nullptr || callback == nullptr) {
         HILOG_ERROR("eventHandler_ exist: %{public}d, callback exist: %{public}d.", eventHandler_ != nullptr,

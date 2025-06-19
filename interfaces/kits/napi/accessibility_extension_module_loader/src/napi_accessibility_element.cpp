@@ -1922,7 +1922,7 @@ napi_value NAccessibilityElement::ExecuteAction(napi_env env, napi_callback_info
         napi_throw(env, err);
         return nullptr;
     }
-    return PerformActionAsync(env, argc, argv, ACTION_NAMES.at(action), accessibilityElement);
+    return PerformActionAsync(env, argc, argv, ACTION_NAMES.at(action), accessibilityElement, true);
 }
 
 AccessibilityElement* NAccessibilityElement::UnrapAccessibilityElement(napi_env env, napi_value thisVar)
@@ -1945,7 +1945,7 @@ AccessibilityElement* NAccessibilityElement::UnrapAccessibilityElement(napi_env 
 }
 
 napi_value NAccessibilityElement::PerformActionAsync(napi_env env, size_t argc, napi_value* argv,
-    std::string actionName, AccessibilityElement* accessibilityElement)
+    std::string actionName, AccessibilityElement* accessibilityElement, bool checkPerm)
 {
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (callbackInfo == nullptr) {
@@ -1957,11 +1957,11 @@ napi_value NAccessibilityElement::PerformActionAsync(napi_env env, size_t argc, 
     callbackInfo->env_ = env;
     callbackInfo->accessibilityElement_ = *accessibilityElement;
 
-    return PerformActionConstructPromise(env, argc, argv, callbackInfo, actionName);
+    return PerformActionConstructPromise(env, argc, argv, callbackInfo, actionName, checkPerm);
 }
 
 napi_value NAccessibilityElement::PerformActionConstructPromise(napi_env env, size_t argc, napi_value* argv,
-    NAccessibilityElementData* callbackInfo, std::string actionName)
+    NAccessibilityElementData* callbackInfo, std::string actionName, bool checkPerm)
 {
     napi_value promise = nullptr;
     std::map<std::string, std::string> actionArguments {};
@@ -2001,6 +2001,10 @@ napi_value NAccessibilityElement::PerformActionConstructPromise(napi_env env, si
     } else {
         HILOG_DEBUG("argc is others, use promise");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    }
+
+    if (checkPerm) {
+        actionArguments.insert(std::pair<std::string, std::string>("sysapi_check_perm", "1"));
     }
 
     callbackInfo->actionName_ = actionName;
