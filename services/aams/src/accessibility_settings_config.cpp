@@ -21,6 +21,8 @@
 #include "accessible_ability_manager_service.h"
 #include "accessibility_account_data.h"
 #include "parameters.h"
+#include "time_service_client.h"
+#include "accessibility_notification_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -77,6 +79,8 @@ namespace {
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const std::string FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
     const std::string FLASH_REMINDER_ENABLED = "accessibility_reminder_function_enabled";
+    const std::string IGNORE_REPEAT_CLICK_TIMESTAMP = "accessibility_ignore_repeat_click_timestamp";
+    const std::string RECOVERY_IGNORE_REPEAT_CLICK_DATE = "recovery_ignore_repeat_click_switch_date";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -90,6 +94,8 @@ namespace {
     constexpr int AUDIO_BALANCE_STEP = 5;
     constexpr float INVALID_MASTER_BALANCE_VALUE = 2.0;
     constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
+    constexpr uint32_t IGNORE_REPEAT_CLICK_SHORTEST = 0;
+    constexpr uint32_t IGNORE_REPEAT_CLICK_SHORT = 1;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -520,6 +526,15 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetIgnoreRepeatClickState");
         HILOG_ERROR("set ignoreRepeatClickState_ failed");
         return ret;
+    }
+    if (state) {
+        uint64_t nowTime = MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
+        ret = datashare_->PutUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, nowTime);
+        IgnoreRepeatClickNotification::RegisterTimers(nowTime);
+    } else {
+        ret = datashare_->PutUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, 0);
+        IgnoreRepeatClickNotification::DestoryTimers();
+        IgnoreRepeatClickNotification::CancelNotification();
     }
     ignoreRepeatClickState_ = state;
     return ret;
@@ -1042,6 +1057,27 @@ void AccessibilitySettingsConfig::InitSetting()
     SetIgnoreRepeatClickTime(ignoreRepeatClickTime_);
     datashare_->GetStringValue(FLASH_REMINDER_SWITCH_KEY, "0");
     datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "DEFAULT");
+
+    uint64_t recoveryDate = datashare_->GetUnsignedLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, 0);
+    if (ignoreRepeatClickState_ && recoveryDate == 0 &&
+        (ignoreRepeatClickTime_ == IGNORE_REPEAT_CLICK_SHORTEST ||
+            ignoreRepeatClickTime_ == IGNORE_REPEAT_CLICK_SHORT)) {
+        ignoreRepeatClickState_ = false;
+        SetIgnoreRepeatClickState(false);
+        recoveryDate = MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
+        datashare_->PutUnsignedLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, recoveryDate);
+        HILOG_INFO("recovery ignore repeat click %{public}llu", recoveryDate);
+    }
+ 
+    if (ignoreRepeatClickState_) {
+        IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
+        uint64_t timeStamp = datashare_->GetUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, 0);
+        if (timeStamp == 0) {
+            timeStamp = MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
+            datashare_->PutUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, timeStamp);
+        }
+        IgnoreRepeatClickNotification::RegisterTimers(timeStamp);
+    }
 }
 
 void AccessibilitySettingsConfig::InitCapability()

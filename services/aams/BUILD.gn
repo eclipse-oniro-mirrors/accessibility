@@ -68,6 +68,7 @@ accessibleabilityms_files = [
   "${services_path}/src/accessibility_resource_bundle_manager.cpp",
   "${services_path}/src/accessibility_setting_observer.cpp",
   "${services_path}/src/accessibility_setting_provider.cpp",
+  "${services_path}/src/accessibility_notification_helper.cpp",
   "${services_path}/src/msdp_manager.cpp",
   "${services_path}/src/accessibility_security_component_manager.cpp",
   "${services_path}/src/accessibility_short_key_dialog.cpp",
@@ -145,8 +146,8 @@ ohos_shared_library("accessibleabilityms") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
-    "graphic_2d:librender_service_base",
   ]
 
   if (accessibility_feature_power_manager) {
@@ -175,6 +176,12 @@ ohos_shared_library("accessibleabilityms") {
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 
   install_enable = true
