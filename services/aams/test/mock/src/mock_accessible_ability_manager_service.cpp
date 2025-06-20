@@ -261,6 +261,13 @@ ErrCode AccessibleAbilityManagerService::GetActiveWindow(int32_t &windowId)
     return RET_OK;
 }
 
+ErrCode AccessibleAbilityManagerService::GetActiveWindow(int32_t &windowId, bool systemApi)
+{
+    (void)windowId;
+    (void)systemApi;
+    return RET_OK;
+}
+
 ErrCode AccessibleAbilityManagerService::SetScreenMagnificationState(bool state)
 {
     (void)state;
@@ -674,6 +681,16 @@ ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32
     (void)windowId;
     (void)treeId;
     (void)parentId;
+    return RET_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId,
+    int64_t &parentId, bool systemApi)
+{
+    (void)windowId;
+    (void)treeId;
+    (void)parentId;
+    (void)systemApi;
     return RET_OK;
 }
 

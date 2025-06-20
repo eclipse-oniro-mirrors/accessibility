@@ -104,6 +104,9 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
         HILOG_ERROR("isFilter write error: %{public}d, ", isFilter);
         return RET_ERR_IPC_FAILED;
     }
+    if (!data.WriteBool(systemApi)) {
+        return RET_ERR_IPC_FAILED;
+    }
     if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID,
         data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by elementId");

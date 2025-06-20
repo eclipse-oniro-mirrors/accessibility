@@ -108,7 +108,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SetOnKeyPressEventResult, TestSize.
 HWTEST_F(AccessibleAbilityChannelClientTest, FindFocusedElementInfo_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "FindFocusedElementInfo_001 start";
-    EXPECT_CALL(*stub_, FindFocusedElementInfo(_, _, _, _, _)).Times(1).WillOnce(Return(RET_ERR_FAILED));
+    EXPECT_CALL(*stub_, FindFocusedElementInfo(_, _, _, _, _, _)).Times(1).WillOnce(Return(RET_ERR_FAILED));
     AccessibilityElementInfo info {};
     EXPECT_EQ(instance_->FindFocusedElementInfo(ACCESSIBILITY_WINDOW_ID,
         ELEMENT_ID, FOCUS_TYPE_INPUT, info), RET_ERR_FAILED);
@@ -140,7 +140,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, FindFocusedElementInfo_002, TestSiz
 HWTEST_F(AccessibleAbilityChannelClientTest, FindFocusedElementInfo_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "FindFocusedElementInfo_003 start";
-    EXPECT_CALL(*stub_, FindFocusedElementInfo(_, _, _, _, _)).Times(1).WillOnce(Return(RET_OK));
+    EXPECT_CALL(*stub_, FindFocusedElementInfo(_, _, _, _, _, _)).Times(1).WillOnce(Return(RET_OK));
     AccessibilityElementInfo info {};
     EXPECT_EQ(instance_->FindFocusedElementInfo(
         ACCESSIBILITY_WINDOW_ID, ELEMENT_ID, FOCUS_TYPE_INPUT, info), RET_ERR_TIME_OUT);
@@ -278,7 +278,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, GetWindows_001, TestSize.Level1)
 HWTEST_F(AccessibleAbilityChannelClientTest, GetWindows_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetWindows_002 start";
-    EXPECT_CALL(*stub_, GetWindows(_)).Times(1).WillOnce(Return(RET_OK));
+    EXPECT_CALL(*stub_, GetWindows(_, _)).Times(1).WillOnce(Return(RET_OK));
     std::vector<AccessibilityWindowInfo> windowInfo {};
     EXPECT_EQ(instance_->GetWindows(windowInfo), RET_OK);
     GTEST_LOG_(INFO) << "GetWindows_002 end";
@@ -308,7 +308,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, GetWindows_003, TestSize.Level1)
 HWTEST_F(AccessibleAbilityChannelClientTest, GetWindows_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetWindows_004 start";
-    EXPECT_CALL(*stub_, GetWindowsByDisplayId(_, _)).Times(1).WillOnce(Return(RET_OK));
+    EXPECT_CALL(*stub_, GetWindowsByDisplayId(_, _, _)).Times(1).WillOnce(Return(RET_OK));
     std::vector<AccessibilityWindowInfo> windowInfo {};
     EXPECT_EQ(instance_->GetWindows(0, windowInfo), RET_OK);
     GTEST_LOG_(INFO) << "GetWindows_004 end";
@@ -338,7 +338,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByText_001, TestS
 HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByText_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SearchElementInfosByText_002 start";
-    EXPECT_CALL(*stub_, SearchElementInfosByText(_, _, _, _, _)).Times(1).WillOnce(Return(RET_ERR_FAILED));
+    EXPECT_CALL(*stub_, SearchElementInfosByText(_, _, _, _, _, _)).Times(1).WillOnce(Return(RET_ERR_FAILED));
     std::vector<AccessibilityElementInfo> infos;
     EXPECT_EQ(instance_->SearchElementInfosByText(ACCESSIBILITY_WINDOW_ID, ELEMENT_ID, TEST, infos), RET_ERR_FAILED);
     GTEST_LOG_(INFO) << "SearchElementInfosByText_002 end";
@@ -352,7 +352,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByText_002, TestS
 HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByText_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SearchElementInfosByText_003 start";
-    EXPECT_CALL(*stub_, SearchElementInfosByText(_, _, _, _, _)).Times(1).WillOnce(Return(RET_OK));
+    EXPECT_CALL(*stub_, SearchElementInfosByText(_, _, _, _, _, _)).Times(1).WillOnce(Return(RET_OK));
     std::vector<AccessibilityElementInfo> infos;
     EXPECT_EQ(instance_->SearchElementInfosByText(ACCESSIBILITY_WINDOW_ID, ELEMENT_ID, TEST, infos), RET_ERR_TIME_OUT);
     GTEST_LOG_(INFO) << "SearchElementInfosByText_003 end";
@@ -383,7 +383,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, FocusMoveSearch_001, TestSize.Level
 HWTEST_F(AccessibleAbilityChannelClientTest, FocusMoveSearch_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "FocusMoveSearch_002 start";
-    EXPECT_CALL(*stub_, FocusMoveSearch(_, _, _, _, _)).Times(1).WillOnce(Return(RET_ERR_FAILED));
+    EXPECT_CALL(*stub_, FocusMoveSearch(_, _, _, _, _, _)).Times(1).WillOnce(Return(RET_ERR_FAILED));
     AccessibilityElementInfo info {};
     EXPECT_EQ(instance_->FocusMoveSearch(ACCESSIBILITY_WINDOW_ID, ELEMENT_ID,
         FocusMoveDirection::DOWN, info), RET_ERR_FAILED);
@@ -398,7 +398,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, FocusMoveSearch_002, TestSize.Level
 HWTEST_F(AccessibleAbilityChannelClientTest, FocusMoveSearch_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "FocusMoveSearch_003 start";
-    EXPECT_CALL(*stub_, FocusMoveSearch(_, _, _, _, _)).Times(1).WillOnce(Return(RET_OK));
+    EXPECT_CALL(*stub_, FocusMoveSearch(_, _, _, _, _, _)).Times(1).WillOnce(Return(RET_OK));
     AccessibilityElementInfo info {};
     EXPECT_EQ(instance_->FocusMoveSearch(ACCESSIBILITY_WINDOW_ID, ELEMENT_ID,
         FocusMoveDirection::DOWN, info), RET_ERR_TIME_OUT);
@@ -443,7 +443,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SetTargetBundleName_002, TestSize.L
 HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByAccessibilityId_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SearchElementInfosByAccessibilityId_001 start";
-    EXPECT_CALL(*stub_, SearchElementInfoByAccessibilityId(_, _, _, _, _)).Times(1).WillOnce(Return(RET_ERR_FAILED));
+    EXPECT_CALL(*stub_, SearchElementInfoByAccessibilityId(_, _, _, _, _, _)).Times(1).WillOnce(Return(RET_ERR_FAILED));
     std::vector<AccessibilityElementInfo> infos;
     EXPECT_EQ(instance_->SearchElementInfosByAccessibilityId(ACCESSIBILITY_WINDOW_ID,
         ELEMENT_ID, MODE, infos, TREE_ID), RET_ERR_FAILED);
@@ -475,7 +475,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByAccessibilityId
 HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByAccessibilityId_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SearchElementInfosByAccessibilityId_003 start";
-    EXPECT_CALL(*stub_, SearchElementInfoByAccessibilityId(_, _, _, _, _)).Times(1).WillOnce(Return(RET_OK));
+    EXPECT_CALL(*stub_, SearchElementInfoByAccessibilityId(_, _, _, _, _, _)).Times(1).WillOnce(Return(RET_OK));
     std::vector<AccessibilityElementInfo> infos;
     EXPECT_EQ(instance_->SearchElementInfosByAccessibilityId(ACCESSIBILITY_WINDOW_ID,
         ELEMENT_ID, MODE, infos, TREE_ID), RET_ERR_TIME_OUT);

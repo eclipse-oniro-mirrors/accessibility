@@ -179,6 +179,10 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
 {
     HILOG_DEBUG("SearchElementInfosByText :channel SearchElementInfo elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
+    if (systemApi && !Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
+        OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        return RET_ERR_NO_PERMISSION;
+    }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
     if (eventHandler_ == nullptr) {
@@ -233,6 +237,10 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
 {
     HILOG_DEBUG("channel FindFocusedElementInfo elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
+    if (systemApi && !Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
+        OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        return RET_ERR_NO_PERMISSION;
+    }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
     if (eventHandler_== nullptr) {
@@ -286,6 +294,10 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
 {
     HILOG_DEBUG("FocusMoveSearch :channel FocusMoveSearch elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
+    if (systemApi && !Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
+        OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        return RET_ERR_NO_PERMISSION;
+    }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
     if (eventHandler_ == nullptr) {
@@ -588,6 +600,10 @@ RetError AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayI
 
 RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const
 {
+    if (systemApi && !Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
+        OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        return RET_ERR_NO_PERMISSION;
+    }
     if (eventHandler_== nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
