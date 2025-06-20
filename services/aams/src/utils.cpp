@@ -39,6 +39,7 @@ namespace {
     const std::string KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE = "accessibilityCapabilityRationale";
     const std::string KEY_IS_IMPORTANT = "isImportant";
     const std::string KEY_NEED_HIDE = "needHide";
+    const std::string KEY_ACCESSIBILITY_EVENT_CONFIGURE = "accessibilityEventConfigure";
 
     // The json value of accessibilityAbility type
     const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_SPOKEN = "spoken";
@@ -105,6 +106,21 @@ public:
         if (json.find(key) != json.end() && json.at(key).is_boolean()) {
             HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
             value = json.at(key).get<bool>();
+        }
+        return true;
+    }
+
+    static bool GetUInt32VecFromJson(const nlohmann::json &json, const std::string &key,
+        std::vector<uint32_t> &value)
+    {
+        HILOG_DEBUG("start.");
+        if (!json.is_object()) {
+            HILOG_ERROR("json is not object.");
+            return false;
+        }
+        if (json.find(key) != json.end() && json.at(key).is_array()) {
+            HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
+            value = json.at(key).get<std::vector<uint32_t>>();
         }
         return true;
     }
@@ -236,6 +252,12 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
     // needHide
     if (!JsonUtils::GetBoolFromJson(sourceJson, KEY_NEED_HIDE, initParams.needHide)) {
         HILOG_ERROR("Get needHide from json failed.");
+        return;
+    }
+
+    //accessibilityEventConfigure
+    if (!JsonUtils::GetUInt32VecFromJson(sourceJson, KEY_ACCESSIBILITY_EVENT_CONFIGURE, initParams.eventConfigure)) {
+        HILOG_ERROR("Get accessibilityCapabilities from json failed.");
         return;
     }
 }

@@ -80,6 +80,8 @@ public:
 
     RetError NotifyDisconnect() override;
 
+    RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override;
+
 private:
     static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);
     static RetError GetElementOperator(int32_t accountId, int32_t windowId, int32_t focusType,

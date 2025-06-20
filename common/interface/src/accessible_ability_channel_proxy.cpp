@@ -703,5 +703,36 @@ RetError AccessibleAbilityChannelProxy::NotifyDisconnect()
 
     return static_cast<RetError>(reply.ReadInt32());
 }
+
+RetError AccessibleAbilityChannelProxy::ConfigureEvents(const std::vector<uint32_t> needEvents)
+{
+    HILOG_DEBUG();
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteUint32(needEvents.size())) {
+        HILOG_ERROR("needEvents size write error: %{public}zu", needEvents.size());
+        return RET_ERR_IPC_FAILED;
+    }
+    for (auto &needEvent : needEvents) {
+        if (!data.WriteUint32(needEvent)) {
+            HILOG_ERROR("needEvent write error: %{public}d", needEvent);
+            return RET_ERR_IPC_FAILED;
+        }
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::CONFIGURE_EVENTS,
+        data, reply, option)) {
+        HILOG_ERROR("fail to notify disconnect");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    return static_cast<RetError>(reply.ReadInt32());
+}
 } // namespace Accessibility
 } // namespace OHOS

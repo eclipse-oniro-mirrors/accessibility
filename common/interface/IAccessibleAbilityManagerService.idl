@@ -90,5 +90,6 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void RemoveRequestId([in] int requestId);
     void GetRootParentId([in] int windowsId, [in] int treeId, [out] long parentId);
     void GetScreenReaderState([out] boolean state);
-    void SetEnhanceConfig([in] CString cfg, [in] unsigned int cfgLen);
+    void SetEnhanceConfig([in] AccessibilitySecCompRawdata rawData);
+    void SearchNeedEvents([out] int[] needEvents);
 }

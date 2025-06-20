@@ -914,5 +914,16 @@ void AccessibilitySystemAbilityClientImpl::AccessibilityLoadCallback::OnLoadSyst
         g_Instance->LoadSystemAbilityFail();
     }
 }
+
+RetError AccessibilitySystemAbilityClientImpl::SearchNeedEvents(std::vector<uint32_t> &needEvents)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    return static_cast<RetError>(serviceProxy_->SearchNeedEvents(needEvents));
+}
 } // namespace Accessibility
 } // namespace OHOS

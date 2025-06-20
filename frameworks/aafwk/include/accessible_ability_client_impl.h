@@ -401,6 +401,13 @@ public:
     void SetConnectionState(bool state);
 
     /**
+     * @brief Config need events.
+     * @param needEvents The need events.
+     * @return Return RET_OK if config need events successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override;
+
+    /**
      * @brief Find the node information by accessibility ID.
      * @param accessibilityWindowId The window id that the component belongs to.
      * @param elementId: The unique id of the component ID.

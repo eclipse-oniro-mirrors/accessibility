@@ -144,6 +144,7 @@ public:
     void GetElementOperatorConnection(sptr<AccessibilityWindowConnection> &connection,
         const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
     ErrCode GetScreenReaderState(bool &state) override;
+    ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
 private:
     int32_t focusWindowId_ = -1;
     int64_t focusElementId_ = -1;
@@ -330,6 +331,8 @@ public:
     std::shared_ptr<MagnificationManager> GetMagnificationMgr();
     std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
     std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
+
+    RetError UpdateUIestConfigureEvents(std::vector<uint32_t> needEvents);
 
 private:
     void StopCallbackWait(int32_t windowId);

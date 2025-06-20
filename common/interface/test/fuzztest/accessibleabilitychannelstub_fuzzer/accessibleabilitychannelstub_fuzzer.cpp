@@ -113,6 +113,10 @@ public:
     {
         return RET_OK;
     }
+    RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override
+    {
+        return RET_OK;
+    }
 };
 
 template<class T>

@@ -250,6 +250,13 @@ public:
     virtual RetError SearchElementInfoByAccessibilityId(const int32_t windowId, const int64_t elementId,
         const uint32_t mode, AccessibilityElementInfo &info, bool isFilter = false) override;
 
+    /**
+     * @brief Config need events.
+     * @param needEvents The need events.
+     * @return Return RET_OK if config need events successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override;
+
 private:
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
 };

@@ -218,6 +218,13 @@ public:
      */
     RetError NotifyDisconnect();
 
+    /**
+     * @brief Config need events.
+     * @param needEvents The need events.
+     * @return Return RET_OK if config need events successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents);
+
 private:
     int32_t GenerateRequestId();
 

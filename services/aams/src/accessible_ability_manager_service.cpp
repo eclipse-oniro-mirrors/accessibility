@@ -83,6 +83,8 @@ namespace {
     const std::string USER_SETUP_COMPLETED = "user_setup_complete";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
+    const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
+    const std::string UI_TEST_ABILITY_NAME = "uitestability";
     constexpr int32_t INVALID_SHORTCUT_STATE = 2;
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
@@ -4011,6 +4013,35 @@ int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const char *cfg, uint3
     HILOG_INFO();
     int32_t result = SecurityComponentManager::SetEnhanceConfig(cfg, cfgLen);
     return result;
+}
+
+RetError AccessibleAbilityManagerService::UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("Account data is null");
+        return RET_ERR_NULLPTR;
+    }
+ 
+    std::string uiTestUri = Utils::GetUri(UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
+    accountData->AddNeedEvent(uiTestUri, needEvents);
+    uint32_t state = accountData->GetAccessibilityState();
+    state |= STATE_CONFIG_EVENT_CHANGE;
+    stateObservers_.OnStateObservers(state);
+    return RET_OK;
+}
+ 
+ErrCode AccessibleAbilityManagerService::SearchNeedEvents(std::vector<uint32_t> &needEvents)
+{
+    HILOG_DEBUG("SearchNeedEvents AAMS");
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("Account data is null");
+        return ERR_INVALID_VALUE;
+    }
+    needEvents = accountData->GetNeedEvents();
+    HILOG_DEBUG("GetNeedEvent size is %{public}ld", needEvents.size());
+    return NO_ERROR;
 }
 } // namespace Accessibility
 } // namespace OHOS

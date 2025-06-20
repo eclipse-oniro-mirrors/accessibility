@@ -290,8 +290,13 @@ public:
     const sptr<AccessibleAbilityConnection> GetWaitDisConnectAbility(const std::string &uri);
     void AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection);
     void RemoveWaitDisconnectAbility(const std::string &uri);
+    std::vector<uint32_t> UpdateNeedEvents();
+    void AddNeedEvent(std::string &name, std::vector<uint32_t> needEvents);
+    void RemoveNeedEvent(const std::string &name);
 
     bool screenReaderState_ = false;
+    std::map<std::string, std::vector<uint32_t>> abilityNeedEvents_;
+    std::vector<uint32_t> needEvents_;
 
 private:
     /**

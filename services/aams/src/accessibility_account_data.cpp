@@ -62,6 +62,8 @@ namespace {
     const std::string ACCESSIBILITY_TOUCH_GUIDE_ENABLED = "enableTouchGuideMode";
     const std::string SCREEN_READER_SINGLE_CLICK_MODE = "screen_reader_single_click_mode";
     const std::string ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
+    const std::string SCREEN_READER_BUNDLE_NAME = "com.huawei.hmos.screenreader";
+    const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -262,6 +264,9 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
         return;
     }
     enabledAbilities_.push_back(name);
+    std::string bundleName = name;
+    std::vector<int32_t> events = {};
+    AddNeedEvent(bundleName, events);
     if (name == screenReaderAbilityName_) {
         SetScreenReaderState(screenReaderKey_, "1");
     }
@@ -279,6 +284,7 @@ RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
             if (name == screenReaderAbilityName_) {
                 SetScreenReaderState(screenReaderKey_, "0");
             }
+            RemoveNeedEvent(name);
             UpdateEnableAbilityListsState();
             HILOG_DEBUG("EnabledAbility size %{public}zu", enabledAbilities_.size());
             return RET_OK;
@@ -706,6 +712,9 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
 #endif // OHOS_BUILD_ENABLE_HITRACE
 
     enabledAbilities_.push_back(name);
+    std::string bundleName = name;
+    std::vector<uint32_t> events = {};
+    AddNeedEvent(bundleName, events);
     SetAbilityAutoStartState(name, true);
     if (name == screenReaderAbilityName_) {
         SetScreenReaderState(screenReaderKey_, "1");
@@ -1444,6 +1453,73 @@ void AccessibilityAccountDataMap::Clear()
 {
     std::lock_guard<ffrt::mutex> lock(accountDataMutex_);
     accountDataMap_.clear();
+}
+
+void AccessibilityAccountData::AddNeedEvent(std::string &name, std::vector<uint32_t> needEvents)
+{
+    std::string packageName = "";
+    std::string bundleName = "";
+    size_t pos = name.find('/');
+    if (pos != std::string::npos) {
+        bundleName = name.substr(0, pos);
+    }
+ 
+    if (bundleName == SCREEN_READER_BUNDLE_NAME) {
+        abilityNeedEvents_[bundleName].push_back(TYPES_ALL_MASK);
+    } else if (bundleName == UI_TEST_BUNDLE_NAME) {
+        for (auto &uitestNeedEvent : needEvents) {
+            if (std::find(abilityNeedEvents_[bundleName].begin(), abilityNeedEvents_[bundleName].end(),
+                uitestNeedEvent) == abilityNeedEvents_[bundleName].end()) {
+                abilityNeedEvents_[bundleName].push_back(uitestNeedEvent);
+            }
+        }
+    } else {
+        for (auto &installAbility : installedAbilities_) {
+            packageName = installAbility.GetPackageName();
+            if (packageName == bundleName) {
+                installAbility.GetEventConfigure(abilityNeedEvents_[bundleName]);
+            }
+        }
+    }
+    HILOG_INFO("needEvent size is %{public}ld", abilityNeedEvents_[bundleName].size());
+    UpdateNeedEvents();
+}
+
+void AccessibilityAccountData::RemoveNeedEvent(const std::string &name)
+{
+    size_t pos = name.find('/');
+    if (pos != std::string::npos) {
+        std::string bundleName = name.substr(0, pos);
+        HILOG_INFO("RemoveNeedEvent bundleName is %{public}s, abilityNeedEvents_ size is %{public}ld",
+            bundleName.c_str(), abilityNeedEvents_.size());
+        abilityNeedEvents_.erase(bundleName);
+        UpdateNeedEvents();
+    }
+}
+ 
+std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
+{
+    needEvents_.clear();
+    std::vector<uint32_t> needEvents = {};
+    for (const auto& pair : abilityNeedEvents_) {
+        const std::vector<uint32_t>& events = pair.second;
+        for (uint32_t event : events) {
+            if (std::find(needEvents.begin(), needEvents.end(), event) == needEvents.end()) {
+                needEvents.push_back(event);
+            }
+        }
+    }
+ 
+    if (std::find(needEvents.begin(), needEvents.end(), TYPES_ALL_MASK) != needEvents.end()) {
+        needEvents_.push_back(TYPES_ALL_MASK);
+    } else if ((needEvents.size() == 1) &&
+        std::find(needEvents.begin(), needEvents.end(), TYPE_VIEW_INVALID) != needEvents.end()) {
+        needEvents_.push_back(TYPE_VIEW_INVALID);
+    } else {
+        needEvents_ = needEvents;
+    }
+    HILOG_INFO("needEvents size is %{public}ld", needEvents_.size());
+    return needEvents_;
 }
 } // namespace Accessibility
 } // namespace OHOS

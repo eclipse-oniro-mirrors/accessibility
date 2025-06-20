@@ -244,6 +244,7 @@ public:
         const int32_t requestId, const int32_t requestCode) override;
     virtual void SetPerformActionResult(const bool succeeded, const int32_t requestId) override;
     virtual RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
+    virtual RetError SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
 
     bool LoadAccessibilityService();
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
