@@ -44,8 +44,9 @@ void FullScreenMagnificationManager::ShowMagnification()
     Accessibility::AccessibilityAbilityHelper::GetInstance().SetZoomState(true);
 }
 
-void FullScreenMagnificationManager::DisableMagnification()
+void FullScreenMagnificationManager::DisableMagnification(bool needClear)
 {
+    (void)needClear;
     Accessibility::AccessibilityAbilityHelper::GetInstance().SetZoomState(false);
 }
 

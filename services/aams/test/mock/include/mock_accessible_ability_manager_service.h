@@ -104,6 +104,8 @@ public:
     MOCK_METHOD3(GetRootParentId, ErrCode(int32_t windowId, int32_t treeId, int64_t &parentId));
     MOCK_METHOD2(GetAllTreeId, RetError(int32_t windowId, std::vector<int32_t> &treeIds));
     MOCK_METHOD1(CheckPermission, bool(const std::string &permission));
+    MOCK_METHOD1(SearchNeedEvents, ErrCode(std::vector<uint32_t> &needEvents));
+    MOCK_METHOD1(UpdateUITestConfigureEvents, RetError(std::vector<uint32_t> needEvents));
 };
 } // namespace Accessibility
 } // namespace OHOS

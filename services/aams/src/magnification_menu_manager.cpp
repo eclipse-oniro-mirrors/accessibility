@@ -71,8 +71,13 @@ void MagnificationMenuManager::CreateMenuWindow()
 {
     HILOG_DEBUG();
     GetWindowParam();
-    menuRect_ = {(screenWidth_ - menuSize_ - margin_), (screenHeight_ - menuSize_ - margin_), menuSize_, menuSize_};
+    menuRect_ = {(static_cast<int32_t>(screenWidth_ - menuSize_) - margin_), (
+        static_cast<int32_t>(screenHeight_ - menuSize_) - margin_), menuSize_, menuSize_};
     sptr<Rosen::WindowOption> windowOption = new(std::nothrow) Rosen::WindowOption();
+    if (windowOption == nullptr) {
+        HILOG_ERROR("windowOption is null");
+        return;
+    }
     windowOption->SetWindowType(Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU);
     windowOption->SetWindowMode(Rosen::WindowMode::WINDOW_MODE_FLOATING);
     windowOption->SetWindowRect(menuRect_);
@@ -83,6 +88,10 @@ void MagnificationMenuManager::CreateMenuWindow()
     }
     menuWindow_->SetCornerRadius(MENU_CORNER_RADIUS);
     surfaceNode_ = menuWindow_->GetSurfaceNode();
+    if (surfaceNode_ == nullptr) {
+        HILOG_ERROR("surfaceNode_ is nullptr.");
+        return;
+    }
     canvasNode_ = Rosen::RSCanvasNode::Create();
     surfaceNode_->SetAbilityBGAlpha(BG_ALPHA);
     surfaceNode_->AddChild(canvasNode_, -1);
@@ -146,6 +155,12 @@ void MagnificationMenuManager::ShowMenuWindow(uint32_t mode)
 void MagnificationMenuManager::DisableMenuWindow()
 {
     HILOG_DEBUG();
+    if (surfaceNode_ != nullptr) {
+        surfaceNode_->SetVisible(false);
+        surfaceNode_->ClearChildren();
+        Rosen::RSTransaction::FlushImplicitTransaction();
+    }
+
     isMenuShown_ = false;
     if (menuWindow_ != nullptr) {
         menuWindow_->Hide();
@@ -185,7 +200,7 @@ void MagnificationMenuManager::AttachToEdge()
     if (menuRect_.posX_ < static_cast<int32_t>(screenWidth_ / DIVISOR_TWO)) {
         menuRect_.posX_ = margin_;
     } else {
-        menuRect_.posX_ = screenWidth_ - menuSize_ - margin_;
+        menuRect_.posX_ = static_cast<int32_t>(screenWidth_ - menuSize_) - margin_;
     }
     menuWindow_->MoveTo(menuRect_.posX_, menuRect_.posY_);
 }

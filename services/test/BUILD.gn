@@ -77,8 +77,9 @@ ohos_moduletest("aams_accessibility_touch_exploration_test") {
     "../aams/src/accessibility_setting_observer.cpp",
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
+    "../aams/src/accessibility_notification_helper.cpp",
     "../aams/src/msdp_manager.cpp",
-    "../aams/src/security_component_manager.cpp",
+    "../aams/src/accessibility_security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -163,18 +164,26 @@ ohos_moduletest("aams_accessibility_touch_exploration_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "memmgr:memmgrclient",
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -200,8 +209,9 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "../aams/src/accessibility_setting_observer.cpp",
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
+    "../aams/src/accessibility_notification_helper.cpp",
     "../aams/src/msdp_manager.cpp",
-    "../aams/src/security_component_manager.cpp",
+    "../aams/src/accessibility_security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -287,18 +297,26 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "memmgr:memmgrclient",
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -324,8 +342,9 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "../aams/src/accessibility_setting_observer.cpp",
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
+    "../aams/src/accessibility_notification_helper.cpp",
     "../aams/src/msdp_manager.cpp",
-    "../aams/src/security_component_manager.cpp",
+    "../aams/src/accessibility_security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -410,18 +429,26 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "memmgr:memmgrclient",
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -447,8 +474,9 @@ ohos_moduletest("aams_server_test") {
     "../aams/src/accessibility_setting_observer.cpp",
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
+    "../aams/src/accessibility_notification_helper.cpp",
     "../aams/src/msdp_manager.cpp",
-    "../aams/src/security_component_manager.cpp",
+    "../aams/src/accessibility_security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -531,18 +559,26 @@ ohos_moduletest("aams_server_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "memmgr:memmgrclient",
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -568,8 +604,9 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "../aams/src/accessibility_setting_observer.cpp",
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
+    "../aams/src/accessibility_notification_helper.cpp",
     "../aams/src/msdp_manager.cpp",
-    "../aams/src/security_component_manager.cpp",
+    "../aams/src/accessibility_security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -653,18 +690,26 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "memmgr:memmgrclient",
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -690,8 +735,9 @@ ohos_moduletest("aams_common_event_registry_test") {
     "../aams/src/accessibility_setting_observer.cpp",
     "../aams/src/accessibility_settings.cpp",
     "../aams/src/accessibility_settings_config.cpp",
+    "../aams/src/accessibility_notification_helper.cpp",
     "../aams/src/msdp_manager.cpp",
-    "../aams/src/security_component_manager.cpp",
+    "../aams/src/accessibility_security_component_manager.cpp",
     "../aams/src/accessibility_short_key.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_window_connection.cpp",
@@ -780,18 +826,26 @@ ohos_moduletest("aams_common_event_registry_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "memmgr:memmgrclient",
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "preferences:native_preferences",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 

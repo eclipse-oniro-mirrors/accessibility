@@ -165,15 +165,14 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
         }
         HILOG_DEBUG("InitAccessibilityServiceProxy success");
         return true;
-    }
-#ifdef ACCESSIBILITY_WATCH_FEATURE
+    } else {
         if (LoadAccessibilityService() == false) {
             HILOG_ERROR("LoadSystemAbilityService failed.");
             return false;
         } else {
             return true;
         }
-#endif // ACCESSIBILITY_WATCH_FEATURE
+    }
     return true;
 }
 
@@ -292,14 +291,10 @@ bool AccessibilityConfig::Impl::RegisterToService()
 
 sptr<Accessibility::IAccessibleAbilityManagerService> AccessibilityConfig::Impl::GetServiceProxy()
 {
-#ifndef ACCESSIBILITY_WATCH_FEATURE
-    return serviceProxy_;
-#else
     if (serviceProxy_ == nullptr) {
         LoadAccessibilityService();
     }
     return serviceProxy_;
-#endif // ACCESSIBILITY_WATCH_FEATURE
 }
 
 void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
@@ -2015,8 +2010,10 @@ Accessibility::RetError AccessibilityConfig::Impl::SetEnhanceConfig(uint8_t *cfg
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    return static_cast<Accessibility::RetError>(GetServiceProxy()->SetEnhanceConfig(reinterpret_cast<char*>(cfg),
-        cfgLen));
+    AccessibilitySecCompRawdata rawData;
+    rawData.size = cfgLen;
+    rawData.data = cfg;
+    return static_cast<Accessibility::RetError>(GetServiceProxy()->SetEnhanceConfig(rawData));
 }
 } // namespace AccessibilityConfig
 } // namespace OHOS

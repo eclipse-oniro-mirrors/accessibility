@@ -145,6 +145,18 @@ float AccessibilityDatashareHelper::GetFloatValue(const std::string& key, const 
     return result;
 }
 
+uint64_t AccessibilityDatashareHelper::GetUnsignedLongValue(const std::string& key, const uint64_t& defaultValue,
+    const bool readOnlyFlag)
+{
+    int64_t result = defaultValue;
+    std::string valueStr = GetStringValue(key, std::to_string(result), readOnlyFlag);
+    if (valueStr != "") {
+        result = static_cast<int64_t>(std::stoull(valueStr.c_str(), nullptr, DECIMAL_NOTATION));
+    }
+    return result;
+}
+ 
+
 RetError AccessibilityDatashareHelper::PutStringValue(const std::string& key, const std::string& value, bool needNotify)
 {
     std::string callingIdentity = IPCSkeleton::ResetCallingIdentity();
@@ -178,6 +190,11 @@ RetError AccessibilityDatashareHelper::PutStringValue(const std::string& key, co
     IPCSkeleton::SetCallingIdentity(callingIdentity);
 #endif
     return rtn;
+}
+
+RetError AccessibilityDatashareHelper::PutUnsignedLongValue(const std::string& key, uint64_t value, bool needNotify)
+{
+    return PutStringValue(key, std::to_string(value), needNotify);
 }
 
 RetError AccessibilityDatashareHelper::PutIntValue(const std::string& key, int32_t value, bool needNotify)

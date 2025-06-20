@@ -265,7 +265,7 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
     }
     enabledAbilities_.push_back(name);
     std::string bundleName = name;
-    std::vector<int32_t> events = {};
+    std::vector<uint32_t> events = {};
     AddNeedEvent(bundleName, events);
     if (name == screenReaderAbilityName_) {
         SetScreenReaderState(screenReaderKey_, "1");
@@ -1467,12 +1467,8 @@ void AccessibilityAccountData::AddNeedEvent(std::string &name, std::vector<uint3
     if (bundleName == SCREEN_READER_BUNDLE_NAME) {
         abilityNeedEvents_[bundleName].push_back(TYPES_ALL_MASK);
     } else if (bundleName == UI_TEST_BUNDLE_NAME) {
-        for (auto &uitestNeedEvent : needEvents) {
-            if (std::find(abilityNeedEvents_[bundleName].begin(), abilityNeedEvents_[bundleName].end(),
-                uitestNeedEvent) == abilityNeedEvents_[bundleName].end()) {
-                abilityNeedEvents_[bundleName].push_back(uitestNeedEvent);
-            }
-        }
+        abilityNeedEvents_[bundleName].clear();
+        abilityNeedEvents_[bundleName] = needEvents;
     } else {
         for (auto &installAbility : installedAbilities_) {
             packageName = installAbility.GetPackageName();
@@ -1481,7 +1477,7 @@ void AccessibilityAccountData::AddNeedEvent(std::string &name, std::vector<uint3
             }
         }
     }
-    HILOG_INFO("needEvent size is %{public}ld", abilityNeedEvents_[bundleName].size());
+    HILOG_DEBUG("needEvent size is %{public}u", abilityNeedEvents_[bundleName].size());
     UpdateNeedEvents();
 }
 
@@ -1490,7 +1486,7 @@ void AccessibilityAccountData::RemoveNeedEvent(const std::string &name)
     size_t pos = name.find('/');
     if (pos != std::string::npos) {
         std::string bundleName = name.substr(0, pos);
-        HILOG_INFO("RemoveNeedEvent bundleName is %{public}s, abilityNeedEvents_ size is %{public}ld",
+        HILOG_DEBUG("RemoveNeedEvent bundleName is %{public}s, abilityNeedEvents_ size is %{public}u",
             bundleName.c_str(), abilityNeedEvents_.size());
         abilityNeedEvents_.erase(bundleName);
         UpdateNeedEvents();
@@ -1518,7 +1514,12 @@ std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
     } else {
         needEvents_ = needEvents;
     }
-    HILOG_INFO("needEvents size is %{public}ld", needEvents_.size());
+    HILOG_INFO("needEvents size is %{public}u", needEvents_.size());
+    return needEvents_;
+}
+
+std::vector<uint32_t> AccessibilityAccountData::GetNeedEvents()
+{
     return needEvents_;
 }
 } // namespace Accessibility

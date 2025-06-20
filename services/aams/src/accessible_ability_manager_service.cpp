@@ -52,8 +52,9 @@
 #include "tokenid_kit.h"
 #include "accessibility_caption.h"
 #include "msdp_manager.h"
-#include "security_component_manager.h"
 #include "accessibility_permission.h"
+#include "mem_mgr_client.h"
+#include "mem_mgr_proxy.h"
 
 using namespace std;
 using namespace OHOS::Security::AccessToken;
@@ -303,6 +304,7 @@ void AccessibleAbilityManagerService::OnStart()
     AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
     AddSystemAbilityListener(DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID);
+    AddSystemAbilityListener(MEMORY_MANAGER_SA_ID);
 
     accessibilitySettings_->RegisterSettingsHandler(handler_);
 }
@@ -345,6 +347,8 @@ void AccessibleAbilityManagerService::OnStop()
     isReady_ = false;
     isPublished_ = false;
     SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
+    int pid = getpid();
+    Memory::MemMgrClient::GetInstance().NotifyProcessStatus(pid, 1, 0, ACCESSIBILITY_MANAGER_SERVICE_ID);
     HILOG_INFO("AccessibleAbilityManagerService::OnStop OK.");
 }
 
@@ -357,6 +361,11 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
     }
 
     handler_->PostTask([=]() {
+        if (systemAbilityId == MEMORY_MANAGER_SA_ID) {
+            int pid = getpid();
+            Memory::MemMgrClient::GetInstance().NotifyProcessStatus(pid, 1, 1, ACCESSIBILITY_MANAGER_SERVICE_ID);
+            return;
+        }
         auto iter = dependentServicesStatus_.find(systemAbilityId);
         if (iter == dependentServicesStatus_.end()) {
             HILOG_ERROR("SystemAbilityId is not found!");
@@ -742,7 +751,7 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     AccessibilityElementInfo focusedElementInfo {};
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(focusedElementInfo);
     if (ret) {
-        actionArguments = SecurityComponentManager::GenerateActionArgumentsWithHMAC(action,
+        actionArguments = AccessibilitySecurityComponentManager::GenerateActionArgumentsWithHMAC(action,
             focusedElementInfo.GetUniqueId(), focusedElementInfo.GetBundleName(), actionArguments);
     }
     sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl();
@@ -2004,7 +2013,12 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         }
         accountData->GetImportantEnabledAbilities(importantEnabledAbilities);
         accountData->OnAccountSwitched();
-        UpdateAccessibilityManagerService();
+        accountData->UpdateAccountCapabilities();
+        if (inputInterceptor_ != nullptr) {
+            inputInterceptor_->SetAvailableFunctions(0);
+        }
+        UpdateAccessibilityState();
+        UpdateShortKeyRegister();
     }
     currentAccountId_ = accountId;
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -2425,6 +2439,24 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
     }
 
     stateObservers_.OnStateObservers(state);
+    UpdateCriticalState();
+}
+
+void AccessibleAbilityManagerService::UpdateCriticalState()
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("account data is null");
+        return;
+    }
+    uint32_t accessibilityState = accountData->GetAccessibilityState();
+    uint32_t inputFlag = accountData->GetInputFilterFlag();
+    int pid = getpid();
+    if (accessibilityState != 0 || inputFlag != 0) {
+        Memory::MemMgrClient::GetInstance().SetCritical(pid, true, ACCESSIBILITY_MANAGER_SERVICE_ID);
+    } else {
+        Memory::MemMgrClient::GetInstance().SetCritical(pid, false, ACCESSIBILITY_MANAGER_SERVICE_ID);
+    }
 }
 
 void AccessibleAbilityManagerService::UpdateCaptionProperty()
@@ -3966,8 +3998,7 @@ float AccessibleAbilityManagerService::GetMagnificationScale()
         return magnificationScale;
     }
 
-    magnificationScale =
-        static_cast<uint32_t>(helper->GetFloatValue(SCREEN_MAGNIFICATION_SCALE, DEFAULT_SCALE));
+    magnificationScale = helper->GetFloatValue(SCREEN_MAGNIFICATION_SCALE, DEFAULT_SCALE);
     return magnificationScale;
 }
 
@@ -4008,10 +4039,10 @@ std::shared_ptr<FullScreenMagnificationManager> AccessibleAbilityManagerService:
     return magnificationManager_->GetFullScreenMagnificationManager();
 }
 
-int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
+int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
 {
     HILOG_INFO();
-    int32_t result = SecurityComponentManager::SetEnhanceConfig(cfg, cfgLen);
+    int32_t result = AccessibilitySecurityComponentManager::SetEnhanceConfig(rawData);
     return result;
 }
 
@@ -4040,7 +4071,7 @@ ErrCode AccessibleAbilityManagerService::SearchNeedEvents(std::vector<uint32_t> 
         return ERR_INVALID_VALUE;
     }
     needEvents = accountData->GetNeedEvents();
-    HILOG_DEBUG("GetNeedEvent size is %{public}ld", needEvents.size());
+    HILOG_DEBUG("GetNeedEvent size is %{public}u", needEvents.size());
     return NO_ERROR;
 }
 } // namespace Accessibility

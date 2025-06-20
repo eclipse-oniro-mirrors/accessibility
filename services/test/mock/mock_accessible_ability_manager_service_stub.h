@@ -119,7 +119,9 @@ public:
     ErrCode GetFocusedWindowId(int32_t &focusedWindowId) override;
     ErrCode RemoveRequestId(int32_t requestId) override;
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t& parentId) override;
-    int32_t SetEnhanceConfig(const char *cfg, uint32_t cfgLen) override;
+    int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override;
+    ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
+    RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);
 
 private:
     std::shared_ptr<AppExecFwk::EventRunner> runner_;

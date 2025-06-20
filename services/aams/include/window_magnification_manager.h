@@ -55,7 +55,7 @@ public:
     void DrawRuoundRectFrame();
     void EnableWindowMagnification(int32_t centerX, int32_t centerY);
     void ShowWindowMagnification();
-    void DisableWindowMagnification();
+    void DisableWindowMagnification(bool needClear = false);
     void SetScale(float deltaSpan);
     void MoveMagnificationWindow(int32_t deltaX, int32_t deltaY);
     void InitMagnificationParam();
@@ -77,9 +77,9 @@ private:
     void GetWindowParam();
     PointerPos GetRectCenter(Rosen::Rect rect);
 
-    Rosen::Rect sourceRect_;
-    Rosen::Rect windowRect_;
-    Rosen::Rect screenRect_;
+    Rosen::Rect sourceRect_ = {0, 0, 0, 0};
+    Rosen::Rect windowRect_ = {0, 0, 0, 0};
+    Rosen::Rect screenRect_ = {0, 0, 0, 0};
 
     sptr<Rosen::Window> window_ = nullptr;
     std::shared_ptr<Rosen::RSSurfaceNode> surfaceNode_;

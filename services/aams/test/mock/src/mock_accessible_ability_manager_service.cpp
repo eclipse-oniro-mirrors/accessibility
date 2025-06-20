@@ -721,9 +721,19 @@ std::shared_ptr<FullScreenMagnificationManager> AccessibleAbilityManagerService:
     return nullptr;
 }
 
-int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
+int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
 {
     return 0;
+}
+
+ErrCode AccessibleAbilityManagerService::SearchNeedEvents(std::vector<uint32_t> &needEvents)
+{
+    return NO_ERROR;
+}
+
+RetError AccessibleAbilityManagerService::UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents)
+{
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS

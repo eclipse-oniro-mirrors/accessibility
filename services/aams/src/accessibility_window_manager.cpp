@@ -1064,7 +1064,7 @@ void AccessibilityWindowManager::ClearAccessibilityFocused()
     AccessibilityEventInfoParcel eventInfoParcel(eventInfo);
     bool isSendWindowEvent = CheckEvents();
     if (isSendWindowEvent) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfParcel, 0);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfoParcel, 0);
     }
 }
 

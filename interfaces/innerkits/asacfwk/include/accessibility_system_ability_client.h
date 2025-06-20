@@ -190,7 +190,7 @@ public:
             elementId = CONT_SPLIT_ID;
             return;
         }
-        if ((static_cast<uint64_t>(elementId) & MAX_ELEMENT_ID) != elementId) {
+        if ((static_cast<uint64_t>(elementId) & MAX_ELEMENT_ID) != static_cast<uint64_t>(elementId)) {
             return;
         }
         uint64_t itemp = 0;

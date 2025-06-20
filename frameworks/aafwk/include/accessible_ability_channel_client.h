@@ -34,7 +34,7 @@ public:
     /**
      * @brief The deconstructor of AccessibleAbilityChannelClient.
      */
-    ~AccessibleAbilityChannelClient() = default;
+    virtual ~AccessibleAbilityChannelClient() = default;
 
     /**
      * @brief Get remote object of IAccessibleAbilityChannel

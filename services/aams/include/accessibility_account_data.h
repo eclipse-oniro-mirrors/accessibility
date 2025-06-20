@@ -293,6 +293,7 @@ public:
     std::vector<uint32_t> UpdateNeedEvents();
     void AddNeedEvent(std::string &name, std::vector<uint32_t> needEvents);
     void RemoveNeedEvent(const std::string &name);
+    std::vector<uint32_t> GetNeedEvents();
 
     bool screenReaderState_ = false;
     std::map<std::string, std::vector<uint32_t>> abilityNeedEvents_;

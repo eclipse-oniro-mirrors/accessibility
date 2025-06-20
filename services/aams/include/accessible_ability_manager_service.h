@@ -44,6 +44,7 @@
 #include "accessibility_resource_bundle_manager.h"
 #include "refbase.h"
 #include "magnification_manager.h"
+#include "accessibility_security_component_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -319,7 +320,7 @@ public:
     ErrCode RemoveRequestId(int32_t requestId) override;
     void OnDataClone();
     bool CheckPermission(const std::string &permission) const;
-    int32_t SetEnhanceConfig(const char *cfg, uint32_t cfgLen) override;
+    int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override;
 
     // for magnification
     bool GetMagnificationState();
@@ -332,7 +333,7 @@ public:
     std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
     std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
 
-    RetError UpdateUIestConfigureEvents(std::vector<uint32_t> needEvents);
+    RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);
 
 private:
     void StopCallbackWait(int32_t windowId);
@@ -438,6 +439,7 @@ private:
     void UpdateSettingsInAtoHos();
     void UpdateAutoStartAbilities();
     void UpdateAllSetting();
+    void UpdateCriticalState();
 
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
     void RemoveSavedConfigCallback(const wptr<IRemoteObject>& callback);

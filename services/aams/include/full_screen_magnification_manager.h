@@ -39,7 +39,7 @@ public:
     void DrawRuoundRectFrame();
     void EnableMagnification(int32_t centerX, int32_t centerY);
     void ShowMagnification();
-    void DisableMagnification();
+    void DisableMagnification(bool needClear = false);
     PointerPos ConvertCoordinates(int32_t posX, int32_t posY);
     void RefreshWindowParam();
     void SetScale(float scaleSpan);
@@ -61,9 +61,9 @@ private:
     std::shared_ptr<Rosen::RSCanvasNode> canvasNode_;
     bool isMagnificationWindowShow_ = false;
 
-    Rosen::Rect sourceRect_;
-    Rosen::Rect windowRect_;
-    Rosen::Rect screenRect_;
+    Rosen::Rect sourceRect_ = {0, 0, 0, 0};
+    Rosen::Rect windowRect_ = {0, 0, 0, 0};
+    Rosen::Rect screenRect_ = {0, 0, 0, 0};
     uint32_t screenWidth_ = 0;
     uint32_t screenHeight_ = 0;
     float screenSpan_ = 0.0f;

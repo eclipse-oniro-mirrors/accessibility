@@ -83,6 +83,8 @@ public:
     // return 0 when not found
     int32_t FindTreeIdWindowIdPair(int32_t treeId);
 
+    bool CheckEvents();
+
     std::map<int32_t, AccessibilityWindowInfo> a11yWindows_ {};
     int32_t activeWindowId_ = INVALID_WINDOW_ID;
     int32_t a11yFocusedWindowId_ = INVALID_WINDOW_ID;

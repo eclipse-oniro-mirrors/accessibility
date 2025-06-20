@@ -216,6 +216,8 @@ void WindowMagnificationGesture::DestroyEvents()
 {
     HILOG_DEBUG();
     SendCacheEventsToNext();
+    ResetTapCount();
+    SetGestureState(MagnificationGestureState::READY_STATE, HANDLER);
 }
 
 void WindowMagnificationGesture::CancelPostEvent(MagnificationGestureMsg msg)
@@ -646,8 +648,10 @@ void WindowMagnificationGesture::HandleTwoFingersDownStateMove(MMI::PointerEvent
     MMI::PointerEvent::PointerItem baseSecondItem;
     lastDownEvent_->GetPointerItem(1, baseSecondItem);
 
-    float baseFocusX = (baseFirstItem.GetDisplayX() + baseSecondItem.GetDisplayX()) / DIVISOR_TWO;
-    float baseFocusY = (baseFirstItem.GetDisplayY() + baseSecondItem.GetDisplayY()) / DIVISOR_TWO;
+    float baseFocusX = (baseFirstItem.GetDisplayX() + baseSecondItem.GetDisplayX()) /
+        static_cast<float>(DIVISOR_TWO);
+    float baseFocusY = (baseFirstItem.GetDisplayY() + baseSecondItem.GetDisplayY()) /
+        static_cast<float>(DIVISOR_TWO);
     int32_t baseOffsetX = abs(baseFirstItem.GetDisplayX() - baseSecondItem.GetDisplayX());
     int32_t baseOffsetY = abs(baseFirstItem.GetDisplayY() - baseSecondItem.GetDisplayY());
     float baseDistance = hypot(baseOffsetX, baseOffsetY);
@@ -662,8 +666,10 @@ void WindowMagnificationGesture::HandleTwoFingersDownStateMove(MMI::PointerEvent
     MMI::PointerEvent::PointerItem secondItem;
     lastSlidingEvent_->GetPointerItem(1, secondItem);
 
-    float lastFocusX = (firstItem.GetDisplayX() + secondItem.GetDisplayX()) / DIVISOR_TWO;
-    float lastFocusY = (firstItem.GetDisplayY() + secondItem.GetDisplayY()) / DIVISOR_TWO;
+    float lastFocusX = (firstItem.GetDisplayX() + secondItem.GetDisplayX()) /
+        static_cast<float>(DIVISOR_TWO);
+    float lastFocusY = (firstItem.GetDisplayY() + secondItem.GetDisplayY()) /
+        static_cast<float>(DIVISOR_TWO);
     int32_t offsetX = abs(firstItem.GetDisplayX() - secondItem.GetDisplayX());
     int32_t offsetY = abs(firstItem.GetDisplayY() - secondItem.GetDisplayY());
     float slidingDistance = hypot(offsetX, offsetY);
@@ -674,8 +680,10 @@ void WindowMagnificationGesture::HandleTwoFingersDownStateMove(MMI::PointerEvent
     MMI::PointerEvent::PointerItem secondCurrentItem;
     event.GetPointerItem(1, secondCurrentItem);
 
-    float currentFocusX = (firstCurrentItem.GetDisplayX() + secondCurrentItem.GetDisplayX()) / DIVISOR_TWO;
-    float currentFocusY = (firstCurrentItem.GetDisplayY() + secondCurrentItem.GetDisplayY()) / DIVISOR_TWO;
+    float currentFocusX = (firstCurrentItem.GetDisplayX() + secondCurrentItem.GetDisplayX()) /
+        static_cast<float>(DIVISOR_TWO);
+    float currentFocusY = (firstCurrentItem.GetDisplayY() + secondCurrentItem.GetDisplayY()) /
+        static_cast<float>(DIVISOR_TWO);
     int32_t currentOffsetX = abs(firstCurrentItem.GetDisplayX() - secondCurrentItem.GetDisplayX());
     int32_t currentOffsetY = abs(firstCurrentItem.GetDisplayY() - secondCurrentItem.GetDisplayY());
     float currentDistance = hypot(currentOffsetX, currentOffsetY);
@@ -867,7 +875,8 @@ void WindowMagnificationGesture::ShieldZoomGesture(bool state)
     if (state) {
         Clear();
         if (windowMagnificationManager_ != nullptr) {
-            windowMagnificationManager_->DisableWindowMagnification();
+            windowMagnificationManager_->DisableWindowMagnification(true);
+            SetGestureState(MagnificationGestureState::READY_STATE, HANDLER);
         }
         Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
         isSingleTapOnWindow_ = false;

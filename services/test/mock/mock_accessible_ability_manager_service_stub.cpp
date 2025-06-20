@@ -502,9 +502,19 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetRootParentId(int32_t windowI
     return RET_OK;
 }
 
-int32_t MockAccessibleAbilityManagerServiceStub::SetEnhanceConfig(const char *cfg, uint32_t cfgLen)
+int32_t MockAccessibleAbilityManagerServiceStub::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
 {
     return 0;
+}
+
+ErrCode MockAccessibleAbilityManagerServiceStub::SearchNeedEvents(std::vector<uint32_t> &needEvents)
+{
+    return RET_OK;
+}
+
+RetError MockAccessibleAbilityManagerServiceStub::UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents)
+{
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -241,6 +241,9 @@ void AccessibilitySystemAbilityClientImpl::Init()
     if (stateType & STATE_SINGLE_CLICK_MODE_ENABLED) {
         stateArray_[AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED] = true;
     }
+    if (stateType & STATE_CONFIG_EVENT_CHANGE) {
+        stateArray_[AccessibilityStateEventType::EVENT_CONFIG_EVENT_CHANGED] = true;
+    }
 }
 
 void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject> &remote)
@@ -577,9 +580,11 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
         return;
     }
 
-    if (stateArray_[eventType] == value) {
-        HILOG_DEBUG("State value is not changed");
-        return;
+    if (eventType != EVENT_CONFIG_EVENT_CHANGED) {
+        if (stateArray_[eventType] == value) {
+            HILOG_DEBUG("State value is not changed");
+            return;
+        }
     }
 
     stateArray_[eventType] = value;
@@ -661,6 +666,9 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED,
         !!(stateType & STATE_SCREENREADER_ENABLED));
+
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_CONFIG_EVENT_CHANGED,
+        !!(stateType & STATE_CONFIG_EVENT_CHANGE));
 }
 
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityIdResult(

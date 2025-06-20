@@ -321,9 +321,18 @@ public:
     {
         return 0;
     }
-    int32_t SetEnhanceConfig(const char *cfg, uint32_t cfgLen) override
+    int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override
     {
         return 0;
+    }
+    ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override
+    {
+        return NO_ERROR;
+    }
+
+    RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents)
+    {
+        return RET_OK;
     }
 };
 
