@@ -1103,7 +1103,8 @@ void ConvertActionArgsJSToNAPI(
     }
 }
 
-void SetPermCheckFlagForAction(bool checkPerm, std::map<std::string, std::string>& args) {
+void SetPermCheckFlagForAction(bool checkPerm, std::map<std::string, std::string>& args)
+{
     if (checkPerm) {
         args.insert(std::pair<std::string, std::string>("sysapi_check_perm", "1"));
     }
