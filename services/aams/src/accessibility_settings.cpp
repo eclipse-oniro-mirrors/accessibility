@@ -25,6 +25,7 @@
 #endif
 #include "hilog_wrapper.h"
 #include "parameter.h"
+#include "accessibility_notification_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -595,7 +596,15 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickState(const bool state)
         HILOG_ERROR("SetIgnoreRepeatClickState Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
-    return syncFuture.get();
+    RetError ret = syncFuture.get();
+    if (ret == RET_OK) {
+        if (state) {
+            IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
+        } else {
+            IgnoreRepeatClickNotification::DestoryTimers();
+        }
+    }
+    return ret;
 }
 
 RetError AccessibilitySettings::SetIgnoreRepeatClickTime(const uint32_t time)

@@ -68,6 +68,7 @@ ohos_unittest("accessibility_account_data_test") {
     "../src/accessibility_resource_bundle_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/accessibility_settings.cpp",
     "../src/msdp_manager.cpp",
     "../src/accessibility_security_component_manager.cpp",
@@ -148,12 +149,19 @@ ohos_unittest("accessibility_account_data_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -194,6 +202,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "../src/accessibility_setting_provider.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/msdp_manager.cpp",
     "../src/accessibility_security_component_manager.cpp",
     "../src/accessibility_short_key.cpp",
@@ -278,12 +287,19 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -374,6 +390,7 @@ ohos_unittest("accessibility_touch_exploration_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -407,6 +424,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "../src/accessibility_setting_provider.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
@@ -474,9 +492,16 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
 }
 
 ################################################################################
@@ -506,6 +531,7 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_setting_provider.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
     "../src/accessibility_short_key.cpp",
@@ -579,9 +605,16 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
 }
 
 ################################################################################
@@ -607,6 +640,7 @@ ohos_unittest("accessibility_window_manager_test") {
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_setting_provider.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
     "../src/accessibility_short_key.cpp",
@@ -680,9 +714,16 @@ ohos_unittest("accessibility_window_manager_test") {
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
 }
 
 ################################################################################
@@ -702,6 +743,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_setting_provider.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
     "../src/accessibility_short_key.cpp",
@@ -772,9 +814,16 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
 }
 
 ################################################################################
@@ -805,6 +854,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/msdp_manager.cpp",
     "../src/accessibility_security_component_manager.cpp",
     "../src/accessibility_short_key.cpp",
@@ -892,12 +942,19 @@ ohos_unittest("accessible_ability_connection_test") {
     "samgr:samgr_proxy",
     "samgr:samgr_proxy",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -1072,6 +1129,7 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_setting_provider.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
     "../src/accessibility_short_key.cpp",
@@ -1143,9 +1201,16 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
 }
 
 ################################################################################
@@ -1169,6 +1234,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_resource_bundle_manager.cpp",
     "../src/accessibility_setting_observer.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessible_ability_channel.cpp",                                                                                                                                                                                             
     "../src/accessible_ability_connection.cpp",
@@ -1239,9 +1305,16 @@ ohos_unittest("accessible_ability_channel_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
 }
 
 ################################################################################
@@ -1268,6 +1341,7 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_setting_provider.cpp",
     "../src/accessibility_settings.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/msdp_manager.cpp",
     "../src/accessibility_security_component_manager.cpp",
     "../src/accessibility_short_key.cpp",
@@ -1347,12 +1421,19 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -1382,6 +1463,7 @@ ohos_unittest("accessibility_screen_touch_test") {
     "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_setting_provider.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
@@ -1459,9 +1541,16 @@ ohos_unittest("accessibility_screen_touch_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
 }
 
 ################################################################################
@@ -1540,6 +1629,7 @@ ohos_unittest("accessibility_short_key_test") {
     "../src/accessibility_setting_observer.cpp",
     "../src/accessibility_setting_provider.cpp",
     "../src/accessibility_settings.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/accessibility_settings_config.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
@@ -1610,9 +1700,16 @@ ohos_unittest("accessibility_short_key_test") {
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
 }
 
 ################################################################################
@@ -1635,6 +1732,7 @@ ohos_unittest("accessibility_short_key_dialog_test") {
     "../src/accessibility_setting_provider.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
@@ -1698,9 +1796,16 @@ ohos_unittest("accessibility_short_key_dialog_test") {
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
 }
 
 ################################################################################
@@ -1733,6 +1838,7 @@ ohos_unittest("accessibility_settings_config_test") {
     "../src/accessibility_setting_provider.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/msdp_manager.cpp",
     "../src/accessibility_security_component_manager.cpp",
     "../src/accessibility_short_key.cpp",
@@ -1810,12 +1916,19 @@ ohos_unittest("accessibility_settings_config_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -1843,6 +1956,7 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "../src/accessibility_setting_provider.cpp",
     "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
+    "../src/accessibility_notification_helper.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_short_key_dialog.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
@@ -1913,9 +2027,16 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
 }
 
 ################################################################################

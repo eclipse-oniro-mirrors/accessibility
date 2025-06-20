@@ -19,6 +19,7 @@
 #include "common_event_manager.h"
 #include "common_event_support.h"
 #include "hilog_wrapper.h"
+#include "accessibility_notification_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -44,6 +45,8 @@ AccessibilityCommonEvent::AccessibilityCommonEvent()
         &AccessibilityCommonEvent::HandlePackageChanged;
     handleEventFunc_[EventFwk::CommonEventSupport::COMMON_EVENT_DATA_SHARE_READY] =
         &AccessibilityCommonEvent::HandleDataShareReady;
+    handleEventFunc_[EventFwk::CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED] =
+        &AccessibilityCommonEvent::HandlePowerOnEvent;
 
     for (auto it = handleEventFunc_.begin(); it != handleEventFunc_.end(); ++it) {
         HILOG_DEBUG("Add event: %{public}s", it->first.c_str());
@@ -222,6 +225,12 @@ void AccessibilityCommonEvent::HandleDataShareReady(const EventFwk::CommonEventD
 
     HILOG_INFO("reInit datashare.");
     config->Init();
+}
+
+void AccessibilityCommonEvent::HandlePowerOnEvent(const EventFwk::CommonEventData &data) const
+{
+    IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
+    HILOG_ERROR("HandlePowerOnEvent");
 }
 } // namespace Accessibility
 } // namespace OHOS

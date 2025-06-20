@@ -43,12 +43,15 @@ public:
     int64_t GetLongValue(const std::string& key, const int64_t& defaultValue, const bool readOnlyFlag = false);
     bool GetBoolValue(const std::string& key, const bool& defaultValue, const bool readOnlyFlag = false);
     float GetFloatValue(const std::string& key, const float& defaultValue, const bool readOnlyFlag = false);
+    uint64_t GetUnsignedLongValue(const std::string& key, const uint64_t& defaultValue,
+        const bool readOnlyFlag = false);
 
     RetError PutStringValue(const std::string& key, const std::string& value, bool needNotify = true);
     RetError PutIntValue(const std::string& key, int32_t value, bool needNotify = true);
     RetError PutLongValue(const std::string& key, int64_t value, bool needNotify = true);
     RetError PutBoolValue(const std::string& key, bool value, bool needNotify = true);
     RetError PutFloatValue(const std::string& key, float value, bool needNotify = true);
+    RetError PutUnsignedLongValue(const std::string& key, uint64_t value, bool needNotify = true);
 
     RetError Initialize(int32_t systemAbilityId);
 
