@@ -1103,6 +1103,12 @@ void ConvertActionArgsJSToNAPI(
     }
 }
 
+void SetPermCheckFlagForAction(bool checkPerm, std::map<std::string, std::string>& args) {
+    if (checkPerm) {
+        args.insert(std::pair<std::string, std::string>("sysapi_check_perm", "1"));
+    }
+}
+
 int32_t ConvertIntJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty)
 {
     int32_t dataValue = 0;

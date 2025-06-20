@@ -2002,9 +2002,9 @@ napi_value NAccessibilityElement::PerformActionConstructPromise(napi_env env, si
         HILOG_DEBUG("argc is others, use promise");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
-    if (checkPerm) {
-        actionArguments.insert(std::pair<std::string, std::string>("sysapi_check_perm", "1"));
-    }
+
+    SetPermCheckFlagForAction(checkPerm, actionArguments);
+
     callbackInfo->actionName_ = actionName;
     callbackInfo->actionArguments_ = actionArguments;
     napi_value resource = nullptr;
