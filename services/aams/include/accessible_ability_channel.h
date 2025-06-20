@@ -89,6 +89,7 @@ private:
     RetError TransmitActionToMmi(const int32_t action);
     static void SetKeyCodeToMmi(std::shared_ptr<MMI::KeyEvent>& keyEvent, const bool isPress,
         const int32_t keyCode);
+    static bool HasSysApiPermOrIgnoreCheck(const std::map<std::string, std::string> &actionArguments);
     std::string clientName_ = "";
     int32_t accountId_ = -1;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
