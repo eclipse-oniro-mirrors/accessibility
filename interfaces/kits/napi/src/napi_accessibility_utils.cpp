@@ -659,6 +659,87 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
     return a11yEvtTypeTable.at(type);
 }
 
+AccessibilityEventType CovertStringToAccessibilityEventType(const std::string &eventType)
+{
+    static const std::map<const std::string, AccessibilityEventType> eventTypeTable = {
+        {"accessibilityFocus", AccessibilityEventType::TYPE_ACCESSIBILITY_FOCUS},
+        {"accessibilityFocusClear", AccessibilityEventType::TYPE_ACCESSIBILITY_FOCUS_CLEAR},
+        {"click", AccessibilityEventType::TYPE_CLICK},
+        {"longClick", AccessibilityEventType::TYPE_LONG_CLICK},
+        {"select", AccessibilityEventType::TYPE_SELECT},
+        {"hoverEnter", AccessibilityEventType::TYPE_HOVER_ENTER},
+        {"hoverExit", AccessibilityEventType::TYPE_HOVER_EXIT},
+        {"focus", AccessibilityEventType::TYPE_FOCUS},
+        {"textUpdate", AccessibilityEventType::TYPE_TEXT_UPDATE},
+        {"textSelectionUpdate", AccessibilityEventType::TYPE_TEXT_SELECTION_UPDATE},
+        {"scroll", AccessibilityEventType::TYPE_SCROLL},
+        {"requestFocusForAccessibility", AccessibilityEventType::TYPE_REQUEST_FOCUS_FOR_ACCESSIBILITY},
+        {"announceForAccessibility", AccessibilityEventType::TYPE_ANNOUNCE_FOR_ACCESSIBILITY},
+        {"requestFocusForAccessibilityNotInterrupt",
+            AccessibilityEventType::TYPE_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
+        {"announceForAccessibilityNotInterrupt",
+            AccessibilityEventType::TYPE_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT},
+        {"elementInfoChange", AccessibilityEventType::TYPE_ELEMENT_INFO_CHANGE},
+        {"scrolling", AccessibilityEventType::TYPE_SCROLLING},
+        {"add", AccessibilityEventType::TYPE_WINDOW_ADD},
+        {"remove", AccessibilityEventType::TYPE_WINDOW_REMOVE},
+        {"bounds", AccessibilityEventType::TYPE_WINDOW_BOUNDS},
+        {"active", AccessibilityEventType::TYPE_WINDOW_ACTIVE},
+        {"focus", AccessibilityEventType::TYPE_WINDOW_FOCUS},
+        {"property", AccessibilityEventType::TYPE_WINDOW_PROPERTY},
+        {"layer", AccessibilityEventType::TYPE_WINDOW_LAYER},
+        {"touchBegin", AccessibilityEventType::TYPE_TOUCH_BEGIN},
+        {"touchEnd", AccessibilityEventType::TYPE_TOUCH_END},
+        {"pageContentUpdate", AccessibilityEventType::TYPE_PAGE_CONTENT_UPDATE},
+        {"pageStateUpdate", AccessibilityEventType::TYPE_PAGE_STATE_UPDATE},
+        {"pageOpen", AccessibilityEventType::TYPE_PAGE_OPEN},
+        {"pageClose", AccessibilityEventType::TYPE_PAGE_CLOSE},
+        {"left", AccessibilityEventType::TYPE_SWIPE_LEFT},
+        {"leftThenRight", AccessibilityEventType::TYPE_SWIPE_LEFT_THEN_RIGHT},
+        {"leftThenUp", AccessibilityEventType::TYPE_SWIPE_LEFT_THEN_UP},
+        {"leftThenDown", AccessibilityEventType::TYPE_SWIPE_LEFT_THEN_DOWN},
+        {"right", AccessibilityEventType::TYPE_SWIPE_RIGHT},
+        {"rightThenLeft", AccessibilityEventType::TYPE_SWIPE_RIGHT_THEN_LEFT},
+        {"rightThenUp", AccessibilityEventType::TYPE_SWIPE_RIGHT_THEN_UP},
+        {"rightThenDown", AccessibilityEventType::TYPE_SWIPE_RIGHT_THEN_DOWN},
+        {"up", AccessibilityEventType::TYPE_SWIPE_UP},
+        {"upThenLeft", AccessibilityEventType::TYPE_SWIPE_UP_THEN_LEFT},
+        {"upThenRight", AccessibilityEventType::TYPE_SWIPE_UP_THEN_RIGHT},
+        {"upThenDown", AccessibilityEventType::TYPE_SWIPE_UP_THEN_DOWN},
+        {"down", AccessibilityEventType::TYPE_SWIPE_DOWN},
+        {"downThenLeft", AccessibilityEventType::TYPE_SWIPE_DOWN_THEN_LEFT},
+        {"downThenRight", AccessibilityEventType::TYPE_SWIPE_DOWN_THEN_RIGHT},
+        {"downThenUp", AccessibilityEventType::TYPE_SWIPE_DOWN_THEN_UP},
+        {"twoFingerSingleTap", AccessibilityEventType::TYPE_TWO_FINGER_SINGLE_TAP},
+        {"twoFingerDoubleTap", AccessibilityEventType::TYPE_TWO_FINGER_DOUBLE_TAP},
+        {"twoFingerDoubleTapAndHold", AccessibilityEventType::TYPE_TWO_FINGER_DOUBLE_TAP_AND_HOLD},
+        {"twoFingerTripleTap", AccessibilityEventType::TYPE_TWO_FINGER_TRIPLE_TAP},
+        {"twoFingerTripleTapAndHold", AccessibilityEventType::TYPE_TWO_FINGER_TRIPLE_TAP_AND_HOLD},
+        {"threeFingerSingleTap", AccessibilityEventType::TYPE_THREE_FINGER_SINGLE_TAP},
+        {"threeFingerDoubleTap", AccessibilityEventType::TYPE_THREE_FINGER_DOUBLE_TAP},
+        {"threeFingerDoubleTapAndHold", AccessibilityEventType::TYPE_THREE_FINGER_DOUBLE_TAP_AND_HOLD},
+        {"threeFingerTripleTap", AccessibilityEventType::TYPE_THREE_FINGER_TRIPLE_TAP},
+        {"threeFingerTripleTapAndHold", AccessibilityEventType::TYPE_THREE_FINGER_TRIPLE_TAP_AND_HOLD},
+        {"fourFingerSingleTap", AccessibilityEventType::TYPE_FOUR_FINGER_SINGLE_TAP},
+        {"fourFingerDoubleTap", AccessibilityEventType::TYPE_FOUR_FINGER_DOUBLE_TAP},
+        {"fourFingerDoubleTapAndHold", AccessibilityEventType::TYPE_FOUR_FINGER_DOUBLE_TAP_AND_HOLD},
+        {"fourFingerTripleTap", AccessibilityEventType::TYPE_FOUR_FINGER_TRIPLE_TAP},
+        {"fourFingerTripleTapAndHold", AccessibilityEventType::TYPE_FOUR_FINGER_TRIPLE_TAP_AND_HOLD},
+        {"threeFingerSwipeUp", AccessibilityEventType::TYPE_THREE_FINGER_SWIPE_UP},
+        {"threeFingerSwipeDown", AccessibilityEventType::TYPE_THREE_FINGER_SWIPE_DOWN},
+        {"threeFingerSwipeLeft", AccessibilityEventType::TYPE_THREE_FINGER_SWIPE_LEFT},
+        {"threeFingerSwipeRight", AccessibilityEventType::TYPE_THREE_FINGER_SWIPE_RIGHT},
+        {"fourFingerSwipeUp", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_UP},
+        {"fourFingerSwipeDown", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_DOWN},
+        {"fourFingerSwipeLeft", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_LEFT},
+        {"fourFingerSwipeRight", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_RIGHT},
+    };
+    if (eventTypeTable.find(eventType) == eventTypeTable.end()) {
+        return AccessibilityEventType::TYPE_ERROR;
+    }
+    return eventTypeTable.at(eventType);
+}
+
 std::string CoverGestureTypeToString(GestureType type)
 {
     static const std::map<GestureType, const std::string> gestureTypeTable = {
@@ -1013,8 +1094,6 @@ void ConvertActionArgsJSToNAPI(
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     std::string str = "";
-    std::map<std::string, std::string> scrollValueMap = { {"halfScreen", HALF_VALUE}, {"fullScreen", FULL_VALUE} };
-    std::string scrollValue = FULL_VALUE;
     bool seleFlag = false;
     switch (action) {
         case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
@@ -1073,33 +1152,45 @@ void ConvertActionArgsJSToNAPI(
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
-            napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
-            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-            if (hasProperty) {
-                if (scrollValueMap.find(str) != scrollValueMap.end()) {
-                    scrollValue = scrollValueMap.find(str)->second;
-                    HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
-                } else {
-                    HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
-                }
-                args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
-            }
+            SetScrollTypeParam(env, object, args);
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
-            napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
-            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-            if (hasProperty) {
-                if (scrollValueMap.find(str) != scrollValueMap.end()) {
-                    scrollValue = scrollValueMap.find(str)->second;
-                    HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
-                } else {
-                    HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
-                }
-                args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
-            }
+            SetScrollTypeParam(env, object, args);
             break;
         default:
             break;
+    }
+}
+
+void SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, std::string>& args)
+{
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
+    std::string str = "";
+    std::map<std::string, std::string> scrollValueMap = { {"halfScreen", HALF_VALUE}, {"fullScreen", FULL_VALUE} };
+    std::string scrollValue = FULL_VALUE;
+
+    napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
+    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (!hasProperty) {
+        napi_create_string_utf8(env, "scrollType", NAPI_AUTO_LENGTH, &propertyNameValue);
+        str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    }
+    if (hasProperty) {
+        if (scrollValueMap.find(str) != scrollValueMap.end()) {
+            scrollValue = scrollValueMap.find(str)->second;
+            HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
+        } else {
+            HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
+        }
+        args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
+    }
+}
+
+void SetPermCheckFlagForAction(bool checkPerm, std::map<std::string, std::string>& args)
+{
+    if (checkPerm) {
+        args.insert(std::pair<std::string, std::string>("sysapi_check_perm", "1"));
     }
 }
 

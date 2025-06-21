@@ -26,7 +26,8 @@ namespace OHOS {
 namespace Accessibility {
 int AccessibilityExtensionContext::illegalRequestCode_(-1);
 const std::string WANT_VERIFY = "";
-RetError AccessibilityExtensionContext::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
+RetError AccessibilityExtensionContext::GetFocus(
+    const int32_t focusType, AccessibilityElementInfo& elementInfo, bool systemApi)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
@@ -34,7 +35,7 @@ RetError AccessibilityExtensionContext::GetFocus(const int32_t focusType, Access
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return aaClient->GetFocus(focusType, elementInfo);
+    return aaClient->GetFocus(focusType, elementInfo, systemApi);
 }
 
 RetError AccessibilityExtensionContext::GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo,
@@ -61,7 +62,7 @@ RetError AccessibilityExtensionContext::InjectGesture(
     return aaClient->InjectGesture(gesturePath);
 }
 
-RetError AccessibilityExtensionContext::GetRoot(AccessibilityElementInfo &elementInfo)
+RetError AccessibilityExtensionContext::GetRoot(AccessibilityElementInfo &elementInfo, bool systemApi)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
@@ -69,11 +70,11 @@ RetError AccessibilityExtensionContext::GetRoot(AccessibilityElementInfo &elemen
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return aaClient->GetRoot(elementInfo);
+    return aaClient->GetRoot(elementInfo, systemApi);
 }
 
 RetError AccessibilityExtensionContext::GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
-    AccessibilityElementInfo &elementInfo)
+    AccessibilityElementInfo &elementInfo, bool systemApi)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
@@ -81,10 +82,10 @@ RetError AccessibilityExtensionContext::GetRootByWindow(const AccessibilityWindo
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return aaClient->GetRootByWindow(windowInfo, elementInfo);
+    return aaClient->GetRootByWindow(windowInfo, elementInfo, systemApi);
 }
 
-RetError AccessibilityExtensionContext::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibilityExtensionContext::GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
@@ -92,11 +93,11 @@ RetError AccessibilityExtensionContext::GetWindows(std::vector<AccessibilityWind
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return aaClient->GetWindows(windows);
+    return aaClient->GetWindows(windows, systemApi);
 }
 
 RetError AccessibilityExtensionContext::GetWindows(const uint64_t displayId,
-    std::vector<AccessibilityWindowInfo> &windows)
+    std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
@@ -104,7 +105,7 @@ RetError AccessibilityExtensionContext::GetWindows(const uint64_t displayId,
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return aaClient->GetWindows(displayId, windows);
+    return aaClient->GetWindows(displayId, windows, systemApi);
 }
 
 RetError AccessibilityExtensionContext::GetNext(const AccessibilityElementInfo &elementInfo,

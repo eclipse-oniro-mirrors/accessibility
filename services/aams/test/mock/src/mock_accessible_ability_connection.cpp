@@ -43,7 +43,7 @@ AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, cons
 
 RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
-    const int32_t mode, bool isFilter)
+    const int32_t mode, bool isFilter, bool systemApi)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SearchElementInfoByAccessibilityId";
     (void)elementBasicInfo;
@@ -51,6 +51,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
     (void)callback;
     (void)mode;
     (void)isFilter;
+    (void)systemApi;
     return RET_OK;
 }
 
@@ -69,7 +70,7 @@ RetError AccessibleAbilityChannel::SearchDefaultFocusedByWindowId(const ElementB
 
 RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t accessibilityWindowId,
     const int64_t elementId, const std::string& text, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback>& callback)
+    const sptr<IAccessibilityElementOperatorCallback>& callback, bool systemApi)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SearchElementInfosByText";
     (void)accessibilityWindowId;
@@ -77,12 +78,13 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
     (void)text;
     (void)requestId;
     (void)callback;
+    (void)systemApi;
     return RET_OK;
 }
 
 RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessibilityWindowId,
     const int64_t elementId, const int32_t focusType, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback>& callback)
+    const sptr<IAccessibilityElementOperatorCallback>& callback, bool systemApi)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel FindFocusedElementInfo";
     (void)accessibilityWindowId;
@@ -90,11 +92,13 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
     (void)focusType;
     (void)requestId;
     (void)callback;
+    (void)systemApi;
     return RET_OK;
 }
 
 RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId,
-    const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
+    const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
+    bool systemApi)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel FocusMoveSearch";
     (void)accessibilityWindowId;
@@ -102,6 +106,7 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
     (void)direction;
     (void)requestId;
     (void)callback;
+    (void)systemApi;
     return RET_OK;
 }
 
@@ -119,11 +124,13 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
     return RET_OK;
 }
 
-RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const
+RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows,
+    bool systemApi) const
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel GetWindows";
     (void)displayId;
     (void)windows;
+    (void)systemApi;
     sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
     if (!clientConnection) {
         HILOG_ERROR("There is no client connection");
@@ -137,11 +144,11 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
     return RET_OK;
 }
 
-RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel GetWindows";
     uint64_t displayId = 0;
-    return GetWindows(displayId, windows);
+    return GetWindows(displayId, windows, systemApi);
 }
 
 RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
@@ -160,10 +167,10 @@ RetError AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::st
 }
 
 RetError AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
-    std::vector<AccessibilityWindowInfo> &windows)
+    std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel GetWindowsByDisplayId";
-    return GetWindows(displayId, windows);
+    return GetWindows(displayId, windows, systemApi);
 }
 
 void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)

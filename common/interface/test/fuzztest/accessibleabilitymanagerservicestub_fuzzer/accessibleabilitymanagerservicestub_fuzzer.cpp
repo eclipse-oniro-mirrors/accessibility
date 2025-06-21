@@ -132,6 +132,10 @@ public:
     {
         return RET_OK;
     }
+    ErrCode GetActiveWindow(int32_t &windowId, bool systemApi) override
+    {
+        return RET_OK;
+    }
     ErrCode CheckExtensionAbilityPermission(std::string& processName) override
     {
         return RET_OK;
@@ -318,6 +322,10 @@ public:
         return RET_OK;
     }
     ErrCode GetRootParentId(int32_t windowsId, int32_t treeId, int64_t &parentId) override
+    {
+        return 0;
+    }
+    ErrCode GetRootParentId(int32_t windowsId, int32_t treeId, int64_t &parentId, bool systemApi) override
     {
         return 0;
     }

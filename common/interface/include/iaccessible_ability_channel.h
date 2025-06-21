@@ -45,7 +45,7 @@ public:
      */
     virtual RetError SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-        const int32_t mode, bool isFilter = false) = 0;
+        const int32_t mode, bool isFilter = false, bool systemApi = false) = 0;
 
     /**
      * @brief Searches elementInfo by window id and set the result by callback.
@@ -74,7 +74,7 @@ public:
      */
     virtual RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int64_t elementId,
         const std::string &text, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi = false) = 0;
 
     /**
      * @brief Make the element information of the component focused by the focus type specified.
@@ -88,7 +88,7 @@ public:
      */
     virtual RetError FindFocusedElementInfo(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t focusType, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi = false) = 0;
 
     /**
      * @brief Make the element info by current focus move direction.
@@ -101,7 +101,7 @@ public:
      */
     virtual RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t direction, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi = false) = 0;
 
     /**
      * @brief To perform action.
@@ -160,18 +160,20 @@ public:
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param windows The information of windows.
+     * @param systemApi Whether the API is called by the system.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) = 0;
+    virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi = false) = 0;
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
      * @param windows The information of windows.
+     * @param systemApi Whether the API is called by the system.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetWindowsByDisplayId(const uint64_t displayId,
-        std::vector<AccessibilityWindowInfo> &windows) = 0;
+        std::vector<AccessibilityWindowInfo> &windows, bool systemApi = false) = 0;
 
     /**
      * @brief Set the result of key press event.

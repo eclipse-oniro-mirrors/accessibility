@@ -171,6 +171,10 @@ struct AccessibilityEventInfoCallbackInfo : public ExtensionCallbackInfo {
     std::string extraInfo_ = "";
 };
 
+struct AccessibilityEventTypeCallbackInfo : public AccessibilityEventInfoCallbackInfo {
+    AccessibilityEventType AccessibilityEventType_ = TYPE_ERROR;
+};
+
 napi_handle_scope OpenScope(napi_env env);
 } // namespace Accessibility
 } // namespace OHOS

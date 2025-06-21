@@ -70,6 +70,7 @@ public:
     ErrCode DisableAbility(const std::string& name) override;
     ErrCode SetMagnificationState(const bool state) override;
     ErrCode GetActiveWindow(int32_t& windowId) override;
+    ErrCode GetActiveWindow(int32_t& windowId, bool systemApi) override;
 
     ErrCode CheckExtensionAbilityPermission(std::string& processName) override;
     ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
@@ -119,6 +120,7 @@ public:
     ErrCode GetFocusedWindowId(int32_t &focusedWindowId) override;
     ErrCode RemoveRequestId(int32_t requestId) override;
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t& parentId) override;
+    ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t& parentId, bool systemApi) override;
     int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override;
     ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
     RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);

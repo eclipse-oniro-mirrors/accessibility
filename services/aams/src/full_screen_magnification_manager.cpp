@@ -18,6 +18,7 @@
 #include "accessibility_display_manager.h"
 #include "accessible_ability_manager_service.h"
 #include "magnification_menu_manager.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -220,6 +221,8 @@ void FullScreenMagnificationManager::PersistScale()
 {
     HILOG_DEBUG("scale_ = %{public}f", scale_);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetMagnificationScale(scale_);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+        AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
 }
 
 void FullScreenMagnificationManager::GetWindowParam()
@@ -250,11 +253,10 @@ void FullScreenMagnificationManager::GetWindowParam()
 void FullScreenMagnificationManager::RefreshWindowParam()
 {
     HILOG_INFO();
-    int32_t centerX = sourceRect_.posX_;
-    int32_t centerY = sourceRect_.posY_;
+    PointerPos center = GetRectCenter(sourceRect_);
     if (isMagnificationWindowShow_) {
         DisableMagnification();
-        EnableMagnification(centerX, centerY);
+        EnableMagnification(center.posX, center.posY);
     } else {
         GetWindowParam();
     }
@@ -357,6 +359,24 @@ void FullScreenMagnificationManager::UpdateAnchor()
         static_cast<int32_t>(sourceRect_.width_)) / DIVISOR_TWO);
     centerY_ = static_cast<int32_t>((sourceRect_.posY_ + sourceRect_.posY_ +
         static_cast<int32_t>(sourceRect_.height_)) / DIVISOR_TWO);
+}
+
+PointerPos FullScreenMagnificationManager::GetRectCenter(Rosen::Rect rect)
+{
+    PointerPos point = {0, 0};
+    point.posX = rect.posX_ + static_cast<int32_t>(rect.width_ / DIVISOR_TWO);
+    point.posY = rect.posY_ + static_cast<int32_t>(rect.height_ / DIVISOR_TWO);
+    return point;
+}
+
+void FullScreenMagnificationManager::FollowFocuseElement(int32_t centerX, int32_t centerY)
+{
+    HILOG_INFO();
+    sourceRect_ = GetSourceRectFromPointer(centerX, centerY);
+    window_->SetFrameRectForParticalZoomIn(sourceRect_);
+    DrawRuoundRectFrame();
+    Rosen::RSTransaction::FlushImplicitTransaction();
+    UpdateAnchor();
 }
 } // namespace Accessibility
 } // namespace OHOS

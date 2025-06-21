@@ -49,7 +49,7 @@ public:
      */
     virtual RetError SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-        const int32_t mode, bool isFilter) override;
+        const int32_t mode, bool isFilter, bool systemApi = false) override;
 
     /**
      * @brief Searches elementInfo by window id and set the result by callback through the proxy object.
@@ -78,7 +78,7 @@ public:
      */
     virtual RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int64_t elementId,
         const std::string &text, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi = false) override;
 
     /**
      * @brief Make the element information of the component focused
@@ -93,7 +93,7 @@ public:
      */
     virtual RetError FindFocusedElementInfo(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t focusType, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi = false) override;
 
     /**
      * @brief Make the element info by current focus move direction through the proxy object.
@@ -106,7 +106,7 @@ public:
      */
     virtual RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t direction, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi = false) override;
 
     /**
      * @brief To perform action through the proxy object.
@@ -146,7 +146,7 @@ public:
      * @param windows The information of windows.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
+    virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi = false) override;
 
     /**
      * @brief Package and transfer isenable to the data table
@@ -176,7 +176,7 @@ public:
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetWindowsByDisplayId(const uint64_t displayId,
-        std::vector<AccessibilityWindowInfo> &windows) override;
+        std::vector<AccessibilityWindowInfo> &windows, bool systemApi = false) override;
 
     /**
      * @brief Set the result of key press event through the proxy object.

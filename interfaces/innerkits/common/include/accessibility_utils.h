@@ -84,6 +84,8 @@ OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME ConvertStringToClickResponseTimeT
 OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME ConvertStringToIgnoreRepeatClickTimeTypes(std::string& type);
 void ConvertActionArgsJSToNAPI(
     napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action);
+void SetPermCheckFlagForAction(bool checkPerm, std::map<std::string, std::string>& args);
+void SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, std::string>& args);
 
 KeyAction TransformKeyActionValue(int32_t keyAction);
 bool HasKeyCode(const std::vector<int32_t>& pressedKeys, int32_t keyCode);
@@ -142,6 +144,7 @@ bool ConvertGesturePathJSToNAPIPart1(napi_env env, napi_value object,
     std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>& gesturePath);
 bool ConvertGesturePathJSToNAPIPart2(napi_env env, napi_value object,
     std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>& gesturePath);
+AccessibilityEventType CovertStringToAccessibilityEventType(const std::string &eventType);
 
 struct AccessibilityCallbackInfo {
     napi_env env_;

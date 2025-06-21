@@ -19,6 +19,7 @@
 #include "accessibility_def.h"
 #include "accessibility_event_info.h"
 #include "accessibility_window_info.h"
+#include "napi_utils.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 
@@ -59,7 +60,27 @@ struct NAccessibilityElementData {
     std::string actionName_ = "";
     std::string condition_ = "";
     int32_t cursorPosition_ = 0;
+    bool systemApi = false;
     OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RetError::RET_ERR_FAILED;
+};
+
+using ParseConditionFunc = std::function<OHOS::Accessibility::RetError(OHOS::Accessibility::NAPICbInfo&,
+    NAccessibilityElementData*)>;
+
+using ParseElementFunc = std::function<OHOS::Accessibility::RetError(OHOS::Accessibility::NAPICbInfo&,
+    NAccessibilityElementData*)>;
+
+using ParseCallbackFunc = std::function<void(OHOS::Accessibility::NAPICbInfo&,
+    NAccessibilityElementData*, napi_value&)>;
+
+using TaskRunFunc = std::function<OHOS::Accessibility::RetError(OHOS::Accessibility::NAPICbInfo&,
+    NAccessibilityElementData*, napi_value&)>;
+
+struct ElementFunctionCallbackInfo {
+    ParseElementFunc parseElement;
+    ParseConditionFunc parseCondition;
+    ParseCallbackFunc parseCallback;
+    TaskRunFunc run;
 };
 
 class NAccessibilityElement {
@@ -82,6 +103,7 @@ public:
     static napi_value FindElement(napi_env env, napi_callback_info info);
     static napi_value ErrorOperation(NAccessibilityElementData *callbackInfo);
     static napi_value GetCursorPosition(napi_env env, napi_callback_info info);
+    static napi_value ExecuteAction(napi_env env, napi_callback_info info);
 
     // Element info
     static void GetElementInfoComponentId(NAccessibilityElementData *callbackInfo, napi_value &value);
@@ -151,6 +173,7 @@ public:
     static void GetElementInfoAccessibilityParentId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityChildrenIds(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityScrollable(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoSupportedActionNames(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);
@@ -161,6 +184,31 @@ public:
     static void GetWindowInfoIsFocused(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoMainWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoHotArea(NAccessibilityElementData *callbackInfo, napi_value &value);
+
+    static OHOS::Accessibility::RetError ParseConditionInt64(OHOS::Accessibility::NAPICbInfo& cbInfo,
+        NAccessibilityElementData* elementData, size_t paramIndex, FindElementCondition conditionId);
+
+    static OHOS::Accessibility::RetError ParseConditionString(OHOS::Accessibility::NAPICbInfo& cbInfo,
+        NAccessibilityElementData* elementData, size_t paramIndex, FindElementCondition conditionId);
+
+    static napi_value QueryCommon(napi_env env, napi_callback_info info,
+        const ElementFunctionCallbackInfo& callbackInfo);
+
+    static OHOS::Accessibility::RetError RunFindElementAsync(OHOS::Accessibility::NAPICbInfo& cbInfo,
+        NAccessibilityElementData* elementData, napi_value& result);
+
+    static void ParseCallback(OHOS::Accessibility::NAPICbInfo& cbInfo,
+        NAccessibilityElementData* elementData, size_t paramIndex, napi_value& result);
+
+    static napi_value GetProperty(napi_env env, napi_callback_info info, std::string key);
+    static napi_value GetParent(napi_env env, napi_callback_info info);
+    static napi_value GetChildren(napi_env env, napi_callback_info info);
+    static napi_value GetRootElement(napi_env env, napi_callback_info info);
+    static napi_value FindElementByContent(napi_env env, napi_callback_info info);
+    static napi_value FindElementByFocusDirection(napi_env env, napi_callback_info info);
+    static napi_value FindElementsByAccessibilityHintText(napi_env env, napi_callback_info info);
+    static napi_value FindElementById(napi_env env, napi_callback_info info);
 
     static napi_ref consRef_;
 private:
@@ -177,9 +225,9 @@ private:
     static void FindElementByText(NAccessibilityElementData *callbackInfo);
     static void GetElement(NAccessibilityElementData *callbackInfo, napi_value &value);
     static napi_value PerformActionAsync(napi_env env, size_t argc, napi_value* argv,
-        std::string actionName, AccessibilityElement* accessibilityElement);
+        std::string actionName, AccessibilityElement* accessibilityElement, bool checkPerm = false);
     static napi_value PerformActionConstructPromise(napi_env env, size_t argc, napi_value* argv,
-        NAccessibilityElementData* callbackInfo, std::string actionName);
+        NAccessibilityElementData* callbackInfo, std::string actionName, bool checkPerm = false);
     static napi_value FindElementAsync(napi_env env, size_t argc, napi_value* argv,
         NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement);
     static NAccessibilityErrorCode GetAttribute(napi_env env, size_t argc, napi_value* argv,
@@ -205,7 +253,27 @@ private:
     static void GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetExtraElementInfo(NAccessibilityElementData *callbackInfo, napi_value &value, std::string keyStr);
 
+    static OHOS::Accessibility::RetError ParseAccessibilityElement(
+        OHOS::Accessibility::NAPICbInfo& cbInfo, NAccessibilityElementData* elementData);
+
+    static OHOS::Accessibility::RetError RunAttributeValueAsync(
+        OHOS::Accessibility::NAPICbInfo& cbInfo, NAccessibilityElementData* elementData, napi_value& result);
+
+    static OHOS::Accessibility::RetError RunAttributeValue(
+        OHOS::Accessibility::NAPICbInfo& cbInfo, NAccessibilityElementData* elementData, napi_value& result);
+
     NAccessibilityElement() = default;
     ~NAccessibilityElement() = default;
 };
+
+template<const char* Key>
+struct ElementProperty {
+    static constexpr const char* value() { return Key; }
+};
+
+template<typename T>
+static napi_value GetElementProperty(napi_env env, napi_callback_info info)
+{
+    return NAccessibilityElement::GetProperty(env, info, T::value());
+}
 #endif // NAPI_ACCESSIBILITY_ELEMENT_H

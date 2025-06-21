@@ -97,11 +97,13 @@ void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
 {
 }
 
-RetError AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
+RetError AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo,
+    bool systemApi)
 {
     HILOG_DEBUG();
     (void)focusType;
     (void)elementInfo;
+    (void)systemApi;
     return RET_OK;
 }
 
@@ -122,19 +124,21 @@ RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<Access
     return RET_OK;
 }
 
-RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo)
+RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo, bool systemApi)
 {
     HILOG_DEBUG();
     (void)elementInfo;
+    (void)systemApi;
     return RET_OK;
 }
 
 RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
-    AccessibilityElementInfo &elementInfo)
+    AccessibilityElementInfo &elementInfo, bool systemApi)
 {
     HILOG_DEBUG();
     (void)windowInfo;
     (void)elementInfo;
+    (void)systemApi;
     return RET_OK;
 }
 
@@ -155,15 +159,16 @@ RetError AccessibleAbilityClientImpl::GetDefaultFocusedElementIds(const int32_t 
     return RET_OK;
 }
 
-RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     HILOG_DEBUG();
     (void)windows;
+    (void)systemApi;
     return RET_OK;
 }
 
 RetError AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId,
-    std::vector<AccessibilityWindowInfo> &windows)
+    std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     HILOG_DEBUG();
     (void)displayId;
@@ -172,12 +177,13 @@ RetError AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId,
 }
 
 RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &elementInfo,
-    const FocusMoveDirection direction, AccessibilityElementInfo &nextElementInfo)
+    const FocusMoveDirection direction, AccessibilityElementInfo &nextElementInfo, bool systemApi)
 {
     HILOG_DEBUG();
     (void)elementInfo;
     (void)direction;
     (void)nextElementInfo;
+    (void)systemApi;
     return RET_OK;
 }
 
@@ -192,21 +198,23 @@ RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, c
 }
 
 RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &parent,
-    std::vector<AccessibilityElementInfo> &children)
+    std::vector<AccessibilityElementInfo> &children, bool systemApi)
 {
     HILOG_DEBUG();
     (void)parent;
     (void)children;
+    (void)systemApi;
     return RET_OK;
 }
 
 RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInfo &elementInfo,
-    const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
+    const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos, bool systemApi)
 {
     HILOG_DEBUG();
     (void)elementInfo;
     (void)text;
     (void)elementInfos;
+    (void)systemApi;
     return RET_OK;
 }
 
@@ -220,21 +228,23 @@ RetError AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &ev
 }
 
 RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityElementInfo &child,
-    AccessibilityElementInfo &parent)
+    AccessibilityElementInfo &parent, bool systemApi)
 {
     HILOG_DEBUG();
     (void)child;
     (void)parent;
+    (void)systemApi;
     return RET_OK;
 }
 
 RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, const int32_t windowId,
-    AccessibilityElementInfo &targetElementInfo)
+    AccessibilityElementInfo &targetElementInfo, bool systemApi)
 {
     HILOG_DEBUG();
     (void)elementId;
     (void)windowId;
     (void)targetElementInfo;
+    (void)systemApi;
     return RET_OK;
 }
 

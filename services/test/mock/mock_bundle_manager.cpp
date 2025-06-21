@@ -230,7 +230,7 @@ BundleMgrClient::~BundleMgrClient()
 {}
 
 bool BundleMgrClient::GetResConfigFile(const ExtensionAbilityInfo& extensionInfo, const std::string& metadataName,
-    std::vector<std::string>& profileInfos) const
+    std::vector<std::string>& profileInfos, bool includeSysRes) const
 {
     std::ifstream jsonFileStream;
     jsonFileStream.open(ACCESSIBLE_ABILITY_JSON_FILE_PAT, std::ios::in);

@@ -361,6 +361,7 @@ void AccessibilityInputInterceptor::DestroyTransmitters()
         Singleton<AccessibleAbilityManagerService>::GetInstance().SetTouchEventInjector(nullptr);
         pointerEventTransmitters_= nullptr;
         zoomGesture_ = nullptr;
+        windowMagnificationGesture_ = nullptr;
     }
     if (keyEventTransmitters_ != nullptr) {
         keyEventTransmitters_->DestroyEvents();

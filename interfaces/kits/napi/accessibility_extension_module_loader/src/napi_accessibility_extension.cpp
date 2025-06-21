@@ -36,6 +36,14 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr int64_t VIRTUAL_COMPONENT_ID = -1;
+    template <typename T>
+    void DeleteAndNullify(T*& ptr)
+    {
+        if (ptr) {
+            delete ptr;
+            ptr = nullptr;
+        }
+    }
 }
 NAccessibilityExtension* NAccessibilityExtension::Create(const std::unique_ptr<AbilityRuntime::Runtime>& runtime)
 {
@@ -193,6 +201,7 @@ void NAccessibilityExtension::OnAbilityConnected()
         [](uv_work_t *work, int status) {
             ExtensionCallbackInfo *data = static_cast<ExtensionCallbackInfo*>(work->data);
             data->extension_->CallObjectMethod("onConnect");
+            data->extension_->CallObjectMethod("onAccessibilityConnect");
             delete data;
             data = nullptr;
             delete work;
@@ -244,6 +253,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
         [](uv_work_t *work, int status) {
             ExtensionCallbackInfo *data = static_cast<ExtensionCallbackInfo*>(work->data);
             data->extension_->CallObjectMethod("onDisconnect");
+            data->extension_->CallObjectMethod("onAccessibilityDisconnect");
             data->syncPromise_.set_value();
             delete data;
             data = nullptr;
@@ -422,7 +432,7 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
         work,
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
-            AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
+            AccessibilityEventTypeCallbackInfo *data = static_cast<AccessibilityEventTypeCallbackInfo*>(work->data);
             napi_env env = data->env_;
             auto closeScope = [env](napi_handle_scope scope) {
                 napi_close_handle_scope(env, scope);
@@ -457,6 +467,12 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
                 ConvertAccessibilityElementToJS(data->env_, napiEventInfo, data->element_);
                 napi_value argv[] = {napiEventInfo};
                 data->extension_->CallObjectMethod("onAccessibilityEvent", argv, 1);
+                if (SetNapiEventInfoIntProperty(data->env_, "eventType",
+                    static_cast<int64_t>(data->AccessibilityEventType_), napiEventInfo) != napi_ok) {
+                    GET_AND_THROW_LAST_ERROR((data->env_));
+                    break;
+                }
+                data->extension_->CallObjectMethod("onAccessibilityEventInfo", argv, 1);
             } while (0);
             if (data != nullptr) {
                 delete data;
@@ -482,7 +498,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
     }
     uv_loop_s* loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    AccessibilityEventInfoCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityEventInfoCallbackInfo();
+    AccessibilityEventTypeCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityEventTypeCallbackInfo();
     if (!callbackInfo) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
@@ -491,6 +507,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
     callbackInfo->env_ = env_;
     callbackInfo->extension_ = this;
     callbackInfo->eventType_ = strType;
+    callbackInfo->AccessibilityEventType_ = CovertStringToAccessibilityEventType(strType);
     callbackInfo->timeStamp_ = eventInfo.GetTimeStamp();
     callbackInfo->element_ = element;
     callbackInfo->elementId_ = eventInfo.GetRequestFocusElementId();
@@ -566,33 +583,31 @@ int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loo
             if (napi_create_object(data->env_, &napiEventInfo) != napi_ok) {
                 HILOG_ERROR("Create keyEvent object failed.");
                 data->syncPromise_.set_value(false);
-                delete data;
-                data = nullptr;
-                delete work;
-                work = nullptr;
+                DeleteAndNullify(data);
+                DeleteAndNullify(work);
                 return;
             }
             ConvertKeyEventToJS(data->env_, napiEventInfo, data->keyEvent_);
             napi_value argv[] = {napiEventInfo};
             napi_value nativeResult = data->extension_->CallObjectMethod("onKeyEvent", argv, 1);
+            napi_value accessibilityNativeResult =
+                data->extension_->CallObjectMethod("onAccessibilityKeyEvent", argv, 1);
 
             // Unwrap result
             bool result = false;
-            if (!ConvertFromJsValue(data->env_, nativeResult, result)) {
+            bool accessibilityResult = false;
+            if (!ConvertFromJsValue(data->env_, nativeResult, result) &&
+                !ConvertFromJsValue(data->env_, accessibilityNativeResult, accessibilityResult)) {
                 HILOG_ERROR("ConvertFromJsValue failed");
                 data->syncPromise_.set_value(false);
-                delete data;
-                data = nullptr;
-                delete work;
-                work = nullptr;
+                DeleteAndNullify(data);
+                DeleteAndNullify(work);
                 return;
             }
             HILOG_INFO("OnKeyPressEvent result = %{public}d", result);
             data->syncPromise_.set_value(result);
-            delete data;
-            data = nullptr;
-            delete work;
-            work = nullptr;
+            DeleteAndNullify(data);
+            DeleteAndNullify(work);
         },
         uv_qos_user_initiated);
     return ret;
@@ -655,10 +670,13 @@ void NAccessibilityExtension::OnKeyPressEventCompleteCallback(uv_work_t* work, i
     ConvertKeyEventToJS(data->env_, napiEventInfo, data->keyEvent_);
     napi_value argv[] = {napiEventInfo};
     napi_value napiResult = data->extension_->CallObjectMethod("onKeyEvent", argv, 1);
+    napi_value accessibilityNativeResult = data->extension_->CallObjectMethod("onAccessibilityKeyEvent", argv, 1);
 
     // Unwrap result
     bool result = false;
-    if (!ConvertFromJsValue(data->env_, napiResult, result)) {
+    bool accessibilityResult = false;
+    if (!ConvertFromJsValue(data->env_, napiResult, result) &&
+        !ConvertFromJsValue(data->env_, accessibilityNativeResult, accessibilityResult)) {
         HILOG_ERROR("ConvertFromJsValue failed");
         data->syncPromise_.set_value(false);
         delete data;

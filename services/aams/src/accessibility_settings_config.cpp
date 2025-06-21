@@ -39,6 +39,8 @@ namespace {
     const std::string KEYEVENT_OBSERVER = "keyevent_observer";
     const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
+    const std::string SCREEN_MAGNIFICATION_MODE = "accessibility_magnification_mode";
+    const std::string SCREEN_MAGNIFICATION_SCALE = "accessibility_display_magnification_scale";
     const std::string MOUSEKEY = "mousekey";
     const std::string HIGH_CONTRAST_TEXT_KEY = "high_text_contrast_enabled";
     const std::string DALTONIZATION_STATE = "accessibility_display_daltonizer_enabled";
@@ -96,6 +98,7 @@ namespace {
     constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORTEST = 0;
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORT = 1;
+    constexpr float DEFAULT_MAGNIFICATION_SCALE = 2.0;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -179,6 +182,20 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t 
 {
     HILOG_DEBUG("screenMagnificationType = [%{public}u]", type);
     screenMagnificationType_ = type;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetScreenMagnificationMode(const uint32_t mode)
+{
+    HILOG_DEBUG("screenMagnificationMode = [%{public}u]", mode);
+    screenMagnificationMode_ = mode;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetScreenMagnificationScale(const float scale)
+{
+    HILOG_DEBUG("screenMagnificationScale = [%{public}f]", scale);
+    screenMagnificationScale_ = scale;
     return RET_OK;
 }
 
@@ -780,6 +797,16 @@ uint32_t AccessibilitySettingsConfig::GetScreenMagnificationType() const
     return screenMagnificationType_;
 }
 
+uint32_t AccessibilitySettingsConfig::GetScreenMagnificationMode() const
+{
+    return screenMagnificationMode_;
+}
+
+float AccessibilitySettingsConfig::GetScreenMagnificationScale() const
+{
+    return screenMagnificationScale_;
+}
+
 bool AccessibilitySettingsConfig::GetIgnoreRepeatClickState() const
 {
     return ignoreRepeatClickState_;
@@ -1051,6 +1078,9 @@ void AccessibilitySettingsConfig::InitSetting()
     audioBalance_ = static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0));
     SetAudioBalance(audioBalance_);
     screenMagnificationType_ = static_cast<uint32_t>(datashare_->GetIntValue(SCREEN_MAGNIFICATION_TYPE, 0));
+    screenMagnificationMode_ = static_cast<uint32_t>(datashare_->GetIntValue(SCREEN_MAGNIFICATION_MODE, 0));
+    screenMagnificationScale_ = static_cast<float>(
+        datashare_->GetFloatValue(SCREEN_MAGNIFICATION_SCALE, DEFAULT_MAGNIFICATION_SCALE));
     clickResponseTime_ = static_cast<uint32_t>(datashare_->GetIntValue(CLICK_RESPONCE_TIME, 0));
     SetClickResponseTime(clickResponseTime_);
     ignoreRepeatClickTime_ = static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0));

@@ -47,6 +47,7 @@ public:
     void PersistScale();
     PointerPos ConvertGesture(uint32_t type, PointerPos coordinates);
     uint32_t CheckTapOnHotArea(int32_t posX, int32_t posY);
+    void FollowFocuseElement(int32_t centerX, int32_t centerY);
     inline bool IsMagnificationWindowShow()
     {
         return isMagnificationWindowShow_;
@@ -56,6 +57,7 @@ private:
     void InitMagnificationParam();
     Rosen::Rect GetSourceRectFromPointer(int32_t centerX, int32_t centerY);
     void UpdateAnchor();
+    PointerPos GetRectCenter(Rosen::Rect rect);
     sptr<Rosen::Window> window_ = nullptr;
     std::shared_ptr<Rosen::RSSurfaceNode> surfaceNode_;
     std::shared_ptr<Rosen::RSCanvasNode> canvasNode_;

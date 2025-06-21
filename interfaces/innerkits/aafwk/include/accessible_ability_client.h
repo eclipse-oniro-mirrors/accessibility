@@ -108,7 +108,8 @@ public:
      * @param elementInfo The accessibilityElementInfo of focus.
      * @return Return RET_OK if obtains elementInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo) = 0;
+    virtual RetError GetFocus(
+        const int32_t focusType, AccessibilityElementInfo& elementInfo, bool systemApi = false) = 0;
 
     /**
      * @brief Obtains elementInfo of focus.
@@ -132,7 +133,7 @@ public:
      * @param elementInfo The elementInfo of the accessible root node.
      * @return Return RET_OK if obtains elementInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetRoot(AccessibilityElementInfo &elementInfo) = 0;
+    virtual RetError GetRoot(AccessibilityElementInfo &elementInfo, bool systemApi = false) = 0;
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
@@ -141,7 +142,7 @@ public:
      * @return Return RET_OK if obtains elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
-        AccessibilityElementInfo &elementInfo) = 0;
+        AccessibilityElementInfo &elementInfo, bool systemApi = false) = 0;
 
     /**
      * @brief Obtains elementInfos of the accessible root node in batchs.
@@ -174,7 +175,7 @@ public:
      * @param windows The information of windows.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) = 0;
+    virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi = false) = 0;
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
@@ -182,7 +183,8 @@ public:
      * @param windows The information of windows.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) = 0;
+    virtual RetError GetWindows(
+        const uint64_t displayId, std::vector<AccessibilityWindowInfo>& windows, bool systemApi = false) = 0;
 
     /**
      * @brief Gets the next focused node in the specified direction of the currently focused node.
@@ -192,7 +194,7 @@ public:
      * @return Return RET_OK if gets next elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetNext(const AccessibilityElementInfo &elementInfo, const FocusMoveDirection direction,
-        AccessibilityElementInfo &nextElementInfo) = 0;
+        AccessibilityElementInfo &nextElementInfo, bool systemApi = false) = 0;
 
     /**
      * @brief Get the child node information by child index.
@@ -211,7 +213,7 @@ public:
      * @return Return RET_OK if gets children elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetChildren(const AccessibilityElementInfo &parent,
-        std::vector<AccessibilityElementInfo> &children) = 0;
+        std::vector<AccessibilityElementInfo> &children, bool systemApi = false) = 0;
 
     /**
      * @brief Searches for node information based on the specified content.
@@ -221,7 +223,7 @@ public:
      * @return Return RET_OK if gets elementInfos successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
-        std::vector<AccessibilityElementInfo> &elementInfos) = 0;
+        std::vector<AccessibilityElementInfo> &elementInfos, bool systemApi = false) = 0;
 
     /**
      * @brief Get the node information related with the event
@@ -237,7 +239,8 @@ public:
      * @param parent The parent element info.
      * @return Return RET_OK if gets info successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetParentElementInfo(const AccessibilityElementInfo &child, AccessibilityElementInfo &parent) = 0;
+    virtual RetError GetParentElementInfo(
+        const AccessibilityElementInfo& child, AccessibilityElementInfo& parent, bool systemApi = false) = 0;
 
     /**
      * @brief Get node information based on element id in active window.
@@ -247,7 +250,7 @@ public:
      * @return Return RET_OK if gets info successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetByElementId(const int64_t elementId, const int32_t windowId,
-        AccessibilityElementInfo &targetElementInfo) = 0;
+        AccessibilityElementInfo &targetElementInfo, bool systemApi = false) = 0;
 
     /**
      * @brief Get node information based on inspectorKey in active window.

@@ -138,6 +138,13 @@ namespace {
             {SWITCH_WINDOW, ""}
         };
     };
+
+    static std::map<std::string, std::string> ResourceMap = {
+        {MAGNIFICATION_SCALE, ""},
+        {MAGNIFICATION_DISABLE, ""},
+        {SWITCH_FULL_SCREEN, ""},
+        {SWITCH_WINDOW, ""}
+    };
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -1788,6 +1795,15 @@ ErrCode AccessibleAbilityManagerService::GetActiveWindow(int32_t &windowId)
     HILOG_DEBUG();
     windowId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
     return ERR_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::GetActiveWindow(int32_t &windowId, bool systemApi)
+{
+    if (systemApi && !CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        HILOG_WARN("GetActiveWindow permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return GetActiveWindow(windowId);
 }
 
 bool AccessibleAbilityManagerService::Init()
@@ -3790,6 +3806,16 @@ ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32
     }
     connection->GetRootParentId(treeId, parentId);
     return ERR_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::GetRootParentId(
+    int32_t windowId, int32_t treeId, int64_t& parentId, bool systemApi)
+{
+    if (systemApi && !CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        HILOG_WARN("GetRootParentId permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return GetRootParentId(windowId, treeId, parentId);
 }
 
 int32_t AccessibleAbilityManagerService::GenerateRequestId()

@@ -111,5 +111,11 @@ Rosen::Rect FullScreenMagnificationManager::GetSourceRectFromPointer(int32_t cen
 void FullScreenMagnificationManager::UpdateAnchor()
 {
 }
+
+void FullScreenMagnificationManager::FollowFocuseElement(int32_t centerX, int32_t centerY)
+{
+    (void)centerX;
+    (void)centerY;
+}
 } // namespace Accessibility
 } // namespace OHOS

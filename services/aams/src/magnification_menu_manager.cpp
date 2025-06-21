@@ -128,7 +128,7 @@ void MagnificationMenuManager::LoadMenuBgImage(uint32_t mode)
 
 void MagnificationMenuManager::ShowMenuWindow(uint32_t mode)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
     GetWindowParam();
     currentType_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationType();
     menuMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
@@ -138,12 +138,12 @@ void MagnificationMenuManager::ShowMenuWindow(uint32_t mode)
     }
 
     if (menuWindow_ == nullptr) {
-        HILOG_WARN("window is null. need create.");
+        HILOG_ERROR("window is null. need create.");
         CreateMenuWindow();
     }
     
     if (menuWindow_ == nullptr) {
-        HILOG_INFO("create window failed.");
+        HILOG_ERROR("create window failed.");
         return;
     }
 
@@ -154,7 +154,7 @@ void MagnificationMenuManager::ShowMenuWindow(uint32_t mode)
 
 void MagnificationMenuManager::DisableMenuWindow()
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
     if (surfaceNode_ != nullptr) {
         surfaceNode_->SetVisible(false);
         surfaceNode_->ClearChildren();

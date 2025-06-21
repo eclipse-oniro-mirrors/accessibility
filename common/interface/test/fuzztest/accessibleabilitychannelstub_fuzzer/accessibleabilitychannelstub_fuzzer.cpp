@@ -34,7 +34,7 @@ public:
 
     RetError SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-        const int32_t mode, bool isFilter) override
+        const int32_t mode, bool isFilter, bool systemApi) override
     {
         return RET_OK;
     }
@@ -46,18 +46,18 @@ public:
     }
     RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int64_t elementId,
         const std::string &text, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override
+        const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi) override
     {
         return RET_OK;
     }
     RetError FindFocusedElementInfo(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t focusType, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override
+        const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi) override
     {
         return RET_OK;
     }
     RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t direction,
-        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi) override
     {
         return RET_OK;
     }
@@ -88,11 +88,12 @@ public:
     {
         return RET_OK;
     }
-    RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) override
+    RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi) override
     {
         return RET_OK;
     }
-    RetError GetWindowsByDisplayId(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) override
+    RetError GetWindowsByDisplayId(
+        const uint64_t displayId, std::vector<AccessibilityWindowInfo>& windows, bool systemApi) override
     {
         return RET_OK;
     }

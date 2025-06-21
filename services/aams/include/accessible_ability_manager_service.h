@@ -126,6 +126,7 @@ public:
     ErrCode DisableUITestAbility() override;
     ErrCode SetMagnificationState(const bool state) override;
     ErrCode GetActiveWindow(int32_t &windowId) override;
+    ErrCode GetActiveWindow(int32_t &windowId, bool systemApi) override;
     ErrCode GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
     ErrCode GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
     bool FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout = TIME_OUT_OPERATOR);
@@ -137,6 +138,7 @@ public:
     int64_t GetFocusElementId();
     static int32_t GetTreeIdBySplitElementId(const int64_t elementId);
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId) override;
+    ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId, bool systemApi) override;
     void SetTokenIdMapAndRootParentId(const sptr<AccessibilityWindowConnection> connection,
         const int32_t treeId, const int64_t nodeId, const uint32_t tokenId);
     void RemoveTreeDeathRecipient(const int32_t windowId, const int32_t treeId,
@@ -332,6 +334,10 @@ public:
     std::shared_ptr<MagnificationManager> GetMagnificationMgr();
     std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
     std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
+    ErrCode AnnouncedForAccessibility(const std::string &announcedText);
+    void InitResource();
+    std::string &GetResource(const std::string &resourceName);
+    void AnnouncedForMagnification(AnnounceType announceType);
 
     RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);
 
@@ -465,6 +471,7 @@ private:
     int32_t ApplyTreeId();
     void RecycleTreeId(int32_t treeId);
     std::shared_ptr<AccessibilityDatashareHelper> GetCurrentAcountDatashareHelper();
+    void OnFocusedEvent(const AccessibilityEventInfo &eventInfo);
 
     bool isReady_ = false;
     bool isPublished_ = false;
@@ -523,6 +530,7 @@ private:
     bool isSubscribeMSDPCallback_ = false;
     ffrt::mutex subscribeMSDPMutex_;
     std::shared_ptr<MagnificationManager> magnificationManager_ = nullptr;
+    bool isResourceInit_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

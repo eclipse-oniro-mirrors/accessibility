@@ -589,5 +589,18 @@ bool Utils::IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect)
     return (posX >= rect.posX_ && posY >= rect.posY_ && posX <= rect.posX_ + static_cast<int32_t>(rect.width_) &&
         posY <= rect.posY_ + static_cast<int32_t>(rect.height_));
 }
+
+std::string Utils::FormatString(const std::string& format, const std::string& value)
+{
+    int bufferSize = static_cast<int>(format.size() + value.size() + 1); // +1 for null terminator
+    char* buffer = new char[bufferSize];
+    if (snprintf_s(buffer, bufferSize, bufferSize -1, format.c_str(), value.c_str()) < 0) {
+        delete[] buffer;
+        return "";
+    }
+    std::string result(buffer);
+    delete[] buffer;
+    return result;
+}
 } // namespace Accessibility
 } // namespace OHOS

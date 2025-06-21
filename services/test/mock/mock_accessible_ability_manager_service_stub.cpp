@@ -183,6 +183,13 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetActiveWindow(int32_t& window
     return RET_OK;
 }
 
+ErrCode MockAccessibleAbilityManagerServiceStub::GetActiveWindow(int32_t& windowId, bool systemApi)
+{
+    (void)windowId;
+    (void)systemApi;
+    return RET_OK;
+}
+
 ErrCode MockAccessibleAbilityManagerServiceStub::CheckExtensionAbilityPermission(std::string& processName)
 {
     (void)processName;
@@ -499,6 +506,16 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetRootParentId(int32_t windowI
     (void)windowId;
     (void)treeId;
     (void)parentId;
+    return RET_OK;
+}
+
+ErrCode MockAccessibleAbilityManagerServiceStub::GetRootParentId(int32_t windowId, int32_t treeId,
+    int64_t& parentId, bool systemApi)
+{
+    (void)windowId;
+    (void)treeId;
+    (void)parentId;
+    (void)systemApi;
     return RET_OK;
 }
 

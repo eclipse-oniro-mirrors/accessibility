@@ -19,6 +19,9 @@
 #include "accessible_ability_manager_service.h"
 #include "magnification_menu_manager.h"
 #include "accessibility_window_manager.h"
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+#include "accessibility_power_manager.h"
+#endif
 
 namespace OHOS {
 namespace Accessibility {
@@ -218,6 +221,14 @@ void WindowMagnificationGesture::DestroyEvents()
     SendCacheEventsToNext();
     ResetTapCount();
     SetGestureState(MagnificationGestureState::READY_STATE, HANDLER);
+    if (windowMagnificationManager_ != nullptr &&
+        windowMagnificationManager_->IsMagnificationWindowShow()) {
+        HILOG_INFO("window gesture disable.");
+        windowMagnificationManager_->DisableWindowMagnification();
+        Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+        isSingleTapOnWindow_ = false;
+        isTapOnHotArea_ = false;
+    }
 }
 
 void WindowMagnificationGesture::CancelPostEvent(MagnificationGestureMsg msg)
@@ -387,6 +398,7 @@ void WindowMagnificationGesture::HandleReadyStateOneFingerTapDown(MMI::PointerEv
     HILOG_DEBUG();
     CancelPostEvent(MagnificationGestureMsg::SINGLE_TAP_FAIL_MSG);
     CancelPostEvent(MagnificationGestureMsg::TRIPLE_TAP_FAIL_MSG);
+    receivedPointerEvents_.push_back(event);
 
     if (lastDownEvent_ == nullptr) {
         HILOG_ERROR("lastDownEvent_ is nullptr");
@@ -585,6 +597,7 @@ void WindowMagnificationGesture::HandleZoomInStateOneFingerTapDown(MMI::PointerE
     HILOG_DEBUG();
     CancelPostEvent(MagnificationGestureMsg::SINGLE_TAP_FAIL_MSG);
     CancelPostEvent(MagnificationGestureMsg::TRIPLE_TAP_FAIL_MSG);
+    receivedPointerEvents_.push_back(event);
 
     if (lastDownEvent_ == nullptr) {
         HILOG_ERROR("lastDownEvent_ is nullptr");
@@ -699,6 +712,10 @@ void WindowMagnificationGesture::HandleTwoFingersDownStateMove(MMI::PointerEvent
         int32_t deltaX = static_cast<int32_t>(currentFocusX - lastFocusX);
         int32_t deltaY = static_cast<int32_t>(currentFocusY - lastFocusY);
         windowMagnificationManager_->MoveMagnificationWindow(deltaX, deltaY);
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+        AccessibilityPowerManager &powerMgr = Singleton<AccessibilityPowerManager>::GetInstance();
+        powerMgr.RefreshActivity();
+#endif
     }
 
     if (abs(windowMagnificationManager_->GetScale() - DEFAULT_SCALE) < EPS) {
@@ -828,10 +845,14 @@ void WindowMagnificationGesture::OnTripleTap(int32_t centerX, int32_t centerY)
     if (windowMagnificationManager_->IsMagnificationWindowShow()) {
         windowMagnificationManager_->DisableWindowMagnification();
         Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+            AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
         isSingleTapOnWindow_ = false;
         isTapOnHotArea_ = false;
     } else {
         windowMagnificationManager_->EnableWindowMagnification(centerX, centerY);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+            AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
         Singleton<MagnificationMenuManager>::GetInstance().ShowMenuWindow(WINDOW_MAGNIFICATION);
     }
 }
@@ -857,6 +878,7 @@ void WindowMagnificationGesture::SendEventToMultimodal(MMI::PointerEvent event, 
 
         pointer.SetDisplayX(coordinates.posX);
         pointer.SetDisplayY(coordinates.posY);
+        pointer.SetTargetWindowId(-1);
         event.RemovePointerItem(event.GetPointerId());
         event.AddPointerItem(pointer);
         event.SetZOrder(10000); // magnification zlevel is 10000
