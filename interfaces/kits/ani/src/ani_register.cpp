@@ -18,6 +18,9 @@
 #include <iostream>
 #include "ani_accessibility_system_ability_client.h"
 #include "hilog_wrapper.h"
+#include <ani_signature_builder.h>
+
+using namespace arkts::ani_signature;
 
 constexpr int32_t INVALID_ANI_VERSION = 1;
 constexpr int32_t MODULE_NOT_FOUND = 2;
@@ -34,17 +37,17 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
         return (ani_status)INVALID_ANI_VERSION;
     }
 
-    static const char *nsName = "L@ohos/accessibility/accessibility;";
+    Namespace accessibilityNamespace = Builder::BuildNamespace("@ohos.accessibility.accessibility");
     ani_namespace ns;
-    if (env->FindNamespace(nsName, &ns) != ANI_OK) {
-        HILOG_ERROR("namespace not found: %{public}s", nsName);
+    if (env->FindNamespace(accessibilityNamespace.Descriptor().c_str(), &ns) != ANI_OK) {
+        HILOG_ERROR("namespace accessibility not found");
         return (ani_status)NAMESPACE_NOT_FOUND;
     }
 
-    static const char *moduleName = "L@ohos/accessibility;";
+    Module accessibilityModule = Builder::BuildModule("@ohos.accessibility");
     ani_module mod;
-    if (env->FindModule(moduleName, &mod) != ANI_OK) {
-        HILOG_ERROR("module not found: %{public}s", moduleName);
+    if (env->FindModule(accessibilityModule.Descriptor().c_str(), &mod) != ANI_OK) {
+        HILOG_ERROR("module accessibility not found");
         return (ani_status)MODULE_NOT_FOUND;
     }
 

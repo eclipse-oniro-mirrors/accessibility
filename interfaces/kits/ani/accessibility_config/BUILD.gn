@@ -42,6 +42,7 @@ ohos_shared_library("AccessibilityConfig") {
     "hilog:libhilog",
     "input:libmmi-client",
     "runtime_core:ani",
+    "runtime_core:ani_helpers",
   ]
   sources = [
     "./src/ani_accessibility_config.cpp",
