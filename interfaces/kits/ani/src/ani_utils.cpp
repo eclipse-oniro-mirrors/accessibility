@@ -72,7 +72,7 @@ bool ANIUtils::GetIntField(ani_env *env, std::string fieldName, ani_object objec
         return false;
     }
     if (!isUndefined) {
-        if (env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "intValue", nullptr, &fieldValue) ==
+        if (env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "unboxed", nullptr, &fieldValue) ==
             ANI_OK) {
             return true;
         }
@@ -117,7 +117,7 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
     }
 
     int32_t lengthInt;
-    if (env->Object_CallMethodByName_Int(static_cast<ani_object>(length), "intValue", nullptr, &lengthInt) != ANI_OK ||
+    if (env->Object_CallMethodByName_Int(static_cast<ani_object>(length), "unboxed", nullptr, &lengthInt) != ANI_OK ||
         lengthInt <= 0) {
         return false;
     }
