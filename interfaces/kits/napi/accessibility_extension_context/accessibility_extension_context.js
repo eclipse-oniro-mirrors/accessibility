@@ -94,6 +94,21 @@ class AccessibilityExtensionContext extends ExtensionContext {
     console.log('notifyDisconnect');
     return this.__context_impl__.notifyDisconnect();
   }
+
+  getAccessibilityFocusedElement(callback) {
+    console.log('getAccessibilityFocusedElement');
+    return this.__context_impl__.getAccessibilityFocusedElement(callback);
+  }
+
+  getRootInActiveWindow(windowId, callback) {
+    console.log('getRootInActiveWindow');
+    return this.__context_impl__.getRootInActiveWindow(windowId, callback);
+  }
+
+  getAccessibilityWindowsSync(displayId) {
+    console.log('getAccessibilityWindowsSync');
+    return this.__context_impl__.getAccessibilityWindowsSync(displayId);
+  }
 }
 
 export default AccessibilityExtensionContext;

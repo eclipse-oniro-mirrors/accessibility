@@ -107,7 +107,8 @@ public:
      * @param elementInfo The accessibilityElementInfo of focus.
      * @return Return RET_OK if obtains elementInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo) override;
+    virtual RetError GetFocus(
+        const int32_t focusType, AccessibilityElementInfo& elementInfo, bool systemApi = false) override;
 
     /**
      * @brief Obtains elementInfo of focus.
@@ -131,7 +132,7 @@ public:
      * @param elementInfo The elementInfo of the accessible root node.
      * @return Return RET_OK if obtains elementInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetRoot(AccessibilityElementInfo &elementInfo) override;
+    virtual RetError GetRoot(AccessibilityElementInfo &elementInfo, bool systemApi = false) override;
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
@@ -140,7 +141,7 @@ public:
      * @return Return RET_OK if obtains elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
-        AccessibilityElementInfo &elementInfo) override;
+        AccessibilityElementInfo &elementInfo, bool systemApi = false) override;
 
     /**
      * @brief Obtains elementInfos of the accessible root node in batchs.
@@ -173,7 +174,7 @@ public:
      * @param windows The information of windows.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
+    virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi = false) override;
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
@@ -181,7 +182,8 @@ public:
      * @param windows The information of windows.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) override;
+    virtual RetError GetWindows(
+        const uint64_t displayId, std::vector<AccessibilityWindowInfo>& windows, bool systemApi = false) override;
 
     /**
      * @brief Gets the next focused node in the specified direction of the currently focused node.
@@ -191,7 +193,7 @@ public:
      * @return Return RET_OK if gets next elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetNext(const AccessibilityElementInfo &elementInfo, const FocusMoveDirection direction,
-        AccessibilityElementInfo &nextElementInfo) override;
+        AccessibilityElementInfo &nextElementInfo, bool systemApi = false) override;
 
     /**
      * @brief Get the child node information by childId
@@ -210,7 +212,7 @@ public:
      * @return Return RET_OK if gets child elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetChildren(const AccessibilityElementInfo &parent,
-        std::vector<AccessibilityElementInfo> &children) override;
+        std::vector<AccessibilityElementInfo> &children, bool systemApi = false) override;
 
     /**
      * @brief Searches for node information based on the specified content.
@@ -220,7 +222,7 @@ public:
      * @return Return RET_OK if gets elementInfos successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
-        std::vector<AccessibilityElementInfo> &elementInfos) override;
+        std::vector<AccessibilityElementInfo> &elementInfos, bool systemApi = false) override;
 
     /**
      * @brief Get the node information related with the event
@@ -238,7 +240,7 @@ public:
      * @return Return RET_OK if gets info successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetParentElementInfo(const AccessibilityElementInfo &child,
-        AccessibilityElementInfo &parent) override;
+        AccessibilityElementInfo &parent, bool systemApi = false) override;
 
     /**
      * @brief Get node information based on element id in active window.
@@ -248,7 +250,7 @@ public:
      * @return Return RET_OK if gets info successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetByElementId(const int64_t elementId, const int32_t windowId,
-        AccessibilityElementInfo &targetElementInfo) override;
+        AccessibilityElementInfo &targetElementInfo, bool systemApi = false) override;
 
     /**
      * @brief Get node information based on inspectorKey in active window.
@@ -422,10 +424,10 @@ public:
         std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false);
     RetError SearchElementInfoRecursiveByWinid(const int32_t windowId, const int64_t elementId,
         uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId, bool isFilter = false,
-        uint64_t parentIndex = 0);
+        uint64_t parentIndex = 0, bool systemApi = false);
     RetError SearchElementInfoRecursiveByContent(const int32_t windowId, const int64_t elementId,
         uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, const std::string text, int32_t treeId,
-        bool isFilter = false);
+        bool isFilter = false, bool systemApi = false);
     void RemoveCacheData(const AccessibilityEventInfo &eventInfo);
     void AddCacheByWMS(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
     void AddCacheByAce(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
@@ -435,7 +437,7 @@ public:
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
     RetError GetChildrenWork(const int32_t windowId, std::vector<int64_t> childIds,
-        std::vector<AccessibilityElementInfo> &children);
+        std::vector<AccessibilityElementInfo> &children, bool systemApi = false);
 
 private:
     class ElementCacheInfo {
@@ -504,9 +506,9 @@ private:
     void SetCacheElementInfo(const int32_t windowId,
         const std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
     RetError SearchElementInfoByElementId(const int32_t windowId, const int64_t elementId,
-        const uint32_t mode, AccessibilityElementInfo &info, int32_t treeId);
+        const uint32_t mode, AccessibilityElementInfo &info, int32_t treeId, bool systemApi = false);
     RetError SearchElementInfoFromAce(const int32_t windowId, const int64_t elementId,
-        const uint32_t mode, AccessibilityElementInfo &info);
+        const uint32_t mode, AccessibilityElementInfo &info, bool systemApi = false);
     bool InitAccessibilityServiceProxy();
     static void OnParameterChanged(const char *key, const char *value, void *context);
     bool CheckServiceProxy(); // should be used in mutex

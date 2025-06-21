@@ -45,6 +45,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void DisableAbility([in] String name);
     void SetMagnificationState([in] boolean state);
     void GetActiveWindow([out] int windowId);
+    void GetActiveWindow([out] int windowId, [in] boolean systemApi);
     void CheckExtensionAbilityPermission([inout] String processName);
     void EnableUITestAbility([in] IRemoteObject obj);
     void DisableUITestAbility();
@@ -91,6 +92,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void RegisterConfigObserver([in] IAccessibleAbilityManagerConfigObserver observer);
     void RemoveRequestId([in] int requestId);
     void GetRootParentId([in] int windowsId, [in] int treeId, [out] long parentId);
+    void GetRootParentId([in] int windowsId, [in] int treeId, [out] long parentId, [in] boolean systemApi);
     void GetScreenReaderState([out] boolean state);
     void SetEnhanceConfig([in] AccessibilitySecCompRawdata rawData);
 }

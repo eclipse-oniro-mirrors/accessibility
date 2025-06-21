@@ -53,12 +53,17 @@ AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, cons
 
 RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-    const int32_t mode, bool isFilter)
+    const int32_t mode, bool isFilter, bool systemApi)
 {
     int32_t treeId = elementBasicInfo.treeId;
     int32_t windowId = elementBasicInfo.windowId;
     int64_t elementId = elementBasicInfo.elementId;
     HILOG_DEBUG("elementId:%{public}" PRId64 " winId: %{public}d treeId: %{public}d", elementId, windowId, treeId);
+    if (systemApi && !Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
+        OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        HILOG_WARN("SearchElementInfoByAccessibilityId permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 
     if (eventHandler_ == nullptr || callback == nullptr) {
@@ -175,7 +180,7 @@ RetError AccessibleAbilityChannel::SearchDefaultFocusedByWindowId(const ElementB
 
 RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t accessibilityWindowId,
     const int64_t elementId, const std::string &text, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi)
 {
     HILOG_DEBUG("SearchElementInfosByText :channel SearchElementInfo elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
@@ -184,7 +189,6 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
         return RET_ERR_NO_PERMISSION;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-
     if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -193,7 +197,6 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
         HILOG_ERROR("callback is nullptr.");
         return RET_ERR_NULLPTR;
     }
-
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("SearchElementInfosByText :channel SearchElementInfo treeId: %{public}d", treeId);
     int32_t accountId = accountId_;
@@ -213,7 +216,6 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
             syncPromise->set_value(ret);
             return;
         }
-
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
         Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
@@ -221,7 +223,6 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
         elementOperator->SearchElementInfosByText(realElementId, text, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, "SearchElementInfosByText");
-
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
@@ -233,7 +234,7 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
 
 RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessibilityWindowId,
     const int64_t elementId, const int32_t focusType, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi)
 {
     HILOG_DEBUG("channel FindFocusedElementInfo elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
@@ -242,8 +243,7 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         return RET_ERR_NO_PERMISSION;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-
-    if (eventHandler_== nullptr) {
+    if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
@@ -251,7 +251,6 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         HILOG_ERROR("callback is nullptr.");
         return RET_ERR_NULLPTR;
     }
-
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     ffrt::future syncFuture = syncPromise->get_future();
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
@@ -271,7 +270,6 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
             syncPromise->set_value(ret);
             return;
         }
-
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
         Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
@@ -279,7 +277,6 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         elementOperator->FindFocusedElementInfo(realElementId, focusType, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, "FindFocusedElementInfo");
-    
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
@@ -290,7 +287,8 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
 }
 
 RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId,
-    const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
+    bool systemApi)
 {
     HILOG_DEBUG("FocusMoveSearch :channel FocusMoveSearch elementId: %{public}" PRId64 " winId: %{public}d",
         elementId, accessibilityWindowId);
@@ -299,7 +297,6 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
         return RET_ERR_NO_PERMISSION;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-
     if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -308,7 +305,6 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
         HILOG_ERROR("callback is nullptr.");
         return RET_ERR_NULLPTR;
     }
-
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     ffrt::future syncFuture = syncPromise->get_future();
     int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
@@ -328,7 +324,6 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
             syncPromise->set_value(ret);
             return;
         }
-
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
         Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
@@ -336,7 +331,6 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
         elementOperator->FocusMoveSearch(realElementId, direction, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, "FocusMoveSearch");
-    
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
@@ -453,14 +447,6 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
 {
     HILOG_DEBUG("ExecuteAction elementId:%{public}" PRId64 " winId:%{public}d, action:%{public}d, requestId:%{public}d",
         elementId, accessibilityWindowId, action, requestId);
-    if (actionArguments.find("sysapi_check_perm") != actionArguments.end()) {
-        if (!Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
-            OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
-            HILOG_WARN("system api permission denied.");
-            return RET_ERR_NO_PERMISSION;
-        }
-    }
-
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (eventHandler_ == nullptr || callback == nullptr) {
         HILOG_ERROR("eventHandler_ exist: %{public}d, callback exist: %{public}d.", eventHandler_ != nullptr,
@@ -478,13 +464,6 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         callback->SetExecuteActionResult(true, requestId);
         return RET_OK;
     }
-    return ExecuteActionAsync(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
-}
-
-RetError AccessibleAbilityChannel::ExecuteActionAsync(const int32_t accessibilityWindowId, const int64_t elementId,
-    const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
-{
     SetFocusWindowIdAndElementId(accessibilityWindowId, elementId, action);
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     ffrt::future syncFuture = syncPromise->get_future();
@@ -577,28 +556,29 @@ RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, Accessibili
     return syncFuture.get();
 }
 
-RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     HILOG_DEBUG();
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     uint64_t displayId = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplayId();
     HILOG_DEBUG("default display id is %{public}" PRIu64 "", displayId);
-    return GetWindows(displayId, windows);
+    return GetWindows(displayId, windows, systemApi);
 #else
     HILOG_DEBUG("not support display manager");
-    return GetWindows(0, windows);
+    return GetWindows(0, windows, systemApi);
 #endif
 }
 
 RetError AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
-    std::vector<AccessibilityWindowInfo> &windows)
+    std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     HILOG_DEBUG();
-    return GetWindows(displayId, windows);
+    return GetWindows(displayId, windows, systemApi);
 }
 
-RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const
+RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows,
+    bool systemApi) const
 {
     if (systemApi && !Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
         OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
@@ -608,7 +588,6 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
         HILOG_ERROR("eventHandler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
-
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     auto tmpWindows = std::make_shared<std::vector<AccessibilityWindowInfo>>(windows);
     int32_t accountId = accountId_;
@@ -622,13 +601,11 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
             syncPromise->set_value(RET_ERR_NO_CONNECTION);
             return;
         }
-
         if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
             HILOG_ERROR("GetWindows failed: no capability");
             syncPromise->set_value(RET_ERR_NO_CAPABILITY);
             return;
         }
-
         std::vector<AccessibilityWindowInfo> windowInfos =
             Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
@@ -644,13 +621,11 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
 #endif
         syncPromise->set_value(RET_OK);
         }, "GetWindows");
-    
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait GetWindows result");
         return RET_ERR_TIME_OUT;
     }
-
     windows = *tmpWindows;
     return syncFuture.get();
 }

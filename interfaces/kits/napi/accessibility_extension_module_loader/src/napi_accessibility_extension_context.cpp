@@ -212,14 +212,29 @@ public:
         GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetFocusElement);
     }
 
+    static napi_value GetFocusElementSys(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetFocusElementSys);
+    }
+
     static napi_value GetWindowRootElement(napi_env env, napi_callback_info info)
     {
         GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetWindowRootElement);
     }
 
+    static napi_value GetWindowRootElementSys(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetWindowRootElementSys);
+    }
+
     static napi_value GetWindows(napi_env env, napi_callback_info info)
     {
         GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetWindows);
+    }
+
+    static napi_value GetAccessibilityWindowsSync(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetAccessibilityWindowsSync);
     }
 
     static napi_value InjectGesture(napi_env env, napi_callback_info info)
@@ -344,7 +359,17 @@ private:
         return result;
     }
 
+    napi_value OnGetFocusElementSys(napi_env env, NapiCallbackInfo& info)
+    {
+        return OnGetFocusElementInner(env, info, true);
+    }
+
     napi_value OnGetFocusElement(napi_env env, NapiCallbackInfo& info)
+    {
+        return OnGetFocusElementInner(env, info, false);
+    }
+
+    napi_value OnGetFocusElementInner(napi_env env, NapiCallbackInfo& info, bool systemApi)
     {
         HILOG_INFO();
         bool isAccessibilityFocus = false;
@@ -368,14 +393,14 @@ private:
 
         int32_t focus = isAccessibilityFocus ? FOCUS_TYPE_ACCESSIBILITY : FOCUS_TYPE_INPUT;
         HILOG_DEBUG("focus type is [%{public}d]", focus);
-        return GetFoucusElementCompleteTask(env, focus, lastParam);
+        return GetFoucusElementCompleteTask(env, focus, lastParam, systemApi);
     }
 
-    napi_value GetFoucusElementCompleteTask(napi_env env, int32_t focus, napi_value lastParam)
+    napi_value GetFoucusElementCompleteTask(napi_env env, int32_t focus, napi_value lastParam, bool systemApi)
     {
         auto elementInfo = std::make_shared<OHOS::Accessibility::AccessibilityElementInfo>();
         auto ret = std::make_shared<RetError>(RET_OK);
-        NapiAsyncTask::ExecuteCallback execute = [weak = context_, elementInfo, focus, ret] () {
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, elementInfo, focus, systemApi, ret] () {
             HILOG_INFO("GetFoucusElement begin");
             auto context = weak.lock();
             if (!context) {
@@ -384,7 +409,7 @@ private:
                 return;
             }
 
-            *ret = context->GetFocus(focus, *elementInfo);
+            *ret = context->GetFocus(focus, *elementInfo, systemApi);
         };
         NapiAsyncTask::CompleteCallback complete =
             [ret, elementInfo](napi_env env, NapiAsyncTask& task, int32_t status) {
@@ -408,7 +433,17 @@ private:
         return result;
     }
 
+    napi_value OnGetWindowRootElementSys(napi_env env, NapiCallbackInfo& info)
+    {
+        return OnGetWindowRootElementInner(env, info, true);
+    }
+
     napi_value OnGetWindowRootElement(napi_env env, NapiCallbackInfo& info)
+    {
+        return OnGetWindowRootElementInner(env, info, false);
+    }
+
+    napi_value OnGetWindowRootElementInner(napi_env env, NapiCallbackInfo& info, bool systemApi)
     {
         HILOG_INFO();
         int32_t windowId = INVALID_WINDOW_ID;
@@ -441,15 +476,16 @@ private:
             lastParam = nullptr;
             HILOG_INFO("argc is others, use promise");
         }
-        return GetWindowRootElementCompleteTask(env, windowId, isActiveWindow, lastParam);
+        return GetWindowRootElementCompleteTask(env, windowId, isActiveWindow, lastParam, systemApi);
     }
 
     napi_value GetWindowRootElementCompleteTask(
-        napi_env env, int32_t windowId, bool isActiveWindow, napi_value lastParam)
+        napi_env env, int32_t windowId, bool isActiveWindow, napi_value lastParam, bool systemApi)
     {
         auto elementInfo = std::make_shared<OHOS::Accessibility::AccessibilityElementInfo>();
         auto ret = std::make_shared<RetError>(RET_OK);
-        NapiAsyncTask::ExecuteCallback execute = [weak = context_, isActiveWindow, windowId, elementInfo, ret] () {
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, isActiveWindow, windowId, elementInfo, systemApi,
+                                                     ret]() {
             HILOG_INFO("GetWindowRootElement begin");
             auto context = weak.lock();
             if (!context) {
@@ -458,11 +494,11 @@ private:
                 return;
             }
             if (isActiveWindow) {
-                *ret = context->GetRoot(*elementInfo);
+                *ret = context->GetRoot(*elementInfo, systemApi);
             } else {
                 AccessibilityWindowInfo windowInfo;
                 windowInfo.SetWindowId(windowId);
-                *ret = context->GetRootByWindow(windowInfo, *elementInfo);
+                *ret = context->GetRootByWindow(windowInfo, *elementInfo, systemApi);
             }
         };
 
@@ -602,6 +638,56 @@ private:
         NapiAsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsByDisplayIdAsync",
             env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
         return result;
+    }
+
+    napi_value OnGetAccessibilityWindowsSync(napi_env env, NapiCallbackInfo& info)
+    {
+        HILOG_INFO();
+        if (info.argc > ARGS_SIZE_ONE) {
+            HILOG_ERROR("invalid param");
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return CreateJsUndefined(env);
+        }
+        int64_t displayId = 0;
+        bool hasDisplayId = false;
+        if (info.argv[PARAM0] != nullptr && IsNapiNumber(env, info.argv[PARAM0])) {
+            hasDisplayId = ConvertFromJsValue(env, info.argv[PARAM0], displayId);
+        }
+        auto context = context_.lock();
+        if (!context) {
+            HILOG_ERROR("context is released");
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return CreateJsUndefined(env);
+        }
+        auto accessibilityWindows = std::make_shared<std::vector<OHOS::Accessibility::AccessibilityWindowInfo>>();
+        RetError ret = RET_OK;
+        if (hasDisplayId) {
+            if (displayId < 0) {
+                HILOG_ERROR("displayId is error: %{public}" PRId64 "", displayId);
+                napi_throw(env, CreateJsError(env,
+                    static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                    ERROR_MESSAGE_PARAMETER_ERROR));
+                return CreateJsUndefined(env);
+            }
+            ret = context->GetWindows(static_cast<uint64_t>(displayId), *accessibilityWindows, true);
+        } else {
+            ret = context->GetWindows(*accessibilityWindows, true);
+        }
+        if (ret != RET_OK) {
+            HILOG_ERROR("result error, ret %{public}d", ret);
+            NAccessibilityErrMsg errMsg = QueryRetMsg(ret);
+            napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+            return CreateJsUndefined(env);
+        }
+        napi_value napiWindowInfos = nullptr;
+        napi_create_array(env, &napiWindowInfos);
+        ConvertAccessibilityWindowInfosToJS(env, napiWindowInfos, *accessibilityWindows);
+        HILOG_DEBUG("OnGetAccessibilityWindowsSync success");
+        return napiWindowInfos;
     }
 
     napi_value OnGestureInjectSync(napi_env env, NapiCallbackInfo& info)
@@ -1080,6 +1166,12 @@ napi_value CreateJsAccessibilityExtensionContext(
         NAccessibilityExtensionContext::UnRegisterCallback);
     BindNativeFunction(env, object, "notifyDisconnect", moduleName,
         NAccessibilityExtensionContext::NotifyDisconnect);
+    BindNativeFunction(env, object, "getAccessibilityFocusedElement", moduleName,
+        NAccessibilityExtensionContext::GetFocusElementSys);
+    BindNativeFunction(env, object, "getRootInActiveWindow", moduleName,
+        NAccessibilityExtensionContext::GetWindowRootElementSys);
+    BindNativeFunction(env, object, "getAccessibilityWindowsSync", moduleName,
+        NAccessibilityExtensionContext::GetAccessibilityWindowsSync);
     return object;
 }
 } // namespace Accessibility

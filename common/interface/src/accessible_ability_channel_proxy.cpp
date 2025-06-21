@@ -61,7 +61,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(AccessibilityInterfaceCode c
 
 RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-    const int32_t mode, bool isFilter)
+    const int32_t mode, bool isFilter, bool systemApi)
 {
     HILOG_DEBUG();
     if (callback == nullptr) {
@@ -170,7 +170,7 @@ RetError AccessibleAbilityChannelProxy::SearchDefaultFocusedByWindowId(const Ele
 
 RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t accessibilityWindowId,
     const int64_t elementId, const std::string &text, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi)
 {
     HILOG_DEBUG();
 
@@ -206,6 +206,10 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t a
         HILOG_ERROR("callback write error");
         return RET_ERR_IPC_FAILED;
     }
+    if (!data.WriteBool(systemApi)) {
+        HILOG_ERROR("systemApi write error: %{public}d, ", systemApi);
+        return RET_ERR_IPC_FAILED;
+    }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT,
         data, reply, option)) {
@@ -217,7 +221,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t a
 
 RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessibilityWindowId,
     const int64_t elementId, const int32_t focusType, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi)
 {
     HILOG_DEBUG();
     if (callback == nullptr) {
@@ -252,6 +256,10 @@ RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t acc
         HILOG_ERROR("callback write error");
         return RET_ERR_IPC_FAILED;
     }
+    if (!data.WriteBool(systemApi)) {
+        HILOG_ERROR("systemApi write error: %{public}d, ", systemApi);
+        return RET_ERR_IPC_FAILED;
+    }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO, data, reply, option)) {
         HILOG_ERROR("fail to gain focus");
@@ -261,7 +269,8 @@ RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t acc
 }
 
 RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId,
-    const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
+    bool systemApi)
 {
     HILOG_DEBUG();
     if (callback == nullptr) {
@@ -294,6 +303,10 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibil
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteBool(systemApi)) {
+        HILOG_ERROR("systemApi write error: %{public}d, ", systemApi);
         return RET_ERR_IPC_FAILED;
     }
 
@@ -459,7 +472,7 @@ RetError AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, Access
     return static_cast<RetError>(reply.ReadInt32());
 }
 
-RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -467,6 +480,10 @@ RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWind
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteBool(systemApi)) {
+        HILOG_ERROR("systemApi write error: %{public}d, ", systemApi);
         return RET_ERR_IPC_FAILED;
     }
 
@@ -494,7 +511,7 @@ RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWind
 }
 
 RetError AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
-    std::vector<AccessibilityWindowInfo> &windows)
+    std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     HILOG_DEBUG();
 
@@ -508,6 +525,11 @@ RetError AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t dis
 
     if (!data.WriteUint64(displayId)) {
         HILOG_ERROR("displayId write error: %{public}" PRIu64 ", ", displayId);
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteBool(systemApi)) {
+        HILOG_ERROR("systemApi write error: %{public}d, ", systemApi);
         return RET_ERR_IPC_FAILED;
     }
 

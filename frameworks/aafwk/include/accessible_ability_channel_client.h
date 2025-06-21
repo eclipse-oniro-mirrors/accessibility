@@ -60,7 +60,7 @@ public:
      * @return Return RET_OK if finds focus element info successfully, otherwise refer to the RetError for the failure.
      */
     RetError FindFocusedElementInfo(int32_t accessibilityWindowId, int64_t elementId,
-        int32_t focusType, AccessibilityElementInfo &elementInfo);
+        int32_t focusType, AccessibilityElementInfo &elementInfo, bool systemApi = false);
 
     /**
      * @brief Send simulate gesture to aams.
@@ -135,8 +135,9 @@ public:
      * @param elementInfos[out] The components information matched conditions searched.
      * @return Return RET_OK if search element info successfully, otherwise refer to the RetError for the failure.
      */
-    RetError SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId, int64_t elementId,
-        int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId, bool isFilter = false);
+    RetError SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId, int64_t elementId, int32_t mode,
+        std::vector<AccessibilityElementInfo>& elementInfos, int32_t treeId, bool isFilter = false,
+        bool systemApi = false);
 
     /**
      * @brief Find the node information by window ID.
@@ -165,7 +166,7 @@ public:
      * @param windows The information of windows.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
-    RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows);
+    RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi = false);
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
@@ -173,7 +174,8 @@ public:
      * @param windows The information of windows.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
-    RetError GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const;
+    RetError GetWindows(
+        const uint64_t displayId, std::vector<AccessibilityWindowInfo>& windows, bool systemApi = false) const;
 
     /**
      * @brief Find the node information filtered by text.
@@ -184,7 +186,7 @@ public:
      * @return Return RET_OK if search element info successfully, otherwise refer to the RetError for the failure.
      */
     RetError SearchElementInfosByText(int32_t accessibilityWindowId, int64_t elementId,
-        const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos);
+        const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos, bool systemApi = false);
 
     /**
      * @brief Find the node information by focus move direction.
@@ -196,7 +198,7 @@ public:
      * @return Return RET_OK if find element info successfully, otherwise refer to the RetError for the failure.
      */
     RetError FocusMoveSearch(int32_t accessibilityWindowId,
-        int64_t elementId, int32_t direction, AccessibilityElementInfo &elementInfo);
+        int64_t elementId, int32_t direction, AccessibilityElementInfo &elementInfo, bool systemApi = false);
 
     /**
      * @brief Set target bundle names.

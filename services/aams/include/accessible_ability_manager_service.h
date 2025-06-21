@@ -126,6 +126,7 @@ public:
     ErrCode DisableUITestAbility() override;
     ErrCode SetMagnificationState(const bool state) override;
     ErrCode GetActiveWindow(int32_t &windowId) override;
+    ErrCode GetActiveWindow(int32_t &windowId, bool systemApi) override;
     ErrCode GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
     ErrCode GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
     bool FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout = TIME_OUT_OPERATOR);
@@ -137,6 +138,7 @@ public:
     int64_t GetFocusElementId();
     static int32_t GetTreeIdBySplitElementId(const int64_t elementId);
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId) override;
+    ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId, bool systemApi) override;
     void SetTokenIdMapAndRootParentId(const sptr<AccessibilityWindowConnection> connection,
         const int32_t treeId, const int64_t nodeId, const uint32_t tokenId);
     void RemoveTreeDeathRecipient(const int32_t windowId, const int32_t treeId,
