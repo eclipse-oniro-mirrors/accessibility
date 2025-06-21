@@ -30,6 +30,23 @@ class AccessibilityExtensionAbility {
     console.log('onKeyEvent');
     return false;
   }
+
+  onAccessibilityConnect() {
+    console.log('onAccessibilityConnect');
+  }
+
+  onAccessibilityDisconnect() {
+    console.log('onAccessibilityDisconnect');
+  }
+
+  onAccessibilityEventInfo(accessibilityEventInfo) {
+    console.log('onAccessibilityEventInfo');
+  }
+
+  onAccessibilityKeyEvent(keyEvent) {
+    console.log('onAccessibilityKeyEvent');
+    return false;
+  }
 }
 
 export default AccessibilityExtensionAbility;
