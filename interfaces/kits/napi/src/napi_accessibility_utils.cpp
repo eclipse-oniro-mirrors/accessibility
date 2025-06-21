@@ -1081,7 +1081,7 @@ void ConvertActionArgsJSToNAPI(
     }
 }
 
-void SetScrollTypeParam( napi_env env, napi_value object, std::map<std::string, std::string>& args)
+void SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, std::string>& args)
 {
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
