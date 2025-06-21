@@ -239,8 +239,6 @@ static napi_value CreateAccessibilityAction(napi_env env)
     return objValue;
 }
 
-static napi_value CreateAccessibilityActionType(napi_env env)
-
 /*
  * function for module exports
  */
