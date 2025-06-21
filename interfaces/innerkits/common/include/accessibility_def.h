@@ -493,6 +493,32 @@ enum AccessibilityEventType : int32_t {
     TYPE_FOUR_FINGER_SWIPE_RIGHT = 68
 };
 
+enum AccessibilityAction : int32_t {
+    ERROR = -1,
+    ACCESSIBILITY_FOCUS = 0,
+    CLEAR_ACCESSIBILITY_FOCUS = 1,
+    FOCUS = 2,
+    CLEAR_FOCUS = 3,
+    CLICK = 4,
+    LONG_CLICK = 5,
+    CUT = 6,
+    COPY = 7,
+    PASTE = 8,
+    SELECT = 9,
+    SET_TEXT = 10,
+    SCROLL_FORWARD = 11,
+    SCROLL_BACKWARD = 12,
+    SET_SELECTION = 13,
+    SET_CURSOR_POSITION = 14,
+    HOME = 15,
+    BACK = 16,
+    RECENT_TASK = 17,
+    NOTIFICATION_CENTER = 18,
+    CONTROL_CENTER = 19,
+    COMMON = 20,
+    SPAN_CLICK = 21
+}
+
 #define RETURN_FALSE_IF_NULL(sptr)                     \
     do {                                               \
         if ((sptr) == nullptr) {                       \
