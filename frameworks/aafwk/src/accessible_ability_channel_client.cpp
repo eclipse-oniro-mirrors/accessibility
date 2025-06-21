@@ -53,7 +53,7 @@ void AccessibleAbilityChannelClient::SetOnKeyPressEventResult(const bool handled
 }
 
 RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilityWindowId,
-    int64_t elementId, int32_t focusType, AccessibilityElementInfo &elementInfo)
+    int64_t elementId, int32_t focusType, AccessibilityElementInfo &elementInfo, bool systemApi)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
 #ifdef OHOS_BUILD_ENABLE_HITRACE
@@ -82,7 +82,7 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     }
 
     RetError ret = proxy_->FindFocusedElementInfo(windowId,
-        elementId, focusType, requestId, elementOperator);
+        elementId, focusType, requestId, elementOperator, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("FindFocusedElementInfo failed. ret[%{public}d]", ret);
         return ret;
@@ -247,7 +247,7 @@ RetError AccessibleAbilityChannelClient::UnholdRunningLock()
 
 RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId,
     int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId,
-    bool isFilter)
+    bool isFilter, bool systemApi)
 {
     int32_t requestId = GenerateRequestId();
     HILOG_DEBUG("channelId:%{public}d, elementId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
@@ -274,7 +274,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     elementBasicInfo.elementId = elementId;
 
     RetError ret = proxy_->SearchElementInfoByAccessibilityId(elementBasicInfo, requestId,
-        elementOperator, mode, isFilter);
+        elementOperator, mode, isFilter, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("searchElement failed. ret: %{public}d. elementId: %{public}" PRId64 ", requestId :[%{public}d]",
             ret, elementId, requestId);
@@ -366,14 +366,14 @@ RetError AccessibleAbilityChannelClient::GetWindow(const int32_t windowId, Acces
     return proxy_->GetWindow(windowId, windowInfo);
 }
 
-RetError AccessibleAbilityChannelClient::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibleAbilityChannelClient::GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
 #ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER(HITRACE_TAG_ACCESSIBILITY_MANAGER);
 #endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_) {
-        return proxy_->GetWindows(windows);
+        return proxy_->GetWindows(windows, systemApi);
     } else {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
@@ -381,14 +381,14 @@ RetError AccessibleAbilityChannelClient::GetWindows(std::vector<AccessibilityWin
 }
 
 RetError AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId,
-    std::vector<AccessibilityWindowInfo> &windows) const
+    std::vector<AccessibilityWindowInfo> &windows, bool systemApi) const
 {
     HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}" PRIu64 "]", channelId_, displayId);
 #ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "GetWindowsByDisplayId");
 #endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_) {
-        return proxy_->GetWindowsByDisplayId(displayId, windows);
+        return proxy_->GetWindowsByDisplayId(displayId, windows, systemApi);
     } else {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
@@ -396,7 +396,7 @@ RetError AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId,
 }
 
 RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t accessibilityWindowId,
-    int64_t elementId, const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
+    int64_t elementId, const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos, bool systemApi)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
 #ifdef OHOS_BUILD_ENABLE_HITRACE
@@ -418,7 +418,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
     ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     RetError ret = proxy_->SearchElementInfosByText(accessibilityWindowId,
-        elementId, text, requestId, elementOperator);
+        elementId, text, requestId, elementOperator, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("SearchElementInfosByText failed. ret[%{public}d]", ret);
         return ret;
@@ -442,7 +442,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
 }
 
 RetError AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWindowId,
-    int64_t elementId, int32_t direction, AccessibilityElementInfo &elementInfo)
+    int64_t elementId, int32_t direction, AccessibilityElementInfo &elementInfo, bool systemApi)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     if (proxy_ == nullptr) {
@@ -459,7 +459,8 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWi
     }
     ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
-    RetError ret = proxy_->FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, elementOperator);
+    RetError ret =
+        proxy_->FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, elementOperator, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("FocusMoveSearch failed. ret[%{public}d]", ret);
         return ret;

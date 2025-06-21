@@ -389,7 +389,8 @@ void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
     channel->SetOnKeyPressEventResult(handled, sequence);
 }
 
-RetError AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
+RetError AccessibleAbilityClientImpl::GetFocus(
+    const int32_t focusType, AccessibilityElementInfo& elementInfo, bool systemApi)
 {
     HILOG_DEBUG("focusType[%{public}d]", focusType);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
@@ -412,7 +413,7 @@ RetError AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, Accessib
     }
 
     Accessibility::RetError ret = channelClient_->FindFocusedElementInfo(
-        ANY_WINDOW_ID, ROOT_NODE_ID, focusType, elementInfo);
+        ANY_WINDOW_ID, ROOT_NODE_ID, focusType, elementInfo, systemApi);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -487,7 +488,7 @@ RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<Access
     return ret;
 }
 
-RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo)
+RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo, bool systemApi)
 {
     HILOG_DEBUG();
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
@@ -510,14 +511,14 @@ RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementI
     }
 
     int32_t activeWindow = INVALID_WINDOW_ID;
-    serviceProxy_->GetActiveWindow(activeWindow);
+    serviceProxy_->GetActiveWindow(activeWindow, systemApi);
     HILOG_DEBUG("activeWindow[%{public}d]", activeWindow);
     if (GetCacheElementInfo(activeWindow, ROOT_NONE_ID, elementInfo)) {
         HILOG_DEBUG("get element info from cache");
         return RET_OK;
     }
 
-    RetError ret = SearchElementInfoFromAce(activeWindow, ROOT_NONE_ID, cacheMode_, elementInfo);
+    RetError ret = SearchElementInfoFromAce(activeWindow, ROOT_NONE_ID, cacheMode_, elementInfo, systemApi);
     if (ret == RET_OK) {
         elementInfo.SetMainWindowId(activeWindow);
     }
@@ -528,7 +529,7 @@ RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementI
 }
 
 RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
-    AccessibilityElementInfo &elementInfo)
+    AccessibilityElementInfo &elementInfo, bool systemApi)
 {
     HILOG_DEBUG();
     if (!isConnected_) {
@@ -549,7 +550,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowI
         return RET_OK;
     }
 
-    RetError ret = SearchElementInfoFromAce(windowId, ROOT_NONE_ID, cacheMode_, elementInfo);
+    RetError ret = SearchElementInfoFromAce(windowId, ROOT_NONE_ID, cacheMode_, elementInfo, systemApi);
     if (ret == RET_OK) {
         elementInfo.SetMainWindowId(windowId);
     }
@@ -694,7 +695,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWi
     return RET_OK;
 }
 
-RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     HILOG_DEBUG();
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
@@ -710,7 +711,7 @@ RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindow
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    Accessibility::RetError ret = channelClient_->GetWindows(windows);
+    Accessibility::RetError ret = channelClient_->GetWindows(windows, systemApi);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -718,7 +719,7 @@ RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindow
 }
 
 RetError AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId,
-    std::vector<AccessibilityWindowInfo> &windows)
+    std::vector<AccessibilityWindowInfo> &windows, bool systemApi)
 {
     HILOG_DEBUG("displayId[%{public}" PRIu64 "]", displayId);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
@@ -734,15 +735,15 @@ RetError AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId,
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    Accessibility::RetError ret = channelClient_->GetWindows(displayId, windows);
+    Accessibility::RetError ret = channelClient_->GetWindows(displayId, windows, systemApi);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     return ret;
 }
 
-RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &elementInfo,
-    const FocusMoveDirection direction, AccessibilityElementInfo &nextElementInfo)
+RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo& elementInfo,
+    const FocusMoveDirection direction, AccessibilityElementInfo& nextElementInfo, bool systemApi)
 {
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], direction[%{public}d]",
         elementInfo.GetWindowId(), elementInfo.GetAccessibilityId(), direction);
@@ -764,7 +765,7 @@ RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &el
         return RET_ERR_INVALID_PARAM;
     }
     RetError ret = channelClient_->FocusMoveSearch(elementInfo.GetWindowId(),
-        elementInfo.GetAccessibilityId(), direction, nextElementInfo);
+        elementInfo.GetAccessibilityId(), direction, nextElementInfo, systemApi);
     if (ret == RET_OK) {
         nextElementInfo.SetMainWindowId(elementInfo.GetMainWindowId());
     }
@@ -811,7 +812,7 @@ RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, c
 }
 
 RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &parent,
-    std::vector<AccessibilityElementInfo> &children)
+    std::vector<AccessibilityElementInfo> &children, bool systemApi)
 {
     HILOG_DEBUG();
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
@@ -827,10 +828,10 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
         std::vector<AccessibilityElementInfo> elementInfos {};
         if (parent.GetChildWindowId() > 0 && (parent.GetChildWindowId() != windowId)) {
             ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetChildWindowId(), ROOT_NONE_ID,
-            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
+            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), systemApi);
         } else if (parent.GetChildTreeId() > 0) {
             ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
-            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
+            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), systemApi);
         }
         if (ret != RET_OK) {
             HILOG_ERROR("Get element info from ace failed");
@@ -845,19 +846,19 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
     } else if (childIds.size() > 0 && parent.GetChildTreeId() > 0) {
         std::vector<AccessibilityElementInfo> elementInfos {};
         ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
-            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId());
+            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), systemApi);
         if (ret != RET_OK) {
             HILOG_ERROR("Get element info from ace failed");
             return ret;
         }
         children.emplace_back(elementInfos.front());
     }
-    ret = GetChildrenWork(windowId, childIds, children);
+    ret = GetChildrenWork(windowId, childIds, children, systemApi);
     return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetChildrenWork(const int32_t windowId, std::vector<int64_t> childIds,
-    std::vector<AccessibilityElementInfo> &children)
+    std::vector<AccessibilityElementInfo> &children, bool systemApi)
 {
     for (auto &childId : childIds) {
         HILOG_DEBUG("childId[%{public}" PRId64 "]", childId);
@@ -871,7 +872,7 @@ RetError AccessibleAbilityClientImpl::GetChildrenWork(const int32_t windowId, st
             children.emplace_back(child);
             continue;
         }
-        RetError ret = SearchElementInfoFromAce(windowId, childId, cacheMode_, child);
+        RetError ret = SearchElementInfoFromAce(windowId, childId, cacheMode_, child, systemApi);
         if (ret != RET_OK) {
             HILOG_ERROR("Get element info from ace failed");
             continue;
@@ -882,7 +883,7 @@ RetError AccessibleAbilityClientImpl::GetChildrenWork(const int32_t windowId, st
 }
 
 RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInfo &elementInfo,
-    const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
+    const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos, bool systemApi)
 {
     HILOG_DEBUG();
     if (!isConnected_) {
@@ -902,15 +903,15 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
 
     RetError ret = RET_ERR_FAILED;
     if (text != "") { // find element condition is null, so we will search all element info
-        ret = channelClient_->SearchElementInfosByText(windowId, elementId, text, elementInfos);
+        ret = channelClient_->SearchElementInfosByText(windowId, elementId, text, elementInfos, systemApi);
         if (elementInfos.empty()) {
             int32_t activeWindowId = 0;
-            serviceProxy_->GetActiveWindow(activeWindowId);
+            serviceProxy_->GetActiveWindow(activeWindowId, systemApi);
             ret = SearchElementInfoRecursiveByContent(activeWindowId, elementId, GET_SOURCE_MODE, elementInfos, text,
-                ROOT_TREE_ID);
+                ROOT_TREE_ID, systemApi);
         }
     } else {
-        ret = SearchElementInfoRecursiveByWinid(windowId, elementId, GET_SOURCE_MODE, elementInfos, treeId);
+        ret = SearchElementInfoRecursiveByWinid(windowId, elementId, GET_SOURCE_MODE, elementInfos, treeId, systemApi);
     }
     if (!elementInfos.empty()) {
         for (auto &element : elementInfos) {
@@ -923,7 +924,7 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
 
 RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByContent(const int32_t windowId,
     const int64_t elementId, uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos,
-    const std::string text, int32_t treeId, bool isFilter)
+    const std::string text, int32_t treeId, bool isFilter, bool systemApi)
 {
     HILOG_INFO("windowId %{public}d}, elementId %{public}" PRId64 "", windowId, elementId);
     if (windowId <= 0) {
@@ -932,7 +933,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByContent(const 
     std::vector<AccessibilityElementInfo> vecElementInfos = {};
     std::vector<AccessibilityElementInfo> vecTextElementInfos = {};
     RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, ROOT_NONE_ID,
-        mode, vecElementInfos, treeId, isFilter);
+        mode, vecElementInfos, treeId, isFilter, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("search element info failed. windowId %{public}d}", windowId);
         return ret;
@@ -947,7 +948,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByContent(const 
             info.GetChildWindowId());
         if (info.GetParentNodeId() == ROOT_PARENT_ELEMENT_ID) {
             ret = channelClient_->SearchElementInfosByText(windowId, info.GetAccessibilityId(),
-                text, vecTextElementInfos);
+                text, vecTextElementInfos, systemApi);
             if (ret != RET_OK) {
                 HILOG_ERROR("SearchElementInfosByText WindowId %{public}d} ret:%{public}d text:%{public}s",
                     windowId, ret, text.c_str());
@@ -961,10 +962,10 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByContent(const 
         }
         if (info.GetChildWindowId() > 0 && info.GetChildWindowId() != info.GetWindowId()) {
             ret = SearchElementInfoRecursiveByContent(info.GetChildWindowId(),
-                elementId, mode, elementInfos, text, info.GetChildTreeId(), isFilter);
+                elementId, mode, elementInfos, text, info.GetChildTreeId(), isFilter, systemApi);
         } else if (info.GetChildTreeId() > 0) {
             ret = SearchElementInfoRecursiveByContent(info.GetWindowId(),
-                elementId, mode, elementInfos, text, info.GetChildTreeId(), isFilter);
+                elementId, mode, elementInfos, text, info.GetChildTreeId(), isFilter, systemApi);
         }
         if (ret != RET_OK) {
             HILOG_ERROR("search element info failed.ChildWindowId %{public}d},ChildTreeId %{public}d},ret:%{public}d",
@@ -999,7 +1000,7 @@ RetError AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &ev
 }
 
 RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityElementInfo &child,
-    AccessibilityElementInfo &parent)
+    AccessibilityElementInfo &parent, bool systemApi)
 {
     HILOG_DEBUG();
     if (!isConnected_) {
@@ -1024,12 +1025,13 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     }
     RetError ret = RET_ERR_FAILED;
     if ((parentElementId == ROOT_PARENT_ELEMENT_ID) && (parentWindowId > 0)) {
-        serviceProxy_->GetRootParentId(windowId, treeId, parentElementId);
+        serviceProxy_->GetRootParentId(windowId, treeId, parentElementId, systemApi);
         if (parentElementId > 0) {
             treeId = (static_cast<uint64_t>(parentElementId) >> ELEMENT_MOVE_BIT);
             HILOG_DEBUG("find root parentId and search parentElementId [%{public}" PRId64 "] treeId[%{public}d]",
                 parentElementId, treeId);
-            ret = SearchElementInfoByElementId(child.GetParentWindowId(), parentElementId, cacheMode_, parent, treeId);
+            ret = SearchElementInfoByElementId(
+                child.GetParentWindowId(), parentElementId, cacheMode_, parent, treeId, systemApi);
             parent.SetMainWindowId(child.GetMainWindowId());
             return ret;
         } else {
@@ -1037,13 +1039,13 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
             return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
         }
     }
-    ret = SearchElementInfoByElementId(windowId, parentElementId, cacheMode_, parent, treeId);
+    ret = SearchElementInfoByElementId(windowId, parentElementId, cacheMode_, parent, treeId, systemApi);
     parent.SetMainWindowId(child.GetMainWindowId());
     return ret;
 }
 
 RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, const int32_t windowId,
-    AccessibilityElementInfo &targetElementInfo)
+    AccessibilityElementInfo &targetElementInfo, bool systemApi)
 {
     HILOG_DEBUG();
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
@@ -1067,7 +1069,7 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, co
 
     int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
     int32_t wid = 0;
-    serviceProxy_->GetActiveWindow(wid);
+    serviceProxy_->GetActiveWindow(wid, systemApi);
     wid = windowId > 0 ? windowId : wid;
     HILOG_DEBUG("window:[%{public}d],treeId:%{public}d,elementId:%{public}" PRId64 "",
         wid, treeId, elementId);
@@ -1076,7 +1078,8 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, co
         return RET_OK;
     }
 
-    Accessibility::RetError ret = SearchElementInfoByElementId(wid, elementId, cacheMode_, targetElementInfo, treeId);
+    Accessibility::RetError ret =
+        SearchElementInfoByElementId(wid, elementId, cacheMode_, targetElementInfo, treeId, systemApi);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1276,7 +1279,7 @@ void AccessibleAbilityClientImpl::SetCacheElementInfo(const int32_t windowId,
 }
 
 RetError AccessibleAbilityClientImpl::SearchElementInfoByElementId(const int32_t windowId, const int64_t elementId,
-    const uint32_t mode, AccessibilityElementInfo &info, int32_t treeId)
+    const uint32_t mode, AccessibilityElementInfo &info, int32_t treeId, bool systemApi)
 {
     if (channelClient_ == nullptr) {
         HILOG_ERROR("The channel is invalid.");
@@ -1286,7 +1289,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByElementId(const int32_t
     HILOG_INFO("windowId %{public}d}, elementId %{public}" PRId64 "", windowId, elementId);
     std::vector<AccessibilityElementInfo> elementInfos {};
     RetError ret = channelClient_->SearchElementInfosByAccessibilityId(
-        windowId, elementId, static_cast<int32_t>(mode), elementInfos, treeId);
+        windowId, elementId, static_cast<int32_t>(mode), elementInfos, treeId, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId failed. windowId[%{public}d] ", windowId);
         return ret;
@@ -1303,7 +1306,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByElementId(const int32_t
 }
 
 RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t windowId, const int64_t elementId,
-    const uint32_t mode, AccessibilityElementInfo &info)
+    const uint32_t mode, AccessibilityElementInfo &info, bool systemApi)
 {
     if (channelClient_ == nullptr) {
         HILOG_ERROR("The channel is invalid.");
@@ -1316,7 +1319,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t win
         treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
     }
     RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId,
-        static_cast<int32_t>(mode), elementInfos, treeId);
+        static_cast<int32_t>(mode), elementInfos, treeId, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("search element info failed. windowId[%{public}d] elementId[%{public}" PRId64 "] mode[%{public}d]",
             windowId, elementId, mode);
@@ -1332,7 +1335,8 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t win
     }
 
     HILOG_DEBUG("elementInfos from ace is empty find all element");
-    ret = SearchElementInfoRecursiveByWinid(windowId, ROOT_NONE_ID, GET_SOURCE_MODE, elementInfos, ROOT_TREE_ID);
+    ret = SearchElementInfoRecursiveByWinid(
+        windowId, ROOT_NONE_ID, GET_SOURCE_MODE, elementInfos, ROOT_TREE_ID, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("SearchElementInfoRecursiveByWinid failed. windowId[%{public}d]", windowId);
         return ret;
@@ -1507,7 +1511,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursive(int32_t windowI
 
 RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const int32_t windowId,
     const int64_t elementId, uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos,
-    int32_t treeId, bool isFilter, uint64_t parentIndex)
+    int32_t treeId, bool isFilter, uint64_t parentIndex, bool systemApi)
 {
     HILOG_INFO("windowId %{public}d}, elementId %{public}" PRId64 ", treeId %{public}d, mode %{public}d",
         windowId, elementId, treeId, mode);
@@ -1517,7 +1521,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
     }
     std::vector<AccessibilityElementInfo> vecElementInfos {};
     RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId,
-        mode, vecElementInfos, treeId, isFilter);
+        mode, vecElementInfos, treeId, isFilter, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("search element info failed. windowId %{public}d}", windowId);
         return ret;
@@ -1546,12 +1550,12 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
         if ((elementInfos[i].GetChildWindowId() > 0) &&
             (elementInfos[i].GetChildWindowId() != elementInfos[i].GetWindowId())) {
             ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetChildWindowId(),
-                ROOT_NONE_ID, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, i);
+                ROOT_NONE_ID, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, i, systemApi);
             HILOG_INFO("ChildWindowId %{public}d}. ret:%{public}d, GetChildTreeId %{public}d",
                 elementInfos[i].GetChildWindowId(), ret, elementInfos[i].GetChildTreeId());
         } else if (elementInfos[i].GetChildTreeId() > 0 && elementInfos[i].GetChildTreeId() != treeId) {
             ret = SearchElementInfoRecursiveByWinid(elementInfos[i].GetWindowId(),
-                ROOT_NONE_ID, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, i);
+                ROOT_NONE_ID, mode, elementInfos, elementInfos[i].GetChildTreeId(), isFilter, i, systemApi);
             HILOG_INFO("windowId %{public}d}.treeId:%{public}d. ret:%{public}d",
                 elementInfos[i].GetWindowId(), elementInfos[i].GetChildTreeId(), ret);
         }

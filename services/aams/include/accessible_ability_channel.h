@@ -31,7 +31,7 @@ public:
     ~AccessibleAbilityChannel() = default;
     RetError SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
-        const int32_t mode, bool isFilter = false) override;
+        const int32_t mode, bool isFilter = false, bool systemApi = false) override;
 
     RetError SearchDefaultFocusedByWindowId(const ElementBasicInfo elementBasicInfo,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
@@ -39,14 +39,15 @@ public:
 
     RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int64_t elementId,
         const std::string &text, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi = false) override;
 
     RetError FindFocusedElementInfo(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t focusType, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, bool systemApi = false) override;
 
     RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t direction,
-        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
+        bool systemApi = false) override;
 
     RetError EnableScreenCurtain(bool isEnable) override;
 
@@ -60,9 +61,10 @@ public:
 
     RetError GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override;
 
-    RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
+    RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi = false) override;
 
-    RetError GetWindowsByDisplayId(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) override;
+    RetError GetWindowsByDisplayId(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows,
+        bool systemApi = false) override;
 
     void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) override;
 
@@ -85,7 +87,8 @@ private:
     static RetError GetElementOperator(int32_t accountId, int32_t windowId, int32_t focusType,
         const std::string &clientName, sptr<IAccessibilityElementOperator> &elementOperator, const int32_t treeId);
     static bool CheckWinFromAwm(const int32_t windowId);
-    RetError GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const;
+    RetError GetWindows(
+        uint64_t displayId, std::vector<AccessibilityWindowInfo>& windows, bool systemApi = false) const;
     RetError TransmitActionToMmi(const int32_t action);
     static void SetKeyCodeToMmi(std::shared_ptr<MMI::KeyEvent>& keyEvent, const bool isPress,
         const int32_t keyCode);

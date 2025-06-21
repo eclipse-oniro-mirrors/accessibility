@@ -132,8 +132,9 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
         mode = PREFETCH_RECURSIVE_CHILDREN;
     }
     bool isFilter = data.ReadBool();
+    bool systemApi = data.ReadBool();
     RetError result = SearchElementInfoByAccessibilityId(elementBasicInfo, requestId, callback, mode,
-        isFilter);
+        isFilter, systemApi);
     HILOG_DEBUG("SearchElementInfoByAccessibilityId ret = %{public}d", result);
     reply.WriteInt32(result);
 
@@ -207,8 +208,8 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParc
         HILOG_ERROR("callback is nullptr.");
         return ERR_INVALID_VALUE;
     }
-
-    RetError result = SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, callback);
+    bool systemApi = data.ReadBool();
+    RetError result = SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, callback, systemApi);
     HILOG_DEBUG("SearchElementInfosByText ret = %{public}d", result);
     reply.WriteInt32(result);
 
@@ -235,8 +236,10 @@ ErrCode AccessibleAbilityChannelStub::HandleFindFocusedElementInfo(MessageParcel
         HILOG_ERROR("callback is nullptr.");
         return ERR_INVALID_VALUE;
     }
+    bool systemApi = data.ReadBool();
 
-    RetError result = FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, callback);
+    RetError result =
+        FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, callback, systemApi);
     HILOG_DEBUG("FindFocusedElementInfo ret = %{public}d", result);
     reply.WriteInt32(result);
     return NO_ERROR;
@@ -262,8 +265,9 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearch(MessageParcel &data,
         HILOG_ERROR("callback is nullptr.");
         return ERR_INVALID_VALUE;
     }
+    bool systemApi = data.ReadBool();
 
-    RetError result = FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, callback);
+    RetError result = FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, callback, systemApi);
     HILOG_DEBUG("FocusMoveSearch ret = %{public}d", result);
     reply.WriteInt32(result);
 
@@ -413,8 +417,9 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindow(MessageParcel &data, Messa
 ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
+    bool systemApi = data.ReadBool();
     std::vector<AccessibilityWindowInfo> windows;
-    RetError result = GetWindows(windows);
+    RetError result = GetWindows(windows, systemApi);
     if (!reply.WriteInt32(static_cast<int32_t>(windows.size()))) {
         HILOG_ERROR("windows.size() write error: %{public}zu, ", windows.size());
         return ERR_INVALID_VALUE;
@@ -439,8 +444,9 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId(MessageParcel 
     HILOG_DEBUG();
 
     uint64_t displayId = data.ReadUint64();
+    bool systemApi = data.ReadBool();
     std::vector<AccessibilityWindowInfo> windows;
-    RetError result = GetWindowsByDisplayId(displayId, windows);
+    RetError result = GetWindowsByDisplayId(displayId, windows, systemApi);
     if (!reply.WriteInt32(static_cast<int32_t>(windows.size()))) {
         HILOG_ERROR("windows.size() write error: %{public}zu, ", windows.size());
         return ERR_INVALID_VALUE;

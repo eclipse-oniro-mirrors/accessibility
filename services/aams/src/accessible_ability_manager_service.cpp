@@ -1777,6 +1777,15 @@ ErrCode AccessibleAbilityManagerService::GetActiveWindow(int32_t &windowId)
     return ERR_OK;
 }
 
+ErrCode AccessibleAbilityManagerService::GetActiveWindow(int32_t &windowId, bool systemApi)
+{
+    if (systemApi && !CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        HILOG_WARN("GetActiveWindow permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return GetActiveWindow(windowId);
+}
+
 bool AccessibleAbilityManagerService::Init()
 {
     HILOG_DEBUG();
@@ -3777,6 +3786,16 @@ ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32
     }
     connection->GetRootParentId(treeId, parentId);
     return ERR_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::GetRootParentId(
+    int32_t windowId, int32_t treeId, int64_t& parentId, bool systemApi)
+{
+    if (systemApi && !CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        HILOG_WARN("GetRootParentId permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return GetRootParentId(windowId, treeId, parentId);
 }
 
 int32_t AccessibleAbilityManagerService::GenerateRequestId()

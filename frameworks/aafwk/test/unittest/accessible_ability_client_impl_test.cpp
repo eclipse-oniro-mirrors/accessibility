@@ -724,7 +724,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetCursorPosition_001, TestSize.Level1
 HWTEST_F(AccessibleAbilityClientImplTest, ResetAAClient_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ResetAAClient_001 start";
-    EXPECT_CALL(*stub_, GetWindows(_)).Times(1).WillOnce(Return(RET_OK));
+    EXPECT_CALL(*stub_, GetWindows(_, _)).Times(1).WillOnce(Return(RET_OK));
     Connect();
     wptr<IRemoteObject> remote = nullptr;
     instance_->ResetAAClient(remote);
@@ -773,7 +773,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, OnKeyPressEvent_002, TestSize.Level1)
 HWTEST_F(AccessibleAbilityClientImplTest, GetWindows_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetWindows_001 start";
-    EXPECT_CALL(*stub_, GetWindows(_)).Times(1).WillOnce(Return(RET_OK));
+    EXPECT_CALL(*stub_, GetWindows(_, _)).Times(1).WillOnce(Return(RET_OK));
     Connect();
     std::vector<AccessibilityWindowInfo> infos;
     EXPECT_EQ(instance_->GetWindows(infos), RET_OK);
@@ -788,7 +788,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetWindows_001, TestSize.Level1)
 HWTEST_F(AccessibleAbilityClientImplTest, GetWindows_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetWindows_002 start";
-    EXPECT_CALL(*stub_, GetWindowsByDisplayId(_, _)).Times(1).WillOnce(Return(RET_OK));
+    EXPECT_CALL(*stub_, GetWindowsByDisplayId(_, _, _)).Times(1).WillOnce(Return(RET_OK));
     Connect();
     std::vector<AccessibilityWindowInfo> infos;
     EXPECT_EQ(instance_->GetWindows(0, infos), RET_OK);

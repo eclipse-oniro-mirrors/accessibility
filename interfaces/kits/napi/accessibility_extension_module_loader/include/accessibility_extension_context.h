@@ -39,7 +39,7 @@ public:
      * @param elementInfo The accessibilityElementInfo of focus.
      * @return Return RET_OK if obtains elementInfo successfully, otherwise refer to the RetError for the failure.
      */
-    RetError GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo);
+    RetError GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo, bool systemApi = false);
 
     /**
      * @brief Obtains elementInfo of focus.
@@ -63,7 +63,7 @@ public:
      * @param elementInfo The elementInfo of the accessible root node.
      * @return Return RET_OK if obtains elementInfo successfully, otherwise refer to the RetError for the failure.
      */
-    RetError GetRoot(AccessibilityElementInfo &elementInfo);
+    RetError GetRoot(AccessibilityElementInfo &elementInfo, bool systemApi = false);
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
@@ -72,14 +72,14 @@ public:
      * @return Return RET_OK if obtains elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     RetError GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
-        AccessibilityElementInfo &elementInfo);
+        AccessibilityElementInfo &elementInfo, bool systemApi = false);
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param windows The information of windows.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
-    RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows);
+    RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows, bool systemApi = false);
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
@@ -87,7 +87,8 @@ public:
      * @param windows The information of windows.
      * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
-    RetError GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows);
+    RetError GetWindows(
+        const uint64_t displayId, std::vector<AccessibilityWindowInfo>& windows, bool systemApi = false);
 
     /**
      * @brief Gets the next focused node in the specified direction of the currently focused node.
