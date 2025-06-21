@@ -130,13 +130,6 @@ namespace {
         {"CAPTION_STYLE", CAPTION_STYLE},
         {"SCREEN_MAGNIFICATION", SCREEN_MAGNIFICATION},
         {"MOUSE_AUTOCLICK", MOUSE_AUTOCLICK}
-
-        static std::map<std::string, std::string> ResourceMap = {
-            {MAGNIFICATION_SCALE, ""},
-            {MAGNIFICATION_DISABLE, ""},
-            {SWITCH_FULL_SCREEN, ""},
-            {SWITCH_WINDOW, ""}
-        };
     };
 
     static std::map<std::string, std::string> ResourceMap = {
