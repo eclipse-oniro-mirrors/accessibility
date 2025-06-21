@@ -517,7 +517,7 @@ enum AccessibilityAction : int32_t {
     CONTROL_CENTER = 19,
     COMMON = 20,
     SPAN_CLICK = 21
-}
+};
 
 #define RETURN_FALSE_IF_NULL(sptr)                     \
     do {                                               \
