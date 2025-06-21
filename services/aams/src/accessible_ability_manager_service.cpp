@@ -55,6 +55,7 @@
 #include "accessibility_permission.h"
 #include "mem_mgr_client.h"
 #include "mem_mgr_proxy.h"
+#include "magnification_def.h"
 
 using namespace std;
 using namespace OHOS::Security::AccessToken;
@@ -84,6 +85,8 @@ namespace {
     const std::string USER_SETUP_COMPLETED = "user_setup_complete";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
+    const std::string HAP_PATH = "/system/app/Settings/Settings.hap";
+    const std::string HAP_BUNDLE = "com.ohos.settings";
     constexpr int32_t INVALID_SHORTCUT_STATE = 2;
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
@@ -125,6 +128,13 @@ namespace {
         {"CAPTION_STYLE", CAPTION_STYLE},
         {"SCREEN_MAGNIFICATION", SCREEN_MAGNIFICATION},
         {"MOUSE_AUTOCLICK", MOUSE_AUTOCLICK}
+    };
+
+    static std::map<std::string, std::string> ResourceMap = {
+        {MAGNIFICATION_SCALE, ""},
+        {MAGNIFICATION_DISABLE, ""},
+        {SWITCH_FULL_SCREEN, ""},
+        {SWITCH_WINDOW, ""}
     };
 } // namespace
 
@@ -539,6 +549,7 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
 
     auto sendEventTask = [this, uiEvent]() {
         HILOG_DEBUG();
+        OnFocusedEvent(uiEvent);
         UpdateAccessibilityWindowStateByEvent(uiEvent);
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -3951,51 +3962,70 @@ std::shared_ptr<AccessibilityDatashareHelper> AccessibleAbilityManagerService::G
 bool AccessibleAbilityManagerService::GetMagnificationState()
 {
     HILOG_DEBUG();
-    bool magnificationState = false;
-    shared_ptr<AccessibilityDatashareHelper> helper = GetCurrentAcountDatashareHelper();
-    if (helper == nullptr) {
-        HILOG_ERROR("datashareHelper is nullptr");
-        return magnificationState;
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
     }
 
-    magnificationState =
-        static_cast<uint32_t>(helper->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false));
-    return magnificationState;
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return false;
+    }
+    return config->GetScreenMagnificationState();
 }
 
 uint32_t AccessibleAbilityManagerService::GetMagnificationType()
 {
     HILOG_DEBUG();
-    uint32_t magnificationType = FULL_SCREEN_MAGNIFICATION;
-    shared_ptr<AccessibilityDatashareHelper> helper = GetCurrentAcountDatashareHelper();
-    if (helper == nullptr) {
-        HILOG_ERROR("datashareHelper is nullptr");
-        return magnificationType;
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return 0;
     }
 
-    magnificationType =
-        static_cast<uint32_t>(helper->GetIntValue(SCREEN_MAGNIFICATION_TYPE, FULL_SCREEN_MAGNIFICATION));
-    return magnificationType;
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return 0;
+    }
+    return config->GetScreenMagnificationType();
 }
 
 uint32_t AccessibleAbilityManagerService::GetMagnificationMode()
 {
     HILOG_DEBUG();
-    uint32_t magnificationMode = FULL_SCREEN_MAGNIFICATION;
-    shared_ptr<AccessibilityDatashareHelper> helper = GetCurrentAcountDatashareHelper();
-    if (helper == nullptr) {
-        HILOG_ERROR("datashareHelper is nullptr");
-        return magnificationMode;
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return 0;
     }
 
-    magnificationMode =
-        static_cast<uint32_t>(helper->GetIntValue(SCREEN_MAGNIFICATION_MODE, FULL_SCREEN_MAGNIFICATION));
-    return magnificationMode;
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return 0;
+    }
+    return config->GetScreenMagnificationMode();
 }
 
 void AccessibleAbilityManagerService::SetMagnificationMode(int32_t mode)
 {
     HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+    config->SetScreenMagnificationMode(mode);
+
     shared_ptr<AccessibilityDatashareHelper> helper = GetCurrentAcountDatashareHelper();
     if (helper == nullptr) {
         HILOG_ERROR("datashareHelper is nullptr");
@@ -4008,20 +4038,36 @@ void AccessibleAbilityManagerService::SetMagnificationMode(int32_t mode)
 float AccessibleAbilityManagerService::GetMagnificationScale()
 {
     HILOG_DEBUG();
-    float magnificationScale = DEFAULT_SCALE;
-    shared_ptr<AccessibilityDatashareHelper> helper = GetCurrentAcountDatashareHelper();
-    if (helper == nullptr) {
-        HILOG_ERROR("datashareHelper is nullptr");
-        return magnificationScale;
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return DEFAULT_SCALE;
     }
 
-    magnificationScale = helper->GetFloatValue(SCREEN_MAGNIFICATION_SCALE, DEFAULT_SCALE);
-    return magnificationScale;
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return DEFAULT_SCALE;
+    }
+    return config->GetScreenMagnificationScale();
 }
 
 void AccessibleAbilityManagerService::SetMagnificationScale(float scale)
 {
     HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+    config->SetScreenMagnificationScale(scale);
+
     shared_ptr<AccessibilityDatashareHelper> helper = GetCurrentAcountDatashareHelper();
     if (helper == nullptr) {
         HILOG_ERROR("datashareHelper is nullptr");
@@ -4061,6 +4107,111 @@ int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const AccessibilitySec
     HILOG_INFO();
     int32_t result = AccessibilitySecurityComponentManager::SetEnhanceConfig(rawData);
     return result;
+}
+
+void AccessibleAbilityManagerService::OnFocusedEvent(const AccessibilityEventInfo &eventInfo)
+{
+    if (magnificationManager_ == nullptr) {
+        return;
+    }
+    if (!magnificationManager_->GetMagnificationState()) {
+        return;
+    }
+    if (eventInfo.GetEventType() != TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT) {
+        return;
+    }
+    Rect rect = eventInfo.GetElementInfo().GetRectInScreen();
+    int32_t centerX = static_cast<int32_t>((rect.GetLeftTopXScreenPostion() +
+        rect.GetRightBottomXScreenPostion()) / static_cast<float>(DIVISOR_TWO));
+    int32_t centerY = static_cast<int32_t>((rect.GetLeftTopYScreenPostion() +
+        rect.GetRightBottomYScreenPostion()) / static_cast<float>(DIVISOR_TWO));
+
+    magnificationManager_->FollowFocuseElement(centerX, centerY);
+}
+
+void AccessibleAbilityManagerService::InitResource()
+{
+    if (isResourceInit_) {
+        HILOG_WARN("already init.");
+        return;
+    }
+    std::shared_ptr<Global::Resource::ResourceManager> resourceManager(Global::Resource::CreateResourceManager());
+    if (resourceManager == nullptr) {
+        HILOG_ERROR("resourceManager is null");
+        return;
+    }
+    std::unique_ptr<Global::Resource::ResConfig> resConfig(Global::Resource::CreateResConfig());
+    if (resConfig == nullptr) {
+        HILOG_ERROR("resConfig is null");
+        return;
+    }
+    std::map<std::string, std::string> configs;
+    OHOS::Global::I18n::LocaleInfo locale(Global::I18n::LocaleConfig::GetSystemLocale(), configs);
+    std::string language = locale.GetLanguage();
+    std::string script = locale.GetScript();
+    std::string region = locale.GetRegion();
+ 
+    resConfig->SetLocaleInfo(language.c_str(), script.c_str(), region.c_str());
+    resourceManager->UpdateResConfig(*resConfig);
+    if (!resourceManager->AddResource(HAP_PATH.c_str())) {
+        HILOG_ERROR("AddResource failed");
+        return;
+    }
+    for (auto &iter : ResourceMap) {
+        std::string outValue;
+        resourceManager->GetStringByName(iter.first.c_str(), outValue);
+        ResourceMap[iter.first] = outValue;
+    }
+    isResourceInit_ = true;
+}
+
+std::string &AccessibleAbilityManagerService::GetResource(const std::string &resourceName)
+{
+    return ResourceMap[resourceName];
+}
+
+ErrCode AccessibleAbilityManagerService::AnnouncedForAccessibility(const std::string &announcedText)
+{
+    HILOG_DEBUG();
+    AccessibilityEventInfo event(TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY);
+    event.SetBundleName(HAP_BUNDLE);
+    event.SetTriggerAction(ACCESSIBILITY_ACTION_COMMON);
+    event.SetTextAnnouncedForAccessibility(announcedText);
+    AccessibilityEventInfoParcel eventParcel(event);
+    return SendEvent(eventParcel, 0);
+}
+
+void AccessibleAbilityManagerService::AnnouncedForMagnification(AnnounceType announceType)
+{
+    std::string resource = "";
+    if (announceType == AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE) {
+        resource = GetResource(MAGNIFICATION_SCALE).c_str();
+        std::ostringstream oss;
+        float scale = GetMagnificationScale();
+        oss << std::fixed << std::setprecision(1) << scale;
+        std::string scaleStr = oss.str();
+        std::string announceStr = Utils::FormatString(resource, scaleStr);
+        AnnouncedForAccessibility(announceStr);
+        return;
+    }
+
+    if (announceType == AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE) {
+        resource = GetResource(MAGNIFICATION_DISABLE).c_str();
+        AnnouncedForAccessibility(resource);
+        return;
+    }
+
+    if (announceType == AnnounceType::ANNOUNCE_SWITCH_FULL_SCREEN) {
+        resource = GetResource(SWITCH_FULL_SCREEN).c_str();
+        AnnouncedForAccessibility(resource);
+        return;
+    }
+
+    if (announceType == AnnounceType::ANNOUNCE_SWITCH_WINDOW) {
+        resource = GetResource(SWITCH_WINDOW).c_str();
+        AnnouncedForAccessibility(resource);
+        return;
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

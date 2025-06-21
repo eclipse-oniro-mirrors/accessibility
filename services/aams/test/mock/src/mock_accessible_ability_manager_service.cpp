@@ -742,5 +742,27 @@ int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const AccessibilitySec
 {
     return 0;
 }
+
+ErrCode AccessibleAbilityManagerService::AnnouncedForAccessibility(const std::string &announcedText)
+{
+    (void)announcedText;
+    return RET_OK;
+}
+
+void AccessibleAbilityManagerService::InitResource()
+{
+}
+
+std::string &GetResource(const std::string &resourceName)
+{
+    (void)resourceName;
+    std::string resource = "";
+    return resource;
+}
+
+void AccessibleAbilityManagerService::AnnouncedForMagnification(AnnounceType announceType)
+{
+    (void)announceType;
+}
 } // namespace Accessibility
 } // namespace OHOS

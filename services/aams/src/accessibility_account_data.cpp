@@ -556,6 +556,9 @@ void AccessibilityAccountData::SetScreenReaderState(const std::string &name, con
     } else {
         screenReaderState_ = (state == "1");
     }
+    if (screenReaderState_) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().InitResource();
+    }
 }
 
 bool AccessibilityAccountData::GetScreenReaderState()

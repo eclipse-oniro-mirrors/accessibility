@@ -24,13 +24,20 @@ struct PointerPos {
     int32_t posY;
 };
 
+enum class AnnounceType : uint32_t {
+    ANNOUNCE_MAGNIFICATION_SCALE,
+    ANNOUNCE_MAGNIFICATION_DISABLE,
+    ANNOUNCE_SWITCH_FULL_SCREEN,
+    ANNOUNCE_SWITCH_WINDOW
+};
+
 constexpr float EPS = 1e-6;
 constexpr float DEFAULT_SCALE = 2.0f;
 constexpr float MAX_SCALE = 8.0f;
 constexpr uint8_t BG_ALPHA = 254;
 constexpr float CORNER_RADIUS = 75.0f;
 constexpr float MENU_CORNER_RADIUS = 25.0f;
-constexpr float PEN_WIDTH = 10.0f;
+constexpr float PEN_WIDTH = 15.0f;
 constexpr int32_t DIVISOR_TWO = 2;
 constexpr int32_t ROUND_RECT_MARGIN = 5;
 constexpr int32_t ANCHOR_OFFSET = 20;
@@ -52,6 +59,10 @@ constexpr uint32_t LEFT_BACK_GESTURE = 1; // Swipe from the left side of the scr
 constexpr uint32_t RIGHT_BACK_GESTURE = 2; // Swipe from the right side of the screen inward
 constexpr uint32_t BOTTOM_BACK_GESTURE = 3; // Swipe from the bottom side of the screen inward
 
+const std::string MAGNIFICATION_SCALE = "magnification_scale";
+const std::string MAGNIFICATION_DISABLE = "magnification_disabled";
+const std::string SWITCH_FULL_SCREEN = "switch_full_screen_magnification";
+const std::string SWITCH_WINDOW = "switch_window_magnification";
 } // namespace Accessibility
 } // namespace OHOS
 #endif // MAGNIFICATION_MANAGER_DEF_H

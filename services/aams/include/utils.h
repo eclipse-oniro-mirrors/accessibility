@@ -78,7 +78,7 @@ public:
     static bool IsWideFold();
     static bool IsBigFold();
     static bool IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect);
-
+    static std::string FormatString(const std::string& format, const std::string& value);
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);
 };

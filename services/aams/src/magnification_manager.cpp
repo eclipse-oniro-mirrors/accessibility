@@ -123,6 +123,8 @@ void MagnificationManager::OnModeChanged(uint32_t mode)
         }
         if (windowMagnificationManager_ != nullptr && needShow) {
             windowMagnificationManager_->ShowWindowMagnification();
+            Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+                AnnounceType::ANNOUNCE_SWITCH_WINDOW);
         }
     } else {
         HILOG_INFO("disable window magnification.");
@@ -132,6 +134,8 @@ void MagnificationManager::OnModeChanged(uint32_t mode)
         }
         if (fullScreenMagnificationManager_ != nullptr && needShow) {
             fullScreenMagnificationManager_->ShowMagnification();
+            Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+                AnnounceType::ANNOUNCE_SWITCH_FULL_SCREEN);
         }
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetMagnificationMode(static_cast<int32_t>(mode));
@@ -148,10 +152,12 @@ void MagnificationManager::DisableMagnification()
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
     Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
     if (windowMagnificationManager_ != nullptr && windowMagnificationManager_->IsMagnificationWindowShow()) {
+        HILOG_INFO("disable window");
         windowMagnificationManager_->DisableWindowMagnification();
         interceptor->DisableGesture(WINDOW_MAGNIFICATION);
     }
     if (fullScreenMagnificationManager_ != nullptr && fullScreenMagnificationManager_->IsMagnificationWindowShow()) {
+        HILOG_INFO("disable full");
         fullScreenMagnificationManager_->DisableMagnification();
         interceptor->DisableGesture(FULL_SCREEN_MAGNIFICATION);
     }
@@ -204,6 +210,22 @@ void MagnificationManager::RefreshWindowParam()
     }
 
     Singleton<MagnificationMenuManager>::GetInstance().RefreshWindowParam();
+}
+
+void MagnificationManager::FollowFocuseElement(int32_t centerX, int32_t centerY)
+{
+    HILOG_INFO();
+    if (currentMode_ == WINDOW_MAGNIFICATION && windowMagnificationManager_ != nullptr) {
+        if (windowMagnificationManager_->IsMagnificationWindowShow()) {
+            windowMagnificationManager_->FollowFocuseElement(centerX, centerY);
+        }
+    }
+
+    if (currentMode_ == FULL_SCREEN_MAGNIFICATION && fullScreenMagnificationManager_ != nullptr) {
+        if (fullScreenMagnificationManager_->IsMagnificationWindowShow()) {
+            fullScreenMagnificationManager_->FollowFocuseElement(centerX, centerY);
+        }
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -65,6 +65,7 @@ public:
     void FixSourceCenter(bool needFix);
     void PersistScale();
     void RefreshWindowParam();
+    void FollowFocuseElement(int32_t centerX, int32_t centerY);
 
 private:
     PointerPos ConvertCenterToTopLeft(int32_t centerX, int32_t centerY);
