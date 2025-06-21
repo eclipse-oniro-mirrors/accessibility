@@ -447,6 +447,14 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
 {
     HILOG_DEBUG("ExecuteAction elementId:%{public}" PRId64 " winId:%{public}d, action:%{public}d, requestId:%{public}d",
         elementId, accessibilityWindowId, action, requestId);
+    if (actionArguments.find("sysapi_check_perm") != actionArguments.end()) {
+        if (!Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
+            OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+            HILOG_WARN("system api permission denied.");
+            return RET_ERR_NO_PERMISSION;
+        }
+    }
+
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (eventHandler_ == nullptr || callback == nullptr) {
         HILOG_ERROR("eventHandler_ exist: %{public}d, callback exist: %{public}d.", eventHandler_ != nullptr,
@@ -464,6 +472,13 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         callback->SetExecuteActionResult(true, requestId);
         return RET_OK;
     }
+    return ExecuteActionAsync(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
+}
+
+RetError AccessibleAbilityChannel::ExecuteActionAsync(const int32_t accessibilityWindowId, const int64_t elementId,
+    const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
     SetFocusWindowIdAndElementId(accessibilityWindowId, elementId, action);
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     ffrt::future syncFuture = syncPromise->get_future();

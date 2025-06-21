@@ -103,6 +103,7 @@ public:
     static napi_value FindElement(napi_env env, napi_callback_info info);
     static napi_value ErrorOperation(NAccessibilityElementData *callbackInfo);
     static napi_value GetCursorPosition(napi_env env, napi_callback_info info);
+    static napi_value ExecuteAction(napi_env env, napi_callback_info info);
 
     // Element info
     static void GetElementInfoComponentId(NAccessibilityElementData *callbackInfo, napi_value &value);
@@ -224,9 +225,9 @@ private:
     static void FindElementByText(NAccessibilityElementData *callbackInfo);
     static void GetElement(NAccessibilityElementData *callbackInfo, napi_value &value);
     static napi_value PerformActionAsync(napi_env env, size_t argc, napi_value* argv,
-        std::string actionName, AccessibilityElement* accessibilityElement);
+        std::string actionName, AccessibilityElement* accessibilityElement, bool checkPerm = false);
     static napi_value PerformActionConstructPromise(napi_env env, size_t argc, napi_value* argv,
-        NAccessibilityElementData* callbackInfo, std::string actionName);
+        NAccessibilityElementData* callbackInfo, std::string actionName, bool checkPerm = false);
     static napi_value FindElementAsync(napi_env env, size_t argc, napi_value* argv,
         NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement);
     static NAccessibilityErrorCode GetAttribute(napi_env env, size_t argc, napi_value* argv,
