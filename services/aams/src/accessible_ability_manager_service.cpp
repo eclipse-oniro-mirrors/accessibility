@@ -55,6 +55,7 @@
 #include "accessibility_permission.h"
 #include "mem_mgr_client.h"
 #include "mem_mgr_proxy.h"
+#include "magnification_def.h"
 
 using namespace std;
 using namespace OHOS::Security::AccessToken;
@@ -84,6 +85,8 @@ namespace {
     const std::string USER_SETUP_COMPLETED = "user_setup_complete";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
+    const std::string HAP_PATH = "/system/app/Settings/Settings.hap";
+    const std::string HAP_BUNDLE = "com.ohos.settings";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     constexpr int32_t INVALID_SHORTCUT_STATE = 2;
