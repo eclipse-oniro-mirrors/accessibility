@@ -75,6 +75,7 @@ private:
     void ClearCacheEventsAndMsg();
     void RecognizeInReadyState(MMI::PointerEvent &event);
     void RecognizeInZoomStateDownEvent(MMI::PointerEvent &event);
+    void RecognizeInZoomStateMoveEvent(MMI::PointerEvent &event);
     void RecognizeInZoomState(MMI::PointerEvent &event);
     void RecognizeInSlidingState(MMI::PointerEvent &event);
     void RecognizeInMenuSlidingState(MMI::PointerEvent &event);
@@ -89,7 +90,7 @@ private:
     bool IsLongPress();
     bool IsKnuckles(MMI::PointerEvent &event);
     bool IsTripleTaps();
-    void OnTripleTaps(MMI::PointerEvent &event);
+    void OnTripleTap(MMI::PointerEvent &event);
     int64_t CalcIntervalTime(std::shared_ptr<MMI::PointerEvent> firstEvent,
         std::shared_ptr<MMI::PointerEvent> secondEvent);
     float CalcSeparationDistance(std::shared_ptr<MMI::PointerEvent> firstEvent,

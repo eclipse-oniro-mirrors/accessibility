@@ -331,6 +331,10 @@ public:
     std::shared_ptr<MagnificationManager> GetMagnificationMgr();
     std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
     std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
+    ErrCode AnnouncedForAccessibility(const std::string &announcedText);
+    void InitResource();
+    std::string &GetResource(const std::string &resourceName);
+    void AnnouncedForMagnification(AnnounceType announceType);
 
 private:
     void StopCallbackWait(int32_t windowId);
@@ -462,6 +466,7 @@ private:
     int32_t ApplyTreeId();
     void RecycleTreeId(int32_t treeId);
     std::shared_ptr<AccessibilityDatashareHelper> GetCurrentAcountDatashareHelper();
+    void OnFocusedEvent(const AccessibilityEventInfo &eventInfo);
 
     bool isReady_ = false;
     bool isPublished_ = false;
@@ -520,6 +525,7 @@ private:
     bool isSubscribeMSDPCallback_ = false;
     ffrt::mutex subscribeMSDPMutex_;
     std::shared_ptr<MagnificationManager> magnificationManager_ = nullptr;
+    bool isResourceInit_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

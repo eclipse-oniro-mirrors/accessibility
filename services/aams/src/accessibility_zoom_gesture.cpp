@@ -229,6 +229,7 @@ void AccessibilityZoomGesture::SendCacheEventsToNext()
             }
             pointer.SetDisplayX(coordinates.posX);
             pointer.SetDisplayY(coordinates.posY);
+            pointer.SetTargetWindowId(-1);
             pointerEvent->RemovePointerItem(pointerEvent->GetPointerId());
             pointerEvent->AddPointerItem(pointer);
             pointerEvent->SetZOrder(10000); // 10000 is magnification window zorder
@@ -291,7 +292,7 @@ void AccessibilityZoomGesture::RecognizeInReadyState(MMI::PointerEvent &event)
     }
 
     if (isTripleTaps) {
-        OnTripleTaps(event);
+        OnTripleTap(event);
     }
 }
 
@@ -344,6 +345,23 @@ void AccessibilityZoomGesture::RecognizeInZoomStateDownEvent(MMI::PointerEvent &
     }
 }
 
+void AccessibilityZoomGesture::RecognizeInZoomStateMoveEvent(MMI::PointerEvent &event)
+{
+    int32_t action = event.GetPointerAction();
+    std::vector<int32_t> pointerIdList = event.GetPointerIds();
+    size_t pointerCount = pointerIdList.size();
+    HILOG_DEBUG();
+    if ((pointerCount == POINTER_COUNT_1) && !IsLongPress() && IsMoveValid()) {
+        HILOG_DEBUG("move valid.");
+    } else if (isTapOnMenu_ && (!IsMoveValid() || IsLongPress())) {
+        TransferState(MENU_SLIDING_STATE);
+        ClearCacheEventsAndMsg();
+    } else {
+        SendCacheEventsToNext();
+        HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
+    }
+}
+
 void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
@@ -374,15 +392,7 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_MOVE:
-            if ((pointerCount == POINTER_COUNT_1) && !IsLongPress() && IsMoveValid()) {
-                HILOG_DEBUG("move valid.");
-            } else if (isTapOnMenu_ && (!IsMoveValid() || IsLongPress())) {
-                TransferState(MENU_SLIDING_STATE);
-                ClearCacheEventsAndMsg();
-            } else {
-                SendCacheEventsToNext();
-                HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
-            }
+            RecognizeInZoomStateMoveEvent(event);
             break;
         case MMI::PointerEvent::POINTER_ACTION_CANCEL:
             SendCacheEventsToNext();
@@ -393,7 +403,7 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
     }
 
     if (isTripleTaps) {
-        OnTripleTaps(event);
+        OnTripleTap(event);
     }
 }
 
@@ -789,9 +799,9 @@ float AccessibilityZoomGesture::CalcSeparationDistance(std::shared_ptr<MMI::Poin
     return distance;
 }
 
-void AccessibilityZoomGesture::OnTripleTaps(MMI::PointerEvent &event)
+void AccessibilityZoomGesture::OnTripleTap(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG("state_ is %{public}d.", state_);
+    HILOG_INFO("state_ is %{public}d.", state_);
 
     switch (state_) {
         case READY_STATE: {
@@ -883,18 +893,26 @@ void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
         return;
     }
     fullScreenManager_->EnableMagnification(anchorX, anchorY);
-    Singleton<MagnificationMenuManager>::GetInstance().ShowMenuWindow(1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+        AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
+    Singleton<MagnificationMenuManager>::GetInstance().ShowMenuWindow(
+        FULL_SCREEN_MAGNIFICATION);
 }
 
 void AccessibilityZoomGesture::OffZoom()
 {
     HILOG_INFO();
-    Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
     if (fullScreenManager_ == nullptr) {
         HILOG_ERROR("fullScreenManager_ is nullptr.");
         return;
     }
-    fullScreenManager_->DisableMagnification();
+    if (fullScreenManager_->IsMagnificationWindowShow()) {
+        HILOG_INFO("full magnification disable.");
+        fullScreenManager_->DisableMagnification();
+        Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+            AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
+    }
 }
 
 void AccessibilityZoomGesture::OnScroll(float offsetX, float offsetY)
@@ -934,6 +952,7 @@ void AccessibilityZoomGesture::DestroyEvents()
 {
     HILOG_INFO();
     Clear();
+    OffZoom();
     EventTransmission::DestroyEvents();
 }
 

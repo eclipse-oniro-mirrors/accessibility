@@ -73,6 +73,20 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t 
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetScreenMagnificationMode(const uint32_t mode)
+{
+    HILOG_DEBUG("start.");
+    screenMagnificationMode_ = mode;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetScreenMagnificationScale(const float scale)
+{
+    HILOG_DEBUG("start.");
+    screenMagnificationScale_ = scale;
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
 {
     HILOG_DEBUG("start.");
@@ -222,6 +236,24 @@ bool AccessibilitySettingsConfig::GetScreenMagnificationState() const
 {
     HILOG_DEBUG("start.");
     return isScreenMagnificationState_;
+}
+
+uint32_t AccessibilitySettingsConfig::GetScreenMagnificationType() const
+{
+    HILOG_DEBUG("start.");
+    return screenMagnificationType_;
+}
+
+uint32_t AccessibilitySettingsConfig::GetScreenMagnificationMode() const
+{
+    HILOG_DEBUG("start.");
+    return screenMagnificationMode_;
+}
+
+float AccessibilitySettingsConfig::GetScreenMagnificationScale() const
+{
+    HILOG_DEBUG("start.");
+    return screenMagnificationScale_;
 }
 
 bool AccessibilitySettingsConfig::GetShortKeyState() const

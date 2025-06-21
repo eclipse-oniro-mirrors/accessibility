@@ -45,6 +45,8 @@ public:
     RetError SetCaptionState(const bool state);
     RetError SetScreenMagnificationState(const bool state);
     RetError SetScreenMagnificationType(const uint32_t type);
+    RetError SetScreenMagnificationMode(const uint32_t mode);
+    RetError SetScreenMagnificationScale(const float scale);
     RetError SetShortKeyState(const bool state);
     RetError SetShortKeyOnLockScreenState(const bool state);
     RetError SetShortKeyTimeout(const int32_t time);
@@ -97,6 +99,8 @@ public:
     bool GetIgnoreRepeatClickState() const;
     uint32_t GetIgnoreRepeatClickTime() const;
     uint32_t GetScreenMagnificationType() const;
+    uint32_t GetScreenMagnificationMode() const;
+    float GetScreenMagnificationScale() const;
 
     RetError SetEnabledAccessibilityServices(const std::vector<std::string> &services);
     const std::vector<std::string> GetEnabledAccessibilityServices();
@@ -134,6 +138,8 @@ private:
     bool filteringKeyEvents_ = false;
     bool isScreenMagnificationState_ = false;
     uint32_t screenMagnificationType_ = 0;
+    uint32_t screenMagnificationMode_ = 0;
+    float screenMagnificationScale_ = 2.0f;
     bool isCaptionState_ = false;
     AccessibilityConfig::CaptionProperty captionProperty_;
     bool isMouseKeyState_ = false;

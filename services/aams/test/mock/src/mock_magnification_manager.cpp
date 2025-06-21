@@ -60,5 +60,11 @@ bool MagnificationManager::GetMagnificationState()
 void MagnificationManager::RefreshWindowParam()
 {
 }
+
+void MagnificationManager::FollowFocuseElement(int32_t centerX, int32_t centerY)
+{
+    (void)centerX;
+    (void)centerY;
+}
 } // namespace Accessibility
 } // namespace OHOS
