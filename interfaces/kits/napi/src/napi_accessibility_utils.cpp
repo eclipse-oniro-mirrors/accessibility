@@ -1013,8 +1013,6 @@ void ConvertActionArgsJSToNAPI(
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     std::string str = "";
-    std::map<std::string, std::string> scrollValueMap = { {"halfScreen", HALF_VALUE}, {"fullScreen", FULL_VALUE} };
-    std::string scrollValue = FULL_VALUE;
     bool seleFlag = false;
     switch (action) {
         case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
@@ -1073,33 +1071,45 @@ void ConvertActionArgsJSToNAPI(
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
-            napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
-            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-            if (hasProperty) {
-                if (scrollValueMap.find(str) != scrollValueMap.end()) {
-                    scrollValue = scrollValueMap.find(str)->second;
-                    HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
-                } else {
-                    HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
-                }
-                args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
-            }
+            SetScrollTypeParam(env, object, args);
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
-            napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
-            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-            if (hasProperty) {
-                if (scrollValueMap.find(str) != scrollValueMap.end()) {
-                    scrollValue = scrollValueMap.find(str)->second;
-                    HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
-                } else {
-                    HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
-                }
-                args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
-            }
+            SetScrollTypeParam(env, object, args);
             break;
         default:
             break;
+    }
+}
+
+void SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, std::string>& args)
+{
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
+    std::string str = "";
+    std::map<std::string, std::string> scrollValueMap = { {"halfScreen", HALF_VALUE}, {"fullScreen", FULL_VALUE} };
+    std::string scrollValue = FULL_VALUE;
+
+    napi_create_string_utf8(env, "scrolltype", NAPI_AUTO_LENGTH, &propertyNameValue);
+    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (!hasProperty) {
+        napi_create_string_utf8(env, "scrollType", NAPI_AUTO_LENGTH, &propertyNameValue);
+        str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    }
+    if (hasProperty) {
+        if (scrollValueMap.find(str) != scrollValueMap.end()) {
+            scrollValue = scrollValueMap.find(str)->second;
+            HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
+        } else {
+            HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
+        }
+        args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
+    }
+}
+
+void SetPermCheckFlagForAction(bool checkPerm, std::map<std::string, std::string>& args)
+{
+    if (checkPerm) {
+        args.insert(std::pair<std::string, std::string>("sysapi_check_perm", "1"));
     }
 }
 
