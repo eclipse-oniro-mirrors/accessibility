@@ -379,7 +379,7 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEvent, napi_val
         HILOG_ERROR("failed to wrap JS object");
     }
     HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
-    napi_set_named_property(env, objEventInfo, "target", nTargetObject)
+    napi_set_named_property(env, objEventInfo, "target", nTargetObject);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEvent, "target", nTargetObject));
 }
 
