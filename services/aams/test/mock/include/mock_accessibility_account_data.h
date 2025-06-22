@@ -82,6 +82,10 @@ public:
     MOCK_METHOD1(GetWaitDisConnectAbility, sptr<AccessibleAbilityConnection>(const std::string &uri));
     MOCK_METHOD1(AddWaitDisconnectAbility, void(sptr<AccessibleAbilityConnection>& connection));
     MOCK_METHOD1(RemoveWaitDisconnectAbility, void(const std::string &uri));
+    MOCK_METHOD0(UpdateNeedEvents, std::vector<uint32_t>());
+    MOCK_METHOD2(AddNeedEvent, void(std::string &name, std::vector<uint32_t> needEvents));
+    MOCK_METHOD1(RemoveNeedEvent, void(const std::string &name));
+    MOCK_METHOD0(GetNeedEvents, std::vector<uint32_t>());
 };
 } // namespace Accessibility
 } // namespace OHOS

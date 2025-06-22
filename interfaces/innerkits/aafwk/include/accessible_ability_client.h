@@ -396,6 +396,13 @@ public:
      * @return Return RET_OK if notifyDisconnect successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError NotifyDisconnect() = 0;
+
+    /**
+     * @brief Config need events.
+     * @param needEvents The need events.
+     * @return Return RET_OK if config need events successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError ConfigureEvents(std::vector<uint32_t> needEvents) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

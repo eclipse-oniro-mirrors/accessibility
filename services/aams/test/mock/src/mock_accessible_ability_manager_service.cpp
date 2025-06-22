@@ -764,5 +764,15 @@ void AccessibleAbilityManagerService::AnnouncedForMagnification(AnnounceType ann
 {
     (void)announceType;
 }
+
+ErrCode AccessibleAbilityManagerService::SearchNeedEvents(std::vector<uint32_t> &needEvents)
+{
+    return NO_ERROR;
+}
+
+RetError AccessibleAbilityManagerService::UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents)
+{
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

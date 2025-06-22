@@ -513,5 +513,15 @@ RetError AccessibleAbilityChannelClient::NotifyDisconnect()
     }
     return proxy_->NotifyDisconnect();
 }
+
+RetError AccessibleAbilityChannelClient::ConfigureEvents(const std::vector<uint32_t> needEvents)
+{
+    HILOG_INFO("uitest config need events size is %{public}u", needEvents.size());
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("ConfigureEvents Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return RET_ERR_SAMGR;
+    }
+    return proxy_->ConfigureEvents(needEvents);
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -333,6 +333,15 @@ public:
     {
         return 0;
     }
+    ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override
+    {
+        return NO_ERROR;
+    }
+
+    RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents)
+    {
+        return RET_OK;
+    }
 };
 
 uint32_t GetU32Data(const uint8_t *ptr)

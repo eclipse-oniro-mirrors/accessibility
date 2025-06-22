@@ -212,6 +212,12 @@ public:
      */
     virtual RetError NotifyDisconnect() override;
 
+    /**
+     * @brief Configure events.
+     * @return Return RET_OK if ConfigureEvents successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override;
+
 private:
     /**
      * @brief Write the descriptor of IPC.

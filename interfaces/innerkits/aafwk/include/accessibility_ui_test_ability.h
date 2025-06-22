@@ -251,6 +251,13 @@ public:
      */
     virtual RetError SearchElementInfoByAccessibilityId(const int32_t windowId, const int64_t elementId,
         const uint32_t mode, AccessibilityElementInfo &info, bool isFilter = false) = 0;
+
+    /**
+     * @brief Config need events.
+     * @param needEvents The need events.
+     * @return Return RET_OK if config need events successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError ConfigureEvents(std::vector<uint32_t> needEvents) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

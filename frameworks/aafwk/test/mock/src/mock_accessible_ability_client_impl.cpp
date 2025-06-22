@@ -375,5 +375,11 @@ RetError AccessibleAbilityClientImpl::NotifyDisconnect()
     HILOG_DEBUG();
     return RET_OK;
 }
+
+RetError AccessibleAbilityClientImpl::ConfigureEvents(const std::vector<uint32_t> needEvents)
+{
+    HILOG_DEBUG();
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

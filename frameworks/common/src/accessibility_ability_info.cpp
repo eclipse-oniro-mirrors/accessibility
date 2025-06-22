@@ -33,6 +33,7 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AccessibilityAbilityIni
     abilityTypes_ = initParams.abilityTypes;
     isImportant_ = initParams.isImportant;
     needHide_ = initParams.needHide;
+    eventConfigure_ = initParams.eventConfigure;
 
     HILOG_DEBUG("ability name:[%{public}s], bundle name:[%{public}s], module name:[%{public}s],"
         "capabilities:[%{public}d], rationale:[%{public}s], settingsAbility:[%{public}s],"
@@ -129,6 +130,12 @@ const std::string &AccessibilityAbilityInfo::GetLabel() const
 {
     HILOG_DEBUG();
     return label_;
+}
+
+void AccessibilityAbilityInfo::GetEventConfigure(std::vector<uint32_t> &needEvents)
+{
+    HILOG_DEBUG();
+    needEvents = eventConfigure_;
 }
 } // namespace Accessibility
 } // namespace OHOS

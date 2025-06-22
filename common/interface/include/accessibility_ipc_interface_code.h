@@ -60,6 +60,7 @@ namespace Accessibility {
         SEARCH_DEFAULTFOCUSED_BY_WINDOW_ID,
         HOLD_RUNNING_LOCK,
         UNHOLD_RUNNING_LOCK,
+        CONFIGURE_EVENTS,
         
         INIT = 500,
         DISCONNECT,

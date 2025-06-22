@@ -122,6 +122,8 @@ public:
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t& parentId) override;
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t& parentId, bool systemApi) override;
     int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override;
+    ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
+    RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);
 
 private:
     std::shared_ptr<AppExecFwk::EventRunner> runner_;

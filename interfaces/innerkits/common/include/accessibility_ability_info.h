@@ -33,6 +33,7 @@ struct AccessibilityAbilityInitParams {
     uint32_t abilityTypes = ACCESSIBILITY_ABILITY_TYPE_INVALID;
     bool isImportant = false;
     bool needHide = false;
+    std::vector<uint32_t> eventConfigure;
 };
 
 class AccessibilityAbilityInfo {
@@ -188,6 +189,13 @@ public:
      */
     const std::string &GetLabel() const;
 
+    /**
+     * @brief Get event configure.
+     * @param needEvents
+     * @return Return needEvents.
+     */
+    void GetEventConfigure(std::vector<uint32_t> &needEvents);
+
 protected:
     std::string bundleName_;
     std::string moduleName_;
@@ -206,6 +214,7 @@ protected:
     std::vector<std::string> targetBundleNames_;
     bool isImportant_ = false;
     bool needHide_ = false;
+    std::vector<uint32_t> eventConfigure_ = { TYPES_ALL_MASK };
 };
 } // namespace Accessibility
 } // namespace OHOS

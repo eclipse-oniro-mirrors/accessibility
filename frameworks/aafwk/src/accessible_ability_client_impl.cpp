@@ -2024,5 +2024,32 @@ RetError AccessibleAbilityClientImpl::NotifyDisconnect()
 
     return RET_OK;
 }
+
+RetError AccessibleAbilityClientImpl::ConfigureEvents(const std::vector<uint32_t> needEvents)
+{
+    HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    if (CheckServiceProxy() == false) {
+        HILOG_ERROR("failed to connect to aams.");
+        return RET_ERR_SAMGR;
+    }
+
+    if (!channelClient_) {
+        HILOG_ERROR("channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    RetError ret = channelClient_->ConfigureEvents(needEvents);
+    if (ret != RET_OK) {
+        HILOG_ERROR("config need events failed");
+        return ret;
+    }
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

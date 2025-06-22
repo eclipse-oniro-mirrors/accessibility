@@ -300,5 +300,11 @@ RetError AccessibilityUITestAbilityImpl::SearchElementInfoByAccessibilityId(cons
     return AccessibleAbilityClient::GetInstance()->SearchElementInfoByAccessibilityId(windowId,
         elementId, mode, info, isFilter);
 }
+
+RetError AccessibilityUITestAbilityImpl::ConfigureEvents(const std::vector<uint32_t> needEvents)
+{
+    HILOG_DEBUG();
+    return AccessibleAbilityClient::GetInstance()->ConfigureEvents(needEvents);
+}
 } // namespace Accessibility
 } // namespace OHOS

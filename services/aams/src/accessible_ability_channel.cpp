@@ -899,5 +899,16 @@ RetError AccessibleAbilityChannel::NotifyDisconnect()
     clientConnection->NotifyDisconnect();
     return RET_OK;
 }
+
+RetError AccessibleAbilityChannel::ConfigureEvents(const std::vector<uint32_t> needEvents)
+{
+    HILOG_INFO();
+    RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateUITestConfigureEvents(needEvents);
+    if (ret != RET_OK) {
+        HILOG_ERROR("Configure Events failed!");
+        return RET_ERR_FAILED;
+    }
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

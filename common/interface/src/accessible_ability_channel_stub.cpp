@@ -57,7 +57,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_DEFAULTFOCUSED_BY_WINDOW_ID, HandleSearchDefaultFocusedByWindowId) \
     SWITCH_CASE(                                                                                                      \
         AccessibilityInterfaceCode::SET_IS_REGISTER_DISCONNECT_CALLBACK, HandleSetIsRegisterDisconnectCallback)       \
-    SWITCH_CASE(AccessibilityInterfaceCode::NOTIFY_DISCONNECT, HandleNotifyDisconnect)
+    SWITCH_CASE(AccessibilityInterfaceCode::NOTIFY_DISCONNECT, HandleNotifyDisconnect)                                \
+    SWITCH_CASE(AccessibilityInterfaceCode::CONFIGURE_EVENTS, HandleConfigureEvents)
 
 namespace OHOS {
 namespace Accessibility {
@@ -543,6 +544,29 @@ ErrCode AccessibleAbilityChannelStub::HandleNotifyDisconnect(MessageParcel &data
     }
 
     RetError result = NotifyDisconnect();
+    reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleConfigureEvents(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    std::vector<uint32_t> needEvents;
+    uint32_t size = data.ReadUint32();
+    bool verifyResult = ContainerSecurityVerify(data, size, needEvents.max_size());
+    if (!verifyResult) {
+        return TRANSACTION_ERR;
+    }
+
+    if (size < 0 || size > MAX_ALLOW_SIZE) {
+        return TRANSACTION_ERR;
+    }
+    
+    for (uint32_t i = 0; i < size; i++) {
+        uint32_t temp = data.ReadUint32();
+        needEvents.emplace_back(temp);
+    }
+    RetError result = ConfigureEvents(needEvents);
     reply.WriteInt32(result);
     return NO_ERROR;
 }

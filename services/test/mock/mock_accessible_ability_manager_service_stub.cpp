@@ -523,5 +523,15 @@ int32_t MockAccessibleAbilityManagerServiceStub::SetEnhanceConfig(const Accessib
 {
     return 0;
 }
+
+ErrCode MockAccessibleAbilityManagerServiceStub::SearchNeedEvents(std::vector<uint32_t> &needEvents)
+{
+    return RET_OK;
+}
+
+RetError MockAccessibleAbilityManagerServiceStub::UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents)
+{
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

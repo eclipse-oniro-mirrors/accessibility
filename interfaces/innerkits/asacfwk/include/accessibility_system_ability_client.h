@@ -177,6 +177,7 @@ public:
         const int32_t requestId, const int32_t requestCode) = 0;
     virtual void SetPerformActionResult(const bool succeeded, const int32_t requestId) = 0;
     virtual RetError GetFocusedWindowId(int32_t &focusedWindowId) = 0;
+    virtual RetError SearchNeedEvents(std::vector<uint32_t> &needEvents) = 0;
 
     /**
     * @brief Splic ElementId and TreeId.

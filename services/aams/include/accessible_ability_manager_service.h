@@ -147,6 +147,7 @@ public:
     void GetElementOperatorConnection(sptr<AccessibilityWindowConnection> &connection,
         const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
     ErrCode GetScreenReaderState(bool &state) override;
+    ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
 private:
     int32_t focusWindowId_ = -1;
     int64_t focusElementId_ = -1;
@@ -337,6 +338,8 @@ public:
     void InitResource();
     std::string &GetResource(const std::string &resourceName);
     void AnnouncedForMagnification(AnnounceType announceType);
+
+    RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);
 
 private:
     void StopCallbackWait(int32_t windowId);

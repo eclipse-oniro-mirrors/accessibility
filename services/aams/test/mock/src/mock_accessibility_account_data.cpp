@@ -22,6 +22,7 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     const std::string PREF_TEST_PATH = "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
+    std::vector<uint32_t> needEvents_ = {};
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -575,6 +576,27 @@ void AccessibilityAccountData::RemoveWaitDisconnectAbility(const std::string &ur
 {
     HILOG_INFO();
     waitDisconnectA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
+}
+
+std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
+{
+    return needEvents_;
+}
+
+void AccessibilityAccountData::AddNeedEvent(std::string &name, std::vector<uint32_t> needEvents)
+{
+    (void)name;
+    (void)needEvents;
+}
+
+void AccessibilityAccountData::RemoveNeedEvent(const std::string &name)
+{
+    (void)name;
+}
+
+std::vector<uint32_t> AccessibilityAccountData::GetNeedEvents()
+{
+    return needEvents_;
 }
 } // namespace Accessibility
 } // namespace OHOS
