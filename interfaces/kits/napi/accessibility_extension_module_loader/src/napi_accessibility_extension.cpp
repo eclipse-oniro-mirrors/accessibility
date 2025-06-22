@@ -342,7 +342,7 @@ void NAccessibilityExtension::CreateElementInfoByEventInfo(const AccessibilityEv
     elementInfo->SetItemCounts(eventInfo.GetItemCounts());
 }
 
-void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
+void ConvertAccessibilityElementToJS(napi_env env, napi_value objEvent, napi_value objEventInfo,
     const std::shared_ptr<AccessibilityElement>& element)
 {
     HILOG_DEBUG();
@@ -379,7 +379,8 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
         HILOG_ERROR("failed to wrap JS object");
     }
     HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "target", nTargetObject));
+    napi_set_named_property(env, objEventInfo, "target", nTargetObject);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEvent, "target", nTargetObject));
 }
 
 napi_status SetNapiEventInfoIntProperty(napi_env env, const char *property, int64_t value, napi_value &napiEventInfo)
@@ -438,24 +439,39 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
                 napi_close_handle_scope(env, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(data->env_), closeScope);
+            napi_value napiEvent = nullptr;
             napi_value napiEventInfo = nullptr;
+            napi_create_object(data->env_, &napiEvent);
             napi_create_object(data->env_, &napiEventInfo);
 
             do {
-                if (SetEventInfoStrProperty(data->env_, "eventType", data->eventType_, napiEventInfo) != napi_ok) {
+                if (SetEventInfoStrProperty(data->env_, "eventType", data->eventType_, napiEvent) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
-                if (SetNapiEventInfoIntProperty(data->env_, "timeStamp", data->timeStamp_, napiEventInfo) != napi_ok) {
+                if (SetNapiEventInfoIntProperty(data->env_, "eventType",
+                    static_cast<int64_t>(data->AccessibilityEventType_), napiEventInfo) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
-                if (SetNapiEventInfoIntProperty(data->env_, "elementId", data->elementId_, napiEventInfo) != napi_ok) {
+                if (SetNapiEventInfoIntProperty(data->env_, "timeStamp", data->timeStamp_, napiEvent) != napi_ok) {
+                    GET_AND_THROW_LAST_ERROR((data->env_));
+                    break;
+                }
+                if (SetNapiEventInfoIntProperty(data->env_, "timestamp", data->timeStamp_, napiEventInfo) != napi_ok) {
+                    GET_AND_THROW_LAST_ERROR((data->env_));
+                    break;
+                }
+                if (SetNapiEventInfoIntProperty(data->env_, "elementId", data->elementId_, napiEvent) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
                 if (SetEventInfoStrProperty(data->env_, "textAnnouncedForAccessibility",
-                    data->textAnnouncedForAccessibility_, napiEventInfo) != napi_ok) {
+                    data->textAnnouncedForAccessibility_, napiEvent) != napi_ok) {
+                    GET_AND_THROW_LAST_ERROR((data->env_));
+                    break;
+                }
+                if (SetEventInfoStrProperty(data->env_, "extraInfo", data->extraInfo_, napiEvent) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
@@ -464,15 +480,11 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
                     break;
                 }
 
-                ConvertAccessibilityElementToJS(data->env_, napiEventInfo, data->element_);
-                napi_value argv[] = {napiEventInfo};
-                data->extension_->CallObjectMethod("onAccessibilityEvent", argv, 1);
-                if (SetNapiEventInfoIntProperty(data->env_, "eventType",
-                    static_cast<int64_t>(data->AccessibilityEventType_), napiEventInfo) != napi_ok) {
-                    GET_AND_THROW_LAST_ERROR((data->env_));
-                    break;
-                }
-                data->extension_->CallObjectMethod("onAccessibilityEventInfo", argv, 1);
+                ConvertAccessibilityElementToJS(data->env_, napiEvent, napiEventInfo, data->element_);
+                napi_value eventArgv[] = {napiEvent};
+                data->extension_->CallObjectMethod("onAccessibilityEvent", eventArgv, 1);
+                napi_value eventInfoArgv[] = {napiEventInfo};
+                data->extension_->CallObjectMethod("onAccessibilityEventInfo", eventInfoArgv, 1);
             } while (0);
             if (data != nullptr) {
                 delete data;
@@ -529,36 +541,6 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         delete work;
         work = nullptr;
     }
-}
-
-void NAccessibilityExtension::OnAccessibilityEventCompleteCallback(uv_work_t* work, int status)
-{
-    AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
-    napi_env env = data->env_;
-    auto closeScope = [env](napi_handle_scope scope) {
-        napi_close_handle_scope(env, scope);
-    };
-    std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(data->env_), closeScope);
-    napi_value napiEventInfo = nullptr;
-    napi_create_object(data->env_, &napiEventInfo);
-
-    napi_value nType = nullptr;
-    NAPI_CALL_RETURN_VOID(data->env_, napi_create_string_utf8(data->env_, data->eventType_.c_str(),
-        NAPI_AUTO_LENGTH, &nType));
-    NAPI_CALL_RETURN_VOID(data->env_, napi_set_named_property(data->env_, napiEventInfo, "eventType", nType));
-    HILOG_DEBUG("eventType[%{public}s]", data->eventType_.c_str());
-
-    napi_value nTimeStamp = nullptr;
-    NAPI_CALL_RETURN_VOID(data->env_, napi_create_int64(data->env_, data->timeStamp_, &nTimeStamp));
-    NAPI_CALL_RETURN_VOID(data->env_, napi_set_named_property(data->env_, napiEventInfo, "timeStamp", nTimeStamp));
-
-    ConvertAccessibilityElementToJS(data->env_, napiEventInfo, data->element_);
-    napi_value argv[] = {napiEventInfo};
-    data->extension_->CallObjectMethod("onAccessibilityEvent", argv, 1);
-    delete data;
-    data = nullptr;
-    delete work;
-    work = nullptr;
 }
 
 int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loop)

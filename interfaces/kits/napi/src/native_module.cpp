@@ -44,6 +44,201 @@ static void Cleanup(void *data)
         NAccessibilityClient::captionListeners_->UnsubscribeFromFramework();
     }
 }
+
+static napi_value CreateIntObject(napi_env env, int32_t value)
+{
+    napi_value jsObject = nullptr;
+    napi_create_int32(env, value, &jsObject);
+    return jsObject;
+}
+
+static void CreateAccessibilityEventTypePartTwo(napi_env env, napi_value objValue)
+{
+    napi_set_named_property(env, objValue, "TYPE_WINDOW_LAYER",
+        CreateIntObject(env, AccessibilityEventType::TYPE_WINDOW_LAYER));
+    napi_set_named_property(env, objValue, "TYPE_TOUCH_BEGIN",
+        CreateIntObject(env, AccessibilityEventType::TYPE_TOUCH_BEGIN));
+    napi_set_named_property(env, objValue, "TYPE_TOUCH_END",
+        CreateIntObject(env, AccessibilityEventType::TYPE_TOUCH_END));
+    napi_set_named_property(env, objValue, "TYPE_PAGE_CONTENT_UPDATE",
+        CreateIntObject(env, AccessibilityEventType::TYPE_PAGE_CONTENT_UPDATE));
+    napi_set_named_property(env, objValue, "TYPE_PAGE_STATE_UPDATE",
+        CreateIntObject(env, AccessibilityEventType::TYPE_PAGE_STATE_UPDATE));
+    napi_set_named_property(env, objValue, "TYPE_PAGE_OPEN",
+        CreateIntObject(env, AccessibilityEventType::TYPE_PAGE_OPEN));
+    napi_set_named_property(env, objValue, "TYPE_PAGE_CLOSE",
+        CreateIntObject(env, AccessibilityEventType::TYPE_PAGE_CLOSE));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_LEFT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_LEFT));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_LEFT_THEN_RIGHT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_LEFT_THEN_RIGHT));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_LEFT_THEN_UP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_LEFT_THEN_UP));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_LEFT_THEN_DOWN",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_LEFT_THEN_DOWN));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_RIGHT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_RIGHT));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_RIGHT_THEN_LEFT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_RIGHT_THEN_LEFT));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_RIGHT_THEN_UP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_RIGHT_THEN_UP));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_RIGHT_THEN_DOWN",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_RIGHT_THEN_DOWN));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_UP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_UP));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_UP_THEN_LEFT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_UP_THEN_LEFT));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_UP_THEN_RIGHT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_UP_THEN_RIGHT));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_UP_THEN_DOWN",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_UP_THEN_DOWN));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_DOWN",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_DOWN));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_DOWN_THEN_LEFT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_DOWN_THEN_LEFT));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_DOWN_THEN_RIGHT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_DOWN_THEN_RIGHT));
+    napi_set_named_property(env, objValue, "TYPE_SWIPE_DOWN_THEN_UP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SWIPE_DOWN_THEN_UP));
+    napi_set_named_property(env, objValue, "TYPE_TWO_FINGER_SINGLE_TAP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_TWO_FINGER_SINGLE_TAP));
+}
+
+static void CreateAccessibilityEventTypePartThree(napi_env env, napi_value objValue)
+{
+    napi_set_named_property(env, objValue, "TYPE_TWO_FINGER_DOUBLE_TAP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_TWO_FINGER_DOUBLE_TAP));
+    napi_set_named_property(env, objValue, "TYPE_TWO_FINGER_DOUBLE_TAP_AND_HOLD",
+        CreateIntObject(env, AccessibilityEventType::TYPE_TWO_FINGER_DOUBLE_TAP_AND_HOLD));
+    napi_set_named_property(env, objValue, "TYPE_TWO_FINGER_TRIPLE_TAP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_TWO_FINGER_TRIPLE_TAP));
+    napi_set_named_property(env, objValue, "TYPE_TWO_FINGER_TRIPLE_TAP_AND_HOLD",
+        CreateIntObject(env, AccessibilityEventType::TYPE_TWO_FINGER_TRIPLE_TAP_AND_HOLD));
+    napi_set_named_property(env, objValue, "TYPE_THREE_FINGER_SINGLE_TAP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_THREE_FINGER_SINGLE_TAP));
+    napi_set_named_property(env, objValue, "TYPE_THREE_FINGER_DOUBLE_TAP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_THREE_FINGER_DOUBLE_TAP));
+    napi_set_named_property(env, objValue, "TYPE_THREE_FINGER_DOUBLE_TAP_AND_HOLD",
+        CreateIntObject(env, AccessibilityEventType::TYPE_THREE_FINGER_DOUBLE_TAP_AND_HOLD));
+    napi_set_named_property(env, objValue, "TYPE_THREE_FINGER_TRIPLE_TAP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_THREE_FINGER_TRIPLE_TAP));
+    napi_set_named_property(env, objValue, "TYPE_THREE_FINGER_TRIPLE_TAP_AND_HOLD",
+        CreateIntObject(env, AccessibilityEventType::TYPE_THREE_FINGER_TRIPLE_TAP_AND_HOLD));
+    napi_set_named_property(env, objValue, "TYPE_FOUR_FINGER_SINGLE_TAP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_FOUR_FINGER_SINGLE_TAP));
+    napi_set_named_property(env, objValue, "TYPE_FOUR_FINGER_DOUBLE_TAP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_FOUR_FINGER_DOUBLE_TAP));
+    napi_set_named_property(env, objValue, "TYPE_FOUR_FINGER_DOUBLE_TAP_AND_HOLD",
+        CreateIntObject(env, AccessibilityEventType::TYPE_FOUR_FINGER_DOUBLE_TAP_AND_HOLD));
+    napi_set_named_property(env, objValue, "TYPE_FOUR_FINGER_TRIPLE_TAP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_FOUR_FINGER_TRIPLE_TAP));
+    napi_set_named_property(env, objValue, "TYPE_FOUR_FINGER_TRIPLE_TAP_AND_HOLD",
+        CreateIntObject(env, AccessibilityEventType::TYPE_FOUR_FINGER_TRIPLE_TAP_AND_HOLD));
+    napi_set_named_property(env, objValue, "TYPE_THREE_FINGER_SWIPE_UP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_THREE_FINGER_SWIPE_UP));
+    napi_set_named_property(env, objValue, "TYPE_THREE_FINGER_SWIPE_DOWN",
+        CreateIntObject(env, AccessibilityEventType::TYPE_THREE_FINGER_SWIPE_DOWN));
+    napi_set_named_property(env, objValue, "TYPE_THREE_FINGER_SWIPE_LEFT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_THREE_FINGER_SWIPE_LEFT));
+    napi_set_named_property(env, objValue, "TYPE_THREE_FINGER_SWIPE_RIGHT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_THREE_FINGER_SWIPE_RIGHT));
+    napi_set_named_property(env, objValue, "TYPE_FOUR_FINGER_SWIPE_UP",
+        CreateIntObject(env, AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_UP));
+    napi_set_named_property(env, objValue, "TYPE_FOUR_FINGER_SWIPE_DOWN",
+        CreateIntObject(env, AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_DOWN));
+    napi_set_named_property(env, objValue, "TYPE_FOUR_FINGER_SWIPE_LEFT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_LEFT));
+    napi_set_named_property(env, objValue, "TYPE_FOUR_FINGER_SWIPE_RIGHT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_RIGHT));
+}
+
+static napi_value CreateAccessibilityEventType(napi_env env)
+{
+    napi_value objValue = nullptr;
+    napi_create_object(env, &objValue);
+    napi_set_named_property(env, objValue, "TYPE_ACCESSIBILITY_FOCUS",
+        CreateIntObject(env, AccessibilityEventType::TYPE_ACCESSIBILITY_FOCUS));
+    napi_set_named_property(env, objValue, "TYPE_ACCESSIBILITY_FOCUS_CLEAR",
+        CreateIntObject(env, AccessibilityEventType::TYPE_ACCESSIBILITY_FOCUS_CLEAR));
+    napi_set_named_property(env, objValue, "TYPE_CLICK", CreateIntObject(env, AccessibilityEventType::TYPE_CLICK));
+    napi_set_named_property(env, objValue, "TYPE_LONG_CLICK",
+        CreateIntObject(env, AccessibilityEventType::TYPE_LONG_CLICK));
+    napi_set_named_property(env, objValue, "TYPE_SELECT", CreateIntObject(env, AccessibilityEventType::TYPE_SELECT));
+    napi_set_named_property(env, objValue, "TYPE_HOVER_ENTER",
+        CreateIntObject(env, AccessibilityEventType::TYPE_HOVER_ENTER));
+    napi_set_named_property(env, objValue, "TYPE_HOVER_EXIT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_HOVER_EXIT));
+    napi_set_named_property(env, objValue, "TYPE_FOCUS", CreateIntObject(env, AccessibilityEventType::TYPE_FOCUS));
+    napi_set_named_property(env, objValue, "TYPE_TEXT_UPDATE",
+        CreateIntObject(env, AccessibilityEventType::TYPE_TEXT_UPDATE));
+    napi_set_named_property(env, objValue, "TYPE_TEXT_SELECTION_UPDATE",
+        CreateIntObject(env, AccessibilityEventType::TYPE_TEXT_SELECTION_UPDATE));
+    napi_set_named_property(env, objValue, "TYPE_SCROLL", CreateIntObject(env, AccessibilityEventType::TYPE_SCROLL));
+    napi_set_named_property(env, objValue, "TYPE_REQUEST_FOCUS_FOR_ACCESSIBILITY",
+        CreateIntObject(env, AccessibilityEventType::TYPE_REQUEST_FOCUS_FOR_ACCESSIBILITY));
+    napi_set_named_property(env, objValue, "TYPE_ANNOUNCE_FOR_ACCESSIBILITY",
+        CreateIntObject(env, AccessibilityEventType::TYPE_ANNOUNCE_FOR_ACCESSIBILITY));
+    napi_set_named_property(env, objValue, "TYPE_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT));
+    napi_set_named_property(env, objValue, "TYPE_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT",
+        CreateIntObject(env, AccessibilityEventType::TYPE_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT));
+    napi_set_named_property(env, objValue, "TYPE_ELEMENT_INFO_CHANGE",
+        CreateIntObject(env, AccessibilityEventType::TYPE_ELEMENT_INFO_CHANGE));
+    napi_set_named_property(env, objValue, "TYPE_SCROLLING",
+        CreateIntObject(env, AccessibilityEventType::TYPE_SCROLLING));
+    napi_set_named_property(env, objValue, "TYPE_WINDOW_ADD",
+        CreateIntObject(env, AccessibilityEventType::TYPE_WINDOW_ADD));
+    napi_set_named_property(env, objValue, "TYPE_WINDOW_REMOVE",
+        CreateIntObject(env, AccessibilityEventType::TYPE_WINDOW_REMOVE));
+    napi_set_named_property(env, objValue, "TYPE_WINDOW_BOUNDS",
+        CreateIntObject(env, AccessibilityEventType::TYPE_WINDOW_BOUNDS));
+    napi_set_named_property(env, objValue, "TYPE_WINDOW_ACTIVE",
+        CreateIntObject(env, AccessibilityEventType::TYPE_WINDOW_ACTIVE));
+    napi_set_named_property(env, objValue, "TYPE_WINDOW_FOCUS",
+        CreateIntObject(env, AccessibilityEventType::TYPE_WINDOW_FOCUS));
+    napi_set_named_property(env, objValue, "TYPE_WINDOW_PROPERTY",
+        CreateIntObject(env, AccessibilityEventType::TYPE_WINDOW_PROPERTY));
+    CreateAccessibilityEventTypePartTwo(env, objValue);
+    CreateAccessibilityEventTypePartThree(env, objValue);
+    return objValue;
+}
+
+static napi_value CreateAccessibilityAction(napi_env env)
+{
+    napi_value objValue = nullptr;
+    napi_create_object(env, &objValue);
+    napi_set_named_property(env, objValue, "ACCESSIBILITY_FOCUS",
+        CreateIntObject(env, AccessibilityAction::ACCESSIBILITY_FOCUS));
+    napi_set_named_property(env, objValue, "CLEAR_ACCESSIBILITY_FOCUS",
+        CreateIntObject(env, AccessibilityAction::CLEAR_ACCESSIBILITY_FOCUS));
+    napi_set_named_property(env, objValue, "FOCUS", CreateIntObject(env, AccessibilityAction::FOCUS));
+    napi_set_named_property(env, objValue, "CLEAR_FOCUS", CreateIntObject(env, AccessibilityAction::CLEAR_FOCUS));
+    napi_set_named_property(env, objValue, "CLICK", CreateIntObject(env, AccessibilityAction::CLICK));
+    napi_set_named_property(env, objValue, "LONG_CLICK", CreateIntObject(env, AccessibilityAction::LONG_CLICK));
+    napi_set_named_property(env, objValue, "CUT", CreateIntObject(env, AccessibilityAction::CUT));
+    napi_set_named_property(env, objValue, "COPY", CreateIntObject(env, AccessibilityAction::COPY));
+    napi_set_named_property(env, objValue, "PASTE", CreateIntObject(env, AccessibilityAction::PASTE));
+    napi_set_named_property(env, objValue, "SELECT", CreateIntObject(env, AccessibilityAction::SELECT));
+    napi_set_named_property(env, objValue, "SET_TEXT", CreateIntObject(env, AccessibilityAction::SET_TEXT));
+    napi_set_named_property(env, objValue, "SCROLL_FORWARD",
+        CreateIntObject(env, AccessibilityAction::SCROLL_FORWARD));
+    napi_set_named_property(env, objValue, "SCROLL_BACKWARD",
+        CreateIntObject(env, AccessibilityAction::SCROLL_BACKWARD));
+    napi_set_named_property(env, objValue, "SET_SELECTION", CreateIntObject(env, AccessibilityAction::SET_SELECTION));
+    napi_set_named_property(env, objValue, "SET_CURSOR_POSITION",
+        CreateIntObject(env, AccessibilityAction::SET_CURSOR_POSITION));
+    napi_set_named_property(env, objValue, "HOME", CreateIntObject(env, AccessibilityAction::HOME));
+    napi_set_named_property(env, objValue, "BACK", CreateIntObject(env, AccessibilityAction::BACK));
+    napi_set_named_property(env, objValue, "RECENT_TASK", CreateIntObject(env, AccessibilityAction::RECENT_TASK));
+    napi_set_named_property(env, objValue, "NOTIFICATION_CENTER",
+        CreateIntObject(env, AccessibilityAction::NOTIFICATION_CENTER));
+    napi_set_named_property(env, objValue, "CONTROL_CENTER",
+        CreateIntObject(env, AccessibilityAction::CONTROL_CENTER));
+    napi_set_named_property(env, objValue, "COMMON", CreateIntObject(env, AccessibilityAction::COMMON));
+    napi_set_named_property(env, objValue, "SPAN_CLICK", CreateIntObject(env, AccessibilityAction::SPAN_CLICK));
+    return objValue;
+}
+
 /*
  * function for module exports
  */
@@ -68,6 +263,9 @@ static napi_value Init(napi_env env, napi_value exports)
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
+
+    napi_set_named_property(env, exports, "AccessibilityEventType", CreateAccessibilityEventType(env));
+    napi_set_named_property(env, exports, "AccessibilityAction", CreateAccessibilityAction(env));
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     (void)instance.InitializeContext();
