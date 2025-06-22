@@ -227,8 +227,38 @@ public:
      */
     virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents);
 
+    /*
+     * @brief Search element infos by specific property.
+     * @param accessibilityWindowId The window id that the component belongs to.
+     * @param elementId  The unique id of the component ID.
+     * @param param The specific property parameters.
+     * @param infos The element infos searched by specific property.
+     * @param elementInfos The element infos searched by specific property.
+     * @param treeId The tree id of the component.
+     * @return Returns 0 on success, others on failure.
+     */
+    RetError SearchElementInfosBySpecificProperty(int32_t accessibilityWindowId, int64_t elementId,
+        const SpecificPropertyParam& param, std::vector<AccessibilityElementInfo> &infos,
+        std::vector<AccessibilityElementInfo> &elementInfos,
+        int32_t treeId);
+
 private:
     int32_t GenerateRequestId();
+
+    /**
+     * @brief Validate and process element infos with main window ID setting
+     * @param sourceInfos The source element infos to validate and process
+     * @param targetInfos The target vector to store processed infos
+     * @param clearInfos The vector to clear
+     * @param accessibilityWindowId The window ID to set for all elements
+     * @param logType The type name for logging
+     * @return Returns RET_OK on success, RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE on validation failure
+     */
+    RetError ValidateAndProcessElementInfos(const std::vector<AccessibilityElementInfo>& sourceInfos,
+        std::vector<AccessibilityElementInfo>& targetInfos,
+        std::vector<AccessibilityElementInfo>& clearInfos,
+        int32_t accessibilityWindowId,
+        const std::string& logType);
 
     int32_t channelId_ = INVALID_CHANNEL_ID;
     int32_t accessibilityFocusedWindowId_ = INVALID_WINDOW_ID;

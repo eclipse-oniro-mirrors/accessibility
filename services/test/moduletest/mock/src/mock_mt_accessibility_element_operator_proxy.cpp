@@ -127,5 +127,15 @@ void MockAccessibilityElementOperatorProxy::SetParentWindowId(const int32_t pare
 {
     (void)parentWindowId;
 }
+
+void MockAccessibilityElementOperatorProxy::SearchElementInfoBySpecificProperty(const int64_t elementId,
+    const SpecificPropertyParam& param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    (void)elementId;
+    (void)param;
+    (void)requestId;
+    (void)callback;
+}
 } // namespace Accessibility
 } // namespace OHOS

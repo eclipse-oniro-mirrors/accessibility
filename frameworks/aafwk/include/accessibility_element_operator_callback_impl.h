@@ -93,12 +93,22 @@ public:
      */
     virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
 
+    /**
+     * @brief Set the search element info by specific property result.
+     * @param infos The element infos searched by specific property.
+     * @param treeInfos The element infos searched by specific property.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
+        const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override;
+
 private:
     ffrt::promise<void> promise_;
     std::atomic<bool> promiseFlag_ = false;
     bool executeActionResult_ = false;
     AccessibilityElementInfo accessibilityInfoResult_ = {};
     std::vector<AccessibilityElementInfo> elementInfosResult_;
+    std::vector<AccessibilityElementInfo> treeInfosResult_;
     int32_t CursorPosition_ = 0 ;
     friend class AccessibleAbilityChannelClient;
 };

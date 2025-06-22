@@ -152,5 +152,17 @@ void MockAccessibilityElementOperatorProxy::SetParentWindowId(const int32_t pare
     testParentWindowId_ = parentWindowId;
     return;
 }
+
+void MockAccessibilityElementOperatorProxy::SearchElementInfoBySpecificProperty(const int64_t elementId,
+    const SpecificPropertyParam& param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback>& callback)
+{
+    GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy SearchElementInfoBySpecificProperty";
+    testChannelElementId_ = elementId;
+    testChannelRequestId_ = requestId;
+    (void)param;
+    (void)callback;
+    return;
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -2232,6 +2232,42 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
     promise_.set_value();
 }
 
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoBySpecificPropertyResult(
+    const std::list<AccessibilityElementInfo> &infos, const std::list<AccessibilityElementInfo> &treeInfos,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    if (!infos.empty()) {
+        if (!ValidateElementInfos(infos)) {
+            return;
+        }
+        elementInfosResult_.assign(infos.begin(), infos.end());
+    } else if (!treeInfos.empty()) {
+        if (!ValidateElementInfos(treeInfos)) {
+            return;
+        }
+        elementInfosResult_.assign(treeInfos.begin(), treeInfos.end());
+    }
+    promise_.set_value();
+}
+
+bool AccessibleAbilityManagerService::ElementOperatorCallbackImpl::ValidateElementInfos(
+    const std::list<AccessibilityElementInfo>& infos)
+{
+    for (auto info : infos) {
+        if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
+            info.GetAccessibilityId()) == RET_OK) {
+            HILOG_DEBUG("VerifyingToKenId ok");
+        } else {
+            HILOG_ERROR("VerifyingToKenId failed");
+            elementInfosResult_.clear();
+            promise_.set_value();
+            return false;
+        }
+    }
+    return true;
+}
+
 void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo &info, const int32_t requestId)
 {

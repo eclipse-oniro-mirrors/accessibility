@@ -759,5 +759,60 @@ RetError AccessibleAbilityChannelProxy::ConfigureEvents(const std::vector<uint32
 
     return static_cast<RetError>(reply.ReadInt32());
 }
+
+void AccessibleAbilityChannelProxy::SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
+    const SpecificPropertyParam& param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("windowId:%{public}d, elementId:%{public}" PRId64 ", propertyTarget:%{public}s,"
+        "propertyType:%{public}u, requestId:%{public}d", elementBasicInfo.windowId, elementBasicInfo.elementId,
+        param.propertyTarget.c_str(), static_cast<uint32_t>(param.propertyType), requestId);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return;
+    }
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        return;
+    }
+    if (!data.WriteInt32(elementBasicInfo.windowId)) {
+        HILOG_ERROR("windowId write error: %{public}d, ", elementBasicInfo.windowId);
+        return;
+    }
+    if (!data.WriteInt64(elementBasicInfo.elementId)) {
+        HILOG_ERROR("elementId write error: %{public}" PRId64 ", ", elementBasicInfo.elementId);
+        return;
+    }
+    if (!data.WriteInt32(elementBasicInfo.treeId)) {
+        HILOG_ERROR("treeId write error: %{public}d, ", elementBasicInfo.treeId);
+        return;
+    }
+    if (!data.WriteString(param.propertyTarget)) {
+        HILOG_ERROR("propertyTarget write error");
+        return;
+    }
+    if (!data.WriteUint32(static_cast<uint32_t>(param.propertyType))) {
+        HILOG_ERROR("propertyType write error");
+        return;
+    }
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("requestId write error: %{public}d, ", requestId);
+        return;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("callback write error");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_SPECIFIC_PROPERTY,
+        data, reply, option)) {
+        HILOG_ERROR("fail to find elementInfo by specific property");
+        return;
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

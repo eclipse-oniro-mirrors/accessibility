@@ -82,6 +82,15 @@ public:
      * @param requestId The request id from AA, it is used to match with request and response.
      */
     virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) = 0;
+
+    /**
+     * @brief Set the element information by specific property to AA.
+     * @param infos The element information searched by specific property.
+     * @param treeInfos The element info searched by specific property.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
+        const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

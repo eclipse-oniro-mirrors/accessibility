@@ -350,5 +350,43 @@ void AccessibilityElementOperatorImpl::EraseCallback(const int32_t requestId)
         HILOG_DEBUG("Can't find the callback [requestId:%{public}d]", requestId);
     }
 }
+
+void AccessibilityElementOperatorImpl::SearchElementInfoBySpecificProperty(const int64_t elementId,
+    const SpecificPropertyParam& param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    int32_t mRequestId = AddRequest(requestId, callback);
+    HILOG_DEBUG("search element add requestId[%{public}d], elementId[%{public}" PRId64 "], "
+        "requestId[%{public}d], propertyTarget[%{public}s], propertyType[%{public}u]",
+        mRequestId, elementId, requestId, param.propertyTarget.c_str(), static_cast<uint32_t>(param.propertyType));
+    if (operator_) {
+        operator_->SearchElementInfoBySpecificProperty(elementId, param, mRequestId, operatorCallback_);
+    } else {
+        HILOG_ERROR("Operator is nullptr");
+        return;
+    }
+}
+
+void AccessibilityElementOperatorImpl::SetSearchElementInfoBySpecificPropertyResult(
+    const std::list<AccessibilityElementInfo> &infos, const std::list<AccessibilityElementInfo> &treeInfos,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("requestId is %{public}d", requestId);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
+    std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
+    auto iter = requests_.find(requestId);
+    if (iter != requests_.end()) {
+        if (iter->second != nullptr) {
+            HILOG_DEBUG("isFilter %{public}d", iter->second->GetFilter());
+            if (iter->second->GetFilter()) {
+                SetFiltering(filterInfos);
+            }
+            iter->second->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+        }
+        requests_.erase(iter);
+    } else {
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -374,6 +374,16 @@ struct ResourceInfo {
     std::string moduleName;
 };
 
+enum SEARCH_TYPE : uint32_t {
+    CUSTOMID = 0,
+    ACCESSIBILITY_TEXT
+};
+
+struct SpecificPropertyParam {
+    std::string propertyTarget;
+    SEARCH_TYPE propertyType;
+};
+
 constexpr int32_t PARAM0 = 0;
 constexpr int32_t PARAM1 = 1;
 constexpr int32_t PARAM2 = 2;

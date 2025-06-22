@@ -933,5 +933,34 @@ RetError AccessibilitySystemAbilityClientImpl::SearchNeedEvents(std::vector<uint
     }
     return static_cast<RetError>(serviceProxy_->SearchNeedEvents(needEvents));
 }
+
+void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoBySpecificPropertyResult(
+    const std::list<AccessibilityElementInfo> &infos, const std::list<AccessibilityElementInfo> &treeInfos,
+    const int32_t requestId)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    HILOG_DEBUG("search element requestId[%{public}d]", requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
+    std::vector<AccessibilityElementInfo> filterInfos(infos.begin(), infos.end());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
+    if (requestId < 0) {
+        HILOG_ERROR("requestId is invalid");
+        return;
+    }
+    if (callback != nullptr) {
+        if (callback->GetFilter()) {
+            AccessibilityElementOperatorImpl::SetFiltering(filterInfos);
+        }
+        serviceProxy_->RemoveRequestId(requestId);
+        callback->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+        AccessibilityElementOperatorImpl::EraseCallback(requestId);
+    } else {
+        HILOG_INFO("callback is nullptr");
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

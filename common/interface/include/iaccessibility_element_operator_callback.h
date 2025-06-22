@@ -17,6 +17,7 @@
 #define INTERFACE_ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_H
 
 #include <cstdint>
+#include <list>
 #include <string>
 #include <vector>
 #include "accessibility_element_info.h"
@@ -82,6 +83,15 @@ public:
      * @param requestId The request id from AA, it is used to match with request and response.
      */
     virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) = 0;
+
+    /**
+     * @brief Set the search element info by specific property result.
+     * @param infos The element infos searched by specific property.
+     * @param treeInfos The element infos searched by specific property.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
+         const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) = 0;
 
     /**
      * @brief Set isFilter.

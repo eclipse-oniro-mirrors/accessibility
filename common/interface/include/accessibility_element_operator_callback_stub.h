@@ -107,6 +107,25 @@ private:
      */
     ErrCode HandleSetCursorPositionResult(MessageParcel &data, MessageParcel &reply);
 
+    /**
+     * @brief Handle the IPC request for the function:SetSearchElementInfoBySpecificPropertyResult.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleSetSearchElementInfoBySpecificPropertyResult(MessageParcel &data, MessageParcel &reply);
+
+    /**
+     * @brief Read AccessibilityElementInfo list from MessageParcel with size validation.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @param infoSize The size of info list to read
+     * @param infos The output list to store AccessibilityElementInfo objects
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode ReadAccessibilityElementInfoList(MessageParcel &data, MessageParcel &reply,
+        int32_t infoSize, std::list<AccessibilityElementInfo> &infos);
+
     using AccessibilityElementOperatorCallbackFunc =
         ErrCode (AccessibilityElementOperatorCallbackStub::*)(MessageParcel &data, MessageParcel &reply);
 };

@@ -214,6 +214,17 @@ public:
      * @return Return RET_OK if configureEvents successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents) = 0;
+
+    /**
+     * @brief Search element infos by specific property.
+     * @param elementBasicInfo The basic info of the element.
+     * @param param The specific property parameters.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param callback The callback to return the result.
+     */
+    virtual void SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
+        const SpecificPropertyParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

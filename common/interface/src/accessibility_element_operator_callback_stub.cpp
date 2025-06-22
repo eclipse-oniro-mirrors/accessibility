@@ -44,7 +44,9 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION, HandleSetExecuteActionResult)        \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_CURSOR_RESULT, HandleSetCursorPositionResult)        \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_WINDOW_ID,                                        \
-        HandleSetSearchDefaultFocusByWindowIdResult)
+        HandleSetSearchDefaultFocusByWindowIdResult)                                                        \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_SPECIFIC_PROPERTY,                                \
+        HandleSetSearchElementInfoBySpecificPropertyResult)
 
 namespace OHOS {
 namespace Accessibility {
@@ -279,5 +281,62 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetCursorPositionResult(
     return NO_ERROR;
 }
 
+ErrCode AccessibilityElementOperatorCallbackStub::ReadAccessibilityElementInfoList(
+    MessageParcel &data, MessageParcel &reply, int32_t infoSize, std::list<AccessibilityElementInfo> &infos)
+{
+    if (infoSize == 0) {
+        HILOG_INFO("infoSize is 0, no element info to read");
+        return NO_ERROR;
+    }
+    size_t rawDataSize = data.ReadUint32();
+    MessageParcel tmpParcel;
+    void *buffer = nullptr;
+    // memory alloced in GetData will be released when tmpParcel destruct
+    if (!GetData(rawDataSize, data.ReadRawData(rawDataSize), buffer)) {
+        reply.WriteInt32(RET_ERR_FAILED);
+        return TRANSACTION_ERR;
+    }
+    if (!tmpParcel.ParseFrom(reinterpret_cast<uintptr_t>(buffer), rawDataSize)) {
+        reply.WriteInt32(RET_ERR_FAILED);
+        return TRANSACTION_ERR;
+    }
+    if (infoSize < 0 || infoSize > MAX_ALLOW_SIZE) {
+        reply.WriteInt32(RET_ERR_FAILED);
+        return TRANSACTION_ERR;
+    }
+    for (size_t i = 0; i < infoSize; i++) {
+        sptr<AccessibilityElementInfoParcel> info =
+                tmpParcel.ReadStrongParcelable<AccessibilityElementInfoParcel>();
+        if (info == nullptr) {
+            reply.WriteInt32(RET_ERR_FAILED);
+            return TRANSACTION_ERR;
+        }
+        infos.emplace_back(*info);
+    }
+    return NO_ERROR;
+}
+
+ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoBySpecificPropertyResult(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int32_t requestId = data.ReadInt32();
+    int32_t infoSize = data.ReadInt32();
+
+    std::list<AccessibilityElementInfo> infos;
+    ErrCode result = ReadAccessibilityElementInfoList(data, reply, infoSize, infos);
+    if (result != NO_ERROR) {
+        return result;
+    }
+    int32_t treeInfoSize = data.ReadInt32();
+    std::list<AccessibilityElementInfo> treeInfos;
+    result = ReadAccessibilityElementInfoList(data, reply, treeInfoSize, treeInfos);
+    if (result != NO_ERROR) {
+        return result;
+    }
+    reply.WriteInt32(RET_OK);
+    SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+    return NO_ERROR;
+}
 } // namespace Accessibility
 } // namespace OHOS

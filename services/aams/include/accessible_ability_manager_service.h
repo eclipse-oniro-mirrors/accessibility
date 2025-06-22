@@ -254,6 +254,8 @@ public:
         virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) override;
         virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
         virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
+        virtual void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
+            const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override;
 
     private:
         ffrt::promise<void> promise_;
@@ -261,6 +263,13 @@ public:
         AccessibilityElementInfo accessibilityInfoResult_ = {};
         std::vector<AccessibilityElementInfo> elementInfosResult_;
         int32_t callCursorPosition_ = 0;
+
+        /**
+         * @brief Validate element infos and handle verification failure
+         * @param infos The element infos to validate
+         * @return true if all validations pass, false otherwise
+         */
+        bool ValidateElementInfos(const std::list<AccessibilityElementInfo>& infos);
 
         friend class AccessibleAbilityManagerService;
     };

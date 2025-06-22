@@ -166,6 +166,17 @@ public:
     {
         (void)parentWindowId;
     }
+
+    /**
+     * @brief Search element info by specific property.
+     * @param elementId The unique id of the component ID.
+     * @param param The specific property parameters.
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback The callback to return the result.
+     */
+    virtual void SearchElementInfoBySpecificProperty(const int64_t elementId,
+    const SpecificPropertyParam& param, const int32_t requestId,
+    AccessibilityElementOperatorCallback &callback) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

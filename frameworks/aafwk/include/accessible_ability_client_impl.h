@@ -445,6 +445,9 @@ public:
     void LoadSystemAbilityFail();
     RetError GetChildrenWork(const int32_t windowId, std::vector<int64_t> childIds,
         std::vector<AccessibilityElementInfo> &children, bool systemApi = false);
+    RetError SearchElementInfoRecursiveBySpecificProperty(const int32_t windowId, const int64_t elementId,
+        std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId, uint64_t parentIndex = 0,
+        const SpecificPropertyParam& param = {});
 
 private:
     class ElementCacheInfo {

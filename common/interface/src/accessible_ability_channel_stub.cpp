@@ -58,7 +58,9 @@
     SWITCH_CASE(                                                                                                      \
         AccessibilityInterfaceCode::SET_IS_REGISTER_DISCONNECT_CALLBACK, HandleSetIsRegisterDisconnectCallback)       \
     SWITCH_CASE(AccessibilityInterfaceCode::NOTIFY_DISCONNECT, HandleNotifyDisconnect)                                \
-    SWITCH_CASE(AccessibilityInterfaceCode::CONFIGURE_EVENTS, HandleConfigureEvents)
+    SWITCH_CASE(AccessibilityInterfaceCode::CONFIGURE_EVENTS, HandleConfigureEvents)                                  \
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_SPECIFIC_PROPERTY,                                 \
+        HandleSearchElementInfoBySpecificProperty)                                                                    \
 
 namespace OHOS {
 namespace Accessibility {
@@ -567,6 +569,41 @@ ErrCode AccessibleAbilityChannelStub::HandleConfigureEvents(MessageParcel &data,
         needEvents.emplace_back(temp);
     }
     RetError result = ConfigureEvents(needEvents);
+    reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoBySpecificProperty(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    ElementBasicInfo elementBasicInfo {};
+    elementBasicInfo.windowId = data.ReadInt32();
+    elementBasicInfo.elementId = data.ReadInt64();
+    elementBasicInfo.treeId = data.ReadInt32();
+
+    SpecificPropertyParam param;
+    param.propertyTarget = data.ReadString();
+    param.propertyType = static_cast<SEARCH_TYPE>(data.ReadUint32());
+
+    int32_t requestId = data.ReadInt32();
+
+    sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (remote == nullptr) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        iface_cast<IAccessibilityElementOperatorCallback>(remote);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+
+    SearchElementInfoBySpecificProperty(elementBasicInfo, param, requestId, callback);
+    RetError result = RET_OK;
+    HILOG_DEBUG("SearchElementInfosBySpecificProperty ret = %{public}d", result);
     reply.WriteInt32(result);
     return NO_ERROR;
 }

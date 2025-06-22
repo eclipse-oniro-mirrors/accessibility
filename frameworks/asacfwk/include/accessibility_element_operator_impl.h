@@ -238,6 +238,26 @@ public:
      */
     void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId);
 
+    /**
+     * @brief Search element infos by specific property.
+     * @param elementId The accessibility id of the component.
+     * @param param The specific property parameters.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param callback The callback to return the result.
+     */
+    virtual void SearchElementInfoBySpecificProperty(const int64_t elementId,
+        const SpecificPropertyParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
+    /**
+     * @brief Set the search element info by specific property result.
+     * @param infos The element infos searched by specific property.
+     * @param treeInfos The element infos searched by specific property.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
+        const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId);
+
     static sptr<IAccessibilityElementOperatorCallback> GetCallbackByRequestId(const int32_t requestId);
     static void EraseCallback(const int32_t requestId);
 

@@ -237,6 +237,14 @@ public:
      */
     virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
 
+    /**
+     * @brief Set the element information by specific property to AA.
+     * @param infos The element info searched by accessibility id.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
+        const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override;
+
     virtual uint32_t GetAccessibilityState() override;
     virtual void SetFindAccessibilityNodeInfoResult(const AccessibilityElementInfo elementInfo,
         const int32_t requestId, const int32_t requestCode) override;
