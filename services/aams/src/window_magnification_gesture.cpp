@@ -170,8 +170,10 @@ WindowMagnificationGesture::WindowMagnificationGesture(
 
 bool WindowMagnificationGesture::OnPointerEvent(MMI::PointerEvent &event)
 {
-    MMI::PointerEvent::PointerItem Item;
-    event.GetPointerItem(event.GetPointerId(), Item);
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN ||
+        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP) {
+        HILOG_INFO("PointerAction: %{public}d.", event.GetPointerAction());
+    }
 
     if (needBypassPointerEvent(event)) {
         EventTransmission::OnPointerEvent(event);
@@ -506,6 +508,7 @@ void WindowMagnificationGesture::HandleZoomInStateOneFingerDownStateDown(MMI::Po
 
         if (isDoubleFingersValid_) {
             SetGestureState(MagnificationGestureState::ZOOMIN_STATE_TWO_FINGERS_DOWN, event.GetPointerAction());
+            Clear();
         } else {
             receivedPointerEvents_.push_back(event);
             SendCacheEventsToNext();
