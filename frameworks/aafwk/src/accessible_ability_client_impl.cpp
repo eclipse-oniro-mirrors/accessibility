@@ -1016,7 +1016,7 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     int32_t windowId = child.GetWindowId();
     int64_t parentElementId = child.GetParentNodeId();
     int32_t parentWindowId = child.GetParentWindowId();
-    int32_t treeId = (static_cast<uint64_t>(child.GetAccessibilityId()) >> ELEMENT_MOVE_BIT);
+    int32_t treeId = 0;
     HILOG_DEBUG("windowId[%{public}d], parentWindowId[%{public}d], parentId[%{public}" PRId64 "]",
         windowId, parentWindowId, parentElementId);
     if (GetCacheElementInfo(windowId, parentElementId, parent)) {
@@ -1025,6 +1025,8 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     }
     RetError ret = RET_ERR_FAILED;
     if ((parentElementId == ROOT_PARENT_ELEMENT_ID) && (parentWindowId > 0)) {
+        //Get the element id of the parent by children tree id.
+        treeId = (static_cast<uint64_t>(child.GetAccessibilityId()) >> ELEMENT_MOVE_BIT);
         serviceProxy_->GetRootParentId(windowId, treeId, parentElementId, systemApi);
         if (parentElementId > 0) {
             treeId = (static_cast<uint64_t>(parentElementId) >> ELEMENT_MOVE_BIT);
@@ -1039,6 +1041,9 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
             return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
         }
     }
+    //In the same layer rendering scenario, parentElementId is not equal to ROOT_PARENT_ELEMENT_ID.
+    //Search the parent elementId need to use the tree is of the parent node. 
+    treeId = (static_cast<uint64_t>(parentElementId) >> ELEMENT_MOVE_BIT);
     ret = SearchElementInfoByElementId(windowId, parentElementId, cacheMode_, parent, treeId, systemApi);
     parent.SetMainWindowId(child.GetMainWindowId());
     return ret;
