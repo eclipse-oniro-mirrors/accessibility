@@ -62,7 +62,11 @@ std::map<std::string, std::string> AccessibilitySecurityComponentManager::Genera
     std::string timeStr = std::to_string(timeStamp);
 
     point->uniqueId = uniqueId;
-    memcpy_s(point->bundleName, MAX_BUNDLE_NAME_LEN, bundleName.c_str(), bundleName.size());
+    errno_t ret = memcpy_s(point->bundleName, MAX_BUNDLE_NAME_LEN, bundleName.c_str(), bundleName.size());
+    if (ret != EOK) {
+        HILOG_ERROR("point bundleName memcpy_s failed.");
+        return actionArguments;
+    }
     point->timeStamp = timeStamp;
 
     uint32_t dataLen = sizeof(*point);
