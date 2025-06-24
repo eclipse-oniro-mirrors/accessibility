@@ -635,6 +635,9 @@ bool TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
 
     MMI::PointerEvent::PointerItem pointer {};
     event.GetPointerItem(event.GetPointerId(), pointer);
+
+    focusedWindowId_ = focusedElementInfo.GetWindowId();
+
     offsetX_ = (focusedElementInfo.GetRectInScreen().GetLeftTopXScreenPostion() +
         focusedElementInfo.GetRectInScreen().GetRightBottomXScreenPostion()) / DIVIDE_NUM - pointer.GetDisplayX();
     offsetY_ = (focusedElementInfo.GetRectInScreen().GetLeftTopYScreenPostion() +
