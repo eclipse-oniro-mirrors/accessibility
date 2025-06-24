@@ -413,7 +413,11 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         }
         accountData->RemoveConnectedAbility(*sharedElementName);
         accountData->RemoveEnabledAbility(uri);
-        accountData->RemoveInstalledAbility(sharedElementName->GetBundleName());
+
+        // the extension ability connected to aams by inner api
+        if (sharedElementName->GetBundleName() == sharedElementName->GetAbilityName()) {
+            accountData->RemoveInstalledAbility(sharedElementName->GetBundleName());
+        }
 
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
     std::string bundleName = sharedElementName->GetBundleName();
