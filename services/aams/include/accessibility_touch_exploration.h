@@ -383,6 +383,7 @@ private:
     // single-finger gesture
     int32_t offsetX_ = 0;
     int32_t offsetY_ = 0;
+    int32_t focusedWindowId_ = -1;
     float moveThreshold_ = 0;
     float xMinPixels_ = 0;
     float yMinPixels_ = 0;
