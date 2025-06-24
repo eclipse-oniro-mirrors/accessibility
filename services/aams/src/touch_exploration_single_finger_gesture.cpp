@@ -735,8 +735,16 @@ void TouchExploration::OffsetEvent(MMI::PointerEvent &event)
         return;
     }
 
+    AccessibilityWindowInfo windowInfo = {};
+    if (Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindow(focusedWindowId_, windowInfo)) {
+        event.SetZOrder(static_cast<float>(windowInfo.GetWindowLayer() + 1));
+    } else {
+        HILOG_ERROR("get windowInfo failed");
+    }
+
     MMI::PointerEvent::PointerItem pointer {};
     event.GetPointerItem(event.GetPointerId(), pointer);
+    pointer.SetTargetWindowId(focusedWindowId_);
     int32_t x = offsetX_ + pointer.GetDisplayX();
     int32_t y = offsetY_ + pointer.GetDisplayY();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
