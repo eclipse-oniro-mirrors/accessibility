@@ -13,6 +13,9 @@
 * limitations under the License.
 */
 
+#ifndef ANI_ACCESSIBILITY_CONFIG_H
+#define ANI_ACCESSIBILITY_CONFIG_H
+
 #include <vector>
 #include <map>
 #include <ani.h>
@@ -28,3 +31,5 @@ private:
     ANIAccessibilityConfig() = default;
     ~ANIAccessibilityConfig() = default;
 };
+
+#endif // ANI_ACCESSIBILITY_CONFIG_H
