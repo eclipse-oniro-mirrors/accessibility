@@ -1077,8 +1077,10 @@ void AccessibilitySettingsConfig::InitSetting()
     brightnessDiscount_ = static_cast<float>(datashare_->GetFloatValue(BRIGHTNESS_DISCOUNT_KEY, 1.0));
     audioBalance_ = static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0));
     SetAudioBalance(audioBalance_);
-    screenMagnificationType_ = static_cast<uint32_t>(datashare_->GetIntValue(SCREEN_MAGNIFICATION_TYPE, 0));
-    screenMagnificationMode_ = static_cast<uint32_t>(datashare_->GetIntValue(SCREEN_MAGNIFICATION_MODE, 0));
+    screenMagnificationType_ = static_cast<uint32_t>(
+        datashare_->GetIntValue(SCREEN_MAGNIFICATION_TYPE, FULL_SCREEN_MAGNIFICATION));
+    screenMagnificationMode_ = static_cast<uint32_t>(
+        datashare_->GetIntValue(SCREEN_MAGNIFICATION_MODE, FULL_SCREEN_MAGNIFICATION));
     screenMagnificationScale_ = static_cast<float>(
         datashare_->GetFloatValue(SCREEN_MAGNIFICATION_SCALE, DEFAULT_MAGNIFICATION_SCALE));
     clickResponseTime_ = static_cast<uint32_t>(datashare_->GetIntValue(CLICK_RESPONCE_TIME, 0));
