@@ -340,12 +340,12 @@ Rosen::Rect FullScreenMagnificationManager::GetSourceRectFromPointer(int32_t cen
     int32_t y = centerY - static_cast<int32_t>(sourceRect.height_ / DIVISOR_TWO);
 
     x = (x < 0) ? 0 : x;
-    x = (x + static_cast<int32_t>(sourceRect.width_)) > screenWidth_ ? static_cast<int32_t>(
-        screenWidth_ - sourceRect.width_) : x;
+    x = (x + static_cast<int32_t>(sourceRect.width_)) > static_cast<int32_t>(
+        screenWidth_) ? static_cast<int32_t>(screenWidth_ - sourceRect.width_) : x;
  
     y = (y < 0) ? 0 : y;
-    y = (y + static_cast<int32_t>(sourceRect.height_)) > screenHeight_ ? static_cast<int32_t>(
-        screenHeight_ - sourceRect.height_) : y;
+    y = (y + static_cast<int32_t>(sourceRect.height_)) > static_cast<int32_t>(
+        screenHeight_) ? static_cast<int32_t>(screenHeight_ - sourceRect.height_) : y;
 
     sourceRect.posX_ = x;
     sourceRect.posY_ = y;

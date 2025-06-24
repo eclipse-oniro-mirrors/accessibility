@@ -66,7 +66,7 @@ static bool GetData(size_t size, const void *data, void *&buffer)
     if (buffer == nullptr) {
         return false;
     }
-    if (memcpy_s(buffer, sizeof(void *) * size, data, size) != EOK) {
+    if (memcpy_s(buffer, sizeof(char) * size, data, size) != EOK) {
         free(buffer);
         return false;
     }
