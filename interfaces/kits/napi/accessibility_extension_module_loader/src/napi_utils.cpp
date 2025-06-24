@@ -37,6 +37,10 @@ RetError NAPICbInfo::Init(napi_env env, napi_callback_info info)
     if (!argv) {
         argv = new(std::nothrow) napi_value[argc];
     }
+    if (argv == nullptr) {
+        HILOG_ERROR("argv is null.");
+        return RetError::RET_ERR_NULLPTR;
+    }
 
     void* data = nullptr;
     napi_status status = napi_get_cb_info(env, info, &argc, argv, &thisVar, &data);

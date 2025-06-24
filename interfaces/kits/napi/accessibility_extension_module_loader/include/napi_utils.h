@@ -32,7 +32,7 @@ public:
     size_t argc;
     napi_value* argv = nullptr;
     napi_value thisVar = nullptr;
-    napi_env env;
+    napi_env env = nullptr;
 };
 } // namespace OHOS::Accessibility
 
