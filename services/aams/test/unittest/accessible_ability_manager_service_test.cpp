@@ -1262,7 +1262,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, CheckExtensionAbilityPermissio
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_001 start";
     std::string processName = "";
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().CheckExtensionAbilityPermission(
+    EXPECT_NE(RET_ERR_NO_PERMISSION,
+        Singleton<AccessibleAbilityManagerService>::GetInstance().CheckExtensionAbilityPermission(
         processName));
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_001 end";
 }
@@ -1332,7 +1333,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_003, TestS
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableUITestAbility_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_001 start";
-    EXPECT_EQ(RET_ERR_NO_CONNECTION, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility());
+    EXPECT_EQ(RET_ERR_NO_PERMISSION, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility());
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_001 end";
 }
 
@@ -1631,7 +1632,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableUITestAbility_002, Test
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_002 start";
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    EXPECT_EQ(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility(), RET_ERR_NULLPTR);
+    EXPECT_EQ(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility(),
+        RET_ERR_NO_PERMISSION);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_002 end";
 }
 
@@ -2412,7 +2414,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, FindInnerWindowId_001, TestSiz
     event.SetSource(1);
     int32_t windowId = 0;
     Singleton<AccessibleAbilityManagerService>::GetInstance().FindInnerWindowId(event, windowId);
-    EXPECT_EQ(windowId, 0);
+    EXPECT_TRUE(windowId == 0);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_FindInnerWindowId_001 end";
 }
 
