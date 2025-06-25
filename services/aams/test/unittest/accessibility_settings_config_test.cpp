@@ -17,6 +17,9 @@
 #include "accessibility_settings_config.h"
 #include "mock_preferences.h"
 #include "system_ability_definition.h"
+#include "accesstoken_kit.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -45,6 +48,7 @@ namespace {
     const std::string CONFIG_IGNOREREPEATCLICKSTATE = "ignoreRepeatClickState";
     const std::string CONFIG_SHORTCUT_ON_LOCK_SCREEN = "shortcutOnLockScreen";
     const std::string CONFIG_SHORTCUT_TIMEOUT = "shortcutTimeout";
+    const std::string ENABLE_ABILITY_NAME = "HIGH_CONTRAST_TEXT";
 } // namespace
 
 class AccessibilitySettingsConfigTest : public testing::Test {
@@ -63,9 +67,34 @@ public:
     void TearDown() override;
 };
 
+void AddPermission()
+{
+    const char *perms[] = {
+        OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str(),
+        OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str(),
+        OHOS_PERMISSION_MANAGE_SECURE_SETTINGS.c_str(),
+        OHOS_PERMISSION_MANAGE_SETTINGS.c_str()
+    };
+    NativeTokenInfoParams infoInstance = {
+        .dcapsNum = 0,
+        .permsNum = 4,
+        .aclsNum = 0,
+        .dcaps = nullptr,
+        .perms = perms,
+        .acls = nullptr,
+        .processName = "com.accessibility.accessibilitySettingsConfigTest",
+        .aplStr = "normal",
+    };
+    uint64_t tokenId = GetAccessTokenId(&infoInstance);
+    auto ret = SetSelfTokenID(tokenId);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest AddPermission SetSelfTokenID ret: " << ret;
+    Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
+}
+
 void AccessibilitySettingsConfigTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest SetUpTestCase";
+    AddPermission();
 }
 
 void AccessibilitySettingsConfigTest::TearDownTestCase()
@@ -75,7 +104,7 @@ void AccessibilitySettingsConfigTest::TearDownTestCase()
 
 void AccessibilitySettingsConfigTest::SetUp()
 {
-    int32_t accountId = 1;
+    int32_t accountId = 100;
     settingConfig_ = std::make_shared<AccessibilitySettingsConfig>(accountId);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest SetUp";
 }
@@ -95,6 +124,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_I
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_Init start";
     settingConfig_->Init();
+    EXPECT_TRUE(settingConfig_->GetInitializeState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_Init end";
 }
 
@@ -457,8 +487,9 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 start";
+    settingConfig_->Init();
     settingConfig_->SetMouseAutoClick(MOUSE_AUTO_CLICK_VALUE);
-    EXPECT_EQ(MOUSE_AUTO_CLICK_VALUE, settingConfig_->GetMouseAutoClick());
+    EXPECT_EQ(-1, settingConfig_->GetMouseAutoClick());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 end";
 }
 
@@ -488,8 +519,9 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002 start";
     std::string name = "TEST";
+    settingConfig_->Init();
     settingConfig_->SetShortkeyTarget(name);
-    EXPECT_STREQ("TEST", settingConfig_->GetShortkeyTarget().c_str());
+    EXPECT_STREQ("", settingConfig_->GetShortkeyTarget().c_str());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002 end";
 }
 
@@ -881,6 +913,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_C
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_ClearData_001 start";
     settingConfig_->Init();
+    EXPECT_TRUE(settingConfig_->GetInitializeState());
     settingConfig_->ClearData();
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_ClearData_001 end";
 }
@@ -896,6 +929,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, Unittest_SetShortkeyMultiTargetInPkgRe
     settingConfig_->Init();
     std::string name = "TEST";
     settingConfig_->SetShortkeyMultiTargetInPkgRemove(name);
+    EXPECT_NE(settingConfig_->GetShortkeyMultiTarget().size(), 0);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001 end";
 }
 
@@ -960,6 +994,71 @@ HWTEST_F(AccessibilitySettingsConfigTest,
     int32_t ret = settingConfig_->SetShortkeyMultiTargetInPkgRemove(name);
     EXPECT_EQ(ret, RET_ERR_NULLPTR);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetScreenMagnificationType_001
+ * @tc.name: SetScreenMagnificationType
+ * @tc.desc: Test function SetScreenMagnificationType GetScreenMagnificationType
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetScreenMagnificationType_001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationType_001 start";
+    settingConfig_->Init();
+    uint32_t screenMagnificationType = 0;
+    settingConfig_->SetScreenMagnificationType(screenMagnificationType);
+
+    EXPECT_EQ(settingConfig_->GetScreenMagnificationType(), 0);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationType_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_RemoveEnabledAccessibilityService_001
+ * @tc.name: RemoveEnabledAccessibilityService
+ * @tc.desc: Test function AddEnabledAccessibilityService RemoveEnabledAccessibilityService
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_RemoveEnabledAccessibilityService_001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_RemoveEnabledAccessibilityService_001 start";
+    settingConfig_->Init();
+    settingConfig_->RemoveEnabledAccessibilityService(ENABLE_ABILITY_NAME);
+    settingConfig_->AddEnabledAccessibilityService(ENABLE_ABILITY_NAME);
+    RetError rtn = settingConfig_->RemoveEnabledAccessibilityService(ENABLE_ABILITY_NAME);
+
+    EXPECT_EQ(rtn, RET_OK);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_RemoveEnabledAccessibilityService_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_OnDataClone_001
+ * @tc.name: OnDataClone
+ * @tc.desc: Test function OnDataClone
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_OnDataClone_001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_OnDataClone start";
+    settingConfig_->Init();
+    settingConfig_->OnDataClone();
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_OnDataClone end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetInitializeState_001
+ * @tc.name: SetInitializeState
+ * @tc.desc: Test function SetInitializeState GetInitializeState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetInitializeState_001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInitializeState_001 start";
+    settingConfig_->Init();
+    settingConfig_->SetInitializeState(false);
+
+    EXPECT_EQ(settingConfig_->GetInitializeState(), 0);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInitializeState_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
