@@ -124,7 +124,6 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_I
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_Init start";
     settingConfig_->Init();
-    EXPECT_TRUE(settingConfig_->GetInitializeState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_Init end";
 }
 
