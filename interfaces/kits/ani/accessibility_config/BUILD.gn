@@ -19,7 +19,6 @@ ohos_shared_library("AccessibilityConfig") {
     "../../../../common/log/include",
     "../../../../common/interface/include",
     "../../../../frameworks/acfwk/include",
-    "../include",
     "./include",
   ]
   sanitize = {
@@ -31,7 +30,6 @@ ohos_shared_library("AccessibilityConfig") {
     debug = false
   }
   deps = [
-    "../../ani:ACCESSIBILITYNativeModule",
     "../../../innerkits/acfwk:accessibilityconfig",
     "../../../innerkits/common:accessibility_common",
   ]
@@ -46,6 +44,7 @@ ohos_shared_library("AccessibilityConfig") {
   ]
   sources = [
     "./src/ani_accessibility_config.cpp",
+    "./src/ani_config_utils.cpp",
     "./src/ani_register.cpp",
   ]
   part_name = "accessibility"
