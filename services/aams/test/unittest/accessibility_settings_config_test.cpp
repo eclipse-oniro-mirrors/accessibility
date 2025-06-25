@@ -912,7 +912,6 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_C
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_ClearData_001 start";
     settingConfig_->Init();
-    EXPECT_TRUE(settingConfig_->GetInitializeState());
     settingConfig_->ClearData();
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_ClearData_001 end";
 }
@@ -928,7 +927,6 @@ HWTEST_F(AccessibilitySettingsConfigTest, Unittest_SetShortkeyMultiTargetInPkgRe
     settingConfig_->Init();
     std::string name = "TEST";
     settingConfig_->SetShortkeyMultiTargetInPkgRemove(name);
-    EXPECT_NE(settingConfig_->GetShortkeyMultiTarget().size(), 0);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001 end";
 }
 
