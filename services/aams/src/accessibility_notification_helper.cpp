@@ -161,6 +161,10 @@ static std::shared_ptr<OHOS::Media::PixelMap> GetIcon()
         HILOG_ERROR("Failed to get icon");
         return nullptr;
     }
+    if (icon == nullptr) {
+        HILOG_ERROR("icon is null");
+        return nullptr;
+    }
     icon->scale(ICON_SIZE, ICON_SIZE);
     return icon;
 }
