@@ -16,7 +16,7 @@
 #include <array>
 #include <iostream>
 #include "ani_accessibility_config.h"
-#include "ani_utils.h"
+#include "ani_config_utils.h"
 #include "hilog_wrapper.h"
 
 void ANIAccessibilityConfig::SetHighContrastText(ani_env *env, ani_object object, ani_boolean state)
