@@ -62,7 +62,7 @@ public:
     static void SubscribeState(ani_env *env, ani_string type, ani_object callback);
     static void UnsubscribeState(ani_env *env, ani_string type, ani_object callback);
     static void UnsubscribeStateAll(ani_env *env, ani_string type);
-    static ani_int SendAccessibilityEvent(ani_env *env, ani_object eventObject);
+    static void SendAccessibilityEvent(ani_env *env, ani_object eventObject);
 
     static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;
     static std::shared_ptr<StateListenerImpl> touchGuideStateListeners_;

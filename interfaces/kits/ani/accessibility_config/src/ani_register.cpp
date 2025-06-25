@@ -18,6 +18,9 @@
 #include <iostream>
 #include "ani_accessibility_config.h"
 #include "hilog_wrapper.h"
+#include <ani_signature_builder.h>
+
+using namespace arkts::ani_signature;
 
 constexpr int32_t INVALID_ANI_VERSION = 1;
 constexpr int32_t MODULE_NOT_FOUND = 2;
@@ -34,10 +37,10 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
         return (ani_status)INVALID_ANI_VERSION;
     }
 
-    static const char *className = "L@ohos/accessibility/config/config/HighContrastTextConfig;";
+    Type highContrastTextClass = Builder::BuildClass("@ohos.accessibility.config.config.HighContrastTextConfig");
     ani_class cls;
-    if (env->FindClass(className, &cls) != ANI_OK) {
-        HILOG_ERROR("class not found: %{public}s", className);
+    if (env->FindClass(highContrastTextClass.Descriptor().c_str(), &cls) != ANI_OK) {
+        HILOG_ERROR("HighContrastTextConfig class not found");
         return (ani_status)CLASS_NOT_FOUND;
     }
 
