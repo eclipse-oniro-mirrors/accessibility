@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import { AccessibilityError } from '@ohos.accessibility';
+import { BusinessError } from '@ohos.base';
 
 export namespace config {
     loadLibrary("AccessibilityConfig");
@@ -33,20 +33,20 @@ export namespace config {
                     resolve(ret as undefined);
                 })
                 .catch((ret: NullishType): void => {
-                    reject(ret as AccessibilityError);
+                    reject(ret as BusinessError);
                 });
             });
         }
 
-        set(value: boolean, callback:(err: AccessibilityError) => void): void {
+        set(value: boolean, callback:(err: BusinessError) => void): void {
             taskpool.execute((): void => {
                 return this.setSync(value);
             })
             .then((ret: NullishType): void => {
-                callback(new AccessibilityError(0, ""));
+                callback(new BusinessError());
             })
             .catch((ret: NullishType): void => {
-                callback(ret as AccessibilityError);
+                callback(ret as BusinessError);
             });
         }
 
@@ -59,20 +59,20 @@ export namespace config {
                     resolve(ret as boolean);
                 })
                 .catch((ret: NullishType): void => {
-                    reject(ret as AccessibilityError);
+                    reject(ret as BusinessError);
                 });
             });
         }
 
-        get(callback:(err: AccessibilityError, data: boolean) => void): void {
+        get(callback:(err: BusinessError, data: boolean) => void): void {
             taskpool.execute((): boolean => {
                 return this.getSync();
             })
             .then((ret: NullishType): void => {
-                callback(new AccessibilityError(0, ""), ret as boolean);
+                callback(new BusinessError(), ret as boolean);
             })
             .catch((ret: NullishType): void => {
-                callback(ret as AccessibilityError, false);
+                callback(ret as BusinessError, false);
             });
         }
     }
