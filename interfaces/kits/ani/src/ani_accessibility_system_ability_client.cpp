@@ -237,8 +237,8 @@ void ANIAccessibilityClient::SendAccessibilityEvent(ani_env *env, ani_object eve
         return;
     }
 
-    bool ret = ANIUtils::ConvertEventInfoMandatoryFields(env, eventObject, eventInfo);
-    if (!ret) {
+    ani_int ret = ANIUtils::ConvertEventInfoMandatoryFields(env, eventObject, eventInfo);
+    if (ret != 0) {
         HILOG_ERROR("ConvertEventInfoMandatoryFields failed");
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
         return;
