@@ -298,6 +298,7 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<s
         HILOG_ERROR("set shortkeyMultiTarget_ failed");
         return ret;
     }
+    HILOG_DEBUG("targets size is %{public}d", targets.size());
     shortkeyMultiTarget_ = std::vector<std::string>(targets.begin(), targets.end());
     return ret;
 }
@@ -314,6 +315,7 @@ RetError AccessibilitySettingsConfig::SetShortkeyMultiTargetInPkgRemove(const st
 
     for (auto iter = shortkeyMultiTarget_.begin(); iter != shortkeyMultiTarget_.end(); ++iter) {
         if (*iter == name) {
+            HILOG_DEBUG("erase target is %{public}s", name.c_str());
             shortkeyMultiTarget_.erase(iter);
             std::string stringOut = "";
             Utils::VectorToString(shortkeyMultiTarget_, stringOut);
