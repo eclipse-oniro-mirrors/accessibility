@@ -16,7 +16,7 @@
 #include <array>
 #include <iostream>
 #include "ani_accessibility_config.h"
-#include "ani_utils.h"
+#include "ani_config_utils.h"
 #include "hilog_wrapper.h"
 
 void ANIAccessibilityConfig::SetHighContrastText(ani_env *env, ani_object object, ani_boolean state)
@@ -24,7 +24,7 @@ void ANIAccessibilityConfig::SetHighContrastText(ani_env *env, ani_object object
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     auto ret = instance.SetHighContrastTextState(state);
     if (ret != OHOS::Accessibility::RetError::RET_OK) {
-        ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(ret));
+        ANIConfigUtils::ThrowBusinessError(env, ANIConfigUtils::QueryRetMsg(ret));
     }
     HILOG_INFO("SetHighContrastText ret = %{public}d", static_cast<int32_t>(ret));
     return;
@@ -36,7 +36,7 @@ ani_boolean ANIAccessibilityConfig::GetHighContrastText(ani_env *env, ani_object
     bool state = false;
     auto ret = instance.GetHighContrastTextState(state);
     if (ret != OHOS::Accessibility::RetError::RET_OK) {
-        ANIUtils::ThrowAccessibilityError(env, ANIUtils::QueryRetMsg(ret));
+        ANIConfigUtils::ThrowBusinessError(env, ANIConfigUtils::QueryRetMsg(ret));
     }
     HILOG_INFO("GetHighContrastText ret = %{public}d", static_cast<int32_t>(ret));
     return static_cast<ani_boolean>(state);
