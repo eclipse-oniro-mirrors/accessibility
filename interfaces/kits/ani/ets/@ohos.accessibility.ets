@@ -13,24 +13,9 @@
  * limitations under the License.
  */
 
-export class AccessibilityError extends Error {
-    constructor(code: int, message: string) {
-        super(message)
-        this.code = code;
-    }
-    code: int;
-}
+import { BusinessError, AsyncCallback } from '@ohos.base';
 
-type AccessibilityCallback<T> = (err: AccessibilityError, data?: T) => void;
-
-native function sendAccessibilityEventSync(event: accessibility.EventInfo): int;
-
-let errMap: Map<int, string> = new Map<int, string>();
-errMap.set(9300001, 'Invalid bundle name or ability name.');
-errMap.set(9300002, 'Target ability already enabled.');
-errMap.set(9300003, 'No accessibility permission to perform the operation.');
-errMap.set(9300004, 'This property does not exist.');
-errMap.set(9300005, 'This action is not supported.');
+native function sendAccessibilityEventSync(event: accessibility.EventInfo): void;
 
 export namespace accessibility {
     loadLibrary("ACCESSIBILITYNativeModule");
@@ -95,32 +80,29 @@ export namespace accessibility {
         customId?: string;
     }
 
-    export function sendAccessibilityEvent(event: EventInfo, callback:AccessibilityCallback<void>): void {
-        let p1 = taskpool.execute(sendAccessibilityEventSync, event);
-        p1.then((code: NullishType) => {
-            let codeInt = code as int;
-            let message = errMap.get(code as int) ?? '';
-            let err: AccessibilityError = new AccessibilityError(codeInt, message);
-            callback(err);
+    export function sendAccessibilityEvent(event: EventInfo, callback: AsyncCallback<void>): void {
+        taskpool.execute((): void => {
+            return sendAccessibilityEventSync(event);
+        })
+        .then((ret: NullishType): void => {
+            callback(new BusinessError(), ret as undefined);
+        })
+        .catch((ret: NullishType): void => {
+            callback(ret as BusinessError, undefined);
         });
     }
 
     export function sendAccessibilityEvent(event: EventInfo): Promise<void> {
-        let p = new Promise<void> ((resolve: (v: undefined) => void, reject: (error: AccessibilityError) => void): void => {
-            let p1 = taskpool.execute(sendAccessibilityEventSync, event);
-            p1.then((code :NullishType) => {
-                let codeInt = code as int;
-                let message = errMap.get(code as int) ?? '';
-                let err: AccessibilityError = new AccessibilityError(codeInt, message);
-                if(err.code != 0){
-                    reject(err);
-                }
-                else{
-                    resolve(undefined);
-                }
+        return new Promise<void>((resolve, reject): void => {
+            taskpool.execute((): void => {
+                return sendAccessibilityEventSync(event);
+            })
+            .then((ret: NullishType): void => {
+                resolve(ret as undefined);
+            })
+            .catch((ret: NullishType): void => {
+                reject(ret as BusinessError);
             });
-        
         });
-        return p;
     }
 }

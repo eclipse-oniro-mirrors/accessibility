@@ -302,29 +302,42 @@ NAccessibilityErrMsg ANIUtils::QueryRetMsg(RetError errorCode)
     }
 }
 
-void ANIUtils::ThrowAccessibilityError(ani_env *env, NAccessibilityErrMsg errMsg)
+void ANIUtils::ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
 {
-    Type errorClass = Builder::BuildClass("@ohos.accessibility.AccessibilityError");
+    Type errorClass = Builder::BuildClass("@ohos.base.BusinessError");
     ani_class cls {};
     if (env->FindClass(errorClass.Descriptor().c_str(), &cls) != ANI_OK) {
-        HILOG_ERROR("find class AccessibilityError failed");
+        HILOG_ERROR("find class BusinessError failed");
         return;
     }
     ani_method ctor;
     std::string ctorName = Builder::BuildConstructorName();
-    if (env->Class_FindMethod(cls, ctorName.c_str(), nullptr, &ctor) != ANI_OK) {
-        HILOG_ERROR("find method AccessibilityError.constructor failed");
+    SignatureBuilder sb{};
+    if (env->Class_FindMethod(cls, ctorName.c_str(), sb.BuildSignatureDescriptor().c_str(), &ctor) != ANI_OK) {
+        HILOG_ERROR("find method BusinessError.constructor failed");
         return;
     }
-    ani_int errCode = static_cast<ani_int>(errMsg.errCode);
+    ani_double errCode = static_cast<ani_double>(errMsg.errCode);
     ani_string errMsgStr;
     env->String_NewUTF8(errMsg.message.c_str(), errMsg.message.length(), &errMsgStr);
     ani_object errorObject;
-    if (env->Object_New(cls, ctor, &errorObject, errCode, errMsgStr) != ANI_OK) {
-        HILOG_ERROR("create AccessibilityError object failed");
+    if (env->Object_New(cls, ctor, &errorObject) != ANI_OK) {
+        HILOG_ERROR("create BusinessError object failed");
         return;
     }
-    env->ThrowError(static_cast<ani_error>(errorObject));
+    if (env->Object_SetPropertyByName_Double(errorObject, "code", errCode) != ANI_OK) {
+        HILOG_ERROR("set property BusinessError.code failed!");
+        return;
+    }
+    if (env->Object_SetPropertyByName_Ref(errorObject, "message", static_cast<ani_ref>(errMsgStr)) != ANI_OK) {
+        HILOG_ERROR("set property BusinessError.message failed!");
+        return;
+    }
+    if (env->ThrowError(static_cast<ani_error>(errorObject)) != ANI_OK) {
+        HILOG_ERROR("throw BusinessError failed!");
+        return;
+    }
+    HILOG_INFO("throw BusinessError success!");
     return;
 }
 
