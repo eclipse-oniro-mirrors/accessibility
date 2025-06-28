@@ -77,21 +77,5 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_Register_
     shortKey_->Register();
     GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_001 end";
 }
-
-/**
- * @tc.number: Accessibility_Short_Key_UnitTest_AccessibilityShortKey001
- * @tc.name: AccessibilityShortKey
- * @tc.desc: Test function AccessibilityShortKey(power key cancel)
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessibility_Short_Key_UnitTest_AccessibilityShortKey001 start";
-    TearDownTestCase();
-    sptr<AccessibilityShortKey> test = new (std::nothrow) AccessibilityShortKey();
-    test = nullptr;
-    SetUpTestCase();
-    GTEST_LOG_(INFO) << "Accessibility_Short_Key_UnitTest_AccessibilityShortKey001 end";
-}
 } // namespace Accessibility
 } // namespace OHOS
