@@ -18,7 +18,6 @@ group("aniaccessibility") {
   deps = [
     ":ACCESSIBILITYNativeModule",
     ":accessibility_ani_abc_etc",
-    "accessibility_extension:AccessibilityExtensionAbility_ani_abc_etc",
     "accessibility_config:AccessibilityConfig",
     "accessibility_config:accessibility_config_ani_abc_etc",
   ]
