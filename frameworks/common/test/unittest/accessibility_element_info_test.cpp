@@ -1697,5 +1697,113 @@ HWTEST_F(AccessibilityElementInfoTest, SetUniqueId_001, TestSize.Level1)
     EXPECT_EQ(elementInfo_->GetUniqueId(), 1);
     GTEST_LOG_(INFO) << "SetUniqueId_001 end";
 }
+
+/**
+ * @tc.number: SetOriginalText_001
+ * @tc.name: SetOriginalText
+ * @tc.desc: Test function SetOriginalText, GetOriginalText with normal text
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetOriginalText_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetOriginalText_001 start";
+    std::string originalText = "Hello World";
+    elementInfo_->SetOriginalText(originalText);
+    EXPECT_STREQ(elementInfo_->GetOriginalText().c_str(), "Hello World");
+    GTEST_LOG_(INFO) << "SetOriginalText_001 end";
+}
+
+/**
+ * @tc.number: SetOriginalText_002
+ * @tc.name: SetOriginalText
+ * @tc.desc: Test function SetOriginalText, GetOriginalText with empty string
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetOriginalText_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetOriginalText_002 start";
+    std::string originalText = "";
+    elementInfo_->SetOriginalText(originalText);
+    EXPECT_STREQ(elementInfo_->GetOriginalText().c_str(), "");
+    GTEST_LOG_(INFO) << "SetOriginalText_002 end";
+}
+
+/**
+ * @tc.number: SetOriginalText_003
+ * @tc.name: SetOriginalText
+ * @tc.desc: Test function SetOriginalText, GetOriginalText with Chinese text
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetOriginalText_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetOriginalText_003 start";
+    std::string originalText = "你好世界";
+    elementInfo_->SetOriginalText(originalText);
+    EXPECT_STREQ(elementInfo_->GetOriginalText().c_str(), "你好世界");
+    GTEST_LOG_(INFO) << "SetOriginalText_003 end";
+}
+
+/**
+ * @tc.number: SetOriginalText_004
+ * @tc.name: SetOriginalText
+ * @tc.desc: Test function SetOriginalText, GetOriginalText with special characters
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetOriginalText_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetOriginalText_004 start";
+    std::string originalText = "!@#$%^&*()_+-=[]{}|;':\",./<>?";
+    elementInfo_->SetOriginalText(originalText);
+    EXPECT_STREQ(elementInfo_->GetOriginalText().c_str(), "!@#$%^&*()_+-=[]{}|;':\",./<>?");
+    GTEST_LOG_(INFO) << "SetOriginalText_004 end";
+}
+
+/**
+ * @tc.number: SetOriginalText_005
+ * @tc.name: SetOriginalText
+ * @tc.desc: Test function SetOriginalText, GetOriginalText with long text
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetOriginalText_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetOriginalText_005 start";
+    std::string originalText = "This is a very long text string that contains multiple words and sentences. "
+                              "It is used to test the SetOriginalText and GetOriginalText functions with "
+                              "longer content to ensure they work correctly with various text lengths.";
+    elementInfo_->SetOriginalText(originalText);
+    EXPECT_STREQ(elementInfo_->GetOriginalText().c_str(), originalText.c_str());
+    GTEST_LOG_(INFO) << "SetOriginalText_005 end";
+}
+
+/**
+ * @tc.number: SetOriginalText_006
+ * @tc.name: SetOriginalText
+ * @tc.desc: Test function SetOriginalText, GetOriginalText with newline characters
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetOriginalText_006, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetOriginalText_006 start";
+    std::string originalText = "Line 1\nLine 2\nLine 3";
+    elementInfo_->SetOriginalText(originalText);
+    EXPECT_STREQ(elementInfo_->GetOriginalText().c_str(), "Line 1\nLine 2\nLine 3");
+    GTEST_LOG_(INFO) << "SetOriginalText_006 end";
+}
+
+/**
+ * @tc.number: SetOriginalText_007
+ * @tc.name: SetOriginalText
+ * @tc.desc: Test function SetOriginalText, GetOriginalText with multiple calls (overwrite)
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetOriginalText_007, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetOriginalText_007 start";
+    // First set
+    elementInfo_->SetOriginalText("First Text");
+    EXPECT_STREQ(elementInfo_->GetOriginalText().c_str(), "First Text");
+
+    // Second set (should overwrite)
+    elementInfo_->SetOriginalText("Second Text");
+    EXPECT_STREQ(elementInfo_->GetOriginalText().c_str(), "Second Text");
+
+    // Third set with empty string
+    elementInfo_->SetOriginalText("");
+    EXPECT_STREQ(elementInfo_->GetOriginalText().c_str(), "");
+    GTEST_LOG_(INFO) << "SetOriginalText_007 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
