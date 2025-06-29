@@ -19,6 +19,7 @@
 #include "accessibility_window_manager.h"
 #include "accessible_ability_connection.h"
 #include "hilog_wrapper.h"
+#include <cinttypes>
 #include "transaction/rs_interfaces.h"
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "accessibility_power_manager.h"
@@ -909,6 +910,67 @@ RetError AccessibleAbilityChannel::ConfigureEvents(const std::vector<uint32_t> n
         return RET_ERR_FAILED;
     }
     return RET_OK;
+}
+
+void AccessibleAbilityChannel::SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
+    const SpecificPropertyParam& param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    int32_t treeId = elementBasicInfo.treeId;
+    int32_t windowId = elementBasicInfo.windowId;
+    int64_t elementId = elementBasicInfo.elementId;
+    HILOG_DEBUG("elementId:%{public}" PRId64 " winId: %{public}d treeId: %{public}d "
+        "propertyTarget:%{public}s propertyType:%{public}u",
+        elementId, windowId, treeId, param.propertyTarget.c_str(), static_cast<uint32_t>(param.propertyType));
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
+
+    if (eventHandler_ == nullptr || callback == nullptr) {
+        HILOG_ERROR("eventHandler_ exist: %{public}d, callback exist: %{public}d.", eventHandler_ != nullptr,
+            callback != nullptr);
+        return;
+    }
+
+    int32_t accountId = accountId_;
+    std::string clientName = clientName_;
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
+    eventHandler_->PostTask([accountId, clientName, syncPromise, windowId, elementId, treeId, requestId,
+        callback, param]() {
+        HILOG_DEBUG("search element accountId[%{public}d], name[%{public}s]", accountId, clientName.c_str());
+        sptr<IAccessibilityElementOperator> elementOperator = nullptr;
+        RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID, clientName,
+            elementOperator, treeId);
+        if (ret != RET_OK || !CheckWinFromAwm(windowId)) {
+            HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", windowId);
+            std::list<AccessibilityElementInfo> infos = {};
+            std::list<AccessibilityElementInfo> treeInfos = {};
+            callback->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+            syncPromise->set_value(ret);
+            return;
+        }
+
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        if (windowId == SCENE_BOARD_WINDOW_ID && awm.IsInnerWindowRootElement(elementId)) {
+            std::list<AccessibilityElementInfo> infos = {};
+            std::list<AccessibilityElementInfo> treeInfos = {};
+            callback->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+            HILOG_DEBUG("IsInnerWindowRootElement elementId: %{public}" PRId64 "", elementId);
+        } else {
+            int64_t realElementId = awm.GetSceneBoardElementId(windowId, elementId);
+            Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(windowId, treeId,
+                requestId, callback);
+            elementOperator->SearchElementInfoBySpecificProperty(realElementId, param, requestId, callback);
+            HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfosBySpecificProperty successfully");
+        }
+        syncPromise->set_value(RET_OK);
+        }, "SearchElementInfosBySpecificProperty");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
+        HILOG_ERROR("Failed to wait SearchElementInfosBySpecificProperty result");
+        return;
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

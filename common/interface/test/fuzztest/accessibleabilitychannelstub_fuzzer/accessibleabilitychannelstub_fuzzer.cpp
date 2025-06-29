@@ -118,6 +118,9 @@ public:
     {
         return RET_OK;
     }
+    void SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
+        const SpecificPropertyParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 };
 
 template<class T>

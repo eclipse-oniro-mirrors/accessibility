@@ -138,6 +138,17 @@ public:
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
 
     /**
+     * @brief Search element information by specific property.
+     * @param elementId: The unique id of the component ID.
+     * @param param The specific property parameters.
+     * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the node info to ASAC and it defined by ASAC.
+     */
+    void SearchElementInfoBySpecificProperty(const int64_t elementId,
+        const SpecificPropertyParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback>& callback) override;
+
+    /**
      * @brief The function is called while accessibility System check the id of window is not equal
      * to the id of active window when sendAccessibility.
      */

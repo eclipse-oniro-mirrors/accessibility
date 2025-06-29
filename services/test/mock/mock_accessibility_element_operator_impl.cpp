@@ -133,6 +133,19 @@ void MockAccessibilityElementOperatorImpl::GetCursorPosition(const int64_t eleme
     return;
 }
 
+void MockAccessibilityElementOperatorImpl::SearchElementInfoBySpecificProperty(const int64_t elementId,
+    const SpecificPropertyParam& param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback>& callback)
+{
+    int32_t mRequestId = AddRequest(requestId, callback);
+    if (operator_) {
+        operator_->SearchElementInfoBySpecificProperty(elementId, param, mRequestId, operatorCallback_);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
+    return;
+}
+
 void MockAccessibilityElementOperatorImpl::ClearFocus()
 {
     if (operator_) {

@@ -42,6 +42,9 @@ public:
         int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD3(GetCursorPosition, void(const int64_t elementId,
         int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
+    MOCK_METHOD4(SearchElementInfoBySpecificProperty, void(const int64_t elementId,
+        const SpecificPropertyParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD0(ClearFocus, void());
     MOCK_METHOD0(OutsideTouch, void());
     MOCK_METHOD3(SetChildTreeIdAndWinId, void(const int64_t elementId, const int32_t treeId,

@@ -218,6 +218,18 @@ public:
      */
     virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override;
 
+    /**
+     * @brief Search element infos by specific property.
+     * @param elementBasicInfo The basic info of the element.
+     * @param param The specific property parameters.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param callback The callback to return the result.
+     * @return Returns 0 on success, others on failure.
+     */
+    virtual void SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
+        const SpecificPropertyParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
 private:
     /**
      * @brief Write the descriptor of IPC.

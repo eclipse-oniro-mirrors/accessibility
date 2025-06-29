@@ -162,6 +162,17 @@ public:
      * @sysCap Accessibility
     */
     virtual void SetParentWindowId(const int32_t iParentWindowId) = 0;
+
+    /**
+     * @brief Search element info by specific property.
+     * @param elementId The unique id of the component ID.
+     * @param param The specific property parameters.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param callback The callback to return the result.
+     */
+    virtual void SearchElementInfoBySpecificProperty(const int64_t elementId,
+        const SpecificPropertyParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

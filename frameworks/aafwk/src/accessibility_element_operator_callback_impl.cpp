@@ -93,5 +93,20 @@ void AccessibilityElementOperatorCallbackImpl::SetCursorPositionResult(const int
         promiseFlag_ = true;
     }
 }
+
+void AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoBySpecificPropertyResult(
+    const std::list<AccessibilityElementInfo> &infos, const std::list<AccessibilityElementInfo> &treeInfos,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("Response[elementInfoSize:%{public}zu] [treeInfoSize:%{public}zu] [requestId:%{public}d]",
+        infos.size(), treeInfos.size(), requestId);
+
+    elementInfosResult_.assign(infos.begin(), infos.end());
+    treeInfosResult_.assign(treeInfos.begin(), treeInfos.end());
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

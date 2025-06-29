@@ -100,5 +100,13 @@ ErrCode MockAccessibilityElementOperatorStub::HandleOutsideTouch(MessageParcel& 
     (void)reply;
     return NO_ERROR;
 }
+
+ErrCode MockAccessibilityElementOperatorStub::HandleSearchElementInfoBySpecificProperty(MessageParcel& data,
+    MessageParcel& reply)
+{
+    (void)data;
+    (void)reply;
+    return NO_ERROR;
+}
 } // namespace Accessibility
 } // namespace OHOS

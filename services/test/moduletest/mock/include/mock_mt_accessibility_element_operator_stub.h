@@ -43,6 +43,9 @@ public:
     MOCK_METHOD3(GetCursorPosition,
         void(const int64_t elementId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback));
+    MOCK_METHOD4(SearchElementInfoBySpecificProperty, void(const int64_t elementId,
+        const SpecificPropertyParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD0(ClearFocus, void());
     MOCK_METHOD0(OutsideTouch, void());
     MOCK_METHOD1(SetWindowId, void(int32_t windowId));

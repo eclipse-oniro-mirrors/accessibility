@@ -89,6 +89,15 @@ public:
      */
     void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
 
+    /**
+     * @brief Set the search element info by specific property result.
+     * @param infos The element infos searched by specific property.
+     * @param treeInfos The element infos searched by specific property.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
+         const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override;
+
 private:
     /**
      * @brief Write the descriptor of IPC.
@@ -107,6 +116,15 @@ private:
      */
     bool SendTransactCmd(AccessibilityInterfaceCode code, MessageParcel &data,
         MessageParcel &reply,  MessageOption &option);
+
+    /**
+     * @brief Write accessibility element infos to MessageParcel as raw data for
+     *    SetSearchElementInfoBySpecificPropertyResult.
+     * @param infos The accessibility element infos to write.
+     * @param data The MessageParcel to write raw data to.
+     * @return true: Write successfully; otherwise is false.
+     */
+    bool WriteElementInfosToRawData(const std::list<AccessibilityElementInfo> &infos, MessageParcel &data);
 
     static inline BrokerDelegator<AccessibilityElementOperatorCallbackProxy> delegator;
 };

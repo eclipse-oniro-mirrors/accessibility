@@ -62,6 +62,9 @@ public:
     MOCK_METHOD1(SetIsRegisterDisconnectCallback, RetError(bool isRegister));
     MOCK_METHOD0(NotifyDisconnect, RetError());
     MOCK_METHOD1(ConfigureEvents, RetError(const std::vector<uint32_t> needEvents));
+    MOCK_METHOD4(SearchElementInfoBySpecificProperty, void(const ElementBasicInfo elementBasicInfo,
+        const SpecificPropertyParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback>& callback));
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -15,6 +15,7 @@
 
 #include "accessibility_element_operator_proxy.h"
 #include "hilog_wrapper.h"
+#include <cinttypes>
 
 namespace OHOS {
 namespace Accessibility {
@@ -490,6 +491,59 @@ void AccessibilityElementOperatorProxy::SetParentWindowId(const int32_t iParentW
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SET_PARENTWINDOWID, data, reply, option)) {
         HILOG_ERROR("clear focus failed");
+        return;
+    }
+}
+
+void AccessibilityElementOperatorProxy::SearchElementInfoBySpecificProperty(const int64_t elementId,
+    const SpecificPropertyParam& param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("elementId:%{public}" PRId64 ", propertyTarget:%{public}s, propertyType:%{public}u, "
+        "requestId:%{public}d", elementId, param.propertyTarget.c_str(),
+        static_cast<uint32_t>(param.propertyType), requestId);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+
+    if (!data.WriteInt64(elementId)) {
+        HILOG_ERROR("connection write parcelable element id failed");
+        return;
+    }
+
+    if (!data.WriteString(param.propertyTarget)) {
+        HILOG_ERROR("connection write parcelable property target failed");
+        return;
+    }
+
+    if (!data.WriteUint32(static_cast<uint32_t>(param.propertyType))) {
+        HILOG_ERROR("connection write parcelable property type failed");
+        return;
+    }
+
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write parcelable request id failed");
+        return;
+    }
+
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr");
+        return;
+    }
+
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("connection write parcelable callback failed");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_BY_SPECIFIC_PROPERTY,
+        data, reply, option)) {
+        HILOG_ERROR("search element info by specific property failed");
         return;
     }
 }

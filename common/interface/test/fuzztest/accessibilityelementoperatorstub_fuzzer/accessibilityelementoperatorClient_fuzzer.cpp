@@ -44,6 +44,9 @@ public:
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
     void GetCursorPosition(const int64_t elementId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
+    void SearchElementInfoBySpecificProperty(const int64_t elementId,
+        const SpecificPropertyParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
     void ClearFocus() override {}
     void OutsideTouch() override {}
     void SetChildTreeIdAndWinId(const int64_t elementId, const int32_t treeId,

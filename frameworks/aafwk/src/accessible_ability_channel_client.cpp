@@ -523,5 +523,87 @@ RetError AccessibleAbilityChannelClient::ConfigureEvents(const std::vector<uint3
     }
     return proxy_->ConfigureEvents(needEvents);
 }
+
+RetError AccessibleAbilityChannelClient::SearchElementInfosBySpecificProperty(int32_t accessibilityWindowId,
+    int64_t elementId, const SpecificPropertyParam& param, std::vector<AccessibilityElementInfo> &infos,
+    std::vector<AccessibilityElementInfo> &treeInfos, int32_t treeId)
+{
+    int32_t requestId = GenerateRequestId();
+    HILOG_DEBUG("channelId:%{public}d, elementId:%{public}" PRId64 ", windowId:%{public}d, "
+        "requestId:%{public}d, propertyTarget:%{public}s, propertyType:%{public}u",
+        channelId_, elementId, accessibilityWindowId, requestId, param.propertyTarget.c_str(),
+        static_cast<uint32_t>(param.propertyType));
+
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("SearchElementInfosBySpecificProperty Failed to connect to aams [channelId:%{public}d]",
+            channelId_);
+        return RET_ERR_SAMGR;
+    }
+
+    ElementBasicInfo elementBasicInfo;
+    elementBasicInfo.windowId = accessibilityWindowId;
+    elementBasicInfo.elementId = elementId;
+    elementBasicInfo.treeId = treeId;
+
+    sptr<AccessibilityElementOperatorCallbackImpl> callback =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (callback == nullptr) {
+        HILOG_ERROR("SearchElementInfosBySpecificProperty Failed to create callback");
+        return RET_ERR_NULLPTR;
+    }
+
+    ffrt::future<void> promiseFuture = callback->promise_.get_future();
+    proxy_->SearchElementInfoBySpecificProperty(elementBasicInfo, param, requestId, callback);
+
+    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitFocus != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
+
+    if (!callback->elementInfosResult_.empty()) {
+        RetError ret = ValidateAndProcessElementInfos(callback->elementInfosResult_, infos, treeInfos,
+            accessibilityWindowId, "elementInfosResult_");
+        if (ret != RET_OK) {
+            return ret;
+        }
+    } else if (!callback->treeInfosResult_.empty()) {
+        RetError ret = ValidateAndProcessElementInfos(callback->treeInfosResult_, treeInfos, infos,
+            accessibilityWindowId, "treeInfosResult_");
+        if (ret != RET_OK) {
+            return ret;
+        }
+    } else {
+        infos.clear();
+        treeInfos.clear();
+        HILOG_DEBUG("Both result sets are empty");
+    }
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannelClient::ValidateAndProcessElementInfos(
+    const std::vector<AccessibilityElementInfo>& sourceInfos,
+    std::vector<AccessibilityElementInfo>& targetInfos,
+    std::vector<AccessibilityElementInfo>& clearInfos,
+    int32_t accessibilityWindowId,
+    const std::string& logType)
+{
+    for (const auto &info : sourceInfos) {
+        if (info.GetAccessibilityId() == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
+            HILOG_ERROR("SearchElementInfosBySpecificProperty The %{public}s from ace is wrong", logType.c_str());
+            return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
+        }
+    }
+
+    targetInfos = sourceInfos;
+    clearInfos.clear();
+
+    for (auto &element : targetInfos) {
+        element.SetMainWindowId(accessibilityWindowId);
+    }
+
+    HILOG_DEBUG("Found results in %{public}s, size: %{public}zu", logType.c_str(), targetInfos.size());
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

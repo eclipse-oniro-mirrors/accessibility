@@ -1346,8 +1346,8 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t win
         HILOG_ERROR("SearchElementInfoRecursiveByWinid failed. windowId[%{public}d]", windowId);
         return ret;
     }
-    HILOG_DEBUG("SetCacheElementInfo windowId:%{public}d, element [elementSize:%{public}zu]",
-        windowId, elementInfos.size());
+    HILOG_DEBUG("SetCacheElementInfo windowId:%{public}d, element [elementSize:%{public}zu]", windowId,
+        elementInfos.size());
     SetCacheElementInfo(windowId, elementInfos);
     if (!GetCacheElementInfo(windowId, elementId, info)) {
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
@@ -1381,34 +1381,52 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
     int32_t windowId = 0;
     serviceProxy_->GetActiveWindow(windowId);
     HILOG_DEBUG("windowId[%{public}d]", windowId);
+    std::vector<AccessibilityElementInfo> infos {};
     std::vector<AccessibilityElementInfo> elementInfos {};
 
-    RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, ROOT_NONE_ID,
-        static_cast<int32_t>(GET_SOURCE_MODE), elementInfos, ROOT_TREE_ID);
+    SpecificPropertyParam param;
+    param.propertyTarget = inspectorKey;
+    param.propertyType = SEARCH_TYPE::CUSTOMID;
+
+    RetError ret = channelClient_->SearchElementInfosBySpecificProperty(windowId, ROOT_NONE_ID, param,
+        infos, elementInfos, ROOT_TREE_ID);
     if (ret != RET_OK) {
         HILOG_ERROR("search element info failed.");
         return ret;
     }
 
-    ret = SearchElementInfoRecursiveByWinid(windowId, ROOT_NONE_ID, GET_SOURCE_MODE, elementInfos, ROOT_TREE_ID);
-    if (ret != RET_OK) {
-        HILOG_ERROR("get window element failed.");
-        return ret;
+    if (!infos.empty()) {
+        HILOG_INFO("find elementInfo by inspectorKey success in infos (single element), inspectorKey: %{public}s",
+            inspectorKey.c_str());
+        elementInfo = infos.front();
+        elementInfo.SetMainWindowId(windowId);
+        HILOG_DEBUG("DEBUG: returned elementInfo inspectorKey: %{public}s", elementInfo.GetInspectorKey().c_str());
+        return RET_OK;
     }
 
-    if (elementInfos.empty()) {
-        HILOG_ERROR("elementInfos from ace is empty");
-        return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
-    }
-    SortElementInfosIfNecessary(elementInfos);
-    for (auto &info : elementInfos) {
-        if (info.GetInspectorKey() == inspectorKey) {
-            HILOG_INFO("find elementInfo by inspectorKey success, inspectorKey: %{public}s", inspectorKey.c_str());
-            elementInfo = info;
-            elementInfo.SetMainWindowId(windowId);
-            return RET_OK;
+    if (!elementInfos.empty()) {
+        HILOG_DEBUG("Found elements in elementInfos, searching with recursive logic. Size: %{public}zu",
+            elementInfos.size());
+        for (auto& treeParentInfo : elementInfos) {
+            std::vector<AccessibilityElementInfo> newInfos {};
+            HILOG_DEBUG("SearchElementInfoRecursiveByWinid :search element info success. windowId %{public}d}",
+                treeParentInfo.GetChildWindowId());
+            if (treeParentInfo.GetChildTreeId() > 0) {
+                ret = SearchElementInfoRecursiveBySpecificProperty(treeParentInfo.GetChildWindowId(),
+                    ROOT_NONE_ID, newInfos, treeParentInfo.GetChildTreeId(), 0, param);
+                HILOG_DEBUG("ChildWindowId %{public}d}. ret:%{public}d, GetChildTreeId %{public}d",
+                    treeParentInfo.GetChildWindowId(), ret, treeParentInfo.GetChildTreeId());
+                if (!newInfos.empty()) {
+                    HILOG_INFO("find elementInfo1 by inspectorKey success in infos, inspectorKey: %{public}s",
+                        inspectorKey.c_str());
+                    elementInfo = newInfos.front();
+                    elementInfo.SetMainWindowId(windowId);
+                    return RET_OK;
+                }
+            }
         }
     }
+
     HILOG_INFO("SearchElementInfoByInspectorKey failed, inspectorKey: %{public}s", inspectorKey.c_str());
     return RET_ERR_FAILED;
 }
@@ -2055,6 +2073,51 @@ RetError AccessibleAbilityClientImpl::ConfigureEvents(const std::vector<uint32_t
         return ret;
     }
     return RET_OK;
+}
+
+RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveBySpecificProperty(const int32_t windowId,
+    const int64_t elementId, std::vector<AccessibilityElementInfo> &elementInfos,
+    int32_t treeId, uint64_t parentIndex, const SpecificPropertyParam& param)
+{
+    HILOG_INFO("windowId %{public}d}, elementId %{public}" PRId64 ", treeId %{public}d", windowId, elementId, treeId);
+    if (windowId <= 0) {
+        HILOG_ERROR("window Id is failed windowId %{public}d}", windowId);
+        return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
+    }
+    std::vector<AccessibilityElementInfo> vecElementInfos {};
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+    std::vector<AccessibilityElementInfo> infos;
+    RetError ret = channelClient_->SearchElementInfosBySpecificProperty(windowId, elementId, param, infos,
+        vecElementInfos, treeId);
+    if (ret != RET_OK) {
+        HILOG_ERROR("search element info failed. windowId %{public}d}", windowId);
+        return ret;
+    }
+    if (!infos.empty()) {
+        HILOG_INFO("search element info find front");
+        elementInfos.push_back(infos.front());
+        return RET_OK;
+    }
+    for (auto& treeParentInfo : vecElementInfos) {
+        std::vector<AccessibilityElementInfo> newInfos {};
+        HILOG_INFO("search element info success. windowId %{public}d}",
+            treeParentInfo.GetChildWindowId());
+        if (treeParentInfo.GetChildTreeId() > 0) {
+            ret = SearchElementInfoRecursiveBySpecificProperty(treeParentInfo.GetChildWindowId(),
+                ROOT_NONE_ID, newInfos, treeParentInfo.GetChildTreeId(), 0, param);
+            HILOG_INFO("ChildWindowId %{public}d}. ret:%{public}d, GetChildTreeId %{public}d",
+                treeParentInfo.GetChildWindowId(), ret, treeParentInfo.GetChildTreeId());
+            if (!newInfos.empty()) {
+                HILOG_INFO("search element info find: find front");
+                elementInfos.push_back(newInfos.front());
+                return RET_OK;
+            }
+        }
+    }
+    return RET_ERR_FAILED;
 }
 } // namespace Accessibility
 } // namespace OHOS

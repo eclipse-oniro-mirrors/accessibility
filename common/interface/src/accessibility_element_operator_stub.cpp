@@ -16,6 +16,7 @@
 #include "accessibility_element_operator_stub.h"
 #include "accessibility_element_operator_callback_proxy.h"
 #include "hilog_wrapper.h"
+#include <cinttypes>
 
 #define SWITCH_BEGIN(code) switch (code) {
 #define SWITCH_CASE(case_code, func)     \
@@ -44,7 +45,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SET_CHILDTREEID, HandleSetChildTreeIdAndWinId)                        \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_BELONGTREEID, HandleSetBelongTreeId)                              \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_PARENTWINDOWID, HandleSetParentWindowId)                          \
-    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_BY_WINDOW_ID, HandleSearchDefaultFocusedByWindowId)
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_BY_WINDOW_ID, HandleSearchDefaultFocusedByWindowId)            \
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_BY_SPECIFIC_PROPERTY, HandleSearchElementInfoBySpecificProperty)
 
 namespace OHOS {
 namespace Accessibility {
@@ -296,6 +298,37 @@ ErrCode AccessibilityElementOperatorStub::HandleSetParentWindowId(MessageParcel 
     int32_t iParentWindowId = data.ReadInt32();
 
     SetParentWindowId(iParentWindowId);
+    return NO_ERROR;
+}
+
+ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoBySpecificProperty(MessageParcel &data,
+    MessageParcel &reply)
+{
+    int64_t elementId = data.ReadInt64();
+
+    SpecificPropertyParam param;
+    param.propertyTarget = data.ReadString();
+    param.propertyType = static_cast<SEARCH_TYPE>(data.ReadUint32());
+
+    int32_t requestId = data.ReadInt32();
+
+    HILOG_DEBUG("elementId:%{public}" PRId64 ", propertyTarget:%{public}s, propertyType:%{public}u, "
+        "requestId:%{public}d", elementId, param.propertyTarget.c_str(),
+        static_cast<uint32_t>(param.propertyType), requestId);
+
+    sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (remote == nullptr) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+
+    sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr");
+        return ERR_INVALID_VALUE;
+    }
+
+    SearchElementInfoBySpecificProperty(elementId, param, requestId, callback);
     return NO_ERROR;
 }
 } // namespace Accessibility

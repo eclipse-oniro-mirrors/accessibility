@@ -48,6 +48,11 @@ public:
         OHOS::Accessibility::AccessibilityElementOperatorCallback &callback) override
     {
     }
+    void SearchElementInfoBySpecificProperty(const int64_t elementId,
+        const OHOS::Accessibility::SpecificPropertyParam& param, const int32_t requestId,
+        OHOS::Accessibility::AccessibilityElementOperatorCallback &callback) override
+    {
+    }
     void ClearFocus() override
     {
     }
