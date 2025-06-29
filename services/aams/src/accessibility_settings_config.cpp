@@ -90,7 +90,7 @@ AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 
 RetError AccessibilitySettingsConfig::SetEnabled(const bool state)
 {
-    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    HILOG_INFO("QC123 state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(ACCESSIBILITY, state);
     if (ret != RET_OK) {
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetEnabled");
@@ -970,28 +970,31 @@ void AccessibilitySettingsConfig::InitCapability()
 RetError AccessibilitySettingsConfig::SetConfigState(const std::string& key, bool value)
 {
     if (!datashare_) {
+        HILOG_INFO("QC123 datashare_ IS NULLPTR");
         return RET_ERR_NULLPTR;
     }
     auto ret = datashare_->PutBoolValue(key, value);
     if (ret != RET_OK) {
-        HILOG_ERROR("set configState failed");
+        HILOG_ERROR("QC123 set configState failed");
     }
     return ret;
 }
 
 void AccessibilitySettingsConfig::Init()
 {
-    HILOG_DEBUG();
+    HILOG_INFO("QC123");
     datashare_ = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SECURE, accountId_);
     if (datashare_ == nullptr) {
+        HILOG_INFO("QC123 datashare is nullptr");
         return;
     }
     datashare_->Initialize(POWER_MANAGER_SERVICE_ID);
     InitCaption();
     InitSetting();
-
+    HILOG_INFO("QC123");
     systemDatashare_ = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SYSTEM, accountId_);
     if (systemDatashare_ == nullptr) {
+        HILOG_INFO("QC123 systemDatashare_ is nullptr");
         return;
     }
     systemDatashare_->Initialize(POWER_MANAGER_SERVICE_ID);
