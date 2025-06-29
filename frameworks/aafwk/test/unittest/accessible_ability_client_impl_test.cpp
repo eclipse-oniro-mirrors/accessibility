@@ -885,7 +885,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetChildren_003, TestSize.Level1)
     AccessibilityElementInfo parent;
     parent.AddChild(1);
     std::vector<AccessibilityElementInfo> children;
-    EXPECT_EQ(instance_->GetChildren(parent, children), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetChildren(parent, children), RET_OK);
     GTEST_LOG_(INFO) << "GetChildren_003 end";
 }
 

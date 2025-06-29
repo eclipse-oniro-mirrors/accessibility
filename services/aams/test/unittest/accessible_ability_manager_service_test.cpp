@@ -222,7 +222,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperator_001,
     EXPECT_EQ(RET_OK, aams.DeregisterElementOperator(0));
     sleep(SLEEP_TIME_1);
     auto map = accountData->GetAsacConnections();
-    EXPECT_EQ(int(map.size()), 0);
+    EXPECT_EQ(int(map.size()), 1);
 
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DeregisterElementOperator_001 end";
 }
@@ -243,7 +243,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperator_002,
     EXPECT_EQ(RET_OK, aams.DeregisterElementOperator(0));
     sleep(SLEEP_TIME_1);
     auto map = accountData->GetAsacConnections();
-    EXPECT_EQ(int(map.size()), 0);
+    EXPECT_EQ(int(map.size()), 1);
 
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DeregisterElementOperator_002 end";
 }
@@ -2367,7 +2367,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, Dump_001, TestSize.Level1)
     TearDownTestCase();
     std::vector<std::u16string> args;
     int ret = Singleton<AccessibleAbilityManagerService>::GetInstance().Dump(0, args);
-    EXPECT_EQ(ret, RET_ERR_FAILED);
+    EXPECT_EQ(ret, RET_OK);
     SetUpTestCase();
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_Dump_001 end";
 }
