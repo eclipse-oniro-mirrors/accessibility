@@ -63,6 +63,7 @@ enum CallBackID {
 constexpr int REQUEST_ID_INIT = 65535;
 constexpr int32_t TREE_ID_MAX = 0x00001FFF;
 constexpr uint32_t TIME_OUT_OPERATOR = 5000;
+constexpr uint32_t TIME_OUT_1000MS = 1000;
 constexpr int32_t WAIT_NOTIFY_DISCONNECT_TIMEOUT = 30 * 1000; // 30s
 
 class AccessibleAbilityManagerService : public SystemAbility, public AccessibleAbilityManagerServiceStub {
