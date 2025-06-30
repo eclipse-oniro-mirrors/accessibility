@@ -26,6 +26,7 @@
 #include "recording/recording_canvas.h"
 #include "hilog_wrapper.h"
 #include "magnification_def.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -74,6 +75,7 @@ private:
     int32_t centerX_ = 0;
     int32_t centerY_ = 0;
     float scale_ = 2.0f;
+    ffrt::mutex mutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

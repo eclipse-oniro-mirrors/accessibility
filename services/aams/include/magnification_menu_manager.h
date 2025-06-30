@@ -28,6 +28,7 @@
 #include "image_source.h"
 #include "pixel_map.h"
 #include "magnification_manager.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -81,6 +82,7 @@ private:
     uint32_t menuMode_ = 0;
     uint32_t currentType_ = 0;
     bool isMenuShown_ = false;
+    ffrt::mutex mutex_;
 };
 
 } // namespace Accessibility

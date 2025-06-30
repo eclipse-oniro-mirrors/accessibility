@@ -104,7 +104,7 @@ void FullScreenMagnificationManager::EnableMagnification(int32_t centerX, int32_
     sourceRect_ = GetSourceRectFromPointer(centerX, centerY);
     UpdateAnchor();
     DrawRuoundRectFrame();
-    window_->SetFrameRectForParticalZoomIn(sourceRect_);
+    window_->SetFrameRectForPartialZoomIn(sourceRect_);
     window_->Show();
     Rosen::RSTransaction::FlushImplicitTransaction();
     isMagnificationWindowShow_ = true;
@@ -120,6 +120,7 @@ void FullScreenMagnificationManager::ShowMagnification()
 void FullScreenMagnificationManager::DisableMagnification(bool needClear)
 {
     HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (needClear && surfaceNode_ != nullptr) {
         HILOG_DEBUG("claer surfaceNode");
         surfaceNode_->SetVisible(false);
@@ -140,6 +141,10 @@ void FullScreenMagnificationManager::DisableMagnification(bool needClear)
 void FullScreenMagnificationManager::SetScale(float scaleSpan)
 {
     HILOG_DEBUG();
+    if (window_ == nullptr) {
+        HILOG_ERROR("window_ is nullptr.");
+        return;
+    }
     if (screenWidth_ == 0 || screenHeight_ == 0 || abs(screenSpan_) < EPS) {
         HILOG_ERROR("screen param invalid.");
         return;
@@ -183,7 +188,7 @@ void FullScreenMagnificationManager::SetScale(float scaleSpan)
     sourceRect_ = {newPosX, newPosY, newWidth, newHeight};
     scale_ = tmpScale;
     HILOG_DEBUG("scale_ = %{public}f", scale_);
-    window_->SetFrameRectForParticalZoomIn(sourceRect_);
+    window_->SetFrameRectForPartialZoomIn(sourceRect_);
     DrawRuoundRectFrame();
     Rosen::RSTransaction::FlushImplicitTransaction();
     UpdateAnchor();
@@ -191,6 +196,10 @@ void FullScreenMagnificationManager::SetScale(float scaleSpan)
 
 void FullScreenMagnificationManager::MoveMagnification(int32_t deltaX, int32_t deltaY)
 {
+    if (window_ == nullptr) {
+        HILOG_ERROR("window_ is nullptr.");
+        return;
+    }
     int32_t sourcePosX = sourceRect_.posX_ - deltaX;
     int32_t sourcePosY = sourceRect_.posY_ - deltaY;
 
@@ -211,7 +220,7 @@ void FullScreenMagnificationManager::MoveMagnification(int32_t deltaX, int32_t d
     }
     sourceRect_.posX_ = sourcePosX;
     sourceRect_.posY_ = sourcePosY;
-    window_->SetFrameRectForParticalZoomIn(sourceRect_);
+    window_->SetFrameRectForPartialZoomIn(sourceRect_);
     DrawRuoundRectFrame();
     Rosen::RSTransaction::FlushImplicitTransaction();
     UpdateAnchor();
@@ -372,8 +381,12 @@ PointerPos FullScreenMagnificationManager::GetRectCenter(Rosen::Rect rect)
 void FullScreenMagnificationManager::FollowFocuseElement(int32_t centerX, int32_t centerY)
 {
     HILOG_INFO();
+    if (window_ == nullptr) {
+        HILOG_ERROR("window_ is nullptr.");
+        return;
+    }
     sourceRect_ = GetSourceRectFromPointer(centerX, centerY);
-    window_->SetFrameRectForParticalZoomIn(sourceRect_);
+    window_->SetFrameRectForPartialZoomIn(sourceRect_);
     DrawRuoundRectFrame();
     Rosen::RSTransaction::FlushImplicitTransaction();
     UpdateAnchor();

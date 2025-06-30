@@ -26,6 +26,7 @@
 #include "recording/recording_canvas.h"
 #include "hilog_wrapper.h"
 #include "magnification_def.h"
+#include "ffrt.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -77,10 +78,12 @@ private:
     void CalculateAnchorOffset();
     void GetWindowParam();
     PointerPos GetRectCenter(Rosen::Rect rect);
+    void UpdateRelativeRect();
 
     Rosen::Rect sourceRect_ = {0, 0, 0, 0};
     Rosen::Rect windowRect_ = {0, 0, 0, 0};
     Rosen::Rect screenRect_ = {0, 0, 0, 0};
+    Rosen::Rect relativeRect_ = {0, 0, 0, 0}; //The relative position of sourceRect_ in windowRect_
 
     sptr<Rosen::Window> window_ = nullptr;
     std::shared_ptr<Rosen::RSSurfaceNode> surfaceNode_;
@@ -102,6 +105,7 @@ private:
     Rosen::DisplayOrientation orientation_ = Rosen::DisplayOrientation::UNKNOWN;
     bool isFixSourceCenter_ = false;
     PointerPos fixedSourceCenter_ = {0, 0};
+    ffrt::mutex mutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
