@@ -505,7 +505,7 @@ RetError AccessibleAbilityChannel::ExecuteActionAsync(const int32_t accessibilit
         syncPromise->set_value(RET_OK);
         }, "ExecuteAction");
 
-    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_1000MS));
     if (wait != ffrt::future_status::ready) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
         HILOG_ERROR("Failed to wait ExecuteAction result");
