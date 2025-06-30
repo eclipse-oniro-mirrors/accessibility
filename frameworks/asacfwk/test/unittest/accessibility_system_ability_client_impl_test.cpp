@@ -133,7 +133,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_004, 
     }
     std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
     EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+    EXPECT_EQ(RET_ERR_CONNECTION_EXIST, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "RegisterElementOperator_004 end";
 }

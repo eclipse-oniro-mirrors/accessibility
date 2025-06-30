@@ -989,7 +989,6 @@ void AccessibilitySettingsConfig::Init()
     datashare_->Initialize(POWER_MANAGER_SERVICE_ID);
     InitCaption();
     InitSetting();
-
     systemDatashare_ = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SYSTEM, accountId_);
     if (systemDatashare_ == nullptr) {
         return;

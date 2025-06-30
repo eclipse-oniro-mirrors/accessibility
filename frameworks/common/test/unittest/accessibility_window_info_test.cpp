@@ -294,7 +294,7 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetScaleVal_001, TestSize.Level1)
         return;
     }
     windowInfo_->SetScaleVal(1.1);
-    EXPECT_EQ(windowInfo_->GetScaleVal(), 1.1);
+    EXPECT_FLOAT_EQ(windowInfo_->GetScaleVal(), 1.1);
     GTEST_LOG_(INFO) << "GetScaleVal_001 end";
 }
 
@@ -311,7 +311,7 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetScaleX_001, TestSize.Level1)
         return;
     }
     windowInfo_->SetScaleX(1.1);
-    EXPECT_EQ(windowInfo_->GetScaleX(), 1.1);
+    EXPECT_FLOAT_EQ(windowInfo_->GetScaleX(), 1.1);
     GTEST_LOG_(INFO) << "GetScaleX_001 end";
 }
 
@@ -328,7 +328,7 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetScaleY_001, TestSize.Level1)
         return;
     }
     windowInfo_->SetScaleY(1.1);
-    EXPECT_EQ(windowInfo_->GetScaleY(), 1.1);
+    EXPECT_FLOAT_EQ(windowInfo_->GetScaleY(), 1.1);
     GTEST_LOG_(INFO) << "GetScaleY_001 end";
 }
 
