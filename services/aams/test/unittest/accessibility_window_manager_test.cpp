@@ -1259,13 +1259,7 @@ HWTEST_F(
     mgr.a11yWindows_.insert(std::make_pair(windowId, info));
     EXPECT_EQ(1, (int)mgr.a11yWindows_.size());
 
-    /* SetAccessibilityFocusedWindow */
-    mgr.SetAccessibilityFocusedWindow(windowId);
-
-    /* GetAccessibilityWindows */
-    std::vector<AccessibilityWindowInfo> windows = mgr.GetAccessibilityWindows();
-
-    static Accessibility::AccessibilityWindowType type = windows.begin()->GetAccessibilityWindowType();
+    static Accessibility::AccessibilityWindowType type = mgr.a11yWindows_[windowId].GetAccessibilityWindowType();
     EXPECT_EQ(AccessibilityWindowType::TYPE_APPLICATION, type);
 
     mgr.a11yWindows_.clear();

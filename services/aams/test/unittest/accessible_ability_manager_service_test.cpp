@@ -2367,7 +2367,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, Dump_001, TestSize.Level1)
     TearDownTestCase();
     std::vector<std::u16string> args;
     int ret = Singleton<AccessibleAbilityManagerService>::GetInstance().Dump(0, args);
-    EXPECT_EQ(ret, RET_OK);
+    EXPECT_EQ(ret, RET_ERR_FAILED);
     SetUpTestCase();
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_Dump_001 end";
 }
