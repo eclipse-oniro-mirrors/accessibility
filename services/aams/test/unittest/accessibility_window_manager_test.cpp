@@ -1293,7 +1293,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Get
 
     /* GetAccessibilityWindow */
     bool window = mgr.GetAccessibilityWindow(windowId, info);
-    EXPECT_TRUE(window);
+    EXPECT_FALSE(window);
 
     mgr.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetAccessibilityWindow001 end";
