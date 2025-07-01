@@ -183,9 +183,6 @@ RetError AccessibilityDatashareHelper::PutStringValue(const std::string& key, co
             }
             HILOG_INFO("helper insert %{public}s ret(%{public}d).", key.c_str(), static_cast<int>(ret));
         }
-        if (needNotify) {
-            dataShareHelper_->NotifyChange(AssembleUri(key));
-        }
     } while (0);
     IPCSkeleton::SetCallingIdentity(callingIdentity);
 #endif
