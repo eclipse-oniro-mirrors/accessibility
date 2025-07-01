@@ -93,6 +93,10 @@ void MagnificationMenuManager::CreateMenuWindow()
         return;
     }
     canvasNode_ = Rosen::RSCanvasNode::Create();
+    if (canvasNode_ == nullptr) {
+        HILOG_ERROR("create canvasNode_ fail.");
+        return;
+    }
     surfaceNode_->SetAbilityBGAlpha(BG_ALPHA);
     surfaceNode_->AddChild(canvasNode_, -1);
     canvasNode_->SetBounds(0, 0, menuSize_, menuSize_);
@@ -114,12 +118,18 @@ void MagnificationMenuManager::LoadMenuBgImage(uint32_t mode)
         HILOG_ERROR("DecodePixelMap failed.");
         return;
     }
-
+    if (canvasNode_ == nullptr) {
+        HILOG_ERROR("canvasNode_ is nullptr.");
+        return;
+    }
     canvasNode_->SetBgImageWidth(menuSize_);
     canvasNode_->SetBgImageHeight(menuSize_);
     canvasNode_->SetBgImagePositionX(0);
     canvasNode_->SetBgImagePositionY(0);
-
+    if (rosenImage_ == nullptr) {
+        HILOG_ERROR("rosenImage_ is nullptr.");
+        return;
+    }
     rosenImage_->SetPixelMap(bgpixelmap_);
     rosenImage_->SetImageFit(static_cast<int>(Rosen::ImageFit::FILL));
     canvasNode_->SetBgImage(rosenImage_);
@@ -155,6 +165,7 @@ void MagnificationMenuManager::ShowMenuWindow(uint32_t mode)
 void MagnificationMenuManager::DisableMenuWindow()
 {
     HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (surfaceNode_ != nullptr) {
         surfaceNode_->SetVisible(false);
         surfaceNode_->ClearChildren();

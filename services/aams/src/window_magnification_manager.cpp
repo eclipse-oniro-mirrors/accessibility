@@ -98,6 +98,14 @@ void WindowMagnificationManager::DrawRuoundRectFrame()
     auto p2 = Rosen::Drawing::Point(BAR_END, windowHeight_ - barMargin_);
     canvas->DrawLine(p1, p2);
     canvas->DetachPen();
+
+    Rosen::Drawing::Brush brush;
+    brush.SetAntiAlias(true);
+    brush.SetColor(ORANGE_COLOR);
+    canvas->AttachBrush(brush);
+    canvas->DrawCircle(p1, static_cast<float>(PEN_WIDTH / DIVISOR_TWO));
+    canvas->DrawCircle(p2, static_cast<float>(PEN_WIDTH / DIVISOR_TWO));
+    canvas->DetachBrush();
     canvasNode_->FinishRecording();
 }
 
@@ -117,7 +125,8 @@ void WindowMagnificationManager::EnableWindowMagnification(int32_t centerX, int3
     }
     sourceRect_ = GetSourceRectFromPointer(centerX, centerY);
     CalculateAnchorOffset();
-    window_->SetFrameRectForParticalZoomIn(sourceRect_);
+    UpdateRelativeRect();
+    window_->SetFrameRectForPartialZoomIn(relativeRect_);
     DrawRuoundRectFrame();
     window_->Show();
     Rosen::RSTransaction::FlushImplicitTransaction();
@@ -134,6 +143,7 @@ void WindowMagnificationManager::ShowWindowMagnification()
 void WindowMagnificationManager::DisableWindowMagnification(bool needClear)
 {
     HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (needClear && surfaceNode_ != nullptr) {
         HILOG_DEBUG("claer surfaceNode");
         surfaceNode_->SetVisible(false);
@@ -188,7 +198,8 @@ void WindowMagnificationManager::SetScale(float deltaSpan)
 
     sourceRect_ = tmpRect;
     scale_ = tmpScale;
-    window_->SetFrameRectForParticalZoomIn(sourceRect_);
+    UpdateRelativeRect();
+    window_->SetFrameRectForPartialZoomIn(relativeRect_);
     DrawRuoundRectFrame();
     Rosen::RSTransaction::FlushImplicitTransaction();
     CalculateAnchorOffset();
@@ -226,7 +237,8 @@ void WindowMagnificationManager::MoveMagnificationWindow(int32_t deltaX, int32_t
     sourceRect_.posX_ = sourcePosX;
     sourceRect_.posY_ = sourcePosY;
     AdjustSourceWindowPosition();
-    window_->SetFrameRectForParticalZoomIn(sourceRect_);
+    UpdateRelativeRect();
+    window_->SetFrameRectForPartialZoomIn(relativeRect_);
     DrawRuoundRectFrame();
     Rosen::RSTransaction::FlushImplicitTransaction();
     CalculateAnchorOffset();
@@ -465,10 +477,38 @@ void WindowMagnificationManager::FollowFocuseElement(int32_t centerX, int32_t ce
     windowRect_ = GetWindowRectFromPointer(centerX, centerY);
     sourceRect_ = GetSourceRectFromPointer(centerX, centerY);
     window_->MoveTo(windowRect_.posX_, windowRect_.posY_);
-    window_->SetFrameRectForParticalZoomIn(sourceRect_);
+    UpdateRelativeRect();
+    window_->SetFrameRectForPartialZoomIn(relativeRect_);
     DrawRuoundRectFrame();
     Rosen::RSTransaction::FlushImplicitTransaction();
     CalculateAnchorOffset();
+}
+
+void WindowMagnificationManager::UpdateRelativeRect()
+{
+    int32_t posX = sourceRect_.posX_ - windowRect_.posX_;
+    if (posX < 0) {
+        posX = 0;
+    }
+
+    int32_t deltaX = static_cast<int32_t>(windowRect_.width_) - static_cast<int32_t>(sourceRect_.width_);
+    if (posX > deltaX) {
+        posX = deltaX;
+    }
+    relativeRect_.posX_ = posX;
+
+    int32_t posY = sourceRect_.posY_ - windowRect_.posY_;
+    if (posY < 0) {
+        posY = 0;
+    }
+
+    int32_t deltaY = static_cast<int32_t>(windowRect_.height_) - static_cast<int32_t>(sourceRect_.height_);
+    if (posY > deltaY) {
+        posY = deltaY;
+    }
+    relativeRect_.posY_ = posY;
+    relativeRect_.width_ = sourceRect_.width_;
+    relativeRect_.height_ = sourceRect_.height_;
 }
 } // namespace Accessibility
 } // namespace OHOS
