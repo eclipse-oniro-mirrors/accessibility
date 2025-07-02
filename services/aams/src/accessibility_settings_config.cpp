@@ -1046,7 +1046,7 @@ void AccessibilitySettingsConfig::InitAnimationOffConfig()
     if (animationOffState_) {
         system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "0");
         system::SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "0");
-    } else if (!animationOffState_) {
+    } else if (!animationOffState_ && state) {
         system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
         system::SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
     }
