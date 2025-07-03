@@ -51,7 +51,12 @@ void FullScreenMagnificationManager::CreateMagnificationWindow()
     }
     window_->SetCornerRadius(CORNER_RADIUS);
     surfaceNode_ = window_->GetSurfaceNode();
-    canvasNode_ = Rosen::RSCanvasNode::Create();
+    if (surfaceNode_ == nullptr) {
+        HILOG_ERROR("get surfaceNode_ failed.");
+        return;
+    }
+    rsUIContext_ = surfaceNode_->GetRSUIContext();
+    canvasNode_ = Rosen::RSCanvasNode::Create(false, false, rsUIContext_);
 }
 
 void FullScreenMagnificationManager::DrawRuoundRectFrame()
@@ -106,7 +111,7 @@ void FullScreenMagnificationManager::EnableMagnification(int32_t centerX, int32_
     DrawRuoundRectFrame();
     window_->SetFrameRectForPartialZoomIn(sourceRect_);
     window_->Show();
-    Rosen::RSTransaction::FlushImplicitTransaction();
+    FlushImplicitTransaction();
     isMagnificationWindowShow_ = true;
 }
 
@@ -125,7 +130,7 @@ void FullScreenMagnificationManager::DisableMagnification(bool needClear)
         HILOG_DEBUG("claer surfaceNode");
         surfaceNode_->SetVisible(false);
         surfaceNode_->ClearChildren();
-        Rosen::RSTransaction::FlushImplicitTransaction();
+        FlushImplicitTransaction();
     }
 
     if (window_ != nullptr) {
@@ -135,6 +140,7 @@ void FullScreenMagnificationManager::DisableMagnification(bool needClear)
     }
     surfaceNode_ = nullptr;
     canvasNode_ = nullptr;
+    rsUIContext_ = nullptr;
     isMagnificationWindowShow_ = false;
 }
 
@@ -190,7 +196,7 @@ void FullScreenMagnificationManager::SetScale(float scaleSpan)
     HILOG_DEBUG("scale_ = %{public}f", scale_);
     window_->SetFrameRectForPartialZoomIn(sourceRect_);
     DrawRuoundRectFrame();
-    Rosen::RSTransaction::FlushImplicitTransaction();
+    FlushImplicitTransaction();
     UpdateAnchor();
 }
 
@@ -222,7 +228,7 @@ void FullScreenMagnificationManager::MoveMagnification(int32_t deltaX, int32_t d
     sourceRect_.posY_ = sourcePosY;
     window_->SetFrameRectForPartialZoomIn(sourceRect_);
     DrawRuoundRectFrame();
-    Rosen::RSTransaction::FlushImplicitTransaction();
+    FlushImplicitTransaction();
     UpdateAnchor();
 }
 
@@ -388,8 +394,20 @@ void FullScreenMagnificationManager::FollowFocuseElement(int32_t centerX, int32_
     sourceRect_ = GetSourceRectFromPointer(centerX, centerY);
     window_->SetFrameRectForPartialZoomIn(sourceRect_);
     DrawRuoundRectFrame();
-    Rosen::RSTransaction::FlushImplicitTransaction();
+    FlushImplicitTransaction();
     UpdateAnchor();
+}
+
+void FullScreenMagnificationManager::FlushImplicitTransaction()
+{
+    if (rsUIContext_ != nullptr) {
+        auto rsTransaction = rsUIContext_->GetRSTransaction();
+        if (rsTransaction != nullptr) {
+            rsTransaction->FlushImplicitTransaction();
+        }
+    } else {
+        Rosen::RSTransaction::FlushImplicitTransaction();
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

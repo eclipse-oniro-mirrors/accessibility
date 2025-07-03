@@ -39,6 +39,7 @@ enum class MagnificationGestureState : uint32_t {
     SLIDING_STATE,
     TWO_FINGERS_SLIDING_STATE,
     MENU_SLIDING_STATE,
+    DRAGGING_STATE,
 };
 
 enum class MagnificationState : uint32_t {
@@ -95,6 +96,7 @@ public:
     void ShieldZoomGesture(bool state);
     void StartMagnificationInteract();
     void DisableGesture();
+    void OnDrag();
 
     /* Set current magnification gesture state */
     inline void SetGestureState(MagnificationGestureState state, int32_t action)
@@ -132,6 +134,11 @@ public:
     {
         return isTapOnMenu_;
     }
+
+    inline bool GetTripleDown()
+    {
+        return isTripleDown_;
+    }
 private:
     bool needBypassPointerEvent(MMI::PointerEvent &event);
     
@@ -166,6 +173,9 @@ private:
 
     void HandleMenuSlidingStateUp(MMI::PointerEvent &event);
     void HandleMenuSlidingStateMove(MMI::PointerEvent &event);
+
+    void HandleDraggingStateUp(MMI::PointerEvent &event);
+    void HandleDraggingStateMove(MMI::PointerEvent &event);
 
     void InitGestureFuncMap();
 
@@ -204,6 +214,7 @@ private:
     uint32_t tapCount_ = 0;
     float distance_ = 0.0f;
     bool shieldZoomGestureFlag_ = false;
+    bool isTripleDown_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

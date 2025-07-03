@@ -22,6 +22,7 @@
 #include <ui/rs_canvas_node.h>
 #include <ui/rs_surface_node.h>
 #include <transaction/rs_transaction.h>
+#include "ui/rs_ui_context.h"
 #include "ui/rs_ui_director.h"
 #include "ui/rs_root_node.h"
 #include "recording/recording_canvas.h"
@@ -58,12 +59,14 @@ private:
     void LoadMenuBgImage(uint32_t mode);
     void ChangeMode();
     void AdjustMenuPosition();
+    void FlushImplicitTransaction();
     std::shared_ptr<Media::PixelMap> DecodePixelMap(const std::string& pathName,
         const Media::AllocatorType& allocatorType);
     //menu window
     sptr<Rosen::Window> menuWindow_ = nullptr;
-    std::shared_ptr<Rosen::RSSurfaceNode> surfaceNode_;
-    std::shared_ptr<Rosen::RSCanvasNode> canvasNode_;
+    std::shared_ptr<Rosen::RSSurfaceNode> surfaceNode_ = nullptr;
+    std::shared_ptr<Rosen::RSCanvasNode> canvasNode_ = nullptr;
+    std::shared_ptr<Rosen::RSUIContext> rsUIContext_ = nullptr;
     Media::AllocatorType allocatorType_ = Media::AllocatorType::DMA_ALLOC;
     std::shared_ptr<Media::PixelMap> bgpixelmap_ = nullptr;
     std::shared_ptr<Rosen::RSImage> rosenImage_ = nullptr;

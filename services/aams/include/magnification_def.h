@@ -44,6 +44,8 @@ constexpr int32_t ANCHOR_OFFSET = 20;
 constexpr float HALF = 0.5f;
 constexpr float MIN_SCALE_DISTANCE = 200.0f;
 constexpr int32_t SCROLL_SHOT_POINTER_ID = 20001;
+constexpr int32_t DEFAULT_POINTER_ID = 0;
+constexpr uint32_t TAP_COUNT_TWO = 2;
 
 const std::string WINDOW_NAME = "magnification_window";
 const std::string MENU_NAME = "magnification_menu";

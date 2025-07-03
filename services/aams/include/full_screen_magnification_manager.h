@@ -21,6 +21,7 @@
 #include <ui/rs_canvas_node.h>
 #include <ui/rs_surface_node.h>
 #include <transaction/rs_transaction.h>
+#include "ui/rs_ui_context.h"
 #include "ui/rs_ui_director.h"
 #include "ui/rs_root_node.h"
 #include "recording/recording_canvas.h"
@@ -59,9 +60,11 @@ private:
     Rosen::Rect GetSourceRectFromPointer(int32_t centerX, int32_t centerY);
     void UpdateAnchor();
     PointerPos GetRectCenter(Rosen::Rect rect);
+    void FlushImplicitTransaction();
     sptr<Rosen::Window> window_ = nullptr;
-    std::shared_ptr<Rosen::RSSurfaceNode> surfaceNode_;
-    std::shared_ptr<Rosen::RSCanvasNode> canvasNode_;
+    std::shared_ptr<Rosen::RSSurfaceNode> surfaceNode_ = nullptr;
+    std::shared_ptr<Rosen::RSCanvasNode> canvasNode_ = nullptr;
+    std::shared_ptr<Rosen::RSUIContext> rsUIContext_ = nullptr;
     bool isMagnificationWindowShow_ = false;
 
     Rosen::Rect sourceRect_ = {0, 0, 0, 0};

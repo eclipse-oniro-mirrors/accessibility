@@ -92,7 +92,8 @@ void MagnificationMenuManager::CreateMenuWindow()
         HILOG_ERROR("surfaceNode_ is nullptr.");
         return;
     }
-    canvasNode_ = Rosen::RSCanvasNode::Create();
+    rsUIContext_ = surfaceNode_->GetRSUIContext();
+    canvasNode_ = Rosen::RSCanvasNode::Create(false, false, rsUIContext_);
     if (canvasNode_ == nullptr) {
         HILOG_ERROR("create canvasNode_ fail.");
         return;
@@ -158,7 +159,7 @@ void MagnificationMenuManager::ShowMenuWindow(uint32_t mode)
     }
 
     LoadMenuBgImage(mode);
-    Rosen::RSTransaction::FlushImplicitTransaction();
+    FlushImplicitTransaction();
     isMenuShown_ = true;
 }
 
@@ -169,7 +170,7 @@ void MagnificationMenuManager::DisableMenuWindow()
     if (surfaceNode_ != nullptr) {
         surfaceNode_->SetVisible(false);
         surfaceNode_->ClearChildren();
-        Rosen::RSTransaction::FlushImplicitTransaction();
+        FlushImplicitTransaction();
     }
 
     isMenuShown_ = false;
@@ -180,6 +181,7 @@ void MagnificationMenuManager::DisableMenuWindow()
     }
     surfaceNode_ = nullptr;
     canvasNode_ = nullptr;
+    rsUIContext_ = nullptr;
     bgpixelmap_ = nullptr;
     rosenImage_ = nullptr;
 }
@@ -321,6 +323,18 @@ void MagnificationMenuManager::RefreshWindowParam()
         ShowMenuWindow(menuMode_);
     } else {
         GetWindowParam();
+    }
+}
+
+void MagnificationMenuManager::FlushImplicitTransaction()
+{
+    if (rsUIContext_ != nullptr) {
+        auto rsTransaction = rsUIContext_->GetRSTransaction();
+        if (rsTransaction != nullptr) {
+            rsTransaction->FlushImplicitTransaction();
+        }
+    } else {
+        Rosen::RSTransaction::FlushImplicitTransaction();
     }
 }
 } // namespace Accessibility
