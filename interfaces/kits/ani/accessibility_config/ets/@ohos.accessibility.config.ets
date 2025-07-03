@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import { BusinessError，AsyncCallback } from '@ohos.base';
+import { BusinessError, AsyncCallback } from '@ohos.base';
 
 export namespace config {
     loadLibrary("AccessibilityConfig");
@@ -50,10 +50,10 @@ export namespace config {
                 return this.setSync(value);
             })
             .then((ret: NullishType): void => {
-                callback(new BusinessError());
+                callback(new BusinessError(), ret as undefined);
             })
             .catch((ret: NullishType): void => {
-                callback(ret as BusinessError);
+                callback(ret as BusinessError, undefined);
             });
         }
 
