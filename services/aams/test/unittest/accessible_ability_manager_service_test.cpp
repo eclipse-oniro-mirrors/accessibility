@@ -1262,7 +1262,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, CheckExtensionAbilityPermissio
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_001 start";
     std::string processName = "";
-    EXPECT_NE(RET_ERR_NO_PERMISSION,
+    EXPECT_EQ(RET_ERR_NO_PERMISSION,
         Singleton<AccessibleAbilityManagerService>::GetInstance().CheckExtensionAbilityPermission(
         processName));
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_001 end";
@@ -1278,7 +1278,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, CheckExtensionAbilityPermissio
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_002 start";
     AddPermission();
     std::string processName = "";
-    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().CheckExtensionAbilityPermission(
+    EXPECT_EQ(RET_ERR_NO_PERMISSION,
+        Singleton<AccessibleAbilityManagerService>::GetInstance().CheckExtensionAbilityPermission(
         processName));
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_002 end";
 }
