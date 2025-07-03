@@ -144,6 +144,13 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
     }
 
     std::string uri = Utils::GetUri(connection->GetElementName());
+    std::string bundleName = "";
+    size_t pos = uri.find('/');
+    if (pos != std::string::npos) {
+        bundleName = uri.substr(0, pos);
+    }
+    std::vector<uint32_t> events = {};
+    AddNeedEvent(bundleName, events);
     connectedA11yAbilities_.AddAccessibilityAbility(uri, connection);
 }
 
@@ -264,9 +271,6 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
         return;
     }
     enabledAbilities_.push_back(name);
-    std::string bundleName = name;
-    std::vector<uint32_t> events = {};
-    AddNeedEvent(bundleName, events);
     if (name == screenReaderAbilityName_) {
         SetScreenReaderState(screenReaderKey_, "1");
     }
@@ -715,9 +719,6 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
 #endif // OHOS_BUILD_ENABLE_HITRACE
 
     enabledAbilities_.push_back(name);
-    std::string bundleName = name;
-    std::vector<uint32_t> events = {};
-    AddNeedEvent(bundleName, events);
     SetAbilityAutoStartState(name, true);
     if (name == screenReaderAbilityName_) {
         SetScreenReaderState(screenReaderKey_, "1");
@@ -1461,26 +1462,21 @@ void AccessibilityAccountDataMap::Clear()
 void AccessibilityAccountData::AddNeedEvent(std::string &name, std::vector<uint32_t> needEvents)
 {
     std::string packageName = "";
-    std::string bundleName = "";
-    size_t pos = name.find('/');
-    if (pos != std::string::npos) {
-        bundleName = name.substr(0, pos);
-    }
- 
-    if (bundleName == SCREEN_READER_BUNDLE_NAME) {
-        abilityNeedEvents_[bundleName].push_back(TYPES_ALL_MASK);
-    } else if (bundleName == UI_TEST_BUNDLE_NAME) {
-        abilityNeedEvents_[bundleName].clear();
-        abilityNeedEvents_[bundleName] = needEvents;
+    if (name == SCREEN_READER_BUNDLE_NAME) {
+        abilityNeedEvents_[name].push_back(TYPES_ALL_MASK);
+    } else if (name == UI_TEST_BUNDLE_NAME) {
+        abilityNeedEvents_[name].clear();
+        abilityNeedEvents_[name] = needEvents;
     } else {
+        abilityNeedEvents_[name] = needEvents;
         for (auto &installAbility : installedAbilities_) {
             packageName = installAbility.GetPackageName();
-            if (packageName == bundleName) {
-                installAbility.GetEventConfigure(abilityNeedEvents_[bundleName]);
+            if (packageName == name) {
+                installAbility.GetEventConfigure(abilityNeedEvents_[name]);
             }
         }
     }
-    HILOG_DEBUG("needEvent size is %{public}u", abilityNeedEvents_[bundleName].size());
+    HILOG_DEBUG("needEvent size is %{public}u", abilityNeedEvents_[name].size());
     UpdateNeedEvents();
 }
 
