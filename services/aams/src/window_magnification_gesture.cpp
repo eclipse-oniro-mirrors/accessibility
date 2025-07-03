@@ -86,6 +86,11 @@ void WindowMagnificationGesture::InitGestureFuncMap()
             {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleMenuSlidingStateMove)},
             }
         },
+        {MagnificationGestureState::DRAGGING_STATE, {
+            {MMI::PointerEvent::POINTER_ACTION_UP, BIND(HandleDraggingStateUp)},
+            {MMI::PointerEvent::POINTER_ACTION_MOVE, BIND(HandleDraggingStateMove)},
+            }
+        }
     };
 }
 
@@ -105,12 +110,16 @@ void MagnificationGestureEventHandler::ProcessEvent(const AppExecFwk::InnerEvent
         event->GetInnerEventId(), server_.GetGestureState(), static_cast<int32_t>(param));
     switch (msg) {
         case MagnificationGestureMsg::SINGLE_TAP_FAIL_MSG:
-            if (!server_.GetTapOnMenu()) {
-                server_.SendCacheEventsToNext();
-                server_.ResetTapCount();
+            if (server_.GetTripleDown()) {
+                server_.OnDrag();
+            } else {
+                if (!server_.GetTapOnMenu()) {
+                    server_.SendCacheEventsToNext();
+                    server_.ResetTapCount();
+                }
+                // If this event is not canceled within 100ms, it is cleared.
+                server_.SetGestureState(static_cast<MagnificationGestureState>(event->GetParam()), HANDLER);
             }
-            // If this event is not canceled within 100ms, it is cleared.
-            server_.SetGestureState(static_cast<MagnificationGestureState>(event->GetParam()), HANDLER);
             break;
         case MagnificationGestureMsg::TRIPLE_TAP_FAIL_MSG:
             // If no next up comes in more than 250ms, clear it.
@@ -230,6 +239,8 @@ void WindowMagnificationGesture::DestroyEvents()
         Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
         isSingleTapOnWindow_ = false;
         isTapOnHotArea_ = false;
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+            AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
     }
 }
 
@@ -358,6 +369,7 @@ void WindowMagnificationGesture::HandleReadyStateOneFingerDownStateUp(MMI::Point
     }
     AddTapCount();
     if (GetTapCount() == TAP_COUNT_THREE) {
+        isTripleDown_ = false;
         MMI::PointerEvent::PointerItem pointerItem;
         event.GetPointerItem(event.GetPointerId(), pointerItem);
         OnTripleTap(pointerItem.GetDisplayX(), pointerItem.GetDisplayY());
@@ -381,11 +393,15 @@ void WindowMagnificationGesture::HandleReadyStateOneFingerDownStateMove(MMI::Poi
         return;
     }
 
-    if (IsMove(event, *lastDownEvent_, tapDistance_)) {
-        CancelPostEvent(MagnificationGestureMsg::SINGLE_TAP_FAIL_MSG);
-        CancelPostEvent(MagnificationGestureMsg::TRIPLE_TAP_FAIL_MSG);
-        SendCacheEventsToNext();
-        SetGestureState(MagnificationGestureState::PASSING_THROUGH, event.GetPointerAction());
+    if (!isTripleDown_ && GetTapCount() == TAP_COUNT_TWO) {
+        isTripleDown_ = true;
+    } else {
+        if (IsMove(event, *lastDownEvent_, tapDistance_)) {
+            CancelPostEvent(MagnificationGestureMsg::SINGLE_TAP_FAIL_MSG);
+            CancelPostEvent(MagnificationGestureMsg::TRIPLE_TAP_FAIL_MSG);
+            SendCacheEventsToNext();
+            SetGestureState(MagnificationGestureState::PASSING_THROUGH, event.GetPointerAction());
+        }
     }
 }
 
@@ -816,6 +832,51 @@ void WindowMagnificationGesture::HandleMenuSlidingStateUp(MMI::PointerEvent &eve
     SetGestureState(MagnificationGestureState::ZOOMIN_STATE, event.GetPointerAction());
 }
 
+void WindowMagnificationGesture::HandleDraggingStateUp(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+    if (event.GetPointerId() != DEFAULT_POINTER_ID) {
+        return;
+    }
+    SetGestureState(MagnificationGestureState::READY_STATE, HANDLER);
+    lastSlidingEvent_ = nullptr;
+    if (windowMagnificationManager_ != nullptr &&
+        windowMagnificationManager_->IsMagnificationWindowShow()) {
+        windowMagnificationManager_->DisableWindowMagnification();
+        isSingleTapOnWindow_ = false;
+        isTapOnHotArea_ = false;
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+            AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
+    }
+}
+
+void WindowMagnificationGesture::HandleDraggingStateMove(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+    if (event.GetPointerId() != DEFAULT_POINTER_ID) {
+        return;
+    }
+    if (windowMagnificationManager_ == nullptr) {
+        HILOG_ERROR("windowMagnificationManager_ is nullptr.");
+        return;
+    }
+
+    if (lastSlidingEvent_ == nullptr) {
+        lastSlidingEvent_ = std::make_shared<MMI::PointerEvent>(event);
+    }
+    MMI::PointerEvent::PointerItem lastSlidingItem;
+    lastSlidingEvent_->GetPointerItem(lastSlidingEvent_->GetPointerId(), lastSlidingItem);
+
+    MMI::PointerEvent::PointerItem currentItem;
+    event.GetPointerItem(event.GetPointerId(), currentItem);
+
+    int32_t deltaX = currentItem.GetDisplayX() - lastSlidingItem.GetDisplayX();
+    int32_t deltaY = currentItem.GetDisplayY() - lastSlidingItem.GetDisplayY();
+    windowMagnificationManager_->MoveMagnificationWindow(deltaX, deltaY);
+
+    lastSlidingEvent_ = std::make_shared<MMI::PointerEvent>(event);
+}
+
 bool WindowMagnificationGesture::IsMove(MMI::PointerEvent &startEvent, MMI::PointerEvent &endEvent, float slop)
 {
     MMI::PointerEvent::PointerItem endItem;
@@ -902,6 +963,8 @@ void WindowMagnificationGesture::ShieldZoomGesture(bool state)
         if (windowMagnificationManager_ != nullptr) {
             windowMagnificationManager_->DisableWindowMagnification(true);
             SetGestureState(MagnificationGestureState::READY_STATE, HANDLER);
+            Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+                AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
         }
         Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
         isSingleTapOnWindow_ = false;
@@ -968,6 +1031,33 @@ bool WindowMagnificationGesture::IsKnuckles(MMI::PointerEvent &event)
         }
     }
     return false;
+}
+
+void WindowMagnificationGesture::OnDrag()
+{
+    HILOG_INFO();
+    SetGestureState(MagnificationGestureState::DRAGGING_STATE, HANDLER);
+    ResetTapCount();
+    isTripleDown_ = false;
+    if (lastDownEvent_ == nullptr) {
+        HILOG_ERROR("lastDownEvent_ is nullptr");
+        return;
+    }
+
+    MMI::PointerEvent::PointerItem item;
+    lastDownEvent_->GetPointerItem(lastDownEvent_->GetPointerId(), item);
+
+    int32_t anchorX = item.GetDisplayX();
+    int32_t anchorY = item.GetDisplayY();
+
+    if (windowMagnificationManager_ == nullptr) {
+        HILOG_ERROR("windowMagnificationManager_ is nullptr.");
+        return;
+    }
+    windowMagnificationManager_->EnableWindowMagnification(anchorX, anchorY);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+        AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
+    Clear();
 }
 } // namespace Accessibility
 } // namespace OHOS

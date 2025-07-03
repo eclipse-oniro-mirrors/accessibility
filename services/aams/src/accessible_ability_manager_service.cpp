@@ -115,6 +115,7 @@ namespace {
     const std::string TIMER_GET_ALL_CONFIG = "accessibility:getAllConfig";
     const std::string TIMER_REGISTER_CONFIG_OBSERVER = "accessibility:registerConfigObserver";
     constexpr int32_t XCOLLIE_TIMEOUT = 6; // s
+    constexpr int QUANTITY = 2; // plural string
 
     static const std::map<std::string, int32_t> AccessibilityConfigTable = {
         {"HIGH_CONTRAST_TEXT", HIGH_CONTRAST_TEXT},
@@ -4197,7 +4198,11 @@ void AccessibleAbilityManagerService::InitResource()
     }
     for (auto &iter : ResourceMap) {
         std::string outValue;
-        resourceManager->GetStringByName(iter.first.c_str(), outValue);
+        if (iter.first.c_str() == MAGNIFICATION_SCALE) {
+            resourceManager->GetPluralStringByName(iter.first.c_str(), QUANTITY, outValue);
+        } else {
+            resourceManager->GetStringByName(iter.first.c_str(), outValue);
+        }
         ResourceMap[iter.first] = outValue;
     }
     isResourceInit_ = true;
@@ -4221,6 +4226,12 @@ ErrCode AccessibleAbilityManagerService::AnnouncedForAccessibility(const std::st
 
 void AccessibleAbilityManagerService::AnnouncedForMagnification(AnnounceType announceType)
 {
+    bool state = false;
+    GetScreenReaderState(state);
+    if (!state) {
+        HILOG_ERROR("screenReader not enable.");
+        return;
+    }
     std::string resource = "";
     if (announceType == AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE) {
         resource = GetResource(MAGNIFICATION_SCALE).c_str();

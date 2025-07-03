@@ -28,7 +28,8 @@ enum ACCESSIBILITY_ZOOM_STATE {
     READY_STATE,
     ZOOMIN_STATE,
     SLIDING_STATE,
-    MENU_SLIDING_STATE
+    MENU_SLIDING_STATE,
+    DRAGGING_STATE
 };
 
 enum ACCESSIBILITY_ZOOM_GESTURE_MSG : uint32_t {
@@ -79,6 +80,7 @@ private:
     void RecognizeInZoomState(MMI::PointerEvent &event);
     void RecognizeInSlidingState(MMI::PointerEvent &event);
     void RecognizeInMenuSlidingState(MMI::PointerEvent &event);
+    void RecognizeInDraggingState(MMI::PointerEvent &event);
     void RecognizeScroll(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE &coordinate);
     void RecognizeScale(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE &coordinate);
     void CalcFocusCoordinate(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE &coordinate);
@@ -95,11 +97,12 @@ private:
         std::shared_ptr<MMI::PointerEvent> secondEvent);
     float CalcSeparationDistance(std::shared_ptr<MMI::PointerEvent> firstEvent,
         std::shared_ptr<MMI::PointerEvent> secondEvent);
-    void OnZoom(int32_t centerX, int32_t centerY);
+    void OnZoom(int32_t centerX, int32_t centerY, bool showMenu);
     void OffZoom();
     void OnScroll(float offsetX, float offsetY);
     void OnScale(float scaleSpan);
     void Clear();
+    void OnDrag();
 
     bool startScaling_ = false;
     bool isLongPress_ = false;
@@ -136,6 +139,7 @@ private:
     std::atomic<bool> shieldZoomGestureFlag_ = false;
     bool isTapOnMenu_ = false;
     uint32_t gestureType_ = 0;
+    bool isTripleDown_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS
