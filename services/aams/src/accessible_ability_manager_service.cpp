@@ -340,12 +340,10 @@ void AccessibleAbilityManagerService::OnStop()
         currentAccountId_ = -1;
         a11yAccountsData_.Clear();
         stateObservers_.Clear();
-        bundleManager_ = nullptr;
         inputInterceptor_ = nullptr;
         touchEventInjector_ = nullptr;
         keyEventFilter_ = nullptr;
         stateObserversDeathRecipient_ = nullptr;
-        bundleManagerDeathRecipient_ = nullptr;
 
         syncPromise.set_value();
         }, "TASK_ONSTOP");
@@ -1886,44 +1884,6 @@ std::vector<int32_t> AccessibleAbilityManagerService::GetAllAccountIds()
     return a11yAccountsData_.GetAllAccountIds();
 }
 
-sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy()
-{
-    HILOG_DEBUG();
-    if (bundleManager_) {
-        return bundleManager_;
-    }
-
-    sptr<ISystemAbilityManager> systemAbilityManager =
-        SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (!systemAbilityManager) {
-        HILOG_ERROR("failed:fail to get system ability mgr.");
-        return nullptr;
-    }
-
-    sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
-    if (!remoteObject) {
-        HILOG_ERROR("failed:fail to get bundle manager proxy.");
-        return nullptr;
-    }
-
-    bundleManager_ = iface_cast<AppExecFwk::IBundleMgr>(remoteObject);
-    if (!bundleManager_) {
-        HILOG_ERROR("fail to new bundle manager.");
-        return nullptr;
-    }
-
-    if (!bundleManagerDeathRecipient_) {
-        bundleManagerDeathRecipient_ = new(std::nothrow) BundleManagerDeathRecipient();
-        if (!bundleManagerDeathRecipient_) {
-            HILOG_ERROR("bundleManagerDeathRecipient_ is null");
-            return nullptr;
-        }
-    }
-
-    bundleManager_->AsObject()->AddDeathRecipient(bundleManagerDeathRecipient_);
-    return bundleManager_;
-}
-
 sptr<AccessibilityWindowConnection> AccessibleAbilityManagerService::GetAccessibilityWindowConnection(
     int32_t windowId)
 {
@@ -3223,12 +3183,6 @@ void AccessibleAbilityManagerService::ConfigCallbackDeathRecipient::OnRemoteDied
     Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveCallback(CONFIG_CALLBACK, this, remote);
 }
 
-void AccessibleAbilityManagerService::BundleManagerDeathRecipient::OnRemoteDied(
-    const wptr<IRemoteObject> &remote)
-{
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnBundleManagerDied(remote);
-}
-
 void AccessibleAbilityManagerService::UpdateConfigState()
 {
     return accessibilitySettings_->UpdateConfigState();
@@ -3295,25 +3249,6 @@ void AccessibleAbilityManagerService::RemoveSavedConfigCallback(const wptr<IRemo
             break;
         }
     }
-}
-
-void AccessibleAbilityManagerService::OnBundleManagerDied(const wptr<IRemoteObject> &remote)
-{
-    HILOG_INFO("OnBundleManagerDied ");
-    if (!handler_) {
-        HILOG_ERROR("handler is nullptr");
-        return;
-    }
-
-    handler_->PostTask([=]() {
-        if (!remote.GetRefPtr() || !bundleManager_) {
-            HILOG_ERROR("remote is null");
-            return;
-        }
-
-        bundleManager_->AsObject()->RemoveDeathRecipient(bundleManagerDeathRecipient_);
-        bundleManager_ = nullptr;
-        }, "OnBundleManagerDied");
 }
 
 void AccessibleAbilityManagerService::StateObservers::AddStateObserver(

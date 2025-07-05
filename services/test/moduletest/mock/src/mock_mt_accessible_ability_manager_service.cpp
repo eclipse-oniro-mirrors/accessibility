@@ -510,11 +510,6 @@ void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
 {
 }
 
-sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy()
-{
-    return nullptr;
-}
-
 void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter)
 {
     HILOG_DEBUG();

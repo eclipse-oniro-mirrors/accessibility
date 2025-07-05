@@ -215,7 +215,6 @@ public:
     sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
     sptr<AccessibilityAccountData> GetCurrentAccountData();
     std::vector<int32_t> GetAllAccountIds();
-    sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
 
     /* For common event */
     void AddedUser(int32_t accountId);
@@ -459,7 +458,6 @@ private:
 
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
     void RemoveSavedConfigCallback(const wptr<IRemoteObject>& callback);
-    void OnBundleManagerDied(const wptr<IRemoteObject> &remote);
     void DeleteConnectionAndDeathRecipient(
         const int32_t windowId, const sptr<AccessibilityWindowConnection> &connection);
     
@@ -488,7 +486,6 @@ private:
     std::map<int32_t, bool> dependentServicesStatus_;
     int32_t currentAccountId_ = -1;
     AccessibilityAccountDataMap  a11yAccountsData_;
-    sptr<AppExecFwk::IBundleMgr> bundleManager_ = nullptr;
 
     sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
     sptr<TouchEventInjector> touchEventInjector_ = nullptr;
@@ -521,7 +518,6 @@ private:
     sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityListsObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
-    sptr<IRemoteObject::DeathRecipient> bundleManagerDeathRecipient_ = nullptr;
     StateObservers stateObservers_;
     ffrt::mutex mutex_; // current used for register state observer
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;
