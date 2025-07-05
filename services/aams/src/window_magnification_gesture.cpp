@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2024 Huawei Device Co., Ltd.
+ * Copyright (C) 2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -445,6 +445,7 @@ void WindowMagnificationGesture::HandleZoomInStateDown(MMI::PointerEvent &event)
     }
     if (windowMagnificationManager_ == nullptr) {
         HILOG_ERROR("windowMagnificationManager_ is nullptr.");
+        SendEventToMultimodal(event, true, true);
         return;
     }
 
@@ -452,7 +453,7 @@ void WindowMagnificationGesture::HandleZoomInStateDown(MMI::PointerEvent &event)
     lastDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
     MMI::PointerEvent::PointerItem pointerItem;
     event.GetPointerItem(event.GetPointerId(), pointerItem);
-    
+
     if (size != static_cast<int32_t>(PointerCountSize::POINTER_SIZE_1)) {
         return;
     }

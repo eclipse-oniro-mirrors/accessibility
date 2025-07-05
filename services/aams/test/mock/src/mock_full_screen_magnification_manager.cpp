@@ -44,6 +44,12 @@ void FullScreenMagnificationManager::ShowMagnification()
     Accessibility::AccessibilityAbilityHelper::GetInstance().SetZoomState(true);
 }
 
+void FullScreenMagnificationManager::ShowMagnificationWithPosition(PointerPos pos)
+{
+    (void)pos;
+    Accessibility::AccessibilityAbilityHelper::GetInstance().SetZoomState(true);
+}
+
 void FullScreenMagnificationManager::DisableMagnification(bool needClear)
 {
     (void)needClear;
@@ -116,6 +122,12 @@ void FullScreenMagnificationManager::FollowFocuseElement(int32_t centerX, int32_
 {
     (void)centerX;
     (void)centerY;
+}
+
+PointerPos FullScreenMagnificationManager::GetSourceCenter()
+{
+    PointerPos pos = {300, 400};
+    return pos;
 }
 } // namespace Accessibility
 } // namespace OHOS
