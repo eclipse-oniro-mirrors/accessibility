@@ -304,7 +304,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::ReadAccessibilityElementInfoLi
         reply.WriteInt32(RET_ERR_FAILED);
         return TRANSACTION_ERR;
     }
-    for (size_t i = 0; i < infoSize; i++) {
+    for (size_t i = 0; i < static_cast<uint32_t>(infoSize); i++) {
         sptr<AccessibilityElementInfoParcel> info =
                 tmpParcel.ReadStrongParcelable<AccessibilityElementInfoParcel>();
         if (info == nullptr) {
