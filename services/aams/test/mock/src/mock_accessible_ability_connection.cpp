@@ -21,6 +21,7 @@
 #include "accessibility_account_data.h"
 #include "accessibility_ut_helper.h"
 #include "accessible_ability_manager_service.h"
+#include "accessible_ability_channel.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -345,6 +346,17 @@ RetError AccessibleAbilityChannel::NotifyDisconnect()
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilitychannel NotifyDisconnect";
     return RET_OK;
+}
+
+void AccessibleAbilityChannel::SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
+    const SpecificPropertyParam& param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilitychannel SearchElementInfoBySpecificProperty";
+    (void)elementBasicInfo;
+    (void)param;
+    (void)requestId;
+    (void)callback;
 }
 
 bool AccessibleAbilityConnection::GetIsRegisterDisconnectCallback() const
