@@ -201,6 +201,11 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_
     return accountData->GetAccessibleAbilityConnection(clientName);
 }
 
+RetError AccessibleAbilityChannel::ConfigureEvents(const std::vector<uint32_t> needEvents)
+{
+    return RET_OK;
+}
+
 AccessibleAbilityConnection::AccessibleAbilityConnection(
     int32_t accountId, int32_t connectionId, AccessibilityAbilityInfo& abilityInfo)
 {

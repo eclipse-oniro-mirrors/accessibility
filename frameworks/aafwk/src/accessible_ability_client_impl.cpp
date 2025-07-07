@@ -851,7 +851,9 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
             HILOG_ERROR("Get element info from ace failed");
             return ret;
         }
-        children.emplace_back(elementInfos.front());
+        if (!elementInfos.empty()) {
+            children.emplace_back(elementInfos.front());
+        }
     }
     ret = GetChildrenWork(windowId, childIds, children, systemApi);
     return ret;

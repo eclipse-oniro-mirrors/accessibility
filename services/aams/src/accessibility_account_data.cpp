@@ -1060,12 +1060,8 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
 
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
-    sptr<AppExecFwk::IBundleMgr> bms = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
-    if (!bms) {
-        HILOG_ERROR("bms is nullptr.");
-        return;
-    }
-    bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
+    bool ret = Singleton<AccessibilityResourceBundleManager>::GetInstance().QueryExtensionAbilityInfos(
+        AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     bool hasNewExtensionAbility = false;
     for (auto &newAbility : extensionInfos) {

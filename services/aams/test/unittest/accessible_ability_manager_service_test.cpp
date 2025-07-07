@@ -406,45 +406,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveCallback_005, TestSize.L
 }
 
 /**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_OnBundleManagerDied_001
- * @tc.name: OnBundleManagerDied
- * @tc.desc: Test function OnBundleManagerDied
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnBundleManagerDied_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_001 start";
-
-    sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    EXPECT_TRUE(samgr);
-
-    wptr<IRemoteObject> remote = samgr->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);    
-
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    aams.OnBundleManagerDied(remote);
-    EXPECT_TRUE(remote != nullptr);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_001 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_OnBundleManagerDied_002
- * @tc.name: OnBundleManagerDied
- * @tc.desc: Test function OnBundleManagerDied
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnBundleManagerDied_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_002 start";
-
-    wptr<IRemoteObject> remote = nullptr;
-
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    aams.OnBundleManagerDied(remote);
-    EXPECT_TRUE(remote == nullptr);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_OnBundleManagerDied_002 end";
-}
-
-/**
  * @tc.number: Accessible_Ability_ManagerService_UnitTest_GetScreenReaderState_001
  * @tc.name: GetScreenReaderState
  * @tc.desc: Test function GetScreenReaderState
@@ -620,19 +581,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemovedUser_002, TestSize.Leve
     Singleton<AccessibleAbilityManagerService>::GetInstance().RemovedUser(1);
     // can't to check a11yAccountsData_ because it is private,and don't provite api.
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_RemovedUser_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_GetBundleMgrProxy_001
- * @tc.name: GetBundleMgrProxy
- * @tc.desc: Test function GetBundleMgrProxy
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetBundleMgrProxy_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetBundleMgrProxy_001 start";
-    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
-    EXPECT_TRUE(ret);
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetBundleMgrProxyr_001 end";
 }
 
 /**

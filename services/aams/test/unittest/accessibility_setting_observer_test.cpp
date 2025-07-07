@@ -284,19 +284,6 @@ HWTEST_F(AccessibilitySettingObserverTest, RemovedUser_002, TestSize.Level1)
 }
 
 /**
- * @tc.number: AccessibilitySettingObserver_UnitTest_GetBundleMgrProxy_001
- * @tc.name: GetBundleMgrProxy
- * @tc.desc: Test function GetBundleMgrProxy
- */
-HWTEST_F(AccessibilitySettingObserverTest, GetBundleMgrProxy_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilitySettingObserver_ServiceUnittest_GetBundleMgrProxy_001 start";
-    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
-    EXPECT_TRUE(ret);
-    GTEST_LOG_(INFO) << "AccessibilitySettingObserver_ServiceUnittest_GetBundleMgrProxyr_001 end";
-}
-
-/**
  * @tc.number: AccessibilitySettingObserver_UnitTest_PackageChanged_001
  * @tc.name: PackageChanged
  * @tc.desc: Test function PackageChanged
