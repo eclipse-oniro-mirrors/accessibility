@@ -57,6 +57,7 @@ public:
     void DrawRuoundRectFrame();
     void EnableWindowMagnification(int32_t centerX, int32_t centerY);
     void ShowWindowMagnification();
+    void ShowWindowMagnificationWithPosition(PointerPos pos);
     void DisableWindowMagnification(bool needClear = false);
     void SetScale(float deltaSpan);
     void MoveMagnificationWindow(int32_t deltaX, int32_t deltaY);
@@ -68,6 +69,7 @@ public:
     void PersistScale();
     void RefreshWindowParam();
     void FollowFocuseElement(int32_t centerX, int32_t centerY);
+    PointerPos GetSourceCenter();
 
 private:
     PointerPos ConvertCenterToTopLeft(int32_t centerX, int32_t centerY);

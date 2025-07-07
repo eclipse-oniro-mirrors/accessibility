@@ -109,14 +109,16 @@ void MagnificationManager::OnModeChanged(uint32_t mode)
         return;
     }
     bool needShow = false;
+    PointerPos pos = {0, 0};
     if (mode == WINDOW_MAGNIFICATION) {
         HILOG_INFO("disable full screen magnification.");
         if (fullScreenMagnificationManager_ != nullptr) {
             needShow = fullScreenMagnificationManager_->IsMagnificationWindowShow();
+            pos = fullScreenMagnificationManager_->GetSourceCenter();
             fullScreenMagnificationManager_->DisableMagnification();
         }
         if (windowMagnificationManager_ != nullptr && needShow) {
-            windowMagnificationManager_->ShowWindowMagnification();
+            windowMagnificationManager_->ShowWindowMagnificationWithPosition(pos);
             Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
                 AnnounceType::ANNOUNCE_SWITCH_WINDOW);
         }
@@ -124,10 +126,11 @@ void MagnificationManager::OnModeChanged(uint32_t mode)
         HILOG_INFO("disable window magnification.");
         if (windowMagnificationManager_ != nullptr) {
             needShow = windowMagnificationManager_->IsMagnificationWindowShow();
+            pos = windowMagnificationManager_->GetSourceCenter();
             windowMagnificationManager_->DisableWindowMagnification();
         }
         if (fullScreenMagnificationManager_ != nullptr && needShow) {
-            fullScreenMagnificationManager_->ShowMagnification();
+            fullScreenMagnificationManager_->ShowMagnificationWithPosition(pos);
             Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
                 AnnounceType::ANNOUNCE_SWITCH_FULL_SCREEN);
         }

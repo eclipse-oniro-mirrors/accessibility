@@ -145,6 +145,15 @@ void WindowMagnificationManager::ShowWindowMagnification()
     EnableWindowMagnification(centerX, centerY);
 }
 
+void WindowMagnificationManager::ShowWindowMagnificationWithPosition(PointerPos pos)
+{
+    if (pos.posX == 0 && pos.posY == 0) {
+        ShowWindowMagnification();
+    } else {
+        EnableWindowMagnification(pos.posX, pos.posY);
+    }
+}
+
 void WindowMagnificationManager::DisableWindowMagnification(bool needClear)
 {
     HILOG_INFO();
@@ -366,6 +375,14 @@ PointerPos WindowMagnificationManager::GetRectCenter(Rosen::Rect rect)
     PointerPos point = {0, 0};
     point.posX = rect.posX_ + static_cast<int32_t>(rect.width_ / DIVISOR_TWO);
     point.posY = rect.posY_ + static_cast<int32_t>(rect.height_ / DIVISOR_TWO);
+    return point;
+}
+
+PointerPos WindowMagnificationManager::GetSourceCenter()
+{
+    PointerPos point = {0, 0};
+    point.posX = sourceRect_.posX_ + static_cast<int32_t>(sourceRect_.width_ / DIVISOR_TWO);
+    point.posY = sourceRect_.posY_ + static_cast<int32_t>(sourceRect_.height_ / DIVISOR_TWO);
     return point;
 }
 

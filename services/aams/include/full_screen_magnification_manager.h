@@ -41,6 +41,7 @@ public:
     void DrawRuoundRectFrame();
     void EnableMagnification(int32_t centerX, int32_t centerY);
     void ShowMagnification();
+    void ShowMagnificationWithPosition(PointerPos pos);
     void DisableMagnification(bool needClear = false);
     PointerPos ConvertCoordinates(int32_t posX, int32_t posY);
     void RefreshWindowParam();
@@ -50,6 +51,7 @@ public:
     PointerPos ConvertGesture(uint32_t type, PointerPos coordinates);
     uint32_t CheckTapOnHotArea(int32_t posX, int32_t posY);
     void FollowFocuseElement(int32_t centerX, int32_t centerY);
+    PointerPos GetSourceCenter();
     inline bool IsMagnificationWindowShow()
     {
         return isMagnificationWindowShow_;
