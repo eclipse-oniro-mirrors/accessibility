@@ -113,6 +113,8 @@ private:
     float lastScrollFocusY_ = 0.0f;
     float tapDistance_ = 0.0f;
     float multiTapDistance_ = 0.0f;
+    float scale_ = DEFAULT_SCALE;
+    bool isScale_ = false;
     uint64_t screenId_ = -1;
     uint32_t screenWidth_ = 0;
     uint32_t screenHeight_ = 0;

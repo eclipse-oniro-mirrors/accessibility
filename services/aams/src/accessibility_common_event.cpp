@@ -47,6 +47,8 @@ AccessibilityCommonEvent::AccessibilityCommonEvent()
         &AccessibilityCommonEvent::HandleDataShareReady;
     handleEventFunc_[EventFwk::CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED] =
         &AccessibilityCommonEvent::HandlePowerOnEvent;
+    handleEventFunc_[EventFwk::CommonEventSupport::COMMON_EVENT_LOCALE_CHANGED] =
+        &AccessibilityCommonEvent::HandleLocalChangedEvent;
 
     for (auto it = handleEventFunc_.begin(); it != handleEventFunc_.end(); ++it) {
         HILOG_DEBUG("Add event: %{public}s", it->first.c_str());
@@ -231,6 +233,12 @@ void AccessibilityCommonEvent::HandlePowerOnEvent(const EventFwk::CommonEventDat
 {
     IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
     HILOG_ERROR("HandlePowerOnEvent");
+}
+
+void AccessibilityCommonEvent::HandleLocalChangedEvent(const EventFwk::CommonEventData &data) const
+{
+    HILOG_DEBUG("reInit Resource.");
+    Singleton<AccessibleAbilityManagerService>::GetInstance().InitResource(true);
 }
 } // namespace Accessibility
 } // namespace OHOS

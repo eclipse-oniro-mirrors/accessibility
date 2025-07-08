@@ -744,8 +744,9 @@ ErrCode AccessibleAbilityManagerService::AnnouncedForAccessibility(const std::st
     return RET_OK;
 }
 
-void AccessibleAbilityManagerService::InitResource()
+void AccessibleAbilityManagerService::InitResource(bool needReInit)
 {
+    (void)needReInit;
 }
 
 std::string &GetResource(const std::string &resourceName)
