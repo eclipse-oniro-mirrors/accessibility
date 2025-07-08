@@ -19,23 +19,10 @@
 #include <vector>
 #include "hilog_wrapper.h"
 #include "ani_utils.h"
+#include <ani_signature_builder.h>
 
 using namespace OHOS::Accessibility;
-
-namespace {
-    const std::string ERROR_MESSAGE_PARAMETER_ERROR = "Parameter error. Possible causes:"
-        "1. Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.";
-    const std::string ERROR_MESSAGE_NO_PERMISSION = "Permission verification failed."
-        "The application does not have the permission required to call the API.";
-    const std::string ERROR_MESSAGE_NOT_SYSTEM_APP = "Permission verification failed."
-        "A non-system application calls a system API.";
-    const std::string ERROR_MESSAGE_NO_RIGHT = "No accessibility permission to perform the operation";
-    const std::string ERROR_MESSAGE_SYSTEM_ABNORMALITY = "System abnormality";
-    const std::string ERROR_MESSAGE_PROPERTY_NOT_EXIST = "This property does not exist";
-    const std::string ERROR_MESSAGE_ACTION_NOT_SUPPORT = "This action is not supported";
-    const std::string ERROR_MESSAGE_INVALID_BUNDLE_NAME_OR_ABILITY_NAME = "Invalid bundle name or ability name";
-    const std::string ERROR_MESSAGE_TARGET_ABILITY_ALREADY_ENABLED = "Target ability already enabled";
-} // namespace
+using namespace arkts::ani_signature;
 
 std::string ANIUtils::ANIStringToStdString(ani_env *env, ani_string ani_str)
 {
@@ -85,7 +72,7 @@ bool ANIUtils::GetIntField(ani_env *env, std::string fieldName, ani_object objec
         return false;
     }
     if (!isUndefined) {
-        if (env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "intValue", nullptr, &fieldValue) ==
+        if (env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "unboxed", nullptr, &fieldValue) ==
             ANI_OK) {
             return true;
         }
@@ -112,13 +99,15 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
 
     fieldValue.clear();
     ani_class arrayCls;
-    const char *arrayClassName = "Lescompat/Array;";
-    if (env->FindClass(arrayClassName, &arrayCls) != ANI_OK) {
+    if (env->FindClass(Builder::BuildClass("escompat.Array").Descriptor().c_str(), &arrayCls) != ANI_OK) {
         return false;
     }
 
     ani_method arrayLengthMethod;
-    if (env->Class_FindMethod(arrayCls, "length", ":Lstd/core/Object;", &arrayLengthMethod) != ANI_OK) {
+    SignatureBuilder objectBuilder{};
+    objectBuilder.SetReturnClass("std.core.Object");
+    std::string objectBuilderDescriptor = objectBuilder.BuildSignatureDescriptor();
+    if (env->Class_FindMethod(arrayCls, "length", objectBuilderDescriptor.c_str(), &arrayLengthMethod) != ANI_OK) {
         return false;
     }
 
@@ -128,13 +117,13 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
     }
 
     int32_t lengthInt;
-    if (env->Object_CallMethodByName_Int(static_cast<ani_object>(length), "intValue", nullptr, &lengthInt) != ANI_OK ||
+    if (env->Object_CallMethodByName_Int(static_cast<ani_object>(length), "unboxed", nullptr, &lengthInt) != ANI_OK ||
         lengthInt <= 0) {
         return false;
     }
 
     ani_method arrayPopMethod;
-    if (env->Class_FindMethod(arrayCls, "pop", ":Lstd/core/Object;", &arrayPopMethod) != ANI_OK) {
+    if (env->Class_FindMethod(arrayCls, "pop", objectBuilderDescriptor.c_str(), &arrayPopMethod) != ANI_OK) {
         return false;
     }
 
@@ -315,14 +304,16 @@ NAccessibilityErrMsg ANIUtils::QueryRetMsg(RetError errorCode)
 
 void ANIUtils::ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
 {
-    static const char *errorClsName = "L@ohos/base/BusinessError;";
+    Type errorClass = Builder::BuildClass("@ohos.base.BusinessError");
     ani_class cls {};
-    if (env->FindClass(errorClsName, &cls) != ANI_OK) {
+    if (env->FindClass(errorClass.Descriptor().c_str(), &cls) != ANI_OK) {
         HILOG_ERROR("find class BusinessError failed");
         return;
     }
     ani_method ctor;
-    if (env->Class_FindMethod(cls, "<ctor>", ":V", &ctor) != ANI_OK) {
+    std::string ctorName = Builder::BuildConstructorName();
+    SignatureBuilder sb{};
+    if (env->Class_FindMethod(cls, ctorName.c_str(), sb.BuildSignatureDescriptor().c_str(), &ctor) != ANI_OK) {
         HILOG_ERROR("find method BusinessError.constructor failed");
         return;
     }
@@ -352,15 +343,18 @@ void ANIUtils::ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
 
 ani_object ANIUtils::CreateBoolObject(ani_env *env, ani_boolean value)
 {
-    static const char *boolClsName = "Lstd/core/Boolean;";
+    Type boolClass = Builder::BuildClass("std.core.Boolean");
     ani_class cls {};
-    if (env->FindClass(boolClsName, &cls) != ANI_OK) {
+    if (env->FindClass(boolClass.Descriptor().c_str(), &cls) != ANI_OK) {
         HILOG_ERROR("find class Boolean failed");
         return nullptr;
     }
 
     ani_method ctor;
-    if (env->Class_FindMethod(cls, "<ctor>", "Z:V", &ctor) != ANI_OK) {
+    std::string ctorName = Builder::BuildConstructorName();
+    SignatureBuilder sb{};
+    sb.AddBoolean();
+    if (env->Class_FindMethod(cls, ctorName.c_str(), sb.BuildSignatureDescriptor().c_str(), &ctor) != ANI_OK) {
         HILOG_ERROR("find method Boolean.constructor failed");
         return nullptr;
     }
@@ -373,45 +367,45 @@ ani_object ANIUtils::CreateBoolObject(ani_env *env, ani_boolean value)
     return boolObject;
 }
 
-bool ANIUtils::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObject,
+ani_int ANIUtils::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObject,
     AccessibilityEventInfo &eventInfo)
 {
     std::string type;
     if (!GetStringField(env, "type", eventObject, type)) {
         HILOG_ERROR("get type Faild!");
-        return false;
+        return static_cast<ani_int>(QueryRetMsg(RET_ERR_INVALID_PARAM).errCode);
     }
     OHOS::Accessibility::EventType eventType = ConvertStringToEventInfoTypes(type);
     if (eventType == TYPE_VIEW_INVALID) {
         HILOG_ERROR("event type is invalid!");
-        return false;
+        return static_cast<ani_int>(QueryRetMsg(RET_ERR_INVALID_PARAM).errCode);
     }
     eventInfo.SetEventType(eventType);
 
     std::string bundleName;
     if (!GetStringField(env, "bundleName", eventObject, bundleName)) {
         HILOG_ERROR("get bundleName Faild!");
-        return false;
+        return static_cast<ani_int>(QueryRetMsg(RET_ERR_INVALID_PARAM).errCode);
     }
     if (bundleName == "") {
         HILOG_ERROR("bundle name is invalid!");
-        return false;
+        return static_cast<ani_int>(QueryRetMsg(RET_ERR_INVALID_PARAM).errCode);
     }
     eventInfo.SetBundleName(bundleName);
 
     std::string triggerAction;
     if (!GetStringField(env, "triggerAction", eventObject, triggerAction)) {
         HILOG_ERROR("get triggerAction Faild!");
-        return false;
+        return static_cast<ani_int>(QueryRetMsg(RET_ERR_INVALID_PARAM).errCode);
     }
     OHOS::Accessibility::ActionType action = ConvertStringToAccessibleOperationType(triggerAction);
     if (action == ACCESSIBILITY_ACTION_INVALID) {
         HILOG_ERROR("action is invalid!");
-        return false;
+        return static_cast<ani_int>(QueryRetMsg(RET_ERR_INVALID_PARAM).errCode);
     }
     eventInfo.SetTriggerAction(action);
 
-    return true;
+    return 0;
 }
 
 void ANIUtils::ConvertEventInfoStringFields(ani_env *env, ani_object eventObject,
