@@ -39,6 +39,7 @@ namespace {
     constexpr float MIN_SCROLL_SPAN = 2.0f;
     constexpr float MIN_SCALE_SPAN = 2.0f;
     constexpr float DEFAULT_ANCHOR = 0.5f;
+    constexpr float MIN_SCALE = 0.1f;
 } // namespace
 
 AccessibilityZoomGesture::AccessibilityZoomGesture(
@@ -337,6 +338,8 @@ void AccessibilityZoomGesture::RecognizeInZoomStateDownEvent(MMI::PointerEvent &
             SendCacheEventsToNext();
         } else {
             TransferState(SLIDING_STATE);
+            scale_ = fullScreenManager_->GetScale();
+            isScale_ = false;
             ClearCacheEventsAndMsg();
             ZOOM_FOCUS_COORDINATE focusXY = {0.0f, 0.0f};
             CalcFocusCoordinate(event, focusXY);
@@ -437,12 +440,15 @@ void AccessibilityZoomGesture::RecognizeInSlidingState(MMI::PointerEvent &event)
         case MMI::PointerEvent::POINTER_ACTION_UP:
             if (pointerCount == POINTER_COUNT_1) {
                 TransferState(ZOOMIN_STATE);
-                fullScreenManager_->PersistScale();
+                if (isScale_ && (abs(scale_ - fullScreenManager_->GetScale()) > MIN_SCALE)) {
+                    fullScreenManager_->PersistScale();
+                    isScale_ = false;
+                }
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_CANCEL:
             TransferState(ZOOMIN_STATE);
-            fullScreenManager_->PersistScale();
+            isScale_ = false;
             break;
         default:
             break;
@@ -570,6 +576,7 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event, ZOOM_FOC
     if (abs(scaleSpan) > EPS) {
         OnScale(scaleSpan);
         lastSpan_ = span;
+        isScale_ = true;
     }
 }
 

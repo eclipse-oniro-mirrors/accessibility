@@ -56,6 +56,10 @@ public:
     {
         return isMagnificationWindowShow_;
     }
+    inline float GetScale()
+    {
+        return scale_;
+    }
 private:
     void GetWindowParam();
     void InitMagnificationParam();

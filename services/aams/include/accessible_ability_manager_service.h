@@ -344,7 +344,7 @@ public:
     std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
     std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
     ErrCode AnnouncedForAccessibility(const std::string &announcedText);
-    void InitResource();
+    void InitResource(bool needReInit);
     std::string &GetResource(const std::string &resourceName);
     void AnnouncedForMagnification(AnnounceType announceType);
 

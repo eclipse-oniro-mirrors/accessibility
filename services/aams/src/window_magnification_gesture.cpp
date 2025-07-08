@@ -639,10 +639,12 @@ void WindowMagnificationGesture::HandleZoomInStateOneFingerTapDown(MMI::PointerE
 
 void WindowMagnificationGesture::HandleTwoFingersDownStateUp(MMI::PointerEvent &event)
 {
-    startScale_ = false;
     if (windowMagnificationManager_ != nullptr) {
+        if (startScale_) {
+            windowMagnificationManager_->PersistScale();
+        }
+        startScale_ = false;
         windowMagnificationManager_->FixSourceCenter(startScale_);
-        windowMagnificationManager_->PersistScale();
     }
     lastSlidingEvent_ = nullptr;
     MMI::PointerEvent::PointerItem pointerItem;

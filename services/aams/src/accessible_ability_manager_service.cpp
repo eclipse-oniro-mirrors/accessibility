@@ -4103,9 +4103,9 @@ void AccessibleAbilityManagerService::OnFocusedEvent(const AccessibilityEventInf
     magnificationManager_->FollowFocuseElement(centerX, centerY);
 }
 
-void AccessibleAbilityManagerService::InitResource()
+void AccessibleAbilityManagerService::InitResource(bool needReInit)
 {
-    if (isResourceInit_) {
+    if (isResourceInit_ && !needReInit) {
         HILOG_WARN("already init.");
         return;
     }
