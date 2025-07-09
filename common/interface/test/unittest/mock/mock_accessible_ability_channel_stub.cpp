@@ -19,6 +19,7 @@
 #include "accessibility_ipc_interface_code.h"
 #include "accessibility_permission.h"
 #include "accessibility_window_info_parcel.h"
+#include "accessibility_def.h"
 #include "hilog_wrapper.h"
 #include "parcel_util.h"
 
@@ -52,6 +53,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SEND_SIMULATE_GESTURE_PATH, HandleSendSimulateGesturePath)\
     SWITCH_CASE(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME, HandleSetTargetBundleName)\
     SWITCH_CASE(AccessibilityInterfaceCode::GET_CURSOR_POSITION, HandleGetCursorPosition)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_SPECIFIC_PROPERTY, \
+        HandleSearchElementInfoBySpecificProperty) \
 
 namespace OHOS {
 namespace Accessibility {
@@ -420,6 +423,41 @@ ErrCode AccessibleAbilityChannelStubMock::HandleSetTargetBundleName(MessageParce
         targetBundleNames.emplace_back(temp);
     }
     RetError result = SetTargetBundleName(targetBundleNames);
+    reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStubMock::HandleSearchElementInfoBySpecificProperty(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    ElementBasicInfo elementBasicInfo {};
+    elementBasicInfo.windowId = data.ReadInt32();
+    elementBasicInfo.elementId = data.ReadInt64();
+    elementBasicInfo.treeId = data.ReadInt32();
+
+    SpecificPropertyParam param;
+    param.propertyTarget = data.ReadString();
+    param.propertyType = static_cast<SEARCH_TYPE>(data.ReadUint32());
+
+    int32_t requestId = data.ReadInt32();
+
+    sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (remote == nullptr) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        iface_cast<IAccessibilityElementOperatorCallback>(remote);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+
+    SearchElementInfoBySpecificProperty(elementBasicInfo, param, requestId, callback);
+    RetError result = RET_OK;
+    HILOG_DEBUG("SearchElementInfoBySpecificProperty ret = %{public}d", result);
     reply.WriteInt32(result);
     return NO_ERROR;
 }

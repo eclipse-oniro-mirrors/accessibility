@@ -37,6 +37,7 @@ public:
     MOCK_METHOD2(SetExecuteActionResult, void(const bool succeeded, const int32_t requestId));
     MOCK_METHOD3(SetSearchElementInfoBySpecificPropertyResult, void(const std::list<AccessibilityElementInfo> &infos,
         const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId));
+    MOCK_METHOD0(GetFilter, bool());
 };
 } // namespace Accessibility
 } // namespace OHOS
