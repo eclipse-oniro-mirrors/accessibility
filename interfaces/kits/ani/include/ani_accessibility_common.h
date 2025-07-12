@@ -13,8 +13,8 @@
 * limitations under the License.
 */
 
-#ifndef ANI_UITLS_H
-#define ANI_UITLS_H
+#ifndef ANI_ACCESSIBILITY_COMMON_H
+#define ANI_ACCESSIBILITY_COMMON_H
 
 #include <ani.h>
 #include <vector>
@@ -27,7 +27,7 @@
 
 static thread_local std::shared_ptr<OHOS::AppExecFwk::EventHandler> mainHandler;
 
-class ANIUtils {
+class ANICommon {
 public:
     static std::string ANIStringToStdString(ani_env *env, ani_string ani_str);
     static bool GetStringField(ani_env *env, std::string fieldName, ani_object object, std::string &fieldValue);
@@ -42,7 +42,7 @@ public:
     static NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode);
     static void ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg);
     static ani_object CreateBoolObject(ani_env *env, ani_boolean value);
-    static ani_int ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObject,
+    static void ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObject,
         OHOS::Accessibility::AccessibilityEventInfo &eventInfo);
     static void ConvertEventInfoStringFields(ani_env *env, ani_object eventObject,
         OHOS::Accessibility::AccessibilityEventInfo &eventInfo);
@@ -55,4 +55,4 @@ private:
     ~ANIUtils() = default;
 };
 
-#endif // ANI_UITLS_H
+#endif // ANI_ACCESSIBILITY_COMMON_H

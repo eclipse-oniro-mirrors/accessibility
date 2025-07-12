@@ -18,13 +18,15 @@
 #include <iostream>
 #include <vector>
 #include "hilog_wrapper.h"
-#include "ani_config_utils.h"
+#include "accessibility_utils_ani.h"
 #include <ani_signature_builder.h>
 
+namespace OHOS {
+namespace AccessibilityAni {
 using namespace OHOS::Accessibility;
 using namespace arkts::ani_signature;
 
-NAccessibilityErrMsg ANIConfigUtils::QueryRetMsg(RetError errorCode)
+NAccessibilityErrMsg QueryRetMsg(RetError errorCode)
 {
     switch (errorCode) {
         case RetError::RET_OK:
@@ -71,7 +73,7 @@ NAccessibilityErrMsg ANIConfigUtils::QueryRetMsg(RetError errorCode)
     }
 }
 
-void ANIConfigUtils::ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
+void ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
 {
     Type errorClass = Builder::BuildClass("@ohos.base.BusinessError");
     ani_class cls {};
@@ -109,3 +111,5 @@ void ANIConfigUtils::ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMs
     HILOG_INFO("throw BusinessError success!");
     return;
 }
+} // namespace AccessibilityAni
+} // namespace OHOS
