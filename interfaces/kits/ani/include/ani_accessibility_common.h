@@ -49,8 +49,8 @@ public:
     static bool SendEventToMainThread(const std::function<void()> func);
 
 private:
-    ANIUtils() = default;
-    ~ANIUtils() = default;
+    ANICommon() = default;
+    ~ANICommon() = default;
 };
 
 #endif // ANI_ACCESSIBILITY_COMMON_H
