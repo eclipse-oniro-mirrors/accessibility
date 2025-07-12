@@ -73,6 +73,7 @@ ohos_shared_library("accessibility_common") {
     "hilog:libhilog",
     "input:libmmi-client",
     "ipc:ipc_single",
+    "runtime_core:ani",
   ]
   innerapi_tags = [ "platformsdk" ]
   subsystem_name = "barrierfree"

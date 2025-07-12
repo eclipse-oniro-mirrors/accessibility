@@ -34,7 +34,7 @@ export namespace accessibility {
 
     export type TextMoveUnit = 'char' | 'word' | 'line' | 'page' | 'paragraph';
 
-    export type observerType = 'accessibilityStateChange' | 'touchGuideStateChange';
+    export type observerType = 'accessibilityStateChange' | 'touchGuideStateChange' | 'screenReaderStateChange';
 
     export native function isOpenTouchGuideSync(): boolean;
 

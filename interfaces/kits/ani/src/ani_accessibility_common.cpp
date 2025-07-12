@@ -18,26 +18,13 @@
 #include <iostream>
 #include <vector>
 #include "hilog_wrapper.h"
-#include "ani_utils.h"
+#include "ani_accessibility_common.h"
+#include <ani_signature_builder.h>
 
 using namespace OHOS::Accessibility;
+using namespace arkts::ani_signature;
 
-namespace {
-    const std::string ERROR_MESSAGE_PARAMETER_ERROR = "Parameter error. Possible causes:"
-        "1. Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.";
-    const std::string ERROR_MESSAGE_NO_PERMISSION = "Permission verification failed."
-        "The application does not have the permission required to call the API.";
-    const std::string ERROR_MESSAGE_NOT_SYSTEM_APP = "Permission verification failed."
-        "A non-system application calls a system API.";
-    const std::string ERROR_MESSAGE_NO_RIGHT = "No accessibility permission to perform the operation";
-    const std::string ERROR_MESSAGE_SYSTEM_ABNORMALITY = "System abnormality";
-    const std::string ERROR_MESSAGE_PROPERTY_NOT_EXIST = "This property does not exist";
-    const std::string ERROR_MESSAGE_ACTION_NOT_SUPPORT = "This action is not supported";
-    const std::string ERROR_MESSAGE_INVALID_BUNDLE_NAME_OR_ABILITY_NAME = "Invalid bundle name or ability name";
-    const std::string ERROR_MESSAGE_TARGET_ABILITY_ALREADY_ENABLED = "Target ability already enabled";
-} // namespace
-
-std::string ANIUtils::ANIStringToStdString(ani_env *env, ani_string ani_str)
+std::string ANICommon::ANIStringToStdString(ani_env *env, ani_string ani_str)
 {
     ani_size strSize;
     env->String_GetUTF8Size(ani_str, &strSize);
@@ -53,7 +40,7 @@ std::string ANIUtils::ANIStringToStdString(ani_env *env, ani_string ani_str)
     return content;
 }
 
-bool ANIUtils::GetStringField(ani_env *env, std::string fieldName, ani_object object, std::string &fieldValue)
+bool ANICommon::GetStringField(ani_env *env, std::string fieldName, ani_object object, std::string &fieldValue)
 {
     ani_ref ref;
     if (env->Object_GetFieldByName_Ref(object, fieldName.c_str(), &ref) != ANI_OK) {
@@ -72,7 +59,7 @@ bool ANIUtils::GetStringField(ani_env *env, std::string fieldName, ani_object ob
     return false;
 }
 
-bool ANIUtils::GetIntField(ani_env *env, std::string fieldName, ani_object object, int32_t &fieldValue)
+bool ANICommon::GetIntField(ani_env *env, std::string fieldName, ani_object object, int32_t &fieldValue)
 {
     ani_ref ref;
     if (env->Object_GetFieldByName_Ref(object, fieldName.c_str(), &ref) != ANI_OK) {
@@ -85,7 +72,7 @@ bool ANIUtils::GetIntField(ani_env *env, std::string fieldName, ani_object objec
         return false;
     }
     if (!isUndefined) {
-        if (env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "intValue", nullptr, &fieldValue) ==
+        if (env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "toInt", ":i", &fieldValue) ==
             ANI_OK) {
             return true;
         }
@@ -93,7 +80,7 @@ bool ANIUtils::GetIntField(ani_env *env, std::string fieldName, ani_object objec
     return false;
 }
 
-bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_object object,
+bool ANICommon::GetArrayStringField(ani_env *env, std::string fieldName, ani_object object,
     std::vector<std::string> &fieldValue)
 {
     ani_ref ref;
@@ -112,13 +99,15 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
 
     fieldValue.clear();
     ani_class arrayCls;
-    const char *arrayClassName = "Lescompat/Array;";
-    if (env->FindClass(arrayClassName, &arrayCls) != ANI_OK) {
+    if (env->FindClass(Builder::BuildClass("escompat.Array").Descriptor().c_str(), &arrayCls) != ANI_OK) {
         return false;
     }
 
     ani_method arrayLengthMethod;
-    if (env->Class_FindMethod(arrayCls, "length", ":Lstd/core/Object;", &arrayLengthMethod) != ANI_OK) {
+    SignatureBuilder objectBuilder{};
+    objectBuilder.SetReturnClass("std.core.Object");
+    std::string objectBuilderDescriptor = objectBuilder.BuildSignatureDescriptor();
+    if (env->Class_FindMethod(arrayCls, "length", objectBuilderDescriptor.c_str(), &arrayLengthMethod) != ANI_OK) {
         return false;
     }
 
@@ -128,13 +117,13 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
     }
 
     int32_t lengthInt;
-    if (env->Object_CallMethodByName_Int(static_cast<ani_object>(length), "intValue", nullptr, &lengthInt) != ANI_OK ||
+    if (env->Object_CallMethodByName_Int(static_cast<ani_object>(length), "toInt", ":i", &lengthInt) != ANI_OK ||
         lengthInt <= 0) {
         return false;
     }
 
     ani_method arrayPopMethod;
-    if (env->Class_FindMethod(arrayCls, "pop", ":Lstd/core/Object;", &arrayPopMethod) != ANI_OK) {
+    if (env->Class_FindMethod(arrayCls, "pop", objectBuilderDescriptor.c_str(), &arrayPopMethod) != ANI_OK) {
         return false;
     }
 
@@ -151,7 +140,7 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
     return true;
 }
 
-bool ANIUtils::CheckObserverEqual(ani_env *env, ani_ref fnRef, ani_env *iterEnv, ani_ref iterFn)
+bool ANICommon::CheckObserverEqual(ani_env *env, ani_ref fnRef, ani_env *iterEnv, ani_ref iterFn)
 {
     if (env != iterEnv) {
         HILOG_DEBUG("not the same env");
@@ -165,7 +154,7 @@ bool ANIUtils::CheckObserverEqual(ani_env *env, ani_ref fnRef, ani_env *iterEnv,
     return isEquals;
 }
 
-EventType ANIUtils::ConvertStringToEventInfoTypes(const std::string &type)
+EventType ANICommon::ConvertStringToEventInfoTypes(const std::string &type)
 {
     static const std::map<const std::string, EventType> eventInfoTypesTable = {
         {"click", EventType::TYPE_VIEW_CLICKED_EVENT},
@@ -190,7 +179,7 @@ EventType ANIUtils::ConvertStringToEventInfoTypes(const std::string &type)
     return eventInfoTypesTable.at(type);
 }
 
-ActionType ANIUtils::ConvertStringToAccessibleOperationType(const std::string &type)
+ActionType ANICommon::ConvertStringToAccessibleOperationType(const std::string &type)
 {
     std::map<const std::string, ActionType> accessibleOperationTypeTable = {
         {"focus", ActionType::ACCESSIBILITY_ACTION_FOCUS},
@@ -226,7 +215,7 @@ ActionType ANIUtils::ConvertStringToAccessibleOperationType(const std::string &t
     return accessibleOperationTypeTable.at(type);
 }
 
-WindowUpdateType ANIUtils::ConvertStringToWindowUpdateTypes(const std::string &type)
+WindowUpdateType ANICommon::ConvertStringToWindowUpdateTypes(const std::string &type)
 {
     static const std::map<const std::string, WindowUpdateType> windowsUpdateTypesTable = {
         {"accessibilityFocus", WindowUpdateType::WINDOW_UPDATE_ACCESSIBILITY_FOCUSED},
@@ -250,7 +239,7 @@ WindowUpdateType ANIUtils::ConvertStringToWindowUpdateTypes(const std::string &t
     return windowsUpdateTypesTable.at(type);
 }
 
-TextMoveUnit ANIUtils::ConvertStringToTextMoveUnit(const std::string &type)
+TextMoveUnit ANICommon::ConvertStringToTextMoveUnit(const std::string &type)
 {
     static const std::map<const std::string, TextMoveUnit> textMoveUnitTable = {{"char", TextMoveUnit::STEP_CHARACTER},
         {"word", TextMoveUnit::STEP_WORD},
@@ -266,101 +255,20 @@ TextMoveUnit ANIUtils::ConvertStringToTextMoveUnit(const std::string &type)
     return textMoveUnitTable.at(type);
 }
 
-NAccessibilityErrMsg ANIUtils::QueryRetMsg(RetError errorCode)
+ani_object ANICommon::CreateBoolObject(ani_env *env, ani_boolean value)
 {
-    switch (errorCode) {
-        case RetError::RET_OK:
-            return { NAccessibilityErrorCode::ACCESSIBILITY_OK, "" };
-        case RetError::RET_ERR_FAILED:
-        case RetError::RET_ERR_NULLPTR:
-        case RetError::RET_ERR_IPC_FAILED:
-        case RetError::RET_ERR_SAMGR:
-        case RetError::RET_ERR_TIME_OUT:
-        case RetError::RET_ERR_REGISTER_EXIST:
-        case RetError::RET_ERR_NO_REGISTER:
-        case RetError::RET_ERR_NO_CONNECTION:
-        case RetError::RET_ERR_NO_WINDOW_CONNECTION:
-        case RetError::RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE:
-        case RetError::RET_ERR_PERFORM_ACTION_FAILED_BY_ACE:
-        case RetError::RET_ERR_NO_INJECTOR:
-            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
-                     ERROR_MESSAGE_SYSTEM_ABNORMALITY };
-        case RetError::RET_ERR_INVALID_PARAM:
-            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM, ERROR_MESSAGE_PARAMETER_ERROR };
-        case RetError::RET_ERR_NO_PERMISSION:
-            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_NO_PERMISSION, ERROR_MESSAGE_NO_PERMISSION };
-        case RetError::RET_ERR_CONNECTION_EXIST:
-            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_ABILITY_ALREADY_ENABLED,
-                     ERROR_MESSAGE_TARGET_ABILITY_ALREADY_ENABLED };
-        case RetError::RET_ERR_NO_CAPABILITY:
-            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_NO_RIGHT, ERROR_MESSAGE_NO_RIGHT };
-        case RetError::RET_ERR_NOT_INSTALLED:
-        case RetError::RET_ERR_NOT_ENABLED:
-            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_ERROR_EXTENSION_NAME,
-                     ERROR_MESSAGE_INVALID_BUNDLE_NAME_OR_ABILITY_NAME};
-        case RetError::RET_ERR_PROPERTY_NOT_EXIST:
-            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_PROPERTY_NOT_EXIST,
-                     ERROR_MESSAGE_PROPERTY_NOT_EXIST };
-        case RetError::RET_ERR_ACTION_NOT_SUPPORT:
-            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_ACTION_NOT_SUPPORT,
-                     ERROR_MESSAGE_ACTION_NOT_SUPPORT };
-        case RetError::RET_ERR_NOT_SYSTEM_APP:
-            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_NOT_SYSTEM_APP,
-                     ERROR_MESSAGE_NOT_SYSTEM_APP };
-        default:
-            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
-                     ERROR_MESSAGE_SYSTEM_ABNORMALITY };
-    }
-}
-
-void ANIUtils::ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
-{
-    static const char *errorClsName = "L@ohos/base/BusinessError;";
+    Type boolClass = Builder::BuildClass("std.core.Boolean");
     ani_class cls {};
-    if (env->FindClass(errorClsName, &cls) != ANI_OK) {
-        HILOG_ERROR("find class BusinessError failed");
-        return;
-    }
-    ani_method ctor;
-    if (env->Class_FindMethod(cls, "<ctor>", ":V", &ctor) != ANI_OK) {
-        HILOG_ERROR("find method BusinessError.constructor failed");
-        return;
-    }
-    ani_double errCode = static_cast<ani_double>(errMsg.errCode);
-    ani_string errMsgStr;
-    env->String_NewUTF8(errMsg.message.c_str(), errMsg.message.length(), &errMsgStr);
-    ani_object errorObject;
-    if (env->Object_New(cls, ctor, &errorObject) != ANI_OK) {
-        HILOG_ERROR("create BusinessError object failed");
-        return;
-    }
-    if (env->Object_SetPropertyByName_Double(errorObject, "code", errCode) != ANI_OK) {
-        HILOG_ERROR("set property BusinessError.code failed!");
-        return;
-    }
-    if (env->Object_SetPropertyByName_Ref(errorObject, "message", static_cast<ani_ref>(errMsgStr)) != ANI_OK) {
-        HILOG_ERROR("set property BusinessError.message failed!");
-        return;
-    }
-    if (env->ThrowError(static_cast<ani_error>(errorObject)) != ANI_OK) {
-        HILOG_ERROR("throw BusinessError failed!");
-        return;
-    }
-    HILOG_INFO("throw BusinessError success!");
-    return;
-}
-
-ani_object ANIUtils::CreateBoolObject(ani_env *env, ani_boolean value)
-{
-    static const char *boolClsName = "Lstd/core/Boolean;";
-    ani_class cls {};
-    if (env->FindClass(boolClsName, &cls) != ANI_OK) {
+    if (env->FindClass(boolClass.Descriptor().c_str(), &cls) != ANI_OK) {
         HILOG_ERROR("find class Boolean failed");
         return nullptr;
     }
 
     ani_method ctor;
-    if (env->Class_FindMethod(cls, "<ctor>", "Z:V", &ctor) != ANI_OK) {
+    std::string ctorName = Builder::BuildConstructorName();
+    SignatureBuilder sb{};
+    sb.AddBoolean();
+    if (env->Class_FindMethod(cls, ctorName.c_str(), sb.BuildSignatureDescriptor().c_str(), &ctor) != ANI_OK) {
         HILOG_ERROR("find method Boolean.constructor failed");
         return nullptr;
     }
@@ -373,7 +281,7 @@ ani_object ANIUtils::CreateBoolObject(ani_env *env, ani_boolean value)
     return boolObject;
 }
 
-bool ANIUtils::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObject,
+bool ANICommon::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObject,
     AccessibilityEventInfo &eventInfo)
 {
     std::string type;
@@ -414,7 +322,7 @@ bool ANIUtils::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObj
     return true;
 }
 
-void ANIUtils::ConvertEventInfoStringFields(ani_env *env, ani_object eventObject,
+void ANICommon::ConvertEventInfoStringFields(ani_env *env, ani_object eventObject,
     OHOS::Accessibility::AccessibilityEventInfo &eventInfo)
 {
     std::string windowUpdateType;
@@ -461,7 +369,7 @@ void ANIUtils::ConvertEventInfoStringFields(ani_env *env, ani_object eventObject
     }
 }
 
-void ANIUtils::ConvertEventInfoIntFields(ani_env *env, ani_object eventObject,
+void ANICommon::ConvertEventInfoIntFields(ani_env *env, ani_object eventObject,
     OHOS::Accessibility::AccessibilityEventInfo &eventInfo)
 {
     int32_t pageId;
@@ -495,7 +403,7 @@ void ANIUtils::ConvertEventInfoIntFields(ani_env *env, ani_object eventObject,
     }
 }
 
-bool ANIUtils::SendEventToMainThread(const std::function<void()> func)
+bool ANICommon::SendEventToMainThread(const std::function<void()> func)
 {
     if (func == nullptr) {
         HILOG_ERROR("func is nullptr!");
