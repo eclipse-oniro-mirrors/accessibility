@@ -50,7 +50,7 @@ public:
 
 private:
     ANICommon() = default;
-    ~ANICommonANI() = default;
+    ~ANICommon() = default;
 };
 
 #endif // ANI_ACCESSIBILITY_COMMON_H
