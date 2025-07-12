@@ -31,6 +31,7 @@
 #include "element_name.h"
 #include "accessibility_setting_provider.h"
 #include "os_account_info.h"
+#include "os_account_subscriber.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -391,6 +392,12 @@ public:
 private:
     std::map<int32_t, sptr<AccessibilityAccountData>> accountDataMap_;
     ffrt::mutex accountDataMutex_;
+};
+
+class AccountSubscriber final : public AccountSA::OsAccountSubscriber {
+public:
+    AccountSubscriber(const AccountSA::OsAccountSubscribeInfo &info): OsAccountSubscriber(info) {};
+    void OnStateChanged(const AccountSA::OsAccountStateData &data) override;
 };
 } // namespace Accessibility
 } // namespace OHOS

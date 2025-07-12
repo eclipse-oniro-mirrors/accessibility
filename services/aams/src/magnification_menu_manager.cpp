@@ -167,6 +167,10 @@ void MagnificationMenuManager::DisableMenuWindow()
 {
     HILOG_INFO();
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (!isMenuShown_) {
+        HILOG_INFO("menu not shown.");
+        return;
+    }
     if (surfaceNode_ != nullptr) {
         surfaceNode_->SetVisible(false);
         surfaceNode_->ClearChildren();

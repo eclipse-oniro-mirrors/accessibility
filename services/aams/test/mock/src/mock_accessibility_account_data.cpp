@@ -598,5 +598,10 @@ std::vector<uint32_t> AccessibilityAccountData::GetNeedEvents()
 {
     return needEvents_;
 }
+
+void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data)
+{
+    (void)data;
+}
 } // namespace Accessibility
 } // namespace OHOS
