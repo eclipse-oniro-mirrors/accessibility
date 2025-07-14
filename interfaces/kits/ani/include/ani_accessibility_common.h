@@ -13,8 +13,8 @@
 * limitations under the License.
 */
 
-#ifndef ANI_UITLS_H
-#define ANI_UITLS_H
+#ifndef ANI_ACCESSIBILITY_COMMON_H
+#define ANI_ACCESSIBILITY_COMMON_H
 
 #include <ani.h>
 #include <vector>
@@ -27,7 +27,7 @@
 
 static thread_local std::shared_ptr<OHOS::AppExecFwk::EventHandler> mainHandler;
 
-class ANIUtils {
+class ANICommon {
 public:
     static std::string ANIStringToStdString(ani_env *env, ani_string ani_str);
     static bool GetStringField(ani_env *env, std::string fieldName, ani_object object, std::string &fieldValue);
@@ -39,8 +39,6 @@ public:
     static OHOS::Accessibility::ActionType ConvertStringToAccessibleOperationType(const std::string &type);
     static OHOS::Accessibility::WindowUpdateType ConvertStringToWindowUpdateTypes(const std::string &type);
     static OHOS::Accessibility::TextMoveUnit ConvertStringToTextMoveUnit(const std::string &type);
-    static NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode);
-    static void ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg);
     static ani_object CreateBoolObject(ani_env *env, ani_boolean value);
     static bool ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObject,
         OHOS::Accessibility::AccessibilityEventInfo &eventInfo);
@@ -51,8 +49,8 @@ public:
     static bool SendEventToMainThread(const std::function<void()> func);
 
 private:
-    ANIUtils() = default;
-    ~ANIUtils() = default;
+    ANICommon() = default;
+    ~ANICommon() = default;
 };
 
-#endif // ANI_UITLS_H
+#endif // ANI_ACCESSIBILITY_COMMON_H
