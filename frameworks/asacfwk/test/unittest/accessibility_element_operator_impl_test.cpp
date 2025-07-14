@@ -30,6 +30,8 @@ namespace {
     constexpr int64_t ELEMENT_ID = 1;
     constexpr int32_t REQUEST_ID = 1;
     constexpr int32_t REQUEST_ID_2 = 2;
+    constexpr int32_t REQUEST_ID_3 = 3;
+    constexpr int32_t REQUEST_ID_4 = 4;
     constexpr int32_t MODE = 0;
     constexpr int32_t FOCUS_TYPE = 1;
     constexpr int32_t DIRECTION = 1;
@@ -620,6 +622,191 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetCursorPositionResult_002, 
         EXPECT_NE(mockStub_.GetRefPtr(), nullptr);
     }
     GTEST_LOG_(INFO) << "SetCursorPositionResult_002 end";
+}
+
+/**
+ * @tc.number: SearchElementInfoBySpecificProperty_001
+ * @tc.name: SearchElementInfoBySpecificProperty
+ * @tc.desc: Test function SearchElementInfoBySpecificProperty
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SearchElementInfoBySpecificProperty_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_001 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+    } else {
+        sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
+            = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
+        SpecificPropertyParam param;
+        EXPECT_CALL(*operation_, SearchElementInfoBySpecificProperty(_, _, _, _)).Times(1);
+        mockStub_->SearchElementInfoBySpecificProperty(ELEMENT_ID, param, REQUEST_ID, elementOperator);
+        EXPECT_NE(mockStub_.GetRefPtr(), nullptr);
+    }
+    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_001 end";
+}
+
+/**
+ * @tc.number: SetSearchElementInfoBySpecificPropertyResult_001
+ * @tc.name: SetSearchElementInfoBySpecificPropertyResult
+ * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoBySpecificPropertyResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_001 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+    } else {
+        sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
+            = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
+        EXPECT_CALL(*elementOperator, SetSearchElementInfoBySpecificPropertyResult(_, _, _)).Times(0);
+        std::list<AccessibilityElementInfo> infos;
+        std::list<AccessibilityElementInfo> treeInfos;
+        AccessibilityElementInfo info {};
+        infos.push_back(info);
+        treeInfos.push_back(info);
+        mockStub_->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, REQUEST_ID);
+        EXPECT_NE(mockStub_.GetRefPtr(), nullptr);
+    }
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_001 end";
+}
+
+/**
+ * @tc.number: SetSearchElementInfoBySpecificPropertyResult_002
+ * @tc.name: SetSearchElementInfoBySpecificPropertyResult
+ * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoBySpecificPropertyResult_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_002 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+    } else {
+        sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
+            = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
+        SpecificPropertyParam param;
+        mockStub_->SearchElementInfoBySpecificProperty(ELEMENT_ID, param, REQUEST_ID_2, elementOperator);
+        std::list<AccessibilityElementInfo> infos;
+        std::list<AccessibilityElementInfo> treeInfos;
+        AccessibilityElementInfo info {};
+        infos.push_back(info);
+        treeInfos.push_back(info);
+        mockStub_->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, CompositeId(REQUEST_ID_2));
+        EXPECT_NE(mockStub_.GetRefPtr(), nullptr);
+    }
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_002 end";
+}
+
+/**
+ * @tc.number: SearchElementInfoBySpecificProperty_002
+ * @tc.name: SearchElementInfoBySpecificProperty
+ * @tc.desc: Test function SearchElementInfoBySpecificProperty with operator_ is nullptr
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SearchElementInfoBySpecificProperty_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_002 start";
+    std::shared_ptr<AccessibilityElementOperator> nullOperator = nullptr;
+    std::shared_ptr<AccessibilitySystemAbilityClientImpl> testCallback =
+        std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    AccessibilityElementOperatorImpl testStub(WINDOW_ID, nullOperator, *testCallback);
+
+    sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
+        = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
+    ASSERT_TRUE(elementOperator);
+
+    SpecificPropertyParam param;
+    testStub.SearchElementInfoBySpecificProperty(ELEMENT_ID, param, REQUEST_ID, elementOperator);
+    EXPECT_NE(mockStub_.GetRefPtr(), nullptr);
+
+    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_002 end";
+}
+
+/**
+ * @tc.number: SetSearchElementInfoBySpecificPropertyResult_003
+ * @tc.name: SetSearchElementInfoBySpecificPropertyResult
+ * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult with callback not found
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoBySpecificPropertyResult_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_003 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+    } else {
+        std::list<AccessibilityElementInfo> infos;
+        std::list<AccessibilityElementInfo> treeInfos;
+        AccessibilityElementInfo info {};
+        infos.push_back(info);
+        treeInfos.push_back(info);
+        int32_t invalidRequestId = 99999;
+        mockStub_->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, invalidRequestId);
+        EXPECT_NE(mockStub_.GetRefPtr(), nullptr);
+    }
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_003 end";
+}
+
+/**
+ * @tc.number: SetSearchElementInfoBySpecificPropertyResult_004
+ * @tc.name: SetSearchElementInfoBySpecificPropertyResult
+ * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult with filter enabled
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoBySpecificPropertyResult_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_004 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+    } else {
+        sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
+            = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
+        ASSERT_TRUE(elementOperator);
+
+        EXPECT_CALL(*elementOperator, GetFilter()).WillRepeatedly(Return(true));
+        EXPECT_CALL(*elementOperator, SetSearchElementInfoBySpecificPropertyResult(_, _, _)).Times(1);
+
+        SpecificPropertyParam param;
+        mockStub_->SearchElementInfoBySpecificProperty(ELEMENT_ID, param, REQUEST_ID_3, elementOperator);
+
+        std::list<AccessibilityElementInfo> infos;
+        std::list<AccessibilityElementInfo> treeInfos;
+        AccessibilityElementInfo info {};
+        infos.push_back(info);
+        treeInfos.push_back(info);
+
+        mockStub_->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, REQUEST_ID_3);
+        EXPECT_NE(mockStub_.GetRefPtr(), nullptr);
+    }
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_004 end";
+}
+
+/**
+ * @tc.number: SetSearchElementInfoBySpecificPropertyResult_005
+ * @tc.name: SetSearchElementInfoBySpecificPropertyResult
+ * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult with filter disabled
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoBySpecificPropertyResult_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_005 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+    } else {
+        sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
+            = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
+        ASSERT_TRUE(elementOperator);
+
+        EXPECT_CALL(*elementOperator, GetFilter()).WillRepeatedly(Return(false));
+        EXPECT_CALL(*elementOperator, SetSearchElementInfoBySpecificPropertyResult(_, _, _)).Times(1);
+
+        SpecificPropertyParam param;
+        mockStub_->SearchElementInfoBySpecificProperty(ELEMENT_ID, param, REQUEST_ID_4, elementOperator);
+
+        std::list<AccessibilityElementInfo> infos;
+        std::list<AccessibilityElementInfo> treeInfos;
+        AccessibilityElementInfo info {};
+        infos.push_back(info);
+        treeInfos.push_back(info);
+
+        mockStub_->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, REQUEST_ID_4);
+        EXPECT_NE(mockStub_.GetRefPtr(), nullptr);
+    }
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_005 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -43,6 +43,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE, HandleSetFocusMoveSearchResult)\
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION, HandleSetExecuteActionResult)\
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_CURSOR_RESULT, HandleSetCursorPositionResult)\
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_SPECIFIC_PROPERTY, \
+        HandleSetSearchElementInfoBySpecificPropertyResult) \
 
 namespace OHOS {
 namespace Accessibility {
@@ -222,5 +224,55 @@ ErrCode AccessibilityElementOperatorCallbackStubTest::HandleSetCursorPositionRes
     return NO_ERROR;
 }
 
+ErrCode AccessibilityElementOperatorCallbackStubTest::HandleSetSearchElementInfoBySpecificPropertyResult(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int32_t requestId = data.ReadInt32();
+    int32_t infoSize = data.ReadInt32();
+
+    std::list<AccessibilityElementInfo> infos;
+    bool verifyResult = ContainerSecurityVerify(data, infoSize, infos.max_size());
+    if (!verifyResult || infoSize < 0 || infoSize > INT32_MAX) {
+        return TRANSACTION_ERR;
+    }
+    for (int32_t i = 0; i < infoSize; i++) {
+        sptr<AccessibilityElementInfoParcel> accessibilityInfo =
+            data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
+        if (accessibilityInfo == nullptr) {
+            HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
+            return TRANSACTION_ERR;
+        }
+        infos.emplace_back(*accessibilityInfo);
+    }
+
+    int32_t treeInfoSize = data.ReadInt32();
+    std::list<AccessibilityElementInfo> treeInfos;
+    verifyResult = ContainerSecurityVerify(data, treeInfoSize, treeInfos.max_size());
+    if (!verifyResult || treeInfoSize < 0 || treeInfoSize > INT32_MAX) {
+        return TRANSACTION_ERR;
+    }
+    for (int32_t i = 0; i < treeInfoSize; i++) {
+        sptr<AccessibilityElementInfoParcel> treeInfo =
+            data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
+        if (treeInfo == nullptr) {
+            HILOG_ERROR("ReadStrongParcelable<treeInfo> failed");
+            return TRANSACTION_ERR;
+        }
+        treeInfos.emplace_back(*treeInfo);
+    }
+
+    SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+
+    return NO_ERROR;
+}
+
+void AccessibilityElementOperatorCallbackStubTest::SetSearchElementInfoBySpecificPropertyResult(
+    const std::list<AccessibilityElementInfo> &infos, const std::list<AccessibilityElementInfo> &treeInfos,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("infos size %{public}zu, treeInfos size %{public}zu, requestId %{public}d",
+        infos.size(), treeInfos.size(), requestId);
+}
 } // namespace Accessibility
 } // namespace OHOS

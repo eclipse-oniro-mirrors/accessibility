@@ -481,5 +481,173 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByAccessibilityId
         ELEMENT_ID, MODE, infos, TREE_ID), RET_ERR_TIME_OUT);
     GTEST_LOG_(INFO) << "SearchElementInfosByAccessibilityId_003 end";
 }
+
+/**
+ * @tc.number: SearchElementInfosBySpecificProperty_001
+ * @tc.name: SearchElementInfosBySpecificProperty
+ * @tc.desc: Test function SearchElementInfosBySpecificProperty
+ */
+HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosBySpecificProperty_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_001 start";
+    EXPECT_CALL(*stub_, SearchElementInfoBySpecificProperty(_, _, _, _)).Times(1);
+    std::vector<AccessibilityElementInfo> infos;
+    std::vector<AccessibilityElementInfo> treeInfos;
+    SpecificPropertyParam param;
+    EXPECT_EQ(instance_->SearchElementInfosBySpecificProperty(ACCESSIBILITY_WINDOW_ID,
+        ELEMENT_ID, param, infos, treeInfos, TREE_ID), RET_ERR_TIME_OUT);
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_001 end";
+}
+
+/**
+ * @tc.number: SearchElementInfosBySpecificProperty_002
+ * @tc.name: SearchElementInfosBySpecificProperty
+ * @tc.desc: Test function SearchElementInfosBySpecificProperty
+ */
+HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosBySpecificProperty_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_002 start";
+    std::shared_ptr<AccessibleAbilityChannelClient> client =
+        std::make_shared<AccessibleAbilityChannelClient>(CHANNEL_ID, nullptr);
+    ASSERT_TRUE(client);
+    std::vector<AccessibilityElementInfo> infos;
+    std::vector<AccessibilityElementInfo> treeInfos;
+    SpecificPropertyParam param;
+    EXPECT_EQ(client->SearchElementInfosBySpecificProperty(ACCESSIBILITY_WINDOW_ID,
+        ELEMENT_ID, param, infos, treeInfos, TREE_ID), RET_ERR_SAMGR);
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_002 end";
+}
+
+/**
+ * @tc.number: SearchElementInfosBySpecificProperty_003
+ * @tc.name: SearchElementInfosBySpecificProperty
+ * @tc.desc: Test function SearchElementInfosBySpecificProperty
+ */
+HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosBySpecificProperty_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_003 start";
+    EXPECT_CALL(*stub_, SearchElementInfoBySpecificProperty(_, _, _, _)).Times(1);
+    std::vector<AccessibilityElementInfo> infos;
+    std::vector<AccessibilityElementInfo> treeInfos;
+    SpecificPropertyParam param;
+    EXPECT_EQ(instance_->SearchElementInfosBySpecificProperty(ACCESSIBILITY_WINDOW_ID,
+        ELEMENT_ID, param, infos, treeInfos, TREE_ID), RET_ERR_TIME_OUT);
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_003 end";
+}
+
+/**
+ * @tc.number: SearchElementInfosBySpecificProperty_004
+ * @tc.name: SearchElementInfosBySpecificProperty
+ * @tc.desc: Test function SearchElementInfosBySpecificProperty with elementInfosResult not empty
+ */
+HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosBySpecificProperty_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_004 start";
+    EXPECT_CALL(*stub_, SearchElementInfoBySpecificProperty(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke([](const ElementBasicInfo &elementBasicInfo, const SpecificPropertyParam& param,
+            const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) {
+            std::list<AccessibilityElementInfo> infos;
+            std::list<AccessibilityElementInfo> treeInfos;
+            AccessibilityElementInfo info;
+            info.SetAccessibilityId(1);
+            infos.push_back(info);
+            callback->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+        }));
+
+    std::vector<AccessibilityElementInfo> infos;
+    std::vector<AccessibilityElementInfo> treeInfos;
+    SpecificPropertyParam param;
+    EXPECT_EQ(instance_->SearchElementInfosBySpecificProperty(ACCESSIBILITY_WINDOW_ID,
+        ELEMENT_ID, param, infos, treeInfos, TREE_ID), RET_OK);
+    EXPECT_FALSE(infos.empty());
+    EXPECT_TRUE(treeInfos.empty());
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_004 end";
+}
+
+/**
+ * @tc.number: SearchElementInfosBySpecificProperty_005
+ * @tc.name: SearchElementInfosBySpecificProperty
+ * @tc.desc: Test function SearchElementInfosBySpecificProperty with treeInfosResult not empty
+ */
+HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosBySpecificProperty_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_005 start";
+    EXPECT_CALL(*stub_, SearchElementInfoBySpecificProperty(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke([](const ElementBasicInfo &elementBasicInfo, const SpecificPropertyParam& param,
+            const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) {
+            std::list<AccessibilityElementInfo> infos;
+            std::list<AccessibilityElementInfo> treeInfos;
+            AccessibilityElementInfo info;
+            info.SetAccessibilityId(1);
+            treeInfos.push_back(info);
+            callback->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+        }));
+
+    std::vector<AccessibilityElementInfo> infos;
+    std::vector<AccessibilityElementInfo> treeInfos;
+    SpecificPropertyParam param;
+    EXPECT_EQ(instance_->SearchElementInfosBySpecificProperty(ACCESSIBILITY_WINDOW_ID,
+        ELEMENT_ID, param, infos, treeInfos, TREE_ID), RET_OK);
+    EXPECT_TRUE(infos.empty());
+    EXPECT_FALSE(treeInfos.empty());
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_005 end";
+}
+
+/**
+ * @tc.number: SearchElementInfosBySpecificProperty_006
+ * @tc.name: SearchElementInfosBySpecificProperty
+ * @tc.desc: Test function SearchElementInfosBySpecificProperty with both results empty
+ */
+HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosBySpecificProperty_006, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_006 start";
+    EXPECT_CALL(*stub_, SearchElementInfoBySpecificProperty(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke([](const ElementBasicInfo &elementBasicInfo, const SpecificPropertyParam& param,
+            const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) {
+            std::list<AccessibilityElementInfo> infos;
+            std::list<AccessibilityElementInfo> treeInfos;
+            callback->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+        }));
+
+    std::vector<AccessibilityElementInfo> infos;
+    std::vector<AccessibilityElementInfo> treeInfos;
+    SpecificPropertyParam param;
+    EXPECT_EQ(instance_->SearchElementInfosBySpecificProperty(ACCESSIBILITY_WINDOW_ID,
+        ELEMENT_ID, param, infos, treeInfos, TREE_ID), RET_OK);
+    EXPECT_TRUE(infos.empty());
+    EXPECT_TRUE(treeInfos.empty());
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_006 end";
+}
+
+/**
+ * @tc.number: SearchElementInfosBySpecificProperty_007
+ * @tc.name: SearchElementInfosBySpecificProperty
+ * @tc.desc: Test function SearchElementInfosBySpecificProperty with invalid elementInfo
+ */
+HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosBySpecificProperty_007, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_007 start";
+    EXPECT_CALL(*stub_, SearchElementInfoBySpecificProperty(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke([](const ElementBasicInfo &elementBasicInfo, const SpecificPropertyParam& param,
+            const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) {
+            std::list<AccessibilityElementInfo> infos;
+            std::list<AccessibilityElementInfo> treeInfos;
+            AccessibilityElementInfo info;
+            info.SetAccessibilityId(AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID);
+            infos.push_back(info);
+            callback->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+        }));
+
+    std::vector<AccessibilityElementInfo> infos;
+    std::vector<AccessibilityElementInfo> treeInfos;
+    SpecificPropertyParam param;
+    EXPECT_EQ(instance_->SearchElementInfosBySpecificProperty(ACCESSIBILITY_WINDOW_ID,
+        ELEMENT_ID, param, infos, treeInfos, TREE_ID), RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE);
+    GTEST_LOG_(INFO) << "SearchElementInfosBySpecificProperty_007 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

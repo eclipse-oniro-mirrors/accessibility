@@ -15,12 +15,16 @@
 
 #include <gtest/gtest.h>
 #include <optional>
+#include <chrono>
+#include "ffrt.h"
 #include "accessibility_ability_info.h"
 #include "accessibility_event_info.h"
 #include "accessibility_common_helper.h"
+#include "accessibility_constants.h"
 #include "accessibility_display_manager.h"
 #include "accessibility_ut_helper.h"
 #include "accessibility_window_manager.h"
+#include "accessibility_element_info.h"
 #define private public
 #define protected public
 #include "accessible_ability_manager_service.h"
@@ -2432,6 +2436,134 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveRequestId_001, TestSize.
     ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
     EXPECT_EQ(ret, RET_OK);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_RemoveRequestId_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_001
+ * @tc.name: SetSearchElementInfoBySpecificPropertyResult
+ * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetSearchElementInfoBySpecificPropertyResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_001 start";
+    std::list<AccessibilityElementInfo> infos;
+    std::list<AccessibilityElementInfo> treeInfos;
+    int32_t requestId = 0;
+    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
+        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
+    ASSERT_TRUE(obj != nullptr);
+    obj->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+    EXPECT_TRUE(obj->elementInfosResult_.empty());
+    delete obj;
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_001 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_002
+ * @tc.name: SetSearchElementInfoBySpecificPropertyResult
+ * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult with empty infos but non-empty treeInfos
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetSearchElementInfoBySpecificPropertyResult_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_002 start";
+    std::list<AccessibilityElementInfo> infos;
+    std::list<AccessibilityElementInfo> treeInfos;
+    AccessibilityElementInfo info;
+    info.SetWindowId(-1);
+    info.SetAccessibilityId(-1);
+    treeInfos.push_back(info);
+    int32_t requestId = 0;
+    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
+        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
+    ASSERT_TRUE(obj != nullptr);
+    obj->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+    EXPECT_EQ(obj->elementInfosResult_.size(), 1);
+    EXPECT_EQ(obj->elementInfosResult_[0].GetWindowId(), -1);
+    EXPECT_EQ(obj->elementInfosResult_[0].GetAccessibilityId(), -1);
+    delete obj;
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_002 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_003
+ * @tc.name: SetSearchElementInfoBySpecificPropertyResult
+ * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult with non-empty infos (priority test)
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetSearchElementInfoBySpecificPropertyResult_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_003 start";
+    std::list<AccessibilityElementInfo> infos;
+    AccessibilityElementInfo info;
+    info.SetWindowId(-1);
+    info.SetAccessibilityId(-1);
+    infos.push_back(info);
+    std::list<AccessibilityElementInfo> treeInfos;
+    AccessibilityElementInfo treeInfo;
+    treeInfo.SetWindowId(-1);
+    treeInfo.SetAccessibilityId(-1);
+    treeInfos.push_back(treeInfo);
+    int32_t requestId = 0;
+    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
+        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
+    ASSERT_TRUE(obj != nullptr);
+    EXPECT_FALSE(infos.empty());
+    EXPECT_FALSE(treeInfos.empty());
+    obj->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+    EXPECT_EQ(obj->elementInfosResult_.size(), 1);
+    EXPECT_EQ(obj->elementInfosResult_[0].GetWindowId(), -1);
+    EXPECT_EQ(obj->elementInfosResult_[0].GetAccessibilityId(), -1);
+    delete obj;
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_003 end";
+}
+
+/**
+ * @tc.number: Accessible_Ability_ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_004
+ * @tc.name: SetSearchElementInfoBySpecificPropertyResult
+ * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult with infos that pass VerifyingToKenId
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetSearchElementInfoBySpecificPropertyResult_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_004 start";
+    std::list<AccessibilityElementInfo> infos;
+    std::list<AccessibilityElementInfo> treeInfos;
+    AccessibilityElementInfo info;
+    info.SetWindowId(999);
+    info.SetAccessibilityId(999);
+    infos.push_back(info);
+    int32_t requestId = 0;
+    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
+        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
+    ASSERT_TRUE(obj != nullptr);
+    obj->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+    ffrt::future<void> future = obj->promise_.get_future();
+    ffrt::future_status status = future.wait_for(std::chrono::milliseconds(100));
+    EXPECT_EQ(status, ffrt::future_status::ready) << "Promise should be set when VerifyingToKenId fails";
+    EXPECT_TRUE(obj->elementInfosResult_.empty()) << "elementInfosResult_ should be cleared when validation fails";
+    delete obj;
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_004 end";
+}
+
+/**
+ * @tc.number: SetSearchElementInfoBySpecificPropertyResult_005
+ * @tc.name: SetSearchElementInfoBySpecificPropertyResult
+ * @tc.desc: Test SetSearchElementInfoBySpecificPropertyResult with both infos and treeInfos empty
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetSearchElementInfoBySpecificPropertyResult_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_005 start";
+    std::list<AccessibilityElementInfo> infos;
+    std::list<AccessibilityElementInfo> treeInfos;
+    int32_t requestId = 0;
+    AccessibleAbilityManagerService::ElementOperatorCallbackImpl *obj = new
+        AccessibleAbilityManagerService::ElementOperatorCallbackImpl();
+    ASSERT_TRUE(obj != nullptr);
+    obj->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+    ffrt::future<void> future = obj->promise_.get_future();
+    ffrt::future_status status = future.wait_for(std::chrono::milliseconds(100));
+    EXPECT_EQ(status, ffrt::future_status::ready) << "Promise should be set even when both lists are empty";
+    EXPECT_TRUE(obj->elementInfosResult_.empty()) << "elementInfosResult_ should remain empty when no data is provided";
+    delete obj;
+    GTEST_LOG_(INFO) << "ManagerService_UnitTest_SetSearchElementInfoBySpecificPropertyResult_007 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -178,5 +178,29 @@ HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetExecuteActionResult_00
     }
     GTEST_LOG_(INFO) << "SetExecuteActionResult_001 end";
 }
+
+/**
+ * @tc.number: SetSearchElementInfoBySpecificPropertyResult_001
+ * @tc.name: SetSearchElementInfoBySpecificPropertyResult
+ * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult
+ */
+HWTEST_F(
+    AccessibilityElementOperatorCallbackImplTest, SetSearchElementInfoBySpecificPropertyResult_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_001 start";
+
+    if (!instance_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorCallbackImpl instance_";
+    } else {
+        std::list<AccessibilityElementInfo> infos;
+        std::list<AccessibilityElementInfo> treeInfos;
+        AccessibilityElementInfo info {};
+        infos.push_back(info);
+        treeInfos.push_back(info);
+        instance_->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, SEQUENCE_NUM);
+        EXPECT_NE(instance_.get(), nullptr);
+    }
+    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

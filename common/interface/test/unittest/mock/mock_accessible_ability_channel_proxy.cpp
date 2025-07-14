@@ -17,6 +17,7 @@
 
 #include <cinttypes>
 
+#include "accessibility_def.h"
 #include "accessibility_element_info_parcel.h"
 #include "accessibility_gesture_inject_path_parcel.h"
 #include "accessibility_ipc_interface_code.h"
@@ -563,6 +564,61 @@ RetError AccessibleAbilityChannelProxyMock::SetTargetBundleName(const std::vecto
         return RET_ERR_IPC_FAILED;
     }
     return static_cast<RetError>(reply.ReadInt32());
+}
+
+void AccessibleAbilityChannelProxyMock::SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
+    const SpecificPropertyParam& param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("windowId:%{public}d, elementId:%{public}" PRId64 ", propertyTarget:%{public}s,"
+        "propertyType:%{public}u, requestId:%{public}d", elementBasicInfo.windowId, elementBasicInfo.elementId,
+        param.propertyTarget.c_str(), static_cast<uint32_t>(param.propertyType), requestId);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return;
+    }
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        return;
+    }
+    if (!data.WriteInt32(elementBasicInfo.windowId)) {
+        HILOG_ERROR("windowId write error: %{public}d, ", elementBasicInfo.windowId);
+        return;
+    }
+    if (!data.WriteInt64(elementBasicInfo.elementId)) {
+        HILOG_ERROR("elementId write error: %{public}" PRId64 "", elementBasicInfo.elementId);
+        return;
+    }
+    if (!data.WriteInt32(elementBasicInfo.treeId)) {
+        HILOG_ERROR("treeId write error: %{public}d, ", elementBasicInfo.treeId);
+        return;
+    }
+    if (!data.WriteString(param.propertyTarget)) {
+        HILOG_ERROR("propertyTarget write error: %{public}s, ", param.propertyTarget.c_str());
+        return;
+    }
+    if (!data.WriteUint32(static_cast<uint32_t>(param.propertyType))) {
+        HILOG_ERROR("propertyType write error: %{public}u, ", static_cast<uint32_t>(param.propertyType));
+        return;
+    }
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("requestId write error: %{public}d, ", requestId);
+        return;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("callback write error");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_SPECIFIC_PROPERTY,
+        data, reply, option)) {
+        HILOG_ERROR("fail to find elementInfo by specific property");
+        return;
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

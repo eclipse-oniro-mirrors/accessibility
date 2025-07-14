@@ -14,13 +14,17 @@
  */
 
 #include <gtest/gtest.h>
+#include <thread>
+#include <chrono>
 #include "accessibility_ability_info.h"
 #include "accessibility_account_data.h"
 #include "accessibility_element_operator_proxy.h"
 #include "accessibility_ut_helper.h"
 #include "accessible_ability_channel.h"
+#include "accessibility_def.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
+#include "accessibility_window_manager.h"
 #include "mock_accessibility_element_operator_stub.h"
 #include "mock_accessibility_setting_provider.h"
 
@@ -29,6 +33,44 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
+class MockAccessibilityElementOperatorCallbackStub : public AccessibilityElementOperatorCallbackStub {
+public:
+    MockAccessibilityElementOperatorCallbackStub() = default;
+    virtual ~MockAccessibilityElementOperatorCallbackStub() = default;
+
+    void SetSearchElementInfoByAccessibilityIdResult(const std::vector<AccessibilityElementInfo> &infos,
+        const int32_t requestId) override {}
+    void SetSearchDefaultFocusByWindowIdResult(const std::vector<AccessibilityElementInfo> &infos,
+        const int32_t requestId) override {}
+    void SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
+        const int32_t requestId) override {}
+    void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info, const int32_t requestId) override {}
+    void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) override {}
+    void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override {}
+    void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override {}
+    void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
+        const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override
+    {
+        receivedInfos_.assign(infos.begin(), infos.end());
+        receivedTreeInfos_.assign(treeInfos.begin(), treeInfos.end());
+        receivedRequestId_ = requestId;
+        callbackCalled_ = true;
+
+        GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult called: requestId=" << requestId
+                         << ", infos.size=" << infos.size() << ", treeInfos.size=" << treeInfos.size();
+    }
+
+    bool IsCallbackCalled() const { return callbackCalled_; }
+    const std::vector<AccessibilityElementInfo>& GetReceivedInfos() const { return receivedInfos_; }
+    const std::vector<AccessibilityElementInfo>& GetReceivedTreeInfos() const { return receivedTreeInfos_; }
+    int32_t GetReceivedRequestId() const { return receivedRequestId_; }
+
+private:
+    bool callbackCalled_ = false;
+    std::vector<AccessibilityElementInfo> receivedInfos_;
+    std::vector<AccessibilityElementInfo> receivedTreeInfos_;
+    int32_t receivedRequestId_ = -1;
+};
 namespace {
     constexpr int RETRY_TIMES = 10;
     constexpr int ELEMENT_ID = 0;
@@ -486,6 +528,255 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
 
     EXPECT_EQ(channel->GetCursorPosition(WINDOW_ID, ELEMENT_ID, 0, nullptr), RET_ERR_NO_CONNECTION);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetCursorPosition_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_001
+ * @tc.name: SearchElementInfoBySpecificProperty
+ * @tc.desc: Test function SearchElementInfoBySpecificProperty
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_001 start";
+    ElementBasicInfo elementBasicInfo;
+    elementBasicInfo.windowId = 0;
+    elementBasicInfo.treeId = 0;
+    elementBasicInfo.elementId = 0;
+    SpecificPropertyParam param;
+    channel_->SearchElementInfoBySpecificProperty(elementBasicInfo, param, 0, nullptr);
+
+    EXPECT_NE(channel_, nullptr) << "channel_ should remain valid after method call";
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_002
+ * @tc.name: SearchElementInfoBySpecificProperty
+ * @tc.desc: Test function SearchElementInfoBySpecificProperty with callback is nullptr
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_002 start";
+    ElementBasicInfo elementBasicInfo;
+    elementBasicInfo.windowId = 1;
+    elementBasicInfo.treeId = 0;
+    elementBasicInfo.elementId = 1;
+    SpecificPropertyParam param;
+    channel_->SearchElementInfoBySpecificProperty(elementBasicInfo, param, 1, nullptr);
+    EXPECT_NE(channel_, nullptr) << "channel_ should remain valid after method call";
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_003
+ * @tc.name: SearchElementInfoBySpecificProperty
+ * @tc.desc: Test function SearchElementInfoBySpecificProperty with valid callback
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_003 start";
+    ElementBasicInfo elementBasicInfo;
+    elementBasicInfo.windowId = 1;
+    elementBasicInfo.treeId = 0;
+    elementBasicInfo.elementId = 1;
+    SpecificPropertyParam param;
+    param.propertyTarget = "test";
+    param.propertyType = SEARCH_TYPE::CUSTOMID;
+    sptr<MockAccessibilityElementOperatorCallbackStub> callback =
+        new MockAccessibilityElementOperatorCallbackStub();
+    channel_->SearchElementInfoBySpecificProperty(elementBasicInfo, param, 2, callback);
+    EXPECT_NE(channel_, nullptr) << "channel_ should remain valid after method call";
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_003 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_004
+ * @tc.name: SearchElementInfoBySpecificProperty
+ * @tc.desc: Test function SearchElementInfoBySpecificProperty with invalid windowId
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_004 start";
+    ElementBasicInfo elementBasicInfo;
+    elementBasicInfo.windowId = -1;
+    elementBasicInfo.treeId = 0;
+    elementBasicInfo.elementId = 1;
+    SpecificPropertyParam param;
+    param.propertyTarget = "test";
+    param.propertyType = SEARCH_TYPE::CUSTOMID;
+    sptr<MockAccessibilityElementOperatorCallbackStub> callback =
+        new MockAccessibilityElementOperatorCallbackStub();
+    channel_->SearchElementInfoBySpecificProperty(elementBasicInfo, param, 3, callback);
+    EXPECT_NE(channel_, nullptr) << "channel_ should remain valid after method call";
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_004 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_005
+ * @tc.name: SearchElementInfoBySpecificProperty
+ * @tc.desc: Test function SearchElementInfoBySpecificProperty with GetElementOperator failure path
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_005 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    accountData->RemoveAccessibilityWindowConnection(WINDOW_ID);
+    ElementBasicInfo elementBasicInfo;
+    elementBasicInfo.windowId = WINDOW_ID;
+    elementBasicInfo.treeId = 0;
+    elementBasicInfo.elementId = 1;
+    SpecificPropertyParam param;
+    param.propertyTarget = "test";
+    param.propertyType = SEARCH_TYPE::CUSTOMID;
+    sptr<MockAccessibilityElementOperatorCallbackStub> callback =
+        new MockAccessibilityElementOperatorCallbackStub();
+    channel_->SearchElementInfoBySpecificProperty(elementBasicInfo, param, 4, callback);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    EXPECT_TRUE(callback->IsCallbackCalled());
+    EXPECT_TRUE(callback->GetReceivedInfos().empty());
+    EXPECT_TRUE(callback->GetReceivedTreeInfos().empty());
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_005 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_006
+ * @tc.name: SearchElementInfoBySpecificProperty
+ * @tc.desc: Test function SearchElementInfoBySpecificProperty with SCENE_BOARD_WINDOW_ID and IsInnerWindowRootElement
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_006, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_006 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
+    ASSERT_TRUE(stub);
+    sptr<IAccessibilityElementOperator> proxy = new AccessibilityElementOperatorProxy(stub);
+    ASSERT_TRUE(proxy);
+    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(1, proxy, ACCOUNT_ID);
+    ASSERT_TRUE(connection);
+    accountData->AddAccessibilityWindowConnection(1, connection);
+    auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+    int64_t testElementId = 12345;
+    awm.sceneBoardElementIdMap_.InsertPair(1, testElementId);
+    ElementBasicInfo elementBasicInfo;
+    elementBasicInfo.windowId = 1;
+    elementBasicInfo.treeId = 0;
+    elementBasicInfo.elementId = testElementId;
+    SpecificPropertyParam param;
+    param.propertyTarget = "test";
+    param.propertyType = SEARCH_TYPE::CUSTOMID;
+    sptr<MockAccessibilityElementOperatorCallbackStub> callback =
+        new MockAccessibilityElementOperatorCallbackStub();
+    channel_->SearchElementInfoBySpecificProperty(elementBasicInfo, param, 5, callback);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    EXPECT_TRUE(callback->IsCallbackCalled());
+    EXPECT_TRUE(callback->GetReceivedInfos().empty());
+    EXPECT_TRUE(callback->GetReceivedTreeInfos().empty());
+    EXPECT_TRUE(awm.IsInnerWindowRootElement(testElementId));
+    awm.sceneBoardElementIdMap_.Clear();
+    accountData->RemoveAccessibilityWindowConnection(1);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_006 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_007
+ * @tc.name: SearchElementInfoBySpecificProperty
+ * @tc.desc: Test function SearchElementInfoBySpecificProperty with normal execution path (non-SCENE_BOARD_WINDOW_ID)
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_007, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_007 start";
+    auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+    awm.sceneBoardElementIdMap_.Clear();
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+
+    sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
+    ASSERT_TRUE(stub);
+    sptr<IAccessibilityElementOperator> proxy = new AccessibilityElementOperatorProxy(stub);
+    ASSERT_TRUE(proxy);
+    int32_t normalWindowId = 2;
+    sptr<AccessibilityWindowConnection> connection =
+        new AccessibilityWindowConnection(normalWindowId, proxy, ACCOUNT_ID);
+    ASSERT_TRUE(connection);
+    accountData->AddAccessibilityWindowConnection(normalWindowId, connection);
+    ElementBasicInfo elementBasicInfo;
+    elementBasicInfo.windowId = normalWindowId;
+    elementBasicInfo.treeId = 0;
+    elementBasicInfo.elementId = 12345;
+    SpecificPropertyParam param;
+    param.propertyTarget = "test";
+    param.propertyType = SEARCH_TYPE::CUSTOMID;
+    sptr<MockAccessibilityElementOperatorCallbackStub> callback =
+        new MockAccessibilityElementOperatorCallbackStub();
+    channel_->SearchElementInfoBySpecificProperty(elementBasicInfo, param, 6, callback);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    std::list<AccessibilityElementInfo> mockInfos;
+    std::list<AccessibilityElementInfo> mockTreeInfos;
+    AccessibilityElementInfo mockInfo;
+    mockInfo.SetAccessibilityId(12345);
+    mockInfo.SetComponentType("normal_execution_test");
+    mockInfos.push_back(mockInfo);
+    AccessibilityElementInfo mockTreeInfo;
+    mockTreeInfo.SetAccessibilityId(12346);
+    mockTreeInfo.SetComponentType("tree_info_test");
+    mockTreeInfos.push_back(mockTreeInfo);
+    callback->SetSearchElementInfoBySpecificPropertyResult(mockInfos, mockTreeInfos, 6);
+    EXPECT_TRUE(callback->IsCallbackCalled());
+    EXPECT_FALSE(callback->GetReceivedInfos().empty());
+    EXPECT_FALSE(callback->GetReceivedTreeInfos().empty());
+    accountData->RemoveAccessibilityWindowConnection(normalWindowId);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_007 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_008
+ * @tc.name: SearchElementInfoBySpecificProperty
+ * @tc.desc: Test function SearchElementInfoBySpecificProperty with CheckWinFromAwm failure path
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_008, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_008 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    int32_t invalidWindowId = 9999;
+    sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
+    ASSERT_TRUE(stub);
+    sptr<IAccessibilityElementOperator> proxy = new AccessibilityElementOperatorProxy(stub);
+    ASSERT_TRUE(proxy);
+    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(invalidWindowId, proxy,
+        ACCOUNT_ID);
+    ASSERT_TRUE(connection);
+    accountData->AddAccessibilityWindowConnection(invalidWindowId, connection);
+    ElementBasicInfo elementBasicInfo;
+    elementBasicInfo.windowId = invalidWindowId;
+    elementBasicInfo.treeId = 0;
+    elementBasicInfo.elementId = 1;
+    SpecificPropertyParam param;
+    param.propertyTarget = "test";
+    param.propertyType = SEARCH_TYPE::CUSTOMID;
+    sptr<MockAccessibilityElementOperatorCallbackStub> callback =
+        new MockAccessibilityElementOperatorCallbackStub();
+    channel_->SearchElementInfoBySpecificProperty(elementBasicInfo, param, 7, callback);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    EXPECT_TRUE(callback->IsCallbackCalled());
+    EXPECT_TRUE(callback->GetReceivedInfos().empty());
+    EXPECT_TRUE(callback->GetReceivedTreeInfos().empty());
+    accountData->RemoveAccessibilityWindowConnection(invalidWindowId);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SearchElementInfoBySpecificProperty_008 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

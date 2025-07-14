@@ -15,6 +15,7 @@
 
 #include "accessibility_element_operator_callback_proxy.h"
 #include "accessibility_element_info_parcel.h"
+#include "accessibility_def.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -271,5 +272,82 @@ void AccessibilityElementOperatorCallbackProxyTest::SetCursorPositionResult(cons
     }
 }
 
+void AccessibilityElementOperatorCallbackProxyTest::SetSearchElementInfoBySpecificPropertyResult(
+    const std::list<AccessibilityElementInfo> &infos, const std::list<AccessibilityElementInfo> &treeInfos,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("infos size %{public}zu, treeInfos size %{public}zu, requestId %{public}d",
+        infos.size(), treeInfos.size(), requestId);
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
+
+    if (!data.WriteUint32(infos.size())) {
+        HILOG_ERROR("write infos's size failed");
+        return;
+    }
+
+    if (!WriteElementInfosToRawData(infos, data)) {
+        return;
+    }
+
+    if (!data.WriteUint32(treeInfos.size())) {
+        HILOG_ERROR("write tree infos's size failed");
+        return;
+    }
+
+    if (!WriteElementInfosToRawData(treeInfos, data)) {
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_BY_SPECIFIC_PROPERTY, data, reply, option)) {
+        HILOG_ERROR("setSearchElementInfoBySpecificPropertyResult failed");
+        return;
+    }
+    if (static_cast<RetError>(reply.ReadInt32() != RET_OK)) {
+        HILOG_ERROR("read reply code failed");
+    }
+    return;
+}
+
+bool AccessibilityElementOperatorCallbackProxyTest::WriteElementInfosToRawData(
+    const std::list<AccessibilityElementInfo> &infos, MessageParcel &data)
+{
+    if (infos.size() == 0) {
+        HILOG_DEBUG("infos is empty, skip writing raw data");
+        return true;
+    }
+
+    MessageParcel tmpParcel;
+    tmpParcel.SetMaxCapacity(MAX_RAWDATA_SIZE);
+    // when set pracel's max capacity, it won't alloc memory immediately
+    // MessageParcel will expand memory dynamiclly
+    for (const auto &info : infos) {
+        AccessibilityElementInfoParcel infoParcel(info);
+        if (!tmpParcel.WriteParcelable(&infoParcel)) {
+            HILOG_ERROR("write accessibilityElementInfoParcel failed");
+            return false;
+        }
+    }
+    size_t tmpParcelSize = tmpParcel.GetDataSize();
+    if (!data.WriteUint32(tmpParcelSize)) {
+        HILOG_ERROR("write rawData size failed");
+        return false;
+    }
+    if (!data.WriteRawData(reinterpret_cast<uint8_t *>(tmpParcel.GetData()), tmpParcelSize)) {
+        HILOG_ERROR("write rawData failed");
+        return false;
+    }
+    return true;
+}
 } // namespace Accessibility
 } // namespace OHOS
