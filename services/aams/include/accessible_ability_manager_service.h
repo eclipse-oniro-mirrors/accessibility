@@ -347,6 +347,7 @@ public:
     void InitResource(bool needReInit);
     std::string &GetResource(const std::string &resourceName);
     void AnnouncedForMagnification(AnnounceType announceType);
+    void OffZoomGesture();
 
     RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);
 
@@ -466,7 +467,6 @@ private:
     void RegisterProvisionCallback();
     void RegisterShortKeyEvent();
     bool IsNeedUnload();
-    void OffZoomGesture();
     void OnScreenMagnificationStateChanged();
     void RegisterScreenMagnificationState();
     void OnScreenMagnificationTypeChanged();
@@ -475,6 +475,8 @@ private:
     void OnVoiceRecognitionChanged();
     void RegisterVoiceRecognitionState();
     void UpdateVoiceRecognitionState();
+    void SubscribeOsAccount();
+    void UnsubscribeOsAccount();
 
     int32_t ApplyTreeId();
     void RecycleTreeId(int32_t treeId);
@@ -537,6 +539,7 @@ private:
     ffrt::mutex subscribeMSDPMutex_;
     std::shared_ptr<MagnificationManager> magnificationManager_ = nullptr;
     bool isResourceInit_ = false;
+    std::shared_ptr<AccountSubscriber> accountSubscriber_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

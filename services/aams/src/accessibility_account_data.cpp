@@ -1517,5 +1517,13 @@ std::vector<uint32_t> AccessibilityAccountData::GetNeedEvents()
 {
     return needEvents_;
 }
+
+void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data)
+{
+    if (data.state == AccountSA::OsAccountState::SWITCHING) {
+        HILOG_INFO("account switching.");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OffZoomGesture();
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

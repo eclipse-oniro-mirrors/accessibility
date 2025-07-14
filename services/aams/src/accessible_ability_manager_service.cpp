@@ -336,6 +336,7 @@ void AccessibleAbilityManagerService::OnStop()
         Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
         Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
         Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
+        UnsubscribeOsAccount();
 
         currentAccountId_ = -1;
         a11yAccountsData_.Clear();
@@ -1826,7 +1827,7 @@ bool AccessibleAbilityManagerService::Init()
         HILOG_DEBUG("Query account information success, account id:%{public}d", accountIds[0]);
         SwitchedUser(accountIds[0]);
     }
-
+    SubscribeOsAccount();
     return true;
 }
 
@@ -1975,7 +1976,6 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         HILOG_WARN("The account is current account id.");
         return;
     }
-    OffZoomGesture();
 
     std::map<std::string, uint32_t> importantEnabledAbilities;
     SCREENREADER_STATE screenReaderState = SCREENREADER_STATE::UNINIT;
@@ -4225,6 +4225,39 @@ ErrCode AccessibleAbilityManagerService::SearchNeedEvents(std::vector<uint32_t> 
     needEvents = accountData->GetNeedEvents();
     HILOG_DEBUG("GetNeedEvent size is %{public}u", needEvents.size());
     return NO_ERROR;
+}
+
+void AccessibleAbilityManagerService::SubscribeOsAccount()
+{
+    HILOG_INFO();
+    if (accountSubscriber_ != nullptr) {
+        HILOG_ERROR("accountSubscriber is already registed!");
+        return;
+    }
+    std::set<AccountSA::OsAccountState> states;
+    states.insert(AccountSA::OsAccountState::SWITCHING);
+    AccountSA::OsAccountSubscribeInfo info(states, false);
+    accountSubscriber_ = std::make_shared<AccountSubscriber>(info);
+    if (accountSubscriber_ == nullptr) {
+        HILOG_ERROR("create accountSubscriber fail!");
+        return;
+    }
+    auto result = AccountSA::OsAccountManager::SubscribeOsAccount(accountSubscriber_);
+    if (result != ERR_OK) {
+        HILOG_ERROR("fail to register subscriber, res:%{public}d.", result);
+    }
+}
+
+void AccessibleAbilityManagerService::UnsubscribeOsAccount()
+{
+    if (accountSubscriber_ == nullptr) {
+        HILOG_ERROR("accountSubscriber is nullptr.");
+        return;
+    }
+    auto res = AccountSA::OsAccountManager::UnsubscribeOsAccount(accountSubscriber_);
+    if (res != ERR_OK) {
+        HILOG_ERROR("unregister account event fail res:%{public}d", res);
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS
