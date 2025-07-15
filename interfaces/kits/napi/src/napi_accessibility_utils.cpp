@@ -68,6 +68,8 @@ namespace {
     const std::string ERROR_MESSAGE_INVALID_BUNDLE_NAME_OR_ABILITY_NAME = "Invalid bundle name or ability name";
     const std::string ERROR_MESSAGE_TARGET_ABILITY_ALREADY_ENABLED = "Target ability already enabled";
     const std::string ERROR_MESSAGE_ENABLE_MAGNIFICATION = "Failed to trigger magnification.";
+    const std::string ERROR_MESSAGE_CAPABILITY_NOT_SUPPORT = "Capability not supported."
+        "Failed to call the API due to limited device capabilities.";
 } // namespace
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
@@ -288,6 +290,9 @@ NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode)
         case OHOS::Accessibility::RetError::RET_ERR_ENABLE_MAGNIFICATION:
             return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_ENABLE_MAGNIFICATION,
                     ERROR_MESSAGE_ENABLE_MAGNIFICATION };
+        case OHOS::Accessibility::RetError::RET_ERR_MAGNIFICATION_NOT_SUPPORT:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_CAPABILITY_NOT_SUPPORT,
+                    ERROR_MESSAGE_CAPABILITY_NOT_SUPPORT };
         default:
             return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
                      ERROR_MESSAGE_SYSTEM_ABNORMALITY };
