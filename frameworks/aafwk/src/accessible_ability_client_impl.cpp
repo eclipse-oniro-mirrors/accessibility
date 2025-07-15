@@ -248,6 +248,7 @@ sptr<IRemoteObject> AccessibleAbilityClientImpl::GetRemoteObject()
 RetError AccessibleAbilityClientImpl::CheckExtensionAbilityPermission()
 {
     HILOG_DEBUG();
+    Utils::UniqueReadGuard<Utils::RWLock> wLock(rwLock_);
     if (CheckServiceProxy() == false) {
         HILOG_ERROR("failed to connect to aams!");
         return RET_ERR_SAMGR;

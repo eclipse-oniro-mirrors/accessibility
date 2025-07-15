@@ -67,14 +67,18 @@ napi_value NAccessibilityClient::IsScreenReaderOpenSync(napi_env env, napi_callb
     HILOG_INFO();
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
-    napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
-    ACCESSIBILITY_NAPI_ASSERT(env, argc == ARGS_SIZE_ZERO, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
-
-    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
-    ACCESSIBILITY_NAPI_ASSERT(env, asaClient != nullptr, OHOS::Accessibility::RET_ERR_NULLPTR);
     bool status = false;
-    auto ret = asaClient->IsScreenReaderEnabled(status);
-    ACCESSIBILITY_NAPI_ASSERT(env, ret == RET_OK, OHOS::Accessibility::RET_ERR_FAILED);
+    do {
+        napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+        if (argc != ARGS_SIZE_ZERO) {
+            break;
+        }
+        auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+        if (asaClient == nullptr) {
+            break;
+        }
+        asaClient->IsScreenReaderEnabled(status);
+    } while (0);
     napi_value result = nullptr;
     napi_get_boolean(env, status, &result);
     return result;
@@ -88,14 +92,18 @@ napi_value NAccessibilityClient::IsOpenAccessibilitySync(napi_env env, napi_call
     HILOG_INFO();
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
-    napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
-    ACCESSIBILITY_NAPI_ASSERT(env, argc == ARGS_SIZE_ZERO, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
-
-    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
-    ACCESSIBILITY_NAPI_ASSERT(env, asaClient != nullptr, OHOS::Accessibility::RET_ERR_NULLPTR);
     bool status = false;
-    auto ret = asaClient->IsEnabled(status);
-    ACCESSIBILITY_NAPI_ASSERT(env, ret == RET_OK, OHOS::Accessibility::RET_ERR_FAILED);
+    do {
+        napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+        if (argc != ARGS_SIZE_ZERO) {
+            break;
+        }
+        auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+        if (asaClient == nullptr) {
+            break;
+        }
+        asaClient->IsEnabled(status);
+    } while (0);
     napi_value result = nullptr;
     napi_get_boolean(env, status, &result);
     return result;
@@ -161,14 +169,18 @@ napi_value NAccessibilityClient::IsOpenTouchExplorationSync(napi_env env, napi_c
     HILOG_INFO();
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
-    napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
-    ACCESSIBILITY_NAPI_ASSERT(env, argc == ARGS_SIZE_ZERO, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
-
-    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
-    ACCESSIBILITY_NAPI_ASSERT(env, asaClient != nullptr, OHOS::Accessibility::RET_ERR_NULLPTR);
     bool status = false;
-    auto ret = asaClient->IsTouchExplorationEnabled(status);
-    ACCESSIBILITY_NAPI_ASSERT(env, ret == RET_OK, OHOS::Accessibility::RET_ERR_FAILED);
+    do {
+        napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+        if (argc != ARGS_SIZE_ZERO) {
+            break;
+        }
+        auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+        if (asaClient == nullptr) {
+            break;
+        }
+        asaClient->IsTouchExplorationEnabled(status);
+    } while (0);
     napi_value result = nullptr;
     napi_get_boolean(env, status, &result);
     return result;
