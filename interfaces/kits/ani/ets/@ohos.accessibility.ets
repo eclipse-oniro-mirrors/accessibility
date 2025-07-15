@@ -128,9 +128,9 @@ namespace accessibility {
         stateType: AbilityState): Promise<Array<AccessibilityAbilityInfo>> {
         return new Promise<Array<AccessibilityAbilityInfo>> ((resolve: (v: Array<AccessibilityAbilityInfo>) => void,
             reject: (error: BusinessError) => void): void => {
-            taskpool.execute(getAccessibilityExtensionListSync, abilityType, stateType).then((code :NullishType): void => {
+            taskpool.execute(getAccessibilityExtensionListSync, abilityType, stateType).then((code :Any): void => {
                 resolve(code as Array<AccessibilityAbilityInfo>);
-            }).catch((err: NullishType): void => {
+            }).catch((err: Any): void => {
                 reject(err as BusinessError);
             });
         });
@@ -140,9 +140,9 @@ namespace accessibility {
         callback: AsyncCallback<Array<AccessibilityAbilityInfo>>
     ): void {
         let p1 = taskpool.execute(getAccessibilityExtensionListSync, abilityType, stateType);
-        p1.then((ret: NullishType): void => {
+        p1.then((ret: Any): void => {
             callback(new BusinessError(), ret as Array<AccessibilityAbilityInfo>)
-        }).catch((err: NullishType): void => {
+        }).catch((err: Any): void => {
             callback(err as BusinessError, [] as Array<AccessibilityAbilityInfo>)
         });
     }
@@ -285,10 +285,10 @@ namespace accessibility {
         taskpool.execute((): void => {
             return sendAccessibilityEventSync(event);
         })
-        .then((ret: NullishType): void => {
+        .then((ret: Any): void => {
             callback(new BusinessError(), ret as undefined);
         })
-        .catch((ret: NullishType): void => {
+        .catch((ret: Any): void => {
             callback(ret as BusinessError, undefined);
         });
     }
@@ -298,10 +298,10 @@ namespace accessibility {
             taskpool.execute((): void => {
                 return sendAccessibilityEventSync(event);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 resolve(ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 reject(ret as BusinessError);
             });
         });
