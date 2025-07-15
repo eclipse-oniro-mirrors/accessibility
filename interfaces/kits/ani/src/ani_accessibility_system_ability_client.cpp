@@ -16,10 +16,12 @@
 #include <array>
 #include <iostream>
 #include "ani_accessibility_system_ability_client.h"
-#include "ani_utils.h"
+#include "ani_accessibility_common.h"
+#include "accessibility_utils_ani.h"
 #include "hilog_wrapper.h"
 
 using namespace OHOS::Accessibility;
+using namespace OHOS::AccessibilityAni;
 
 constexpr int32_t ANI_SCOPE_SIZE = 16;
 
@@ -27,6 +29,8 @@ std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::accessibilityStateLis
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED);
 std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::touchGuideStateListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED);
+std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::screenReaderStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED);
 
 void StateListenerImpl::SubscribeToFramework()
 {
@@ -61,7 +65,7 @@ void StateListenerImpl::SubscribeObserver(ani_env *env, ani_object observer)
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
-        if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
+        if (ANICommon::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
             HILOG_WARN("SubscribeObserver Observer exist");
             return;
         } else {
@@ -80,7 +84,7 @@ void StateListenerImpl::UnsubscribeObserver(ani_env *env, ani_object observer)
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
-        if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
+        if (ANICommon::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
             HILOG_INFO("UnsubscribeObserver Observer exist");
             env->GlobalReference_Delete(fnRef);
             observers_.erase(iter);
@@ -121,7 +125,7 @@ void StateListener::NotifyETS(ani_env *env, bool state, ani_ref fnRef)
         ani_size nr_refs = ANI_SCOPE_SIZE;
         tmpEnv->CreateLocalScope(nr_refs);
         auto fnObj = reinterpret_cast<ani_fn_object>(callbackInfo->fnRef_);
-        ani_object state = ANIUtils::CreateBoolObject(tmpEnv, static_cast<ani_boolean>(callbackInfo->state_));
+        ani_object state = ANICommon::CreateBoolObject(tmpEnv, static_cast<ani_boolean>(callbackInfo->state_));
         if (state == nullptr) {
             HILOG_ERROR("create boolean object failed");
             return;
@@ -131,7 +135,7 @@ void StateListener::NotifyETS(ani_env *env, bool state, ani_ref fnRef)
         tmpEnv->FunctionalObject_Call(fnObj, 1, args.data(), &result);
         tmpEnv->DestroyLocalScope();
     };
-    if (!ANIUtils::SendEventToMainThread(task)) {
+    if (!ANICommon::SendEventToMainThread(task)) {
         HILOG_ERROR("failed to send event");
     }
 }
@@ -143,40 +147,46 @@ void StateListener::OnStateChanged(const bool state)
 
 void ANIAccessibilityClient::SubscribeState(ani_env *env, ani_string type, ani_object callback)
 {
-    std::string eventType = ANIUtils::ANIStringToStdString(env, type);
+    std::string eventType = ANICommon::ANIStringToStdString(env, type);
     if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
         accessibilityStateListeners_->SubscribeObserver(env, callback);
     } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
         touchGuideStateListeners_->SubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "screenReaderStateChange") == 0) {
+        screenReaderStateListeners_->SubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
     }
 }
 
 void ANIAccessibilityClient::UnsubscribeState(ani_env *env, ani_string type, ani_object callback)
 {
-    std::string eventType = ANIUtils::ANIStringToStdString(env, type);
+    std::string eventType = ANICommon::ANIStringToStdString(env, type);
     if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
         accessibilityStateListeners_->UnsubscribeObserver(env, callback);
     } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
         touchGuideStateListeners_->UnsubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "screenReaderStateChange") == 0) {
+        screenReaderStateListeners_->UnsubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("UnsubscribeState eventType[%{public}s] is error", eventType.c_str());
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
     }
 }
 
 void ANIAccessibilityClient::UnsubscribeStateAll(ani_env *env, ani_string type)
 {
-    std::string eventType = ANIUtils::ANIStringToStdString(env, type);
+    std::string eventType = ANICommon::ANIStringToStdString(env, type);
     if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
         accessibilityStateListeners_->UnsubscribeObservers();
     } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
         touchGuideStateListeners_->UnsubscribeObservers();
+    } else if (std::strcmp(eventType.c_str(), "screenReaderStateChange") == 0) {
+        screenReaderStateListeners_->UnsubscribeObservers();
     } else {
         HILOG_ERROR("UnsubscribeStateAll eventType[%{public}s] is error", eventType.c_str());
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
     }
 }
 
@@ -185,14 +195,14 @@ ani_boolean ANIAccessibilityClient::IsOpenTouchGuideSync([[maybe_unused]] ani_en
     auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
     if (asaClient == nullptr) {
         HILOG_ERROR("asaClient is nullptr!");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        ThrowBusinessError(env, QueryRetMsg(RET_ERR_NULLPTR));
         return false;
     }
     bool status = false;
     auto ret = asaClient->IsTouchExplorationEnabled(status);
     if (ret != RET_OK) {
         HILOG_ERROR("get touch guide state failed!");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        ThrowBusinessError(env, QueryRetMsg(RET_ERR_FAILED));
         return false;
     }
 
@@ -204,14 +214,14 @@ ani_boolean ANIAccessibilityClient::IsOpenAccessibilitySync([[maybe_unused]] ani
     auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
     if (asaClient == nullptr) {
         HILOG_ERROR("asaClient is nullptr!");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        ThrowBusinessError(env, QueryRetMsg(RET_ERR_NULLPTR));
         return false;
     }
     bool status = false;
     auto ret = asaClient->IsEnabled(status);
     if (ret != RET_OK) {
         HILOG_ERROR("get accessibility state failed!");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        ThrowBusinessError(env, QueryRetMsg(RET_ERR_FAILED));
         return false;
     }
 
@@ -225,24 +235,24 @@ void ANIAccessibilityClient::SendAccessibilityEvent(ani_env *env, ani_object eve
     auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
     if (asaClient == nullptr) {
         HILOG_ERROR("asaClient is nullptr!");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
         return;
     }
 
-    bool ret = ANIUtils::ConvertEventInfoMandatoryFields(env, eventObject, eventInfo);
+    bool ret = ANICommon::ConvertEventInfoMandatoryFields(env, eventObject, eventInfo);
     if (!ret) {
         HILOG_ERROR("ConvertEventInfoMandatoryFields failed");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
         return;
     }
 
-    ANIUtils::ConvertEventInfoStringFields(env, eventObject, eventInfo);
-    ANIUtils::ConvertEventInfoIntFields(env, eventObject, eventInfo);
+    ANICommon::ConvertEventInfoStringFields(env, eventObject, eventInfo);
+    ANICommon::ConvertEventInfoIntFields(env, eventObject, eventInfo);
 
     auto result = asaClient->SendEvent(eventInfo);
     if (result != RET_OK) {
         HILOG_ERROR("SendAccessibilityEvent failed!");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(result));
+        ThrowBusinessError(env, QueryRetMsg(result));
     }
     return;
 }

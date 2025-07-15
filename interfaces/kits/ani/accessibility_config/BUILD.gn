@@ -14,20 +14,11 @@
 import("//build/config/components/ets_frontend/ets2abc_config.gni")
 import("//build/ohos.gni")
 
-group("ani_packages") {
-  deps = [
-    ":accessibility_ani",
-    ":accessibility_ani_abc_etc",
-    "accessibility_config:accessibility_config_ani",
-    "accessibility_config:accessibility_config_ani_abc_etc",
-  ]
-}
-
-ohos_shared_library("accessibility_ani") {
+ohos_shared_library("accessibility_config_ani") {
   include_dirs = [
-    "../../../common/log/include",
-    "../../../common/interface/include",
-    "../../../frameworks/asacfwk/include",
+    "../../../../common/log/include",
+    "../../../../common/interface/include",
+    "../../../../frameworks/acfwk/include",
     "./include",
   ]
   sanitize = {
@@ -39,12 +30,11 @@ ohos_shared_library("accessibility_ani") {
     debug = false
   }
   deps = [
-    "../../innerkits/asacfwk:accessibilityclient",
-    "../../innerkits/common:accessibility_common",
+    "../../../innerkits/acfwk:accessibilityconfig",
+    "../../../innerkits/common:accessibility_common",
   ]
 
   external_deps = [
-    "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "hilog:libhilog",
@@ -53,9 +43,8 @@ ohos_shared_library("accessibility_ani") {
     "runtime_core:ani_helpers",
   ]
   sources = [
-    "./src/accessibility_utils_ani.cpp",
-    "./src/ani_accessibility_common.cpp",
-    "./src/ani_accessibility_system_ability_client.cpp",
+    "../src/accessibility_utils_ani.cpp",
+    "./src/ani_accessibility_config.cpp",
     "./src/ani_register.cpp",
   ]
   part_name = "accessibility"
@@ -63,20 +52,20 @@ ohos_shared_library("accessibility_ani") {
   output_extension = "so"
 }
 
-generate_static_abc("accessibility_ani_abc") {
+generate_static_abc("accessibility_config_ani_abc") {
   base_url = "./ets"
-  files = [ "./ets/@ohos.accessibility.ets" ]
-  dst_file = "$target_out_dir/accessibility.abc"
-  out_puts = [ "$target_out_dir/accessibility.abc" ]
+  files = [ "./ets/@ohos.accessibility.config.ets" ]
+  dst_file = "$target_out_dir/accessibility_config.abc"
+  out_puts = [ "$target_out_dir/accessibility_config.abc" ]
 
   is_boot_abc = "True"
-  device_dst_file = "/system/framework/accessibility.abc"
+  device_dst_file = "/system/framework/accessibility_config.abc"
 }
 
-ohos_prebuilt_etc("accessibility_ani_abc_etc") {
-  source = "$target_out_dir/accessibility.abc"
+ohos_prebuilt_etc("accessibility_config_ani_abc_etc") {
+  source = "$target_out_dir/accessibility_config.abc"
   module_install_dir = "framework"
   part_name = "accessibility"
   subsystem_name = "barrierfree"
-  deps = [ ":accessibility_ani_abc" ]
+  deps = [ ":accessibility_config_ani_abc" ]
 }
