@@ -98,6 +98,7 @@ void MagnificationMenuManager::CreateMenuWindow()
         HILOG_ERROR("create canvasNode_ fail.");
         return;
     }
+    canvasNode_->SetSkipCheckInMultiInstance(true);
     surfaceNode_->SetAbilityBGAlpha(BG_ALPHA);
     surfaceNode_->AddChild(canvasNode_, -1);
     canvasNode_->SetBounds(0, 0, menuSize_, menuSize_);
