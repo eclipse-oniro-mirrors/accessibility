@@ -61,6 +61,11 @@ void WindowMagnificationManager::CreateMagnificationWindow(int32_t posX, int32_t
     }
     rsUIContext_ = surfaceNode_->GetRSUIContext();
     canvasNode_ = Rosen::RSCanvasNode::Create(false, false, rsUIContext_);
+    if (canvasNode_ == nullptr) {
+        HILOG_ERROR("canvasNode_ is nullptr.");
+        return;
+    }
+    canvasNode_->SetSkipCheckInMultiInstance(true);
 }
 
 void WindowMagnificationManager::DrawRuoundRectFrame()
