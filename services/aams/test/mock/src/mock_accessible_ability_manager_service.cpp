@@ -770,5 +770,10 @@ RetError AccessibleAbilityManagerService::UpdateUITestConfigureEvents(std::vecto
 {
     return RET_OK;
 }
+
+void AccessibleAbilityManagerService::OffZoomGesture()
+{
+    return;
+}
 } // namespace Accessibility
 } // namespace OHOS
