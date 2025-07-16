@@ -1443,7 +1443,26 @@ void NAccessibilityElement::GetElementInfoAccessibilityChildrenIds(NAccessibilit
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_array(callbackInfo->env_, &value));
-    ConvertInt64VecToJS(callbackInfo->env_, value, callbackInfo->accessibilityElement_.elementInfo_->GetChildIds());
+    int32_t childTreeId = callbackInfo->accessibilityElement_.elementInfo_->GetChildTreeId();
+    int32_t childWindowId = callbackInfo->accessibilityElement_.elementInfo_->GetChildWindowId();
+    if (childTreeId <= 0 && childWindowId <= 0) {
+        ConvertInt64VecToJS(
+            callbackInfo->env_, value, callbackInfo->accessibilityElement_.elementInfo_->GetChildIds());
+        return;
+    }
+    std::vector<AccessibilityElementInfo> children{};
+    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetChildren(
+        *callbackInfo->accessibilityElement_.elementInfo_, children, callbackInfo->systemApi);
+    if (callbackInfo->ret_ == RET_OK) {
+        std::vector<int64_t> childIds;
+        for (const auto& iter : children) {
+            childIds.emplace_back(iter.GetAccessibilityId());
+        }
+        ConvertInt64VecToJS(callbackInfo->env_, value, childIds);
+    } else {
+        ConvertInt64VecToJS(
+            callbackInfo->env_, value, callbackInfo->accessibilityElement_.elementInfo_->GetChildIds());
+    }
 }
 
 void NAccessibilityElement::GetElementInfoAccessibilityScrollable(NAccessibilityElementData *callbackInfo,
