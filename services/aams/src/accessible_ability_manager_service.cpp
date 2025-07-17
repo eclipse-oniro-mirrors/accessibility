@@ -3588,17 +3588,17 @@ void AccessibleAbilityManagerService::OnVoiceRecognitionChanged()
     }
 
     bool voiceRecognitionEnabled = config->GetDbHandle()->GetBoolValue(VOICE_RECOGNITION_KEY, false);
-    std::string voiceRecognitionTypes = config->GetDbHandle()->GetStringValue(VOICE_RECOGNITION_TYPES, "");
+    std::string voiceRecognitionTypes = config->GetDbHandle()->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
 
     std::lock_guard<ffrt::mutex> lock(subscribeMSDPMutex_);
-    if (!isSubscribeMSDPCallback_ && voiceRecognitionEnabled && !voiceRecognitionTypes.empty()) {
+    if (!isSubscribeMSDPCallback_ && voiceRecognitionEnabled && voiceRecognitionTypes != "DEFAULT") {
         int32_t ret = MsdpManager::GetInstance().SubscribeVoiceRecognition();
         isSubscribeMSDPCallback_ = true;
         HILOG_INFO("SubscribeVoiceRecognition ret: %{public}d", ret);
         return;
     }
 
-    if (isSubscribeMSDPCallback_ && (!voiceRecognitionEnabled || voiceRecognitionTypes.empty())) {
+    if (isSubscribeMSDPCallback_ && (!voiceRecognitionEnabled || voiceRecognitionTypes == "DEFAULT")) {
         MsdpManager::GetInstance().UnSubscribeVoiceRecognition();
         isSubscribeMSDPCallback_ = false;
         return;
