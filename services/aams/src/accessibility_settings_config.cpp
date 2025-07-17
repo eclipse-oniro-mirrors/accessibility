@@ -81,6 +81,8 @@ namespace {
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const std::string FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
     const std::string FLASH_REMINDER_ENABLED = "accessibility_reminder_function_enabled";
+    const std::string VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
+    const std::string VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
     const std::string IGNORE_REPEAT_CLICK_TIMESTAMP = "accessibility_ignore_repeat_click_timestamp";
     const std::string RECOVERY_IGNORE_REPEAT_CLICK_DATE = "recovery_ignore_repeat_click_switch_date";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
@@ -1089,6 +1091,8 @@ void AccessibilitySettingsConfig::InitSetting()
     SetIgnoreRepeatClickTime(ignoreRepeatClickTime_);
     datashare_->GetStringValue(FLASH_REMINDER_SWITCH_KEY, "0");
     datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "DEFAULT");
+    datashare_->GetBoolValue(VOICE_RECOGNITION_KEY, false);
+    datashare_->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
 
     uint64_t recoveryDate = datashare_->GetUnsignedLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, 0);
     if (ignoreRepeatClickState_ && recoveryDate == 0 &&
