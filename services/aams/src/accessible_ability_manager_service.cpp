@@ -79,6 +79,7 @@ namespace {
     const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
     const std::string SCREEN_MAGNIFICATION_MODE = "accessibility_magnification_mode";
     const std::string SCREEN_MAGNIFICATION_SCALE = "accessibility_display_magnification_scale";
+    const std::string MAGNIFICATION_PARAM = "const.accessibility.magnification";
     const std::string VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
     const std::string VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
     const std::string DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
@@ -1630,7 +1631,10 @@ ErrCode AccessibleAbilityManagerService::SetMagnificationState(const bool state)
     bool currentState = GetMagnificationState();
     uint32_t type = GetMagnificationType();
     uint32_t mode = GetMagnificationMode();
-
+    if (!system::GetBoolParameter(MAGNIFICATION_PARAM, false)) {
+        HILOG_WARN("Not support magnification");
+        return RET_ERR_MAGNIFICATION_NOT_SUPPORT;
+    }
     if (!IsSystemApp()) {
         HILOG_WARN("Not system app");
         return RET_ERR_NOT_SYSTEM_APP;
