@@ -4227,7 +4227,7 @@ ErrCode AccessibleAbilityManagerService::SearchNeedEvents(std::vector<uint32_t> 
         return ERR_INVALID_VALUE;
     }
     needEvents = accountData->GetNeedEvents();
-    HILOG_DEBUG("GetNeedEvent size is %{public}u", needEvents.size());
+    HILOG_DEBUG("GetNeedEvent size is %{public}zu", needEvents.size());
     return NO_ERROR;
 }
 

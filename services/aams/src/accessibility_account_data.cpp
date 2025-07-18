@@ -1472,7 +1472,7 @@ void AccessibilityAccountData::AddNeedEvent(std::string &name, std::vector<uint3
             }
         }
     }
-    HILOG_DEBUG("needEvent size is %{public}u", abilityNeedEvents_[name].size());
+    HILOG_DEBUG("needEvent size is %{public}zu", abilityNeedEvents_[name].size());
     UpdateNeedEvents();
 }
 
@@ -1481,7 +1481,7 @@ void AccessibilityAccountData::RemoveNeedEvent(const std::string &name)
     size_t pos = name.find('/');
     if (pos != std::string::npos) {
         std::string bundleName = name.substr(0, pos);
-        HILOG_DEBUG("RemoveNeedEvent bundleName is %{public}s, abilityNeedEvents_ size is %{public}u",
+        HILOG_DEBUG("RemoveNeedEvent bundleName is %{public}s, abilityNeedEvents_ size is %{public}zu",
             bundleName.c_str(), abilityNeedEvents_.size());
         abilityNeedEvents_.erase(bundleName);
         UpdateNeedEvents();
@@ -1509,7 +1509,7 @@ std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
     } else {
         needEvents_ = needEvents;
     }
-    HILOG_INFO("needEvents size is %{public}u", needEvents_.size());
+    HILOG_INFO("needEvents size is %{public}zu", needEvents_.size());
     return needEvents_;
 }
 
