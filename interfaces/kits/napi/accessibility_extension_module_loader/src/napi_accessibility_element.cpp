@@ -2151,7 +2151,7 @@ napi_value NAccessibilityElement::ExecuteAction(napi_env env, napi_callback_info
     NAccessibilityErrorCode errCode = NAccessibilityErrorCode::ACCESSIBILITY_OK;
     if (argc < ARGS_SIZE_ONE || !ParseInt32(env, action, argv[PARAM0]) ||
         action < 0 || static_cast<uint32_t>(action) >= ACTION_NAMES.size()) {
-        HILOG_ERROR("parameter is invalid: argc=%{public}zu, action=%{public}zu", argc, action);
+        HILOG_ERROR("parameter is invalid: argc=%{public}zu, action=%{public}d", argc, action);
         errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
         delete accessibilityElement;
         accessibilityElement = nullptr;

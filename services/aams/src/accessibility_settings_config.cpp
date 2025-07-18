@@ -1102,7 +1102,7 @@ void AccessibilitySettingsConfig::InitSetting()
         SetIgnoreRepeatClickState(false);
         recoveryDate = MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
         datashare_->PutUnsignedLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, recoveryDate);
-        HILOG_INFO("recovery ignore repeat click %{public}llu", recoveryDate);
+        HILOG_INFO("recovery ignore repeat click %{public}" PRIu64, recoveryDate);
     }
  
     if (ignoreRepeatClickState_) {
