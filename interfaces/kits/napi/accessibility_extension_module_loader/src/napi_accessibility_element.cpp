@@ -1352,7 +1352,7 @@ void NAccessibilityElement::GetElementInfoIsActive(NAccessibilityElementData *ca
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetIsActive(), &value));
 }
 
@@ -1362,7 +1362,7 @@ void NAccessibilityElement::GetElementInfoAccessibilityVisible(
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityVisible(), &value));
 }
 
@@ -1371,7 +1371,7 @@ void NAccessibilityElement::GetElementInfoClip(NAccessibilityElementData *callba
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetClip(), &value));
 }
 
@@ -2369,6 +2369,7 @@ RetError NAccessibilityElement::ParseConditionInt64(NAPICbInfo& cbInfo,
 
     elementData->conditionId_ = conditionId;
     elementData->condition_ = std::to_string(value);
+    elementData->systemApi = true;
     return RetError::RET_OK;
 }
 

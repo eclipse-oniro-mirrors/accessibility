@@ -664,6 +664,17 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
     return a11yEvtTypeTable.at(type);
 }
 
+AccessibilityEventType CovertStringToAccessibilityEventType(const AccessibilityEventInfo &eventInfo,
+    const std::string &eventTypeString)
+{
+    EventType type = eventInfo.GetEventType();
+    AccessibilityEventType accessibilityEventType = CovertStringToAccessibilityEventType(eventTypeString);
+    if (type == TYPE_WINDOW_UPDATE && accessibilityEventType == AccessibilityEventType::TYPE_FOCUS) {
+        return AccessibilityEventType::TYPE_WINDOW_FOCUS;
+    }
+    return accessibilityEventType;
+}
+
 AccessibilityEventType CovertStringToAccessibilityEventType(const std::string &eventType)
 {
     static const std::map<const std::string, AccessibilityEventType> eventTypeTable = {
@@ -1118,26 +1129,12 @@ void ConvertActionArgsJSToNAPI(
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SET_SELECTION:
-            napi_create_string_utf8(env, "selectTextBegin", NAPI_AUTO_LENGTH, &propertyNameValue);
-            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-            if (hasProperty) {
-                args.insert(std::pair<std::string, std::string>("selectTextBegin", str.c_str()));
-            }
-            napi_create_string_utf8(env, "selectTextEnd", NAPI_AUTO_LENGTH, &propertyNameValue);
-            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-            if (hasProperty) {
-                args.insert(std::pair<std::string, std::string>("selectTextEnd", str.c_str()));
-            }
-            napi_create_string_utf8(env, "selectTextInForWard", NAPI_AUTO_LENGTH, &propertyNameValue);
-            seleFlag = ConvertBoolJSToNAPI(env, object, propertyNameValue, hasProperty);
-            if (hasProperty) {
-                std::string value = seleFlag ? "forWard" : "backWard";
-                args.insert(std::pair<std::string, std::string>("selectTextInForWard", value.c_str()));
-            }
+            SetSelectionParam(env, object, args);
             break;
         case ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION:
             napi_create_string_utf8(env, "offset", NAPI_AUTO_LENGTH, &propertyNameValue);
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+            CheckNumber(env, str);
             if (hasProperty) {
                 args.insert(std::pair<std::string, std::string>("offset", str.c_str()));
             }
@@ -1152,6 +1149,7 @@ void ConvertActionArgsJSToNAPI(
         case ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK:
             napi_create_string_utf8(env, "spanId", NAPI_AUTO_LENGTH, &propertyNameValue);
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+            CheckNumber(env, str);
             if (hasProperty) {
                 args.insert(std::pair<std::string, std::string>("spanId", str.c_str()));
             }
@@ -1164,6 +1162,43 @@ void ConvertActionArgsJSToNAPI(
             break;
         default:
             break;
+    }
+}
+
+void CheckNumber(napi_env env, std::string value)
+{
+    int num;
+    std::stringstream streamStr;
+    streamStr << value;
+    if (!(streamStr >> num)) {
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+    }
+}
+
+void SetSelectionParam(napi_env env, napi_value object, std::map<std::string, std::string>& args)
+{
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
+    std::string str = "";
+    bool seleFlag = false;
+    napi_create_string_utf8(env, "selectTextBegin", NAPI_AUTO_LENGTH, &propertyNameValue);
+    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    CheckNumber(env, str);
+    if (hasProperty) {
+        args.insert(std::pair<std::string, std::string>("selectTextBegin", str.c_str()));
+    }
+    napi_create_string_utf8(env, "selectTextEnd", NAPI_AUTO_LENGTH, &propertyNameValue);
+    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    CheckNumber(env, str);
+    if (hasProperty) {
+        args.insert(std::pair<std::string, std::string>("selectTextEnd", str.c_str()));
+    }
+    napi_create_string_utf8(env, "selectTextInForWard", NAPI_AUTO_LENGTH, &propertyNameValue);
+    seleFlag = ConvertBoolJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        std::string value = seleFlag ? "forWard" : "backWard";
+        args.insert(std::pair<std::string, std::string>("selectTextInForWard", value.c_str()));
     }
 }
 
@@ -1186,7 +1221,9 @@ void SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, s
             scrollValue = scrollValueMap.find(str)->second;
             HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
         } else {
-            HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
+            HILOG_DEBUG("Input is empty, throw error");
+            napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
+            napi_throw(env, err);
         }
         args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
     }
