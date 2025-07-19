@@ -519,7 +519,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
     callbackInfo->env_ = env_;
     callbackInfo->extension_ = this;
     callbackInfo->eventType_ = strType;
-    callbackInfo->AccessibilityEventType_ = CovertStringToAccessibilityEventType(strType);
+    callbackInfo->AccessibilityEventType_ = CovertStringToAccessibilityEventType(eventInfo, strType);
     callbackInfo->timeStamp_ = eventInfo.GetTimeStamp();
     callbackInfo->element_ = element;
     callbackInfo->elementId_ = eventInfo.GetRequestFocusElementId();
