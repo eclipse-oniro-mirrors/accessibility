@@ -1432,8 +1432,12 @@ void NAccessibilityElement::GetElementInfoAccessibilityParentId(NAccessibilityEl
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->GetParentNodeId(), &value));
+    int64_t parentId = callbackInfo->accessibilityElement_.elementInfo_->GetParentNodeId();
+    if (parentId < 0) {
+        HILOG_DEBUG("parentId is invalid");
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_, parentId, &value));
 }
 
 void NAccessibilityElement::GetElementInfoAccessibilityChildrenIds(NAccessibilityElementData *callbackInfo,
