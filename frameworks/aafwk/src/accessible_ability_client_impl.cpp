@@ -819,7 +819,6 @@ RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, c
 RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &parent,
     std::vector<AccessibilityElementInfo> &children, bool systemApi)
 {
-    HILOG_DEBUG();
     Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
     RetError ret = CheckConnection();
     if (ret != RET_OK) {
@@ -829,8 +828,8 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
     std::vector<int64_t> childIds =  parent.GetChildIds();
     HILOG_DEBUG("windowId[%{public}d], childIds.size[%{public}zu] childTreeId:%{public}d",
         windowId, childIds.size(), parent.GetChildTreeId());
+    std::vector<AccessibilityElementInfo> elementInfos {};
     if ((childIds.size() == 0) && (parent.GetChildWindowId() > 0 || parent.GetChildTreeId() > 0)) {
-        std::vector<AccessibilityElementInfo> elementInfos {};
         if (parent.GetChildWindowId() > 0 && (parent.GetChildWindowId() != windowId)) {
             ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetChildWindowId(), ROOT_NONE_ID,
             GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), false, systemApi);
@@ -849,7 +848,6 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
         SortElementInfosIfNecessary(elementInfos);
         children.emplace_back(elementInfos.front());
     } else if (childIds.size() > 0 && parent.GetChildTreeId() > 0) {
-        std::vector<AccessibilityElementInfo> elementInfos {};
         ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
             GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), false, systemApi);
         if (ret != RET_OK) {
@@ -858,6 +856,12 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
         }
         if (!elementInfos.empty()) {
             children.emplace_back(elementInfos.front());
+        }
+    } else if (systemApi) {
+        ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
+            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), false, systemApi);
+        if (ret == RET_ERR_NO_PERMISSION) {
+            return ret;
         }
     }
     ret = GetChildrenWork(windowId, childIds, children, systemApi);
