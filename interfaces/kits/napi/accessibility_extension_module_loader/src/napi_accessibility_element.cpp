@@ -1604,7 +1604,9 @@ void NAccessibilityElement::GetElementInfoAllAttribute2(NAccessibilityElementDat
 
     napi_value parentId = nullptr;
     GetElementInfoAccessibilityParentId(callbackInfo, parentId);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "parentId", parentId));
+    if (parentId != nullptr) {
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "parentId", parentId));
+    }
 
     napi_value childrenIds = nullptr;
     GetElementInfoAccessibilityChildrenIds(callbackInfo, childrenIds);
