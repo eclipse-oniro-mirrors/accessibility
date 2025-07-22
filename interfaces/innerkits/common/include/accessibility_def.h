@@ -527,8 +527,7 @@ enum AccessibilityAction : int32_t {
     RECENT_TASK = 17,
     NOTIFICATION_CENTER = 18,
     CONTROL_CENTER = 19,
-    COMMON = 20,
-    SPAN_CLICK = 21
+    SPAN_CLICK = 20
 };
 
 #define RETURN_FALSE_IF_NULL(sptr)                     \
