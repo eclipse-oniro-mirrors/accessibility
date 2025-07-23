@@ -31,7 +31,8 @@ static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
     "hasRegisteredHover",
     "direction",
     "expandedState",
-    "componentTypeDescription"
+    "componentTypeDescription",
+    "isModal"
 };
 }
 void AccessibilityElementInfo::SetComponentId(const int64_t componentId)
