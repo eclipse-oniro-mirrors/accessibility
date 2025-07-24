@@ -1060,7 +1060,8 @@ void AccessibilitySettingsConfig::InitSetting()
     if (datashare_ == nullptr) {
         return;
     }
-
+    IgnoreRepeatClickNotification::CancelNotification();
+    
     InitShortKeyConfig();
     InitPrivacySpaceConfig();
     InitAnimationOffConfig();
