@@ -437,6 +437,21 @@ void Utils::RecordStartingA11yEvent(const std::string &name)
 #endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
+void Utils::RecordMSDPUnavailableEvent(const std::string &name)
+{
+    std::ostringstream oss;
+    oss << "msdp run failed" << ", caused by: " << name << ";";
+    HILOG_DEBUG("starting accessibility: %{public}s", oss.str().c_str());
+    int32_t ret = HiSysEventWrite(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "UNAVAILABLE",
+        OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+        "MSG", oss.str());
+    if (ret != 0) {
+        HILOG_ERROR("Write HiSysEvent error, ret:%{public}d", ret);
+    }
+}
+
 void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name, const bool &enableState)
 {
     std::string MSG_NAME = "enable single targets";
