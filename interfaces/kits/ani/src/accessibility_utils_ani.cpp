@@ -103,7 +103,7 @@ void ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
         HILOG_ERROR("find method BusinessError.constructor failed");
         return;
     }
-    ani_double errCode = static_cast<ani_double>(errMsg.errCode);
+    ani_int errCode = static_cast<ani_int>(errMsg.errCode);
     ani_string errMsgStr;
     env->String_NewUTF8(errMsg.message.c_str(), errMsg.message.length(), &errMsgStr);
     ani_object errorObject;
@@ -111,7 +111,7 @@ void ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
         HILOG_ERROR("create BusinessError object failed");
         return;
     }
-    if (env->Object_SetPropertyByName_Double(errorObject, "code", errCode) != ANI_OK) {
+    if (env->Object_SetPropertyByName_Int(errorObject, "code", errCode) != ANI_OK) {
         HILOG_ERROR("set property BusinessError.code failed!");
         return;
     }
