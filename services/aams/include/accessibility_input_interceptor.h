@@ -99,6 +99,8 @@ private:
     void UpdateInterceptor();
     void DestroyInterceptor();
     void CreateMagnificationGesture(sptr<EventTransmission> &header, sptr<EventTransmission> &current);
+    void CreatZoomGesture();
+    void CreatWindowMagnificationGesture();
     void ClearMagnificationGesture();
 
     sptr<EventTransmission> pointerEventTransmitters_ = nullptr;

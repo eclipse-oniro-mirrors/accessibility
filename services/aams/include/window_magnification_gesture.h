@@ -19,6 +19,8 @@
 #include "accessibility_event_transmission.h"
 #include "window_magnification_manager.h"
 #include "hilog_wrapper.h"
+#include "event_handler.h"
+#include "magnification_menu_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -85,7 +87,8 @@ private:
 class WindowMagnificationGesture : public EventTransmission {
 public:
     WindowMagnificationGesture();
-    explicit WindowMagnificationGesture(std::shared_ptr<WindowMagnificationManager> windowMagnificationManager);
+    explicit WindowMagnificationGesture(std::shared_ptr<WindowMagnificationManager> windowMagnificationManager,
+        std::shared_ptr<MagnificationMenuManager> menuManager);
     ~WindowMagnificationGesture() = default;
 
     bool OnPointerEvent(MMI::PointerEvent &event) override;
@@ -193,6 +196,7 @@ private:
     std::shared_ptr<MagnificationGestureEventHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     std::shared_ptr<WindowMagnificationManager> windowMagnificationManager_ = nullptr;
+    std::shared_ptr<MagnificationMenuManager> menuManager_ = nullptr;
     MagnificationState magnificationState_ = MagnificationState::MAGNIFICATION_READY_STATE;
     MagnificationGestureState gestureState_ = MagnificationGestureState::READY_STATE;
 

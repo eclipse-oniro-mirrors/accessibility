@@ -32,6 +32,11 @@ std::shared_ptr<FullScreenMagnificationManager> MagnificationManager::GetFullScr
     return nullptr;
 }
 
+std::shared_ptr<MagnificationMenuManager> MagnificationManager::GetMenuManager()
+{
+    return nullptr;
+}
+
 void MagnificationManager::OnMagnificationTypeChanged(uint32_t magnificationType)
 {
     (void)magnificationType;

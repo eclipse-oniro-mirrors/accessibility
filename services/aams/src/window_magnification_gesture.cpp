@@ -141,8 +141,9 @@ void MagnificationGestureEventHandler::ProcessEvent(const AppExecFwk::InnerEvent
 }
 
 WindowMagnificationGesture::WindowMagnificationGesture(
-    std::shared_ptr<WindowMagnificationManager> windowMagnificationManager)
-    : windowMagnificationManager_(windowMagnificationManager)
+    std::shared_ptr<WindowMagnificationManager> windowMagnificationManager,
+    std::shared_ptr<MagnificationMenuManager> menuManager)
+    : windowMagnificationManager_(windowMagnificationManager), menuManager_(menuManager)
 {
     HILOG_DEBUG();
     runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
@@ -234,9 +235,11 @@ void WindowMagnificationGesture::DestroyEvents()
     SetGestureState(MagnificationGestureState::READY_STATE, HANDLER);
     if (windowMagnificationManager_ != nullptr &&
         windowMagnificationManager_->IsMagnificationWindowShow()) {
-        HILOG_INFO("window gesture disable.");
+        HILOG_DEBUG("window gesture disable.");
         windowMagnificationManager_->DisableWindowMagnification();
-        Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+        if (menuManager_ != nullptr) {
+            menuManager_->DisableMenuWindow();
+        }
         isSingleTapOnWindow_ = false;
         isTapOnHotArea_ = false;
         Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
@@ -457,9 +460,9 @@ void WindowMagnificationGesture::HandleZoomInStateDown(MMI::PointerEvent &event)
     if (size != static_cast<int32_t>(PointerCountSize::POINTER_SIZE_1)) {
         return;
     }
-
-    isTapOnMenu_ = Singleton<MagnificationMenuManager>::GetInstance().IsTapOnMenu(pointerItem.GetDisplayX(),
-        pointerItem.GetDisplayY());
+    if (menuManager_ != nullptr) {
+        isTapOnMenu_ = menuManager_->IsTapOnMenu(pointerItem.GetDisplayX(), pointerItem.GetDisplayY());
+    }
     if (isTapOnMenu_) {
         isTapOnHotArea_ = false;
         isSingleTapOnWindow_ = false;
@@ -567,8 +570,8 @@ void WindowMagnificationGesture::HandleZoomInStateOneFingerDownStateUp(MMI::Poin
         Clear();
         SetGestureState(MagnificationGestureState::READY_STATE, event.GetPointerAction());
     } else {
-        if (isTapOnMenu_) {
-            Singleton<MagnificationMenuManager>::GetInstance().OnMenuTap();
+        if (isTapOnMenu_ && menuManager_ != nullptr) {
+            menuManager_->OnMenuTap();
         } else {
             handler_->SendEvent(static_cast<uint32_t>(MagnificationGestureMsg::TRIPLE_TAP_FAIL_MSG),
                 static_cast<int64_t>(MagnificationGestureState::ZOOMIN_STATE),
@@ -801,7 +804,7 @@ void WindowMagnificationGesture::HandleMenuSlidingStateMove(MMI::PointerEvent &e
         return;
     }
 
-    if (isTapOnMenu_) {
+    if (isTapOnMenu_ && menuManager_ != nullptr) {
         if (lastSlidingEvent_ == nullptr) {
             lastSlidingEvent_ = std::make_shared<MMI::PointerEvent>(event);
         }
@@ -813,7 +816,7 @@ void WindowMagnificationGesture::HandleMenuSlidingStateMove(MMI::PointerEvent &e
 
         int32_t deltaX = currentItem.GetDisplayX() - lastSlidingItem.GetDisplayX();
         int32_t deltaY = currentItem.GetDisplayY() - lastSlidingItem.GetDisplayY();
-        Singleton<MagnificationMenuManager>::GetInstance().MoveMenuWindow(deltaX, deltaY);
+        menuManager_->MoveMenuWindow(deltaX, deltaY);
 
         lastSlidingEvent_ = std::make_shared<MMI::PointerEvent>(event);
     } else {
@@ -831,7 +834,9 @@ void WindowMagnificationGesture::HandleMenuSlidingStateUp(MMI::PointerEvent &eve
     lastSlidingEvent_ = nullptr;
     isTapOnMenu_ = false;
     Clear();
-    Singleton<MagnificationMenuManager>::GetInstance().AttachToEdge();
+    if (menuManager_ != nullptr) {
+        menuManager_->AttachToEdge();
+    }
     SetGestureState(MagnificationGestureState::ZOOMIN_STATE, event.GetPointerAction());
 }
 
@@ -908,10 +913,13 @@ void WindowMagnificationGesture::OnTripleTap(int32_t centerX, int32_t centerY)
         HILOG_ERROR("windowMagnificationManager_ is nullptr.");
         return;
     }
-
+    if (menuManager_ == nullptr) {
+        HILOG_ERROR("menuManager_ is nullptr.");
+        return;
+    }
     if (windowMagnificationManager_->IsMagnificationWindowShow()) {
         windowMagnificationManager_->DisableWindowMagnification();
-        Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+        menuManager_->DisableMenuWindow();
         Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
             AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
         isSingleTapOnWindow_ = false;
@@ -920,7 +928,7 @@ void WindowMagnificationGesture::OnTripleTap(int32_t centerX, int32_t centerY)
         windowMagnificationManager_->EnableWindowMagnification(centerX, centerY);
         Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
             AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
-        Singleton<MagnificationMenuManager>::GetInstance().ShowMenuWindow(WINDOW_MAGNIFICATION);
+        menuManager_->ShowMenuWindow(WINDOW_MAGNIFICATION);
     }
 }
 
@@ -969,7 +977,9 @@ void WindowMagnificationGesture::ShieldZoomGesture(bool state)
             Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
                 AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
         }
-        Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+        if (menuManager_ != nullptr) {
+            menuManager_->DisableMenuWindow();
+        }
         isSingleTapOnWindow_ = false;
         isTapOnHotArea_ = false;
     }

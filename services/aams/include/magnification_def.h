@@ -16,6 +16,8 @@
 #ifndef MAGNIFICATION_MANAGER_DEF_H
 #define MAGNIFICATION_MANAGER_DEF_H
 
+#include <string>
+
 namespace OHOS {
 namespace Accessibility {
 
@@ -46,6 +48,14 @@ constexpr float MIN_SCALE_DISTANCE = 200.0f;
 constexpr int32_t SCROLL_SHOT_POINTER_ID = 20001;
 constexpr int32_t DEFAULT_POINTER_ID = 0;
 constexpr uint32_t TAP_COUNT_TWO = 2;
+
+constexpr uint32_t MAGNIFY_WINDOW_WIDTH = 940;
+constexpr uint32_t MAGNIFY_WINDOW_HEIGHT = 550;
+constexpr uint32_t BAR_MARGIN = 40;
+constexpr uint32_t HOT_AREA_WIDTH = 60;
+constexpr int32_t GESTURE_OFFSET = 100;
+constexpr int32_t BAR_START = 400;
+constexpr int32_t BAR_END = 550;
 
 const std::string WINDOW_NAME = "magnification_window";
 const std::string MENU_NAME = "magnification_menu";

@@ -220,57 +220,80 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
 void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmission> &header,
     sptr<EventTransmission> &current)
 {
+    Singleton<AccessibleAbilityManagerService>::GetInstance().InitMagnification();
     uint32_t magnificationMode = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
     if (magnificationMode == FULL_SCREEN_MAGNIFICATION) {
         HILOG_INFO("create zoomGesture");
-        std::shared_ptr<FullScreenMagnificationManager> fullScreenMagnificationManager =
-            Singleton<AccessibleAbilityManagerService>::GetInstance().GetFullScreenMagnificationManager();
-        if (fullScreenMagnificationManager == nullptr) {
-            HILOG_ERROR("get windowMagnification manager failed.");
-            return;
-        }
-
+        CreatZoomGesture();
         if (zoomGesture_ == nullptr) {
-            sptr<AccessibilityZoomGesture> zoomGesture =
-                new(std::nothrow) AccessibilityZoomGesture(fullScreenMagnificationManager);
-            if (zoomGesture == nullptr) {
-                HILOG_ERROR("zoomGesture create error.");
-                return;
-            }
-            zoomGesture_ = zoomGesture;
-        }
-
-        if (needInteractMagnification_) {
-            zoomGesture_->StartMagnificationInteract();
-            needInteractMagnification_ = false;
+            HILOG_ERROR("zoomGesture create error.");
+            return;
         }
         SetNextEventTransmitter(header, current, zoomGesture_);
     } else if (magnificationMode == WINDOW_MAGNIFICATION) {
         HILOG_INFO("create windowMagnificationGesture");
-        std::shared_ptr<WindowMagnificationManager> windowMagnificationManager =
-            Singleton<AccessibleAbilityManagerService>::GetInstance().GetWindowMagnificationManager();
-        if (windowMagnificationManager == nullptr) {
-            HILOG_ERROR("get windowMagnification manager failed.");
-            return;
-        }
-
+        CreatWindowMagnificationGesture();
         if (windowMagnificationGesture_ == nullptr) {
-            sptr<WindowMagnificationGesture> windowMagnificationGesture =
-                new(std::nothrow) WindowMagnificationGesture(windowMagnificationManager);
-            if (windowMagnificationGesture == nullptr) {
-                HILOG_ERROR("windowMagnificationGesture create error.");
-                return;
-            }
-            windowMagnificationGesture_ = windowMagnificationGesture;
-        }
-        if (needInteractMagnification_) {
-            windowMagnificationGesture_->StartMagnificationInteract();
-            needInteractMagnification_ = false;
+            HILOG_ERROR("windowMagnificationGesture create error.");
+            return;
         }
         SetNextEventTransmitter(header, current, windowMagnificationGesture_);
     } else {
         HILOG_WARN("invalid magnificationMode");
         ClearMagnificationGesture();
+    }
+}
+
+void AccessibilityInputInterceptor::CreatZoomGesture()
+{
+    std::shared_ptr<FullScreenMagnificationManager> fullScreenMagnificationManager =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetFullScreenMagnificationManager();
+    std::shared_ptr<MagnificationMenuManager> menuManager =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMenuManager();
+    if (fullScreenMagnificationManager == nullptr || menuManager == nullptr) {
+        HILOG_ERROR("get windowMagnification or menu manager failed.");
+        return;
+    }
+
+    if (zoomGesture_ == nullptr) {
+        sptr<AccessibilityZoomGesture> zoomGesture =
+            new(std::nothrow) AccessibilityZoomGesture(fullScreenMagnificationManager, menuManager);
+        if (zoomGesture == nullptr) {
+            HILOG_ERROR("zoomGesture create error.");
+            return;
+        }
+        zoomGesture_ = zoomGesture;
+    }
+
+    if (needInteractMagnification_) {
+        zoomGesture_->StartMagnificationInteract();
+        needInteractMagnification_ = false;
+    }
+}
+
+void AccessibilityInputInterceptor::CreatWindowMagnificationGesture()
+{
+    std::shared_ptr<WindowMagnificationManager> windowMagnificationManager =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetWindowMagnificationManager();
+    std::shared_ptr<MagnificationMenuManager> menuManager =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMenuManager();
+    if (windowMagnificationManager == nullptr || menuManager == nullptr) {
+        HILOG_ERROR("get windowMagnification or menu manager failed.");
+        return;
+    }
+
+    if (windowMagnificationGesture_ == nullptr) {
+        sptr<WindowMagnificationGesture> windowMagnificationGesture =
+            new(std::nothrow) WindowMagnificationGesture(windowMagnificationManager, menuManager);
+        if (windowMagnificationGesture == nullptr) {
+            HILOG_ERROR("windowMagnificationGesture create error.");
+            return;
+        }
+        windowMagnificationGesture_ = windowMagnificationGesture;
+    }
+    if (needInteractMagnification_) {
+        windowMagnificationGesture_->StartMagnificationInteract();
+        needInteractMagnification_ = false;
     }
 }
 

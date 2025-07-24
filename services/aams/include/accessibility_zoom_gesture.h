@@ -21,6 +21,7 @@
 #include "pointer_event.h"
 #include "dm_common.h"
 #include "full_screen_magnification_manager.h"
+#include "magnification_menu_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -43,7 +44,8 @@ struct ZOOM_FOCUS_COORDINATE {
 
 class AccessibilityZoomGesture : public EventTransmission {
 public:
-    AccessibilityZoomGesture(std::shared_ptr<FullScreenMagnificationManager> fullScreenManager);
+    AccessibilityZoomGesture(std::shared_ptr<FullScreenMagnificationManager> fullScreenManager,
+        std::shared_ptr<MagnificationMenuManager> menuManager);
     ~AccessibilityZoomGesture() = default;
 
     virtual bool OnPointerEvent(MMI::PointerEvent &event) override;
@@ -137,6 +139,7 @@ private:
     std::shared_ptr<ZoomGestureEventHandler> zoomGestureEventHandler_ = nullptr;
     std::vector<std::shared_ptr<MMI::PointerEvent>> cacheEvents_;
     std::shared_ptr<FullScreenMagnificationManager> fullScreenManager_ = nullptr;
+    std::shared_ptr<MagnificationMenuManager> menuManager_ = nullptr;
     
     std::atomic<bool> shieldZoomGestureFlag_ = false;
     bool isTapOnMenu_ = false;
