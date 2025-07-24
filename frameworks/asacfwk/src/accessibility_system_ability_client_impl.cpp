@@ -50,7 +50,7 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
 {
     HILOG_DEBUG();
 
-    stateArray_.fill(false);
+    stateHandler_.Reset();
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     if (retSysParam >= 0 && !std::strcmp(value, "true")) {
@@ -210,7 +210,7 @@ void AccessibilitySystemAbilityClientImpl::LoadSystemAbilityFail()
 void AccessibilitySystemAbilityClientImpl::Init()
 {
     HILOG_DEBUG();
-    stateArray_.fill(false);
+    stateHandler_.Reset();
     if (!stateObserver_) {
         stateObserver_ = new(std::nothrow) AccessibleAbilityManagerStateObserverImpl(*this);
         if (!stateObserver_) {
@@ -224,25 +224,25 @@ void AccessibilitySystemAbilityClientImpl::Init()
     uint32_t stateType = 0;
     serviceProxy_->RegisterStateObserver(stateObserver_, stateType);
     if (stateType & STATE_ACCESSIBILITY_ENABLED) {
-        stateArray_[AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED] = true;
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED, true);
     }
     if (stateType & STATE_EXPLORATION_ENABLED) {
-        stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED] = true;
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED, true);
     }
     if (stateType & STATE_KEYEVENT_ENABLED) {
-        stateArray_[AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED] = true;
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED, true);
     }
     if (stateType & STATE_GESTURE_ENABLED) {
-        stateArray_[AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED] = true;
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED, true);
     }
     if (stateType & STATE_SCREENREADER_ENABLED) {
-        stateArray_[AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED] = true;
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED, true);
     }
     if (stateType & STATE_SINGLE_CLICK_MODE_ENABLED) {
-        stateArray_[AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED] = true;
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED, true);
     }
     if (stateType & STATE_CONFIG_EVENT_CHANGE) {
-        stateArray_[AccessibilityStateEventType::EVENT_CONFIG_EVENT_CHANGED] = true;
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_CONFIG_EVENT_CHANGED, true);
     }
 }
 
@@ -263,7 +263,7 @@ void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject
     }
     // notify observer when SA died
     OnAccessibleAbilityManagerStateChanged(0);
-    stateArray_.fill(false);
+    stateHandler_.Reset();
 }
 
 RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
@@ -401,7 +401,7 @@ RetError AccessibilitySystemAbilityClientImpl::IsEnabled(bool &isEnabled)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    isEnabled = stateArray_[AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED];
+    isEnabled = stateHandler_.GetState(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED);
     return RET_OK;
 }
 
@@ -409,7 +409,7 @@ RetError AccessibilitySystemAbilityClientImpl::IsTouchExplorationEnabled(bool &i
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    isEnabled = stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED];
+    isEnabled = stateHandler_.GetState(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED);
     return RET_OK;
 }
 
@@ -417,13 +417,13 @@ void AccessibilitySystemAbilityClientImpl::GetTouchMode(std::string &touchMode)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    bool isTouchExploration = stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED];
+    bool isTouchExploration = stateHandler_.GetState(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED);
     if (!isTouchExploration) {
         touchMode = "none";
         return;
     }
 
-    bool isSingleClickMode = stateArray_[AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED];
+    bool isSingleClickMode = stateHandler_.GetState(AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED);
     if (isSingleClickMode) {
         touchMode = "singleTouchMode";
     } else {
@@ -581,13 +581,13 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
     }
 
     if (eventType != EVENT_CONFIG_EVENT_CHANGED) {
-        if (stateArray_[eventType] == value) {
+        if (stateHandler_.GetState(static_cast<AccessibilityStateEventType>(eventType)) == value) {
             HILOG_DEBUG("State value is not changed");
             return;
         }
     }
 
-    stateArray_[eventType] = value;
+    stateHandler_.SetState(static_cast<AccessibilityStateEventType>(eventType), value);
     StateObserverVector &observers = stateObserversArray_[eventType];
     for (auto &observer : observers) {
         if (observer) {
@@ -604,8 +604,8 @@ void AccessibilitySystemAbilityClientImpl::NotifyTouchModeChanged(bool touchExpl
     HILOG_DEBUG("touchExplorationState = %{public}d, isSingleTouchMode = %{public}d", touchExplorationState,
         isSingleTouchMode);
     
-    bool originalTouchMode = stateArray_[EVENT_TOUCH_MODE_CHANGED];
-    stateArray_[EVENT_TOUCH_MODE_CHANGED] = isSingleTouchMode;
+    bool originalTouchMode = stateHandler_.GetState(EVENT_TOUCH_MODE_CHANGED);
+    stateHandler_.SetState(EVENT_TOUCH_MODE_CHANGED, isSingleTouchMode);
 
     if (!touchExplorationState) {
         HILOG_DEBUG("touch guide state is false");
@@ -613,7 +613,7 @@ void AccessibilitySystemAbilityClientImpl::NotifyTouchModeChanged(bool touchExpl
     }
 
     if ((originalTouchMode == isSingleTouchMode) &&
-        (stateArray_[EVENT_TOUCH_GUIDE_STATE_CHANGED] == touchExplorationState)) {
+        (stateHandler_.GetState(EVENT_TOUCH_GUIDE_STATE_CHANGED) == touchExplorationState)) {
         HILOG_DEBUG("touch mode is not changed");
         return;
     }
@@ -961,6 +961,30 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoBySpecificPropert
     } else {
         HILOG_INFO("callback is nullptr");
     }
+}
+
+AccessibilitySystemAbilityClientImpl::StateArrayHandler::StateArrayHandler()
+{
+    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    stateArray_.fill(false);
+}
+
+void AccessibilitySystemAbilityClientImpl::StateArrayHandler::SetState(AccessibilityStateEventType type, bool state)
+{
+    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    stateArray_[type] = state;
+}
+
+bool AccessibilitySystemAbilityClientImpl::StateArrayHandler::GetState(AccessibilityStateEventType type)
+{
+    Utils::UniqueReadGuard<Utils::RWLock> wLock(rwLock_);
+    return stateArray_[type];
+}
+
+void AccessibilitySystemAbilityClientImpl::StateArrayHandler::Reset()
+{
+    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    stateArray_.fill(false);
 }
 } // namespace Accessibility
 } // namespace OHOS

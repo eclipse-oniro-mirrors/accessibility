@@ -26,6 +26,7 @@
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
+#include "rwlock.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -301,6 +302,19 @@ private:
         void OnLoadSystemAbilityFail(int32_t systemAbilityId) override;
     };
 
+    class StateArrayHandler {
+    public:
+        StateArrayHandler();
+        ~StateArrayHandler() = default;
+        void SetState(AccessibilityStateEventType type, bool state);
+        bool GetState(AccessibilityStateEventType);
+        void Reset();
+
+    private:
+        Utils::RWLock rwLock_;
+        StateArray stateArray_;
+    };
+
     /**
      * @brief Connect to AAMS Service.
      * @return success : true, failed : false.
@@ -330,11 +344,10 @@ private:
 
     uint32_t state_{0};
     ffrt::mutex mutex_;
-    StateArray stateArray_;
+    StateArrayHandler stateHandler_;
     StateObserversArray stateObserversArray_;
 
     std::map<int32_t, sptr<AccessibilityElementOperatorImpl>> elementOperators_;
-    std::map<int32_t, std::map<int32_t, sptr<AccessibilityElementOperatorImpl>>> cardElementOperators_;
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerStateObserverImpl> stateObserver_ = nullptr;
