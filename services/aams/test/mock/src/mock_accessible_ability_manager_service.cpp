@@ -733,6 +733,11 @@ std::shared_ptr<FullScreenMagnificationManager> AccessibleAbilityManagerService:
     return nullptr;
 }
 
+std::shared_ptr<MagnificationMenuManager> AccessibleAbilityManagerService::GetMenuManager()
+{
+    return nullptr;
+}
+
 int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
 {
     return 0;
@@ -773,6 +778,17 @@ RetError AccessibleAbilityManagerService::UpdateUITestConfigureEvents(std::vecto
 
 void AccessibleAbilityManagerService::OffZoomGesture()
 {
+    return;
+}
+
+void AccessibleAbilityManagerService::InitMagnification()
+{
+    return;
+}
+
+void AccessibleAbilityManagerService::OnModeChanged(uint32_t mode)
+{
+    (void)mode;
     return;
 }
 } // namespace Accessibility

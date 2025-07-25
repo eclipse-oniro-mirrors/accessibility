@@ -159,7 +159,6 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
 
     accessibilitySettings_ = std::make_shared<AccessibilitySettings>();
     accessibilityShortKey_ = std::make_shared<AccessibilityShortKey>();
-    magnificationManager_ = std::make_shared<MagnificationManager>();
 }
 
 AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
@@ -1807,7 +1806,6 @@ bool AccessibleAbilityManagerService::Init()
 {
     HILOG_DEBUG();
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
-    Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(magnificationManager_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     bool result = Singleton<AccessibilityWindowManager>::GetInstance().Init();
     HILOG_DEBUG("wms init result is %{public}d", result);
@@ -1831,7 +1829,6 @@ bool AccessibleAbilityManagerService::Init()
         HILOG_DEBUG("Query account information success, account id:%{public}d", accountIds[0]);
         SwitchedUser(accountIds[0]);
     }
-    SubscribeOsAccount();
     return true;
 }
 
@@ -3438,6 +3435,14 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
         }, "REGISTER_SHORTKEY_OBSERVER");
 }
 
+void AccessibleAbilityManagerService::InitMagnification()
+{
+    HILOG_INFO();
+    magnificationManager_ = std::make_shared<MagnificationManager>();
+    Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(magnificationManager_);
+    SubscribeOsAccount();
+}
+
 void AccessibleAbilityManagerService::OffZoomGesture()
 {
     HILOG_INFO();
@@ -4078,6 +4083,26 @@ std::shared_ptr<FullScreenMagnificationManager> AccessibleAbilityManagerService:
         return nullptr;
     }
     return magnificationManager_->GetFullScreenMagnificationManager();
+}
+
+std::shared_ptr<MagnificationMenuManager> AccessibleAbilityManagerService::GetMenuManager()
+{
+    HILOG_DEBUG();
+    if (magnificationManager_ == nullptr) {
+        HILOG_ERROR("magnificationManager_ is nullptr.");
+        return nullptr;
+    }
+    return magnificationManager_->GetMenuManager();
+}
+
+void AccessibleAbilityManagerService::OnModeChanged(uint32_t mode)
+{
+    HILOG_DEBUG();
+    if (magnificationManager_ == nullptr) {
+        HILOG_ERROR("magnificationManager_ is nullptr.");
+        return;
+    }
+    return magnificationManager_->OnModeChanged(mode);
 }
 
 int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)

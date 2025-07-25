@@ -24,14 +24,6 @@ FullScreenMagnificationManager::FullScreenMagnificationManager()
 {
 }
 
-void FullScreenMagnificationManager::CreateMagnificationWindow()
-{
-}
-
-void FullScreenMagnificationManager::DrawRuoundRectFrame()
-{
-}
-
 void FullScreenMagnificationManager::EnableMagnification(int32_t centerX, int32_t centerY)
 {
     (void)centerX;
@@ -71,10 +63,6 @@ void FullScreenMagnificationManager::PersistScale()
 {
 }
 
-void FullScreenMagnificationManager::GetWindowParam()
-{
-}
-
 void FullScreenMagnificationManager::RefreshWindowParam()
 {
 }
@@ -102,22 +90,6 @@ uint32_t FullScreenMagnificationManager::CheckTapOnHotArea(int32_t posX, int32_t
     return INVALID_GESTURE_TYPE;
 }
 
-void FullScreenMagnificationManager::InitMagnificationParam()
-{
-}
-
-Rosen::Rect FullScreenMagnificationManager::GetSourceRectFromPointer(int32_t centerX, int32_t centerY)
-{
-    (void)centerX;
-    (void)centerY;
-    Rosen::Rect rect = {0, 0, 800, 500};
-    return rect;
-}
-
-void FullScreenMagnificationManager::UpdateAnchor()
-{
-}
-
 void FullScreenMagnificationManager::FollowFocuseElement(int32_t centerX, int32_t centerY)
 {
     (void)centerX;
@@ -128,6 +100,16 @@ PointerPos FullScreenMagnificationManager::GetSourceCenter()
 {
     PointerPos pos = {300, 400};
     return pos;
+}
+
+bool FullScreenMagnificationManager::IsMagnificationWindowShow()
+{
+    return Accessibility::AccessibilityAbilityHelper::GetInstance().GetZoomState();
+}
+
+float FullScreenMagnificationManager::GetScale()
+{
+    return DEFAULT_SCALE;
 }
 } // namespace Accessibility
 } // namespace OHOS

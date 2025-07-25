@@ -18,6 +18,8 @@
 
 #include "window_magnification_manager.h"
 #include "full_screen_magnification_manager.h"
+#include "magnification_menu_manager.h"
+#include "magnification_window_proxy.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -28,6 +30,7 @@ public:
 
     std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
     std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
+    std::shared_ptr<MagnificationMenuManager> GetMenuManager();
     void OnMagnificationTypeChanged(uint32_t magnificationType);
     void OnModeChanged(uint32_t mode);
     void DisableMagnification();
@@ -42,7 +45,9 @@ public:
 private:
     std::shared_ptr<WindowMagnificationManager> windowMagnificationManager_ = nullptr;
     std::shared_ptr<FullScreenMagnificationManager> fullScreenMagnificationManager_ = nullptr;
+    std::shared_ptr<MagnificationMenuManager> menuManager_ = nullptr;
     uint32_t currentMode_ = 0;
+    std::shared_ptr<MagnificationWindowProxy> windowProxy_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -343,11 +343,14 @@ public:
     std::shared_ptr<MagnificationManager> GetMagnificationMgr();
     std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
     std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
+    std::shared_ptr<MagnificationMenuManager> GetMenuManager();
     ErrCode AnnouncedForAccessibility(const std::string &announcedText);
     void InitResource(bool needReInit);
     std::string &GetResource(const std::string &resourceName);
     void AnnouncedForMagnification(AnnounceType announceType);
     void OffZoomGesture();
+    void InitMagnification();
+    void OnModeChanged(uint32_t mode);
 
     RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);
 

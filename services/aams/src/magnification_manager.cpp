@@ -24,7 +24,7 @@ namespace OHOS {
 namespace Accessibility {
 MagnificationManager::MagnificationManager()
 {
-    HILOG_DEBUG();
+    windowProxy_ = std::make_shared<MagnificationWindowProxy>();
 }
 
 std::shared_ptr<WindowMagnificationManager> MagnificationManager::GetWindowMagnificationManager()
@@ -32,7 +32,7 @@ std::shared_ptr<WindowMagnificationManager> MagnificationManager::GetWindowMagni
     HILOG_DEBUG();
     currentMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
     if (windowMagnificationManager_ == nullptr) {
-        windowMagnificationManager_ = std::make_shared<WindowMagnificationManager>();
+        windowMagnificationManager_ = std::make_shared<WindowMagnificationManager>(windowProxy_);
     }
     return windowMagnificationManager_;
 }
@@ -42,9 +42,18 @@ std::shared_ptr<FullScreenMagnificationManager> MagnificationManager::GetFullScr
     HILOG_DEBUG();
     currentMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
     if (fullScreenMagnificationManager_ == nullptr) {
-        fullScreenMagnificationManager_ = std::make_shared<FullScreenMagnificationManager>();
+        fullScreenMagnificationManager_ = std::make_shared<FullScreenMagnificationManager>(windowProxy_);
     }
     return fullScreenMagnificationManager_;
+}
+
+std::shared_ptr<MagnificationMenuManager> MagnificationManager::GetMenuManager()
+{
+    HILOG_DEBUG();
+    if (menuManager_ == nullptr) {
+        menuManager_ = std::make_shared<MagnificationMenuManager>(windowProxy_);
+    }
+    return menuManager_;
 }
 
 void MagnificationManager::OnMagnificationTypeChanged(uint32_t magnificationType)
@@ -59,24 +68,28 @@ void MagnificationManager::OnMagnificationTypeChanged(uint32_t magnificationType
         GetFullScreenMagnificationManager();
     }
 
+    if (menuManager_ == nullptr) {
+        HILOG_ERROR("menuManager_ is nullptr.");
+        return;
+    }
     currentMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
-    Singleton<MagnificationMenuManager>::GetInstance().SetCurrentType(magnificationType);
+    menuManager_->SetCurrentType(magnificationType);
     if (magnificationType == SWITCH_MAGNIFICATION) {
         if (windowMagnificationManager_ != nullptr && windowMagnificationManager_->IsMagnificationWindowShow()) {
-            Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
-            Singleton<MagnificationMenuManager>::GetInstance().ShowMenuWindow(currentMode_);
+            menuManager_->DisableMenuWindow();
+            menuManager_->ShowMenuWindow(currentMode_);
             return;
         }
 
         if (fullScreenMagnificationManager_ != nullptr &&
             fullScreenMagnificationManager_->IsMagnificationWindowShow()) {
-            Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
-            Singleton<MagnificationMenuManager>::GetInstance().ShowMenuWindow(currentMode_);
+            menuManager_->DisableMenuWindow();
+            menuManager_->ShowMenuWindow(currentMode_);
             return;
         }
     }
 
-    Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+    menuManager_->DisableMenuWindow();
 
     HILOG_INFO("magnificationType = %{public}d, currentMode_ = %{public}d", magnificationType, currentMode_);
     if (currentMode_ == magnificationType) {
@@ -147,7 +160,9 @@ void MagnificationManager::DisableMagnification()
 {
     HILOG_INFO();
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
-    Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+    if (menuManager_ != nullptr) {
+        menuManager_->DisableMenuWindow();
+    }
     if (windowMagnificationManager_ != nullptr && windowMagnificationManager_->IsMagnificationWindowShow()) {
         HILOG_INFO("disable window");
         windowMagnificationManager_->DisableWindowMagnification();
@@ -175,8 +190,8 @@ void MagnificationManager::TriggerMagnification(uint32_t type, uint32_t mode)
         }
     }
 
-    if (type == SWITCH_MAGNIFICATION) {
-        Singleton<MagnificationMenuManager>::GetInstance().ShowMenuWindow(mode);
+    if (type == SWITCH_MAGNIFICATION && menuManager_ != nullptr) {
+        menuManager_->ShowMenuWindow(mode);
     }
 
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
@@ -206,7 +221,9 @@ void MagnificationManager::RefreshWindowParam()
         fullScreenMagnificationManager_->RefreshWindowParam();
     }
 
-    Singleton<MagnificationMenuManager>::GetInstance().RefreshWindowParam();
+    if (menuManager_ != nullptr) {
+        menuManager_->RefreshWindowParam();
+    }
 }
 
 void MagnificationManager::FollowFocuseElement(int32_t centerX, int32_t centerY)
