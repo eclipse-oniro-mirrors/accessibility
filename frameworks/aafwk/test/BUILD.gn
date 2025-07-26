@@ -189,7 +189,6 @@ ohos_unittest("accessible_ability_test") {
     "c_utils:utils",
     "data_share:datashare_common",
     "data_share:datashare_consumer",
-    "display_manager:displaymgr",
 
     "e2fsprogs:libext2_uuid",
     "eventhandler:libeventhandler",
@@ -221,6 +220,10 @@ ohos_unittest("accessible_ability_test") {
 
   if (product_name != "qemu-arm-linux-min") {
     external_deps += [ "hiappevent:hiappevent_innerapi" ]
+  }
+
+  if (accessibility_feature_display_manager) {
+    external_deps += [ "display_manager:displaymgr" ]
   }
 
   if (security_component_enable) {

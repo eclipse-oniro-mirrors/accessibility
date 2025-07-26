@@ -12,6 +12,7 @@
 # limitations under the License.
 
 import("//build/test.gni")
+import("../../../accessibility_manager_service.gni")
 
 module_output_path = "accessibility/accessibility"
 
@@ -69,7 +70,6 @@ ohos_unittest("ac_unit_test") {
     "c_utils:utils",
     "data_share:datashare_common",
     "data_share:datashare_consumer",
-    "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "googletest:gmock_main",
@@ -81,6 +81,10 @@ ohos_unittest("ac_unit_test") {
     "samgr:dynamic_cache",
     "samgr:samgr_proxy",
   ]
+
+  if (accessibility_feature_display_manager) {
+    external_deps += [ "display_manager:displaymgr" ]
+  }
 }
 
 ###############################################################################
