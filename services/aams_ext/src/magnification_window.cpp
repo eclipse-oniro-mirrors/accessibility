@@ -68,6 +68,7 @@ void MagnificationWindow::CreateMagnificationWindow()
     window_ = OHOS::Rosen::Window::Create(WINDOW_NAME, windowOption);
     if (window_ == nullptr) {
         HILOG_ERROR("window create failed.");
+        ExtUtils::RecordMagnificationUnavailableEvent("Create window failed.");
         return;
     }
     window_->SetCornerRadius(CORNER_RADIUS);
@@ -175,14 +176,7 @@ void MagnificationWindow::DisableMagnification(bool needClear)
     rsUIContext_ = nullptr;
 }
 
-bool MagnificationWindow::IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect)
-{
-    return (posX >= rect.posX_ && posY >= rect.posY_ && posX <= rect.posX_ + static_cast<int32_t>(rect.width_) &&
-        posY <= rect.posY_ + static_cast<int32_t>(rect.height_));
-}
-
-// full magnification ==================================================================================
-
+// full magnification
 PointerPos MagnificationWindow::ConvertGesture(uint32_t type, PointerPos coordinates)
 {
     int32_t posX = coordinates.posX;
@@ -305,7 +299,11 @@ void MagnificationWindow::EnableMagnificationFull(int32_t centerX, int32_t cente
     sourceRect_ = GetSourceRectFromPointer(centerX, centerY);
     UpdateAnchor();
     DrawRuoundRectFrameFull();
-    window_->SetFrameRectForPartialZoomIn(sourceRect_);
+    Rosen::WMError ret = window_->SetFrameRectForPartialZoomIn(sourceRect_);
+    if (ret != Rosen::WMError::WM_OK) {
+        HILOG_ERROR("Trigger magnification failed.");
+        ExtUtils::RecordMagnificationUnavailableEvent("Trigger magnification failed.");
+    }
     window_->Show();
     FlushImplicitTransaction();
     isMagnificationShowFull_ = true;
@@ -430,7 +428,7 @@ bool MagnificationWindow::IsMagnificationShowFull()
     return isMagnificationShowFull_;
 }
 
-// window magnification =============================================================================
+// window magnification
 Rosen::Rect MagnificationWindow::GetWindowRectFromPointer(int32_t centerX, int32_t centerY)
 {
     Rosen::Rect windowRect = {0, 0, windowWidth_, windowHeight_};
@@ -541,12 +539,12 @@ bool MagnificationWindow::IsTapOnHotArea(int32_t posX, int32_t posY)
         windowRect_.posY_ - static_cast<int32_t>(hotAreaWidth_),
         windowRect_.width_ + static_cast<uint32_t>(2 * hotAreaWidth_),
         windowRect_.height_ + static_cast<uint32_t>(2 * hotAreaWidth_)};
-    return IsInRect(posX, posY, outRect) && !(IsInRect(posX, posY, innerRect));
+    return ExtUtils::IsInRect(posX, posY, outRect) && !(ExtUtils::IsInRect(posX, posY, innerRect));
 }
 
 bool MagnificationWindow::IsTapOnMagnificationWindow(int32_t posX, int32_t posY)
 {
-    return IsInRect(posX, posY, windowRect_);
+    return ExtUtils::IsInRect(posX, posY, windowRect_);
 }
 void MagnificationWindow::FixSourceCenter(bool needFix)
 {
@@ -636,7 +634,11 @@ void MagnificationWindow::EnableMagnificationPart(int32_t centerX, int32_t cente
     sourceRect_ = GetSourceRectFromPointer(centerX, centerY);
     CalculateAnchorOffset();
     UpdateRelativeRect();
-    window_->SetFrameRectForPartialZoomIn(relativeRect_);
+    Rosen::WMError ret = window_->SetFrameRectForPartialZoomIn(relativeRect_);
+    if (ret != Rosen::WMError::WM_OK) {
+        HILOG_ERROR("Trigger magnification failed.");
+        ExtUtils::RecordMagnificationUnavailableEvent("Trigger magnification failed.");
+    }
     DrawRuoundRectFramePart();
     window_->Show();
     FlushImplicitTransaction();

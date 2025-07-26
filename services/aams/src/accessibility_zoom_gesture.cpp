@@ -962,6 +962,7 @@ void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY, bool sho
     if (showMenu && menuManager_ != nullptr) {
         menuManager_->ShowMenuWindow(FULL_SCREEN_MAGNIFICATION);
     }
+    Utils::RecordOnZoomGestureEvent("on", true);
 }
 
 void AccessibilityZoomGesture::OffZoom()
@@ -982,6 +983,7 @@ void AccessibilityZoomGesture::OffZoom()
         Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
             AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
     }
+    Utils::RecordOnZoomGestureEvent("off", true);
 }
 
 void AccessibilityZoomGesture::OnScroll(float offsetX, float offsetY)

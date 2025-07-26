@@ -19,7 +19,6 @@
 #include "accessibility_ability_info.h"
 #include "element_name.h"
 #include "extension_ability_info.h"
-#include "window.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -70,7 +69,7 @@ public:
     static int32_t GetUserIdByCallingUid();
     static bool GetBundleNameByCallingUid(std::string &bundleName);
     static void RecordEnableShortkeyAbilityEvent(const std::string &name, const bool &enableState);
-    static void RecordOnZoomGestureEvent(const std::string &state);
+    static void RecordOnZoomGestureEvent(const std::string &state, const bool &isFullType);
     static void RecordOnRemoveSystemAbility(int32_t systemAbilityId,
         const std::string &bundleName = "", const std::string &abilityName = "");
     static void RecordDatashareInteraction(A11yDatashareValueType type, const std::string &businessName = "",
@@ -78,7 +77,6 @@ public:
     static bool UpdateColorModeConfiguration(int32_t &accountId);
     static bool IsWideFold();
     static bool IsBigFold();
-    static bool IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect);
     static std::string FormatString(const std::string& format, const std::string& value);
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);

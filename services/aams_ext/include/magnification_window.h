@@ -28,6 +28,7 @@
 #include "recording/recording_canvas.h"
 #include "magnification_def.h"
 #include "display_manager.h"
+#include "ext_utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -71,7 +72,6 @@ private:
     PointerPos GetRectCenter(Rosen::Rect rect);
     void FlushImplicitTransaction();
     void DisableMagnification(bool needClear = false);
-    bool IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect);
 
     // full magnification
     Rosen::Rect GetSourceRectFromPointer(int32_t centerX, int32_t centerY);

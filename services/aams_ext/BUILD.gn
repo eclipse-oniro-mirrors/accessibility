@@ -40,6 +40,7 @@ config("aams_ext_config") {
 aams_ext_files = [
   "${services_ext_path}/src/magnification_window.cpp",
   "${services_ext_path}/src/magnification_menu.cpp",
+  "${services_ext_path}/src/ext_utils.cpp",
 ]
 
 ohos_shared_library("aams_ext") {
@@ -65,6 +66,7 @@ ohos_shared_library("aams_ext") {
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "graphic_2d:librender_service_base",
+    "hisysevent:libhisysevent",
     "window_manager:libdm",
     "window_manager:libwm",
   ]

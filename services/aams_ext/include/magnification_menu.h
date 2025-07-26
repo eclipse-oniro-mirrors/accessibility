@@ -30,6 +30,7 @@
 #include "pixel_map.h"
 #include "magnification_def.h"
 #include "display_manager.h"
+#include "ext_utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -53,7 +54,6 @@ private:
     void LoadMenuBgImage(uint32_t mode);
     void AdjustMenuPosition();
     void FlushImplicitTransaction();
-    bool IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect);
     std::shared_ptr<Media::PixelMap> DecodePixelMap(const std::string& pathName,
         const Media::AllocatorType& allocatorType);
     //menu window

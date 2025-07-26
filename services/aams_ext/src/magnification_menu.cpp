@@ -43,6 +43,7 @@ void MagnificationMenu::CreateMenuWindow()
     menuWindow_ = Rosen::Window::Create(MENU_NAME, windowOption);
     if (menuWindow_ == nullptr) {
         HILOG_ERROR("create failed");
+        ExtUtils::RecordMagnificationUnavailableEvent("Create menu failed.");
         return;
     }
     menuWindow_->SetCornerRadius(MENU_CORNER_RADIUS);
@@ -184,18 +185,12 @@ void MagnificationMenu::SetCurrentType(uint32_t type)
     currentType_ = type;
 }
 
-bool MagnificationMenu::IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect)
-{
-    return (posX >= rect.posX_ && posY >= rect.posY_ && posX <= rect.posX_ + static_cast<int32_t>(rect.width_) &&
-        posY <= rect.posY_ + static_cast<int32_t>(rect.height_));
-}
-
 bool MagnificationMenu::IsTapOnMenu(int32_t posX, int32_t posY)
 {
     if (!isMenuShown_) {
         return false;
     }
-    return IsInRect(posX, posY, menuRect_);
+    return ExtUtils::IsInRect(posX, posY, menuRect_);
 }
 
 uint32_t MagnificationMenu::ChangeMode()

@@ -472,9 +472,12 @@ void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name, const bool
 #endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
-void Utils::RecordOnZoomGestureEvent(const std::string &state)
+void Utils::RecordOnZoomGestureEvent(const std::string &state, const bool &isFullType)
 {
     std::string MSG_NAME = "on zoom gesture state";
+    if (!isFullType) {
+        MSG_NAME = "on partial zoom gesture state";
+    }
     HILOG_DEBUG("starting RecordOnZoomGestureEvent on zoom gesture state: %{public}s", state.c_str());
 #ifdef OHOS_BUILD_ENABLE_HISYSEVENT
     int32_t ret = HiSysEventWrite(
@@ -597,12 +600,6 @@ bool Utils::GetBundleNameByCallingUid(std::string &bundleName)
     }
     HILOG_DEBUG("GetCallingUid:%{public}d, getBundleNameByUid:%{public}s", uid, bundleName.c_str());
     return true;
-}
-
-bool Utils::IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect)
-{
-    return (posX >= rect.posX_ && posY >= rect.posY_ && posX <= rect.posX_ + static_cast<int32_t>(rect.width_) &&
-        posY <= rect.posY_ + static_cast<int32_t>(rect.height_));
 }
 
 std::string Utils::FormatString(const std::string& format, const std::string& value)
