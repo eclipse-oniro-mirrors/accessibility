@@ -57,9 +57,6 @@ constexpr int32_t GESTURE_OFFSET = 100;
 constexpr int32_t BAR_START = 400;
 constexpr int32_t BAR_END = 550;
 
-const std::string WINDOW_NAME = "magnification_window";
-const std::string MENU_NAME = "magnification_menu";
-
 constexpr uint32_t FULL_SCREEN_MAGNIFICATION = 1;
 constexpr uint32_t WINDOW_MAGNIFICATION = 2;
 constexpr uint32_t SWITCH_MAGNIFICATION = 3;
@@ -70,11 +67,6 @@ constexpr uint32_t INVALID_GESTURE_TYPE = 0;
 constexpr uint32_t LEFT_BACK_GESTURE = 1; // Swipe from the left side of the screen inward
 constexpr uint32_t RIGHT_BACK_GESTURE = 2; // Swipe from the right side of the screen inward
 constexpr uint32_t BOTTOM_BACK_GESTURE = 3; // Swipe from the bottom side of the screen inward
-
-const std::string MAGNIFICATION_SCALE = "magnification_scale";
-const std::string MAGNIFICATION_DISABLE = "magnification_disabled";
-const std::string SWITCH_FULL_SCREEN = "switch_full_screen_magnification";
-const std::string SWITCH_WINDOW = "switch_window_magnification";
 } // namespace Accessibility
 } // namespace OHOS
 #endif // MAGNIFICATION_MANAGER_DEF_H
