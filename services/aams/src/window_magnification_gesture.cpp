@@ -924,11 +924,13 @@ void WindowMagnificationGesture::OnTripleTap(int32_t centerX, int32_t centerY)
             AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
         isSingleTapOnWindow_ = false;
         isTapOnHotArea_ = false;
+        Utils::RecordOnZoomGestureEvent("off", false);
     } else {
         windowMagnificationManager_->EnableWindowMagnification(centerX, centerY);
         Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
             AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
         menuManager_->ShowMenuWindow(WINDOW_MAGNIFICATION);
+        Utils::RecordOnZoomGestureEvent("on", false);
     }
 }
 
