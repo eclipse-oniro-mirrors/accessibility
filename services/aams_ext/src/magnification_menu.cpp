@@ -22,6 +22,7 @@ namespace Accessibility {
 namespace {
     const std::string FULL_SCREEN_PATH = "/system/etc/accessibility/fullScreen.png";
     const std::string WINDOW_PATH = "/system/etc/accessibility/window.png";
+    const std::string MENU_NAME = "magnification_menu";
 }
 static MagnificationMenu instance;
 

@@ -19,6 +19,11 @@
 
 namespace OHOS {
 namespace Accessibility {
+
+namespace {
+    const std::string WINDOW_NAME = "magnification_window";
+}
+
 static MagnificationWindow instance;
 
 //common

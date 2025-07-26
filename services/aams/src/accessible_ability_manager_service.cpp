@@ -115,6 +115,10 @@ namespace {
     const std::string TIMER_REGISTER_ENABLEABILITY_OBSERVER = "accessibility:registerEnableAbilityObServer";
     const std::string TIMER_GET_ALL_CONFIG = "accessibility:getAllConfig";
     const std::string TIMER_REGISTER_CONFIG_OBSERVER = "accessibility:registerConfigObserver";
+    const std::string MAGNIFICATION_SCALE = "magnification_scale";
+    const std::string MAGNIFICATION_DISABLE = "magnification_disabled";
+    const std::string SWITCH_FULL_SCREEN = "switch_full_screen_magnification";
+    const std::string SWITCH_WINDOW = "switch_window_magnification";
     constexpr int32_t XCOLLIE_TIMEOUT = 6; // s
     constexpr int QUANTITY = 2; // plural string
 
