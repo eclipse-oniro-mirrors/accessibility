@@ -65,7 +65,6 @@ test_external_deps = [
   "cJSON:cjson_static",
   "common_event_service:cesfwk_innerkits",
   "data_share:datashare_consumer",
-  "display_manager:displaymgr",
   "eventhandler:libeventhandler",
   "ffrt:libffrt",
   "googletest:gmock_main",
@@ -93,6 +92,10 @@ test_external_deps = [
   "window_manager:libdm",
   "window_manager:libwm_lite",
 ]
+
+if (accessibility_feature_display_manager) {
+  test_external_deps += [ "display_manager:displaymgr" ]
+}
 
 if (defined(global_parts_info) &&
 defined(global_parts_info.notification_distributed_notification_service)) {
@@ -230,11 +233,14 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "mock/src/mock_accessible_ability_client_stub_impl.cpp",
     "mock/src/mock_accessible_ability_manager_service_state_observer_proxy.cpp",
     "mock/src/mock_accessible_ability_manager_service_state_observer_stub.cpp",
-    "mock/src/mock_display_power_mgr_client.cpp",
     "mock/src/mock_magnification_manager.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessible_ability_manager_service_test.cpp",
   ]
+
+  if (accessibility_feature_display_manager) {
+    sources += [ "mock/src/mock_display_power_mgr_client.cpp" ]
+  }
 
   configs = [
     ":module_private_config",

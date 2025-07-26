@@ -334,7 +334,9 @@ void AccessibleAbilityManagerService::OnStop()
         HILOG_DEBUG();
 
         Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
         Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
+#endif
         Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
         UnsubscribeOsAccount();
 
@@ -439,7 +441,9 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
         if (isReady_) {
             SwitchedUser(-1);
             Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
             Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
+#endif
             Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
             Singleton<AccessibilityWindowManager>::GetInstance().DeInit();
 
@@ -3439,7 +3443,9 @@ void AccessibleAbilityManagerService::InitMagnification()
 {
     HILOG_INFO();
     magnificationManager_ = std::make_shared<MagnificationManager>();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(magnificationManager_);
+#endif
     SubscribeOsAccount();
 }
 

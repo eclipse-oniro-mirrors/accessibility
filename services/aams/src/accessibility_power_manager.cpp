@@ -15,7 +15,9 @@
 
 #include "accessibility_power_manager.h"
 #include "running_lock.h"
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 #include "display_power_mgr_client.h"
+#endif
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -33,12 +35,15 @@ AccessibilityPowerManager::~AccessibilityPowerManager()
 
 bool AccessibilityPowerManager::DiscountBrightness(const float discount)
 {
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     auto& displayPowerMgrClient = DisplayPowerMgr::DisplayPowerMgrClient::GetInstance();
     if (!displayPowerMgrClient.DiscountBrightness(discount)) {
         HILOG_ERROR("Failed to set brightness discount");
         return false;
     }
-
+#else
+    HILOG_DEBUG("not support display manager");
+#endif
     return true;
 }
 
