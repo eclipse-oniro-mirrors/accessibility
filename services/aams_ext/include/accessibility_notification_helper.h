@@ -26,7 +26,7 @@ public:
     static void CancelNotification();
     static int32_t RegisterTimers(uint64_t beginTime);
     static void DestoryTimers();
-    static void TimeerCallback();
+    static int64_t TimeerCallback();
 private:
     static uint64_t CalculateTimeToMidnight(uint64_t nowTime);
 };
