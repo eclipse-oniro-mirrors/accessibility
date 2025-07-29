@@ -95,6 +95,10 @@ void MagnificationMenu::LoadMenuBgImage(uint32_t mode)
     rosenImage_->SetPixelMap(bgpixelmap_);
     rosenImage_->SetImageFit(static_cast<int>(Rosen::ImageFit::FILL));
     canvasNode_->SetBgImage(rosenImage_);
+    if (menuWindow_ == nullptr) {
+        HILOG_ERROR("create failed");
+        return;
+    }
     menuWindow_->Show();
 }
 

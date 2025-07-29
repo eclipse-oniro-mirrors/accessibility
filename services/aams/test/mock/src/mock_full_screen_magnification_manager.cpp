@@ -63,8 +63,9 @@ void FullScreenMagnificationManager::PersistScale()
 {
 }
 
-void FullScreenMagnificationManager::RefreshWindowParam()
+void FullScreenMagnificationManager::RefreshWindowParam(RotationType type)
 {
+    (void)type;
 }
 
 PointerPos FullScreenMagnificationManager::ConvertCoordinates(int32_t posX, int32_t posY)

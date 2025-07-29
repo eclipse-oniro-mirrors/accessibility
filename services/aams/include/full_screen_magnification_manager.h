@@ -35,7 +35,7 @@ public:
     void ShowMagnificationWithPosition(PointerPos pos);
     void DisableMagnification(bool needClear = false);
     PointerPos ConvertCoordinates(int32_t posX, int32_t posY);
-    void RefreshWindowParam();
+    void RefreshWindowParam(RotationType type);
     void SetScale(float scaleSpan);
     void MoveMagnification(int32_t deltaX, int32_t deltaY);
     void PersistScale();

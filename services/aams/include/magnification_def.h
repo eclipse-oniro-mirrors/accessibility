@@ -33,6 +33,14 @@ enum class AnnounceType : uint32_t {
     ANNOUNCE_SWITCH_WINDOW
 };
 
+enum class RotationType : uint32_t {
+    LEFT_ROTATE = 0,
+    RIGHT_ROTATE,
+    FLIP_VERTICAL,
+    NO_CHANGE,
+    UNKNOWN
+};
+
 constexpr float EPS = 1e-6;
 constexpr float DEFAULT_SCALE = 2.0f;
 constexpr float MAX_SCALE = 8.0f;

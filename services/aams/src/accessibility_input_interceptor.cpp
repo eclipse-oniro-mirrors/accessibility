@@ -250,11 +250,14 @@ void AccessibilityInputInterceptor::CreatZoomGesture()
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetFullScreenMagnificationManager();
     std::shared_ptr<MagnificationMenuManager> menuManager =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetMenuManager();
-    if (fullScreenMagnificationManager == nullptr || menuManager == nullptr) {
-        HILOG_ERROR("get windowMagnification or menu manager failed.");
+    if (fullScreenMagnificationManager == nullptr) {
+        HILOG_ERROR("get windowMagnification manager failed.");
         return;
     }
-
+    if (menuManager == nullptr) {
+        HILOG_ERROR("get menu manager failed.");
+        return;
+    }
     if (zoomGesture_ == nullptr) {
         sptr<AccessibilityZoomGesture> zoomGesture =
             new(std::nothrow) AccessibilityZoomGesture(fullScreenMagnificationManager, menuManager);
@@ -277,11 +280,14 @@ void AccessibilityInputInterceptor::CreatWindowMagnificationGesture()
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetWindowMagnificationManager();
     std::shared_ptr<MagnificationMenuManager> menuManager =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetMenuManager();
-    if (windowMagnificationManager == nullptr || menuManager == nullptr) {
-        HILOG_ERROR("get windowMagnification or menu manager failed.");
+    if (windowMagnificationManager == nullptr) {
+        HILOG_ERROR("get windowMagnification manager failed.");
         return;
     }
-
+    if (menuManager == nullptr) {
+        HILOG_ERROR("get menu manager failed.");
+        return;
+    }
     if (windowMagnificationGesture_ == nullptr) {
         sptr<WindowMagnificationGesture> windowMagnificationGesture =
             new(std::nothrow) WindowMagnificationGesture(windowMagnificationManager, menuManager);

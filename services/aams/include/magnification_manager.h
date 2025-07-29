@@ -36,7 +36,7 @@ public:
     void DisableMagnification();
     void TriggerMagnification(uint32_t type, uint32_t mode);
     bool GetMagnificationState();
-    void RefreshWindowParam();
+    void RefreshWindowParam(RotationType type);
     void FollowFocuseElement(int32_t centerX, int32_t centerY);
     inline void ResetCurrentMode()
     {

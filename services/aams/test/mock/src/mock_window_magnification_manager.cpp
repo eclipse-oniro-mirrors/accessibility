@@ -66,8 +66,9 @@ bool WindowMagnificationManager::IsTapOnHotArea(int32_t posX, int32_t posY)
     return false;
 }
 
-void WindowMagnificationManager::RefreshWindowParam()
+void WindowMagnificationManager::RefreshWindowParam(RotationType type)
 {
+    (void)type;
 }
 
 bool WindowMagnificationManager::IsTapOnMagnificationWindow(int32_t posX, int32_t posY)

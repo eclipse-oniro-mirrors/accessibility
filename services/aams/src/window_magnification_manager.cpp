@@ -83,11 +83,11 @@ bool WindowMagnificationManager::IsTapOnHotArea(int32_t posX, int32_t posY)
     return windowProxy_->IsTapOnHotArea(posX, posY);
 }
 
-void WindowMagnificationManager::RefreshWindowParam()
+void WindowMagnificationManager::RefreshWindowParam(RotationType type)
 {
     HILOG_DEBUG();
     CHECK_PROXY_PTR_VOID()
-    windowProxy_->RefreshWindowParam(WINDOW_MAGNIFICATION);
+    windowProxy_->RefreshWindowParam(WINDOW_MAGNIFICATION, type);
 }
 
 bool WindowMagnificationManager::IsTapOnMagnificationWindow(int32_t posX, int32_t posY)
