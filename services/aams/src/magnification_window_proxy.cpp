@@ -15,7 +15,7 @@
 
 // LCOV_EXCL_START
 #include "magnification_window_proxy.h"
-#include ""
+#include "rwlock.h"
 #include <dlfcn.h>
 
 namespace OHOS {
@@ -495,23 +495,6 @@ bool MagnificationWindowProxy::IsMenuShown()
         return false;
     }
     return isMenuShownFun();
-}
-
-int32_t MagnificationWindowProxy::PublishIgnoreRepeatClickReminder()
-{
-    if (!handle_) {
-        HILOG_ERROR("handle is null");
-        return -1;
-    }
- 
-    using PublishIgnoreRepeatClickReminderFunc = int32_t (*)();
-    PublishIgnoreRepeatClickReminderFunc func =
-        (PublishIgnoreRepeatClickReminderFunc)GetFunc("PublishIgnoreRepeatClickReminderFunc");
-    if (!func) {
-        HILOG_ERROR("PublishIgnoreRepeatClickReminder func is null");
-        return -1;
-    }
-    return func();
 }
 
 int32_t MagnificationWindowProxy::PublishIgnoreRepeatClickReminder()
