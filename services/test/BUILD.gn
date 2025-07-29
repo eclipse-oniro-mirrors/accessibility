@@ -171,7 +171,6 @@ ohos_moduletest("aams_accessibility_touch_exploration_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
-    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -182,12 +181,6 @@ ohos_moduletest("aams_accessibility_touch_exploration_test") {
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
-  }
-
-  if (defined(global_parts_info) &&
-    defined(
-      global_parts_info.notification_distributed_notification_service)) {
-    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -308,7 +301,6 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
-    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -319,12 +311,6 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
-  }
-
-  if (defined(global_parts_info) &&
-    defined(
-      global_parts_info.notification_distributed_notification_service)) {
-    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -444,7 +430,6 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
-    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -455,12 +440,6 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
-  }
-
-  if (defined(global_parts_info) &&
-    defined(
-      global_parts_info.notification_distributed_notification_service)) {
-    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -578,7 +557,6 @@ ohos_moduletest("aams_server_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
-    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -589,12 +567,6 @@ ohos_moduletest("aams_server_test") {
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
-  }
-
-  if (defined(global_parts_info) &&
-    defined(
-      global_parts_info.notification_distributed_notification_service)) {
-    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -713,7 +685,6 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
-    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -724,12 +695,6 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
-  }
-
-  if (defined(global_parts_info) &&
-    defined(
-      global_parts_info.notification_distributed_notification_service)) {
-    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 
@@ -853,7 +818,6 @@ ohos_moduletest("aams_common_event_registry_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:dynamic_cache",
-    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -864,12 +828,6 @@ ohos_moduletest("aams_common_event_registry_test") {
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
-  }
-
-  if (defined(global_parts_info) &&
-    defined(
-      global_parts_info.notification_distributed_notification_service)) {
-    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 

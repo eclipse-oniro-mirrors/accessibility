@@ -22,13 +22,12 @@ namespace OHOS {
 namespace Accessibility {
 class IgnoreRepeatClickNotification {
 public:
-    static RetError PublishIgnoreRepeatClickReminder();
+    static int32_t PublishIgnoreRepeatClickReminder();
     static void CancelNotification();
-    static RetError RegisterTimers(uint64_t beginTime);
+    static int32_t RegisterTimers(uint64_t beginTime);
     static void DestoryTimers();
-    static void TimerCallback();
+    static void GetWallTimeMs();
 private:
-    static uint64_t CalculateTimeToMidnight(uint64_t nowTime);
     static bool IsSendIgnoreRepeatClickNotification();
 };
 } // namespace Accessibility
