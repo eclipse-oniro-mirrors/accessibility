@@ -1059,7 +1059,7 @@ void AccessibilitySettingsConfig::HandleIgnoreRepeatClickCache()
 {
     bool value = false;
     value = datashare_->GetBoolValue(IGNORE_REPEATED_CLICK_CACHE_FLAG, false);
-    if (value == true) {
+    if (value) {
         ignoreRepeatClickState_ = true;
         datashare_->PutBoolValue(IGNORE_REPEAT_CLICK_SWITCH, true);
         datashare_->PutBoolValue(IGNORE_REPEATED_CLICK_CACHE_FLAG, false);
