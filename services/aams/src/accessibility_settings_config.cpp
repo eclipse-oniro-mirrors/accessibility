@@ -85,6 +85,7 @@ namespace {
     const std::string VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
     const std::string IGNORE_REPEAT_CLICK_TIMESTAMP = "accessibility_ignore_repeat_click_timestamp";
     const std::string RECOVERY_IGNORE_REPEAT_CLICK_DATE = "recovery_ignore_repeat_click_switch_date";
+    const std::string IGNORE_REPEATED_CLICK_CACHE_FLAG = "accessibility_ignore_repeat_click_cache_flag";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -1054,6 +1055,19 @@ void AccessibilitySettingsConfig::InitAnimationOffConfig()
     }
 }
 
+void AccessibilitySettingsConfig::HandleIgnoreRepeatClickCache()
+{
+    bool value = false;
+    value = datashare_->GetBoolValue(IGNORE_REPEATED_CLICK_CACHE_FLAG, false);
+    if (value) {
+        ignoreRepeatClickState_ = true;
+        datashare_->PutBoolValue(IGNORE_REPEAT_CLICK_SWITCH, true);
+        datashare_->PutBoolValue(IGNORE_REPEATED_CLICK_CACHE_FLAG, false);
+    } else {
+        ignoreRepeatClickState_ = datashare_->GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, false);
+    }
+}
+
 void AccessibilitySettingsConfig::InitSetting()
 {
     HILOG_DEBUG();
@@ -1072,7 +1086,7 @@ void AccessibilitySettingsConfig::InitSetting()
     highContrastTextState_ = datashare_->GetBoolValue(HIGH_CONTRAST_TEXT_KEY, false);
     daltonizationState_ = datashare_->GetBoolValue(DALTONIZATION_STATE, false);
     audioMonoState_ = datashare_->GetBoolValue(AUDIO_MONO_KEY, false);
-    ignoreRepeatClickState_ = datashare_->GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, false);
+    HandleIgnoreRepeatClickCache();
     mouseAutoClick_ = static_cast<int32_t>(datashare_->GetIntValue("MouseAutoClick", -1));
     daltonizationColorFilter_ = static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0));
     SetDaltonizationColorFilter(daltonizationColorFilter_);
