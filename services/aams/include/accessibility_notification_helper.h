@@ -26,7 +26,7 @@ public:
     static void CancelNotification();
     static int32_t RegisterTimers(uint64_t beginTime);
     static void DestoryTimers();
-    static void GetWallTimeMs();
+    static int64_t GetWallTimeMs();
 private:
     static bool IsSendIgnoreRepeatClickNotification();
 };
