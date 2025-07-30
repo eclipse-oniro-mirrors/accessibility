@@ -122,6 +122,7 @@ ohos_unittest("accessible_ability_test") {
     "../../../services/aams/src/accessibility_settings.cpp",
     "../../../services/aams/src/accessibility_settings_config.cpp",
     "../../../services/aams/src/accessibility_notification_helper.cpp",
+    "../../../services/aams/src/magnification_window_proxy.cpp",
     "../../../services/aams/src/msdp_manager.cpp",
     "../../../services/aams/src/accessibility_security_component_manager.cpp",
     "../../../services/aams/src/accessible_ability_manager_service.cpp",
@@ -213,7 +214,6 @@ ohos_unittest("accessible_ability_test") {
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
-    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
@@ -228,12 +228,6 @@ ohos_unittest("accessible_ability_test") {
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
-  }
-
-  if (defined(global_parts_info) &&
-    defined(
-      global_parts_info.notification_distributed_notification_service)) {
-    external_deps += [ "distributed_notification_service:ans_innerkits" ]
   }
 }
 

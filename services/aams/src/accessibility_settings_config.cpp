@@ -21,7 +21,6 @@
 #include "accessible_ability_manager_service.h"
 #include "accessibility_account_data.h"
 #include "parameters.h"
-#include "time_service_client.h"
 #include "accessibility_notification_helper.h"
 
 namespace OHOS {
@@ -102,6 +101,7 @@ namespace {
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORTEST = 0;
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORT = 1;
     constexpr float DEFAULT_MAGNIFICATION_SCALE = 2.0;
+    bool g_ignoreRepeatClickOnceFlag = false;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -548,7 +548,7 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state
         return ret;
     }
     if (state) {
-        uint64_t nowTime = MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
+        uint64_t nowTime = IgnoreRepeatClickNotification::GetWallTimeMs();
         ret = datashare_->PutUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, nowTime);
         IgnoreRepeatClickNotification::RegisterTimers(nowTime);
     } else {
@@ -1055,6 +1055,37 @@ void AccessibilitySettingsConfig::InitAnimationOffConfig()
     }
 }
 
+void AccessibilitySettingsConfig::HandleIgnoreRepeatClickState()
+{
+    uint64_t recoveryDate = datashare_->GetUnsignedLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, 0);
+    if (ignoreRepeatClickState_ && recoveryDate == 0 &&
+        (ignoreRepeatClickTime_ == IGNORE_REPEAT_CLICK_SHORTEST ||
+            ignoreRepeatClickTime_ == IGNORE_REPEAT_CLICK_SHORT)) {
+        ignoreRepeatClickState_ = false;
+        SetIgnoreRepeatClickState(false);
+        recoveryDate = IgnoreRepeatClickNotification::GetWallTimeMs();
+        datashare_->PutUnsignedLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, recoveryDate);
+        HILOG_INFO("recovery ignore repeat click %{public}" PRIu64, recoveryDate);
+    }
+ 
+    if (ignoreRepeatClickState_) {
+        IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
+        uint64_t timeStamp = datashare_->GetUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, 0);
+        if (timeStamp == 0) {
+            timeStamp = IgnoreRepeatClickNotification::GetWallTimeMs();
+            datashare_->PutUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, timeStamp);
+        }
+        if (timeStamp > 0) {
+            IgnoreRepeatClickNotification::RegisterTimers(timeStamp);
+        }
+        if (g_ignoreRepeatClickOnceFlag) {
+            IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
+        } else {
+            g_ignoreRepeatClickOnceFlag = true;
+        }
+    }
+}
+
 void AccessibilitySettingsConfig::HandleIgnoreRepeatClickCache()
 {
     bool value = false;
@@ -1074,7 +1105,6 @@ void AccessibilitySettingsConfig::InitSetting()
     if (datashare_ == nullptr) {
         return;
     }
-    IgnoreRepeatClickNotification::CancelNotification();
     
     InitShortKeyConfig();
     InitPrivacySpaceConfig();
@@ -1108,27 +1138,7 @@ void AccessibilitySettingsConfig::InitSetting()
     datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "DEFAULT");
     datashare_->GetBoolValue(VOICE_RECOGNITION_KEY, false);
     datashare_->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
-
-    uint64_t recoveryDate = datashare_->GetUnsignedLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, 0);
-    if (ignoreRepeatClickState_ && recoveryDate == 0 &&
-        (ignoreRepeatClickTime_ == IGNORE_REPEAT_CLICK_SHORTEST ||
-            ignoreRepeatClickTime_ == IGNORE_REPEAT_CLICK_SHORT)) {
-        ignoreRepeatClickState_ = false;
-        SetIgnoreRepeatClickState(false);
-        recoveryDate = MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
-        datashare_->PutUnsignedLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, recoveryDate);
-        HILOG_INFO("recovery ignore repeat click %{public}" PRIu64, recoveryDate);
-    }
- 
-    if (ignoreRepeatClickState_) {
-        IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
-        uint64_t timeStamp = datashare_->GetUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, 0);
-        if (timeStamp == 0) {
-            timeStamp = MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
-            datashare_->PutUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, timeStamp);
-        }
-        IgnoreRepeatClickNotification::RegisterTimers(timeStamp);
-    }
+    HandleIgnoreRepeatClickState();
 }
 
 void AccessibilitySettingsConfig::InitCapability()
@@ -1283,6 +1293,9 @@ void AccessibilitySettingsConfig::SetDefaultShortcutKeyService()
 void AccessibilitySettingsConfig::OnDataClone()
 {
     HILOG_INFO();
+    if (ignoreRepeatClickState_) {
+        IgnoreRepeatClickNotification::CancelNotification();
+    }
 
     InitSetting();
     SetDefaultShortcutKeyService();

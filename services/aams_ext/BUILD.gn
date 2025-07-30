@@ -41,6 +41,8 @@ aams_ext_files = [
   "${services_ext_path}/src/magnification_window.cpp",
   "${services_ext_path}/src/magnification_menu.cpp",
   "${services_ext_path}/src/ext_utils.cpp",
+  "${services_ext_path}/src/accessibility_notification_helper.cpp",
+  "${services_ext_path}/src/export_api.cpp",
 ]
 
 ohos_shared_library("aams_ext") {
@@ -62,14 +64,26 @@ ohos_shared_library("aams_ext") {
   ]
 
   external_deps = [
+    "ability_base:zuri",
+    "ability_runtime:wantagent_innerkits",
     "c_utils:utils",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "graphic_2d:librender_service_base",
     "hisysevent:libhisysevent",
+    "i18n:intl_util",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
   ]
+
+  if (defined(global_parts_info) &&
+    defined(
+      global_parts_info.notification_distributed_notification_service)) {
+    external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
 
   install_enable = true
 

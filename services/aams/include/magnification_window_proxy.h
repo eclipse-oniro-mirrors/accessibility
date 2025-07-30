@@ -31,6 +31,7 @@ class MagnificationWindowProxy {
 public:
     MagnificationWindowProxy();
     ~MagnificationWindowProxy();
+    static std::shared_ptr<MagnificationWindowProxy> GetInstance();
 
     // common
     void EnableMagnification(uint32_t magnificationType, int32_t centerX, int32_t centerY);
@@ -66,9 +67,15 @@ public:
     uint32_t ChangeMode();
     bool IsMenuShown();
 
+    // notification helper
+    int32_t PublishIgnoreRepeatClickReminder();
+    void CancelNotification();
+    int32_t RegisterTimers(uint64_t beginTime);
+    void DestoryTimers();
+    int64_t GetWallTimeMs();
+
 private:
     void* GetFunc(const std::string& funcName);
-    const std::string windowLibName_ = "libaams_ext.z.so";
     void* handle_ = nullptr;
 };
 } // namespace Accessibility

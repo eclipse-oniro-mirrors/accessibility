@@ -15,10 +15,25 @@
 
 // LCOV_EXCL_START
 #include "magnification_window_proxy.h"
+#include "rwlock.h"
 #include <dlfcn.h>
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string windowLibName_ = "libaams_ext.z.so";
+    std::shared_ptr<MagnificationWindowProxy> g_Instance = nullptr;
+    Utils::RWLock rwLock;
+}
+
+std::shared_ptr<MagnificationWindowProxy> MagnificationWindowProxy::GetInstance()
+{
+    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock);
+    if (g_Instance == nullptr) {
+        g_Instance = std::make_shared<MagnificationWindowProxy>();
+    }
+    return g_Instance;
+}
 
 MagnificationWindowProxy::MagnificationWindowProxy()
 {
@@ -30,6 +45,7 @@ MagnificationWindowProxy::MagnificationWindowProxy()
 
 MagnificationWindowProxy::~MagnificationWindowProxy()
 {
+    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock);
     if (!handle_) {
         return;
     }
@@ -479,6 +495,85 @@ bool MagnificationWindowProxy::IsMenuShown()
         return false;
     }
     return isMenuShownFun();
+}
+
+int32_t MagnificationWindowProxy::PublishIgnoreRepeatClickReminder()
+{
+    if (!handle_) {
+        HILOG_ERROR("handle is null");
+        return -1;
+    }
+ 
+    using PublishIgnoreRepeatClickReminderFunc = int32_t (*)();
+    PublishIgnoreRepeatClickReminderFunc func =
+        (PublishIgnoreRepeatClickReminderFunc)GetFunc("PublishIgnoreRepeatClickReminderFunc");
+    if (!func) {
+        HILOG_ERROR("PublishIgnoreRepeatClickReminder func is null");
+        return -1;
+    }
+    return func();
+}
+
+void MagnificationWindowProxy::CancelNotification()
+{
+    if (!handle_) {
+        HILOG_ERROR("handle is null");
+        return;
+    }
+ 
+    using CancelNotificationFunc = void (*)();
+    CancelNotificationFunc func = (CancelNotificationFunc)GetFunc("CancelNotification");
+    if (!func) {
+        HILOG_ERROR("CancelNotification func is null");
+        return;
+    }
+    func();
+}
+
+int32_t MagnificationWindowProxy::RegisterTimers(uint64_t beginTime)
+{
+    if (!handle_) {
+        HILOG_ERROR("handle is null");
+        return -1;
+    }
+ 
+    using RegisterTimersFunc = int32_t (*)(uint64_t beginTime);
+    RegisterTimersFunc func = (RegisterTimersFunc)GetFunc("RegisterTimers");
+    if (!func) {
+        HILOG_ERROR("RegisterTimers func is null");
+        return -1;
+    }
+    return func(beginTime);
+}
+void MagnificationWindowProxy::DestoryTimers()
+{
+    if (!handle_) {
+        HILOG_ERROR("handle is null");
+        return;
+    }
+ 
+    using DestoryTimersFunc = void (*)();
+    DestoryTimersFunc func = (DestoryTimersFunc)GetFunc("DestoryTimers");
+    if (!func) {
+        HILOG_ERROR("DestoryTimers func is null");
+        return;
+    }
+    func();
+}
+int64_t MagnificationWindowProxy::GetWallTimeMs()
+{
+    if (!handle_) {
+        HILOG_ERROR("handle is null");
+        return 0;
+    }
+ 
+    using GetWallTimeMsFunc = int64_t (*)();
+    GetWallTimeMsFunc func = (GetWallTimeMsFunc)GetFunc("GetWallTimeMs");
+    if (!func) {
+        HILOG_ERROR("GetWallTimeMs func is null");
+        return 0;
+    }
+    return func();
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -30,6 +30,7 @@
 #include "system_ability_definition.h"
 #include "os_account_manager.h"
 #include "accessibility_resource_bundle_manager.h"
+#include "accessibility_notification_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -136,6 +137,9 @@ void AccessibilityAccountData::OnAccountSwitched()
     enabledAbilities_.clear();
     std::lock_guard lock(asacConnectionsMutex_);
     asacConnections_.clear();
+    if (config_ && config_->GetIgnoreRepeatClickState()) {
+        IgnoreRepeatClickNotification::CancelNotification();
+    }
 }
 
 void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)

@@ -24,7 +24,7 @@ namespace OHOS {
 namespace Accessibility {
 MagnificationManager::MagnificationManager()
 {
-    windowProxy_ = std::make_shared<MagnificationWindowProxy>();
+    windowProxy_ = MagnificationWindowProxy::GetInstance();
 }
 
 std::shared_ptr<WindowMagnificationManager> MagnificationManager::GetWindowMagnificationManager()

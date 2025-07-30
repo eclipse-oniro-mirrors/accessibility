@@ -88,18 +88,12 @@ test_external_deps = [
   "safwk:system_ability_fwk",
   "samgr:samgr_proxy",
   "selinux_adapter:librestorecon",
-  "time_service:time_client",
   "window_manager:libdm",
   "window_manager:libwm_lite",
 ]
 
 if (accessibility_feature_display_manager) {
   test_external_deps += [ "display_manager:displaymgr" ]
-}
-
-if (defined(global_parts_info) &&
-defined(global_parts_info.notification_distributed_notification_service)) {
-  test_external_deps += [ "distributed_notification_service:ans_innerkits" ]
 }
 if (security_component_enable) {
   test_external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
@@ -827,6 +821,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "../src/accessible_ability_connection.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
+    "../src/magnification_window_proxy.cpp",
     "../src/utils.cpp",
     "mock/src/mock_accessibility_element_operator_proxy.cpp",
     "mock/src/mock_accessibility_element_operator_stub.cpp",
@@ -1119,6 +1114,7 @@ ohos_unittest("accessibility_short_key_dialog_test") {
     "../src/accessible_ability_channel.cpp",
     "../src/accessible_ability_connection.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
+    "../src/magnification_window_proxy.cpp",
     "../src/utils.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",

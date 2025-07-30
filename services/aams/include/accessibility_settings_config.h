@@ -130,6 +130,7 @@ private:
     void InitPrivacySpaceConfig();
     void InitAnimationOffConfig();
     void HandleIgnoreRepeatClickCache();
+    void HandleIgnoreRepeatClickState();
     RetError SetConfigState(const std::string& key, bool value);
 
     int32_t accountId_;
