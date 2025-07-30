@@ -331,6 +331,8 @@ private:
 
     void InitScreenReaderStateObserver();
 
+    void SetAccessibilityStateToTP(bool state);
+
     class AccessibilityAbility {
     public:
         AccessibilityAbility() = default;

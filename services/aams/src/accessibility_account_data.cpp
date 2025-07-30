@@ -16,6 +16,7 @@
 #include "accessibility_account_data.h"
 
 #include <any>
+#include <dlfcn.h>
 #ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
 #endif // OHOS_BUILD_ENABLE_HITRACE
@@ -64,6 +65,7 @@ namespace {
     const std::string ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
     const std::string SCREEN_READER_BUNDLE_NAME = "com.huawei.hmos.screenreader";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
+    const std::string THP_PATH = "/system/lib64/libthp_extra_innerapi.z.so";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -551,6 +553,32 @@ void AccessibilityAccountData::SetAbilityAutoStartState(const std::string &name,
     }
 }
 
+void AccessibilityAccountData::SetAccessibilityStateToTP(bool state)
+{
+    HILOG_INFO("set accessibility state to TP, state = %{public}d", state);
+
+    void *handle = nullptr;
+    handle = dlopen(THP_PATH.c_str(), RTLD_LAZY);
+    if (handle == nullptr) {
+        HILOG_ERROR("thp handle is null!");
+        return;
+    }
+
+    typedef const char* (*ThpExtraRunCommandFunc)(const char* command, const char* parameters);
+    const char* (*ThpExtraRunCommand)(const char* command, const char* parameters) {};
+    ThpExtraRunCommand = reinterpret_cast<ThpExtraRunCommandFunc>(dlsym(handle, "ThpExtraRunCommand"));
+    if (ThpExtraRunCommand == nullptr) {
+        HILOG_ERROR("ThpExtraRunCommand is null");
+        dlclose(handle);
+        return;
+    }
+
+    std::string stateValue = state ? "1" : "0";
+    const std::string param = std::string("THP#").append(stateValue);
+    ThpExtraRunCommand("THP_SetAccessibilityMode", param.c_str());
+    dlclose(handle);
+}
+
 void AccessibilityAccountData::SetScreenReaderState(const std::string &name, const std::string &state)
 {
     HILOG_DEBUG("set screen reader key [%{public}s], state = [%{public}s].", name.c_str(), state.c_str());
@@ -565,6 +593,7 @@ void AccessibilityAccountData::SetScreenReaderState(const std::string &name, con
         HILOG_ERROR("set failed, ret=%{public}d", ret);
     } else {
         screenReaderState_ = (state == "1");
+        SetAccessibilityStateToTP(state == "1");
     }
     if (screenReaderState_) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().InitResource(false);
