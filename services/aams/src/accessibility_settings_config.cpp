@@ -101,7 +101,7 @@ namespace {
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORTEST = 0;
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORT = 1;
     constexpr float DEFAULT_MAGNIFICATION_SCALE = 2.0;
-    bool ignoreRepeatClickOnceFlag = false;
+    bool g_ignoreRepeatClickOnceFlag = false;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -1078,10 +1078,10 @@ void AccessibilitySettingsConfig::HandleIgnoreRepeatClickState()
         if (timeStamp > 0) {
             IgnoreRepeatClickNotification::RegisterTimers(timeStamp);
         }
-        if (ignoreRepeatClickOnceFlag) {
+        if (g_ignoreRepeatClickOnceFlag) {
             IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
         } else {
-            ignoreRepeatClickOnceFlag = true;
+            g_ignoreRepeatClickOnceFlag = true;
         }
     }
 }

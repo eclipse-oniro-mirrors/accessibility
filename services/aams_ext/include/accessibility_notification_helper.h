@@ -16,7 +16,7 @@
 #ifndef NOTIFICATION_HELPER_H
 #define NOTIFICATION_HELPER_H
 
-#include "accessibility_def.h"
+#include <cinttypes>
 
 namespace OHOS {
 namespace Accessibility {
@@ -26,7 +26,7 @@ public:
     static void CancelNotification();
     static int32_t RegisterTimers(uint64_t beginTime);
     static void DestoryTimers();
-    static int64_t TimeerCallback();
+    static void TimerCallback();
 private:
     static uint64_t CalculateTimeToMidnight(uint64_t nowTime);
 };

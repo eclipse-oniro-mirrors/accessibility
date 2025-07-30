@@ -14,7 +14,6 @@
 */
 
 #include "accessibility_notification_helper.h"
-#include "accessible_ability_manager_service.h"
 #include "timer_info.h"
 #include "time_service_client.h"
 
@@ -206,29 +205,8 @@ void IgnoreRepeatClickNotification::CancelNotification()
     Notification::NotificationHelper::CancelNotification(ACCESSIBILITY_NOTIFICATION_UID);
 }
 
-bool IgnoreRepeatClickNotification::IsSendIgnoreRepeatClickNotification()
-{
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        return true;
-    }
-    bool notificationState = true;
-    bool ignoreRepeatClickState = false;
-    if (accountData->GetConfig() && accountData->GetConfig()->GetDbHandle()) {
-        notificationState =
-            accountData->GetConfig()->GetDbHandle()->GetBoolValue(IGNORE_REPEAT_CLICK_NOTIFICATION, true);
-        ignoreRepeatClickState =
-            accountData->GetConfig()->GetDbHandle()->GetBoolValue(INGORE_REPEAT_CLICK_KEY, false);
-    }
-    return ignoreRepeatClickState && notificationState;
-}
-
 int32_t IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder()
 {
-    if (!IsSendIgnoreRepeatClickNotification()) {
-        HILOG_ERROR("no need notificatino");
-        return 0;
-    }
     GetReource();
     Notification::NotificationRequest request;
     std::shared_ptr<Notification::NotificationActionButton> cancelButtion =
@@ -275,11 +253,6 @@ int32_t IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder()
 
 int32_t IgnoreRepeatClickNotification::RegisterTimers(uint64_t beginTime)
 {
-    if (!IsSendIgnoreRepeatClickNotification()) {
-        HILOG_ERROR("no need notificatino");
-        return 0;
-    }
-    uint64_t nowTime = MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
     uint64_t millisecondsToMidnight = CalculateTimeToMidnight(beginTime);
     for (const auto &interval : NOTIFICATION_DATE) {
         uint64_t intervalMs = millisecondsToMidnight + TWELVE_CLOCK + interval + beginTime;

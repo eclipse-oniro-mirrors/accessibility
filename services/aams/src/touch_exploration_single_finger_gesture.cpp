@@ -700,17 +700,6 @@ void TouchExploration::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent
         return;
     }
 
-    std::shared_ptr<MMI::PointerEvent> pointerEvent = nullptr;
-    int32_t focusedWindowId = INVALID_WINDOW_ID;
-    Singleton<AccessibilityWindowManager>::GetInstance().GetFocusedWindowId(focusedWindowId);
-    int32_t activeWindowId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
-    if (focusedWindowId != INVALID_WINDOW_ID && focusedWindowId != activeWindowId) {
-        pointerEvent = std::make_shared<MMI::PointerEvent>(event);
-    }
-    if (activeWindowId != INVALID_WINDOW_ID && pointerEvent) {
-        pointerEvent->SetAgentWindowId(activeWindowId);
-    }
-
     gestureHandler_->PostTask([this]() {
         Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(
             ActionType::ACCESSIBILITY_ACTION_CLICK);
