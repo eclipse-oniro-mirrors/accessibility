@@ -20,10 +20,41 @@
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int32_t DEFAULT_DPI = 540;
+    constexpr int32_t DEFAULT_WIDTH = 1260;
+    constexpr int32_t DEFAULT_HEIGHT = 2720;
 
-constexpr int32_t DEFAULT_DPI = 540;
-constexpr int32_t DEFAULT_WIDTH = 1260;
-constexpr int32_t DEFAULT_HEIGHT = 2720;
+    static const std::map<std::pair<Rosen::DisplayOrientation, Rosen::DisplayOrientation>, RotationType> rotationMap = {
+        {{Rosen::DisplayOrientation::PORTRAIT, Rosen::DisplayOrientation::LANDSCAPE},
+            RotationType::RIGHT_ROTATE},
+        {{Rosen::DisplayOrientation::PORTRAIT, Rosen::DisplayOrientation::LANDSCAPE_INVERTED},
+            RotationType::LEFT_ROTATE},
+        {{Rosen::DisplayOrientation::PORTRAIT, Rosen::DisplayOrientation::PORTRAIT_INVERTED},
+            RotationType::FLIP_VERTICAL},
+        
+        {{Rosen::DisplayOrientation::LANDSCAPE, Rosen::DisplayOrientation::PORTRAIT},
+            RotationType::LEFT_ROTATE},
+        {{Rosen::DisplayOrientation::LANDSCAPE, Rosen::DisplayOrientation::PORTRAIT_INVERTED},
+            RotationType::RIGHT_ROTATE},
+        {{Rosen::DisplayOrientation::LANDSCAPE, Rosen::DisplayOrientation::LANDSCAPE_INVERTED},
+            RotationType::FLIP_VERTICAL},
+        
+        {{Rosen::DisplayOrientation::PORTRAIT_INVERTED, Rosen::DisplayOrientation::LANDSCAPE},
+            RotationType::LEFT_ROTATE},
+        {{Rosen::DisplayOrientation::PORTRAIT_INVERTED, Rosen::DisplayOrientation::PORTRAIT},
+            RotationType::FLIP_VERTICAL},
+        {{Rosen::DisplayOrientation::PORTRAIT_INVERTED, Rosen::DisplayOrientation::LANDSCAPE_INVERTED},
+            RotationType::RIGHT_ROTATE},
+        
+        {{Rosen::DisplayOrientation::LANDSCAPE_INVERTED, Rosen::DisplayOrientation::PORTRAIT},
+            RotationType::RIGHT_ROTATE},
+        {{Rosen::DisplayOrientation::LANDSCAPE_INVERTED, Rosen::DisplayOrientation::LANDSCAPE},
+            RotationType::FLIP_VERTICAL},
+        {{Rosen::DisplayOrientation::LANDSCAPE_INVERTED, Rosen::DisplayOrientation::PORTRAIT_INVERTED},
+            RotationType::LEFT_ROTATE}
+    };
+}
 
 AccessibilityDisplayManager::AccessibilityDisplayManager()
 {
@@ -169,9 +200,20 @@ void AccessibilityDisplayManager::UnregisterDisplayListener()
     }
 }
 
+RotationType AccessibilityDisplayManager::GetRotationType(Rosen::DisplayOrientation prev,
+    Rosen::DisplayOrientation curr)
+{
+    auto key = std::make_pair(prev, curr);
+    auto it = rotationMap.find(key);
+    if (it != rotationMap.end()) {
+        return it->second;
+    }
+    return RotationType::UNKNOWN;
+}
+
 void AccessibilityDisplayManager::DisplayListener::OnChange(Rosen::DisplayId dId)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     if (manager_ == nullptr) {
         manager_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMgr();
     }
@@ -185,10 +227,9 @@ void AccessibilityDisplayManager::DisplayListener::OnChange(Rosen::DisplayId dId
     OHOS::Rosen::DisplayOrientation currentOrientation = displayMgr.GetOrientation();
     OHOS::Rosen::FoldDisplayMode currentMode = displayMgr.GetFoldDisplayMode();
     if (orientation_ == currentOrientation && displayMode_ == currentMode) {
-        HILOG_INFO("no need fresh.");
         return;
     }
-
+    HILOG_INFO("need fresh.");
     if (Utils::IsWideFold()) {
         OnChangeForWideFold(currentOrientation, currentMode);
         return;
@@ -212,7 +253,7 @@ void AccessibilityDisplayManager::DisplayListener::OnChangeForWideFold(
         currentOrientation, currentMode);
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
     if (interceptor == nullptr) {
-        HILOG_INFO("interceptor is null");
+        HILOG_ERROR("interceptor is null");
         return;
     }
     if (currentMode == Rosen::FoldDisplayMode::MAIN) {
@@ -226,9 +267,13 @@ void AccessibilityDisplayManager::DisplayListener::OnChangeForWideFold(
         interceptor->ShieldZoomGesture(false);
         displayMode_ = currentMode;
         if (orientation_ != currentOrientation) {
-            HILOG_INFO("need refresh");
+            HILOG_INFO("need refresh orientation.");
+            RotationType type = Singleton<AccessibilityDisplayManager>::GetInstance().GetRotationType(
+                orientation_, currentOrientation);
+            if (manager_ != nullptr) {
+                manager_->RefreshWindowParam(type);
+            }
             orientation_ = currentOrientation;
-            manager_->RefreshWindowParam();
         }
     }
 }
@@ -241,14 +286,20 @@ void AccessibilityDisplayManager::DisplayListener::OnChangeForBigFold(
         currentOrientation, currentMode);
     if (displayMode_ != currentMode) {
         HILOG_INFO("need refresh");
-        manager_->RefreshWindowParam();
+        if (manager_ != nullptr) {
+            manager_->RefreshWindowParam(RotationType::NO_CHANGE);
+        }
         displayMode_ = currentMode;
     }
 
     if (orientation_ != currentOrientation) {
-        HILOG_INFO("need refresh");
+        HILOG_INFO("need refresh orientation.");
+        RotationType type = Singleton<AccessibilityDisplayManager>::GetInstance().GetRotationType(
+            orientation_, currentOrientation);
+        if (manager_ != nullptr) {
+            manager_->RefreshWindowParam(type);
+        }
         orientation_ = currentOrientation;
-        manager_->RefreshWindowParam();
     }
 }
 
@@ -257,63 +308,13 @@ void AccessibilityDisplayManager::DisplayListener::OnChangeDefault(
 {
     HILOG_DEBUG("currentOrientation = %{public}d", currentOrientation);
     if (orientation_ != currentOrientation) {
-        HILOG_INFO("need refresh");
+        HILOG_INFO("need refresh orientation.");
+        RotationType type = Singleton<AccessibilityDisplayManager>::GetInstance().GetRotationType(
+            orientation_, currentOrientation);
+        if (manager_ != nullptr) {
+            manager_->RefreshWindowParam(type);
+        }
         orientation_ = currentOrientation;
-        manager_->RefreshWindowParam();
-    }
-}
-
-void AccessibilityDisplayManager::RegisterDisplayModeListener()
-{
-    HILOG_DEBUG();
-    if (displayModeListener_) {
-        HILOG_DEBUG("Display mode listener is already registed!");
-        return;
-    }
-    displayModeListener_ = new(std::nothrow) DisplayModeListener();
-    if (!displayModeListener_) {
-        HILOG_ERROR("Create display mode listener fail!");
-        return;
-    }
-    Rosen::DisplayManager::GetInstance().RegisterDisplayModeListener(displayModeListener_);
-}
-
-void AccessibilityDisplayManager::UnregisterDisplayModeListener()
-{
-    HILOG_DEBUG();
-    if (displayModeListener_) {
-        Rosen::DisplayManager::GetInstance().UnregisterDisplayModeListener(displayModeListener_);
-        displayModeListener_ = nullptr;
-    }
-}
-
-void AccessibilityDisplayManager::DisplayModeListener::OnDisplayModeChanged(Rosen::FoldDisplayMode displayMode)
-{
-    if (Utils::IsWideFold()) {
-        auto interceptor = AccessibilityInputInterceptor::GetInstance();
-        if (interceptor == nullptr) {
-            HILOG_ERROR("interceptior is null");
-            return;
-        }
-        if (displayMode == Rosen::FoldDisplayMode::MAIN) {
-            interceptor->ShieldZoomGesture(true);
-        } else if (displayMode == Rosen::FoldDisplayMode::FULL) {
-            interceptor->ShieldZoomGesture(false);
-        } else {
-            HILOG_DEBUG("other display mode.");
-        }
-        return;
-    }
-
-    if (Utils::IsBigFold()) {
-        HILOG_DEBUG("IsBigFold");
-        auto manager = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMgr();
-        if (manager == nullptr) {
-            HILOG_ERROR("manager is null");
-            return;
-        }
-        manager->RefreshWindowParam();
-        return;
     }
 }
 } // namespace Accessibility

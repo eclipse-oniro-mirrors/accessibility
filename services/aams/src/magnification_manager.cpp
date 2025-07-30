@@ -210,15 +210,15 @@ bool MagnificationManager::GetMagnificationState()
     return false;
 }
 
-void MagnificationManager::RefreshWindowParam()
+void MagnificationManager::RefreshWindowParam(RotationType type)
 {
     HILOG_DEBUG();
     if (currentMode_ == WINDOW_MAGNIFICATION && windowMagnificationManager_ != nullptr) {
-        windowMagnificationManager_->RefreshWindowParam();
+        windowMagnificationManager_->RefreshWindowParam(type);
     }
 
     if (currentMode_ == FULL_SCREEN_MAGNIFICATION && fullScreenMagnificationManager_ != nullptr) {
-        fullScreenMagnificationManager_->RefreshWindowParam();
+        fullScreenMagnificationManager_->RefreshWindowParam(type);
     }
 
     if (menuManager_ != nullptr) {

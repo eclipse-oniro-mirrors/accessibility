@@ -203,20 +203,20 @@ void MagnificationWindowProxy::ShowMagnification(uint32_t magnificationType)
     showFun(magnificationType);
 }
 
-void MagnificationWindowProxy::RefreshWindowParam(uint32_t magnificationType)
+void MagnificationWindowProxy::RefreshWindowParam(uint32_t magnificationType, RotationType type)
 {
     if (!handle_) {
         HILOG_ERROR("handle is null");
         return;
     }
  
-    using RefreshWindowParam = void (*)(uint32_t magnificationType);
+    using RefreshWindowParam = void (*)(uint32_t magnificationType, RotationType type);
     RefreshWindowParam refreshWindowParamFun = (RefreshWindowParam)GetFunc("RefreshWindowParam");
     if (!refreshWindowParamFun) {
         HILOG_ERROR("RefreshWindowParam func is null");
         return;
     }
-    refreshWindowParamFun(magnificationType);
+    refreshWindowParamFun(magnificationType, type);
 }
 
 PointerPos MagnificationWindowProxy::ConvertCoordinates(int32_t posX, int32_t posY)

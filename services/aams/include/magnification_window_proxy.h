@@ -42,7 +42,7 @@ public:
     float GetScale();
     bool IsMagnificationWindowShow(uint32_t magnificationType);
     void ShowMagnification(uint32_t magnificationType);
-    void RefreshWindowParam(uint32_t magnificationType);
+    void RefreshWindowParam(uint32_t magnificationType, RotationType type);
     PointerPos ConvertCoordinates(int32_t posX, int32_t posY);
     void InitMagnificationParam(float scale);
 

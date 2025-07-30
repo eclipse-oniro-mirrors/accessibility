@@ -84,11 +84,11 @@ void FullScreenMagnificationManager::PersistScale()
         AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
 }
 
-void FullScreenMagnificationManager::RefreshWindowParam()
+void FullScreenMagnificationManager::RefreshWindowParam(RotationType type)
 {
     HILOG_DEBUG();
     CHECK_PROXY_PTR_VOID()
-    windowProxy_->RefreshWindowParam(FULL_SCREEN_MAGNIFICATION);
+    windowProxy_->RefreshWindowParam(FULL_SCREEN_MAGNIFICATION, type);
 }
 
 PointerPos FullScreenMagnificationManager::ConvertCoordinates(int32_t posX, int32_t posY)

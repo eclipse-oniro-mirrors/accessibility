@@ -35,10 +35,17 @@ namespace Accessibility {
 class MagnificationWindow {
 public:
     // common
-    float GetScale();
     PointerPos GetSourceCenter();
     PointerPos ConvertCoordinates(int32_t posX, int32_t posY);
-    void InitMagnificationParam(float scale);
+    inline float GetScale()
+    {
+        return scale_;
+    }
+ 
+    inline void InitMagnificationParam(float scale)
+    {
+        scale_ = scale;
+    }
 
     // full magnification
     void EnableMagnificationFull(int32_t centerX, int32_t centerY);
@@ -49,7 +56,7 @@ public:
     uint32_t CheckTapOnHotArea(int32_t posX, int32_t posY);
     void FollowFocuseElementFull(int32_t centerX, int32_t centerY);
     void ShowMagnificationFull();
-    void RefreshWindowParamFull();
+    void RefreshWindowParamFull(RotationType type);
     bool IsMagnificationShowFull();
 
     // window magnification
@@ -62,7 +69,7 @@ public:
     void FixSourceCenter(bool needFix);
     void FollowFocuseElementPart(int32_t centerX, int32_t centerY);
     void ShowMagnificationPart();
-    void RefreshWindowParamPart();
+    void RefreshWindowParamPart(RotationType type);
     bool IsMagnificationShowPart();
 
 private:
@@ -72,6 +79,7 @@ private:
     PointerPos GetRectCenter(Rosen::Rect rect);
     void FlushImplicitTransaction();
     void DisableMagnification(bool needClear = false);
+    PointerPos TransferCenter(RotationType type, PointerPos center);
 
     // full magnification
     Rosen::Rect GetSourceRectFromPointer(int32_t centerX, int32_t centerY);

@@ -62,8 +62,9 @@ bool MagnificationManager::GetMagnificationState()
     return false;
 }
 
-void MagnificationManager::RefreshWindowParam()
+void MagnificationManager::RefreshWindowParam(RotationType type)
 {
+    (void)type;
 }
 
 void MagnificationManager::FollowFocuseElement(int32_t centerX, int32_t centerY)

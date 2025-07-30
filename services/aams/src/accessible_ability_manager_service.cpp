@@ -3446,6 +3446,10 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
 void AccessibleAbilityManagerService::InitMagnification()
 {
     HILOG_INFO();
+    if (magnificationManager_ != nullptr) {
+        HILOG_WARN("magnification already init.");
+        return;
+    }
     magnificationManager_ = std::make_shared<MagnificationManager>();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(magnificationManager_);

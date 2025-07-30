@@ -27,11 +27,6 @@ namespace {
 static MagnificationWindow instance;
 
 //common
-float MagnificationWindow::GetScale()
-{
-    return scale_;
-}
-
 PointerPos MagnificationWindow::GetSourceCenter()
 {
     PointerPos point = {0, 0};
@@ -103,11 +98,6 @@ void MagnificationWindow::GetWindowParam()
 #else
     HILOG_INFO("not support");
 #endif
-}
-
-void MagnificationWindow::InitMagnificationParam(float scale)
-{
-    scale_ = scale;
 }
 
 void MagnificationWindow::FlushImplicitTransaction()
@@ -268,6 +258,10 @@ void MagnificationWindow::DrawRuoundRectFrameFull()
     canvasNode_->SetRotation(0);
 
     auto canvas = canvasNode_->BeginRecording(screenWidth_, screenHeight_);
+    if (canvas == nullptr) {
+        HILOG_ERROR("get canvas fail");
+        return;
+    }
     Rosen::Drawing::Pen pen;
     pen.SetAntiAlias(true);
     pen.SetColor(ORANGE_COLOR);
@@ -411,12 +405,13 @@ void MagnificationWindow::ShowMagnificationFull()
     EnableMagnificationFull(centerX, centerY);
 }
 
-void MagnificationWindow::RefreshWindowParamFull()
+void MagnificationWindow::RefreshWindowParamFull(RotationType type)
 {
     HILOG_DEBUG();
     PointerPos center = GetRectCenter(sourceRect_);
     if (isMagnificationShowFull_) {
         DisableMagnificationFull(false);
+        center = TransferCenter(type, center);
         EnableMagnificationFull(center.posX, center.posY);
     } else {
         GetWindowParam();
@@ -585,6 +580,10 @@ void MagnificationWindow::DrawRuoundRectFramePart()
     canvasNode_->SetRotation(0);
 
     auto canvas = canvasNode_->BeginRecording(windowWidth_, windowHeight_);
+    if (canvas == nullptr) {
+        HILOG_ERROR("get canvas fail");
+        return;
+    }
     Rosen::Drawing::Pen pen;
     pen.SetAntiAlias(true);
     pen.SetColor(ORANGE_COLOR);
@@ -763,17 +762,36 @@ void MagnificationWindow::FollowFocuseElementPart(int32_t centerX, int32_t cente
     CalculateAnchorOffset();
 }
 
-void MagnificationWindow::RefreshWindowParamPart()
+void MagnificationWindow::RefreshWindowParamPart(RotationType type)
 {
     HILOG_DEBUG();
     if (isMagnificationShowPart_) {
         PointerPos center = GetRectCenter(windowRect_);
         HILOG_INFO("need refresh window param.");
         DisableMagnificationPart();
+        center = TransferCenter(type, center);
         EnableMagnificationPart(center.posX, center.posY);
     } else {
         GetWindowParam();
     }
+}
+
+PointerPos MagnificationWindow::TransferCenter(RotationType type, PointerPos center)
+{
+    if (type == RotationType::NO_CHANGE || type == RotationType::UNKNOWN) {
+        return center;
+    }
+    GetWindowParam();
+    if (type == RotationType::LEFT_ROTATE) {
+        return {center.posY, screenHeight_ - center.posX};
+    }
+    if (type == RotationType::RIGHT_ROTATE) {
+        return {screenWidth_ - center.posY, center.posX};
+    }
+    if (type == RotationType::FLIP_VERTICAL) {
+        return {screenWidth_ - center.posX, screenHeight_ - center.posY};
+    }
+    return center;
 }
 
 extern "C" API_EXPORT void EnableMagnification(uint32_t magnificationType, int32_t posX, int32_t posY)
@@ -891,14 +909,14 @@ extern "C" API_EXPORT void ShowMagnification(uint32_t magnificationType)
     HILOG_DEBUG("invalid type = %{public}d", magnificationType);
 }
 
-extern "C" API_EXPORT void RefreshWindowParam(uint32_t magnificationType)
+extern "C" API_EXPORT void RefreshWindowParam(uint32_t magnificationType, RotationType type)
 {
     if (magnificationType == FULL_SCREEN_MAGNIFICATION) {
-        instance.RefreshWindowParamFull();
+        instance.RefreshWindowParamFull(type);
         return;
     }
     if (magnificationType == WINDOW_MAGNIFICATION) {
-        instance.RefreshWindowParamPart();
+        instance.RefreshWindowParamPart(type);
         return;
     }
     HILOG_DEBUG("invalid type = %{public}d", magnificationType);

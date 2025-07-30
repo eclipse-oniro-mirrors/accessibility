@@ -48,7 +48,7 @@ public:
     PointerPos ConvertCoordinates(int32_t posX, int32_t posY);
     void FixSourceCenter(bool needFix);
     void PersistScale();
-    void RefreshWindowParam();
+    void RefreshWindowParam(RotationType type);
     void FollowFocuseElement(int32_t centerX, int32_t centerY);
     PointerPos GetSourceCenter();
 
