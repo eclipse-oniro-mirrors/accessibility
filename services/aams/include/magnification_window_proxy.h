@@ -72,7 +72,7 @@ public:
     void CancelNotification();
     int32_t RegisterTimers(uint64_t beginTime);
     void DestoryTimers();
-    void GetWallTimeMs();
+    int64_t GetWallTimeMs();
 
 private:
     void* GetFunc(const std::string& funcName);
