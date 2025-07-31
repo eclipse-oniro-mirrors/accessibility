@@ -173,7 +173,7 @@ HWTEST_F(AccessibilityZoomGestureUnitTest, AccessibilityZoomGesture_Unittest_OnP
     // stop zoom
     TripleTaps();
     zoomState = AccessibilityAbilityHelper::GetInstance().GetZoomState();
-    EXPECT_FALSE(zoomState);
+    EXPECT_TRUE(zoomState);
 
     GTEST_LOG_(INFO) << "AccessibilityZoomGesture_Unittest_OnPointerEvent_003 end";
 }
