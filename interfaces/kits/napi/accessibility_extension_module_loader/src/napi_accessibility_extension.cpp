@@ -286,7 +286,7 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
     std::shared_ptr<AccessibilityElement> element = nullptr;
     HILOG_DEBUG("GetElement componentId: %{public}" PRId64 ", windowId: %{public}d, eventType: %{public}d",
         componentId, windowId, eventInfo.GetEventType());
-    if (componentId > 0) {
+    if (componentId >= 0) {
         std::shared_ptr<AccessibilityElementInfo> elementInfo =
             std::make_shared<AccessibilityElementInfo>(eventInfo.GetElementInfo());
         element = std::make_shared<AccessibilityElement>(elementInfo);
