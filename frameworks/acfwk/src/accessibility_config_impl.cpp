@@ -81,6 +81,10 @@ void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *
     }
     std::string strKey(key);
     std::string strValue(value);
+    HILOG_INFO("strKey is %{public}s", strKey.c_str());
+    HILOG_INFO("strValue is %{public}s", strValue.c_str());
+    HILOG_INFO("strKey result %{public}d", strKey != SYSTEM_PARAMETER_AAMS_NAME);
+    HILOG_INFO("strValue result %{public}d", strValue != "true");
     if (strKey != SYSTEM_PARAMETER_AAMS_NAME || strValue != "true") {
         return;
     }
