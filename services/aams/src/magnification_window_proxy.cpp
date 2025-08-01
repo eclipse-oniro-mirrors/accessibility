@@ -506,7 +506,7 @@ int32_t MagnificationWindowProxy::PublishIgnoreRepeatClickReminder()
  
     using PublishIgnoreRepeatClickReminderFunc = int32_t (*)();
     PublishIgnoreRepeatClickReminderFunc func =
-        (PublishIgnoreRepeatClickReminderFunc)GetFunc("PublishIgnoreRepeatClickReminderFunc");
+        (PublishIgnoreRepeatClickReminderFunc)GetFunc("PublishIgnoreRepeatClickReminder");
     if (!func) {
         HILOG_ERROR("PublishIgnoreRepeatClickReminder func is null");
         return -1;

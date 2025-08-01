@@ -265,7 +265,7 @@ int32_t IgnoreRepeatClickNotification::RegisterTimers(uint64_t beginTime)
             HILOG_ERROR("createTimerFailed");
             continue;
         }
-        HILOG_INFO("timeId = %{public}llu", timerId);
+        HILOG_INFO("timeId = %{public}" PRId64 "", timerId);
         MiscServices::TimeServiceClient::GetInstance()->StartTimer(timerId, intervalMs);
         timersVec.emplace_back(timerId);
     }
