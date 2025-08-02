@@ -181,7 +181,7 @@ void StateListener::NotifyETS(ani_env *env, std::string mode, ani_ref fnRef)
         tmpEnv->FunctionalObject_Call(fnObj, 1, args.data(), &result);
         tmpEnv->DestroyLocalScope();
     };
-    if (!ANIUtils::SendEventToMainThread(task)) {
+    if (!ANICommon::SendEventToMainThread(task)) {
         HILOG_ERROR("failed to send event");
     }
 }
