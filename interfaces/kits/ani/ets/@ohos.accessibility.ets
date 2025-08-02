@@ -34,7 +34,8 @@ export namespace accessibility {
 
     export type TextMoveUnit = 'char' | 'word' | 'line' | 'page' | 'paragraph';
 
-    export type observerType = 'accessibilityStateChange' | 'touchGuideStateChange' | 'screenReaderStateChange';
+    export type observerType = 'accessibilityStateChange' | 'touchGuideStateChange' | 'screenReaderStateChange' |
+        'touchModeChange';
 
     export native function isOpenTouchGuideSync(): boolean;
 
@@ -46,7 +47,7 @@ export namespace accessibility {
 
     native function offAll(type: observerType): void;
 
-    export function off (type: observerType, callback?: ((parameter: boolean) => void)): void {
+    export function off(type: observerType, callback?: ((parameter: boolean) => void)): void {
         if (callback === undefined) {
             offAll(type);
         } else {
