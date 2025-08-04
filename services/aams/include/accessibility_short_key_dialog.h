@@ -30,7 +30,8 @@ namespace Accessibility {
 
 enum ShortKeyDialogType {
     FUNCTION_SELECT = 0,
-    RECONFIRM = 1
+    RECONFIRM = 1,
+    READER_EXCLUSIVE = 2
 };
 
 class ShortkeyAbilityConnection : public AAFwk::AbilityConnectionStub {
@@ -69,6 +70,24 @@ private:
     std::string commandStr_;
 };
 
+class ExclusiveAbilityConnection : public AAFwk::AbilityConnectionStub {
+public:
+    explicit ExclusiveAbilityConnection(const std::string commandStr)
+    {
+        commandStr_ = commandStr;
+    }
+ 
+    virtual ~ExclusiveAbilityConnection() = default;
+ 
+    void OnAbilityConnectDone(const AppExecFwk::ElementName &element,
+        const sptr<IRemoteObject> &remoteObject, int32_t resultCode) override;
+    void OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int32_t resultCode) override;
+    std::string GetCommandString();
+ 
+private:
+    std::string commandStr_;
+};
+
 class AccessibilityShortkeyDialog {
 public:
     AccessibilityShortkeyDialog();
@@ -84,6 +103,7 @@ private:
 private:
     sptr<ShortkeyAbilityConnection> functionSelectConn_ {nullptr};
     sptr<ReConfirmAbilityConnection> reConfirmConn_ {nullptr};
+    sptr<ExclusiveAbilityConnection> readerExclusiveConn_ {nullptr};
 };
 
 } // namespace Accessibility
