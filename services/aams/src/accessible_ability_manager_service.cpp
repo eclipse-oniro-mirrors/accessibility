@@ -64,32 +64,32 @@ using namespace OHOS::AccessibilityConfig;
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
-    const std::string AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
-    const std::string AAMS_SEND_EVENT_RUNNER_NAME = "AamsSendEventRunner";
-    const std::string AAMS_CHANNEL_RUNNER_NAME = "AamsChannelRunner";
-    const std::string AAMS_INPUT_MANAGER_RUNNER_NAME = "AamsInputManagerRunner";
-    const std::string AAMS_GESTURE_RUNNER_NAME = "AamsGestureRunner";
-    const std::string AAMS_HOVER_ENTER_RUNNER_NAME = "AamsHoverEnterRunner";
-    const std::string AAMS_REGISTER_RUNNER_NAME = "AamsRegisterRunner";
-    const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
-    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
-    const std::string DEVICE_PROVISIONED = "device_provisioned";
-    const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
-    const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
-    const std::string SCREEN_MAGNIFICATION_MODE = "accessibility_magnification_mode";
-    const std::string SCREEN_MAGNIFICATION_SCALE = "accessibility_display_magnification_scale";
-    const std::string MAGNIFICATION_PARAM = "const.accessibility.magnification";
-    const std::string VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
-    const std::string VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
-    const std::string DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
-    const std::string USER_SETUP_COMPLETED = "user_setup_complete";
-    const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
-    const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
-    const std::string HAP_PATH = "/system/app/Settings/Settings.hap";
-    const std::string HAP_BUNDLE = "com.ohos.settings";
-    const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
-    const std::string UI_TEST_ABILITY_NAME = "uitestability";
+    const char* AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
+    const char* AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
+    const char* AAMS_SEND_EVENT_RUNNER_NAME = "AamsSendEventRunner";
+    const char* AAMS_CHANNEL_RUNNER_NAME = "AamsChannelRunner";
+    const char* AAMS_INPUT_MANAGER_RUNNER_NAME = "AamsInputManagerRunner";
+    const char* AAMS_GESTURE_RUNNER_NAME = "AamsGestureRunner";
+    const char* AAMS_HOVER_ENTER_RUNNER_NAME = "AamsHoverEnterRunner";
+    const char* AAMS_REGISTER_RUNNER_NAME = "AamsRegisterRunner";
+    const char* SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
+    const char* SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const char* DEVICE_PROVISIONED = "device_provisioned";
+    const char* SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
+    const char* SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
+    const char* SCREEN_MAGNIFICATION_MODE = "accessibility_magnification_mode";
+    const char* SCREEN_MAGNIFICATION_SCALE = "accessibility_display_magnification_scale";
+    const char* MAGNIFICATION_PARAM = "const.accessibility.magnification";
+    const char* VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
+    const char* VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
+    const char* DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
+    const char* USER_SETUP_COMPLETED = "user_setup_complete";
+    const char* ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
+    const char* SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
+    const char* HAP_PATH = "/system/app/Settings/Settings.hap";
+    const char* HAP_BUNDLE = "com.ohos.settings";
+    const char* UI_TEST_BUNDLE_NAME = "ohos.uitest";
+    const char* UI_TEST_ABILITY_NAME = "uitestability";
     constexpr int32_t INVALID_SHORTCUT_STATE = 2;
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
@@ -110,15 +110,15 @@ namespace {
         OFF = 0,
         ON = 1,
     };
-    const std::string TIMER_REGISTER_STATE_OBSERVER = "accessibility:registerStateObServer";
-    const std::string TIMER_REGISTER_CAPTION_OBSERVER = "accessibility:registerCaptionObServer";
-    const std::string TIMER_REGISTER_ENABLEABILITY_OBSERVER = "accessibility:registerEnableAbilityObServer";
-    const std::string TIMER_GET_ALL_CONFIG = "accessibility:getAllConfig";
-    const std::string TIMER_REGISTER_CONFIG_OBSERVER = "accessibility:registerConfigObserver";
-    const std::string MAGNIFICATION_SCALE = "magnification_scale";
-    const std::string MAGNIFICATION_DISABLE = "magnification_disabled";
-    const std::string SWITCH_FULL_SCREEN = "switch_full_screen_magnification";
-    const std::string SWITCH_WINDOW = "switch_window_magnification";
+    const char* TIMER_REGISTER_STATE_OBSERVER = "accessibility:registerStateObServer";
+    const char* TIMER_REGISTER_CAPTION_OBSERVER = "accessibility:registerCaptionObServer";
+    const char* TIMER_REGISTER_ENABLEABILITY_OBSERVER = "accessibility:registerEnableAbilityObServer";
+    const char* TIMER_GET_ALL_CONFIG = "accessibility:getAllConfig";
+    const char* TIMER_REGISTER_CONFIG_OBSERVER = "accessibility:registerConfigObserver";
+    const char* MAGNIFICATION_SCALE = "magnification_scale";
+    const char* MAGNIFICATION_DISABLE = "magnification_disabled";
+    const char* SWITCH_FULL_SCREEN = "switch_full_screen_magnification";
+    const char* SWITCH_WINDOW = "switch_window_magnification";
     constexpr int32_t XCOLLIE_TIMEOUT = 6; // s
     constexpr int QUANTITY = 2; // plural string
 
@@ -309,7 +309,7 @@ void AccessibleAbilityManagerService::OnStart()
     InitGestureHandler();
     InitHoverEnterHandler();
 
-    SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
+    SetParameter(SYSTEM_PARAMETER_AAMS_NAME, "false");
 
     HILOG_DEBUG("AddAbilityListener!");
     AddSystemAbilityListener(ABILITY_MGR_SERVICE_ID);
@@ -362,7 +362,7 @@ void AccessibleAbilityManagerService::OnStop()
 
     isReady_ = false;
     isPublished_ = false;
-    SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
+    SetParameter(SYSTEM_PARAMETER_AAMS_NAME, "false");
     int pid = getpid();
     Memory::MemMgrClient::GetInstance().NotifyProcessStatus(pid, 1, 0, ACCESSIBILITY_MANAGER_SERVICE_ID);
     HILOG_INFO("AccessibleAbilityManagerService::OnStop OK.");
@@ -411,7 +411,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         InitInnerResource();
 
         isReady_ = true;
-        SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "true");
+        SetParameter(SYSTEM_PARAMETER_AAMS_NAME, "true");
         HILOG_DEBUG("AAMS is ready!");
         RegisterShortKeyEvent();
         PostDelayUnloadTask();
@@ -452,7 +452,7 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
             Singleton<AccessibilityWindowManager>::GetInstance().DeInit();
 
             isReady_ = false;
-            SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
+            SetParameter(SYSTEM_PARAMETER_AAMS_NAME, "false");
         }
 
         if (systemAbilityId == DISTRIBUTED_KV_DATA_SERVICE_ABILITY_ID) {
@@ -3668,7 +3668,7 @@ void AccessibleAbilityManagerService::PostDelayUnloadTask()
             HILOG_ERROR("unload system ability failed");
             return;
         }
-        SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
+        SetParameter(SYSTEM_PARAMETER_AAMS_NAME, "false");
     };
     handler_->RemoveTask(DELAY_UNLOAD_TASK);
     handler_->PostTask(task, DELAY_UNLOAD_TASK, UNLOAD_TASK_INTERNAL);
@@ -4170,7 +4170,7 @@ void AccessibleAbilityManagerService::InitResource(bool needReInit)
  
     resConfig->SetLocaleInfo(language.c_str(), script.c_str(), region.c_str());
     resourceManager->UpdateResConfig(*resConfig);
-    if (!resourceManager->AddResource(HAP_PATH.c_str())) {
+    if (!resourceManager->AddResource(HAP_PATH)) {
         HILOG_ERROR("AddResource failed");
         return;
     }

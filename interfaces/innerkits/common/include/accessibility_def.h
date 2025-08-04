@@ -412,6 +412,22 @@ constexpr int32_t US_TO_MS = 1000;
 constexpr float COMPLEX_UNIT_MM_CONVERSION = 1.0f / 25.4f;
 constexpr int32_t MM_PER_CM = 10;
 
+const char ERROR_MESSAGE_PARAMETER_ERROR[] = "Parameter error. Possible causes:"
+    "1. Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.";
+const char ERROR_MESSAGE_NO_PERMISSION[] = "Permission verification failed."
+    "The application does not have the permission required to call the API.";
+const char ERROR_MESSAGE_NOT_SYSTEM_APP[] = "Permission verification failed."
+    "A non-system application calls a system API.";
+const char ERROR_MESSAGE_NO_RIGHT[] = "No accessibility permission to perform the operation";
+const char ERROR_MESSAGE_SYSTEM_ABNORMALITY[] = "System abnormality";
+const char ERROR_MESSAGE_PROPERTY_NOT_EXIST[] = "This property does not exist";
+const char ERROR_MESSAGE_ACTION_NOT_SUPPORT[] = "This action is not supported";
+const char ERROR_MESSAGE_INVALID_BUNDLE_NAME_OR_ABILITY_NAME[] = "Invalid bundle name or ability name";
+const char ERROR_MESSAGE_TARGET_ABILITY_ALREADY_ENABLED[] = "Target ability already enabled";
+const char ERROR_MESSAGE_ENABLE_MAGNIFICATION[] = "Failed to trigger magnification.";
+const char ERROR_MESSAGE_CAPABILITY_NOT_SUPPORT[] = "Capability not supported."
+    "Failed to call the API due to limited device capabilities.";
+
 enum class NAccessibilityErrorCode : int32_t {
     ACCESSIBILITY_OK = 0,
     ACCESSIBILITY_ERROR_NO_PERMISSION = 201,
