@@ -31,60 +31,60 @@ namespace {
     const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const int32_t DEFAULT_ACCOUNT_ID = 100;
-    const std::string ACCESSIBILITY = "accessibility";
-    const std::string TOUCH_GUIDE_STATE = "touch_guide_state";
-    const std::string GESTURE_KEY = "gesture_state";
-    const std::string CAPTION_KEY = "caption_state";
-    const std::string KEYEVENT_OBSERVER = "keyevent_observer";
-    const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
-    const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
-    const std::string SCREEN_MAGNIFICATION_MODE = "accessibility_magnification_mode";
-    const std::string SCREEN_MAGNIFICATION_SCALE = "accessibility_display_magnification_scale";
-    const std::string MOUSEKEY = "mousekey";
-    const std::string HIGH_CONTRAST_TEXT_KEY = "high_text_contrast_enabled";
-    const std::string DALTONIZATION_STATE = "accessibility_display_daltonizer_enabled";
-    const std::string INVERT_COLOR_KEY = "accessibility_display_inversion_enabled";
-    const std::string ANIMATION_OFF_KEY = "animation_off";
-    const std::string AUDIO_MONO_KEY = "master_mono";
-    const std::string IGNORE_REPEAT_CLICK_SWITCH = "ignore_repeat_click_switch";
-    const std::string SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
-    const std::string SHORTCUT_SERVICE = "accessibility_shortcut_target_service";
-    const std::string CLICK_RESPONCE_TIME = "click_response_time";
-    const std::string IGNORE_REPEAT_CLICK_TIME = "ignore_repeat_click_time";
-    const std::string DALTONIZATION_COLOR_FILTER_KEY = "accessibility_display_daltonizer";
-    const std::string CONTENT_TIMEOUT_KEY = "accessibility_content_timeout";
-    const std::string BRIGHTNESS_DISCOUNT_KEY = "accessibility_brightness_discount";
-    const std::string AUDIO_BALANCE_KEY = "master_balance";
-    const std::string FONT_FAMILY = "accessibility_font_family";
-    const std::string FONT_COLOR = "accessibility_font_color";
-    const std::string FONT_EDGE_TYPE = "accessibility_font_edge_type";
-    const std::string BACKGROUND_COLOR = "accessibility_background_color";
-    const std::string WINDOW_COLOR = "accessibility_window_color";
-    const std::string FONT_SCALE = "accessibility_font_scale";
-    const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
-    const std::string SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen"; // HMOS key
-    const std::string SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen"; // AOS key
-    const std::string SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
-    const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
-    const std::string SCREENREADER_TAG = "screenreader";
-    const std::string INVERT_COLOR_AOS_TAG = "ColorInversion";
-    const std::string INVERT_COLOR_HMOS_TAG = "INVERT_COLOR";
-    const std::string AUDIO_MONO_HMOS_TAG = "AUDIO_MONO";
-    const std::string HIGH_CONTRAST_TEXT_HMOS_TAG = "HIGH_CONTRAST_TEXT";
-    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
-    const std::string ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
-    const std::string ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
-    const std::string IGNORE_REPEAT_CLICK_RECONFIRM = "accessibility_ignore_repeat_click_reconfirm";
-    const std::string ZOOM_GESTURE_ENABLED_RECONFIRM = "accessibility_zoom_gesture_enabled_reconfirm";
-    const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
-    const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
-    const std::string FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
-    const std::string FLASH_REMINDER_ENABLED = "accessibility_reminder_function_enabled";
-    const std::string VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
-    const std::string VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
-    const std::string IGNORE_REPEAT_CLICK_TIMESTAMP = "accessibility_ignore_repeat_click_timestamp";
-    const std::string RECOVERY_IGNORE_REPEAT_CLICK_DATE = "recovery_ignore_repeat_click_switch_date";
-    const std::string IGNORE_REPEATED_CLICK_CACHE_FLAG = "accessibility_ignore_repeat_click_cache_flag";
+    const char* ACCESSIBILITY = "accessibility";
+    const char* TOUCH_GUIDE_STATE = "touch_guide_state";
+    const char* GESTURE_KEY = "gesture_state";
+    const char* CAPTION_KEY = "caption_state";
+    const char* KEYEVENT_OBSERVER = "keyevent_observer";
+    const char* SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
+    const char* SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
+    const char* SCREEN_MAGNIFICATION_MODE = "accessibility_magnification_mode";
+    const char* SCREEN_MAGNIFICATION_SCALE = "accessibility_display_magnification_scale";
+    const char* MOUSEKEY = "mousekey";
+    const char* HIGH_CONTRAST_TEXT_KEY = "high_text_contrast_enabled";
+    const char* DALTONIZATION_STATE = "accessibility_display_daltonizer_enabled";
+    const char* INVERT_COLOR_KEY = "accessibility_display_inversion_enabled";
+    const char* ANIMATION_OFF_KEY = "animation_off";
+    const char* AUDIO_MONO_KEY = "master_mono";
+    const char* IGNORE_REPEAT_CLICK_SWITCH = "ignore_repeat_click_switch";
+    const char* SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
+    const char* SHORTCUT_SERVICE = "accessibility_shortcut_target_service";
+    const char* CLICK_RESPONCE_TIME = "click_response_time";
+    const char* IGNORE_REPEAT_CLICK_TIME = "ignore_repeat_click_time";
+    const char* DALTONIZATION_COLOR_FILTER_KEY = "accessibility_display_daltonizer";
+    const char* CONTENT_TIMEOUT_KEY = "accessibility_content_timeout";
+    const char* BRIGHTNESS_DISCOUNT_KEY = "accessibility_brightness_discount";
+    const char* AUDIO_BALANCE_KEY = "master_balance";
+    const char* FONT_FAMILY = "accessibility_font_family";
+    const char* FONT_COLOR = "accessibility_font_color";
+    const char* FONT_EDGE_TYPE = "accessibility_font_edge_type";
+    const char* BACKGROUND_COLOR = "accessibility_background_color";
+    const char* WINDOW_COLOR = "accessibility_window_color";
+    const char* FONT_SCALE = "accessibility_font_scale";
+    const char* ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
+    const char* SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen"; // HMOS key
+    const char* SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen"; // AOS key
+    const char* SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
+    const char* ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
+    const char* SCREENREADER_TAG = "screenreader";
+    const char* INVERT_COLOR_AOS_TAG = "ColorInversion";
+    const char* INVERT_COLOR_HMOS_TAG = "INVERT_COLOR";
+    const char* AUDIO_MONO_HMOS_TAG = "AUDIO_MONO";
+    const char* HIGH_CONTRAST_TEXT_HMOS_TAG = "HIGH_CONTRAST_TEXT";
+    const char* SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const char* ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
+    const char* ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
+    const char* IGNORE_REPEAT_CLICK_RECONFIRM = "accessibility_ignore_repeat_click_reconfirm";
+    const char* ZOOM_GESTURE_ENABLED_RECONFIRM = "accessibility_zoom_gesture_enabled_reconfirm";
+    const char* GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
+    const char* ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
+    const char* FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
+    const char* FLASH_REMINDER_ENABLED = "accessibility_reminder_function_enabled";
+    const char* VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
+    const char* VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
+    const char* IGNORE_REPEAT_CLICK_TIMESTAMP = "accessibility_ignore_repeat_click_timestamp";
+    const char* RECOVERY_IGNORE_REPEAT_CLICK_DATE = "recovery_ignore_repeat_click_switch_date";
+    const char* IGNORE_REPEATED_CLICK_CACHE_FLAG = "accessibility_ignore_repeat_click_cache_flag";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -1043,15 +1043,15 @@ void AccessibilitySettingsConfig::InitPrivacySpaceConfig()
 void AccessibilitySettingsConfig::InitAnimationOffConfig()
 {
     animationOffState_ = datashare_->GetBoolValue(ANIMATION_OFF_KEY, false);
-    std::string graphicState = system::GetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
-    std::string arkuiState = system::GetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
+    std::string graphicState = system::GetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "1");
+    std::string arkuiState = system::GetParameter(ARKUI_ANIMATION_SCALE_NAME, "1");
     bool state = (graphicState == "0" && arkuiState == "0");
     if (animationOffState_) {
-        system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "0");
-        system::SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "0");
+        system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "0");
+        system::SetParameter(ARKUI_ANIMATION_SCALE_NAME, "0");
     } else if (!animationOffState_ && state) {
-        system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
-        system::SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
+        system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "1");
+        system::SetParameter(ARKUI_ANIMATION_SCALE_NAME, "1");
     }
 }
 
