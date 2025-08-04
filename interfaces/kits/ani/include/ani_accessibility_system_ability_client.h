@@ -27,15 +27,20 @@ struct ANIStateCallbackInfo {
     ani_env *env_;
     ani_ref fnRef_;
     bool state_;
+    std::string mode_;
 };
 
 struct StateListener {
-    StateListener(ani_env *env, ani_ref fnRef) : env_(env), fnRef_(fnRef) {};
+    StateListener(ani_env *env, ani_ref fnRef, bool isBoolObserver = true) : env_(env), fnRef_(fnRef),
+        isBoolObserver_(isBoolObserver) {};
     static void NotifyETS(ani_env *env, bool state, ani_ref fnRef);
+    static void NotifyETS(ani_env *env, std::string mode, ani_ref fnRef);
     void OnStateChanged(const bool state);
+    void OnStateChanged(const std::string mode);
 
     ani_env* env_;
     ani_ref fnRef_;
+    bool isBoolObserver_ = true;
 };
 
 class StateListenerImpl : public OHOS::Accessibility::AccessibilityStateObserver,
@@ -45,7 +50,7 @@ public:
     void OnStateChanged(const bool state) override;
     void SubscribeToFramework();
     void UnsubscribeFromFramework();
-    void SubscribeObserver(ani_env *env, ani_object observer);
+    void SubscribeObserver(ani_env *env, ani_object observer, bool isBoolObserver = true);
     void UnsubscribeObserver(ani_env *env, ani_object observer);
     void UnsubscribeObservers();
 
@@ -67,6 +72,7 @@ public:
     static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;
     static std::shared_ptr<StateListenerImpl> touchGuideStateListeners_;
     static std::shared_ptr<StateListenerImpl> screenReaderStateListeners_;
+    static std::shared_ptr<StateListenerImpl> touchModeListeners_;
 
 private:
     ANIAccessibilityClient() = default;

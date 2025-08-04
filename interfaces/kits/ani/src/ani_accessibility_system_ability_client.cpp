@@ -31,6 +31,8 @@ std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::touchGuideStateListen
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED);
 std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::screenReaderStateListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_SCREEN_READER_STATE_CHANGED);
+std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::touchModeListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED);
 
 void StateListenerImpl::SubscribeToFramework()
 {
@@ -53,13 +55,27 @@ void StateListenerImpl::UnsubscribeFromFramework()
 void StateListenerImpl::OnStateChanged(const bool state)
 {
     HILOG_INFO("state is %{public}d", state);
-    std::lock_guard<ffrt::mutex> lock(mutex_);
+    std::string touchMode = "";
+    if (type_ == AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED) {
+        for (auto &observer : observers_) {
+            touchMode = state ? "singleTouchMode" : "doubleTouchMode";
+            observer->OnStateChanged(touchMode);
+        }
+        return;
+    }
+ 
     for (auto &observer : observers_) {
-        observer->OnStateChanged(state);
+        if (observer->isBoolObserver_) {
+            observer->OnStateChanged(state);
+        } else if (!state) {
+            // notify the touch mode change
+            touchMode = "none";
+            observer->OnStateChanged(touchMode);
+        }
     }
 }
 
-void StateListenerImpl::SubscribeObserver(ani_env *env, ani_object observer)
+void StateListenerImpl::SubscribeObserver(ani_env *env, ani_object observer, bool isBoolObserver)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
     ani_ref fnRef;
@@ -73,7 +89,7 @@ void StateListenerImpl::SubscribeObserver(ani_env *env, ani_object observer)
         }
     }
 
-    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, fnRef);
+    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, fnRef, isBoolObserver);
     observers_.emplace_back(stateListener);
     HILOG_INFO("observer size%{public}zu", observers_.size());
 }
@@ -101,7 +117,7 @@ void StateListenerImpl::UnsubscribeObservers()
 {
     HILOG_INFO();
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    for (auto iter = observers_.begin(); iter != observers_.end();) {
+    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
         (*iter)->env_->GlobalReference_Delete((*iter)->fnRef_);
     }
     observers_.clear();
@@ -140,9 +156,44 @@ void StateListener::NotifyETS(ani_env *env, bool state, ani_ref fnRef)
     }
 }
 
+void StateListener::NotifyETS(ani_env *env, std::string mode, ani_ref fnRef)
+{
+    HILOG_INFO("mode = [%{public}s]", mode.c_str());
+    
+    std::shared_ptr<ANIStateCallbackInfo> callbackInfo = std::make_shared<ANIStateCallbackInfo>();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("Failed to create callbackInfo");
+        return;
+    }
+    callbackInfo->mode_ = mode;
+    callbackInfo->env_ = env;
+    callbackInfo->fnRef_ = fnRef;
+    auto task = [callbackInfo]() {
+        HILOG_INFO("notify mode changed to ets");
+        ani_env *tmpEnv = callbackInfo->env_;
+        ani_size nr_refs = ANI_SCOPE_SIZE;
+        tmpEnv->CreateLocalScope(nr_refs);
+        auto fnObj = reinterpret_cast<ani_fn_object>(callbackInfo->fnRef_);
+        ani_string modeStr;
+        tmpEnv->String_NewUTF8(callbackInfo->mode_.c_str(), callbackInfo->mode_.length(), &modeStr);
+        std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(modeStr)};
+        ani_ref result;
+        tmpEnv->FunctionalObject_Call(fnObj, 1, args.data(), &result);
+        tmpEnv->DestroyLocalScope();
+    };
+    if (!ANICommon::SendEventToMainThread(task)) {
+        HILOG_ERROR("failed to send event");
+    }
+}
+
 void StateListener::OnStateChanged(const bool state)
 {
     NotifyETS(env_, state, fnRef_);
+}
+
+void StateListener::OnStateChanged(const std::string mode)
+{
+    NotifyETS(env_, mode, fnRef_);
 }
 
 void ANIAccessibilityClient::SubscribeState(ani_env *env, ani_string type, ani_object callback)
@@ -154,6 +205,9 @@ void ANIAccessibilityClient::SubscribeState(ani_env *env, ani_string type, ani_o
         touchGuideStateListeners_->SubscribeObserver(env, callback);
     } else if (std::strcmp(eventType.c_str(), "screenReaderStateChange") == 0) {
         screenReaderStateListeners_->SubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "touchModeChange") == 0) {
+        touchModeListeners_->SubscribeObserver(env, callback);
+        touchGuideStateListeners_->SubscribeObserver(env, callback, false);
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
         ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
@@ -169,6 +223,9 @@ void ANIAccessibilityClient::UnsubscribeState(ani_env *env, ani_string type, ani
         touchGuideStateListeners_->UnsubscribeObserver(env, callback);
     } else if (std::strcmp(eventType.c_str(), "screenReaderStateChange") == 0) {
         screenReaderStateListeners_->UnsubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "touchModeChange") == 0) {
+        touchModeListeners_->UnsubscribeObserver(env, callback);
+        touchGuideStateListeners_->UnsubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("UnsubscribeState eventType[%{public}s] is error", eventType.c_str());
         ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
@@ -184,6 +241,9 @@ void ANIAccessibilityClient::UnsubscribeStateAll(ani_env *env, ani_string type)
         touchGuideStateListeners_->UnsubscribeObservers();
     } else if (std::strcmp(eventType.c_str(), "screenReaderStateChange") == 0) {
         screenReaderStateListeners_->UnsubscribeObservers();
+    } else if (std::strcmp(eventType.c_str(), "touchModeChange") == 0) {
+        touchModeListeners_->UnsubscribeObservers();
+        touchGuideStateListeners_->UnsubscribeObservers();
     } else {
         HILOG_ERROR("UnsubscribeStateAll eventType[%{public}s] is error", eventType.c_str());
         ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
