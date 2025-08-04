@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import { BusinessError, AsyncCallback } from '@ohos.base';
+import { BusinessError, AsyncCallback, Callback } from '@ohos.base';
 
 native function sendAccessibilityEventSync(event: accessibility.EventInfo): void;
 
@@ -40,20 +40,54 @@ export namespace accessibility {
 
     export native function isOpenAccessibilitySync(): boolean;
 
-    export native function on(type: observerType, callback: ((parameter: boolean) => void)): void;
+    native function onStateChange(type: observerType, callback: Callback<boolean>): void;
 
-    native function offObserver(type: observerType, callback: ((parameter: boolean) => void)): void;
+    export function onAccessibilityStateChange(type: 'accessibilityStateChange', callback: Callback<boolean>): void {
+        onStateChange(type, callback);
+    }
+
+    export function onTouchGuideStateChange(type: 'touchGuideStateChange', callback: Callback<boolean>): void {
+        onStateChange(type, callback);
+    }
+
+    export function onScreenReaderStateChange(type: 'screenReaderStateChange', callback: Callback<boolean>): void {
+        onStateChange(type, callback);
+    }
+
+    export overload on { onAccessibilityStateChange, onTouchGuideStateChange, onScreenReaderStateChange };
+
+    native function offStateChange(type: observerType, callback: Callback<boolean>): void;
 
     native function offAll(type: observerType): void;
 
-    export function off (type: observerType, callback?: ((parameter: boolean) => void)): void {
+    export function offAccessibilityStateChange(type: 'accessibilityStateChange', callback?: Callback<boolean>): void {
         if (callback === undefined) {
             offAll(type);
         } else {
-            let callbackFunc: ((parameter: boolean) => void) = callback as ((parameter: boolean) => void); 
-            offObserver(type, callbackFunc);
+            let callbackFunc: Callback<boolean> = callback as Callback<boolean>; 
+            offStateChange(type, callbackFunc);
         }
     }
+
+    export function offTouchGuideStateChange(type: 'touchGuideStateChange', callback?: Callback<boolean>): void {
+        if (callback === undefined) {
+            offAll(type);
+        } else {
+            let callbackFunc: Callback<boolean> = callback as Callback<boolean>; 
+            offStateChange(type, callbackFunc);
+        }
+    }
+
+    export function offScreenReaderStateChange(type: 'screenReaderStateChange', callback?: Callback<boolean>): void {
+        if (callback === undefined) {
+            offAll(type);
+        } else {
+            let callbackFunc: Callback<boolean> = callback as Callback<boolean>; 
+            offStateChange(type, callbackFunc);
+        }
+    }
+
+    export overload off { offAccessibilityStateChange, offTouchGuideStateChange, offScreenReaderStateChange };
 
     export class EventInfo {
         constructor(type: EventType, bundleName: string, triggerAction: Action) {
