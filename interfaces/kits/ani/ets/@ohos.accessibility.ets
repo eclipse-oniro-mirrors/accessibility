@@ -64,7 +64,7 @@ export namespace accessibility {
         if (callback === undefined) {
             offAll(type);
         } else {
-            let callbackFunc: Callback<boolean> = callback as Callback<boolean>; 
+            let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
             offStateChange(type, callbackFunc);
         }
     }
@@ -73,7 +73,7 @@ export namespace accessibility {
         if (callback === undefined) {
             offAll(type);
         } else {
-            let callbackFunc: Callback<boolean> = callback as Callback<boolean>; 
+            let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
             offStateChange(type, callbackFunc);
         }
     }
@@ -82,7 +82,7 @@ export namespace accessibility {
         if (callback === undefined) {
             offAll(type);
         } else {
-            let callbackFunc: Callback<boolean> = callback as Callback<boolean>; 
+            let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
             offStateChange(type, callbackFunc);
         }
     }
