@@ -286,6 +286,18 @@ std::string Utils::GetUri(const std::string &bundleName, const std::string &abil
     return bundleName + "/" + abilityName;
 }
 
+std::string Utils::GetBundleNameFromUri(const std::string &uri)
+{
+    if (uri.empty()) {
+        return "";
+    }
+    size_t pos = uri.find('/');
+    if (pos != std::string::npos) {
+        return uri.substr(0, pos);
+    }
+    return uri;
+}
+
 std::string Utils::GetAbilityAutoStartStateKey(const std::string &bundleName, const std::string &abilityName,
     int32_t accountId)
 {
