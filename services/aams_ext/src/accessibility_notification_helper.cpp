@@ -259,7 +259,8 @@ int32_t IgnoreRepeatClickNotification::RegisterTimers(uint64_t beginTime)
         std::shared_ptr<TimerInfo> timer = std::make_shared<TimerInfo>();
         timer->SetCallbackInfo(TimerCallback);
         timer->SetDisposable(true);
-        timer->SetType(timer->TIMER_TYPE_EXACT | timer->TIMER_TYPE_WAKEUP);
+        timer->SetType(
+            static_cast<uint32_t>(timer->TIMER_TYPE_EXACT) | static_cast<uint32_t>(timer->TIMER_TYPE_WAKEUP));
         uint64_t timerId = MiscServices::TimeServiceClient::GetInstance()->CreateTimer(timer);
         if (!timerId) {
             HILOG_ERROR("createTimerFailed");
@@ -274,7 +275,7 @@ int32_t IgnoreRepeatClickNotification::RegisterTimers(uint64_t beginTime)
 
 uint64_t IgnoreRepeatClickNotification::CalculateTimeToMidnight(uint64_t nowTime)
 {
-    time_t nowSec = nowTime / 1000;
+    time_t nowSec = static_cast<int64_t>(nowTime / 1000);
     struct tm *utcTime = gmtime((const time_t *)&nowSec);
     if (!utcTime) {
         return 0;
