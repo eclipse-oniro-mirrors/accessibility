@@ -783,7 +783,7 @@ PointerPos MagnificationWindow::TransferCenter(RotationType type, PointerPos cen
     }
     GetWindowParam();
     if (type == RotationType::LEFT_ROTATE) {
-        return {center.posY, screenHeight_ - center.posX};
+        return {center.posY, static_cast<int32_t>(screenHeight_) - center.posX};
     }
     if (type == RotationType::RIGHT_ROTATE) {
         return {screenWidth_ - center.posY, center.posX};
