@@ -1574,9 +1574,7 @@ ErrCode AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
     std::string bundleName = "";
-    if (!Utils::GetBundleNameByCallingUid(bundleName)) {
-        return RET_ERR_FAILED;
-    }
+    bundleName = Utils::GetBundleNameFromUri(name);
     auto &powerManager = Singleton<AccessibilityPowerManager>::GetInstance();
     if (!powerManager.UnholdRunningLock(bundleName)) {
         HILOG_ERROR("Failed to unhold running lock.");
