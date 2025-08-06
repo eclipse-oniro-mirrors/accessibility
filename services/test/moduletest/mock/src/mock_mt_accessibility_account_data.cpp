@@ -218,7 +218,8 @@ const std::vector<std::string>& MockAccessibilityAccountData::GetEnabledAbilitie
     return enabledAbilities_;
 }
 
-bool AccessibilityAccountData::DealWithScreenReaderState() {
+bool AccessibilityAccountData::DealWithScreenReaderState()
+{
     HILOG_DEBUG("start.");
     return true;
 }
