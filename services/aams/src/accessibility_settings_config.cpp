@@ -62,16 +62,16 @@ namespace {
     const char* WINDOW_COLOR = "accessibility_window_color";
     const char* FONT_SCALE = "accessibility_font_scale";
     const char* ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
-    const char* SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen"; // HMOS key
+    const char* SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
     const char* SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen"; // AOS key
     const char* SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const char* ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const char* SCREENREADER_TAG = "screenreader";
     const char* INVERT_COLOR_AOS_TAG = "ColorInversion";
-    const char* INVERT_COLOR_HMOS_TAG = "INVERT_COLOR";
-    const char* AUDIO_MONO_HMOS_TAG = "AUDIO_MONO";
-    const char* HIGH_CONTRAST_TEXT_HMOS_TAG = "HIGH_CONTRAST_TEXT";
-    const char* SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const char* INVERT_COLOR_TAG = "INVERT_COLOR";
+    const char* AUDIO_MONO_TAG = "AUDIO_MONO";
+    const char* HIGH_CONTRAST_TEXT_TAG = "HIGH_CONTRAST_TEXT";
+    const char* SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
     const char* ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
     const char* ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
     const char* IGNORE_REPEAT_CLICK_RECONFIRM = "accessibility_ignore_repeat_click_reconfirm";
@@ -1233,17 +1233,17 @@ uint32_t AccessibilitySettingsConfig::GetShortKeyService(std::vector<std::string
 
     auto invertColor = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
         return service.find(INVERT_COLOR_AOS_TAG) != std::string::npos ||
-            service.find(INVERT_COLOR_HMOS_TAG) != std::string::npos;
+            service.find(INVERT_COLOR_TAG) != std::string::npos;
     });
     serviceFlag = invertColor != services.end() ? (serviceFlag | STATE_INVETRTCOLOR_ENABLED) : serviceFlag;
 
     auto audioMono = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
-        return service.find(AUDIO_MONO_HMOS_TAG) != std::string::npos;
+        return service.find(AUDIO_MONO_TAG) != std::string::npos;
     });
     serviceFlag = audioMono != services.end() ? (serviceFlag | STATE_AUDIOMONO_ENABLED) : serviceFlag;
 
     auto highContrastText = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
-        return service.find(HIGH_CONTRAST_TEXT_HMOS_TAG) != std::string::npos;
+        return service.find(HIGH_CONTRAST_TEXT_TAG) != std::string::npos;
     });
     serviceFlag = highContrastText != services.end() ? (serviceFlag | STATE_HIGHCONTRAST_ENABLED) : serviceFlag;
 
@@ -1259,13 +1259,13 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
         shortkeyService.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
     }
     if (shortkeyServiceFlag & STATE_INVETRTCOLOR_ENABLED) {
-        shortkeyService.push_back(INVERT_COLOR_HMOS_TAG);
+        shortkeyService.push_back(INVERT_COLOR_TAG);
     }
     if (shortkeyServiceFlag & STATE_AUDIOMONO_ENABLED) {
-        shortkeyService.push_back(AUDIO_MONO_HMOS_TAG);
+        shortkeyService.push_back(AUDIO_MONO_TAG);
     }
     if (shortkeyServiceFlag & STATE_HIGHCONTRAST_ENABLED) {
-        shortkeyService.push_back(HIGH_CONTRAST_TEXT_HMOS_TAG);
+        shortkeyService.push_back(HIGH_CONTRAST_TEXT_TAG);
     }
     SetShortkeyMultiTarget(shortkeyService);
 

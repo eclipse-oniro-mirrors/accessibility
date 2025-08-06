@@ -73,7 +73,7 @@ namespace {
     const char* AAMS_HOVER_ENTER_RUNNER_NAME = "AamsHoverEnterRunner";
     const char* AAMS_REGISTER_RUNNER_NAME = "AamsRegisterRunner";
     const char* SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
-    const char* SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const char* SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
     const char* DEVICE_PROVISIONED = "device_provisioned";
     const char* SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const char* SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
