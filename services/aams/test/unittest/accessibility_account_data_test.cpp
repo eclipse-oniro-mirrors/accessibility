@@ -1676,7 +1676,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetAbil
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetAbilityAutoStartState002 start";
     const int32_t accountId = 1;
-    const std::string abilityName = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const std::string abilityName = "com.ohos.screenreader/AccessibilityExtAbility";
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     accountData->SetAbilityAutoStartState(abilityName, false);
     EXPECT_EQ(accountData->GetAbilityAutoStartState(abilityName), false);
@@ -1835,7 +1835,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilityAutoStartState_001 start";
     const int32_t accountId = 1;
-    const std::string abilityName = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const std::string abilityName = "com.ohos.screenreader/AccessibilityExtAbility";
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     accountData->Init();
     accountData->SetAbilityAutoStartState(abilityName, false);

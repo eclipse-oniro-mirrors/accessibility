@@ -32,7 +32,7 @@ namespace Accessibility {
 namespace {
     const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
-    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     const int32_t DATASHARE_DEFAULT_TIMEOUT = 2 * 1000; // ms

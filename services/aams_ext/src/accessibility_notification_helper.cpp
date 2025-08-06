@@ -51,8 +51,8 @@ std::vector<uint64_t> NOTIFICATION_DATE{NOTIFICATION_DATA_2,
     NOTIFICATION_DATA_22,
     NOTIFICATION_DATA_30};
 
-const std::string SETTING_BUNDLE_NAME = "com.huawei.hmos.settings";
-const std::string SETTING_ABILITY_NAME = "com.huawei.hmos.settings.MainAbility";
+const std::string SETTING_BUNDLE_NAME = "com.ohos.settings";
+const std::string SETTING_ABILITY_NAME = "com.ohos.settings.MainAbility";
 const std::string SERVICE_EXTENSION_ABILITY_NAME = "IgnoreRepeatClickExtService";
 const std::string ACCESSIBILITY_SCREEN_TOUCH_URI = "accessibility_touchscreen_entry";
 const std::string HAP_PATH = "/system/app/Settings/Settings.hap";

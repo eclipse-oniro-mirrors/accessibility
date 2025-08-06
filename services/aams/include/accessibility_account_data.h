@@ -362,7 +362,7 @@ private:
     bool isFilteringKeyEvents_ = false;
     bool isGesturesSimulation_ = false;
     bool isSingleClickMode_ = false;
-    std::string screenReaderAbilityName_ = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    std::string screenReaderAbilityName_ = "com.ohos.screenreader/AccessibilityExtAbility";
     std::string screenReaderKey_ = "accessibility_screenreader_enabled";
     uint32_t connectCounter_ = 1;
     AccessibilityAbility connectedA11yAbilities_;  // key: bundleName/abilityName

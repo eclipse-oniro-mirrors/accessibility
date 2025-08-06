@@ -26,7 +26,7 @@ namespace Accessibility {
 
 const int64_t WAIT_INTERVAL = 5000; // 5s
 constexpr int32_t DEFAULT_USER_ID = -1;
-const std::string SETTINGS_BUNDLE_NAME = "com.huawei.hmos.settings";
+const std::string SETTINGS_BUNDLE_NAME = "com.ohos.settings";
 const std::string SERVICE_EXTENSION_ABILITY_NAME = "SettingsExtService";
 const std::string METHOD_KEY = "method";
 const std::string EXTRA_KEY = "extra";

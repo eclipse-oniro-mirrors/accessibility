@@ -1637,7 +1637,7 @@
  {
      GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_067 start";
      const int32_t accountId = 1;
-     const std::string abilityName = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+     const std::string abilityName = "com.ohos.screenreader/AccessibilityExtAbility";
      sptr<AccessibleAbilityManagerStateObserverProxy> accountData = new AccessibleAbilityManagerStateObserverProxy(accountId);
      accountData->SetAbilityAutoStartState(abilityName, false);
      EXPECT_EQ(accountData->GetAbilityAutoStartState(abilityName), false);
@@ -1653,7 +1653,7 @@
  {
      GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_068 start";
      const int32_t accountId = 1;
-     const std::string abilityName = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+     const std::string abilityName = "com.ohos.screenreader/AccessibilityExtAbility";
      sptr<AccessibleAbilityManagerStateObserverProxy> accountData = new AccessibleAbilityManagerStateObserverProxy(accountId);
      accountData->SetAbilityAutoStartState(abilityName, true);
      GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_068 end";
@@ -1791,7 +1791,7 @@
  {
      GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_076 start";
      const int32_t accountId = 1;
-     const std::string name = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+     const std::string name = "com.ohos.screenreader/AccessibilityExtAbility";
      const std::string state = "on";
      sptr<AccessibleAbilityManagerStateObserverProxy> accountData = new AccessibleAbilityManagerStateObserverProxy(accountId);
      accountData->SetScreenReaderState(name, state);
@@ -1807,7 +1807,7 @@
  {
      GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_077 start";
      const int32_t accountId = 1;
-     const std::string abilityName = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+     const std::string abilityName = "com.ohos.screenreader/AccessibilityExtAbility";
      sptr<AccessibleAbilityManagerStateObserverProxy> accountData = new AccessibleAbilityManagerStateObserverProxy(accountId);
      accountData->Init();
      accountData->SetAbilityAutoStartState(abilityName, false);

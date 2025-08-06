@@ -52,7 +52,7 @@ namespace {
     const std::string IGNORE_REPEAT_CLICK_SWITCH = "ignore_repeat_click_switch";
     const std::string IGNORE_REPEAT_CLICK_TIME = "ignore_repeat_click_time";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER = "accessibility_display_daltonizer";
-    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
     const std::string ACCESSIBILITY_SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
@@ -64,7 +64,7 @@ namespace {
     const std::string ACCESSIBILITY_TOUCH_GUIDE_ENABLED = "enableTouchGuideMode";
     const std::string SCREEN_READER_SINGLE_CLICK_MODE = "screen_reader_single_click_mode";
     const std::string ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
-    const std::string SCREEN_READER_BUNDLE_NAME = "com.huawei.hmos.screenreader";
+    const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.screenreader";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string THP_PATH = "/system/lib64/libthp_extra_innerapi.z.so";
 } // namespace
