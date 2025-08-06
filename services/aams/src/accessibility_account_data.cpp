@@ -709,10 +709,6 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
 {
     HILOG_DEBUG("start and name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
 
-    if (name == screenReaderAbilityName_ && !DealWithScreenReaderState()) {
-        return RET_OK;
-    }
-
     bool isInstalled = false;
     for (auto itr = installedAbilities_.begin(); itr != installedAbilities_.end(); itr++) {
         if (itr->GetId() == name) {
@@ -744,6 +740,10 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
         return RET_ERR_CONNECTION_EXIST;
     }
 
+    if (name == screenReaderAbilityName_ && !DealWithScreenReaderState()) {
+        return RET_OK;
+    }
+
     if (GetWaitDisConnectAbility(name)) {
         HILOG_INFO("The ability[%{public}s] is disconnecting: ", name.c_str());
         sptr<AccessibleAbilityConnection> connection = GetWaitDisConnectAbility(name);
@@ -767,7 +767,8 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     return RET_OK;
 }
 
-bool AccessibilityAccountData::DealWithScreenReaderState() {
+bool AccessibilityAccountData::DealWithScreenReaderState()
+{
     bool ignoreStateCache = config_->GetDbHandle()->GetBoolValue(IGNORE_REPEATED_CLICK_CACHE_FLAG, false);
     bool ignoreRepeatClickState = config_->GetIgnoreRepeatClickState();
     if (!ignoreStateCache && !ignoreRepeatClickState) {
