@@ -85,7 +85,8 @@ static bool BindMethod(ani_env *env, ani_namespace ns, ani_module mod)
     };
 
     methods = {
-        ani_native_function {"onStateChange", nullptr, reinterpret_cast<void *>(ANIAccessibilityClient::SubscribeState)},
+        ani_native_function {"onStateChange", nullptr,
+            reinterpret_cast<void *>(ANIAccessibilityClient::SubscribeState)},
     };
 
     if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
