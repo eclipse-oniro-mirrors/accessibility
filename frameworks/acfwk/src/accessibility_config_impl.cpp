@@ -49,6 +49,8 @@ AccessibilityConfig::Impl::~Impl()
     if (enableAbilityListsObserver_ != nullptr) {
         enableAbilityListsObserver_->OnclientDeleted();
     }
+    HILOG_INFO("AccessibilityConfig destory");
+    RemoveParameterWatcher(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
 }
 
 bool AccessibilityConfig::Impl::InitializeContext()
