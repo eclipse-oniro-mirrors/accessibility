@@ -140,5 +140,6 @@ export namespace accessibility {
         });
     }
 
-    overload sendAccessibilityEvent { sendAccessibilityEventWithCallback, sendAccessibilityEventReturnsPromise };
+    export overload sendAccessibilityEvent { sendAccessibilityEventWithCallback,
+        sendAccessibilityEventReturnsPromise };
 }
