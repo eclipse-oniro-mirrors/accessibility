@@ -114,7 +114,7 @@ export namespace accessibility {
         customId?: string;
     }
 
-    export function sendAccessibilityEvent(event: EventInfo, callback: AsyncCallback<void>): void {
+    export function sendAccessibilityEventWithCallback(event: EventInfo, callback: AsyncCallback<void>): void {
         taskpool.execute((): void => {
             return sendAccessibilityEventSync(event);
         })
@@ -126,7 +126,7 @@ export namespace accessibility {
         });
     }
 
-    export function sendAccessibilityEvent(event: EventInfo): Promise<void> {
+    export function sendAccessibilityEventReturnsPromise(event: EventInfo): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
             taskpool.execute((): void => {
                 return sendAccessibilityEventSync(event);
@@ -139,4 +139,6 @@ export namespace accessibility {
             });
         });
     }
+
+    overload sendAccessibilityEvent { sendAccessibilityEventWithCallback, sendAccessibilityEventReturnsPromise };
 }
