@@ -874,7 +874,7 @@ RetError AccessibleAbilityClientImpl::GetChildrenWork(const int32_t windowId, st
     // at this moment, children has at most one child element from GetChildren Cross-subtree
     // filter the element id already in children
     int64_t crossSubtreeChildId = -1;
-    if (children.size() > 0){
+    if (children.size() > 0) {
         crossSubtreeChildId = children.front().GetAccessibilityId();
     }
     for (auto &childId : childIds) {
@@ -883,7 +883,7 @@ RetError AccessibleAbilityClientImpl::GetChildrenWork(const int32_t windowId, st
             HILOG_ERROR("childId is invalid");
             return RET_ERR_INVALID_PARAM;
         }
-        if (childId == crossSubtreeChildId){
+        if (childId == crossSubtreeChildId) {
             continue;
         }
         AccessibilityElementInfo child;
