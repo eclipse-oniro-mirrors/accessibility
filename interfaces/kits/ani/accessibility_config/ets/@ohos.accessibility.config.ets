@@ -21,17 +21,19 @@ export namespace config {
     let highContrastText: Config<Boolean> =  new HighContrastTextConfig();
 
     interface Config<T> {
-        set(value: T): Promise<void>;
-        set(value: T, callback: AsyncCallback<void>): void;
-        get(): Promise<T>;
-        get(callback: AsyncCallback<T>): void;
+        setReturnsPromise(value: T): Promise<void>;
+        setWithCallback(value: T, callback: AsyncCallback<void>): void;
+        getReturnsPromise(): Promise<T>;
+        getWithCallback(callback: AsyncCallback<T>): void;
+        overload set { setReturnsPromise, setWithCallback };
+        overload get { getReturnsPromise, getWithCallback };
     }
 
     class HighContrastTextConfig implements Config<Boolean> {
         native setSync(value: boolean): void;
         native getSync(): boolean;
 
-        set(value: Boolean): Promise<void> {
+        setReturnsPromise(value: Boolean): Promise<void> {
             return new Promise<void>((resolve, reject): void => {
                 taskpool.execute((): void => {
                     return this.setSync(value);
@@ -45,7 +47,7 @@ export namespace config {
             });
         }
 
-        set(value: Boolean, callback: AsyncCallback<void>): void {
+        setWithCallback(value: Boolean, callback: AsyncCallback<void>): void {
             taskpool.execute((): void => {
                 return this.setSync(value);
             })
@@ -57,7 +59,7 @@ export namespace config {
             });
         }
 
-        get(): Promise<Boolean> {
+        getReturnsPromise(): Promise<Boolean> {
             return new Promise<Boolean>((resolve, reject): void => {
                 taskpool.execute((): Boolean => {
                     return this.getSync();
@@ -71,7 +73,7 @@ export namespace config {
             });
         }
 
-        get(callback: AsyncCallback<Boolean>): void {
+        getWithCallback(callback: AsyncCallback<Boolean>): void {
             taskpool.execute((): Boolean => {
                 return this.getSync();
             })
