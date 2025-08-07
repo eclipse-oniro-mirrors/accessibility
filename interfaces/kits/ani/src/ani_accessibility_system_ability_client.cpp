@@ -101,7 +101,7 @@ void StateListenerImpl::UnsubscribeObservers()
 {
     HILOG_INFO();
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    for (auto iter = observers_.begin(); iter != observers_.end();) {
+    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
         (*iter)->env_->GlobalReference_Delete((*iter)->fnRef_);
     }
     observers_.clear();
