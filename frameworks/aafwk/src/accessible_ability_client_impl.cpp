@@ -871,11 +871,22 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
 RetError AccessibleAbilityClientImpl::GetChildrenWork(const int32_t windowId, std::vector<int64_t> childIds,
     std::vector<AccessibilityElementInfo> &children, bool systemApi)
 {
+    // at this moment, children has at most one child element from GetChildren Cross-subtree
+    // filter the element id already in children
+    int64_t crossSubtreeChildId = -1;
+    if (children.size() > 0)
+    {
+        crossSubtreeChildId = children.front().GetAccessibilityId();
+    }
     for (auto &childId : childIds) {
         HILOG_DEBUG("childId[%{public}" PRId64 "]", childId);
         if (childId == -1) {
             HILOG_ERROR("childId is invalid");
             return RET_ERR_INVALID_PARAM;
+        }
+        if (childId == crossSubtreeChildId)
+        {
+            continue;
         }
         AccessibilityElementInfo child;
         if (GetCacheElementInfo(windowId, childId, child)) {
