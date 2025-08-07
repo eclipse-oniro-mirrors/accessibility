@@ -4222,7 +4222,7 @@ void AccessibleAbilityManagerService::InitResource(bool needReInit)
     }
     for (auto &iter : ResourceMap) {
         std::string outValue;
-        if (iter.first.c_str() == MAGNIFICATION_SCALE) {
+        if (iter.first == MAGNIFICATION_SCALE) {
             resourceManager->GetPluralStringByName(iter.first.c_str(), QUANTITY, outValue);
         } else {
             resourceManager->GetStringByName(iter.first.c_str(), outValue);
