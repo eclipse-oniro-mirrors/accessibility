@@ -31,6 +31,7 @@
 #include "os_account_manager.h"
 #include "accessibility_resource_bundle_manager.h"
 #include "accessibility_notification_helper.h"
+#include "accessibility_short_key_dialog.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -67,6 +68,7 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.screenreader";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string THP_PATH = "/system/lib64/libthp_extra_innerapi.z.so";
+    const std::string IGNORE_REPEATED_CLICK_CACHE_FLAG = "accessibility_ignore_repeat_click_cache_flag";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -738,6 +740,10 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
         return RET_ERR_CONNECTION_EXIST;
     }
 
+    if (name == screenReaderAbilityName_ && !DealWithScreenReaderState()) {
+        return RET_OK;
+    }
+
     if (GetWaitDisConnectAbility(name)) {
         HILOG_INFO("The ability[%{public}s] is disconnecting: ", name.c_str());
         sptr<AccessibleAbilityConnection> connection = GetWaitDisConnectAbility(name);
@@ -759,6 +765,22 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     UpdateAbilities();
     Utils::RecordStartingA11yEvent(name);
     return RET_OK;
+}
+
+bool AccessibilityAccountData::DealWithScreenReaderState()
+{
+    bool ignoreStateCache = config_->GetDbHandle()->GetBoolValue(IGNORE_REPEATED_CLICK_CACHE_FLAG, false);
+    bool ignoreRepeatClickState = config_->GetIgnoreRepeatClickState();
+    if (!ignoreStateCache && !ignoreRepeatClickState) {
+        return true;
+    }
+ 
+    std::shared_ptr<AccessibilityShortkeyDialog> shortkeyDialog = std::make_shared<AccessibilityShortkeyDialog>();
+    // dialog
+    if (shortkeyDialog->ConnectDialog(ShortKeyDialogType::READER_EXCLUSIVE)) {
+        HILOG_DEBUG("ready to build screen reader exclusive dialog");
+    }
+    return false;
 }
 
 bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()

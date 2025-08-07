@@ -57,6 +57,7 @@ public:
     MOCK_METHOD0(GetEventTouchGuideStateFlag, bool());
     MOCK_METHOD0(GetFilteringKeyEventsFlag, bool());
     MOCK_METHOD0(GetGesturesSimulationFlag, bool());
+    MOCK_METHOD0(DealWithScreenReaderState, bool());
     MOCK_METHOD0(GetInstalledAbilitiesFromBMS, bool());
     MOCK_METHOD0(GetCaptionProperty, AccessibilityConfig::CaptionProperty());
     MOCK_METHOD1(SetCaptionProperty, bool(const AccessibilityConfig::CaptionProperty& caption));

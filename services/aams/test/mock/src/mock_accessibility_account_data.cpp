@@ -270,6 +270,12 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     return RET_OK;
 }
 
+bool AccessibilityAccountData::DealWithScreenReaderState()
+{
+    HILOG_DEBUG("start.");
+    return true;
+}
+
 bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 {
     HILOG_DEBUG("start.");

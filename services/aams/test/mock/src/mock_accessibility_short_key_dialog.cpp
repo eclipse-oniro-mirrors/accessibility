@@ -65,6 +65,29 @@ std::string ReConfirmAbilityConnection::GetCommandString()
     return "";
 }
 
+void ExclusiveAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
+    const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
+{
+    HILOG_DEBUG("start.");
+    (void)element;
+    (void)remoteObject;
+    (void)resultCode;
+}
+ 
+void ExclusiveAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element,
+    int32_t resultCode)
+{
+    HILOG_DEBUG("start.");
+    (void)element;
+    (void)resultCode;
+}
+ 
+std::string ExclusiveAbilityConnection::GetCommandString()
+{
+    HILOG_DEBUG("start.");
+    return "";
+}
+
 // dialog
 AccessibilityShortkeyDialog::AccessibilityShortkeyDialog() {}
 

@@ -59,6 +59,26 @@ std::string ReConfirmAbilityConnection::GetCommandString()
     return "";
 }
 
+void ExclusiveAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
+    const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
+{
+    (void)element;
+    (void)remoteObject;
+    (void)resultCode;
+}
+ 
+void ExclusiveAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element,
+    int32_t resultCode)
+{
+    (void)element;
+    (void)resultCode;
+}
+ 
+std::string ExclusiveAbilityConnection::GetCommandString()
+{
+    return "";
+}
+
 // dialog
 AccessibilityShortkeyDialog::AccessibilityShortkeyDialog() {}
 
