@@ -44,6 +44,7 @@ public:
     RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption);
     RetError SetCaptionState(const bool state);
     RetError SetScreenMagnificationState(const bool state);
+    RetError SetMagnificationState(const bool state);
     RetError SetScreenMagnificationType(const uint32_t type);
     RetError SetScreenMagnificationMode(const uint32_t mode);
     RetError SetScreenMagnificationScale(const float scale);

@@ -177,6 +177,18 @@ RetError AccessibilitySettingsConfig::SetCaptionState(const bool state)
 RetError AccessibilitySettingsConfig::SetScreenMagnificationState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(SCREEN_MAGNIFICATION_KEY, state);
+    if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetScreenMagnificationState");
+        HILOG_ERROR("set SetScreenMagnificationState failed");
+        return ret;
+    }
+    SetMagnificationState(state);
+    return ret;
+}
+
+RetError AccessibilitySettingsConfig::SetMagnificationState(const bool state)
+{
     isScreenMagnificationState_ = state;
     return RET_OK;
 }
