@@ -572,7 +572,7 @@ bool AccessibilityWindowManager::EqualFocus(const Accessibility::AccessibilityWi
         HILOG_DEBUG("focus values are the same");
         return false;
     }
-    return true;
+    return windowInfo->focused_;
 }
 
 bool AccessibilityWindowManager::EqualBound(const Accessibility::AccessibilityWindowInfo &accWindowInfo,
