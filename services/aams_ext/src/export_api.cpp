@@ -37,7 +37,7 @@ API_EXPORT void DestoryTimers()
 API_EXPORT int64_t GetWallTimeMs()
 {
     if (OHOS::MiscServices::TimeServiceClient::GetInstance()) {
-        OHOS::MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
+        return OHOS::MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
     }
     return 0;
 }
