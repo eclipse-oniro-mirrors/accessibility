@@ -531,9 +531,6 @@ napi_value NAccessibilityClient::GetAccessibilityExtensionListSync(napi_env env,
         }
     }
 
-    ACCESSIBILITY_NAPI_ASSERT(env, errCode == OHOS::Accessibility::RET_OK,
-        OHOS::Accessibility::RET_ERR_INVALID_PARAM);
-
     napi_value resultAbilityList = nullptr;
     napi_create_array(env, &resultAbilityList);
     ConvertAccessibleAbilityInfosToJS(env, resultAbilityList, abilityList);
