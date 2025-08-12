@@ -2420,6 +2420,11 @@ void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(cons
 
     const_cast<AccessibilityEventInfo&>(event).SetElementMainWindowId(windowId);
 
+    if (windowId < 1) {
+        HILOG_INFO("windowId is invilid : %{public}d", windowId);
+        return;
+    }
+
     switch (evtType) {
         case TYPE_VIEW_HOVER_ENTER_EVENT:
             Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(windowId, false);
