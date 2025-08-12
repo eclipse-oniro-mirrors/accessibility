@@ -332,6 +332,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState_002 start";
     bool state = true;
+    settingConfig_->Init();
     settingConfig_->SetScreenMagnificationState(state);
     EXPECT_TRUE(settingConfig_->GetScreenMagnificationState());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState_002 end";
