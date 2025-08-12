@@ -39,6 +39,9 @@ bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityFocused_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isDecorEnable_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mainWindowId_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, scaleX_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, scaleY_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     sptr<RectParcel> boundsInScreen = parcel.ReadStrongParcelable<RectParcel>();
     if (boundsInScreen == nullptr) {
         HILOG_ERROR("ReadStrongParcelable boundsInScreen failed.");
@@ -79,6 +82,9 @@ bool AccessibilityWindowInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityFocused_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isDecorEnable_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, mainWindowId_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, scaleX_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, scaleY_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     RectParcel rectParcel(boundsInScreen_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &rectParcel);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, touchHotAreas_.size());
