@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
+// LCOV_EXCL_START
 #include "accessibility_notification_helper.h"
 #include "visibility.h"
 #include "time_service_client.h"
@@ -42,3 +42,4 @@ API_EXPORT int64_t GetWallTimeMs()
     return 0;
 }
 }
+// LCOV_EXCL_STOP

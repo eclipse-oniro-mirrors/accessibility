@@ -36,6 +36,52 @@ namespace {
     constexpr int32_t REPORTER_THRESHOLD_VALUE = 10;
     constexpr int32_t SET_FLAG = 0;
     constexpr int32_t GET_FLAG = 1;
+
+    static std::map<OHOS::AccessibilityConfig::CONFIG_ID, std::vector<std::string>> configApiMap = {
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT,
+            {"AccessibilityConfig.Impl.SetHighContrastTextState", "AccessibilityConfig.Impl.GetHighContrastTextState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_STATE,
+            {"AccessibilityConfig.Impl.SetDaltonizationState", "AccessibilityConfig.Impl.GetDaltonizationState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR,
+            {"AccessibilityConfig.Impl.SetInvertColorState", "AccessibilityConfig.Impl.GetInvertColorState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF,
+            {"AccessibilityConfig.Impl.SetAnimationOffState", "AccessibilityConfig.Impl.GetAnimationOffState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION,
+            {"AccessibilityConfig.Impl.SetScreenMagnificationState",
+                "AccessibilityConfig.Impl.GetScreenMagnificationState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO,
+            {"AccessibilityConfig.Impl.SetAudioMonoState", "AccessibilityConfig.Impl.GetAudioMonoState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY,
+            {"AccessibilityConfig.Impl.SetMouseKeyState", "AccessibilityConfig.Impl.GetMouseKeyState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY,
+            {"AccessibilityConfig.Impl.SetShortKeyState", "AccessibilityConfig.Impl.GetShortKeyState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE,
+            {"AccessibilityConfig.Impl.SetCaptionsState", "AccessibilityConfig.Impl.GetCaptionsState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT,
+            {"AccessibilityConfig.Impl.SetContentTimeout", "AccessibilityConfig.Impl.GetContentTimeout"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK,
+            {"AccessibilityConfig.Impl.SetMouseAutoClick", "AccessibilityConfig.Impl.GetMouseAutoClick"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE,
+            {"AccessibilityConfig.Impl.SetAudioBalance", "AccessibilityConfig.Impl.GetAudioBalance"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT,
+            {"AccessibilityConfig.Impl.SetBrightnessDiscount", "AccessibilityConfig.Impl.GetBrightnessDiscount"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET,
+            {"AccessibilityConfig.Impl.SetShortkeyTarget", "AccessibilityConfig.Impl.GetShortkeyTarget"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_MULTI_TARGET,
+            {"AccessibilityConfig.Impl.SetShortkeyMultiTarget", "AccessibilityConfig.Impl.GetShortkeyMultiTarget"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE,
+            {"AccessibilityConfig.Impl.SetCaptionsProperty", "AccessibilityConfig.Impl.GetCaptionsProperty"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER,
+            {"AccessibilityConfig.Impl.SetDaltonizationColorFilter",
+                "AccessibilityConfig.Impl.GetDaltonizationColorFilter"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME,
+            {"AccessibilityConfig.Impl.SetClickResponseTime", "AccessibilityConfig.Impl.GetClickResponseTime"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_STATE,
+            {"AccessibilityConfig.Impl.SetIgnoreRepeatClickState",
+                "AccessibilityConfig.Impl.GetIgnoreRepeatClickState"}},
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_TIME,
+            {"AccessibilityConfig.Impl.SetIgnoreRepeatClickTime",
+                "AccessibilityConfig.Impl.GetIgnoreRepeatClickTime"}}};
 }
 
 static napi_handle_scope TmpOpenScope(napi_env env)
@@ -482,43 +528,6 @@ static std::string GetConfigApiTag(OHOS::AccessibilityConfig::CONFIG_ID configId
     if (flag > 1) {
         return "";
     }
-    static std::map<OHOS::AccessibilityConfig::CONFIG_ID, std::vector<std::string>> configApiMap = {
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT,
-            {"AccessibilityConfig.Impl.SetHighContrastTextState", "AccessibilityConfig.Impl.GetHighContrastTextState"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_STATE,
-            {"AccessibilityConfig.Impl.SetDaltonizationState", "AccessibilityConfig.Impl.GetDaltonizationState"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR,
-            {"AccessibilityConfig.Impl.SetInvertColorState", "AccessibilityConfig.Impl.GetInvertColorState"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF,
-            {"AccessibilityConfig.Impl.SetAnimationOffState", "AccessibilityConfig.Impl.GetAnimationOffState"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION,
-            {"AccessibilityConfig.Impl.SetScreenMagnificationState",
-                "AccessibilityConfig.Impl.GetScreenMagnificationState"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO,
-            {"AccessibilityConfig.Impl.SetAudioMonoState", "AccessibilityConfig.Impl.GetAudioMonoState"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY,
-            {"AccessibilityConfig.Impl.SetMouseKeyState", "AccessibilityConfig.Impl.GetMouseKeyState"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY,
-            {"AccessibilityConfig.Impl.SetShortKeyState", "AccessibilityConfig.Impl.GetShortKeyState"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE,
-            {"AccessibilityConfig.Impl.SetCaptionsState", "AccessibilityConfig.Impl.GetCaptionsState"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT,
-            {"AccessibilityConfig.Impl.SetContentTimeout", "AccessibilityConfig.Impl.GetContentTimeout"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK,
-            {"AccessibilityConfig.Impl.SetMouseAutoClick", "AccessibilityConfig.Impl.GetMouseAutoClick"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE,
-            {"AccessibilityConfig.Impl.SetAudioBalance", "AccessibilityConfig.Impl.GetAudioBalance"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT,
-            {"AccessibilityConfig.Impl.SetBrightnessDiscount", "AccessibilityConfig.Impl.GetBrightnessDiscount"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET,
-            {"AccessibilityConfig.Impl.SetShortkeyTarget", "AccessibilityConfig.Impl.GetShortkeyTarget"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_MULTI_TARGET,
-            {"AccessibilityConfig.Impl.SetShortkeyMultiTarget", "AccessibilityConfig.Impl.GetShortkeyMultiTarget"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE,
-            {"AccessibilityConfig.Impl.SetCaptionsProperty", "AccessibilityConfig.Impl.GetCaptionsProperty"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER,
-            {"AccessibilityConfig.Impl.SetDaltonizationColorFilter",
-                "AccessibilityConfig.Impl.GetDaltonizationColorFilter"}}};
     auto iter = configApiMap.find(configId);
     if (iter == configApiMap.end()) {
         return flag == 0 ? "AccessibilityConfig.Impl.Setter" : "AccessibilityConfig.Impl.Getter";
