@@ -32,6 +32,7 @@ using namespace OHOS::AccessibilityNapi;
 namespace OHOS {
 namespace Accessibility {
 namespace {
+constexpr int32_t REPORTER_THRESHOLD_VALUE = 1000;
 
 static void ConvertAccessibilityWindowInfoToJS(
     napi_env env, napi_value result, const AccessibilityWindowInfo& accessibilityWindowInfo)
@@ -900,6 +901,9 @@ private:
 
     napi_value GetElementsAsync(napi_env env, napi_value lastParam, int32_t windowId, int64_t elementId)
     {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+        Accessibility::ApiReportHelper reporter("NAccessibilityExtensionContext.GetElements", REPORTER_THRESHOLD_VALUE);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
         auto accessibilityElements = std::make_shared<std::vector<OHOS::Accessibility::AccessibilityElementInfo>>();
         auto ret = std::make_shared<RetError>(RET_OK);
         NapiAsyncTask::ExecuteCallback execute = [weak = context_, accessibilityElements, ret, windowId, elementId] () {

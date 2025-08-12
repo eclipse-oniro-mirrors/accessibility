@@ -12,7 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
+// LCOV_EXCL_START
 #include "accessibility_notification_helper.h"
 #include "timer_info.h"
 #include "time_service_client.h"
@@ -313,3 +313,4 @@ void IgnoreRepeatClickNotification::DestoryTimers()
 }
 }  // namespace Accessibility
 }  // namespace OHOS
+// LCOV_EXCL_STOP
