@@ -2026,8 +2026,14 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     if (screenReaderState != SCREENREADER_STATE::UNINIT &&
         (accountType == AccountSA::OsAccountType::PRIVATE || accountType == AccountSA::OsAccountType::ADMIN)) {
         bool state = (screenReaderState == SCREENREADER_STATE::ON) ? true : false;
-        accountData->SetAbilityAutoStartState(SCREEN_READER_BUNDLE_ABILITY_NAME, state);
-        HILOG_INFO("set screenreader auto-start state = %{public}d", true);
+        bool ignoreRepeatClickState = accountData->GetConfig()->GetIgnoreRepeatClickState();
+        if (ignoreRepeatClickState) {
+            accountData->SetAbilityAutoStartState(SCREEN_READER_BUNDLE_ABILITY_NAME, false);
+            HILOG_INFO("ignoreRepeatClickState is true, set screenreader false.");
+        } else {
+            accountData->SetAbilityAutoStartState(SCREEN_READER_BUNDLE_ABILITY_NAME, state);
+            HILOG_INFO("set screenreader auto-start state = %{public}d", state);
+        }
     }
 
     if (accountData->GetInstalledAbilitiesFromBMS()) {
