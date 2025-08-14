@@ -26,7 +26,6 @@
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
-#include "rwlock.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -311,7 +310,7 @@ private:
         void Reset();
 
     private:
-        Utils::RWLock rwLock_;
+        ffrt::shared_mutex rwLock_;
         StateArray stateArray_;
     };
 

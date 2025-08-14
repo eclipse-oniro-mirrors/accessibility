@@ -15,20 +15,21 @@
 
 // LCOV_EXCL_START
 #include "magnification_window_proxy.h"
-#include "rwlock.h"
 #include <dlfcn.h>
+#include <shared_mutex>
+#include "ffrt.h"
 
 namespace OHOS {
 namespace Accessibility {
 namespace {
     const std::string windowLibName_ = "libaams_ext.z.so";
     std::shared_ptr<MagnificationWindowProxy> g_Instance = nullptr;
-    Utils::RWLock rwLock;
+    ffrt::shared_mutex rwLock;
 }
 
 std::shared_ptr<MagnificationWindowProxy> MagnificationWindowProxy::GetInstance()
 {
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock);
     if (g_Instance == nullptr) {
         g_Instance = std::make_shared<MagnificationWindowProxy>();
     }
@@ -45,7 +46,7 @@ MagnificationWindowProxy::MagnificationWindowProxy()
 
 MagnificationWindowProxy::~MagnificationWindowProxy()
 {
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock);
     if (!handle_) {
         return;
     }

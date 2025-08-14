@@ -85,7 +85,7 @@ AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
 AccessibleAbilityClientImpl::~AccessibleAbilityClientImpl()
 {
     HILOG_DEBUG();
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     if (serviceProxy_ && serviceProxy_->AsObject()) {
         HILOG_DEBUG("Remove service death recipient");
         serviceProxy_->AsObject()->RemoveDeathRecipient(accessibilityServiceDeathRecipient_);
@@ -148,7 +148,7 @@ void AccessibleAbilityClientImpl::OnParameterChanged(const char *key, const char
     }
 
     AccessibleAbilityClientImpl *implPtr = static_cast<AccessibleAbilityClientImpl *>(context);
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(implPtr->rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(implPtr->rwLock_);
     if (implPtr->InitAccessibilityServiceProxy()) {
         HILOG_INFO("InitAccessibilityServiceProxy success");
     }
@@ -248,7 +248,7 @@ sptr<IRemoteObject> AccessibleAbilityClientImpl::GetRemoteObject()
 RetError AccessibleAbilityClientImpl::CheckExtensionAbilityPermission()
 {
     HILOG_DEBUG();
-    Utils::UniqueReadGuard<Utils::RWLock> wLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (CheckServiceProxy() == false) {
         HILOG_ERROR("failed to connect to aams!");
         return RET_ERR_SAMGR;
@@ -266,7 +266,7 @@ RetError AccessibleAbilityClientImpl::RegisterAbilityListener(
     const std::shared_ptr<AccessibleAbilityListener> &listener)
 {
     HILOG_DEBUG();
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     if (listener_) {
         HILOG_DEBUG("listener already exists.");
         return RET_ERR_REGISTER_EXIST;
@@ -286,7 +286,7 @@ void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &ch
 
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     {
-        Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+        std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
         if (!listener_) {
             HILOG_ERROR("listener_ is nullptr.");
             return;
@@ -325,7 +325,7 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
     std::shared_ptr<AccessibleAbilityListener> listener = listener_;
     {
         isConnected_ = false;
-        Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+        std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
         if (callbackList_.empty()) {
             // Delete death recipient
             if (channelClient_ && channelClient_->GetRemote()) {
@@ -355,7 +355,7 @@ void AccessibleAbilityClientImpl::OnAccessibilityEvent(const AccessibilityEventI
     HILOG_DEBUG();
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     {
-        Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+        std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
         if (!channelClient_) {
             HILOG_ERROR("The channel is invalid.");
             return;
@@ -373,7 +373,7 @@ void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     std::shared_ptr<AccessibleAbilityChannelClient> channel = nullptr;
     {
-        Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+        std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
         listener = listener_;
         channel = channelClient_;
     }
@@ -402,7 +402,7 @@ RetError AccessibleAbilityClientImpl::GetFocus(
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if ((focusType != FOCUS_TYPE_INPUT) && (focusType != FOCUS_TYPE_ACCESSIBILITY)) {
         HILOG_ERROR("focusType is not allowed.");
         return RET_ERR_INVALID_PARAM;
@@ -433,7 +433,7 @@ RetError AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityE
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if ((focusType != FOCUS_TYPE_INPUT) && (focusType != FOCUS_TYPE_ACCESSIBILITY)) {
         HILOG_ERROR("focusType is not allowed.");
         return RET_ERR_INVALID_PARAM;
@@ -467,7 +467,7 @@ RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<Access
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!gesturePath) {
         HILOG_ERROR("The gesturePath is null.");
         return RET_ERR_INVALID_PARAM;
@@ -500,7 +500,7 @@ RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementI
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (CheckServiceProxy() == false) {
         HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
@@ -542,7 +542,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowI
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -573,7 +573,7 @@ RetError AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, Accessib
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -593,7 +593,7 @@ RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElem
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -676,7 +676,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWi
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (CheckServiceProxy() == false) {
         HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
@@ -711,7 +711,7 @@ RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindow
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -735,7 +735,7 @@ RetError AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId,
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -760,7 +760,7 @@ RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo& el
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -792,7 +792,7 @@ RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, c
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -819,7 +819,7 @@ RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, c
 RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &parent,
     std::vector<AccessibilityElementInfo> &children, bool systemApi)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     RetError ret = CheckConnection();
     if (ret != RET_OK) {
         return ret;
@@ -911,7 +911,7 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1008,7 +1008,7 @@ RetError AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &ev
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1032,7 +1032,7 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1089,7 +1089,7 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, co
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (CheckServiceProxy() == false) {
         HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
@@ -1133,7 +1133,7 @@ RetError AccessibleAbilityClientImpl::GetCursorPosition(const AccessibilityEleme
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1160,7 +1160,7 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1185,7 +1185,7 @@ RetError AccessibleAbilityClientImpl::EnableScreenCurtain(bool isEnable)
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     ApiReportHelper reporter("AccessibleAbilityClientImpl.EnableScreenCurtain");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1209,7 +1209,7 @@ RetError AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std:
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1237,7 +1237,7 @@ void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &r
 {
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     {
-        Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+        std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
         if (!serviceProxy_) {
             HILOG_ERROR("serviceProxy_ is nullptr");
             return;
@@ -1262,7 +1262,7 @@ void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &r
 void AccessibleAbilityClientImpl::ResetAAClient(const wptr<IRemoteObject> &remote)
 {
     HILOG_DEBUG();
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     if (channelClient_) {
         sptr<IRemoteObject> object = channelClient_->GetRemote();
         if (object && (remote == object)) {
@@ -1278,7 +1278,7 @@ void AccessibleAbilityClientImpl::ResetAAClient(const wptr<IRemoteObject> &remot
 RetError AccessibleAbilityClientImpl::SetCacheMode(const int32_t cacheMode)
 {
     HILOG_DEBUG("set cache mode: [%{public}d]", cacheMode);
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     cacheWindowId_ = -1;
     cacheElementInfos_.Clear();
     if (cacheMode < 0) {
@@ -1398,7 +1398,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1465,7 +1465,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
 RetError AccessibleAbilityClientImpl::Connect()
 {
     HILOG_DEBUG();
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (CheckServiceProxy() == false) {
         HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
@@ -1477,7 +1477,7 @@ RetError AccessibleAbilityClientImpl::Connect()
 RetError AccessibleAbilityClientImpl::Disconnect()
 {
     HILOG_DEBUG();
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (CheckServiceProxy() == false) {
         HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
@@ -1676,7 +1676,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByAccessibilityId(const i
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (CheckServiceProxy() == false) {
         HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
@@ -1912,7 +1912,7 @@ RetError AccessibleAbilityClientImpl::GetElements(const int32_t windowId, const 
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1950,7 +1950,7 @@ RetError AccessibleAbilityClientImpl::GetDefaultFocusedElementIds(const int32_t 
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1965,7 +1965,7 @@ RetError AccessibleAbilityClientImpl::HoldRunningLock()
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     ApiReportHelper reporter("AccessibleAbilityClientImpl.HoldRunningLock");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1983,7 +1983,7 @@ RetError AccessibleAbilityClientImpl::UnholdRunningLock()
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     ApiReportHelper reporter("AccessibleAbilityClientImpl.UnholdRunningLock");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -2003,7 +2003,7 @@ RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr
         HILOG_INFO("callback IS NULLPTR");
         return RET_ERR_INVALID_PARAM;
     }
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (channelClient_ == nullptr) {
         HILOG_ERROR("the channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -2028,7 +2028,7 @@ RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr
 RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback)
 {
     HILOG_INFO();
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (channelClient_ == nullptr) {
         HILOG_ERROR("the channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -2065,7 +2065,7 @@ RetError AccessibleAbilityClientImpl::NotifyDisconnect()
         return RET_OK;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     // NotifyDisconnect and Delete death recipient
     if (channelClient_ && channelClient_->GetRemote()) {
         channelClient_->NotifyDisconnect();
@@ -2087,7 +2087,7 @@ RetError AccessibleAbilityClientImpl::ConfigureEvents(const std::vector<uint32_t
         return RET_ERR_NO_CONNECTION;
     }
 
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (CheckServiceProxy() == false) {
         HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;

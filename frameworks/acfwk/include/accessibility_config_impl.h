@@ -27,7 +27,6 @@
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
-#include "rwlock.h"
 
 namespace OHOS {
 namespace AccessibilityConfig {
@@ -386,7 +385,7 @@ private:
     // and one thread which calls interface like SetAudioMonoState timeout,
     // InitializeContext will get mutex first, in case main-thread block.
     // InitializeContext always called in main thread
-    Utils::RWLock rwLock_;
+    ffrt::shared_mutex rwLock_;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AppExecFwk::EventHandler> handler_;
