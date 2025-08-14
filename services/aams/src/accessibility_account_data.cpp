@@ -773,6 +773,15 @@ bool AccessibilityAccountData::DealWithScreenReaderState()
     bool ignoreRepeatClickState = config_->GetIgnoreRepeatClickState();
     HILOG_DEBUG("DealWithScreenReaderState ignoreStateCache: [%{public}d], ignoreRepeatClickState: [%{public}d] ",
         ignoreStateCache, ignoreRepeatClickState);
+            bool ignoreRepeatClickState = accountData->GetConfig()->GetIgnoreRepeatClickState();
+        HILOG_INFO("lixun SwitchedUser state %{public}d, ignoreRepeatClickState %{public}d", state, ignoreRepeatClickState);
+        if (ignoreRepeatClickState) {
+            accountData->SetAbilityAutoStartState(SCREEN_READER_BUNDLE_ABILITY_NAME, false);
+            HILOG_INFO("lixun ignoreRepeatClickState is true, not open screenreader");
+        } else {
+            accountData->SetAbilityAutoStartState(SCREEN_READER_BUNDLE_ABILITY_NAME, state);
+            HILOG_INFO("lixun set screenreader auto-start state = %{public}d", state);
+        }
     if (!ignoreStateCache && !ignoreRepeatClickState) {
         return true;
     }
