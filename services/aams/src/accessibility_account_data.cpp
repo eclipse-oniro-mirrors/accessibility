@@ -771,6 +771,8 @@ bool AccessibilityAccountData::DealWithScreenReaderState()
 {
     bool ignoreStateCache = config_->GetDbHandle()->GetBoolValue(IGNORE_REPEATED_CLICK_CACHE_FLAG, false);
     bool ignoreRepeatClickState = config_->GetIgnoreRepeatClickState();
+    HILOG_DEBUG("DealWithScreenReaderState ignoreStateCache: [%{public}d], ignoreRepeatClickState: [%{public}d] ",
+        ignoreStateCache, ignoreRepeatClickState);
     if (!ignoreStateCache && !ignoreRepeatClickState) {
         return true;
     }
