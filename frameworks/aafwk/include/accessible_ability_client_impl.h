@@ -28,7 +28,6 @@
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
-#include "rwlock.h"
 #include "safe_map.h"
 
 namespace OHOS {
@@ -540,7 +539,7 @@ private:
 
     ffrt::condition_variable proxyConVar_;
     ffrt::mutex conVarMutex_;
-    Utils::RWLock rwLock_;
+    ffrt::shared_mutex rwLock_;
     std::list<std::shared_ptr<DisconnectCallback>> callbackList_;
     bool isDisconnectCallbackExecute_ = false;
     ffrt::mutex callbackListMutex_;

@@ -965,25 +965,25 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoBySpecificPropert
 
 AccessibilitySystemAbilityClientImpl::StateArrayHandler::StateArrayHandler()
 {
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     stateArray_.fill(false);
 }
 
 void AccessibilitySystemAbilityClientImpl::StateArrayHandler::SetState(AccessibilityStateEventType type, bool state)
 {
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     stateArray_[type] = state;
 }
 
 bool AccessibilitySystemAbilityClientImpl::StateArrayHandler::GetState(AccessibilityStateEventType type)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> wLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     return stateArray_[type];
 }
 
 void AccessibilitySystemAbilityClientImpl::StateArrayHandler::Reset()
 {
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     stateArray_.fill(false);
 }
 } // namespace Accessibility

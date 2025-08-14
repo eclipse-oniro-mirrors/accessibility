@@ -53,7 +53,7 @@ AccessibilityConfig::Impl::~Impl()
 bool AccessibilityConfig::Impl::InitializeContext()
 {
     HILOG_DEBUG();
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     if (isInitialized_) {
         HILOG_DEBUG("Context has initialized");
         return true;
@@ -121,7 +121,7 @@ bool AccessibilityConfig::Impl::ConnectToService()
 bool AccessibilityConfig::Impl::ConnectToServiceAsync()
 {
     HILOG_DEBUG("ConnectToServiceAsync start.");
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     if (InitAccessibilityServiceProxy()) {
         (void)RegisterToService();
         InitConfigValues();
@@ -300,7 +300,7 @@ sptr<Accessibility::IAccessibleAbilityManagerService> AccessibilityConfig::Impl:
 void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
 {
     HILOG_DEBUG();
-    Utils::UniqueWriteGuard<Utils::RWLock> wLock(rwLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     if (serviceProxy_ != nullptr) {
         sptr<IRemoteObject> object = serviceProxy_->AsObject();
         if (object != nullptr && (remote == object)) {
@@ -341,7 +341,7 @@ bool AccessibilityConfig::Impl::CheckSaStatus()
 Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_INFO("name = [%{private}s] capabilities = [%{private}u]", name.c_str(), capabilities);
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -354,7 +354,7 @@ Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(const std::stri
 Accessibility::RetError AccessibilityConfig::Impl::DisableAbility(const std::string &name)
 {
     HILOG_INFO("name = [%{private}s]", name.c_str());
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -366,7 +366,7 @@ Accessibility::RetError AccessibilityConfig::Impl::DisableAbility(const std::str
 Accessibility::RetError AccessibilityConfig::Impl::SetMagnificationState(const bool state)
 {
     HILOG_INFO("state = [%{public}d]", state);
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -378,7 +378,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetMagnificationState(const b
 
 Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsState(bool &state)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -390,7 +390,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsState(bool &state)
 
 Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsProperty(CaptionProperty &caption)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -405,7 +405,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsProperty(CaptionPr
 Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsProperty(const CaptionProperty& caption)
 {
     HILOG_INFO();
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -419,7 +419,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsProperty(const Cap
 Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -532,7 +532,7 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerCaptionPropertyChanged
 Accessibility::RetError AccessibilityConfig::Impl::SetScreenMagnificationState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -545,7 +545,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetScreenMagnificationState(c
 Accessibility::RetError AccessibilityConfig::Impl::SetShortKeyState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -557,7 +557,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetShortKeyState(const bool s
 Accessibility::RetError AccessibilityConfig::Impl::SetMouseKeyState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -568,7 +568,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetMouseKeyState(const bool s
 
 Accessibility::RetError AccessibilityConfig::Impl::GetScreenMagnificationState(bool &state)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -582,7 +582,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetScreenMagnificationState(b
 
 Accessibility::RetError AccessibilityConfig::Impl::GetShortKeyState(bool &state)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -595,7 +595,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetShortKeyState(bool &state)
 
 Accessibility::RetError AccessibilityConfig::Impl::GetMouseKeyState(bool &state)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -929,7 +929,7 @@ void AccessibilityConfig::Impl::NotifyAnimationOffChanged(
 Accessibility::RetError AccessibilityConfig::Impl::SetMouseAutoClick(const int32_t time)
 {
     HILOG_INFO("time = [%{public}d]", time);
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -941,7 +941,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetMouseAutoClick(const int32
 Accessibility::RetError AccessibilityConfig::Impl::SetShortkeyTarget(const std::string& name)
 {
     HILOG_INFO("name = [%{public}s]", name.c_str());
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -953,7 +953,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetShortkeyTarget(const std::
 Accessibility::RetError AccessibilityConfig::Impl::SetShortkeyMultiTarget(const std::vector<std::string>& name)
 {
     HILOG_INFO("start");
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -964,7 +964,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetShortkeyMultiTarget(const 
 
 Accessibility::RetError AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &time)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -977,7 +977,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &ti
 
 Accessibility::RetError AccessibilityConfig::Impl::GetShortkeyTarget(std::string &name)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -990,7 +990,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetShortkeyTarget(std::string
 
 Accessibility::RetError AccessibilityConfig::Impl::GetShortkeyMultiTarget(std::vector<std::string> &name)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1161,7 +1161,7 @@ void AccessibilityConfig::Impl::NotifyIgnoreRepeatClickStateChanged(
 Accessibility::RetError AccessibilityConfig::Impl::SetHighContrastTextState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1174,7 +1174,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetHighContrastTextState(cons
 Accessibility::RetError AccessibilityConfig::Impl::SetInvertColorState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1186,7 +1186,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetInvertColorState(const boo
 Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1198,7 +1198,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationState(const b
 Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationColorFilter(const DALTONIZATION_TYPE type)
 {
     HILOG_INFO("type = [%{public}u]", static_cast<uint32_t>(type));
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1211,7 +1211,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationColorFilter(c
 Accessibility::RetError AccessibilityConfig::Impl::SetContentTimeout(const uint32_t timer)
 {
     HILOG_INFO("timer = [%{public}u]", timer);
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1223,7 +1223,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetContentTimeout(const uint3
 Accessibility::RetError AccessibilityConfig::Impl::SetAnimationOffState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1235,7 +1235,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetAnimationOffState(const bo
 Accessibility::RetError AccessibilityConfig::Impl::SetBrightnessDiscount(const float brightness)
 {
     HILOG_INFO("brightness = [%{public}f]", brightness);
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1248,7 +1248,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetBrightnessDiscount(const f
 Accessibility::RetError AccessibilityConfig::Impl::SetAudioMonoState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1260,7 +1260,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetAudioMonoState(const bool 
 Accessibility::RetError AccessibilityConfig::Impl::SetAudioBalance(const float balance)
 {
     HILOG_INFO("balance = [%{public}f]", balance);
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1272,7 +1272,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetAudioBalance(const float b
 Accessibility::RetError AccessibilityConfig::Impl::SetClickResponseTime(const CLICK_RESPONSE_TIME time)
 {
     HILOG_INFO("click response time = [%{public}u]", time);
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1284,7 +1284,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetClickResponseTime(const CL
 Accessibility::RetError AccessibilityConfig::Impl::SetIgnoreRepeatClickState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1297,7 +1297,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetIgnoreRepeatClickState(con
 Accessibility::RetError AccessibilityConfig::Impl::SetIgnoreRepeatClickTime(const IGNORE_REPEAT_CLICK_TIME time)
 {
     HILOG_INFO("ignore repeat click time = [%{public}u]", time);
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1309,7 +1309,7 @@ Accessibility::RetError AccessibilityConfig::Impl::SetIgnoreRepeatClickTime(cons
 
 Accessibility::RetError AccessibilityConfig::Impl::GetInvertColorState(bool &state)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1322,7 +1322,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetInvertColorState(bool &sta
 
 Accessibility::RetError AccessibilityConfig::Impl::GetHighContrastTextState(bool &state)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1336,7 +1336,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetHighContrastTextState(bool
 
 Accessibility::RetError AccessibilityConfig::Impl::GetDaltonizationState(bool &state)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1349,7 +1349,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetDaltonizationState(bool &s
 
 Accessibility::RetError AccessibilityConfig::Impl::GetDaltonizationColorFilter(DALTONIZATION_TYPE &type)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1365,7 +1365,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetDaltonizationColorFilter(D
 
 Accessibility::RetError AccessibilityConfig::Impl::GetContentTimeout(uint32_t &timer)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1378,7 +1378,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetContentTimeout(uint32_t &t
 
 Accessibility::RetError AccessibilityConfig::Impl::GetAnimationOffState(bool &state)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1391,7 +1391,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetAnimationOffState(bool &st
 
 Accessibility::RetError AccessibilityConfig::Impl::GetBrightnessDiscount(float &brightness)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1405,7 +1405,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetBrightnessDiscount(float &
 
 Accessibility::RetError AccessibilityConfig::Impl::GetAudioMonoState(bool &state)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1418,7 +1418,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetAudioMonoState(bool &state
 
 Accessibility::RetError AccessibilityConfig::Impl::GetAudioBalance(float &balance)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1431,7 +1431,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetAudioBalance(float &balanc
 
 Accessibility::RetError AccessibilityConfig::Impl::GetClickResponseTime(CLICK_RESPONSE_TIME &time)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1447,7 +1447,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetClickResponseTime(CLICK_RE
 
 Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickState(bool &state)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -1461,7 +1461,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickState(boo
 
 Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_TIME &time)
 {
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
@@ -2000,7 +2000,7 @@ void AccessibilityConfig::Impl::AccessibilityLoadCallback::OnLoadSystemAbilityFa
 Accessibility::RetError AccessibilityConfig::Impl::SetEnhanceConfig(uint8_t *cfg, uint32_t cfgLen)
 {
     HILOG_INFO();
-    Utils::UniqueReadGuard<Utils::RWLock> rLock(rwLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (cfg == nullptr || cfgLen <= 0) {
         HILOG_ERROR("SecCompEnhance cfg info is empty");
         return Accessibility::RET_ERR_NULLPTR;
