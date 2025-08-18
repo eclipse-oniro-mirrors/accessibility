@@ -223,8 +223,8 @@ public:
     void SetDescription(const std::string &contentDescription);
 
 protected:
-    int64_t componentId_ = 0;
-    int32_t windowId_ = 0;
+    int64_t componentId_ = -1;
+    int32_t windowId_ = -1;
     int32_t currentIndex_ = 0;
     int32_t beginIndex_ = 0;
     int32_t endIndex_ = 0;
@@ -233,7 +233,7 @@ protected:
     std::string description_ = "";
     std::string beforeText_ = "";
     std::string latestContent_ = "";
-    int64_t elementId_ = 0;
+    int64_t elementId_ = -1;
     int32_t itemCounts_ = 0;
 };
 
