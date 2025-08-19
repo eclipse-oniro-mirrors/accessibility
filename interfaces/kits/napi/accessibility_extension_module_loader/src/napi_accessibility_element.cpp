@@ -2870,8 +2870,10 @@ void NAccessibilityElement::FindElementComplete(napi_env env, napi_status status
     if (mainWindowId > 0) {
         HILOG_INFO("callbackInfo node set mainWindowId: %{public}d", mainWindowId);
         callbackInfo->nodeInfo_.SetMainWindowId(mainWindowId);
+        callbackInfo->nodeInfo_.SetWindowId(mainWindowId);
         for (auto &node : callbackInfo->nodeInfos_) {
             node.SetMainWindowId(mainWindowId);
+            node.SetWindowId(mainWindowId);
         }
     }
 

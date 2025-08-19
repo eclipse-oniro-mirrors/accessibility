@@ -105,6 +105,7 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
 
     elementInfo = elementOperator->accessibilityInfoResult_;
     elementInfo.SetMainWindowId(windowId);
+    elementInfo.SetWindowId(windowId);
     return RET_OK;
 }
 
@@ -256,8 +257,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
 #endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_ == nullptr) {
-        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]",
-            channelId_);
+        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
     }
 
@@ -298,6 +298,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     if (!elementInfos.empty()) {
         for (auto &element : elementInfos) {
             element.SetMainWindowId(accessibilityWindowId);
+            element.SetWindowId(accessibilityWindowId);
         }
     }
     return RET_OK;
@@ -600,6 +601,7 @@ RetError AccessibleAbilityChannelClient::ValidateAndProcessElementInfos(
 
     for (auto &element : targetInfos) {
         element.SetMainWindowId(accessibilityWindowId);
+        element.SetWindowId(accessibilityWindowId);
     }
 
     HILOG_DEBUG("Found results in %{public}s, size: %{public}zu", logType.c_str(), targetInfos.size());
