@@ -452,6 +452,7 @@ RetError AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityE
     RetError ret = channelClient_->FindFocusedElementInfo(windowId, elementId, focusType, elementInfo);
     if (ret == RET_OK) {
         elementInfo.SetMainWindowId(sourceInfo.GetMainWindowId());
+        elementInfo.SetWindowId(sourceInfo.GetMainWindowId());
     }
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -526,6 +527,7 @@ RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementI
     ret = SearchElementInfoFromAce(activeWindow, ROOT_NONE_ID, cacheMode_, elementInfo, systemApi);
     if (ret == RET_OK) {
         elementInfo.SetMainWindowId(activeWindow);
+        elementInfo.SetWindowId(activeWindow);
     }
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -558,6 +560,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowI
     RetError ret = SearchElementInfoFromAce(windowId, ROOT_NONE_ID, cacheMode_, elementInfo, systemApi);
     if (ret == RET_OK) {
         elementInfo.SetMainWindowId(windowId);
+        elementInfo.SetWindowId(windowId);
     }
     return ret;
 }
@@ -773,6 +776,7 @@ RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo& el
         elementInfo.GetAccessibilityId(), direction, nextElementInfo, systemApi);
     if (ret == RET_OK) {
         nextElementInfo.SetMainWindowId(elementInfo.GetMainWindowId());
+        nextElementInfo.SetWindowId(elementInfo.GetMainWindowId());
     }
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
@@ -940,6 +944,7 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
     if (!elementInfos.empty()) {
         for (auto &element : elementInfos) {
             element.SetMainWindowId(elementInfo.GetMainWindowId());
+            element.SetWindowId(elementInfo.GetMainWindowId());
         }
     }
     HILOG_INFO("ret:%{public}d, windowId:%{public}d, text:%{public}s", ret, windowId, text.c_str());
@@ -1063,6 +1068,7 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
             ret = SearchElementInfoByElementId(
                 child.GetParentWindowId(), parentElementId, cacheMode_, parent, treeId, systemApi);
             parent.SetMainWindowId(child.GetMainWindowId());
+            parent.SetWindowId(child.GetMainWindowId());
             return ret;
         } else {
             HILOG_DEBUG("GetRootParentId faild, parentElement:%{public}" PRId64 "", parentElementId);
@@ -1074,6 +1080,7 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     treeId = (static_cast<uint64_t>(parentElementId) >> ELEMENT_MOVE_BIT);
     ret = SearchElementInfoByElementId(windowId, parentElementId, cacheMode_, parent, treeId, systemApi);
     parent.SetMainWindowId(child.GetMainWindowId());
+    parent.SetWindowId(child.GetMainWindowId());
     return ret;
 }
 
@@ -1172,8 +1179,8 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
     int32_t windowId = elementInfo.GetWindowId();
     int64_t elementId = elementInfo.GetAccessibilityId();
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d", windowId, elementId, action);
-    Accessibility::RetError ret = channelClient_->ExecuteAction(windowId, elementId, action,
-        const_cast<std::map<std::string, std::string> &>(actionArguments));
+    Accessibility::RetError ret = channelClient_->ExecuteAction(windowId, elementInfo.GetMainWindowId(), elementId,
+        action, const_cast<std::map<std::string, std::string> &>(actionArguments));
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1384,6 +1391,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t win
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
     }
     info.SetMainWindowId(windowId);
+    info.SetWindowId(windowId);
     HILOG_DEBUG("elementId:%{public}" PRId64 ", windowId:%{public}d, treeId:%{public}d",
         info.GetAccessibilityId(), info.GetWindowId(), info.GetBelongTreeId());
     return RET_OK;
@@ -1431,6 +1439,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
             inspectorKey.c_str());
         elementInfo = infos.front();
         elementInfo.SetMainWindowId(windowId);
+        elementInfo.SetWindowId(windowId);
         HILOG_DEBUG("DEBUG: returned elementInfo inspectorKey: %{public}s", elementInfo.GetInspectorKey().c_str());
         return RET_OK;
     }
@@ -1452,6 +1461,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
                         inspectorKey.c_str());
                     elementInfo = newInfos.front();
                     elementInfo.SetMainWindowId(windowId);
+                    elementInfo.SetWindowId(windowId);
                     return RET_OK;
                 }
             }
@@ -1704,6 +1714,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByAccessibilityId(const i
     SetCacheElementInfo(windowId, elementInfos);
     info = elementInfos.front();
     info.SetMainWindowId(windowId);
+    info.SetWindowId(windowId);
     return RET_OK;
 }
 

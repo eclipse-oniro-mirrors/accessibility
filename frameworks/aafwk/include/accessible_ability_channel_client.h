@@ -91,7 +91,7 @@ public:
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
      * @return RET_OK: execute action successfully; otherwise refer to the RetError for the failure.
      */
-    RetError ExecuteAction(int32_t accessibilityWindowId,
+    RetError ExecuteAction(int32_t accessibilityWindowId, int32_t mainWindowId,
         int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments);
 
     /**
@@ -262,6 +262,7 @@ private:
 
     int32_t channelId_ = INVALID_CHANNEL_ID;
     int32_t accessibilityFocusedWindowId_ = INVALID_WINDOW_ID;
+    int32_t focusedMainWindowId_ = INVALID_WINDOW_ID;
     int64_t accessibilityFocusedElementId_ = INVALID_WINDOW_ID;
     sptr<IAccessibleAbilityChannel> proxy_ = nullptr;
     std::atomic<int> requestId_ = 0;

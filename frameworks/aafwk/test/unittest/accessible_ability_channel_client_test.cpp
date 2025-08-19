@@ -187,7 +187,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, ExecuteAction_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "ExecuteAction_001 start";
     EXPECT_CALL(*stub_, ExecuteAction(_, _, _, _, _, _)).Times(1).WillOnce(Return(RET_ERR_FAILED));
     std::map<std::string, std::string> actionArguments;
-    EXPECT_EQ(instance_->ExecuteAction(ACCESSIBILITY_WINDOW_ID,
+    EXPECT_EQ(instance_->ExecuteAction(ACCESSIBILITY_WINDOW_ID, ACCESSIBILITY_WINDOW_ID,
         ELEMENT_ID, ActionType::ACCESSIBILITY_ACTION_SELECT, actionArguments), RET_ERR_FAILED);
     GTEST_LOG_(INFO) << "ExecuteAction_001 end";
 }
@@ -204,7 +204,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, ExecuteAction_002, TestSize.Level1)
         std::make_shared<AccessibleAbilityChannelClient>(CHANNEL_ID, nullptr);
     ASSERT_TRUE(client);
     std::map<std::string, std::string> actionArguments;
-    EXPECT_EQ(client->ExecuteAction(ACCESSIBILITY_WINDOW_ID,
+    EXPECT_EQ(client->ExecuteAction(ACCESSIBILITY_WINDOW_ID, ACCESSIBILITY_WINDOW_ID,
         ELEMENT_ID, ActionType::ACCESSIBILITY_ACTION_SELECT, actionArguments), RET_ERR_SAMGR);
     GTEST_LOG_(INFO) << "ExecuteAction_002 end";
 }
@@ -219,7 +219,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, ExecuteAction_003, TestSize.Level1)
     GTEST_LOG_(INFO) << "ExecuteAction_003 start";
     EXPECT_CALL(*stub_, ExecuteAction(_, _, _, _, _, _)).Times(1).WillOnce(Return(RET_OK));
     std::map<std::string, std::string> actionArguments;
-    EXPECT_EQ(instance_->ExecuteAction(ACCESSIBILITY_WINDOW_ID, ELEMENT_ID,
+    EXPECT_EQ(instance_->ExecuteAction(ACCESSIBILITY_WINDOW_ID, ACCESSIBILITY_WINDOW_ID, ELEMENT_ID,
         ActionType::ACCESSIBILITY_ACTION_SELECT, actionArguments), RET_ERR_TIME_OUT);
     GTEST_LOG_(INFO) << "ExecuteAction_003 end";
 }
