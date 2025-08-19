@@ -417,7 +417,7 @@ private:
     bool isFilteringKeyEvents_ = false;
     bool isGesturesSimulation_ = false;
     bool isSingleClickMode_ = false;
-    std::string screenReaderAbilityName_ = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    std::string screenReaderAbilityName_ = "com.screenreader/AccessibilityExtAbility";
     std::string screenReaderKey_ = "accessibility_screenreader_enabled";
     std::map<int32_t, std::shared_ptr<AccessibilityAbilityManager>> abilityManagerMap_;
     mutable ffrt::mutex abilityManagerMutex_; // mutex for abilityManagerMap_

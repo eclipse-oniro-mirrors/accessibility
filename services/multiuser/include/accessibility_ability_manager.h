@@ -32,8 +32,8 @@
 namespace OHOS {
 namespace Accessibility {
 constexpr const char *UI_TEST_BUNDLE_NAME = "ohos.uitest";
-constexpr const char *SCREEN_READER_BUNDLE_NAME = "com.huawei.hmos.screenreader";
-constexpr const char *SCREEN_READER_ABILITY = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+constexpr const char *SCREEN_READER_BUNDLE_NAME = "com.screenreader";
+constexpr const char *SCREEN_READER_ABILITY = "com.screenreader/AccessibilityExtAbility";
 constexpr const char *SCREEN_READER_KEY = "accessibility_screenreader_enabled";
 
 class AccessibilityAbilityManager {
