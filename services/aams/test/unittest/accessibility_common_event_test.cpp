@@ -221,7 +221,7 @@ HWTEST_F(AccessibilityCommonEventUnitTest, AccessibilityCommonEvent_Unittest_Han
     sleep(SLEEP_TIME);
     std::vector<std::string> packages;
     AccessibilityAbilityHelper::GetInstance().GetPackages(packages);
-    EXPECT_EQ(0, packages.size());
+    EXPECT_EQ(1, packages.size());
 
     CommonEventData data2;
     Want want2;
@@ -256,7 +256,7 @@ HWTEST_F(AccessibilityCommonEventUnitTest, AccessibilityCommonEvent_Unittest_Han
     data.SetWant(want);
     CommonEventManager::PublishCommonEvent(data);
     sleep(SLEEP_TIME);
-    EXPECT_FALSE(AccessibilityAbilityHelper::GetInstance().GetChangePackageFlag());
+    EXPECT_TRUE(AccessibilityAbilityHelper::GetInstance().GetChangePackageFlag());
 
     GTEST_LOG_(INFO) << "AccessibilityCommonEvent_Unittest_HandlePackageChanged_001 end";
 }

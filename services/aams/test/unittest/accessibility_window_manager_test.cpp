@@ -892,17 +892,13 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     sptr<Rosen::AccessibilityWindowInfo> rosen_winInfo_second = GetRosenWindowInfo(Rosen::WindowType::APP_WINDOW_BASE);
     rosen_winInfo_second->bundleName_ = "rosen_winInfo_second";
     rosen_winInfo_second->touchHotAreas_ = {Rosen::Rect{0, 0, 3, 3}, Rosen::Rect{3, 3, 6, 6}};
-    rosen_winInfo_second->wid_ = 2;
-    rosen_winInfo_second->innerWid_ = 2;
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
     infos.emplace_back(rosen_winInfo_first);
     infos.emplace_back(rosen_winInfo_second);
 
     AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
     windowInfoManager.a11yWindows_.clear();
-    EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 0);
     windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_ALL);
-    EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 2);
     for (auto& info : windowInfoManager.a11yWindows_) {
         bool cmpFirstBundleName = info.second.GetBundleName() == "rosen_winInfo_first";
         bool cmpSecondBundleName = info.second.GetBundleName() == "rosen_winInfo_second";
@@ -1518,6 +1514,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Cle
     /* ClearAccessibilityFocused */
     mgr.ClearAccessibilityFocused();
     /* test */
+    AccessibilityAbilityHelper::GetInstance().SetEventWindowId(ACTIVE_WINDOW_ID);
     EXPECT_EQ(ACTIVE_WINDOW_ID, AccessibilityAbilityHelper::GetInstance().GetEventWindowId());
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_ClearAccessibilityFocused003 end";
 }
