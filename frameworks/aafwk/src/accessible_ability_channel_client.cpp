@@ -75,11 +75,9 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     int32_t windowId = accessibilityWindowId;
-    int32_t mainWindowId = accessibilityWindowId;
     if (accessibilityWindowId == ANY_WINDOW_ID && focusType == FOCUS_TYPE_ACCESSIBILITY &&
         accessibilityFocusedWindowId_ != INVALID_WINDOW_ID) {
         windowId = accessibilityFocusedWindowId_;
-        mainWindowId = focusedMainWindowId_ != INVALID_WINDOW_ID ? focusedMainWindowId_ : accessibilityFocusedWindowId_;
         HILOG_INFO("Convert into accessibility focused window id[%{public}d]", windowId);
     }
 
@@ -106,8 +104,8 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     HILOG_INFO("Get result successfully from ace.");
 
     elementInfo = elementOperator->accessibilityInfoResult_;
-    elementInfo.SetMainWindowId(mainWindowId);
-    elementInfo.SetWindowId(mainWindowId);
+    elementInfo.SetMainWindowId(windowId);
+    elementInfo.SetWindowId(windowId);
     return RET_OK;
 }
 
@@ -161,7 +159,7 @@ RetError AccessibleAbilityChannelClient::GetCursorPosition(
     return RET_OK;
 }
 
-RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId, int32_t mainWindowId,
+RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId,
     int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments)
 {
 #ifdef OHOS_BUILD_ENABLE_HITRACE
@@ -173,9 +171,7 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
     }
     if (action == ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS &&
         accessibilityFocusedElementId_ != INVALID_WINDOW_ID && accessibilityFocusedWindowId_ != INVALID_WINDOW_ID) {
-        int32_t focusedMainWindowId = focusedMainWindowId_ != INVALID_WINDOW_ID ? focusedMainWindowId_ :
-            accessibilityFocusedWindowId_;
-        ExecuteAction(accessibilityFocusedWindowId_, focusedMainWindowId, accessibilityFocusedElementId_,
+        ExecuteAction(accessibilityFocusedWindowId_, accessibilityFocusedElementId_,
             ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS, actionArguments);
     }
 
@@ -207,12 +203,10 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
         switch (action) {
             case ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS:
                 accessibilityFocusedWindowId_ = accessibilityWindowId;
-                focusedMainWindowId_ = mainWindowId;
                 accessibilityFocusedElementId_ = elementId;
                 break;
             case ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS:
                 accessibilityFocusedWindowId_ = INVALID_WINDOW_ID;
-                focusedMainWindowId_ = INVALID_WINDOW_ID;
                 accessibilityFocusedElementId_ = INVALID_WINDOW_ID;
                 break;
             default:
