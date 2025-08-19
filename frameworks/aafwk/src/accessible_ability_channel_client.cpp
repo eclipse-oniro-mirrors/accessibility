@@ -257,8 +257,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
 #endif // OHOS_BUILD_ENABLE_HITRACE
     if (proxy_ == nullptr) {
-        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]",
-            channelId_);
+        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
     }
 
