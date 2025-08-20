@@ -54,7 +54,7 @@ namespace {
     const std::string IGNORE_REPEAT_CLICK_SWITCH = "ignore_repeat_click_switch";
     const std::string IGNORE_REPEAT_CLICK_TIME = "ignore_repeat_click_time";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER = "accessibility_display_daltonizer";
-    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
     const std::string ACCESSIBILITY_SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
