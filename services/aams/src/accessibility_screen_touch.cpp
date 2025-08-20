@@ -244,7 +244,9 @@ void AccessibilityScreenTouch::HandleCoordinates(MMI::PointerEvent::PointerItem 
             if ((displayMgr.GetFoldStatus() == Rosen::FoldStatus::EXPAND &&
                 FOLDABLE[SUBSCRIPT_TWO] == FOLDABLE_SCREEN_ROTATE) ||
                 (displayMgr.GetFoldStatus() == Rosen::FoldStatus::FOLDED &&
-                FOLDABLE[SUBSCRIPT_ZERO] == FOLDABLE_SCREEN_ROTATE)) {
+                FOLDABLE[SUBSCRIPT_ZERO] == FOLDABLE_SCREEN_ROTATE) ||
+                (displayMgr.GetFoldStatus() == Rosen::FoldStatus::FOLD_STATE_EXPAND_WITH_SECOND_EXPAND &&
+                FOLDABLE[SUBSCRIPT_TWO] == FOLDABLE_SCREEN_ROTATE)) {
                 circleCenterPhysicalX_ = originalX;
                 circleCenterPhysicalY_ = originalY;
                 startAngle_ = START_ANGLE_PORTRAIT;
