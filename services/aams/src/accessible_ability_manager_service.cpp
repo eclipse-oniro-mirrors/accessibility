@@ -90,6 +90,8 @@ namespace {
     const char* HAP_BUNDLE = "com.ohos.settings";
     const char* UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const char* UI_TEST_ABILITY_NAME = "uitestability";
+    const char* PC_MODE_SWITCH = "window_pcmode_switch_status";
+    const char* PC_MODE_SUPPORT = "const.window.support_window_pcmode_switch";
     constexpr int32_t INVALID_SHORTCUT_STATE = 2;
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
@@ -2048,6 +2050,10 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     RegisterScreenMagnificationState();
     RegisterScreenMagnificationType();
     RegisterVoiceRecognitionState();
+
+    if (system::GetParameter(PC_MODE_SUPPORT, "false") == "true") {
+        RegisterPcModeSwitch();
+    }
 }
 
 void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
@@ -4358,6 +4364,33 @@ void AccessibleAbilityManagerService::UnsubscribeOsAccount()
     if (res != ERR_OK) {
         HILOG_ERROR("unregister account event fail res:%{public}d", res);
     }
+}
+
+void AccessibleAbilityManagerService::RegisterPcModeSwitch()
+{
+    HILOG_INFO();
+    if (system::GetParameter(PC_MODE_SUPPORT, "false") != "true") {
+        HILOG_ERROR("not support switch pcmode");
+        return;
+    }
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [](const std::string &state) {
+            Singleton<AccessibilityWindowManager>::GetInstance().Init();
+        };
+        if (accountData->GetConfig()->GetSystemDbHandle()) {
+            accountData->GetConfig()->GetSystemDbHandle()->RegisterObserver(PC_MODE_SWITCH, func);
+        }
+        }, "REGISTER_PC_MODE_SWITCH_OBSERVER");
 }
 } // namespace Accessibility
 } // namespace OHOS
