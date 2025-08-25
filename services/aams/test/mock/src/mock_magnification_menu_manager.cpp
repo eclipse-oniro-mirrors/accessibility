@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include "accessibility_ut_helper.h"
 #include "magnification_menu_manager.h"
 
 namespace OHOS {
@@ -35,6 +36,7 @@ void MagnificationMenuManager::MoveMenuWindow(int32_t deltaX, int32_t deltaY)
 {
     (void)deltaX;
     (void)deltaY;
+    Accessibility::AccessibilityAbilityHelper::GetInstance().SetMenuMove(true);
 }
 
 void MagnificationMenuManager::AttachToEdge()
@@ -50,7 +52,7 @@ bool MagnificationMenuManager::IsTapOnMenu(int32_t posX, int32_t posY)
 {
     (void)posX;
     (void)posY;
-    return false;
+    return Accessibility::AccessibilityAbilityHelper::GetInstance().GetTapOnMenu();
 }
 
 void MagnificationMenuManager::OnMenuTap()
