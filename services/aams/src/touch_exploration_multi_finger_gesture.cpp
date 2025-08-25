@@ -1006,14 +1006,13 @@ void TouchExploration::HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, 
             SetCurrentState(TouchExplorationState::TOUCH_INIT);
             return;
         }
-        for (int32_t pIndex = 0; pIndex < static_cast<int32_t>(fingerNum); pIndex++) {
-            if (multiFingerSwipeRoute_.count(pIndex) == 0 ||
-                multiFingerSwipeRoute_[pIndex].size() < MIN_MULTI_FINGER_SWIPE_POINTER_NUM) {
+        for (auto &pair : multiFingerSwipeRoute_) {
+            if (pair.second.size() < MIN_MULTI_FINGER_SWIPE_POINTER_NUM) {
                 Clear();
                 SetCurrentState(TouchExplorationState::TOUCH_INIT);
                 return;
             }
-            if (!RecognizeMultiFingerSwipePath(multiFingerSwipeRoute_[pIndex])) {
+            if (!RecognizeMultiFingerSwipePath(pair.second)) {
                 Clear();
                 SetCurrentState(TouchExplorationState::TOUCH_INIT);
                 return;
