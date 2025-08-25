@@ -1275,6 +1275,71 @@ ohos_unittest("accessibility_zoom_gesture_test") {
 }
 
 ################################################################################
+ohos_unittest("window_magnification_gesture_test") {
+  module_out_path = module_output_path
+  sources = [
+    "../../test/mock/mock_common_event_data.cpp",
+    "../../test/mock/mock_common_event_manager.cpp",
+    "../../test/mock/mock_common_event_subscribe_info.cpp",
+    "../../test/mock/mock_common_event_subscriber.cpp",
+    "../../test/mock/mock_matching_skill.cpp",
+    "../src/accessibility_account_data.cpp",
+    "../src/accessibility_circle_drawing_manager.cpp",
+    "../src/accessibility_datashare_helper.cpp",
+    "../src/accessibility_dumper.cpp",
+    "../src/accessibility_input_interceptor.cpp",
+    "../src/accessibility_keyevent_filter.cpp",
+    "../src/accessibility_mouse_autoclick.cpp",
+    "../src/accessibility_mouse_key.cpp",
+    "../src/accessibility_power_manager.cpp",
+    "../src/accessibility_resource_bundle_manager.cpp",
+    "../src/accessibility_screen_touch.cpp",
+    "../src/accessibility_setting_observer.cpp",
+    "../src/accessibility_setting_provider.cpp",
+    "../src/accessibility_settings.cpp",
+    "../src/accessibility_settings_config.cpp",
+    "../src/accessibility_notification_helper.cpp",
+    "../src/accessibility_short_key.cpp",
+    "../src/accessibility_short_key_dialog.cpp",
+    "../src/accessibility_touchEvent_injector.cpp",
+    "../src/accessibility_window_connection.cpp",
+    "../src/accessibility_window_manager.cpp",
+    "../src/accessibility_zoom_gesture.cpp",
+    "../src/accessible_ability_channel.cpp",
+    "../src/accessible_ability_connection.cpp",
+    "../src/accessible_ability_manager_service_event_handler.cpp",
+    "../src/touch_exploration_multi_finger_gesture.cpp",
+    "../src/touch_exploration_single_finger_gesture.cpp",
+    "../src/utils.cpp",
+    "../src/magnification_manager.cpp",
+    "../src/window_magnification_gesture.cpp",
+    "../src/magnification_window_proxy.cpp",
+    "mock/src/mock_accessibility_common_event.cpp",
+    "mock/src/mock_accessibility_display_manager.cpp",
+    "mock/src/mock_accessibility_event_transmission.cpp",
+    "mock/src/mock_accessible_ability_client_stub_impl.cpp",
+    "mock/src/mock_accessible_ability_manager_service.cpp",
+    "mock/src/mock_window_magnification_manager.cpp",
+    "mock/src/mock_magnification_menu_manager.cpp",
+    "mock/src/mock_system_ability.cpp",
+    "unittest/window_magnification_gesture_test.cpp",
+  ]
+  sources += aams_mock_distributeddatamgr_src
+
+  configs = [
+    ":module_private_config",
+    "../../../resources/config/build:coverage_flags",
+  ]
+
+  deps = [
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+  ]
+
+  external_deps = test_external_deps
+}
+
+################################################################################
 group("unittest") {
   testonly = true
   deps = []
@@ -1298,5 +1363,6 @@ group("unittest") {
     ":accessible_ability_channel_test",
     ":accessible_ability_connection_test",
     ":accessible_ability_manager_service_test",
+    ":window_magnification_gesture_test",
   ]
 }

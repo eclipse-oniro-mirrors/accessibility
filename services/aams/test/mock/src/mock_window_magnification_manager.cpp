@@ -57,13 +57,14 @@ void WindowMagnificationManager::MoveMagnificationWindow(int32_t deltaX, int32_t
 {
     (void)deltaX;
     (void)deltaY;
+    Accessibility::AccessibilityAbilityHelper::GetInstance().SetZoomMove(true);
 }
 
 bool WindowMagnificationManager::IsTapOnHotArea(int32_t posX, int32_t posY)
 {
     (void)posX;
     (void)posY;
-    return false;
+    return Accessibility::AccessibilityAbilityHelper::GetInstance().GetTapOnHotArea();
 }
 
 void WindowMagnificationManager::RefreshWindowParam(RotationType type)
@@ -75,7 +76,7 @@ bool WindowMagnificationManager::IsTapOnMagnificationWindow(int32_t posX, int32_
 {
     (void)posX;
     (void)posY;
-    return false;
+    return Accessibility::AccessibilityAbilityHelper::GetInstance().GetTapOnMagnificationWindow();
 }
 
 PointerPos WindowMagnificationManager::ConvertCoordinates(int32_t posX, int32_t posY)
@@ -109,7 +110,7 @@ void WindowMagnificationManager::FollowFocuseElement(int32_t centerX, int32_t ce
 
 bool WindowMagnificationManager::IsMagnificationWindowShow()
 {
-    return false;
+    return Accessibility::AccessibilityAbilityHelper::GetInstance().GetZoomState();
 }
 
 float WindowMagnificationManager::GetScale()

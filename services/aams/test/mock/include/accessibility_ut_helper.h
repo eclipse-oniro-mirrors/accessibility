@@ -422,6 +422,66 @@ public:
     {
         return executeAction_;
     }
+
+    void ClearZoom()
+    {
+        zoomState_ = false;
+        tapOnMagnificationWindow_ = false;
+        tapOnMenu_ = false;
+        tapOnHotArea_ = false;
+        isMove_ = false;
+        isMenuMove_ = false;
+    }
+
+    void SetTapOnMagnificationWindow(bool tapOnMagnificationWindow)
+    {
+        tapOnMagnificationWindow_ = tapOnMagnificationWindow;
+    }
+
+    bool GetTapOnMagnificationWindow()
+    {
+        return tapOnMagnificationWindow_;
+    }
+
+    void SetTapOnMenu(bool tapOnMenu)
+    {
+        tapOnMenu_ = tapOnMenu;
+    }
+
+    bool GetTapOnMenu()
+    {
+        return tapOnMenu_;
+    }
+
+    void SetTapOnHotArea(bool tapOnHotArea)
+    {
+        tapOnHotArea_ = tapOnHotArea;
+    }
+
+    bool GetTapOnHotArea()
+    {
+        return tapOnHotArea_;
+    }
+
+    void SetZoomMove(bool isMove)
+    {
+        isMove_ = isMove;
+    }
+
+    bool GetZoomMoveState()
+    {
+        return isMove_;
+    }
+
+    void SetMenuMove(bool isMenuMove)
+    {
+        isMenuMove_ = isMenuMove;
+    }
+
+    bool GetMenuMoveState()
+    {
+        return isMenuMove_;
+    }
 public:
     static const int32_t accountId_ = 100;
 
@@ -459,6 +519,11 @@ private:
     WindowUpdateType eventWindowChangeType_ = WINDOW_UPDATE_INVALID;
     int32_t realId_ = 0;
     int32_t executeAction_ = ACCESSIBILITY_ACTION_INVALID;
+    bool tapOnMagnificationWindow_ = false;
+    bool tapOnMenu_ = false;
+    bool tapOnHotArea_ = false;
+    bool isMove_ = false;
+    bool isMenuMove_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS
