@@ -352,11 +352,6 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
 {
     HILOG_INFO("Deregister windowId[%{public}d] start", windowId);
     std::lock_guard<ffrt::mutex> lock(mutex_);
-
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
     auto iter = elementOperators_.find(windowId);
     if (iter != elementOperators_.end()) {
         HILOG_DEBUG("windowID[%{public}d] is erase", windowId);
@@ -364,6 +359,10 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
     } else {
         HILOG_WARN("Not find windowID[%{public}d]", windowId);
         return RET_ERR_NO_REGISTER;
+    }
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
     }
     return static_cast<RetError>(serviceProxy_->DeregisterElementOperatorByWindowId(windowId));
 }
