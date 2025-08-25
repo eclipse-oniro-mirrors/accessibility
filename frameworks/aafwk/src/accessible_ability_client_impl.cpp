@@ -39,7 +39,6 @@ const int32_t ROOT_TREE_ID = 0;
 constexpr uint64_t ELEMENT_MOVE_BIT = 40;
 namespace {
     const std::string SYSTEM_PARAMETER_AAMS_SERVICE = "accessibility.config.ready";
-    constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
     constexpr int64_t ROOT_NONE_ID = -1;
     constexpr int64_t NODE_ID_MAX = 0x7FFFFFFE;
     ffrt::mutex g_Mutex;
@@ -201,7 +200,6 @@ bool AccessibleAbilityClientImpl::LoadAccessibilityService()
 void AccessibleAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
     std::lock_guard<ffrt::mutex> lock(conVarMutex_);
-    char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
     do
     {
         if (serviceProxy_ != nullptr) {

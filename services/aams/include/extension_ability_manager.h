@@ -36,7 +36,6 @@ private:
     sptr <IRemoteObject> remoteObject_;
     std::mutex mutex_;
     std::condition_variable cv_;
-    bool waitFlag_ = false;
 };
 
 class ExtensionAbilityManager {

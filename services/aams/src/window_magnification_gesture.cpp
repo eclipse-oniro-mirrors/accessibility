@@ -686,10 +686,6 @@ void WindowMagnificationGesture::HandleTwoFingersDownStateMove(MMI::PointerEvent
     MMI::PointerEvent::PointerItem baseSecondItem;
     lastDownEvent_->GetPointerItem(1, baseSecondItem);
 
-    float baseFocusX = (baseFirstItem.GetDisplayX() + baseSecondItem.GetDisplayX()) /
-        static_cast<float>(DIVISOR_TWO);
-    float baseFocusY = (baseFirstItem.GetDisplayY() + baseSecondItem.GetDisplayY()) /
-        static_cast<float>(DIVISOR_TWO);
     int32_t baseOffsetX = abs(baseFirstItem.GetDisplayX() - baseSecondItem.GetDisplayX());
     int32_t baseOffsetY = abs(baseFirstItem.GetDisplayY() - baseSecondItem.GetDisplayY());
     float baseDistance = hypot(baseOffsetX, baseOffsetY);

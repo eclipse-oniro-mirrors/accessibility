@@ -769,7 +769,7 @@ void AccessibilityWindowManager::WindowUpdateBounds(const std::vector<sptr<Rosen
         if (isSendWindowEvent) {
             AccessibilityEventInfo evtInfBounds(realWidId, WINDOW_UPDATE_BOUNDS);
             AccessibilityEventInfoParcel evtInfParcel(evtInfBounds);
-            Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfParcel, 0);
+            aams.SendEvent(evtInfParcel, 0);
         }
     }
 }
@@ -817,7 +817,7 @@ void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Ros
         if (isSendWindowEvent) {
             AccessibilityEventInfo evtInfProperty(realWidId, WINDOW_UPDATE_PROPERTY);
             AccessibilityEventInfoParcel evtInfParcel(evtInfProperty);
-            Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfParcel, 0);
+            aams.SendEvent(evtInfParcel, 0);
         }
     }
 }
@@ -945,7 +945,6 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
 {
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto oldA11yWindows_ = a11yWindows_;
-    int32_t oldActiveWindowId = activeWindowId_;
     HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
     WinDeInit();
     for (auto &window : infos) {

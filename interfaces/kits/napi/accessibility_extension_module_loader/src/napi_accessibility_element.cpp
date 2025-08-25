@@ -60,10 +60,8 @@ namespace {
     constexpr char MAIN_WINDOW_ID[] = "mainWindowId";
     constexpr char NAV_DESTINATION_ID[] = "navDestinationId";
     constexpr char PAGE_ID[] = "pageId";
-    constexpr char PARENT[] = "parent";
     constexpr char PLURAL_LINE_SUPPORTED[] = "pluralLineSupported";
     constexpr char RESOURCE_NAME[] = "resourceName";
-    constexpr char ROW[] = "row";
     constexpr char SCROLLABLE[] = "scrollable";
     constexpr char SELECTED[] = "selected";
     constexpr char SPAN[] = "span";
@@ -81,11 +79,6 @@ namespace {
     constexpr char CURRENT_ITEM[] = "currentItem";
     constexpr char ACCESSIBILITY_GROUP[] = "accessibilityGroup";
     constexpr char ACCESSIBILITY_LEVEL[] = "accessibilityLevel";
-    constexpr char CHECKBOX_GROUP_SELECTED_STATUS[] = "checkboxGroupSelectedStatus";
-    constexpr char COLUMN[] = "column";
-    constexpr char LIST_ITEM_INDEX[] = "listItemIndex";
-    constexpr char SIDE_BAR_CONTAINER_STATES[] = "sideBarContainerStates";
-    constexpr char ALL_ATTRIBUTE[] = "allAttribute";
     constexpr char CLIP[] = "clip";
     constexpr char CUSTOM_COMPONENT_TYPE[] = "customComponentType";
     constexpr char EXTRA_INFO[] = "extraInfo";

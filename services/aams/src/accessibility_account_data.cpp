@@ -40,7 +40,6 @@ namespace {
     constexpr int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
     constexpr int32_t INIT_DATASHARE_HELPER_SLEEP_TIME = 500;
     constexpr int DEFAULT_ACCOUNT_ID = 100;
-    constexpr int SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     constexpr int SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
@@ -792,7 +791,7 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryInstalledAbilityInfo");
 #endif // OHOS_BUILD_ENABLE_HITRACE
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
-    bool ret = Singleton<AccessibilityResourceBundleManager>::GetInstance().QueryExtensionAbilityInfos(
+    Singleton<AccessibilityResourceBundleManager>::GetInstance().QueryExtensionAbilityInfos(
         AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     for (auto& info : extensionInfos) {
@@ -1117,7 +1116,7 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
 
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
-    bool ret = Singleton<AccessibilityResourceBundleManager>::GetInstance().QueryExtensionAbilityInfos(
+    Singleton<AccessibilityResourceBundleManager>::GetInstance().QueryExtensionAbilityInfos(
         AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     bool hasNewExtensionAbility = false;

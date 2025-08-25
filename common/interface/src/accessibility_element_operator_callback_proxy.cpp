@@ -21,8 +21,6 @@ namespace OHOS {
 namespace Accessibility {
 
 constexpr int32_t MAX_RAWDATA_SIZE = 128 * 1024 * 1024; // RawData limit is 128M, limited by IPC
-constexpr int32_t MULTI_TRANSMIT_FINISH = -1;
-constexpr int32_t DATA_NUMBER_ONE_TIME = 400;
 
 AccessibilityElementOperatorCallbackProxy::AccessibilityElementOperatorCallbackProxy(
     const sptr<IRemoteObject> &impl) : IRemoteProxy<IAccessibilityElementOperatorCallback>(impl)

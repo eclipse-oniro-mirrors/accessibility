@@ -55,7 +55,7 @@ RetError AccessibilityWindowConnection::SetCardProxy(const int32_t treeId,
 sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetCardProxy(const int32_t treeId)
 {
     sptr<IAccessibilityElementOperator> connection = nullptr;
-    bool ret = cardProxy_.Find(treeId, connection);
+    cardProxy_.Find(treeId, connection);
     HILOG_DEBUG("GetCardProxy : operation is %{public}d", connection != nullptr);
     return connection;
 }

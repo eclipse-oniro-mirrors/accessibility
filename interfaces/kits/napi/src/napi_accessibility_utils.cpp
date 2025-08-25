@@ -1094,7 +1094,6 @@ void ConvertActionArgsJSToNAPI(
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     std::string str = "";
-    bool seleFlag = false;
     switch (action) {
         case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
         case ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM:

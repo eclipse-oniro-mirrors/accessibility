@@ -120,11 +120,8 @@ private:
     uint64_t screenId_ = -1;
     uint32_t screenWidth_ = 0;
     uint32_t screenHeight_ = 0;
-    float anchorPointX_ = 0.0f;
-    float anchorPointY_ = 0.0f;
     int32_t centerX_ = 0;
     int32_t centerY_ = 0;
-    float scaleRatio_ = 2.0f;
     int32_t downPid_ = -1;
     ACCESSIBILITY_ZOOM_STATE state_ = READY_STATE;
     OHOS::Rosen::DisplayOrientation orientation_ =

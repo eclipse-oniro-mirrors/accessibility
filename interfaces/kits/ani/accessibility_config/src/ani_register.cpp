@@ -23,7 +23,6 @@
 using namespace arkts::ani_signature;
 
 constexpr int32_t INVALID_ANI_VERSION = 1;
-constexpr int32_t MODULE_NOT_FOUND = 2;
 constexpr int32_t CLASS_NOT_FOUND = 3;
 constexpr int32_t BIND_METHOD_FAILED = 4;
 
