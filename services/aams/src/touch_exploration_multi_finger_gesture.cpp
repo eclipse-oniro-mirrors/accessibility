@@ -515,10 +515,10 @@ bool TouchExploration::GetPointerItemWithFingerNum(uint32_t fingerNum,
         findPrePointer = false;
         event.GetPointerItem(pIds[i], curPoints[i]);
         for (auto &preEvent : receivedPointerEvents_) {
-            if ((preEvent.GetPointerId() == i) &&
+            if ((preEvent.GetPointerId() == pIds[i]) &&
                 (preEvent.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN)) {
                 findPrePointer = true;
-                preEvent.GetPointerItem(i, prePoints[i]);
+                preEvent.GetPointerItem(pIds[i], prePoints[i]);
                 break;
             }
         }
