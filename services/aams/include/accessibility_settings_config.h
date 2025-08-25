@@ -120,6 +120,10 @@ public:
     {
         return datashare_;
     }
+    std::shared_ptr<AccessibilityDatashareHelper> GetSystemDbHandle()
+    {
+        return systemDatashare_;
+    }
 
     void Init();
     void ClearData();

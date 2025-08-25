@@ -332,6 +332,7 @@ public:
     void OnDataClone();
     bool CheckPermission(const std::string &permission) const;
     int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override;
+    void RegisterPcModeSwitch();
 
     // for magnification
     bool GetMagnificationState();
