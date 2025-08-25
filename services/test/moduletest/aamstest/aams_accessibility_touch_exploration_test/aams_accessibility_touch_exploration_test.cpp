@@ -388,26 +388,25 @@ bool AamsTouchExplorationTest::MultiFingerTapEventProduce(std::vector<MMI::Point
     int64_t occurredTime = 0;
     for (int32_t tapIndex = 1; tapIndex <= tapTimes; tapIndex++) {
         points.clear();
-        int32_t pId = 0;
         for (auto iter : pointsVec) {
             points.emplace_back(iter);
-            event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, occurredTime, 0, pId);
-            pId++;
+            event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, occurredTime, 0,
+                iter.GetPointerId());
             inputEventConsumer->OnInputEvent(event);
         }
 
-        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, POINT_ID_0);
+        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0,
+            pointsVec.front().GetPointerId());
         inputEventConsumer->OnInputEvent(event);
 
         if (holdFlag && tapIndex == tapTimes) {
             sleep(1);
         }
 
-        pId = pointsVec.size() - 1;
         for (int32_t pointsVecIndex = 0; pointsVecIndex < pointsVec.size(); pointsVecIndex++) {
-            event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, occurredTime, 0, pId);
+            event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, occurredTime, 0,
+                points.back().GetPointerId());
             points.pop_back();
-            pId--;
             inputEventConsumer->OnInputEvent(event);
         }
 
@@ -429,11 +428,9 @@ bool AamsTouchExplorationTest::MultiFingerTapAndMoveEventProduce(std::vector<MMI
     std::shared_ptr<MMI::PointerEvent> event;
     int64_t occurredTime = 0;
     points.clear();
-    int32_t pId = 0;
     for (auto iter : pointStartVec) {
         points.emplace_back(iter);
-        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, occurredTime, 0, pId);
-        pId++;
+        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, occurredTime, 0, iter.GetPointerId());
         inputEventConsumer->OnInputEvent(event);
     }
 
@@ -441,14 +438,14 @@ bool AamsTouchExplorationTest::MultiFingerTapAndMoveEventProduce(std::vector<MMI
     for (auto iter : pointEndVec) {
         points.emplace_back(iter);
     }
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, occurredTime, 0, 0);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, occurredTime, 0,
+        pointStartVec.front().GetPointerId());
     inputEventConsumer->OnInputEvent(event);
 
-    pId = pointEndVec.size() - 1;
     for (int32_t pointsEndVecIndex = 0; pointsEndVecIndex < pointEndVec.size(); pointsEndVecIndex++) {
-        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, occurredTime, 0, pId);
+        event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, occurredTime, 0,
+            points.back().GetPointerId());
         points.pop_back();
-        pId--;
         inputEventConsumer->OnInputEvent(event);
     }
 
@@ -1551,7 +1548,7 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
 /**
  * @tc.number: OnPointerEvent029
  * @tc.name:OnPointerEvent
- * @tc.desc: Check the four finger tri[le tap event and hold.
+ * @tc.desc: Check the four finger triple tap event and hold.
  */
 HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent029, TestSize.Level0)
 {
@@ -1925,6 +1922,80 @@ HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointer
             static_cast<int32_t>(GestureType::GESTURE_FOUR_FINGER_SWIPE_RIGHT));
     }
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent037 ends";
+}
+
+/**
+ * @tc.number: OnPointerEvent038
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the simulated swipe gesture.
+ */
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent038, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent038 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchExplorationPointSet(point1, 10000, 100, 100);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchExplorationPointSet(point2, 10001, 200, 100);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchExplorationPointSet(point3, 10002, 300, 100);
+    std::vector<MMI::PointerEvent::PointerItem> pointStartVec{point1, point2, point3};
+
+    MMI::PointerEvent::PointerItem point11 = {};
+    TouchExplorationPointSet(point11, 10000, 100, 800);
+    MMI::PointerEvent::PointerItem point22 = {};
+    TouchExplorationPointSet(point22, 10001, 200, 800);
+    MMI::PointerEvent::PointerItem point33 = {};
+    TouchExplorationPointSet(point33, 10002, 300, 800);
+    std::vector<MMI::PointerEvent::PointerItem> pointEndVec{point11, point22, point33};
+
+    bool eventProduceRst = MultiFingerTapAndMoveEventProduce(points, pointStartVec, pointEndVec);
+    if (!eventProduceRst) {
+        GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0030 inputEventConsumer is null";
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_SWIPE_DOWN));
+    }
+    GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent038 ends";
+}
+
+/**
+ * @tc.number: OnPointerEvent039
+ * @tc.name:OnPointerEvent
+ * @tc.desc: Check the simulated multi-tap gesture.
+ */
+HWTEST_F(AamsTouchExplorationTest, AamsTouchExplorationTest_Moduletest_OnPointerEvent039, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent039 starts";
+
+    AccessibilityHelper::GetInstance().GetEventType() = {};
+    MMI::MockInputManager::ClearTouchActions();
+
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point1 = {};
+    TouchExplorationPointSet(point1, 10000, 100, 100);
+    MMI::PointerEvent::PointerItem point2 = {};
+    TouchExplorationPointSet(point2, 10001, 200, 100);
+    MMI::PointerEvent::PointerItem point3 = {};
+    TouchExplorationPointSet(point3, 10002, 300, 100);
+    std::vector<MMI::PointerEvent::PointerItem> pointVec{point1, point2, point3};
+
+    bool eventProduceRst = MultiFingerTapEventProduce(points, pointVec, 2, false);
+    if (!eventProduceRst) {
+        GTEST_LOG_(INFO) << "AamsTouchExplorationTest OnPointerEvent0022 inputEventConsumer is null";
+    } else {
+        sleep(1);
+        // gestureId
+        EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+            static_cast<int32_t>(GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP));
+    }
+    GTEST_LOG_(INFO) << "AamsTouchExplorationTest AamsTouchExplorationTest_Moduletest_OnPointerEvent039 ends";
 }
 } // namespace Accessibility
 } // namespace OHOS
