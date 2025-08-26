@@ -71,7 +71,6 @@ namespace {
     const char* AAMS_INPUT_MANAGER_RUNNER_NAME = "AamsInputManagerRunner";
     const char* AAMS_GESTURE_RUNNER_NAME = "AamsGestureRunner";
     const char* AAMS_HOVER_ENTER_RUNNER_NAME = "AamsHoverEnterRunner";
-    const char* AAMS_REGISTER_RUNNER_NAME = "AamsRegisterRunner";
     const char* SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     const char* SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
     const char* DEVICE_PROVISIONED = "device_provisioned";
@@ -82,7 +81,10 @@ namespace {
     const char* MAGNIFICATION_PARAM = "const.accessibility.magnification";
     const char* VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
     const char* VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
+#ifdef ACCESSIBILITY_WATCH_FEATURE
     const char* DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
+    constexpr int32_t UNLOAD_TASK_INTERNAL = 3 * 60 * 1000; // ms
+#endif
     const char* USER_SETUP_COMPLETED = "user_setup_complete";
     const char* ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
     const char* SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
@@ -99,7 +101,6 @@ namespace {
     constexpr int32_t REQUEST_ID_MIN = 0x0000FFFF;
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
     constexpr int32_t ROOT_UID = 0;
-    constexpr int32_t UNLOAD_TASK_INTERNAL = 3 * 60 * 1000; // ms
     constexpr int32_t TREE_ID_INVALID = 0;
     constexpr uint32_t ELEMENT_MOVE_BIT = 40;
     constexpr int32_t SINGLE_TREE_ID = 0;

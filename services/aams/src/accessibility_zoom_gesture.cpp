@@ -32,12 +32,9 @@ namespace {
     constexpr int32_t MULTI_TAP_TIMER = 250; // ms
     constexpr int32_t LONG_PRESS_TIMER = 300; // ms
     constexpr float DOUBLE_TAP_SLOP = 100.0f;
-    constexpr uint32_t DOUBLE = 2;
     constexpr uint32_t TRIPLE_TAP_COUNT = 3;
-    constexpr float NORMAL_SCALE = 1.0f;
     constexpr float MIN_SCROLL_SPAN = 2.0f;
     constexpr float MIN_SCALE_SPAN = 2.0f;
-    constexpr float DEFAULT_ANCHOR = 0.5f;
     constexpr float MIN_SCALE = 0.1f;
 } // namespace
 

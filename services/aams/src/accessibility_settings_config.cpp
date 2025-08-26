@@ -235,6 +235,7 @@ RetError AccessibilitySettingsConfig::SetShortKeyOnLockScreenState(const bool st
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetShortKeyOnLockScreenState");
         HILOG_ERROR("set isShortKeyEnabledOnLockScreen_ failed");
     }
+    isShortKeyEnabledOnLockScreen_ = state;
     return ret;
 }
 

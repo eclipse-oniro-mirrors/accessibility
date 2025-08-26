@@ -29,7 +29,6 @@ namespace {
     constexpr uint32_t DISPLAY_DALTONIZER_GREEN = 12;
     constexpr uint32_t DISPLAY_DALTONIZER_RED = 11;
     constexpr uint32_t DISPLAY_DALTONIZER_BLUE = 13;
-    constexpr int32_t REPORTER_THRESHOLD_VALUE = 10;
 }
 
 AccessibilityConfig::Impl::Impl()

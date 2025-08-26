@@ -51,8 +51,6 @@
 namespace OHOS {
 namespace Accessibility {
 
-constexpr int32_t SINGLE_TRANSMIT = -2;
-constexpr int32_t MULTI_TRANSMIT_FINISH = -1;
 constexpr int32_t ERR_CODE_DEFAULT = -1000;
 constexpr int32_t MAX_RAWDATA_SIZE = 128 * 1024 * 1024; // RawData limit is 128M, limited by IPC
 

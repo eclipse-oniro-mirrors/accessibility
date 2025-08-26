@@ -1123,7 +1123,7 @@ private:
     napi_value OnNotifyDisconnect(napi_env env, NapiCallbackInfo &info)
     {
         HILOG_INFO();
-        RetError ret = context_.lock()->NotifyDisconnect();
+        context_.lock()->NotifyDisconnect();
         return nullptr;
     }
 };
