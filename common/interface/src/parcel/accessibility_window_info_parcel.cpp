@@ -52,7 +52,7 @@ bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
     int32_t touchHotAreasSize = 0;
     static const int32_t touchHotAreasMaxSize = 1024;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, touchHotAreasSize);
-    if (touchHotAreasSize > touchHotAreasMaxSize) {
+    if (touchHotAreasSize > touchHotAreasMaxSize || touchHotAreasSize < 0) {
         return false;
     }
     std::vector<Rect> touchHotAreas {};
