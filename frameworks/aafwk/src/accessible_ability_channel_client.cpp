@@ -104,8 +104,8 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     HILOG_INFO("Get result successfully from ace.");
 
     elementInfo = elementOperator->accessibilityInfoResult_;
-    elementInfo.SetMainWindowId(windowId);
-    elementInfo.SetWindowId(windowId);
+    elementInfo.SetMainWindowId((windowId > 0) ? windowId : elementInfo.GetWindowId());
+    elementInfo.SetWindowId((windowId > 0) ? windowId : elementInfo.GetWindowId());
     return RET_OK;
 }
 
