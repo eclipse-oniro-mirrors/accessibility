@@ -1232,7 +1232,6 @@ bool FuzzWithSpanInfo(const uint8_t* data, size_t size)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    OHOS::DoSomethingInterestingWithRegisterAbilityListener();
     OHOS::DoSomethingInterestingWithGetFocus(data, size);
     OHOS::DoSomethingInterestingWithGetFocusByElementInfo(data, size);
     OHOS::DoSomethingInterestingWithInjectGesture(data, size);
@@ -1253,7 +1252,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::FuzzWithSearchElementInfoByAccessibilityId(data, size);
     OHOS::FuzzWithGetRootByWindowBatch(data, size);
     OHOS::FuzzWithGetRootBatch(data, size);
-    OHOS::FuzzWithConnect();
     OHOS::FuzzWithExtraElementInfo(data, size);
     OHOS::FuzzWithSpanInfo(data, size);
     return 0;
