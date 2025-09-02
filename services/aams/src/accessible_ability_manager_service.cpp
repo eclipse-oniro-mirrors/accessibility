@@ -3854,9 +3854,11 @@ void AccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t
 ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId)
 {
     HILOG_INFO("aa search treeParent from aams,  windowId: %{public}d, treeId: %{public}d", windowId, treeId);
-    sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
+    int32_t realId =
+        Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, FOCUS_TYPE_INVALID);
+    sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(realId);
     if (!connection) {
-        HILOG_WARN("The operator of windowId[%{public}d] has not been registered.", windowId);
+        HILOG_WARN("The operator of windowId[%{public}d] has not been registered.", realId);
         return RET_ERR_NO_CONNECTION;
     }
     connection->GetRootParentId(treeId, parentId);
