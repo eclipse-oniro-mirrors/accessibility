@@ -2395,7 +2395,10 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
             //       root -> node that send event, and it's a UiExtensionNode
             // when elementId is element that at the UiExtension tree, try to get the id of UiExtensionComponent
             // by GetRootParentId,
-            elementId = GetRootParentId(windowId, treeId, elementId);
+            ErrCode ret = GetRootParentId(windowId, treeId, elementId);
+            if (ret != ERR_OK) {
+                break;
+            }
         } else {
             // keep find its parent node, until it's a root node or find its elementId in sceneBoardElementIdMap_
             // which saves mapping of windowId&root-elementId of the window.
