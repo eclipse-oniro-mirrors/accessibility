@@ -234,7 +234,6 @@ static napi_value CreateAccessibilityAction(napi_env env)
         CreateIntObject(env, AccessibilityAction::NOTIFICATION_CENTER));
     napi_set_named_property(env, objValue, "CONTROL_CENTER",
         CreateIntObject(env, AccessibilityAction::CONTROL_CENTER));
-    napi_set_named_property(env, objValue, "COMMON", CreateIntObject(env, AccessibilityAction::COMMON));
     napi_set_named_property(env, objValue, "SPAN_CLICK", CreateIntObject(env, AccessibilityAction::SPAN_CLICK));
     return objValue;
 }

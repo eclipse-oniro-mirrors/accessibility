@@ -18,6 +18,7 @@
 
 #include <map>
 #include "accessibility_ability_info.h"
+#include "accessibility_base_utils.h"
 #include "accessibility_caption.h"
 #include "accessibility_element_info.h"
 #include "accessibility_event_info.h"
@@ -54,9 +55,6 @@ napi_value CreateBusinessError(napi_env env, OHOS::Accessibility::RetError errCo
 napi_value GetErrorValue(napi_env env, int errCode);
 bool CheckObserverEqual(napi_env env, napi_value observer, napi_env iterEnv, napi_ref iterRef);
 std::string ConvertWindowTypeToString(OHOS::Accessibility::AccessibilityWindowType type);
-std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZATION_TYPE type);
-std::string ConvertClickResponseTimeTypeToString(OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME type);
-std::string ConvertIgnoreRepeatClickTimeTypeToString(OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME type);
 void ConvertRectToJS(napi_env env, napi_value result, const OHOS::Accessibility::Rect& rect);
 void ConvertGridItemToJS(napi_env env, napi_value result, const Accessibility::GridItemInfo& gridItem);
 void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
@@ -79,9 +77,6 @@ bool ConvertEventInfoJSToNAPIPart3(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
 bool ConvertEventInfoJSToNAPIPart4(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
-OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(std::string& type);
-OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME ConvertStringToClickResponseTimeTypes(std::string& type);
-OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME ConvertStringToIgnoreRepeatClickTimeTypes(std::string& type);
 void ConvertActionArgsJSToNAPI(
     napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action);
 void SetPermCheckFlagForAction(bool checkPerm, std::map<std::string, std::string>& args);
@@ -127,8 +122,6 @@ void ConvertResourceJSToNAPI(napi_env env, napi_value object, napi_value propert
 bool IsColorWithMagic(const std::string& colorStr);
 
 OHOS::Accessibility::ActionType ConvertStringToAccessibleOperationType(const std::string &type);
-OHOS::Accessibility::AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type);
-OHOS::Accessibility::AbilityStateType ConvertStringToAbilityStateType(const std::string &type);
 OHOS::Accessibility::TextMoveUnit ConvertStringToTextMoveUnit(const std::string &type);
 
 std::string ConvertTextMoveUnitToString(OHOS::Accessibility::TextMoveUnit type);

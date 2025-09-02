@@ -511,14 +511,18 @@ RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementI
     }
 
     int32_t activeWindow = INVALID_WINDOW_ID;
-    serviceProxy_->GetActiveWindow(activeWindow, systemApi);
+    RetError ret = static_cast<RetError>(serviceProxy_->GetActiveWindow(activeWindow, systemApi));
+    if (ret == RET_ERR_NO_PERMISSION) {
+        HILOG_ERROR("no permission");
+        return ret;
+    }
     HILOG_DEBUG("activeWindow[%{public}d]", activeWindow);
     if (GetCacheElementInfo(activeWindow, ROOT_NONE_ID, elementInfo)) {
         HILOG_DEBUG("get element info from cache");
         return RET_OK;
     }
 
-    RetError ret = SearchElementInfoFromAce(activeWindow, ROOT_NONE_ID, cacheMode_, elementInfo, systemApi);
+    ret = SearchElementInfoFromAce(activeWindow, ROOT_NONE_ID, cacheMode_, elementInfo, systemApi);
     if (ret == RET_OK) {
         elementInfo.SetMainWindowId(activeWindow);
     }
@@ -824,14 +828,14 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
     std::vector<int64_t> childIds =  parent.GetChildIds();
     HILOG_DEBUG("windowId[%{public}d], childIds.size[%{public}zu] childTreeId:%{public}d",
         windowId, childIds.size(), parent.GetChildTreeId());
+    std::vector<AccessibilityElementInfo> elementInfos {};
     if ((childIds.size() == 0) && (parent.GetChildWindowId() > 0 || parent.GetChildTreeId() > 0)) {
-        std::vector<AccessibilityElementInfo> elementInfos {};
         if (parent.GetChildWindowId() > 0 && (parent.GetChildWindowId() != windowId)) {
             ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetChildWindowId(), ROOT_NONE_ID,
-            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), systemApi);
+            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), false, systemApi);
         } else if (parent.GetChildTreeId() > 0) {
             ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
-            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), systemApi);
+            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), false, systemApi);
         }
         if (ret != RET_OK) {
             HILOG_ERROR("Get element info from ace failed");
@@ -844,14 +848,21 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
         SortElementInfosIfNecessary(elementInfos);
         children.emplace_back(elementInfos.front());
     } else if (childIds.size() > 0 && parent.GetChildTreeId() > 0) {
-        std::vector<AccessibilityElementInfo> elementInfos {};
         ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
-            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), systemApi);
+            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), false, systemApi);
         if (ret != RET_OK) {
             HILOG_ERROR("Get element info from ace failed");
             return ret;
         }
-        children.emplace_back(elementInfos.front());
+        if (!elementInfos.empty()) {
+            children.emplace_back(elementInfos.front());
+        }
+    } else if (systemApi) {
+        ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
+            GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), false, systemApi);
+        if (ret == RET_ERR_NO_PERMISSION) {
+            return ret;
+        }
     }
     ret = GetChildrenWork(windowId, childIds, children, systemApi);
     return ret;
@@ -904,6 +915,10 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
     RetError ret = RET_ERR_FAILED;
     if (text != "") { // find element condition is null, so we will search all element info
         ret = channelClient_->SearchElementInfosByText(windowId, elementId, text, elementInfos, systemApi);
+        if (ret == RET_ERR_NO_PERMISSION) {
+            HILOG_ERROR("no permission");
+            return ret;
+        }
         if (elementInfos.empty()) {
             int32_t activeWindowId = 0;
             serviceProxy_->GetActiveWindow(activeWindowId, systemApi);
@@ -1002,7 +1017,7 @@ RetError AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &ev
 RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityElementInfo &child,
     AccessibilityElementInfo &parent, bool systemApi)
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("systemApi=%{public}d", systemApi);
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
@@ -1027,7 +1042,11 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     if ((parentElementId == ROOT_PARENT_ELEMENT_ID) && (parentWindowId > 0)) {
         //Get the element id of the parent by children tree id.
         treeId = (static_cast<uint64_t>(child.GetAccessibilityId()) >> ELEMENT_MOVE_BIT);
-        serviceProxy_->GetRootParentId(windowId, treeId, parentElementId, systemApi);
+        ret = static_cast<RetError>(serviceProxy_->GetRootParentId(windowId, treeId, parentElementId, systemApi));
+        if (ret == RET_ERR_NO_PERMISSION) {
+            HILOG_ERROR("no permission");
+            return ret;
+        }
         if (parentElementId > 0) {
             treeId = (static_cast<uint64_t>(parentElementId) >> ELEMENT_MOVE_BIT);
             HILOG_DEBUG("find root parentId and search parentElementId [%{public}" PRId64 "] treeId[%{public}d]",
@@ -1074,7 +1093,11 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, co
 
     int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
     int32_t wid = 0;
-    serviceProxy_->GetActiveWindow(wid, systemApi);
+    RetError ret = static_cast<RetError>(serviceProxy_->GetActiveWindow(wid, systemApi));
+    if (ret == RET_ERR_NO_PERMISSION) {
+        HILOG_ERROR("no permission");
+        return ret;
+    }
     wid = windowId > 0 ? windowId : wid;
     HILOG_DEBUG("window:[%{public}d],treeId:%{public}d,elementId:%{public}" PRId64 "",
         wid, treeId, elementId);
@@ -1083,8 +1106,7 @@ RetError AccessibleAbilityClientImpl::GetByElementId(const int64_t elementId, co
         return RET_OK;
     }
 
-    Accessibility::RetError ret =
-        SearchElementInfoByElementId(wid, elementId, cacheMode_, targetElementInfo, treeId, systemApi);
+    ret = SearchElementInfoByElementId(wid, elementId, cacheMode_, targetElementInfo, treeId, systemApi);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1294,7 +1316,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByElementId(const int32_t
     HILOG_INFO("windowId %{public}d}, elementId %{public}" PRId64 "", windowId, elementId);
     std::vector<AccessibilityElementInfo> elementInfos {};
     RetError ret = channelClient_->SearchElementInfosByAccessibilityId(
-        windowId, elementId, static_cast<int32_t>(mode), elementInfos, treeId, systemApi);
+        windowId, elementId, static_cast<int32_t>(mode), elementInfos, treeId, false, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId failed. windowId[%{public}d] ", windowId);
         return ret;
@@ -1324,7 +1346,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t win
         treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
     }
     RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId,
-        static_cast<int32_t>(mode), elementInfos, treeId, systemApi);
+        static_cast<int32_t>(mode), elementInfos, treeId, false, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("search element info failed. windowId[%{public}d] elementId[%{public}" PRId64 "] mode[%{public}d]",
             windowId, elementId, mode);
@@ -2003,7 +2025,8 @@ RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_p
         return RET_ERR_NO_CONNECTION;
     }
     std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
-    if (callback->handlerRef_ == nullptr) {
+    if (!callback->IsValidRef()) {
+        HILOG_INFO("callback is nullptr, clear all callback");
         callbackList_.clear();
     } else {
         for (auto it = callbackList_.begin(); it != callbackList_.end();) {

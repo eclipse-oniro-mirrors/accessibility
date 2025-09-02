@@ -99,6 +99,8 @@ ohos_unittest("accessibility_ui_test_ability_impl_test") {
     "os_account:os_account_innerkits",
     "samgr:dynamic_cache",
     "samgr:samgr_proxy",
+    "runtime_core:ani",
+    "runtime_core:ani_helpers",
   ]
 }
 
@@ -217,6 +219,8 @@ ohos_unittest("accessible_ability_test") {
     "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
+    "runtime_core:ani",
+    "runtime_core:ani_helpers",
   ]
 
   if (product_name != "qemu-arm-linux-min") {

@@ -35,6 +35,7 @@ config("accessibility_common_public_config") {
 }
 
 accessibility_common_src = [
+  "${accessibility_common_path}/src/accessibility_base_utils.cpp",
   "${accessibility_common_path}/src/accessibility_ability_info.cpp",
   "${accessibility_common_path}/src/accessibility_caption.cpp",
   "${accessibility_common_path}/src/accessibility_constants.cpp",

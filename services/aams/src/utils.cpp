@@ -19,6 +19,7 @@
 #include <hisysevent.h>
 #endif //OHOS_BUILD_ENABLE_HISYSEVENT
 
+#include "accessibility_base_utils.h"
 #include "bundle_mgr_client.h"
 #include "hilog_wrapper.h"
 #include "nlohmann/json.hpp"

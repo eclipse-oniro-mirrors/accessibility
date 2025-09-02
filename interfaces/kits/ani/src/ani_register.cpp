@@ -17,6 +17,7 @@
 #include <array>
 #include <iostream>
 #include "ani_accessibility_system_ability_client.h"
+#include "ani_utils.h"
 #include "hilog_wrapper.h"
 #include <ani_signature_builder.h>
 
@@ -69,53 +70,28 @@ static bool BindMethod(ani_env *env, ani_namespace ns, ani_module mod)
     std::array methods = {
         ani_native_function {"isOpenTouchGuideSync", nullptr, reinterpret_cast<void *>(
             ANIAccessibilityClient::IsOpenTouchGuideSync)},
-    };
-
-    if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
-        return false;
-    };
-
-    methods = {
         ani_native_function {"isOpenAccessibilitySync", nullptr, reinterpret_cast<void *>(
             ANIAccessibilityClient::IsOpenAccessibilitySync)},
-    };
-
-    if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
-        return false;
-    };
-
-    methods = {
         ani_native_function {"onStateChange", nullptr,
             reinterpret_cast<void *>(ANIAccessibilityClient::SubscribeState)},
-    };
-
-    if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
-        return false;
-    };
-
-    methods = {
         ani_native_function {"offStateChange", nullptr, reinterpret_cast<void *>(
             ANIAccessibilityClient::UnsubscribeState)},
-    };
-
-    if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
-        return false;
-    };
-
-    methods = {
         ani_native_function {"offAll", nullptr, reinterpret_cast<void *>(ANIAccessibilityClient::UnsubscribeStateAll)},
-    };
+        ani_native_function {"isScreenReaderOpenSync", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityClient::IsScreenReaderOpenSync)},
+        ani_native_function {"getAccessibilityExtensionListSync", nullptr,
+            reinterpret_cast<void *>(ANIAccessibilityClient::GetAccessibilityExtensionListSync)},
+   };
 
     if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
         return false;
     };
 
-    methods = {
+    std::array moduleMethods = {
         ani_native_function {"sendAccessibilityEventSync", nullptr,
             reinterpret_cast<void *>(ANIAccessibilityClient::SendAccessibilityEvent)},
     };
-
-    if (env->Module_BindNativeFunctions(mod, methods.data(), methods.size()) != ANI_OK) {
+    if (env->Module_BindNativeFunctions(mod, moduleMethods.data(), moduleMethods.size()) != ANI_OK) {
         return false;
     };
 

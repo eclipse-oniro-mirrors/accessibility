@@ -84,6 +84,8 @@ ohos_shared_library("accessibleability") {
     "ipc:ipc_single",
     "napi:ace_napi",
     "samgr:samgr_proxy",
+    "runtime_core:ani",
+    "eventhandler:libeventhandler",
   ]
 
   if (accessibility_feature_hiviewdfx_hitrace) {

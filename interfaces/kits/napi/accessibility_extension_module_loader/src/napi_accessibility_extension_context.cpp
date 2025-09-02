@@ -1087,7 +1087,7 @@ private:
         }
 
         if (type == "preDisconnect" && ref != nullptr) {
-            std::shared_ptr<DisconnectCallback> callback = std::make_shared<DisconnectCallback>(env, ref);
+            std::shared_ptr<DisconnectCallback> callback = std::make_shared<NapiDisconnectCallback>(env, ref);
             context_.lock()->RegisterDisconnectCallback(callback);
         }
         return nullptr;
@@ -1113,7 +1113,7 @@ private:
         }
 
         if (type == "preDisconnect") {
-            std::shared_ptr<DisconnectCallback> callback = std::make_shared<DisconnectCallback>(env, ref);
+            std::shared_ptr<DisconnectCallback> callback = std::make_shared<NapiDisconnectCallback>(env, ref);
             context_.lock()->UnRegisterDisconnectCallback(callback);
         }
         return nullptr;

@@ -21,6 +21,17 @@
 
 namespace OHOS {
 namespace Accessibility {
+constexpr const char *ABILITY_INFO_ID = "id";
+constexpr const char *ABILITY_INFO_NAME = "name";
+constexpr const char *ABILITY_INFO_BUNDLE_NAME = "bundleName";
+constexpr const char *ABILITY_INFO_TARGET_BUNDLE_NAMES = "targetBundleNames";
+constexpr const char *ABILITY_INFO_ABILITY_TYPES = "abilityTypes";
+constexpr const char *ABILITY_INFO_CAPABILITIES = "capabilities";
+constexpr const char *ABILITY_INFO_DESCRIPTION = "description";
+constexpr const char *ABILITY_INFO_EVENT_TYPES = "eventTypes";
+constexpr const char *ABILITY_INFO_NEED_HIDE = "needHide";
+constexpr const char *ABILITY_INFO_LABEL = "label";
+
 struct AccessibilityAbilityInitParams {
     std::string bundleName = "";
     std::string description = "";

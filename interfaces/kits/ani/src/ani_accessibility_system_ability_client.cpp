@@ -16,12 +16,14 @@
 #include <array>
 #include <iostream>
 #include "ani_accessibility_system_ability_client.h"
-#include "ani_accessibility_common.h"
+#include "ani_utils.h"
 #include "accessibility_utils_ani.h"
 #include "hilog_wrapper.h"
+#include <ani_signature_builder.h>
 
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityAni;
+using namespace arkts::ani_signature;
 
 constexpr int32_t ANI_SCOPE_SIZE = 16;
 
@@ -65,7 +67,7 @@ void StateListenerImpl::SubscribeObserver(ani_env *env, ani_object observer)
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
-        if (ANICommon::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
+        if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
             HILOG_WARN("SubscribeObserver Observer exist");
             return;
         } else {
@@ -75,7 +77,7 @@ void StateListenerImpl::SubscribeObserver(ani_env *env, ani_object observer)
 
     std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, fnRef);
     observers_.emplace_back(stateListener);
-    HILOG_INFO("observer size%{public}zu", observers_.size());
+    HILOG_INFO("observer size:%{public}zu", observers_.size());
 }
 
 void StateListenerImpl::UnsubscribeObserver(ani_env *env, ani_object observer)
@@ -84,7 +86,7 @@ void StateListenerImpl::UnsubscribeObserver(ani_env *env, ani_object observer)
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
-        if (ANICommon::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
+        if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
             HILOG_INFO("UnsubscribeObserver Observer exist");
             env->GlobalReference_Delete(fnRef);
             observers_.erase(iter);
@@ -125,7 +127,7 @@ void StateListener::NotifyETS(ani_env *env, bool state, ani_ref fnRef)
         ani_size nr_refs = ANI_SCOPE_SIZE;
         tmpEnv->CreateLocalScope(nr_refs);
         auto fnObj = reinterpret_cast<ani_fn_object>(callbackInfo->fnRef_);
-        ani_object state = ANICommon::CreateBoolObject(tmpEnv, static_cast<ani_boolean>(callbackInfo->state_));
+        ani_object state = ANIUtils::CreateBoolObject(tmpEnv, static_cast<ani_boolean>(callbackInfo->state_));
         if (state == nullptr) {
             HILOG_ERROR("create boolean object failed");
             return;
@@ -135,7 +137,7 @@ void StateListener::NotifyETS(ani_env *env, bool state, ani_ref fnRef)
         tmpEnv->FunctionalObject_Call(fnObj, 1, args.data(), &result);
         tmpEnv->DestroyLocalScope();
     };
-    if (!ANICommon::SendEventToMainThread(task)) {
+    if (!ANIUtils::SendEventToMainThread(task)) {
         HILOG_ERROR("failed to send event");
     }
 }
@@ -147,7 +149,8 @@ void StateListener::OnStateChanged(const bool state)
 
 void ANIAccessibilityClient::SubscribeState(ani_env *env, ani_string type, ani_object callback)
 {
-    std::string eventType = ANICommon::ANIStringToStdString(env, type);
+    std::string eventType = ANIUtils::ANIStringToStdString(env, type);
+    HILOG_DEBUG("SubscribeState:%{public}s", eventType.c_str());
     if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
         accessibilityStateListeners_->SubscribeObserver(env, callback);
     } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
@@ -162,7 +165,8 @@ void ANIAccessibilityClient::SubscribeState(ani_env *env, ani_string type, ani_o
 
 void ANIAccessibilityClient::UnsubscribeState(ani_env *env, ani_string type, ani_object callback)
 {
-    std::string eventType = ANICommon::ANIStringToStdString(env, type);
+    std::string eventType = ANIUtils::ANIStringToStdString(env, type);
+    HILOG_DEBUG("UnsubscribeState:%{public}s", eventType.c_str());
     if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
         accessibilityStateListeners_->UnsubscribeObserver(env, callback);
     } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
@@ -177,7 +181,8 @@ void ANIAccessibilityClient::UnsubscribeState(ani_env *env, ani_string type, ani
 
 void ANIAccessibilityClient::UnsubscribeStateAll(ani_env *env, ani_string type)
 {
-    std::string eventType = ANICommon::ANIStringToStdString(env, type);
+    std::string eventType = ANIUtils::ANIStringToStdString(env, type);
+    HILOG_DEBUG("UnsubscribeStateAll:%{public}s", eventType.c_str());
     if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
         accessibilityStateListeners_->UnsubscribeObservers();
     } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
@@ -228,6 +233,201 @@ ani_boolean ANIAccessibilityClient::IsOpenAccessibilitySync([[maybe_unused]] ani
     return status;
 }
 
+ani_boolean ANIAccessibilityClient::IsScreenReaderOpenSync([[maybe_unused]] ani_env *env)
+{
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient == nullptr) {
+        HILOG_ERROR("asaClient is nullptr!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        return false;
+    }
+    bool status = false;
+    auto ret = asaClient->IsScreenReaderEnabled(status);
+    if (ret != RET_OK) {
+        HILOG_ERROR("get screen reader state failed!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return false;
+    }
+
+    return status;
+}
+
+ani_object ANIAccessibilityClient::CreateJsOtherInfoInner(ani_env *env, ani_class cls,
+    ani_object &object, AccessibilityAbilityInfo &info)
+{
+    if (!ANIUtils::SetStringProperty(env, object, ABILITY_INFO_DESCRIPTION, info.GetDescription())) {
+        HILOG_ERROR("set description failed");
+        return nullptr;
+    }
+    uint32_t eventTypesValue = info.GetEventTypes();
+    std::vector<std::string> eventTypes = ParseEventTypesToVec(eventTypesValue);
+    if (eventTypes.size() > 0) {
+        ANIUtils::SetStringArrayProperty(env, object, ABILITY_INFO_EVENT_TYPES, eventTypes);
+    }
+    ani_status status;
+    if ((status = env->Object_SetPropertyByName_Boolean(object, ABILITY_INFO_NEED_HIDE, info.NeedHide())) != ANI_OK) {
+        HILOG_ERROR("set needHide failed status=%{public}d", status);
+        return nullptr;
+    }
+
+    if (!ANIUtils::SetStringProperty(env, object, ABILITY_INFO_LABEL, info.GetLabel())) {
+        HILOG_ERROR("set label failed");
+        return nullptr;
+    }
+    return object;
+}
+
+ani_object ANIAccessibilityClient::CreateJsAccessibilityAbilityInfoInner(ani_env *env, ani_class cls,
+    ani_object &object, AccessibilityAbilityInfo &info)
+{
+    if (env == nullptr || cls == nullptr || object == nullptr) {
+        HILOG_ERROR("invalid args");
+        return nullptr;
+    }
+
+    if (!ANIUtils::SetStringProperty(env, object, ABILITY_INFO_ID, info.GetId())) {
+        HILOG_ERROR("set id failed id");
+        return nullptr;
+    }
+    if (!ANIUtils::SetStringProperty(env, object, ABILITY_INFO_NAME, info.GetName())) {
+        HILOG_ERROR("set name failed");
+        return nullptr;
+    }
+
+    if (!ANIUtils::SetStringProperty(env, object, ABILITY_INFO_BUNDLE_NAME, info.GetPackageName())) {
+        HILOG_ERROR("set bundleName failed");
+        return nullptr;
+    }
+    std::vector<std::string> filterNames = info.GetFilterBundleNames();
+    if (filterNames.size() > 0) {
+        ANIUtils::SetStringArrayProperty(env, object, ABILITY_INFO_TARGET_BUNDLE_NAMES, filterNames);
+    }
+    std::vector<std::string> abilityTypes = ParseAbilityTypesToVec(info.GetAccessibilityAbilityType());
+    if (abilityTypes.size() > 0) {
+        ANIUtils::SetStringArrayProperty(env, object, ABILITY_INFO_ABILITY_TYPES, abilityTypes);
+    }
+    std::vector<std::string> capabilities = ParseCapabilitiesToVec(info.GetStaticCapabilityValues());
+    if (capabilities.size() > 0) {
+        ANIUtils::SetStringArrayProperty(env, object, ABILITY_INFO_CAPABILITIES, capabilities);
+    }
+    return CreateJsOtherInfoInner(env, cls, object, info);
+}
+
+ani_object ANIAccessibilityClient::CreateJsAccessibilityAbilityInfo(ani_env *env,
+    AccessibilityAbilityInfo &info)
+{
+    HILOG_DEBUG();
+    ani_class cls = nullptr;
+    ani_status status = ANI_ERROR;
+    ani_method ctor = nullptr;
+    ani_object object = nullptr;
+
+    if ((status = env->FindClass(Builder::BuildClass("@ohos.accessibility.accessibility.AccessibilityAbilityInfoImpl")
+        .Descriptor().c_str(), &cls)) != ANI_OK || cls == nullptr) {
+        HILOG_ERROR("FindClass status : %{public}d or null cls", status);
+        return nullptr;
+    }
+    std::string ctorName = Builder::BuildConstructorName();
+    SignatureBuilder sb{};
+    if ((status = env->Class_FindMethod(cls, ctorName.c_str(), sb.BuildSignatureDescriptor().c_str(), &ctor)) != ANI_OK
+        || ctor == nullptr) {
+        HILOG_ERROR("Class_FindMethod Constructor fail : %{public}d or null ctor", status);
+        return nullptr;
+    }
+    if ((status = env->Object_New(cls, ctor, &object)) != ANI_OK || object == nullptr) {
+        HILOG_ERROR("Object_New status : %{public}d or null cls", status);
+        return nullptr;
+    }
+
+    return CreateJsAccessibilityAbilityInfoInner(env, cls, object, info);
+}
+
+ani_object ANIAccessibilityClient::ConvertAccessibleAbilityInfosToJs(ani_env *env,
+    std::vector<AccessibilityAbilityInfo> &accessibleAbilityInfos)
+{
+    if (accessibleAbilityInfos.empty()) {
+        HILOG_ERROR("convert accessible ability infos accessibleAbilityInfos empty");
+        return nullptr;
+    }
+    ani_ref undefinedRef = nullptr;
+    if (ANI_OK != env->GetUndefined(&undefinedRef)) {
+        HILOG_ERROR("GetUndefined Failed.");
+    }
+    ani_array aniArray;
+    env->Array_New(accessibleAbilityInfos.size(), undefinedRef, &aniArray);
+    if (aniArray == nullptr) {
+        HILOG_ERROR("ConvertAccessibleAbilityInfosToJs array is null");
+        return nullptr;
+    }
+    ani_size index = 0;
+    for (auto &abilityInfo : accessibleAbilityInfos) {
+        ani_ref ani_info = CreateJsAccessibilityAbilityInfo(env, abilityInfo);
+        if (ani_info == nullptr) {
+            HILOG_ERROR("ConvertAccessibleAbilityInfosToJs obj is null");
+            return nullptr;
+        }
+        auto status = env->Array_Set(aniArray, index, ani_info);
+        if (ANI_OK != status) {
+            HILOG_ERROR("Object_CallMethodByName_Void failed  --%{public}d ", status);
+            return nullptr;
+        }
+        index++;
+    }
+    return aniArray;
+}
+
+ani_object ANIAccessibilityClient::GetAccessibilityExtensionListSync(ani_env *env, ani_string abilityType,
+    ani_string stateType)
+{
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient == nullptr) {
+        HILOG_ERROR("asaClient is nullptr!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        return nullptr;
+    }
+    std::string abilityTypeStr = ANIUtils::ANIStringToStdString(env, abilityType);
+    std::string stateTypeStr = ANIUtils::ANIStringToStdString(env, stateType);
+
+    RetError errCode = RET_OK;
+    AbilityStateType stateTypes = ABILITY_STATE_INVALID;
+    uint32_t abilityTypes = 0;
+
+    HILOG_INFO("abilityTypeStr = %{public}s", abilityTypeStr.c_str());
+    if (CheckAbilityType(abilityTypeStr)) {
+        abilityTypes = ConvertStringToAccessibilityAbilityTypes(abilityTypeStr);
+    } else {
+        errCode = RET_ERR_INVALID_PARAM;
+    }
+
+    // parse ability state
+    HILOG_INFO("stateTypeStr = %{public}s", stateTypeStr.c_str());
+    if (CheckStateType(stateTypeStr)) {
+        stateTypes = ConvertStringToAbilityStateType(stateTypeStr);
+    } else {
+        errCode = RET_ERR_INVALID_PARAM;
+    }
+
+    std::vector<AccessibilityAbilityInfo> accessibilityAbilityList{};
+    if (errCode == RET_OK) {
+        auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+        if (asaClient) {
+            errCode = asaClient->GetAbilityList(abilityTypes, stateTypes, accessibilityAbilityList);
+        }
+    }
+
+    if (errCode != RET_OK) {
+        HILOG_ERROR("get accessibility ability list failed!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+        return nullptr;
+    }
+
+    ani_object aniArray = ConvertAccessibleAbilityInfosToJs(env, accessibilityAbilityList);
+    if (aniArray == nullptr) {
+        HILOG_WARN("get accessibility extension list convert null aniArray");
+    }
+    return aniArray;
+}
+
 void ANIAccessibilityClient::SendAccessibilityEvent(ani_env *env, ani_object eventObject)
 {
     AccessibilityEventInfo eventInfo {};
@@ -239,15 +439,16 @@ void ANIAccessibilityClient::SendAccessibilityEvent(ani_env *env, ani_object eve
         return;
     }
 
-    bool ret = ANICommon::ConvertEventInfoMandatoryFields(env, eventObject, eventInfo);
+    bool ret = ANIUtils::ConvertEventInfoMandatoryFields(env, eventObject, eventInfo);
     if (!ret) {
         HILOG_ERROR("ConvertEventInfoMandatoryFields failed");
         ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
         return;
     }
 
-    ANICommon::ConvertEventInfoStringFields(env, eventObject, eventInfo);
-    ANICommon::ConvertEventInfoIntFields(env, eventObject, eventInfo);
+    ANIUtils::ConvertEventInfoStringFields(env, eventObject, eventInfo);
+    ANIUtils::ConvertEventInfoIntFields(env, eventObject, eventInfo);
+    ANIUtils::ConvertEventInfoRefFields(env, eventObject, eventInfo);
 
     auto result = asaClient->SendEvent(eventInfo);
     if (result != RET_OK) {

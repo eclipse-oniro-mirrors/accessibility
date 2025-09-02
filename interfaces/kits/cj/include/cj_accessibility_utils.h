@@ -150,7 +150,6 @@ CArrString GetCapabilityStr(uint32_t capabilities, RetError &errCode);
 CArrString GetEventTypeStr(uint32_t eventType, RetError &errCode);
 
 bool CheckAbilityType(const std::string &abilityType);
-bool CheckStateType(const std::string &stateType);
 
 void FreecAbility(CAccessibilityAbilityInfo *cAbility);
 // func
