@@ -235,7 +235,7 @@ bool ANIUtils::SetStringArrayProperty(ani_env *env, ani_object &object, const st
     ani_size index = 0;
     for (auto &str : values) {
         if (ANI_OK != env->Array_Set(arrayObj, index, StdStringToAniString(env, str))) {
-            HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}d str=%{public}s",
+            HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}zu str=%{public}s",
                 name.c_str(), index, str.c_str());
             return false;
         }
@@ -1041,7 +1041,7 @@ bool ANIUtils::SetArrayStringField(ani_env *env, ani_object &object, const std::
     ani_size index = 0;
     for (auto &str : values) {
         if (ANI_OK != env->Array_Set(arrayObj, index, StdStringToAniString(env, str))) {
-            HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}d str=%{public}s",
+            HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}zu str=%{public}s",
                 fieldName.c_str(), index, str.c_str());
             return false;
         }
@@ -1213,7 +1213,7 @@ bool ANIUtils::SetArrayField(ani_env *env, ani_object &object, const std::string
     ani_size index = 0;
     for (auto &item : fieldValue) {
         if (ANI_OK != env->Array_Set(array, index, item)) {
-            HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}d",
+            HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}zu",
                 fieldName.c_str(), index);
             return false;
         }

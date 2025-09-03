@@ -138,6 +138,7 @@ class AbilityListener : public AccessibleAbilityListener {
         AniAccessibilityExtension &extension_;
     };
 private:
+    void DeleteContextRef();
     void BindContext(ani_env *env, std::shared_ptr<AAFwk::Want> want,
         const std::shared_ptr<AppExecFwk::OHOSApplication> &application);
 

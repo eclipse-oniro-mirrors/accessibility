@@ -66,12 +66,11 @@ void StateListenerImpl::SubscribeObserver(ani_env *env, ani_object observer)
     std::lock_guard<ffrt::mutex> lock(mutex_);
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
-    for (auto iter = observers_.begin(); iter != observers_.end();) {
+    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
         if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
+            env->GlobalReference_Delete(fnRef);
             HILOG_WARN("SubscribeObserver Observer exist");
             return;
-        } else {
-            iter++;
         }
     }
 
@@ -85,14 +84,11 @@ void StateListenerImpl::UnsubscribeObserver(ani_env *env, ani_object observer)
     std::lock_guard<ffrt::mutex> lock(mutex_);
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
-    for (auto iter = observers_.begin(); iter != observers_.end();) {
+    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
         if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
             HILOG_INFO("UnsubscribeObserver Observer exist");
-            env->GlobalReference_Delete(fnRef);
             observers_.erase(iter);
-            return;
-        } else {
-            iter++;
+            break;
         }
     }
     env->GlobalReference_Delete(fnRef);
