@@ -68,9 +68,39 @@ AniAccessibilityExtension::AniAccessibilityExtension(AbilityRuntime::ETSRuntime 
 
 AniAccessibilityExtension::~AniAccessibilityExtension()
 {
+    DeleteContextRef();
     auto context = GetContext();
     if (context) {
         context->Unbind();
+    }
+}
+
+void AniAccessibilityExtension::DeleteContextRef()
+{
+    HILOG_DEBUG("AniAccessibilityExtension DeleteContextRef");
+    if (env_ == nullptr || jsObj_ == nullptr) {
+        HILOG_ERROR("env_ is null or jsObj_ is null");
+        return;
+    }
+    ani_field contextField;
+    ani_class cls = nullptr;
+    arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(ANI_ACCESSIBILITY_EXTENSION_CLS);
+    if ((env_->FindClass(className.Descriptor().c_str(), &cls)) != ANI_OK) {
+        HILOG_ERROR("FindClass err: accessibility extension");
+        return;
+    }
+    auto status = env_->Class_FindField(cls, "context", &contextField);
+    if (status != ANI_OK) {
+        HILOG_ERROR("Class_GetField context failed");
+        return;
+    }
+    ani_ref contextRef = nullptr;
+    if (env_->Object_GetField_Ref(jsObj_->aniObj, contextField, &contextRef) != ANI_OK) {
+        HILOG_ERROR("Object_GetField_Ref contextObj failed");
+        return;
+    }
+    if (contextRef != nullptr) {
+        env_->GlobalReference_Delete(contextRef);
     }
 }
 
@@ -156,8 +186,7 @@ void AniAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLo
     if (!GetSrcPathAndModuleName(srcPath, moduleName)) {
         return;
     }
-    auto env = stsRuntime_.GetAniEnv();
-    env_ = env;
+    env_ = stsRuntime_.GetAniEnv();
     if (env_ == nullptr) {
         HILOG_ERROR("null env");
         return;
@@ -170,7 +199,7 @@ void AniAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLo
         HILOG_ERROR("Failed to get jsobj_");
         return;
     }
-    BindContext(env, record->GetWant(), application);
+    BindContext(env_, record->GetWant(), application);
     HILOG_INFO("Init end");
 }
 

@@ -14,39 +14,6 @@
 import("//build/config/components/ets_frontend/ets2abc_config.gni")
 import("//build/ohos.gni")
 
-ohos_shared_library("accessibility_extension_ability") {
-  include_dirs = [
-    "../../../innerkits/aafwk/include",
-    "../../../../common/log/include",
-    "../../../../common/interface/include",    
-    "./include",
-    "../include",
-  ]
-  sanitize = {
-    integer_overflow = true
-    ubsan = true
-    boundary_sanitize = true
-    cfi = true
-    cfi_cross_dso = true
-    debug = false
-  }
-  deps = [
-    "../../ani:accessibility_ani",
-    "../../../innerkits/common:accessibility_common",
-  ]
-
-  external_deps = [
-    "eventhandler:libeventhandler",
-    "ffrt:libffrt",
-    "hilog:libhilog",
-    "input:libmmi-client",
-    "runtime_core:ani",
-  ]
-  part_name = "accessibility"
-  subsystem_name = "barrierfree"
-  output_extension = "so"
-}
-
 generate_static_abc("accessibility_extension_context_ani_abc") {
   base_url = "./ets"
   files = [ "./ets/application/AccessibilityExtensionContext.ets" ]

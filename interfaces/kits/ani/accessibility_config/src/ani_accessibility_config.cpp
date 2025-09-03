@@ -95,6 +95,7 @@ void EnableAbilityListsObserverImpl::SubscribeObserver(ani_env *env, ani_object 
     env->GlobalReference_Create(observer, &fnRef);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end(); iter++) {
         if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->callback_)) {
+            env->GlobalReference_Delete(fnRef);
             HILOG_DEBUG("SubscribeObserver Observer exist");
             return;
         }
@@ -112,6 +113,7 @@ void EnableAbilityListsObserverImpl::SubscribeInstallObserver(ani_env *env, ani_
     env->GlobalReference_Create(observer, &fnRef);
     for (auto iter = installAbilityListsObservers_.begin(); iter != installAbilityListsObservers_.end(); iter++) {
         if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->callback_)) {
+            env->GlobalReference_Delete(fnRef);
             HILOG_DEBUG("SubscribeObserver Observer exist");
             return;
         }
@@ -129,16 +131,21 @@ void EnableAbilityListsObserverImpl::UnsubscribeObserver(ani_env *env, ani_objec
     env->GlobalReference_Create(observer, &fnRef);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end(); iter++) {
         if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->callback_)) {
+            env->GlobalReference_Delete((*iter)->callback_);
             enableAbilityListsObservers_.erase(iter);
-            return;
+            break;
         }
     }
+    env->GlobalReference_Delete(fnRef);
 }
 
 void EnableAbilityListsObserverImpl::UnsubscribeObservers()
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end(); iter++) {
+        ((*iter)->env_)->GlobalReference_Delete((*iter)->callback_);
+    }
     enableAbilityListsObservers_.clear();
 }
 
@@ -150,11 +157,12 @@ void EnableAbilityListsObserverImpl::UnsubscribeInstallObserver(ani_env *env, an
     env->GlobalReference_Create(observer, &fnRef);
     for (auto iter = installAbilityListsObservers_.begin(); iter != installAbilityListsObservers_.end(); iter++) {
         if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->callback_)) {
-            env->GlobalReference_Delete(fnRef);
+            env->GlobalReference_Delete((*iter)->callback_);
             installAbilityListsObservers_.erase(iter);
-            return;
+            break;
         }
     }
+    env->GlobalReference_Delete(fnRef);
 }
 
 void EnableAbilityListsObserverImpl::UnsubscribeInstallObservers()
@@ -483,12 +491,11 @@ void ANIAccessibilityConfigObserverImpl::SubscribeObserver(ani_env* env,
     std::lock_guard<ffrt::mutex> lock(mutex_);
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
-    for (auto iter = observers_.begin(); iter != observers_.end();) {
+    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
         if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->handlerRef_)) {
+            env->GlobalReference_Delete(fnRef);
             HILOG_INFO(" SubscribeObserver Observer exist");
             return;
-        } else {
-            iter++;
         }
     }
     std::shared_ptr<ANIAccessibilityConfigObserver> observerPtr =
@@ -502,19 +509,17 @@ void ANIAccessibilityConfigObserverImpl::UnsubscribeObserver(ani_env* env,
     std::lock_guard<ffrt::mutex> lock(mutex_);
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
-    for (auto iter = observers_.begin(); iter != observers_.end();) {
+    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
         if ((*iter)->configId_ == id) {
             if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->handlerRef_)) {
                 HILOG_INFO(" UnsubscribeObserver, ID:%{public}d", id);
+                env->GlobalReference_Delete((*iter)->handlerRef_);
                 observers_.erase(iter);
-                return;
-            } else {
-                iter++;
+                break;
             }
-        } else {
-            iter++;
         }
     }
+    env->GlobalReference_Delete(fnRef);
     HILOG_INFO(" UnsubscribeObserver END");
 }
 

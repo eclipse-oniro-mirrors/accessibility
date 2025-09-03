@@ -14,12 +14,14 @@
 accessibility_interface_dir = "//foundation/barrierfree/accessibility/interfaces"
 accessibility_common_dir = "//foundation/barrierfree/accessibility/common"
 ani_accessibility_extension_module_dir = "${accessibility_interface_dir}/kits/ani/accessibility_extension_module"
+ani_source_dir = "${accessibility_interface_dir}/kits/ani/src"
 
 ani_accessibility_extension_module = {
     srcs = [
         "${ani_accessibility_extension_module_dir}/src/ani_accessibility_extension.cpp",
         "${ani_accessibility_extension_module_dir}/src/ani_accessibility_extension_context.cpp",
         "${ani_accessibility_extension_module_dir}/src/ani_accessibility_element.cpp",
+        "${ani_source_dir}/ani_utils.cpp",
     ]
     include_dirs = [
         "${ani_accessibility_extension_module_dir}/include",
@@ -30,7 +32,6 @@ ani_accessibility_extension_module = {
         "${accessibility_common_dir}/interface:accessibility_interface",
         "${accessibility_interface_dir}/innerkits/aafwk:accessibleability",
         "${accessibility_interface_dir}/innerkits/common:accessibility_common",
-        "${accessibility_interface_dir}/kits/ani:accessibility_ani",
     ]
     external_deps = [
       "ability_runtime:ani_common",

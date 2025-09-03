@@ -32,7 +32,7 @@ export class AccessibilityExtensionAbility {
 
     onAccessibilityEventInfo(event: AccessibilityEventInfoImpl): void
     {
-     console.log('onAccessibilityEventInfo');
+        console.log('onAccessibilityEventInfo');
     }
 }
 

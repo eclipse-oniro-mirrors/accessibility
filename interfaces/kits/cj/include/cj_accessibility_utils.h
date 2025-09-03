@@ -149,8 +149,6 @@ CArrString GetAbilityTypesStr(uint32_t abilityTypes, RetError &errCode);
 CArrString GetCapabilityStr(uint32_t capabilities, RetError &errCode);
 CArrString GetEventTypeStr(uint32_t eventType, RetError &errCode);
 
-bool CheckAbilityType(const std::string &abilityType);
-
 void FreecAbility(CAccessibilityAbilityInfo *cAbility);
 // func
 CAccessibilityAbilityInfo ConvertAccAbilityInfo2C(AccessibilityAbilityInfo &abilityInfo, RetError &errCode);

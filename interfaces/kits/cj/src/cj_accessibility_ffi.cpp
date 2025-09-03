@@ -18,6 +18,7 @@
 #include "cj_accessibility_callback.h"
 #include "cj_common_ffi.h"
 #include "cj_lambda.h"
+#include "accessibility_base_utils.h"
 #include "accessibility_system_ability_client.h"
 #include "accessibility_def.h"
 #include "accessibility_utils.h"
@@ -88,7 +89,7 @@ CArrAccessibilityAbilityInfo FfiAccGetAccessibilityExtensionList(char *cAbilityT
     std::string abilityTypeStr(cAbilityType);
     std::string stateTypeStr(cStateType);
     HILOG_DEBUG("abilityTypeStr = %{private}s", abilityTypeStr.c_str());
-    if (Utils::CheckAbilityType(abilityTypeStr)) {
+    if (CheckAbilityType(abilityTypeStr)) {
         abilityTypes = ConvertStringToAccessibilityAbilityTypes(abilityTypeStr);
     } else {
         *errorCode = ERR_INPUT_INVALID;
