@@ -859,7 +859,7 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
         if (!elementInfos.empty()) {
             children.emplace_back(elementInfos.front());
         }
-    } else if (systemApi) {
+    } else if (systemApi && childIds.size() < 1) {
         ret = channelClient_->SearchElementInfosByAccessibilityId(parent.GetWindowId(), ROOT_NONE_ID,
             GET_SOURCE_MODE, elementInfos, parent.GetChildTreeId(), false, systemApi);
         if (ret == RET_ERR_NO_PERMISSION) {
