@@ -1,0 +1,49 @@
+# Copyright (C) 2025 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+accessibility_interface_dir = "//foundation/barrierfree/accessibility/interfaces"
+accessibility_common_dir = "//foundation/barrierfree/accessibility/common"
+ani_accessibility_extension_module_dir = "${accessibility_interface_dir}/kits/ani/accessibility_extension_module"
+ani_source_dir = "${accessibility_interface_dir}/kits/ani/src"
+
+ani_accessibility_extension_module = {
+    srcs = [
+        "${ani_accessibility_extension_module_dir}/src/ani_accessibility_extension.cpp",
+        "${ani_accessibility_extension_module_dir}/src/ani_accessibility_extension_context.cpp",
+        "${ani_accessibility_extension_module_dir}/src/ani_accessibility_element.cpp",
+        "${ani_source_dir}/ani_utils.cpp",
+    ]
+    include_dirs = [
+        "${ani_accessibility_extension_module_dir}/include",
+        "${accessibility_common_dir}/log/include",
+        "${accessibility_interface_dir}/kits/ani/include",
+    ]
+    deps = [
+        "${accessibility_common_dir}/interface:accessibility_interface",
+        "${accessibility_interface_dir}/innerkits/aafwk:accessibleability",
+        "${accessibility_interface_dir}/innerkits/common:accessibility_common",
+    ]
+    external_deps = [
+      "ability_runtime:ani_common",
+      "runtime_core:ani",
+      "runtime_core:ani_helpers",
+      "napi:ace_napi",
+      "ability_runtime:extensionkit_native",
+      "ability_runtime:ability_manager",
+      "ability_runtime:runtime",
+      "ability_runtime:abilitykit_native",
+      "ability_runtime:ability_context_native",
+      "ability_runtime:app_context",
+      "ffrt:libffrt",
+    ]
+}

@@ -19,6 +19,7 @@
 #include <hisysevent.h>
 #endif //OHOS_BUILD_ENABLE_HISYSEVENT
 
+#include "accessibility_base_utils.h"
 #include "bundle_mgr_client.h"
 #include "hilog_wrapper.h"
 #include "nlohmann/json.hpp"
@@ -160,35 +161,6 @@ public:
         }
         return abilityTypes;
     }
-
-    static uint32_t ParseCapabilitiesFromVec(const std::vector<std::string> &capabilities)
-    {
-        HILOG_DEBUG("start.");
-        uint32_t capabilitiesValue = 0;
-
-        for (const auto &capability : capabilities) {
-            if (capability == CAPABILITIES_JSON_VALUE_RETRIEVE) {
-                capabilitiesValue |= Capability::CAPABILITY_RETRIEVE;
-            }
-
-            if (capability == CAPABILITIES_JSON_VALUE_TOUCH_GUIDE) {
-                capabilitiesValue |= Capability::CAPABILITY_TOUCH_GUIDE;
-            }
-
-            if (capability == CAPABILITIES_JSON_VALUE_KEY_EVENT_OBSERVER) {
-                capabilitiesValue |= Capability::CAPABILITY_KEY_EVENT_OBSERVER;
-            }
-
-            if (capability == CAPABILITIES_JSON_VALUE_ZOOM) {
-                capabilitiesValue |= Capability::CAPABILITY_ZOOM;
-            }
-
-            if (capability == CAPABILITIES_JSON_VALUE_GESTURE) {
-                capabilitiesValue |= Capability::CAPABILITY_GESTURE;
-            }
-        }
-        return capabilitiesValue;
-    }
 };
 
 void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, AccessibilityAbilityInitParams &initParams)
@@ -221,7 +193,7 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
         HILOG_ERROR("Get accessibilityCapabilities from json failed.");
         return;
     }
-    initParams.staticCapabilities = PraseVecUtils::ParseCapabilitiesFromVec(capabilities);
+    initParams.staticCapabilities = ParseCapabilitiesFromVec(capabilities);
 
     // accessibilityAbilityTypes
     std::vector<std::string> abilityTypes;

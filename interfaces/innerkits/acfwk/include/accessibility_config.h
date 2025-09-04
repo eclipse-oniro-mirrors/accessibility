@@ -20,7 +20,7 @@
 #include "accessibility_caption.h"
 #include "accessibility_singleton.h"
 #include "accessibility_def.h"
-
+#include "accessibility_base_utils.h"
 namespace OHOS {
 namespace AccessibilityConfig {
 enum CONFIG_ID : int32_t {

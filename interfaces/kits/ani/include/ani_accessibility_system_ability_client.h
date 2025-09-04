@@ -59,6 +59,8 @@ class ANIAccessibilityClient {
 public:
     static ani_boolean IsOpenTouchGuideSync([[maybe_unused]] ani_env *env);
     static ani_boolean IsOpenAccessibilitySync([[maybe_unused]] ani_env *env);
+    static ani_boolean IsScreenReaderOpenSync([[maybe_unused]] ani_env *env);
+    static ani_object GetAccessibilityExtensionListSync(ani_env *env, ani_string abilityType, ani_string stateType);
     static void SubscribeState(ani_env *env, ani_string type, ani_object callback);
     static void UnsubscribeState(ani_env *env, ani_string type, ani_object callback);
     static void UnsubscribeStateAll(ani_env *env, ani_string type);
@@ -71,6 +73,14 @@ public:
 private:
     ANIAccessibilityClient() = default;
     ~ANIAccessibilityClient() = default;
+    static ani_object CreateJsOtherInfoInner(ani_env *env, ani_class cls, ani_object &object,
+        OHOS::Accessibility::AccessibilityAbilityInfo &accessibilityAbilityInfo);
+    static ani_object CreateJsAccessibilityAbilityInfoInner(ani_env *env, ani_class cls, ani_object &object,
+        OHOS::Accessibility::AccessibilityAbilityInfo& accessibleAbilityInfo);
+    static ani_object CreateJsAccessibilityAbilityInfo(ani_env *env,
+        OHOS::Accessibility::AccessibilityAbilityInfo& accessibleAbilityInfo);
+    static ani_object ConvertAccessibleAbilityInfosToJs(ani_env *env,
+        std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos);
 };
 
 #endif // ANI_ACCESSIBILITY_SYSTEM_ABILITY_CLIENT_H

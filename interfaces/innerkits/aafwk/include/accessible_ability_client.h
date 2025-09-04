@@ -16,6 +16,7 @@
 #ifndef ACCESSIBLE_ABILITY_CLIENT_H
 #define ACCESSIBLE_ABILITY_CLIENT_H
 
+#include <ani.h>
 #include <map>
 #include <memory>
 #include "accessibility_element_info.h"
@@ -23,6 +24,7 @@
 #include "accessibility_gesture_inject_path.h"
 #include "accessibility_window_info.h"
 #include "accessible_ability_listener.h"
+#include "event_handler.h"
 #include "iremote_object.h"
 #include "hilog_wrapper.h"
 #include "napi/native_api.h"
@@ -30,9 +32,21 @@
 
 namespace OHOS {
 namespace Accessibility {
+constexpr int32_t ANI_SCOPE_SIZE = 16;
 struct DisconnectCallback {
-    DisconnectCallback(napi_env env, napi_ref ref) : handlerRef_(ref), env_(env) {};
-    ~DisconnectCallback() {};
+    virtual ~DisconnectCallback() = default;
+    virtual void NotifyJS() = 0;
+    virtual bool Equals(const DisconnectCallback& other) const = 0;
+    virtual bool IsValidRef() const = 0;
+
+    bool operator == (const DisconnectCallback& other) const {
+        return Equals(other);
+    }
+};
+
+struct NapiDisconnectCallback : public DisconnectCallback {
+    NapiDisconnectCallback(napi_env env, napi_ref ref) : handlerRef_(ref), env_(env) {};
+    ~NapiDisconnectCallback() {};
     static napi_handle_scope TmpOpenScope(napi_env env)
     {
         napi_handle_scope scope = nullptr;
@@ -40,7 +54,7 @@ struct DisconnectCallback {
         return scope;
     }
 
-    void NotifyJS()
+    void NotifyJS() override
     {
         HILOG_INFO();
         auto task = [this]() {
@@ -62,8 +76,9 @@ struct DisconnectCallback {
         }
     }
 
-    bool operator==(const DisconnectCallback& otherCallback) const
+    bool Equals(const DisconnectCallback& other) const override
     {
+        const auto& otherCallback = static_cast<const NapiDisconnectCallback&>(other);
         if (env_ != otherCallback.env_) {
             return false;
         }
@@ -77,6 +92,11 @@ struct DisconnectCallback {
             return true;
         }
         return false;
+    }
+
+    bool IsValidRef() const override
+    {
+        return handlerRef_ != nullptr;
     }
 
     napi_ref handlerRef_ = nullptr;

@@ -410,6 +410,18 @@ constexpr int32_t CHAE_BUFFER_MAX = 1024;
 constexpr int32_t US_TO_MS = 1000;
 constexpr float COMPLEX_UNIT_MM_CONVERSION = 1.0f / 25.4f;
 constexpr int32_t MM_PER_CM = 10;
+const std::string ERROR_MESSAGE_PARAMETER_ERROR = "Parameter error. Possible causes:"
+    "1. Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.";
+const std::string ERROR_MESSAGE_NO_PERMISSION = "Permission verification failed."
+    "The application does not have the permission required to call the API.";
+const std::string ERROR_MESSAGE_NOT_SYSTEM_APP = "Permission verification failed."
+    "A non-system application calls a system API.";
+const std::string ERROR_MESSAGE_NO_RIGHT = "No accessibility permission to perform the operation";
+const std::string ERROR_MESSAGE_SYSTEM_ABNORMALITY = "System abnormality";
+const std::string ERROR_MESSAGE_PROPERTY_NOT_EXIST = "This property does not exist";
+const std::string ERROR_MESSAGE_ACTION_NOT_SUPPORT = "This action is not supported";
+const std::string ERROR_MESSAGE_INVALID_BUNDLE_NAME_OR_ABILITY_NAME = "Invalid bundle name or ability name";
+const std::string ERROR_MESSAGE_TARGET_ABILITY_ALREADY_ENABLED = "Target ability already enabled";
 
 enum class NAccessibilityErrorCode : int32_t {
     ACCESSIBILITY_OK = 0,
@@ -525,8 +537,31 @@ enum AccessibilityAction : int32_t {
     RECENT_TASK = 17,
     NOTIFICATION_CENTER = 18,
     CONTROL_CENTER = 19,
-    COMMON = 20,
-    SPAN_CLICK = 21
+    SPAN_CLICK = 20
+};
+
+const std::vector<std::string> ACTION_NAMES = {
+    "accessibilityFocus",      //AccessibilityAction.ACCESSIBILITY_FOCUS=0
+    "clearAccessibilityFocus", //AccessibilityAction.CLEAR_ACCESSIBILITY_FOCUS=1
+    "focus",                   //AccessibilityAction.FOCUS=2
+    "clearFocus",              //AccessibilityAction.CLEAR_FOCUS=3
+    "click",                   //AccessibilityAction.CLICK=4
+    "longClick",               //AccessibilityAction.LONG_CLICK=5
+    "cut",                     //AccessibilityAction.CUT=6
+    "copy",                    //AccessibilityAction.COPY=7
+    "paste",                   //AccessibilityAction.PASTE=8
+    "select",                  //AccessibilityAction.SELECT=9
+    "setText",                 //AccessibilityAction.SET_TEXT=10
+    "scrollForward",           //AccessibilityAction.SCROLL_FORWARD=11
+    "scrollBackward",          //AccessibilityAction.SCROLL_BACKWARD=12
+    "setSelection",            //AccessibilityAction.SET_SELECTION=13
+    "setCursorPosition",       //AccessibilityAction.SET_CURSOR_POSITION=14
+    "home",                    //AccessibilityAction.HOME=15
+    "back",                    //AccessibilityAction.BACK=16
+    "recentTask",              //AccessibilityAction.RECENT_TASK=17
+    "notificationCenter",      //AccessibilityAction.NOTIFICATION_CENTER=18
+    "controlCenter",           //AccessibilityAction.CONTROL_CENTER=19
+    "spanClick"                //AccessibilityAction.SPAN_CLICK=20
 };
 
 #define RETURN_FALSE_IF_NULL(sptr)                     \

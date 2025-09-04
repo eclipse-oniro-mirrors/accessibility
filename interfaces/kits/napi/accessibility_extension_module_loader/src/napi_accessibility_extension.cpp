@@ -140,6 +140,8 @@ bool NAccessibilityExtension::GetSrcPathAndModuleName(std::string& srcPath, std:
         }
         srcPath.append("/").append(Extension::abilityInfo_->name).append(".abc");
     } else if (!Extension::abilityInfo_->srcEntrance.empty()) {
+        HILOG_INFO("abilityInfo_->moduleName:%{public}s, abilityInfo_->srcEntrance:%{public}s.",
+            abilityInfo_->moduleName.c_str(), abilityInfo_->srcEntrance.c_str());
         srcPath.append(Extension::abilityInfo_->moduleName + "/");
         srcPath.append(Extension::abilityInfo_->srcEntrance);
         srcPath.erase(srcPath.rfind('.'));
