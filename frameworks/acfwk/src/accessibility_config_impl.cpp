@@ -78,7 +78,7 @@ void AccessibilityConfig::Impl::UnInitializeContext()
 
 void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *value, void *context)
 {
-    if ( !key || !value || !context ) {
+    if (!key || !value || !context) {
         return;
     }
 
