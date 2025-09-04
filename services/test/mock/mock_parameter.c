@@ -48,3 +48,11 @@ int WaitParameter(const char *key, const char *value, int timeout)
     g_ret = timeout;
     return 0;
 }
+
+int RemoveParameterWatcher(const char *keyprefix, ParameterChgPtr callback, void *context)
+{
+    (void)keyprefix;
+    (void)callback;
+    (void)context;
+    return g_ret;
+}
