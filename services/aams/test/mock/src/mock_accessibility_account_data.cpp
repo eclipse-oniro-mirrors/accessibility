@@ -589,7 +589,7 @@ std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
     return needEvents_;
 }
 
-void AccessibilityAccountData::AddNeedEvent(std::string &name, std::vector<uint32_t> needEvents)
+void AccessibilityAccountData::AddNeedEvent(const std::string &name, std::vector<uint32_t> needEvents)
 {
     (void)name;
     (void)needEvents;

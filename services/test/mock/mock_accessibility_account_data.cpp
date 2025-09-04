@@ -1456,7 +1456,7 @@ void MockMockAccessibilityAccountDataMap::Clear()
     accountDataMap_.clear();
 }
 
-void MockMockAccessibilityAccountData::AddNeedEvent(std::string &name, std::vector<uint32_t> needEvents)
+void MockMockAccessibilityAccountData::AddNeedEvent(const std::string &name, std::vector<uint32_t> needEvents)
 {
     std::string packageName = "";
     if (name == SCREEN_READER_BUNDLE_NAME) {

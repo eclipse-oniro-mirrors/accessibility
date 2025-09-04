@@ -411,6 +411,7 @@ constexpr int32_t CHAE_BUFFER_MAX = 1024;
 constexpr int32_t US_TO_MS = 1000;
 constexpr float COMPLEX_UNIT_MM_CONVERSION = 1.0f / 25.4f;
 constexpr int32_t MM_PER_CM = 10;
+const std::string UI_TEST_ABILITY_NAME = "hdcd";
 
 const char ERROR_MESSAGE_PARAMETER_ERROR[] = "Parameter error. Possible causes:"
     "1. Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.";

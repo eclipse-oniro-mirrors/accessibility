@@ -32,6 +32,7 @@
 #include "accessibility_setting_provider.h"
 #include "os_account_info.h"
 #include "os_account_subscriber.h"
+#include "accessibility_def.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -293,7 +294,7 @@ public:
     void AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection);
     void RemoveWaitDisconnectAbility(const std::string &uri);
     std::vector<uint32_t> UpdateNeedEvents();
-    void AddNeedEvent(std::string &name, std::vector<uint32_t> needEvents);
+    void AddNeedEvent(const std::string &name, std::vector<uint32_t> needEvents);
     void RemoveNeedEvent(const std::string &name);
     std::vector<uint32_t> GetNeedEvents();
 
