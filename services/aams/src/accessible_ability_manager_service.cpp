@@ -91,7 +91,6 @@ namespace {
     const char* HAP_PATH = "/system/app/Settings/Settings.hap";
     const char* HAP_BUNDLE = "com.ohos.settings";
     const char* UI_TEST_BUNDLE_NAME = "ohos.uitest";
-    const char* UI_TEST_ABILITY_NAME = "uitestability";
     const char* PC_MODE_SWITCH = "window_pcmode_switch_status";
     const char* PC_MODE_SUPPORT = "const.window.support_window_pcmode_switch";
     constexpr int32_t INVALID_SHORTCUT_STATE = 2;
@@ -4318,8 +4317,7 @@ RetError AccessibleAbilityManagerService::UpdateUITestConfigureEvents(std::vecto
         return RET_ERR_NULLPTR;
     }
  
-    std::string uiTestUri = Utils::GetUri(UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
-    accountData->AddNeedEvent(uiTestUri, needEvents);
+    accountData->AddNeedEvent(UI_TEST_ABILITY_NAME, needEvents);
     uint32_t state = accountData->GetAccessibilityState();
     state |= STATE_CONFIG_EVENT_CHANGE;
     stateObservers_.OnStateObservers(state);

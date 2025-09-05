@@ -65,7 +65,6 @@ namespace {
     const std::string SCREEN_READER_SINGLE_CLICK_MODE = "screen_reader_single_click_mode";
     const std::string ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
     const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.screenreader";
-    const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string THP_PATH = "/system/lib64/libthp_extra_innerapi.z.so";
     const std::string IGNORE_REPEATED_CLICK_CACHE_FLAG = "accessibility_ignore_repeat_click_cache_flag";
 } // namespace
@@ -1511,12 +1510,12 @@ void AccessibilityAccountDataMap::Clear()
     accountDataMap_.clear();
 }
 
-void AccessibilityAccountData::AddNeedEvent(std::string &name, std::vector<uint32_t> needEvents)
+void AccessibilityAccountData::AddNeedEvent(const std::string &name, std::vector<uint32_t> needEvents)
 {
     std::string packageName = "";
     if (name == SCREEN_READER_BUNDLE_NAME) {
         abilityNeedEvents_[name].push_back(TYPES_ALL_MASK);
-    } else if (name == UI_TEST_BUNDLE_NAME) {
+    } else if (name == UI_TEST_ABILITY_NAME) {
         abilityNeedEvents_[name].clear();
         abilityNeedEvents_[name] = needEvents;
     } else {
