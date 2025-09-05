@@ -2795,6 +2795,9 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
                     return;
                 }
                 int32_t windowId = callbackInfo->accessibilityElement_.elementInfo_->GetWindowId();
+                if (windowId == 1) {
+                    windowId = callbackInfo->accessibilityElement_.elementInfo_->GetMainWindowId();
+                }
                 HILOG_DEBUG("elementId is %{public}" PRId64 " windowId: %{public}d", elementId, windowId);
                 callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetByElementId(
                     elementId, windowId, callbackInfo->nodeInfo_, systemApi);
@@ -2852,23 +2855,6 @@ void NAccessibilityElement::FindElementComplete(napi_env env, napi_status status
     }
 
     napi_value result[ARGS_SIZE_TWO] = {0};
-    // set reslult mainWindowId = param mainWidnowId
-    int32_t mainWindowId = -1;
-    if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
-        mainWindowId = callbackInfo->accessibilityElement_.elementInfo_->GetMainWindowId();
-    } else if (callbackInfo->accessibilityElement_.windowInfo_ != nullptr) {
-        mainWindowId = callbackInfo->accessibilityElement_.windowInfo_->GetMainWindowId();
-    }
-
-    if (mainWindowId > 0) {
-        HILOG_INFO("callbackInfo node set mainWindowId: %{public}d", mainWindowId);
-        callbackInfo->nodeInfo_.SetMainWindowId(mainWindowId);
-        callbackInfo->nodeInfo_.SetWindowId(mainWindowId);
-        for (auto &node : callbackInfo->nodeInfos_) {
-            node.SetMainWindowId(mainWindowId);
-            node.SetWindowId(mainWindowId);
-        }
-    }
 
     GetElement(callbackInfo, result[PARAM1]);
     result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);

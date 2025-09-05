@@ -442,7 +442,7 @@ RetError AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityE
         return RET_ERR_NO_CONNECTION;
     }
 
-    int32_t windowId = sourceInfo.GetWindowId() == 1 ? sourceInfo.GetMainWindowId() : sourceInfo.GetWindowId();
+    int32_t windowId = sourceInfo.GetWindowId();
     int64_t elementId = sourceInfo.GetAccessibilityId();
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], focusType[%{public}d]",
         windowId, elementId, focusType);
@@ -1982,8 +1982,12 @@ RetError AccessibleAbilityClientImpl::GetDefaultFocusedElementIds(const int32_t 
         return RET_ERR_NO_CONNECTION;
     }
 
-    return channelClient_->SearchDefaultFocusedByWindowId(windowId, ROOT_NONE_ID,
+    auto ret = channelClient_->SearchDefaultFocusedByWindowId(windowId, ROOT_NONE_ID,
         GET_SOURCE_MODE, elementInfos, ROOT_TREE_ID);
+    for (auto &elementInfo : elementInfos) {
+        elementInfo.SetMainWindowId(windowId);
+    }
+    return ret;
 }
 
 RetError AccessibleAbilityClientImpl::HoldRunningLock()
@@ -2155,6 +2159,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveBySpecificProper
     }
     if (!infos.empty()) {
         HILOG_INFO("search element info find front");
+        infos.front().SetMainWindowId(windowId);
         elementInfos.push_back(infos.front());
         return RET_OK;
     }
@@ -2169,6 +2174,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveBySpecificProper
                 treeParentInfo.GetChildWindowId(), ret, treeParentInfo.GetChildTreeId());
             if (!newInfos.empty()) {
                 HILOG_INFO("search element info find: find front");
+                infos.front().SetMainWindowId(windowId);
                 elementInfos.push_back(newInfos.front());
                 return RET_OK;
             }
