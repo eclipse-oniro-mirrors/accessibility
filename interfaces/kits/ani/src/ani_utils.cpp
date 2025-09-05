@@ -719,22 +719,20 @@ bool ANIUtils::ParseString(ani_env *env, ani_ref ref, std::string& outValue)
 
 bool ANIUtils::ParseStringArray(ani_env *env, ani_object array, std::vector<std::string>& outValue)
 {
-    ani_double arrayLength;
-    if (env->Object_GetPropertyByName_Double(array, "length", &arrayLength) != ANI_OK) {
-        HILOG_ERROR(" Param check failed, unable to get array length.");
+    ani_size length = 0;
+    if (env->Array_GetLength(static_cast<ani_array>(array), &length) != ANI_OK) {
+        HILOG_ERROR("Failed to get array length");
         return false;
     }
-    for (int32_t i = 0; i < static_cast<int32_t>(arrayLength); ++i) {
+    for (ani_size i = 0; i < length; i++) {
         ani_ref elementRef;
-        auto signature = SignatureBuilder().AddInt().SetReturnUndefined().BuildSignatureDescriptor();
-        if (env->Object_CallMethodByName_Ref(array, "$_get", signature.c_str(), &elementRef,
-            static_cast<ani_int>(i)) != ANI_OK) {
-            HILOG_ERROR(" Failed to get element at index %d", i);
-            return false;
+        if (env->Array_Get(static_cast<ani_array>(array), i, &elementRef) != ANI_OK) {
+            HILOG_ERROR("Failed to get element at index %{public}zu", i);
+            continue;
         }
         std::string strValue;
         if (!ANIUtils::ParseString(env, elementRef, strValue)) {
-            HILOG_ERROR(" Failed to parse string at index %d", i);
+            HILOG_ERROR("Failed to parse string at index %{public}zu", i);
             continue;
         }
         outValue.push_back(strValue);
@@ -744,38 +742,21 @@ bool ANIUtils::ParseStringArray(ani_env *env, ani_object array, std::vector<std:
 
 ani_object ANIUtils::CreateArray(ani_env *env, const std::vector<std::string> strs)
 {
-    static const char *className = "Lescompat/Array;";
-    ani_class cls;
-    if (ANI_OK != env->FindClass(className, &cls)) {
-        HILOG_ERROR("Find class '%{public}s' failed", className);
+    ani_array array = ANIUtils::CreateEmptyAniArray(env, strs.size());
+    if (array == nullptr) {
+        HILOG_ERROR("Create array failed");
         return nullptr;
     }
-
-    ani_method ctor;
-    if (ANI_OK != env->Class_FindMethod(cls, "<ctor>", "I:V", &ctor)) {
-        HILOG_ERROR("Find method '<ctor>' failed");
-        return nullptr;
-    }
-
-    ani_object ret;
-    if (ANI_OK != env->Object_New(cls, ctor, &ret, strs.size())) {
-        HILOG_ERROR("New object '%{public}s' failed", className);
-        return nullptr;
-    }
-
-    ani_method set;
-    if (ANI_OK != env->Class_FindMethod(cls, "$_set", "ILstd/core/Object;:V", &set)) {
-        HILOG_ERROR("Find method '$_set' failed");
-        return ret;
-    }
-
-    for (size_t i = 0; i < strs.size(); ++i) {
-        if (ANI_OK != env->Object_CallMethod_Void(ret, set, i, ANIUtils::StdStringToAniString(env, strs[i]))) {
-            HILOG_ERROR("Call method '$_set' failed");
-            return ret;
+    ani_size index = 0;
+    for (auto &item : strs) {
+        auto aniString = ANIUtils::CreateAniString(env, item);
+        if (ANI_OK != env->Array_Set(array, index, aniString)) {
+            HILOG_ERROR("Set array failed, index=%{public}zu", index);
+            return nullptr;
         }
+        index++;
     }
-    return ret;
+    return array;
 }
 
 std::string ANIUtils::AniStrToString(ani_env *env, ani_ref aniStr)
