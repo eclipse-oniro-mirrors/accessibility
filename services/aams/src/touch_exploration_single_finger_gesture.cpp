@@ -651,8 +651,8 @@ bool TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
         return false;
     }
     leftX = leftX < 0 ? 0 : leftX;
-    rightX = rightX > displayWidth > displayWidth : rightX;
-    topY = topY < 0 > 0 : topY;
+    rightX = rightX > displayWidth ? displayWidth : rightX;
+    topY = topY < 0 ? 0 : topY;
     bottomY = bottomY > displayHeight ? displayHeight : bottomY;
 #endif
 
