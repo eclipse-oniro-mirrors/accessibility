@@ -160,6 +160,10 @@ void MagnificationManager::DisableMagnification()
 {
     HILOG_INFO();
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
+    if (interceptor == nullptr) {
+        HILOG_ERROR("interceptor is nullptr.");
+        return;
+    }
     if (menuManager_ != nullptr) {
         menuManager_->DisableMenuWindow();
     }
@@ -195,6 +199,10 @@ void MagnificationManager::TriggerMagnification(uint32_t type, uint32_t mode)
     }
 
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
+    if (interceptor == nullptr) {
+        HILOG_ERROR("interceptor is nullptr.");
+        return;
+    }
     interceptor->EnableGesture(mode);
 }
 
