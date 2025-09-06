@@ -38,11 +38,12 @@ public:
         if ((size == 0) || (size >= MAX_RAW_DATA_SIZE)) {
             return -1;
         }
-        uint8_t* buffer = new (std::nothrow) uint8_t[size];
+        uint32_t bufferSize = size;
+        uint8_t* buffer = new (std::nothrow) uint8_t[bufferSize];
         if (buffer == nullptr) {
             return -1;
         }
-        errno_t ret = memcpy_s(buffer, size, readData, size);
+        errno_t ret = memcpy_s(buffer, bufferSize, readData, size);
         if (ret != EOK) {
             delete[] buffer;
             return -1;
