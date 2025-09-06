@@ -637,11 +637,27 @@ bool TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
     event.GetPointerItem(event.GetPointerId(), pointer);
 
     focusedWindowId_ = focusedElementInfo.GetWindowId();
+    int32_t leftX = focusedElementInfo.GetRectInScreen().GetLeftTopXScreenPostion();
+    int32_t rightX = focusedElementInfo.GetRectInScreen().GetRightBottomXScreenPostion();
+    int32_t topY = focusedElementInfo.GetRectInScreen().GetLeftTopYScreenPostion();
+    int32_t bottomY = focusedElementInfo.GetRectInScreen().GetRightBottomYScreenPostion();
 
-    offsetX_ = (focusedElementInfo.GetRectInScreen().GetLeftTopXScreenPostion() +
-        focusedElementInfo.GetRectInScreen().GetRightBottomXScreenPostion()) / DIVIDE_NUM - pointer.GetDisplayX();
-    offsetY_ = (focusedElementInfo.GetRectInScreen().GetLeftTopYScreenPostion() +
-        focusedElementInfo.GetRectInScreen().GetRightBottomYScreenPostion()) / DIVIDE_NUM - pointer.GetDisplayY();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    int32_t displayWidth = displayMgr.GetWidth();
+    int32_t displayHeight = displayMgr.GetHeight();
+    if (leftX > displayWidth || rightX < 0 || topY > displayHeight || bottomY < 0) {
+        HILOG_ERROR("the focused element is not visible!");
+        return false;
+    }
+    leftX = leftX < 0 ? 0 : leftX;
+    rightX = rightX > displayWidth ? displayWidth : rightX;
+    topY = topY < 0 ? 0 : topY;
+    bottomY = bottomY > displayHeight ? displayHeight : bottomY;
+#endif
+
+    offsetX_ = (leftX + rightX) / DIVIDE_NUM - pointer.GetDisplayX();
+    offsetY_ = (topY + bottomY) / DIVIDE_NUM - pointer.GetDisplayY();
     return true;
 }
 
