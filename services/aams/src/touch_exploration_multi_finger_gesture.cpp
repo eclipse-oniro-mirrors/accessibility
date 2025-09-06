@@ -901,6 +901,10 @@ bool TouchExploration::GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::Poi
         HILOG_ERROR("get base pointEvent(%{public}d) failed", pId);
         return false;
     }
+    if (multiFingerSwipePrePoint_[pId] == nullptr) {
+        HILOG_ERROR("multiFingerSwipePrePoint_ get pointEvent(%{public}d) occurred null pointer.", pId);
+        return false;
+    }
     multiFingerSwipePrePoint_[pId]->GetPointerItem(pId, basePointerIterm);
     return true;
 }
