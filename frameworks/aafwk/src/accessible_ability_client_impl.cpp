@@ -548,6 +548,9 @@ RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowI
     }
 
     int32_t windowId = windowInfo.GetWindowId();
+    if (windowId == 1) {
+        windowId = windowInfo.GetMainWindowId();
+    }
     HILOG_DEBUG("windowId[%{public}d]", windowId);
     if (GetCacheElementInfo(windowId, ROOT_NONE_ID, elementInfo)) {
         HILOG_DEBUG("get element info from cache");
