@@ -1241,6 +1241,9 @@ bool AccessibilityWindowManager::IsInnerWindowRootElement(int64_t elementId)
 
 void AccessibilityWindowManager::InsertTreeIdWindowIdPair(int32_t treeId, int32_t windowId)
 {
+    if (windowId == 1) {
+        return;
+    }
     windowTreeIdMap_.EnsureInsert(treeId, windowId);
 }
 

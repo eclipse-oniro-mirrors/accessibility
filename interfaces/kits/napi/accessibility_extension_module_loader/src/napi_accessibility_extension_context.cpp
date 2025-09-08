@@ -496,6 +496,7 @@ private:
             } else {
                 AccessibilityWindowInfo windowInfo;
                 windowInfo.SetWindowId(windowId);
+                windowInfo.SetMainWindowId(windowId);
                 *ret = context->GetRootByWindow(windowInfo, *elementInfo, systemApi);
             }
         };

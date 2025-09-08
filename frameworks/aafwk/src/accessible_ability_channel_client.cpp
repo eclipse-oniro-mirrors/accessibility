@@ -105,7 +105,6 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
 
     elementInfo = elementOperator->accessibilityInfoResult_;
     elementInfo.SetMainWindowId((windowId > 0) ? windowId : elementInfo.GetWindowId());
-    elementInfo.SetWindowId((windowId > 0) ? windowId : elementInfo.GetWindowId());
     return RET_OK;
 }
 
@@ -295,12 +294,6 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     }
     HILOG_DEBUG("Get result successfully from ace. size[%{public}zu]", elementOperator->elementInfosResult_.size());
     elementInfos = elementOperator->elementInfosResult_;
-    if (!elementInfos.empty()) {
-        for (auto &element : elementInfos) {
-            element.SetMainWindowId(accessibilityWindowId);
-            element.SetWindowId(accessibilityWindowId);
-        }
-    }
     return RET_OK;
 }
 
@@ -601,7 +594,6 @@ RetError AccessibleAbilityChannelClient::ValidateAndProcessElementInfos(
 
     for (auto &element : targetInfos) {
         element.SetMainWindowId(accessibilityWindowId);
-        element.SetWindowId(accessibilityWindowId);
     }
 
     HILOG_DEBUG("Found results in %{public}s, size: %{public}zu", logType.c_str(), targetInfos.size());
