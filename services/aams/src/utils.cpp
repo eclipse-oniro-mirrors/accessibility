@@ -89,10 +89,29 @@ public:
             HILOG_ERROR("json is not object.");
             return false;
         }
-        if (json.find(key) != json.end() && json.at(key).is_array()) {
-            HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
-            value = json.at(key).get<std::vector<std::string>>();
+
+        auto it = json.find(key);
+        if (it == json.end() || !it->is_array()) {
+            HILOG_ERROR("Key not found or not an array");
+            return false;
         }
+
+        const auto &array = *it;
+        bool allStrings = true;
+        for (const auto &item : array) {
+            if (!item.is_array()) {
+                allStrings = false;
+                break;
+            }
+        }
+
+        if (!allStrings) {
+            HILOG_ERROR("Array elements are not all strings");
+            return false;
+        }
+
+        HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
+        value = array.get<std::vector<std::string>>();
         return true;
     }
 
