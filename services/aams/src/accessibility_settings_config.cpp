@@ -1082,6 +1082,15 @@ void AccessibilitySettingsConfig::HandleIgnoreRepeatClickState()
     }
  
     if (ignoreRepeatClickState_) {
+        bool isScreenReaderEnabled =
+            (std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(),
+            SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
+        if (isScreenReaderEnabled) {
+            HILOG_INFO("screenReader is open, recovery ignore repeat click");
+            ignoreRepeatClickState_ = false;
+            SetIgnoreRepeatClickState(false);
+            return;
+        }
         IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
         uint64_t timeStamp = datashare_->GetUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, 0);
         if (timeStamp == 0) {
