@@ -548,9 +548,6 @@ RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowI
     }
 
     int32_t windowId = windowInfo.GetWindowId();
-    if (windowId == SCENE_BOARD_WINDOW_ID) {
-        windowId = windowInfo.GetMainWindowId();
-    }
     HILOG_DEBUG("windowId[%{public}d]", windowId);
     if (GetCacheElementInfo(windowId, ROOT_NONE_ID, elementInfo)) {
         HILOG_DEBUG("get element info from cache");
@@ -2177,7 +2174,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveBySpecificProper
                 treeParentInfo.GetChildWindowId(), ret, treeParentInfo.GetChildTreeId());
             if (!newInfos.empty()) {
                 HILOG_INFO("search element info find: find front");
-                infos.front().SetMainWindowId(windowId);
+                newInfos.front().SetMainWindowId(windowId);
                 elementInfos.push_back(newInfos.front());
                 return RET_OK;
             }
