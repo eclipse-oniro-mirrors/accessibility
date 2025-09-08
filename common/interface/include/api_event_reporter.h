@@ -54,7 +54,6 @@ public:
     void ThresholdWriteEndEvent(int result, std::string apiName, int64_t beginTime,
         int32_t thresholdValue);
     int64_t GetCurrentTime();
-    void ClearCacheData();
 
 private:
     static bool LoadConfigurationFile(const std::string &configFile);

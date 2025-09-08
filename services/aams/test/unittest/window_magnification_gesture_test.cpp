@@ -185,7 +185,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
     SetPointerItem(point2, POINT_ID_1, 20, 20);
     points.emplace_back(point1);
     points.emplace_back(point2);
-    std::shared_ptr<MMI::PointerEvent> event = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, POINT_ID_1);
+    std::shared_ptr<MMI::PointerEvent> event = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
+        points, POINT_ID_1);
     EXPECT_TRUE(event != nullptr);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
     magnificationGesture_->OnPointerEvent(*event);
@@ -261,7 +262,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
     SetPointerItem(point2, POINT_ID_1, 20, 20);
     points.emplace_back(point1);
     points.emplace_back(point2);
-    std::shared_ptr<MMI::PointerEvent> event = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, POINT_ID_1);
+    std::shared_ptr<MMI::PointerEvent> event = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_UP,
+        points, POINT_ID_1);
     EXPECT_TRUE(event != nullptr);
 
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
@@ -302,7 +304,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleReadyStateCancel
  * @tc.desc: Test fun HandleReadyStateCancel
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateCancel_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateCancel_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleReadyStateCancel_001 start";
     EXPECT_TRUE(magnificationGesture_ != nullptr);
@@ -325,7 +328,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleReadyStateCancel
  * @tc.desc: Test fun HandleReadyStateCancel
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateCancel_002, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateCancel_002,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleReadyStateCancel_002 start";
     EXPECT_TRUE(magnificationGesture_ != nullptr);
@@ -349,7 +353,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleReadyStateOneFingerDownStateDown
  * @tc.desc: Test fun HandleReadyStateOneFingerDownStateDown
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateDown_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateDown_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateDown_001 start";
     EXPECT_TRUE(magnificationGesture_ != nullptr);
@@ -369,7 +374,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleReadyStateOneFingerDownStateDown
  * @tc.desc: Test fun HandleReadyStateOneFingerDownStateDown
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateDown_002, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateDown_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateDown_002 start";
     EXPECT_TRUE(magnificationGesture_ != nullptr);
@@ -381,7 +387,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
     SetPointerItem(point2, POINT_ID_1, 20, 20);
     points.emplace_back(point1);
     points.emplace_back(point2);
-    std::shared_ptr<MMI::PointerEvent> event = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, POINT_ID_1);
+    std::shared_ptr<MMI::PointerEvent> event = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
+        points, POINT_ID_1);
     EXPECT_TRUE(event != nullptr);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
     magnificationGesture_->OnPointerEvent(*event);
@@ -398,7 +405,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleReadyStateOneFingerDownStateUp
  * @tc.desc: Test fun HandleReadyStateOneFingerDownStateUp
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateUp_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateUp_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateUp_001 start";
     EXPECT_TRUE(magnificationGesture_ != nullptr);
@@ -418,7 +426,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleReadyStateOneFingerDownStateUp
  * @tc.desc: Test fun HandleReadyStateOneFingerDownStateUp
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateUp_002, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateUp_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateUp_002 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -440,7 +449,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleReadyStateOneFingerDownStateMove
  * @tc.desc: Test fun HandleReadyStateOneFingerDownStateMove
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateMove_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateMove_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStateMove_001 start";
     EXPECT_TRUE(magnificationGesture_ != nullptr);
@@ -463,7 +473,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleReadyStateOneFingerDownStatCancel
  * @tc.desc: Test fun HandleReadyStateOneFingerDownStatCance
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStatCancel_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStatCancel_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStatCancel_001 start";
     EXPECT_TRUE(magnificationGesture_ != nullptr);
@@ -486,7 +497,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleReadyStateOneFingerDownStatCancel
  * @tc.desc: Test fun HandleReadyStateOneFingerDownStatCance
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStatCancel_002, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStatCancel_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerDownStatCancel_002 start";
     EXPECT_TRUE(magnificationGesture_ != nullptr);
@@ -510,7 +522,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleReadyStateOneFingerTapDown
  * @tc.desc: Test fun HandleReadyStateOneFingerTapDown
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerTapDown_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerTapDown_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleReadyStateOneFingerTapDown_001 start";
     MultiTaps(ONE_TAP_COUNT);
@@ -586,7 +599,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleZoomInStateOneFingerDownStateDown
  * @tc.desc: Test fun HandleZoomInStateOneFingerDownStateDown
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateDown_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateDown_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateDown_001 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -610,7 +624,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleZoomInStateOneFingerDownStateDown
  * @tc.desc: Test fun HandleZoomInStateOneFingerDownStateDown
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateDown_002, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateDown_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateDown_001 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -629,7 +644,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
     SetPointerItem(point2, POINT_ID_1, 20, 20);
     points.emplace_back(point1);
     points.emplace_back(point2);
-    std::shared_ptr<MMI::PointerEvent> event2 = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, POINT_ID_1);
+    std::shared_ptr<MMI::PointerEvent> event2 = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
+        points, POINT_ID_1);
     magnificationGesture_->OnPointerEvent(*event2); // two fingers down
     EXPECT_EQ(static_cast<uint32_t>(magnificationGesture_->GetGestureState()),
         static_cast<uint32_t>(MagnificationGestureState::ZOOMIN_STATE_TWO_FINGERS_DOWN));
@@ -641,7 +657,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleZoomInStateOneFingerDownStateUp
  * @tc.desc: Test fun HandleZoomInStateOneFingerDownStateUp
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateUp_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateUp_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateUp_001 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -663,7 +680,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleZoomInStateOneFingerDownStateMove
  * @tc.desc: Test fun HandleZoomInStateOneFingerDownStateMove
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateMove_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateMove_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateMove_001 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -687,7 +705,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleZoomInStateOneFingerDownStateMove
  * @tc.desc: Test fun HandleZoomInStateOneFingerDownStateMove
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateMove_002, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateMove_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateMove_002 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -712,7 +731,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleZoomInStateOneFingerDownStateMove
  * @tc.desc: Test fun HandleZoomInStateOneFingerDownStateMove
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateMove_003, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest,
+    WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateMove_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerDownStateMove_003 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -737,7 +757,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleZoomInStateOneFingerTapDown
  * @tc.desc: Test fun HandleZoomInStateOneFingerTapDown
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerTapDown_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerTapDown_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleZoomInStateOneFingerTapDown_001 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -760,7 +781,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleTwoFingersDownStateUp
  * @tc.desc: Test fun HandleTwoFingersDownStateUp
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleTwoFingersDownStateUp_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleTwoFingersDownStateUp_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleTwoFingersDownStateUp_001 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -779,7 +801,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
     SetPointerItem(point2, POINT_ID_1, 20, 20);
     points.emplace_back(point1);
     points.emplace_back(point2);
-    std::shared_ptr<MMI::PointerEvent> event2 = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, POINT_ID_1);
+    std::shared_ptr<MMI::PointerEvent> event2 = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
+        points, POINT_ID_1);
     magnificationGesture_->OnPointerEvent(*event2); // two fingers down
     EXPECT_EQ(static_cast<uint32_t>(magnificationGesture_->GetGestureState()),
         static_cast<uint32_t>(MagnificationGestureState::ZOOMIN_STATE_TWO_FINGERS_DOWN));
@@ -796,7 +819,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleTwoFingersDownStateMove
  * @tc.desc: Test fun HandleTwoFingersDownStateMove
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleTwoFingersDownStateMove_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleTwoFingersDownStateMove_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleTwoFingersDownStateUp_001 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -815,7 +839,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
     SetPointerItem(point2, POINT_ID_1, 20, 20);
     points.emplace_back(point1);
     points.emplace_back(point2);
-    std::shared_ptr<MMI::PointerEvent> event2 = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, POINT_ID_1);
+    std::shared_ptr<MMI::PointerEvent> event2 = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
+        points, POINT_ID_1);
     magnificationGesture_->OnPointerEvent(*event2); // two fingers down
     EXPECT_EQ(static_cast<uint32_t>(magnificationGesture_->GetGestureState()),
         static_cast<uint32_t>(MagnificationGestureState::ZOOMIN_STATE_TWO_FINGERS_DOWN));
@@ -832,7 +857,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleTwoFingersDownStateMove
  * @tc.desc: Test fun HandleTwoFingersDownStateMove
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleTwoFingersDownStateMove_002, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleTwoFingersDownStateMove_002,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleTwoFingersDownStateUp_001 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -851,7 +877,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
     SetPointerItem(point2, POINT_ID_1, 20, 20);
     points.emplace_back(point1);
     points.emplace_back(point2);
-    std::shared_ptr<MMI::PointerEvent> event2 = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, POINT_ID_1);
+    std::shared_ptr<MMI::PointerEvent> event2 = CreatePointerEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
+        points, POINT_ID_1);
     magnificationGesture_->OnPointerEvent(*event2); // two fingers down
     EXPECT_EQ(static_cast<uint32_t>(magnificationGesture_->GetGestureState()),
         static_cast<uint32_t>(MagnificationGestureState::ZOOMIN_STATE_TWO_FINGERS_DOWN));
@@ -871,7 +898,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleSlidingStateDown
  * @tc.desc: Test fun HandleSlidingStateDown
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleSlidingStateDown_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleSlidingStateDown_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleSlidingStateDown_001 start";
     EXPECT_TRUE(magnificationGesture_ != nullptr);
@@ -911,7 +939,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleSlidingStateMove
  * @tc.desc: Test fun HandleSlidingStateMove
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleSlidingStateMove_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleSlidingStateMove_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleSlidingStateMove_001 start";
     EXPECT_TRUE(magnificationGesture_ != nullptr);
@@ -931,7 +960,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleMenuSlidingStateUp
  * @tc.desc: Test fun HandleMenuSlidingStateUp
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleMenuSlidingStateUp_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleMenuSlidingStateUp_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleMenuSlidingStateUp_001 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -961,7 +991,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleMenuSlidingStateMove
  * @tc.desc: Test fun HandleMenuSlidingStateMove
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleMenuSlidingStateMove_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleMenuSlidingStateMove_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleMenuSlidingStateMove_001 start";
     MultiTaps(TRIPLE_TAP_COUNT);
@@ -1013,7 +1044,8 @@ HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_Han
  * @tc.name: HandleDraggingStateMove
  * @tc.desc: Test fun HandleDraggingStateMove
  */
-HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleDraggingStateMove_001, TestSize.Level1)
+HWTEST_F(WindowMagnificationGestureTest, WindowMagnificationGesture_Unittest_HandleDraggingStateMove_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "WindowMagnificationGesture_Unittest_HandleDraggingStateMove_001 start";
     EXPECT_TRUE(magnificationGesture_ != nullptr);

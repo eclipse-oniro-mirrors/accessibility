@@ -62,11 +62,12 @@ static bool GetData(size_t size, const void *data, void *&buffer)
     if (size > MAX_RAWDATA_SIZE) {
         return false;
     }
-    buffer = malloc(size);
+    size_t bufferSize = size;
+    buffer = malloc(bufferSize);
     if (buffer == nullptr) {
         return false;
     }
-    if (memcpy_s(buffer, sizeof(char) * size, data, size) != EOK) {
+    if (memcpy_s(buffer, bufferSize, data, size) != EOK) {
         free(buffer);
         return false;
     }

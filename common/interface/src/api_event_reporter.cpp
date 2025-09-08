@@ -270,19 +270,6 @@ std::string RandomUuid()
     return std::string(uuidChars);
 }
 
-void ApiEventReporter::ClearCacheData()
-{
-    for (auto it : m_thresholdData) {
-        std::string apiName = it.first;
-        auto expandableData = it.second;
-        int32_t dataCount = static_cast<int32_t>(expandableData->runTime.size());
-        if (dataCount < 1) {
-            continue;
-        }
-        ExecuteThresholdWriteEndEvent(apiName, expandableData, dataCount);
-    }
-}
-
 int64_t ApiEventReporter::GetCurrentTime()
 {
     int64_t time = std::chrono::duration_cast<std::chrono::milliseconds>(
