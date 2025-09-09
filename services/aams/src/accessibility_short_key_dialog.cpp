@@ -203,6 +203,7 @@ bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &wan
         functionSelectConn_ = new(std::nothrow) ShortkeyAbilityConnection(commandStr);
         if (functionSelectConn_ == nullptr) {
             HILOG_ERROR("connection_ is nullptr.");
+            IPCSkeleton::SetCallingIdentity(identity);
             return false;
         }
         ret = AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
@@ -211,6 +212,7 @@ bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &wan
         readerExclusiveConn_ = new(std::nothrow) ExclusiveAbilityConnection(commandStr);
         if (readerExclusiveConn_ == nullptr) {
             HILOG_ERROR("connection_ is nullptr.");
+            IPCSkeleton::SetCallingIdentity(identity);
             return false;
         }
         ret = AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
@@ -219,6 +221,7 @@ bool AccessibilityShortkeyDialog::ConnectExtensionAbility(const AAFwk::Want &wan
         reConfirmConn_ = new(std::nothrow) ReConfirmAbilityConnection(commandStr);
         if (reConfirmConn_ == nullptr) {
             HILOG_ERROR("connection_ is nullptr.");
+            IPCSkeleton::SetCallingIdentity(identity);
             return false;
         }
         ret = AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
