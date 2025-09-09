@@ -579,7 +579,6 @@ void ANIUtils::ConvertEventInfoStringFields(ani_env *env, ani_object eventObject
     if (GetStringField(env, "triggerAction", eventObject, triggerAction)) {
         eventInfo.SetTriggerAction(ConvertStringToAccessibleOperationType(triggerAction));
     }
-
 }
 
 void ANIUtils::ConvertEventInfoIntFields(ani_env *env, ani_object eventObject,
