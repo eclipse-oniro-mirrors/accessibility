@@ -128,49 +128,15 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
         return false;
     }
     if (isUndefined) {
+        HILOG_ERROR("return for undefined");
         return false;
     }
 
     fieldValue.clear();
-    ani_class arrayCls;
-    if (env->FindClass(Builder::BuildClass(CLASS_NAME_ARRAY).Descriptor().c_str(), &arrayCls) != ANI_OK) {
+    if (!ParseStringArray(env, static_cast<ani_object>(ref), fieldValue)) {
+        HILOG_INFO(" ParseStringArray fail");
         return false;
     }
-
-    ani_method arrayLengthMethod;
-    SignatureBuilder objectBuilder{};
-    objectBuilder.SetReturnClass(Builder::BuildUndefined().Descriptor().c_str());
-    std::string objectBuilderDescriptor = objectBuilder.BuildSignatureDescriptor();
-    if (env->Class_FindMethod(arrayCls, "length", objectBuilderDescriptor.c_str(), &arrayLengthMethod) != ANI_OK) {
-        return false;
-    }
-
-    ani_ref length;
-    if (env->Object_CallMethod_Ref(static_cast<ani_object>(ref), arrayLengthMethod, &length) != ANI_OK) {
-        return false;
-    }
-
-    int32_t lengthInt;
-    if (env->Object_CallMethodByName_Int(static_cast<ani_object>(length), "unboxed", nullptr, &lengthInt) != ANI_OK ||
-        lengthInt <= 0) {
-        return false;
-    }
-
-    ani_method arrayPopMethod;
-    if (env->Class_FindMethod(arrayCls, "pop", objectBuilderDescriptor.c_str(), &arrayPopMethod) != ANI_OK) {
-        return false;
-    }
-
-    ani_ref string;
-    std::string result;
-    for (int32_t i = 0; i < lengthInt; i++) {
-        if (env->Object_CallMethod_Ref(static_cast<ani_object>(ref), arrayPopMethod, &string) != ANI_OK) {
-            return false;
-        }
-        result = ANIStringToStdString(env, static_cast<ani_string>(string));
-        fieldValue.insert(fieldValue.begin(), result);
-    }
-
     return true;
 }
 
@@ -609,6 +575,12 @@ void ANIUtils::ConvertEventInfoStringFields(ani_env *env, ani_object eventObject
     if (GetStringField(env, "customId", eventObject, customId)) {
         eventInfo.SetInspectorKey(customId);
     }
+
+    std::string triggerAction;
+    if (GetStringField(env, "triggerAction", eventObject, triggerAction)) {
+        eventInfo.SetTriggerAction(ConvertStringToAccessibleOperationType(triggerAction));
+    }
+
 }
 
 void ANIUtils::ConvertEventInfoIntFields(ani_env *env, ani_object eventObject,
