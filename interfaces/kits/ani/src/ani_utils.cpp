@@ -128,7 +128,6 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
         return false;
     }
     if (isUndefined) {
-        HILOG_ERROR("return for undefined");
         return false;
     }
 
