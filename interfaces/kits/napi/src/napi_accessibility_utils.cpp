@@ -18,9 +18,7 @@
 
 #include <charconv>
 #include <cmath>
-#include <iomanip>
 #include <regex>
-#include <sstream>
 #include <vector>
 
 #include "hilog_wrapper.h"
@@ -31,29 +29,9 @@ namespace OHOS {
 namespace AccessibilityNapi {
 namespace {
     const uint32_t COLOR_TRANSPARENT = 0x00000000;
-    const uint32_t COLOR_WHITE = 0xffffffff;
-    const uint32_t COLOR_BLACK = 0xff000000;
-    const uint32_t COLOR_RED = 0xffff0000;
-    const uint32_t COLOR_GREEN = 0xff00ff00;
-    const uint32_t COLOR_BLUE = 0xff0000ff;
-    const uint32_t COLOR_GRAY = 0xffc0c0c0;
 
-    constexpr uint32_t COLOR_STRING_SIZE_STANDARD = 8;
-    constexpr uint32_t COLOR_STRING_SIZE_4 = 4;
-    constexpr uint32_t COLOR_STRING_SIZE_5 = 5;
-    constexpr uint32_t COLOR_STRING_SIZE_7 = 7;
-    constexpr uint32_t COLOR_STRING_SIZE_9 = 9;
-    constexpr uint32_t COLOR_STRING_BASE = 16;
-    constexpr uint32_t COLOR_ALPHA_MASK = 0xff000000;
-
-    constexpr int32_t RGB_LENGTH = 6;
-    constexpr int32_t ALPHA_LENGTH = 2;
-    constexpr int32_t ALPHA_MOVE = 24;
-    constexpr int32_t COLOR_MOVE = 8;
-    const char UNICODE_BODY = '0';
     const std::string HALF_VALUE = "0";
     const std::string FULL_VALUE = "1";
-    const std::string NUMBER_VALID_CHARS = "0123456789ABCDEFabcdef";
     
     const std::string ERROR_MESSAGE_PARAMETER_ERROR = "Parameter error. Possible causes:"
         "1. Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.";
@@ -1628,111 +1606,6 @@ void ConvertCaptionPropertyToJS(
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowColor", value));
 }
 
-uint32_t ConvertColorStringToNumer(std::string colorStr)
-{
-    HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
-    uint32_t color = COLOR_TRANSPARENT;
-    if (colorStr.empty()) {
-        // Empty string, return transparent
-        return color;
-    }
-    // Remove all " ".
-    colorStr.erase(std::remove(colorStr.begin(), colorStr.end(), ' '), colorStr.end());
-
-    if (ColorRegexMatch(colorStr, color)) {
-        return color;
-    }
-
-    // Match for special string
-    static const std::map<std::string, uint32_t> colorTable {
-        std::make_pair("black", COLOR_BLACK),
-        std::make_pair("blue", COLOR_BLUE),
-        std::make_pair("gray", COLOR_GRAY),
-        std::make_pair("green", COLOR_GREEN),
-        std::make_pair("red", COLOR_RED),
-        std::make_pair("white", COLOR_WHITE),
-    };
-    auto it = colorTable.find(colorStr.c_str());
-    if (it != colorTable.end()) {
-        color = it->second;
-    }
-    return color;
-}
-
-bool IsColorWithMagic(const std::string& colorStr)
-{
-    if (colorStr.size() < 1 || colorStr.substr(0, 1) != "#") {
-        return false;
-    }
-
-    for (int i = 1; i < colorStr.size(); i++) {
-        if (NUMBER_VALID_CHARS.find(colorStr[i]) == std::string::npos) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool ColorRegexMatch(std::string colorStr, uint32_t &color)
-{
-    // for example #909090 or #90909090. avoid use regex match #[0-9A-Fa-f]{6,8}.
-    if (IsColorWithMagic(colorStr) &&
-        (colorStr.size() == COLOR_STRING_SIZE_7 || colorStr.size() == COLOR_STRING_SIZE_9)) {
-        colorStr.erase(0, 1);
-        auto colorValue = stoul(colorStr, nullptr, COLOR_STRING_BASE);
-        if (colorStr.length() < COLOR_STRING_SIZE_STANDARD) {
-            // No alpha specified, set alpha to 0xff
-            colorValue |= COLOR_ALPHA_MASK;
-        } else {
-            auto alpha = colorValue << ALPHA_MOVE;
-            auto rgb = colorValue >> COLOR_MOVE;
-            colorValue = alpha | rgb;
-        }
-        color = colorValue;
-        return true;
-    }
-    // for #rgb or #rgba. avoid use regex match #[0-9A-Fa-f]{3,4}.
-    if (IsColorWithMagic(colorStr) &&
-        (colorStr.size() == COLOR_STRING_SIZE_4 || colorStr.size() == COLOR_STRING_SIZE_5)) {
-        colorStr.erase(0, 1);
-        std::string newColorStr;
-        // Translate #rgb or #rgba to #rrggbb or #rrggbbaa
-        for (const auto& c : colorStr) {
-            newColorStr += c;
-            newColorStr += c;
-        }
-        auto valueMini = stoul(newColorStr, nullptr, COLOR_STRING_BASE);
-        if (newColorStr.length() < COLOR_STRING_SIZE_STANDARD) {
-            // No alpha specified, set alpha to 0xff
-            valueMini |= COLOR_ALPHA_MASK;
-        } else {
-            auto alphaMini = valueMini << ALPHA_MOVE;
-            auto rgbMini = valueMini >> COLOR_MOVE;
-            valueMini = alphaMini | rgbMini;
-        }
-        color = valueMini;
-        return true;
-    }
-    return false;
-}
-
-std::string ConvertColorToString(uint32_t color)
-{
-    HILOG_DEBUG("color is 0X%{public}x", color);
-    uint32_t rgb = color & (~COLOR_ALPHA_MASK);
-    uint32_t alpha = (color) >> ALPHA_MOVE;
-    std::stringstream rgbStream;
-    rgbStream << std::hex << std::setw(RGB_LENGTH) << std::setfill(UNICODE_BODY) << rgb;
-    std::stringstream alphaStream;
-    alphaStream << std::hex << std::setw(ALPHA_LENGTH) << std::setfill(UNICODE_BODY) << alpha;
-    std::string rgbStr(rgbStream.str());
-    std::string alphaStr(alphaStream.str());
-    std::string colorStr = "#" + rgbStr + alphaStr;
-    HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
-    return colorStr;
-}
-
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue)
 {
     uint32_t color = COLOR_TRANSPARENT;
@@ -1752,7 +1625,7 @@ uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameV
         char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
         size_t outSize = 0;
         napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
-        color = ConvertColorStringToNumer(std::string(outBuffer));
+        color = ConvertColorStringToNumber(std::string(outBuffer));
     }
     HILOG_DEBUG("color is 0x%{public}x", color);
     return color;
@@ -1775,7 +1648,7 @@ uint32_t GetColorValue(napi_env env, napi_value value)
         char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
         size_t outSize = 0;
         napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
-        color = ConvertColorStringToNumer(std::string(outBuffer));
+        color = ConvertColorStringToNumber(std::string(outBuffer));
     }
     HILOG_DEBUG("color is 0x%{public}x", color);
     return color;
