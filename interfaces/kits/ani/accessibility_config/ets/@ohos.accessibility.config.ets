@@ -16,7 +16,7 @@
 import { BusinessError, AsyncCallback } from '@ohos.base';
 
 export namespace config {
-    loadLibrary("accessibility_config_ani");
+    loadLibraryWithPermissionCheck("accessibility_config_ani", "@ohos.accessibility.config");
 
     let highContrastText: Config<Boolean> =  new HighContrastTextConfig();
 
