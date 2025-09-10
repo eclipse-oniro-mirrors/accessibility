@@ -916,7 +916,7 @@ bool ANIAccessibilityConfig::GetColorMember(ani_env *env, ani_object object, con
     env->FindClass("Lstd/core/String;", &stringClass);
     ani_boolean isString;
     env->Object_InstanceOf(static_cast<ani_object>(ref), stringClass, &isString);
-    if(isString){
+    if (isString) {
         auto stringContent = ANIUtils::ANIStringToStdString(env, static_cast<ani_string>(ref));
         color = ConvertColorStringToNumber(stringContent);
         HILOG_INFO("color stringContent = %{public}s, color = %{public}u", stringContent.c_str(), color);
@@ -928,7 +928,6 @@ bool ANIAccessibilityConfig::GetColorMember(ani_env *env, ani_object object, con
         }
         color = static_cast<uint32_t>(valueInt);
         HILOG_INFO("color intContent = %{public}u", color);
-
     }
     return true;
 }
