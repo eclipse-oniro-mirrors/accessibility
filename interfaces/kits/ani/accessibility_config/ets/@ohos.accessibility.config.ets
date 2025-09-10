@@ -36,10 +36,10 @@ namespace config {
             taskpool.execute((): void => {
                 return enableAbilitySync(name, capability);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 resolve(ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 reject(ret as BusinessError);
             });
         });
@@ -50,10 +50,10 @@ namespace config {
             taskpool.execute((): void => {
                 return enableAbilitySync(name, capability);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
     }
@@ -63,10 +63,10 @@ namespace config {
             taskpool.execute((): void => {
                 return disableAbilitySync(name);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 resolve(ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 reject(ret as BusinessError);
             });
         });
@@ -76,10 +76,10 @@ namespace config {
         taskpool.execute((): void => {
             return disableAbilitySync(name);
         })
-        .then((ret: NullishType): void => {
+        .then((ret: Any): void => {
             callback(new BusinessError(), ret as undefined);
         })
-        .catch((ret: NullishType): void => {
+        .catch((ret: Any): void => {
             callback(ret as BusinessError, undefined);
         });
     }
@@ -150,10 +150,10 @@ namespace config {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as undefined);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -163,10 +163,10 @@ namespace config {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -176,10 +176,10 @@ namespace config {
                 taskpool.execute((): boolean => {
                     return this.getSync(this.id);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as boolean);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -189,10 +189,10 @@ namespace config {
             taskpool.execute((): boolean => {
                 return this.getSync(this.id);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as boolean);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, false);
             });
         }
@@ -228,10 +228,10 @@ namespace config {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as undefined);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -241,10 +241,10 @@ namespace config {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -254,10 +254,10 @@ namespace config {
                 taskpool.execute((): int => {
                     return this.getSync(this.id);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as int);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -267,10 +267,10 @@ namespace config {
             taskpool.execute((): int => {
                 return this.getSync(this.id);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as int);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -306,10 +306,10 @@ namespace config {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as undefined);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -319,10 +319,10 @@ namespace config {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -332,10 +332,10 @@ namespace config {
                 taskpool.execute((): double => {
                     return this.getSync(this.id);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as double);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -345,10 +345,10 @@ namespace config {
             taskpool.execute((): double => {
                 return this.getSync(this.id);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as double);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -384,10 +384,10 @@ namespace config {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as undefined);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -397,10 +397,10 @@ namespace config {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -410,10 +410,10 @@ namespace config {
                 taskpool.execute((): string => {
                     return this.getSync(this.id);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as string);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -423,10 +423,10 @@ namespace config {
             taskpool.execute((): string => {
                 return this.getSync(this.id);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as string);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -462,10 +462,10 @@ namespace config {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as undefined);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -475,10 +475,10 @@ namespace config {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -488,10 +488,10 @@ namespace config {
                 taskpool.execute((): Array<string> => {
                     return this.getSync(this.id);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as Array<string>);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -501,10 +501,10 @@ namespace config {
             taskpool.execute((): Array<string> => {
                 return this.getSync(this.id);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as Array<string>);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -540,10 +540,10 @@ namespace config {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as undefined);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -553,10 +553,10 @@ namespace config {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -566,10 +566,10 @@ namespace config {
                 taskpool.execute((): DaltonizationColorFilter => {
                     return this.getSync(this.id);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as DaltonizationColorFilter);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -579,10 +579,10 @@ namespace config {
             taskpool.execute((): DaltonizationColorFilter => {
                 return this.getSync(this.id);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as DaltonizationColorFilter);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -618,10 +618,10 @@ namespace config {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as undefined);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -631,10 +631,10 @@ namespace config {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -644,10 +644,10 @@ namespace config {
                 taskpool.execute((): ClickResponseTime => {
                     return this.getSync(this.id);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as ClickResponseTime);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -657,10 +657,10 @@ namespace config {
             taskpool.execute((): ClickResponseTime => {
                 return this.getSync(this.id);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as ClickResponseTime);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -696,10 +696,10 @@ namespace config {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as undefined);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -709,10 +709,10 @@ namespace config {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -722,10 +722,10 @@ namespace config {
                 taskpool.execute((): RepeatClickInterval => {
                     return this.getSync(this.id);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as RepeatClickInterval);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -735,10 +735,10 @@ namespace config {
             taskpool.execute((): RepeatClickInterval => {
                 return this.getSync(this.id);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as RepeatClickInterval);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -774,10 +774,10 @@ namespace config {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as undefined);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -787,10 +787,10 @@ namespace config {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
@@ -800,10 +800,10 @@ namespace config {
                 taskpool.execute((): accessibility.CaptionsStyle => {
                     return this.getSync(this.id);
                 })
-                .then((ret: NullishType): void => {
+                .then((ret: Any): void => {
                     resolve(ret as accessibility.CaptionsStyle);
                 })
-                .catch((ret: NullishType): void => {
+                .catch((ret: Any): void => {
                     reject(ret as BusinessError);
                 });
             });
@@ -813,10 +813,10 @@ namespace config {
             taskpool.execute((): accessibility.CaptionsStyle => {
                 return this.getSync(this.id);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 callback(new BusinessError(), ret as accessibility.CaptionsStyle);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
         }
