@@ -895,6 +895,43 @@ ani_string ANIAccessibilityConfig::GetSyncRepeatClickInterval(ani_env *env, ani_
     return retResult;
 }
 
+bool ANIAccessibilityConfig::GetColorMember(ani_env *env, ani_object object, const char* name, uint32_t &color)
+{
+    color = 0;
+    ani_ref ref;
+    if (ANI_OK != env->Object_GetPropertyByName_Ref(object, name, &ref)) {
+        HILOG_ERROR("Get property '%{public}s' failed", name);
+        return false;
+    }
+
+    ani_boolean isUndefined;
+    if (ANI_OK != env->Reference_IsUndefined(ref, &isUndefined)) {
+        HILOG_ERROR("Reference IsUndefined failed");
+        return false;
+    }
+    if (isUndefined) {
+        return false;
+    }
+    ani_class stringClass;
+    env->FindClass("Lstd/core/String;", &stringClass);
+    ani_boolean isString;
+    env->Object_InstanceOf(static_cast<ani_object>(ref), stringClass, &isString);
+    if (isString) {
+        auto stringContent = ANIUtils::ANIStringToStdString(env, static_cast<ani_string>(ref));
+        color = ConvertColorStringToNumber(stringContent);
+        HILOG_INFO("color stringContent = %{public}s, color = %{public}u", stringContent.c_str(), color);
+    } else {
+        ani_int valueInt;
+        if (ANI_OK != env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "unboxed", ":I", &valueInt)) {
+            HILOG_ERROR(" Unboxed Int failed");
+            return false;
+        }
+        color = static_cast<uint32_t>(valueInt);
+        HILOG_INFO("color intContent = %{public}u", color);
+    }
+    return true;
+}
+
 void ANIAccessibilityConfig::SetSyncCaptionsStyle(ani_env *env, ani_object object, ani_enum_item id, ani_object value)
 {
     ani_int itemEnum;
@@ -919,12 +956,12 @@ void ANIAccessibilityConfig::SetSyncCaptionsStyle(ani_env *env, ani_object objec
 
     if (!isUndefined) {
         ANIUtils::GetStringMember(env, value, "fontFamily", fontFamily);
-        ANIUtils::GetNumberMember(env, value, "fontColor", fontColor);
+        GetColorMember(env, value, "fontColor", fontColor);
         ANIUtils::GetStringMember(env, value, "fontEdgeType", fontEdgeType);
-        ANIUtils::GetNumberMember(env, value, "backgroundColor", backgroundColor);
-        ANIUtils::GetNumberMember(env, value, "windowColor", windowColor);
-        double value1;
-        if (ANI_OK != env->Object_GetPropertyByName_Double(value, "fontScale", &value1)) {
+        GetColorMember(env, value, "backgroundColor", backgroundColor);
+        GetColorMember(env, value, "windowColor", windowColor);
+        int value1;
+        if (ANI_OK != env->Object_GetPropertyByName_Int(value, "fontScale", &value1)) {
             HILOG_ERROR(" Get property value1  failed");
         }
         fontScale = static_cast<uint32_t>(value1);
@@ -955,29 +992,27 @@ ani_object ANIAccessibilityConfig::CreateJsCaptionPropertyInfoInner(ani_env *env
         HILOG_ERROR(" invalid args");
         return nullptr;
     }
-
     if (!ANIUtils::SetStringProperty(env, object, "fontFamily", captionProperty.GetFontFamily())) {
         HILOG_ERROR(" set fontFamily failed");
     }
     if (!ANIUtils::SetStringProperty(env, object, "fontEdgeType", captionProperty.GetFontEdgeType())) {
         HILOG_ERROR(" set fontEdgeType failed");
     }
-    if (ANI_OK != env->Object_SetPropertyByName_Double(object, "fontScale", captionProperty.GetFontScale())) {
+    if (ANI_OK != env->Object_SetPropertyByName_Int(object, "fontScale", captionProperty.GetFontScale())) {
         HILOG_ERROR(" Set property fontScale failed");
     }
-
-    if (!ANIUtils::SetNumberMember(env, object, "fontColor", captionProperty.GetFontColor())) {
+    if (!ANIUtils::SetStringProperty(env, object, "fontColor",
+        ConvertColorToString(captionProperty.GetFontColor()))) {
         HILOG_ERROR(" Set property fontColor failed");
     }
-
-    if (!ANIUtils::SetNumberMember(env, object, "backgroundColor", captionProperty.GetBackgroundColor())) {
+    if (!ANIUtils::SetStringProperty(env, object, "backgroundColor",
+        ConvertColorToString(captionProperty.GetBackgroundColor()))) {
         HILOG_ERROR(" Set property backgroundColor failed");
     }
-
-    if (!ANIUtils::SetNumberMember(env, object, "windowColor", captionProperty.GetWindowColor())) {
+    if (!ANIUtils::SetStringProperty(env, object, "windowColor",
+        ConvertColorToString(captionProperty.GetWindowColor()))) {
         HILOG_ERROR(" Set property windowColor failed");
     }
-
     return object;
 }
 

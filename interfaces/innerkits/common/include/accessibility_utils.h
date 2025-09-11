@@ -107,9 +107,7 @@ bool ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capa
 bool ConvertStringToInt64(std::string &str, int64_t &value);
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue);
 uint32_t GetColorValue(napi_env env, napi_value value);
-uint32_t ConvertColorStringToNumer(std::string colorStr);
 bool ColorRegexMatch(std::string colorStr, uint32_t &color);
-std::string ConvertColorToString(uint32_t color);
 std::string ConvertStringJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
 int32_t ConvertIntJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
 bool ConvertBoolJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
