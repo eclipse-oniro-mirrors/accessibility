@@ -398,7 +398,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsProperty(CaptionPr
     CaptionPropertyParcel captionParcel(caption);
     Accessibility::RetError ret = static_cast<Accessibility::RetError>(
         GetServiceProxy()->GetCaptionProperty(captionParcel));
-    caption = captionParcel;
+    caption = static_cast<CaptionProperty>(captionParcel);
     HILOG_INFO();
     return ret;
 }
