@@ -545,7 +545,8 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
     }
-    if (flag) {
+    std::string isAncoFlag = uiEvent.GetExtraEvent().GetExtraEventInfoValueByKey("isAnco");
+    if (flag && isAncoFlag != "1") {
         if (VerifyingToKenId(uiEvent.GetElementInfo().GetWindowId(),
             uiEvent.GetElementInfo().GetAccessibilityId()) == RET_OK) {
         } else {
@@ -1004,7 +1005,7 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByWindowId(
         }
         connection->SetTokenIdMap(SINGLE_TREE_ID, tokenId);
         accountData->AddAccessibilityWindowConnection(windowId, connection);
-
+        connection->SetAncoFlag(!isApp);
         IsCheckWindowIdEventExist(windowId);
         if (elementOperator && elementOperator->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =

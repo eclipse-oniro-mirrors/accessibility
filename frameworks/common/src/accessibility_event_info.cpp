@@ -24,7 +24,8 @@ namespace Accessibility {
 namespace {
     static std::set<std::string> EXTRA_EVENTINFO_SET = {
         "addText",
-        "removeText"
+        "removeText",
+        "isAnco"
     };
 }
 
@@ -187,6 +188,15 @@ RetError ExtraEventInfo::SetExtraEventInfo(const std::string keyStr, const std::
 const std::map<std::string, std::string> &ExtraEventInfo::GetExtraEventInfoValueStr() const
 {
     return extraEventValueStr_;
+}
+
+const std::string ExtraEventInfo::GetExtraEventInfoValueByKey(const std::string &key) const
+{
+    auto iter = extraEventValueStr_.find(key);
+    if (iter != extraEventValueStr_.end()) {
+        return iter->second;
+    }
+    return "";
 }
 
 void AccessibilityEventInfo::SetExtraEvent(const ExtraEventInfo &extraEventInfo)

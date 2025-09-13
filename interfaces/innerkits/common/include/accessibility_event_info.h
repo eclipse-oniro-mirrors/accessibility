@@ -266,6 +266,14 @@ public:
      */
     const std::map<std::string, std::string> &GetExtraEventInfoValueStr() const;
 
+    /**
+     * @brief Gets the value by key from extraEventValueStr
+     * @param strKey key of extraEventValueStr
+     * @return value or "" when the key is not found
+     * @sysCap Accessibility
+     */
+    const std::string GetExtraEventInfoValueByKey(const std::string &strKey) const;
+
 protected:
     std::map<std::string, std::string> extraEventValueStr_ = {};
 };

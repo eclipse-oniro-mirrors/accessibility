@@ -223,6 +223,7 @@ void AccessibilitySystemAbilityClientImpl::Init()
     }
     uint32_t stateType = 0;
     serviceProxy_->RegisterStateObserver(stateObserver_, stateType);
+    SetAccessibilityState(stateType);
     if (stateType & STATE_ACCESSIBILITY_ENABLED) {
         stateHandler_.SetState(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED, true);
     }
