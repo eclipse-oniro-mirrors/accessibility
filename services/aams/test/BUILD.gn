@@ -229,6 +229,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "mock/src/mock_accessible_ability_manager_service_state_observer_stub.cpp",
     "mock/src/mock_magnification_manager.cpp",
     "mock/src/mock_system_ability.cpp",
+    "mock/src/mock_permission.cpp",
     "unittest/accessible_ability_manager_service_test.cpp",
   ]
 
@@ -1192,6 +1193,7 @@ ohos_unittest("accessibility_settings_config_test") {
     "../src/window_magnification_manager.cpp",
     "../src/magnification_window_proxy.cpp",
     "mock/src/mock_magnification_manager.cpp",
+    "mock/src/mock_permission.cpp",
     "unittest/accessibility_settings_config_test.cpp",
   ]
 

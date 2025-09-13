@@ -1678,6 +1678,10 @@ ErrCode AccessibleAbilityManagerService::SetMagnificationState(const bool state)
 ErrCode AccessibleAbilityManagerService::CheckExtensionAbilityPermission(std::string& processName)
 {
     bool ret = Permission::CheckCallingPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY);
+    if (ret == true) {
+        HILOG_INFO("get hap permission");
+        return RET_OK;
+    }
     auto id = IPCSkeleton::GetCallingTokenID();
     Security::AccessToken::NativeTokenInfo info;
     auto result = Security::AccessToken::AccessTokenKit::GetNativeTokenInfo(id, info);
@@ -1687,7 +1691,7 @@ ErrCode AccessibleAbilityManagerService::CheckExtensionAbilityPermission(std::st
     }
 
     processName = info.processName;
-    if ((processName.compare("hdcd") != 0) && (!ret)) {
+    if (processName.compare("hdcd") != 0) {
         HILOG_ERROR("permission check failed, processName = %{public}s", processName.c_str());
         return RET_ERR_NO_PERMISSION;
     }
