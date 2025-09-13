@@ -844,7 +844,7 @@ RetError AccessibleAbilityChannel::GetElementOperator(
         HILOG_ERROR("windowId[%{public}d] has no connection", realId);
         return RET_ERR_NO_WINDOW_CONNECTION;
     }
-    if (treeId <= 0) {
+    if (connection->IsAnco() == true || treeId <= 0) {
         elementOperator = connection->GetProxy();
     } else {
         elementOperator = connection->GetCardProxy(treeId);

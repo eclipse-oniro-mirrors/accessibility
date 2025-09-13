@@ -46,6 +46,16 @@ public:
         return cardProxy_.Size();
     }
 
+    inline void SetAncoFlag(bool flag)
+    {
+        isAnco_ = flag;
+    }
+
+    inline bool IsAnco()
+    {
+        return isAnco_;
+    }
+
     sptr<IAccessibilityElementOperator> GetCardProxy(const int32_t treeId);
 
     RetError SetCardProxy(const int32_t treeId, sptr<IAccessibilityElementOperator> operation);
@@ -70,6 +80,7 @@ private:
     sptr<IAccessibilityElementOperator> proxy_;
     SafeMap<int32_t, uint32_t> tokenIdMap_;
     SafeMap<int32_t, int64_t> treeIdParentId_;
+    bool isAnco_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS
