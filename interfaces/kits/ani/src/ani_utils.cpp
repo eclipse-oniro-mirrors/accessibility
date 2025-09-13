@@ -26,7 +26,7 @@
 using namespace OHOS::Accessibility;
 using namespace arkts::ani_signature;
 
-constexpr const char* CLASSNAME_DOUBLE = "Lstd/core/Double;";
+constexpr const char* CLASSNAME_DOUBLE = "std.core.Double";
 const std::string HALF_VALUE = "0";
 const std::string FULL_VALUE = "1";
 
@@ -785,7 +785,7 @@ bool ANIUtils::GetNumberMember(ani_env *env, ani_object options, const std::stri
     }
 
     ani_double valueDouble;
-    if (ANI_OK != env->Object_CallMethodByName_Double(static_cast<ani_object>(ref), "unboxed", ":D", &valueDouble)) {
+    if (ANI_OK != env->Object_CallMethodByName_Double(static_cast<ani_object>(ref), "unboxed", ":d", &valueDouble)) {
         HILOG_ERROR(" Unboxed Double failed");
         return false;
     }
@@ -796,7 +796,7 @@ bool ANIUtils::GetNumberMember(ani_env *env, ani_object options, const std::stri
 
 bool ANIUtils::SetNumberMember(ani_env *env, ani_object obj, const std::string &name, const ani_int value)
 {
-    static const char *className = "Lstd/core/Int;";
+    static const char *className = "std.core.Int";
     ani_class cls;
     if (ANI_OK != env->FindClass(className, &cls)) {
         HILOG_ERROR(" Find class '%{public}s' failed", className);
@@ -804,7 +804,7 @@ bool ANIUtils::SetNumberMember(ani_env *env, ani_object obj, const std::string &
     }
 
     ani_method ctor;
-    if (ANI_OK != env->Class_FindMethod(cls, "<ctor>", "I:V", &ctor)) {
+    if (ANI_OK != env->Class_FindMethod(cls, "<ctor>", "i:", &ctor)) {
         HILOG_ERROR(" Find method '<ctor>' failed");
         return false;
     }
@@ -836,7 +836,7 @@ ani_object ANIUtils::CreateDouble(ani_env *env, int32_t value)
         return nullptr;
     }
     ani_method doubleCtor;
-    if ((status = env->Class_FindMethod(doubleCls, "<ctor>", "D:V", &doubleCtor)) != ANI_OK) {
+    if ((status = env->Class_FindMethod(doubleCls, "<ctor>", "d:", &doubleCtor)) != ANI_OK) {
         HILOG_ERROR(" status : %{public}d", status);
         return nullptr;
     }
@@ -852,12 +852,12 @@ ani_status ANIUtils::CreateAniBoolean(ani_env* env, bool value, ani_object& resu
 {
     ani_status state;
     ani_class booleanClass;
-    if ((state = env->FindClass("Lstd/core/Boolean;", &booleanClass)) != ANI_OK) {
+    if ((state = env->FindClass("std.core.Boolean", &booleanClass)) != ANI_OK) {
         HILOG_ERROR("FindClass std/core/Boolean failed, %{public}d", state);
         return state;
     }
     ani_method booleanClassCtor;
-    if ((state = env->Class_FindMethod(booleanClass, "<ctor>", "Z:V", &booleanClassCtor)) != ANI_OK) {
+    if ((state = env->Class_FindMethod(booleanClass, "<ctor>", "z:", &booleanClassCtor)) != ANI_OK) {
         HILOG_ERROR("Class_FindMethod Boolean ctor failed, %{public}d", state);
         return state;
     }
@@ -873,12 +873,12 @@ ani_status ANIUtils::CreateAniInt(ani_env* env, int32_t value, ani_object& resul
 {
     ani_status state;
     ani_class intClass;
-    if ((state = env->FindClass("Lstd/core/Int;", &intClass)) != ANI_OK) {
+    if ((state = env->FindClass("std.core.Int", &intClass)) != ANI_OK) {
         HILOG_ERROR("FindClass std/core/Int failed, %{public}d", state);
         return state;
     }
     ani_method intClassCtor;
-    if ((state = env->Class_FindMethod(intClass, "<ctor>", "I:V", &intClassCtor)) != ANI_OK) {
+    if ((state = env->Class_FindMethod(intClass, "<ctor>", "i:", &intClassCtor)) != ANI_OK) {
         HILOG_ERROR("Class_FindMethod Int ctor failed, %{public}d", state);
         return state;
     }
@@ -893,12 +893,12 @@ ani_status ANIUtils::CreateAniFloat(ani_env* env, float value, ani_object& resul
 {
     ani_status state;
     ani_class floatClass;
-    if ((state = env->FindClass("Lstd/core/Float;", &floatClass)) != ANI_OK) {
+    if ((state = env->FindClass("std.core.Float", &floatClass)) != ANI_OK) {
         HILOG_ERROR("FindClass std/core/Float failed, %{public}d", state);
         return state;
     }
     ani_method floatClassCtor;
-    if ((state = env->Class_FindMethod(floatClass, "<ctor>", "F:V", &floatClassCtor)) != ANI_OK) {
+    if ((state = env->Class_FindMethod(floatClass, "<ctor>", "f:", &floatClassCtor)) != ANI_OK) {
         HILOG_ERROR("Class_FindMethod Float ctor failed, %{public}d", state);
         return state;
     }
@@ -913,12 +913,12 @@ ani_status ANIUtils::CreateAniLong(ani_env* env, int64_t value, ani_object& resu
 {
     ani_status state;
     ani_class longClass;
-    if ((state = env->FindClass("Lstd/core/Long;", &longClass)) != ANI_OK) {
+    if ((state = env->FindClass("std.core.Long", &longClass)) != ANI_OK) {
         HILOG_ERROR("FindClass std/core/Long failed, %{public}d", state);
         return state;
     }
     ani_method longClassCtor;
-    if ((state = env->Class_FindMethod(longClass, "<ctor>", "J:V", &longClassCtor)) != ANI_OK) {
+    if ((state = env->Class_FindMethod(longClass, "<ctor>", "l:", &longClassCtor)) != ANI_OK) {
         HILOG_ERROR("Class_FindMethod Long ctor failed, %{public}d", state);
         return state;
     }
