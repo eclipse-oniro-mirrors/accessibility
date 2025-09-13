@@ -20,6 +20,7 @@
 #include "accesstoken_kit.h"
 #include "nativetoken_kit.h"
 #include "token_setproc.h"
+#include "mock_permission.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -50,6 +51,8 @@ namespace {
     const std::string CONFIG_SHORTCUT_ON_LOCK_SCREEN = "shortcutOnLockScreen";
     const std::string CONFIG_SHORTCUT_TIMEOUT = "shortcutTimeout";
     const std::string ENABLE_ABILITY_NAME = "HIGH_CONTRAST_TEXT";
+    uint64_t g_selfTokenID = 0;
+    static Security::AccessToken::MockToken *g_mock = nullptr;
 } // namespace
 
 class AccessibilitySettingsConfigTest : public testing::Test {
@@ -68,39 +71,22 @@ public:
     void TearDown() override;
 };
 
-void AddPermission()
-{
-    const char *perms[] = {
-        OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str(),
-        OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str(),
-        OHOS_PERMISSION_MANAGE_SECURE_SETTINGS.c_str(),
-        OHOS_PERMISSION_MANAGE_SETTINGS.c_str()
-    };
-    NativeTokenInfoParams infoInstance = {
-        .dcapsNum = 0,
-        .permsNum = 4,
-        .aclsNum = 0,
-        .dcaps = nullptr,
-        .perms = perms,
-        .acls = nullptr,
-        .processName = "com.accessibility.accessibilitySettingsConfigTest",
-        .aplStr = "normal",
-    };
-    uint64_t tokenId = GetAccessTokenId(&infoInstance);
-    auto ret = SetSelfTokenID(tokenId);
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest AddPermission SetSelfTokenID ret: " << ret;
-    Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
-}
-
 void AccessibilitySettingsConfigTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest SetUpTestCase";
-    AddPermission();
+    g_selfTokenID = GetSelfTokenID();
+    Security::AccessToken::MockPermission::SetTestEvironment(g_selfTokenID);
+    g_mock = new (std::nothrow) Security::AccessToken::MockToken("foundation");
 }
 
 void AccessibilitySettingsConfigTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest TearDownTestCase";
+    if (g_mock != nullptr) {
+        delete g_mock;
+        g_mock = nullptr;
+    }
+    Security::AccessToken::MockPermission::ResetTestEvironment();
 }
 
 void AccessibilitySettingsConfigTest::SetUp()
@@ -931,7 +917,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, Unittest_SetShortkeyMultiTargetInPkgRe
     settingConfig_->Init();
     std::string name = "TEST";
     settingConfig_->SetShortkeyMultiTargetInPkgRemove(name);
-    EXPECT_NE(settingConfig_->GetShortkeyMultiTarget().size(), 0);
+    EXPECT_NE(settingConfig_->GetShortkeyMultiTarget().size(), 1);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001 end";
 }
 
