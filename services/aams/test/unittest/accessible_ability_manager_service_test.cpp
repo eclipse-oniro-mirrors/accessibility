@@ -41,6 +41,7 @@
 #include "accesstoken_kit.h"
 #include "nativetoken_kit.h"
 #include "token_setproc.h"
+#include "mock_permission.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -57,6 +58,8 @@ namespace {
     constexpr int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     const std::string DEVICE_PROVISIONED = "device_provisioned";
+    uint64_t g_selfTokenID = 0;
+    static Security::AccessToken::MockHapToken *g_mock = nullptr;
 } // namespace
 
 class AccessibleAbilityManagerServiceUnitTest : public ::testing::Test {
@@ -75,35 +78,21 @@ public:
     void RegisterAbilityConnectionClient(const sptr<IRemoteObject>& obj);
 };
 
-void AddPermission()
-{
-    const char *perms[] = {
-        OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str(),
-        OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str(),
-        OHOS_PERMISSION_MANAGE_SECURE_SETTINGS.c_str(),
-        OHOS_PERMISSION_MANAGE_SETTINGS.c_str(),
-        OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY.c_str()
-    };
-    NativeTokenInfoParams infoInstance = {
-        .dcapsNum = 0,
-        .permsNum = 4,
-        .aclsNum = 0,
-        .dcaps = nullptr,
-        .perms = perms,
-        .acls = nullptr,
-        .processName = "com.accessibility.accessibleAbilityManagerServiceUnitTest",
-        .aplStr = "system_basic",
-    };
-    uint64_t tokenId = GetAccessTokenId(&infoInstance);
-    auto ret = SetSelfTokenID(tokenId);
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest AddPermission SetSelfTokenID ret: " << ret;
-    Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
-}
-
 void AccessibleAbilityManagerServiceUnitTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest SetUpTestCase";
-    AddPermission();
+    g_selfTokenID = GetSelfTokenID();
+    Security::AccessToken::MockPermission::SetTestEvironment(g_selfTokenID);
+    std::vector<std::string> reqPerm;
+
+    reqPerm.emplace_back(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG);
+    reqPerm.emplace_back(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG);
+    reqPerm.emplace_back(OHOS_PERMISSION_MANAGE_SECURE_SETTINGS);
+    reqPerm.emplace_back(OHOS_PERMISSION_MANAGE_SETTINGS);
+    reqPerm.emplace_back(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY);
+    g_mock = new (std::nothrow) Security::AccessToken::MockHapToken(
+        "AccessibleAbilityManagerServiceUnitTest", reqPerm);
+
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
 }
@@ -111,6 +100,12 @@ void AccessibleAbilityManagerServiceUnitTest::SetUpTestCase()
 void AccessibleAbilityManagerServiceUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest TearDownTestCase";
+    if (g_mock != nullptr) {
+        delete g_mock;
+        g_mock = nullptr;
+    }
+    Security::AccessToken::MockPermission::ResetTestEvironment();
+
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
     AccessibilityCommonHelper::GetInstance().SetIsServicePublished(false);
     Singleton<AccessibleAbilityManagerService>::GetInstance().runner_.reset();
@@ -629,7 +624,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetScreenMagnificationState_00
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetScreenMagnificationState_001 start";
     bool state = true;
     bool ret = false;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetScreenMagnificationState(state));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetScreenMagnificationState(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetScreenMagnificationState_001 end";
@@ -646,7 +640,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortKeyState_001, TestSize
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_001 start";
     bool state = true;
     bool ret = false;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortKeyState(state));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortKeyState(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_001 end";
@@ -680,7 +673,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetMouseKeyState_001, TestSize
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseKeyState_001 start";
     bool state = true;
     bool ret = false;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetMouseKeyState(state));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetMouseKeyState(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseKeyState_001 end";
@@ -697,7 +689,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetMouseAutoClick_001, TestSiz
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_001 start";
     int32_t ret = 0;
     int32_t value = MOUSE_AUTO_CLICK_VALUE;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetMouseAutoClick(value));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetMouseAutoClick(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_001 end";
@@ -731,7 +722,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortkeyTarget_001, TestSiz
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_001 start";
     std::string name = "test";
     std::string ret = "";
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyTarget(name));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyTarget(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_001 end";
@@ -765,7 +755,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetHighContrastTextState_001, 
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_001 start";
     bool state = true;
     bool ret = false;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetHighContrastTextState(state));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetHighContrastTextState(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_001 end";
@@ -798,7 +787,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetDaltonizationState_001, Tes
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_001 start";
     bool state = true;
     bool ret = false;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetDaltonizationState(state));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetDaltonizationState(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_001 end";
@@ -833,7 +821,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetInvertColorState_001, TestS
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetInvertColorState_001 start";
     bool state = true;
     bool ret = false;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetInvertColorState(state));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetInvertColorState(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetInvertColorState_001 end";
@@ -850,7 +837,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAnimationOffState_001, Test
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAnimationOffState_001 start";
     bool state = true;
     bool ret = false;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetAnimationOffState(state));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetAnimationOffState(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAnimationOffState_001 end";
@@ -866,7 +852,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioMonoState_001, TestSiz
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAudioMonoState_001 start";
     bool state = true;
     bool ret = false;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetAudioMonoState(state));
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetAudioMonoState(ret));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAudioMonoState_001 end";
@@ -882,7 +867,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetDaltonizationColorFilter_00
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationColorFilter_001 start";
     uint32_t filter = 1;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetDaltonizationColorFilter(filter));
     uint32_t ret = 0;
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetDaltonizationColorFilter(ret));
@@ -899,7 +883,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetContentTimeout_001, TestSiz
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetContentTimeout_001 start";
     uint32_t value = CONTENT_TIMEOUT_VALUE;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetContentTimeout(value));
     uint32_t ret = 0;
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetContentTimeout(ret));
@@ -916,7 +899,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetBrightnessDiscount_001, Tes
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetBrightnessDiscount_001 start";
     float value = BRIGHTNESS_DISCOUNT_VALUE;
-    AddPermission();
     ErrCode result = Singleton<AccessibleAbilityManagerService>::GetInstance().SetBrightnessDiscount(value);
     EXPECT_EQ(RET_OK, result);
     float ret = 0;
@@ -932,7 +914,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetBrightnessDiscount_001, Tes
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioBalance_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAudioBalance_001 start";
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetAudioBalance(AUDIO_BALANCE_VALUE));
     float ret = 0;
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetAudioBalance(ret));
@@ -947,7 +928,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioBalance_001, TestSize.
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetClickResponseTime_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetClickResponseTime_001 start";
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetClickResponseTime(1));
     uint32_t ret = 0;
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetClickResponseTime(ret));
@@ -962,7 +942,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetClickResponseTime_001, Test
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetIgnoreRepeatClickState_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickState_001 start";
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetIgnoreRepeatClickState(true));
     bool ret = false;
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetIgnoreRepeatClickState(ret));
@@ -977,7 +956,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetIgnoreRepeatClickState_001,
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetIgnoreRepeatClickTime_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickTime_001 start";
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetIgnoreRepeatClickTime(1));
     uint32_t ret = 0;
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetIgnoreRepeatClickTime(ret));
@@ -1008,7 +986,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetCaptionState_001, TestSize.
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetCaptionState_001 start";
     bool state = true;
-    AddPermission();
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetCaptionState(state));
     bool ret = false;
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionState(ret));
@@ -1228,7 +1205,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, CheckExtensionAbilityPermissio
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, CheckExtensionAbilityPermission_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_002 start";
-    AddPermission();
     std::string processName = "";
     EXPECT_EQ(RET_ERR_NO_PERMISSION,
         Singleton<AccessibleAbilityManagerService>::GetInstance().CheckExtensionAbilityPermission(
