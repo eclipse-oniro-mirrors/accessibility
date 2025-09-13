@@ -1056,7 +1056,7 @@ ani_object ANIAccessibilityConfig::GetSyncCaptionsStyle(ani_env *env, ani_object
 }
 
 
-void ANIAccessibilityConfig::EnableAbilitySync(ani_env *env, ani_string name, ani_array_ref capability)
+void ANIAccessibilityConfig::EnableAbilitySync(ani_env *env, ani_string name, ani_array capability)
 {
     std::string nameStr = ANIUtils::ANIStringToStdString(env, name);
 
@@ -1076,7 +1076,7 @@ void ANIAccessibilityConfig::EnableAbilitySync(ani_env *env, ani_string name, an
         ani_ref stringRef;
         auto signature = arkts::ani_signature::SignatureBuilder().AddInt().SetReturnUndefined()
             .BuildSignatureDescriptor();
-        if (ANI_OK != env->Array_Get_Ref(capability, i, &stringRef)) {
+        if (ANI_OK != env->Array_Get(capability, i, &stringRef)) {
             HILOG_ERROR("Object_CallMethodByName_Ref Failed");
             return;
         }

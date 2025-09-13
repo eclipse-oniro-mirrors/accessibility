@@ -134,7 +134,7 @@ public:
     static ani_string GetSyncRepeatClickInterval(ani_env *env, ani_object object, ani_enum_item id);
     static void SetSyncCaptionsStyle(ani_env *env, ani_object object, ani_enum_item id, ani_object value);
     static ani_object GetSyncCaptionsStyle(ani_env *env, ani_object object, ani_enum_item id);
-    static void EnableAbilitySync(ani_env *env, ani_string name, ani_array_ref capability);
+    static void EnableAbilitySync(ani_env *env, ani_string name, ani_array capability);
     static void DisableAbilitySync(ani_env *env, ani_string name);
     static void SubscribeState(ani_env *env, ani_string type, ani_object observer);
     static void UnsubscribeState(ani_env *env, ani_string type, ani_object observer);
