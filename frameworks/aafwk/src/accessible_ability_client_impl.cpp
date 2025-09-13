@@ -894,6 +894,9 @@ RetError AccessibleAbilityClientImpl::GetChildrenWork(const int32_t windowId, st
         }
         RetError ret = SearchElementInfoFromAce(windowId, childId, cacheMode_, child, systemApi);
         if (ret != RET_OK) {
+            if (ret == RET_ERR_NO_PERMISSION) {
+                return ret;
+            }
             HILOG_ERROR("Get element info from ace failed");
             continue;
         }
