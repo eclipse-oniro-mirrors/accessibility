@@ -156,7 +156,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, DeregisterElementOperator_001
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
     } else {
-        EXPECT_EQ(RET_ERR_SAMGR, impl_->DeregisterElementOperator(WINDOW_ID));
+        EXPECT_EQ(RET_ERR_NO_REGISTER, impl_->DeregisterElementOperator(WINDOW_ID));
     }
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "DeregisterElementOperator_001 end";
