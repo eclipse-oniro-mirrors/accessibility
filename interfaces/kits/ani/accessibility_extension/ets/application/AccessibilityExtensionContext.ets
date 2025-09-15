@@ -109,8 +109,8 @@ interface AccessibilityElement {
   getCursorPosition(callback: AsyncCallback<int>): void;
   getCursorPosition(): Promise<int>;
   enableScreenCurtain(isEnable: boolean): void;
-  findElement(type: 'textType', condition: string): Promise<Array<AccessibilityElement>>;
-  findElement(type: 'elementId', condition: long): Promise<AccessibilityElement>;
+  findElementByTextType(condition: string): Promise<Array<AccessibilityElement>>;
+  findElementByElementId(condition: long): Promise<AccessibilityElement>;
   mainWindowId?: int;
 }
 
@@ -154,11 +154,11 @@ export class AccessibilityElementImpl implements AccessibilityElement {
         this.enableScreenCurtainNative(isEnable);
     }
 
-    findElement(type: 'textType', condition: string): Promise<Array<AccessibilityElement>> {
-        console.log("findElement " + type);
+    findElementByTextType(condition: string): Promise<Array<AccessibilityElement>> {
+        console.log("findElement by textType");
         return new Promise<Array<AccessibilityElement>>((resolve: (data: Array<AccessibilityElement>) => void,
             reject: (err: BusinessError) => void): void => {
-            let p1 = taskpool.execute(this.findElementsNative, type, condition) as Promise<Array<AccessibilityElement>>;
+            let p1 = taskpool.execute(this.findElementsNative, 'textType', condition) as Promise<Array<AccessibilityElement>>;
             p1.then((code: Array<AccessibilityElement>) => {
                 console.log("resolve findElement size " + code.length);
                 resolve(code);
@@ -168,11 +168,11 @@ export class AccessibilityElementImpl implements AccessibilityElement {
         });
     }
 
-    findElement(type: 'elementId', condition: long): Promise<AccessibilityElement> {
-        console.log("findElement " + type);
+    findElementByElementId(condition: long): Promise<AccessibilityElement> {
+        console.log("findElement by elementId");
         return new Promise<AccessibilityElement>((resolve: (data: AccessibilityElement) => void,
             reject: (err: BusinessError) => void): void => {
-            let p1 = taskpool.execute(this.findElementNative, type, condition) as Promise<AccessibilityElement>;
+            let p1 = taskpool.execute(this.findElementNative, 'elementId', condition) as Promise<AccessibilityElement>;
             p1.then((code: AccessibilityElement) => {
                 console.log("resolve findElement");
                 resolve(code);

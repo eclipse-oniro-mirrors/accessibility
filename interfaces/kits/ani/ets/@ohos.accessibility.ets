@@ -149,52 +149,48 @@ namespace accessibility {
 
     native function onStateChange(type: observerType, callback: Callback<boolean>): void;
 
-    export function onAccessibilityStateChange(type: 'accessibilityStateChange', callback: Callback<boolean>): void {
-        onStateChange(type, callback);
+    export function onAccessibilityStateChange(callback: Callback<boolean>): void {
+        onStateChange('accessibilityStateChange', callback);
     }
 
-    export function onTouchGuideStateChange(type: 'touchGuideStateChange', callback: Callback<boolean>): void {
-        onStateChange(type, callback);
+    export function onTouchGuideStateChange(callback: Callback<boolean>): void {
+        onStateChange('touchGuideStateChange', callback);
     }
 
-    export function onScreenReaderStateChange(type: 'screenReaderStateChange', callback: Callback<boolean>): void {
-        onStateChange(type, callback);
+    export function onScreenReaderStateChange(callback: Callback<boolean>): void {
+        onStateChange('screenReaderStateChange', callback);
     }
-
-    export overload on { onAccessibilityStateChange, onTouchGuideStateChange, onScreenReaderStateChange };
 
     native function offStateChange(type: observerType, callback: Callback<boolean>): void;
 
     native function offAll(type: observerType): void;
 
-    export function offAccessibilityStateChange(type: 'accessibilityStateChange', callback?: Callback<boolean>): void {
+    export function offAccessibilityStateChange(callback?: Callback<boolean>): void {
         if (callback === undefined) {
-            offAll(type);
+            offAll('accessibilityStateChange');
         } else {
             let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
-            offStateChange(type, callbackFunc);
+            offStateChange('accessibilityStateChange', callbackFunc);
         }
     }
 
-    export function offTouchGuideStateChange(type: 'touchGuideStateChange', callback?: Callback<boolean>): void {
+    export function offTouchGuideStateChange(callback?: Callback<boolean>): void {
         if (callback === undefined) {
-            offAll(type);
+            offAll('touchGuideStateChange');
         } else {
             let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
-            offStateChange(type, callbackFunc);
+            offStateChange('touchGuideStateChange', callbackFunc);
         }
     }
 
-    export function offScreenReaderStateChange(type: 'screenReaderStateChange', callback?: Callback<boolean>): void {
+    export function offScreenReaderStateChange(callback?: Callback<boolean>): void {
         if (callback === undefined) {
-            offAll(type);
+            offAll('screenReaderStateChange');
         } else {
             let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
-            offStateChange(type, callbackFunc);
+            offStateChange('screenReaderStateChange', callbackFunc);
         }
     }
-
-    export overload off { offAccessibilityStateChange, offTouchGuideStateChange, offScreenReaderStateChange };
 
     export type CaptionsFontEdgeType = 'none' | 'raised' | 'depressed' | 'uniform' | 'dropShadow';
 
@@ -281,7 +277,7 @@ namespace accessibility {
         customId?: string;
     }
 
-    export function sendAccessibilityEventWithCallback(event: EventInfo, callback: AsyncCallback<void>): void {
+    export function sendAccessibilityEvent(event: EventInfo, callback: AsyncCallback<void>): void {
         taskpool.execute((): void => {
             return sendAccessibilityEventSync(event);
         })
@@ -293,7 +289,7 @@ namespace accessibility {
         });
     }
 
-    export function sendAccessibilityEventReturnsPromise(event: EventInfo): Promise<void> {
+    export function sendAccessibilityEvent(event: EventInfo): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
             taskpool.execute((): void => {
                 return sendAccessibilityEventSync(event);
@@ -306,7 +302,5 @@ namespace accessibility {
             });
         });
     }
-
-    export overload sendAccessibilityEvent { sendAccessibilityEventWithCallback, sendAccessibilityEventReturnsPromise };
 }
 export default accessibility;
