@@ -964,9 +964,11 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     auto oldA11yWindows_ = a11yWindows_;
     HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
     
-    if (HasMagnificationWindow(infos)) {
-        HILOG_INFO("Magnification window found, keep activeWindowId_ as %{public}d", activeWindowId_);
-        return;
+    bool magnificationState = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationState();
+    if (magnificationState) {
+        if (HasMagnificationWindow(infos)) {
+            return;
+        }
     }
 
     WinDeInit();
