@@ -941,7 +941,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId,
         }
 }
 
-bool inline hasMagnificationWindow(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos) 
+bool HasMagnificationWindow(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     bool hasMagnificationWindow = false;
     for (auto &window : infos) {
@@ -964,7 +964,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     auto oldA11yWindows_ = a11yWindows_;
     HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
     
-    if (hasMagnificationWindow(infos)) {
+    if (HasMagnificationWindow(infos)) {
         HILOG_INFO("Magnification window found, keep activeWindowId_ as %{public}d", activeWindowId_);
         return;
     }
