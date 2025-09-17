@@ -941,11 +941,34 @@ void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId,
         }
 }
 
+bool inline hasMagnificationWindow(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos) 
+{
+    bool hasMagnificationWindow = false;
+    for (auto &window : infos) {
+        if (window == nullptr) {
+            HILOG_ERROR("window is nullptr");
+            continue;
+        }
+        if (window->type_ == ROsen::WindowType::WINDOW_TYPE_MAGNIFICATION ||
+            window->type_ == ROsen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU) {
+            hasMagnificationWindow = true;
+            break;
+        }
+    }
+    return hasMagnificationWindow;
+}
+
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto oldA11yWindows_ = a11yWindows_;
     HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
+    
+    if (hasMagnificationWindow(infos)) {
+        HILOG_INFO("Magnification window found, keep activeWindowId_ as %{public}d", activeWindowId_);
+        return;
+    }
+
     WinDeInit();
     for (auto &window : infos) {
         if (window == nullptr) {
