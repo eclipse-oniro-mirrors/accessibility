@@ -949,8 +949,8 @@ bool HasMagnificationWindow(const std::vector<sptr<Rosen::AccessibilityWindowInf
             HILOG_ERROR("window is nullptr");
             continue;
         }
-        if (window->type_ == ROsen::WindowType::WINDOW_TYPE_MAGNIFICATION ||
-            window->type_ == ROsen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU) {
+        if (window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION ||
+            window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU) {
             hasMagnificationWindow = true;
             break;
         }
