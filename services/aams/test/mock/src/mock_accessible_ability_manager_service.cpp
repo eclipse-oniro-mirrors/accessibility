@@ -718,6 +718,11 @@ void AccessibleAbilityManagerService::SetMagnificationScale(float scale)
     (void)scale;
 }
 
+bool AccessibleAbilityManagerService::SetMagnificationState()
+{
+    return true;
+}
+
 std::shared_ptr<MagnificationManager> AccessibleAbilityManagerService::GetMagnificationMgr()
 {
     return nullptr;
