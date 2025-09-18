@@ -25,7 +25,9 @@ namespace {
     static std::set<std::string> EXTRA_EVENTINFO_SET = {
         "addText",
         "removeText",
-        "isAnco"
+        "isAnco",
+        "scrollX",
+        "scrollY"
     };
 }
 

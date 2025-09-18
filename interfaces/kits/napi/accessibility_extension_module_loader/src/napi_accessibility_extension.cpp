@@ -419,6 +419,9 @@ std::string NAccessibilityExtension::GetEventExtraInfo(const AccessibilityEventI
     for (auto &iterStr : mapValIsStr) {
         extraInfoValue[iterStr.first] = iterStr.second;
     }
+
+    extraInfoValue["startIndex"] = std::to_string(eventInfo.GetBeginIndex());
+    extraInfoValue["endIndex"] = std::to_string(eventInfo.GetEndIndex());
     HILOG_DEBUG("GetEventExtraInfo extraInfoValue is [%{public}s]", extraInfoValue.dump().c_str());
     return extraInfoValue.dump().c_str();
 }
