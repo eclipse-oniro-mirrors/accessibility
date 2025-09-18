@@ -718,7 +718,7 @@ void AccessibleAbilityManagerService::SetMagnificationScale(float scale)
     (void)scale;
 }
 
-bool AccessibleAbilityManagerService::SetMagnificationState()
+bool AccessibleAbilityManagerService::GetMagnificationState()
 {
     return true;
 }
