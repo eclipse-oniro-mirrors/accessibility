@@ -84,27 +84,41 @@ namespace config {
         });
     }
 
-    export native function on(type: ObserverConfigType, callback: Callback<void>): void;
+    native function on(type: ObserverConfigType, callback: Callback<void>): void;
 
-    export native function offObserver(type: ObserverConfigType, callback: Callback<void>): void;
+    export function onEnabledAccessibilityExtensionListChange(callback: Callback<void>): void {
+        on('enabledAccessibilityExtensionListChange', callback);
+    }
 
-    export native function offObservers(type: ObserverConfigType): void;
+    export function onInstalledAccessibilityListChange(callback: Callback<void>): void {
+        on('installedAccessibilityListChange', callback);
+    }
 
-    export function off (type: ObserverConfigType, callback?: Callback<void>): void {
+    native function offObserver(type: ObserverConfigType, callback: Callback<void>): void;
+
+    native function offObservers(type: ObserverConfigType): void;
+
+    export function offEnabledAccessibilityExtensionListChange(callback?: Callback<void>): void {
         if (callback === undefined) {
-            offObservers(type);
+            offObservers('enabledAccessibilityExtensionListChange');
         } else {
-            offObserver(type, callback);
+            offObserver('enabledAccessibilityExtensionListChange', callback);
+        }
+    }
+
+    export function offInstalledAccessibilityListChange(callback?: Callback<void>): void {
+        if (callback === undefined) {
+            offObservers('installedAccessibilityListChange');
+        } else {
+            offObserver('installedAccessibilityListChange', callback);
         }
     }
 
     interface Config<T> {
-        setReturnsPromise(value: T): Promise<void>;
-        setWithCallback(value: T, callback: AsyncCallback<void>): void;
-        getReturnsPromise(): Promise<T>;
-        getWithCallback(callback: AsyncCallback<T>): void;
-        overload set { setReturnsPromise, setWithCallback };
-        overload get { getReturnsPromise, getWithCallback };
+        set(value: T): Promise<void>;
+        set(value: T, callback: AsyncCallback<void>): void;
+        get(): Promise<T>;
+        get(callback: AsyncCallback<T>): void;
         on(callback: Callback<T>): void;
         off(callback?: Callback<T>): void;
     }
@@ -145,7 +159,7 @@ namespace config {
             this.id = id;
         }
 
-        setReturnsPromise(value: boolean): Promise<void> {
+        set(value: boolean): Promise<void> {
             return new Promise<void>((resolve, reject): void => {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
@@ -159,7 +173,7 @@ namespace config {
             });
         }
 
-        setWithCallback(value: boolean, callback: AsyncCallback<void>): void {
+        set(value: boolean, callback: AsyncCallback<void>): void {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
@@ -171,7 +185,7 @@ namespace config {
             });
         }
 
-        getReturnsPromise(): Promise<boolean> {
+        get(): Promise<boolean> {
             return new Promise<boolean>((resolve, reject): void => {
                 taskpool.execute((): boolean => {
                     return this.getSync(this.id);
@@ -185,7 +199,7 @@ namespace config {
             });
         }
 
-        getWithCallback(callback: AsyncCallback<boolean>): void {
+        get(callback: AsyncCallback<boolean>): void {
             taskpool.execute((): boolean => {
                 return this.getSync(this.id);
             })
@@ -223,7 +237,7 @@ namespace config {
             this.id = id;
         }
 
-        setReturnsPromise(value: int): Promise<void> {
+        set(value: int): Promise<void> {
             return new Promise<void>((resolve, reject): void => {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
@@ -237,7 +251,7 @@ namespace config {
             });
         }
 
-        setWithCallback(value: int, callback: AsyncCallback<void>): void {
+        set(value: int, callback: AsyncCallback<void>): void {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
@@ -249,7 +263,7 @@ namespace config {
             });
         }
 
-        getReturnsPromise(): Promise<int> {
+        get(): Promise<int> {
             return new Promise<int>((resolve, reject): void => {
                 taskpool.execute((): int => {
                     return this.getSync(this.id);
@@ -263,7 +277,7 @@ namespace config {
             });
         }
 
-        getWithCallback(callback: AsyncCallback<int>): void {
+        get(callback: AsyncCallback<int>): void {
             taskpool.execute((): int => {
                 return this.getSync(this.id);
             })
@@ -301,7 +315,7 @@ namespace config {
             this.id = id;
         }
 
-        setReturnsPromise(value: double): Promise<void> {
+        set(value: double): Promise<void> {
             return new Promise<void>((resolve, reject): void => {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
@@ -315,7 +329,7 @@ namespace config {
             });
         }
 
-        setWithCallback(value: double, callback: AsyncCallback<void>): void {
+        set(value: double, callback: AsyncCallback<void>): void {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
@@ -327,7 +341,7 @@ namespace config {
             });
         }
 
-        getReturnsPromise(): Promise<double> {
+        get(): Promise<double> {
             return new Promise<double>((resolve, reject): void => {
                 taskpool.execute((): double => {
                     return this.getSync(this.id);
@@ -341,7 +355,7 @@ namespace config {
             });
         }
 
-        getWithCallback(callback: AsyncCallback<double>): void {
+        get(callback: AsyncCallback<double>): void {
             taskpool.execute((): double => {
                 return this.getSync(this.id);
             })
@@ -379,7 +393,7 @@ namespace config {
             this.id = id;
         }
 
-        setReturnsPromise(value: string): Promise<void> {
+        set(value: string): Promise<void> {
             return new Promise<void>((resolve, reject): void => {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
@@ -393,7 +407,7 @@ namespace config {
             });
         }
 
-        setWithCallback(value: string, callback: AsyncCallback<void>): void {
+        set(value: string, callback: AsyncCallback<void>): void {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
@@ -405,7 +419,7 @@ namespace config {
             });
         }
 
-        getReturnsPromise(): Promise<string> {
+        get(): Promise<string> {
             return new Promise<string>((resolve, reject): void => {
                 taskpool.execute((): string => {
                     return this.getSync(this.id);
@@ -419,7 +433,7 @@ namespace config {
             });
         }
 
-        getWithCallback(callback: AsyncCallback<string>): void {
+        get(callback: AsyncCallback<string>): void {
             taskpool.execute((): string => {
                 return this.getSync(this.id);
             })
@@ -457,7 +471,7 @@ namespace config {
             this.id = id;
         }
 
-        setReturnsPromise(value: Array<string>): Promise<void> {
+        set(value: Array<string>): Promise<void> {
             return new Promise<void>((resolve, reject): void => {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
@@ -471,7 +485,7 @@ namespace config {
             });
         }
 
-        setWithCallback(value: Array<string>, callback: AsyncCallback<void>): void {
+        set(value: Array<string>, callback: AsyncCallback<void>): void {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
@@ -483,7 +497,7 @@ namespace config {
             });
         }
 
-        getReturnsPromise(): Promise<Array<string>> {
+        get(): Promise<Array<string>> {
             return new Promise<Array<string>>((resolve, reject): void => {
                 taskpool.execute((): Array<string> => {
                     return this.getSync(this.id);
@@ -497,7 +511,7 @@ namespace config {
             });
         }
 
-        getWithCallback(callback: AsyncCallback<Array<string>>): void {
+        get(callback: AsyncCallback<Array<string>>): void {
             taskpool.execute((): Array<string> => {
                 return this.getSync(this.id);
             })
@@ -535,7 +549,7 @@ namespace config {
             this.id = id;
         }
 
-        setReturnsPromise(value: DaltonizationColorFilter): Promise<void> {
+        set(value: DaltonizationColorFilter): Promise<void> {
             return new Promise<void>((resolve, reject): void => {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
@@ -549,7 +563,7 @@ namespace config {
             });
         }
 
-        setWithCallback(value: DaltonizationColorFilter, callback: AsyncCallback<void>): void {
+        set(value: DaltonizationColorFilter, callback: AsyncCallback<void>): void {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
@@ -561,7 +575,7 @@ namespace config {
             });
         }
 
-        getReturnsPromise(): Promise<DaltonizationColorFilter> {
+        get(): Promise<DaltonizationColorFilter> {
             return new Promise<DaltonizationColorFilter>((resolve, reject): void => {
                 taskpool.execute((): DaltonizationColorFilter => {
                     return this.getSync(this.id);
@@ -575,7 +589,7 @@ namespace config {
             });
         }
 
-        getWithCallback(callback: AsyncCallback<DaltonizationColorFilter>): void {
+        get(callback: AsyncCallback<DaltonizationColorFilter>): void {
             taskpool.execute((): DaltonizationColorFilter => {
                 return this.getSync(this.id);
             })
@@ -613,7 +627,7 @@ namespace config {
             this.id = id;
         }
 
-        setReturnsPromise(value: ClickResponseTime): Promise<void> {
+        set(value: ClickResponseTime): Promise<void> {
             return new Promise<void>((resolve, reject): void => {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
@@ -627,7 +641,7 @@ namespace config {
             });
         }
 
-        setWithCallback(value: ClickResponseTime, callback: AsyncCallback<void>): void {
+        set(value: ClickResponseTime, callback: AsyncCallback<void>): void {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
@@ -639,7 +653,7 @@ namespace config {
             });
         }
 
-        getReturnsPromise(): Promise<ClickResponseTime> {
+        get(): Promise<ClickResponseTime> {
             return new Promise<ClickResponseTime>((resolve, reject): void => {
                 taskpool.execute((): ClickResponseTime => {
                     return this.getSync(this.id);
@@ -653,7 +667,7 @@ namespace config {
             });
         }
 
-        getWithCallback(callback: AsyncCallback<ClickResponseTime>): void {
+        get(callback: AsyncCallback<ClickResponseTime>): void {
             taskpool.execute((): ClickResponseTime => {
                 return this.getSync(this.id);
             })
@@ -691,7 +705,7 @@ namespace config {
             this.id = id;
         }
 
-        setReturnsPromise(value: RepeatClickInterval): Promise<void> {
+        set(value: RepeatClickInterval): Promise<void> {
             return new Promise<void>((resolve, reject): void => {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
@@ -705,7 +719,7 @@ namespace config {
             });
         }
 
-        setWithCallback(value: RepeatClickInterval, callback: AsyncCallback<void>): void {
+        set(value: RepeatClickInterval, callback: AsyncCallback<void>): void {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
@@ -717,7 +731,7 @@ namespace config {
             });
         }
 
-        getReturnsPromise(): Promise<RepeatClickInterval> {
+        get(): Promise<RepeatClickInterval> {
             return new Promise<RepeatClickInterval>((resolve, reject): void => {
                 taskpool.execute((): RepeatClickInterval => {
                     return this.getSync(this.id);
@@ -731,7 +745,7 @@ namespace config {
             });
         }
 
-        getWithCallback(callback: AsyncCallback<RepeatClickInterval>): void {
+        get(callback: AsyncCallback<RepeatClickInterval>): void {
             taskpool.execute((): RepeatClickInterval => {
                 return this.getSync(this.id);
             })
@@ -769,7 +783,7 @@ namespace config {
             this.id = id;
         }
 
-        setReturnsPromise(value: accessibility.CaptionsStyle): Promise<void> {
+        set(value: accessibility.CaptionsStyle): Promise<void> {
             return new Promise<void>((resolve, reject): void => {
                 taskpool.execute((): void => {
                     return this.setSync(this.id, value);
@@ -783,7 +797,7 @@ namespace config {
             });
         }
 
-        setWithCallback(value: accessibility.CaptionsStyle, callback: AsyncCallback<void>): void {
+        set(value: accessibility.CaptionsStyle, callback: AsyncCallback<void>): void {
             taskpool.execute((): void => {
                 return this.setSync(this.id, value);
             })
@@ -795,7 +809,7 @@ namespace config {
             });
         }
 
-        getReturnsPromise(): Promise<accessibility.CaptionsStyle> {
+        get(): Promise<accessibility.CaptionsStyle> {
             return new Promise<accessibility.CaptionsStyle>((resolve, reject): void => {
                 taskpool.execute((): accessibility.CaptionsStyle => {
                     return this.getSync(this.id);
@@ -809,7 +823,7 @@ namespace config {
             });
         }
 
-        getWithCallback(callback: AsyncCallback<accessibility.CaptionsStyle>): void {
+        get(callback: AsyncCallback<accessibility.CaptionsStyle>): void {
             taskpool.execute((): accessibility.CaptionsStyle => {
                 return this.getSync(this.id);
             })
