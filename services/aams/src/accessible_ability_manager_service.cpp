@@ -3347,7 +3347,7 @@ void AccessibleAbilityManagerService::StateObservers::AddStateObserver(
 
 void AccessibleAbilityManagerService::StateObservers::OnStateObservers(uint32_t state)
 {
-    HILOG_INFO("state is {public}d", state);
+    HILOG_INFO("state is %{public}d", state);
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
     for (auto& stateObserver : observersList_) {
         if (stateObserver) {
