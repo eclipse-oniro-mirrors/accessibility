@@ -972,10 +972,9 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         previousActiveWindowId = activeWindowId_;
         WinDeInit();
     } else {
-        if (activeWindowId_ != previousActiveWindowId) {
-            HILOG_DEBUG("WindowUpdateAll on Magnification Mode, and hover to a new app window previousActiveWindowId: %{public}d, activeWindowId: %{public}d", previousActiveWindowId, activeWindowId_);
+        if (activeWindowId_ != previousActiveWindowId) {            
             previousActiveWindowId = activeWindowId_;
-        }    
+        }
     }
 
     for (auto &window : infos) {
