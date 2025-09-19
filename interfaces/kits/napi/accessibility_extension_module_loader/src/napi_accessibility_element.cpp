@@ -99,6 +99,7 @@ namespace {
     constexpr char HOT_AREA[] = "hotArea";
     constexpr char SUPPORTED_ACTION_NAMES[] = "supportedActionNames";
     constexpr char ACCESSIBILITY_VISIBLE[] = "accessibilityVisible";
+    constexpr char IS_ESSENTIAL[] = "isEssential";
 
     const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "inspectorKey",
         "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
@@ -110,7 +111,7 @@ namespace {
         "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
         "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
         "allAttribute", "clip", "customComponentType", "extraInfo", "accessibilityNextFocusId",
-        "accessibilityPreviousFocusId", "parentId", "childrenIds", "accessibilityScrollable"};
+        "accessibilityPreviousFocusId", "parentId", "childrenIds", "accessibilityScrollable", "isEssential"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
@@ -184,6 +185,7 @@ namespace {
         {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
         {"accessibilityScrollable", &NAccessibilityElement::GetElementInfoAccessibilityScrollable},
         {"supportedActionNames", &NAccessibilityElement::GetElementInfoSupportedActionNames},
+        {"isEssential", &NAccessibilityElement::GetElementInfoIsEssential},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
         {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
@@ -237,6 +239,7 @@ namespace {
         DECLARE_NAPI_GETTER(IS_FOCUSED, GetElementProperty<ElementProperty<IS_FOCUSED>>),
         DECLARE_NAPI_GETTER(IS_PASSWORD, GetElementProperty<ElementProperty<IS_PASSWORD>>),
         DECLARE_NAPI_GETTER(IS_VISIBLE, GetElementProperty<ElementProperty<IS_VISIBLE>>),
+        DECLARE_NAPI_GETTER(IS_ESSENTIAL, GetElementProperty<ElementProperty<IS_ESSENTIAL>>),
         DECLARE_NAPI_GETTER(ITEM_COUNT, GetElementProperty<ElementProperty<ITEM_COUNT>>),
         DECLARE_NAPI_GETTER(LAST_CONTENT, GetElementProperty<ElementProperty<LAST_CONTENT>>),
         DECLARE_NAPI_GETTER(LAYER, GetElementProperty<ElementProperty<LAYER>>),
@@ -1260,6 +1263,15 @@ void NAccessibilityElement::GetElementInfoIsFocused(NAccessibilityElementData *c
         callbackInfo->accessibilityElement_.elementInfo_->IsFocused(), &value));
 }
 
+void NAccessibilityElement::GetElementInfoIsEssential(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->IsEssential(), &value));
+}
+
 void NAccessibilityElement::GetElementInfoAccessibilityText(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!CheckElementInfoParameter(callbackInfo, value)) {
@@ -1797,6 +1809,10 @@ void NAccessibilityElement::GetElementInfoAllAttribute6(NAccessibilityElementDat
     GetElementInfoAccessibilityScrollable(callbackInfo, accessibilityScrollable);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "accessibilityScrollable",
         accessibilityScrollable));
+    
+    napi_value isEssential = nullptr;
+    GetElementInfoIsEssential(callbackInfo, isEssential);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "isEssential", isEssential));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)

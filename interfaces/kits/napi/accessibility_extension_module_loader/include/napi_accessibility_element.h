@@ -174,6 +174,7 @@ public:
     static void GetElementInfoAccessibilityChildrenIds(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityScrollable(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoSupportedActionNames(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoIsEssential(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);
