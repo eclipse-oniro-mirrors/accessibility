@@ -958,6 +958,8 @@ bool HasMagnificationWindow(const std::vector<sptr<Rosen::AccessibilityWindowInf
     return hasMagnificationWindow;
 }
 
+int32_t previousActiveWindowId = INVALID_WINDOW_ID;
+
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
@@ -965,13 +967,17 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
     
     bool magnificationState = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationState();
-    if (magnificationState) {
-        if (HasMagnificationWindow(infos)) {
-            return;
-        }
+    bool hasMagnificationWindow = HasMagnificationWindow(infos);
+    if (!hasMagnificationWindow) {
+        previousActiveWindowId = activeWindowId_;
+        WinDeInit();
+    } else {
+        if (activeWindowId_ != previousActiveWindowId) {
+            HILOG_DEBUG("WindowUpdateAll on Magnification Mode, and hover to a new app window previousActiveWindowId: %{public}d, activeWindowId: %{public}d", previousActiveWindowId, activeWindowId_);
+            previousActiveWindowId = activeWindowId_;
+        }    
     }
 
-    WinDeInit();
     for (auto &window : infos) {
         if (window == nullptr) {
             HILOG_ERROR("window is nullptr");
@@ -1000,6 +1006,9 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
 
     for (auto it = oldA11yWindows_.begin(); it != oldA11yWindows_.end(); ++it) {
         WindowUpdateTypeEvent(it->first, oldA11yWindows_, WINDOW_UPDATE_REMOVED);
+    }
+    if (hasMagnificationWindow) {
+        SetActiveWindow(previousActiveWindowId);
     }
     HILOG_INFO("WindowUpdateAll end activeWindowId_: %{public}d", activeWindowId_);
 }
