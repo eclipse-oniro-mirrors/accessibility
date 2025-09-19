@@ -862,6 +862,7 @@ void AccessibilitySystemAbilityClientImpl::SetFindAccessibilityNodeInfosResult(
             SetSearchElementInfoByTextResult(elementInfos, requestId);
             break;
         default:
+            SetSearchElementInfoByAccessibilityIdResult(elementInfos, requestId);
             break;
     }
 }
