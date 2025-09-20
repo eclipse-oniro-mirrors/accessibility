@@ -213,7 +213,7 @@ void AniAccessibilityExtension::onAccessibilityConnect(ani_env *env, ani_object 
         HILOG_ERROR("class not found");
         return ;
     }
-    if (ANI_OK != env->Class_FindMethod(cls, "onAccessibilityConnect", ":V", &managedMethod)) {
+    if (ANI_OK != env->Class_FindMethod(cls, "onAccessibilityConnect", ":", &managedMethod)) {
         HILOG_ERROR("Class_FindMethod Failed");
         return ;
     }
@@ -271,7 +271,7 @@ void AniAccessibilityExtension::onAccessibilityDisconnect(ani_env *env, ani_obje
         HILOG_ERROR("OnAccessibilityDisconnect FindClass err: accessibility extension");
         return;
     }
-    if (ANI_OK != env->Class_FindMethod(cls, "onAccessibilityDisconnect", ":V", &managedMethod)) {
+    if (ANI_OK != env->Class_FindMethod(cls, "onAccessibilityDisconnect", ":", &managedMethod)) {
         HILOG_ERROR("Class_FindMethod Failed");
         return ;
     }
@@ -604,7 +604,7 @@ void CreateJsAccessibilityAbilityEventInfoInner(ani_env *env,
 
     do {
         constexpr const char* eventTypeCls =
-            "L@ohos/accessibility/AccessibilityEventType;";
+            "@ohos.accessibility.AccessibilityEventType";
         if (!ANIUtils::SetEnumProperty(env, object, eventTypeCls, "eventType",
             callbackInfo->AccessibilityEventType_)) {
             HILOG_ERROR("Failed to set eventType");

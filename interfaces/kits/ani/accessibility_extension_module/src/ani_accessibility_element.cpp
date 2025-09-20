@@ -67,7 +67,7 @@ bool InitializeAccessibilityElementClass(ani_env *env)
         return false;
     }
     std::array cleanMethod = {
-        ani_native_function {"cleanNative", ":V", reinterpret_cast<void *>(Clean)},
+        ani_native_function {"cleanNative", ":", reinterpret_cast<void *>(Clean)},
     };
     if (ANI_OK != env->Class_BindNativeMethods(cleanerCls, cleanMethod.data(), cleanMethod.size())) {
         HILOG_ERROR("Cannot bind native methods to AccessibilityElementCleaner");

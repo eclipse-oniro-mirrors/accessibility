@@ -913,7 +913,7 @@ bool ANIAccessibilityConfig::GetColorMember(ani_env *env, ani_object object, con
         return false;
     }
     ani_class stringClass;
-    env->FindClass("Lstd/core/String;", &stringClass);
+    env->FindClass("std.core.String", &stringClass);
     ani_boolean isString;
     env->Object_InstanceOf(static_cast<ani_object>(ref), stringClass, &isString);
     if (isString) {
@@ -922,7 +922,7 @@ bool ANIAccessibilityConfig::GetColorMember(ani_env *env, ani_object object, con
         HILOG_INFO("color stringContent = %{public}s, color = %{public}u", stringContent.c_str(), color);
     } else {
         ani_int valueInt;
-        if (ANI_OK != env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "unboxed", ":I", &valueInt)) {
+        if (ANI_OK != env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "unboxed", ":i", &valueInt)) {
             HILOG_ERROR(" Unboxed Int failed");
             return false;
         }
