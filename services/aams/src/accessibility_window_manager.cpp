@@ -29,6 +29,7 @@ namespace Accessibility {
 namespace {
     const std::string TIMER_GET_ACCESSIBILITY_WINDOWS = "accessibilty:getAccessibilityWindowInfo";
     const std::string SCB_SCENE_PANEL = "SCBScenePanel";
+    const std::string SCB_KEYBOARD_DIALOG = "SCBKeyboardDialog";
     constexpr int32_t WMS_TIMEOUT = 10; // s
 }
 
@@ -337,6 +338,11 @@ bool AccessibilityWindowManager::IsSceneBoard(const sptr<Rosen::AccessibilityWin
 bool AccessibilityWindowManager::IsScenePanel(const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
 {
     return windowInfo->bundleName_.find(SCB_SCENE_PANEL) != std::string::npos;
+}
+
+bool AccessibilityWindowManager::IsKeyboardDialog(const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
+{
+    return windowInfo->bundleName_.find(SCB_KEYBOARD_DIALOG) != std::string::npos;
 }
 
 AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInfo(
@@ -966,7 +972,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         }
 
         // IsScenePanel for recent-task window
-        if (window->focused_ || IsScenePanel(window)) {
+        if (window->focused_ || IsScenePanel(window) || IsKeyboardDialog(window)) {
             SetActiveWindow(realWid);
         }
 
