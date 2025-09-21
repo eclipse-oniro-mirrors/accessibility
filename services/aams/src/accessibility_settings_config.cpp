@@ -1085,9 +1085,9 @@ void AccessibilitySettingsConfig::HandleIgnoreRepeatClickState()
         bool isScreenReaderEnabled =
             (std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(),
             SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
-        if (isScreenReaderEnabled) {
+        bool isDataShareScreenReaderEnabled = datashare_->GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, false);
+        if (isScreenReaderEnabled || isDataShareScreenReaderEnabled) {
             HILOG_INFO("screenReader is open, recovery ignore repeat click");
-            ignoreRepeatClickState_ = false;
             SetIgnoreRepeatClickState(false);
             return;
         }

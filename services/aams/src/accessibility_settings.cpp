@@ -732,6 +732,10 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
     }
     
     if (atoHosValue.isScreenReaderEnabled) {
+        if (atoHosValue.ignoreRepeatClickState) {
+            HILOG_INFO("in update settings screenReaderState is true, set ignoreRepeatClickState false.");
+            accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+        }
         uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
             CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
         accountData->EnableAbility(SCREEN_READER_BUNDLE_ABILITY_NAME, capabilities);
