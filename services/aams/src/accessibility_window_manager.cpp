@@ -972,7 +972,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         previousActiveWindowId = activeWindowId_;
         WinDeInit();
     } else {
-        if (activeWindowId_ != previousActiveWindowId) {            
+        if (activeWindowId_ != previousActiveWindowId) {     
             previousActiveWindowId = activeWindowId_;
         }
     }
