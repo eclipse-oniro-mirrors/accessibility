@@ -955,7 +955,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     
     bool hasFocusedOrNonMagnificationWindow = false;
     if (activeWindowId_ != INVALID_WINDOW_ID) {
-        previousActiveWindowId = activeWindowId_;
+        previousActiveWindowId_ = activeWindowId_;
     }
 
     WinDeInit();
@@ -979,8 +979,8 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
 
         // IsScenePanel for recent-task window
         if ((window->focused_ || IsScenePanel(window)) &&
-            ((window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION ||
-                window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU))) {
+            ((window->type_ != Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION &&
+                window->type_ != Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU))) {
             hasFocusedOrNonMagnificationWindow = true;
             SetActiveWindow(realWid);
         }
@@ -993,13 +993,13 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     }
 
     if (!hasFocusedOrNonMagnificationWindow) {
-        if (oldA11yWindows_.count(previousActiveWindowId)) {
-            auto previousActiveWindowInfo = oldA11yWindows_[previousActiveWindowId];
-            if (!a11yWindows_.count(previousActiveWindowId)) {
-                a11yWindows_.emplace(previousActiveWindowId, previousActiveWindowInfo);
+        if (oldA11yWindows_.count(previousActiveWindowId_)) {
+            auto previousActiveWindowInfo = oldA11yWindows_[previousActiveWindowId_];
+            if (!a11yWindows_.count(previousActiveWindowId_)) {
+                a11yWindows_.emplace(previousActiveWindowId_, previousActiveWindowInfo);
             }
         }
-        SetActiveWindow(previousActiveWindowId);
+        SetActiveWindow(previousActiveWindowId_);
     }
     HILOG_INFO("WindowUpdateAll end activeWindowId_: %{public}d", activeWindowId_);
 }
