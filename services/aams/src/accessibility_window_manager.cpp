@@ -941,23 +941,6 @@ void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId,
         }
 }
 
-bool HasMagnificationWindow(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
-{
-    bool hasMagnificationWindow = false;
-    for (auto &window : infos) {
-        if (window == nullptr) {
-            HILOG_ERROR("window is nullptr");
-            continue;
-        }
-        if (window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION ||
-            window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU) {
-            hasMagnificationWindow = true;
-            break;
-        }
-    }
-    return hasMagnificationWindow;
-}
-
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
@@ -1002,7 +985,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     for (auto it = oldA11yWindows_.begin(); it != oldA11yWindows_.end(); ++it) {
         WindowUpdateTypeEvent(it->first, oldA11yWindows_, WINDOW_UPDATE_REMOVED);
     }
-    
+
     if (!hasFocusedOrNonMagnificationWindow) {
         if (oldA11yWindows_.count(previousActiveWindowId)) {
             auto previousActiveWindowInfo = oldA11yWindows_[previousActiveWindowId];
