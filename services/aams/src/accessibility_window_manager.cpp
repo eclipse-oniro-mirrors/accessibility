@@ -958,25 +958,18 @@ bool HasMagnificationWindow(const std::vector<sptr<Rosen::AccessibilityWindowInf
     return hasMagnificationWindow;
 }
 
-int32_t previousActiveWindowId = INVALID_WINDOW_ID;
-
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto oldA11yWindows_ = a11yWindows_;
     HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
     
-    bool magnificationState = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationState();
-    bool hasMagnificationWindow = HasMagnificationWindow(infos);
-    if (!hasMagnificationWindow) {
+    bool hasFocusedOrNonMagnificationWindow = false;
+    if (activeWindowId_ != INVALID_WINDOW_ID) {
         previousActiveWindowId = activeWindowId_;
-        WinDeInit();
-    } else {
-        if (activeWindowId_ != previousActiveWindowId) {
-            previousActiveWindowId = activeWindowId_;
-        }
     }
 
+    WinDeInit();
     for (auto &window : infos) {
         if (window == nullptr) {
             HILOG_ERROR("window is nullptr");
@@ -996,7 +989,10 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         }
 
         // IsScenePanel for recent-task window
-        if (window->focused_ || IsScenePanel(window)) {
+        if ((window->focused_ || IsScenePanel(window)) &&
+            ((window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION ||
+                window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU))) {
+            hasFocusedOrNonMagnificationWindow = true;
             SetActiveWindow(realWid);
         }
 
@@ -1006,7 +1002,14 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     for (auto it = oldA11yWindows_.begin(); it != oldA11yWindows_.end(); ++it) {
         WindowUpdateTypeEvent(it->first, oldA11yWindows_, WINDOW_UPDATE_REMOVED);
     }
-    if (hasMagnificationWindow) {
+    
+    if (!hasFocusedOrNonMagnificationWindow) {
+        if (oldA11yWindows_.count(previousActiveWindowId)) {
+            auto previousActiveWindowInfo = oldA11yWindows_[previousActiveWindowId];
+            if (!a11yWindows_.count(previousActiveWindowId)) {
+                a11yWindows_.emplace(previousActiveWindowId, previousActiveWindowInfo);
+            }
+        }
         SetActiveWindow(previousActiveWindowId);
     }
     HILOG_INFO("WindowUpdateAll end activeWindowId_: %{public}d", activeWindowId_);

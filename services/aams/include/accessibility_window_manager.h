@@ -86,6 +86,7 @@ public:
     bool CheckEvents();
 
     std::map<int32_t, AccessibilityWindowInfo> a11yWindows_ {};
+    int32_t previousActiveWindowId = INVALID_WINDOW_ID;
     int32_t activeWindowId_ = INVALID_WINDOW_ID;
     int32_t a11yFocusedWindowId_ = INVALID_WINDOW_ID;
     std::set<int32_t> subWindows_ {}; // used for window id 1, scene board
