@@ -293,7 +293,7 @@ void ANIAccessibilityConfigObserver::NotifyStateChangedToJs(bool enabled)
 void ANIAccessibilityConfigObserver::NotifyPropertyChangedToJs(
     const OHOS::AccessibilityConfig::CaptionProperty &caption)
 {
-    ANICaptionCallbackInfo *callbackInfo = std::make_shared<ANICaptionCallbackInfo>();
+    std::shared_ptr<ANICaptionCallbackInfo> callbackInfo = std::make_shared<ANICaptionCallbackInfo>();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
