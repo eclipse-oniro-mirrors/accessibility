@@ -79,13 +79,13 @@ sptr<Display> DisplayManager::GetDefaultDisplay()
     return GetDisplayById(GetDefaultDisplayId());
 }
 
-std::vector<DisplayId> DisplayManager::GetAllDisplayIds()
+std::vector<DisplayId> DisplayManager::GetAllDisplayIds(int32_t userId)
 {
     std::vector<DisplayId> res = {};
     return res;
 }
 
-std::vector<sptr<Display>> DisplayManager::GetAllDisplays()
+std::vector<sptr<Display>> DisplayManager::GetAllDisplays(int32_t userId)
 {
     std::vector<sptr<Display>> res;
     return res;

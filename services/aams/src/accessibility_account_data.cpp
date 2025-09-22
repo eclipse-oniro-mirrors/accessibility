@@ -85,7 +85,10 @@ int32_t AccessibilityAccountData::GetAccountId()
 
 uint32_t AccessibilityAccountData::GetAccessibilityState()
 {
-    HILOG_DEBUG();
+    HILOG_INFO("EnabledState[%{public}d], TouchGuideState[%{public}d], KeyEventObserverState[%{public}d], "
+        "GestureState[%{public}d], ScreenReaderState[%{public}d], SingleClickMode[%{public}d]",
+        config_->GetEnabledState(), config_->GetTouchGuideState(), config_->GetKeyEventObserverState(),
+        config_->GetGestureState(), screenReaderState_, isSingleClickMode_);
     uint32_t state = 0;
     if (connectedA11yAbilities_.GetSize() != 0 || connectingA11yAbilities_.GetSize() != 0) {
         HILOG_DEBUG("connectingA11yAbilities %{public}zu connectedA11yAbilities %{public}zu",
