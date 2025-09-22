@@ -978,7 +978,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         }
 
         // IsScenePanel for recent-task window
-        if ((window->focused_ || IsScenePanel(window)) &&
+        if ((window->focused_ || IsScenePanel(window) || IsKeyboardDialog(window)) &&
             ((window->type_ != Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION &&
                 window->type_ != Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU))) {
             hasFocusedOrNonMagnificationWindow = true;
