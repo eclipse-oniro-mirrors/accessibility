@@ -30,6 +30,10 @@ using CONFIG_ID = OHOS::AccessibilityConfig::CONFIG_ID;
 using ConfigValue = OHOS::AccessibilityConfig::ConfigValue;
 
 constexpr int32_t ANI_SCOPE_SIZE = 16;
+const std::string DEFAULT_FONT_FAMILY = "default";
+constexpr uint32_t DEFAULT_FONT_SCALE = 75;
+constexpr uint32_t DEFAULT_COLOR = 0xff000000;
+const std::string DEFAULT_FONT_EDGE_TYPE = "none";
 
 std::shared_ptr<EnableAbilityListsObserverImpl> ANIAccessibilityConfig::enableAbilityListsObservers_ =
     std::make_shared<EnableAbilityListsObserverImpl>();
@@ -289,7 +293,7 @@ void ANIAccessibilityConfigObserver::NotifyStateChangedToJs(bool enabled)
 void ANIAccessibilityConfigObserver::NotifyPropertyChangedToJs(
     const OHOS::AccessibilityConfig::CaptionProperty &caption)
 {
-    ANICaptionCallbackInfo *callbackInfo = new(std::nothrow) ANICaptionCallbackInfo();
+    std::shared_ptr<ANICaptionCallbackInfo> callbackInfo = std::make_shared<ANICaptionCallbackInfo>();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return;
@@ -942,13 +946,13 @@ void ANIAccessibilityConfig::SetSyncCaptionsStyle(ani_env *env, ani_object objec
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
     OHOS::AccessibilityConfig::CaptionProperty captionProperty;
 
-    std::string fontFamily;
-    uint32_t fontScale;
-    uint32_t fontColor;
-    std::string fontEdgeType;
-    uint32_t backgroundColor;
-    uint32_t windowColor;
-    ani_boolean isUndefined;
+    std::string fontFamily = DEFAULT_FONT_FAMILY;
+    uint32_t fontScale = DEFAULT_FONT_SCALE;
+    uint32_t fontColor = DEFAULT_COLOR;
+    std::string fontEdgeType = DEFAULT_FONT_EDGE_TYPE;
+    uint32_t backgroundColor = DEFAULT_COLOR;
+    uint32_t windowColor = DEFAULT_COLOR;
+    ani_boolean isUndefined = true;
     if (ANI_OK != env->Reference_IsUndefined(value, &isUndefined)) {
         HILOG_ERROR(" SetSyncCaptionsStyle Reference_IsUndefined");
         return;

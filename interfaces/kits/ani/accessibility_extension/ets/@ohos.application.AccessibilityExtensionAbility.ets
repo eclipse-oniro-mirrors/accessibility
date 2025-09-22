@@ -30,8 +30,7 @@ export class AccessibilityExtensionAbility {
         console.log('onAccessibilityDisconnect');
     }
 
-    onAccessibilityEventInfo(event: AccessibilityEventInfoImpl): void
-    {
+    onAccessibilityEventInfo(event: AccessibilityEventInfoImpl): void {
         console.log('onAccessibilityEventInfo');
     }
 }
@@ -43,15 +42,14 @@ export class AccessibilityExtensionAbility {
     extraInfo?: string;
 }
 
-export class AccessibilityEventInfoImpl implements AccessibilityEventInfo{
+export class AccessibilityEventInfoImpl implements AccessibilityEventInfo {
     eventType: AccessibilityEventType = AccessibilityEventType.TYPE_ACCESSIBILITY_FOCUS;
     target?: AccessibilityElement = new AccessibilityElement();
     timestamp?: long = 0;
-    extraInfo?: string = "";
+    extraInfo?: string = '';
 }
 
-export class KeyEventImpl implements KeyEvent
-{
+export class KeyEventImpl implements KeyEvent {
     action: Action = Action.CANCEL;
     key: Key = new KeyImpl();
     unicodeChar: int = 0;
@@ -71,8 +69,7 @@ export class KeyEventImpl implements KeyEvent
     windowId: int = 0;
 }
 
-export class KeyImpl implements Key
-{
+export class KeyImpl implements Key {
     code: KeyCode = KeyCode.KEYCODE_FN;
     pressedTime: long = 0;
     deviceId: int = 0;

@@ -45,11 +45,12 @@ namespace {
     constexpr uint32_t COLOR_STRING_SIZE_9 = 9;
     constexpr uint32_t COLOR_STRING_BASE = 16;
     constexpr uint32_t COLOR_ALPHA_MASK = 0xff000000;
+    constexpr uint32_t COLOR_ALPHA = 0xff;
+    constexpr uint32_t COLOR_RBG_MASK = 0x00ffffff;
 
     constexpr int32_t RGB_LENGTH = 6;
     constexpr int32_t ALPHA_LENGTH = 2;
     constexpr int32_t ALPHA_MOVE = 24;
-    constexpr int32_t COLOR_MOVE = 8;
     const char UNICODE_BODY = '0';
     const std::string NUMBER_VALID_CHARS = "0123456789ABCDEFabcdef";
 }
@@ -336,14 +337,14 @@ bool ColorRegexMatch(std::string colorStr, uint32_t &color)
     if (IsColorWithMagic(colorStr) &&
         (colorStr.size() == COLOR_STRING_SIZE_7 || colorStr.size() == COLOR_STRING_SIZE_9)) {
         colorStr.erase(0, 1);
-        auto colorValue = stoul(colorStr, nullptr, COLOR_STRING_BASE);
+        uint32_t colorValue = stoul(colorStr, nullptr, COLOR_STRING_BASE);
         if (colorStr.length() < COLOR_STRING_SIZE_STANDARD) {
             // No alpha specified, set alpha to 0xff
             colorValue |= COLOR_ALPHA_MASK;
         } else {
-            auto alpha = colorValue << ALPHA_MOVE;
-            auto rgb = colorValue >> COLOR_MOVE;
-            colorValue = alpha | rgb;
+            uint32_t alpha = (colorValue >> ALPHA_MOVE) & COLOR_ALPHA;
+            uint32_t rgb = colorValue & COLOR_RBG_MASK;
+            colorValue = (alpha << ALPHA_MOVE) | rgb;
         }
         color = colorValue;
         return true;
@@ -358,14 +359,14 @@ bool ColorRegexMatch(std::string colorStr, uint32_t &color)
             newColorStr += c;
             newColorStr += c;
         }
-        auto valueMini = stoul(newColorStr, nullptr, COLOR_STRING_BASE);
+        uint32_t valueMini = stoul(newColorStr, nullptr, COLOR_STRING_BASE);
         if (newColorStr.length() < COLOR_STRING_SIZE_STANDARD) {
             // No alpha specified, set alpha to 0xff
             valueMini |= COLOR_ALPHA_MASK;
         } else {
-            auto alphaMini = valueMini << ALPHA_MOVE;
-            auto rgbMini = valueMini >> COLOR_MOVE;
-            valueMini = alphaMini | rgbMini;
+            uint32_t alphaMini = (valueMini >> ALPHA_MOVE) & COLOR_ALPHA;
+            uint32_t rgbMini = valueMini & COLOR_RBG_MASK;
+            valueMini = (alphaMini << ALPHA_MOVE) | rgbMini;
         }
         color = valueMini;
         return true;
@@ -415,7 +416,7 @@ std::string ConvertColorToString(uint32_t color)
     alphaStream << std::hex << std::setw(ALPHA_LENGTH) << std::setfill(UNICODE_BODY) << alpha;
     std::string rgbStr(rgbStream.str());
     std::string alphaStr(alphaStream.str());
-    std::string colorStr = "#" + rgbStr + alphaStr;
+    std::string colorStr = "#" + alphaStr + rgbStr;
     HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
     return colorStr;
 }

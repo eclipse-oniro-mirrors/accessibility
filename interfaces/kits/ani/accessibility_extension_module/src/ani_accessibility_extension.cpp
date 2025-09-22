@@ -588,6 +588,8 @@ ani_object  ConvertAccessibilityElementToJS(ani_env *env,  const std::shared_ptr
         return nullptr;
     }
     if (ANI_OK != ANIUtils::Wrap(env, elementObj, pAccessibilityElement)) {
+        delete pAccessibilityElement;
+        pAccessibilityElement = nullptr;
         HILOG_ERROR("Cannot wrap AccessibilityElementInfo");
         return nullptr;
     }
