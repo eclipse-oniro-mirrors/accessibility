@@ -125,6 +125,10 @@ private:
      */
     ErrCode ReadAccessibilityElementInfoList(MessageParcel &data, MessageParcel &reply,
         int32_t infoSize, std::list<AccessibilityElementInfo> &infos);
+    
+    ErrCode HandleSetFocusMoveSearchWithConditionResult(MessageParcel &data, MessageParcel &reply);
+ 
+    ErrCode HandleSetDetectElementInfoFocusableThroughAncestorResult(MessageParcel &data, MessageParcel &reply);
 
     using AccessibilityElementOperatorCallbackFunc =
         ErrCode (AccessibilityElementOperatorCallbackStub::*)(MessageParcel &data, MessageParcel &reply);

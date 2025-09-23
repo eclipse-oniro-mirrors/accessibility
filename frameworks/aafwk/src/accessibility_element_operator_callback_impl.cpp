@@ -108,5 +108,27 @@ void AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoBySpecificPro
         promiseFlag_ = true;
     }
 }
+
+void AccessibilityElementOperatorCallbackImpl::SetFocusMoveSearchWithConditionResult(
+    const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult& result, const int32_t requestId)
+{
+    elementInfosResult_.assign(infos.begin(), infos.end());
+    result_ = result;
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
+}
+
+void AccessibilityElementOperatorCallbackImpl::SetDetectElementInfoFocusableThroughAncestorResult(
+    const bool isFocusable, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d] result[%{public}d]", requestId, isFocusable);
+    isFocusable_ = isFocusable;
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

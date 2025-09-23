@@ -149,6 +149,7 @@ public:
         const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
     ErrCode GetScreenReaderState(bool &state) override;
     ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
+    ErrCode GetReadableRules(std::string &readableRules) override;
 private:
     int32_t focusWindowId_ = -1;
     int64_t focusElementId_ = -1;
@@ -256,6 +257,10 @@ public:
         virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
         virtual void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
             const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override;
+        virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
+            const FocusMoveResult &result, const int32_t requestId) override;
+        virtual void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable,
+            const int32_t requestId) override;
 
     private:
         ffrt::promise<void> promise_;
@@ -263,6 +268,8 @@ public:
         AccessibilityElementInfo accessibilityInfoResult_ = {};
         std::vector<AccessibilityElementInfo> elementInfosResult_;
         int32_t callCursorPosition_ = 0;
+        int32_t result_ = 0;
+        bool isFocusable_ = false;
 
         /**
          * @brief Validate element infos and handle verification failure

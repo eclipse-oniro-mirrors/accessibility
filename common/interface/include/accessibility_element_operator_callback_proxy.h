@@ -97,6 +97,22 @@ public:
      */
     void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
          const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override;
+    
+    /**
+     * @brief Set the search element info by condition result.
+     * @param infos The element infos searched by specific property.
+     * @param result The result of search.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
+        const FocusMoveResult &result, const int32_t requestId) override;
+
+    /**
+     * @brief Set the result of detect elementinfo focusable to AA.
+     * @param isFocusable The isFocusable of the elementInfo.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId) override;
 
 private:
     /**

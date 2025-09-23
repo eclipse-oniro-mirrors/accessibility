@@ -522,6 +522,9 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
         HILOG_ERROR("connection is empty.");
         return RET_ERR_REGISTER_EXIST;
     }
+    if (connection->IsAnco()) {
+        return RET_OK;
+    }
     uint32_t expectTokenId = connection->GetTokenIdMap(treeId);
     if (tokenId != expectTokenId) {
         HILOG_ERROR("tokenId error!");
@@ -546,7 +549,7 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
         return RET_ERR_NULLPTR;
     }
     std::string isAncoFlag = uiEvent.GetExtraEvent().GetExtraEventInfoValueByKey("isAnco");
-    if (flag && isAncoFlag != "1") {
+    if (flag && isAncoFlag != "true") {
         if (VerifyingToKenId(uiEvent.GetElementInfo().GetWindowId(),
             uiEvent.GetElementInfo().GetAccessibilityId()) == RET_OK) {
         } else {
@@ -782,18 +785,19 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         return false;
     }
     ffrt::future<void> actionFuture = actionCallback->promise_.get_future();
-    if (treeId > TREE_ID_INVALID) {
-        if (connection->GetCardProxy(treeId) != nullptr) {
-            connection->GetCardProxy(treeId)->ExecuteAction(elementId, action,
-                actionArguments, GenerateRequestId(), actionCallback);
+
+    if (connection->IsAnco() || treeId <= TREE_ID_INVALID) {
+        if (connection->GetProxy() != nullptr) {
+            connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(),
+                actionCallback);
         } else {
             HILOG_ERROR("get operation is nullptr");
             return false;
         }
     } else {
-        if (connection->GetProxy() != nullptr) {
-            connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(),
-                actionCallback);
+        if (connection->GetCardProxy(treeId) != nullptr) {
+            connection->GetCardProxy(treeId)->ExecuteAction(elementId, action,
+                actionArguments, GenerateRequestId(), actionCallback);
         } else {
             HILOG_ERROR("get operation is nullptr");
             return false;
@@ -2232,6 +2236,28 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
         }
         elementInfosResult_.assign(treeInfos.begin(), treeInfos.end());
     }
+    promise_.set_value();
+}
+
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveSearchWithConditionResult(
+    const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult& result, const int32_t requestId)
+{
+    if (!infos.empty()) {
+        if (!ValidateElementInfos(infos)) {
+            return;
+        }
+        elementInfosResult_.assign(infos.begin(), infos.end());
+    }
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    result_ = result;
+    promise_.set_value();
+}
+
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetDetectElementInfoFocusableThroughAncestorResult(
+    bool isFocusable, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    isFocusable_ = isFocusable;
     promise_.set_value();
 }
 

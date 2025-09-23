@@ -261,6 +261,17 @@ public:
     static sptr<IAccessibilityElementOperatorCallback> GetCallbackByRequestId(const int32_t requestId);
     static void EraseCallback(const int32_t requestId);
 
+    virtual void FocusMoveSearchWithCondition(const int64_t elementId, const AccessibilityFocusMoveParam &param,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+    void SetFocusMoveSearchWithConditionResult(
+        const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult& result, const int32_t requestId);
+
+    virtual void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info, 
+        const int64_t parentId, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
+    void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId);
+
 private:
     int32_t AddRequest(int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);
 

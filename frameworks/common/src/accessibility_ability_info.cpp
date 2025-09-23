@@ -34,6 +34,7 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AccessibilityAbilityIni
     isImportant_ = initParams.isImportant;
     needHide_ = initParams.needHide;
     eventConfigure_ = initParams.eventConfigure;
+    readableRules_ = initParams.readableRules;
 
     HILOG_DEBUG("ability name:[%{public}s], bundle name:[%{public}s], module name:[%{public}s],"
         "capabilities:[%{public}d], rationale:[%{public}s], settingsAbility:[%{public}s],"

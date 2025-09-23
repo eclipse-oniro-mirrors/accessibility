@@ -44,6 +44,13 @@ config("accessibilityclient_public_config") {
 asacfwk_src = [
   "${asacfwk_path}/src/accessibility_system_ability_client_impl.cpp",
   "${asacfwk_path}/src/accessibility_element_operator_impl.cpp",
+  "${asacfwk_path}/src/rules/rules_checker.cpp",
+  "${asacfwk_path}/src/rules/condition_item.cpp",
+  "${asacfwk_path}/src/rules/condition.cpp",
+  "${asacfwk_path}/src/rules/custom_props.cpp",
+  "${asacfwk_path}/src/rules/prop_value.cpp",
+  "${asacfwk_path}/src/rules/readable_rule.cpp",
+  "${asacfwk_path}/src/rules/rules_defines.cpp",
   "../../../common/interface/src/api_event_reporter.cpp",
 ]
 

@@ -34,6 +34,7 @@ struct AccessibilityAbilityInitParams {
     bool isImportant = false;
     bool needHide = false;
     std::vector<uint32_t> eventConfigure;
+    std::string readableRules = "";
 };
 
 class AccessibilityAbilityInfo {
@@ -196,6 +197,11 @@ public:
      */
     void GetEventConfigure(std::vector<uint32_t> &needEvents);
 
+    inline std::string GetReadableRules()
+    {
+        return readableRules_;
+    }
+
 protected:
     std::string bundleName_;
     std::string moduleName_;
@@ -215,6 +221,7 @@ protected:
     bool isImportant_ = false;
     bool needHide_ = false;
     std::vector<uint32_t> eventConfigure_ = { TYPES_ALL_MASK };
+    std::string readableRules_;
 };
 } // namespace Accessibility
 } // namespace OHOS

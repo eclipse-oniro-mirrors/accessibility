@@ -23,6 +23,7 @@
 #include "accessibility_event_info.h"
 #include "accessibility_state_event.h"
 #include "accessibility_window_info.h"
+#include "rules_check_node.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -30,6 +31,11 @@ enum AccessibilityControlType : int32_t {
     CONTENT_CONTROLS = 0x00000001,
     CONTENT_ICONS = 0x00000002,
     CONTENT_TEXT = 0x00000004,
+};
+
+enum ReadableSpecificType : int32_t {
+    ROOT_TYPE = 0x00000001,
+    IGNORE_SCROLL_TYPE = 0x00000002,
 };
 
 constexpr int32_t ELEMENT_MOVE_BIT = 40;
@@ -179,6 +185,10 @@ public:
     virtual RetError GetFocusedWindowId(int32_t &focusedWindowId) = 0;
     virtual RetError SearchNeedEvents(std::vector<uint32_t> &needEvents) = 0;
 
+    virtual RetError IsScreenReaderRulesEnabled(bool& isEnabled)  = 0;
+    virtual RetError CheckNodeIsReadable(const std::shared_ptr<ReadableRulesNode>& node, bool& isReadable) = 0;
+    virtual RetError CheckNodeIsSpecificType(const std::shared_ptr<ReadableRulesNode>& node,
+        ReadableSpecificType specificType, bool& isHit) = 0;
     /**
     * @brief Splic ElementId and TreeId.
     * @param treeId: The tree Id.

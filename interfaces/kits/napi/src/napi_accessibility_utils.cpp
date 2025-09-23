@@ -1058,7 +1058,8 @@ OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME ConvertStringToIgnoreRepeatC
 
 TextMoveUnit ConvertStringToTextMoveUnit(const std::string &type)
 {
-    static const std::map<const std::string, TextMoveUnit> textMoveUnitTable = {{"char", TextMoveUnit::STEP_CHARACTER},
+    static const std::map<const std::string, TextMoveUnit> textMoveUnitTable = {
+        {"char", TextMoveUnit::STEP_CHARACTER},
         {"word", TextMoveUnit::STEP_WORD},
         {"line", TextMoveUnit::STEP_LINE},
         {"page", TextMoveUnit::STEP_PAGE},
@@ -1074,7 +1075,8 @@ TextMoveUnit ConvertStringToTextMoveUnit(const std::string &type)
 
 std::string ConvertTextMoveUnitToString(TextMoveUnit type)
 {
-    static const std::map<TextMoveUnit, const std::string> textMoveUnitTable = {{TextMoveUnit::STEP_CHARACTER, "char"},
+    static const std::map<TextMoveUnit, const std::string> textMoveUnitTable = {
+        {TextMoveUnit::STEP_CHARACTER, "char"},
         {TextMoveUnit::STEP_WORD, "word"},
         {TextMoveUnit::STEP_LINE, "line"},
         {TextMoveUnit::STEP_PAGE, "page"},

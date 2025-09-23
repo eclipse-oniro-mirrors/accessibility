@@ -1583,5 +1583,19 @@ void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data
         Singleton<AccessibleAbilityManagerService>::GetInstance().OffZoomGesture();
     }
 }
+
+int32_t AccessibilityAccountData::GetReadableRules(std::string &readableRules)
+{
+    HILOG_INFO();
+    for (auto &installAbility : installedAbilities_) {
+        HILOG_INFO("GetPackageName: %{public}s", installAbility.GetPackageName().c_str());
+        if (installAbility.GetPackageName() == SCREEN_READER_BUNDLE_NAME) {
+            readableRules = installAbility.GetReadableRules();
+            HILOG_INFO("get screenreader readableRules: %{public}s", readableRules.c_str());
+            return RET_OK;
+        }
+    }
+    return RET_ERR_NOT_INSTALLED;
+}
 } // namespace Accessibility
 } // namespace OHOS

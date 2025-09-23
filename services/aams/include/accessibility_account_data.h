@@ -297,6 +297,7 @@ public:
     void AddNeedEvent(const std::string &name, std::vector<uint32_t> needEvents);
     void RemoveNeedEvent(const std::string &name);
     std::vector<uint32_t> GetNeedEvents();
+    int32_t GetReadableRules(std::string &readableRules);
 
     bool screenReaderState_ = false;
     std::map<std::string, std::vector<uint32_t>> abilityNeedEvents_;
