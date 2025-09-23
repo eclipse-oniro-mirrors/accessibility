@@ -290,6 +290,8 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
         std::shared_ptr<AccessibilityElementInfo> elementInfo =
             std::make_shared<AccessibilityElementInfo>(eventInfo.GetElementInfo());
         element = std::make_shared<AccessibilityElement>(elementInfo);
+        elementInfo->SetComponentId(componentId);
+        elementInfo->SetWindowId(windowId);
     } else if (windowId > 0) {
         std::shared_ptr<AccessibilityWindowInfo> windowInfo = std::make_shared<AccessibilityWindowInfo>();
         if (aaClient->GetWindow(windowId, *windowInfo) == RET_OK) {
