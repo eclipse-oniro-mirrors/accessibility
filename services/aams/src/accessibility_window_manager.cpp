@@ -951,7 +951,7 @@ bool isMagnificationWindow(const sptr<Rosen::AccessibilityWindowInfo>& window)
 {
     if (window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION ||
         window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU) {
-        return true;    
+        return true;
     }
     return false;
 }
