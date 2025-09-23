@@ -947,6 +947,15 @@ void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId,
         }
 }
 
+bool isMagnificationWindow(const sptr<Rosen::AccessibilityWindowInfo>& window)
+{
+    if (window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION ||
+        window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU) {
+        return true;    
+    }
+    return false;
+}
+
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
@@ -979,8 +988,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
 
         // IsScenePanel for recent-task window
         if ((window->focused_ || IsScenePanel(window) || IsKeyboardDialog(window)) &&
-            ((window->type_ != Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION &&
-                window->type_ != Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU))) {
+            !isMagnificationWindow(window)) {
             hasFocusedOrNonMagnificationWindow = true;
             SetActiveWindow(realWid);
         }
