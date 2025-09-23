@@ -1002,11 +1002,11 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     
     HILOG_INFO("WindowUpdateAll end activeWindowId_: %{public}d", activeWindowId_);
 
-    if(hasFocusedOrNonMagnificationWindow) {
+    if (hasFocusedOrNonMagnificationWindow) {
         return;
     }
 
-    if(!oldA11yWindows_.c(previousActiveWindowId_)) {
+    if (!oldA11yWindows_.count(previousActiveWindowId_)) {
         return;
     }
 
