@@ -79,6 +79,7 @@ public:
     }
 
     MOCK_METHOD0(GetCurrentAccountData, sptr<AccessibilityAccountData>());
+    MOCK_METHOD0(GetMagnificationState, bool());
     MOCK_METHOD1(AddedUser, void(int32_t accountId));
     MOCK_METHOD1(RemovedUser, void(int32_t accountId));
     MOCK_METHOD1(SwitchedUser, void(int32_t accountId));

@@ -947,11 +947,26 @@ void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId,
         }
 }
 
+bool IsMagnificationWindow(const sptr<Rosen::AccessibilityWindowInfo>& window)
+{
+    if (window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION ||
+        window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU) {
+        return true;
+    }
+    return false;
+}
+
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto oldA11yWindows_ = a11yWindows_;
     HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
+    
+    bool hasFocusedOrNonMagnificationWindow = false;
+    if (activeWindowId_ != INVALID_WINDOW_ID) {
+        previousActiveWindowId_ = activeWindowId_;
+    }
+
     WinDeInit();
     for (auto &window : infos) {
         if (window == nullptr) {
@@ -972,7 +987,9 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         }
 
         // IsScenePanel for recent-task window
-        if (window->focused_ || IsScenePanel(window) || IsKeyboardDialog(window)) {
+        if ((window->focused_ || IsScenePanel(window) || IsKeyboardDialog(window)) &&
+            !IsMagnificationWindow(window)) {
+            hasFocusedOrNonMagnificationWindow = true;
             SetActiveWindow(realWid);
         }
 
@@ -982,7 +999,22 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     for (auto it = oldA11yWindows_.begin(); it != oldA11yWindows_.end(); ++it) {
         WindowUpdateTypeEvent(it->first, oldA11yWindows_, WINDOW_UPDATE_REMOVED);
     }
+    
     HILOG_INFO("WindowUpdateAll end activeWindowId_: %{public}d", activeWindowId_);
+
+    if (hasFocusedOrNonMagnificationWindow) {
+        return;
+    }
+
+    if (!oldA11yWindows_.count(previousActiveWindowId_)) {
+        return;
+    }
+
+    auto previousActiveWindowInfo = oldA11yWindows_[previousActiveWindowId_];
+    if (!a11yWindows_.count(previousActiveWindowId_)) {
+        a11yWindows_.emplace(previousActiveWindowId_, previousActiveWindowInfo);
+    }
+    SetActiveWindow(previousActiveWindowId_);
 }
 
 void AccessibilityWindowManager::WindowUpdateAllExec(std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_,
