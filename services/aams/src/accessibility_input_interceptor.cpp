@@ -59,13 +59,15 @@ AccessibilityInputInterceptor::AccessibilityInputInterceptor()
 
 AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     availableFunctions_ = 0;
     DestroyInterceptor();
     DestroyTransmitters();
     inputManager_ = nullptr;
     inputEventConsumer_ = nullptr;
+    eventHandler_ = nullptr;
 }
 
 bool AccessibilityInputInterceptor::OnKeyEvent(MMI::KeyEvent &event)
@@ -123,6 +125,7 @@ void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunc
     }
     availableFunctions_ = availableFunctions;
 
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler is empty!");
         return;
@@ -332,7 +335,6 @@ void AccessibilityInputInterceptor::CreateKeyEventTransmitters()
 
 void AccessibilityInputInterceptor::UpdateInterceptor()
 {
-    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG();
     if (!inputManager_) {
         HILOG_ERROR("inputManger is null.");
@@ -375,7 +377,6 @@ void AccessibilityInputInterceptor::DestroyInterceptor()
 
 void AccessibilityInputInterceptor::DestroyTransmitters()
 {
-    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG();
 
     if ((availableFunctions_ & FEATURE_MOUSE_KEY) != FEATURE_MOUSE_KEY) {
