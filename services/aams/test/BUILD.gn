@@ -51,6 +51,7 @@ config("module_private_config") {
 test_external_deps = [
   "ability_base:want",
   "ability_base:zuri",
+  "ability_runtime:ability_connect_callback_stub",
   "ability_runtime:ability_manager",
   "ability_runtime:abilitykit_native",
   "ability_runtime:app_manager",
@@ -89,6 +90,7 @@ test_external_deps = [
   "samgr:samgr_proxy",
   "selinux_adapter:librestorecon",
   "window_manager:libdm",
+  "window_manager:libwm",
   "window_manager:libwm_lite",
 ]
 
