@@ -143,7 +143,7 @@ void ScreenTouchHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &eve
 {
     HILOG_DEBUG();
     switch (event->GetInnerEventId()) {
-        case AccessibilityScreenTouch::FINGER_DOWN_DELAY_MSG: 
+        case AccessibilityScreenTouch::FINGER_DOWN_DELAY_MSG:
             server_.SendInterceptedEvent();
             break;
         default:
