@@ -96,10 +96,12 @@ private:
     void ConversionCoordinates(int32_t originalX, int32_t originalY);
     void DrawCircleProgress();
 
+    void SetTargetScreenId();
+
     bool isMoveBeyondThreshold_ = false;
     int64_t startTime_ = 0; // microsecond
     std::shared_ptr<MMI::PointerEvent::PointerItem> startPointer_ = nullptr;
-    int32_t screenId_ = 0;
+    uint64_t screenId_ = 0;
 
     int64_t lastUpTime_ = 0;
     bool isInterceptClick_ = false;
