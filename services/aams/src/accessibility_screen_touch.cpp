@@ -59,7 +59,7 @@ constexpr float TOUCH_SLOP = 8.0f;
 
 const int32_t ROTATE_POLICY = system::GetIntParameter("const.window.device.rotate_policy", 0);
 const std::string FOLDABLE = system::GetParameter("const.window.foldabledevice.rotate_policy", "");
-constexpr int32_t FOLD_SCREEN_ID = 5;
+constexpr uint64_t FOLD_SCREEN_ID = 5;
 constexpr int32_t WINDOW_ROTATE = 0;
 constexpr int32_t SCREEN_ROTATE = 1;
 constexpr int32_t FOLDABLE_DEVICE = 2;
