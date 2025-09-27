@@ -37,6 +37,7 @@ namespace Accessibility {
     std::string ConvertIgnoreRepeatClickTimeTypeToString(OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME type);
     uint32_t ConvertColorStringToNumber(std::string colorStr);
     std::string ConvertColorToString(uint32_t color);
+    bool ConvertColorStringToUint32(std::string &str, uint32_t &value);
 } // namespace Accessibility
 } // namespace OHOS
 #endif // ACCESSIBILITY_BASE_UTILS_H
