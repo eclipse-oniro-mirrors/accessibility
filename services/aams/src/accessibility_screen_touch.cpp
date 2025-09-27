@@ -59,6 +59,7 @@ constexpr float TOUCH_SLOP = 8.0f;
 
 const int32_t ROTATE_POLICY = system::GetIntParameter("const.window.device.rotate_policy", 0);
 const std::string FOLDABLE = system::GetParameter("const.window.foldabledevice.rotate_policy", "");
+constexpr uint64_t FOLD_SCREEN_ID = 5;
 constexpr int32_t WINDOW_ROTATE = 0;
 constexpr int32_t SCREEN_ROTATE = 1;
 constexpr int32_t FOLDABLE_DEVICE = 2;
@@ -99,8 +100,10 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
 
     if (clickResponseTime_ > 0 && ignoreRepeatClickState_ == true) {
         currentState_ = BOTH_RESPONSE_DELAY_IGNORE_REPEAT_CLICK;
+        SetTargetScreenId();
     } else if (clickResponseTime_ > 0) {
         currentState_ = CLICK_RESPONSE_DELAY_STATE;
+        SetTargetScreenId();
     } else if (ignoreRepeatClickState_ == true) {
         currentState_ = IGNORE_REPEAT_CLICK_STATE;
     } else {
@@ -119,6 +122,21 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
         HILOG_ERROR("create event handler failed");
         return;
     }
+}
+
+void AccessibilityScreenTouch::SetTargetScreenId()
+{
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    if (displayMgr.GetFoldStatus() == Rosen::FoldStatus::FOLDED) {
+        screenId_ = FOLD_SCREEN_ID;
+    } else {
+        screenId_ = displayMgr.GetDefaultDisplayId();
+    }
+#else
+    HILOG_WARN("display manager is not enabled");
+    screenId_ = 0;
+#endif
 }
 
 void ScreenTouchHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
