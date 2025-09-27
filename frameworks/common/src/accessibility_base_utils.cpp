@@ -322,7 +322,7 @@ bool IsColorWithMagic(const std::string& colorStr)
         return false;
     }
 
-    for (int i = 1; i < colorStr.size(); i++) {
+    for (size_t i = 1; i < colorStr.size(); i++) {
         if (NUMBER_VALID_CHARS.find(colorStr[i]) == std::string::npos) {
             return false;
         }
@@ -331,13 +331,32 @@ bool IsColorWithMagic(const std::string& colorStr)
     return true;
 }
 
+bool ConvertColorStringToUint32(std::string &str, uint32_t &value)
+{
+    uint64_t valueTmp;
+    auto [ptr, errCode] = std::from_chars(str.data(), str.data() + str.size(), valueTmp, COLOR_STRING_BASE);
+    if ((errCode != std::errc{}) || (ptr != str.data() + str.size())) {
+        HILOG_ERROR("Convert color string to uint64 failed, str = %{public}s", str.c_str());
+        return false;
+    }
+    if (valueTmp > static_cast<uint64_t>(COLOR_WHITE)) {
+        HILOG_ERROR("color value exceeds uint32");
+        return false;
+    }
+    value = static_cast<uint32_t>(valueTmp);
+    return true;
+}
+
 bool ColorRegexMatch(std::string colorStr, uint32_t &color)
 {
     // for example #909090 or #90909090. avoid use regex match #[0-9A-Fa-f]{6,8}.
+    uint32_t colorValue = 0;
     if (IsColorWithMagic(colorStr) &&
         (colorStr.size() == COLOR_STRING_SIZE_7 || colorStr.size() == COLOR_STRING_SIZE_9)) {
         colorStr.erase(0, 1);
-        uint32_t colorValue = stoul(colorStr, nullptr, COLOR_STRING_BASE);
+        if (!ConvertColorStringToUint32(colorStr, colorValue)) {
+            return false;
+        }
         if (colorStr.length() < COLOR_STRING_SIZE_STANDARD) {
             // No alpha specified, set alpha to 0xff
             colorValue |= COLOR_ALPHA_MASK;
@@ -359,16 +378,18 @@ bool ColorRegexMatch(std::string colorStr, uint32_t &color)
             newColorStr += c;
             newColorStr += c;
         }
-        uint32_t valueMini = stoul(newColorStr, nullptr, COLOR_STRING_BASE);
+        if (!ConvertColorStringToUint32(newColorStr, colorValue)) {
+            return false;
+        }
         if (newColorStr.length() < COLOR_STRING_SIZE_STANDARD) {
             // No alpha specified, set alpha to 0xff
-            valueMini |= COLOR_ALPHA_MASK;
+            colorValue |= COLOR_ALPHA_MASK;
         } else {
-            uint32_t alphaMini = (valueMini >> ALPHA_MOVE) & COLOR_ALPHA;
-            uint32_t rgbMini = valueMini & COLOR_RBG_MASK;
-            valueMini = (alphaMini << ALPHA_MOVE) | rgbMini;
+            uint32_t alphaMini = (colorValue >> ALPHA_MOVE) & COLOR_ALPHA;
+            uint32_t rgbMini = colorValue & COLOR_RBG_MASK;
+            colorValue = (alphaMini << ALPHA_MOVE) | rgbMini;
         }
-        color = valueMini;
+        color = colorValue;
         return true;
     }
     return false;
