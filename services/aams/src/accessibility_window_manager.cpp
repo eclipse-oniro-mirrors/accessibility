@@ -972,7 +972,7 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow()
             continue;
         }
         if (!a11yWindows_.count(windowId)) {
-            a11ywindows_.emplace(windowId, window);
+            a11yWindows_.emplace(windowId, window);
         }
         SetActiveWindow(windowId);
         HILOG_INFO("Active window updated: %{public}d", activeWindowId_);
