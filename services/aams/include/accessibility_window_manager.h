@@ -55,6 +55,7 @@ public:
     void SetEventInfoBundleNameOld(const AccessibilityEventInfo &uiEvent, const int32_t windowId,
         std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
     bool IsValidWindow(int32_t windowId);
+    bool IsMagnificationWindow(const sptr<Rosen::AccessibilityWindowInfo> &window);
     void SetAccessibilityFocusedWindow();
     void ClearAccessibilityFocused();
 

@@ -947,7 +947,7 @@ void AccessibilityWindowManager::WindowUpdateTypeEvent(const int32_t realWidId,
         }
 }
 
-bool IsMagnificationWindow(const sptr<Rosen::AccessibilityWindowInfo>& window)
+bool AccessibilityWindowManager::IsMagnificationWindow(const sptr<Rosen::AccessibilityWindowInfo>& window)
 {
     if (window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION ||
         window->type_ == Rosen::WindowType::WINDOW_TYPE_MAGNIFICATION_MENU) {
