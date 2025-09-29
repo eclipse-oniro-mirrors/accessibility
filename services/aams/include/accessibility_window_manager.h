@@ -55,6 +55,8 @@ public:
     void SetEventInfoBundleNameOld(const AccessibilityEventInfo &uiEvent, const int32_t windowId,
         std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
     bool IsValidWindow(int32_t windowId);
+    bool IsMagnificationWindow(const sptr<Rosen::AccessibilityWindowInfo> &window);
+    void SetAccessibilityFocusedWindow();
     void ClearAccessibilityFocused();
 
     // used for window id 1, scene board
@@ -87,7 +89,6 @@ public:
     bool CheckEvents();
 
     std::map<int32_t, AccessibilityWindowInfo> a11yWindows_ {};
-    int32_t previousActiveWindowId_ = INVALID_WINDOW_ID;
     int32_t activeWindowId_ = INVALID_WINDOW_ID;
     int32_t a11yFocusedWindowId_ = INVALID_WINDOW_ID;
     std::set<int32_t> subWindows_ {}; // used for window id 1, scene board
