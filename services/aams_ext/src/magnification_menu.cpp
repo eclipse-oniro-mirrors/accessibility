@@ -46,6 +46,7 @@ void MagnificationMenu::CreateMenuWindow()
         ExtUtils::RecordMagnificationUnavailableEvent("Create menu failed.");
         return;
     }
+    menuWindow_->SetFocusable(false);
     menuWindow_->SetCornerRadius(MENU_CORNER_RADIUS);
     surfaceNode_ = menuWindow_->GetSurfaceNode();
     if (surfaceNode_ == nullptr) {

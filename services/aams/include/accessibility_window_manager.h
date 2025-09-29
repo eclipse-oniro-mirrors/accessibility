@@ -55,6 +55,7 @@ public:
     void SetEventInfoBundleNameOld(const AccessibilityEventInfo &uiEvent, const int32_t windowId,
         std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows_);
     bool IsValidWindow(int32_t windowId);
+    void SetAccessibilityFocusedWindow();
     void ClearAccessibilityFocused();
 
     // used for window id 1, scene board
