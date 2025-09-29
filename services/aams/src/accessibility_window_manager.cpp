@@ -958,7 +958,7 @@ bool AccessibilityWindowManager::IsMagnificationWindow(const sptr<Rosen::Accessi
 
 void AccessibilityWindowManager::SetAccessibilityFocusedWindow()
 {
-    std::vector<AccessibilityWindowInfo> windowsInfo = GetAccessibilityWindows();
+    std::vector<AccessibilityWindowInfo> windows = GetAccessibilityWindows();
     if (windows.empty()) {
         HILOG_DEBUG("GetAccessibilityWindows is empty");
         return;
@@ -972,7 +972,7 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow()
             continue;
         }
         if (!a11yWindows_.count(windowId)) {
-            a11ywindow_.emplace(windowId, window);
+            a11ywindows_.emplace(windowId, window);
         }
         SetActiveWindow(windowId);
         HILOG_INFO("Active window updated: %{public}d", activeWindowId_);
