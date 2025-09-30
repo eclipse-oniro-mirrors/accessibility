@@ -2239,6 +2239,28 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
     promise_.set_value();
 }
 
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveSearchWithConditionResult(
+    const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult& result, const int32_t requestId)
+{
+    if (!infos.empty()) {
+        if (!ValidateElementInfos(infos)) {
+            return;
+        }
+        elementInfosResult_.assign(infos.begin(), infos.end());
+    }
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    result_ = result;
+    promise_.set_value();
+}
+
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetDetectElementInfoFocusableThroughAncestorResult(
+    bool isFocusable, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    isFocusable_ = isFocusable;
+    promise_.set_value();
+}
+
 bool AccessibleAbilityManagerService::ElementOperatorCallbackImpl::ValidateElementInfos(
     const std::list<AccessibilityElementInfo>& infos)
 {

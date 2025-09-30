@@ -241,6 +241,9 @@ public:
         const SpecificPropertyParam& param, std::vector<AccessibilityElementInfo> &infos,
         std::vector<AccessibilityElementInfo> &elementInfos,
         int32_t treeId);
+    
+    RetError FocusMoveSearchWithCondition(int64_t elementId, AccessibilityFocusMoveParam param,
+        std::vector<AccessibilityElementInfo> &infos, int32_t windowId);
 
 private:
     int32_t GenerateRequestId();

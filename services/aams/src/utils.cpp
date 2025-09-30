@@ -40,6 +40,7 @@ namespace {
     const std::string KEY_IS_IMPORTANT = "isImportant";
     const std::string KEY_NEED_HIDE = "needHide";
     const std::string KEY_ACCESSIBILITY_EVENT_CONFIGURE = "accessibilityEventConfigure";
+    const std::string KEY_ACCESSIBILITY_READABLE_RULES = "readableRules";
 
     // The json value of accessibilityAbility type
     const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_SPOKEN = "spoken";
@@ -112,6 +113,20 @@ public:
 
         HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
         value = array.get<std::vector<std::string>>();
+        return true;
+    }
+
+    static bool GetJsonStringFromJson(const nlohmann::json &json, const std::string &key, std::string &value)
+    {
+        HILOG_INFO("start.");
+        if (!json.is_object()) {
+            HILOG_ERROR("json is not object.");
+            return false;
+        }
+        if (json.contains(key)) {
+            HILOG_INFO("Find key[%{public}s] successful.", key.c_str());
+            value = json[key].dump();
+        }
         return true;
     }
 
@@ -271,6 +286,12 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
     // needHide
     if (!JsonUtils::GetBoolFromJson(sourceJson, KEY_NEED_HIDE, initParams.needHide)) {
         HILOG_ERROR("Get needHide from json failed.");
+        return;
+    }
+
+    // readableRules
+    if (!JsonUtils::GetJsonStringFromJson(sourceJson, KEY_ACCESSIBILITY_READABLE_RULES, initParams.readableRules)) {
+        HILOG_ERROR("Get readableRules from json failed.");
         return;
     }
 

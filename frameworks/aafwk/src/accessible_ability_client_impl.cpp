@@ -2185,5 +2185,16 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveBySpecificProper
     }
     return RET_ERR_FAILED;
 }
+
+RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(int64_t elementId,
+    AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t windowId)
+{
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+    RetError ret = channelClient_->FocusMoveSearchWithCondition(elementId, param, infos, windowId);
+    return ret;
+}
 } // namespace Accessibility
 } // namespace OHOS

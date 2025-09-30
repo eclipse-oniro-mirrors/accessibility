@@ -46,7 +46,11 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_WINDOW_ID,                                        \
         HandleSetSearchDefaultFocusByWindowIdResult)                                                        \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_SPECIFIC_PROPERTY,                                \
-        HandleSetSearchElementInfoBySpecificPropertyResult)
+        HandleSetSearchElementInfoBySpecificPropertyResult)                                                 \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE_SEARCH_WITH_CONDITION,                    \
+        HandleSetFocusMoveSearchWithConditionResult)                                                        \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_DETECT_ELEMENTINFO_FOCUSABLE,                        \
+        HandleSetDetectElementInfoFocusableThroughAncestorResult)
 
 namespace OHOS {
 namespace Accessibility {
@@ -335,6 +339,35 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoBySp
     }
     reply.WriteInt32(RET_OK);
     SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
+    return NO_ERROR;
+}
+
+ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchWithConditionResult(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    std::list<AccessibilityElementInfo> infos;
+    int32_t infoSize = data.ReadInt32();
+    ErrCode rtn = ReadAccessibilityElementInfoList(data, reply, infoSize, infos);
+    if (rtn != NO_ERROR) {
+        return rtn;
+    }
+    FocusMoveResult result = static_cast<FocusMoveResult>(data.ReadInt32());
+    int32_t requestId = data.ReadInt32();
+ 
+    reply.WriteInt32(RET_OK);
+    SetFocusMoveSearchWithConditionResult(infos, result, requestId);
+    return NO_ERROR;
+}
+
+ErrCode AccessibilityElementOperatorCallbackStub::HandleSetDetectElementInfoFocusableThroughAncestorResult(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    bool isFocusable = data.ReadBool();
+    int32_t requestId = data.ReadInt32();
+
+    SetDetectElementInfoFocusableThroughAncestorResult(isFocusable, requestId);
     return NO_ERROR;
 }
 } // namespace Accessibility

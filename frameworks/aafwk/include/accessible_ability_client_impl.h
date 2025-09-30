@@ -422,6 +422,9 @@ public:
     RetError SearchElementInfoByAccessibilityId(const int32_t windowId, const int64_t elementId,
         const uint32_t mode, AccessibilityElementInfo &info, bool isFilter = false) override;
 
+    RetError FocusMoveSearchWithCondition(int64_t elementId, AccessibilityFocusMoveParam param,
+        std::vector<AccessibilityElementInfo> &infos, int32_t windowId) override;
+
     void AddWindowElementMapByWMS(int32_t windowId, int64_t elementId);
     void AddWindowElementMapByAce(int32_t windowId, int64_t elementId);
     RetError GetElementInfoFromCache(int32_t windowId, int64_t elementId,

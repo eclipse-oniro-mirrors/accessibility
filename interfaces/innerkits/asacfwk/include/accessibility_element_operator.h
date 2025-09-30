@@ -174,9 +174,15 @@ public:
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback The callback to return the result.
      */
-    virtual void SearchElementInfoBySpecificProperty(const int64_t elementId,
-    const SpecificPropertyParam& param, const int32_t requestId,
-    AccessibilityElementOperatorCallback &callback) = 0;
+    virtual void SearchElementInfoBySpecificProperty(const int64_t elementId, const SpecificPropertyParam &param,
+        const int32_t requestId, AccessibilityElementOperatorCallback &callback) = 0;
+
+    virtual void FocusMoveSearchWithCondition(const int64_t elementId, const AccessibilityFocusMoveParam param,
+        const int32_t requestId, AccessibilityElementOperatorCallback &callback) = 0;
+
+    virtual void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info, 
+        const int64_t parentId, const int32_t requestId,
+        AccessibilityElementOperatorCallback &callback) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

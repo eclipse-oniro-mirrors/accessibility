@@ -102,6 +102,12 @@ public:
     virtual void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
         const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override;
 
+    virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
+        const FocusMoveResult &result, const int32_t requestId) override;
+    
+    virtual void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable,
+        const int32_t requestId) override;
+
 private:
     ffrt::promise<void> promise_;
     std::atomic<bool> promiseFlag_ = false;
@@ -109,7 +115,9 @@ private:
     AccessibilityElementInfo accessibilityInfoResult_ = {};
     std::vector<AccessibilityElementInfo> elementInfosResult_;
     std::vector<AccessibilityElementInfo> treeInfosResult_;
-    int32_t CursorPosition_ = 0 ;
+    int32_t CursorPosition_ = 0;
+    int32_t result_ = 0;
+    bool isFocusable_ = false;
     friend class AccessibleAbilityChannelClient;
 };
 } // namespace Accessibility

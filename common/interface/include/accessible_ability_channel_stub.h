@@ -204,6 +204,8 @@ private:
      */
     ErrCode HandleSearchElementInfoBySpecificProperty(MessageParcel &data, MessageParcel &reply);
 
+    ErrCode HandleFocusMoveSearchWithCondition(MessageParcel &data, MessageParcel &reply);
+
     using AccessibleAbilityConnectionFunc =
         ErrCode (AccessibleAbilityChannelStub::*)(MessageParcel &data, MessageParcel &reply);
 };

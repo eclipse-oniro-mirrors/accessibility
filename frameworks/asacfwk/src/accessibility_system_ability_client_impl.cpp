@@ -21,6 +21,7 @@
 #include "parameter.h"
 #include "system_ability_definition.h"
 #include "api_reporter_helper.h"
+#include "rules/rules_checker.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -33,6 +34,24 @@ namespace {
 
 static ffrt::mutex g_Mutex;
 static std::shared_ptr<AccessibilitySystemAbilityClientImpl> g_Instance = nullptr;
+
+static bool CheckRulesCheckerIsInit(ReadableRulesChecker& rulesChecker,
+    sptr<IAccessibleAbilityManagerService>& serviceProxy)
+{
+    if (!serviceProxy) {
+        return false;
+    }
+    if (rulesChecker.IsCheckedRules())  {
+        return rulesChecker.IsInited();
+    }
+    std::string readableRules;
+    auto result = static_cast<RetError>(serviceProxy->GetReadableRules(readableRules));
+    if (result != RET_OK) {
+        return false;
+    }
+    return rulesChecker.CheckInit(readableRules);
+}
+
 std::shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::GetInstance()
 {
     HILOG_DEBUG();
@@ -965,6 +984,54 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoBySpecificPropert
     }
 }
 
+void AccessibilitySystemAbilityClientImpl::SetFocusMoveSearchWithConditionResult(
+    const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult& result, const int32_t requestId)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    HILOG_DEBUG("search element requestId[%{public}d]", requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
+    if (requestId < 0) {
+        HILOG_ERROR("requestId is invalid");
+        return;
+    }
+    if (callback != nullptr) {
+        serviceProxy_->RemoveRequestId(requestId);
+        callback->SetFocusMoveSearchWithConditionResult(infos, result, requestId);
+        AccessibilityElementOperatorImpl::EraseCallback(requestId);
+    } else {
+        HILOG_INFO("callback is nullptr");
+    }
+}
+
+void AccessibilitySystemAbilityClientImpl::SetDetectElementInfoFocusableThroughAncestorResult(
+    bool isFocusable, const int32_t requestId)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    HILOG_DEBUG("search element requestId[%{public}d]", requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
+    if (requestId < 0) {
+        HILOG_ERROR("requestId is invalid");
+        return;
+    }
+    if (callback != nullptr) {
+        serviceProxy_->RemoveRequestId(requestId);
+        callback->SetDetectElementInfoFocusableThroughAncestorResult(isFocusable, requestId);
+        AccessibilityElementOperatorImpl::EraseCallback(requestId);
+    } else {
+        HILOG_INFO("callback is nullptr");
+    }
+}
+
 AccessibilitySystemAbilityClientImpl::StateArrayHandler::StateArrayHandler()
 {
     std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
@@ -987,6 +1054,48 @@ void AccessibilitySystemAbilityClientImpl::StateArrayHandler::Reset()
 {
     std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     stateArray_.fill(false);
+}
+
+RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderRulesEnabled(bool &isEnabled)
+{
+    auto& rulesChecker = ReadableRulesChecker::GetInstance();
+    isEnabled = false;
+    isEnabled = CheckRulesCheckerIsInit(rulesChecker, serviceProxy_);
+    return RET_OK;
+}
+ 
+RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsReadable(
+    const std::shared_ptr<ReadableRulesNode>& node, bool& isReadable)
+{
+    auto& rulesChecker = ReadableRulesChecker::GetInstance();
+    isReadable = false;
+    if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy_)) {
+        return RET_ERR_NOT_ENABLED;
+    }
+    isReadable = rulesChecker.IsReadable(node);
+    return RET_OK;
+}
+ 
+RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsSpecificType(
+    const std::shared_ptr<ReadableRulesNode>& node, ReadableSpecificType specificType, bool& isHit)
+{
+    auto& rulesChecker = ReadableRulesChecker::GetInstance();
+    if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy_)) {
+        isHit = false;
+        return RET_ERR_NOT_ENABLED;
+    }
+ 
+    switch (specificType) {
+        case ReadableSpecificType::ROOT_TYPE:
+            isHit = rulesChecker.IsRootType(node);
+            break;
+        case ReadableSpecificType::IGNORE_SCROLL_TYPE:
+            isHit = rulesChecker.IsScrollIgnoreTypes(node);
+            break;
+        default:
+            break;
+    }
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -371,6 +371,77 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoBySpecificPr
     return;
 }
 
+void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchWithConditionResult(
+    const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult& result, const int32_t requestId)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+ 
+    if (!data.WriteUint32(infos.size())) {
+        HILOG_ERROR("write infos's size failed");
+        return;
+    }
+ 
+    if (!WriteElementInfosToRawData(infos, data)) {
+        return;
+    }
+ 
+    if (!data.WriteInt32(result)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
+ 
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
+ 
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE_SEARCH_WITH_CONDITION,
+            data, reply, option)) {
+        HILOG_ERROR("setSearchElementInfoBySpecificPropertyResult failed");
+        return;
+    }
+    if (static_cast<RetError>(reply.ReadInt32() != RET_OK)) {
+        HILOG_ERROR("read reply code failed");
+    }
+    return;
+}
+ 
+void AccessibilityElementOperatorCallbackProxy::SetDetectElementInfoFocusableThroughAncestorResult(
+    bool isFocusable, const int32_t requestId)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+ 
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+ 
+    if (!data.WriteBool(isFocusable)) {
+        HILOG_ERROR("connection write failed");
+        return;
+    }
+ 
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
+ 
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_DETECT_ELEMENTINFO_FOCUSABLE,
+        data, reply, option)) {
+        HILOG_ERROR("set execute action result failed");
+        return;
+    }
+}
+
 bool AccessibilityElementOperatorCallbackProxy::WriteElementInfosToRawData(
     const std::list<AccessibilityElementInfo> &infos, MessageParcel &data)
 {
