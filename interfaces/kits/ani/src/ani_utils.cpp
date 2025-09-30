@@ -95,7 +95,7 @@ bool ANIUtils::GetIntField(ani_env *env, std::string fieldName, ani_object objec
         return false;
     }
     if (!isUndefined) {
-        if (env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "unboxed", nullptr, &fieldValue) ==
+        if (env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "toInt", nullptr, &fieldValue) ==
             ANI_OK) {
             return true;
         }
@@ -785,8 +785,8 @@ bool ANIUtils::GetNumberMember(ani_env *env, ani_object options, const std::stri
     }
 
     ani_double valueDouble;
-    if (ANI_OK != env->Object_CallMethodByName_Double(static_cast<ani_object>(ref), "unboxed", ":d", &valueDouble)) {
-        HILOG_ERROR(" Unboxed Double failed");
+    if (ANI_OK != env->Object_CallMethodByName_Double(static_cast<ani_object>(ref), "toDouble", ":d", &valueDouble)) {
+        HILOG_ERROR(" Unbox Double failed");
         return false;
     }
     HILOG_INFO(" valueDouble:%{public}f", valueDouble);

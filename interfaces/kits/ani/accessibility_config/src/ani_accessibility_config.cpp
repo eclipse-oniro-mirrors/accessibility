@@ -926,8 +926,8 @@ bool ANIAccessibilityConfig::GetColorMember(ani_env *env, ani_object object, con
         HILOG_INFO("color stringContent = %{public}s, color = %{public}u", stringContent.c_str(), color);
     } else {
         ani_int valueInt;
-        if (ANI_OK != env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "unboxed", ":i", &valueInt)) {
-            HILOG_ERROR(" Unboxed Int failed");
+        if (ANI_OK != env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "toInt", ":i", &valueInt)) {
+            HILOG_ERROR(" Unbox Int failed");
             return false;
         }
         color = static_cast<uint32_t>(valueInt);
