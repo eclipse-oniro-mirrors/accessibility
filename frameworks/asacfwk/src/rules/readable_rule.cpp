@@ -71,5 +71,4 @@ bool ReadableRule::ParseIsFocus(const nlohmann::json& rule)
     isFocus_ = rule["isfocus"];
     return true;
 }
-
 } // namespace OHOS::Accessibility

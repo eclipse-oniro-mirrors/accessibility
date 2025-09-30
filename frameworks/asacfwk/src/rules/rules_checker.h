@@ -51,7 +51,7 @@ namespace OHOS::Accessibility {
 class ReadableRulesChecker {
 public:
     ReadableRulesChecker() = default;
-    virtual ~ReadableRulesChecker()  = default; 
+    virtual ~ReadableRulesChecker() = default;
     static ReadableRulesChecker& GetInstance();
     bool IsRootType(const std::shared_ptr<ReadableRulesNode>& node);
     bool IsScrollIgnoreTypes(const std::shared_ptr<ReadableRulesNode>& node);

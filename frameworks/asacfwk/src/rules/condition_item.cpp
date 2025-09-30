@@ -129,37 +129,37 @@ bool ConditionItem::Check(const std::shared_ptr<ReadableRulesNode>& node) const
 }
 
 static std::map<
-    std::string, 
+    std::string,
     std::function<bool(const std::shared_ptr<ReadableRulesNode>& node, PropValue& value)>
 > propFuncMap = {
-    { "text", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) { 
+    { "text", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) {
         return node->GetPropText(value);
     }},
-    { "hintText", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) { 
+    { "hintText", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) {
         return node->GetPropHintText(value);
     }},
-    { "description", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) { 
+    { "description", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) {
         return node->GetPropDesc(value);
     }},
-    { "accessibilityText", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) { 
+    { "accessibilityText", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) {
         return node->GetPropAccessibilityText(value);
     }},
-    { "type", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) { 
+    { "type", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) {
         return node->GetPropType(value);
     }},
-    { "accessibilityLevel", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) { 
+    { "accessibilityLevel", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) {
         return node->GetPropAccessibilityLevel(value);
     }},
-    { "accessibilityGroup", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) { 
+    { "accessibilityGroup", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) {
         return node->GetPropAccessibilityGroup(value);
     }},
-    { "isEnable", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) { 
+    { "isEnable", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) {
         return node->GetPropIsEnable(value);
     }},
-    { "children_count", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) { 
+    { "children_count", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) {
         return node->GetPropChildrenCount(value);
     }},
-    { "actionNames", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) { 
+    { "actionNames", [](const std::shared_ptr<ReadableRulesNode>& node, PropValue& value) {
         return node->GetPropActionNames(value);
     }}
 };
@@ -221,7 +221,7 @@ bool ConditionItem::ParseTarget(const nlohmann::json& condItem)
         return false;
     }
 
-    target_ = findResult->second;    
+    target_ = findResult->second;
     return true;
 }
 

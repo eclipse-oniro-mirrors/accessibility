@@ -62,7 +62,7 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_SPECIFIC_PROPERTY,                                 \
         HandleSearchElementInfoBySpecificProperty)                                                                    \
     SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH_WITH_CONDITION,                                         \
-        HandleFocusMoveSearchWithCondition)   
+        HandleFocusMoveSearchWithCondition)
 
 namespace OHOS {
 namespace Accessibility {

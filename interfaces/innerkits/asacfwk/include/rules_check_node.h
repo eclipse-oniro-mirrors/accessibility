@@ -28,7 +28,7 @@ public:
 
     ReadableRulesNode(int64_t accessibilityId) : accessibilityId_(accessibilityId) {}
 
-    virtual ~ReadableRulesNode(); 
+    virtual ~ReadableRulesNode();
 
     int64_t GetAccessibilityId()
     {
@@ -60,14 +60,11 @@ public:
     virtual std::shared_ptr<ReadableRulesNode> GetParent() = 0;
 
     virtual bool IsModal()
-    { 
+    {
         return true;
     }
 private:
     int64_t accessibilityId_;
-
 };
-
 } // namespace OHOS::Accessibility
-
 #endif // INTERFACES_INNERKITS_ASACFWK_INCLUDE_RULES_CHECKE_NODE_H

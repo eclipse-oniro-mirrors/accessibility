@@ -249,7 +249,6 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
     }
     nlohmann::json sourceJson = nlohmann::json::parse(profileInfos[0]);
 
-    // accessibilityCapabilities
     std::vector<std::string> capabilities;
     if (!JsonUtils::GetStringVecFromJson(sourceJson, KEY_ACCESSIBILITY_CAPABILITIES, capabilities)) {
         HILOG_ERROR("Get accessibilityCapabilities from json failed.");
@@ -257,7 +256,6 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
     }
     initParams.staticCapabilities = PraseVecUtils::ParseCapabilitiesFromVec(capabilities);
 
-    // accessibilityAbilityTypes
     std::vector<std::string> abilityTypes;
     if (!JsonUtils::GetStringVecFromJson(sourceJson, KEY_ACCESSIBILITY_ABILITY_TYPES, abilityTypes)) {
         HILOG_ERROR("Get accessibilityAbilityTypes from json failed.");
@@ -265,37 +263,31 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
     }
     initParams.abilityTypes = PraseVecUtils::ParseAbilityTypesFromVec(abilityTypes);
 
-    // accessibilityCapabilityRationale
     if (!JsonUtils::GetStringFromJson(sourceJson, KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE, initParams.rationale)) {
         HILOG_ERROR("Get accessibilityCapabilityRationale from json failed.");
         return;
     }
 
-    // settingsAbility
     if (!JsonUtils::GetStringFromJson(sourceJson, KEY_SETTINGS_ABILITY, initParams.settingsAbility)) {
         HILOG_ERROR("Get settingsAbility from json failed.");
         return;
     }
 
-    // isImportant
     if (!JsonUtils::GetBoolFromJson(sourceJson, KEY_IS_IMPORTANT, initParams.isImportant)) {
         HILOG_ERROR("Get isImportant from json failed.");
         return;
     }
 
-    // needHide
     if (!JsonUtils::GetBoolFromJson(sourceJson, KEY_NEED_HIDE, initParams.needHide)) {
         HILOG_ERROR("Get needHide from json failed.");
         return;
     }
 
-    // readableRules
     if (!JsonUtils::GetJsonStringFromJson(sourceJson, KEY_ACCESSIBILITY_READABLE_RULES, initParams.readableRules)) {
         HILOG_ERROR("Get readableRules from json failed.");
         return;
     }
 
-    //accessibilityEventConfigure
     if (!JsonUtils::GetUInt32VecFromJson(sourceJson, KEY_ACCESSIBILITY_EVENT_CONFIGURE, initParams.eventConfigure)) {
         HILOG_ERROR("Get accessibilityCapabilities from json failed.");
         return;

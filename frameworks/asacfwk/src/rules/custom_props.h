@@ -22,17 +22,19 @@
 #include "nlohmann/json.hpp"
 
 namespace OHOS::Accessibility {
+constexpr int32_t PATCH_SIZE = 8;
 
 class CustomProps {
 public:
     bool Parse(const nlohmann::json& jsonRoot);
 
     const Condition* GetCondition(const std::string name) const;
-    size_t GetTotalMemoryUsage() const {
+    size_t GetTotalMemoryUsage() const
+    {
         size_t totalSize = sizeof(CustomProps);
 
         for (auto &pair : customProps_) {
-            totalSize += 8;
+            totalSize += PATCH_SIZE;
             totalSize += pair.second.GetSize();
         }
         return totalSize;

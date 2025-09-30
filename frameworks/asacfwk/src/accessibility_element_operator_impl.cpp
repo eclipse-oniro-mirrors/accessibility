@@ -418,9 +418,8 @@ void AccessibilityElementOperatorImpl::SetFocusMoveSearchWithConditionResult(
     }
 }
 
-void AccessibilityElementOperatorImpl::DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info, 
-        const int64_t parentId, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback)
+void AccessibilityElementOperatorImpl::DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
+    const int64_t parentId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {

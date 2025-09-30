@@ -35,7 +35,8 @@ class Condition {
 public:
     bool Parse(const nlohmann::json& cond);
     bool Check(const std::shared_ptr<ReadableRulesNode>& node) const;
-    size_t GetSize() const {
+    size_t GetSize() const
+    {
         size_t totalSize = sizeof(Condition);
         totalSize +=  items_.size() * sizeof(ConditionItem);
 

@@ -402,7 +402,7 @@ void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchWithConditionR
     }
  
     if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE_SEARCH_WITH_CONDITION,
-            data, reply, option)) {
+        data, reply, option)) {
         HILOG_ERROR("setSearchElementInfoBySpecificPropertyResult failed");
         return;
     }

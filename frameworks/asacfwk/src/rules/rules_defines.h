@@ -21,6 +21,7 @@
 #include "nlohmann/json.hpp"
 
 namespace OHOS::Accessibility {
+constexpr int32_t PATCH_SIZE = 8;
 #define CHECK_NE_RETURN(var, value, ret) \
     do {                                    \
         if ((var) != (value)) {             \
@@ -32,8 +33,9 @@ public:
     bool IsRootType(const std::string& type);
     bool Parse(const nlohmann::json& jsonRoot);
     bool IsScrollIgnoreTypes(const std::string& type);
-    size_t GetTotalMemoryUsage() const {
-        return sizeof(RulesDefines) + rootTypes_.size() * 8;
+    size_t GetTotalMemoryUsage() const
+    {
+        return sizeof(RulesDefines) + rootTypes_.size() * PATCH_SIZE;
     }
 
 private:
@@ -44,7 +46,5 @@ private:
     std::set<std::string> rootTypes_;
     std::set<std::string> scrollIgnoreTypes_;
 };
-
 } // namespace OHOS::Accessibility
-
 #endif // FRAMEWORKS_ASACFWK_SRC_RULES_RULES_DEFINES_H

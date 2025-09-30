@@ -27,7 +27,8 @@ class  ReadableRule {
 public:
     bool Parse(const nlohmann::json& rule);
     CheckResult IsReadable(const std::shared_ptr<ReadableRulesNode>& node) const;
-    const std::string& GetName() const {
+    const std::string& GetName() const
+    {
         return name_;
     }
 

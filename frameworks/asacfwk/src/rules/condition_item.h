@@ -58,7 +58,5 @@ private:
     bool isCustom_ = false;
     TargetNode target_ = TargetNode::DEFAULT;
 };
-
 } // namespace OHOS::Accessibility
-
 #endif // FRAMEWORKS_ASACFWK_SRC_RULES_CONDITION_ITEM_H

@@ -18,15 +18,13 @@
 namespace OHOS::Accessibility {
 
 enum class HandleResult {
-  TO_NEXT,
-  HANDLED,
+    TO_NEXT,
+    HANDLED,
 };
 
 struct CheckResult {
-  bool isReadable;
-  HandleResult handleResult;
+    bool isReadable;
+    HandleResult handleResult;
 };
-
 } // namespace OHOS::Accessibility
-
 #endif // FRAMEWORKS_ASACFWK_SRC_RULES_CHECK_RESULT_H

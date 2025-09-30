@@ -194,7 +194,7 @@ public:
     virtual void FocusMoveSearchWithCondition(const int64_t elementId, const AccessibilityFocusMoveParam &param,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
  
-    virtual void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info, 
+    virtual void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
         const int64_t parentId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 private:

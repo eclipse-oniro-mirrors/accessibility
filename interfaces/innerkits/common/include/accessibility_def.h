@@ -589,7 +589,7 @@ enum AccessibilityAction : int32_t {
 };
 
 enum FocusMoveResult : int32_t {
-    NOT_SUPPORT = -1, 
+    NOT_SUPPORT = -1,
     SEARCH_SUCCESS = 0,
     SEARCH_SUCCESS_NEXT_BYPASS_DESCENDANTS = 0x00000001,
     SEARCH_FAIL = 0x00000002,

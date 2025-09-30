@@ -18,7 +18,7 @@
 namespace OHOS::Accessibility {
 
 bool PropValue::Compare(CondOperator op, const PropValue& other)
-{ 
+{
     bool result = false;
     if (valueType == ValueType::BOOL) {
         result = CompareBool(op, other);

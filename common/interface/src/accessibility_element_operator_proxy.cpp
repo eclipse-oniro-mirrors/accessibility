@@ -595,7 +595,7 @@ void AccessibilityElementOperatorProxy::FocusMoveSearchWithCondition(const int64
     }
 }
 
-void AccessibilityElementOperatorProxy::DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info, 
+void AccessibilityElementOperatorProxy::DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
     const int64_t parentId, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {

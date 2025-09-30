@@ -28,11 +28,11 @@ bool ReadableRulesChecker::CheckInit(const std::string& readableRules)
 {
     isChecked_ = true;
     if (!IsInited()) {
-      Init(readableRules);
+        Init(readableRules);
     }
 
     if (!IsInited()) {
-      return false;
+        return false;
     }
 
     return true;

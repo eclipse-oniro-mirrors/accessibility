@@ -266,7 +266,7 @@ public:
     void SetFocusMoveSearchWithConditionResult(
         const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult& result, const int32_t requestId);
 
-    virtual void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info, 
+    virtual void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
         const int64_t parentId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
