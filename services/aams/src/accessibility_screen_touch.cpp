@@ -326,7 +326,6 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
         }
     }
 
-    screenId_ = event.GetTargetDisplayId();
     startTime_ = event.GetActionTime();
     startPointer_ = std::make_shared<MMI::PointerEvent::PointerItem>(pointerItem);
     isMoveBeyondThreshold_ = false;
