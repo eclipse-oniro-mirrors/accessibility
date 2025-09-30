@@ -88,6 +88,10 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
             std::vector<AccessibilityElementInfo> infos = {};
             callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             syncPromise->set_value(ret);
+            if (elementOperator != nullptr) {
+                HILOG_INFO("before elementOperator release, refCount is [%{public}d]",
+                    elementOperator->GetSptrRefCount());
+            }
             return;
         }
 
