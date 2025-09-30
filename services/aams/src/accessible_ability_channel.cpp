@@ -89,7 +89,8 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
             callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             syncPromise->set_value(ret);
             if (elementOperator != nullptr) {
-                HILOG_INFO("before elementOperator release, refCount is [%{public}d]", elementOperator->GetSptrRefCount());
+                HILOG_INFO("before elementOperator release, refCount is [%{public}d]",
+                    elementOperator->GetSptrRefCount());
             }
             return;
         }
