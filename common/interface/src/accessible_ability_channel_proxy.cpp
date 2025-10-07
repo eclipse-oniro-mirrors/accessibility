@@ -832,7 +832,7 @@ void AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const int64_t e
         return;
     }
     if (!data.WriteInt64(elementId)) {
-        HILOG_ERROR("windowId write error: %{public}ld, ", elementId);
+        HILOG_ERROR("elementId write error: %{public}" PRId64 ", ", elementId);
         return;
     }
     if (!data.WriteInt32(param.direction)) {
