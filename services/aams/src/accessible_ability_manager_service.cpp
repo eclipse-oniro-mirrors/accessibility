@@ -4427,5 +4427,16 @@ void AccessibleAbilityManagerService::RegisterPcModeSwitch()
         }
         }, "REGISTER_PC_MODE_SWITCH_OBSERVER");
 }
+
+ErrCode AccessibleAbilityManagerService::GetReadableRules(std::string &readableRules)
+{
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> account = GetCurrentAccountData();
+    if (!account) {
+        HILOG_ERROR("account is nullptr");
+        return RET_ERROR_NULLPTR;
+    }
+    return account->GetReadableRules(readableRules);
+}
 } // namespace Accessibility
 } // namespace OHOS
