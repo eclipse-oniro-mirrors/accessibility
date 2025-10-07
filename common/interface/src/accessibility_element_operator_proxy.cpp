@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_element_operator_proxy.h"
+#include "accessibility_element_info_parcel.h"
 #include "hilog_wrapper.h"
 #include <cinttypes>
 

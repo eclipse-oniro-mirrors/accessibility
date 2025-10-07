@@ -17,12 +17,12 @@
 #define FRAMEWORKS_ASACFWK_SRC_RULES_CUSTOM_PROPS_H
 
 #include "condition.h"
+#include "rules_defines.h"
 #include <string>
 #include <map>
 #include "nlohmann/json.hpp"
 
 namespace OHOS::Accessibility {
-constexpr int32_t PATCH_SIZE = 8;
 
 class CustomProps {
 public:
