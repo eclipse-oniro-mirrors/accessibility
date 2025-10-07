@@ -218,7 +218,6 @@ public:
     static napi_value FindElementsByAccessibilityHintText(napi_env env, napi_callback_info info);
     static napi_value FindElementById(napi_env env, napi_callback_info info);
     static OHOS::Accessibility::DetailCondition ConvertStringToDetailCondition(const std::string &str);
-    static OHOS::Accessibility::FocusMoveDirection ConvertStringToDirection(const std::string &str);
 
     static napi_ref consRef_;
 private:
@@ -264,7 +263,6 @@ private:
     static void GetExtraElementInfo(NAccessibilityElementData *callbackInfo, napi_value &value, std::string keyStr);
     static void FocusMoveSearchWithConditionExecute(napi_env env, void* data);
     static void FocusMoveSearchWithConditionComplete(napi_env env, napi_status status, void* data);
-    static FindElementCondition ConvertStringToCondition(const std::string &str);
 
     static OHOS::Accessibility::RetError ParseAccessibilityElement(
         OHOS::Accessibility::NAPICbInfo& cbInfo, NAccessibilityElementData* elementData);
