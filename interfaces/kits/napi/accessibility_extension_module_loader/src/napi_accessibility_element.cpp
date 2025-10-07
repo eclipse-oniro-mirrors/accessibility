@@ -1842,7 +1842,7 @@ void NAccessibilityElement::GetElementInfoAllAttribute6(NAccessibilityElementDat
  
     napi_value belongTreeId = nullptr;
     GetElementInfoBelongTreeId(callbackInfo, belongTreeId);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "belongTreeId", belongTreeId))
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "belongTreeId", belongTreeId));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
