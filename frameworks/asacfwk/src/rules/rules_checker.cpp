@@ -130,7 +130,7 @@ bool ReadableRulesChecker::IsScrollIgnoreTypes(const std::shared_ptr<ReadableRul
     std::string type =  value.valueStr;
     std::transform(type.begin(), type.end(), type.begin(),
         [](unsigned char c) { return std::tolower(c); });
-    bool IsScrollIgnoreTypes = rulesDefines_.IsScrollIgnoreTypes(type);
-    return IsScrollIgnoreTypes;
+    bool isScrollIgnoreTypes = rulesDefines_.IsScrollIgnoreTypes(type);
+    return isScrollIgnoreTypes;
 }
 } // namespace OHOS::Ace::Accessibility
