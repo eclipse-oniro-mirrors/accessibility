@@ -124,6 +124,7 @@ public:
     int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override;
     ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
     RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);
+    ErrCode GetReadableRules(std::string &name) override;
 
 private:
     std::shared_ptr<AppExecFwk::EventRunner> runner_;

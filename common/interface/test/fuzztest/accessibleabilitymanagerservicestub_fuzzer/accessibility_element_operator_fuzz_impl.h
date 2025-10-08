@@ -68,5 +68,14 @@ public:
     void SetParentWindowId(const int32_t parentWindowId) override
     {
     }
+    void FocusMoveSearchWithCondition(const int64_t elementId, const AccessibilityFocusMoveParam param,
+        const int32_t requestId, AccessibilityElementOperatorCallback &callback) override
+    {
+    }
+    void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
+        const int64_t parentId, const int32_t requestId,
+        AccessibilityElementOperatorCallback &callback) override
+    {
+    }
 };
 #endif //ACCESSIBILITY_ACCESSIBILITY_ELEMENT_OPERATOR_FUZZ_IMPL_H

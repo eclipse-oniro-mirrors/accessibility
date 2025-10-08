@@ -142,6 +142,13 @@ public:
     void SearchElementInfoBySpecificProperty(const int64_t elementId,
         const SpecificPropertyParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
+    
+    void FocusMoveSearchWithCondition(const int64_t elementId, const AccessibilityFocusMoveParam &param,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
+    void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
+        const int64_t parentId, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     /**
      * @brief The function is called while accessibility System check the id of window is not equal

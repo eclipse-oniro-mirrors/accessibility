@@ -389,5 +389,12 @@ RetError AccessibleAbilityChannel::UnholdRunningLock()
 {
     return RET_OK;
 }
+
+void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const int64_t elementId,
+    const AccessibilityFocusMoveParam &param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId)
+{
+    return;
+}
 } // namespace Accessibility
 } // namespace OHOS

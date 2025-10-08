@@ -87,6 +87,7 @@ public:
     MOCK_METHOD2(AddNeedEvent, void(std::string &name, std::vector<uint32_t> needEvents));
     MOCK_METHOD1(RemoveNeedEvent, void(const std::string &name));
     MOCK_METHOD0(GetNeedEvents, std::vector<uint32_t>());
+    MOCK_METHOD1(GetReadableRules, int32_t(std::string &readableRules));
 };
 } // namespace Accessibility
 } // namespace OHOS

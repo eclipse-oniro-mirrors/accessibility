@@ -146,6 +146,33 @@ void MockAccessibilityElementOperatorImpl::SearchElementInfoBySpecificProperty(c
     return;
 }
 
+void MockAccessibilityElementOperatorImpl::FocusMoveSearchWithCondition(const int64_t elementId,
+    const AccessibilityFocusMoveParam &param,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    int32_t mRequestId = AddRequest(requestId, callback);
+    if (operator_) {
+        operator_->FocusMoveSearchWithCondition(elementId, param, mRequestId, operatorCallback_);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
+    return;
+}
+
+void MockAccessibilityElementOperatorImpl::DetectElementInfoFocusableThroughAncestor(
+    const AccessibilityElementInfo &info,
+    const int64_t parentId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    int32_t mRequestId = AddRequest(requestId, callback);
+    if (operator_) {
+        operator_->DetectElementInfoFocusableThroughAncestor(info, parentId, mRequestId, operatorCallback_);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
+    return;
+}
+
 void MockAccessibilityElementOperatorImpl::ClearFocus()
 {
     if (operator_) {

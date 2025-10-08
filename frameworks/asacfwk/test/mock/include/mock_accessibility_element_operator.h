@@ -48,6 +48,11 @@ public:
         const int32_t childWindowId));
     MOCK_METHOD1(SetBelongTreeId, void(const int32_t treeId));
     MOCK_METHOD1(SetParentWindowId, void(const int32_t parentWindowId));
+    MOCK_METHOD4(FocusMoveSearchWithCondition, void(const int64_t elementId, const AccessibilityFocusMoveParam param,
+        const int32_t requestId, AccessibilityElementOperatorCallback &callback));
+    MOCK_METHOD4(DetectElementInfoFocusableThroughAncestor, void(const AccessibilityElementInfo &info,
+        const int64_t parentId, const int32_t requestId,
+        AccessibilityElementOperatorCallback &callback));
 };
 } // namespace Accessibility
 } // namespace OHOS

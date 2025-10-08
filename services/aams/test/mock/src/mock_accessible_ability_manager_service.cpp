@@ -791,5 +791,10 @@ void AccessibleAbilityManagerService::OnModeChanged(uint32_t mode)
     (void)mode;
     return;
 }
+
+ErrCode AccessibleAbilityManagerService::GetReadableRules(std::string &name)
+{
+    return NO_ERROR;
+}
 } // namespace Accessibility
 } // namespace OHOS

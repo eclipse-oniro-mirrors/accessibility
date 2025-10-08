@@ -105,6 +105,7 @@ public:
     MOCK_METHOD1(CheckPermission, bool(const std::string &permission));
     MOCK_METHOD1(SearchNeedEvents, ErrCode(std::vector<uint32_t> &needEvents));
     MOCK_METHOD1(UpdateUITestConfigureEvents, RetError(std::vector<uint32_t> needEvents));
+    MOCK_METHOD1(GetReadableRules, ErrCode(std::string &name));
 };
 } // namespace Accessibility
 } // namespace OHOS
