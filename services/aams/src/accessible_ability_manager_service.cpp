@@ -935,13 +935,17 @@ ErrCode AccessibleAbilityManagerService::GetAbilityList(uint32_t abilityTypes, i
         return RET_ERR_INVALID_PARAM;
     }
 
-    ffrt::promise<RetError> syncPromise;
-    ffrt::future syncFuture = syncPromise.get_future();
-    handler_->PostTask([this, &syncPromise, &infos, abilityTypes, stateType]() {
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    handler_->PostTask([this, syncPromise, &infos, abilityTypes, stateType]() {
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Get current account data failed!!");
-            syncPromise.set_value(RET_ERR_FAILED);
+            syncPromise->set_value(RET_ERR_FAILED);
             return;
         }
 
@@ -956,8 +960,13 @@ ErrCode AccessibleAbilityManagerService::GetAbilityList(uint32_t abilityTypes, i
             }
         }
         HILOG_DEBUG("infos count is %{public}zu", infos.size());
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }, "TASK_GET_ABILITY_LIST");
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_1000MS));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetAbilityList Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
