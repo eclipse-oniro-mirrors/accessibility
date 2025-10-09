@@ -4434,7 +4434,7 @@ ErrCode AccessibleAbilityManagerService::GetReadableRules(std::string &readableR
     sptr<AccessibilityAccountData> account = GetCurrentAccountData();
     if (!account) {
         HILOG_ERROR("account is nullptr");
-        return RET_ERROR_NULLPTR;
+        return RET_ERR_NULLPTR;
     }
     return account->GetReadableRules(readableRules);
 }
