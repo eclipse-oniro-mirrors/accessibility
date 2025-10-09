@@ -39,6 +39,7 @@ ohos_fuzztest("AccessibilitySystemAbilityClientFuzzTest") {
     "ffrt:libffrt",
     "ipc:ipc_single",
     "samgr:samgr_proxy",
+    "cJSON:cjson_static",
   ]
 }
 
