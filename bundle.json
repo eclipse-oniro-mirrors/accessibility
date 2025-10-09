@@ -70,7 +70,8 @@
         "security_component_manager",
         "memmgr",
         "distributed_notification_service",
-        "time_service"
+        "time_service",
+        "json"
       ],
       "third_party": []
     },

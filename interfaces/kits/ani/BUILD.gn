@@ -51,7 +51,6 @@ ohos_shared_library("accessibility_ani") {
     "input:libmmi-client",
     "runtime_core:ani",
     "runtime_core:ani_helpers",
-    "cJSON:cjson_static",
   ]
   sources = [
     "./src/accessibility_utils_ani.cpp",

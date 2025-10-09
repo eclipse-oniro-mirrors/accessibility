@@ -94,7 +94,6 @@ ohos_unittest("asac_unit_test") {
     "ipc:ipc_core",
     "samgr:dynamic_cache",
     "samgr:samgr_proxy",
-    "json:nlohmann_json_static",
   ]
 
   if (product_name != "qemu-arm-linux-min") {
