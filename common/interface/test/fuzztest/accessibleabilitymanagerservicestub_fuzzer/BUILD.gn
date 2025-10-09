@@ -46,7 +46,6 @@ ohos_fuzztest("AccessibleAbilityManagerServiceStubFuzzTest") {
     "c_utils:utils",
     "input:libmmi-client",
     "ipc:ipc_single",
-    "cJSON:cjson_static",
   ]
 }
 
