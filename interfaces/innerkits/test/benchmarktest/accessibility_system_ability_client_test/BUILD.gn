@@ -26,6 +26,7 @@ ohos_benchmarktest("BenchmarkTestForAccessibilitySystemAbilityClient") {
     "../../../asacfwk:accessibilityclient",
     "../../../common:accessibility_common",
   ]
+  external_deps = [ "cJSON:cjson_static" ]
 }
 
 group("benchmarktest") {

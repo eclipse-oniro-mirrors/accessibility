@@ -66,6 +66,7 @@ ohos_shared_library("accessibility_napi") {
     "hilog:libhilog",
     "input:libmmi-client",
     "napi:ace_napi",
+    "cJSON:cjson_static",
   ]
 
   if (product_name != "qemu-arm-linux-min") {

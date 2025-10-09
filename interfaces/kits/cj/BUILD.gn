@@ -83,6 +83,7 @@ ohos_shared_library("cj_accessibility_ffi") {
     "napi:ace_napi",
     "napi:cj_bind_ffi",
     "napi:cj_bind_native",
+    "cJSON:cjson_static",
   ]
   innerapi_tags = [ "platformsdk" ]
   subsystem_name = "barrierfree"

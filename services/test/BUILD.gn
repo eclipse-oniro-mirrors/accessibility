@@ -173,6 +173,7 @@ ohos_moduletest("aams_accessibility_touch_exploration_test") {
     "samgr:dynamic_cache",
     "window_manager:libdm",
     "window_manager:libwm",
+    "cJSON:cjson_static",
   ]
 
   if (accessibility_feature_display_manager) {
@@ -303,6 +304,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "samgr:dynamic_cache",
     "window_manager:libdm",
     "window_manager:libwm",
+    "cJSON:cjson_static",
   ]
 
   if (accessibility_feature_display_manager) {
@@ -432,6 +434,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "samgr:dynamic_cache",
     "window_manager:libdm",
     "window_manager:libwm",
+    "cJSON:cjson_static",
   ]
 
   if (accessibility_feature_display_manager) {
