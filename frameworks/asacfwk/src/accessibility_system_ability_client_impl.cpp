@@ -71,6 +71,15 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
 AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
 {
     HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (serviceProxy_ != nullptr) {
+        sptr<IRemoteObject> object = serviceProxy_->AsObject();
+        if (object) {
+            object->RemoveDeathRecipient(deathRecipient_);
+            serviceProxy_ = nullptr;
+            HILOG_INFO("serviceProxy_ = nullptr");
+        }
+    }
     if (stateObserver_ != nullptr) {
         stateObserver_->OnClientDeleted();
     }
