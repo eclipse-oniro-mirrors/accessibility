@@ -177,6 +177,8 @@ ani_object CreateAniAccessibilityElement(ani_env *env, const AccessibilityElemen
 
     if (ANI_OK != ANIUtils::Wrap(env, elementObj, element)) {
         HILOG_ERROR("Cannot wrap AccessibilityElementInfo");
+        delete element;
+        element = nullptr;
         return nullptr;
     }
 
