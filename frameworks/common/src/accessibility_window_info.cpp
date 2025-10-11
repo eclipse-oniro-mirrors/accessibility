@@ -158,6 +158,18 @@ void AccessibilityWindowInfo::SetDecorEnable(const bool isDecorEnable)
     HILOG_DEBUG("isDecorEnable_[%{public}d]", isDecorEnable_);
 }
 
+bool AccessibilityWindowInfo::IsSceneBoard() const
+{
+    HILOG_DEBUG("isSceneBoard_[%{public}d]", isSceneBoard_);
+    return isSceneBoard_;
+}
+
+void AccessibilityWindowInfo::SetSceneBoard(const bool isSceneBoard)
+{
+    isSceneBoard_ = isSceneBoard;
+    HILOG_DEBUG("isSceneBoard_[%{public}d]", isSceneBoard_);
+}
+
 void AccessibilityWindowInfo::SetInnerWid(const int32_t innerWid)
 {
     innerWid_ = innerWid;
