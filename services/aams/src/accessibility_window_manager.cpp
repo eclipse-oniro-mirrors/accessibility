@@ -971,7 +971,7 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow()
         const bool IsFocused = window.IsFocused();
         if (window.IsSceneBoard()) {
             subWindows_.insert(windowId);
-            sceneBoardElementIdMap_.InsertPair(realWid, window.GetUiNodeId());
+            sceneBoardElementIdMap_.InsertPair(windowId, window.GetUiNodeId());
         }
         if (!IsFocused) {
             continue;

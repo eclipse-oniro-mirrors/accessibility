@@ -336,7 +336,7 @@ protected:
     bool accessibilityFocused_ = false;
     Rect boundsInScreen_ {};
     bool isDecorEnable_ = false;
-    bool IsSceneBoard_ = false;
+    bool isSceneBoard_ = false;
     int32_t innerWid_ = 0; // used for window id 1, scene board
     int64_t uiNodeId_ = 0; // used for window id 1, scene board
     float scaleVal_ = 0.0;
