@@ -281,7 +281,11 @@ EventType ANIUtils::ConvertStringToEventInfoTypes(const std::string &type)
         {"accessibilityFocus", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT},
         {"accessibilityFocusClear", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT},
         {"requestFocusForAccessibility", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY},
-        {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY}};
+        {"requestFocusForAccessibilityNotInterrupt",
+            EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
+        {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY},
+        {"announceForAccessibilityNotInterrupt", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT},
+        {"scrolling", EventType::TYPE_VIEW_SCROLLING_EVENT}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
@@ -316,8 +320,7 @@ ActionType ANIUtils::ConvertStringToAccessibleOperationType(const std::string &t
         {"back", ActionType::ACCESSIBILITY_ACTION_BACK},
         {"recentTask", ActionType::ACCESSIBILITY_ACTION_RECENTTASK},
         {"notificationCenter", ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER},
-        {"controlCenter", ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER},
-        {"spanClick", ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK}};
+        {"controlCenter", ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER}};
 
     if (accessibleOperationTypeTable.find(type) == accessibleOperationTypeTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());

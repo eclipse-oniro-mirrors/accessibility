@@ -96,7 +96,8 @@ namespace accessibility {
     export type EventType = 'accessibilityFocus' | 'accessibilityFocusClear' |
         'click' | 'longClick' | 'focus' | 'select' | 'hoverEnter' | 'hoverExit' |
         'textUpdate' | 'textSelectionUpdate' | 'scroll' | 'requestFocusForAccessibility' |
-        'announceForAccessibility';
+        'announceForAccessibility' | 'requestFocusForAccessibilityNotInterrupt' |
+        'announceForAccessibilityNotInterrupt' | 'scrolling';
 
     export type Action = 'accessibilityFocus' | 'clearAccessibilityFocus' | 'focus' | 'clearFocus' | 'clearSelection' |
         'click' | 'longClick' | 'cut' | 'copy' | 'paste' | 'select' | 'setText' | 'delete' |
@@ -129,7 +130,11 @@ namespace accessibility {
         return new Promise<Array<AccessibilityAbilityInfo>> ((resolve: (v: Array<AccessibilityAbilityInfo>) => void,
             reject: (error: BusinessError) => void): void => {
             taskpool.execute(getAccessibilityExtensionListSync, abilityType, stateType).then((code :Any): void => {
-                resolve(code as Array<AccessibilityAbilityInfo>);
+                if (Array.isArray(code)) {
+                    resolve(code as Array<AccessibilityAbilityInfo>);
+                } else {
+                    resolve([] as Array<AccessibilityAbilityInfo>);
+                }
             }).catch((err: Any): void => {
                 reject(err as BusinessError);
             });
@@ -141,7 +146,11 @@ namespace accessibility {
     ): void {
         let p1 = taskpool.execute(getAccessibilityExtensionListSync, abilityType, stateType);
         p1.then((ret: Any): void => {
-            callback(new BusinessError(), ret as Array<AccessibilityAbilityInfo>)
+            if (Array.isArray(ret)) {
+                callback(new BusinessError(), ret as Array<AccessibilityAbilityInfo>);
+            } else {
+                callback(new BusinessError(), [] as Array<AccessibilityAbilityInfo>);
+            }
         }).catch((err: Any): void => {
             callback(err as BusinessError, [] as Array<AccessibilityAbilityInfo>)
         });
