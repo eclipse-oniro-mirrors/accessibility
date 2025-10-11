@@ -287,6 +287,7 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
     accWindowInfo.SetUiNodeId(windowInfo->uiNodeId_);
     accWindowInfo.SetInnerWid(windowInfo->innerWid_);
     if (accWindowInfo.GetWindowId() == SCENE_BOARD_WINDOW_ID) {
+        accWindowInfo.SetSceneBoard(true);
         accWindowInfo.SetWindowId(windowInfo->innerWid_);
         accWindowInfo.SetMainWindowId(windowInfo->innerWid_);
         HILOG_DEBUG("scene board window id 1 convert inner window id[%{public}d]", windowInfo->innerWid_);
@@ -968,6 +969,10 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow()
         const int32_t windowId = window.GetWindowId();
         const std::string bundleName = window.GetBundleName();
         const bool IsFocused = window.IsFocused();
+        if (window.IsSceneBoard()) {
+            subWindows_.insert(windowId);
+            sceneBoardElementIdMap_.InsertPair(realWid, window.GetUiNodeId());
+        }
         if (!IsFocused) {
             continue;
         }
@@ -1019,7 +1024,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         WindowUpdateTypeEvent(it->first, oldA11yWindows_, WINDOW_UPDATE_REMOVED);
     }
 
-    if (hasFocusedAndNoMagnificationWindow) {
+    if (!hasFocusedAndNoMagnificationWindow) {
         SetAccessibilityFocusedWindow();
     }
     HILOG_INFO("WindowUpdateAll end activeWindowId_: %{public}d", activeWindowId_);

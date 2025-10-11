@@ -198,6 +198,20 @@ public:
      */
     void SetDecorEnable(const bool isDecorEnable);
 
+        /**
+     * @brief Get whether the window is part of sceneboard
+     * @return true:the window is; false:the window is not
+     * @sysCap Accessibility
+     */
+    bool IsSceneBoard() const;
+
+    /**
+     * @brief Set the window sceneBoard state
+     * @param isSceneBoard true:the window is ; false:the window is not
+     * @sysCap Accessibility
+     */
+    void SetSceneBoard(const bool isSceneBoard);
+
     /**
      * @brief Set inner window id
      * @param innerWid inner window id
@@ -322,6 +336,7 @@ protected:
     bool accessibilityFocused_ = false;
     Rect boundsInScreen_ {};
     bool isDecorEnable_ = false;
+    bool IsSceneBoard_ = false;
     int32_t innerWid_ = 0; // used for window id 1, scene board
     int64_t uiNodeId_ = 0; // used for window id 1, scene board
     float scaleVal_ = 0.0;
