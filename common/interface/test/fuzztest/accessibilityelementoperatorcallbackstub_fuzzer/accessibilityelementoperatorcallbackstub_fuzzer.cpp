@@ -43,6 +43,9 @@ public:
     void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override {}
     void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
         const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override {}
+    void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &info,
+        const FocusMoveResult &result, const int32_t requestId) override {}
+    void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId) override {}
 };
 
 template<class T>

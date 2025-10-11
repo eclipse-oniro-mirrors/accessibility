@@ -111,7 +111,8 @@ namespace {
         "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
         "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
         "allAttribute", "clip", "customComponentType", "extraInfo", "accessibilityNextFocusId",
-        "accessibilityPreviousFocusId", "parentId", "childrenIds", "accessibilityScrollable", "isEssential"};
+        "accessibilityPreviousFocusId", "parentId", "childrenIds", "accessibilityScrollable", "isEssential",
+        "childrenTreeId", "belongTreeId"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
@@ -186,6 +187,8 @@ namespace {
         {"accessibilityScrollable", &NAccessibilityElement::GetElementInfoAccessibilityScrollable},
         {"supportedActionNames", &NAccessibilityElement::GetElementInfoSupportedActionNames},
         {"isEssential", &NAccessibilityElement::GetElementInfoIsEssential},
+        {"childrenTreeId", &NAccessibilityElement::GetElementInfoChildrenTreeId},
+        {"belongTreeId", &NAccessibilityElement::GetElementInfoBelongTreeId},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
         {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
@@ -216,6 +219,7 @@ namespace {
         DECLARE_NAPI_FUNCTION("getChildren", NAccessibilityElement::GetChildren),
         DECLARE_NAPI_FUNCTION("getRoot", NAccessibilityElement::GetRootElement),
         DECLARE_NAPI_FUNCTION("executeAction", NAccessibilityElement::ExecuteAction),
+        DECLARE_NAPI_FUNCTION("focusMoveSearchWithCondition", NAccessibilityElement::FocusMoveSearchWithCondition),
         DECLARE_NAPI_GETTER(ACCESSIBILITY_FOCUSED, GetElementProperty<ElementProperty<ACCESSIBILITY_FOCUSED>>),
         DECLARE_NAPI_GETTER(BUNDLE_NAME, GetElementProperty<ElementProperty<BUNDLE_NAME>>),
         DECLARE_NAPI_GETTER(CHECKABLE, GetElementProperty<ElementProperty<CHECKABLE>>),
@@ -1503,6 +1507,24 @@ void NAccessibilityElement::GetElementInfoSupportedActionNames(
     ConvertStringVecToJS(callbackInfo->env_, value, actionNames);
 }
 
+void NAccessibilityElement::GetElementInfoChildrenTreeId(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetChildTreeId(), &value));
+}
+ 
+void NAccessibilityElement::GetElementInfoBelongTreeId(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetBelongTreeId(), &value));
+}
+
 void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_object(callbackInfo->env_, &value));
@@ -1813,6 +1835,14 @@ void NAccessibilityElement::GetElementInfoAllAttribute6(NAccessibilityElementDat
     napi_value isEssential = nullptr;
     GetElementInfoIsEssential(callbackInfo, isEssential);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "isEssential", isEssential));
+
+    napi_value childrenTreeId = nullptr;
+    GetElementInfoChildrenTreeId(callbackInfo, childrenTreeId);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "childrenTreeId", childrenTreeId));
+ 
+    napi_value belongTreeId = nullptr;
+    GetElementInfoBelongTreeId(callbackInfo, belongTreeId);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "belongTreeId", belongTreeId));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -2368,6 +2398,90 @@ napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info i
     return FindElementAsync(env, argc, argv, callbackInfo, accessibilityElement);
 }
 
+napi_value NAccessibilityElement::FocusMoveSearchWithCondition(napi_env env, napi_callback_info info)
+{
+    int32_t windowId = 0;
+    int64_t elementId = 0;
+    napi_value thisVar = nullptr;
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value argv[ARGS_SIZE_TWO] = {0};
+    napi_status status = napi_get_cb_info(env, info, &argc, argv, &thisVar, nullptr);
+ 
+    AccessibilityElement* accessibilityElement = nullptr;
+    status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
+ 
+    napi_value promise = nullptr;
+    NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
+    callbackInfo->env_ = env;
+    callbackInfo->accessibilityElement_ = *accessibilityElement;
+    napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    if (status != napi_ok) {
+        HILOG_ERROR("Failed to get cb info");
+        return promise;
+    }
+    OHOS::AccessibilityNapi::ParseString(env, callbackInfo->condition_, argv[PARAM0]);
+    OHOS::AccessibilityNapi::ParseString(env, callbackInfo->direction_, argv[PARAM1]);
+ 
+    napi_value resource = nullptr;
+    napi_create_string_utf8(callbackInfo->env_, "FocusMoveSearchWithCondition", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(callbackInfo->env_, nullptr, resource, FocusMoveSearchWithConditionExecute,
+        FocusMoveSearchWithConditionComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    napi_queue_async_work_with_qos(callbackInfo->env_, callbackInfo->work_, napi_qos_user_initiated);
+    return promise;
+}
+ 
+void NAccessibilityElement::FocusMoveSearchWithConditionExecute(napi_env env, void* data)
+{
+    NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
+    if (!callbackInfo->accessibilityElement_.elementInfo_) {
+        HILOG_ERROR("elementInfo_ is nullptr");
+        return;
+    }
+    int64_t elementId = callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityId();
+    int32_t windowId = callbackInfo->accessibilityElement_.elementInfo_->GetWindowId();
+    FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->direction_);
+    DetailCondition condition = ConvertStringToDetailCondition(callbackInfo->condition_);
+    AccessibilityFocusMoveParam param { direction, condition };
+
+    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(elementId, param,
+        callbackInfo->nodeInfos_, windowId);
+}
+ 
+void NAccessibilityElement::FocusMoveSearchWithConditionComplete(napi_env env, napi_status status, void* data)
+{
+    NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
+ 
+    napi_value napiResultInfo = nullptr;
+    napi_create_object(env, &napiResultInfo);
+ 
+    napi_value constructor = nullptr;
+    napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
+    napi_value napiElementInfo = nullptr;
+    napi_new_instance(env, constructor, 0, nullptr, &napiElementInfo);
+    ConvertElementInfosToJS(env, napiElementInfo, callbackInfo->nodeInfos_);
+ 
+    napi_value nResult = nullptr;
+    napi_status nStatus = napi_create_int64(env, callbackInfo->ret_, &nResult);
+    if (nStatus != napi_ok) {
+        return;
+    }
+    napi_set_named_property(env, napiResultInfo, "target", napiElementInfo);
+    napi_set_named_property(env, napiResultInfo, "result", nResult);
+ 
+    napi_resolve_deferred(env, callbackInfo->deferred_, napiResultInfo);
+    napi_delete_async_work(env, callbackInfo->work_);
+    delete callbackInfo;
+    callbackInfo = nullptr;
+}
+
 RetError NAccessibilityElement::ParseConditionInt64(NAPICbInfo& cbInfo,
     NAccessibilityElementData* elementData, size_t paramIndex, FindElementCondition conditionId)
 {
@@ -2410,6 +2524,24 @@ napi_value NAccessibilityElement::GetParent(napi_env env, napi_callback_info inf
             },
             std::bind(ParseCallback, std::placeholders::_1, std::placeholders::_2, PARAM0, std::placeholders::_3),
             RunAttributeValueAsync});
+}
+
+OHOS::Accessibility::RetError NAccessibilityElement::ParseFocusMoveSearchWithCondition(
+    OHOS::Accessibility::NAPICbInfo &cbInfo, NAccessibilityElementData *elementData)
+{
+    std::string direction;
+    RetError ret = cbInfo.ParseString(0, elementData->direction_);
+    if (ret != RetError::RET_OK) {
+        HILOG_ERROR("Parse direction failed");
+        return ret;
+    }
+    ret = cbInfo.ParseString(1, elementData->condition_);
+    if (ret != RetError::RET_OK) {
+        HILOG_ERROR("Parse condition failed");
+        return ret;
+    }
+    elementData->systemApi = true;
+    return RetError::RET_OK;
 }
 
 napi_value NAccessibilityElement::GetChildren(napi_env env, napi_callback_info info)
@@ -2612,6 +2744,35 @@ RetError NAccessibilityElement::ParseAccessibilityElement(NAPICbInfo& cbInfo, NA
 
     elementData->accessibilityElement_ = *accessibilityElement;
     return RetError::RET_OK;
+}
+
+napi_status SetEventInfoStrProperty(napi_env env, const char *property, std::string &value, napi_value &napiEventInfo)
+{
+    if (property == nullptr) {
+        HILOG_ERROR("property is null");
+        return napi_invalid_arg;
+    }
+    napi_value nValue = nullptr;
+    napi_status status = napi_create_string_utf8(env, value.c_str(), NAPI_AUTO_LENGTH, &nValue);
+    if (status != napi_ok) {
+        HILOG_ERROR();
+        return status;
+    }
+    return napi_set_named_property(env, napiEventInfo, property, nValue);
+}
+ 
+napi_status SetNapiEventInfoIntProperty(napi_env env, const char *property, int64_t value, napi_value &napiEventInfo)
+{
+    if (property == nullptr) {
+        HILOG_ERROR("property is null");
+        return napi_invalid_arg;
+    }
+    napi_value nValue = nullptr;
+    napi_status status = napi_create_int64(env, value, &nValue);
+    if (status != napi_ok) {
+        return status;
+    }
+    return napi_set_named_property(env, napiEventInfo, property, nValue);
 }
 
 napi_value NAccessibilityElement::GetCursorPositionAsync(napi_env env, size_t argc, napi_value* argv,
@@ -3064,7 +3225,11 @@ FocusMoveDirection NAccessibilityElement::ConvertStringToDirection(const std::st
         {"left", FocusMoveDirection::LEFT},
         {"right", FocusMoveDirection::RIGHT},
         {"forward", FocusMoveDirection::FORWARD},
-        {"backward", FocusMoveDirection::BACKWARD}
+        {"backward", FocusMoveDirection::BACKWARD},
+        {"findLast", FocusMoveDirection::FIND_LAST},
+        {"GetForwardScrollAncestor", FocusMoveDirection::GET_FORWARD_SCROLL_ANCESTOR},
+        {"GetBackwardScrollAncestor", FocusMoveDirection::GET_BACKWARD_SCROLL_ANCESTOR},
+        {"GetScrollableAncestor", FocusMoveDirection::GET_SCROLLABLE_ANCESTOR}
     };
 
     if (focusMoveDirectionTable.find(str) == focusMoveDirectionTable.end()) {
@@ -3072,6 +3237,21 @@ FocusMoveDirection NAccessibilityElement::ConvertStringToDirection(const std::st
     }
 
     return focusMoveDirectionTable.at(str);
+}
+
+DetailCondition NAccessibilityElement::ConvertStringToDetailCondition(const std::string &str)
+{
+    static const std::map<std::string, DetailCondition> detailConditionMap = {
+        { "bypass_self", DetailCondition::BYPASS_SELF },
+        { "bypass_self_descendants", DetailCondition::BYPASS_SELF_DESCENDANTS},
+        { "check_self", DetailCondition::CHECK_SELF},
+        { "check_self_bypass_descendants", DetailCondition::CHECK_SELF_BYPASS_DESCENDANTS}
+    };
+    if (detailConditionMap.find(str) == detailConditionMap.end()) {
+        return DetailCondition::BYPASS_SELF;
+    }
+ 
+    return detailConditionMap.at(str);
 }
 
 int32_t NAccessibilityElement::ConvertStringToFocusType(const std::string &str)

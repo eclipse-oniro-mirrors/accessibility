@@ -225,6 +225,10 @@ public:
     virtual void SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
         const SpecificPropertyParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+
+    virtual void FocusMoveSearchWithCondition(const int64_t elementId,
+        const AccessibilityFocusMoveParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

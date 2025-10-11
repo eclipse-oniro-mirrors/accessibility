@@ -533,5 +533,10 @@ RetError MockAccessibleAbilityManagerServiceStub::UpdateUITestConfigureEvents(st
 {
     return RET_OK;
 }
+
+ErrCode MockAccessibleAbilityManagerServiceStub::GetReadableRules(std::string &name)
+{
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

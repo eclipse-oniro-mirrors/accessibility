@@ -342,6 +342,11 @@ public:
     {
         return RET_OK;
     }
+
+    ErrCode GetReadableRules(std::string &readableRules) override
+    {
+        return RET_OK;
+    }
 };
 
 uint32_t GetU32Data(const uint8_t *ptr)

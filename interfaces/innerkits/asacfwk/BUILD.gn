@@ -21,6 +21,7 @@ config("accessibilityclient_private_config") {
 
   include_dirs = [
     "${asacfwk_path}/include",
+    "${asacfwk_path}/src/rules",
     "../../../common/log/include",
     "../../../common/interface/include",
   ]
@@ -44,6 +45,13 @@ config("accessibilityclient_public_config") {
 asacfwk_src = [
   "${asacfwk_path}/src/accessibility_system_ability_client_impl.cpp",
   "${asacfwk_path}/src/accessibility_element_operator_impl.cpp",
+  "${asacfwk_path}/src/rules/rules_checker.cpp",
+  "${asacfwk_path}/src/rules/condition_item.cpp",
+  "${asacfwk_path}/src/rules/condition.cpp",
+  "${asacfwk_path}/src/rules/custom_props.cpp",
+  "${asacfwk_path}/src/rules/prop_value.cpp",
+  "${asacfwk_path}/src/rules/readable_rule.cpp",
+  "${asacfwk_path}/src/rules/rules_defines.cpp",
   "../../../common/interface/src/api_event_reporter.cpp",
 ]
 
@@ -80,6 +88,7 @@ ohos_shared_library("accessibilityclient") {
     "init:libbegetutil",
     "ipc:ipc_single",
     "samgr:samgr_proxy",
+    "json:nlohmann_json_static",
   ]
 
   if (product_name != "qemu-arm-linux-min") {

@@ -253,6 +253,13 @@ public:
     virtual void SetPerformActionResult(const bool succeeded, const int32_t requestId) override;
     virtual RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
     virtual RetError SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
+    virtual RetError IsScreenReaderRulesEnabled(bool &isEnabled) override;
+    virtual RetError CheckNodeIsReadable(const std::shared_ptr<ReadableRulesNode>& node, bool& isReadable) override;
+    virtual RetError CheckNodeIsSpecificType(
+        const std::shared_ptr<ReadableRulesNode>& node, ReadableSpecificType specificType, bool& isHit) override;
+    virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
+        const FocusMoveResult &result, const int32_t requestId) override;
+    virtual void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId) override;
 
     bool LoadAccessibilityService();
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);

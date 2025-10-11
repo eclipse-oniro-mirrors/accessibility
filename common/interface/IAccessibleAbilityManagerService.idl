@@ -96,4 +96,5 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void GetScreenReaderState([out] boolean state);
     void SetEnhanceConfig([in] AccessibilitySecCompRawdata rawData);
     void SearchNeedEvents([out] unsigned int[] needEvents);
+    void GetReadableRules([out] String name);
 }

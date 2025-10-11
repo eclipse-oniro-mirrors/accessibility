@@ -121,6 +121,9 @@ public:
     void SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
         const SpecificPropertyParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
+    void FocusMoveSearchWithCondition(const int64_t elementId,
+        const AccessibilityFocusMoveParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId) override {}
 };
 
 template<class T>

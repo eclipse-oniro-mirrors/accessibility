@@ -294,5 +294,17 @@ RetError AccessibilityExtensionContext::NotifyDisconnect()
     }
     return aaClient->NotifyDisconnect();
 }
+
+RetError AccessibilityExtensionContext::FocusMoveSearchWithCondition(int64_t elementId,
+    AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t windowId)
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->FocusMoveSearchWithCondition(elementId, param, infos, windowId);
+}
 } // namespace Accessibility
 } // namespace OHOS

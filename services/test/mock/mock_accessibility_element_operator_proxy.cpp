@@ -164,5 +164,25 @@ void MockAccessibilityElementOperatorProxy::SearchElementInfoBySpecificProperty(
     (void)callback;
     return;
 }
+
+void MockAccessibilityElementOperatorProxy::FocusMoveSearchWithCondition(const int64_t elementId,
+    const AccessibilityFocusMoveParam &param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    (void)elementId;
+    (void)param;
+    (void)requestId;
+    (void)callback;
+}
+
+void MockAccessibilityElementOperatorProxy::DetectElementInfoFocusableThroughAncestor(
+    const AccessibilityElementInfo &info, const int64_t parentId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    (void)info;
+    (void)parentId;
+    (void)requestId;
+    (void)callback;
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -214,6 +214,9 @@ public:
     * @return Return RET_OK if NotifyDisconnect successfully, otherwise refer to the RetError for the failure.
     */
     RetError NotifyDisconnect();
+
+    RetError FocusMoveSearchWithCondition(int64_t elementId, AccessibilityFocusMoveParam param,
+        std::vector<AccessibilityElementInfo> &infos, int32_t windowId);
 private:
     static int illegalRequestCode_;
 };

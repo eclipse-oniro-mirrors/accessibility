@@ -32,6 +32,7 @@ config("module_private_config") {
     "../../../interfaces/innerkits/acfwk/include",
     "../../../interfaces/innerkits/asacfwk/include",
     "../../../services/test/mock/common",
+    "../src/rules",
   ]
   defines = [
     "AAMS_LOG_DOMAIN = 0xD001D05",
@@ -50,6 +51,13 @@ ohos_unittest("asac_unit_test") {
     "../../aafwk/src/accessibility_element_operator_callback_impl.cpp",
     "../src/accessibility_element_operator_impl.cpp",
     "../src/accessibility_system_ability_client_impl.cpp",
+    "../src/rules/rules_checker.cpp",
+    "../src/rules/rules_defines.cpp",
+    "../src/rules/custom_props.cpp",
+    "../src/rules/condition.cpp",
+    "../src/rules/condition_item.cpp",
+    "../src/rules/readable_rule.cpp",
+    "../src/rules/prop_value.cpp",
     "unittest/accessibility_element_operator_impl_test.cpp",
     "unittest/accessibility_system_ability_client_impl_test.cpp",
   ]

@@ -976,5 +976,52 @@ void AccessibleAbilityChannel::SearchElementInfoBySpecificProperty(const Element
         return;
     }
 }
+
+void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const int64_t elementId,
+    const AccessibilityFocusMoveParam &param,  const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId)
+{
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
+    if (eventHandler_ == nullptr) {
+        HILOG_ERROR("eventHandler_ is nullptr.");
+        return;
+    }
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return;
+    }
+    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
+    int32_t accountId = accountId_;
+    std::string clientName = clientName_;
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
+    eventHandler_->PostTask([accountId, clientName, syncPromise, windowId, elementId, treeId,
+        requestId, callback, param]() {
+        sptr<IAccessibilityElementOperator> elementOperator = nullptr;
+        RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID,
+            clientName, elementOperator, treeId);
+        if (ret != RET_OK) {
+            HILOG_ERROR("Get elementOperator failed! windowId[%{public}d]", windowId);
+            std::list<AccessibilityElementInfo> infos;
+            FocusMoveResult result = FocusMoveResult::SEARCH_FAIL;
+            callback->SetFocusMoveSearchWithConditionResult(infos, result, requestId);
+            syncPromise->set_value(ret);
+            return;
+        }
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        int64_t realElementId = awm.GetSceneBoardElementId(windowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(windowId, treeId,
+            requestId, callback);
+        elementOperator->FocusMoveSearchWithCondition(elementId, param, requestId, callback);
+        syncPromise->set_value(RET_OK);
+        }, "FocusMoveSearchWithCondition");
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait SearchElementInfosByText result");
+        return;
+    }
+    syncFuture.get();
+    return;
+}
 } // namespace Accessibility
 } // namespace OHOS

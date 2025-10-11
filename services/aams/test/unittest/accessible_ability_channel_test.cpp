@@ -59,7 +59,9 @@ public:
         GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult called: requestId=" << requestId
                          << ", infos.size=" << infos.size() << ", treeInfos.size=" << treeInfos.size();
     }
-
+    void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
+        const FocusMoveResult &result, const int32_t requestId) override {}
+    void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId) override {}
     bool IsCallbackCalled() const { return callbackCalled_; }
     const std::vector<AccessibilityElementInfo>& GetReceivedInfos() const { return receivedInfos_; }
     const std::vector<AccessibilityElementInfo>& GetReceivedTreeInfos() const { return receivedTreeInfos_; }

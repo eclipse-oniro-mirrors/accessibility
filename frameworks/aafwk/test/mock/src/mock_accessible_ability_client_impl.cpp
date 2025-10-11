@@ -381,5 +381,12 @@ RetError AccessibleAbilityClientImpl::ConfigureEvents(const std::vector<uint32_t
     HILOG_DEBUG();
     return RET_OK;
 }
+
+RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(int64_t elementId,
+    AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t windowId)
+{
+    HILOG_DEBUG();
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

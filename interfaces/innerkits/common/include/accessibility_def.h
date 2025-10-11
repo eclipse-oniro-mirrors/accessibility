@@ -211,6 +211,10 @@ enum FocusMoveDirection : int32_t {
     RIGHT = 0x00000008,
     FORWARD = 0x00000010,
     BACKWARD = 0x00000020,
+    FIND_LAST = 0x00000040,
+    GET_FORWARD_SCROLL_ANCESTOR = 0x00000080,
+    GET_BACKWARD_SCROLL_ANCESTOR = 0x00000100,
+    GET_SCROLLABLE_ANCESTOR = 0x00000200,
 };
 
 enum WindowUpdateType : int32_t {
@@ -385,6 +389,43 @@ struct SpecificPropertyParam {
     SEARCH_TYPE propertyType;
 };
 
+const std::map<std::string, EventType> EvtTypeTable = {
+    {"accessibilityFocus", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT},
+    {"accessibilityFocusClear", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT},
+    {"click", EventType::TYPE_VIEW_CLICKED_EVENT},
+    {"longClick", EventType::TYPE_VIEW_LONG_CLICKED_EVENT},
+    {"focus", EventType::TYPE_VIEW_FOCUSED_EVENT},
+    {"select", EventType::TYPE_VIEW_SELECTED_EVENT},
+    {"scroll", EventType::TYPE_VIEW_SCROLLED_EVENT},
+    {"scrolling", EventType::TYPE_VIEW_SCROLLING_EVENT},
+    {"hoverEnter", EventType::TYPE_VIEW_HOVER_ENTER_EVENT},
+    {"hoverExit", EventType::TYPE_VIEW_HOVER_EXIT_EVENT},
+    {"textUpdate", EventType::TYPE_VIEW_TEXT_UPDATE_EVENT},
+    {"textSelectionUpdate", EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT},
+    {"requestFocusForAccessibility", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY},
+    {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY},
+    {"announceForAccessibilityNotInterrupt", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT},
+    {"requestFocusForAccessibilityNotInterrupt", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
+    {"pageContentUpdate", EventType::TYPE_PAGE_CONTENT_UPDATE},
+    {"pageStateUpdate", EventType::TYPE_PAGE_STATE_UPDATE},
+    {"pageOpen", EventType::TYPE_PAGE_OPEN},
+    {"pageClose", EventType::TYPE_PAGE_CLOSE},
+    {"allEvents", EventType::TYPES_ALL_MASK},
+    {"noneEvents", EventType::TYPE_VIEW_INVALID}
+};
+
+enum DetailCondition : int32_t {
+    BYPASS_SELF = 0x00000001,
+    BYPASS_SELF_DESCENDANTS = 0x00000002,
+    CHECK_SELF = 0x00000004,
+    CHECK_SELF_BYPASS_DESCENDANTS = 0x00000008,
+};
+
+struct AccessibilityFocusMoveParam {
+    FocusMoveDirection direction;
+    DetailCondition condition;
+};
+
 constexpr int32_t PARAM0 = 0;
 constexpr int32_t PARAM1 = 1;
 constexpr int32_t PARAM2 = 2;
@@ -394,6 +435,19 @@ struct AccessibilitySecCompPoint {
     int64_t uniqueId;
     char bundleName[MAX_BUNDLE_NAME_LEN];
     int64_t timeStamp;
+};
+
+enum FocusMoveResult : int32_t {
+    NOT_SUPPORT = -1,
+    SEARCH_SUCCESS = 0,
+    SEARCH_SUCCESS_NEXT_BYPASS_DESCENDANTS = 0x00000001,
+    SEARCH_FAIL = 0x00000002,
+    SEARCH_FAIL_IN_CHILDTREE = 0x00000004,
+    SEARCH_FAIL_LOST_NODE = 0x00000008,
+    SEARCH_NEXT = 0x00000010,
+    DOUBLE_CHECK_CHILD_PROPERTY = 0x00000020,
+    DOUBLE_CHECK_CHILD_PROPERTY_AND_GET_LAST = 0x00000040,
+    SERACH_FAIL_IN_SCROLL = 0x00000080,
 };
 } // namespace Accessibility
 } // namespace OHOS

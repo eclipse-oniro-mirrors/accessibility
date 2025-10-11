@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_element_operator_proxy.h"
+#include "accessibility_element_info_parcel.h"
 #include "hilog_wrapper.h"
 #include <cinttypes>
 
@@ -542,6 +543,94 @@ void AccessibilityElementOperatorProxy::SearchElementInfoBySpecificProperty(cons
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_BY_SPECIFIC_PROPERTY,
+        data, reply, option)) {
+        HILOG_ERROR("search element info by specific property failed");
+        return;
+    }
+}
+
+void AccessibilityElementOperatorProxy::FocusMoveSearchWithCondition(const int64_t elementId,
+    const AccessibilityFocusMoveParam &param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+
+    if (!data.WriteInt64(elementId)) {
+        return;
+    }
+
+    if (!data.WriteInt32(param.direction)) {
+        return;
+    }
+
+    if (!data.WriteInt32(param.condition)) {
+        return;
+    }
+
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write parcelable request id failed");
+        return;
+    }
+
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr");
+        return;
+    }
+
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("connection write parcelable callback failed");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::ASAC_FOCUS_MOVE_SEARCH_WITH_CONDITION,
+        data, reply, option)) {
+        HILOG_ERROR("search element info by specific property failed");
+        return;
+    }
+}
+
+void AccessibilityElementOperatorProxy::DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
+    const int64_t parentId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+    AccessibilityElementInfoParcel infoParcel(info);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+
+    if (!data.WriteParcelable(&infoParcel)) {
+        HILOG_ERROR("connection write info failed");
+        return;
+    }
+
+    if (!data.WriteInt64(parentId)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
+
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
+
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("connection write parcelable callback failed");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::ASAC_DETECT_ELEMENTINFO_FOCUSABLE,
         data, reply, option)) {
         HILOG_ERROR("search element info by specific property failed");
         return;

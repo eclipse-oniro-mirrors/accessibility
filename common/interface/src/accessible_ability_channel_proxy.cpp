@@ -814,5 +814,50 @@ void AccessibleAbilityChannelProxy::SearchElementInfoBySpecificProperty(const El
         return;
     }
 }
+
+void AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const int64_t elementId,
+    const AccessibilityFocusMoveParam& param, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId)
+{
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return;
+    }
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        return;
+    }
+    if (!data.WriteInt64(elementId)) {
+        HILOG_ERROR("elementId write error: %{public}" PRId64 ", ", elementId);
+        return;
+    }
+    if (!data.WriteInt32(param.direction)) {
+        return;
+    }
+    if (!data.WriteInt32(param.condition)) {
+        return;
+    }
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("requestId write error: %{public}d, ", requestId);
+        return;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("callback write error");
+        return;
+    }
+    if (!data.WriteInt32(windowId)) {
+        HILOG_ERROR("windowId write error: %{public}d, ", windowId);
+        return;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH_WITH_CONDITION,
+        data, reply, option)) {
+        HILOG_ERROR("fail to find elementInfo by specific property");
+        return;
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

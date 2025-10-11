@@ -599,5 +599,37 @@ RetError AccessibleAbilityChannelClient::ValidateAndProcessElementInfos(
     HILOG_DEBUG("Found results in %{public}s, size: %{public}zu", logType.c_str(), targetInfos.size());
     return RET_OK;
 }
+
+RetError AccessibleAbilityChannelClient::FocusMoveSearchWithCondition(int64_t elementId,
+    AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t windowId)
+{
+    int32_t requestId = GenerateRequestId();
+    HILOG_DEBUG("channelId:%{public}d, elementId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
+        channelId_, elementId, windowId, requestId);
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]",
+            channelId_);
+        return RET_ERR_SAMGR;
+    }
+    sptr<AccessibilityElementOperatorCallbackImpl> callback =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (callback == nullptr) {
+        HILOG_ERROR("SearchElementInfosBySpecificProperty Failed to create callback");
+        return RET_ERR_NULLPTR;
+    }
+
+    ffrt::future<void> promiseFuture = callback->promise_.get_future();
+    proxy_->FocusMoveSearchWithCondition(elementId, param, requestId, callback, windowId);
+
+    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitFocus != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
+    infos = callback->elementInfosResult_;
+
+    return static_cast<RetError>(callback->result_);
+}
 } // namespace Accessibility
 } // namespace OHOS

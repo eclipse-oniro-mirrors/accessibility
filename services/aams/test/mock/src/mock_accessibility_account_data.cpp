@@ -609,5 +609,10 @@ void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data
 {
     (void)data;
 }
+
+int32_t AccessibilityAccountData::GetReadableRules(std::string &readableRules)
+{
+    return 0;
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -403,6 +403,9 @@ public:
      * @return Return RET_OK if config need events successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError ConfigureEvents(std::vector<uint32_t> needEvents) = 0;
+
+    virtual RetError FocusMoveSearchWithCondition(int64_t elementId, AccessibilityFocusMoveParam param,
+        std::vector<AccessibilityElementInfo> &infos, int32_t windowId) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

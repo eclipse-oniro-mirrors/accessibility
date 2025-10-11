@@ -61,6 +61,8 @@
     SWITCH_CASE(AccessibilityInterfaceCode::CONFIGURE_EVENTS, HandleConfigureEvents)                                  \
     SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_SPECIFIC_PROPERTY,                                 \
         HandleSearchElementInfoBySpecificProperty)                                                                    \
+    SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH_WITH_CONDITION,                                         \
+        HandleFocusMoveSearchWithCondition)
 
 namespace OHOS {
 namespace Accessibility {
@@ -602,6 +604,37 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoBySpecificProperty(
     }
 
     SearchElementInfoBySpecificProperty(elementBasicInfo, param, requestId, callback);
+    RetError result = RET_OK;
+    HILOG_DEBUG("SearchElementInfosBySpecificProperty ret = %{public}d", result);
+    reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithCondition(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int64_t elementId = data.ReadInt64();
+    AccessibilityFocusMoveParam param;
+    param.direction = static_cast<FocusMoveDirection>(data.ReadInt32());
+    param.condition = static_cast<DetailCondition>(data.ReadInt32());
+
+    int32_t requestId = data.ReadInt32();
+
+    sptr<IRemoteObject> remote = data.ReadRemoteObject();
+    if (remote == nullptr) {
+        HILOG_ERROR("remote is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        iface_cast<IAccessibilityElementOperatorCallback>(remote);
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return ERR_INVALID_VALUE;
+    }
+    int32_t windowId = data.ReadInt32();
+
+    FocusMoveSearchWithCondition(elementId, param, requestId, callback, windowId);
     RetError result = RET_OK;
     HILOG_DEBUG("SearchElementInfosBySpecificProperty ret = %{public}d", result);
     reply.WriteInt32(result);
