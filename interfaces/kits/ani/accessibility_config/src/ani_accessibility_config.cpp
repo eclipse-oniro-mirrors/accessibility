@@ -423,39 +423,6 @@ void ANIAccessibilityConfigObserver::NotifyIntChangedToJs(int32_t value)
     }
 }
 
-void ANIAccessibilityConfigObserver::NotifyUintChangedToJs(uint32_t value)
-{
-    HILOG_INFO(" id = [%{public}d] value = [%{public}u]", static_cast<int32_t>(configId_), value);
-
-    std::shared_ptr<ANIStateCallbackInfo> callbackInfo = std::make_shared<ANIStateCallbackInfo>();
-    if (callbackInfo == nullptr) {
-        HILOG_ERROR("Failed to create callbackInfo");
-        return;
-    }
-    callbackInfo->uint32Value_ = value;
-    callbackInfo->env_ = env_;
-    callbackInfo->fnRef_ = handlerRef_;
-    auto task = [callbackInfo]() {
-        HILOG_INFO("notify state changed to ets");
-        ani_env *tmpEnv = callbackInfo->env_;
-        ani_size nr_refs = ANI_SCOPE_SIZE;
-        tmpEnv->CreateLocalScope(nr_refs);
-        auto fnObj = reinterpret_cast<ani_fn_object>(callbackInfo->fnRef_);
-        ani_object state = ANIUtils::CreateDouble(tmpEnv, callbackInfo->uint32Value_);
-        if (state == nullptr) {
-            HILOG_ERROR("create uint32_t object failed");
-            return;
-        }
-        std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(state)};
-        ani_ref result;
-        tmpEnv->FunctionalObject_Call(fnObj, 1, args.data(), &result);
-        tmpEnv->DestroyLocalScope();
-    };
-    if (!ANIUtils::SendEventToMainThread(task)) {
-        HILOG_ERROR("failed to send event");
-    }
-}
-
 void ANIAccessibilityConfigObserver::NotifyFloatChangedToJs(float value)
 {
     HILOG_INFO("id = [%{public}d] value = [%{public}f]", static_cast<int32_t>(configId_), value);
