@@ -338,41 +338,6 @@ ani_object FindElements(ani_env *env, ani_object thisObj, ani_string type, ani_s
     return resultArray;
 }
 
-void AttributeValueExecute(FindElementParams* data)
-{
-    if (data == nullptr) {
-        HILOG_ERROR("FindElementParams is nullptr");
-        return;
-    }
-    bool systemApi = data->systemApi_;
-    HILOG_DEBUG("systemApi: %{public}d", systemApi);
-    if (data->attribute_ == "parent") {
-        if (data->accessibilityElement_.elementInfo_) {
-            data->ret_ = AccessibleAbilityClient::GetInstance()->GetParentElementInfo(
-                *data->accessibilityElement_.elementInfo_, data->nodeInfo_, systemApi);
-        } else {
-            HILOG_ERROR("elementInfo is nullptr");
-        }
-    } else if (data->attribute_ == "children") {
-        if (data->accessibilityElement_.elementInfo_) {
-            data->ret_ = AccessibleAbilityClient::GetInstance()->GetChildren(
-                *data->accessibilityElement_.elementInfo_, data->nodeInfos_, systemApi);
-        } else {
-            HILOG_ERROR("elementInfo is nullptr");
-        }
-    } else if (data->attribute_ == "rootElement") {
-        if (data->accessibilityElement_.windowInfo_) {
-            data->ret_ = AccessibleAbilityClient::GetInstance()->GetRootByWindow(
-                *data->accessibilityElement_.windowInfo_, data->nodeInfo_, systemApi);
-        } else {
-            HILOG_ERROR("windowInfo is nullptr");
-        }
-    } else {
-        data->ret_ = RET_OK;
-    }
-    HILOG_DEBUG("attribute[%{public}s], result[%{public}d]", data->attribute_.c_str(), data->ret_);
-}
-
 void FindElementByText(FindElementParams *data)
 {
     bool systemApi = data->systemApi_;
