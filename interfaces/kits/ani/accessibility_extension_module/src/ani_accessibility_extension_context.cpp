@@ -109,13 +109,13 @@ static ani_object GetDefaultFocusedElementIdsNative([[maybe_unused]] ani_env *en
             return nullptr;
         }
         if (ANI_OK != env->Array_Set(resultArray, static_cast<ani_size>(i), idObj)) {
-            HILOG_ERROR("Failed to set array element at index %zu", i);
+            HILOG_ERROR("Failed to set array element at index %{public}zu", i);
             ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
             return nullptr;
         }
     }
 
-    HILOG_DEBUG("getDefaultFocusedElementIdsNative end, returned %zu elements", accessibilityElements->size());
+    HILOG_DEBUG("getDefaultFocusedElementIdsNative end, returned %{public}zu elements", accessibilityElements->size());
     return resultArray;
 }
 

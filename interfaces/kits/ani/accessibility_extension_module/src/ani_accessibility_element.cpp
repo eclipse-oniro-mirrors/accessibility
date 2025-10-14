@@ -208,16 +208,16 @@ ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<Accessibility
     for (size_t i = 0; i < windowInfos.size(); i++) {
         ani_object windowObj = CreateAniAccessibilityElement(env, windowInfos[i]);
         if (windowObj == nullptr) {
-            HILOG_ERROR("Failed to create AccessibilityElement at index %zu", i);
+            HILOG_ERROR("Failed to create AccessibilityElement at index %{public}zu", i);
             continue;
         }
 
         if (ANI_OK != env->Array_Set(resultArray, static_cast<ani_size>(i), windowObj)) {
-            HILOG_ERROR("Failed to set array element at index %zu", i);
+            HILOG_ERROR("Failed to set array element at index %{public}zu", i);
         }
     }
 
-    HILOG_DEBUG("ConvertElementInfosToAni end, converted %zu elements", windowInfos.size());
+    HILOG_DEBUG("ConvertElementInfosToAni end, converted %{public}zu elements", windowInfos.size());
     return resultArray;
 }
 
@@ -452,15 +452,15 @@ ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<Accessibility
     for (size_t i = 0; i < elementInfos.size(); i++) {
         ani_object elementObj = CreateAniAccessibilityElement(env, elementInfos[i]);
         if (elementObj == nullptr) {
-            HILOG_ERROR("Failed to create AccessibilityElement at index %zu", i);
+            HILOG_ERROR("Failed to create AccessibilityElement at index %{public}zu", i);
             continue;
         }
         if (ANI_OK != env->Array_Set(resultArray, static_cast<ani_size>(i), elementObj)) {
-            HILOG_ERROR("Failed to set array element at index %zu", i);
+            HILOG_ERROR("Failed to set array element at index %{public}zu", i);
         }
     }
 
-    HILOG_DEBUG("ConvertElementInfosToAni end, converted %zu elements", elementInfos.size());
+    HILOG_DEBUG("ConvertElementInfosToAni end, converted %{public}zu elements", elementInfos.size());
     return resultArray;
 }
 }
