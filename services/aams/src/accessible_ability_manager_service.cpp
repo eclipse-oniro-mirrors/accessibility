@@ -2621,6 +2621,10 @@ void AccessibleAbilityManagerService::UpdateShortKeyRegister()
 ErrCode AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
         HILOG_WARN("SetCaptionProperty permission denied.");
         return RET_ERR_NO_PERMISSION;
@@ -2757,6 +2761,10 @@ ErrCode AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
 ErrCode AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
         HILOG_WARN("SetCaptionProperty permission denied.");
         return RET_ERR_NO_PERMISSION;
@@ -2809,6 +2817,10 @@ ErrCode AccessibleAbilityManagerService::SetBrightnessDiscount(const float disco
 ErrCode AccessibleAbilityManagerService::SetAudioBalance(const float balance)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
         HILOG_WARN("SetCaptionProperty permission denied.");
         return RET_ERR_NO_PERMISSION;
@@ -2819,6 +2831,10 @@ ErrCode AccessibleAbilityManagerService::SetAudioBalance(const float balance)
 ErrCode AccessibleAbilityManagerService::SetClickResponseTime(const uint32_t time)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
         HILOG_WARN("SetCaptionProperty permission denied.");
         return RET_ERR_NO_PERMISSION;
@@ -2829,6 +2845,10 @@ ErrCode AccessibleAbilityManagerService::SetClickResponseTime(const uint32_t tim
 ErrCode AccessibleAbilityManagerService::SetIgnoreRepeatClickState(const bool state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
         HILOG_WARN("SetCaptionProperty permission denied.");
         return RET_ERR_NO_PERMISSION;
@@ -2839,6 +2859,10 @@ ErrCode AccessibleAbilityManagerService::SetIgnoreRepeatClickState(const bool st
 ErrCode AccessibleAbilityManagerService::SetIgnoreRepeatClickTime(const uint32_t time)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
         HILOG_WARN("SetCaptionProperty permission denied.");
         return RET_ERR_NO_PERMISSION;
@@ -2849,6 +2873,10 @@ ErrCode AccessibleAbilityManagerService::SetIgnoreRepeatClickTime(const uint32_t
 ErrCode AccessibleAbilityManagerService::GetScreenMagnificationState(bool &state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetScreenMagnificationState(state);
 }
 
@@ -2875,9 +2903,9 @@ ErrCode AccessibleAbilityManagerService::GetMouseKeyState(bool &state)
 ErrCode AccessibleAbilityManagerService::GetMouseAutoClick(int32_t &time)
 {
     PostDelayUnloadTask();
-    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("SetCaptionProperty permission denied.");
-        return RET_ERR_NO_PERMISSION;
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
     }
     return accessibilitySettings_->GetMouseAutoClick(time);
 }
@@ -2945,6 +2973,10 @@ ErrCode AccessibleAbilityManagerService::GetAnimationOffState(bool &state)
 ErrCode AccessibleAbilityManagerService::GetAudioMonoState(bool &state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetAudioMonoState(state);
 }
 
@@ -2981,24 +3013,40 @@ ErrCode AccessibleAbilityManagerService::GetBrightnessDiscount(float &brightness
 ErrCode AccessibleAbilityManagerService::GetAudioBalance(float &balance)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetAudioBalance(balance);
 }
 
 ErrCode AccessibleAbilityManagerService::GetClickResponseTime(uint32_t &time)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetClickResponseTime(time);
 }
 
 ErrCode AccessibleAbilityManagerService::GetIgnoreRepeatClickState(bool &state)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetIgnoreRepeatClickState(state);
 }
 
 ErrCode AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &time)
 {
     PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetIgnoreRepeatClickTime(time);
 }
 
