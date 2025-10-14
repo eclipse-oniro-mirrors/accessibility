@@ -2412,11 +2412,19 @@ napi_value NAccessibilityElement::FocusMoveSearchWithCondition(napi_env env, nap
  
     napi_value promise = nullptr;
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_NULLPTR);
+        napi_throw(env, err);
+        return nullptr;
+    }
     callbackInfo->env_ = env;
     callbackInfo->accessibilityElement_ = *accessibilityElement;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     if (status != napi_ok) {
         HILOG_ERROR("Failed to get cb info");
+        delete callbackInfo;
+        callbackInfo = nullptr;
         return promise;
     }
     OHOS::AccessibilityNapi::ParseString(env, callbackInfo->condition_, argv[PARAM0]);
