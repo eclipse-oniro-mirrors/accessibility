@@ -177,6 +177,8 @@ ani_object CreateAniAccessibilityElement(ani_env *env, const AccessibilityElemen
 
     if (ANI_OK != ANIUtils::Wrap(env, elementObj, element)) {
         HILOG_ERROR("Cannot wrap AccessibilityElementInfo");
+        delete element;
+        element = nullptr;
         return nullptr;
     }
 
@@ -206,16 +208,16 @@ ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<Accessibility
     for (size_t i = 0; i < windowInfos.size(); i++) {
         ani_object windowObj = CreateAniAccessibilityElement(env, windowInfos[i]);
         if (windowObj == nullptr) {
-            HILOG_ERROR("Failed to create AccessibilityElement at index %zu", i);
+            HILOG_ERROR("Failed to create AccessibilityElement at index %{public}zu", i);
             continue;
         }
 
         if (ANI_OK != env->Array_Set(resultArray, static_cast<ani_size>(i), windowObj)) {
-            HILOG_ERROR("Failed to set array element at index %zu", i);
+            HILOG_ERROR("Failed to set array element at index %{public}zu", i);
         }
     }
 
-    HILOG_DEBUG("ConvertElementInfosToAni end, converted %zu elements", windowInfos.size());
+    HILOG_DEBUG("ConvertElementInfosToAni end, converted %{public}zu elements", windowInfos.size());
     return resultArray;
 }
 
@@ -336,41 +338,6 @@ ani_object FindElements(ani_env *env, ani_object thisObj, ani_string type, ani_s
     return resultArray;
 }
 
-void AttributeValueExecute(FindElementParams* data)
-{
-    if (data == nullptr) {
-        HILOG_ERROR("FindElementParams is nullptr");
-        return;
-    }
-    bool systemApi = data->systemApi_;
-    HILOG_DEBUG("systemApi: %{public}d", systemApi);
-    if (data->attribute_ == "parent") {
-        if (data->accessibilityElement_.elementInfo_) {
-            data->ret_ = AccessibleAbilityClient::GetInstance()->GetParentElementInfo(
-                *data->accessibilityElement_.elementInfo_, data->nodeInfo_, systemApi);
-        } else {
-            HILOG_ERROR("elementInfo is nullptr");
-        }
-    } else if (data->attribute_ == "children") {
-        if (data->accessibilityElement_.elementInfo_) {
-            data->ret_ = AccessibleAbilityClient::GetInstance()->GetChildren(
-                *data->accessibilityElement_.elementInfo_, data->nodeInfos_, systemApi);
-        } else {
-            HILOG_ERROR("elementInfo is nullptr");
-        }
-    } else if (data->attribute_ == "rootElement") {
-        if (data->accessibilityElement_.windowInfo_) {
-            data->ret_ = AccessibleAbilityClient::GetInstance()->GetRootByWindow(
-                *data->accessibilityElement_.windowInfo_, data->nodeInfo_, systemApi);
-        } else {
-            HILOG_ERROR("windowInfo is nullptr");
-        }
-    } else {
-        data->ret_ = RET_OK;
-    }
-    HILOG_DEBUG("attribute[%{public}s], result[%{public}d]", data->attribute_.c_str(), data->ret_);
-}
-
 void FindElementByText(FindElementParams *data)
 {
     bool systemApi = data->systemApi_;
@@ -450,15 +417,15 @@ ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<Accessibility
     for (size_t i = 0; i < elementInfos.size(); i++) {
         ani_object elementObj = CreateAniAccessibilityElement(env, elementInfos[i]);
         if (elementObj == nullptr) {
-            HILOG_ERROR("Failed to create AccessibilityElement at index %zu", i);
+            HILOG_ERROR("Failed to create AccessibilityElement at index %{public}zu", i);
             continue;
         }
         if (ANI_OK != env->Array_Set(resultArray, static_cast<ani_size>(i), elementObj)) {
-            HILOG_ERROR("Failed to set array element at index %zu", i);
+            HILOG_ERROR("Failed to set array element at index %{public}zu", i);
         }
     }
 
-    HILOG_DEBUG("ConvertElementInfosToAni end, converted %zu elements", elementInfos.size());
+    HILOG_DEBUG("ConvertElementInfosToAni end, converted %{public}zu elements", elementInfos.size());
     return resultArray;
 }
 }

@@ -86,7 +86,6 @@ public:
     void NotifyStringChangedToJs(const std::string& value);
     void NotifyStringVectorChangedToJs(std::vector<std::string> value);
     void NotifyIntChangedToJs(int32_t value);
-    void NotifyUintChangedToJs(uint32_t value);
     void NotifyFloatChangedToJs(float value);
 
     ani_env* env_ = nullptr;
