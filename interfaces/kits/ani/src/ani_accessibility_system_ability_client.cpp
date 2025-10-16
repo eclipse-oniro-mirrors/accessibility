@@ -321,7 +321,7 @@ void ANIAccessibilityClient::SubscribeState(ani_env *env, ani_string type, ani_o
         screenReaderStateListeners_->SubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
-        ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
     }
 }
 
@@ -337,7 +337,7 @@ void ANIAccessibilityClient::UnsubscribeState(ani_env *env, ani_string type, ani
         screenReaderStateListeners_->UnsubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("UnsubscribeState eventType[%{public}s] is error", eventType.c_str());
-        ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
     }
 }
 
@@ -353,7 +353,7 @@ void ANIAccessibilityClient::UnsubscribeStateAll(ani_env *env, ani_string type)
         screenReaderStateListeners_->UnsubscribeObservers();
     } else {
         HILOG_ERROR("UnsubscribeStateAll eventType[%{public}s] is error", eventType.c_str());
-        ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
     }
 }
 
@@ -398,14 +398,14 @@ ani_boolean ANIAccessibilityClient::IsOpenTouchGuideSync([[maybe_unused]] ani_en
     auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
     if (asaClient == nullptr) {
         HILOG_ERROR("asaClient is nullptr!");
-        ThrowBusinessError(env, QueryRetMsg(RET_ERR_NULLPTR));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
         return false;
     }
     bool status = false;
     auto ret = asaClient->IsTouchExplorationEnabled(status);
     if (ret != RET_OK) {
         HILOG_ERROR("get touch guide state failed!");
-        ThrowBusinessError(env, QueryRetMsg(RET_ERR_FAILED));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
         return false;
     }
 
@@ -417,14 +417,14 @@ ani_boolean ANIAccessibilityClient::IsOpenAccessibilitySync([[maybe_unused]] ani
     auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
     if (asaClient == nullptr) {
         HILOG_ERROR("asaClient is nullptr!");
-        ThrowBusinessError(env, QueryRetMsg(RET_ERR_NULLPTR));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
         return false;
     }
     bool status = false;
     auto ret = asaClient->IsEnabled(status);
     if (ret != RET_OK) {
         HILOG_ERROR("get accessibility state failed!");
-        ThrowBusinessError(env, QueryRetMsg(RET_ERR_FAILED));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
         return false;
     }
 
@@ -769,17 +769,17 @@ void ANIAccessibilityClient::SetStyle(ani_env *env, ani_object object, ani_objec
     }
 
     if (!isUndefined) {
-        RETURN_IF_FALSE(ANIUtils::GetStringMember(env, value, "fontFamily", fontFamily));
-        RETURN_IF_FALSE(GetColorMember(env, value, "fontColor", fontColor));
-        RETURN_IF_FALSE(ANIUtils::GetStringMember(env, value, "fontEdgeType", fontEdgeType));
-        RETURN_IF_FALSE(GetColorMember(env, value, "backgroundColor", backgroundColor));
-        RETURN_IF_FALSE(GetColorMember(env, value, "windowColor", windowColor));
-        int value1 = 0;
-        if ((env->Object_GetPropertyByName_Int(value, "fontScale", &value1) != ANI_OK) || (value1 < 0)) {
-            HILOG_ERROR("Get property value1 failed");
+        RETURN_IF_FALSE(ANIUtils::GetStringMember(env, style, "fontFamily", fontFamily));
+        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, style, "fontColor", fontColor));
+        RETURN_IF_FALSE(ANIUtils::GetStringMember(env, style, "fontEdgeType", fontEdgeType));
+        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, style, "backgroundColor", backgroundColor));
+        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, style, "windowColor", windowColor));
+        int styleValue = 0;
+        if ((env->Object_GetPropertyByName_Int(style, "fontScale", &styleValue) != ANI_OK) || (styleValue < 0)) {
+            HILOG_ERROR("Get property failed");
             return;
         }
-        fontScale = static_cast<uint32_t>(value1);
+        fontScale = static_cast<uint32_t>(styleValue);
     }
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
@@ -801,14 +801,14 @@ void ANIAccessibilityClient::SendAccessibilityEvent(ani_env *env, ani_object eve
     auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
     if (asaClient == nullptr) {
         HILOG_ERROR("asaClient is nullptr!");
-        ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
         return;
     }
 
     bool ret = ANIUtils::ConvertEventInfoMandatoryFields(env, eventObject, eventInfo);
     if (!ret) {
         HILOG_ERROR("ConvertEventInfoMandatoryFields failed");
-        ThrowBusinessError(env, QueryRetMsg(RET_ERR_INVALID_PARAM));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
         return;
     }
 
@@ -819,7 +819,7 @@ void ANIAccessibilityClient::SendAccessibilityEvent(ani_env *env, ani_object eve
     auto result = asaClient->SendEvent(eventInfo);
     if (result != RET_OK) {
         HILOG_ERROR("SendAccessibilityEvent failed!");
-        ThrowBusinessError(env, QueryRetMsg(result));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(result));
     }
     return;
 }
