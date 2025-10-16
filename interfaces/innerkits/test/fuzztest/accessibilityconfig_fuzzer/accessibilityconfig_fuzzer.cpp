@@ -120,7 +120,7 @@ void DoSomethingInterestingSetConfigFirstPart(OHOS::AccessibilityConfig::Accessi
     abConfig.SetScreenMagnificationState(data[startPos++] & 0x01);
     abConfig.SetShortKeyState(data[startPos++] & 0x01);
     abConfig.SetMouseKeyState(data[startPos++] & 0x01);
-    abConfig.SetCaptionsState(data[startPos++] & 0x01);
+    abConfig.SetCaptionsState(data[startPos++] & 0x01, true);
     abConfig.SetHighContrastTextState(data[startPos++] & 0x01);
     abConfig.SetDaltonizationState(data[startPos++] & 0x01);
     abConfig.SetInvertColorState(data[startPos++] & 0x01);
@@ -157,7 +157,7 @@ void DoSomethingInterestingSetConfigFirstPart(OHOS::AccessibilityConfig::Accessi
 
     OHOS::AccessibilityConfig::CaptionProperty property;
     startPos += GenerateCaptionProperty(property, &data[startPos], size - startPos);
-    abConfig.SetCaptionsProperty(property);
+    abConfig.SetCaptionsProperty(property, true);
 }
 
 void DoSomethingInterestingSetConfigSecondPart(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
@@ -237,7 +237,7 @@ void DoSomethingInterestingGetConfigFirstPart(OHOS::AccessibilityConfig::Accessi
     flag = data[startPos++] & 0x01;
     abConfig.GetMouseKeyState(flag);
     flag = data[startPos++] & 0x01;
-    abConfig.GetCaptionsState(flag);
+    abConfig.GetCaptionsState(flag, true);
     flag = data[startPos++] & 0x01;
     abConfig.GetHighContrastTextState(flag);
     flag = data[startPos++] & 0x01;
@@ -271,7 +271,7 @@ void DoSomethingInterestingGetConfigFirstPart(OHOS::AccessibilityConfig::Accessi
 
     OHOS::AccessibilityConfig::CaptionProperty propertyForGet;
     GenerateCaptionProperty(propertyForGet, &data[startPos], size - startPos);
-    abConfig.GetCaptionsProperty(propertyForGet);
+    abConfig.GetCaptionsProperty(propertyForGet, true);
     CheckCaptionProperty(propertyForGet, data, size);
 }
 

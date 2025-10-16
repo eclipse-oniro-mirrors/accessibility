@@ -564,7 +564,7 @@ void ANIAccessibilityConfig::SetSyncboolean(ani_env *env, ani_object object, ani
     } else if (configId == CONFIG_ID::CONFIG_SHORT_KEY) {
         ret = instance.SetShortKeyState(state);
     } else if (configId == CONFIG_ID::CONFIG_CAPTION_STATE) {
-        ret = instance.SetCaptionsState(state);
+        ret = instance.SetCaptionsState(state, true);
     } else if (configId == CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_STATE) {
         ret = instance.SetIgnoreRepeatClickState(state);
     }
@@ -605,7 +605,7 @@ ani_boolean ANIAccessibilityConfig::GetSyncboolean(ani_env *env, ani_object obje
     } else if (configId == CONFIG_ID::CONFIG_SHORT_KEY) {
         ret = instance.GetShortKeyState(state);
     } else if (configId == CONFIG_ID::CONFIG_CAPTION_STATE) {
-        ret = instance.GetCaptionsState(state);
+        ret = instance.GetCaptionsState(state, true);
     } else if (configId == CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_STATE) {
         ret = instance.GetIgnoreRepeatClickState(state);
     }
@@ -947,7 +947,7 @@ void ANIAccessibilityConfig::SetSyncCaptionsStyle(ani_env *env, ani_object objec
         captionProperty.SetFontEdgeType(fontEdgeType);
         captionProperty.SetBackgroundColor(backgroundColor);
         captionProperty.SetWindowColor(windowColor);
-        ret = instance.SetCaptionsProperty(captionProperty);
+        ret = instance.SetCaptionsProperty(captionProperty, true);
     }
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
@@ -1018,7 +1018,7 @@ ani_object ANIAccessibilityConfig::GetSyncCaptionsStyle(ani_env *env, ani_object
     (void)id;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty;
-    auto ret = instance.GetCaptionsProperty(captionProperty);
+    auto ret = instance.GetCaptionsProperty(captionProperty, true);
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }

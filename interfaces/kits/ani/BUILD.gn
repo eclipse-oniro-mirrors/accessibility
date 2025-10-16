@@ -41,6 +41,7 @@ ohos_shared_library("accessibility_ani") {
     debug = false
   }
   deps = [
+    "../../innerkits/acfwk:accessibilityconfig",
     "../../innerkits/asacfwk:accessibilityclient",
     "../../innerkits/common:accessibility_common",
   ]
