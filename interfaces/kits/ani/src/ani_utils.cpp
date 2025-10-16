@@ -770,6 +770,43 @@ bool ANIUtils::GetStringMember(ani_env *env, ani_object options, const std::stri
     return true;
 }
 
+bool ANIAccessibilityConfig::GetColorMember(ani_env *env, ani_object object, const char* name, uint32_t &color)
+{
+    color = 0;
+    ani_ref ref;
+    if (env->Object_GetPropertyByName_Ref(object, name, &ref) != ANI_OK) {
+        HILOG_ERROR("Get property '%{public}s' failed", name);
+        return false;
+    }
+
+    ani_boolean isUndefined;
+    if (env->Reference_IsUndefined(ref, &isUndefined) != ANI_OK) {
+        HILOG_ERROR("Reference IsUndefined failed");
+        return false;
+    }
+    if (isUndefined) {
+        return false;
+    }
+    ani_class stringClass;
+    env->FindClass("std.core.String", &stringClass);
+    ani_boolean isString;
+    env->Object_InstanceOf(static_cast<ani_object>(ref), stringClass, &isString);
+    if (isString) {
+        auto stringContent = ANIStringToStdString(env, static_cast<ani_string>(ref));
+        color = ConvertColorStringToNumber(stringContent);
+        HILOG_INFO("color stringContent = %{public}s, color = %{public}u", stringContent.c_str(), color);
+    } else {
+        ani_int valueInt;
+        if (env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "unboxed", ":i", &valueInt) != ANI_OK) {
+            HILOG_ERROR(" Unboxed Int failed");
+            return false;
+        }
+        color = static_cast<uint32_t>(valueInt);
+        HILOG_INFO("color intContent = %{public}u", color);
+    }
+    return true;
+}
+
 bool ANIUtils::GetNumberMember(ani_env *env, ani_object options, const std::string &name, uint32_t& value)
 {
     ani_ref ref;
