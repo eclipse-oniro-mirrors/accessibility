@@ -538,5 +538,23 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetReadableRules(std::string &n
 {
     return RET_OK;
 }
+
+ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterCaptionObserver(
+    const sptr<IAccessibleAbilityManagerCaptionObserver> &observer)
+{
+    return RET_OK;
+}
+
+ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterEnableAbilityListsObserver(
+    const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
+{
+    return RET_OK;
+}
+
+ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterConfigObserver(
+    const sptr<IAccessibleAbilityManagerConfigObserver> &observer)
+{
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS
