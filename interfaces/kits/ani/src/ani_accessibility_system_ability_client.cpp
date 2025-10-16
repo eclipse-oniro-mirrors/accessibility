@@ -15,7 +15,6 @@
 
 #include <array>
 #include <iostream>
-#include "accessibility_def.h"
 #include "ani_accessibility_system_ability_client.h"
 #include "ani_utils.h"
 #include "accessibility_utils_ani.h"
@@ -770,11 +769,11 @@ void ANIAccessibilityClient::SetStyle(ani_env *env, ani_object object, ani_objec
     }
 
     if (!isUndefined) {
-        RETURN_IF_FALSE(ANIUtils::GetStringMember(env, style, "fontFamily", fontFamily));
-        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, style, "fontColor", fontColor));
-        RETURN_IF_FALSE(ANIUtils::GetStringMember(env, style, "fontEdgeType", fontEdgeType));
-        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, style, "backgroundColor", backgroundColor));
-        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, style, "windowColor", windowColor));
+        ANIUtils::GetStringMember(env, style, "fontFamily", fontFamily);
+        ANIUtils::GetColorMember(env, style, "fontColor", fontColor);
+        ANIUtils::GetStringMember(env, style, "fontEdgeType", fontEdgeType);
+        ANIUtils::GetColorMember(env, style, "backgroundColor", backgroundColor);
+        ANIUtils::GetColorMember(env, style, "windowColor", windowColor);
         int styleValue = 0;
         if ((env->Object_GetPropertyByName_Int(style, "fontScale", &styleValue) != ANI_OK) || (styleValue < 0)) {
             HILOG_ERROR("Get property failed");
