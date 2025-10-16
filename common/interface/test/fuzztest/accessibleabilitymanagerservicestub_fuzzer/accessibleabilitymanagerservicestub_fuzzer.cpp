@@ -347,6 +347,22 @@ public:
     {
         return RET_OK;
     }
+
+    ErrCode DeRegisterCaptionObserver(const sptr<IAccessibleAbilityManagerCaptionObserver> &callback) override
+    {
+        return RET_OK;
+    }
+
+    ErrCode DeRegisterEnableAbilityListsObserver(
+        const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override
+    {
+        return RET_OK;
+    }
+
+    ErrCode DeRegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override
+    {
+        return RET_OK;
+    }
 };
 
 uint32_t GetU32Data(const uint8_t *ptr)

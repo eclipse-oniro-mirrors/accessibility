@@ -112,6 +112,11 @@ public:
 
     ErrCode DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId) override;
 
+    ErrCode DeRegisterCaptionObserver(const sptr<IAccessibleAbilityManagerCaptionObserver> &callback) override;
+
+    ErrCode DeRegisterEnableAbilityListsObserver(
+        const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override;
+
     ErrCode GetCaptionProperty(CaptionPropertyParcel &caption) override;
     ErrCode SetCaptionProperty(const CaptionPropertyParcel &caption) override;
     ErrCode SetCaptionState(const bool state) override;
@@ -320,6 +325,7 @@ public:
     ErrCode GetAllConfigs(AccessibilityConfigData& configData, CaptionPropertyParcel& caption) override;
 
     ErrCode RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
+    ErrCode DeRegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
     void UpdateConfigState();
     void UpdateAudioBalance();
     void UpdateBrightnessDiscount();

@@ -801,5 +801,26 @@ ErrCode AccessibleAbilityManagerService::GetReadableRules(std::string &name)
 {
     return NO_ERROR;
 }
+
+ErrCode AccessibleAbilityManagerService::DeRegisterCaptionObserver(
+    const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
+{
+    (void)callback;
+    return RET_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::DeRegisterEnableAbilityListsObserver(
+    const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
+{
+    (void)observer;
+    return RET_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::DeRegisterConfigObserver(
+    const sptr<IAccessibleAbilityManagerConfigObserver> &callback)
+{
+    (void)callback;
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

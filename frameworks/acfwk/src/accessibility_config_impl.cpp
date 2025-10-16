@@ -29,6 +29,7 @@ namespace {
     constexpr uint32_t DISPLAY_DALTONIZER_GREEN = 12;
     constexpr uint32_t DISPLAY_DALTONIZER_RED = 11;
     constexpr uint32_t DISPLAY_DALTONIZER_BLUE = 13;
+    constexpr int32_t DESTRUCTOR_DELAY_TIME = 300 * 1000; // 300ms
 }
 
 AccessibilityConfig::Impl::Impl()
@@ -46,6 +47,32 @@ AccessibilityConfig::Impl::~Impl()
     
     if (enableAbilityListsObserver_ != nullptr) {
         enableAbilityListsObserver_->OnclientDeleted();
+    }
+
+    if (serviceProxy_ != nullptr) {
+        ErrCode ret = Accessibility::RET_OK;
+        ret = serviceProxy_->DeRegisterCaptionObserver(captionObserver_);
+        if (ret != ERR_OK) {
+            HILOG_ERROR("DeRegister captionObserver failed.");
+        }
+        ret = serviceProxy_->DeRegisterEnableAbilityListsObserver(enableAbilityListsObserver_);
+        if (ret != ERR_OK) {
+            HILOG_ERROR("DeRegister EnableAbilityListsObserver failed.");
+        }
+        ret = serviceProxy_->DeRegisterConfigObserver(configObserver_);
+        if (ret != ERR_OK) {
+            HILOG_ERROR("DeRegister configObserver failed.");
+        }
+        usleep(DESTRUCTOR_DELAY_TIME);
+ 
+        sptr<IRemoteObject> object = serviceProxy_->AsObject();
+        if (object != nullptr) {
+            object->RemoveDeathRecipient(deathRecipient_);
+            serviceProxy_ = nullptr;
+            captionObserver_ = nullptr;
+            enableAbilityListsObserver_ = nullptr;
+            configObserver_ = nullptr;
+        }
     }
     
     HILOG_INFO("AccessibilityConfig destory");
