@@ -615,9 +615,9 @@ HWTEST_F(AccessibilitySettingObserverTest, SetCaptionState_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingObserverTest_SetCaptionState_001 start";
     bool state = true;
-    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().SetCaptionState(state));
+    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().SetCaptionState(state, true));
     bool ret = false;
-    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionState(ret));
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionState(ret, true));
     GTEST_LOG_(INFO) << "AccessibilitySettingObserverTest_SetCaptionState_001 end";
 }
 
@@ -693,10 +693,10 @@ HWTEST_F(AccessibilitySettingObserverTest, SetCaptionProperty_001, TestSize.Leve
     AccessibilityConfig::CaptionProperty caption;
     int scale = 1;
     caption.SetFontScale(scale);
-    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetCaptionProperty(caption));
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetCaptionProperty(caption, true));
 
     AccessibilityConfig::CaptionProperty res;
-    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionProperty(res));
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionProperty(res, true));
     GTEST_LOG_(INFO) << "AccessibilitySettingObserverTest_SetCaptionProperty_001 end";
 }
 
@@ -1063,8 +1063,8 @@ HWTEST_F(AccessibilitySettingObserverTest, SetCaptionProperty_002, TestSize.Leve
     AccessibilityConfig::CaptionProperty caption;
     int scale = 1;
     caption.SetFontScale(scale);
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetCaptionProperty(caption));
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionProperty(caption));
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetCaptionProperty(caption, true));
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionProperty(caption, true));
     GTEST_LOG_(INFO) << "AccessibilitySettingObserverTest_SetCaptionProperty_002 end";
 }
 
@@ -1079,8 +1079,8 @@ HWTEST_F(AccessibilitySettingObserverTest, SetCaptionState_002, TestSize.Level1)
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     bool state = true;
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetCaptionState(state));
-    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionState(state));
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetCaptionState(state, true));
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionState(state, true));
     GTEST_LOG_(INFO) << "AccessibilitySettingObserverTest_SetCaptionState_002 end";
 }
 

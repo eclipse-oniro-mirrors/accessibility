@@ -770,7 +770,7 @@ bool ANIUtils::GetStringMember(ani_env *env, ani_object options, const std::stri
     return true;
 }
 
-bool ANIAccessibilityConfig::GetColorMember(ani_env *env, ani_object object, const char* name, uint32_t &color)
+bool ANIUtils::GetColorMember(ani_env *env, ani_object object, const char* name, uint32_t &color)
 {
     color = 0;
     ani_ref ref;
