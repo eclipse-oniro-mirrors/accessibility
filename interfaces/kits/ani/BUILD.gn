@@ -55,7 +55,6 @@ ohos_shared_library("accessibility_ani") {
     "runtime_core:ani_helpers",
   ]
   sources = [
-    "./src/accessibility_utils_ani.cpp",
     "./src/ani_accessibility_system_ability_client.cpp",
     "./src/ani_register.cpp",
     "./src/ani_utils.cpp",
