@@ -42,9 +42,9 @@ public:
     MOCK_METHOD1(DeregisterElementOperatorByWindowId, ErrCode(const int32_t windowId));
     MOCK_METHOD2(DeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
         const int32_t treeId));
-    MOCK_METHOD1(GetCaptionProperty, ErrCode(CaptionPropertyParcel& caption, bool isPermissionRequired));
-    MOCK_METHOD1(SetCaptionProperty, ErrCode(const CaptionPropertyParcel& caption, bool isPermissionRequired));
-    MOCK_METHOD1(SetCaptionState, ErrCode(bool state, bool isPermissionRequired));
+    MOCK_METHOD2(GetCaptionProperty, ErrCode(CaptionPropertyParcel& caption, bool isPermissionRequired));
+    MOCK_METHOD2(SetCaptionProperty, ErrCode(const CaptionPropertyParcel& caption, bool isPermissionRequired));
+    MOCK_METHOD2(SetCaptionState, ErrCode(bool state, bool isPermissionRequired));
     MOCK_METHOD1(SetTouchEventInjector, void(const sptr<TouchEventInjector>& touchEventInjector));
 
     inline sptr<TouchEventInjector> GetTouchEventInjector()
@@ -87,7 +87,7 @@ public:
     MOCK_METHOD1(PackageRemoved, void(const std::string& bundleName));
     MOCK_METHOD1(PackageAdd, void(const std::string& bundleName));
     MOCK_METHOD0(UpdateAccessibilityManagerService, void());
-    MOCK_METHOD1(GetCaptionState, ErrCode(bool &state, bool isPermissionRequired));
+    MOCK_METHOD2(GetCaptionState, ErrCode(bool &state, bool isPermissionRequired));
     MOCK_METHOD1(GetScreenReaderState, ErrCode(bool &state));
     MOCK_METHOD1(SetTouchGuideState, bool(const bool state));
     MOCK_METHOD1(SetGestureState, bool(const bool state));
