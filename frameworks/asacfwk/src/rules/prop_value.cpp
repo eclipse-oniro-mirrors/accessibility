@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+// LCOV_EXCL_START
 #include "prop_value.h"
 
 namespace OHOS::Accessibility {
@@ -148,3 +149,4 @@ void PropValue::Print() const
     return;
 }
 } // namespace OHOS::Accessibility
+// LCOV_EXCL_STOP

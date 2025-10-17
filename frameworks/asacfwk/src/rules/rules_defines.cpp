@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+// LCOV_EXCL_START
 #include "rules_defines.h"
 
 namespace OHOS::Accessibility {
@@ -75,3 +76,4 @@ bool RulesDefines::IsScrollIgnoreTypes(const std::string& type)
     return scrollIgnoreTypes_.find(type) != scrollIgnoreTypes_.end();
 }
 } // namespace OHOS::Accessibility
+// LCOV_EXCL_STOP

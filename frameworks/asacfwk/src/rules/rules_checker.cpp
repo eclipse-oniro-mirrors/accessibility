@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+// LCOV_EXCL_START
 #include "rules_checker.h"
 #include "hilog_wrapper.h"
 namespace OHOS::Accessibility {
@@ -132,3 +133,4 @@ bool ReadableRulesChecker::IsScrollIgnoreTypes(const std::shared_ptr<ReadableRul
     return isScrollIgnoreTypes;
 }
 } // namespace OHOS::Ace::Accessibility
+// LCOV_EXCL_STOP

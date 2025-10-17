@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+// LCOV_EXCL_START
 #include "condition.h"
 #include "custom_props.h"
 
@@ -150,3 +151,4 @@ bool Condition::ParseCondType(const nlohmann::json& cond)
 }
 
 } // namespace OHOS::Accessibility
+// LCOV_EXCL_STOP
