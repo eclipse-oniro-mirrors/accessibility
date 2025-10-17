@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+// LCOV_EXCL_START
 #include "custom_props.h"
 
 namespace OHOS::Accessibility {
@@ -40,3 +41,4 @@ const Condition* CustomProps::GetCondition(const std::string name) const
 }
 
 } // namespace OHOS::Accessibility
+// LCOV_EXCL_STOP

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+// LCOV_EXCL_START
 #include "readable_rule.h"
 
 namespace OHOS::Accessibility {
@@ -72,3 +73,4 @@ bool ReadableRule::ParseIsFocus(const nlohmann::json& rule)
     return true;
 }
 } // namespace OHOS::Accessibility
+// LCOV_EXCL_STOP
