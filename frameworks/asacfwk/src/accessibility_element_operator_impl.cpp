@@ -431,14 +431,14 @@ void AccessibilityElementOperatorImpl::DetectElementInfoFocusableThroughAncestor
 }
 
 void AccessibilityElementOperatorImpl::SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable,
-    const int32_t requestId)
+    const int32_t requestId, const AccessibilityElementInfo &info)
 {
     HILOG_DEBUG("requestId is %{public}d", requestId);
     std::lock_guard<ffrt::mutex> lock(requestsMutex_);
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {
-            iter->second->SetDetectElementInfoFocusableThroughAncestorResult(isFocusable, requestId);
+            iter->second->SetDetectElementInfoFocusableThroughAncestorResult(isFocusable, requestId, info);
         }
         requests_.erase(iter);
     } else {

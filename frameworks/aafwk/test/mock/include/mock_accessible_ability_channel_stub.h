@@ -68,6 +68,8 @@ public:
     MOCK_METHOD5(FocusMoveSearchWithCondition, void(const int64_t elementId,
         const AccessibilityFocusMoveParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId));
+    MOCK_METHOD4(DetectElementInfoFocusableThroughAncestor, void(AccessibilityElementInfo &info,
+        const int32_t windowId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback));
 };
 } // namespace Accessibility
 } // namespace OHOS

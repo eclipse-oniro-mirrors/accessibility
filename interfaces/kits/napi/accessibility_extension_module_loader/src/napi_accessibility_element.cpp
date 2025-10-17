@@ -2466,24 +2466,22 @@ void NAccessibilityElement::FocusMoveSearchWithConditionComplete(napi_env env, n
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
- 
+
     napi_value napiResultInfo = nullptr;
     napi_create_object(env, &napiResultInfo);
- 
-    napi_value constructor = nullptr;
-    napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
-    napi_value napiElementInfo = nullptr;
-    napi_new_instance(env, constructor, 0, nullptr, &napiElementInfo);
-    ConvertElementInfosToJS(env, napiElementInfo, callbackInfo->nodeInfos_);
- 
+
+    napi_value value = nullptr;
+    napi_create_array(callbackInfo->env_, &value);
+    ConvertElementInfosToJS(env, value, callbackInfo->nodeInfos_);
+
     napi_value nResult = nullptr;
     napi_status nStatus = napi_create_int64(env, callbackInfo->ret_, &nResult);
     if (nStatus != napi_ok) {
         return;
     }
-    napi_set_named_property(env, napiResultInfo, "target", napiElementInfo);
+    napi_set_named_property(env, napiResultInfo, "target", value);
     napi_set_named_property(env, napiResultInfo, "result", nResult);
- 
+
     napi_resolve_deferred(env, callbackInfo->deferred_, napiResultInfo);
     napi_delete_async_work(env, callbackInfo->work_);
     delete callbackInfo;

@@ -859,5 +859,47 @@ void AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const int64_t e
         return;
     }
 }
+
+void AccessibleAbilityChannelProxy::DetectElementInfoFocusableThroughAncestor(AccessibilityElementInfo &info,
+    const int32_t windowId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr.");
+        return;
+    }
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    AccessibilityElementInfoParcel infoParcel(info);
+
+    if (!WriteInterfaceToken(data)) {
+        return;
+    }
+
+    if (!data.WriteParcelable(&infoParcel)) {
+        HILOG_ERROR("connection write info failed");
+        return;
+    }
+
+    if (!data.WriteInt32(windowId)) {
+        HILOG_ERROR("windowId write error: %{public}d, ", windowId);
+        return;
+    }
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("requestId write error: %{public}d, ", requestId);
+        return;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("callback write error");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::DETECT_ELEMENTINFO_FOCUSABLE_THROUGH_ANCESTOR,
+        data, reply, option)) {
+        HILOG_ERROR("fail to detect elementInfo focusable");
+        return;
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

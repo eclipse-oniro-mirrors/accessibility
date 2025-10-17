@@ -106,7 +106,7 @@ public:
         const FocusMoveResult &result, const int32_t requestId) override;
     
     virtual void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable,
-        const int32_t requestId) override;
+        const int32_t requestId, const AccessibilityElementInfo &info) override;
 
 private:
     ffrt::promise<void> promise_;

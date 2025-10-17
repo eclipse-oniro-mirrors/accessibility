@@ -381,26 +381,26 @@ void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchWithConditionR
         HILOG_ERROR("connection write token failed");
         return;
     }
- 
+
     if (!data.WriteUint32(infos.size())) {
         HILOG_ERROR("write infos's size failed");
         return;
     }
- 
+
     if (!WriteElementInfosToRawData(infos, data)) {
         return;
     }
- 
+
     if (!data.WriteInt32(result)) {
         HILOG_ERROR("connection write request id failed");
         return;
     }
- 
+
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("connection write request id failed");
         return;
     }
- 
+
     if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE_SEARCH_WITH_CONDITION,
         data, reply, option)) {
         HILOG_ERROR("setSearchElementInfoBySpecificPropertyResult failed");
@@ -411,30 +411,36 @@ void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchWithConditionR
     }
     return;
 }
- 
+
 void AccessibilityElementOperatorCallbackProxy::SetDetectElementInfoFocusableThroughAncestorResult(
-    bool isFocusable, const int32_t requestId)
+    bool isFocusable, const int32_t requestId, const AccessibilityElementInfo &info)
 {
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
- 
+    AccessibilityElementInfoParcel infoParcel(info);
+
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
         return;
     }
- 
+
     if (!data.WriteBool(isFocusable)) {
         HILOG_ERROR("connection write failed");
         return;
     }
- 
+
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("connection write request id failed");
         return;
     }
- 
+
+    if (!data.WriteParcelable(&infoParcel)) {
+        HILOG_ERROR("connection write info failed");
+        return;
+    }
+
     if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_DETECT_ELEMENTINFO_FOCUSABLE,
         data, reply, option)) {
         HILOG_ERROR("set execute action result failed");

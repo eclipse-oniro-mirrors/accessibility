@@ -270,7 +270,8 @@ public:
         const int64_t parentId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId);
+    void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId,
+        const AccessibilityElementInfo &info);
 
 private:
     int32_t AddRequest(int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);

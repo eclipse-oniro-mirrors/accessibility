@@ -111,8 +111,10 @@ public:
      * @brief Set the result of detect elementinfo focusable to AA.
      * @param isFocusable The isFocusable of the elementInfo.
      * @param requestId The request id from AA, it is used to match with request and response.
+     * @param info return focusable elementInfo.
      */
-    void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId) override;
+    void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId,
+        const AccessibilityElementInfo &info) override;
 
 private:
     /**

@@ -90,6 +90,8 @@ public:
     void FocusMoveSearchWithCondition(const int64_t elementId, const AccessibilityFocusMoveParam &param,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         int32_t windowId) override;
+    void DetectElementInfoFocusableThroughAncestor(AccessibilityElementInfo &info, const int32_t windowId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
 private:
     static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);

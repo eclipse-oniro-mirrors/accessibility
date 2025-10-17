@@ -354,7 +354,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchWithCo
     }
     FocusMoveResult result = static_cast<FocusMoveResult>(data.ReadInt32());
     int32_t requestId = data.ReadInt32();
- 
+
     reply.WriteInt32(RET_OK);
     SetFocusMoveSearchWithConditionResult(infos, result, requestId);
     return NO_ERROR;
@@ -366,8 +366,9 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetDetectElementInfoFocu
     HILOG_DEBUG();
     bool isFocusable = data.ReadBool();
     int32_t requestId = data.ReadInt32();
+    sptr<AccessibilityElementInfoParcel> info = data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
 
-    SetDetectElementInfoFocusableThroughAncestorResult(isFocusable, requestId);
+    SetDetectElementInfoFocusableThroughAncestorResult(isFocusable, requestId, *info);
     return NO_ERROR;
 }
 } // namespace Accessibility

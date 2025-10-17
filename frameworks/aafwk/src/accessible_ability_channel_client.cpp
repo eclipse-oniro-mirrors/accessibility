@@ -624,12 +624,39 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearchWithCondition(int64_t el
 
     ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (waitFocus != ffrt::future_status::ready) {
-        HILOG_ERROR("Failed to wait result");
+        HILOG_ERROR("Failed to wait result, requestId: %{public}d", requestId);
         return RET_ERR_TIME_OUT;
     }
     infos = callback->elementInfosResult_;
 
     return static_cast<RetError>(callback->result_);
+}
+
+RetError AccessibleAbilityChannelClient::DetectElementInfoFocusableThroughAncestor(AccessibilityElementInfo &info,
+    int32_t windowId, bool &isFocusable, AccessibilityElementInfo &targetInfo)
+{
+    int32_t requestId = GenerateRequestId();
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return RET_ERR_SAMGR;
+    }
+ 
+    sptr<AccessibilityElementOperatorCallbackImpl> callback =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (callback == nullptr) {
+        HILOG_ERROR("Failed to create callback");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future<void> promiseFuture = callback->promise_.get_future();
+    proxy_->DetectElementInfoFocusableThroughAncestor(info, windowId, requestId, callback);
+    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitFocus != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait result, requestId: %{public}d", requestId);
+        return RET_ERR_TIME_OUT;
+    }
+    isFocusable = callback->isFocusable_;
+    targetInfo = callback->accessibilityInfoResult_;
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS

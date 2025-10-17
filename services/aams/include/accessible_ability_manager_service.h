@@ -265,7 +265,7 @@ public:
         virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
             const FocusMoveResult &result, const int32_t requestId) override;
         virtual void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable,
-            const int32_t requestId) override;
+            const int32_t requestId, const AccessibilityElementInfo &info) override;
 
     private:
         ffrt::promise<void> promise_;
@@ -494,6 +494,7 @@ private:
     void UpdateVoiceRecognitionState();
     void SubscribeOsAccount();
     void UnsubscribeOsAccount();
+    bool CheckNodeIsReadableOverChildTree(AccessibilityEventInfo &event);
 
     int32_t ApplyTreeId();
     void RecycleTreeId(int32_t treeId);

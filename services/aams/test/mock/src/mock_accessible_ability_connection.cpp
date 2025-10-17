@@ -396,5 +396,11 @@ void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const int64_t elemen
 {
     return;
 }
+
+void AccessibleAbilityChannel::DetectElementInfoFocusableThroughAncestor(AccessibilityElementInfo &elementInfo,
+    const int32_t windowId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    return;
+}
 } // namespace Accessibility
 } // namespace OHOS
