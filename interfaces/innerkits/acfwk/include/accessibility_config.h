@@ -200,7 +200,7 @@ public:
      * @param isPermissionRequired Indicates whether it is necessary to verify permission.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    Accessibility::RetError SetCaptionsState(const bool state, bool isPermissionRequired);
+    Accessibility::RetError SetCaptionsState(const bool state, bool isPermissionRequired = true);
 
     /**
      * @brief Set caption properties
@@ -208,7 +208,7 @@ public:
      * @param isPermissionRequired Indicates whether it is necessary to verify permission.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    Accessibility::RetError SetCaptionsProperty(const CaptionProperty &caption, bool isPermissionRequired);
+    Accessibility::RetError SetCaptionsProperty(const CaptionProperty &caption, bool isPermissionRequired = true);
 
     /**
      * @brief Set the time for the cursor to stop for the mouse to automatically perform the click action
@@ -342,7 +342,7 @@ public:
      * @param isPermissionRequired Indicates whether it is necessary to verify permission.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    Accessibility::RetError GetCaptionsState(bool &state, bool isPermissionRequired) const;
+    Accessibility::RetError GetCaptionsState(bool &state, bool isPermissionRequired = true) const;
 
     /**
      * @brief Get caption properties
@@ -350,7 +350,7 @@ public:
      * @param isPermissionRequired Indicates whether it is necessary to verify permission.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    Accessibility::RetError GetCaptionsProperty(CaptionProperty &caption, bool isPermissionRequired) const;
+    Accessibility::RetError GetCaptionsProperty(CaptionProperty &caption, bool isPermissionRequired = true) const;
 
     /**
      * @brief Get the time for the cursor to stop for the mouse to automatically perform the click action
