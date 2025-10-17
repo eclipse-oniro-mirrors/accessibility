@@ -564,7 +564,7 @@ void ANIAccessibilityConfig::SetSyncboolean(ani_env *env, ani_object object, ani
     } else if (configId == CONFIG_ID::CONFIG_SHORT_KEY) {
         ret = instance.SetShortKeyState(state);
     } else if (configId == CONFIG_ID::CONFIG_CAPTION_STATE) {
-        ret = instance.SetCaptionsState(state);
+        ret = instance.SetCaptionsState(state, true);
     } else if (configId == CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_STATE) {
         ret = instance.SetIgnoreRepeatClickState(state);
     }
@@ -605,7 +605,7 @@ ani_boolean ANIAccessibilityConfig::GetSyncboolean(ani_env *env, ani_object obje
     } else if (configId == CONFIG_ID::CONFIG_SHORT_KEY) {
         ret = instance.GetShortKeyState(state);
     } else if (configId == CONFIG_ID::CONFIG_CAPTION_STATE) {
-        ret = instance.GetCaptionsState(state);
+        ret = instance.GetCaptionsState(state, true);
     } else if (configId == CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_STATE) {
         ret = instance.GetIgnoreRepeatClickState(state);
     }
@@ -866,43 +866,6 @@ ani_string ANIAccessibilityConfig::GetSyncRepeatClickInterval(ani_env *env, ani_
     return retResult;
 }
 
-bool ANIAccessibilityConfig::GetColorMember(ani_env *env, ani_object object, const char* name, uint32_t &color)
-{
-    color = 0;
-    ani_ref ref;
-    if (ANI_OK != env->Object_GetPropertyByName_Ref(object, name, &ref)) {
-        HILOG_ERROR("Get property '%{public}s' failed", name);
-        return false;
-    }
-
-    ani_boolean isUndefined;
-    if (ANI_OK != env->Reference_IsUndefined(ref, &isUndefined)) {
-        HILOG_ERROR("Reference IsUndefined failed");
-        return false;
-    }
-    if (isUndefined) {
-        return false;
-    }
-    ani_class stringClass;
-    env->FindClass("std.core.String", &stringClass);
-    ani_boolean isString;
-    env->Object_InstanceOf(static_cast<ani_object>(ref), stringClass, &isString);
-    if (isString) {
-        auto stringContent = ANIUtils::ANIStringToStdString(env, static_cast<ani_string>(ref));
-        color = ConvertColorStringToNumber(stringContent);
-        HILOG_INFO("color stringContent = %{public}s, color = %{public}u", stringContent.c_str(), color);
-    } else {
-        ani_int valueInt;
-        if (ANI_OK != env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "toInt", ":i", &valueInt)) {
-            HILOG_ERROR(" Unbox Int failed");
-            return false;
-        }
-        color = static_cast<uint32_t>(valueInt);
-        HILOG_INFO("color intContent = %{public}u", color);
-    }
-    return true;
-}
-
 void ANIAccessibilityConfig::SetSyncCaptionsStyle(ani_env *env, ani_object object, ani_enum_item id, ani_object value)
 {
     ani_int itemEnum;
@@ -927,10 +890,10 @@ void ANIAccessibilityConfig::SetSyncCaptionsStyle(ani_env *env, ani_object objec
 
     if (!isUndefined) {
         ANIUtils::GetStringMember(env, value, "fontFamily", fontFamily);
-        GetColorMember(env, value, "fontColor", fontColor);
+        ANIUtils::GetColorMember(env, value, "fontColor", fontColor);
         ANIUtils::GetStringMember(env, value, "fontEdgeType", fontEdgeType);
-        GetColorMember(env, value, "backgroundColor", backgroundColor);
-        GetColorMember(env, value, "windowColor", windowColor);
+        ANIUtils::GetColorMember(env, value, "backgroundColor", backgroundColor);
+        ANIUtils::GetColorMember(env, value, "windowColor", windowColor);
         int value1;
         if (ANI_OK != env->Object_GetPropertyByName_Int(value, "fontScale", &value1)) {
             HILOG_ERROR(" Get property value1  failed");
@@ -947,7 +910,7 @@ void ANIAccessibilityConfig::SetSyncCaptionsStyle(ani_env *env, ani_object objec
         captionProperty.SetFontEdgeType(fontEdgeType);
         captionProperty.SetBackgroundColor(backgroundColor);
         captionProperty.SetWindowColor(windowColor);
-        ret = instance.SetCaptionsProperty(captionProperty);
+        ret = instance.SetCaptionsProperty(captionProperty, true);
     }
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
@@ -1018,7 +981,7 @@ ani_object ANIAccessibilityConfig::GetSyncCaptionsStyle(ani_env *env, ani_object
     (void)id;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty;
-    auto ret = instance.GetCaptionsProperty(captionProperty);
+    auto ret = instance.GetCaptionsProperty(captionProperty, true);
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }

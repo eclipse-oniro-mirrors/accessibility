@@ -201,6 +201,60 @@ namespace accessibility {
         }
     }
 
+    export native function getCaptionsManager(): CaptionsManager;
+
+    export interface CaptionsManager {
+        enabled: boolean;
+        style: CaptionsStyle;
+        onEnableChange(callback: Callback<boolean>): void;
+        onStyleChange(callback: Callback<CaptionsStyle>): void;
+        offEnableChange(callback?: Callback<boolean>): void;
+        offStyleChange(callback?: Callback<CaptionsStyle>): void;
+    }
+
+    export class CaptionsManagerImpl implements CaptionsManager {
+        native getEnabled(): boolean;
+        native getStyle(): CaptionsStyle;
+        native setEnabled(value: boolean): void;
+        native setStyle(value: CaptionsStyle): void;
+        get enabled(): boolean {
+            return this.getEnabled();
+        }
+        get style(): CaptionsStyle {
+            return this.getStyle();
+        }
+        set enabled(value: boolean) {
+            return this.setEnabled(value);
+        }
+        set style(value: CaptionsStyle) {
+            return this.setStyle(value);
+        }
+
+        native onEnableChange(callback: Callback<boolean>): void;
+        native onStyleChange(callback: Callback<CaptionsStyle>): void;
+
+        native offEnableChangeWithCallback(callback: Callback<boolean>): void;
+        native offEnableChangeAll(): void;
+        native offStyleChangeWithCallback(callback: Callback<CaptionsStyle>): void;
+        native offStyleChangeAll(): void;
+        offEnableChange(callback?: Callback<boolean>): void {
+            if (callback === undefined) {
+                this.offEnableChangeAll();
+            } else {
+                let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
+                this.offEnableChangeWithCallback(callbackFunc);
+            }
+        }
+        offStyleChange(callback?: Callback<CaptionsStyle>): void {
+            if (callback === undefined) {
+                this.offStyleChangeAll();
+            } else {
+                let callbackFunc: Callback<CaptionsStyle> = callback as Callback<CaptionsStyle>;
+                this.offStyleChangeWithCallback(callbackFunc);
+            }
+        }
+    }
+
     export type CaptionsFontEdgeType = 'none' | 'raised' | 'depressed' | 'uniform' | 'dropShadow';
 
     export type CaptionsFontFamily = 'default' | 'monospacedSerif' | 'serif' | 'monospacedSansSerif' | 'sansSerif' |

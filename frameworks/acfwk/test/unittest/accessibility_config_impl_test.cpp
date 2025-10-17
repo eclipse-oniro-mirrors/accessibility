@@ -85,8 +85,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_002, TestSize.Level1)
     caption.SetFontFamily("sansSerif");
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    instance.SetCaptionsProperty(caption);
-    instance.GetCaptionsProperty(value);
+    instance.SetCaptionsProperty(caption, true);
+    instance.GetCaptionsProperty(value, true);
     EXPECT_STREQ(value.GetFontFamily().c_str(), "default");
     GTEST_LOG_(INFO) << "SetCaptionProperty_002 end";
 }
@@ -105,8 +105,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_003, TestSize.Level1)
     caption.SetFontFamily("default");
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    instance.SetCaptionsProperty(caption);
-    instance.GetCaptionsProperty(value);
+    instance.SetCaptionsProperty(caption, true);
+    instance.GetCaptionsProperty(value, true);
     EXPECT_STREQ(value.GetFontFamily().c_str(), "default");
     GTEST_LOG_(INFO) << "SetCaptionProperty_003 end";
 }
@@ -125,8 +125,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_004, TestSize.Level1)
     caption.SetFontFamily("casual");
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    instance.SetCaptionsProperty(caption);
-    instance.GetCaptionsProperty(value);
+    instance.SetCaptionsProperty(caption, true);
+    instance.GetCaptionsProperty(value, true);
     EXPECT_STREQ(value.GetFontFamily().c_str(), "default");
     GTEST_LOG_(INFO) << "SetCaptionProperty_004 end";
 }
@@ -145,8 +145,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_005, TestSize.Level1)
     caption.SetFontFamily("cursive");
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    instance.SetCaptionsProperty(caption);
-    instance.GetCaptionsProperty(value);
+    instance.SetCaptionsProperty(caption, true);
+    instance.GetCaptionsProperty(value, true);
     EXPECT_STREQ(value.GetFontFamily().c_str(), "default");
     GTEST_LOG_(INFO) << "SetCaptionProperty_005 end";
 }
@@ -165,8 +165,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_006, TestSize.Level1)
     caption.SetFontFamily("smallCapitals");
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    instance.SetCaptionsProperty(caption);
-    instance.GetCaptionsProperty(value);
+    instance.SetCaptionsProperty(caption, true);
+    instance.GetCaptionsProperty(value, true);
     EXPECT_STREQ(value.GetFontFamily().c_str(), "default");
     GTEST_LOG_(INFO) << "SetCaptionProperty_006 end";
 }
@@ -185,8 +185,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_007, TestSize.Level1)
     caption.SetFontFamily("monospacedSansSerif");
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    instance.SetCaptionsProperty(caption);
-    instance.GetCaptionsProperty(value);
+    instance.SetCaptionsProperty(caption, true);
+    instance.GetCaptionsProperty(value, true);
     EXPECT_STREQ(value.GetFontFamily().c_str(), "default");
     GTEST_LOG_(INFO) << "SetCaptionProperty_007 end";
 }
@@ -423,8 +423,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionsState_002, TestSize.Level1)
     bool state = true;
     bool value = false;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    instance.SetCaptionsState(state);
-    instance.GetCaptionsState(value);
+    instance.SetCaptionsState(state, true);
+    instance.GetCaptionsState(value, true);
     EXPECT_FALSE(value);
     GTEST_LOG_(INFO) << "SetCaptionsState_002 end";
 }
@@ -441,8 +441,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionsState_003, TestSize.Level1)
     bool state = false;
     bool value = true;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    instance.SetCaptionsState(state);
-    instance.GetCaptionsState(value);
+    instance.SetCaptionsState(state, true);
+    instance.GetCaptionsState(value, true);
     EXPECT_TRUE(value);
     GTEST_LOG_(INFO) << "SetCaptionsState_003 end";
 }
@@ -459,8 +459,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionsState_004, TestSize.Level1)
     bool state = false;
     bool value = false;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    instance.SetCaptionsState(state);
-    instance.GetCaptionsState(value);
+    instance.SetCaptionsState(state, true);
+    instance.GetCaptionsState(value, true);
     EXPECT_FALSE(value);
     GTEST_LOG_(INFO) << "SetCaptionsState_004 end";
 }
@@ -477,8 +477,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionsState_005, TestSize.Level1)
     bool state = true;
     bool value = true;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    instance.SetCaptionsState(state);
-    instance.GetCaptionsState(value);
+    instance.SetCaptionsState(state, true);
+    instance.GetCaptionsState(value, true);
     EXPECT_TRUE(value);
     GTEST_LOG_(INFO) << "SetCaptionsState_005 end";
 }
@@ -1353,8 +1353,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_001, TestSize.Level1)
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
-    instance.SetCaptionsProperty(caption);
-    instance.GetCaptionsProperty(value);
+    instance.SetCaptionsProperty(caption, true);
+    instance.GetCaptionsProperty(value, true);
     EXPECT_STREQ("sansSerif", value.GetFontFamily().c_str());
     GTEST_LOG_(INFO) << "SetCaptionProperty_001 end";
 }
@@ -1429,8 +1429,8 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionsState_001, TestSize.Level1)
     bool value = false;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
-    instance.SetCaptionsState(state);
-    instance.GetCaptionsState(value);
+    instance.SetCaptionsState(state, true);
+    instance.GetCaptionsState(value, true);
     EXPECT_TRUE(value);
     GTEST_LOG_(INFO) << "SetCaptionsState_001 end";
 }

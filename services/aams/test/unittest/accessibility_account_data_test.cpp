@@ -1087,7 +1087,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
     const std::string name = "bundle/ability";
     uint32_t capabilities = 0;
     RetError test = accountData->EnableAbility(name, capabilities);
-    EXPECT_EQ(test, RET_ERR_NO_CAPABILITY);
+    EXPECT_EQ(test, RET_ERR_NOT_ENABLED);
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_001 end";
 }
@@ -1169,7 +1169,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     accountData->AddInstalledAbility(*abilityInfo);
     const std::string name = "bundle/ability";
-    EXPECT_EQ(RET_ERR_NO_CAPABILITY, accountData->EnableAbility(name, 0));
+    EXPECT_EQ(RET_ERR_NOT_ENABLED, accountData->EnableAbility(name, 0));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_005 end";
 }
 

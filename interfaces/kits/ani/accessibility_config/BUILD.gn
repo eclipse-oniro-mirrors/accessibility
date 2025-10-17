@@ -50,7 +50,6 @@ ohos_shared_library("accessibility_config") {
     "./src/ani_accessibility_config.cpp",
     "../src/ani_utils.cpp",
     "./src/ani_register.cpp",
-    "../src/accessibility_utils_ani.cpp",
   ]
   part_name = "accessibility"
   subsystem_name = "barrierfree"

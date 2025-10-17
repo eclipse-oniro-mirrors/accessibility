@@ -65,6 +65,7 @@ public:
     static ani_object CreateArray(ani_env *env, const std::vector<std::string> strs);
     static bool ParseString(ani_env *env, ani_ref ref, std::string& outValue);
     static bool GetStringMember(ani_env *env, ani_object options, const std::string &name, std::string &value);
+    static bool GetColorMember(ani_env *env, ani_object object, const char* name, uint32_t &color);
     static std::string AniStrToString(ani_env *env, ani_ref aniStr);
     static ani_string CreateAniString(ani_env *env, const std::string &str);
     static bool GetNumberMember(ani_env *env, ani_object options, const std::string &name, uint32_t& value);

@@ -147,7 +147,6 @@ public:
 private:
     static bool CheckReadPermission(const std::string &permission);
     static bool IsAvailable(ani_env *env);
-    static bool GetColorMember(ani_env *env, ani_object object, const char* name, uint32_t &color);
     ANIAccessibilityConfig() = default;
     ~ANIAccessibilityConfig() = default;
 };

@@ -197,16 +197,18 @@ public:
     /**
      * @brief Set whether to enable the caption function
      * @param state true:enable caption function; false:disable caption function
+     * @param isPermissionRequired Indicates whether it is necessary to verify permission.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    Accessibility::RetError SetCaptionsState(const bool state);
+    Accessibility::RetError SetCaptionsState(const bool state, bool isPermissionRequired = true);
 
     /**
      * @brief Set caption properties
      * @param caption caption properties
+     * @param isPermissionRequired Indicates whether it is necessary to verify permission.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    Accessibility::RetError SetCaptionsProperty(const CaptionProperty &caption);
+    Accessibility::RetError SetCaptionsProperty(const CaptionProperty &caption, bool isPermissionRequired = true);
 
     /**
      * @brief Set the time for the cursor to stop for the mouse to automatically perform the click action
@@ -337,16 +339,18 @@ public:
     /**
      * @brief Get the status of whether the caption function is enabled
      * @param state(out) true:the caption function is enabled; false:the caption function is disabled
+     * @param isPermissionRequired Indicates whether it is necessary to verify permission.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    Accessibility::RetError GetCaptionsState(bool &state) const;
+    Accessibility::RetError GetCaptionsState(bool &state, bool isPermissionRequired = true) const;
 
     /**
      * @brief Get caption properties
      * @param caption(out) caption properties
+     * @param isPermissionRequired Indicates whether it is necessary to verify permission.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    Accessibility::RetError GetCaptionsProperty(CaptionProperty &caption) const;
+    Accessibility::RetError GetCaptionsProperty(CaptionProperty &caption, bool isPermissionRequired = true) const;
 
     /**
      * @brief Get the time for the cursor to stop for the mouse to automatically perform the click action
