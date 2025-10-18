@@ -2202,8 +2202,6 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(int64_t eleme
     bool isFocusable;
     AccessibilityElementInfo targetInfo;
     ret = channelClient_->DetectElementInfoFocusableThroughAncestor(infos[0], windowId, isFocusable, targetInfo);
-    HILOG_INFO("DetectElementInfoFocusableThroughAncestor result, isFocusable: %{public}d, elementId: %{public}" PRId64 "",
-        isFocusable, targetInfo.GetAccessibilityId());
     if (targetInfo.GetAccessibilityId() >=0 && targetInfo.GetAccessibilityId() != infos[0].GetAccessibilityId()) {
         HILOG_INFO("return SEARCH_NEXT");
         return static_cast<RetError>(FocusMoveResult::SEARCH_NEXT);

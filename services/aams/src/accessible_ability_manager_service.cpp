@@ -562,7 +562,6 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
     }
 
     if (isAncoFlag != "true" && !CheckNodeIsReadableOverChildTree(uiEvent)) {
-        HILOG_ERROR("hover node is not focusable");
         return RET_ERR_FAILED;
     }
 
@@ -4596,16 +4595,13 @@ bool AccessibleAbilityManagerService::CheckNodeIsReadableOverChildTree(Accessibi
     if (event.GetEventType() != TYPE_VIEW_HOVER_ENTER_EVENT) {
         return true;
     }
-
     std::string readableRules;
     if (GetReadableRules(readableRules) != RET_OK || readableRules.empty()) {
         HILOG_INFO("no readablerules");
         return true;
     }
-
     auto& originElementInfo = event.GetElementInfo();
     int32_t treeId = originElementInfo.GetBelongTreeId();
-
     if (treeId <= 0) {
         return true;
     }
@@ -4616,13 +4612,11 @@ bool AccessibleAbilityManagerService::CheckNodeIsReadableOverChildTree(Accessibi
         HILOG_ERROR("GetCurrentAccountData failed");
         return true;
     }
-
     sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
     if (!connection) {
         HILOG_ERROR("GetAccessibilityWindowConnection failed, windowId: %{public}d", windowId);
         return true;
     }
-
     int64_t parentId = AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID;
     auto result = connection->GetRootParentId(treeId, parentId);
     if ((result != RET_OK) || (parentId == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID)) {
@@ -4640,17 +4634,14 @@ bool AccessibleAbilityManagerService::CheckNodeIsReadableOverChildTree(Accessibi
         HILOG_ERROR("elementOperator is nullptr");
         return true;
     }
-
     sptr<ElementOperatorCallbackImpl> callBack = new(std::nothrow) ElementOperatorCallbackImpl();
     if (callBack == nullptr) {
         HILOG_ERROR("Failed to create callBack.");
         return true;
     }
-
     ffrt::future<void> promiseFuture = callBack->promise_.get_future();
     int32_t requestId = GenerateRequestId();
     AddRequestId(windowId, parentTreeId, requestId, callBack);
-
     elementOperator->DetectElementInfoFocusableThroughAncestor(originElementInfo, parentId, requestId, callBack);
     ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (waitFocus != ffrt::future_status::ready) {
