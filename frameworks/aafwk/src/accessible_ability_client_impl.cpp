@@ -2198,6 +2198,9 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(int64_t eleme
     if (ret != RET_OK || infos.size() == 0 || infos[0].GetBelongTreeId() <= 0) {
         return ret;
     }
+    for (auto &elementInfo : infos) {
+        elementInfo.SetMainWindowId(windowId);
+    }
 
     bool isFocusable;
     AccessibilityElementInfo targetInfo;

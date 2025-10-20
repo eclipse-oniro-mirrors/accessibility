@@ -2451,6 +2451,9 @@ void NAccessibilityElement::FocusMoveSearchWithConditionExecute(napi_env env, vo
     }
     int64_t elementId = callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityId();
     int32_t windowId = callbackInfo->accessibilityElement_.elementInfo_->GetWindowId();
+    if (windowId == 1) {
+        windowId = callbackInfo->accessibilityElement_.elementInfo_->GetMainWindowId();
+    }
     FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->direction_);
     DetailCondition condition = ConvertStringToDetailCondition(callbackInfo->condition_);
     AccessibilityFocusMoveParam param { direction, condition };
