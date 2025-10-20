@@ -1018,7 +1018,7 @@ void AccessibilitySystemAbilityClientImpl::SetFocusMoveSearchWithConditionResult
 }
 
 void AccessibilitySystemAbilityClientImpl::SetDetectElementInfoFocusableThroughAncestorResult(
-    bool isFocusable, const int32_t requestId)
+    bool isFocusable, const int32_t requestId, const AccessibilityElementInfo &info)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG("search element requestId[%{public}d]", requestId);
@@ -1034,7 +1034,7 @@ void AccessibilitySystemAbilityClientImpl::SetDetectElementInfoFocusableThroughA
     }
     if (callback != nullptr) {
         serviceProxy_->RemoveRequestId(requestId);
-        callback->SetDetectElementInfoFocusableThroughAncestorResult(isFocusable, requestId);
+        callback->SetDetectElementInfoFocusableThroughAncestorResult(isFocusable, requestId, info);
         AccessibilityElementOperatorImpl::EraseCallback(requestId);
     } else {
         HILOG_INFO("callback is nullptr");

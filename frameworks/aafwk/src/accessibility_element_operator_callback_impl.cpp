@@ -121,13 +121,14 @@ void AccessibilityElementOperatorCallbackImpl::SetFocusMoveSearchWithConditionRe
 }
 
 void AccessibilityElementOperatorCallbackImpl::SetDetectElementInfoFocusableThroughAncestorResult(
-    const bool isFocusable, const int32_t requestId)
+    const bool isFocusable, const int32_t requestId, const AccessibilityElementInfo &info)
 {
     HILOG_DEBUG("Response [requestId:%{public}d] result[%{public}d]", requestId, isFocusable);
     isFocusable_ = isFocusable;
     if (promiseFlag_ == false) {
         promise_.set_value();
         promiseFlag_ = true;
+        accessibilityInfoResult_ = info;
     }
 }
 } // namespace Accessibility

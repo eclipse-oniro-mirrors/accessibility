@@ -95,7 +95,8 @@ public:
     virtual void SetFocusMoveSearchWithConditionResult(
         const std::list<AccessibilityElementInfo> &info, const FocusMoveResult &result, const int32_t requestId) = 0;
 
-    virtual void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId) = 0;
+    virtual void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId,
+        const AccessibilityElementInfo &info) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

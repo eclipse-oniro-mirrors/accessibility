@@ -234,6 +234,9 @@ public:
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int32_t windowId) override;
 
+    virtual void DetectElementInfoFocusableThroughAncestor(AccessibilityElementInfo &info, const int32_t windowId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
 private:
     /**
      * @brief Write the descriptor of IPC.

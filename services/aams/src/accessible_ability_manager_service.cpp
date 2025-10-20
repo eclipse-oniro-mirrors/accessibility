@@ -561,6 +561,10 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
         }
     }
 
+    if (isAncoFlag != "true" && !CheckNodeIsReadableOverChildTree(uiEvent)) {
+        return RET_ERR_FAILED;
+    }
+
     RetError res = GetResourceBundleInfo(const_cast<AccessibilityEventInfo&>(uiEvent));
     if (res != RET_OK) {
         HILOG_ERROR("Get Resource BundleInfo failed! RetError is %{public}d", res);
@@ -2266,10 +2270,11 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveS
 }
 
 void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetDetectElementInfoFocusableThroughAncestorResult(
-    bool isFocusable, const int32_t requestId)
+    bool isFocusable, const int32_t requestId, const AccessibilityElementInfo &info)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
     isFocusable_ = isFocusable;
+    accessibilityInfoResult_ = info;
     promise_.set_value();
 }
 
@@ -4583,6 +4588,73 @@ ErrCode AccessibleAbilityManagerService::DeRegisterConfigObserver(
     }
  
     return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::CheckNodeIsReadableOverChildTree(AccessibilityEventInfo &event)
+{
+    if (event.GetEventType() != TYPE_VIEW_HOVER_ENTER_EVENT) {
+        return true;
+    }
+    std::string readableRules;
+    if (GetReadableRules(readableRules) != RET_OK || readableRules.empty()) {
+        HILOG_INFO("no readablerules");
+        return true;
+    }
+    auto& originElementInfo = event.GetElementInfo();
+    int32_t treeId = originElementInfo.GetBelongTreeId();
+    if (treeId <= 0) {
+        return true;
+    }
+    auto windowId = event.GetWindowId();
+    sptr<IAccessibilityElementOperator> elementOperator = nullptr;
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("GetCurrentAccountData failed");
+        return true;
+    }
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
+    if (!connection) {
+        HILOG_ERROR("GetAccessibilityWindowConnection failed, windowId: %{public}d", windowId);
+        return true;
+    }
+    int64_t parentId = AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID;
+    auto result = connection->GetRootParentId(treeId, parentId);
+    if ((result != RET_OK) || (parentId == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID)) {
+        HILOG_ERROR("GetRootParentId failed");
+        return true;
+    }
+    int32_t parentTreeId = -1;
+    if (parentId > 0) {
+        parentTreeId = GetTreeIdBySplitElementId(parentId);
+        elementOperator = connection->GetCardProxy(parentTreeId);
+    } else {
+        elementOperator = connection->GetProxy();
+    }
+    if (elementOperator == nullptr) {
+        HILOG_ERROR("elementOperator is nullptr");
+        return true;
+    }
+    sptr<ElementOperatorCallbackImpl> callBack = new(std::nothrow) ElementOperatorCallbackImpl();
+    if (callBack == nullptr) {
+        HILOG_ERROR("Failed to create callBack.");
+        return true;
+    }
+    ffrt::future<void> promiseFuture = callBack->promise_.get_future();
+    int32_t requestId = GenerateRequestId();
+    AddRequestId(windowId, parentTreeId, requestId, callBack);
+    elementOperator->DetectElementInfoFocusableThroughAncestor(originElementInfo, parentId, requestId, callBack);
+    ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitFocus != ffrt::future_status::ready) {
+        ipcTimeoutNum_++;
+        HILOG_ERROR("Failed to wait result, requestId: %{public}d", requestId);
+        return true;
+    }
+    if (callBack->isFocusable_ && callBack->accessibilityInfoResult_.GetAccessibilityId() !=
+        event.GetElementInfo().GetAccessibilityId()) {
+        event.SetElementInfo(callBack->accessibilityInfoResult_);
+        event.SetSource(callBack->accessibilityInfoResult_.GetAccessibilityId());
+    }
+    return callBack->isFocusable_;
 }
 } // namespace Accessibility
 } // namespace OHOS

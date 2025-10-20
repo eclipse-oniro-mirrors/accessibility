@@ -29,6 +29,7 @@
 #include "parameter.h"
 #include "system_ability_definition.h"
 #include "api_reporter_helper.h"
+#include "accessibility_def.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -2194,6 +2195,17 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(int64_t eleme
         return RET_ERR_NO_CONNECTION;
     }
     RetError ret = channelClient_->FocusMoveSearchWithCondition(elementId, param, infos, windowId);
+    if (ret != RET_OK || infos.size() == 0 || infos[0].GetBelongTreeId() <= 0) {
+        return ret;
+    }
+
+    bool isFocusable;
+    AccessibilityElementInfo targetInfo;
+    ret = channelClient_->DetectElementInfoFocusableThroughAncestor(infos[0], windowId, isFocusable, targetInfo);
+    if (targetInfo.GetAccessibilityId() >=0 && targetInfo.GetAccessibilityId() != infos[0].GetAccessibilityId()) {
+        HILOG_INFO("return SEARCH_NEXT");
+        return static_cast<RetError>(FocusMoveResult::SEARCH_NEXT);
+    }
     return ret;
 }
 } // namespace Accessibility

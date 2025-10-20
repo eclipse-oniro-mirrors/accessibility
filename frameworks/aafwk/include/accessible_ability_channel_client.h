@@ -245,6 +245,9 @@ public:
     RetError FocusMoveSearchWithCondition(int64_t elementId, AccessibilityFocusMoveParam param,
         std::vector<AccessibilityElementInfo> &infos, int32_t windowId);
 
+    RetError DetectElementInfoFocusableThroughAncestor(AccessibilityElementInfo &info, int32_t windowId,
+        bool &isFocusable, AccessibilityElementInfo &targetInfo);
+
 private:
     int32_t GenerateRequestId();
 
