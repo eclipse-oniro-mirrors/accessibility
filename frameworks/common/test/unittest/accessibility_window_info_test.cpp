@@ -72,6 +72,23 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetAccessibilityWindowType_001, TestSi
 }
 
 /**
+ * @tc.number: SetSceneBoard_001
+ * @tc.name: SetSceneBoard
+ * @tc.desc: Test function SetSceneBoard
+ */
+HWTEST_F(AccessibilityWindowInfoUnitTest, SetSceneBoard_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSceneBoard start";
+    if (!windowInfo_) {
+        GTEST_LOG_(INFO) << "windowInfo_ is null";
+    } else {
+        windowInfo_->SetSceneBoard(true);
+        EXPECT_EQ(windowInfo_->IsSceneBoard(), true);
+    }
+    GTEST_LOG_(INFO) << "SetSceneBoard end";
+}
+
+/**
  * @tc.number: SetWindowLayer_001
  * @tc.name: SetWindowLayer
  * @tc.desc: Test function SetWindowLayer

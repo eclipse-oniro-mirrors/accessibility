@@ -198,7 +198,7 @@ public:
      */
     void SetDecorEnable(const bool isDecorEnable);
 
-        /**
+    /**
      * @brief Get whether the window is part of sceneboard
      * @return true:the window is; false:the window is not
      * @sysCap Accessibility
