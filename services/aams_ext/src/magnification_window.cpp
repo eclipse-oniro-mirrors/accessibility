@@ -66,6 +66,7 @@ void MagnificationWindow::CreateMagnificationWindow()
         ExtUtils::RecordMagnificationUnavailableEvent("Create window failed.");
         return;
     }
+    window_->SetFocusable(false);
     window_->SetCornerRadius(CORNER_RADIUS);
     surfaceNode_ = window_->GetSurfaceNode();
     if (surfaceNode_ == nullptr) {
