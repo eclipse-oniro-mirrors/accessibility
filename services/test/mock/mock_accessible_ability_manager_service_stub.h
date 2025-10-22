@@ -57,12 +57,12 @@ public:
 
     ErrCode DeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId, int32_t treeId) override;
 
-    ErrCode DeRegisterCaptionObserver(const sptr<IAccessibleAbilityManagerCaptionObserver>& observer) override;
+    ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override;
 
     ErrCode DeRegisterEnableAbilityListsObserver(
-        const sptr<IAccessibilityEnableAbilityListsObserver>& observer) override;
+        const sptr<IRemoteObject>& obj) override;
     
-    ErrCode DeRegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver>& observer) override;
+    ErrCode DeRegisterConfigObserver(const sptr<IRemoteObject>& obj) override;
 
     ErrCode GetCaptionProperty(CaptionPropertyParcel& caption) override;
     ErrCode SetCaptionProperty(const CaptionPropertyParcel& caption) override;

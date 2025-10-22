@@ -30,9 +30,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     [oneway] void SendEvent([in] AccessibilityEventInfoParcel eventInfoParcel, [in] int flag);
     void RegisterStateObserver([in] IAccessibleAbilityManagerStateObserver observer, [out] unsigned int state);
     void RegisterCaptionObserver([in] IAccessibleAbilityManagerCaptionObserver observer);
-    void DeRegisterCaptionObserver([in] IAccessibleAbilityManagerCaptionObserver observer);
     [oneway] void RegisterEnableAbilityListsObserver([in] IAccessibilityEnableAbilityListsObserver observer);
-    [oneway] void DeRegisterEnableAbilityListsObserver([in] IAccessibilityEnableAbilityListsObserver observer);
     void GetAbilityList([in] unsigned int abilityTypes, [in] int stateType, [out] AccessibilityAbilityInfoParcel[] infos);
     [oneway] void RegisterElementOperatorByWindowId([in] int windowId, [in] IAccessibilityElementOperator elementOperator);
     [oneway] void RegisterElementOperatorByParameter([in] RegistrationPara parameter, [in] IAccessibilityElementOperator elementOperator);
@@ -92,7 +90,6 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void GetSceneBoardInnerWinId([in] int windowId, [in] long elementId, [out] int innerWid);
     void GetFocusedWindowId([out] int focusedWindowId);
     void RegisterConfigObserver([in] IAccessibleAbilityManagerConfigObserver observer);
-    void DeRegisterConfigObserver([in] IAccessibleAbilityManagerConfigObserver observer);
     void RemoveRequestId([in] int requestId);
     void GetRootParentId([in] int windowsId, [in] int treeId, [out] long parentId);
     void GetRootParentId([in] int windowsId, [in] int treeId, [out] long parentId, [in] boolean systemApi);
@@ -100,4 +97,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void SetEnhanceConfig([in] AccessibilitySecCompRawdata rawData);
     void SearchNeedEvents([out] unsigned int[] needEvents);
     void GetReadableRules([out] String name);
+    void DeRegisterCaptionObserver([in] IRemoteObject obj);
+    void DeRegisterEnableAbilityListsObserver([in] IRemoteObject obj);
+    void DeRegisterConfigObserver([in] IRemoteObject obj);
 }

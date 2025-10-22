@@ -51,15 +51,15 @@ AccessibilityConfig::Impl::~Impl()
 
     if (serviceProxy_ != nullptr) {
         ErrCode ret = Accessibility::RET_OK;
-        ret = serviceProxy_->DeRegisterCaptionObserver(captionObserver_);
+        ret = serviceProxy_->DeRegisterCaptionObserver(captionObserver_->AsObject());
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister captionObserver failed.");
         }
-        ret = serviceProxy_->DeRegisterEnableAbilityListsObserver(enableAbilityListsObserver_);
+        ret = serviceProxy_->DeRegisterEnableAbilityListsObserver(enableAbilityListsObserver_->AsObject());
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister EnableAbilityListsObserver failed.");
         }
-        ret = serviceProxy_->DeRegisterConfigObserver(configObserver_);
+        ret = serviceProxy_->DeRegisterConfigObserver(configObserver_->AsObject());
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister configObserver failed.");
         }

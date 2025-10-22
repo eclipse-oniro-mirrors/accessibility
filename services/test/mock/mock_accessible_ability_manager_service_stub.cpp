@@ -540,19 +540,19 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetReadableRules(std::string &n
 }
 
 ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterCaptionObserver(
-    const sptr<IAccessibleAbilityManagerCaptionObserver> &observer)
+    const sptr<IRemoteObject>& obj)
 {
     return RET_OK;
 }
 
 ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterEnableAbilityListsObserver(
-    const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
+    const sptr<IRemoteObject>& obj)
 {
     return RET_OK;
 }
 
 ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterConfigObserver(
-    const sptr<IAccessibleAbilityManagerConfigObserver> &observer)
+    const sptr<IRemoteObject>& obj)
 {
     return RET_OK;
 }

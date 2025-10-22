@@ -803,23 +803,23 @@ ErrCode AccessibleAbilityManagerService::GetReadableRules(std::string &name)
 }
 
 ErrCode AccessibleAbilityManagerService::DeRegisterCaptionObserver(
-    const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
+    const sptr<IRemoteObject>& obj)
 {
-    (void)callback;
+    (void)obj;
     return RET_OK;
 }
 
 ErrCode AccessibleAbilityManagerService::DeRegisterEnableAbilityListsObserver(
-    const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
+    const sptr<IRemoteObject>& obj)
 {
-    (void)observer;
+    (void)obj;
     return RET_OK;
 }
 
 ErrCode AccessibleAbilityManagerService::DeRegisterConfigObserver(
-    const sptr<IAccessibleAbilityManagerConfigObserver> &callback)
+    const sptr<IRemoteObject>& obj)
 {
-    (void)callback;
+    (void)obj;
     return RET_OK;
 }
 } // namespace Accessibility
