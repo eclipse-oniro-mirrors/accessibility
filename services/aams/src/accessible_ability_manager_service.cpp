@@ -4457,137 +4457,42 @@ ErrCode AccessibleAbilityManagerService::GetReadableRules(std::string &readableR
 }
 
 ErrCode AccessibleAbilityManagerService::DeRegisterCaptionObserver(
-    const sptr<IAccessibleAbilityManagerCaptionObserver> &callback)
+    const sptr<IRemoteObject>& obj)
 {
-    HILOG_DEBUG();
-    if (!callback || !actionHandler_) {
-        HILOG_ERROR("Parameters check failed!");
-        return ERR_INVALID_VALUE;
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return RET_ERR_NULLPTR;
     }
- 
-    XCollieHelper timer(TIMER_DEREGISTER_CAPTION_OBSERVER, XCOLLIE_TIMEOUT);
-    std::shared_ptr<ffrt::promise<uint32_t>> syncPromise = std::make_shared<ffrt::promise<uint32_t>>();
-    ffrt::future syncFuture = syncPromise->get_future();
-    actionHandler_->PostTask([this, syncPromise, callback]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            syncPromise->set_value(ERR_INVALID_VALUE);
-            return;
-        }
- 
-        if (!callback->AsObject()) {
-            HILOG_ERROR("object is null");
-            syncPromise->set_value(ERR_INVALID_VALUE);
-            return;
-        }
- 
-        callback->AsObject()->RemoveDeathRecipient(captionPropertyCallbackDeathRecipient_);
-        accountData->RemoveCaptionPropertyCallback(callback);
-        HILOG_DEBUG("the size of caption property callbacks is %{public}zu",
-            accountData->GetCaptionPropertyCallbacks().size());
- 
-        syncPromise->set_value(NO_ERROR);
-    },
-        "TASK_UNREGISTER_CAPTION_OBSERVER");
- 
-    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != ffrt::future_status::ready) {
-        HILOG_ERROR("Failed to wait UnregisterCaptionObserver result");
-        return RET_ERR_TIME_OUT;
-    }
- 
-    return syncFuture.get();
+    accountData->RemoveCaptionPropertyCallback(obj);
+    return RET_OK;
 }
 
 ErrCode AccessibleAbilityManagerService::DeRegisterEnableAbilityListsObserver(
-    const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
+    const sptr<IRemoteObject>& obj)
 {
-    HILOG_DEBUG();
-    if (!observer || !actionHandler_) {
-        HILOG_ERROR("Parameters check failed!");
-        return ERR_INVALID_DATA;
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return RET_ERR_NULLPTR;
     }
- 
-    XCollieHelper timer(TIMER_DEREGISTER_ENABLEABILITY_OBSERVER, XCOLLIE_TIMEOUT);
-    std::shared_ptr<ffrt::promise<ErrCode>> syncPromisePtr = std::make_shared<ffrt::promise<ErrCode>>();
-    ffrt::future syncFuture = syncPromisePtr->get_future();
-    actionHandler_->PostTask([this, syncPromisePtr, observer]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            syncPromisePtr->set_value(ERR_INVALID_DATA);
-            return;
-        }
- 
-        if (!observer->AsObject()) {
-            HILOG_ERROR("object is null");
-            syncPromisePtr->set_value(ERR_INVALID_DATA);
-            return;
-        }
- 
-        observer->AsObject()->RemoveDeathRecipient(enableAbilityListsObserverDeathRecipient_);
-        accountData->RemoveEnableAbilityListsObserver(observer);
- 
-        syncPromisePtr->set_value(NO_ERROR);
-    },
-        "TASK_UNREGISTER_ENABLE_ABILITY_LISTS_OBSERVER");
- 
-    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != ffrt::future_status::ready) {
-        HILOG_ERROR("Failed to wait UnregisterEnableAbilityListsObserver result");
-        return ERR_TRANSACTION_FAILED;
-    }
- 
-    return syncFuture.get();
+    accountData->RemoveEnableAbilityListsObserver(obj);
+    return RET_OK;
 }
 
 ErrCode AccessibleAbilityManagerService::DeRegisterConfigObserver(
-    const sptr<IAccessibleAbilityManagerConfigObserver> &callback)
+    const sptr<IRemoteObject>& obj)
 {
-    HILOG_DEBUG();
-    if (!callback || !actionHandler_) {
-        HILOG_ERROR("Parameters check failed!");
-        return ERR_INVALID_VALUE;
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return RET_ERR_NULLPTR;
     }
- 
-    XCollieHelper timer(TIMER_DEREGISTER_CONFIG_OBSERVER, XCOLLIE_TIMEOUT);
-    std::shared_ptr<ffrt::promise<uint32_t>> syncPromisePtr = std::make_shared<ffrt::promise<uint32_t>>();
-    ffrt::future syncFuture = syncPromisePtr->get_future();
-    actionHandler_->PostTask([this, syncPromisePtr, callback]() {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            syncPromisePtr->set_value(ERR_INVALID_VALUE);
-            return;
-        }
- 
-        if (!callback->AsObject()) {
-            HILOG_ERROR("object is null");
-            syncPromisePtr->set_value(ERR_INVALID_VALUE);
-            return;
-        }
- 
-        callback->AsObject()->RemoveDeathRecipient(configCallbackDeathRecipient_);
-        accountData->RemoveConfigCallback(callback);
- 
-        HILOG_DEBUG("the size of config callbacks is %{public}zu",
-            accountData->GetConfigCallbacks().size());
- 
-        syncPromisePtr->set_value(NO_ERROR);
-    },
-        "TASK_UNREGISTER_CONFIG_OBSERVER");
- 
-    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != ffrt::future_status::ready) {
-        HILOG_ERROR("Failed to wait UnregisterConfigObserver result");
-        return RET_ERR_TIME_OUT;
-    }
- 
-    return syncFuture.get();
+    accountData->RemoveConfigCallback(obj);
+    return RET_OK;
 }
 
 bool AccessibleAbilityManagerService::CheckNodeIsReadableOverChildTree(AccessibilityEventInfo &event)

@@ -348,18 +348,17 @@ public:
         return RET_OK;
     }
 
-    ErrCode DeRegisterCaptionObserver(const sptr<IAccessibleAbilityManagerCaptionObserver> &callback) override
+    ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override
     {
         return RET_OK;
     }
 
-    ErrCode DeRegisterEnableAbilityListsObserver(
-        const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override
+    ErrCode DeRegisterEnableAbilityListsObserver(const sptr<IRemoteObject>& obj) override
     {
         return RET_OK;
     }
 
-    ErrCode DeRegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override
+    ErrCode DeRegisterConfigObserver(const sptr<IRemoteObject>& obj) override
     {
         return RET_OK;
     }
