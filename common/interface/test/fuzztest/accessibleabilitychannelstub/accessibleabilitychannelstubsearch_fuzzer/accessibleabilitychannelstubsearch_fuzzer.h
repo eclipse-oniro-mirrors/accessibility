@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBLEABILITYCHANNELSTUB_FUZZER_H
-#define ACCESSIBLEABILITYCHANNELSTUB_FUZZER_H
+#ifndef ACCESSIBLEABILITYCHANNELSTUBSEARCH_FUZZER_H
+#define ACCESSIBLEABILITYCHANNELSTUBSEARCH_FUZZER_H
 
-#define FUZZ_PROJECT_NAME "accessibleabilitychannelstub_fuzzer"
-#endif // ACCESSIBLEABILITYCHANNELSTUB_FUZZER_H
+#define FUZZ_PROJECT_NAME "accessibleabilitychannelstubsearch_fuzzer"
+#endif // ACCESSIBLEABILITYCHANNELSTUBSEARCH_FUZZER_H
