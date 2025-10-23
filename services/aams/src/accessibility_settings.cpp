@@ -651,6 +651,10 @@ void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpd
 {
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return;
+    }
     // set
     if (atoHosValue.daltonizationState) {
         accountData->GetConfig()->SetDaltonizationState(atoHosValue.daltonizationState);
@@ -697,6 +701,10 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
 {
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return;
+    }
     ConfigValueAtoHosUpdate atoHosValue;
     accountData->GetConfigValueAtoHos(atoHosValue);
 

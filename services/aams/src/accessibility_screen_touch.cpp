@@ -94,6 +94,10 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
     // get from account data directly
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return;
+    }
     clickResponseTime_ = accountData->GetConfig()->GetClickResponseTime();
     ignoreRepeatClickState_ = accountData->GetConfig()->GetIgnoreRepeatClickState();
     ignoreRepeatClickTime_ = accountData->GetConfig()->GetIgnoreRepeatClickTime();
