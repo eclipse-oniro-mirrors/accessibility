@@ -3605,10 +3605,10 @@ void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
     bool screenMagnificationEnabled = false;
     screenMagnificationEnabled = config->GetDbHandle()->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
     config->SetMagnificationState(screenMagnificationEnabled);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
     if (!screenMagnificationEnabled) {
         OffZoomGesture();
     }
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
 }
 
 void AccessibleAbilityManagerService::RegisterScreenMagnificationState()
