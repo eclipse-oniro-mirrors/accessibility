@@ -93,6 +93,7 @@ public:
 private:
     AccessibilityInputInterceptor();
     static sptr<AccessibilityInputInterceptor> instance_;
+    static ffrt::mutex instanceMutex_;
     void CreateTransmitters();
     void DestroyTransmitters();
     void CreatePointerEventTransmitters();
@@ -115,6 +116,7 @@ private:
     std::shared_ptr<AccessibilityInputEventConsumer> inputEventConsumer_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
     ffrt::mutex mutex_;
+    ffrt::mutex eventHandlerMutex_;
 
     sptr<AccessibilityZoomGesture> zoomGesture_ = nullptr;
     sptr<WindowMagnificationGesture> windowMagnificationGesture_ = nullptr;
