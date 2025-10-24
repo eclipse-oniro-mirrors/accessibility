@@ -121,6 +121,10 @@ void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
 
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("GetCurrentAccountData failed");
+        return;
+    }
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps = accountData->GetConnectedA11yAbilities();
 
     std::shared_ptr<ProcessingEvent> processingEvent = nullptr;

@@ -1553,9 +1553,9 @@ void AccessibilityConfig::Impl::OnAccessibilityEnableAbilityListsChanged()
 
 void AccessibilityConfig::Impl::OnAccessibilityInstallAbilityListsChanged()
 {
-    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
     std::vector<std::shared_ptr<AccessibilityEnableAbilityListsObserver>> observers;
     {
+        HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
         std::lock_guard<ffrt::mutex> lock(enableAbilityListsObserversMutex_);
         observers = enableAbilityListsObservers_;
     }
