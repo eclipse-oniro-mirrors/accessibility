@@ -34,16 +34,21 @@
 namespace OHOS {
 namespace Accessibility {
 sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::instance_ = nullptr;
+ffrt::mutex AccessibilityInputInterceptor::instanceMutex_;
 sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::GetInstance()
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     if (!instance_) {
-        instance_ = new(std::nothrow) AccessibilityInputInterceptor();
+        std::lock_guard<ffrt::mutex> lock(instanceMutex_);
         if (!instance_) {
-            HILOG_ERROR("instance_ is null");
-            return nullptr;
+            HILOG_INFO("Create AccessibilityInputInterceptor instance.");
+            instance_ = new(std::nothrow) AccessibilityInputInterceptor();
         }
+    }
+    if (!instance_) {
+        HILOG_ERROR("instance_ is null");
+        return nullptr;
     }
     return instance_;
 }
@@ -61,7 +66,7 @@ AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
 {
     HILOG_INFO();
 
-    std::lock_guard<ffrt::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(eventHandlerMutex_);
     availableFunctions_ = 0;
     DestroyInterceptor();
     DestroyTransmitters();
@@ -119,12 +124,12 @@ void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunc
 {
     HILOG_INFO("function[%{public}d].", availableFunctions);
 
+    std::lock_guard<ffrt::mutex> lock(eventHandlerMutex_);
     if ((availableFunctions_ == availableFunctions) && ((availableFunctions & FEATURE_SCREEN_TOUCH) == 0)) {
         return;
     }
     availableFunctions_ = availableFunctions;
 
-    std::lock_guard<ffrt::mutex> lock(mutex_);
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler is empty!");
         return;
