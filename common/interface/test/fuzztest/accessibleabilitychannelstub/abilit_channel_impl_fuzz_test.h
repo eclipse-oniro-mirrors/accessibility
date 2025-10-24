@@ -13,6 +13,9 @@
  * limitations under the License.
  */
 
+#ifndef ABILIT_CHANNEL_IMPL_FUZZ_H
+#define ABILIT_CHANNEL_IMPL_FUZZ_H
+
 #include "accessible_ability_channel_stub.h"
 #include "accessibility_ipc_interface_code.h"
 #include "parcel/accessibility_gesture_inject_path_parcel.h"
@@ -122,6 +125,10 @@ public:
     {
         return RET_OK;
     }
+
+    void FocusMoveSearchWithCondition(const int64_t elementId,
+        const AccessibilityFocusMoveParam& param, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId) override {}
 };
 
 template<class T>
@@ -135,3 +142,4 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
 }
 } // namespace Accessibility
 } // namespace OHOS
+#endif // ABILIT_CHANNEL_IMPL_FUZZ_H
