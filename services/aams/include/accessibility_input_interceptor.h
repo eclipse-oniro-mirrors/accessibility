@@ -48,7 +48,7 @@ private:
 
 class AccessibilityInputInterceptor : public EventTransmission {
 public:
-    // Feature flag for screen magnification.
+    // Feature flag for full screen magnification.
     static constexpr uint32_t FEATURE_SCREEN_MAGNIFICATION = 0x00000001;
 
     // Feature flag for touch exploration.
@@ -68,6 +68,9 @@ public:
 
     // Feature flag for screen touch.
     static constexpr uint32_t FEATURE_SCREEN_TOUCH = 0x00000080;
+
+    // Feature flag for window magnification.
+    static constexpr uint32_t FEATURE_WINDOW_MAGNIFICATION = 0x00000100;
 
     static constexpr uint32_t PRIORITY_EVENT = 500;
 

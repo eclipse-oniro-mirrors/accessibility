@@ -119,8 +119,7 @@ void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunc
 {
     HILOG_INFO("function[%{public}d].", availableFunctions);
 
-    if (((availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) != FEATURE_SCREEN_MAGNIFICATION) &&
-        (availableFunctions_ == availableFunctions) && ((availableFunctions & FEATURE_SCREEN_TOUCH) == 0)) {
+    if ((availableFunctions_ == availableFunctions) && ((availableFunctions & FEATURE_SCREEN_TOUCH) == 0)) {
         return;
     }
     availableFunctions_ = availableFunctions;
@@ -156,6 +155,7 @@ void AccessibilityInputInterceptor::CreateTransmitters()
         (availableFunctions_ & FEATURE_INJECT_TOUCH_EVENTS) ||
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
         (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) ||
+        (availableFunctions_ & FEATURE_WINDOW_MAGNIFICATION) ||
         (availableFunctions_ & FEATURE_SCREEN_TOUCH)) {
         CreatePointerEventTransmitters();
     }
@@ -191,7 +191,7 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
         Singleton<AccessibleAbilityManagerService>::GetInstance().SetTouchEventInjector(touchEventInjector);
     }
 
-    if (availableFunctions_& FEATURE_SCREEN_MAGNIFICATION) {
+    if ((availableFunctions_& FEATURE_SCREEN_MAGNIFICATION) || (availableFunctions_& FEATURE_WINDOW_MAGNIFICATION)) {
         CreateMagnificationGesture(header, current);
     } else {
         ClearMagnificationGesture();
@@ -349,6 +349,7 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
     if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
         (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) ||
+        (availableFunctions_ & FEATURE_WINDOW_MAGNIFICATION) ||
         (availableFunctions_ & FEATURE_MOUSE_KEY) ||
         (availableFunctions_ & FEATURE_SCREEN_TOUCH)) {
             inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();

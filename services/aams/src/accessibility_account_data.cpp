@@ -1017,7 +1017,11 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     }
     uint32_t flag = 0;
     if (config_->GetScreenMagnificationState()) {
-        flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION;
+        if (config_->GetScreenMagnificationMode() == WINDOW_MAGNIFICATION) {
+            flag |= AccessibilityInputInterceptor::FEATURE_WINDOW_MAGNIFICATION;
+        } else {
+            flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION;
+        }
     }
     if (isEventTouchGuideState_) {
         flag |= AccessibilityInputInterceptor::FEATURE_TOUCH_EXPLORATION;
