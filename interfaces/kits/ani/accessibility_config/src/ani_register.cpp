@@ -19,6 +19,7 @@
 #include "ani_accessibility_config.h"
 #include "hilog_wrapper.h"
 #include <ani_signature_builder.h>
+#include "accessibility_config.h"
 
 using namespace arkts::ani_signature;
 
@@ -47,6 +48,9 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
         HILOG_ERROR("bind method failed");
         return (ani_status)BIND_METHOD_FAILED;
     }
+
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    (void)instance.InitializeContext();
 
     *result = ANI_VERSION_1;
     return ANI_OK;
