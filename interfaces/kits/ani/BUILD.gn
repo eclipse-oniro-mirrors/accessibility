@@ -18,10 +18,10 @@ group("ani_packages") {
   deps = [
     ":accessibility_ani",
     ":accessibility_ani_abc_etc",
-    "accessibility_extension:accessibility_extension_context_ani_abc_etc",
-    "accessibility_extension:accessibility_extension_ability_ani_abc_etc",
     "accessibility_config:accessibility_config",
     "accessibility_config:accessibility_config_ani_abc_etc",
+    "accessibility_extension:accessibility_extension_ability_ani_abc_etc",
+    "accessibility_extension:accessibility_extension_context_ani_abc_etc",
   ]
 }
 
@@ -81,4 +81,3 @@ ohos_prebuilt_etc("accessibility_ani_abc_etc") {
   subsystem_name = "barrierfree"
   deps = [ ":accessibility_ani_abc" ]
 }
-

@@ -36,19 +36,19 @@ ohos_shared_library("accessibility_config") {
   ]
 
   external_deps = [
+    "access_token:libaccesstoken_sdk",
+    "access_token:libtokenid_sdk",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "hilog:libhilog",
     "input:libmmi-client",
+    "ipc:ipc_core",
     "runtime_core:ani",
     "runtime_core:ani_helpers",
-    "access_token:libaccesstoken_sdk",
-    "access_token:libtokenid_sdk",
-    "ipc:ipc_core",
   ]
   sources = [
-    "./src/ani_accessibility_config.cpp",
     "../src/ani_utils.cpp",
+    "./src/ani_accessibility_config.cpp",
     "./src/ani_register.cpp",
   ]
   part_name = "accessibility"
