@@ -506,7 +506,7 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
 
 void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     std::string strType = "";
     ConvertEventTypeToString(eventInfo, strType);
     if (strType.empty()) {
@@ -682,7 +682,7 @@ void NAccessibilityExtension::OnKeyPressEventCompleteCallback(uv_work_t* work, i
 
 napi_value NAccessibilityExtension::CallObjectMethod(const char* name, napi_value* argv, size_t argc)
 {
-    HILOG_INFO("name:%{public}s", name);
+    HILOG_DEBUG("name:%{public}s", name);
     if (!jsObj_) {
         HILOG_ERROR("jsObj_ is nullptr");
         return nullptr;
