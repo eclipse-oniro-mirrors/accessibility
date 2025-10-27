@@ -424,11 +424,6 @@ public:
 
     RetError FocusMoveSearchWithCondition(int64_t elementId, AccessibilityFocusMoveParam param,
         std::vector<AccessibilityElementInfo> &infos, int32_t windowId) override;
-
-    void AddWindowElementMapByWMS(int32_t windowId, int64_t elementId);
-    void AddWindowElementMapByAce(int32_t windowId, int64_t elementId);
-    RetError GetElementInfoFromCache(int32_t windowId, int64_t elementId,
-        std::vector<AccessibilityElementInfo> &elementInfos);
     RetError SearchElementInfoRecursive(int32_t windowId, int64_t elementId, uint32_t mode,
         std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false);
     RetError SearchElementInfoRecursiveByWinid(const int32_t windowId, const int64_t elementId,
@@ -437,9 +432,6 @@ public:
     RetError SearchElementInfoRecursiveByContent(const int32_t windowId, const int64_t elementId,
         uint32_t mode, std::vector<AccessibilityElementInfo> &elementInfos, const std::string text, int32_t treeId,
         bool isFilter = false, bool systemApi = false);
-    void RemoveCacheData(const AccessibilityEventInfo &eventInfo);
-    void AddCacheByWMS(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
-    void AddCacheByAce(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
     void SortElementInfosIfNecessary(std::vector<AccessibilityElementInfo> &elementInfos);
 
     bool LoadAccessibilityService();
@@ -452,38 +444,6 @@ public:
         const SpecificPropertyParam& param = {});
 
 private:
-    class ElementCacheInfo {
-    public:
-        ElementCacheInfo() = default;
-        ~ElementCacheInfo() = default;
-        void RemoveElementByWindowId(const int32_t windowId);
-        bool GetElementByWindowId(const int32_t windowId, const int64_t elementId,
-            std::vector<AccessibilityElementInfo>& elementInfos);
-        bool GetElementByWindowIdBFS(const int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos,
-            std::map<int32_t, std::shared_ptr<AccessibilityElementInfo>>& cache);
-        void AddElementCache(int32_t windowId, const std::vector<AccessibilityElementInfo>& elementInfos);
-        bool IsExistWindowId(int32_t windowId);
-    private:
-        std::map<int32_t, std::map<int32_t, std::shared_ptr<AccessibilityElementInfo>>> elementCache_;
-        std::deque<int32_t> windowIdSet_;
-        ffrt::mutex elementCacheMutex_;
-    };
-
-    class SceneBoardWindowElementMap {
-    public:
-        SceneBoardWindowElementMap() = default;
-        ~SceneBoardWindowElementMap() = default;
-        bool IsExistWindowId(int32_t windowId);
-        void AddWindowElementIdPair(int32_t windowId, int64_t elementId);
-        std::vector<int32_t> GetWindowIdList();
-        int32_t GetWindowIdByElementId(int64_t elementId);
-        void RemovePairByWindowIdList(std::vector<int32_t>& windowIdList);
-        void RemovePairByWindowId(int32_t windowId);
-    private:
-        std::map<int32_t, int64_t> windowElementMap_;
-        ffrt::mutex mapMutex_;
-    };
-
     class AccessibleAbilityDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         AccessibleAbilityDeathRecipient(AccessibleAbilityClientImpl &client) : client_(client) {}
@@ -534,15 +494,12 @@ private:
     uint32_t cacheMode_ = 0;
     int32_t cacheWindowId_ = -1;
     SafeMap<int64_t, AccessibilityElementInfo> cacheElementInfos_;
-    ffrt::mutex mutex_;
     std::atomic<bool> isConnected_ = false;
-    // used for query element info in batch
-    ElementCacheInfo elementCacheInfo_;
-    SceneBoardWindowElementMap windowElementMap_;
 
     ffrt::condition_variable proxyConVar_;
     ffrt::mutex conVarMutex_;
-    ffrt::shared_mutex rwLock_;
+    ffrt::shared_mutex rwServiceLock_;
+    ffrt::shared_mutex rwChannelLock_;
     std::list<std::shared_ptr<DisconnectCallback>> callbackList_;
     bool isDisconnectCallbackExecute_ = false;
     ffrt::mutex callbackListMutex_;
