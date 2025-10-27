@@ -72,6 +72,8 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
         return (ani_status)BIND_METHOD_FAILED;
     }
 
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    (void)instance.InitializeContext();
     ANIAccessibilityClient::accessibilityStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::touchGuideStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::screenReaderStateListeners_->SubscribeToFramework();
