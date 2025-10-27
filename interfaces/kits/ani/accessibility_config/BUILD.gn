@@ -14,11 +14,12 @@
 import("//build/config/components/ets_frontend/ets2abc_config.gni")
 import("//build/ohos.gni")
 
-ohos_shared_library("accessibility_config_ani") {
+ohos_shared_library("accessibility_config") {
   include_dirs = [
     "../../../../common/log/include",
     "../../../../common/interface/include",
     "../../../../frameworks/acfwk/include",
+    "../include",
     "./include",
   ]
   sanitize = {
@@ -41,10 +42,13 @@ ohos_shared_library("accessibility_config_ani") {
     "input:libmmi-client",
     "runtime_core:ani",
     "runtime_core:ani_helpers",
+    "access_token:libaccesstoken_sdk",
+    "access_token:libtokenid_sdk",
+    "ipc:ipc_core",
   ]
   sources = [
-    "../src/accessibility_utils_ani.cpp",
     "./src/ani_accessibility_config.cpp",
+    "../src/ani_utils.cpp",
     "./src/ani_register.cpp",
   ]
   part_name = "accessibility"

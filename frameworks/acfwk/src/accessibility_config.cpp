@@ -117,16 +117,17 @@ Accessibility::RetError AccessibilityConfig::SetMouseKeyState(const bool state)
     return pImpl_->SetMouseKeyState(state);
 }
 
-Accessibility::RetError AccessibilityConfig::SetCaptionsState(const bool state)
+Accessibility::RetError AccessibilityConfig::SetCaptionsState(const bool state, bool isPermissionRequired)
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
-    return pImpl_->SetCaptionsState(state);
+    return pImpl_->SetCaptionsState(state, isPermissionRequired);
 }
 
-Accessibility::RetError AccessibilityConfig::SetCaptionsProperty(const CaptionProperty &caption)
+Accessibility::RetError AccessibilityConfig::SetCaptionsProperty(const CaptionProperty &caption,
+    bool isPermissionRequired)
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
-    return pImpl_->SetCaptionsProperty(caption);
+    return pImpl_->SetCaptionsProperty(caption, isPermissionRequired);
 }
 
 Accessibility::RetError AccessibilityConfig::SetMouseAutoClick(const int32_t time)
@@ -237,16 +238,17 @@ Accessibility::RetError AccessibilityConfig::GetMouseKeyState(bool &state) const
     return pImpl_->GetMouseKeyState(state);
 }
 
-Accessibility::RetError AccessibilityConfig::GetCaptionsState(bool &state) const
+Accessibility::RetError AccessibilityConfig::GetCaptionsState(bool &state, bool isPermissionRequired) const
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
-    return pImpl_->GetCaptionsState(state);
+    return pImpl_->GetCaptionsState(state, isPermissionRequired);
 }
 
-Accessibility::RetError AccessibilityConfig::GetCaptionsProperty(CaptionProperty &caption) const
+Accessibility::RetError AccessibilityConfig::GetCaptionsProperty(CaptionProperty &caption,
+    bool isPermissionRequired) const
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
-    return pImpl_->GetCaptionsProperty(caption);
+    return pImpl_->GetCaptionsProperty(caption, isPermissionRequired);
 }
 
 Accessibility::RetError AccessibilityConfig::GetMouseAutoClick(int32_t &time) const

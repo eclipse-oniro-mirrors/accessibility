@@ -16,6 +16,7 @@
 #include "accessibility_extension_module_loader.h"
 #include "accessibility_extension.h"
 #include "hilog_wrapper.h"
+#include "ani_accessibility_extension.h"
 #include "napi_accessibility_extension.h"
 
 namespace OHOS::Accessibility {
@@ -31,8 +32,11 @@ AbilityRuntime::Extension *AccessibilityExtensionModuleLoader::Create(
     HILOG_INFO("AccessibilityExtension::Create runtime");
     switch (runtime->GetLanguage()) {
         case AbilityRuntime::Runtime::Language::JS:
+            HILOG_INFO("AccessibilityExtension::Create JS runtime");
             return NAccessibilityExtension::Create(runtime);
-
+        case AbilityRuntime::Runtime::Language::ETS:
+            HILOG_INFO("AccessibilityExtension::Create ETS runtime");
+            return AniAccessibilityExtension::Create(runtime);
         default:
             return new(std::nothrow) AccessibilityExtension();
     }

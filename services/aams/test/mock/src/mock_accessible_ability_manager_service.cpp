@@ -169,27 +169,32 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(i
     return a11yAccountsData_.GetAccountData(accountId);
 }
 
-ErrCode AccessibleAbilityManagerService::GetCaptionProperty(CaptionPropertyParcel &caption)
+ErrCode AccessibleAbilityManagerService::GetCaptionProperty(CaptionPropertyParcel &caption, bool isPermissionRequired)
 {
     (void)caption;
+    (void)isPermissionRequired;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetCaptionProperty(const CaptionPropertyParcel& caption)
+ErrCode AccessibleAbilityManagerService::SetCaptionProperty(const CaptionPropertyParcel& caption,
+    bool isPermissionRequired)
 {
     (void)caption;
+    (void)isPermissionRequired;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetCaptionState(bool state)
+ErrCode AccessibleAbilityManagerService::SetCaptionState(bool state, bool isPermissionRequired)
 {
     (void)state;
+    (void)isPermissionRequired;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::GetCaptionState(bool &state)
+ErrCode AccessibleAbilityManagerService::GetCaptionState(bool &state, bool isPermissionRequired)
 {
     state = true;
+    (void)isPermissionRequired;
     return RET_OK;
 }
 

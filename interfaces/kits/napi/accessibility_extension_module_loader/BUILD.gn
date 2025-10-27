@@ -12,6 +12,7 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
+import("../../ani/accessibility_extension_module/config.gni")
 import("../../../../accessibility_manager_service.gni")
 
 config("accessibility_extension_module_config") {
@@ -75,7 +76,6 @@ ohos_shared_library("accessibility_extension_module") {
     "ability_runtime:abilitykit_utils",
     "ability_runtime:app_context",
     "ability_runtime:extensionkit_native",
-    "ability_runtime:napi_common",
     "ability_runtime:runtime",
     "access_token:libaccesstoken_sdk",
     "access_token:libtokenid_sdk",
@@ -88,6 +88,11 @@ ohos_shared_library("accessibility_extension_module") {
     "ipc:ipc_napi",
     "napi:ace_napi",
   ]
+
+  include_dirs = ani_accessibility_extension_module.include_dirs
+  sources += ani_accessibility_extension_module.srcs
+  deps += ani_accessibility_extension_module.deps
+  external_deps += ani_accessibility_extension_module.external_deps
 
   relative_install_dir = "extensionability/"
   subsystem_name = "barrierfree"

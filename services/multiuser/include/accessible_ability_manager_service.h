@@ -112,11 +112,11 @@ public:
 
     ErrCode DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId) override;
 
-    ErrCode GetCaptionProperty(CaptionPropertyParcel &caption) override;
-    ErrCode SetCaptionProperty(const CaptionPropertyParcel &caption) override;
-    ErrCode SetCaptionState(const bool state) override;
+    ErrCode GetCaptionProperty(CaptionPropertyParcel &caption, bool isPermissionRequired) override;
+    ErrCode SetCaptionProperty(const CaptionPropertyParcel &caption, bool isPermissionRequired) override;
+    ErrCode SetCaptionState(const bool state, bool isPermissionRequired) override;
 
-    ErrCode GetCaptionState(bool &state) override;
+    ErrCode GetCaptionState(bool &state, bool isPermissionRequired) override;
 
     ErrCode EnableAbility(const std::string &name, const uint32_t capabilities) override;
     ErrCode GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;

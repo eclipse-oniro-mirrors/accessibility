@@ -288,31 +288,6 @@ namespace {
         DECLARE_NAPI_GETTER(PARENT_ID, GetElementProperty<ElementProperty<PARENT_ID>>),
         DECLARE_NAPI_GETTER(CHILDREN_IDS, GetElementProperty<ElementProperty<CHILDREN_IDS>>),
     };
-
-    const std::vector<std::string> ACTION_NAMES = {
-        "accessibilityFocus",      //AccessibilityAction.ACCESSIBILITY_FOCUS=0
-        "clearAccessibilityFocus", //AccessibilityAction.CLEAR_ACCESSIBILITY_FOCUS=1
-        "focus",                   //AccessibilityAction.FOCUS=2
-        "clearFocus",              //AccessibilityAction.CLEAR_FOCUS=3
-        "click",                   //AccessibilityAction.CLICK=4
-        "longClick",               //AccessibilityAction.LONG_CLICK=5
-        "cut",                     //AccessibilityAction.CUT=6
-        "copy",                    //AccessibilityAction.COPY=7
-        "paste",                   //AccessibilityAction.PASTE=8
-        "select",                  //AccessibilityAction.SELECT=9
-        "setText",                 //AccessibilityAction.SET_TEXT=10
-        "scrollForward",           //AccessibilityAction.SCROLL_FORWARD=11
-        "scrollBackward",          //AccessibilityAction.SCROLL_BACKWARD=12
-        "setSelection",            //AccessibilityAction.SET_SELECTION=13
-        "setCursorPosition",       //AccessibilityAction.SET_CURSOR_POSITION=14
-        "home",                    //AccessibilityAction.HOME=15
-        "back",                    //AccessibilityAction.BACK=16
-        "recentTask",              //AccessibilityAction.RECENT_TASK=17
-        "notificationCenter",      //AccessibilityAction.NOTIFICATION_CENTER=18
-        "controlCenter",           //AccessibilityAction.CONTROL_CENTER=19
-        "common",                  //AccessibilityAction.COMMON=20
-        "spanClick"                //AccessibilityAction.SPAN_CLICK=21
-    };
 } // namespace
 
 napi_ref NAccessibilityElement::consRef_ = nullptr;

@@ -129,27 +129,6 @@ CArrString GetEventTypeStr(uint32_t eventType, RetError &errCode)
     return VectorToCArrString(eventTypeStr, errCode);
 }
 
-bool CheckAbilityType(const std::string &abilityType)
-{
-    if (std::strcmp(abilityType.c_str(), "audible") == 0 || std::strcmp(abilityType.c_str(), "generic") == 0 ||
-        std::strcmp(abilityType.c_str(), "haptic") == 0 || std::strcmp(abilityType.c_str(), "spoken") == 0 ||
-        std::strcmp(abilityType.c_str(), "visual") == 0 || std::strcmp(abilityType.c_str(), "all") == 0) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool CheckStateType(const std::string &stateType)
-{
-    if (std::strcmp(stateType.c_str(), "enable") == 0 || std::strcmp(stateType.c_str(), "disable") == 0 ||
-        std::strcmp(stateType.c_str(), "install") == 0) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 CAccessibilityAbilityInfo ConvertAccAbilityInfo2C(AccessibilityAbilityInfo &abilityInfo, RetError &errCode)
 {
     CAccessibilityAbilityInfo cAbility;

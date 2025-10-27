@@ -90,11 +90,11 @@ public:
         return RET_OK;
     }
 
-    ErrCode GetCaptionProperty(CaptionPropertyParcel &caption) override
+    ErrCode GetCaptionProperty(CaptionPropertyParcel &caption, bool isPermissionRequired) override
     {
         return RET_OK;
     }
-    ErrCode GetCaptionState(bool &state) override
+    ErrCode GetCaptionState(bool &state, bool isPermissionRequired) override
     {
         return RET_OK;
     }
@@ -103,11 +103,11 @@ public:
         return RET_OK;
     }
 
-    ErrCode SetCaptionProperty(const CaptionPropertyParcel &caption) override
+    ErrCode SetCaptionProperty(const CaptionPropertyParcel &caption, bool isPermissionRequired) override
     {
         return RET_OK;
     }
-    ErrCode SetCaptionState(bool state) override
+    ErrCode SetCaptionState(bool state, bool isPermissionRequired) override
     {
         return RET_OK;
     }

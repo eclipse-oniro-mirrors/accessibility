@@ -55,8 +55,8 @@ public:
     Accessibility::RetError SetScreenMagnificationState(const bool state);
     Accessibility::RetError SetShortKeyState(const bool state);
     Accessibility::RetError SetMouseKeyState(const bool state);
-    Accessibility::RetError SetCaptionsState(const bool state);
-    Accessibility::RetError SetCaptionsProperty(const CaptionProperty &caption);
+    Accessibility::RetError SetCaptionsState(const bool state, bool isPermissionRequired);
+    Accessibility::RetError SetCaptionsProperty(const CaptionProperty &caption, bool isPermissionRequired);
     Accessibility::RetError SetMouseAutoClick(const int32_t time);
     Accessibility::RetError SetShortkeyTarget(const std::string &name);
     Accessibility::RetError SetShortkeyMultiTarget(const std::vector<std::string> &name);
@@ -76,8 +76,8 @@ public:
     Accessibility::RetError GetScreenMagnificationState(bool &state);
     Accessibility::RetError GetShortKeyState(bool &state);
     Accessibility::RetError GetMouseKeyState(bool &state);
-    Accessibility::RetError GetCaptionsState(bool &state);
-    Accessibility::RetError GetCaptionsProperty(CaptionProperty &caption);
+    Accessibility::RetError GetCaptionsState(bool &state, bool isPermissionRequired);
+    Accessibility::RetError GetCaptionsProperty(CaptionProperty &caption, bool isPermissionRequired);
     Accessibility::RetError GetMouseAutoClick(int32_t &time);
     Accessibility::RetError GetShortkeyTarget(std::string &name);
     Accessibility::RetError GetShortkeyMultiTarget(std::vector<std::string> &name);
