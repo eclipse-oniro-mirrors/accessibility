@@ -21,7 +21,6 @@
 #include <ani_signature_builder.h>
 
 using namespace OHOS::Accessibility;
-using namespace OHOS::AccessibilityAni;
 using namespace arkts::ani_signature;
 
 constexpr int32_t ANI_SCOPE_SIZE = 16;
