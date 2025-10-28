@@ -379,6 +379,11 @@ RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
     
     HILOG_INFO("Transmit keycode to MMI");
 
+    if (accessibleKeyCodeTable.find(action) == accessibleKeyCodeTable.end()) {
+        HILOG_ERROR("Unrecognized action!");
+        return RET_ERROR_INVALID_PARAM;
+    }
+
     if (accessibleKeyCodeTable.at(action).first) {
         SetKeyCodeToMmi(keyEventDown, true, accessibleKeyCodeTable.at(action).second.first);
         SetKeyCodeToMmi(keyEventUp, false, accessibleKeyCodeTable.at(action).second.first);

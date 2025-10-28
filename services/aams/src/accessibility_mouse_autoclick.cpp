@@ -148,7 +148,10 @@ bool AccessibilityMouseAutoclick::IsMouseMovement(MMI::PointerEvent &event)
 
     int32_t pointerId = event.GetPointerId();
     MMI::PointerEvent::PointerItem item;
-    event.GetPointerItem(pointerId, item);
+    if (!event.GetPointerItem(pointerId, item)) {
+        HILOG_ERROR("get pointer item failed!");
+        return false;
+    }
     int32_t newX = item.GetDisplayX();
     int32_t newY = item.GetDisplayY();
 
