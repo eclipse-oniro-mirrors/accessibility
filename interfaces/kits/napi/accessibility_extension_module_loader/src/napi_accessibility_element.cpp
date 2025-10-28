@@ -2409,7 +2409,19 @@ napi_value NAccessibilityElement::FocusMoveSearchWithCondition(napi_env env, nap
  
     AccessibilityElement* accessibilityElement = nullptr;
     status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
- 
+    if (!accessibilityElement || status != napi_ok) {
+        HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_NULLPTR);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    if (!accessibilityElement->isElementInfo_) {
+        HILOG_ERROR("Type of AccessibilityElement is not right");
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_FAILED);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    
     napi_value promise = nullptr;
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (callbackInfo == nullptr) {
