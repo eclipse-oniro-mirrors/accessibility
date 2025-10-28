@@ -106,10 +106,10 @@ private:
     int64_t lastUpTime_ = 0;
     bool isInterceptClick_ = false;
     
-    ScreenTouchState currentState_;
-    uint32_t clickResponseTime_;
-    bool ignoreRepeatClickState_;
-    uint32_t ignoreRepeatClickTime_;
+    ScreenTouchState currentState_ = DEFAULT_STATE;
+    uint32_t clickResponseTime_ = 0;
+    bool ignoreRepeatClickState_ = false;
+    uint32_t ignoreRepeatClickTime_ = 0;
 
     std::atomic<int32_t> circleCenterPhysicalX_;
     std::atomic<int32_t> circleCenterPhysicalY_;
