@@ -47,6 +47,7 @@ ohos_shared_library("accessibility_ani") {
   ]
 
   external_deps = [
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "ffrt:libffrt",
     "hilog:libhilog",

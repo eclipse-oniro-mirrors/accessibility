@@ -17,7 +17,6 @@
 #include <array>
 #include <iostream>
 #include "ani_accessibility_system_ability_client.h"
-#include "ani_utils.h"
 #include "accessibility_config.h"
 #include "hilog_wrapper.h"
 #include <ani_signature_builder.h>
