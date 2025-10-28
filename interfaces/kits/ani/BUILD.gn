@@ -18,8 +18,10 @@ group("ani_packages") {
   deps = [
     ":accessibility_ani",
     ":accessibility_ani_abc_etc",
-    "accessibility_config:accessibility_config_ani",
+    "accessibility_config:accessibility_config",
     "accessibility_config:accessibility_config_ani_abc_etc",
+    "accessibility_extension:accessibility_extension_ability_ani_abc_etc",
+    "accessibility_extension:accessibility_extension_context_ani_abc_etc",
   ]
 }
 
@@ -39,6 +41,7 @@ ohos_shared_library("accessibility_ani") {
     debug = false
   }
   deps = [
+    "../../innerkits/acfwk:accessibilityconfig",
     "../../innerkits/asacfwk:accessibilityclient",
     "../../innerkits/common:accessibility_common",
   ]
@@ -53,10 +56,9 @@ ohos_shared_library("accessibility_ani") {
     "runtime_core:ani_helpers",
   ]
   sources = [
-    "./src/accessibility_utils_ani.cpp",
-    "./src/ani_accessibility_common.cpp",
     "./src/ani_accessibility_system_ability_client.cpp",
     "./src/ani_register.cpp",
+    "./src/ani_utils.cpp",
   ]
   part_name = "accessibility"
   subsystem_name = "barrierfree"

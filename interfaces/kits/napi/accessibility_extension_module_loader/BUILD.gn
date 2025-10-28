@@ -13,6 +13,7 @@
 
 import("//build/ohos.gni")
 import("../../../../accessibility_manager_service.gni")
+import("../../ani/accessibility_extension_module/config.gni")
 
 config("accessibility_extension_module_config") {
   visibility = [ ":*" ]
@@ -49,6 +50,7 @@ ohos_shared_library("accessibility_extension_module") {
   }
 
   sources = [
+    "../src/napi_accessibility_utils.cpp",
     "src/accessibility_extension.cpp",
     "src/accessibility_extension_context.cpp",
     "src/accessibility_extension_module_loader.cpp",
@@ -56,7 +58,6 @@ ohos_shared_library("accessibility_extension_module") {
     "src/napi_accessibility_extension.cpp",
     "src/napi_accessibility_extension_context.cpp",
     "src/napi_utils.cpp",
-    "../src/napi_accessibility_utils.cpp"
   ]
 
   configs = [ ":accessibility_extension_module_config" ]
@@ -88,6 +89,11 @@ ohos_shared_library("accessibility_extension_module") {
     "ipc:ipc_napi",
     "napi:ace_napi",
   ]
+
+  include_dirs = ani_accessibility_extension_module.include_dirs
+  sources += ani_accessibility_extension_module.srcs
+  deps += ani_accessibility_extension_module.deps
+  external_deps += ani_accessibility_extension_module.external_deps
 
   relative_install_dir = "extensionability/"
   subsystem_name = "barrierfree"

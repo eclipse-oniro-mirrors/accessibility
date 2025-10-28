@@ -20,47 +20,13 @@
 #include "cj_lambda.h"
 #include "accessibility_system_ability_client.h"
 #include "accessibility_def.h"
+#include "accessibility_utils.h"
 #include "hilog_wrapper.h"
 #include "securec.h"
 #include "native/ffi_remote_data.h"
 
 namespace OHOS {
 namespace Accessibility {
-
-static AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type)
-{
-    std::map<const std::string, AccessibilityAbilityTypes> accessibilityAbilityTypesTable = {
-        {"spoken", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN},
-        {"haptic", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_HAPTIC},
-        {"audible", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_AUDIBLE},
-        {"visual", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_VISUAL},
-        {"generic", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_GENERIC},
-        {"all", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL},
-    };
-
-    if (accessibilityAbilityTypesTable.find(type) == accessibilityAbilityTypesTable.end()) {
-        HILOG_WARN("invalid key[%{public}s]", type.c_str());
-        return AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_INVALID;
-    }
-
-    return accessibilityAbilityTypesTable.at(type);
-}
-
-static AbilityStateType ConvertStringToAbilityStateType(const std::string &type)
-{
-    std::map<const std::string, AbilityStateType> abilityStateTypeTable = {
-        {"enable", AbilityStateType::ABILITY_STATE_ENABLE},
-        {"disable", AbilityStateType::ABILITY_STATE_DISABLE},
-        {"install", AbilityStateType::ABILITY_STATE_INSTALLED}};
-
-    if (abilityStateTypeTable.find(type) == abilityStateTypeTable.end()) {
-        HILOG_WARN("invalid key[%{public}s]", type.c_str());
-        return ABILITY_STATE_INVALID;
-    }
-
-    return abilityStateTypeTable.at(type);
-}
-
 extern "C" {
 bool FfiAccIsOpenAccessibility(int32_t *errorCode)
 {
@@ -122,14 +88,14 @@ CArrAccessibilityAbilityInfo FfiAccGetAccessibilityExtensionList(char *cAbilityT
     std::string abilityTypeStr(cAbilityType);
     std::string stateTypeStr(cStateType);
     HILOG_DEBUG("abilityTypeStr = %{private}s", abilityTypeStr.c_str());
-    if (Utils::CheckAbilityType(abilityTypeStr)) {
+    if (CheckAbilityType(abilityTypeStr)) {
         abilityTypes = ConvertStringToAccessibilityAbilityTypes(abilityTypeStr);
     } else {
         *errorCode = ERR_INPUT_INVALID;
         return arrAccAbiliyInfo;
     }
     HILOG_DEBUG("stateTypes = %{private}s", stateTypeStr.c_str());
-    if (Utils::CheckStateType(stateTypeStr)) {
+    if (CheckStateType(stateTypeStr)) {
         stateTypes = ConvertStringToAbilityStateType(stateTypeStr);
     } else {
         errCode = RET_ERR_INVALID_PARAM;

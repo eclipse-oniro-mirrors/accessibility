@@ -567,7 +567,7 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY) {
         callbackInfo->ret_ = instance.SetShortKeyState(callbackInfo->boolConfig_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE) {
-        callbackInfo->ret_ = instance.SetCaptionsState(callbackInfo->boolConfig_);
+        callbackInfo->ret_ = instance.SetCaptionsState(callbackInfo->boolConfig_, true);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT) {
         callbackInfo->ret_ = instance.SetContentTimeout(callbackInfo->uint32Config_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK) {
@@ -581,7 +581,7 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_MULTI_TARGET) {
         callbackInfo->ret_ = instance.SetShortkeyMultiTarget(callbackInfo->stringVectorConfig_);
     }  else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE) {
-        callbackInfo->ret_ = instance.SetCaptionsProperty(callbackInfo->captionProperty_);
+        callbackInfo->ret_ = instance.SetCaptionsProperty(callbackInfo->captionProperty_, true);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER) {
         auto filter = ConvertStringToDaltonizationTypes(callbackInfo->stringConfig_);
         callbackInfo->ret_ = instance.SetDaltonizationColorFilter(filter);
@@ -722,7 +722,7 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY) {
         callbackInfo->ret_ = instance.GetShortKeyState(callbackInfo->boolConfig_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE) {
-        callbackInfo->ret_ = instance.GetCaptionsState(callbackInfo->boolConfig_);
+        callbackInfo->ret_ = instance.GetCaptionsState(callbackInfo->boolConfig_, true);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK) {
         callbackInfo->ret_ = instance.GetMouseAutoClick(callbackInfo->int32Config_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE) {
@@ -734,7 +734,7 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_MULTI_TARGET) {
         callbackInfo->ret_ = instance.GetShortkeyMultiTarget(callbackInfo->stringVectorConfig_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE) {
-        callbackInfo->ret_ = instance.GetCaptionsProperty(callbackInfo->captionProperty_);
+        callbackInfo->ret_ = instance.GetCaptionsProperty(callbackInfo->captionProperty_, true);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT) {
         uint32_t timeout = 0;
         callbackInfo->ret_ = instance.GetContentTimeout(timeout);

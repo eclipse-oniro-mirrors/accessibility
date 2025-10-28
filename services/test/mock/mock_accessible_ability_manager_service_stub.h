@@ -64,11 +64,11 @@ public:
     
     ErrCode DeRegisterConfigObserver(const sptr<IRemoteObject>& obj) override;
 
-    ErrCode GetCaptionProperty(CaptionPropertyParcel& caption) override;
-    ErrCode SetCaptionProperty(const CaptionPropertyParcel& caption) override;
-    ErrCode SetCaptionState(const bool state) override;
+    ErrCode GetCaptionProperty(CaptionPropertyParcel& caption, bool isPermissionRequired) override;
+    ErrCode SetCaptionProperty(const CaptionPropertyParcel& caption, bool isPermissionRequired) override;
+    ErrCode SetCaptionState(const bool state, bool isPermissionRequired) override;
 
-    ErrCode GetCaptionState(bool& state) override;
+    ErrCode GetCaptionState(bool& state, bool isPermissionRequired) override;
     ErrCode GetScreenReaderState(bool& state) override;
 
     ErrCode EnableAbility(const std::string& name, uint32_t capabilities) override;

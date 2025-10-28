@@ -63,15 +63,17 @@ ErrCode MockAccessibleAbilityManagerServiceStub::SendEvent(const AccessibilityEv
 }
 
 ErrCode MockAccessibleAbilityManagerServiceStub::SetCaptionProperty(
-    const CaptionPropertyParcel &caption)
+    const CaptionPropertyParcel &caption, bool isPermissionRequired)
 {
     captionProperty_ = caption;
+    (void)isPermissionRequired;
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::SetCaptionState(bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetCaptionState(bool state, bool isPermissionRequired)
 {
     captionState_ = state;
+    (void)isPermissionRequired;
     return RET_OK;
 }
 
@@ -122,9 +124,11 @@ ErrCode MockAccessibleAbilityManagerServiceStub::DeregisterElementOperatorByWind
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::GetCaptionProperty(CaptionPropertyParcel& caption)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetCaptionProperty(CaptionPropertyParcel& caption,
+    bool isPermissionRequired)
 {
     (void)caption;
+    (void)isPermissionRequired;
     return RET_OK;
 }
 
@@ -135,9 +139,10 @@ ErrCode MockAccessibleAbilityManagerServiceStub::RegisterCaptionObserver(
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::GetCaptionState(bool &state)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetCaptionState(bool &state, bool isPermissionRequired)
 {
     state = captionState_;
+    (void)isPermissionRequired;
     return RET_OK;
 }
 

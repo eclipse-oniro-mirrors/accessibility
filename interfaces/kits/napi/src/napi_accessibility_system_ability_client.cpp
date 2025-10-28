@@ -537,31 +537,6 @@ napi_value NAccessibilityClient::GetAccessibilityExtensionListSync(napi_env env,
     return resultAbilityList;
 }
 
-bool NAccessibilityClient::CheckAbilityType(const std::string& abilityType)
-{
-    if (std::strcmp(abilityType.c_str(), "audible") == 0 ||
-        std::strcmp(abilityType.c_str(), "generic") == 0 ||
-        std::strcmp(abilityType.c_str(), "haptic") == 0 ||
-        std::strcmp(abilityType.c_str(), "spoken") == 0 ||
-        std::strcmp(abilityType.c_str(), "visual") == 0 ||
-        std::strcmp(abilityType.c_str(), "all") == 0) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool NAccessibilityClient::CheckStateType(const std::string& stateType)
-{
-    if (std::strcmp(stateType.c_str(), "enable") == 0 ||
-        std::strcmp(stateType.c_str(), "disable") == 0 ||
-        std::strcmp(stateType.c_str(), "install") == 0) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 void NAccessibilityClient::SendEventExecute(napi_env env, void* data)
 {
     NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
@@ -1024,7 +999,7 @@ napi_value NAccessibilityClient::SetCaptionStateEnabled(napi_env env, napi_callb
             HILOG_INFO("captionState = %{public}s", captionState ? "True" : "False");
 
             auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-            ret = instance.SetCaptionsState(captionState);
+            ret = instance.SetCaptionsState(captionState, false);
         }
         if (ret != OHOS::Accessibility::RET_OK) {
             napi_value err = CreateBusinessError(env, ret);
@@ -1048,7 +1023,7 @@ napi_value NAccessibilityClient::GetCaptionStateEnabled(napi_env env, napi_callb
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     bool captionState = false;
-    instance.GetCaptionsState(captionState);
+    instance.GetCaptionsState(captionState, false);
     napi_get_boolean(env, captionState, &captionStateEnabled);
 
     HILOG_INFO("captionState = %{public}s", captionState ? "True" : "False");
@@ -1069,7 +1044,7 @@ napi_value NAccessibilityClient::SetCaptionStyle(napi_env env, napi_callback_inf
             ret = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         } else {
             auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-            ret = instance.SetCaptionsProperty(captionProperty);
+            ret = instance.SetCaptionsProperty(captionProperty, false);
         }
         if (ret != OHOS::Accessibility::RET_OK) {
             napi_value err = CreateBusinessError(env, ret);
@@ -1249,7 +1224,7 @@ napi_value NAccessibilityClient::GetCaptionsFontFamily(napi_env env, napi_callba
     napi_value returnValue = nullptr;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionsProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty, false);
     napi_create_string_utf8(env, captionProperty.GetFontFamily().c_str(), NAPI_AUTO_LENGTH, &returnValue);
     return returnValue;
 }
@@ -1268,10 +1243,10 @@ napi_value NAccessibilityClient::SetCaptionsFontFamily(napi_env env, napi_callba
             HILOG_INFO("FontFamily = %{public}s", fontFamily.c_str());
             auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
             OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
-            instance.GetCaptionsProperty(captionProperty);
+            instance.GetCaptionsProperty(captionProperty, false);
             // Change the input info and then set the CaptionProperty
             captionProperty.SetFontFamily(std::string(fontFamily));
-            ret = instance.SetCaptionsProperty(captionProperty);
+            ret = instance.SetCaptionsProperty(captionProperty, false);
         } else {
             ret = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
@@ -1295,7 +1270,7 @@ napi_value NAccessibilityClient::GetCaptionsFontScale(napi_env env, napi_callbac
     napi_value returnValue = nullptr;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionsProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty, false);
     napi_create_int32(env, captionProperty.GetFontScale(), &returnValue);
     return returnValue;
 }
@@ -1314,10 +1289,10 @@ napi_value NAccessibilityClient::SetCaptionsFontScale(napi_env env, napi_callbac
             HILOG_INFO("FontScale = %{public}d", num);
             auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
             OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
-            instance.GetCaptionsProperty(captionProperty);
+            instance.GetCaptionsProperty(captionProperty, false);
             // Change the input info and then set the CaptionProperty
             captionProperty.SetFontScale(num);
-            ret = instance.SetCaptionsProperty(captionProperty);
+            ret = instance.SetCaptionsProperty(captionProperty, false);
         } else {
             ret = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
@@ -1341,7 +1316,7 @@ napi_value NAccessibilityClient::GetCaptionFrontColor(napi_env env, napi_callbac
     napi_value returnValue = nullptr;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionsProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty, false);
     uint32_t color = captionProperty.GetFontColor();
     std::string colorStr = ConvertColorToString(color);
     napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
@@ -1359,10 +1334,10 @@ napi_value NAccessibilityClient::SetCaptionFrontColor(napi_env env, napi_callbac
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
         auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
-        instance.GetCaptionsProperty(captionProperty);
+        instance.GetCaptionsProperty(captionProperty, false);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetFontColor(color);
-        OHOS::Accessibility::RetError ret = instance.SetCaptionsProperty(captionProperty);
+        OHOS::Accessibility::RetError ret = instance.SetCaptionsProperty(captionProperty, false);
         if (ret != OHOS::Accessibility::RET_OK) {
             napi_value err = CreateBusinessError(env, ret);
             napi_throw(env, err);
@@ -1383,7 +1358,7 @@ napi_value NAccessibilityClient::GetCaptionFontEdgeType(napi_env env, napi_callb
     napi_value returnValue = nullptr;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionsProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty, false);
     napi_create_string_utf8(env, captionProperty.GetFontEdgeType().c_str(), NAPI_AUTO_LENGTH, &returnValue);
     return returnValue;
 }
@@ -1403,10 +1378,10 @@ napi_value NAccessibilityClient::SetCaptionFontEdgeType(napi_env env, napi_callb
             HILOG_INFO("fontEdgeType = %{public}s", fontEdgeType.c_str());
             auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
             OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
-            instance.GetCaptionsProperty(captionProperty);
+            instance.GetCaptionsProperty(captionProperty, false);
             // Change the input info and then set the CaptionProperty
             captionProperty.SetFontEdgeType(std::string(fontEdgeType));
-            ret = instance.SetCaptionsProperty(captionProperty);
+            ret = instance.SetCaptionsProperty(captionProperty, false);
         } else {
             ret = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
@@ -1430,7 +1405,7 @@ napi_value NAccessibilityClient::GetCaptionBackgroundColor(napi_env env, napi_ca
     napi_value returnValue = nullptr;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionsProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty, false);
     uint32_t color = captionProperty.GetBackgroundColor();
     std::string colorStr = ConvertColorToString(color);
     napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
@@ -1448,10 +1423,10 @@ napi_value NAccessibilityClient::SetCaptionBackgroundColor(napi_env env, napi_ca
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
         auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
-        instance.GetCaptionsProperty(captionProperty);
+        instance.GetCaptionsProperty(captionProperty, false);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetBackgroundColor(color);
-        OHOS::Accessibility::RetError ret = instance.SetCaptionsProperty(captionProperty);
+        OHOS::Accessibility::RetError ret = instance.SetCaptionsProperty(captionProperty, false);
         if (ret != OHOS::Accessibility::RET_OK) {
             napi_value err = CreateBusinessError(env, ret);
             napi_throw(env, err);
@@ -1472,7 +1447,7 @@ napi_value NAccessibilityClient::GetCaptionWindowColor(napi_env env, napi_callba
     napi_value returnValue = nullptr;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionsProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty, false);
     uint32_t color = captionProperty.GetWindowColor();
     std::string colorStr = ConvertColorToString(color);
     napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
@@ -1490,10 +1465,10 @@ napi_value NAccessibilityClient::SetCaptionWindowColor(napi_env env, napi_callba
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
         auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
-        instance.GetCaptionsProperty(captionProperty);
+        instance.GetCaptionsProperty(captionProperty, false);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetWindowColor(color);
-        OHOS::Accessibility::RetError ret = instance.SetCaptionsProperty(captionProperty);
+        OHOS::Accessibility::RetError ret = instance.SetCaptionsProperty(captionProperty, false);
         if (ret != OHOS::Accessibility::RET_OK) {
             napi_value err = CreateBusinessError(env, ret);
             napi_throw(env, err);

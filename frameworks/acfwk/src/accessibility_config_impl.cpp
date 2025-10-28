@@ -405,19 +405,21 @@ Accessibility::RetError AccessibilityConfig::Impl::SetMagnificationState(const b
     return ret;
 }
 
-Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsState(bool &state)
+Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsState(bool &state, bool isPermissionRequired)
 {
     std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetCaptionState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetCaptionState(state,
+        isPermissionRequired));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
 }
 
-Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsProperty(CaptionProperty &caption)
+Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsProperty(CaptionProperty &caption,
+    bool isPermissionRequired)
 {
     std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (GetServiceProxy() == nullptr) {
@@ -426,13 +428,14 @@ Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsProperty(CaptionPr
     }
     CaptionPropertyParcel captionParcel(caption);
     Accessibility::RetError ret = static_cast<Accessibility::RetError>(
-        GetServiceProxy()->GetCaptionProperty(captionParcel));
+        GetServiceProxy()->GetCaptionProperty(captionParcel, isPermissionRequired));
     caption = static_cast<CaptionProperty>(captionParcel);
     HILOG_INFO();
     return ret;
 }
 
-Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsProperty(const CaptionProperty& caption)
+Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsProperty(const CaptionProperty& caption,
+    bool isPermissionRequired)
 {
     HILOG_INFO();
     std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
@@ -442,11 +445,11 @@ Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsProperty(const Cap
     }
     CaptionPropertyParcel captionParcel(caption);
     Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetCaptionProperty(
-        captionParcel));
+        captionParcel, isPermissionRequired));
     return ret;
 }
 
-Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsState(const bool state)
+Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsState(const bool state, bool isPermissionRequired)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
@@ -454,7 +457,8 @@ Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsState(const bool s
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetCaptionState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetCaptionState(state,
+        isPermissionRequired));
     return ret;
 }
 

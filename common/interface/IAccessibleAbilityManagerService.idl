@@ -36,10 +36,10 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     [oneway] void RegisterElementOperatorByParameter([in] RegistrationPara parameter, [in] IAccessibilityElementOperator elementOperator);
     [oneway] void DeregisterElementOperatorByWindowId([in] int windowId);
     [oneway] void DeregisterElementOperatorByWindowIdAndTreeId([in] int windowId, [in] int treeId);
-    void GetCaptionProperty([out] CaptionPropertyParcel caption);
-    void GetCaptionState([out] boolean state);
-    void SetCaptionProperty([in] CaptionPropertyParcel caption);
-    void SetCaptionState([in] boolean state);
+    void GetCaptionProperty([out] CaptionPropertyParcel caption, [in] boolean isPermissionRequired);
+    void GetCaptionState([out] boolean state, [in] boolean isPermissionRequired);
+    void SetCaptionProperty([in] CaptionPropertyParcel caption, [in] boolean isPermissionRequired);
+    void SetCaptionState([in] boolean state, [in] boolean isPermissionRequired);
     void EnableAbility([in] String name, [in] unsigned int capabilities);
     void GetEnabledAbilities([out] String[] enabledAbilities);
     void DisableAbility([in] String name);

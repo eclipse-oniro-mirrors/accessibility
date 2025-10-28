@@ -13,16 +13,18 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_UTILS_ANI_H
-#define ACCESSIBILITY_UTILS_ANI_H
+#ifndef ANI_ACCESSIBILITY_EXTENSION_CONTEXT_H
+#define ANI_ACCESSIBILITY_EXTENSION_CONTEXT_H
 
-#include <ani.h>
-#include "accessibility_def.h"
+#include "accessibility_extension_context.h"
+#include "accessibility_element_info.h"
+#include "ani.h"
+#include "extension_base.h"
 
 namespace OHOS {
-namespace AccessibilityAni {
-NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode);
-void ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg);
-} // namespace AccessibilityAni
-} // OHOS
-#endif // ACCESSIBILITY_UTILS_ANI_H
+namespace Accessibility {
+ani_object CreateAniAccessibilityExtensionContext(ani_env *env, std::shared_ptr<AccessibilityExtensionContext> context,
+    const std::shared_ptr<AbilityRuntime::OHOSApplication> &application);
+} // namespace Accessibility
+} // namespace OHOS
+#endif // ANI_ACCESSIBILITY_EXTENSION_CONTEXT_H

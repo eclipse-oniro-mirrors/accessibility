@@ -31,29 +31,8 @@ namespace OHOS {
 namespace AccessibilityNapi {
 namespace {
     const uint32_t COLOR_TRANSPARENT = 0x00000000;
-    const uint32_t COLOR_WHITE = 0xffffffff;
-    const uint32_t COLOR_BLACK = 0xff000000;
-    const uint32_t COLOR_RED = 0xffff0000;
-    const uint32_t COLOR_GREEN = 0xff00ff00;
-    const uint32_t COLOR_BLUE = 0xff0000ff;
-    const uint32_t COLOR_GRAY = 0xffc0c0c0;
-
-    constexpr uint32_t COLOR_STRING_SIZE_STANDARD = 8;
-    constexpr uint32_t COLOR_STRING_SIZE_4 = 4;
-    constexpr uint32_t COLOR_STRING_SIZE_5 = 5;
-    constexpr uint32_t COLOR_STRING_SIZE_7 = 7;
-    constexpr uint32_t COLOR_STRING_SIZE_9 = 9;
-    constexpr uint32_t COLOR_STRING_BASE = 16;
-    constexpr uint32_t COLOR_ALPHA_MASK = 0xff000000;
-
-    constexpr int32_t RGB_LENGTH = 6;
-    constexpr int32_t ALPHA_LENGTH = 2;
-    constexpr int32_t ALPHA_MOVE = 24;
-    constexpr int32_t COLOR_MOVE = 8;
-    const char UNICODE_BODY = '0';
     const std::string HALF_VALUE = "0";
     const std::string FULL_VALUE = "1";
-    const std::string NUMBER_VALID_CHARS = "0123456789ABCDEFabcdef";
 } // namespace
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
@@ -408,97 +387,6 @@ static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
     }
 
     return result;
-}
-
-static std::vector<std::string> ParseAbilityTypesToVec(uint32_t abilityTypesValue)
-{
-    std::vector<std::string> result;
-
-    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN) {
-        result.push_back("spoken");
-    }
-    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_HAPTIC) {
-        result.push_back("haptic");
-    }
-    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_AUDIBLE) {
-        result.push_back("audible");
-    }
-    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_VISUAL) {
-        result.push_back("visual");
-    }
-    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_GENERIC) {
-        result.push_back("generic");
-    }
-
-    return result;
-}
-
-static std::vector<std::string> ParseCapabilitiesToVec(uint32_t capabilitiesValue)
-{
-    std::vector<std::string> result;
-
-    if (capabilitiesValue & Capability::CAPABILITY_RETRIEVE) {
-        result.push_back("retrieve");
-    }
-    if (capabilitiesValue & Capability::CAPABILITY_TOUCH_GUIDE) {
-        result.push_back("touchGuide");
-    }
-    if (capabilitiesValue & Capability::CAPABILITY_KEY_EVENT_OBSERVER) {
-        result.push_back("keyEventObserver");
-    }
-    if (capabilitiesValue & Capability::CAPABILITY_ZOOM) {
-        result.push_back("zoom");
-    }
-    if (capabilitiesValue & Capability::CAPABILITY_GESTURE) {
-        result.push_back("gesture");
-    }
-
-    return result;
-}
-
-std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZATION_TYPE type)
-{
-    static const std::map<OHOS::AccessibilityConfig::DALTONIZATION_TYPE, const std::string> typeTable = {
-        {OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Normal, "Normal"},
-        {OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Protanomaly, "Protanomaly"},
-        {OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly, "Deuteranomaly"},
-        {OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Tritanomaly, "Tritanomaly"}};
-
-    if (typeTable.find(type) == typeTable.end()) {
-        return "";
-    }
-
-    return typeTable.at(type);
-}
-
-std::string ConvertClickResponseTimeTypeToString(OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME type)
-{
-    static const std::map<OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME, const std::string> typeTable = {
-        {OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort, "Short"},
-        {OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayMedium, "Medium"},
-        {OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayLong, "Long"}};
-
-    if (typeTable.find(type) == typeTable.end()) {
-        return "";
-    }
-
-    return typeTable.at(type);
-}
-
-std::string ConvertIgnoreRepeatClickTimeTypeToString(OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME type)
-{
-    static const std::map<OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME, const std::string> typeTable = {
-        {OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest, "Shortest"},
-        {OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShort, "Short"},
-        {OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutMedium, "Medium"},
-        {OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLong, "Long"},
-        {OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLongest, "Longest"}};
-
-    if (typeTable.find(type) == typeTable.end()) {
-        return "";
-    }
-
-    return typeTable.at(type);
 }
 
 void ConvertAccessibleAbilityInfoToJS(
@@ -969,91 +857,6 @@ ActionType ConvertStringToAccessibleOperationType(const std::string &type)
     }
 
     return accessibleOperationTypeTable.at(type);
-}
-
-AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type)
-{
-    std::map<const std::string, AccessibilityAbilityTypes> accessibilityAbilityTypesTable = {
-        {"spoken", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN},
-        {"haptic", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_HAPTIC},
-        {"audible", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_AUDIBLE},
-        {"visual", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_VISUAL},
-        {"generic", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_GENERIC},
-        {"all", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL},
-    };
-
-    if (accessibilityAbilityTypesTable.find(type) == accessibilityAbilityTypesTable.end()) {
-        HILOG_WARN("invalid key[%{public}s]", type.c_str());
-        return AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_INVALID;
-    }
-
-    return accessibilityAbilityTypesTable.at(type);
-}
-
-AbilityStateType ConvertStringToAbilityStateType(const std::string &type)
-{
-    std::map<const std::string, AbilityStateType> abilityStateTypeTable = {
-        {"enable", AbilityStateType::ABILITY_STATE_ENABLE},
-        {"disable", AbilityStateType::ABILITY_STATE_DISABLE},
-        {"install", AbilityStateType::ABILITY_STATE_INSTALLED}};
-
-    if (abilityStateTypeTable.find(type) == abilityStateTypeTable.end()) {
-        HILOG_WARN("invalid key[%{public}s]", type.c_str());
-        return ABILITY_STATE_INVALID;
-    }
-
-    return abilityStateTypeTable.at(type);
-}
-
-OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(std::string& type)
-{
-    std::map<const std::string, OHOS::AccessibilityConfig::DALTONIZATION_TYPE> daltonizationTTypesTable = {
-        {"Normal", OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Normal},
-        {"Protanomaly", OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Protanomaly},
-        {"Deuteranomaly", OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly},
-        {"Tritanomaly", OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Tritanomaly},
-    };
-
-    if (daltonizationTTypesTable.find(type) == daltonizationTTypesTable.end()) {
-        HILOG_WARN("invalid key[%{public}s]", type.c_str());
-        return OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Normal;
-    }
-
-    return daltonizationTTypesTable.at(type);
-}
-
-OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME ConvertStringToClickResponseTimeTypes(std::string& type)
-{
-    std::map<const std::string, OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME> clickResponseTimeTypesTable = {
-        {"Short", OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort},
-        {"Medium", OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayMedium},
-        {"Long", OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayLong},
-    };
-
-    if (clickResponseTimeTypesTable.find(type) == clickResponseTimeTypesTable.end()) {
-        HILOG_WARN("invalid key[%{public}s]", type.c_str());
-        return OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort;
-    }
-
-    return clickResponseTimeTypesTable.at(type);
-}
-
-OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME ConvertStringToIgnoreRepeatClickTimeTypes(std::string& type)
-{
-    std::map<const std::string, OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME> mapTable = {
-        {"Shortest", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest},
-        {"Short", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShort},
-        {"Medium", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutMedium},
-        {"Long", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLong},
-        {"Longest", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLongest},
-    };
-
-    if (mapTable.find(type) == mapTable.end()) {
-        HILOG_WARN("invalid key[%{public}s]", type.c_str());
-        return OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest;
-    }
-
-    return mapTable.at(type);
 }
 
 TextMoveUnit ConvertStringToTextMoveUnit(const std::string &type)
@@ -1863,111 +1666,6 @@ void ConvertCaptionPropertyToJS(
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowColor", value));
 }
 
-uint32_t ConvertColorStringToNumer(std::string colorStr)
-{
-    HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
-    uint32_t color = COLOR_TRANSPARENT;
-    if (colorStr.empty()) {
-        // Empty string, return transparent
-        return color;
-    }
-    // Remove all " ".
-    colorStr.erase(std::remove(colorStr.begin(), colorStr.end(), ' '), colorStr.end());
-
-    if (ColorRegexMatch(colorStr, color)) {
-        return color;
-    }
-
-    // Match for special string
-    static const std::map<std::string, uint32_t> colorTable {
-        std::make_pair("black", COLOR_BLACK),
-        std::make_pair("blue", COLOR_BLUE),
-        std::make_pair("gray", COLOR_GRAY),
-        std::make_pair("green", COLOR_GREEN),
-        std::make_pair("red", COLOR_RED),
-        std::make_pair("white", COLOR_WHITE),
-    };
-    auto it = colorTable.find(colorStr.c_str());
-    if (it != colorTable.end()) {
-        color = it->second;
-    }
-    return color;
-}
-
-bool IsColorWithMagic(const std::string& colorStr)
-{
-    if (colorStr.size() < 1 || colorStr.substr(0, 1) != "#") {
-        return false;
-    }
-
-    for (int i = 1; i < colorStr.size(); i++) {
-        if (NUMBER_VALID_CHARS.find(colorStr[i]) == std::string::npos) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool ColorRegexMatch(std::string colorStr, uint32_t &color)
-{
-    // for example #909090 or #90909090. avoid use regex match #[0-9A-Fa-f]{6,8}.
-    if (IsColorWithMagic(colorStr) &&
-        (colorStr.size() == COLOR_STRING_SIZE_7 || colorStr.size() == COLOR_STRING_SIZE_9)) {
-        colorStr.erase(0, 1);
-        auto colorValue = stoul(colorStr, nullptr, COLOR_STRING_BASE);
-        if (colorStr.length() < COLOR_STRING_SIZE_STANDARD) {
-            // No alpha specified, set alpha to 0xff
-            colorValue |= COLOR_ALPHA_MASK;
-        } else {
-            auto alpha = colorValue << ALPHA_MOVE;
-            auto rgb = colorValue >> COLOR_MOVE;
-            colorValue = alpha | rgb;
-        }
-        color = colorValue;
-        return true;
-    }
-    // for #rgb or #rgba. avoid use regex match #[0-9A-Fa-f]{3,4}.
-    if (IsColorWithMagic(colorStr) &&
-        (colorStr.size() == COLOR_STRING_SIZE_4 || colorStr.size() == COLOR_STRING_SIZE_5)) {
-        colorStr.erase(0, 1);
-        std::string newColorStr;
-        // Translate #rgb or #rgba to #rrggbb or #rrggbbaa
-        for (const auto& c : colorStr) {
-            newColorStr += c;
-            newColorStr += c;
-        }
-        auto valueMini = stoul(newColorStr, nullptr, COLOR_STRING_BASE);
-        if (newColorStr.length() < COLOR_STRING_SIZE_STANDARD) {
-            // No alpha specified, set alpha to 0xff
-            valueMini |= COLOR_ALPHA_MASK;
-        } else {
-            auto alphaMini = valueMini << ALPHA_MOVE;
-            auto rgbMini = valueMini >> COLOR_MOVE;
-            valueMini = alphaMini | rgbMini;
-        }
-        color = valueMini;
-        return true;
-    }
-    return false;
-}
-
-std::string ConvertColorToString(uint32_t color)
-{
-    HILOG_DEBUG("color is 0X%{public}x", color);
-    uint32_t rgb = color & (~COLOR_ALPHA_MASK);
-    uint32_t alpha = (color) >> ALPHA_MOVE;
-    std::stringstream rgbStream;
-    rgbStream << std::hex << std::setw(RGB_LENGTH) << std::setfill(UNICODE_BODY) << rgb;
-    std::stringstream alphaStream;
-    alphaStream << std::hex << std::setw(ALPHA_LENGTH) << std::setfill(UNICODE_BODY) << alpha;
-    std::string rgbStr(rgbStream.str());
-    std::string alphaStr(alphaStream.str());
-    std::string colorStr = "#" + rgbStr + alphaStr;
-    HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
-    return colorStr;
-}
-
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue)
 {
     uint32_t color = COLOR_TRANSPARENT;
@@ -1987,7 +1685,7 @@ uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameV
         char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
         size_t outSize = 0;
         napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
-        color = ConvertColorStringToNumer(std::string(outBuffer));
+        color = ConvertColorStringToNumber(std::string(outBuffer));
     }
     HILOG_DEBUG("color is 0x%{public}x", color);
     return color;
@@ -2010,7 +1708,7 @@ uint32_t GetColorValue(napi_env env, napi_value value)
         char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
         size_t outSize = 0;
         napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
-        color = ConvertColorStringToNumer(std::string(outBuffer));
+        color = ConvertColorStringToNumber(std::string(outBuffer));
     }
     HILOG_DEBUG("color is 0x%{public}x", color);
     return color;

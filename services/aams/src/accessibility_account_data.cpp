@@ -720,7 +720,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
             HILOG_DEBUG("resultCapabilities is [%{public}d]", resultCapabilities);
             if (resultCapabilities == 0) {
                 HILOG_ERROR("the result of capabilities is wrong");
-                return RET_ERR_NO_CAPABILITY;
+                return RET_ERR_NOT_ENABLED;
             }
 
             itr->SetCapabilityValues(resultCapabilities);
