@@ -620,7 +620,12 @@ bool Utils::GetBundleNameByCallingUid(std::string &bundleName)
 
 std::string Utils::FormatString(const std::string& format, const std::string& value)
 {
-    int bufferSize = static_cast<int>(format.size() + value.size() + 1); // +1 for null terminator
+    size_t bufferLength = format.size() + value.size() + 1; // +1 for null terminator
+    if (bufferLength > INT32_MAX) {
+        HILOG_ERROR("string length overflow!");
+        return "";
+    }
+    int bufferSize = static_cast<int>(bufferLength);
     char* buffer = new char[bufferSize];
     if (snprintf_s(buffer, bufferSize, bufferSize -1, format.c_str(), value.c_str()) < 0) {
         delete[] buffer;

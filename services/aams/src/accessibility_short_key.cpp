@@ -58,6 +58,7 @@ void AccessibilityShortKey::Register()
 
     if (subscribeId_ >= 0) {
         HILOG_WARN("shortcut key is not unregistered, id: %{public}d", subscribeId_);
+        Unregister();
     }
 
     std::set<int32_t> preDownKeysUp;

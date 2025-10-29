@@ -844,6 +844,10 @@ RetError AccessibilitySettings::GetMouseKeyState(bool &state)
     }
     ffrt::future syncFuture = syncPromise->get_future();
     auto tmpState = std::make_shared<bool>(state);
+    if (tmpState == nullptr) {
+        HILOG_ERROR("tmpState is nullptr!");
+        return RET_ERR_NULLPTR;
+    }
     handler_->PostTask([this, syncPromise, tmpState]() {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData =
