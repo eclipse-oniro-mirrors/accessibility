@@ -381,7 +381,7 @@ RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
 
     if (accessibleKeyCodeTable.find(action) == accessibleKeyCodeTable.end()) {
         HILOG_ERROR("Unrecognized action!");
-        return RET_ERROR_INVALID_PARAM;
+        return RET_ERR_INVALID_PARAM;
     }
 
     if (accessibleKeyCodeTable.at(action).first) {
