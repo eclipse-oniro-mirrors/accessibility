@@ -85,6 +85,8 @@ namespace {
     const char* IGNORE_REPEAT_CLICK_TIMESTAMP = "accessibility_ignore_repeat_click_timestamp";
     const char* RECOVERY_IGNORE_REPEAT_CLICK_DATE = "recovery_ignore_repeat_click_switch_date";
     const char* IGNORE_REPEATED_CLICK_CACHE_FLAG = "accessibility_ignore_repeat_click_cache_flag";
+    const char* CLONE_CAPABILITY = "const.accessibility.cloneCapability";
+    const char* OLD_DEVICE_CAPABILITY = "accessibility_clone_capability";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -96,12 +98,28 @@ namespace {
     constexpr int DISPLAY_DALTONIZER_BLUE = 13;
     constexpr int INVALID_MASTER_MONO_VALUE = -1;
     constexpr int AUDIO_BALANCE_STEP = 5;
+    constexpr int CLONE_CAPABILITY_ZOOM_GUSTURE = 1 << 0;
+    constexpr int CLONE_CAPABILITY_HIGH_CONTRAST_TEXT = 1 << 1;
+    constexpr int CLONE_CAPABILITY_INVERT_COLOR = 1 << 2;
+    constexpr int CLONE_CAPABILITY_COLOR_CORRECTION = 1 << 3;
+    constexpr int CLONE_CAPABILITY_TRANSITION_ANIMATION = 1 << 4;
+    constexpr int CLONE_CAPABILITY_AUDIO_ADJUSTMENT = 1 << 5;
+    constexpr int CLONE_CAPABILITY_SOUND_RECOGNITION = 1 << 6;
+    constexpr int CLONE_CAPABILITY_FLASH_REMINDER = 1 << 7;
+    constexpr int CLONE_CAPABILITY_TOUCH_SCREEN = 1 << 8;
+    constexpr int CLONE_CAPABILITY_SHORT_KEY = 1 << 9;
     constexpr float INVALID_MASTER_BALANCE_VALUE = 2.0;
     constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORTEST = 0;
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORT = 1;
     constexpr float DEFAULT_MAGNIFICATION_SCALE = 2.0;
     bool g_ignoreRepeatClickOnceFlag = false;
+
+    constexpr int PC_ENABLE_CAPABILITY_LIST[] = {
+        CLONE_CAPABILITY_INVERT_COLOR,
+        CLONE_CAPABILITY_COLOR_CORRECTION,
+        CLONE_CAPABILITY_AUDIO_ADJUSTMENT,
+    };
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -1312,9 +1330,105 @@ void AccessibilitySettingsConfig::SetDefaultShortcutKeyService()
     }
 }
 
+void AccessibilitySettingsConfig::CloneOnDeviceCapability()
+{
+    HILOG_INFO();
+    std::string deviceType = OHOS::system::GetDeviceType();
+    HILOG_INFO("deviceType: %{public}s", deviceType.c_str());
+    if (deviceType != "2in1") {
+        return;
+    }
+
+    int32_t newCapability = system::GetIntParameter(CLONE_CAPABILITY, 0);
+    if (newCapability == 0) {
+        HILOG_INFO("newCapability is 0");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
+    int32_t oldCapability = 0;
+    service->GetIntValue(OLD_DEVICE_CAPABILITY, oldCapability);
+    HILOG_INFO("oldCapability: %{public}d", oldCapability);
+    for (auto capability : PC_ENABLE_CAPABILITY_LIST) {
+        if ((newCapability & capability) != (oldCapability & capability)) {
+            HILOG_INFO("capability: %{public}d is not same, need recover", capability);
+            recoverCapability(capability);
+        }
+    }
+    service->PutIntValue(OLD_DEVICE_CAPABILITY, 0);
+}
+
+void AccessibilitySettingsConfig::recoverCapability(int32_t capability)
+{
+    switch (capability) {
+        case CLONE_CAPABILITY_ZOOM_GUSTURE:
+            return;
+        case CLONE_CAPABILITY_HIGH_CONTRAST_TEXT:
+            return;
+        case CLONE_CAPABILITY_INVERT_COLOR:
+            recoverInvertColor();
+        case CLONE_CAPABILITY_COLOR_CORRECTION:
+            recoverColorCorrection();
+        case CLONE_CAPABILITY_TRANSITION_ANIMATION:
+            return;
+        case CLONE_CAPABILITY_AUDIO_ADJUSTMENT:
+            recoverAudioAdjustment();
+        case CLONE_CAPABILITY_SOUND_RECOGNITION:
+            return;
+        case CLONE_CAPABILITY_FLASH_REMINDER:
+            return;
+        case CLONE_CAPABILITY_TOUCH_SCREEN:
+            return;
+        case CLONE_CAPABILITY_SHORT_KEY:
+            return;
+    }
+}
+
+void AccessibilitySettingsConfig::recoverInvertColor()
+{
+    HILOG_INFO();
+    if (invertColorState_ != datashare_->GetBoolValue(INVERT_COLOR_KEY, false)) {
+        HILOG_INFO("invertColorState_: %{public}d need recovery", invertColorState_);
+        SetInvertColorState(invertColorState_);
+    }
+}
+
+void AccessibilitySettingsConfig::recoverColorCorrection()
+{
+    HILOG_INFO();
+    if (daltonizationState_ != datashare_->GetBoolValue(DALTONIZATION_STATE, false)) {
+        HILOG_INFO("daltonizationState_: %{public}d need recovery", daltonizationState_);
+        SetDaltonizationState(daltonizationState_);
+    }
+    if (daltonizationColorFilter_ !=
+        static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0))) {
+        HILOG_INFO("daltonizationColorFilter_: %{public}d need recovery", daltonizationColorFilter_);
+        SetDaltonizationColorFilter(daltonizationColorFilter_);
+    }
+}
+
+void AccessibilitySettingsConfig::recoverAudioAdjustment()
+{
+    HILOG_INFO();
+    if (audioMonoState_ != datashare_->GetBoolValue(AUDIO_MONO_KEY, false)) {
+        HILOG_INFO("audioMonoState_: %{public}d need recovery", audioMonoState_);
+        SetAudioMonoState(audioMonoState_);
+    }
+    if (audioBalance_ != static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0))) {
+        HILOG_INFO("audioBalance_: %{public}f need recovery", audioBalance_);
+        SetAudioBalance(audioBalance_);
+    }
+}
+
 void AccessibilitySettingsConfig::OnDataClone()
 {
     HILOG_INFO();
+    CloneOnDeviceCapability();
     if (ignoreRepeatClickState_) {
         IgnoreRepeatClickNotification::CancelNotification();
     }

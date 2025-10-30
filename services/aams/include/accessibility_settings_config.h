@@ -138,6 +138,12 @@ private:
     void HandleIgnoreRepeatClickState();
     RetError SetConfigState(const std::string& key, bool value);
 
+    void CloneOnDeviceCapability();
+    void recoverCapability(int32_t capability);
+    void recoverColorCorrection();
+    void recoverInvertColor();
+    void recoverAudioAdjustment();
+
     int32_t accountId_;
     bool enabled_ = false;
     bool eventTouchGuideState_ = false;
