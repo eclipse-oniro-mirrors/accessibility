@@ -29,7 +29,8 @@ namespace {
     constexpr uint32_t DISPLAY_DALTONIZER_GREEN = 12;
     constexpr uint32_t DISPLAY_DALTONIZER_RED = 11;
     constexpr uint32_t DISPLAY_DALTONIZER_BLUE = 13;
-    constexpr int32_t DESTRUCTOR_DELAY_TIME = 300 * 1000; // 300ms
+    constexpr int32_t DESTRUCTOR_DELAY_TIME = 200 * 1000; // 200ms
+    constexpr int32_t DESTRUCTOR_DELAY_COUNT = 5;
 }
 
 AccessibilityConfig::Impl::Impl()
@@ -63,7 +64,19 @@ AccessibilityConfig::Impl::~Impl()
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister configObserver failed.");
         }
-        usleep(DESTRUCTOR_DELAY_TIME);
+        
+        int32_t count = 0;
+        while (count < DESTRUCTOR_DELAY_COUNT) {
+            int32_t captionObserverRef = captionObserver_->GetSptrRefCount();
+            int32_t enableAbilityListsObserverRef = enableAbilityListsObserver_->GetSptrRefCount();
+            int32_t configObserverRef = configObserver_->GetSptrRefCount();
+            if (captionObserverRef == 1 && enableAbilityListsObserverRef == 1 && configObserverRef == 1) {
+                HILOG_INFO("Observer RefCount is 1");
+                break;
+            }
+            usleep(DESTRUCTOR_DELAY_TIME);
+            count++;
+        }
  
         sptr<IRemoteObject> object = serviceProxy_->AsObject();
         if (object != nullptr) {
