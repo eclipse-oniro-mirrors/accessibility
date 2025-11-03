@@ -500,9 +500,9 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
     return syncFuture.get();
 }
 
-RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowId, const int64_t elementId)
+RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowId, const int64_t elementId,
+    uint32_t tokenId)
 {
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
     HILOG_DEBUG("VerifyingToKenId: treeId[%{public}d], windowId[%{public}d], elementId[%{public}" PRId64 "]",
         treeId, windowId, elementId);
@@ -551,27 +551,23 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
     }
-    std::string isAncoFlag = uiEvent.GetExtraEvent().GetExtraEventInfoValueByKey("isAnco");
-    if (flag && isAncoFlag != "true") {
-        if (VerifyingToKenId(uiEvent.GetElementInfo().GetWindowId(),
-            uiEvent.GetElementInfo().GetAccessibilityId()) == RET_OK) {
-        } else {
-            HILOG_ERROR("VerifyingToKenId failed");
-            return RET_ERR_CONNECTION_EXIST;
-        }
-    }
-
-    if (isAncoFlag != "true" && !CheckNodeIsReadableOverChildTree(uiEvent)) {
-        return RET_ERR_FAILED;
-    }
-
     RetError res = GetResourceBundleInfo(const_cast<AccessibilityEventInfo&>(uiEvent));
     if (res != RET_OK) {
         HILOG_ERROR("Get Resource BundleInfo failed! RetError is %{public}d", res);
     }
-
-    auto sendEventTask = [this, uiEvent]() {
+    std::string isAncoFlag = uiEvent.GetExtraEvent().GetExtraEventInfoValueByKey("isAnco");
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
+    auto sendEventTask = [this, uiEvent, flag, isAncoFlag, tokenId]() {
         HILOG_DEBUG();
+        if (flag && isAncoFlag != "true" && VerifyingToKenId(uiEvent.GetElementInfo().GetWindowId(),
+            uiEvent.GetElementInfo().GetAccessibilityId(), tokenId) != RET_OK) {
+            HILOG_ERROR("VerifyingToKenId failed");
+            return;
+        }
+        if (isAncoFlag != "true" && !CheckNodeIsReadableOverChildTree(uiEvent)) {
+            HILOG_ERROR("CheckNodeIsReadableOverChildTree failed");
+            return;
+        }
         OnFocusedEvent(uiEvent);
         UpdateAccessibilityWindowStateByEvent(uiEvent);
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -2188,8 +2184,9 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFindFocuse
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-        info.GetAccessibilityId()) == RET_OK) {
+        info.GetAccessibilityId(), tokenId) == RET_OK) {
         HILOG_DEBUG("VerifyingToKenId ok");
         accessibilityInfoResult_ = info;
         promise_.set_value();
@@ -2203,9 +2200,10 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId()) == RET_OK) {
+            info.GetAccessibilityId(), tokenId) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
@@ -2222,9 +2220,10 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId()) == RET_OK) {
+            info.GetAccessibilityId(), tokenId) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
@@ -2282,9 +2281,10 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetDetectElem
 bool AccessibleAbilityManagerService::ElementOperatorCallbackImpl::ValidateElementInfos(
     const std::list<AccessibilityElementInfo>& infos)
 {
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId()) == RET_OK) {
+            info.GetAccessibilityId(), tokenId) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
@@ -2300,8 +2300,9 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveS
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-        info.GetAccessibilityId()) == RET_OK) {
+        info.GetAccessibilityId(), tokenId) == RET_OK) {
         HILOG_DEBUG("VerifyingToKenId ok");
         accessibilityInfoResult_ = info;
         promise_.set_value();
@@ -2333,9 +2334,10 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchDefa
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId()) == RET_OK) {
+            info.GetAccessibilityId(), tokenId) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
