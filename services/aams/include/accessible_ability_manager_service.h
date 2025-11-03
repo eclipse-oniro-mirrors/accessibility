@@ -382,6 +382,8 @@ private:
         const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation,
         const uint32_t tokenId, bool isApp);
     void IsCheckWindowIdEventExist(const int32_t windowId);
+    void CalculateClickPosition(const AccessibilityElementInfo &focusedElementInfo,
+        int32_t &xPos, int32_t &yPos);
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         StateCallbackDeathRecipient() = default;
