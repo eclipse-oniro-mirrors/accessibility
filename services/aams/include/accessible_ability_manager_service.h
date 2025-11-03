@@ -89,7 +89,7 @@ public:
     /* For AccessibleAbilityManagerServiceStub */
     ErrCode SendEvent(const AccessibilityEventInfoParcel& eventInfoParcel, int32_t flag) override;
 
-    RetError VerifyingToKenId(const int32_t windowId, const int64_t elementId, uint32_t tokenId);
+    RetError VerifyingToKenId(const int32_t windowId, const int64_t elementId, uint32_t tokenId = 0);
 
     ErrCode RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback,
         uint32_t &state) override;

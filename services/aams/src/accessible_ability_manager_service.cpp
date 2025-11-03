@@ -503,6 +503,9 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
 RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowId, const int64_t elementId,
     uint32_t tokenId)
 {
+    if (tokenId == 0) {
+        tokenId = IPCSkeleton::GetCallingTokenID();
+    }
     int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
     HILOG_DEBUG("VerifyingToKenId: treeId[%{public}d], windowId[%{public}d], elementId[%{public}" PRId64 "]",
         treeId, windowId, elementId);
@@ -2184,9 +2187,8 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFindFocuse
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-        info.GetAccessibilityId(), tokenId) == RET_OK) {
+        info.GetAccessibilityId()) == RET_OK) {
         HILOG_DEBUG("VerifyingToKenId ok");
         accessibilityInfoResult_ = info;
         promise_.set_value();
@@ -2200,10 +2202,9 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId(), tokenId) == RET_OK) {
+            info.GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
@@ -2220,10 +2221,9 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElem
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId(), tokenId) == RET_OK) {
+            info.GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
@@ -2281,10 +2281,9 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetDetectElem
 bool AccessibleAbilityManagerService::ElementOperatorCallbackImpl::ValidateElementInfos(
     const std::list<AccessibilityElementInfo>& infos)
 {
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId(), tokenId) == RET_OK) {
+            info.GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
@@ -2300,9 +2299,8 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveS
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-        info.GetAccessibilityId(), tokenId) == RET_OK) {
+        info.GetAccessibilityId()) == RET_OK) {
         HILOG_DEBUG("VerifyingToKenId ok");
         accessibilityInfoResult_ = info;
         promise_.set_value();
@@ -2334,10 +2332,9 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchDefa
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId(), tokenId) == RET_OK) {
+            info.GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
