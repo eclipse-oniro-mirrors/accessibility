@@ -779,26 +779,31 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         HILOG_ERROR("connection is nullptr");
         return false;
     }
+    bool isAnco = connection->IsAnco();
+    if (isAnco && (action == ActionType::ACCESSIBILITY_ACTION_CLICK)) {
+        Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(windowId);
+    }
     std::map<std::string, std::string> actionArguments {};
     AccessibilityElementInfo focusedElementInfo {};
+
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(focusedElementInfo);
     if (ret) {
-        actionArguments = AccessibilitySecurityComponentManager::GenerateActionArgumentsWithHMAC(action,
-            focusedElementInfo.GetUniqueId(), focusedElementInfo.GetBundleName(), actionArguments);
+        actionArguments = AccessibilitySecurityComponentManager::GenerateActionArgumentsWithHMAC(
+            action, focusedElementInfo.GetUniqueId(), focusedElementInfo.GetBundleName(), actionArguments);
     }
+
     sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl();
     if (actionCallback == nullptr) {
         HILOG_ERROR("Failed to create actionCallback.");
         return false;
     }
     ffrt::future<void> actionFuture = actionCallback->promise_.get_future();
-
-    if (connection->IsAnco() || treeId <= TREE_ID_INVALID) {
+    if (isAnco || treeId <= TREE_ID_INVALID) {
         if (connection->GetProxy() != nullptr) {
             connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(),
                 actionCallback);
         } else {
-            HILOG_ERROR("get operation is nullptr");
+            HILOG_ERROR("get card operation is nullptr");
             return false;
         }
     } else {
@@ -817,7 +822,57 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     }
     HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d",
         windowId, elementId, action, actionCallback->executeActionResult_);
+
+    if (isAnco && !actionCallback->executeActionResult_ && (action == ActionType::ACCESSIBILITY_ACTION_CLICK)) {
+        int32_t xPos = 0;
+        int32_t yPos = 0;
+        CalculateClickPosition(focusedElementInfo, xPos, yPos);
+        std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
+        pointerEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
+        pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
+        pointerEvent->AddFlag(MMI::InputEvent::EVENT_FLAG_ACCESSIBILITY);
+        pointerEvent->AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
+        MMI::PointerEvent::PointerItem item;
+        item.SetDisplayX(xPos);
+        item.SetDisplayY(yPos);
+        item.SetRawDisplayX(xPos);
+        item.SetRawDisplayY(yPos);
+        item.SetPointerId(1);
+        pointerEvent->AddPointerItem(item);
+        pointerEvent->SetPointerId(1);
+        MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
+
+        pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
+        MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
+        return true;
+    }
     return actionCallback->executeActionResult_;
+}
+
+void AccessibleAbilityManagerService::CalculateClickPosition(const AccessibilityElementInfo &focusedElementInfo,
+    int32_t &xPos, int32_t &yPos)
+{
+    Rect focusElement = focusedElementInfo.GetRectInScreen();
+    int32_t displayWidth = 0;
+    int32_t displayHeight = 0;
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    displayWidth = displayMgr.GetWidth();
+    displayHeight = displayMgr.GetHeight();
+#endif
+    int32_t focusLeftTopXPos = focusElement.GetLeftTopXScreenPostion();
+    int32_t focusRightBottomXPos = focusElement.GetRightBottomXScreenPostion();
+    int32_t focusLeftTopYpos = focusElement.GetLeftTopYScreenPostion();
+    int32_t focusRightBottomYPos = focusElement.GetRightBottomYScreenPostion();
+
+    int32_t leftTopXPos = focusLeftTopXPos > 0 ? focusLeftTopXPos : 0;
+    int32_t leftTopYPos = focusLeftTopYpos > 0 ? focusLeftTopYpos : 0;
+    int32_t rightBottomXPos = displayWidth > 0 && displayWidth < focusRightBottomXPos ?
+        displayWidth : focusRightBottomXPos;
+    int32_t rightBottomYPos = displayHeight > 0 && displayHeight < focusRightBottomYPos ?
+        displayHeight : focusRightBottomYPos;
+    xPos = leftTopXPos + (rightBottomXPos - leftTopXPos) / 2;
+    yPos = leftTopYPos + (rightBottomYPos - leftTopYPos) / 2;
 }
 
 void AccessibleAbilityManagerService::SetFocusWindowId(const int32_t focusWindowId)
