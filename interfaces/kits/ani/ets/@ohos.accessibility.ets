@@ -91,7 +91,7 @@ export enum AccessibilityEventType {
 }
 
 namespace accessibility {
-    loadLibrary("accessibility_ani");
+    loadLibraryWithPermissionCheck("accessibility_ani", "@ohos.accessibility");
 
     export type EventType = 'accessibilityFocus' | 'accessibilityFocusClear' |
         'click' | 'longClick' | 'focus' | 'select' | 'hoverEnter' | 'hoverExit' |
