@@ -1017,30 +1017,6 @@ void AccessibilitySystemAbilityClientImpl::SetFocusMoveSearchWithConditionResult
     }
 }
 
-void AccessibilitySystemAbilityClientImpl::SetDetectElementInfoFocusableThroughAncestorResult(
-    bool isFocusable, const int32_t requestId, const AccessibilityElementInfo &info)
-{
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    HILOG_DEBUG("search element requestId[%{public}d]", requestId);
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("serviceProxy_ is nullptr");
-        return;
-    }
-    sptr<IAccessibilityElementOperatorCallback> callback =
-        AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
-    if (requestId < 0) {
-        HILOG_ERROR("requestId is invalid");
-        return;
-    }
-    if (callback != nullptr) {
-        serviceProxy_->RemoveRequestId(requestId);
-        callback->SetDetectElementInfoFocusableThroughAncestorResult(isFocusable, requestId, info);
-        AccessibilityElementOperatorImpl::EraseCallback(requestId);
-    } else {
-        HILOG_INFO("callback is nullptr");
-    }
-}
-
 AccessibilitySystemAbilityClientImpl::StateArrayHandler::StateArrayHandler()
 {
     std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
@@ -1072,7 +1048,7 @@ RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderRulesEnabled(bool &
     isEnabled = CheckRulesCheckerIsInit(rulesChecker, serviceProxy_);
     return RET_OK;
 }
- 
+
 RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsReadable(
     const std::shared_ptr<ReadableRulesNode>& node, bool& isReadable)
 {
@@ -1084,7 +1060,7 @@ RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsReadable(
     isReadable = rulesChecker.IsReadable(node);
     return RET_OK;
 }
- 
+
 RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsSpecificType(
     const std::shared_ptr<ReadableRulesNode>& node, ReadableSpecificType specificType, bool& isHit)
 {
@@ -1093,13 +1069,19 @@ RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsSpecificType(
         isHit = false;
         return RET_ERR_NOT_ENABLED;
     }
- 
+
     switch (specificType) {
         case ReadableSpecificType::ROOT_TYPE:
             isHit = rulesChecker.IsRootType(node);
             break;
         case ReadableSpecificType::IGNORE_SCROLL_TYPE:
             isHit = rulesChecker.IsScrollIgnoreTypes(node);
+            break;
+        case ReadableSpecificType::SCROLLABLE_TYPE:
+            isHit = rulesChecker.IsScrollableTypes(node);
+            break;
+        case ReadableSpecificType::AVAILABLE_TYPE:
+            isHit = rulesChecker.IsAvailable(node);
             break;
         default:
             break;

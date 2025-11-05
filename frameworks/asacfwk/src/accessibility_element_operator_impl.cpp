@@ -389,13 +389,13 @@ void AccessibilityElementOperatorImpl::SetSearchElementInfoBySpecificPropertyRes
     }
 }
 
-void AccessibilityElementOperatorImpl::FocusMoveSearchWithCondition(const int64_t elementId,
+void AccessibilityElementOperatorImpl::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
     const AccessibilityFocusMoveParam &param,  const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {
-        operator_->FocusMoveSearchWithCondition(elementId, param, mRequestId, operatorCallback_);
+        operator_->FocusMoveSearchWithCondition(info, param, mRequestId, operatorCallback_);
     } else {
         HILOG_ERROR("Operator is nullptr");
         return;
@@ -411,34 +411,6 @@ void AccessibilityElementOperatorImpl::SetFocusMoveSearchWithConditionResult(
     if (iter != requests_.end()) {
         if (iter->second != nullptr) {
             iter->second->SetFocusMoveSearchWithConditionResult(infos, result, requestId);
-        }
-        requests_.erase(iter);
-    } else {
-        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
-    }
-}
-
-void AccessibilityElementOperatorImpl::DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
-    const int64_t parentId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
-{
-    int32_t mRequestId = AddRequest(requestId, callback);
-    if (operator_) {
-        operator_->DetectElementInfoFocusableThroughAncestor(info, parentId, mRequestId, operatorCallback_);
-    } else {
-        HILOG_ERROR("Operator is nullptr");
-        return;
-    }
-}
-
-void AccessibilityElementOperatorImpl::SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable,
-    const int32_t requestId, const AccessibilityElementInfo &info)
-{
-    HILOG_DEBUG("requestId is %{public}d", requestId);
-    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
-    auto iter = requests_.find(requestId);
-    if (iter != requests_.end()) {
-        if (iter->second != nullptr) {
-            iter->second->SetDetectElementInfoFocusableThroughAncestorResult(isFocusable, requestId, info);
         }
         requests_.erase(iter);
     } else {

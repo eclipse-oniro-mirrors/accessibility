@@ -191,12 +191,10 @@ public:
         const SpecificPropertyParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    virtual void FocusMoveSearchWithCondition(const int64_t elementId, const AccessibilityFocusMoveParam &param,
+    virtual void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
+        const AccessibilityFocusMoveParam &param,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
- 
-    virtual void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
-        const int64_t parentId, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
 private:
     bool isFilter = false;
 

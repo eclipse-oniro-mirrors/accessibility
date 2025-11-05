@@ -48,9 +48,7 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_SPECIFIC_PROPERTY,                                \
         HandleSetSearchElementInfoBySpecificPropertyResult)                                                 \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE_SEARCH_WITH_CONDITION,                    \
-        HandleSetFocusMoveSearchWithConditionResult)                                                        \
-    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_DETECT_ELEMENTINFO_FOCUSABLE,                        \
-        HandleSetDetectElementInfoFocusableThroughAncestorResult)
+        HandleSetFocusMoveSearchWithConditionResult)
 
 namespace OHOS {
 namespace Accessibility {
@@ -352,23 +350,17 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchWithCo
     if (rtn != NO_ERROR) {
         return rtn;
     }
-    FocusMoveResult result = static_cast<FocusMoveResult>(data.ReadInt32());
-    int32_t requestId = data.ReadInt32();
 
+    FocusMoveResult result;
+    result.resultType = static_cast<FocusMoveResultType>(data.ReadInt32());
+    result.nowLevelBelongTreeId = data.ReadInt32();
+    result.parentWindowId = data.ReadInt32();
+    result.changeToNewInfo = data.ReadBool();
+    result.needTerminate = data.ReadBool();
+
+    int32_t requestId = data.ReadInt32();
     reply.WriteInt32(RET_OK);
     SetFocusMoveSearchWithConditionResult(infos, result, requestId);
-    return NO_ERROR;
-}
-
-ErrCode AccessibilityElementOperatorCallbackStub::HandleSetDetectElementInfoFocusableThroughAncestorResult(
-    MessageParcel &data, MessageParcel &reply)
-{
-    HILOG_DEBUG();
-    bool isFocusable = data.ReadBool();
-    int32_t requestId = data.ReadInt32();
-    sptr<AccessibilityElementInfoParcel> info = data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-
-    SetDetectElementInfoFocusableThroughAncestorResult(isFocusable, requestId, *info);
     return NO_ERROR;
 }
 } // namespace Accessibility

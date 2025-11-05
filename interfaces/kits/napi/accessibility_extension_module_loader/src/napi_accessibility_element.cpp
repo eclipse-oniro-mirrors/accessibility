@@ -2445,8 +2445,8 @@ void NAccessibilityElement::FocusMoveSearchWithConditionExecute(napi_env env, vo
     DetailCondition condition = ConvertStringToDetailCondition(callbackInfo->condition_);
     AccessibilityFocusMoveParam param { direction, condition };
 
-    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(elementId, param,
-        callbackInfo->nodeInfos_, windowId);
+    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
+        *callbackInfo->accessibilityElement_.elementInfo_, param, callbackInfo->nodeInfos_, windowId);
 }
  
 void NAccessibilityElement::FocusMoveSearchWithConditionComplete(napi_env env, napi_status status, void* data)

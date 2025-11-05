@@ -177,12 +177,9 @@ public:
     virtual void SearchElementInfoBySpecificProperty(const int64_t elementId, const SpecificPropertyParam &param,
         const int32_t requestId, AccessibilityElementOperatorCallback &callback) = 0;
 
-    virtual void FocusMoveSearchWithCondition(const int64_t elementId, const AccessibilityFocusMoveParam param,
+    virtual void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
+        const AccessibilityFocusMoveParam param,
         const int32_t requestId, AccessibilityElementOperatorCallback &callback) = 0;
-
-    virtual void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
-        const int64_t parentId, const int32_t requestId,
-        AccessibilityElementOperatorCallback &callback) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

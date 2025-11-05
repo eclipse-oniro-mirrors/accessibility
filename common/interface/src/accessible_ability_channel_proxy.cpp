@@ -815,7 +815,7 @@ void AccessibleAbilityChannelProxy::SearchElementInfoBySpecificProperty(const El
     }
 }
 
-void AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const int64_t elementId,
+void AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
     const AccessibilityFocusMoveParam& param, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId)
 {
@@ -827,18 +827,30 @@ void AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const int64_t e
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
+    AccessibilityElementInfoParcel infoParcel(info);
 
     if (!WriteInterfaceToken(data)) {
         return;
     }
-    if (!data.WriteInt64(elementId)) {
-        HILOG_ERROR("elementId write error: %{public}" PRId64 ", ", elementId);
+    if (!data.WriteParcelable(&infoParcel)) {
+        HILOG_ERROR("connection write info failed");
         return;
     }
     if (!data.WriteInt32(param.direction)) {
+        HILOG_ERROR("connection write direction failed");
         return;
     }
     if (!data.WriteInt32(param.condition)) {
+        HILOG_ERROR("connection write condition failed");
+        return;
+    }
+    if (!data.WriteInt64(param.parentId)) {
+        HILOG_ERROR("connection write parentId failed");
+        return;
+    }
+
+    if (!data.WriteBool(param.detectParent)) {
+        HILOG_ERROR("connection write detectParent failed");
         return;
     }
     if (!data.WriteInt32(requestId)) {
@@ -856,48 +868,6 @@ void AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const int64_t e
     if (!SendTransactCmd(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH_WITH_CONDITION,
         data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by specific property");
-        return;
-    }
-}
-
-void AccessibleAbilityChannelProxy::DetectElementInfoFocusableThroughAncestor(AccessibilityElementInfo &info,
-    const int32_t windowId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
-{
-    if (callback == nullptr) {
-        HILOG_ERROR("callback is nullptr.");
-        return;
-    }
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-    AccessibilityElementInfoParcel infoParcel(info);
-
-    if (!WriteInterfaceToken(data)) {
-        return;
-    }
-
-    if (!data.WriteParcelable(&infoParcel)) {
-        HILOG_ERROR("connection write info failed");
-        return;
-    }
-
-    if (!data.WriteInt32(windowId)) {
-        HILOG_ERROR("windowId write error: %{public}d, ", windowId);
-        return;
-    }
-    if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("requestId write error: %{public}d, ", requestId);
-        return;
-    }
-    if (!data.WriteRemoteObject(callback->AsObject())) {
-        HILOG_ERROR("callback write error");
-        return;
-    }
-
-    if (!SendTransactCmd(AccessibilityInterfaceCode::DETECT_ELEMENTINFO_FOCUSABLE_THROUGH_ANCESTOR,
-        data, reply, option)) {
-        HILOG_ERROR("fail to detect elementInfo focusable");
         return;
     }
 }

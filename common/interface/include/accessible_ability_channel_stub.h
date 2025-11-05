@@ -206,8 +206,6 @@ private:
 
     ErrCode HandleFocusMoveSearchWithCondition(MessageParcel &data, MessageParcel &reply);
 
-    ErrCode HandleDetectElementInfoFocusableThroughAncestor(MessageParcel &data, MessageParcel &reply);
-
     using AccessibleAbilityConnectionFunc =
         ErrCode (AccessibleAbilityChannelStub::*)(MessageParcel &data, MessageParcel &reply);
 };

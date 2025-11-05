@@ -259,8 +259,6 @@ public:
         const std::shared_ptr<ReadableRulesNode>& node, ReadableSpecificType specificType, bool& isHit) override;
     virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
         const FocusMoveResult &result, const int32_t requestId) override;
-    virtual void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId,
-        const AccessibilityElementInfo &info) override;
 
     bool LoadAccessibilityService();
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);

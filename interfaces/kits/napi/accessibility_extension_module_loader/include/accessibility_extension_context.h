@@ -215,7 +215,7 @@ public:
     */
     RetError NotifyDisconnect();
 
-    RetError FocusMoveSearchWithCondition(int64_t elementId, AccessibilityFocusMoveParam param,
+    RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info, AccessibilityFocusMoveParam param,
         std::vector<AccessibilityElementInfo> &infos, int32_t windowId);
 private:
     static int illegalRequestCode_;

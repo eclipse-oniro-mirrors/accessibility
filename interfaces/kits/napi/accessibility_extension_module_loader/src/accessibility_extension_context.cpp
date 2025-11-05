@@ -295,7 +295,7 @@ RetError AccessibilityExtensionContext::NotifyDisconnect()
     return aaClient->NotifyDisconnect();
 }
 
-RetError AccessibilityExtensionContext::FocusMoveSearchWithCondition(int64_t elementId,
+RetError AccessibilityExtensionContext::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
     AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t windowId)
 {
     HILOG_DEBUG();
@@ -304,7 +304,7 @@ RetError AccessibilityExtensionContext::FocusMoveSearchWithCondition(int64_t ele
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return aaClient->FocusMoveSearchWithCondition(elementId, param, infos, windowId);
+    return aaClient->FocusMoveSearchWithCondition(info, param, infos, windowId);
 }
 } // namespace Accessibility
 } // namespace OHOS

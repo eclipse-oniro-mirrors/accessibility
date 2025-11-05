@@ -36,6 +36,8 @@ enum AccessibilityControlType : int32_t {
 enum ReadableSpecificType : int32_t {
     ROOT_TYPE = 0x00000001,
     IGNORE_SCROLL_TYPE = 0x00000002,
+    SCROLLABLE_TYPE = 0x00000003,
+    AVAILABLE_TYPE = 0x00000004
 };
 
 constexpr int32_t ELEMENT_MOVE_BIT = 40;

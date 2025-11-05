@@ -33,6 +33,7 @@ public:
     bool IsRootType(const std::string& type);
     bool Parse(const nlohmann::json& jsonRoot);
     bool IsScrollIgnoreTypes(const std::string& type);
+    bool IsScrollableTypes(const std::string& type);
     size_t GetTotalMemoryUsage() const
     {
         return sizeof(RulesDefines) + rootTypes_.size() * PATCH_SIZE;
@@ -42,9 +43,11 @@ private:
     bool ParseRootTypes(const nlohmann::json& defines);
     void PrintRootTypes();
     bool ParseScrollIgnoreTypes(const nlohmann::json& defines);
+    bool ParseScrollableTypes(const nlohmann::json& defines);
 
     std::set<std::string> rootTypes_;
     std::set<std::string> scrollIgnoreTypes_;
+    std::set<std::string> scrollableTypes_;
 };
 } // namespace OHOS::Accessibility
 #endif // FRAMEWORKS_ASACFWK_SRC_RULES_RULES_DEFINES_H

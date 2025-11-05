@@ -982,7 +982,7 @@ void AccessibleAbilityChannel::SearchElementInfoBySpecificProperty(const Element
     }
 }
 
-void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const int64_t elementId,
+void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityElementInfo &elementInfo,
     const AccessibilityFocusMoveParam &param,  const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId)
 {
@@ -995,85 +995,40 @@ void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const int64_t elemen
         HILOG_ERROR("callback is nullptr.");
         return;
     }
-    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
+
     int32_t accountId = accountId_;
     std::string clientName = clientName_;
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     ffrt::future syncFuture = syncPromise->get_future();
-    eventHandler_->PostTask([accountId, clientName, syncPromise, windowId, elementId, treeId,
+    eventHandler_->PostTask([accountId, clientName, syncPromise, windowId, elementInfo,
         requestId, callback, param]() {
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
+        int32_t treeId = elementInfo.GetBelongTreeId();
+        if (param.detectParent) {
+            int64_t parentId = -1;
+            Singleton<AccessibleAbilityManagerService>::GetInstance().GetRootParentId(windowId, treeId, parentId);
+            const_cast<AccessibilityFocusMoveParam&>(param).SetParentId(parentId);
+            treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(parentId);
+        }
+        
         RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID,
             clientName, elementOperator, treeId);
         if (ret != RET_OK) {
             HILOG_ERROR("Get elementOperator failed! windowId[%{public}d]", windowId);
             std::list<AccessibilityElementInfo> infos;
-            FocusMoveResult result = FocusMoveResult::SEARCH_FAIL;
+            FocusMoveResult result;
             callback->SetFocusMoveSearchWithConditionResult(infos, result, requestId);
             syncPromise->set_value(ret);
             return;
         }
-        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
-        int64_t realElementId = awm.GetSceneBoardElementId(windowId, elementId);
         Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(windowId, treeId,
             requestId, callback);
-        elementOperator->FocusMoveSearchWithCondition(elementId, param, requestId, callback);
+        elementOperator->FocusMoveSearchWithCondition(elementInfo, param, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, "FocusMoveSearchWithCondition");
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait SearchElementInfosByText result");
-        return;
-    }
-    syncFuture.get();
-    return;
-}
-
-void AccessibleAbilityChannel::DetectElementInfoFocusableThroughAncestor(AccessibilityElementInfo &elementInfo,
-    const int32_t windowId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
-{
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-    if (eventHandler_ == nullptr) {
-        HILOG_ERROR("eventHandler_ is nullptr.");
-        return;
-    }
-    if (callback == nullptr) {
-        HILOG_ERROR("callback is nullptr.");
-        return;
-    }
-    int32_t belongTreeId = elementInfo.GetBelongTreeId();
-    if (belongTreeId <= 0) {
-        HILOG_ERROR("belongTreeId <= 0.");
-        return;
-    }
-    int32_t accountId = accountId_;
-    std::string clientName = clientName_;
-    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
-    ffrt::future syncFuture = syncPromise->get_future();
-    eventHandler_->PostTask([accountId, clientName, syncPromise, windowId, elementInfo, belongTreeId, requestId,
-        callback]() {
-        int64_t parentId = -1;
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetRootParentId(windowId, belongTreeId, parentId);
-        int32_t parentTreeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(parentId);
-        sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-        RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID, clientName, elementOperator,
-            parentTreeId);
-        if (ret != RET_OK) {
-            HILOG_ERROR("Get elementOperator failed! windowId[%{public}d], parentTreeId: %{public}d",
-                windowId, parentTreeId);
-            AccessibilityElementInfo info;
-            callback->SetDetectElementInfoFocusableThroughAncestorResult(false, requestId, info);
-            syncPromise->set_value(ret);
-            return;
-        }
-        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(windowId, belongTreeId,
-            requestId, callback);
-        elementOperator->DetectElementInfoFocusableThroughAncestor(elementInfo, parentId, requestId, callback);
-        syncPromise->set_value(RET_OK);
-        }, "DetectElementInfoFocusableThroughAncestor");
-    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (wait != ffrt::future_status::ready) {
-        HILOG_ERROR("Failed to wait result, requestId: %{public}d", requestId);
         return;
     }
     syncFuture.get();
