@@ -78,6 +78,7 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     if (accessibilityWindowId == ANY_WINDOW_ID && focusType == FOCUS_TYPE_ACCESSIBILITY &&
         accessibilityFocusedWindowId_ != INVALID_WINDOW_ID) {
         windowId = accessibilityFocusedWindowId_;
+        elementId = accessibilityFocusedElementId_;
         HILOG_INFO("Convert into accessibility focused window id[%{public}d]", windowId);
     }
 
