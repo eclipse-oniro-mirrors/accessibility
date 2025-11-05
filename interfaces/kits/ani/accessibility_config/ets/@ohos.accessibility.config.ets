@@ -21,7 +21,7 @@ native function enableAbilitySync(name: string, capability: Array<accessibility.
 native function disableAbilitySync(name: string): void;
 
 namespace config {
-    loadLibrary("accessibility_config");
+    loadLibraryWithPermissionCheck("accessibility_config", "@ohos.accessibility.config");
 
     export type ObserverConfigType = 'enabledAccessibilityExtensionListChange' | 'installedAccessibilityListChange';
 
