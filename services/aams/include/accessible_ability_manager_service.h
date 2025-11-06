@@ -161,6 +161,7 @@ private:
 public:
     /* For inner modules */
     bool EnableShortKeyTargetAbility(const std::string &name = "");
+    bool EnableCaptionsAbility(sptr<AccessibilityAccountData> accountData);
     bool DisableShortKeyTargetAbility();
     void OnShortKeyProcess();
     void UpdateShortKeyRegister();

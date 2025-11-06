@@ -548,6 +548,12 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::str
     return true;
 }
 
+bool AccessibleAbilityManagerService::EnableCaptionsAbility(sptr<AccessibilityAccountData> accountData)
+{
+    (void)accountData;
+    return true;
+}
+
 void AccessibleAbilityManagerService::OnShortKeyProcess()
 {
     AccessibilityAbilityHelper::GetInstance().SetShortKeyTargetAbilityState(true);

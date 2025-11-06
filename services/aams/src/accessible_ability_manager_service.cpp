@@ -14,7 +14,8 @@
  */
 
 #include "accessible_ability_manager_service.h"
-
+#include "ability_manager_client.h"
+#include "want.h"
 #include <algorithm>
 #include <cinttypes>
 #include <new>
@@ -124,6 +125,11 @@ namespace {
     const char* MAGNIFICATION_DISABLE = "magnification_disabled";
     const char* SWITCH_FULL_SCREEN = "switch_full_screen_magnification";
     const char* SWITCH_WINDOW = "switch_window_magnification";
+    const char* CAPTION_ENABLED_KEY = "vassistant_ai_caption_enable";
+    const char* CAPTION_SHORTKEY_NAME = "CAPTIONS_ASSISTANT";
+    const char* CAPTION_BUNDLE_NAME = "com.huawei.hmos.vassistant";
+    const char* CAPTION_ABILITY_NAME = "AiCaptionServiceExtAbility";
+    const char* CAPTION_URL_ADDRESS = "va://vassistant/caption?action=close";
     constexpr int32_t XCOLLIE_TIMEOUT = 6; // s
     constexpr int QUANTITY = 2; // plural string
 
@@ -3196,6 +3202,45 @@ ErrCode AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData& 
     return syncFuture.get();
 }
 
+bool AccessibleAbilityManagerService::EnableCaptionsAbility(sptr<AccessibilityAccountData> accountData)
+{
+    HILOG_DEBUG();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
+ 
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return false;
+    }
+ 
+    if (config->GetSystemDbHandle() == nullptr) {
+        HILOG_ERROR("systemDatashare_ is nullptr");
+        return false;
+    }
+ 
+    std::string captionState = accountData->GetConfig()->GetSystemDbHandle()->GetStringValue(
+        CAPTION_ENABLED_KEY, "false");
+    HILOG_DEBUG("captionState is [%{public}s]", captionState.c_str());
+    std::string uriAddress = captionState == "true" ? CAPTION_URL_ADDRESS : "";
+    AAFwk::Want want;
+    want.SetElementName(CAPTION_BUNDLE_NAME, CAPTION_ABILITY_NAME);
+    want.SetUri(uriAddress);
+    auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
+    if (!abilityManagerClient) {
+        HILOG_ERROR("abilityManagerClient is nullptr");
+        return false;
+    }
+    auto ret = abilityManagerClient->StartAbility(want);
+    if (ret != ERR_OK) {
+        HILOG_ERROR("start aiCaption ability is failed %{public}d", ret);
+        return false;
+    }
+    return true;
+}
+
 bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::string &name)
 {
     HILOG_DEBUG();
@@ -3208,6 +3253,13 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::str
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
         return false;
+    }
+
+    if (name == CAPTION_SHORTKEY_NAME) {
+        if (!EnableCaptionsAbility(accountData)) {
+            return false;
+        }
+        return true;
     }
 
     std::string targetAbility;

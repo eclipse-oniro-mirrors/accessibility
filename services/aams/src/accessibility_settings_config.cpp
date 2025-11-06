@@ -71,6 +71,7 @@ namespace {
     const char* INVERT_COLOR_TAG = "INVERT_COLOR";
     const char* AUDIO_MONO_TAG = "AUDIO_MONO";
     const char* HIGH_CONTRAST_TEXT_TAG = "HIGH_CONTRAST_TEXT";
+    const char* CAPTIONS_ASSISTANT_HMOS_TAG = "CAPTIONS_ASSISTANT";
     const char* SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
     const char* ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
     const char* ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
@@ -1287,6 +1288,11 @@ uint32_t AccessibilitySettingsConfig::GetShortKeyService(std::vector<std::string
     });
     serviceFlag = highContrastText != services.end() ? (serviceFlag | STATE_HIGHCONTRAST_ENABLED) : serviceFlag;
 
+    auto captionsAssistant = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+        return service.find(CAPTIONS_ASSISTANT_HMOS_TAG) != std::string::npos;
+    });
+    serviceFlag = captionsAssistant != services.end() ? (serviceFlag | STATE_CAPTION_ENABLED) : serviceFlag;
+
     return serviceFlag;
 }
 
@@ -1306,6 +1312,9 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     }
     if (shortkeyServiceFlag & STATE_HIGHCONTRAST_ENABLED) {
         shortkeyService.push_back(HIGH_CONTRAST_TEXT_TAG);
+    }
+    if (shortkeyServiceFlag & STATE_CAPTION_ENABLED) {
+        shortkeyService.push_back(CAPTIONS_ASSISTANT_HMOS_TAG);
     }
     SetShortkeyMultiTarget(shortkeyService);
 
