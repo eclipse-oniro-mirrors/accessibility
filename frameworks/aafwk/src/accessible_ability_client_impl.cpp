@@ -1865,19 +1865,15 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
     if (result.resultType == FocusMoveResultType::SEARCH_FAIL_LOST_NODE) {
         return static_cast<RetError>(result.resultType);
     }
-
     param.detectParent = true;
     std::vector<AccessibilityElementInfo> tmpInfos;
     FocusMoveResult tmpResult;
-    
     if (param.direction == FocusMoveDirection::GET_FORWARD_SCROLL_ANCESTOR ||
-        param.direction == FocusMoveDirection::GET_BACKWARD_SCROLL_ANCESTOR || 
+        param.direction == FocusMoveDirection::GET_BACKWARD_SCROLL_ANCESTOR ||
         param.direction == FocusMoveDirection::GET_SCROLLABLE_ANCESTOR) {
-
         AccessibilityElementInfo tmpInfo;
         tmpInfo.SetBelongTreeId(treeId);
         tmpInfo.SetWindowId(info.GetParentWindowId());
-
         ret = channelClient_->FocusMoveSearchWithCondition(tmpInfo, param, tmpInfos, tmpResult);
         if (ret != RET_OK) {
             return ret;
@@ -1895,7 +1891,6 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
         if ((infos.empty()) || (result.resultType != FocusMoveResultType::SEARCH_SUCCESS)) {
             return static_cast<RetError>(result.resultType);
         }
-
         param.direction = FocusMoveDirection::DETECT_FOCUSABLE_IN_FOCUS_MOVE;
         ret = channelClient_->FocusMoveSearchWithCondition(infos[0], param, tmpInfos, tmpResult);
         if (ret != RET_OK) {

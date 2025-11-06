@@ -56,7 +56,7 @@ public:
         const int32_t childWindowId) override {}
     void SetBelongTreeId(const int32_t treeId) override {}
     void SetParentWindowId(const int32_t parentWindowId) override {}
-    void FocusMoveSearchWithCondition(const int64_t elementId, const AccessibilityFocusMoveParam &param,
+    void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info, const AccessibilityFocusMoveParam &param,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 };
 

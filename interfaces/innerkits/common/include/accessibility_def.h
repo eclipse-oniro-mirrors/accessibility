@@ -429,7 +429,8 @@ struct AccessibilityFocusMoveParam {
     int64_t parentId;
     bool detectParent = false;
 
-    void SetParentId(int64_t id) {
+    void SetParentId(int64_t id)
+    {
         parentId = id;
     }
 };
@@ -455,7 +456,7 @@ enum FocusMoveResultType : int32_t {
     SEARCH_NEXT = 0x00000010,
     DOUBLE_CHECK_CHILD_PROPERTY = 0x00000020,
     DOUBLE_CHECK_CHILD_PROPERTY_AND_GET_LAST = 0x00000040,
-    SERACH_FAIL_IN_SCROLL = 0x00000080,
+    SEARCH_FAIL_IN_SCROLL = 0x00000080,
 };
 
 struct FocusMoveResult {
