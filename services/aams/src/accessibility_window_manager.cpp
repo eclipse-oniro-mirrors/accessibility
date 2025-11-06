@@ -373,7 +373,7 @@ bool AccessibilityWindowManager::CheckEvents()
  
     auto isExit = std::find(needEvents.begin(), needEvents.end(), TYPE_WINDOW_UPDATE);
     auto isAllEvent = std::find(needEvents.begin(), needEvents.end(), TYPES_ALL_MASK);
-    if (isAllEvent != needEvents.end() || isExit != needEvents.end()) {
+    if (isAllEvent != needEvents.end() || isExit != needEvents.end() || (needEvents.size() == 0)) {
         return true;
     }
     return false;

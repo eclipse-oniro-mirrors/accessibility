@@ -580,12 +580,7 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
         }
 
         const_cast<AccessibilityEventInfo&>(uiEvent).SetTimeStamp(Utils::GetSystemTime());
-        map<string, sptr<AccessibleAbilityConnection>> abilities = accountData->GetConnectedA11yAbilities();
-        for (auto &ability : abilities) {
-            if (ability.second) {
-                ability.second->OnAccessibilityEvent(const_cast<AccessibilityEventInfo&>(uiEvent));
-            }
-        }
+        accountData->isSendEvent(uiEvent);
     };
 
     if (eventType == TYPE_VIEW_HOVER_ENTER_EVENT) {
