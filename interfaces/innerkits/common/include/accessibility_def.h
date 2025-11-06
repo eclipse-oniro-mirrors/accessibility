@@ -423,20 +423,6 @@ enum DetailCondition : int32_t {
     CHECK_SELF_BYPASS_DESCENDANTS = 0x00000008,
 };
 
-enum DetectType : int32_t  {
-    DETECT_FOCUS_IN_FIND_ELEMENT = 0,
-    DETECT_FOCUS_IN_HOVER = 1,
-    FIND_SCROLL_FORWARD = 2,
-    FIND_SCROLL_BACKWORD = 3,
-    FIND_SCROLL_ANY = 4
-};
-
-enum DetectResult {
-    SUCCESS = 0,
-    FAIL = 1,
-    TERMINATE_WITH_RESULT = 2
-};
-
 struct AccessibilityFocusMoveParam {
     FocusMoveDirection direction;
     DetailCondition condition;
@@ -446,11 +432,6 @@ struct AccessibilityFocusMoveParam {
     void SetParentId(int64_t id) {
         parentId = id;
     }
-};
-
-struct AccessibilityDetectFocusableParam {
-    DetectType detectType;
-    int64_t parentId;
 };
 
 constexpr int32_t PARAM0 = 0;
@@ -483,13 +464,6 @@ struct FocusMoveResult {
     int32_t parentWindowId;
     bool changeToNewInfo;
     bool needTerminate;
-};
-
-struct DetectFocusableResult {
-    DetectResult result;
-    int32_t nowLevelBelongTreeId;
-    bool changeToNewInfo;
-    FocusMoveResultType terminateResult;
 };
 } // namespace Accessibility
 } // namespace OHOS

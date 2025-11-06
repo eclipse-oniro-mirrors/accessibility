@@ -2349,15 +2349,6 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveS
     promise_.set_value();
 }
 
-void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetDetectElementInfoFocusableThroughAncestorResult(
-    bool isFocusable, const int32_t requestId, const AccessibilityElementInfo &info)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    isFocusable_ = isFocusable;
-    accessibilityInfoResult_ = info;
-    promise_.set_value();
-}
-
 bool AccessibleAbilityManagerService::ElementOperatorCallbackImpl::ValidateElementInfos(
     const std::list<AccessibilityElementInfo>& infos)
 {

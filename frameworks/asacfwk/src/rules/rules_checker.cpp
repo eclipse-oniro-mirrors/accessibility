@@ -89,8 +89,6 @@ bool ReadableRulesChecker::IsReadable(const std::shared_ptr<ReadableRulesNode>& 
     CHECK_NULL_RETURN(node, false);
     for (const auto& rule : rules_) {
         CheckResult ret = rule.IsReadable(node);
-        HILOG_INFO("ruleName:%{public}s,elementId[%{public}" PRId64 "],isReadable:%{public}d,handleResult:%{public}d",
-            rule.GetName().c_str(), node->GetAccessibilityId(), ret.isReadable, ret.handleResult);
         if (ret.handleResult == HandleResult::HANDLED) {
             return ret.isReadable;
         }

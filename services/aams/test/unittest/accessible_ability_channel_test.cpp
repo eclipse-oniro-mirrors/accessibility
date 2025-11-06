@@ -61,8 +61,6 @@ public:
     }
     void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
         const FocusMoveResult &result, const int32_t requestId) override {}
-    void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId,
-        const AccessibilityElementInfo &info) override {}
     bool IsCallbackCalled() const { return callbackCalled_; }
     const std::vector<AccessibilityElementInfo>& GetReceivedInfos() const { return receivedInfos_; }
     const std::vector<AccessibilityElementInfo>& GetReceivedTreeInfos() const { return receivedTreeInfos_; }
