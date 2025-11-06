@@ -127,9 +127,9 @@ namespace {
     const char* SWITCH_WINDOW = "switch_window_magnification";
     const char* CAPTION_ENABLED_KEY = "vassistant_ai_caption_enable";
     const char* CAPTION_SHORTKEY_NAME = "CAPTIONS_ASSISTANT";
-    const char* CAPTION_BUNDLE_NAME = "com.huawei.hmos.vassistant";
+    const char* CAPTION_BUNDLE_NAME = "com.ohos.vassistant";
     const char* CAPTION_ABILITY_NAME = "AiCaptionServiceExtAbility";
-    const char* CAPTION_URL_ADDRESS = "va://vassistant/caption?action=close";
+    const char* CAPTION_URL_ADDRESS = "ohos://vassistant/caption?action=close";
     constexpr int32_t XCOLLIE_TIMEOUT = 6; // s
     constexpr int QUANTITY = 2; // plural string
 
