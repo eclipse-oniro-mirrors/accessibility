@@ -1456,9 +1456,48 @@ void MockMockAccessibilityAccountDataMap::Clear()
     accountDataMap_.clear();
 }
 
+void MockMockAccessibilityAccountData::isSendEvent(const AccessibilityEventInfo &eventInfo)
+{
+    std::map<std::string, sptr<AccessibleAbilityConnection>> abilities = GetConnectedA11yAbilities();
+    uint32_t eventType = eventInfo.GetEventType();
+    std::string bundleName = "";
+    std::lock_guard<ffrt::mutex> lock(abilityNeedEventsMutex_);
+    for (auto &ability : abilities) {
+        size_t pos = ability.first.find('/');
+        if (pos != std::string::npos) {
+            bundleName = ability.first.substr(0, pos);
+        }
+
+        HILOG_DEBUG("send event type is %{public}d, bundle name is %{public}s", eventType, bundleName.c_str());
+        auto it = abilityNeedEvents_.find(bundleName);
+        if (it != abilityNeedEvents_.end()) {
+            uint32_t needEventSize = it->second.size();
+            if (needEventSize == 0) { // default
+                ability.second->OnAccessibilityEvent(const_cast<AccessibilityEventInfo&>(eventInfo));
+            } else {
+                uint32_t event = it->second.at(0);
+                if (event == TYPES_ALL_MASK) { // all event
+                    ability.second->OnAccessibilityEvent(const_cast<AccessibilityEventInfo&>(eventInfo));
+                    continue;
+                }
+
+                if (event == TYPE_VIEW_INVALID) { // none event
+                    continue;
+                }
+
+                auto isEvent = std::find(it->second.begin(), it->second.end(), eventType);
+                if (isEvent != it->second.end()) {
+                    ability.second->OnAccessibilityEvent(const_cast<AccessibilityEventInfo&>(eventInfo));
+                }
+            }
+        }
+    }
+}
+
 void MockMockAccessibilityAccountData::AddNeedEvent(const std::string &name, std::vector<uint32_t> needEvents)
 {
     std::string packageName = "";
+    std::lock_guard<ffrt::mutex> lock(abilityNeedEventsMutex_);
     if (name == SCREEN_READER_BUNDLE_NAME) {
         abilityNeedEvents_[name].push_back(TYPES_ALL_MASK);
     } else if (name == UI_TEST_BUNDLE_NAME) {
@@ -1481,6 +1520,7 @@ void MockMockAccessibilityAccountData::RemoveNeedEvent(const std::string &name)
 {
     size_t pos = name.find('/');
     if (pos != std::string::npos) {
+        std::lock_guard<ffrt::mutex> lock(abilityNeedEventsMutex_);
         std::string bundleName = name.substr(0, pos);
         HILOG_DEBUG("RemoveNeedEvent bundleName is %{public}s, abilityNeedEvents_ size is %{public}zu",
             bundleName.c_str(), abilityNeedEvents_.size());

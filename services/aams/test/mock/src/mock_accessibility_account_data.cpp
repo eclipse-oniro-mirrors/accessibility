@@ -584,6 +584,11 @@ void AccessibilityAccountData::RemoveWaitDisconnectAbility(const std::string &ur
     waitDisconnectA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 
+void AccessibilityAccountData::isSendEvent(const AccessibilityEventInfo &eventInfo)
+{
+    (void)eventInfo;
+}
+
 std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
 {
     return needEvents_;
