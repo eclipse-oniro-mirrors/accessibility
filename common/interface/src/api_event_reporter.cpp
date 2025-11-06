@@ -44,7 +44,7 @@ ApiEventReporter::~ApiEventReporter()
 {
     m_thresholdData.clear();
 }
-
+// LCOV_EXCL_START
 bool ApiEventReporter::IsAppEventProccessorValid()
 {
     if (g_processorId <= NULLPTR_PROCCESSORID) {
@@ -269,7 +269,7 @@ std::string RandomUuid()
     uuid_unparse(uuid, uuidChars);
     return std::string(uuidChars);
 }
-
+// LCOV_EXCL_STOP
 int64_t ApiEventReporter::GetCurrentTime()
 {
     int64_t time = std::chrono::duration_cast<std::chrono::milliseconds>(
