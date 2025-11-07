@@ -1596,7 +1596,7 @@ void StateListenerImpl::UnsubscribeObservers()
     std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         DeleteObserverReference((*iter)->env_, *iter);
-        observers_.erase(iter);
+        iter = observers_.erase(iter);
     }
     observers_.clear();
 }
