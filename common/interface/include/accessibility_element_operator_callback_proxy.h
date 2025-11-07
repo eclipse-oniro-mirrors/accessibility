@@ -107,15 +107,6 @@ public:
     void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
         const FocusMoveResult &result, const int32_t requestId) override;
 
-    /**
-     * @brief Set the result of detect elementinfo focusable to AA.
-     * @param isFocusable The isFocusable of the elementInfo.
-     * @param requestId The request id from AA, it is used to match with request and response.
-     * @param info return focusable elementInfo.
-     */
-    void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId,
-        const AccessibilityElementInfo &info) override;
-
 private:
     /**
      * @brief Write the descriptor of IPC.

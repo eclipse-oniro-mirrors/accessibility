@@ -45,8 +45,6 @@ public:
         const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override {}
     void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &info,
         const FocusMoveResult &result, const int32_t requestId) override {}
-    void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId,
-        const AccessibilityElementInfo &info) override {}
 };
 
 template<class T>

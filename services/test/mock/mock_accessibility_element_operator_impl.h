@@ -240,12 +240,9 @@ public:
     */
     void SetParentWindowId(const int32_t parentWindowId);
 
-    void FocusMoveSearchWithCondition(const int64_t elementId, const AccessibilityFocusMoveParam &param,
+    void FocusMoveSearchWithCondition(const AccessibilityElementInfo &elementInfo,
+        const AccessibilityFocusMoveParam &param,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
-
-    void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
-        const int64_t parentId, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
 private:
     int32_t AddRequest(int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);

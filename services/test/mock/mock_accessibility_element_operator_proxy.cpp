@@ -165,22 +165,12 @@ void MockAccessibilityElementOperatorProxy::SearchElementInfoBySpecificProperty(
     return;
 }
 
-void MockAccessibilityElementOperatorProxy::FocusMoveSearchWithCondition(const int64_t elementId,
+void MockAccessibilityElementOperatorProxy::FocusMoveSearchWithCondition(const AccessibilityElementInfo &elementInfo,
     const AccessibilityFocusMoveParam &param, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    (void)elementId;
+    (void)elementInfo;
     (void)param;
-    (void)requestId;
-    (void)callback;
-}
-
-void MockAccessibilityElementOperatorProxy::DetectElementInfoFocusableThroughAncestor(
-    const AccessibilityElementInfo &info, const int64_t parentId, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
-{
-    (void)info;
-    (void)parentId;
     (void)requestId;
     (void)callback;
 }

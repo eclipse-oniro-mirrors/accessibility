@@ -96,9 +96,6 @@ public:
     virtual void SetFocusMoveSearchWithConditionResult(
         const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult &result, const int32_t requestId) = 0;
 
-    virtual void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable, const int32_t requestId,
-        const AccessibilityElementInfo &info) = 0;
-
     /**
      * @brief Set isFilter.
      * @param enableFilter True : Perform filtering ;otherwise is false.

@@ -226,12 +226,9 @@ public:
         const SpecificPropertyParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
-    virtual void FocusMoveSearchWithCondition(const int64_t elementId,
+    virtual void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId) = 0;
-
-    virtual void DetectElementInfoFocusableThroughAncestor(AccessibilityElementInfo &info, const int32_t windowId,
-        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

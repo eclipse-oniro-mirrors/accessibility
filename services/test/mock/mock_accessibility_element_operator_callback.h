@@ -38,8 +38,6 @@ public:
         const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId));
     MOCK_METHOD3(SetFocusMoveSearchWithConditionResult, void(const std::list<AccessibilityElementInfo> &info,
         const FocusMoveResult &result, const int32_t requestId));
-    MOCK_METHOD3(SetDetectElementInfoFocusableThroughAncestorResult, void(bool isFocusable, const int32_t requestId,
-        const AccessibilityElementInfo &info));
 };
 } // namespace Accessibility
 } // namespace OHOS

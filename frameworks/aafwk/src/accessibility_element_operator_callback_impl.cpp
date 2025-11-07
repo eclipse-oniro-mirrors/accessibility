@@ -113,22 +113,14 @@ void AccessibilityElementOperatorCallbackImpl::SetFocusMoveSearchWithConditionRe
     const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult& result, const int32_t requestId)
 {
     elementInfosResult_.assign(infos.begin(), infos.end());
-    result_ = result;
+    focusMoveResult_ = result.resultType;
+    nowLevelBelongTreeId_ = result.nowLevelBelongTreeId;
+    parentWindowId_ = result.parentWindowId;
+    changeToNewInfo_ = result.changeToNewInfo;
+    needTerminate_ = result.needTerminate;
     if (promiseFlag_ == false) {
         promise_.set_value();
         promiseFlag_ = true;
-    }
-}
-
-void AccessibilityElementOperatorCallbackImpl::SetDetectElementInfoFocusableThroughAncestorResult(
-    const bool isFocusable, const int32_t requestId, const AccessibilityElementInfo &info)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d] result[%{public}d]", requestId, isFocusable);
-    isFocusable_ = isFocusable;
-    if (promiseFlag_ == false) {
-        promise_.set_value();
-        promiseFlag_ = true;
-        accessibilityInfoResult_ = info;
     }
 }
 } // namespace Accessibility

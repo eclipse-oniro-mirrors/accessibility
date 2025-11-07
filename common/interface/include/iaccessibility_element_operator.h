@@ -177,23 +177,13 @@ public:
     
     /**
      * @brief Search element info by condition.
-     * @param elementId The unique id of the component ID.
+     * @param info The start elementInfo.
      * @param param The specific property parameters.
      * @param requestId The request id from AA, it is used to match with request and response.
      * @param callback The callback to return the result.
      */
-    virtual void FocusMoveSearchWithCondition(const int64_t elementId, const AccessibilityFocusMoveParam &param,
-        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
-
-    /**
-     * @brief detect elementInfo focusable through ancestor.
-     * @param info The current elementInfo.
-     * @param parentId The parentId.
-     * @param requestId The request id from AA, it is used to match with request and response.
-     * @param callback The callback to return the result.
-     */
-    virtual void DetectElementInfoFocusableThroughAncestor(const AccessibilityElementInfo &info,
-        const int64_t parentId, const int32_t requestId,
+    virtual void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
+        const AccessibilityFocusMoveParam &param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 };
 } // namespace Accessibility

@@ -215,6 +215,8 @@ enum FocusMoveDirection : int32_t {
     GET_FORWARD_SCROLL_ANCESTOR = 0x00000080,
     GET_BACKWARD_SCROLL_ANCESTOR = 0x00000100,
     GET_SCROLLABLE_ANCESTOR = 0x00000200,
+    DETECT_FOCUSABLE_IN_FOCUS_MOVE = 0x00000400,
+    DETECT_FOCUSABLE_IN_HOVER = 0x00000800,
 };
 
 enum WindowUpdateType : int32_t {
@@ -424,6 +426,13 @@ enum DetailCondition : int32_t {
 struct AccessibilityFocusMoveParam {
     FocusMoveDirection direction;
     DetailCondition condition;
+    int64_t parentId;
+    bool detectParent = false;
+
+    void SetParentId(int64_t id)
+    {
+        parentId = id;
+    }
 };
 
 constexpr int32_t PARAM0 = 0;
@@ -437,7 +446,7 @@ struct AccessibilitySecCompPoint {
     int64_t timeStamp;
 };
 
-enum FocusMoveResult : int32_t {
+enum FocusMoveResultType : int32_t {
     NOT_SUPPORT = -1,
     SEARCH_SUCCESS = 0,
     SEARCH_SUCCESS_NEXT_BYPASS_DESCENDANTS = 0x00000001,
@@ -447,7 +456,15 @@ enum FocusMoveResult : int32_t {
     SEARCH_NEXT = 0x00000010,
     DOUBLE_CHECK_CHILD_PROPERTY = 0x00000020,
     DOUBLE_CHECK_CHILD_PROPERTY_AND_GET_LAST = 0x00000040,
-    SERACH_FAIL_IN_SCROLL = 0x00000080,
+    SEARCH_FAIL_IN_SCROLL = 0x00000080,
+};
+
+struct FocusMoveResult {
+    FocusMoveResultType resultType = FocusMoveResultType::NOT_SUPPORT;
+    int32_t nowLevelBelongTreeId;
+    int32_t parentWindowId;
+    bool changeToNewInfo;
+    bool needTerminate;
 };
 } // namespace Accessibility
 } // namespace OHOS

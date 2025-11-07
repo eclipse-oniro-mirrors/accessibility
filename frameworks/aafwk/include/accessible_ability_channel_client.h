@@ -242,11 +242,8 @@ public:
         std::vector<AccessibilityElementInfo> &elementInfos,
         int32_t treeId);
     
-    RetError FocusMoveSearchWithCondition(int64_t elementId, AccessibilityFocusMoveParam param,
-        std::vector<AccessibilityElementInfo> &infos, int32_t windowId);
-
-    RetError DetectElementInfoFocusableThroughAncestor(AccessibilityElementInfo &info, int32_t windowId,
-        bool &isFocusable, AccessibilityElementInfo &targetInfo);
+    RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info, AccessibilityFocusMoveParam param,
+        std::vector<AccessibilityElementInfo> &infos, FocusMoveResult &result);
 
 private:
     int32_t GenerateRequestId();

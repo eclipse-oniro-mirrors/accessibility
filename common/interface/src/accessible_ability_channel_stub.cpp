@@ -62,9 +62,7 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_SPECIFIC_PROPERTY,                                 \
         HandleSearchElementInfoBySpecificProperty)                                                                    \
     SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH_WITH_CONDITION,                                         \
-        HandleFocusMoveSearchWithCondition)                                                                           \
-    SWITCH_CASE(AccessibilityInterfaceCode::DETECT_ELEMENTINFO_FOCUSABLE_THROUGH_ANCESTOR,                            \
-        HandleDetectElementInfoFocusableThroughAncestor)
+        HandleFocusMoveSearchWithCondition)
 
 namespace OHOS {
 namespace Accessibility {
@@ -616,10 +614,12 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithCondition(Message
     MessageParcel &reply)
 {
     HILOG_DEBUG();
-    int64_t elementId = data.ReadInt64();
+    sptr<AccessibilityElementInfoParcel> info = data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
     AccessibilityFocusMoveParam param;
     param.direction = static_cast<FocusMoveDirection>(data.ReadInt32());
     param.condition = static_cast<DetailCondition>(data.ReadInt32());
+    param.parentId = data.ReadInt64();
+    param.detectParent = data.ReadBool();
 
     int32_t requestId = data.ReadInt32();
 
@@ -636,34 +636,7 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithCondition(Message
     }
     int32_t windowId = data.ReadInt32();
 
-    FocusMoveSearchWithCondition(elementId, param, requestId, callback, windowId);
-    RetError result = RET_OK;
-    HILOG_DEBUG("SearchElementInfosBySpecificProperty ret = %{public}d", result);
-    reply.WriteInt32(result);
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityChannelStub::HandleDetectElementInfoFocusableThroughAncestor(MessageParcel &data,
-    MessageParcel &reply)
-{
-    HILOG_DEBUG();
-    sptr<AccessibilityElementInfoParcel> info = data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
-    int32_t windowId = data.ReadInt32();
-    int32_t requestId = data.ReadInt32();
- 
-    sptr<IRemoteObject> remote = data.ReadRemoteObject();
-    if (remote == nullptr) {
-        HILOG_ERROR("remote is nullptr.");
-        return ERR_INVALID_VALUE;
-    }
-    sptr<IAccessibilityElementOperatorCallback> callback =
-        iface_cast<IAccessibilityElementOperatorCallback>(remote);
-    if (callback == nullptr) {
-        HILOG_ERROR("callback is nullptr.");
-        return ERR_INVALID_VALUE;
-    }
- 
-    DetectElementInfoFocusableThroughAncestor(*info, windowId, requestId, callback);
+    FocusMoveSearchWithCondition(*info, param, requestId, callback, windowId);
     RetError result = RET_OK;
     reply.WriteInt32(result);
     return NO_ERROR;

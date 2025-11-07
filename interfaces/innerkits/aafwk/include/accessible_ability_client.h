@@ -404,7 +404,8 @@ public:
      */
     virtual RetError ConfigureEvents(std::vector<uint32_t> needEvents) = 0;
 
-    virtual RetError FocusMoveSearchWithCondition(int64_t elementId, AccessibilityFocusMoveParam param,
+    virtual RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
+        AccessibilityFocusMoveParam param,
         std::vector<AccessibilityElementInfo> &infos, int32_t windowId) = 0;
 };
 } // namespace Accessibility

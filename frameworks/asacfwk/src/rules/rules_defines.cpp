@@ -23,8 +23,11 @@ bool RulesDefines::Parse(const nlohmann::json& jsonRoot)
     nlohmann::json defines = jsonRoot["defines"];
     auto result = ParseRootTypes(defines);
     CHECK_NE_RETURN(result, true, false);
-    result = ParseRootTypes(defines);
-    return ParseScrollIgnoreTypes(defines);
+    result = ParseScrollIgnoreTypes(defines);
+    CHECK_NE_RETURN(result, true, false);
+    result = ParseScrollableTypes(defines);
+    CHECK_NE_RETURN(result, true, false);
+    return result;
 }
 
 bool RulesDefines::ParseRootTypes(const nlohmann::json& defines)
@@ -74,6 +77,26 @@ bool RulesDefines::ParseScrollIgnoreTypes(const nlohmann::json& defines)
 bool RulesDefines::IsScrollIgnoreTypes(const std::string& type)
 {
     return scrollIgnoreTypes_.find(type) != scrollIgnoreTypes_.end();
+}
+
+bool RulesDefines::ParseScrollableTypes(const nlohmann::json& defines)
+{
+    if (defines.find("scrollable_types") == defines.end()) {
+        return true;
+    }
+    std::vector<std::string> scrollableTypes = defines["scrollable_types"];
+    scrollableTypes_.clear();
+    for (auto& type : scrollableTypes) {
+        std::transform(type.begin(), type.end(), type.begin(),
+            [](unsigned char c) { return std::tolower(c); });
+        scrollableTypes_.insert(type);
+    }
+    return true;
+}
+ 
+bool RulesDefines::IsScrollableTypes(const std::string& type)
+{
+    return scrollableTypes_.find(type) != scrollableTypes_.end();
 }
 } // namespace OHOS::Accessibility
 // LCOV_EXCL_STOP

@@ -573,7 +573,7 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
             HILOG_ERROR("VerifyingToKenId failed");
             return;
         }
-        if (isAncoFlag != "true" && !CheckNodeIsReadableOverChildTree(const_cast<AccessibilityEventInfo&>(uiEvent))) {
+        if (isAncoFlag != "true" && InvalidHoverEnterEvent(const_cast<AccessibilityEventInfo&>(uiEvent))) {
             HILOG_ERROR("CheckNodeIsReadableOverChildTree failed");
             return;
         }
@@ -759,6 +759,27 @@ void AccessibleAbilityManagerService::GetElementOperatorConnection(sptr<Accessib
         elementOperator = connection->GetProxy();
     }
     HILOG_DEBUG("elementId:%{public}" PRId64 " treeId:%{public}d", elementId, treeId);
+}
+
+bool AccessibleAbilityManagerService::GetElementOperator(const int32_t windowId,
+    const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    RETURN_FALSE_IF_NULL(accountData);
+    int32_t realId =
+        Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, FOCUS_TYPE_INVALID);
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
+    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
+    RETURN_FALSE_IF_NULL(connection);
+    int32_t treeId = 0;
+    if (elementId > 0) {
+        treeId = GetTreeIdBySplitElementId(elementId);
+        elementOperator = connection->GetCardProxy(treeId);
+    } else {
+        elementOperator = connection->GetProxy();
+    }
+    RETURN_FALSE_IF_NULL(elementOperator);
+    return true;
 }
 
 bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
@@ -2321,16 +2342,11 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveS
         elementInfosResult_.assign(infos.begin(), infos.end());
     }
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    result_ = result;
-    promise_.set_value();
-}
-
-void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetDetectElementInfoFocusableThroughAncestorResult(
-    bool isFocusable, const int32_t requestId, const AccessibilityElementInfo &info)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    isFocusable_ = isFocusable;
-    accessibilityInfoResult_ = info;
+    focusMoveResult_ = result.resultType;
+    nowLevelBelongTreeId_ = result.nowLevelBelongTreeId;
+    parentWindowId_ = result.parentWindowId;
+    changeToNewInfo_ = result.changeToNewInfo;
+    needTerminate_ = result.needTerminate;
     promise_.set_value();
 }
 
@@ -4597,71 +4613,64 @@ ErrCode AccessibleAbilityManagerService::DeRegisterConfigObserver(
     return RET_OK;
 }
 
-bool AccessibleAbilityManagerService::CheckNodeIsReadableOverChildTree(AccessibilityEventInfo &event)
+bool AccessibleAbilityManagerService::InvalidHoverEnterEvent(AccessibilityEventInfo &event)
 {
     if (event.GetEventType() != TYPE_VIEW_HOVER_ENTER_EVENT) {
-        return true;
+        return false;
     }
     std::string readableRules;
     if (GetReadableRules(readableRules) != RET_OK || readableRules.empty()) {
         HILOG_INFO("no readablerules");
-        return true;
+        return false;
     }
     auto& originElementInfo = event.GetElementInfo();
     int32_t treeId = originElementInfo.GetBelongTreeId();
     if (treeId <= 0) {
-        return true;
+        return false;
     }
     auto windowId = event.GetWindowId();
+    int64_t parentId = -1;
+    GetRootParentId(windowId, treeId, parentId);
     sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("GetCurrentAccountData failed");
-        return true;
+    if (!GetElementOperator(windowId, parentId, elementOperator)) {
+        return false;
     }
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
-    if (!connection) {
-        HILOG_ERROR("GetAccessibilityWindowConnection failed, windowId: %{public}d", windowId);
-        return true;
-    }
-    int64_t parentId = AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID;
-    auto result = connection->GetRootParentId(treeId, parentId);
-    if ((result != RET_OK) || (parentId == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID)) {
-        HILOG_ERROR("GetRootParentId failed");
-        return true;
-    }
-    int32_t parentTreeId = -1;
-    if (parentId > 0) {
-        parentTreeId = GetTreeIdBySplitElementId(parentId);
-        elementOperator = connection->GetCardProxy(parentTreeId);
-    } else {
-        elementOperator = connection->GetProxy();
-    }
-    if (elementOperator == nullptr) {
-        HILOG_ERROR("elementOperator is nullptr");
-        return true;
-    }
+
+    AccessibilityFocusMoveParam param = {
+        .direction = FocusMoveDirection::DETECT_FOCUSABLE_IN_HOVER,
+        .condition = DetailCondition::BYPASS_SELF,
+        .parentId = parentId,
+        .detectParent = true,
+    };
+    int32_t requestId = GenerateRequestId();
     sptr<ElementOperatorCallbackImpl> callBack = new(std::nothrow) ElementOperatorCallbackImpl();
     if (callBack == nullptr) {
         HILOG_ERROR("Failed to create callBack.");
-        return true;
+        return false;
     }
     ffrt::future<void> promiseFuture = callBack->promise_.get_future();
-    int32_t requestId = GenerateRequestId();
-    AddRequestId(windowId, parentTreeId, requestId, callBack);
-    elementOperator->DetectElementInfoFocusableThroughAncestor(originElementInfo, parentId, requestId, callBack);
+    elementOperator->FocusMoveSearchWithCondition(originElementInfo, param, requestId, callBack);
     ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (waitFocus != ffrt::future_status::ready) {
         ipcTimeoutNum_++;
         HILOG_ERROR("Failed to wait result, requestId: %{public}d", requestId);
+        return false;
+    }
+    if (callBack->elementInfosResult_.size() <= 0) {
+        return false;
+    }
+    if (callBack->focusMoveResult_ == FocusMoveResultType::SEARCH_SUCCESS) {
+        if (callBack->changeToNewInfo_ && callBack->elementInfosResult_.size() > 0) {
+            auto newElement = callBack->elementInfosResult_[0];
+            event.SetElementInfo(newElement);
+            event.SetSource(newElement.GetAccessibilityId());
+            return false;
+        }
+    } else {
+        HILOG_INFO("hover enter event is invilid");
         return true;
     }
-    if (callBack->isFocusable_ && callBack->accessibilityInfoResult_.GetAccessibilityId() !=
-        event.GetElementInfo().GetAccessibilityId()) {
-        event.SetElementInfo(callBack->accessibilityInfoResult_);
-        event.SetSource(callBack->accessibilityInfoResult_.GetAccessibilityId());
-    }
-    return callBack->isFocusable_;
+    return false;
 }
 } // namespace Accessibility
 } // namespace OHOS

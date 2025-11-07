@@ -151,6 +151,8 @@ public:
     int32_t GenerateRequestId();
     void GetElementOperatorConnection(sptr<AccessibilityWindowConnection> &connection,
         const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
+    bool GetElementOperator(const int32_t windowId,
+        const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
     ErrCode GetScreenReaderState(bool &state) override;
     ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
     ErrCode GetReadableRules(std::string &readableRules) override;
@@ -264,8 +266,6 @@ public:
             const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override;
         virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
             const FocusMoveResult &result, const int32_t requestId) override;
-        virtual void SetDetectElementInfoFocusableThroughAncestorResult(bool isFocusable,
-            const int32_t requestId, const AccessibilityElementInfo &info) override;
 
     private:
         ffrt::promise<void> promise_;
@@ -273,8 +273,12 @@ public:
         AccessibilityElementInfo accessibilityInfoResult_ = {};
         std::vector<AccessibilityElementInfo> elementInfosResult_;
         int32_t callCursorPosition_ = 0;
-        int32_t result_ = 0;
-        bool isFocusable_ = false;
+
+        FocusMoveResultType focusMoveResult_ = FocusMoveResultType::NOT_SUPPORT;
+        int32_t nowLevelBelongTreeId_ = 0;
+        int32_t parentWindowId_ = 0;
+        bool changeToNewInfo_ = false;
+        bool needTerminate_ = false;
 
         /**
          * @brief Validate element infos and handle verification failure
@@ -496,7 +500,7 @@ private:
     void UpdateVoiceRecognitionState();
     void SubscribeOsAccount();
     void UnsubscribeOsAccount();
-    bool CheckNodeIsReadableOverChildTree(AccessibilityEventInfo &event);
+    bool InvalidHoverEnterEvent(AccessibilityEventInfo &event);
 
     int32_t ApplyTreeId();
     void RecycleTreeId(int32_t treeId);

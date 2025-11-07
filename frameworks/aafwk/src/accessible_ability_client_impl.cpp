@@ -1841,29 +1841,66 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveBySpecificProper
     return RET_ERR_FAILED;
 }
 
-RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(int64_t elementId,
+RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
     AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t windowId)
 {
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    RetError ret = channelClient_->FocusMoveSearchWithCondition(elementId, param, infos, windowId);
-    if (ret != RET_OK || infos.size() == 0 || infos[0].GetBelongTreeId() <= 0) {
-        return ret;
-    }
+    FocusMoveResult result;
+    RetError ret = channelClient_->FocusMoveSearchWithCondition(info, param, infos, result);
     for (auto &elementInfo : infos) {
         elementInfo.SetMainWindowId(windowId);
     }
-
-    bool isFocusable;
-    AccessibilityElementInfo targetInfo;
-    ret = channelClient_->DetectElementInfoFocusableThroughAncestor(infos[0], windowId, isFocusable, targetInfo);
-    if (targetInfo.GetAccessibilityId() >=0 && targetInfo.GetAccessibilityId() != infos[0].GetAccessibilityId()) {
-        HILOG_INFO("return SEARCH_NEXT");
-        return static_cast<RetError>(FocusMoveResult::SEARCH_NEXT);
+    if (ret != RET_OK) {
+        HILOG_ERROR("FocusMoveSearchWithCondition error");
+        return ret;
     }
-    return ret;
+    int32_t treeId = (static_cast<uint64_t>(info.GetAccessibilityId()) >> ELEMENT_MOVE_BIT);
+    if (treeId <= 0) {
+        return static_cast<RetError>(result.resultType);
+    }
+
+    if (result.resultType == FocusMoveResultType::SEARCH_FAIL_LOST_NODE) {
+        return static_cast<RetError>(result.resultType);
+    }
+    param.detectParent = true;
+    std::vector<AccessibilityElementInfo> tmpInfos;
+    FocusMoveResult tmpResult;
+    if (param.direction == FocusMoveDirection::GET_FORWARD_SCROLL_ANCESTOR ||
+        param.direction == FocusMoveDirection::GET_BACKWARD_SCROLL_ANCESTOR ||
+        param.direction == FocusMoveDirection::GET_SCROLLABLE_ANCESTOR) {
+        AccessibilityElementInfo tmpInfo;
+        tmpInfo.SetBelongTreeId(treeId);
+        tmpInfo.SetWindowId(info.GetParentWindowId());
+        ret = channelClient_->FocusMoveSearchWithCondition(tmpInfo, param, tmpInfos, tmpResult);
+        if (ret != RET_OK) {
+            return ret;
+        }
+        if (tmpResult.needTerminate) {
+            return static_cast<RetError>(tmpResult.resultType);
+        }
+        if (tmpResult.resultType == FocusMoveResultType::SEARCH_SUCCESS) {
+            infos.insert(infos.end(), tmpInfos.begin(), tmpInfos.end());
+        }
+        HILOG_INFO("get scroll result %{public}d", result.resultType);
+        auto finalResultType = infos.empty() ? FocusMoveResultType::SEARCH_FAIL : FocusMoveResultType::SEARCH_SUCCESS;
+        return static_cast<RetError>(finalResultType);
+    } else if (param.direction == FocusMoveDirection::FORWARD || param.direction == BACKWARD) {
+        if ((infos.empty()) || (result.resultType != FocusMoveResultType::SEARCH_SUCCESS)) {
+            return static_cast<RetError>(result.resultType);
+        }
+        param.direction = FocusMoveDirection::DETECT_FOCUSABLE_IN_FOCUS_MOVE;
+        ret = channelClient_->FocusMoveSearchWithCondition(infos[0], param, tmpInfos, tmpResult);
+        if (ret != RET_OK) {
+            return ret;
+        }
+
+        HILOG_INFO("send to parent result %{public}d", tmpResult.resultType);
+        return static_cast<RetError>(tmpResult.resultType);
+    }
+    return static_cast<RetError>(result.resultType);
 }
 } // namespace Accessibility
 } // namespace OHOS

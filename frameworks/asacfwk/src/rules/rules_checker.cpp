@@ -132,5 +132,42 @@ bool ReadableRulesChecker::IsScrollIgnoreTypes(const std::shared_ptr<ReadableRul
     bool isScrollIgnoreTypes = rulesDefines_.IsScrollIgnoreTypes(type);
     return isScrollIgnoreTypes;
 }
+
+bool ReadableRulesChecker::IsAvailable(const std::shared_ptr<ReadableRulesNode>& node)
+{
+    CHECK_NULL_RETURN(node, false);
+    auto curNode = node;
+    while (curNode) {
+        PropValue value;
+        auto result = curNode->GetPropType(value);
+        if (IsRootType(curNode)) {
+            return true;
+        }
+        auto children = curNode->GetChildren();
+        auto childrenSize = children.size();
+        if (childrenSize == 0) {
+            curNode = curNode->GetParent();
+            continue;
+        }
+        auto lastChildren = children[childrenSize - 1];
+        if (IsRootType(lastChildren) && lastChildren->IsModal()) {
+            return false;
+        }
+        curNode = curNode->GetParent();
+    }
+    return true;
+}
+
+bool ReadableRulesChecker::IsScrollableTypes(const std::shared_ptr<ReadableRulesNode>& node)
+{
+    CHECK_NULL_RETURN(node, false);
+    PropValue value;
+    auto result = node->GetPropType(value);
+    CHECK_NE_RETURN(result, true, false);
+    std::string type =  value.valueStr;
+    std::transform(type.begin(), type.end(), type.begin(),
+        [](unsigned char c) { return std::tolower(c); });
+    return rulesDefines_.IsScrollableTypes(type);
+}
 } // namespace OHOS::Ace::Accessibility
 // LCOV_EXCL_STOP

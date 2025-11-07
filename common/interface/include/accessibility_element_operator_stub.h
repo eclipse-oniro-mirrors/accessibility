@@ -156,8 +156,6 @@ private:
         ErrCode (AccessibilityElementOperatorStub::*)(MessageParcel &data, MessageParcel &reply);
 
     ErrCode HandleFocusMoveSearchWithCondition(MessageParcel &data, MessageParcel &reply);
-
-    ErrCode HandleDetectElementInfoFocusableThroughAncestor(MessageParcel &data, MessageParcel &reply);
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -390,15 +390,9 @@ RetError AccessibleAbilityChannel::UnholdRunningLock()
     return RET_OK;
 }
 
-void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const int64_t elementId,
+void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityElementInfo &elementInfo,
     const AccessibilityFocusMoveParam &param, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId)
-{
-    return;
-}
-
-void AccessibleAbilityChannel::DetectElementInfoFocusableThroughAncestor(AccessibilityElementInfo &elementInfo,
-    const int32_t windowId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     return;
 }
