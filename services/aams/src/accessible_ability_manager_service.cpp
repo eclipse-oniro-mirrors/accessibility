@@ -567,7 +567,7 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
             HILOG_ERROR("VerifyingToKenId failed");
             return;
         }
-        if (isAncoFlag != "true" && !InvalidHoverEnterEvent(const_cast<AccessibilityEventInfo&>(uiEvent))) {
+        if (isAncoFlag != "true" && InvalidHoverEnterEvent(const_cast<AccessibilityEventInfo&>(uiEvent))) {
             HILOG_ERROR("CheckNodeIsReadableOverChildTree failed");
             return;
         }
