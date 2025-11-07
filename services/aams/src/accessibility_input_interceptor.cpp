@@ -46,10 +46,7 @@ sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::GetInstance()
             instance_ = new(std::nothrow) AccessibilityInputInterceptor();
         }
     }
-    if (!instance_) {
-        HILOG_ERROR("instance_ is null");
-        return nullptr;
-    }
+    
     return instance_;
 }
 
