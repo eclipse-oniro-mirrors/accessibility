@@ -51,6 +51,7 @@ bool InitializeAccessibilityElementClass(ani_env *env)
         ani_native_function {"enableScreenCurtainNative", nullptr, reinterpret_cast<void *>(EnableScreenCurtain)},
         ani_native_function {"findElementNative", nullptr, reinterpret_cast<void *>(FindElement)},
         ani_native_function {"findElementsNative", nullptr, reinterpret_cast<void *>(FindElements)},
+        ani_native_function {"findElementsByConditionNative", nullptr, reinterpret_cast<void *>(FindElementsByCondition)},
     };
 
     if (ANI_OK != env->Class_BindNativeMethods(g_accessibilityElementClass, methods.data(), methods.size())) {
@@ -291,6 +292,31 @@ ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_do
     return CreateAniAccessibilityElement(env, param.nodeInfo_);
 }
 
+ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string rule, ani_string condition)
+{
+    HILOG_DEBUG("FindElementsByCondition native method called");
+
+    AccessibilityElement* element = ANIUtils::Unwrap<AccessibilityElement>(env, thisObj);
+    if (element == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityElementInfo");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return nullptr;
+    }
+
+    std::string ruleStr = ANIUtils::ANIStringToStdString(env, rule);
+    std::string conditionStr = ANIUtils::ANIStringToStdString(env, condition);
+
+    FindElementByConditionParams param = {FIND_ELEMENT_BY_CONDITION, conditionStr, *element};
+    param.rule_ = ruleStr;
+
+    FindElementExecute(&param);
+    if (RET_OK != param.ret_) {
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
+        return nullptr;
+    }
+    return nullptr;
+}
+
 FocusMoveDirection ConvertStringToDirection(const std::string &str)
 {
     static const std::map<std::string, FocusMoveDirection> focusMoveDirectionTable = {
@@ -388,6 +414,11 @@ void FindElementExecute(FindElementParams* data)
                 HILOG_DEBUG("elementId is %{public}lld windowId: %{public}d", elementId, windowId);
                 data->ret_ = AccessibleAbilityClient::GetInstance()->GetByElementId(
                     elementId, windowId, data->nodeInfo_);
+            }
+            break;
+        case FindElementCondition::FIND_ELEMENT_BY_CONDITION:
+            {
+                HILOG_DEBUG("FIND_ELEMENT_BY_CONDITION");
             }
             break;
         default:

@@ -14,6 +14,10 @@
  */
 import AccessibilityExtensionContext from 'application.AccessibilityExtensionContext';
 import AccessibilityElement from 'application.AccessibilityExtensionContext';
+import { FocusRule as _FocusRule,
+  FocusCondition as _FocusCondition,
+  FocusMoveResult as _FocusMoveResult,
+} from 'application.AccessibilityExtensionContext';
 import { KeyEvent } from '@ohos.multimodalInput.keyEvent';
 import { Key } from '@ohos.multimodalInput.keyEvent';
 import { Action } from '@ohos.multimodalInput.keyEvent';
@@ -74,3 +78,7 @@ export class KeyImpl implements Key {
     pressedTime: long = 0;
     deviceId: int = 0;
 }
+
+export type FocusRule = _FocusRule;
+export type FocusCondition = _FocusCondition;
+export type FocusMoveResult = _FocusMoveResult;
