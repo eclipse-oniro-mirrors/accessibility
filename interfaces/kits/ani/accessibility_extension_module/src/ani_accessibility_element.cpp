@@ -51,7 +51,8 @@ bool InitializeAccessibilityElementClass(ani_env *env)
         ani_native_function {"enableScreenCurtainNative", nullptr, reinterpret_cast<void *>(EnableScreenCurtain)},
         ani_native_function {"findElementNative", nullptr, reinterpret_cast<void *>(FindElement)},
         ani_native_function {"findElementsNative", nullptr, reinterpret_cast<void *>(FindElements)},
-        ani_native_function {"findElementsByConditionNative", nullptr, reinterpret_cast<void *>(FindElementsByCondition)},
+        ani_native_function {"findElementsByConditionNative", nullptr,
+            reinterpret_cast<void *>(FindElementsByCondition)},
     };
 
     if (ANI_OK != env->Class_BindNativeMethods(g_accessibilityElementClass, methods.data(), methods.size())) {
