@@ -18,7 +18,7 @@ import Want from '@ohos.app.ability.Want';
 import { AsyncCallback, BusinessError, Callback } from '@ohos.base';
 import { accessibility, FocusMoveResultCode } from '@ohos.accessibility';
 
-export declare interface FocusMoveResult {
+export interface FocusMoveResult {
   target: Array<AccessibilityElement>;
   result: FocusMoveResultCode;
 }
@@ -194,7 +194,7 @@ export class AccessibilityElementImpl implements AccessibilityElement {
         });
     }
 
-    findElementsByCondition(rule: FocusRule, condition: FocusCondition): Promise<FocusMoveResult> {
+    findElementsByCondition(rule: string, condition: string): Promise<FocusMoveResult> {
         console.log("findElements by condition");
         return new Promise<FocusMoveResult>((resolve: (data: FocusMoveResult) => void,
             reject: (err: BusinessError) => void): void => {

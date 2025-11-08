@@ -296,25 +296,6 @@ ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_do
 ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string rule, ani_string condition)
 {
     HILOG_DEBUG("FindElementsByCondition native method called");
-
-    AccessibilityElement* element = ANIUtils::Unwrap<AccessibilityElement>(env, thisObj);
-    if (element == nullptr) {
-        HILOG_ERROR("Failed to unwrap AccessibilityElementInfo");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
-        return nullptr;
-    }
-
-    std::string ruleStr = ANIUtils::ANIStringToStdString(env, rule);
-    std::string conditionStr = ANIUtils::ANIStringToStdString(env, condition);
-
-    FindElementByConditionParams param = {FIND_ELEMENT_BY_CONDITION, conditionStr, *element};
-    param.rule_ = ruleStr;
-
-    FindElementExecute(&param);
-    if (RET_OK != param.ret_) {
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
-        return nullptr;
-    }
     return nullptr;
 }
 
