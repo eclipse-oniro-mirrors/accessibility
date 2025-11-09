@@ -17,6 +17,18 @@ import ExtensionContext from 'application.ExtensionContext';
 import Want from '@ohos.app.ability.Want';
 import { AsyncCallback, BusinessError, Callback } from '@ohos.base';
 import accessibility from '@ohos.accessibility';
+import { FocusMoveResultCode } from '@ohos.accessibility';
+
+export interface FocusMoveResult {
+  target: Array<AccessibilityElement>;
+  result: FocusMoveResultCode;
+}
+
+export type FocusCondition = 'forward' | 'backward' |
+'findLast' | 'getForwardScrollAncestor' | 'getBackwardScrollAncestor' | 'getScrollableAncestor';
+
+export type FocusRule = 'bypassSelf' | 'bypassSelfDescendants' |
+'checkSelf' | 'checkSelfBypassDescendants';
 
 export default class AccessibilityExtensionContext extends ExtensionContext {
     private nativePtr: long = 0;
@@ -111,6 +123,7 @@ interface AccessibilityElement {
   enableScreenCurtain(isEnable: boolean): void;
   findElementByTextType(condition: string): Promise<Array<AccessibilityElement>>;
   findElementByElementId(condition: long): Promise<AccessibilityElement>;
+  findElementsByCondition(rule: FocusRule, condition: FocusCondition): Promise<FocusMoveResult>;
   mainWindowId?: int;
 }
 
@@ -182,10 +195,26 @@ export class AccessibilityElementImpl implements AccessibilityElement {
         });
     }
 
+    findElementsByCondition(rule: string, condition: string): Promise<FocusMoveResult> {
+        console.log("findElements by condition");
+        return new Promise<FocusMoveResult>((resolve: (data: FocusMoveResult) => void,
+            reject: (err: BusinessError) => void): void => {
+            let p1 = taskpool.execute(this.findElementsByConditionNative, rule, condition) as Promise<FocusMoveResult>;
+            p1.then((code: FocusMoveResult) => {
+                console.log("resolve findElementsByCondition");
+                resolve(code);
+            }).catch((err: Error) => {
+                reject(err as BusinessError);
+            });
+        });
+    }
+
     native getCursorPositionNative(): int;
     native enableScreenCurtainNative(isEnable: boolean): void;
     native findElementNative(type: string, condition: long): AccessibilityElement;
     native findElementsNative(type: string, condition: string): Array<AccessibilityElement>;
+    native findElementsByConditionNative(rule: string, condition: string): FocusMoveResult;
+
 }
 
 export type FocusDirection = 'up' | 'down' | 'left' | 'right' | 'forward' | 'backward';

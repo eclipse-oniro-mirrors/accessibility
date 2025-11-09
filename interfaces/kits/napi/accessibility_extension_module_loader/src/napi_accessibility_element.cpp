@@ -219,7 +219,7 @@ namespace {
         DECLARE_NAPI_FUNCTION("getChildren", NAccessibilityElement::GetChildren),
         DECLARE_NAPI_FUNCTION("getRoot", NAccessibilityElement::GetRootElement),
         DECLARE_NAPI_FUNCTION("executeAction", NAccessibilityElement::ExecuteAction),
-        DECLARE_NAPI_FUNCTION("focusMoveSearchWithCondition", NAccessibilityElement::FocusMoveSearchWithCondition),
+        DECLARE_NAPI_FUNCTION("findElementsByCondition", NAccessibilityElement::FindElementsByCondition),
         DECLARE_NAPI_GETTER(ACCESSIBILITY_FOCUSED, GetElementProperty<ElementProperty<ACCESSIBILITY_FOCUSED>>),
         DECLARE_NAPI_GETTER(BUNDLE_NAME, GetElementProperty<ElementProperty<BUNDLE_NAME>>),
         DECLARE_NAPI_GETTER(CHECKABLE, GetElementProperty<ElementProperty<CHECKABLE>>),
@@ -2373,7 +2373,7 @@ napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info i
     return FindElementAsync(env, argc, argv, callbackInfo, accessibilityElement);
 }
 
-napi_value NAccessibilityElement::FocusMoveSearchWithCondition(napi_env env, napi_callback_info info)
+napi_value NAccessibilityElement::FindElementsByCondition(napi_env env, napi_callback_info info)
 {
     int32_t windowId = 0;
     int64_t elementId = 0;
@@ -2418,14 +2418,14 @@ napi_value NAccessibilityElement::FocusMoveSearchWithCondition(napi_env env, nap
     OHOS::AccessibilityNapi::ParseString(env, callbackInfo->direction_, argv[PARAM1]);
  
     napi_value resource = nullptr;
-    napi_create_string_utf8(callbackInfo->env_, "FocusMoveSearchWithCondition", NAPI_AUTO_LENGTH, &resource);
-    napi_create_async_work(callbackInfo->env_, nullptr, resource, FocusMoveSearchWithConditionExecute,
-        FocusMoveSearchWithConditionComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    napi_create_string_utf8(callbackInfo->env_, "FindElementsByCondition", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(callbackInfo->env_, nullptr, resource, FindElementsByConditionExecute,
+        FindElementsByConditionComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work_with_qos(callbackInfo->env_, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
  
-void NAccessibilityElement::FocusMoveSearchWithConditionExecute(napi_env env, void* data)
+void NAccessibilityElement::FindElementsByConditionExecute(napi_env env, void* data)
 {
     NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
     if (callbackInfo == nullptr) {
@@ -2449,7 +2449,7 @@ void NAccessibilityElement::FocusMoveSearchWithConditionExecute(napi_env env, vo
         *callbackInfo->accessibilityElement_.elementInfo_, param, callbackInfo->nodeInfos_, windowId);
 }
  
-void NAccessibilityElement::FocusMoveSearchWithConditionComplete(napi_env env, napi_status status, void* data)
+void NAccessibilityElement::FindElementsByConditionComplete(napi_env env, napi_status status, void* data)
 {
     NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
     if (callbackInfo == nullptr) {
@@ -2522,7 +2522,7 @@ napi_value NAccessibilityElement::GetParent(napi_env env, napi_callback_info inf
             RunAttributeValueAsync});
 }
 
-OHOS::Accessibility::RetError NAccessibilityElement::ParseFocusMoveSearchWithCondition(
+OHOS::Accessibility::RetError NAccessibilityElement::ParseFindElementsByCondition(
     OHOS::Accessibility::NAPICbInfo &cbInfo, NAccessibilityElementData *elementData)
 {
     std::string direction;
@@ -3238,15 +3238,15 @@ FocusMoveDirection NAccessibilityElement::ConvertStringToDirection(const std::st
 DetailCondition NAccessibilityElement::ConvertStringToDetailCondition(const std::string &str)
 {
     static const std::map<std::string, DetailCondition> detailConditionMap = {
-        { "bypass_self", DetailCondition::BYPASS_SELF },
-        { "bypass_self_descendants", DetailCondition::BYPASS_SELF_DESCENDANTS},
-        { "check_self", DetailCondition::CHECK_SELF},
-        { "check_self_bypass_descendants", DetailCondition::CHECK_SELF_BYPASS_DESCENDANTS}
+        { "bypassSelf", DetailCondition::BYPASS_SELF },
+        { "bypassSelfDescendants", DetailCondition::BYPASS_SELF_DESCENDANTS},
+        { "checkSelf", DetailCondition::CHECK_SELF},
+        { "checkSelfBypassDescendants", DetailCondition::CHECK_SELF_BYPASS_DESCENDANTS}
     };
     if (detailConditionMap.find(str) == detailConditionMap.end()) {
         return DetailCondition::BYPASS_SELF;
     }
- 
+
     return detailConditionMap.at(str);
 }
 

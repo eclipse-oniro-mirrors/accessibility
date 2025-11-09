@@ -43,7 +43,8 @@ enum FindElementCondition {
     FIND_ELEMENT_CONDITION_TEXT_TYPE,
     FIND_ELEMENT_CONDITION_FOCUS_DIRECTION,
     FIND_ELEMENT_CONDITION_ELEMENT_ID,
-    FIND_ELEMENT_CONDITION_INVALID
+    FIND_ELEMENT_CONDITION_INVALID,
+    FIND_ELEMENT_BY_CONDITION
 };
 
 struct FindElementParams {
@@ -68,6 +69,7 @@ ani_int GetCursorPosition(ani_env *env, ani_object thisObj);
 void EnableScreenCurtain(ani_env *env, ani_object thisObj, ani_boolean isEnable);
 ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_double condition);
 ani_object FindElements(ani_env *env, ani_object thisObj, ani_string type, ani_string condition);
+ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string rule, ani_string condition);
 void FindElementExecute(FindElementParams* data);
 ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<AccessibilityWindowInfo>& windowInfos);
 ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<AccessibilityElementInfo>& elementInfos);

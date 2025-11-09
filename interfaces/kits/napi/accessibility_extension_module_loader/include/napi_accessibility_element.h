@@ -105,7 +105,7 @@ public:
     static napi_value ErrorOperation(NAccessibilityElementData *callbackInfo);
     static napi_value GetCursorPosition(napi_env env, napi_callback_info info);
     static napi_value ExecuteAction(napi_env env, napi_callback_info info);
-    static napi_value FocusMoveSearchWithCondition(napi_env env, napi_callback_info info);
+    static napi_value FindElementsByCondition(napi_env env, napi_callback_info info);
 
     // Element info
     static void GetElementInfoComponentId(NAccessibilityElementData *callbackInfo, napi_value &value);
@@ -206,7 +206,7 @@ public:
     static void ParseCallback(OHOS::Accessibility::NAPICbInfo& cbInfo,
         NAccessibilityElementData* elementData, size_t paramIndex, napi_value& result);
 
-    static OHOS::Accessibility::RetError ParseFocusMoveSearchWithCondition(
+    static OHOS::Accessibility::RetError ParseFindElementsByCondition(
         OHOS::Accessibility::NAPICbInfo &cbInfo, NAccessibilityElementData *elementData);
 
     static napi_value GetProperty(napi_env env, napi_callback_info info, std::string key);
@@ -261,8 +261,8 @@ private:
     static void GetElementInfoAllAttribute6(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetExtraElementInfo(NAccessibilityElementData *callbackInfo, napi_value &value, std::string keyStr);
-    static void FocusMoveSearchWithConditionExecute(napi_env env, void* data);
-    static void FocusMoveSearchWithConditionComplete(napi_env env, napi_status status, void* data);
+    static void FindElementsByConditionExecute(napi_env env, void* data);
+    static void FindElementsByConditionComplete(napi_env env, napi_status status, void* data);
 
     static OHOS::Accessibility::RetError ParseAccessibilityElement(
         OHOS::Accessibility::NAPICbInfo& cbInfo, NAccessibilityElementData* elementData);
