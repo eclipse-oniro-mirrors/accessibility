@@ -16,7 +16,20 @@
 import ExtensionContext from 'application.ExtensionContext';
 import Want from '@ohos.app.ability.Want';
 import { AsyncCallback, BusinessError, Callback } from '@ohos.base';
-import { accessibility, FocusMoveResultCode } from '@ohos.accessibility';
+import accessibility from '@ohos.accessibility';
+
+export enum FocusMoveResultCode {
+  NOT_SUPPORTED = -1,
+  SEARCH_SUCCESS = 0,
+  SEARCH_SUCCESS_NEXT_BYPASS_DESCENDANTS = 1,
+  SEARCH_FAILURE = 2,
+  SEARCH_FAILURE_IN_CHILD_TREE = 3,
+  SEARCH_FAILURE_LOST_NODE = 4,
+  SEARCH_NEXT = 5,
+  DOUBLE_CHECK_CHILD_PROPERTY = 6,
+  DOUBLE_CHECK_CHILD_PROPERTY_AND_GET_LAST = 7,
+  SEARCH_FAILURE_IN_SCROLL = 8
+}
 
 export interface FocusMoveResult {
   target: Array<AccessibilityElement>;
