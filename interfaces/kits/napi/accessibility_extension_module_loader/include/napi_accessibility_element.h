@@ -206,7 +206,7 @@ public:
     static void ParseCallback(OHOS::Accessibility::NAPICbInfo& cbInfo,
         NAccessibilityElementData* elementData, size_t paramIndex, napi_value& result);
 
-    static OHOS::Accessibility::RetError ParseFocusMoveSearchWithCondition(
+    static OHOS::Accessibility::RetError ParseFindElementsByCondition(
         OHOS::Accessibility::NAPICbInfo &cbInfo, NAccessibilityElementData *elementData);
 
     static napi_value GetProperty(napi_env env, napi_callback_info info, std::string key);
