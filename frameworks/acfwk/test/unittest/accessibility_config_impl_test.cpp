@@ -1179,7 +1179,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetClickResponseTime_002, TestSize.Level1)
     CLICK_RESPONSE_TIME time = ResponseDelayMedium;
     CLICK_RESPONSE_TIME value = ResponseDelayShort;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    uint32_t pre = 0;
+    CLICK_RESPONSE_TIME pre = ResponseDelayShort;
     instance.GetClickResponseTime(pre);
     instance.SetClickResponseTime(time);
     instance.GetClickResponseTime(value);
@@ -1199,7 +1199,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetClickResponseTime_003, TestSize.Level1)
     CLICK_RESPONSE_TIME time = ResponseDelayShort;
     CLICK_RESPONSE_TIME value = ResponseDelayShort;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    uint32_t pre = 0;
+    CLICK_RESPONSE_TIME pre = ResponseDelayShort;
     instance.GetClickResponseTime(pre);
     instance.SetClickResponseTime(time);
     instance.GetClickResponseTime(value);
@@ -1219,7 +1219,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetClickResponseTime_004, TestSize.Level1)
     CLICK_RESPONSE_TIME time = ResponseDelayLong;
     CLICK_RESPONSE_TIME value = ResponseDelayShort;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    uint32_t pre = 0;
+    CLICK_RESPONSE_TIME pre = ResponseDelayShort;
     instance.GetClickResponseTime(pre);
     instance.SetClickResponseTime(time);
     instance.GetClickResponseTime(value);
@@ -1321,7 +1321,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickTime_002, TestSize.Lev
     IGNORE_REPEAT_CLICK_TIME time = RepeatClickTimeoutShort;
     IGNORE_REPEAT_CLICK_TIME value = RepeatClickTimeoutShortest;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    uint32_t pre = 0;
+    IGNORE_REPEAT_CLICK_TIME pre = RepeatClickTimeoutShortest;
     instance.GetIgnoreRepeatClickTime(pre);
     instance.SetIgnoreRepeatClickTime(time);
     instance.GetIgnoreRepeatClickTime(value);
@@ -1341,7 +1341,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickTime_004, TestSize.Lev
     IGNORE_REPEAT_CLICK_TIME time = RepeatClickTimeoutMedium;
     IGNORE_REPEAT_CLICK_TIME value = RepeatClickTimeoutShortest;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    uint32_t pre = 0;
+    IGNORE_REPEAT_CLICK_TIME pre = RepeatClickTimeoutShortest;
     instance.GetIgnoreRepeatClickTime(pre);
     instance.SetIgnoreRepeatClickTime(time);
     instance.GetIgnoreRepeatClickTime(value);
@@ -1693,7 +1693,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetClickResponseTime_001, TestSize.Level1)
     CLICK_RESPONSE_TIME value = ResponseDelayShort;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
-    uint32_t pre = 0;
+    CLICK_RESPONSE_TIME pre = ResponseDelayShort;
     instance.GetClickResponseTime(pre);
     instance.SetClickResponseTime(time);
     instance.GetClickResponseTime(value);
@@ -1735,7 +1735,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickTime_001, TestSize.Lev
     IGNORE_REPEAT_CLICK_TIME value = RepeatClickTimeoutShortest;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
-    uint32_t pre = 0;
+    IGNORE_REPEAT_CLICK_TIME pre = RepeatClickTimeoutShortest;
     instance.GetIgnoreRepeatClickTime(pre);
     instance.SetIgnoreRepeatClickTime(time);
     instance.GetIgnoreRepeatClickTime(value);
@@ -1756,7 +1756,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickTime_003, TestSize.Lev
     IGNORE_REPEAT_CLICK_TIME value = RepeatClickTimeoutLongest;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
-    uint32_t pre = 0;
+    IGNORE_REPEAT_CLICK_TIME pre = RepeatClickTimeoutShortest;
     instance.GetIgnoreRepeatClickTime(pre);
     instance.SetIgnoreRepeatClickTime(time);
     instance.GetIgnoreRepeatClickTime(value);

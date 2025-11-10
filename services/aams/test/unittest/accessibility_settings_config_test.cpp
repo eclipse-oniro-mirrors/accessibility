@@ -802,8 +802,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetClickResponseTime_001 start";
     settingConfig_->Init();
-    uint32_t pre = 0;
-    settingConfig_->GetClickResponseTime(pre);
+    uint32_t pre = settingConfig_->GetClickResponseTime();
     settingConfig_->SetClickResponseTime(1);
     EXPECT_EQ(1, settingConfig_->GetClickResponseTime());
     settingConfig_->SetClickResponseTime(pre);
@@ -819,8 +818,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
     AccessibilitySettingsConfig_Unittest_SetClickResponseTime_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetClickResponseTime_002 start";
-    uint32_t pre = 0;
-    settingConfig_->GetClickResponseTime(pre);
+    uint32_t pre = settingConfig_->GetClickResponseTime();
     settingConfig_->SetClickResponseTime(1);
     EXPECT_NE(1, settingConfig_->GetClickResponseTime());
     settingConfig_->SetClickResponseTime(pre);
@@ -837,8 +835,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_001 start";
     settingConfig_->Init();
-    bool pre = false;
-    settingConfig_->GetIgnoreRepeatClickState(pre);
+    bool pre = settingConfig_->GetIgnoreRepeatClickState();
     settingConfig_->SetIgnoreRepeatClickState(true);
     EXPECT_EQ(true, settingConfig_->GetIgnoreRepeatClickState());
     settingConfig_->SetIgnoreRepeatClickState(pre);
@@ -854,8 +851,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
     AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_002 start";
-    bool pre = false;
-    settingConfig_->GetIgnoreRepeatClickState(pre);
+    bool pre = settingConfig_->GetIgnoreRepeatClickState();
     settingConfig_->SetIgnoreRepeatClickState(true);
     EXPECT_NE(true, settingConfig_->GetIgnoreRepeatClickState());
     settingConfig_->SetIgnoreRepeatClickState(pre);
@@ -872,8 +868,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_001 start";
     settingConfig_->Init();
-    uint32_t pre = 0;
-    settingConfig_->GetIgnoreRepeatClickTime(pre);
+    uint32_t pre = settingConfig_->GetIgnoreRepeatClickTime();
     settingConfig_->SetIgnoreRepeatClickTime(1);
     EXPECT_EQ(1, settingConfig_->GetIgnoreRepeatClickTime());
     settingConfig_->SetIgnoreRepeatClickTime(pre);
@@ -889,8 +884,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
     AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_002 start";
-    uint32_t pre = 0;
-    settingConfig_->GetIgnoreRepeatClickTime(pre);
+    uint32_t pre = settingConfig_->GetIgnoreRepeatClickTime();
     settingConfig_->SetIgnoreRepeatClickTime(1);
     EXPECT_NE(1, settingConfig_->GetIgnoreRepeatClickTime());
     settingConfig_->SetIgnoreRepeatClickTime(pre);
