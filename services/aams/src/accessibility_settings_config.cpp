@@ -1364,7 +1364,8 @@ void AccessibilitySettingsConfig::CloneOnDeviceCapability()
     service->GetIntValue(OLD_DEVICE_CAPABILITY, oldCapability);
     HILOG_INFO("oldCapability: %{public}d", oldCapability);
     for (auto capability : PC_ENABLE_CAPABILITY_LIST) {
-        if ((newCapability & capability) != (oldCapability & capability)) {
+        if ((static_cast<uint32_t>(newCapability) & capability) != (
+            static_cast<uint32_t>(oldCapability) & capability)) {
             HILOG_INFO("capability: %{public}d is not same, need recover", capability);
             recoverCapability(capability);
         }
@@ -1381,12 +1382,15 @@ void AccessibilitySettingsConfig::recoverCapability(int32_t capability)
             return;
         case CLONE_CAPABILITY_INVERT_COLOR:
             recoverInvertColor();
+            return;
         case CLONE_CAPABILITY_COLOR_CORRECTION:
             recoverColorCorrection();
+            return;
         case CLONE_CAPABILITY_TRANSITION_ANIMATION:
             return;
         case CLONE_CAPABILITY_AUDIO_ADJUSTMENT:
             recoverAudioAdjustment();
+            return;
         case CLONE_CAPABILITY_SOUND_RECOGNITION:
             return;
         case CLONE_CAPABILITY_FLASH_REMINDER:

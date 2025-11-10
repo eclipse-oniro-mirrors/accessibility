@@ -210,7 +210,7 @@ bool ConditionItem::CheckCustom(const std::shared_ptr<ReadableRulesNode>& node) 
 
 bool ConditionItem::ParseTarget(const nlohmann::json& condItem)
 {
-    if (!condItem.contains("target")) {
+    if (!condItem.contains("target") || !condItem["target"].is_string()) {
         target_ = TargetNode::DEFAULT;
         return true;
     }
@@ -294,7 +294,7 @@ bool ConditionItem::ParseValue(const nlohmann::json& condItem)
 
 bool ConditionItem::ParseOperator(const nlohmann::json& condItem)
 {
-    if (!condItem.contains("operator")) {
+    if (!condItem.contains("operator") || !condItem["operator"].is_string()) {
         return false;
     }
 
@@ -311,7 +311,7 @@ bool ConditionItem::ParseOperator(const nlohmann::json& condItem)
 
 bool ConditionItem::ParseProp(const nlohmann::json& condItem)
 {
-    if (!condItem.contains("prop")) {
+    if (!condItem.contains("prop") || !condItem["prop"].is_string()) {
         return false;
     }
 

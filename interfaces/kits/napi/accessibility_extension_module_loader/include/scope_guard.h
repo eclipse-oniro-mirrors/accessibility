@@ -24,9 +24,6 @@ public:
 
     ~ScopeGuard()
     {
-        if (!dismissed_) {
-            onExitScope_();
-        }
     }
 
     void Dismiss()
