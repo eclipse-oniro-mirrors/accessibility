@@ -276,7 +276,10 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
             return;
         }
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
-        int64_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        int64_t realElementId = ROOT_NODE_ID;
+        if (treeId <= 0) {
+            realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        }
         Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(accessibilityWindowId, treeId,
             requestId, callback);
         elementOperator->FindFocusedElementInfo(realElementId, focusType, requestId, callback);
