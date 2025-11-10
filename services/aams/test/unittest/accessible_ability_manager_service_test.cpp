@@ -928,9 +928,12 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioBalance_001, TestSize.
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetClickResponseTime_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetClickResponseTime_001 start";
+    uint32_t pre = 0;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetClickResponseTime(pre);
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetClickResponseTime(1));
     uint32_t ret = 0;
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetClickResponseTime(ret));
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetClickResponseTime(pre);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetClickResponseTime_001 end";
 }
 
@@ -942,9 +945,12 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetClickResponseTime_001, Test
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetIgnoreRepeatClickState_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickState_001 start";
+    bool pre = false;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetIgnoreRepeatClickState(pre);
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetIgnoreRepeatClickState(true));
     bool ret = false;
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetIgnoreRepeatClickState(ret));
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetIgnoreRepeatClickState(pre);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickState_001 end";
 }
 
@@ -956,9 +962,12 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetIgnoreRepeatClickState_001,
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetIgnoreRepeatClickTime_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickTime_001 start";
+    uint32_t pre = 0;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetIgnoreRepeatClickTime(pre);
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetIgnoreRepeatClickTime(1));
     uint32_t ret = 0;
     EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetIgnoreRepeatClickTime(ret));
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetIgnoreRepeatClickTime(pre);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickTime_001 end";
 }
 
