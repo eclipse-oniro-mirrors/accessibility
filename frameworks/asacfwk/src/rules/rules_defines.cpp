@@ -15,6 +15,7 @@
 
 // LCOV_EXCL_START
 #include "rules_defines.h"
+#include "hilog_wrapper.h"
 
 namespace OHOS::Accessibility {
 
@@ -32,7 +33,24 @@ bool RulesDefines::Parse(const nlohmann::json& jsonRoot)
 
 bool RulesDefines::ParseRootTypes(const nlohmann::json& defines)
 {
-    std::vector<std::string> rootTypes = defines["root_types"];
+    if (!defines.is_object()) {
+        HILOG_ERROR("json is not object.");
+        return false;
+    }
+
+    std::vector<std::string> rootTypes;
+    auto it = defines.find("root_types");
+    if (it != defines.end() && it->is_array()) {
+        const auto &array = *it;
+        for (const auto &item : array) {
+            if (!item.is_string()) {
+                HILOG_ERROR("Array elements are not all strings");
+                return false;
+            }
+        }
+        HILOG_DEBUG("Find key root_types successful.");
+        rootTypes = array.get<std::vector<std::string>>();
+    }
     rootTypes_.clear();
     for (auto& type : rootTypes) {
         std::transform(type.begin(), type.end(), type.begin(),
@@ -64,7 +82,24 @@ bool RulesDefines::IsRootType(const std::string& type)
 
 bool RulesDefines::ParseScrollIgnoreTypes(const nlohmann::json& defines)
 {
-    std::vector<std::string> scrollIgnoreTypes = defines["disabled_scroll_types"];
+    if (!defines.is_object()) {
+        HILOG_ERROR("json is not object.");
+        return false;
+    }
+    
+    std::vector<std::string> scrollIgnoreTypes;
+    auto it = defines.find("disabled_scroll_types");
+    if (it != defines.end() && it->is_array()) {
+        const auto &array = *it;
+        for (const auto &item : array) {
+            if (!item.is_string()) {
+                HILOG_ERROR("Array elements are not all strings");
+                return false;
+            }
+        }
+        HILOG_DEBUG("Find key disabled_scroll_types successful.");
+        scrollIgnoreTypes = array.get<std::vector<std::string>>();
+    }
     scrollIgnoreTypes_.clear();
     for (auto& type : scrollIgnoreTypes) {
         std::transform(type.begin(), type.end(), type.begin(),

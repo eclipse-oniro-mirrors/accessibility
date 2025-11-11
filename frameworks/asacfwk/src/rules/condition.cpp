@@ -136,6 +136,9 @@ bool Condition::ParseCombinedCond(const nlohmann::json& cond)
 
 bool Condition::ParseCondType(const nlohmann::json& cond)
 {
+    if (!cond.contains("condition_type") || !cond["condition_type"].is_string()) {
+        return false;
+    }
     std::string condType = cond["condition_type"];
     if (condType.empty()) {
         return false;

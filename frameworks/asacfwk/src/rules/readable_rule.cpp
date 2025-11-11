@@ -55,7 +55,7 @@ bool ReadableRule::ParseCondition(const nlohmann::json& rule)
 
 bool ReadableRule::ParseName(const nlohmann::json& rule)
 {
-    if (!rule.contains("name")) {
+    if (!rule.contains("name") || !rule["name"].is_string()) {
         return false;
     }
 
@@ -65,7 +65,7 @@ bool ReadableRule::ParseName(const nlohmann::json& rule)
 
 bool ReadableRule::ParseIsFocus(const nlohmann::json& rule)
 {
-    if (!rule.contains("isfocus")) {
+    if (!rule.contains("isfocus") || !rule["isfocus"].is_boolean()) {
         return false;
     }
 

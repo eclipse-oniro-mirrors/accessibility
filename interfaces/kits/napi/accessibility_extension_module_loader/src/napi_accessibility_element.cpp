@@ -2640,6 +2640,7 @@ napi_value NAccessibilityElement::QueryCommon(napi_env env, napi_callback_info i
     if (elementData == nullptr) {
         HILOG_ERROR("Failed to create elementData.");
         ret = RetError::RET_ERR_NULLPTR;
+        guard.Commit();
         return nullptr;
     }
 
@@ -2647,6 +2648,7 @@ napi_value NAccessibilityElement::QueryCommon(napi_env env, napi_callback_info i
     ret = cbInfo.Init(env, info);
     if (ret != RET_OK) {
         HILOG_ERROR("Init cbInfo failed.");
+        guard.Commit();
         return nullptr;
     }
 
@@ -2656,12 +2658,14 @@ napi_value NAccessibilityElement::QueryCommon(napi_env env, napi_callback_info i
     ret = callbackInfo.parseElement(cbInfo, elementData);
     if (ret != RET_OK) {
         HILOG_ERROR("parseElement failed.");
+        guard.Commit();
         return nullptr;
     }
 
     ret = callbackInfo.parseCondition(cbInfo, elementData);
     if (ret != RET_OK) {
         HILOG_ERROR("parseCondition failed.");
+        guard.Commit();
         return nullptr;
     }
     HILOG_DEBUG("condition: %{public}s", elementData->condition_.c_str());
@@ -2674,6 +2678,7 @@ napi_value NAccessibilityElement::QueryCommon(napi_env env, napi_callback_info i
     ret = callbackInfo.run(cbInfo, elementData, result);
     if (ret != RET_OK) {
         HILOG_ERROR("run failed.");
+        guard.Commit();
         return nullptr;
     }
 
