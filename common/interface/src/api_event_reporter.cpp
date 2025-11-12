@@ -34,6 +34,7 @@ namespace Accessibility {
 std::string ApiEventReporter::g_fileContent = "";
 int64_t ApiEventReporter::g_processorId = -1;
 std::mutex ApiEventReporter::g_apiOperationMutex;
+std::mutex ApiEventReporter::g_apiExpandableDataMutex;
 constexpr size_t UUID_CHAR_ARRAY_LENGTH = 37;
 
 ApiEventReporter::ApiEventReporter()
@@ -280,6 +281,7 @@ int64_t ApiEventReporter::GetCurrentTime()
 void ApiEventReporter::ThresholdWriteEndEvent(int result, std::string apiName, int64_t beginTime,
     int32_t thresholdValue)
 {
+    std::lock_guard<std::mutex> lock(g_apiExpandableDataMutex);
     auto expandableData = CacheEventInfo(apiName, beginTime, result);
     if (expandableData == nullptr) {
         return;
