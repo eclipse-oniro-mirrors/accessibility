@@ -3228,9 +3228,9 @@ FocusMoveDirection NAccessibilityElement::ConvertStringToDirection(const std::st
         {"forward", FocusMoveDirection::FORWARD},
         {"backward", FocusMoveDirection::BACKWARD},
         {"findLast", FocusMoveDirection::FIND_LAST},
-        {"GetForwardScrollAncestor", FocusMoveDirection::GET_FORWARD_SCROLL_ANCESTOR},
-        {"GetBackwardScrollAncestor", FocusMoveDirection::GET_BACKWARD_SCROLL_ANCESTOR},
-        {"GetScrollableAncestor", FocusMoveDirection::GET_SCROLLABLE_ANCESTOR}
+        {"getForwardScrollAncestor", FocusMoveDirection::GET_FORWARD_SCROLL_ANCESTOR},
+        {"getBackwardScrollAncestor", FocusMoveDirection::GET_BACKWARD_SCROLL_ANCESTOR},
+        {"getScrollableAncestor", FocusMoveDirection::GET_SCROLLABLE_ANCESTOR}
     };
 
     if (focusMoveDirectionTable.find(str) == focusMoveDirectionTable.end()) {
