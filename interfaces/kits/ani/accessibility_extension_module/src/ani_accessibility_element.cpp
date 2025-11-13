@@ -26,6 +26,7 @@ namespace Accessibility {
 using namespace arkts::ani_signature;
 
 static ani_class g_accessibilityElementClass = nullptr;
+static ani_class g_focusMoveResultClass = nullptr;
 
 constexpr const char *ANI_ACCESSIBILITY_ELEMENT_CLS =
     "application.AccessibilityExtensionContext.AccessibilityElementImpl";
@@ -34,7 +35,7 @@ constexpr const char *ANI_ACCESSIBILITY_ELEMENT_CLEANER_CLS =
 
 bool InitializeAccessibilityElementClass(ani_env *env)
 {
-    if (g_accessibilityElementClass != nullptr) {
+    if (g_accessibilityElementClass != nullptr && g_focusMoveResultClass != nullptr) {
         return true;
     }
 
@@ -58,6 +59,12 @@ bool InitializeAccessibilityElementClass(ani_env *env)
     if (ANI_OK != env->Class_BindNativeMethods(g_accessibilityElementClass, methods.data(), methods.size())) {
         HILOG_ERROR("Cannot bind native methods to element");
         g_accessibilityElementClass = nullptr;
+        return false;
+    }
+
+    arkts::ani_signature::Type moveResultName = arkts::ani_signature::Builder::BuildClass(ANI_ACCESSIBILITY_FOCUS_MOVE_RESULT_CLS);
+    if (ANI_OK != env->FindClass(moveResultName.Descriptor().c_str(), &g_focusMoveResultClass)) {
+        HILOG_ERROR(" not found class focusMoveResult");
         return false;
     }
 
@@ -116,6 +123,20 @@ void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const Ac
         HILOG_ERROR("Failed to set mainWindowId");
     }
     HILOG_INFO("setAccessibilityElementField end");
+}
+
+
+void SetFocusMoveResultField(ani_env *env, ani_object& elementObj, ani_object resultArray, int32_t ret)
+{
+    ani_status status = env->Object_SetFieldByName_Ref(elementObj, "target", resultArray);
+    if (status != ANI_OK) {
+        HILOG_ERROR("Failed to set target, status : %{public}d", status);
+        return;
+    }
+    if (!ANIUtils::SetIntField(env, elementObj, "result", ret, false)) {
+        HILOG_ERROR("Failed to set result code");
+    }
+    HILOG_INFO("SetFocusMoveResultField end");
 }
 
 ani_object CreateAniAccessibilityElement(ani_env *env, const AccessibilityWindowInfo& windowInfo)
@@ -186,6 +207,21 @@ ani_object CreateAniAccessibilityElement(ani_env *env, const AccessibilityElemen
 
     SetAccessibilityElementField(env, elementObj, elementInfo);
 
+    HILOG_INFO("CreateAniAccessibilityElement end");
+    return elementObj;
+}
+
+ani_object CreateAniAccessibilityRuleResult(ani_env *env, std::vector<AccessibilityElementInfo> &infos, int32_t ret)
+{
+    HILOG_DEBUG("CreateAniAccessibilityRuleResult begin");
+ 
+    if (!InitializeAccessibilityElementClass(env)) {
+        HILOG_ERROR("Failed to initialize AccessibilityElement class");
+        return nullptr;
+    }
+    ani_object elementObj = ANIUtils::CreateObject(env, g_focusMoveResultClass);
+    ani_object resultArray = ConvertElementInfosToJs(env, infos);
+    SetFocusMoveResultField(env, elementObj, resultArray, ret);
     HILOG_INFO("CreateAniAccessibilityElement end");
     return elementObj;
 }
@@ -296,7 +332,19 @@ ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_do
 ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string rule, ani_string condition)
 {
     HILOG_DEBUG("FindElementsByCondition native method called");
-    return nullptr;
+    AccessibilityElement* element = ANIUtils::Unwrap<AccessibilityElement>(env, thisObj);
+    if (element == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityElementInfo");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return nullptr;
+    }
+    std::string ruleStr = ANIUtils::ANIStringToStdString(env, rule);
+    std::string conditionStr = ANIUtils::ANIStringToStdString(env, condition);
+    FindElementParams param = {FIND_ELEMENT_BY_CONDITION, conditionStr, *element};
+    param.rule_ = ruleStr;
+    FindElementExecute(&param);
+ 
+    return CreateAniAccessibilityRuleResult(env, param.nodeInfos_, param.ret_);
 }
 
 FocusMoveDirection ConvertStringToDirection(const std::string &str)
@@ -307,7 +355,11 @@ FocusMoveDirection ConvertStringToDirection(const std::string &str)
         {"left", FocusMoveDirection::LEFT},
         {"right", FocusMoveDirection::RIGHT},
         {"forward", FocusMoveDirection::FORWARD},
-        {"backward", FocusMoveDirection::BACKWARD}
+        {"backward", FocusMoveDirection::BACKWARD},
+        {"findLast", FocusMoveDirection::FIND_LAST},
+        {"getForwardScrollAncestor", FocusMoveDirection::GET_FORWARD_SCROLL_ANCESTOR},
+        {"getBackwardScrollAncestor", FocusMoveDirection::GET_BACKWARD_SCROLL_ANCESTOR},
+        {"getScrollableAncestor", FocusMoveDirection::GET_SCROLLABLE_ANCESTOR}
     };
 
     if (focusMoveDirectionTable.find(str) == focusMoveDirectionTable.end()) {
@@ -315,6 +367,21 @@ FocusMoveDirection ConvertStringToDirection(const std::string &str)
     }
 
     return focusMoveDirectionTable.at(str);
+}
+
+DetailCondition ConvertStringToDetailCondition(const std::string &str)
+{
+    static const std::map<std::string, DetailCondition> detailConditionMap = {
+        { "bypassSelf", DetailCondition::BYPASS_SELF },
+        { "bypassSelfDescendants", DetailCondition::BYPASS_SELF_DESCENDANTS},
+        { "checkSelf", DetailCondition::CHECK_SELF},
+        { "checkSelfBypassDescendants", DetailCondition::CHECK_SELF_BYPASS_DESCENDANTS}
+    };
+    if (detailConditionMap.find(str) == detailConditionMap.end()) {
+        return DetailCondition::BYPASS_SELF;
+    }
+ 
+    return detailConditionMap.at(str);
 }
 
 ani_object FindElements(ani_env *env, ani_object thisObj, ani_string type, ani_string condition)
@@ -401,6 +468,13 @@ void FindElementExecute(FindElementParams* data)
         case FindElementCondition::FIND_ELEMENT_BY_CONDITION:
             {
                 HILOG_DEBUG("FIND_ELEMENT_BY_CONDITION");
+                AccessibilityFocusMoveParam param;
+                param.direction = ConvertStringToDirection(data->condition_);
+                param.condition = ConvertStringToDetailCondition(data->rule_);
+                std::vector<AccessibilityElementInfo> infos;
+                int32_t windowId = data->accessibilityElement_.elementInfo_->GetWindowId();
+                data->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
+                    *data->accessibilityElement_.elementInfo_, param, infos, windowId);
             }
             break;
         default:

@@ -634,7 +634,10 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearchWithCondition(const Acce
     result.parentWindowId = callback->parentWindowId_;
     result.changeToNewInfo = callback->changeToNewInfo_;
     result.needTerminate = callback->needTerminate_;
-
+    HILOG_DEBUG("result, resultType: %{public}d, size: %{public}zu, nowLevelBelongTreeId: %{public}d, "
+        "parentWindowId: %{public}d, changeToNewInfo: %{public}d, needTerminate: %{public}d",
+        result.resultType, infos.size(), result.nowLevelBelongTreeId, result.parentWindowId, result.changeToNewInfo,
+        result.needTerminate);
     return RET_OK;
 }
 } // namespace Accessibility

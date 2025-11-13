@@ -24,6 +24,11 @@ export interface FocusMoveResult {
   result: FocusMoveResultCode;
 }
 
+export class FocusMoveResultImpl implements FocusMoveResult {
+    target: Array<AccessibilityElement> = [];
+    result: FocusMoveResultCode = FocusMoveResultCode.NOT_SUPPORTED;
+}
+
 export type FocusCondition = 'forward' | 'backward' |
 'findLast' | 'getForwardScrollAncestor' | 'getBackwardScrollAncestor' | 'getScrollableAncestor';
 

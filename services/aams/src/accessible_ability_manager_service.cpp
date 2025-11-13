@@ -4657,6 +4657,7 @@ bool AccessibleAbilityManagerService::InvalidHoverEnterEvent(AccessibilityEventI
         return false;
     }
     if (callBack->elementInfosResult_.size() <= 0) {
+        HILOG_INFO("result size is 0");
         return false;
     }
     if (callBack->focusMoveResult_ == FocusMoveResultType::SEARCH_SUCCESS) {

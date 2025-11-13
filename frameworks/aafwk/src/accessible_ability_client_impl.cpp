@@ -1844,6 +1844,8 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveBySpecificProper
 RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
     AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t windowId)
 {
+    HILOG_DEBUG("start elementId: %{public} " PRId64 ", direction: %{public}d, condition: %{public}d,"
+        "windowId: %{public}d", info.GetAccessibilityId(), param.direction, param.condition, windowId);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
