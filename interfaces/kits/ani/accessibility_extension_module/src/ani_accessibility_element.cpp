@@ -64,7 +64,8 @@ bool InitializeAccessibilityElementClass(ani_env *env)
         return false;
     }
 
-    arkts::ani_signature::Type moveResultName = arkts::ani_signature::Builder::BuildClass(ANI_ACCESSIBILITY_FOCUS_MOVE_RESULT_CLS);
+    arkts::ani_signature::Type moveResultName = arkts::ani_signature::Builder::BuildClass(
+        ANI_ACCESSIBILITY_FOCUS_MOVE_RESULT_CLS);
     if (ANI_OK != env->FindClass(moveResultName.Descriptor().c_str(), &g_focusMoveResultClass)) {
         HILOG_ERROR(" not found class focusMoveResult");
         return false;
