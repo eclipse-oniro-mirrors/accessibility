@@ -32,6 +32,8 @@ constexpr const char *ANI_ACCESSIBILITY_ELEMENT_CLS =
     "application.AccessibilityExtensionContext.AccessibilityElementImpl";
 constexpr const char *ANI_ACCESSIBILITY_ELEMENT_CLEANER_CLS =
     "application.AccessibilityExtensionContext.AccessibilityElementCleaner";
+constexpr const char *ANI_ACCESSIBILITY_FOCUS_MOVE_RESULT_CLS =
+    "application.AccessibilityExtensionContext.FocusMoveResultImpl";
 
 bool InitializeAccessibilityElementClass(ani_env *env)
 {
@@ -124,7 +126,6 @@ void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const Ac
     }
     HILOG_INFO("setAccessibilityElementField end");
 }
-
 
 void SetFocusMoveResultField(ani_env *env, ani_object& elementObj, ani_object resultArray, int32_t ret)
 {
