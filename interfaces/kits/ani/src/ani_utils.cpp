@@ -649,7 +649,7 @@ void ANIUtils::ConvertEventInfoRefFields(ani_env *env, ani_object eventObject,
     eventInfo.SetResourceId(id);
     eventInfo.SetResourceBundleName(bundleName);
     eventInfo.SetResourceModuleName(moduleName);
-    HILOG_DEBUG("resourceId is %{public}lld, bundleName is %{public}s, moduleName is %{public}s",
+    HILOG_DEBUG("resourceId is %{public}ld, bundleName is %{public}s, moduleName is %{public}s",
         id, bundleName.c_str(), moduleName.c_str());
 }
 

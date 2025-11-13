@@ -138,7 +138,7 @@ static ani_object GetElementsNative(ani_env *env, ani_object thisObj, ani_int wi
         }
         elementIdValue = static_cast<int64_t>(result);
     }
-    HILOG_DEBUG("GetElementsNative begin, windowId: %{public}d, elementId: %{public}lld", windowId, elementIdValue);
+    HILOG_DEBUG("GetElementsNative begin, windowId: %{public}d, elementId: %{public}ld", windowId, elementIdValue);
     std::vector<AccessibilityElementInfo> accessibilityElementsInfo;
     RetError ret = context->GetElements(static_cast<int32_t>(windowId), elementIdValue, accessibilityElementsInfo);
     if (ret != RET_OK) {

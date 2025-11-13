@@ -617,7 +617,7 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
 
     stateHandler_.SetState(static_cast<AccessibilityStateEventType>(eventType), value);
     StateObserverVector &observers = stateObserversArray_[eventType];
-    HILOG_INFO("observers size is %{public}u", observers.size());
+    HILOG_INFO("observers size is %{public}lu", observers.size());
     for (auto &observer : observers) {
         if (observer) {
             observer->OnStateChanged(value);
