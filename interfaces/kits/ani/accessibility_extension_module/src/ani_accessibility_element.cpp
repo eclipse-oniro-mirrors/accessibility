@@ -337,7 +337,6 @@ ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string 
     AccessibilityElement* element = ANIUtils::Unwrap<AccessibilityElement>(env, thisObj);
     if (element == nullptr) {
         HILOG_ERROR("Failed to unwrap AccessibilityElementInfo");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
         return nullptr;
     }
     std::string ruleStr = ANIUtils::ANIStringToStdString(env, rule);
