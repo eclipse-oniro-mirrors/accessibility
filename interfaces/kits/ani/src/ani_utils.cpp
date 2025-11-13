@@ -649,8 +649,8 @@ void ANIUtils::ConvertEventInfoRefFields(ani_env *env, ani_object eventObject,
     eventInfo.SetResourceId(id);
     eventInfo.SetResourceBundleName(bundleName);
     eventInfo.SetResourceModuleName(moduleName);
-    HILOG_DEBUG("resourceId is %{public}ld, bundleName is %{public}s, moduleName is %{public}s",
-        id, bundleName.c_str(), moduleName.c_str());
+    HILOG_DEBUG("resourceId is %{public}lld, bundleName is %{public}s, moduleName is %{public}s",
+        static_cast<unsigned long long>(id), bundleName.c_str(), moduleName.c_str());
 }
 
 bool ANIUtils::SendEventToMainThread(const std::function<void()> func)
