@@ -1005,19 +1005,20 @@ bool WindowMagnificationGesture::IsTapOnInputMethod(MMI::PointerEvent &event)
     std::vector<AccessibilityWindowInfo> windowInfos =
         Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
     for (auto &window : windowInfos) {
-        if (window.GetWindowType() == INPUT_METHOD_WINDOW_TYPE) {
-            Rect inputRect = window.GetRectInScreen();
-            int32_t leftTopX = inputRect.GetLeftTopXScreenPostion();
-            int32_t leftTopY = inputRect.GetLeftTopYScreenPostion();
-            int32_t rightBottomX = inputRect.GetRightBottomXScreenPostion();
-            int32_t rightBottomY = inputRect.GetRightBottomYScreenPostion();
-            
+        if (window.GetWindowType() != INPUT_METHOD_WINDOW_TYPE) {
+            continue;
+        }
+        for (auto &outRect : window.GetTouchHotAreas()) {
+            int32_t leftTopX = outRect.GetLeftTopXScreenPostion();
+            int32_t leftTopY = outRect.GetLeftTopYScreenPostion();
+            int32_t rightBottomX = outRect.GetRightBottomXScreenPostion();
+            int32_t rightBottomY = outRect.GetRightBottomYScreenPostion();
             MMI::PointerEvent::PointerItem item;
             event.GetPointerItem(event.GetPointerId(), item);
             int32_t itemX = item.GetDisplayX();
             int32_t itemY = item.GetDisplayY();
             if ((itemX >= leftTopX) && (itemX <= rightBottomX) &&
-            (itemY >= leftTopY) && (itemY <= rightBottomY)) {
+                (itemY >= leftTopY) && (itemY <= rightBottomY)) {
                 HILOG_INFO("tap on input method window.");
                 return true;
             }
