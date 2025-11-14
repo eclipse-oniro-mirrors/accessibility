@@ -279,7 +279,7 @@ ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_do
     }
 
     int64_t elementId = static_cast<int64_t>(condition);
-    HILOG_DEBUG("Finding element by ID: %{public}lld", elementId);
+    HILOG_DEBUG("Finding element by ID: %{public}lld", static_cast<long long>(elementId));
 
     FindElementParams param = {FIND_ELEMENT_CONDITION_ELEMENT_ID, std::to_string(elementId), *element};
 
@@ -385,7 +385,8 @@ void FindElementExecute(FindElementParams* data)
                     return;
                 }
                 int32_t windowId = data->accessibilityElement_.elementInfo_->GetWindowId();
-                HILOG_DEBUG("elementId is %{public}lld windowId: %{public}d", elementId, windowId);
+                HILOG_DEBUG("elementId is %{public}lld windowId: %{public}d",
+                    static_cast<long long>(elementId), windowId);
                 data->ret_ = AccessibleAbilityClient::GetInstance()->GetByElementId(
                     elementId, windowId, data->nodeInfo_);
             }
