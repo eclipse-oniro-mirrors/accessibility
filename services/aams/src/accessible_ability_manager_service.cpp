@@ -58,6 +58,11 @@
 #include "mem_mgr_proxy.h"
 #include "magnification_def.h"
 
+#undef LOG_DOMAIN
+#undef LOG_TAG
+#define LOG_TAG AAMS_LOG_TAG
+#define LOG_DOMAIN AAMS_LOG_DOMAIN
+
 using namespace std;
 using namespace OHOS::Security::AccessToken;
 using namespace OHOS::AccessibilityConfig;
@@ -311,6 +316,7 @@ void AccessibleAbilityManagerService::InitHoverEnterHandler()
 void AccessibleAbilityManagerService::OnStart()
 {
     HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
+    HILOG_COMM_INFO("AccessibleAbilityManagerService::OnStart start");
 
     InitHandler();
     InitActionHandler();
@@ -338,6 +344,7 @@ void AccessibleAbilityManagerService::OnStart()
 void AccessibleAbilityManagerService::OnStop()
 {
     HILOG_INFO("stop AccessibleAbilityManagerService");
+    HILOG_COMM_INFO("stop AccessibleAbilityManagerService");
     if (!handler_) {
         HILOG_ERROR("AccessibleAbilityManagerService::OnStop failed!");
         return;
@@ -408,6 +415,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
 
         if (Init() == false) {
             HILOG_ERROR("AccessibleAbilityManagerService::Init failed!");
+            HILOG_COMM_ERROR("AccessibleAbilityManagerService::Init failed!");
             return;
         }
 
@@ -424,6 +432,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         isReady_ = true;
         SetParameter(SYSTEM_PARAMETER_AAMS_NAME, "true");
         HILOG_DEBUG("AAMS is ready!");
+        HILOG_COMM_INFO("AAMS is ready!");
         RegisterShortKeyEvent();
         PostDelayUnloadTask();
         RegisterScreenMagnificationState();
@@ -438,6 +447,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
 void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
 {
     HILOG_INFO("systemAbilityId:%{public}d removed!", systemAbilityId);
+    HILOG_COMM_INFO("systemAbilityId:%{public}d removed!", systemAbilityId);
     Utils::RecordOnRemoveSystemAbility(systemAbilityId);
     if (!handler_) {
         HILOG_DEBUG("Event handler is nullptr.");
