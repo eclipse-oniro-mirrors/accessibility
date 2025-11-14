@@ -989,6 +989,7 @@ void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityE
     const AccessibilityFocusMoveParam &param,  const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId)
 {
+    HILOG_DEBUG("requestId: %{public}d, windowId: %{public}d", requestId, windowId);
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -1012,8 +1013,9 @@ void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityE
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetRootParentId(windowId, treeId, parentId);
             const_cast<AccessibilityFocusMoveParam&>(param).SetParentId(parentId);
             treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(parentId);
+            HILOG_DEBUG("requestId: %{public}d, treeId: %{public}d", requestId, treeId);
         }
-        
+
         RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID,
             clientName, elementOperator, treeId);
         if (ret != RET_OK) {
@@ -1031,7 +1033,7 @@ void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityE
         }, "FocusMoveSearchWithCondition");
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
-        HILOG_ERROR("Failed to wait SearchElementInfosByText result");
+        HILOG_ERROR("Failed to wait SearchElementInfosByText result, requestId: %{public}d", requestId);
         return;
     }
     syncFuture.get();

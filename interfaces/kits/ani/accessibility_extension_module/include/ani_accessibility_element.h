@@ -58,6 +58,7 @@ struct FindElementParams {
     OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RetError::RET_ERR_FAILED;
     std::map<std::string, std::string> actionArguments_;
     std::string actionName_ = "";
+    std::string rule_ = "";
 };
 
 // AccessibilityElement initialization and creation
