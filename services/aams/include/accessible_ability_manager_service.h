@@ -156,6 +156,7 @@ public:
     ErrCode GetScreenReaderState(bool &state) override;
     ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
     ErrCode GetReadableRules(std::string &readableRules) override;
+    ErrCode IsInnerWindowRootElement(int64_t elementId, bool &state) override;
 private:
     int32_t focusWindowId_ = -1;
     int64_t focusElementId_ = -1;

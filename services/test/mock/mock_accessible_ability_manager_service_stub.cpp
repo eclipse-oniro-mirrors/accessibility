@@ -561,5 +561,10 @@ ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterConfigObserver(
 {
     return RET_OK;
 }
+
+ErrCode MockAccessibleAbilityManagerServiceStub::IsInnerWindowRootElement(int64_t elementId, bool &state)
+{
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

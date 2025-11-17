@@ -96,25 +96,19 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
         }
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
-        if (windowId == SCENE_BOARD_WINDOW_ID && awm.IsInnerWindowRootElement(elementId)) {
+        int64_t realElementId = awm.GetSceneBoardElementId(windowId, elementId);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(windowId, treeId,
+            requestId, callback);
+        ret = elementOperator->SearchElementInfoByAccessibilityId(realElementId, requestId,
+            callback, mode, isFilter);
+        if (ret != RET_OK) {
+            HILOG_ERROR("SearchElementInfoByAccessibilityId IPC Failed.");
             std::vector<AccessibilityElementInfo> infos = {};
             callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
-            HILOG_DEBUG("IsInnerWindowRootElement elementId: %{public}" PRId64 "", elementId);
-        } else {
-            int64_t realElementId = awm.GetSceneBoardElementId(windowId, elementId);
-            Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(windowId, treeId,
-                requestId, callback);
-            RetError ret = elementOperator->SearchElementInfoByAccessibilityId(realElementId, requestId,
-                callback, mode, isFilter);
-            if (ret != RET_OK) {
-                HILOG_ERROR("SearchElementInfoByAccessibilityId IPC Failed.");
-                std::vector<AccessibilityElementInfo> infos = {};
-                callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
-                syncPromise->set_value(ret);
-                return;
-            }
-            HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
+            syncPromise->set_value(ret);
+            return;
         }
+        HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
         syncPromise->set_value(RET_OK);
         }, "SearchElementInfoByAccessibilityId");
 

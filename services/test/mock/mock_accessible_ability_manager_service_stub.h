@@ -132,6 +132,7 @@ public:
     ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
     RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);
     ErrCode GetReadableRules(std::string &name) override;
+    ErrCode IsInnerWindowRootElement(int64_t elementId, bool &state) override;
 
 private:
     std::shared_ptr<AppExecFwk::EventRunner> runner_;

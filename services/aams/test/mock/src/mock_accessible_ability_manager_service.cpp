@@ -833,5 +833,12 @@ ErrCode AccessibleAbilityManagerService::DeRegisterConfigObserver(
     (void)obj;
     return RET_OK;
 }
+
+ErrCode AccessibleAbilityManagerService::IsInnerWindowRootElement(int64_t elementId, bool &state)
+{
+    (void)elementId;
+    (void)state;
+    return NO_ERROR;
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -4678,5 +4678,12 @@ bool AccessibleAbilityManagerService::InvalidHoverEnterEvent(AccessibilityEventI
     }
     return false;
 }
+
+ErrCode AccessibleAbilityManagerService::IsInnerWindowRootElement(int64_t elementId, bool &state)
+{
+    HILOG_DEBUG("IsInnerWindowRootElement elementId: %{public}" PRId64 "", elementId);
+    state = Singleton<AccessibilityWindowManager>::GetInstance().IsInnerWindowRootElement(elementId);
+    return ERR_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS
