@@ -814,7 +814,7 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
         }
         if (elementInfos.empty()) {
             HILOG_ERROR("elementInfos from ace is empty");
-            return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
+            return RET_OK;
         }
         SortElementInfosIfNecessary(elementInfos);
         children.emplace_back(elementInfos.front());
