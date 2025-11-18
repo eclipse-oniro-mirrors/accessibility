@@ -1473,6 +1473,10 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursive(int32_t windowI
     std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter)
 {
     HILOG_INFO("windowId %{public}d}, elementId %{public}" PRId64 "", windowId, elementId);
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
     RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId,
         mode, elementInfos, ROOT_TREE_ID, isFilter);
     if (ret != RET_OK) {
@@ -1498,6 +1502,10 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
     if (windowId <= 0) {
         HILOG_ERROR("window Id is failed windowId %{public}d", windowId);
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
+    }
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
     }
     std::vector<AccessibilityElementInfo> vecElementInfos {};
     RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId,
