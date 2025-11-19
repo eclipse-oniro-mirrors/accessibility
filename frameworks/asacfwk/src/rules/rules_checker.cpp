@@ -112,7 +112,7 @@ bool ReadableRulesChecker::IsRootType(const std::shared_ptr<ReadableRulesNode>& 
     PropValue value;
     auto result = node->GetPropType(value);
     CHECK_NE_RETURN(result, true, false);
-    std::string type =  value.valueStr;
+    std::string type = value.valueStr;
     std::transform(type.begin(), type.end(), type.begin(),
         [](unsigned char c) { return std::tolower(c); });
 
@@ -126,11 +126,10 @@ bool ReadableRulesChecker::IsScrollIgnoreTypes(const std::shared_ptr<ReadableRul
     PropValue value;
     auto result = node->GetPropType(value);
     CHECK_NE_RETURN(result, true, false);
-    std::string type =  value.valueStr;
+    std::string type = value.valueStr;
     std::transform(type.begin(), type.end(), type.begin(),
         [](unsigned char c) { return std::tolower(c); });
-    bool isScrollIgnoreTypes = rulesDefines_.IsScrollIgnoreTypes(type);
-    return isScrollIgnoreTypes;
+    return rulesDefines_.IsScrollIgnoreTypes(type);
 }
 
 bool ReadableRulesChecker::IsAvailable(const std::shared_ptr<ReadableRulesNode>& node)
@@ -164,7 +163,7 @@ bool ReadableRulesChecker::IsScrollableTypes(const std::shared_ptr<ReadableRules
     PropValue value;
     auto result = node->GetPropType(value);
     CHECK_NE_RETURN(result, true, false);
-    std::string type =  value.valueStr;
+    std::string type = value.valueStr;
     std::transform(type.begin(), type.end(), type.begin(),
         [](unsigned char c) { return std::tolower(c); });
     return rulesDefines_.IsScrollableTypes(type);
