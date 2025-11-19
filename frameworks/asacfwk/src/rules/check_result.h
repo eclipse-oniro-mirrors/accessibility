@@ -17,7 +17,7 @@
 
 namespace OHOS::Accessibility {
 
-enum class HandleResult : int32_t {
+enum class HandleResult {
     TO_NEXT,
     HANDLED,
 };
