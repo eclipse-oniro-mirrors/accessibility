@@ -107,6 +107,7 @@ public:
     MOCK_METHOD1(SearchNeedEvents, ErrCode(std::vector<uint32_t> &needEvents));
     MOCK_METHOD1(UpdateUITestConfigureEvents, RetError(std::vector<uint32_t> needEvents));
     MOCK_METHOD1(GetReadableRules, ErrCode(std::string &name));
+    MOCK_METHOD2(IsInnerWindowRootElement, ErrCode(int64_t elementId, bool &state));
 };
 } // namespace Accessibility
 } // namespace OHOS

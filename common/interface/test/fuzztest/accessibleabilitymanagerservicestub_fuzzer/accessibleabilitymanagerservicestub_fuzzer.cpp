@@ -362,6 +362,11 @@ public:
     {
         return RET_OK;
     }
+
+    ErrCode IsInnerWindowRootElement(int64_t elementId, bool &state) override
+    {
+        return RET_OK;
+    }
 };
 
 uint32_t GetU32Data(const uint8_t *ptr)

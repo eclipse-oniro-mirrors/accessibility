@@ -1016,8 +1016,15 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     int64_t parentElementId = child.GetParentNodeId();
     int32_t parentWindowId = child.GetParentWindowId();
     int32_t treeId = 0;
+    bool isInnerWindowRootElement = false;
     HILOG_DEBUG("windowId[%{public}d], parentWindowId[%{public}d], parentId[%{public}" PRId64 "]",
         windowId, parentWindowId, parentElementId);
+
+    serviceProxy_->IsInnerWindowRootElement(child.GetAccessibilityId(), isInnerWindowRootElement);
+    if (windowId == SCENE_BOARD_WINDOW_ID && isInnerWindowRootElement) {
+        return RET_OK;
+    }
+
     if (GetCacheElementInfo(windowId, parentElementId, parent)) {
         HILOG_DEBUG("get element info from cache");
         parent.SetMainWindowId(child.GetMainWindowId());

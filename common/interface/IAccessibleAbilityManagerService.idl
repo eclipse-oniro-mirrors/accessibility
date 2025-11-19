@@ -100,4 +100,5 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void DeRegisterCaptionObserver([in] IRemoteObject obj);
     void DeRegisterEnableAbilityListsObserver([in] IRemoteObject obj);
     void DeRegisterConfigObserver([in] IRemoteObject obj);
+    void IsInnerWindowRootElement([in] long elementId, [out] boolean state);
 }
