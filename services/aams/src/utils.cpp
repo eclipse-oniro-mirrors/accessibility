@@ -125,11 +125,9 @@ public:
             return false;
         }
         if (json.contains(key) && json.at(key).is_object()) {
-            HILOG_ERROR("key is not found or type error.");
-            return true;
+            HILOG_INFO("Find key[%{public}s] successful.", key.c_str());
+            value = json[key].dump();
         }
-        HILOG_INFO("Find key[%{public}s] successful.", key.c_str());
-        value = json[key].dump();
         return true;
     }
 
