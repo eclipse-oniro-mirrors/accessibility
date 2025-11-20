@@ -124,7 +124,7 @@ public:
             HILOG_ERROR("json is not object.");
             return false;
         }
-        if (!json.contains(key) || !json[key].is_string()) {
+        if (json.contains(key) && json.at(key).is_object()) {
             HILOG_ERROR("key is not found or type error.");
             return true;
         }

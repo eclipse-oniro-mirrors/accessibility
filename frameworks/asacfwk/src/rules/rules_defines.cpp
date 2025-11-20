@@ -116,10 +116,24 @@ bool RulesDefines::IsScrollIgnoreTypes(const std::string& type)
 
 bool RulesDefines::ParseScrollableTypes(const nlohmann::json& defines)
 {
-    if (defines.find("scrollable_types") == defines.end()) {
+    if (!defines.is_object()) {
+        HILOG_ERROR("json is not object.");
         return true;
     }
-    std::vector<std::string> scrollableTypes = defines["scrollable_types"];
+    
+    std::vector<std::string> scrollableTypes;
+    auto it = defines.find("scrollable_types");
+    if (it != defines.end() && it->is_array()) {
+        const auto &array = *it;
+        for (const auto &item : array) {
+            if (!item.is_string()) {
+                HILOG_ERROR("Array elements are not all strings");
+                return false;
+            }
+        }
+        HILOG_DEBUG("Find key scrollable_types successful.");
+        scrollableTypes = array.get<std::vector<std::string>>();
+    }
     scrollableTypes_.clear();
     for (auto& type : scrollableTypes) {
         std::transform(type.begin(), type.end(), type.begin(),
