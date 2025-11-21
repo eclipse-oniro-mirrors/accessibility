@@ -130,15 +130,15 @@ void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const Ac
 
 void SetFocusMoveResultField(ani_env *env, ani_object& elementObj, ani_object resultArray, int32_t ret)
 {
-    ani_status status = env->Object_SetFieldByName_Ref(elementObj, "target", resultArray);
+    ani_status status = env->Object_SetPropertyByName_Ref(elementObj, "target", resultArray);
     if (status != ANI_OK) {
         HILOG_ERROR("Failed to set target, status : %{public}d", status);
         return;
     }
-    if (!ANIUtils::SetIntField(env, elementObj, "result", ret, false)) {
+    if (!ANIUtils::SetIntField(env, elementObj, "result", ret, true)) {
         HILOG_ERROR("Failed to set result code");
     }
-    HILOG_INFO("SetFocusMoveResultField end");
+    HILOG_INFO("SetFocusMoveResultField end, ret: %{public}d", ret);
 }
 
 ani_object CreateAniAccessibilityElement(ani_env *env, const AccessibilityWindowInfo& windowInfo)
@@ -472,10 +472,9 @@ void FindElementExecute(FindElementParams* data)
                 AccessibilityFocusMoveParam param;
                 param.direction = ConvertStringToDirection(data->condition_);
                 param.condition = ConvertStringToDetailCondition(data->rule_);
-                std::vector<AccessibilityElementInfo> infos;
                 int32_t windowId = data->accessibilityElement_.elementInfo_->GetWindowId();
                 data->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
-                    *data->accessibilityElement_.elementInfo_, param, infos, windowId);
+                    *data->accessibilityElement_.elementInfo_, param, data->nodeInfos_, windowId);
             }
             break;
         default:

@@ -296,7 +296,7 @@ RetError AccessibilityExtensionContext::NotifyDisconnect()
 }
 
 RetError AccessibilityExtensionContext::FindElementsByCondition(const AccessibilityElementInfo &info,
-    AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t windowId)
+    AccessibilityFocusMoveParam &param, std::vector<AccessibilityElementInfo> &infos, int32_t windowId)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
