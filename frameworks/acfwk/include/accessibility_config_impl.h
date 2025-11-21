@@ -353,6 +353,7 @@ private:
     sptr<AccessibilityEnableAbilityListsObserverImpl> enableAbilityListsObserver_ = nullptr;
 
     bool isInitialized_ = false;
+    bool isConfigInit_ = false;
     bool shortkey_ = false;
     bool highContrastText_ = false;
     bool screenMagnifier_ = false;
