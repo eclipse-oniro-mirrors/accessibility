@@ -180,7 +180,7 @@ void AccessibilityDisplayManager::RegisterDisplayListener(
 {
     HILOG_DEBUG();
     if (listener_) {
-        HILOG_DEBUG("Display listener is already registed!");
+        HILOG_ERROR("Display listener is already registed!");
         return;
     }
     listener_ = new(std::nothrow) DisplayListener(manager);
@@ -202,15 +202,14 @@ void AccessibilityDisplayManager::UnregisterDisplayListener()
 
 void AccessibilityDisplayManager::RegisterFoldStatusListener()
 {
-    
     HILOG_DEBUG();
     if (foldListener_) {
-        HILOG_DEBUG("Fold status listener is already registed!");
+        HILOG_ERROR("Fold status listener is already registed!");
         return;
     }
     foldListener_ = new(std::nothrow) FoldStatusListener();
     if (!foldListener_) {
-        HILOG_ERROR("Create display listener fail!");
+        HILOG_ERROR("Create fold status listener fail!");
         return;
     }
     Rosen::DisplayManager::GetInstance().RegisterFoldStatusListener(foldListener_);
