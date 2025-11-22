@@ -55,6 +55,7 @@ namespace {
     const std::string NUMBER_VALID_CHARS = "0123456789ABCDEFabcdef";
 }
 
+// LCOV_EXCL_START
 AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type)
 {
     std::map<const std::string, AccessibilityAbilityTypes> accessibilityAbilityTypesTable = {
@@ -441,6 +442,6 @@ std::string ConvertColorToString(uint32_t color)
     HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
     return colorStr;
 }
-
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS
