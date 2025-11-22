@@ -200,6 +200,31 @@ void AccessibilityDisplayManager::UnregisterDisplayListener()
     }
 }
 
+void AccessibilityDisplayManager::RegisterFoldStatusListener()
+{
+    
+    HILOG_DEBUG();
+    if (foldListener_) {
+        HILOG_DEBUG("Fold status listener is already registed!");
+        return;
+    }
+    foldListener_ = new(std::nothrow) FoldStatusListener();
+    if (!foldListener_) {
+        HILOG_ERROR("Create display listener fail!");
+        return;
+    }
+    Rosen::DisplayManager::GetInstance().RegisterFoldStatusListener(foldListener_);
+}
+
+void AccessibilityDisplayManager::UnregisterFoldStatusListener()
+{
+    HILOG_DEBUG();
+    if (foldListener_) {
+        Rosen::DisplayManager::GetInstance().UnregisterFoldStatusListener(foldListener_);
+        foldListener_ = nullptr;
+    }
+}
+
 RotationType AccessibilityDisplayManager::GetRotationType(Rosen::DisplayOrientation prev,
     Rosen::DisplayOrientation curr)
 {
@@ -315,6 +340,28 @@ void AccessibilityDisplayManager::DisplayListener::OnChangeDefault(
             manager_->RefreshWindowParam(type);
         }
         orientation_ = currentOrientation;
+    }
+}
+
+void AccessibilityDisplayManager::FoldStatusListener::OnFoldStatusChanged(Rosen::FoldStatus foldStatus)
+{
+    HILOG_DEBUG("status = %{public}d", foldStatus);
+
+    auto interceptor = AccessibilityInputInterceptor::GetInstance();
+    if (interceptor == nullptr) {
+        HILOG_ERROR("interceptor is null");
+        return;
+    }
+    if (foldStatus == Rosen::FoldStatus::FOLDED) {
+        HILOG_INFO("FoldStatus FOLDED");
+        interceptor->ShieldZoomGesture(true);
+        return;
+    }
+
+    if (foldStatus == Rosen::FoldStatus::EXPAND) {
+        HILOG_INFO("FoldStatus EXPAND");
+        interceptor->ShieldZoomGesture(false);
+        return;
     }
 }
 } // namespace Accessibility

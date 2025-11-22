@@ -61,6 +61,7 @@ namespace {
     const std::string FOLD_SCREEN_TYPE = system::GetParameter("const.window.foldscreen.type", "0,0,0,0");
     const bool IS_WIDE_FOLD = (FOLD_SCREEN_TYPE == "4,2,0,0");
     const bool IS_BIG_FOLD = (FOLD_SCREEN_TYPE == "1,2,0,0") || (FOLD_SCREEN_TYPE == "6,1,0,0");
+    const bool IS_SMALL_FOLD = (FOLD_SCREEN_TYPE == "2,2,0,0");
     const int32_t STRING_LEN_MAX = 10240;
     constexpr int32_t BASE_USER_RANGE = 200000;
     constexpr int32_t INVALID_ID = -1;
@@ -601,6 +602,11 @@ bool Utils::IsWideFold()
 bool Utils::IsBigFold()
 {
     return IS_BIG_FOLD;
+}
+
+bool Utils::IsSmallFold()
+{
+    return IS_SMALL_FOLD;
 }
 
 bool Utils::GetBundleNameByCallingUid(std::string &bundleName)

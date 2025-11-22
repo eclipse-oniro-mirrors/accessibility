@@ -356,6 +356,9 @@ void AccessibleAbilityManagerService::OnStop()
         Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
         Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
+        if (Utils::IsSmallFold()) {
+            Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterFoldStatusListener();
+        }
 #endif
         Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
         UnsubscribeOsAccount();
@@ -463,6 +466,9 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
             Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
             Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
+            if (Utils::IsSmallFold()) {
+                Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterFoldStatusListener();
+            }
 #endif
             Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
             Singleton<AccessibilityWindowManager>::GetInstance().DeInit();
@@ -3690,6 +3696,9 @@ void AccessibleAbilityManagerService::InitMagnification()
     magnificationManager_ = std::make_shared<MagnificationManager>();
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(magnificationManager_);
+    if (Utils::IsSmallFold()) {
+        Singleton<AccessibilityDisplayManager>::GetInstance().RegisterFoldStatusListener();
+    }
 #endif
     SubscribeOsAccount();
 }
@@ -3730,6 +3739,12 @@ void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
     config->SetMagnificationState(screenMagnificationEnabled);
     if (!screenMagnificationEnabled) {
         OffZoomGesture();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+        Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
+        if (Utils::IsSmallFold()) {
+            Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterFoldStatusListener();
+        }
+#endif
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
 }
