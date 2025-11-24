@@ -137,7 +137,7 @@ bool ReadableRulesChecker::IsScrollIgnoreTypes(const std::shared_ptr<ReadableRul
 bool ReadableRulesChecker::IsAvailable(const std::shared_ptr<ReadableRulesNode>& node)
 {
     CHECK_NULL_RETURN(node, false);
-    auto curNode = node;
+    auto curNode = IsRootType(node) ? node : node->GetParent();
     while (curNode) {
         PropValue value;
         auto result = curNode->GetPropType(value);
