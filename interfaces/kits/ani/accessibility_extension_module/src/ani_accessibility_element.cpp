@@ -129,7 +129,7 @@ bool InitializeAccessibilityElementClass(ani_env *env)
             reinterpret_cast<void *>(FindElementByFocusDirection)},
         ani_native_function {"findElementsByAccessibilityHintTextNative",
             nullptr, reinterpret_cast<void *>(FindElementsByAccessibilityHintText)},
-        ani_native_function {"findElementByIdNative", nullptr, reinterpret_cast<void *>(FindElementById)},
+        ani_native_function {"findElementByIdNative", nullptr, reinterpret_cast<void *>(FindElementById)}
     };
 
     if (ANI_OK != env->Class_BindNativeMethods(g_accessibilityElementClass, methods.data(), methods.size())) {
