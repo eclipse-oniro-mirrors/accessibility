@@ -1737,7 +1737,7 @@ RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_p
 {
     HILOG_INFO();
     std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
-    if (callback->handlerRef_ == nullptr) {
+    if (!callback->IsValidRef()) {
         callbackList_.clear();
     } else {
         for (auto it = callbackList_.begin(); it != callbackList_.end();) {
