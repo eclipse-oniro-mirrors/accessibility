@@ -33,6 +33,12 @@ export class AccessibilityExtensionAbility {
     onAccessibilityEventInfo(event: AccessibilityEventInfoImpl): void {
         console.log('onAccessibilityEventInfo');
     }
+
+    onAccessibilityKeyEvent(keyEvent: KeyEvent): boolean
+    {
+        console.log('onAccessibilityKeyEvent');
+        return false;
+    }
 }
 
  interface AccessibilityEventInfo {

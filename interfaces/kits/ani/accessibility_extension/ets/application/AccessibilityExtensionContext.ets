@@ -17,7 +17,7 @@ import ExtensionContext from 'application.ExtensionContext';
 import Want from '@ohos.app.ability.Want';
 import { AsyncCallback, BusinessError, Callback } from '@ohos.base';
 import accessibility from '@ohos.accessibility';
-import { FocusMoveResultCode } from '@ohos.accessibility';
+import { AccessibilityAction, FocusMoveResultCode } from '@ohos.accessibility';
 
 export interface FocusMoveResult {
   target: Array<AccessibilityElement>;
@@ -80,6 +80,25 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
         });
     }
 
+    onPreDisconnect(callback: Callback<void>): void {
+        this.onNative('preDisconnect', callback);
+    }
+
+    offPreDisconnect(callback?: Callback<void>): void {
+        this.offNative('preDisconnect', callback);
+    }
+
+    getAccessibilityFocusedElement(): Promise<AccessibilityElement> {
+        return new Promise<AccessibilityElement>((resolve: (data: AccessibilityElement) => void,
+            reject: (err: BusinessError) => void): void => {
+            taskpool.execute(this.getAccessibilityFocusedElementNative).then((code) => {
+                resolve(code as AccessibilityElement);
+            }).catch((err: Error) => {
+                reject(err as BusinessError);
+            });
+        });
+    }
+
     getRootInActiveWindow(windowId?: int): Promise<AccessibilityElement> {
         console.log("getRootInActiveWindow " + windowId);
         return new Promise<AccessibilityElement>((resolve: (data: AccessibilityElement) => void,
@@ -96,7 +115,14 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
     native startAbilityNative(want: Want): void;
     native getElementsNative(windowId: int, elementId?: long): Array<AccessibilityElement>;
     native getDefaultFocusedElementIdsNative(windowId: int): Array<long>;
+    native holdRunningLockSync(): void;
+    native unholdRunningLockSync(): void;
+    native onNative(type: string, callback: object): void;
+    native offNative(type: string, callback?: object): void;
+    native notifyDisconnect(): void;
+    native getAccessibilityFocusedElementNative(): AccessibilityElement;
     native getRootInActiveWindowNative(windowId?: int): AccessibilityElement;
+    native getAccessibilityWindowsSync(displayId?: long): Array<AccessibilityElement>;
 }
 
 class AccessibilityElementCleaner {
@@ -129,13 +155,148 @@ interface AccessibilityElement {
   findElementByTextType(condition: string): Promise<Array<AccessibilityElement>>;
   findElementByElementId(condition: long): Promise<AccessibilityElement>;
   findElementsByCondition(rule: FocusRule, condition: FocusCondition): Promise<FocusMoveResult>;
+  getParent(): Promise<AccessibilityElement>;
+  getChildren(): Promise<Array<AccessibilityElement>>;
+  getRoot(): Promise<AccessibilityElement>;
+  findElementByContent(condition: string): Promise<Array<AccessibilityElement>>;
+  findElementByFocusDirection(condition: FocusDirection): Promise<AccessibilityElement>;
+  findElementsByAccessibilityHintText(condition: string): Promise<Array<AccessibilityElement>>;
+  findElementById(condition: long): Promise<AccessibilityElement>;
+
+  accessibilityFocused?: boolean;
+  bundleName?: string;
+  checkable?: boolean;
+  checked?: boolean;
+  clickable?: boolean;
+  componentId?: long;
+  componentType?: string;
+  contents?: Array<string>;
+  currentIndex?: int;
+  description?: string;
+  editable?: boolean;
+  endIndex?: int;
+  error?: string;
+  focusable?: boolean;
+  hintText?: string;
+  inputType?: int;
+  inspectorKey?: string;
+  isActive?: boolean;
+  isEnable?: boolean;
+  isHint?: boolean;
+  isFocused?: boolean;
+  isPassword?: boolean;
+  isVisible?: boolean;
+  itemCount?: int;
+  lastContent?: string;
+  layer?: int;
+  longClickable?: boolean;
+  pageId?: int;
+  pluralLineSupported?: boolean;
+  rect?: Rect;
+  resourceName?: string;
+  screenRect?: Rect;
+  scrollable?: boolean;
+  selected?: boolean;
+  startIndex?: int;
+  text?: string;
+  textLengthLimit?: int;
+  textMoveUnit?: accessibility.TextMoveUnit;
+  triggerAction?: AccessibilityAction;
+  type?: WindowType;
+  valueMax?: double;
+  valueMin?: double;
+  valueNow?: double;
+  windowId?: int;
+  offset?: double;
+  textType?: string;
+  accessibilityText?: string;
+  hotArea?: Rect;
+  customComponentType?: string;
+  accessibilityNextFocusId?: long;
+  accessibilityPreviousFocusId?: long;
+  extraInfo?: string;
+  accessibilityScrollable?: boolean;
+  supportedActionNames?: Array<string>;
+  accessibilityGroup?: boolean;
+  accessibilityLevel?: string;
+  navDestinationId?: long;
+  currentItem?: AccessibilityGrid;
+  spans?: AccessibilitySpan[];
+  accessibilityVisible?: boolean;
   mainWindowId?: int;
+  clip?: boolean;
+  parentId?: long;
+  childrenIds?: Array<long>;
 }
 
 export class AccessibilityElementImpl implements AccessibilityElement {
     private nativePtr: long = 0;
     private cleaner: AccessibilityElementCleaner | null = null;
+
+    accessibilityFocused?: boolean = false;
+    bundleName?: string = "";
+    checkable?: boolean = false;
+    checked?: boolean = false;
+    clickable?: boolean = false;
+    componentId?: long = 0;
+    componentType?: string = "";
+    contents?: Array<string> = [];
+    currentIndex?: int = 0;
+    description?: string = "";
+    editable?: boolean = false;
+    endIndex?: int = 0;
+    error?: string = "";
+    focusable?: boolean = false;
+    hintText?: string = "";
+    inputType?: int = 0;
+    inspectorKey?: string = "";
+    isActive?: boolean = true;
+    isEnable?: boolean = true;
+    isHint?: boolean = false;
+    isFocused?: boolean = false;
+    isPassword?: boolean = false;
+    isVisible?: boolean = true;
+    itemCount?: int = 0;
+    lastContent?: string = "";
+    layer?: int = 0;
+    longClickable?: boolean = false;
+    pageId?: int = 0;
+    pluralLineSupported?: boolean = false;
+    rect?: Rect = new RectImpl();
+    resourceName?: string = "";
+    screenRect?: Rect = new RectImpl();
+    scrollable?: boolean = false;
+    selected?: boolean = false;
+    startIndex?: int = 0;
+    text?: string = "";
+    textLengthLimit?: int = 0;
+    textMoveUnit?: accessibility.TextMoveUnit = undefined;
+    triggerAction?: AccessibilityAction = undefined;
+    type?: WindowType = 'application';
+    valueMax?: double = 0;
+    valueMin?: double = 0;
+    valueNow?: double = 0;
+    windowId?: int = 0;
+    offset?: double = 0;
+    textType?: string = "";
+    accessibilityText?: string = "";
+    hotArea?: Rect = new RectImpl();
+    customComponentType?: string = "";
+    accessibilityNextFocusId?: long = 0;
+    accessibilityPreviousFocusId?: long = 0;
+    extraInfo?: string = "";
+    accessibilityScrollable?: boolean = false;
+    supportedActionNames?: Array<string> = [];
+    accessibilityGroup?: boolean = true;
+    accessibilityLevel?: string = "auto";
+    navDestinationId?: long = 0;
+    currentItem?: AccessibilityGrid = new AccessibilityGridImpl();
+    spans?: AccessibilitySpan[] = [];
+    accessibilityVisible?: boolean = true;
     mainWindowId?: int = 0;
+    clip?: boolean = false;
+    parentId?: long = 0;
+    childrenIds?: Array<long> = [];
 
     constructor() {
         super();
@@ -214,12 +375,131 @@ export class AccessibilityElementImpl implements AccessibilityElement {
         });
     }
 
+  getParent(): Promise<AccessibilityElement> {
+    return new Promise<AccessibilityElement>((resolve: (data: AccessibilityElement) => void,
+        reject: (err: BusinessError) => void): void => {
+        let p1 = taskpool.execute(this.getParentNative) as Promise<AccessibilityElement>;
+        p1.then((code: AccessibilityElement) => {
+            resolve(code);
+        }).catch((err: Error) => {
+            reject(err as BusinessError);
+        });
+    });
+  }
+
+  getChildren(): Promise<Array<AccessibilityElement>> {
+    return new Promise<Array<AccessibilityElement>>((resolve: (data: Array<AccessibilityElement>) => void,
+        reject: (err: BusinessError) => void): void => {
+            let p1 = taskpool.execute(this.getChildrenNative) as Promise<Array<AccessibilityElement>>;
+            p1.then((code: Array<AccessibilityElement>) => {
+                resolve(code);
+            }).catch((err: Error) => {
+                reject(err as BusinessError);
+            });
+        });
+  }
+
+  getRoot(): Promise<AccessibilityElement> {
+    return new Promise<AccessibilityElement>((resolve: (data: AccessibilityElement) => void,
+        reject: (err: BusinessError) => void): void => {
+            let p1 = taskpool.execute(this.getRootNative) as Promise<AccessibilityElement>;
+            p1.then((code: AccessibilityElement) => {
+                resolve(code);
+            }).catch((err: Error) => {
+                reject(err as BusinessError);
+            });
+        });
+  }
+
+  findElementByContent(condition: string): Promise<Array<AccessibilityElement>> {
+    return new Promise<Array<AccessibilityElement>>((resolve: (data: Array<AccessibilityElement>) => void,
+        reject: (err: BusinessError) => void): void => {
+            let p1 = taskpool.execute(this.findElementByContentNative, condition) as
+                Promise<Array<AccessibilityElement>>;
+            p1.then((code: Array<AccessibilityElement>) => {
+                resolve(code);
+            }).catch((err: Error) => {
+                reject(err as BusinessError);
+            });
+        });
+  }
+
+  findElementByFocusDirection(condition: FocusDirection): Promise<AccessibilityElement> {
+    return new Promise<AccessibilityElement>((resolve: (data: AccessibilityElement) => void,
+        reject: (err: BusinessError) => void): void => {
+            let p1 = taskpool.execute(this.findElementByFocusDirectionNative, condition) as Promise<AccessibilityElement>;
+            p1.then((code: AccessibilityElement) => {
+                resolve(code);
+            }).catch((err: Error) => {
+                reject(err as BusinessError);
+            });
+        });
+  }
+
+  findElementsByAccessibilityHintText(condition: string): Promise<Array<AccessibilityElement>> {
+    return new Promise<Array<AccessibilityElement>>((resolve: (data: Array<AccessibilityElement>) => void,
+        reject: (err: BusinessError) => void): void => {
+            let p1 = taskpool.execute(this.findElementsByAccessibilityHintTextNative, condition) as
+                Promise<Array<AccessibilityElement>>;
+                p1.then((code: Array<AccessibilityElement>) => {
+                resolve(code);
+            }).catch((err: Error) => {
+                reject(err as BusinessError);
+            });
+        });
+  }
+
+
+  findElementById(condition: long): Promise<AccessibilityElement> {
+    return new Promise<AccessibilityElement>((resolve: (data: AccessibilityElement) => void,
+        reject: (err: BusinessError) => void): void => {
+            let p1 = taskpool.execute(this.findElementByIdNative, condition) as Promise<AccessibilityElement>;
+            p1.then((code: AccessibilityElement) => {
+                resolve(code);
+            }).catch((err: Error) => {
+                reject(err as BusinessError);
+            });
+        });
+  }
+
     native getCursorPositionNative(): int;
     native enableScreenCurtainNative(isEnable: boolean): void;
     native findElementNative(type: string, condition: long): AccessibilityElement;
     native findElementsNative(type: string, condition: string): Array<AccessibilityElement>;
     native findElementsByConditionNative(rule: string, condition: string): FocusMoveResult;
+    native getParentNative(): AccessibilityElement;
+    native getChildrenNative(): Array<AccessibilityElement>;
+    native getRootNative(): AccessibilityElement;
+    native findElementByContentNative(condition: string): Array<AccessibilityElement>;
+    native findElementByFocusDirectionNative(condition: FocusDirection): AccessibilityElement;
+    native findElementsByAccessibilityHintTextNative(condition: string): Array<AccessibilityElement>;
+    native findElementByIdNative(condition: long): AccessibilityElement;
+}
 
+interface AccessibilityGrid {
+  rowIndex: int ;
+  columnIndex: int ;
+}
+
+export class AccessibilityGridImpl implements AccessibilityGrid {
+  rowIndex: int = 0;
+  columnIndex: int = 0;
+}
+
+interface AccessibilitySpan {
+  spanId: int ;
+  spanText: string;
+  accessibilityText: string;
+  accessibilityDescription: string;
+  accessibilityLevel: string;
+}
+
+export class AccessibilitySpanImpl implements AccessibilitySpan {
+  spanId: int = 0;
+  spanText: string = '';
+  accessibilityText: string = '';
+  accessibilityDescription: string = '';
+  accessibilityLevel: string = '';
 }
 
 export type FocusDirection = 'up' | 'down' | 'left' | 'right' | 'forward' | 'backward';
