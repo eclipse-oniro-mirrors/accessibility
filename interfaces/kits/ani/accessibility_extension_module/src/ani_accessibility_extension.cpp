@@ -711,6 +711,345 @@ void AniAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInf
     return;
 }
 
+void SetInputEventProperty(ani_env *env, ani_object object, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
+{
+    HILOG_DEBUG("enter");
+    if (env == nullptr || object == nullptr || keyEvent == nullptr) {
+        HILOG_ERROR("invalid args");
+        return;
+    }
+    int32_t id = keyEvent->GetId();
+    ani_status status;
+    if ((status = env->Object_SetPropertyByName_Int(object, "id", id)) != ANI_OK) {
+        HILOG_ERROR("set ref status: %{public}d", status);
+        return;
+    }
+    int32_t deviceId = keyEvent->GetDeviceId();
+    if ((status = env->Object_SetPropertyByName_Int(object, "deviceId", deviceId)) != ANI_OK) {
+        HILOG_ERROR("set ref status: %{public}d", status);
+        return;
+    }
+    int64_t actionTime = keyEvent->GetActionTime();
+    if ((status = env->Object_SetPropertyByName_Long(object, "actionTime", actionTime)) != ANI_OK) {
+        HILOG_ERROR("set ref status: %{public}d", status);
+        return;
+    }
+    int32_t screenId = keyEvent->GetTargetDisplayId();
+    if ((status = env->Object_SetPropertyByName_Int(object, "screenId", screenId)) != ANI_OK) {
+        HILOG_ERROR("set ref status: %{public}d", status);
+        return;
+    }
+    int32_t windowId = keyEvent->GetTargetWindowId();
+    if ((status = env->Object_SetPropertyByName_Int(object, "windowId", windowId)) != ANI_OK) {
+        HILOG_ERROR("set ref status: %{public}d", status);
+        return;
+    }
+}
+
+AccessibilityNapi::KeyAction TransformKeyActionValue(int32_t keyAction)
+{
+    HILOG_DEBUG("keyAction: %{public}d", keyAction);
+    AccessibilityNapi::KeyAction action = AccessibilityNapi::KeyAction::UNKNOWN;
+    if (keyAction == OHOS::MMI::KeyEvent::KEY_ACTION_DOWN) {
+        action = AccessibilityNapi::KeyAction::DOWN;
+    } else if (keyAction == OHOS::MMI::KeyEvent::KEY_ACTION_UP) {
+        action = AccessibilityNapi::KeyAction::UP;
+    } else if (keyAction == OHOS::MMI::KeyEvent::KEY_ACTION_CANCEL) {
+        action = AccessibilityNapi::KeyAction::CANCEL;
+    } else {
+        HILOG_ERROR("key action is invalid");
+    }
+    return action;
+}
+
+bool HasKeyCode(const std::vector<int32_t>& pressedKeys, int32_t keyCode)
+{
+    return std::find(pressedKeys.begin(), pressedKeys.end(), keyCode) != pressedKeys.end();
+}
+
+void SetKeyPropertyPart3(ani_env *env, ani_object object, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
+{
+    HILOG_DEBUG();
+    if (env == nullptr || object == nullptr || keyEvent == nullptr) {
+        HILOG_ERROR("invalid args");
+        return;
+    }
+    ani_status status;
+    bool capsLockValue = false;
+    if ((status = env->Object_SetPropertyByName_Boolean(object, "capsLock", static_cast<ani_boolean>(capsLockValue)))
+        != ANI_OK) {
+        HILOG_ERROR("set ref status : %{public}d", status);
+        return;
+    }
+    bool numLockValue = false;
+    if ((status = env->Object_SetPropertyByName_Boolean(object, "numLock", static_cast<ani_boolean>(numLockValue)))
+        != ANI_OK) {
+        HILOG_ERROR("set ref status : %{public}d", status);
+        return;
+    }
+    bool scrollLockValue = false;
+    if ((status = env->Object_SetPropertyByName_Boolean(object, "scrollLock",
+        static_cast<ani_boolean>(scrollLockValue)))!= ANI_OK) {
+        HILOG_ERROR("set ref status : %{public}d", status);
+        return;
+    }
+}
+
+void GetKeyValue(ani_env *env, ani_object keyObject, std::optional<MMI::KeyEvent::KeyItem> keyItem)
+{
+    HILOG_DEBUG();
+    if (!keyItem) {
+        HILOG_ERROR("keyItem is null.");
+        return;
+    }
+    ani_status status;
+    constexpr const char* keyCodeCls = "@ohos.multimodalInput.keyCode.KeyCode";
+    int32_t keyCode = keyItem->GetKeyCode();
+    if (!ANIUtils::SetEnumProperty(env, keyObject, keyCodeCls, "code", keyCode)) {
+        HILOG_ERROR("Failed to set keycode");
+    }
+    int64_t pressedTime = keyItem->GetDownTime();
+    if ((status = env->Object_SetPropertyByName_Long(keyObject, "pressedTime", pressedTime)) != ANI_OK) {
+        HILOG_ERROR("set ref pressedTime status : %{public}d", status);
+    }
+    int32_t deviceId = keyItem->GetDeviceId();
+    if ((status = env->Object_SetPropertyByName_Int(keyObject, "deviceId", deviceId)) != ANI_OK) {
+        HILOG_ERROR("set ref deviceId status : %{public}d", status);
+    }
+}
+
+ani_object CreatKeyObject(ani_env *env)
+{
+    ani_class keyCls = nullptr;
+    ani_method keyMethod = nullptr;
+    ani_object keyObj = nullptr;
+    constexpr const char* KeyImpl = "@ohos.application.AccessibilityExtensionAbility.KeyImpl";
+    arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(KeyImpl);
+    if (env->FindClass(className.Descriptor().c_str(), &keyCls) != ANI_OK) {
+        HILOG_ERROR(" not found class");
+        return nullptr;
+    }
+    if (env->Class_FindMethod(keyCls, "<ctor>", nullptr, &keyMethod) != ANI_OK) {
+        HILOG_ERROR("get ctor Failed");
+        return nullptr;
+    }
+    if ((env->Object_New(keyCls, keyMethod, &keyObj)) != ANI_OK || keyObj == nullptr) {
+        HILOG_ERROR("Object_New failed");
+        return nullptr;
+    }
+    return keyObj;
+}
+
+bool SetArrayProperty(ani_env *env, ani_object &object, const std::string &fieldName,
+    const std::vector<ani_object> &fieldValue)
+{
+    if (env == nullptr) {
+        HILOG_ERROR("SetArrayField null env");
+        return false;
+    }
+    ani_ref undefinedRef = nullptr;
+    if (env->GetUndefined(&undefinedRef) != ANI_OK) {
+        HILOG_ERROR("GetUndefined Failed.");
+    }
+    ani_array array;
+    env->Array_New(fieldValue.size(), undefinedRef, &array);
+    if (array == nullptr) {
+        HILOG_ERROR("CreateArray failed");
+        return false;
+    }
+    ani_size index = 0;
+    for (auto &item : fieldValue) {
+        if (env->Array_Set(array, index, item) != ANI_OK) {
+            HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}zu",
+                fieldName.c_str(), index);
+            return false;
+        }
+        index++;
+    }
+    ani_status status;
+    if ((status =env->Object_SetPropertyByName_Ref(object, fieldName.c_str(), array)) != ANI_OK) {
+        HILOG_ERROR("status is %{public}d", status);
+        return false;
+    }
+    return true;
+}
+
+void SetKeyPropertyPart2(ani_env *env, ani_object object, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
+{
+    HILOG_DEBUG();
+    if (env == nullptr || object == nullptr || keyEvent == nullptr) {
+        HILOG_ERROR("invalid args");
+        return;
+    }
+    ani_status status;
+    std::vector<int32_t> pressedKeys = keyEvent->GetPressedKeys();
+    bool isPressed = HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_SHIFT_LEFT)
+        || HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_SHIFT_RIGHT);
+    if ((status = env->Object_SetPropertyByName_Boolean(object, "shiftKey", static_cast<ani_boolean>(isPressed)))
+        != ANI_OK) {
+        HILOG_ERROR("set ref status : %{public}d", status);
+        return;
+    }
+    isPressed = HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_META_LEFT)
+        || HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_META_RIGHT);
+    if ((status = env->Object_SetPropertyByName_Boolean(object, "logoKey", static_cast<ani_boolean>(isPressed)))
+        != ANI_OK) {
+        HILOG_ERROR("set ref status : %{public}d", status);
+        return;
+    }
+    isPressed = HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_FN);
+    if ((status = env->Object_SetPropertyByName_Boolean(object, "fnKey", static_cast<ani_boolean>(isPressed)))
+        != ANI_OK) {
+        HILOG_ERROR("set ref status : %{public}d", status);
+    }
+}
+
+void SetKeyPropertyPart1(ani_env *env, ani_object object, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
+{
+    HILOG_DEBUG();
+    if (env == nullptr || object == nullptr || keyEvent == nullptr) {
+        HILOG_ERROR("invalid args");
+        return;
+    }
+    ani_object keyobj = nullptr;
+    std::vector<ani_object> jsArray;
+    std::vector<int32_t> pressedKeys = keyEvent->GetPressedKeys();
+    for (const auto &pressedKeyCode : pressedKeys) {
+        keyobj = CreatKeyObject(env);
+        std::optional<MMI::KeyEvent::KeyItem> pressedKeyItem = keyEvent->GetKeyItem(pressedKeyCode);
+        GetKeyValue(env, keyobj, pressedKeyItem);
+        jsArray.push_back(keyobj);
+    }
+    if (!SetArrayProperty(env, object, "keys", jsArray)) {
+        HILOG_ERROR("Failed to set array property");
+        return;
+    }
+    bool isPressed = HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_CTRL_LEFT)
+        || HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_CTRL_RIGHT);
+    ani_status status;
+    if ((status = env->Object_SetPropertyByName_Boolean(object, "ctrlKey", static_cast<ani_boolean>(isPressed)))
+        != ANI_OK) {
+        HILOG_ERROR("set ref status : %{public}d", status);
+        return;
+    }
+    isPressed = HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_ALT_LEFT)
+        || HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_ALT_RIGHT);
+    if ((status = env->Object_SetPropertyByName_Boolean(object, "altKey", static_cast<ani_boolean>(isPressed)))
+        != ANI_OK) {
+        HILOG_ERROR("set ref status : %{public}d", status);
+    }
+}
+
+ani_object ConvertKeyEventToJS(ani_env *env, ani_object object, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
+{
+    HILOG_DEBUG();
+    if (env == nullptr || object == nullptr || keyEvent == nullptr) {
+        HILOG_ERROR("invalid args");
+        return nullptr;
+    }
+    SetInputEventProperty(env, object, keyEvent);
+    ani_enum enumType;
+    constexpr const char* ActionEnum = "@ohos.multimodalInput.keyEvent.Action";
+    int32_t keyAction = TransformKeyActionValue(keyEvent->GetKeyAction());
+    if (!ANIUtils::SetEnumProperty(env, object, ActionEnum, "action", keyAction)) {
+        HILOG_ERROR("Failed to set action");
+    }
+    ani_object keyObj = CreatKeyObject(env);
+    if (keyObj == nullptr) {
+        HILOG_ERROR("creat keyobj failed");
+        return nullptr;
+    }
+    std::optional<MMI::KeyEvent::KeyItem> keyItem = keyEvent->GetKeyItem();
+    GetKeyValue(env, keyObj, keyItem);
+    if ((env->Object_SetPropertyByName_Ref(object, "key", keyObj)) != ANI_OK) {
+        HILOG_ERROR("set key failed");
+        return nullptr;
+    }
+    ani_status status;
+    int32_t unicodeChar = 0;
+    if ((status = env->Object_SetPropertyByName_Int(object, "unicodeChar", unicodeChar)) != ANI_OK) {
+        HILOG_ERROR("set ref status : %{public}d", status);
+        return nullptr;
+    }
+    SetKeyPropertyPart1(env, object, keyEvent);
+    SetKeyPropertyPart2(env, object, keyEvent);
+    SetKeyPropertyPart3(env, object, keyEvent);
+    return object;
+}
+
+void CreateKeyEventObject(ani_env *env, ani_object object, std::shared_ptr<OHOS::MMI::KeyEvent> keyEvent)
+{
+    HILOG_DEBUG();
+    ani_class cls = nullptr;
+    ani_class eventCls = nullptr;
+    ani_method ctor = nullptr;
+    ani_method callback = nullptr;
+    ani_object keyEventObj = nullptr;
+    constexpr const char* KeyEventCls = "@ohos.application.AccessibilityExtensionAbility.KeyEventImpl";
+    if (env->FindClass(KeyEventCls, &eventCls) != ANI_OK) {
+        HILOG_ERROR("class not found: %{public}s", KeyEventCls);
+        return;
+    }
+    if (env->Class_FindMethod(eventCls, "<ctor>", nullptr, &ctor) != ANI_OK) {
+        HILOG_ERROR("get ctor Failed");
+        return;
+    }
+    if ((env->Object_New(eventCls, ctor, &keyEventObj)) != ANI_OK || keyEventObj == nullptr) {
+        HILOG_ERROR("Object_New failed");
+        return;
+    }
+    static const char *className = ANI_ACCESSIBILITY_EXTENSION_CLS;
+    if (env->FindClass(className, &cls) != ANI_OK) {
+        HILOG_ERROR("class not found: %{public}s", className);
+        return;
+    }
+    if (env->Class_FindMethod(cls, "onAccessibilityKeyEvent", nullptr, &callback) != ANI_OK) {
+        HILOG_ERROR("Class_FindMethod Failed");
+        return;
+    }
+    ConvertKeyEventToJS(env, keyEventObj, keyEvent);
+    ani_boolean result = ANI_FALSE;
+    ani_status status;
+    if ((status = env->Object_CallMethod_Boolean(object, callback, &result, keyEventObj)) != ANI_OK) {
+        HILOG_ERROR("set ref callback status : %{public}d", status);
+    }
+}
+
+bool OnKeyPressEventExec(ani_env *env, ani_object object, std::shared_ptr<KeyEventCallbackInfo> callbackInfo)
+{
+    HILOG_DEBUG();
+    auto task = [callbackInfo, env, object]() {
+        CreateKeyEventObject(env, object, callbackInfo->keyEvent_);
+    };
+    if (!ANIUtils::SendEventToMainThread(task)) {
+        HILOG_ERROR("failed to send event");
+        return false;
+    }
+    return true;
+}
+
+
+bool AniAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent>& keyEvent)
+{
+    HILOG_DEBUG();
+    if (keyEvent == nullptr) {
+        HILOG_ERROR("keyEvent is null");
+        return false;
+    }
+    auto env = env_;
+    if (env == nullptr) {
+        HILOG_ERROR("env is null");
+        return false;
+    }
+    std::shared_ptr<KeyEventCallbackInfo> callbackInfo = std::make_shared<KeyEventCallbackInfo>();
+    callbackInfo->env_ = env_;
+    callbackInfo->keyEvent_ = OHOS::MMI::KeyEvent::Clone(keyEvent);
+    callbackInfo->extension_ = this;
+    ani_object thisObj = jsObj_->aniObj;
+    OnKeyPressEventExec(env, thisObj, callbackInfo);
+    return true;
+}
+
 sptr<IRemoteObject> AniAccessibilityExtension::OnConnect(const AAFwk::Want &want)
 {
     HILOG_DEBUG();

@@ -1090,6 +1090,9 @@ void FindElementExecute(FindElementParams* data)
                     return;
                 }
                 int32_t windowId = data->accessibilityElement_.elementInfo_->GetWindowId();
+                if (windowId == 1) {
+                    windowId = data->accessibilityElement_.elementInfo_->GetMainWindowId();
+                }
                 HILOG_DEBUG("elementId is %{public}lld windowId: %{public}d", elementId, windowId);
                 data->ret_ = AccessibleAbilityClient::GetInstance()->GetByElementId(
                     elementId, windowId, data->nodeInfo_);
