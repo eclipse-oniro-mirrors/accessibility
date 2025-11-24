@@ -224,6 +224,14 @@ void AccessibilityDisplayManager::UnregisterFoldStatusListener()
     }
 }
 
+AccessibilityDisplayManager::DisplayListener::DisplayListener(const std::shared_ptr<MagnificationManager> &manager)
+    : manager_(manager)
+{
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    orientation_ = displayMgr.GetOrientation();
+    displayMode_ = displayMgr.GetFoldDisplayMode();
+}
+
 RotationType AccessibilityDisplayManager::GetRotationType(Rosen::DisplayOrientation prev,
     Rosen::DisplayOrientation curr)
 {

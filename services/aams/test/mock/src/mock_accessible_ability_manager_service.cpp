@@ -773,7 +773,7 @@ void AccessibleAbilityManagerService::InitResource(bool needReInit)
 std::string &GetResource(const std::string &resourceName)
 {
     (void)resourceName;
-    std::string resource = "";
+    static std::string resource = "resource";
     return resource;
 }
 

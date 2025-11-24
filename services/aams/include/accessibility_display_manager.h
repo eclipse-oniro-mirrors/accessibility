@@ -51,8 +51,7 @@ public:
 private:
     class DisplayListener : public Rosen::DisplayManager::IDisplayListener {
     public:
-        explicit DisplayListener(const std::shared_ptr<MagnificationManager> &manager)
-            : manager_(manager) {}
+        explicit DisplayListener(const std::shared_ptr<MagnificationManager> &manager);
         ~DisplayListener() = default;
 
         virtual void OnCreate(Rosen::DisplayId dId) override {}
