@@ -74,6 +74,7 @@ namespace {
     constexpr char VALUE_NOW[] = "valueNow";
     constexpr char WINDOW_ID[] = "windowId";
     constexpr char ACCESSIBILITY_TEXT[] = "accessibilityText";
+    constexpr char ACCESSIBILITY_STATE_DESCRIPTION[] = "accessibilityStateDescription";
     constexpr char TEXT_TYPE[] = "textType";
     constexpr char OFFSET[] = "offset";
     constexpr char CURRENT_ITEM[] = "currentItem";
@@ -101,18 +102,17 @@ namespace {
     constexpr char ACCESSIBILITY_VISIBLE[] = "accessibilityVisible";
     constexpr char IS_ESSENTIAL[] = "isEssential";
 
-    const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "inspectorKey",
-        "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
-        "textMoveUnit", "contents", "lastContent", "itemCount", "currentIndex", "startIndex", "endIndex",
-        "resourceName", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible", "mainWindowId",
-        "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable", "navDestinationId",
-        "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
-        "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
-        "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
-        "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
-        "allAttribute", "clip", "customComponentType", "extraInfo", "accessibilityNextFocusId",
-        "accessibilityPreviousFocusId", "parentId", "childrenIds", "accessibilityScrollable", "isEssential",
-        "childrenTreeId", "belongTreeId"};
+    const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = { "componentId", "inspectorKey", "bundleName",
+        "componentType", "inputType", "text", "hintText", "description", "triggerAction", "textMoveUnit", "contents",
+        "lastContent", "itemCount", "currentIndex", "startIndex", "endIndex", "resourceName", "textLengthLimit", "rect",
+        "checkable", "checked", "focusable", "isVisible", "mainWindowId", "selected", "clickable", "longClickable",
+        "isEnable", "isPassword", "scrollable", "navDestinationId", "editable", "pluralLineSupported", "parent",
+        "children", "isFocused", "accessibilityFocused", "error", "isHint", "pageId", "valueMax", "valueMin",
+        "valueNow", "windowId", "accessibilityText", "accessibilityStateDescription", "textType", "offset",
+        "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus", "row", "column",
+        "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible", "allAttribute", "clip",
+        "customComponentType", "extraInfo", "accessibilityNextFocusId", "accessibilityPreviousFocusId", "parentId",
+        "childrenIds", "accessibilityScrollable", "isEssential", "childrenTreeId", "belongTreeId" };
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
@@ -161,6 +161,7 @@ namespace {
         {"valueNow", &NAccessibilityElement::GetElementInfoValueNow},
         {"windowId", &NAccessibilityElement::GetElementInfoWindowId},
         {"accessibilityText", &NAccessibilityElement::GetElementInfoAccessibilityText},
+        {"accessibilityStateDescription", &NAccessibilityElement::GetElementInfoAccessibilityStateDescription},
         {"textType", &NAccessibilityElement::GetElementInfoTextType},
         {"offset", &NAccessibilityElement::GetElementInfoOffset},
         {"accessibilityGroup", &NAccessibilityElement::GetElementInfoAccessibilityGroup},
@@ -268,6 +269,8 @@ namespace {
         DECLARE_NAPI_GETTER(OFFSET, GetElementProperty<ElementProperty<OFFSET>>),
         DECLARE_NAPI_GETTER(TEXT_TYPE, GetElementProperty<ElementProperty<TEXT_TYPE>>),
         DECLARE_NAPI_GETTER(ACCESSIBILITY_TEXT, GetElementProperty<ElementProperty<ACCESSIBILITY_TEXT>>),
+        DECLARE_NAPI_GETTER(
+            ACCESSIBILITY_STATE_DESCRIPTION, GetElementProperty<ElementProperty<ACCESSIBILITY_STATE_DESCRIPTION>>),
         DECLARE_NAPI_GETTER(HOT_AREA, GetElementProperty<ElementProperty<HOT_AREA>>),
         DECLARE_NAPI_GETTER(CUSTOM_COMPONENT_TYPE, GetElementProperty<ElementProperty<CUSTOM_COMPONENT_TYPE>>),
         DECLARE_NAPI_GETTER(
@@ -1260,6 +1263,17 @@ void NAccessibilityElement::GetElementInfoAccessibilityText(NAccessibilityElemen
         callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityText().c_str(), NAPI_AUTO_LENGTH, &value));
 }
 
+void NAccessibilityElement::GetElementInfoAccessibilityStateDescription(
+    NAccessibilityElementData* callbackInfo, napi_value& value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityStateDescription().c_str(),
+        NAPI_AUTO_LENGTH, &value));
+}
+
 void NAccessibilityElement::GetElementInfoTextType(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!CheckElementInfoParameter(callbackInfo, value)) {
@@ -1719,6 +1733,11 @@ void NAccessibilityElement::GetElementInfoAllAttribute4(NAccessibilityElementDat
     napi_value accessibilityText = nullptr;
     GetElementInfoAccessibilityText(callbackInfo, accessibilityText);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "accessibilityText", accessibilityText));
+
+    napi_value accessibilityStateDescription = nullptr;
+    GetElementInfoAccessibilityStateDescription(callbackInfo, accessibilityStateDescription);
+    NAPI_CALL_RETURN_VOID(
+        env, napi_set_named_property(env, value, "accessibilityStateDescription", accessibilityStateDescription));
 
     napi_value textType = nullptr;
     GetElementInfoTextType(callbackInfo, textType);

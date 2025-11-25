@@ -227,6 +227,7 @@ interface AccessibilityElement {
   clip?: boolean;
   parentId?: long;
   childrenIds?: Array<long>;
+  accessibilityStateDescription?: string;
 }
 
 export class AccessibilityElementImpl implements AccessibilityElement {
@@ -297,6 +298,7 @@ export class AccessibilityElementImpl implements AccessibilityElement {
     clip?: boolean = false;
     parentId?: long = 0;
     childrenIds?: Array<long> = [];
+    accessibilityStateDescription?: string = '';
 
     constructor() {
         super();
