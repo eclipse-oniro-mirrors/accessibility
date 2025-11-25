@@ -98,7 +98,6 @@ public:
     static void ConvertActionArgsJSToANI(ani_env *env, ani_object obj, std::map<std::string, std::string>& args,
         OHOS::Accessibility::ActionType action);
 
-
     template <typename T>
     static ani_status Wrap(ani_env *env, ani_object object, T *nativePtr, const char *propName = "nativePtr")
     {

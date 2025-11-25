@@ -106,8 +106,6 @@ bool InitializeAccessibilityElementClass(ani_env *env)
         return true;
     }
 
-    HILOG_DEBUG("InitializeAccessibilityElementClass begin");
-
     arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(ANI_ACCESSIBILITY_ELEMENT_CLS);
     if (ANI_OK != env->FindClass(className.Descriptor().c_str(), &g_accessibilityElementClass)) {
         HILOG_ERROR(" not found class AccessibilityElement");
@@ -127,8 +125,8 @@ bool InitializeAccessibilityElementClass(ani_env *env)
         ani_native_function {"findElementByContentNative", nullptr, reinterpret_cast<void *>(FindElementByContent)},
         ani_native_function {"findElementByFocusDirectionNative", nullptr,
             reinterpret_cast<void *>(FindElementByFocusDirection)},
-        ani_native_function {"findElementsByAccessibilityHintTextNative",
-            nullptr, reinterpret_cast<void *>(FindElementsByAccessibilityHintText)},
+        ani_native_function {"findElementsByAccessibilityHintTextNative", nullptr,
+            reinterpret_cast<void *>(FindElementsByAccessibilityHintText)},
         ani_native_function {"findElementByIdNative", nullptr, reinterpret_cast<void *>(FindElementById)}
     };
 
@@ -152,15 +150,11 @@ bool InitializeAccessibilityElementClass(ani_env *env)
         HILOG_ERROR(" not found class AccessibilityElement");
         return false;
     }
-    std::array cleanMethod = {
-        ani_native_function {"cleanNative", ":", reinterpret_cast<void *>(Clean)},
-    };
+    std::array cleanMethod = { ani_native_function {"cleanNative", ":", reinterpret_cast<void *>(Clean)} };
     if (ANI_OK != env->Class_BindNativeMethods(cleanerCls, cleanMethod.data(), cleanMethod.size())) {
         HILOG_ERROR("Cannot bind native methods to AccessibilityElementCleaner");
         return false;
     }
-
-    HILOG_DEBUG("InitializeAccessibilityElementClass end - methods bound successfully");
     return true;
 }
 
