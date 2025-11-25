@@ -194,7 +194,7 @@ void NAccessibilityExtension::OnAbilityConnected()
     }
     work->data = static_cast<void*>(callbackInfo);
 
-    int ret = uv_queue_work_with_qos(
+    int ret = uv_queue_work_with_qos_internal(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -207,7 +207,8 @@ void NAccessibilityExtension::OnAbilityConnected()
             delete work;
             work = nullptr;
         },
-        uv_qos_user_initiated);
+        uv_qos_user_initiated,
+        "OnAbilityConnected");
     if (ret) {
         HILOG_ERROR("Failed to execute OnAbilityConnected work queue");
         delete callbackInfo;
@@ -246,7 +247,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
     work->data = static_cast<void*>(callbackInfo);
     ffrt::future syncFuture = callbackInfo->syncPromise_.get_future();
 
-    int ret = uv_queue_work_with_qos(
+    int ret = uv_queue_work_with_qos_internal(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -260,7 +261,8 @@ void NAccessibilityExtension::OnAbilityDisconnected()
             delete work;
             work = nullptr;
         },
-        uv_qos_user_initiated);
+        uv_qos_user_initiated,
+        "OnAbilityDisconnected");
     if (ret) {
         HILOG_ERROR("Failed to execute OnAbilityDisconnected work queue");
         callbackInfo->syncPromise_.set_value();
@@ -433,7 +435,7 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
     if (loop == nullptr || work == nullptr) {
         return RET_ERR_FAILED;
     }
-    int ret = uv_queue_work_with_qos(
+    int ret = uv_queue_work_with_qos_internal(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -500,7 +502,8 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
                 work = nullptr;
             }
         },
-        uv_qos_user_initiated);
+        uv_qos_user_initiated,
+        "OnAccessibilityEventExec");
     return ret;
 }
 
@@ -554,7 +557,7 @@ int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loo
         HILOG_ERROR("loop or work is nullptr.");
         return RET_ERR_FAILED;
     }
-    int ret = uv_queue_work_with_qos(
+    int ret = uv_queue_work_with_qos_internal(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -596,7 +599,8 @@ int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loo
             DeleteAndNullify(data);
             DeleteAndNullify(work);
         },
-        uv_qos_user_initiated);
+        uv_qos_user_initiated,
+        "OnKeyPressEventExec");
     return ret;
 }
 

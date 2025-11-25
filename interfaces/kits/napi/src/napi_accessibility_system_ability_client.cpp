@@ -886,7 +886,7 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
         napi_get_undefined(callbackInfo->env_, &undefined);
         napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
     };
-    if (napi_send_event(env, task, napi_eprio_high) != napi_status::napi_ok) {
+    if (napi_send_event(env, task, napi_eprio_high, "NotifyJS") != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
     }
 }
@@ -923,7 +923,7 @@ void StateListener::NotifyJS(napi_env env, std::string mode, napi_ref handlerRef
         napi_get_undefined(callbackInfo->env_, &undefined);
         napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
     };
-    if (napi_send_event(env, task, napi_eprio_high) != napi_status::napi_ok) {
+    if (napi_send_event(env, task, napi_eprio_high, "NotifyJS") != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
     }
 }
@@ -1549,7 +1549,7 @@ void StateListenerImpl::DeleteObserverReference(napi_env env, std::shared_ptr<St
             OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
         napi_delete_reference(tmpEnv, callbackInfo->ref_);
     };
-    if (napi_send_event(env, task, napi_eprio_high) != napi_status::napi_ok) {
+    if (napi_send_event(env, task, napi_eprio_high, "DeleteObserverReference") != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
     }
 }
