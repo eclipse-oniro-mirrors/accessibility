@@ -75,14 +75,28 @@ public:
     static ani_status CreateAniInt(ani_env* env, int32_t value, ani_object& result);
     static ani_status CreateAniFloat(ani_env* env, float value, ani_object& result);
     static ani_status CreateAniLong(ani_env* env, int64_t value, ani_object& result);
-    static bool SetIntField(ani_env *env, ani_object &object, const std::string &fieldName,
-        int32_t fieldValue, bool isProperty = true);
+    static bool SetStringField(ani_env *env, ani_object &object, const std::string &fieldName, const std::string &value,
+        bool isProperty = true);
+    static bool SetIntField(ani_env *env, ani_object &object, const std::string &fieldName, int32_t fieldValue,
+        bool isProperty = true);
+    static bool SetArrayStringField(ani_env *env, ani_object &object, const std::string &fieldName,
+        const std::vector<std::string> &fieldValue, bool isProperty = true);
+    static bool SetDoubleField(ani_env *env, ani_object &object, const std::string &fieldName, double fieldValue,
+        bool isProperty = true);
+    static bool SetBooleanField(ani_env *env, ani_object &object, const std::string &fieldName, bool fieldValue,
+        bool isProperty = true);
+    static bool SetLongField(ani_env *env, ani_object &object, const std::string &fieldName, int64_t fieldValue,
+        bool isProperty = true);
+    static bool SetArrayField(ani_env *env, ani_object &object, const std::string &fieldName,
+        const std::vector<ani_object> &fieldValue, bool isProperty = true);
     static bool SetLongPropertyRef(ani_env *env, ani_object &object, const std::string &propName, int64_t propValue);
     static ani_object CreateObject(ani_env *env, ani_class cls, ...);
     static bool ConvertStringToInt64(std::string &str, int64_t &value);
     static void CheckNumber(ani_env *env, std::string value);
     static void SetScrollTypeParam(ani_env *env, ani_object obj, std::map<std::string, std::string>& args);
     static void SetSelectionParam(ani_env *env, ani_object obj, std::map<std::string, std::string>& args);
+    static void ConvertActionArgsJSToANI(ani_env *env, ani_object obj, std::map<std::string, std::string>& args,
+        OHOS::Accessibility::ActionType action);
 
     template <typename T>
     static ani_status Wrap(ani_env *env, ani_object object, T *nativePtr, const char *propName = "nativePtr")

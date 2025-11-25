@@ -86,6 +86,8 @@ public:
      */
     void OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo);
 
+    bool OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent>& keyEvent);
+
     void onAccessibilityConnect(ani_env *env, ani_object object);
 
     void onAccessibilityDisconnect(ani_env *env, ani_object object);
@@ -128,10 +130,9 @@ class AbilityListener : public AccessibleAbilityListener {
          * @return Returns true if the event has been consumed; returns false otherwise.
          *         The event that has been consumed will not be sent to the application.
          */
-        bool OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent) override
+        bool OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent>& keyEvent) override
         {
-            (void)keyEvent;
-            return false;
+            return extension_.OnKeyPressEvent(keyEvent);
         }
 
     private:
@@ -146,6 +147,16 @@ private:
     AbilityRuntime::ETSRuntime& stsRuntime_;
     std::shared_ptr<AbilityListener> listener_ = nullptr;
     ani_env* env_ = nullptr;
+};
+
+struct AniExtensionCallbackInfo {
+    AniAccessibilityExtension *extension_;
+    ffrt::promise<void> syncPromise_;
+};
+
+struct AniKeyEventCallbackInfo : public AniExtensionCallbackInfo {
+    std::shared_ptr<MMI::KeyEvent> keyEvent_;
+    ffrt::promise<bool> syncPromise_;
 };
 
 ani_class GetAniAccessibilityElementClass();
