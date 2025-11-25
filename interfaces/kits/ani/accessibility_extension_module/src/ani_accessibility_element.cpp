@@ -438,7 +438,7 @@ bool SetElementChildrenProperty(ani_env *env, ani_object& elementObj, const std:
     std::vector<ani_object> childrenArray;
     for (const auto &childId : children) {
         if (ANIUtils::CreateAniLong(env, childId, value) != ANI_OK) {
-            HILOG_ERROR("CreateAniLong failed for childId %{public}ld", childId);
+            HILOG_ERROR("CreateAniLong failed for childId %{public}lld", childId);
             return false;
         }
         childrenArray.push_back(value);
@@ -613,6 +613,22 @@ void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const Ac
     }
 }
 
+std::string ConvertWindowTypeToString(AccessibilityWindowType type)
+{
+    static const std::map<AccessibilityWindowType, const std::string> windowTypeTable = {
+        {AccessibilityWindowType::TYPE_ACCESSIBILITY_OVERLAY, "accessibilityOverlay"},
+        {AccessibilityWindowType::TYPE_APPLICATION, "application"},
+        {AccessibilityWindowType::TYPE_INPUT_METHOD, "inputMethod"},
+        {AccessibilityWindowType::TYPE_SPLIT_SCREEN_DIVIDER, "screenDivider"},
+        {AccessibilityWindowType::TYPE_SYSTEM, "system"}};
+
+    if (windowTypeTable.find(type) == windowTypeTable.end()) {
+        return "";
+    }
+
+    return windowTypeTable.at(type);
+}
+
 void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const AccessibilityWindowInfo& windowInfo)
 {
     if (!ANIUtils::SetBooleanField(env, elementObj, "isActive", windowInfo.IsActive())) {
@@ -637,22 +653,6 @@ void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const Ac
     }
     SetElementRectArrayField(env, elementObj, const_cast<AccessibilityWindowInfo&>(windowInfo).GetTouchHotAreas(),
         "hotArea");
-}
-
-std::string ConvertWindowTypeToString(AccessibilityWindowType type)
-{
-    static const std::map<AccessibilityWindowType, const std::string> windowTypeTable = {
-        {AccessibilityWindowType::TYPE_ACCESSIBILITY_OVERLAY, "accessibilityOverlay"},
-        {AccessibilityWindowType::TYPE_APPLICATION, "application"},
-        {AccessibilityWindowType::TYPE_INPUT_METHOD, "inputMethod"},
-        {AccessibilityWindowType::TYPE_SPLIT_SCREEN_DIVIDER, "screenDivider"},
-        {AccessibilityWindowType::TYPE_SYSTEM, "system"}};
-
-    if (windowTypeTable.find(type) == windowTypeTable.end()) {
-        return "";
-    }
-
-    return windowTypeTable.at(type);
 }
 
 void SetFocusMoveResultField(ani_env *env, ani_object& elementObj, ani_object resultArray, int32_t ret)
