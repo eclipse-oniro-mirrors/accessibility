@@ -302,9 +302,12 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
         std::string inspectorKey = eventInfo.GetInspectorKey();
         RetError ret = RET_ERR_FAILED;
         AccessibilityElementInfo accessibilityElementInfo;
-        if ((eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY ||
-            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT) &&
-            inspectorKey != "") {
+        if (eventInfo.GetEventType() == TYPE_PAGE_ACTIVE && inspectorKey == "") {
+            ret = aaClient->GetRoot(accessibilityElementInfo, true);
+            accessibilityElementInfo.SetAccessibilityId(VIRTUAL_COMPONENT_ID);
+        } else if ((eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY ||
+            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT ||
+            eventInfo.GetEventType() == TYPE_PAGE_ACTIVE) && inspectorKey != "") {
             ret = aaClient->SearchElementInfoByInspectorKey(inspectorKey, accessibilityElementInfo);
         }
         if (ret == RET_OK) {

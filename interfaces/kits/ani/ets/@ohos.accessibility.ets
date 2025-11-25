@@ -87,7 +87,8 @@ export enum AccessibilityEventType {
   TYPE_FOUR_FINGER_SWIPE_UP = 65,
   TYPE_FOUR_FINGER_SWIPE_DOWN = 66,
   TYPE_FOUR_FINGER_SWIPE_LEFT = 67,
-  TYPE_FOUR_FINGER_SWIPE_RIGHT = 68
+  TYPE_FOUR_FINGER_SWIPE_RIGHT = 68,
+  TYPE_PAGE_ACTIVE = 69
 }
 
 namespace accessibility {
@@ -97,7 +98,7 @@ namespace accessibility {
         'click' | 'longClick' | 'focus' | 'select' | 'hoverEnter' | 'hoverExit' |
         'textUpdate' | 'textSelectionUpdate' | 'scroll' | 'requestFocusForAccessibility' |
         'announceForAccessibility' | 'requestFocusForAccessibilityNotInterrupt' |
-        'announceForAccessibilityNotInterrupt' | 'scrolling';
+        'announceForAccessibilityNotInterrupt' | 'scrolling' | 'pageActive';
 
     export type Action = 'accessibilityFocus' | 'clearAccessibilityFocus' | 'focus' | 'clearFocus' | 'clearSelection' |
         'click' | 'longClick' | 'cut' | 'copy' | 'paste' | 'select' | 'setText' | 'delete' |

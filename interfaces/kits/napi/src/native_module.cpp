@@ -150,6 +150,8 @@ static void CreateAccessibilityEventTypePartThree(napi_env env, napi_value objVa
         CreateIntObject(env, AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_LEFT));
     napi_set_named_property(env, objValue, "TYPE_FOUR_FINGER_SWIPE_RIGHT",
         CreateIntObject(env, AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_RIGHT));
+    napi_set_named_property(env, objValue, "TYPE_PAGE_ACTIVE",
+        CreateIntObject(env, AccessibilityEventType::TYPE_PAGE_ACTIVE));
 }
 
 static napi_value CreateAccessibilityEventType(napi_env env)

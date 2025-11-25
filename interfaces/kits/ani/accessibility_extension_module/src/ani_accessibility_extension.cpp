@@ -389,6 +389,7 @@ AccessibilityEventType ConvertStringToAccessibilityEventType(const std::string &
         {"fourFingerSwipeDown", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_DOWN},
         {"fourFingerSwipeLeft", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_LEFT},
         {"fourFingerSwipeRight", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_RIGHT},
+        {"pageActive", AccessibilityEventType::TYPE_PAGE_ACTIVE}
     };
     if (eventTypeTable.find(eventType) == eventTypeTable.end()) {
         return AccessibilityEventType::TYPE_ERROR;
@@ -500,7 +501,8 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT, "announceForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT,
             "requestFocusForAccessibilityNotInterrupt"},
-        {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"}};
+        {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
+        {EventType::TYPE_PAGE_ACTIVE, "pageActive"}};
 
     if (a11yEvtTypeTable.find(type) == a11yEvtTypeTable.end()) {
         return "";
@@ -554,9 +556,12 @@ std::shared_ptr<AccessibilityElement> GetElement(const AccessibilityEventInfo& e
         std::string inspectorKey = eventInfo.GetInspectorKey();
         RetError ret = RET_ERR_FAILED;
         AccessibilityElementInfo accessibilityElementInfo;
-        if ((eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY ||
-            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT) &&
-            inspectorKey != "") {
+        if (eventInfo.GetEventType() == TYPE_PAGE_ACTIVE && inspectorKey == "") {
+            ret = aaClient->GetRoot(accessibilityElementInfo, true);
+            accessibilityElementInfo.SetAccessibilityId(VIRTUAL_COMPONENT_ID);
+        } else if ((eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY ||
+            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT ||
+            eventInfo.GetEventType() == TYPE_PAGE_ACTIVE) && inspectorKey != "") {
             ret = aaClient->SearchElementInfoByInspectorKey(inspectorKey, accessibilityElementInfo);
         }
         if (ret == RET_OK) {
