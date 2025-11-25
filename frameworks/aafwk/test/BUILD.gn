@@ -97,6 +97,8 @@ ohos_unittest("accessibility_ui_test_ability_impl_test") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "runtime_core:ani",
+    "runtime_core:ani_helpers",
     "samgr:dynamic_cache",
     "samgr:samgr_proxy",
   ]
@@ -213,6 +215,8 @@ ohos_unittest("accessible_ability_test") {
     "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
     "resource_management:global_resmgr",
+    "runtime_core:ani",
+    "runtime_core:ani_helpers",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "window_manager:libdm",
