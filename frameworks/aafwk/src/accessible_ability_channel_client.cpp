@@ -256,10 +256,6 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
 #ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
 #endif // OHOS_BUILD_ENABLE_HITRACE
-    if (proxy_ == nullptr) {
-        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]", channelId_);
-        return RET_ERR_SAMGR;
-    }
 
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
@@ -272,6 +268,11 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     elementBasicInfo.windowId = accessibilityWindowId;
     elementBasicInfo.treeId = treeId;
     elementBasicInfo.elementId = elementId;
+
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return RET_ERR_SAMGR;
+    }
 
     RetError ret = proxy_->SearchElementInfoByAccessibilityId(elementBasicInfo, requestId,
         elementOperator, mode, isFilter, systemApi);
