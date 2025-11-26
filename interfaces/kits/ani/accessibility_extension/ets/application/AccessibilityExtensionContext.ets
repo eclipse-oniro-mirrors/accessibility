@@ -162,6 +162,7 @@ interface AccessibilityElement {
   findElementByFocusDirection(condition: FocusDirection): Promise<AccessibilityElement>;
   findElementsByAccessibilityHintText(condition: string): Promise<Array<AccessibilityElement>>;
   findElementById(condition: long): Promise<AccessibilityElement>;
+  executeAction(action: AccessibilityAction, parameters?: Parameter): Promise<void>;
 
   accessibilityFocused?: boolean;
   bundleName?: string;
@@ -377,6 +378,21 @@ export class AccessibilityElementImpl implements AccessibilityElement {
         });
     }
 
+    executeAction(action: AccessibilityAction, parameters?: Parameter): Promise<void> {
+        return new Promise<void>((resolve, reject): void => {
+            let actualParameter: Parameter = parameters ?? new Parameter();
+            taskpool.execute((): void => {
+                this.executeActionNative(action, actualParameter);
+            })
+            .then((ret: NullishType): void => {
+                resolve(ret as undefined);
+            })
+            .catch((ret: NullishType): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
   getParent(): Promise<AccessibilityElement> {
     return new Promise<AccessibilityElement>((resolve: (data: AccessibilityElement) => void,
         reject: (err: BusinessError) => void): void => {
@@ -469,6 +485,7 @@ export class AccessibilityElementImpl implements AccessibilityElement {
     native findElementNative(type: string, condition: long): AccessibilityElement;
     native findElementsNative(type: string, condition: string): Array<AccessibilityElement>;
     native findElementsByConditionNative(rule: string, condition: string): FocusMoveResult;
+    native executeActionNative(action: AccessibilityAction, parameters: Parameter): void;
     native getParentNative(): AccessibilityElement;
     native getChildrenNative(): Array<AccessibilityElement>;
     native getRootNative(): AccessibilityElement;
@@ -505,7 +522,13 @@ export class AccessibilitySpanImpl implements AccessibilitySpan {
 }
 
 export class Parameter {
-    
+    setText?: string = '';
+    selectTextBegin?: string = '';
+    selectTextEnd?: string = '';
+    selectTextInForWard?: boolean = false;
+    offset?: string = '';
+    spanId?: string = '';
+    scrollType?: string = ''; 
 }
 
 export type FocusDirection = 'up' | 'down' | 'left' | 'right' | 'forward' | 'backward';
