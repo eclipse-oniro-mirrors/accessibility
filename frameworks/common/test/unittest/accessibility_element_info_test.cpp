@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -1280,6 +1280,19 @@ HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityText_001, TestSize.Level1
     elementInfo_->SetAccessibilityText("test");
     EXPECT_STREQ(elementInfo_->GetAccessibilityText().c_str(), "test");
     GTEST_LOG_(INFO) << "SetAccessibilityText_001 end";
+}
+
+/**
+ * @tc.number: SetAccessibilityDescription_001
+ * @tc.name: SetAccessibilityDescription
+ * @tc.desc: Test function SetAccessibilityDescription, GetAccessibilityDescription
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetAccessibilityDescription_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAccessibilityDescription_001 start";
+    elementInfo_->SetAccessibilityStateDescription("test accessibility description");
+    EXPECT_STREQ(elementInfo_->GetAccessibilityStateDescription().c_str(), "test accessibility description");
+    GTEST_LOG_(INFO) << "SetAccessibilityDescription_001 end";
 }
 
 /**
