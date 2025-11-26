@@ -504,6 +504,10 @@ export class AccessibilitySpanImpl implements AccessibilitySpan {
   accessibilityLevel: string = '';
 }
 
+export class Parameter {
+    
+}
+
 export type FocusDirection = 'up' | 'down' | 'left' | 'right' | 'forward' | 'backward';
 
 export type WindowType = 'application' | 'system';
