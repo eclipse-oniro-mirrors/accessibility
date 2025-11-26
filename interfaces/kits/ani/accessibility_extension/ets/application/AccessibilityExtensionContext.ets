@@ -384,10 +384,10 @@ export class AccessibilityElementImpl implements AccessibilityElement {
             taskpool.execute((): void => {
                 this.executeActionNative(action, actualParameter);
             })
-            .then((ret: NullishType): void => {
+            .then((ret: Any): void => {
                 resolve(ret as undefined);
             })
-            .catch((ret: NullishType): void => {
+            .catch((ret: Any): void => {
                 reject(ret as BusinessError);
             });
         });
