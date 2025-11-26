@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,9 +26,21 @@
 #endif
 #include "hilog_wrapper.h"
 #include "utils.h"
+#include "system_ability_definition.h"
+#include "if_system_ability_manager.h"
+#include "iservice_registry.h"
+#include "bundle_info.h"
+#include "accessible_app_state_observer.h"
+#include <cstdint>
 
 namespace OHOS {
 namespace Accessibility {
+std::map<std::string, std::shared_ptr<AccessibleAbilityConnection::ExtensionServiceInfo>> 
+    AccessibleAbilityConnection::extensionServiceMappings_;
+ffrt::mutex AccessibleAbilityConnection::mappingMutex_;
+std::map<std::string, sptr<AccessibleAbilityConnection>> 
+    AccessibleAbilityConnection::appStateObserverMappings_;
+ffrt::mutex AccessibleAbilityConnection::appStateObserverMutex_;
 AccessibleAbilityConnection::AccessibleAbilityConnection(int32_t accountId, int32_t connectionId,
     AccessibilityAbilityInfo &abilityInfo)
     : accountId_(accountId), connectionId_(connectionId), abilityInfo_(abilityInfo)
@@ -46,6 +58,96 @@ AccessibleAbilityConnection::~AccessibleAbilityConnection()
     }
 }
 
+sptr<AppExecFwk::IBundleMgr> AccessibleAbilityConnection::GetBundleMgrProxy()
+{
+    HILOG_DEBUG("GetBundleMgrProxy called");
+    
+    auto systemAbilityManager = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (!systemAbilityManager) {
+        HILOG_ERROR("Failed to get system ability manager");
+        return nullptr;
+    }
+
+    auto bundleMgrSa = systemAbilityManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+    if (!bundleMgrSa) {
+        HILOG_ERROR("Failed to get bundle manager service");
+        return nullptr;
+    }
+
+    sptr<AppExecFwk::IBundleMgr> bundleMgr = iface_cast<AppExecFwk::IBundleMgr>(bundleMgrSa);
+    if (!bundleMgr) {
+        HILOG_ERROR("Failed to get bundle manager proxy");
+        return nullptr;
+    }
+
+    HILOG_DEBUG("Successfully got bundle manager proxy");
+    return bundleMgr;
+}
+
+sptr<AppExecFwk::IAppMgr> AccessibleAbilityConnection::GetAppMgrProxy()
+{
+    HILOG_DEBUG("GetBundleMgrProxy called");
+    
+    auto systemAbilityManager = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (!systemAbilityManager) {
+        HILOG_ERROR("Failed to get system ability manager");
+        return nullptr;
+    }
+
+    auto abilityMgrSa = systemAbilityManager->GetSystemAbility(APP_MGR_SERVICE_ID);
+    if (!abilityMgrSa) {
+        HILOG_ERROR("Failed to get bundle manager service");
+        return nullptr;
+    }
+
+    sptr<AppExecFwk::IAppMgr> abilityMgr = iface_cast<AppExecFwk::IAppMgr>(abilityMgrSa);
+    if (!abilityMgr) {
+        HILOG_ERROR("Failed to get bundle manager proxy");
+        return nullptr;
+    }
+
+    HILOG_DEBUG("Successfully got bundle manager proxy");
+    return abilityMgr;
+}
+
+void AccessibleAbilityConnection::RegisterAppStateObserverMapping(
+    const std::string& bundleName, 
+    const sptr<AccessibleAbilityConnection>& connection)
+{
+    if (bundleName.empty() || !connection) {
+        HILOG_ERROR("Invalid parameters for RegisterAppStateObserverMapping");
+        return;
+    }
+    
+    std::lock_guard<ffrt::mutex> lock(appStateObserverMutex_);
+    appStateObserverMappings_[bundleName] = connection;
+}
+
+void AccessibleAbilityConnection::UnregisterAppStateObserverMapping(const std::string& bundleName)
+{
+    if (bundleName.empty()) {
+        HILOG_ERROR("Invalid bundleName for UnregisterAppStateObserverMapping");
+        return;
+    }
+    
+    std::lock_guard<ffrt::mutex> lock(appStateObserverMutex_);
+    auto iter = appStateObserverMappings_.find(bundleName);
+    if (iter != appStateObserverMappings_.end()) {
+        appStateObserverMappings_.erase(iter);
+    }
+}
+
+sptr<AccessibleAbilityConnection> AccessibleAbilityConnection::GetConnectionByBundleName(
+    const std::string& bundleName)
+{
+    std::lock_guard<ffrt::mutex> lock(appStateObserverMutex_);
+    auto iter = appStateObserverMappings_.find(bundleName);
+    if (iter != appStateObserverMappings_.end()) {
+        return iter->second;
+    }
+    return nullptr;
+}
+
 void AccessibleAbilityConnection::HandleNoEventHandler(const AppExecFwk::ElementName &element)
 {
     HILOG_ERROR("eventHandler_ is nullptr.");
@@ -53,6 +155,188 @@ void AccessibleAbilityConnection::HandleNoEventHandler(const AppExecFwk::Element
     if (accountData != nullptr) {
         accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
     }
+}
+
+std::string AccessibleAbilityConnection::GenerateConnectionKey(const std::string& bundleName, 
+                                                            const std::string& abilityName, 
+                                                            int32_t accountId)
+{  
+    std::string key = bundleName + "#" + abilityName + "#" + 
+                     std::to_string(accountId) + "#" + 
+                     std::to_string(getpid());
+    
+    return key;
+}
+
+void AccessibleAbilityConnection::RegisterExtensionServiceMapping(const std::string& key, 
+                                                               const std::string& bundleName,
+                                                               const std::string& abilityName,
+                                                               const sptr<IRemoteObject>& remoteObject,
+                                                               int32_t accountId)
+{
+    if (key.empty() || bundleName.empty() || abilityName.empty() || !remoteObject) {
+        HILOG_ERROR("Invalid parameters for RegisterExtensionServiceMapping");
+        return;
+    }
+    
+    std::lock_guard<ffrt::mutex> lock(mappingMutex_);
+    auto info = std::make_shared<ExtensionServiceInfo>();
+    info->bundleName = bundleName;
+    info->abilityName = abilityName;
+    info->remoteObject = remoteObject;
+    info->accountId = accountId;
+    info->pid = getpid();
+    info->uid = getuid();
+    
+    extensionServiceMappings_[key] = info;
+}
+
+void AccessibleAbilityConnection::UnregisterExtensionServiceMapping(const std::string& key)
+{
+    if (key.empty()) {
+        HILOG_ERROR("Invalid key for UnregisterExtensionServiceMapping");
+        return;
+    }
+    
+    std::lock_guard<ffrt::mutex> lock(mappingMutex_);
+    auto iter = extensionServiceMappings_.find(key);
+    if (iter != extensionServiceMappings_.end()) {
+        HILOG_DEBUG("Unregistered extension service mapping: key=%{public}s, bundle=%{public}s, ability=%{public}s", 
+                    key.c_str(), iter->second->bundleName.c_str(), iter->second->abilityName.c_str());
+        extensionServiceMappings_.erase(iter);
+    }
+}
+
+std::tuple<std::string, std::string, int32_t> AccessibleAbilityConnection::GetExtensionServiceInfoByKey(
+    const std::string& key)
+{
+    std::lock_guard<ffrt::mutex> lock(mappingMutex_);
+    auto iter = extensionServiceMappings_.find(key);
+    if (iter != extensionServiceMappings_.end()) {
+        return std::make_tuple(iter->second->bundleName, iter->second->abilityName, iter->second->accountId);
+    }
+    return std::make_tuple("", "", -1);
+}
+
+sptr<IRemoteObject> AccessibleAbilityConnection::GetRemoteObjectByKey(const std::string& key)
+{
+    std::lock_guard<ffrt::mutex> lock(mappingMutex_);
+    auto iter = extensionServiceMappings_.find(key);
+    if (iter != extensionServiceMappings_.end()) {
+        return iter->second->remoteObject;
+    }
+    return nullptr;
+}
+
+void AccessibleAbilityConnection::NotifyExtensionServiceDeath(const std::string& key)
+{
+    HILOG_DEBUG("Notifying extension service death: key=%{public}s", key.c_str());
+
+    auto info = GetExtensionServiceInfoByKey(key);
+    std::string bundleName = std::get<0>(info);
+    std::string abilityName = std::get<1>(info);
+    int32_t accountId = std::get<2>(info);
+
+    if (!bundleName.empty()) {
+        HILOG_INFO("Extension service died: bundle=%{public}s, ability=%{public}s, account=%{public}d", 
+                   bundleName.c_str(), abilityName.c_str(), accountId);
+
+        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
+        if (!accountData) {
+            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
+            HILOG_ERROR("accountData is nullptr.");
+            return;
+        }
+        std::string name = bundleName + "/" + abilityName;
+        accountData->CallEnableAbilityCallback(name);
+    }
+    UnregisterExtensionServiceMapping(key);
+}
+
+bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(
+    const std::string& bundleName,
+    const std::string& abilityName,
+    const sptr<AccessibleAbilityConnection>& connection,
+    const sptr<AccessibilityAccountData>& accountData)
+{
+    sptr<AppExecFwk::IBundleMgr> bundleMgr = GetBundleMgrProxy();
+    if (!bundleMgr) {
+        HILOG_ERROR("Failed to get bundle manager proxy");
+        return false;
+    }
+
+    std::string appBundleName = bundleName;
+    std::string appAbilityName = abilityName;
+    AppExecFwk::AbilityInfo abilityInfo;
+    int32_t ret = bundleMgr->GetAbilityInfo(appBundleName, appAbilityName, abilityInfo);
+    if (ret != ERR_OK) {
+        HILOG_ERROR("Failed to get ability info, ret=%{public}d", ret);
+        return false;
+    }
+
+    RegisterAppStateObserverMapping(appBundleName, connection);
+
+    auto appStateObserver = sptr<AccessibleAppStateObserver>(
+        new (std::nothrow) AccessibleAppStateObserver());
+    if (!appStateObserver) {
+        HILOG_ERROR("Failed to create app state observer");
+        return false;
+    }
+    auto appStateObserver_ = appStateObserver;
+    appStateObserver->SetStateChangeCallback(
+        [appBundleName, appAbilityName, appStateObserver_, this](const AppExecFwk::AppStateData& appStateData) {
+            HILOG_INFO("OnAppStateChanged: bundleName=%{public}s, state=%{public}d",
+                appStateData.bundleName.c_str(), appStateData.state);
+            
+            if (appStateData.bundleName == appBundleName &&
+                appStateData.state == static_cast<int32_t>(
+                    AppExecFwk::ApplicationState::APP_STATE_TERMINATED)) {
+
+                auto connection = GetConnectionByBundleName(appBundleName);
+                if (connection) {
+                    std::string targetBundleName = connection->GetElementName().GetBundleName();
+                    std::string targetAbilityName = connection->GetElementName().GetAbilityName();
+                    
+                    std::lock_guard<ffrt::mutex> lock(mappingMutex_);
+                    for (auto iter = extensionServiceMappings_.begin(); 
+                         iter != extensionServiceMappings_.end();) {
+                        if (iter->second->bundleName == targetBundleName && 
+                            iter->second->abilityName == targetAbilityName) {
+                            HILOG_DEBUG("Removing extension service mapping: key=%{public}s, bundle=%{public}s, ability=%{public}s",
+                                       iter->first.c_str(), targetBundleName.c_str(), targetAbilityName.c_str());
+                            iter = extensionServiceMappings_.erase(iter);
+                        } else {
+                            ++iter;
+                        }
+                    }
+                    connection->Disconnect();
+                    auto abilityManagerClient = GetAppMgrProxy();
+                    int32_t result = abilityManagerClient->UnregisterApplicationStateObserver(appStateObserver_);
+                    if (result != ERR_OK) {
+                        HILOG_ERROR("Failed to unregister application state observer, ret=%{public}d", result);
+                    }
+                }
+                UnregisterAppStateObserverMapping(appBundleName);
+            }
+        });
+
+    std::vector<std::string> bundleNameList = {appBundleName};
+    auto abilityManagerClient = GetAppMgrProxy();
+    if (!abilityManagerClient) {
+        UnregisterAppStateObserverMapping(appBundleName);
+        HILOG_ERROR("Failed to get app manager proxy");
+        return false;
+    }
+
+    ret = abilityManagerClient->RegisterApplicationStateObserver(
+        appStateObserver, bundleNameList);
+    if (ret != ERR_OK) {
+        UnregisterAppStateObserverMapping(appBundleName);
+        HILOG_ERROR("Failed to register application state observer, ret=%{public}d", ret);
+        return false;
+    }
+    return true;
 }
 
 void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
@@ -65,7 +349,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     }
 
     int32_t accountId = accountId_;
-    eventHandler_->PostTask([accountId, element, remoteObject, resultCode]() {
+    eventHandler_->PostTask([accountId, element, remoteObject, resultCode, this]() {
 #ifdef OHOS_BUILD_ENABLE_HITRACE
         FinishAsyncTrace(HITRACE_TAG_ACCESSIBILITY_MANAGER, "AccessibleAbilityConnect",
             static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
@@ -107,6 +391,35 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
         connection->InitAbilityClient(remoteObject);
         accountData->UpdateEnableAbilityListsState();
+
+        if (!connection->GetConnectionKey().empty()) {
+            RegisterExtensionServiceMapping(connection->GetConnectionKey(), 
+                                          bundleName, 
+                                          abilityName, 
+                                          remoteObject,
+                                          accountId);
+            HILOG_DEBUG("Registered extension service mapping for key: %{public}s", 
+                       connection->GetConnectionKey().c_str());
+        }
+        
+        if (!deathRecipient_) {
+            deathRecipient_ = new(std::nothrow) AccessibleAbilityConnectionDeathRecipient(
+                accountId_, elementName_, eventHandler_);
+            if (!deathRecipient_) {
+                Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                    A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
+                HILOG_ERROR("deathRecipient_ is null");
+                return;
+            }
+        }
+
+        if (!abilityClient_->AsObject() || !abilityClient_->AsObject()->AddDeathRecipient(deathRecipient_)) {
+            HILOG_ERROR("Failed to add death recipient");
+        }
+
+        if (!RegisterAppStateObserverToAMS(bundleName, abilityName, connection, accountData)) {
+            HILOG_ERROR("Failed to register app state observer for %{public}s", bundleName.c_str());
+        }
         }, "OnAbilityConnectDone");
 }
 
@@ -246,6 +559,21 @@ void AccessibleAbilityConnection::DisconnectAbility()
         HILOG_ERROR("Disconnect failed!");
         return;
     }
+    std::string bundleName = elementName_.GetBundleName();
+    std::string abilityName = elementName_.GetAbilityName();
+    
+    UnregisterAppStateObserverMapping(bundleName);
+
+    std::lock_guard<ffrt::mutex> lock(mappingMutex_);
+    for (auto iter = extensionServiceMappings_.begin(); 
+         iter != extensionServiceMappings_.end();) {
+        if (iter->second->bundleName == bundleName && 
+            iter->second->abilityName == abilityName) {
+            iter = extensionServiceMappings_.erase(iter);
+        } else {
+            ++iter;
+        }
+    }
 }
 
 void AccessibleAbilityConnection::NotifyDisconnect()
@@ -276,6 +604,9 @@ bool AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element
     elementName_ = element;
     HILOG_DEBUG("bundleName[%{public}s], abilityName [%{public}s], accountId [%{public}d]",
         bundleName.c_str(), abilityName.c_str(), accountId_);
+
+    connectionKey_ = GenerateConnectionKey(bundleName, abilityName, accountId_);
+    HILOG_DEBUG("Generated connection key: %{public}s", connectionKey_.c_str());
 
     int uid = Singleton<AccessibilityResourceBundleManager>::GetInstance().GetUidByBundleName(
         bundleName, abilityName, accountId_);
@@ -411,6 +742,14 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
             HILOG_ERROR("There is no connection for %{public}s.", uri.c_str());
             return;
         }
+
+        const std::string& connectionKey = connection->GetConnectionKey();
+        if (!connectionKey.empty()) {
+            NotifyExtensionServiceDeath(connectionKey);
+            HILOG_DEBUG("Notified extension service death for key: %{public}s", 
+                       connectionKey.c_str());
+        }
+
         accountData->RemoveConnectedAbility(*sharedElementName);
         accountData->RemoveEnabledAbility(uri);
 

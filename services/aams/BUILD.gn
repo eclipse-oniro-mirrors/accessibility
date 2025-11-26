@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2024 Huawei Device Co., Ltd.
+# Copyright (C) 2022-2025 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -49,6 +49,7 @@ accessibleabilityms_files = [
   "${services_path}/src/accessible_ability_manager_service_event_handler.cpp",
   "${services_path}/src/accessible_ability_manager_service.cpp",
   "${services_path}/src/accessibility_account_data.cpp",
+  "${services_path}/src/accessible_app_state_observer.cpp",
   "${services_path}/src/accessibility_circle_drawing_manager.cpp",
   "${services_path}/src/accessibility_settings.cpp",
   "${services_path}/src/accessibility_settings_config.cpp",

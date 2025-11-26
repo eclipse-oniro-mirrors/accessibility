@@ -60,6 +60,11 @@ AccessibilityConfig::Impl::~Impl()
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister EnableAbilityListsObserver failed.");
         }
+        ret = serviceProxy_->DeRegisterEnableAbilityCallbackObserver(
+            enableAbilityCallbackObserver_->AsObject());
+        if (ret != ERR_OK) {
+            HILOG_ERROR("DeRegister EnableAbilityCallbackObserver failed.");
+        }
         ret = serviceProxy_->DeRegisterConfigObserver(configObserver_->AsObject());
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister configObserver failed.");
@@ -69,8 +74,10 @@ AccessibilityConfig::Impl::~Impl()
         while (count < DESTRUCTOR_DELAY_COUNT) {
             int32_t captionObserverRef = captionObserver_->GetSptrRefCount();
             int32_t enableAbilityListsObserverRef = enableAbilityListsObserver_->GetSptrRefCount();
+            int32_t enableAbilityCallbackObserverRef = enableAbilityCallbackObserver_->GetSptrRefCount();
             int32_t configObserverRef = configObserver_->GetSptrRefCount();
-            if (captionObserverRef == 1 && enableAbilityListsObserverRef == 1 && configObserverRef == 1) {
+            if (captionObserverRef == 1 && enableAbilityListsObserverRef == 1 && configObserverRef == 1 
+                && enableAbilityCallbackObserverRef == 1) {
                 HILOG_INFO("Observer RefCount is 1");
                 break;
             }
@@ -84,6 +91,7 @@ AccessibilityConfig::Impl::~Impl()
             serviceProxy_ = nullptr;
             captionObserver_ = nullptr;
             enableAbilityListsObserver_ = nullptr;
+            enableAbilityCallbackObserver_ = nullptr;
             configObserver_ = nullptr;
         }
     }
@@ -313,6 +321,16 @@ bool AccessibilityConfig::Impl::RegisterToService()
         serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserver_);
     }
 
+    if (!enableAbilityCallbackObserver_) {
+        enableAbilityCallbackObserver_ =
+            new(std::nothrow) AccessibilityEnableAbilityCallbackObserverImpl(*this);
+        if (enableAbilityCallbackObserver_ == nullptr) {
+            HILOG_ERROR("Create enableAbilityCallbackObserver_ failed.");
+            return false;
+        }
+        serviceProxy_->RegisterEnableAbilityCallbackObserver(enableAbilityCallbackObserver_);
+    }
+
     if (!configObserver_) {
         configObserver_ = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(*this);
         if (configObserver_ == nullptr) {
@@ -350,6 +368,7 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
             serviceProxy_ = nullptr;
             captionObserver_ = nullptr;
             enableAbilityListsObserver_ = nullptr;
+            enableAbilityCallbackObserver_ = nullptr;
             configObserver_ = nullptr;
             isInitialized_ = false;
             HILOG_INFO("ResetService ok");
@@ -388,6 +407,7 @@ Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(const std::stri
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
+
     Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->EnableAbility(name,
         capabilities));
     return ret;
@@ -1537,6 +1557,94 @@ Accessibility::RetError AccessibilityConfig::Impl::SubscribeEnableAbilityListsOb
     enableAbilityListsObservers_.push_back(observer);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
     return Accessibility::RET_OK;
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::SubscribeEnableAbilityCallbackObserver(
+    const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer)
+{
+    HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+    if (std::any_of(enableAbilityCallbackObservers_.begin(), enableAbilityCallbackObservers_.end(),
+        [&observer](const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &listObserver) {
+            return listObserver == observer;
+            })) {
+        HILOG_ERROR("the observer is exist");
+        return Accessibility::RET_OK;
+    }
+    enableAbilityCallbackObservers_.push_back(observer);
+    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
+    return Accessibility::RET_OK;
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeEnableAbilityCallbackObserver(
+    const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer)
+{
+    HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+    auto iter = enableAbilityCallbackObservers_.begin();
+    for (;iter != enableAbilityCallbackObservers_.end(); iter++) {
+        if (*iter == observer) {
+            HILOG_DEBUG("erase observer");
+            enableAbilityCallbackObservers_.erase(iter);
+            HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
+            return Accessibility::RET_OK;
+        }
+    }
+    return Accessibility::RET_OK;
+}
+
+void AccessibilityConfig::Impl::OnEnableAbilityRemoteDied(const std::string& name)
+{
+    HILOG_DEBUG();
+    std::vector<std::shared_ptr<AccessibilityEnableAbilityCallbackObserver>> observers;
+    {
+        std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+        observers = enableAbilityCallbackObservers_;
+    }
+    for (auto &enableAbilityCallbackObserver : observers) {
+        enableAbilityCallbackObserver->OnEnableAbilityRemoteDied(name);
+    }
+}
+
+void AccessibilityConfig::Impl::RegisterEnableAbilityCallback(
+    const std::string& name, const std::function<void()>& callback)
+{
+    if (name.empty() || !callback) {
+        HILOG_ERROR("Invalid parameters for RegisterEnableAbilityCallback");
+        return;
+    }
+    
+    std::lock_guard<ffrt::mutex> lock(abilityCallbackMutex_);
+    abilityCallbackMappings_[name].push_back(callback);
+    HILOG_DEBUG("Registered callback for ability: %{public}s", name.c_str());
+}
+
+void AccessibilityConfig::Impl::UnregisterEnableAbilityCallback(
+    const std::string& name, const std::function<void()>& callback)
+{
+    if (name.empty() || !callback) {
+        HILOG_ERROR("Invalid parameters for UnregisterEnableAbilityCallback");
+        return;
+    }
+    
+    std::lock_guard<ffrt::mutex> lock(abilityCallbackMutex_);
+    auto iter = abilityCallbackMappings_.find(name);
+    if (iter != abilityCallbackMappings_.end()) {
+        auto& callbacks = iter->second;
+        for (auto cbIter = callbacks.begin(); cbIter != callbacks.end(); ) {
+            if (!(*cbIter) ) {
+                cbIter = callbacks.erase(cbIter);
+            } else {
+                ++cbIter;
+            }
+        }
+        
+        if (callbacks.empty()) {
+            abilityCallbackMappings_.erase(iter);
+        }
+        
+        HILOG_DEBUG("Unregistered callback for ability: %{public}s", name.c_str());
+    }
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeEnableAbilityListsObserver(

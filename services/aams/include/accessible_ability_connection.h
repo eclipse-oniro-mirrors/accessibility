@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,8 +20,10 @@
 #include "accessibility_ability_info.h"
 #include "accessible_ability_channel.h"
 #include "accessible_ability_client_proxy.h"
+#include "accessibility_resource_bundle_manager.h"
 #include "ffrt.h"
 #include "common_event_manager.h"
+#include "app_mgr_interface.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -78,6 +80,31 @@ public:
     void SetIsRegisterDisconnectCallback(bool isRegister);
     void NotifyDisconnect();
     void DisconnectAbility();
+    bool RegisterAppStateObserverToAMS(const std::string& bundleName, const std::string& abilityName,
+                                 const sptr<AccessibleAbilityConnection>& connection,
+                                 const sptr<AccessibilityAccountData>& accountData);
+
+    static std::string GenerateConnectionKey(const std::string& bundleName, 
+                                           const std::string& abilityName, 
+                                           int32_t accountId);
+    
+    void SetConnectionKey(const std::string& key) { connectionKey_ = key; }
+    const std::string& GetConnectionKey() const { return connectionKey_; }
+    
+    static void RegisterExtensionServiceMapping(const std::string& key, 
+                                              const std::string& bundleName,
+                                              const std::string& abilityName,
+                                              const sptr<IRemoteObject>& remoteObject,
+                                              int32_t accountId);
+    static void UnregisterExtensionServiceMapping(const std::string& key);
+    static std::tuple<std::string, std::string, int32_t> GetExtensionServiceInfoByKey(const std::string& key);
+    static sptr<IRemoteObject> GetRemoteObjectByKey(const std::string& key);
+    static void NotifyExtensionServiceDeath(const std::string& key);
+
+    static void RegisterAppStateObserverMapping(const std::string& bundleName, 
+                                              const sptr<AccessibleAbilityConnection>& connection);
+    static void UnregisterAppStateObserverMapping(const std::string& bundleName);
+    static sptr<AccessibleAbilityConnection> GetConnectionByBundleName(const std::string& bundleName);
 
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -107,6 +134,24 @@ private:
     AppExecFwk::ElementName elementName_ {};
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
     bool isRegisterDisconnectCallback_ = false;
+    std::string connectionKey_;
+    sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
+    sptr<AppExecFwk::IAppMgr> GetAppMgrProxy();
+    
+    struct ExtensionServiceInfo {
+        std::string bundleName;
+        std::string abilityName;
+        sptr<IRemoteObject> remoteObject;
+        int32_t accountId;
+        pid_t pid;
+        uid_t uid;
+    };
+    
+    static std::map<std::string, std::shared_ptr<ExtensionServiceInfo>> extensionServiceMappings_;
+    static ffrt::mutex mappingMutex_;
+
+    static std::map<std::string, sptr<AccessibleAbilityConnection>> appStateObserverMappings_;
+    static ffrt::mutex appStateObserverMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

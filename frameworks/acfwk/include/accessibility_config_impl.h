@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@
 
 #include "accessibility_config.h"
 #include "accessibility_enable_ability_lists_observer_stub.h"
+#include "accessibility_enable_ability_callback_observer_stub.h"
 #include "accessible_ability_manager_caption_observer_stub.h"
 #include "accessible_ability_manager_config_observer_stub.h"
 #include "accessible_ability_manager_service_proxy.h"
@@ -47,6 +48,11 @@ public:
         const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer);
     Accessibility::RetError UnsubscribeEnableAbilityListsObserver(
         const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer);
+
+    Accessibility::RetError SubscribeEnableAbilityCallbackObserver(
+        const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer);
+    Accessibility::RetError UnsubscribeEnableAbilityCallbackObserver(
+        const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer);
 
     Accessibility::RetError EnableAbility(const std::string &name, const uint32_t capabilities);
     Accessibility::RetError DisableAbility(const std::string &name);
@@ -109,12 +115,18 @@ public:
     void OnAccessibleAbilityManagerIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime);
     void OnAccessibilityEnableAbilityListsChanged();
     void OnAccessibilityInstallAbilityListsChanged();
-
+    void OnEnableAbilityRemoteDied(const std::string& name);
     void SetInitializeFlag(bool flag)
     {
         isInitialized_ = flag;
     }
 private:
+    std::map<std::string, std::vector<std::function<void()>>> abilityCallbackMappings_;
+    ffrt::mutex abilityCallbackMutex_;
+    
+    void RegisterEnableAbilityCallback(const std::string& name, const std::function<void()>& callback);
+    void UnregisterEnableAbilityCallback(const std::string& name, const std::function<void()>& callback);
+
     class AccessibilityEnableAbilityListsObserverImpl :
         public Accessibility::AccessibilityEnableAbilityListsObserverStub {
     public:
@@ -143,6 +155,22 @@ private:
     private:
         Impl &client_;
         std::atomic<bool> enableAbilityClientDeleted_ = false;
+    };
+
+    class AccessibilityEnableAbilityCallbackObserverImpl :
+        public Accessibility::AccessibilityEnableAbilityCallbackObserverStub {
+    public:
+        explicit AccessibilityEnableAbilityCallbackObserverImpl(Impl &client)
+            : client_(client) {}
+        ~AccessibilityEnableAbilityCallbackObserverImpl() = default;
+
+        virtual void OnEnableAbilityRemoteDied(const std::string& name)
+        {
+            client_.OnEnableAbilityRemoteDied(name);
+        }
+
+    private:
+        Impl &client_;
     };
 
     class AccessibleAbilityManagerCaptionObserverImpl
@@ -351,6 +379,7 @@ private:
     sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver_ = nullptr;
     sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver_ = nullptr;
     sptr<AccessibilityEnableAbilityListsObserverImpl> enableAbilityListsObserver_ = nullptr;
+    sptr<AccessibilityEnableAbilityCallbackObserverImpl> enableAbilityCallbackObserver_ = nullptr;
 
     bool isInitialized_ = false;
     bool shortkey_ = false;
@@ -378,6 +407,8 @@ private:
     std::vector<std::string> shortkeyMultiTarget_ {};
     std::vector<std::shared_ptr<AccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     ffrt::mutex enableAbilityListsObserversMutex_;
+    std::vector<std::shared_ptr<AccessibilityEnableAbilityCallbackObserver>> enableAbilityCallbackObservers_;
+    ffrt::mutex enableAbilityCallbackObserversMutex_;
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>> configObservers_;
     ffrt::mutex configObserversMutex_;
     

@@ -1020,6 +1020,51 @@ ErrCode AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
     return syncFuture.get();
 }
 
+ErrCode AccessibleAbilityManagerService::RegisterEnableAbilityCallbackObserver(
+    const sptr<IAccessibilityEnableAbilityCallbackObserver> &observer)
+{
+    HILOG_DEBUG();
+    if (!observer || !actionHandler_) {
+        HILOG_ERROR("Parameters check failed!");
+        return ERR_INVALID_DATA;
+    }
+    XCollieHelper timer(TIMER_REGISTER_ENABLEABILITY_OBSERVER, XCOLLIE_TIMEOUT);
+    std::shared_ptr<ffrt::promise<ErrCode>> syncPromisePtr = std::make_shared<ffrt::promise<ErrCode>>();
+    ffrt::future syncFuture = syncPromisePtr->get_future();
+    actionHandler_->PostTask([this, syncPromisePtr, observer]() {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Account data is null");
+            syncPromisePtr->set_value(ERR_INVALID_DATA);
+            return;
+        }
+        if (!enableAbilityCallbackObserverDeathRecipient_) {
+            enableAbilityCallbackObserverDeathRecipient_ = new(std::nothrow) EnableAbilityListsObserverDeathRecipient();
+            if (!enableAbilityCallbackObserverDeathRecipient_) {
+                HILOG_ERROR("enableAbilityListsObserverDeathRecipient_ is null");
+                syncPromisePtr->set_value(ERR_INVALID_DATA);
+                return;
+            }
+        }
+        if (!observer->AsObject()) {
+            HILOG_ERROR("object is null");
+            syncPromisePtr->set_value(ERR_OK);
+            return;
+        }
+        observer->AsObject()->AddDeathRecipient(enableAbilityCallbackObserverDeathRecipient_);
+        accountData->AddEnableAbilityCallbackObserver(observer);
+        syncPromisePtr->set_value(ERR_OK);
+        }, "TASK_REGISTER_ENABLE_ABILITY_LISTS_OBSERVER");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait RegisterEnableAbilityListsObserver result");
+        return ERR_TRANSACTION_FAILED;
+    }
+    return syncFuture.get();
+}
+
 ErrCode AccessibleAbilityManagerService::GetAbilityList(uint32_t abilityTypes, int32_t stateType,
     std::vector<AccessibilityAbilityInfoParcel>& infos)
 {
@@ -4617,6 +4662,19 @@ ErrCode AccessibleAbilityManagerService::DeRegisterEnableAbilityListsObserver(
         return RET_ERR_NULLPTR;
     }
     accountData->RemoveEnableAbilityListsObserver(obj);
+    return RET_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::DeRegisterEnableAbilityCallbackObserver(
+    const sptr<IRemoteObject>& obj)
+{
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    accountData->RemoveEnableAbilityCallbackObserver(obj);
     return RET_OK;
 }
 
