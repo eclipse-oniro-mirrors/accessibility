@@ -1099,7 +1099,7 @@ int EnableAbilityListsObserver::OnEnableAbilityListsStateChangedWork(uv_work_t *
         HILOG_ERROR("loop or work is nullptr.");
         return RET_ERR_FAILED;
     }
-    int ret = uv_queue_work_with_qos(
+    int ret = uv_queue_work_with_qos_internal(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -1123,7 +1123,8 @@ int EnableAbilityListsObserver::OnEnableAbilityListsStateChangedWork(uv_work_t *
             delete work;
             work = nullptr;
         },
-        uv_qos_default);
+        uv_qos_default,
+        "OnEnableAbilityListsStateChangedWork");
     return ret;
 }
 

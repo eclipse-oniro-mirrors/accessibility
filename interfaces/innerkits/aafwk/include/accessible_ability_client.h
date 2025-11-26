@@ -72,7 +72,7 @@ struct NapiDisconnectCallback : public DisconnectCallback {
             napi_get_undefined(env_, &undefined);
             napi_call_function(env_, undefined, handler, 0, &jsEvent, &callResult);
         };
-        if (napi_send_event(env_, task, napi_eprio_high) != napi_status::napi_ok) {
+        if (napi_send_event(env_, task, napi_eprio_high, "NotifyJS") != napi_status::napi_ok) {
             HILOG_ERROR("failed to send event");
         }
     }

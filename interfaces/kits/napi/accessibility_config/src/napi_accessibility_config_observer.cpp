@@ -143,7 +143,7 @@ void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
         napi_get_value_int32(callbackInfo->env_, callResult, &result);
         HILOG_INFO("NotifyStateChangedJS napi_call_function result[%{public}d]", result);
     };
-    if (napi_send_event(env_, task, napi_eprio_high) != napi_status::napi_ok) {
+    if (napi_send_event(env_, task, napi_eprio_high, "NotifyStateChanged2JS") != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
     }
 }
@@ -188,7 +188,7 @@ void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::Accessib
         napi_get_value_int32(callbackInfo->env_, callResult, &result);
         HILOG_INFO("NotifyPropertyChangedJS napi_call_function result[%{public}d]", result);
     };
-    if (napi_send_event(env_, task, napi_eprio_high) != napi_status::napi_ok) {
+    if (napi_send_event(env_, task, napi_eprio_high, "NotifyPropertyChanged2JS") != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
     }
 }
@@ -230,7 +230,7 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& val
         napi_get_value_string_utf8(callbackInfo->env_, callResult, buf, BUF_SIZE, &result);
         HILOG_INFO("NotifyStringChanged2JSInner napi_call_function result[%{public}zu]", result);
     };
-    if (napi_send_event(env_, task, napi_eprio_high) != napi_status::napi_ok) {
+    if (napi_send_event(env_, task, napi_eprio_high, "NotifyStringChanged2JS") != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
     }
 }
@@ -273,7 +273,7 @@ void NAccessibilityConfigObserver::NotifyStringVectorChanged2JS(std::vector<std:
         napi_get_value_string_utf8(callbackInfo->env_, callResult, buf, BUF_SIZE, &result);
         HILOG_DEBUG("NotifyStringVectorChanged napi_call_function result[%{public}zu]", result);
     };
-    if (napi_send_event(env_, task, napi_eprio_high) != napi_status::napi_ok) {
+    if (napi_send_event(env_, task, napi_eprio_high, "NotifyStringVectorChanged2JS") != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
     }
 }
@@ -313,7 +313,7 @@ void NAccessibilityConfigObserver::NotifyIntChanged2JS(int32_t value)
         napi_get_value_int32(callbackInfo->env_, callResult, &result);
         HILOG_INFO("NotifyIntChanged2JSInner napi_call_function result[%{public}d]", result);
     };
-    if (napi_send_event(env_, task, napi_eprio_high) != napi_status::napi_ok) {
+    if (napi_send_event(env_, task, napi_eprio_high, "NotifyIntChanged2JS") != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
     }
 }
@@ -353,7 +353,7 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
         napi_get_value_uint32(callbackInfo->env_, callResult, &result);
         HILOG_INFO("NotifyUintChanged2JSInner napi_call_function result[%{public}d]", result);
     };
-    if (napi_send_event(env_, task, napi_eprio_high) != napi_status::napi_ok) {
+    if (napi_send_event(env_, task, napi_eprio_high, "NotifyUintChanged2JS") != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
     }
 }
@@ -392,7 +392,7 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
         int32_t result;
         napi_get_value_int32(callbackInfo->env_, callResult, &result);
     };
-    if (napi_send_event(env_, task, napi_eprio_high) != napi_status::napi_ok) {
+    if (napi_send_event(env_, task, napi_eprio_high, "NotifyFloatChanged2JS") != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
     }
 }
