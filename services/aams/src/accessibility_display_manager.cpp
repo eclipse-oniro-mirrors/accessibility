@@ -292,6 +292,7 @@ void AccessibilityDisplayManager::DisplayListener::OnChangeForWideFold(
         HILOG_INFO("FoldDisplayMode MAIN");
         interceptor->ShieldZoomGesture(true);
         displayMode_ = currentMode;
+        orientation_ = currentOrientation;
         return;
     }
     if (currentMode == Rosen::FoldDisplayMode::FULL) {
