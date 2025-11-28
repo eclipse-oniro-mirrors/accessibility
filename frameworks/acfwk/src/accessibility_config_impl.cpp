@@ -250,6 +250,10 @@ void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObjec
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     if (retSysParam >= 0 && std::strcmp(value, "true")) {
         do {
+            std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
+            if (serviceProxy_ != nullptr) {
+                break;
+            }
             auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
             if (samgr == nullptr) {
                 break;
@@ -352,6 +356,7 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
             enableAbilityListsObserver_ = nullptr;
             configObserver_ = nullptr;
             isInitialized_ = false;
+            isConfigInit_ = false;
             HILOG_INFO("ResetService ok");
         }
     }
@@ -1902,6 +1907,9 @@ void AccessibilityConfig::Impl::InitConfigValues()
     if (serviceProxy_ == nullptr) {
         return;
     }
+    if (isConfigInit_) {
+        return;
+    }
     serviceProxy_->GetAllConfigs(configData, captionParcel);
     
     std::lock_guard<ffrt::mutex> lock(configObserversMutex_);
@@ -1925,6 +1933,7 @@ void AccessibilityConfig::Impl::InitConfigValues()
     ignoreRepeatClickTime_ = configData.ignoreRepeatClickTime_;
     ignoreRepeatClickState_ = configData.ignoreRepeatClickState_;
     captionProperty_ = static_cast<CaptionProperty>(captionParcel);
+    isConfigInit_ = true;
     NotifyDefaultConfigs();
     HILOG_DEBUG("ConnectToService Success");
 }
