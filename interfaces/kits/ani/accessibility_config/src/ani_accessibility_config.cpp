@@ -195,32 +195,38 @@ void EnableAbilityListsObserverImpl::UnsubscribeFromFramework()
     instance.UnsubscribeEnableAbilityListsObserver(shared_from_this());
 }
 
-void EnableAbilityCallbackObserver::OnEnableAbilityRemoteDied(const std::string& name)
+void EnableAbilityCallbackObserver::OnEnableAbilityRemoteDied(const std::string &name)
 {
     HILOG_INFO();
-    ANIUtils::EnvGuard guard(vm_);
-    ani_env *tmpEnv = guard.GetEnv();
-    if (tmpEnv == nullptr) {
-        HILOG_ERROR("tmpEnv is null");
-        return;
+    auto task = [vm = vm_, callback = callback_]() {
+        HILOG_INFO("on enable ability lists state changed");
+        ANIUtils::EnvGuard guard(vm);
+        ani_env *tmpEnv = guard.GetEnv();
+        if (tmpEnv == nullptr) {
+            HILOG_ERROR("tmpEnv is null");
+            return;
+        }
+        ani_size nr_refs = ANI_SCOPE_SIZE;
+        tmpEnv->CreateLocalScope(nr_refs);
+        ani_ref call = nullptr;
+        auto status =
+            tmpEnv->Object_GetPropertyByName_Ref(reinterpret_cast<ani_object>(callback), "onDisconnect", &call);
+        if (status != ANI_OK) {
+            HILOG_ERROR("get onDisconnect property failed with %{public}d", status);
+            return;
+        }
+        auto fnObj = reinterpret_cast<ani_fn_object>(call);
+        ani_ref result;
+        status = tmpEnv->FunctionalObject_Call(fnObj, 0, nullptr, &result);
+        if (status != ANI_OK) {
+            HILOG_ERROR("FunctionalObject_Call failed, status %{public}d", status);
+            return;
+        }
+        tmpEnv->DestroyLocalScope();
+    };
+    if (!ANIUtils::SendEventToMainThread(task)) {
+        HILOG_ERROR("failed to send event");
     }
-    ani_size nr_refs = ANI_SCOPE_SIZE;
-    tmpEnv->CreateLocalScope(nr_refs);
-    ani_ref callback = nullptr;
-    auto status = tmpEnv->Object_GetPropertyByName_Ref(
-        reinterpret_cast<ani_object>(callback_), "onDisconnect", &callback);
-    if (status != ANI_OK) {
-        HILOG_ERROR("get onDisconnect property failed with %{public}d", status);
-        return;
-    }
-    auto fnObj = reinterpret_cast<ani_fn_object>(callback);
-    ani_ref result;
-    status = tmpEnv->FunctionalObject_Call(fnObj, 0, nullptr, &result);
-    if (status != ANI_OK) {
-        HILOG_ERROR("FunctionalObject_Call failed, status %{public}d", status);
-        return;
-    }
-    tmpEnv->DestroyLocalScope();
 }
 
 void EnableAbilityCallbackObserverImpl::OnEnableAbilityRemoteDied(const std::string& name)

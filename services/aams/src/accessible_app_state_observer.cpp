@@ -28,7 +28,7 @@ AccessibleAppStateObserver::~AccessibleAppStateObserver()
     HILOG_DEBUG("AccessibleAppStateObserver destructed");
 }
 
-void AccessibleAppStateObserver::SetStateChangeCallback( 
+void AccessibleAppStateObserver::SetStateChangeCallback(
     std::function<void(const AppExecFwk::AppStateData&)> callback)
 {
     std::lock_guard<std::mutex> lock(callbackMutex_);

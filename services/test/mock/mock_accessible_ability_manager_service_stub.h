@@ -44,6 +44,9 @@ public:
     ErrCode RegisterEnableAbilityListsObserver(
         const sptr<IAccessibilityEnableAbilityListsObserver>& observer) override;
 
+    ErrCode RegisterEnableAbilityCallbackObserver(
+        const sptr<IAccessibilityEnableAbilityCallbackObserver> &observer) override;
+
     ErrCode GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
         std::vector<AccessibilityAbilityInfoParcel>& infos) override;
 
@@ -61,7 +64,9 @@ public:
 
     ErrCode DeRegisterEnableAbilityListsObserver(
         const sptr<IRemoteObject>& obj) override;
-    
+
+    ErrCode DeRegisterEnableAbilityCallbackObserver(const sptr<IRemoteObject>& obj) override;
+
     ErrCode DeRegisterConfigObserver(const sptr<IRemoteObject>& obj) override;
 
     ErrCode GetCaptionProperty(CaptionPropertyParcel& caption, bool isPermissionRequired) override;
@@ -140,6 +145,7 @@ private:
     sptr<IAccessibleAbilityManagerConfigObserver> observer_ = nullptr;
     sptr<IAccessibleAbilityManagerCaptionObserver> captionObserver_ = nullptr;
     sptr<IAccessibilityEnableAbilityListsObserver> abilityObserver_ = nullptr;
+    sptr<IAccessibilityEnableAbilityCallbackObserver> callbackObserver_ = nullptr;
 
     bool shortkey_ = false;
     bool highContrastText_ = false;

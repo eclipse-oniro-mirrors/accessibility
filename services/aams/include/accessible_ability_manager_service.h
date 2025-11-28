@@ -98,6 +98,7 @@ public:
 
     ErrCode RegisterEnableAbilityListsObserver(
         const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override;
+
     ErrCode RegisterEnableAbilityCallbackObserver(
         const sptr<IAccessibilityEnableAbilityCallbackObserver> &observer) override;
 
@@ -117,6 +118,7 @@ public:
     ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override;
 
     ErrCode DeRegisterEnableAbilityListsObserver(const sptr<IRemoteObject>& obj) override;
+
     ErrCode DeRegisterEnableAbilityCallbackObserver(const sptr<IRemoteObject>& obj) override;
 
     ErrCode GetCaptionProperty(CaptionPropertyParcel &caption, bool isPermissionRequired) override;

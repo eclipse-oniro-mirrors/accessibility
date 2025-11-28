@@ -169,7 +169,7 @@ void NAccessibilityConfig::EnableAbilityWithCallbackError(size_t& argc, OHOS::Ac
         errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         return;
     }
-    napi_create_reference(env,itemValue, 1, &callbackInfo->notifyCallback_);
+    napi_create_reference(env, itemValue, 1, &callbackInfo->notifyCallback_);
 }
 
 void NAccessibilityConfig::DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
@@ -283,7 +283,7 @@ napi_value NAccessibilityConfig::EnableAbilityWithCallback(napi_env env, napi_ca
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "EnableAbilityWithCallback", NAPI_AUTO_LENGTH, &resource);
 
-    napi_value param = parameters[PARAM2]; 
+    napi_value param = parameters[PARAM2];
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
@@ -291,8 +291,9 @@ napi_value NAccessibilityConfig::EnableAbilityWithCallback(napi_env env, napi_ca
             auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
             if (callbackInfo->capabilities_ != 0) {
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-                Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.EnableAbility", REPORTER_THRESHOLD_VALUE);
-#endif // ACCESSIBILITY_EMULATOR_DEFINED 
+                Accessibility::ApiReportHelper reporter(
+                    "AccessibilityConfig.Impl.EnableAbility", REPORTER_THRESHOLD_VALUE);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
                 callbackInfo->ret_ = instance.EnableAbility(callbackInfo->abilityName_, callbackInfo->capabilities_);
                 if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
                     napi_value callback = nullptr;

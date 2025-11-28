@@ -13,38 +13,39 @@
  * limitations under the License.
  */
 
- #ifndef ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_PROXY_H
- #define ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_PROXY_H
- 
- #include "iaccessibility_enable_ability_callback_observer.h"
- #include "iremote_proxy.h"
- 
- namespace OHOS {
- namespace Accessibility {
- class AccessibilityEnableAbilityCallbackObserverProxy : public IRemoteProxy<IAccessibilityEnableAbilityCallbackObserver> {
- public:
-     /**
-      * @brief construct function
-      * @param object The object of IPC
-      */
-     explicit AccessibilityEnableAbilityCallbackObserverProxy(const sptr<IRemoteObject> &object);
- 
-     /**
-      * @brief destruct function
-      */
-     virtual ~AccessibilityEnableAbilityCallbackObserverProxy() override;
- 
-     virtual void OnEnableAbilityRemoteDied(const std::string& name) override;
+#ifndef ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_PROXY_H
+#define ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_PROXY_H
 
- private:
-     /**
-      * @brief Write the descriptor of IPC.
-      * @param data It is include the descriptor of IPC.
-      * @return true: Write the descriptor successfully; otherwise is not.
-      */
-     bool WriteInterfaceToken(MessageParcel &data);
-     static inline BrokerDelegator<AccessibilityEnableAbilityCallbackObserverProxy> delegator;
- };
- } // namespace Accessibility
- } // namespace OHOS
- #endif // ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_PROXY_H
+#include "iaccessibility_enable_ability_callback_observer.h"
+#include "iremote_proxy.h"
+
+namespace OHOS {
+namespace Accessibility {
+class AccessibilityEnableAbilityCallbackObserverProxy
+    : public IRemoteProxy<IAccessibilityEnableAbilityCallbackObserver> {
+public:
+    /**
+     * @brief construct function
+     * @param object The object of IPC
+     */
+    explicit AccessibilityEnableAbilityCallbackObserverProxy(const sptr<IRemoteObject>& object);
+
+    /**
+     * @brief destruct function
+     */
+    virtual ~AccessibilityEnableAbilityCallbackObserverProxy() override;
+
+    virtual void OnEnableAbilityRemoteDied(const std::string& name) override;
+
+private:
+    /**
+     * @brief Write the descriptor of IPC.
+     * @param data It is include the descriptor of IPC.
+     * @return true: Write the descriptor successfully; otherwise is not.
+     */
+    bool WriteInterfaceToken(MessageParcel& data);
+    static inline BrokerDelegator<AccessibilityEnableAbilityCallbackObserverProxy> delegator;
+};
+} // namespace Accessibility
+} // namespace OHOS
+#endif // ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_PROXY_H

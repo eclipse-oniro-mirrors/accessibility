@@ -236,7 +236,7 @@ void AccessibilityAccountData::AddEnableAbilityCallbackObserver(
 void AccessibilityAccountData::RemoveEnableAbilityCallbackObserver(const wptr<IRemoteObject>& observer)
 {
     std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
-    auto itr = enableAbilityCallbackObservers_.begin(); 
+    auto itr = enableAbilityCallbackObservers_.begin();
     for (; itr != enableAbilityCallbackObservers_.end(); itr++) {
         if ((*itr)->AsObject() == observer) {
             HILOG_DEBUG("erase observer");
@@ -254,17 +254,6 @@ void AccessibilityAccountData::UpdateEnableAbilityListsState()
     for (auto &observer : enableAbilityListsObservers_) {
         if (observer) {
             observer->OnAccessibilityEnableAbilityListsChanged();
-        }
-    }
-}
-
-void AccessibilityAccountData::CallEnableAbilityCallback(const std::string &name)
-{
-    std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
-    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
-    for (auto &observer : enableAbilityCallbackObservers_) {
-        if (observer) {
-            observer->OnEnableAbilityRemoteDied(name);
         }
     }
 }
@@ -756,7 +745,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
             isInstalled = true;
 
             // Judge capabilities
-            uint32_t resultCapabilities = capabilities;
+            uint32_t resultCapabilities = itr->GetStaticCapabilityValues() & capabilities;
             HILOG_DEBUG("resultCapabilities is [%{public}d]", resultCapabilities);
             if (resultCapabilities == 0) {
                 HILOG_ERROR("the result of capabilities is wrong");
@@ -1039,7 +1028,7 @@ void AccessibilityAccountData::UpdateAutoStartEnabledAbilities()
             HILOG_INFO("auto start packageName is %{public}s.", bundleName.c_str());
             uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
                 CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
-            uint32_t resultCapabilities = capabilities;
+            uint32_t resultCapabilities = installAbility.GetStaticCapabilityValues() & capabilities;
             installAbility.SetCapabilityValues(resultCapabilities);
             std::string uri = Utils::GetUri(bundleName, abilityName);
             AddEnabledAbility(uri);
@@ -1087,6 +1076,76 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     }
 
     return flag;
+}
+
+void AccessibilityAccountData::AddExtensionServiceObserverAbility(
+    const std::string& key, const sptr<AccessibleAbilityConnection>& connection)
+{
+    if (key.empty() || !connection) {
+        HILOG_ERROR("Invalid parameters for AddExtensionServiceObserverAbility");
+        return;
+    }
+    extensionServiceAbilities_.AddAccessibilityAbility(key, connection);
+}
+
+void AccessibilityAccountData::RemoveExtensionServiceObserverAbility(const std::string& uri)
+{
+    if (uri.empty()) {
+        HILOG_ERROR("Invalid key for RemoveExtensionServiceObserverAbility");
+        return;
+    }
+    
+    extensionServiceAbilities_.RemoveAccessibilityAbilityByUri(uri);
+}
+
+sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetExtensionServiceObserverByUri(const std::string& uri)
+{
+    return extensionServiceAbilities_.GetAccessibilityAbilityByUri(uri);
+}
+
+void AccessibilityAccountData::NotifyExtensionServiceDeath(const std::string& uri)
+{
+    HILOG_DEBUG("Notifying extension service death: uri=%{public}s", uri.c_str());
+
+    CallEnableAbilityCallback(uri);
+    RemoveExtensionServiceObserverAbility(uri);
+}
+
+void AccessibilityAccountData::CallEnableAbilityCallback(const std::string &uri)
+{
+    std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
+    for (auto &observer : enableAbilityCallbackObservers_) {
+        if (observer) {
+            observer->OnEnableAbilityRemoteDied(uri);
+        }
+    }
+}
+
+void AccessibilityAccountData::AddAppStateObserverAbility(
+    const std::string& uri, const sptr<AccessibleAbilityConnection>& connection)
+{
+    if (uri.empty() || !connection) {
+        HILOG_ERROR("Invalid parameters for AddAppStateObserverAbility");
+        return;
+    }
+    
+    appStateObserverAbilities_.AddAccessibilityAbility(uri, connection);
+}
+
+void AccessibilityAccountData::RemoveAppStateObserverAbility(const std::string& uri)
+{
+    if (uri.empty()) {
+        HILOG_ERROR("Invalid uri for RemoveAppStateObserverAbility");
+        return;
+    }
+    
+    appStateObserverAbilities_.RemoveAccessibilityAbilityByUri(uri);
+}
+
+sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAppStateObserverAbility(const std::string& uri)
+{
+    return appStateObserverAbilities_.GetAccessibilityAbilityByUri(uri);
 }
 
 void AccessibilityAccountData::UpdateAbilities()
@@ -1178,7 +1237,7 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
                 HILOG_DEBUG("auto start packageName is %{public}s.", bundleName.c_str());
                 uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
                     CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
-                uint32_t resultCapabilities = capabilities;
+                uint32_t resultCapabilities = accessibilityInfo->GetStaticCapabilityValues() & capabilities;
                 accessibilityInfo->SetCapabilityValues(resultCapabilities);
                 AddInstalledAbility(*accessibilityInfo);
                 hasNewExtensionAbility = true;

@@ -117,7 +117,6 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
     if (ANIAccessibilityConfig::enableAbilityCallbackObservers_) {
         ANIAccessibilityConfig::enableAbilityCallbackObservers_->SubscribeToFramework();
     }
-    
 
     *result = ANI_VERSION_1;
     return ANI_OK;

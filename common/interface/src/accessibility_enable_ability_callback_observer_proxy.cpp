@@ -13,59 +13,58 @@
  * limitations under the License.
  */
 
- #include "accessibility_enable_ability_callback_observer_proxy.h"
- #include "accessibility_ipc_interface_code.h"
- #include "hilog_wrapper.h"
- 
- namespace OHOS {
- namespace Accessibility {
- AccessibilityEnableAbilityCallbackObserverProxy::AccessibilityEnableAbilityCallbackObserverProxy(
-     const sptr<IRemoteObject> &impl) : IRemoteProxy<IAccessibilityEnableAbilityCallbackObserver>(impl)
- {}
- 
- AccessibilityEnableAbilityCallbackObserverProxy::~AccessibilityEnableAbilityCallbackObserverProxy()
- {}
- 
- bool AccessibilityEnableAbilityCallbackObserverProxy::WriteInterfaceToken(MessageParcel &data)
- {
-     HILOG_DEBUG();
-     if (!data.WriteInterfaceToken(AccessibilityEnableAbilityCallbackObserverProxy::GetDescriptor())) {
-         HILOG_ERROR("write interface token failed");
-         return false;
-     }
-     return true;
- }
- 
- void AccessibilityEnableAbilityCallbackObserverProxy::OnEnableAbilityRemoteDied(const std::string& name)
- {
-     HILOG_DEBUG();
- 
-     MessageParcel data;
-     MessageParcel reply;
-     MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
- 
-     if (!WriteInterfaceToken(data)) {
-         HILOG_ERROR("write interface token failed");
-         return;
-     }
-     if (!data.WriteString(name)) {
-         HILOG_ERROR("fail, connection write name error");
-         return;
-     }
- 
-     sptr<IRemoteObject> remote = Remote();
-     if (remote == nullptr) {
-         HILOG_ERROR("fail to send transact cmd due to remote object");
-         return;
-     }
- 
-     int32_t result = remote->SendRequest(static_cast<uint32_t>(
-         AccessibilityInterfaceCode::ON_ACCESSIBILITY_ENABLE_ABILITY_REMOTE_DIED),
-         data, reply, option);
-     if (result != NO_ERROR) {
-         HILOG_ERROR("OnAccessibilityEnableAbilityListsChanged fail, error: %{public}d", result);
-     }
- }
- 
- } // namespace Accessibility
- } // namespace OHOS
+#include "accessibility_enable_ability_callback_observer_proxy.h"
+#include "accessibility_ipc_interface_code.h"
+#include "hilog_wrapper.h"
+
+namespace OHOS {
+namespace Accessibility {
+AccessibilityEnableAbilityCallbackObserverProxy::AccessibilityEnableAbilityCallbackObserverProxy(
+    const sptr<IRemoteObject>& impl)
+    : IRemoteProxy<IAccessibilityEnableAbilityCallbackObserver>(impl)
+{}
+
+AccessibilityEnableAbilityCallbackObserverProxy::~AccessibilityEnableAbilityCallbackObserverProxy() {}
+
+bool AccessibilityEnableAbilityCallbackObserverProxy::WriteInterfaceToken(MessageParcel& data)
+{
+    HILOG_DEBUG();
+    if (!data.WriteInterfaceToken(AccessibilityEnableAbilityCallbackObserverProxy::GetDescriptor())) {
+        HILOG_ERROR("write interface token failed");
+        return false;
+    }
+    return true;
+}
+
+void AccessibilityEnableAbilityCallbackObserverProxy::OnEnableAbilityRemoteDied(const std::string& name)
+{
+    HILOG_DEBUG();
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC | MessageOption::TF_ASYNC_WAKEUP_LATER);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("write interface token failed");
+        return;
+    }
+    if (!data.WriteString(name)) {
+        HILOG_ERROR("fail, connection write name error");
+        return;
+    }
+
+    sptr<IRemoteObject> remote = Remote();
+    if (remote == nullptr) {
+        HILOG_ERROR("fail to send transact cmd due to remote object");
+        return;
+    }
+
+    int32_t result = remote->SendRequest(
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_ACCESSIBILITY_ENABLE_ABILITY_REMOTE_DIED), data, reply,
+        option);
+    if (result != NO_ERROR) {
+        HILOG_ERROR("OnAccessibilityEnableAbilityListsChanged fail, error: %{public}d", result);
+    }
+}
+} // namespace Accessibility
+} // namespace OHOS

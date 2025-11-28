@@ -374,7 +374,7 @@ RetError AccessibilityAbilityManager::EnableAbility(const std::string &name, con
         return RET_ERR_NOT_INSTALLED;
     }
 
-    uint32_t resultCapabilities = capabilities;
+    uint32_t resultCapabilities = it->GetStaticCapabilityValues() & capabilities;
     if (!resultCapabilities) {
         HILOG_ERROR("the result of capabilities is wrong");
         return RET_ERR_NO_CAPABILITY;
@@ -559,7 +559,7 @@ void AccessibilityAbilityManager::AddAbility(const std::string &bundleName)
             HILOG_DEBUG("Auto start packageName: %{public}s", bundleName.c_str());
             uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
                 CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
-            uint32_t resultCapabilities = capabilities;
+            uint32_t resultCapabilities = accessibilityInfo->GetStaticCapabilityValues() & capabilities;
             accessibilityInfo->SetCapabilityValues(resultCapabilities);
             AddInstalledAbility(*accessibilityInfo);
             hasNewExtensionAbility = true;
@@ -959,7 +959,7 @@ void AccessibilityAbilityManager::UpdateAutoStartEnabledAbilities()
             HILOG_INFO("auto start packageName is %{public}s.", bundleName.c_str());
             uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
                 CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
-            uint32_t resultCapabilities = capabilities;
+            uint32_t resultCapabilities = installAbility.GetStaticCapabilityValues() & capabilities;
             installAbility.SetCapabilityValues(resultCapabilities);
             std::string uri = Utils::GetUri(bundleName, abilityName);
             AddEnabledAbility(uri);

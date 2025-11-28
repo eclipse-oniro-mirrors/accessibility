@@ -108,6 +108,18 @@ public:
     void AddEnableAbilityCallbackObserver(const sptr<IAccessibilityEnableAbilityCallbackObserver>& observer);
     void RemoveEnableAbilityCallbackObserver(const wptr<IRemoteObject>& observer);
 
+    void AddExtensionServiceObserverAbility(
+        const std::string& uri, const sptr<AccessibleAbilityConnection>& connection);
+    void RemoveExtensionServiceObserverAbility(const std::string& uri);
+    sptr<AccessibleAbilityConnection> GetExtensionServiceObserverByUri(const std::string& uri);
+
+    void NotifyExtensionServiceDeath(const std::string& uri);
+    void CallEnableAbilityCallback(const std::string &uri);
+
+    void AddAppStateObserverAbility(const std::string& uri, const sptr<AccessibleAbilityConnection>& connection);
+    void RemoveAppStateObserverAbility(const std::string& uri);
+    sptr<AccessibleAbilityConnection> GetAppStateObserverAbility(const std::string& uri);
+
     /**
      * @brief Add interface operation interactive connection.
      * @param windowId Interface operation interactive connection the
@@ -267,7 +279,6 @@ public:
     void Init();
 
     void UpdateEnableAbilityListsState();
-    void CallEnableAbilityCallback(const std::string &name);
     void UpdateInstallAbilityListsState();
 
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
@@ -378,6 +389,8 @@ private:
     AccessibilityAbility connectedA11yAbilities_;  // key: bundleName/abilityName
     AccessibilityAbility connectingA11yAbilities_;  // key: bundleName/abilityName
     AccessibilityAbility waitDisconnectA11yAbilities_;  // key: bundleName/abilityName
+    AccessibilityAbility extensionServiceAbilities_;  // key: bundleName/abilityName
+    AccessibilityAbility appStateObserverAbilities_;  // key: bundleName/abilityName
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     ffrt::mutex enableAbilityListObserversMutex_; // mutex for enableAbilityListsObservers_
     std::vector<sptr<IAccessibilityEnableAbilityCallbackObserver>> enableAbilityCallbackObservers_;

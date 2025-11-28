@@ -69,15 +69,13 @@ AccessibilityConfig::Impl::~Impl()
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister configObserver failed.");
         }
-        
+
         int32_t count = 0;
         while (count < DESTRUCTOR_DELAY_COUNT) {
             int32_t captionObserverRef = captionObserver_->GetSptrRefCount();
             int32_t enableAbilityListsObserverRef = enableAbilityListsObserver_->GetSptrRefCount();
-            int32_t enableAbilityCallbackObserverRef = enableAbilityCallbackObserver_->GetSptrRefCount();
             int32_t configObserverRef = configObserver_->GetSptrRefCount();
-            if (captionObserverRef == 1 && enableAbilityListsObserverRef == 1 && configObserverRef == 1 
-                && enableAbilityCallbackObserverRef == 1) {
+            if (captionObserverRef == 1 && enableAbilityListsObserverRef == 1 && configObserverRef == 1) {
                 HILOG_INFO("Observer RefCount is 1");
                 break;
             }
@@ -1631,14 +1629,14 @@ void AccessibilityConfig::Impl::UnregisterEnableAbilityCallback(
     auto iter = abilityCallbackMappings_.find(name);
     if (iter != abilityCallbackMappings_.end()) {
         auto& callbacks = iter->second;
-        for (auto cbIter = callbacks.begin(); cbIter != callbacks.end(); ) {
-            if (!(*cbIter) ) {
+        for (auto cbIter = callbacks.begin(); cbIter != callbacks.end();) {
+            if (!(*cbIter)) {
                 cbIter = callbacks.erase(cbIter);
             } else {
                 ++cbIter;
             }
         }
-        
+
         if (callbacks.empty()) {
             abilityCallbackMappings_.erase(iter);
         }

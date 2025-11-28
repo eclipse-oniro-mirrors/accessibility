@@ -83,28 +83,8 @@ public:
     bool RegisterAppStateObserverToAMS(const std::string& bundleName, const std::string& abilityName,
                                  const sptr<AccessibleAbilityConnection>& connection,
                                  const sptr<AccessibilityAccountData>& accountData);
-
-    static std::string GenerateConnectionKey(const std::string& bundleName, 
-                                           const std::string& abilityName, 
-                                           int32_t accountId);
-    
     void SetConnectionKey(const std::string& key) { connectionKey_ = key; }
     const std::string& GetConnectionKey() const { return connectionKey_; }
-    
-    static void RegisterExtensionServiceMapping(const std::string& key, 
-                                              const std::string& bundleName,
-                                              const std::string& abilityName,
-                                              const sptr<IRemoteObject>& remoteObject,
-                                              int32_t accountId);
-    static void UnregisterExtensionServiceMapping(const std::string& key);
-    static std::tuple<std::string, std::string, int32_t> GetExtensionServiceInfoByKey(const std::string& key);
-    static sptr<IRemoteObject> GetRemoteObjectByKey(const std::string& key);
-    static void NotifyExtensionServiceDeath(const std::string& key);
-
-    static void RegisterAppStateObserverMapping(const std::string& bundleName, 
-                                              const sptr<AccessibleAbilityConnection>& connection);
-    static void UnregisterAppStateObserverMapping(const std::string& bundleName);
-    static sptr<AccessibleAbilityConnection> GetConnectionByBundleName(const std::string& bundleName);
 
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -137,21 +117,6 @@ private:
     std::string connectionKey_;
     sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
     sptr<AppExecFwk::IAppMgr> GetAppMgrProxy();
-    
-    struct ExtensionServiceInfo {
-        std::string bundleName;
-        std::string abilityName;
-        sptr<IRemoteObject> remoteObject;
-        int32_t accountId;
-        pid_t pid;
-        uid_t uid;
-    };
-    
-    static std::map<std::string, std::shared_ptr<ExtensionServiceInfo>> extensionServiceMappings_;
-    static ffrt::mutex mappingMutex_;
-
-    static std::map<std::string, sptr<AccessibleAbilityConnection>> appStateObserverMappings_;
-    static ffrt::mutex appStateObserverMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
