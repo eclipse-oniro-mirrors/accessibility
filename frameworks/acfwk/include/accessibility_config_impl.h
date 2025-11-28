@@ -121,12 +121,6 @@ public:
         isInitialized_ = flag;
     }
 private:
-    std::map<std::string, std::vector<std::function<void()>>> abilityCallbackMappings_;
-    ffrt::mutex abilityCallbackMutex_;
-    
-    void RegisterEnableAbilityCallback(const std::string& name, const std::function<void()>& callback);
-    void UnregisterEnableAbilityCallback(const std::string& name, const std::function<void()>& callback);
-
     class AccessibilityEnableAbilityListsObserverImpl :
         public Accessibility::AccessibilityEnableAbilityListsObserverStub {
     public:

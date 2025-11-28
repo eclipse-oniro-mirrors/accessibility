@@ -128,14 +128,10 @@ bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(
     wptr<AccessibleAbilityConnection> weakPtr = this;
     auto appUri = Utils::GetUri(bundleName, abilityName);
     appStateObserver->SetStateChangeCallback(
-        [appUri, bundleName, appStateObserver, accountData, weakPtr](const AppExecFwk::AppStateData& appStateData) {
-            HILOG_INFO("OnAppStateChanged: bundleName=%{public}s, state=%{public}d",
+        [appUri, bundleName, appStateObserver, accountData, weakPtr](const AppExecFwk::ProcessData& appStateData) {
+            HILOG_INFO("OnProcessDied: bundleName=%{public}s, state=%{public}d",
                 appStateData.bundleName.c_str(), appStateData.state);
             auto obj = weakPtr.promote();
-            if (appStateData.bundleName != bundleName ||
-                appStateData.state != static_cast<int32_t>(AppExecFwk::ApplicationState::APP_STATE_TERMINATED)) {
-                return;
-            }
             auto connection = accountData->GetAppStateObserverAbility(appUri);
             if (!connection) {
                 accountData->RemoveAppStateObserverAbility(appUri);

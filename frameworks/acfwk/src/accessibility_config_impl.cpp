@@ -1604,47 +1604,6 @@ void AccessibilityConfig::Impl::OnEnableAbilityRemoteDied(const std::string& nam
     }
 }
 
-void AccessibilityConfig::Impl::RegisterEnableAbilityCallback(
-    const std::string& name, const std::function<void()>& callback)
-{
-    if (name.empty() || !callback) {
-        HILOG_ERROR("Invalid parameters for RegisterEnableAbilityCallback");
-        return;
-    }
-    
-    std::lock_guard<ffrt::mutex> lock(abilityCallbackMutex_);
-    abilityCallbackMappings_[name].push_back(callback);
-    HILOG_DEBUG("Registered callback for ability: %{public}s", name.c_str());
-}
-
-void AccessibilityConfig::Impl::UnregisterEnableAbilityCallback(
-    const std::string& name, const std::function<void()>& callback)
-{
-    if (name.empty() || !callback) {
-        HILOG_ERROR("Invalid parameters for UnregisterEnableAbilityCallback");
-        return;
-    }
-    
-    std::lock_guard<ffrt::mutex> lock(abilityCallbackMutex_);
-    auto iter = abilityCallbackMappings_.find(name);
-    if (iter != abilityCallbackMappings_.end()) {
-        auto& callbacks = iter->second;
-        for (auto cbIter = callbacks.begin(); cbIter != callbacks.end();) {
-            if (!(*cbIter)) {
-                cbIter = callbacks.erase(cbIter);
-            } else {
-                ++cbIter;
-            }
-        }
-
-        if (callbacks.empty()) {
-            abilityCallbackMappings_.erase(iter);
-        }
-        
-        HILOG_DEBUG("Unregistered callback for ability: %{public}s", name.c_str());
-    }
-}
-
 Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeEnableAbilityListsObserver(
     const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer)
 {

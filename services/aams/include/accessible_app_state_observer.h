@@ -27,19 +27,18 @@ public:
     AccessibleAppStateObserver();
     virtual ~AccessibleAppStateObserver();
 
-    void SetStateChangeCallback(std::function<void(const AppExecFwk::AppStateData&)> callback);
+    void SetStateChangeCallback(std::function<void(const AppExecFwk::ProcessData&)> callback);
 
     virtual void OnAbilityStateChanged(const AppExecFwk::AbilityStateData &abilityStateData) override {};
     virtual void OnApplicationStateChanged(const AppExecFwk::AppStateData &appStateData) override {}
-    virtual void OnAppStateChanged(const AppExecFwk::AppStateData &appStateData) override;
+    virtual void OnAppStateChanged(const AppExecFwk::AppStateData &appStateData) override {};
 
     virtual void OnForegroundApplicationChanged(const AppExecFwk::AppStateData &appStateData) override {};
     virtual void OnExtensionStateChanged(const AppExecFwk::AbilityStateData &abilityStateData) override {};
     virtual void OnProcessCreated(const AppExecFwk::ProcessData &processData) override {};
-    virtual void OnProcessDied(const AppExecFwk::ProcessData &processData) override {};
-
+    virtual void OnProcessDied(const AppExecFwk::ProcessData &processData) override;
 private:
-    std::function<void(const AppExecFwk::AppStateData&)> stateChangeCallback_;
+    std::function<void(const AppExecFwk::ProcessData&)> stateChangeCallback_;
     std::mutex callbackMutex_;
 };
 

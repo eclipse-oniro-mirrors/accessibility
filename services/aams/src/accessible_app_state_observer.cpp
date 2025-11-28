@@ -29,13 +29,13 @@ AccessibleAppStateObserver::~AccessibleAppStateObserver()
 }
 
 void AccessibleAppStateObserver::SetStateChangeCallback(
-    std::function<void(const AppExecFwk::AppStateData&)> callback)
+    std::function<void(const AppExecFwk::ProcessData&)> callback)
 {
     std::lock_guard<std::mutex> lock(callbackMutex_);
     stateChangeCallback_ = callback;
 }
 
-void AccessibleAppStateObserver::OnAppStateChanged(const AppExecFwk::AppStateData &appStateData)
+void AccessibleAppStateObserver::OnProcessDied(const AppExecFwk::ProcessData &appStateData)
 {
     if (stateChangeCallback_) {
         stateChangeCallback_(appStateData);
