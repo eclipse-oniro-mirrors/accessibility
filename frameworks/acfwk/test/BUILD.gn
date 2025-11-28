@@ -46,7 +46,7 @@ ohos_unittest("ac_unit_test") {
     "../../../services/test/mock/mock_parameter.c",
     "../src/accessibility_config.cpp",
     "../src/accessibility_config_impl.cpp",
-    "mock/src/mock_service_registry.cpp",
+    "../../../services/test/mock/mock_service_registry.cpp",
     "unittest/accessibility_config_impl_test.cpp",
   ]
 
