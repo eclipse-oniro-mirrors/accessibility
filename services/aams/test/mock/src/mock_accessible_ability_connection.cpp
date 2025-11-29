@@ -241,14 +241,12 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
 }
 
 bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(
-    const std::string& bundleName,
+    const std::string& appBundleName,
     const std::string& abilityName,
-    const sptr<AccessibleAbilityConnection>& connection,
     const sptr<AccessibilityAccountData>& accountData)
 {
-    (void)bundleName;
+    (void)appBundleName;
     (void)abilityName;
-    (void)connection;
     (void)accountData;
     return true;
 }

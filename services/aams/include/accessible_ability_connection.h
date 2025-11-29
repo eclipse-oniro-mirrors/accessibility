@@ -80,11 +80,12 @@ public:
     void SetIsRegisterDisconnectCallback(bool isRegister);
     void NotifyDisconnect();
     void DisconnectAbility();
-    bool RegisterAppStateObserverToAMS(const std::string& bundleName, const std::string& abilityName,
-                                 const sptr<AccessibleAbilityConnection>& connection,
-                                 const sptr<AccessibilityAccountData>& accountData);
+    bool RegisterAppStateObserverToAMS(
+        const std::string& appBundleName,
+        const std::string& abilityName,
+        const sptr<AccessibilityAccountData>& accountData);
     void SetConnectionKey(const std::string& key) { connectionKey_ = key; }
-    const std::string& GetConnectionKey() const { return connectionKey_; }
+    std::string GetConnectionKey() { return connectionKey_; }
 
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {

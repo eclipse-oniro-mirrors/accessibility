@@ -108,11 +108,6 @@ public:
     void AddEnableAbilityCallbackObserver(const sptr<IAccessibilityEnableAbilityCallbackObserver>& observer);
     void RemoveEnableAbilityCallbackObserver(const wptr<IRemoteObject>& observer);
 
-    void AddExtensionServiceObserverAbility(
-        const std::string& uri, const sptr<AccessibleAbilityConnection>& connection);
-    void RemoveExtensionServiceObserverAbility(const std::string& uri);
-    sptr<AccessibleAbilityConnection> GetExtensionServiceObserverByUri(const std::string& uri);
-
     void NotifyExtensionServiceDeath(const std::string& uri);
     void CallEnableAbilityCallback(const std::string &uri);
 
@@ -268,7 +263,10 @@ public:
 
     std::shared_ptr<AccessibilitySettingsConfig> GetConfig();
 
-    RetError EnableAbility(const std::string &name, const uint32_t capabilities);
+    RetError EnableAbility(
+        const std::string &name,
+        const uint32_t capabilities,
+        const std::string &callerBundleName = "");
 
     void SetScreenReaderState(const std::string &name, const std::string &state);
     bool DealWithScreenReaderState();
@@ -291,7 +289,7 @@ public:
     void UpdateAutoStartEnabledAbilities();
 
     uint32_t GetInputFilterFlag() const;
-    void UpdateAbilities();
+    void UpdateAbilities(std::string callerBundleName = "");
     bool RemoveAbility(const std::string &bundleName);
     void AddAbility(const std::string &bundleName);
     void ChangeAbility(const std::string &bundleName);
@@ -389,7 +387,6 @@ private:
     AccessibilityAbility connectedA11yAbilities_;  // key: bundleName/abilityName
     AccessibilityAbility connectingA11yAbilities_;  // key: bundleName/abilityName
     AccessibilityAbility waitDisconnectA11yAbilities_;  // key: bundleName/abilityName
-    AccessibilityAbility extensionServiceAbilities_;  // key: bundleName/abilityName
     AccessibilityAbility appStateObserverAbilities_;  // key: bundleName/abilityName
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     ffrt::mutex enableAbilityListObserversMutex_; // mutex for enableAbilityListsObservers_

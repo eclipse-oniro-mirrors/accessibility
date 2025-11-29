@@ -735,7 +735,10 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     service->DeleteInstance();
 }
 
-RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
+RetError AccessibilityAccountData::EnableAbility(
+    const std::string &name,
+    const uint32_t capabilities,
+    const std::string &callerBundleName)
 {
     HILOG_DEBUG("start and name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
 
@@ -791,7 +794,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     if (name == screenReaderAbilityName_) {
         SetScreenReaderState(screenReaderKey_, "1");
     }
-    UpdateAbilities();
+    UpdateAbilities(callerBundleName);
     Utils::RecordStartingA11yEvent(name);
     return RET_OK;
 }
@@ -1078,37 +1081,10 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     return flag;
 }
 
-void AccessibilityAccountData::AddExtensionServiceObserverAbility(
-    const std::string& key, const sptr<AccessibleAbilityConnection>& connection)
-{
-    if (key.empty() || !connection) {
-        HILOG_ERROR("Invalid parameters for AddExtensionServiceObserverAbility");
-        return;
-    }
-    extensionServiceAbilities_.AddAccessibilityAbility(key, connection);
-}
-
-void AccessibilityAccountData::RemoveExtensionServiceObserverAbility(const std::string& uri)
-{
-    if (uri.empty()) {
-        HILOG_ERROR("Invalid key for RemoveExtensionServiceObserverAbility");
-        return;
-    }
-    
-    extensionServiceAbilities_.RemoveAccessibilityAbilityByUri(uri);
-}
-
-sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetExtensionServiceObserverByUri(const std::string& uri)
-{
-    return extensionServiceAbilities_.GetAccessibilityAbilityByUri(uri);
-}
-
 void AccessibilityAccountData::NotifyExtensionServiceDeath(const std::string& uri)
 {
     HILOG_DEBUG("Notifying extension service death: uri=%{public}s", uri.c_str());
-
     CallEnableAbilityCallback(uri);
-    RemoveExtensionServiceObserverAbility(uri);
 }
 
 void AccessibilityAccountData::CallEnableAbilityCallback(const std::string &uri)
@@ -1148,7 +1124,7 @@ sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAppStateObserverA
     return appStateObserverAbilities_.GetAccessibilityAbilityByUri(uri);
 }
 
-void AccessibilityAccountData::UpdateAbilities()
+void AccessibilityAccountData::UpdateAbilities(std::string callerBundleName)
 {
     HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
     for (auto &installAbility : installedAbilities_) {
@@ -1174,6 +1150,7 @@ void AccessibilityAccountData::UpdateAbilities()
             AppExecFwk::ElementName element("", bundleName, abilityName);
             connection = new(std::nothrow) AccessibleAbilityConnection(id_, connectCounter_++, installAbility);
             if (connection != nullptr && connection->Connect(element)) {
+                connection->SetConnectionKey(callerBundleName);
                 AddConnectingA11yAbility(Utils::GetUri(bundleName, abilityName), connection);
             }
         } else {
@@ -1652,7 +1629,6 @@ void AccessibilityAccountData::isSendEvent(const AccessibilityEventInfo &eventIn
         }
     }
 }
- 
 
 void AccessibilityAccountData::AddNeedEvent(const std::string &name, std::vector<uint32_t> needEvents)
 {
@@ -1688,7 +1664,7 @@ void AccessibilityAccountData::RemoveNeedEvent(const std::string &name)
         UpdateNeedEvents();
     }
 }
- 
+
 std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
 {
     needEvents_.clear();
@@ -1701,7 +1677,7 @@ std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
             }
         }
     }
- 
+
     if (std::find(needEvents.begin(), needEvents.end(), TYPES_ALL_MASK) != needEvents.end()) {
         needEvents_.push_back(TYPES_ALL_MASK);
     } else if ((needEvents.size() == 1) &&

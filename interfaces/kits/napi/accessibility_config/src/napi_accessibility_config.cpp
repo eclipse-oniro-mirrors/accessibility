@@ -1369,11 +1369,11 @@ void EnableAbilityCallbackObserverImpl::OnEnableAbilityRemoteDied(const std::str
 {
     HILOG_DEBUG("name: %{public}s", name.c_str());
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    for (auto &pair : enableAbilityCallbackObservers_) {
-        if (pair.first == name && pair.second && pair.second->env_) {
-            pair.second->OnEnableAbilityRemoteDied(name);
-            UnsubscribeObserver(pair.second->env_, name);
-        }
+
+    auto iter = enableAbilityCallbackObservers_.find(name);
+    if (iter != enableAbilityCallbackObservers_.end()) {
+        iter->second->OnEnableAbilityRemoteDied(name);
+        enableAbilityCallbackObservers_.erase(iter);
     }
 }
 
