@@ -39,6 +39,8 @@ std::shared_ptr<EnableAbilityListsObserverImpl> ANIAccessibilityConfig::enableAb
     std::make_shared<EnableAbilityListsObserverImpl>();
 std::shared_ptr<ANIAccessibilityConfigObserverImpl> ANIAccessibilityConfig::configObservers_ =
     std::make_shared<ANIAccessibilityConfigObserverImpl>();
+std::shared_ptr<EnableAbilityCallbackObserverImpl> ANIAccessibilityConfig::enableAbilityCallbackObservers_ =
+    std::make_shared<EnableAbilityCallbackObserverImpl>();
 
 void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
 {
@@ -191,6 +193,90 @@ void EnableAbilityListsObserverImpl::UnsubscribeFromFramework()
     HILOG_INFO("UnsubscribeFromFramework");
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.UnsubscribeEnableAbilityListsObserver(shared_from_this());
+}
+
+void EnableAbilityCallbackObserver::OnEnableAbilityRemoteDied(const std::string &name)
+{
+    HILOG_INFO();
+    auto task = [vm = vm_, callback = callback_]() {
+        HILOG_INFO("on enable ability lists state changed");
+        ANIUtils::EnvGuard guard(vm);
+        ani_env *tmpEnv = guard.GetEnv();
+        if (tmpEnv == nullptr) {
+            HILOG_ERROR("tmpEnv is null");
+            return;
+        }
+        ani_size nr_refs = ANI_SCOPE_SIZE;
+        tmpEnv->CreateLocalScope(nr_refs);
+        ani_ref call = nullptr;
+        auto status =
+            tmpEnv->Object_GetPropertyByName_Ref(reinterpret_cast<ani_object>(callback), "onDisconnect", &call);
+        if (status != ANI_OK) {
+            HILOG_ERROR("get onDisconnect property failed with %{public}d", status);
+            return;
+        }
+        auto fnObj = reinterpret_cast<ani_fn_object>(call);
+        ani_ref result;
+        status = tmpEnv->FunctionalObject_Call(fnObj, 0, nullptr, &result);
+        if (status != ANI_OK) {
+            HILOG_ERROR("FunctionalObject_Call failed, status %{public}d", status);
+            return;
+        }
+        tmpEnv->DestroyLocalScope();
+    };
+    if (!ANIUtils::SendEventToMainThread(task)) {
+        HILOG_ERROR("failed to send event");
+    }
+}
+
+void EnableAbilityCallbackObserverImpl::OnEnableAbilityRemoteDied(const std::string& name)
+{
+    HILOG_DEBUG("name: %{public}s", name.c_str());
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto &pair : enableAbilityCallbackObservers_) {
+        if (pair.first == name && pair.second && pair.second->vm_) {
+            pair.second->OnEnableAbilityRemoteDied(name);
+            UnsubscribeObserver(name);
+        }
+    }
+}
+
+void EnableAbilityCallbackObserverImpl::SubscribeObserver(ani_vm *vm, const std::string& name, ani_ref observer)
+{
+    HILOG_DEBUG("name: %{public}s", name.c_str());
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (enableAbilityCallbackObservers_.find(name) != enableAbilityCallbackObservers_.end()) {
+        HILOG_DEBUG("Observer exist");
+        return;
+    }
+    std::shared_ptr<EnableAbilityCallbackObserver> observerPtr =
+        std::make_shared<EnableAbilityCallbackObserver>(vm, observer);
+    enableAbilityCallbackObservers_[name] = observerPtr;
+    HILOG_DEBUG("observer size%{public}zu", enableAbilityCallbackObservers_.size());
+}
+
+void EnableAbilityCallbackObserverImpl::UnsubscribeObserver(const std::string& name)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    auto iter = enableAbilityCallbackObservers_.find(name);
+    if (iter != enableAbilityCallbackObservers_.end()) {
+        enableAbilityCallbackObservers_.erase(iter);
+        return;
+    }
+}
+
+void EnableAbilityCallbackObserverImpl::SubscribeToFramework()
+{
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.SubscribeEnableAbilityCallbackObserver(shared_from_this());
+}
+
+void EnableAbilityCallbackObserverImpl::UnsubscribeFromFramework()
+{
+    HILOG_INFO("UnsubscribeFromFramework");
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.UnsubscribeEnableAbilityCallbackObserver(shared_from_this());
 }
 
 void ANIAccessibilityConfigObserver::OnConfigChangedExtra(const ConfigValue &value)
@@ -1023,6 +1109,52 @@ void ANIAccessibilityConfig::EnableAbilitySync(ani_env *env, ani_string name, an
     }
     HILOG_INFO("EnableAbilitySync ret = %{public}d", static_cast<int32_t>(ret));
     return;
+}
+
+void ANIAccessibilityConfig::EnableAbilityWithCallbackSync(
+    ani_env* env, ani_string name, ani_array capability, ani_object connectCallback)
+{
+    std::string nameStr = ANIUtils::ANIStringToStdString(env, name);
+
+    if (capability == nullptr) {
+        HILOG_INFO("capability is null");
+        return;
+    }
+    if (connectCallback == nullptr) {
+        HILOG_INFO("connectCallback is null");
+        return;
+    }
+
+    ani_size length;
+    ani_status status = env->Array_GetLength(capability, &length);
+    if (status != ANI_OK) {
+        HILOG_INFO("Array_GetLength failed. status : %{public}d", status);
+        return;
+    }
+
+    std::vector<std::string> strings;
+    for (ani_size i = 0; i < length; i++) {
+        ani_ref stringRef;
+        auto signature = arkts::ani_signature::SignatureBuilder().AddInt().SetReturnUndefined()
+            .BuildSignatureDescriptor();
+        if (ANI_OK != env->Array_Get(capability, i, &stringRef)) {
+            HILOG_ERROR("Object_CallMethodByName_Ref Failed");
+            return;
+        }
+        strings.emplace_back(ANIUtils::ANIStringToStdString(env, static_cast<ani_string>(stringRef)));
+    }
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    auto ret = instance.EnableAbility(nameStr, ParseCapabilitiesFromVec(strings));
+    if (ret != RET_OK) {
+        HILOG_ERROR("EnableAbilityWithCallbackSync ret = %{public}d", static_cast<int32_t>(ret));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+        return;
+    }
+    ani_vm *vm = nullptr;
+    env->GetVM(&vm);
+    ani_ref callback = nullptr;
+    env->GlobalReference_Create(connectCallback, &callback);
+    enableAbilityCallbackObservers_->SubscribeObserver(vm, nameStr, callback);
 }
 
 void ANIAccessibilityConfig::DisableAbilitySync(ani_env *env, ani_string name)

@@ -321,6 +321,17 @@ void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemo
     (void)observer;
 }
 
+void AccessibilityAccountData::AddEnableAbilityCallbackObserver(
+    const sptr<IAccessibilityEnableAbilityCallbackObserver>& observer)
+{
+    (void)observer;
+}
+
+void AccessibilityAccountData::RemoveEnableAbilityCallbackObserver(const wptr<IRemoteObject>& observer)
+{
+    (void)observer;
+}
+
 void AccessibilityAccountData::AddConfigCallback(
     const sptr<IAccessibleAbilityManagerConfigObserver>& callback)
 {

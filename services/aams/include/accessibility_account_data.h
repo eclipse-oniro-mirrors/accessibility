@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,6 +22,7 @@
 
 #include "accessibility_caption.h"
 #include "iaccessibility_enable_ability_lists_observer.h"
+#include "iaccessibility_enable_ability_callback_observer.h"
 #include "accessibility_settings_config.h"
 #include "accessibility_window_connection.h"
 #include "accessible_ability_connection.h"
@@ -103,6 +104,21 @@ public:
 
     void AddEnableAbilityListsObserver(const sptr<IAccessibilityEnableAbilityListsObserver>& observer);
     void RemoveEnableAbilityListsObserver(const wptr<IRemoteObject>& observer);
+
+    void AddEnableAbilityCallbackObserver(const sptr<IAccessibilityEnableAbilityCallbackObserver>& observer);
+    void RemoveEnableAbilityCallbackObserver(const wptr<IRemoteObject>& observer);
+
+    void AddExtensionServiceObserverAbility(
+        const std::string& uri, const sptr<AccessibleAbilityConnection>& connection);
+    void RemoveExtensionServiceObserverAbility(const std::string& uri);
+    sptr<AccessibleAbilityConnection> GetExtensionServiceObserverByUri(const std::string& uri);
+
+    void NotifyExtensionServiceDeath(const std::string& uri);
+    void CallEnableAbilityCallback(const std::string &uri);
+
+    void AddAppStateObserverAbility(const std::string& uri, const sptr<AccessibleAbilityConnection>& connection);
+    void RemoveAppStateObserverAbility(const std::string& uri);
+    sptr<AccessibleAbilityConnection> GetAppStateObserverAbility(const std::string& uri);
 
     /**
      * @brief Add interface operation interactive connection.
@@ -373,8 +389,12 @@ private:
     AccessibilityAbility connectedA11yAbilities_;  // key: bundleName/abilityName
     AccessibilityAbility connectingA11yAbilities_;  // key: bundleName/abilityName
     AccessibilityAbility waitDisconnectA11yAbilities_;  // key: bundleName/abilityName
+    AccessibilityAbility extensionServiceAbilities_;  // key: bundleName/abilityName
+    AccessibilityAbility appStateObserverAbilities_;  // key: bundleName/abilityName
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     ffrt::mutex enableAbilityListObserversMutex_; // mutex for enableAbilityListsObservers_
+    std::vector<sptr<IAccessibilityEnableAbilityCallbackObserver>> enableAbilityCallbackObservers_;
+    ffrt::mutex enableAbilityCallbackObserversMutex_; // mutex for enableAbilityCallbackObservers_
     std::map<int32_t, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
     ffrt::mutex asacConnectionsMutex_; // mutex for map asacConnections_
     CaptionPropertyCallbacks captionPropertyCallbacks_;

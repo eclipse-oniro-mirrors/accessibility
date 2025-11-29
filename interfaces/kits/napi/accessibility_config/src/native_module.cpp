@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -625,6 +625,9 @@ static void Cleanup(void *data)
     if (NAccessibilityConfig::enableAbilityListsObservers_) {
         NAccessibilityConfig::enableAbilityListsObservers_->UnsubscribeFromFramework();
     }
+    if (NAccessibilityConfig::enableAbilityCallbackObservers_) {
+        NAccessibilityConfig::enableAbilityCallbackObservers_->UnsubscribeFromFramework();
+    }
 }
 
 static napi_value InitConfigModule(napi_env env, napi_value exports)
@@ -633,6 +636,8 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("on", NAccessibilityConfig::SubscribeState),
         DECLARE_NAPI_FUNCTION("off", NAccessibilityConfig::UnsubscribeState),
         DECLARE_NAPI_FUNCTION("enableAbility", NAccessibilityConfig::EnableAbility),
+        DECLARE_NAPI_FUNCTION(
+            "enableAbilityWithCallback", NAccessibilityConfig::EnableAbilityWithCallback),
         DECLARE_NAPI_FUNCTION("disableAbility", NAccessibilityConfig::DisableAbility),
         DECLARE_NAPI_FUNCTION("setMagnificationState", NAccessibilityConfig::SetMagnificationState),
         DECLARE_NAPI_STATIC_PROPERTY("highContrastText", InitHighContrastText(env)),
@@ -663,6 +668,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
     (void)instance.InitializeContext();
     NAccessibilityConfig::configObservers_->SubscribeToFramework();
     NAccessibilityConfig::enableAbilityListsObservers_->SubscribeToFramework();
+    NAccessibilityConfig::enableAbilityCallbackObservers_->SubscribeToFramework();
     napi_status status = napi_add_env_cleanup_hook(env, Cleanup, &NAccessibilityConfig::configObservers_);
     if (status != napi_ok) {
         HILOG_WARN("add cleanup hook failed %{public}d", status);

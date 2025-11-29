@@ -219,6 +219,39 @@ public:
         return true;
     }
 
+    class EnvGuard {
+    public:
+        EnvGuard(ani_vm *vm) : vm_(vm)
+        {
+            isTemporary_ = vm_->GetEnv(ANI_VERSION_1, &env_) != ANI_OK;
+            if (isTemporary_) {
+                vm_->AttachCurrentThread(nullptr, ANI_VERSION_1, &env_);
+            }
+        }
+
+        ~EnvGuard()
+        {
+            if (isTemporary_) {
+                vm_->DetachCurrentThread();
+            }
+        }
+
+        EnvGuard(EnvGuard const &) = delete;
+        EnvGuard &operator=(EnvGuard const &) = delete;
+        EnvGuard(EnvGuard &&) = delete;
+        EnvGuard &operator=(EnvGuard &&) = delete;
+
+        ani_env *GetEnv()
+        {
+            return env_;
+        }
+
+    private:
+        ani_env *env_;
+        ani_vm *vm_;
+        bool isTemporary_;
+    };
+
 public:
     constexpr static const char *CLASS_NAME_ARRAY = "escompat.Array";
     constexpr static int32_t INVALID_ANI_VERSION = 1;

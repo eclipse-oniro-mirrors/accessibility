@@ -240,6 +240,19 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
     return;
 }
 
+bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(
+    const std::string& bundleName,
+    const std::string& abilityName,
+    const sptr<AccessibleAbilityConnection>& connection,
+    const sptr<AccessibilityAccountData>& accountData)
+{
+    (void)bundleName;
+    (void)abilityName;
+    (void)connection;
+    (void)accountData;
+    return true;
+}
+
 bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent& keyEvent, const int32_t sequence)
 {
     (void)sequence;

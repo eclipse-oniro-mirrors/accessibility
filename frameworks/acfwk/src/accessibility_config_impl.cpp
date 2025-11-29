@@ -60,11 +60,16 @@ AccessibilityConfig::Impl::~Impl()
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister EnableAbilityListsObserver failed.");
         }
+        ret = serviceProxy_->DeRegisterEnableAbilityCallbackObserver(
+            enableAbilityCallbackObserver_->AsObject());
+        if (ret != ERR_OK) {
+            HILOG_ERROR("DeRegister EnableAbilityCallbackObserver failed.");
+        }
         ret = serviceProxy_->DeRegisterConfigObserver(configObserver_->AsObject());
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister configObserver failed.");
         }
-        
+
         int32_t count = 0;
         while (count < DESTRUCTOR_DELAY_COUNT) {
             int32_t captionObserverRef = captionObserver_->GetSptrRefCount();
@@ -84,6 +89,7 @@ AccessibilityConfig::Impl::~Impl()
             serviceProxy_ = nullptr;
             captionObserver_ = nullptr;
             enableAbilityListsObserver_ = nullptr;
+            enableAbilityCallbackObserver_ = nullptr;
             configObserver_ = nullptr;
         }
     }
@@ -317,6 +323,16 @@ bool AccessibilityConfig::Impl::RegisterToService()
         serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserver_);
     }
 
+    if (!enableAbilityCallbackObserver_) {
+        enableAbilityCallbackObserver_ =
+            new(std::nothrow) AccessibilityEnableAbilityCallbackObserverImpl(*this);
+        if (enableAbilityCallbackObserver_ == nullptr) {
+            HILOG_ERROR("Create enableAbilityCallbackObserver_ failed.");
+            return false;
+        }
+        serviceProxy_->RegisterEnableAbilityCallbackObserver(enableAbilityCallbackObserver_);
+    }
+
     if (!configObserver_) {
         configObserver_ = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(*this);
         if (configObserver_ == nullptr) {
@@ -354,6 +370,7 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
             serviceProxy_ = nullptr;
             captionObserver_ = nullptr;
             enableAbilityListsObserver_ = nullptr;
+            enableAbilityCallbackObserver_ = nullptr;
             configObserver_ = nullptr;
             isInitialized_ = false;
             isConfigInit_ = false;
@@ -393,6 +410,7 @@ Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(const std::stri
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
+
     Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->EnableAbility(name,
         capabilities));
     return ret;
@@ -1542,6 +1560,53 @@ Accessibility::RetError AccessibilityConfig::Impl::SubscribeEnableAbilityListsOb
     enableAbilityListsObservers_.push_back(observer);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
     return Accessibility::RET_OK;
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::SubscribeEnableAbilityCallbackObserver(
+    const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer)
+{
+    HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+    if (std::any_of(enableAbilityCallbackObservers_.begin(), enableAbilityCallbackObservers_.end(),
+        [&observer](const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &listObserver) {
+            return listObserver == observer;
+            })) {
+        HILOG_ERROR("the observer is exist");
+        return Accessibility::RET_OK;
+    }
+    enableAbilityCallbackObservers_.push_back(observer);
+    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
+    return Accessibility::RET_OK;
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeEnableAbilityCallbackObserver(
+    const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer)
+{
+    HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+    auto iter = enableAbilityCallbackObservers_.begin();
+    for (;iter != enableAbilityCallbackObservers_.end(); iter++) {
+        if (*iter == observer) {
+            HILOG_DEBUG("erase observer");
+            enableAbilityCallbackObservers_.erase(iter);
+            HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
+            return Accessibility::RET_OK;
+        }
+    }
+    return Accessibility::RET_OK;
+}
+
+void AccessibilityConfig::Impl::OnEnableAbilityRemoteDied(const std::string& name)
+{
+    HILOG_DEBUG();
+    std::vector<std::shared_ptr<AccessibilityEnableAbilityCallbackObserver>> observers;
+    {
+        std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+        observers = enableAbilityCallbackObservers_;
+    }
+    for (auto &enableAbilityCallbackObserver : observers) {
+        enableAbilityCallbackObserver->OnEnableAbilityRemoteDied(name);
+    }
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeEnableAbilityListsObserver(

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -213,6 +213,35 @@ void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemo
             HILOG_DEBUG("erase observer");
             enableAbilityListsObservers_.erase(itr);
             HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
+            return;
+        }
+    }
+}
+
+void AccessibilityAccountData::AddEnableAbilityCallbackObserver(
+    const sptr<IAccessibilityEnableAbilityCallbackObserver>& observer)
+{
+    std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+    if (std::any_of(enableAbilityCallbackObservers_.begin(), enableAbilityCallbackObservers_.end(),
+        [observer](const sptr<IAccessibilityEnableAbilityCallbackObserver> &listObserver) {
+            return listObserver == observer;
+        })) {
+        HILOG_ERROR("observer is already exist");
+        return;
+    }
+    enableAbilityCallbackObservers_.push_back(observer);
+    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
+}
+
+void AccessibilityAccountData::RemoveEnableAbilityCallbackObserver(const wptr<IRemoteObject>& observer)
+{
+    std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+    auto itr = enableAbilityCallbackObservers_.begin();
+    for (; itr != enableAbilityCallbackObservers_.end(); itr++) {
+        if ((*itr)->AsObject() == observer) {
+            HILOG_DEBUG("erase observer");
+            enableAbilityCallbackObservers_.erase(itr);
+            HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
             return;
         }
     }
@@ -746,7 +775,6 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     }
 
     if (GetWaitDisConnectAbility(name)) {
-        HILOG_INFO("The ability[%{public}s] is disconnecting: ", name.c_str());
         sptr<AccessibleAbilityConnection> connection = GetWaitDisConnectAbility(name);
         if (connection != nullptr && connection->GetIsRegisterDisconnectCallback()) {
             connection->DisconnectAbility();
@@ -1048,6 +1076,76 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     }
 
     return flag;
+}
+
+void AccessibilityAccountData::AddExtensionServiceObserverAbility(
+    const std::string& key, const sptr<AccessibleAbilityConnection>& connection)
+{
+    if (key.empty() || !connection) {
+        HILOG_ERROR("Invalid parameters for AddExtensionServiceObserverAbility");
+        return;
+    }
+    extensionServiceAbilities_.AddAccessibilityAbility(key, connection);
+}
+
+void AccessibilityAccountData::RemoveExtensionServiceObserverAbility(const std::string& uri)
+{
+    if (uri.empty()) {
+        HILOG_ERROR("Invalid key for RemoveExtensionServiceObserverAbility");
+        return;
+    }
+    
+    extensionServiceAbilities_.RemoveAccessibilityAbilityByUri(uri);
+}
+
+sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetExtensionServiceObserverByUri(const std::string& uri)
+{
+    return extensionServiceAbilities_.GetAccessibilityAbilityByUri(uri);
+}
+
+void AccessibilityAccountData::NotifyExtensionServiceDeath(const std::string& uri)
+{
+    HILOG_DEBUG("Notifying extension service death: uri=%{public}s", uri.c_str());
+
+    CallEnableAbilityCallback(uri);
+    RemoveExtensionServiceObserverAbility(uri);
+}
+
+void AccessibilityAccountData::CallEnableAbilityCallback(const std::string &uri)
+{
+    std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
+    for (auto &observer : enableAbilityCallbackObservers_) {
+        if (observer) {
+            observer->OnEnableAbilityRemoteDied(uri);
+        }
+    }
+}
+
+void AccessibilityAccountData::AddAppStateObserverAbility(
+    const std::string& uri, const sptr<AccessibleAbilityConnection>& connection)
+{
+    if (uri.empty() || !connection) {
+        HILOG_ERROR("Invalid parameters for AddAppStateObserverAbility");
+        return;
+    }
+    
+    appStateObserverAbilities_.AddAccessibilityAbility(uri, connection);
+}
+
+void AccessibilityAccountData::RemoveAppStateObserverAbility(const std::string& uri)
+{
+    if (uri.empty()) {
+        HILOG_ERROR("Invalid uri for RemoveAppStateObserverAbility");
+        return;
+    }
+    
+    appStateObserverAbilities_.RemoveAccessibilityAbilityByUri(uri);
+}
+
+sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAppStateObserverAbility(const std::string& uri)
+{
+    return appStateObserverAbilities_.GetAccessibilityAbilityByUri(uri);
 }
 
 void AccessibilityAccountData::UpdateAbilities()

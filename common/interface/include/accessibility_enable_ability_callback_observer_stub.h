@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,27 +13,27 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_STUB_H
-#define ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_STUB_H
+#ifndef ACCESSIBILITY_ENABLE_ABILITY_CALLBACK_OBSERVER_STUB_H
+#define ACCESSIBILITY_ENABLE_ABILITY_CALLBACK_OBSERVER_STUB_H
 
-#include "iaccessibility_enable_ability_lists_observer.h"
 #include "iaccessibility_enable_ability_callback_observer.h"
 #include "iremote_stub.h"
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityEnableAbilityListsObserverStub : public IRemoteStub<IAccessibilityEnableAbilityListsObserver> {
+class AccessibilityEnableAbilityCallbackObserverStub :
+    public IRemoteStub<IAccessibilityEnableAbilityCallbackObserver> {
 public:
     /**
      * @brief construct function
      * @param object The object of IPC
      */
-    AccessibilityEnableAbilityListsObserverStub();
+    AccessibilityEnableAbilityCallbackObserverStub();
 
     /**
      * @brief destruct function
      */
-    virtual ~AccessibilityEnableAbilityListsObserverStub() = default;
+    virtual ~AccessibilityEnableAbilityCallbackObserverStub() = default;
 
     /**
      * @brief Receive the event from proxy by IPC mechanism.
@@ -52,16 +52,8 @@ private:
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandleOnAccessibilityEnableAbilityListsChanged(MessageParcel &data, MessageParcel &reply);
-
-    /**
-     * @brief Handle the IPC request for the function:HandleOnInstallStateChanged.
-     * @param data The data of process communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleOnAccessibilityInstallAbilityListsChanged(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleOnEnableAbilityListsRemoteDied(MessageParcel &data, MessageParcel &reply);
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_STUB_H
+#endif // ACCESSIBILITY_ENABLE_ABILITY_CALLBACK_OBSERVER_STUB_H
