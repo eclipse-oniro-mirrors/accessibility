@@ -54,7 +54,6 @@ public:
 };
 
 class ConfigObserver : public IAccessibleAbilityManagerConfigObserver {
-
     void OnConfigStateChanged(const uint32_t stateType) override {}
     void OnAudioBalanceChanged(const float audioBalance) override {}
     void OnBrightnessDiscountChanged(const float brightnessDiscount) override {}
@@ -74,7 +73,6 @@ class ConfigObserver : public IAccessibleAbilityManagerConfigObserver {
 
 class AccessibilityElementOperator : public IAccessibilityElementOperator {
 public:
-
     RetError SearchElementInfoByAccessibilityId(const int64_t elementId,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
         bool isFliter = false) override {return RET_OK;}
