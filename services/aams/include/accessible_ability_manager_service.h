@@ -471,7 +471,10 @@ private:
         ffrt::mutex stateObserversMutex_;
     };
 
-    RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities);
+    RetError InnerEnableAbility(
+        const std::string &name,
+        const uint32_t capabilities,
+        const std::string callerBundleName = "");
     RetError InnerDisableAbility(const std::string &name);
 
     sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(int32_t windowId);

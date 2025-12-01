@@ -256,7 +256,10 @@ void AccessibilityAccountData::UpdateEnableAbilityListsState()
     return;
 }
 
-RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
+RetError AccessibilityAccountData::EnableAbility(
+    const std::string &name,
+    const uint32_t capabilities,
+    const std::string &callerBundleName)
 {
     HILOG_DEBUG("start.");
     if (std::any_of(enabledAbilities_.begin(), enabledAbilities_.end(),
@@ -388,7 +391,7 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     return 0;
 }
 
-void AccessibilityAccountData::UpdateAbilities()
+void AccessibilityAccountData::UpdateAbilities(std::string callerBundleName)
 {
     HILOG_DEBUG("UpdateAbilities start");
 }

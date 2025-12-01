@@ -62,8 +62,7 @@ public:
 
     ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override;
 
-    ErrCode DeRegisterEnableAbilityListsObserver(
-        const sptr<IRemoteObject>& obj) override;
+    ErrCode DeRegisterEnableAbilityListsObserver(const sptr<IRemoteObject>& obj) override;
 
     ErrCode DeRegisterEnableAbilityCallbackObserver(const sptr<IRemoteObject>& obj) override;
 
