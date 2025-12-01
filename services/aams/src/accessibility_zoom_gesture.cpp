@@ -1027,17 +1027,23 @@ void AccessibilityZoomGesture::DestroyEvents()
 
 void AccessibilityZoomGesture::ShieldZoomGesture(bool state)
 {
-    shieldZoomGestureFlag_ = state;
     if (menuManager_ == nullptr) {
         HILOG_ERROR("menuManager_ is nullptr.");
         return;
     }
     HILOG_INFO("ShieldZoomGesture state = %{public}d", state);
+    if (shieldZoomGestureFlag_ == state) {
+        return;
+    }
+    shieldZoomGestureFlag_ = state;
     if (state) {
         Clear();
         menuManager_->DisableMenuWindow();
         if (fullScreenManager_ == nullptr) {
             HILOG_ERROR("fullScreenManager_ is nullptr.");
+            return;
+        }
+        if (!fullScreenManager_->IsMagnificationWindowShow()) {
             return;
         }
         fullScreenManager_->DisableMagnification(true);

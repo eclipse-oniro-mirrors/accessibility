@@ -966,10 +966,14 @@ void WindowMagnificationGesture::SendEventToMultimodal(MMI::PointerEvent event, 
 void WindowMagnificationGesture::ShieldZoomGesture(bool state)
 {
     HILOG_INFO("ShieldZoomGesture state = %{public}d", state);
+    if (shieldZoomGestureFlag_ == state) {
+        return;
+    }
     shieldZoomGestureFlag_ = state;
     if (state) {
         Clear();
-        if (windowMagnificationManager_ != nullptr) {
+        if (windowMagnificationManager_ != nullptr &&
+            windowMagnificationManager_->IsMagnificationWindowShow()) {
             windowMagnificationManager_->DisableWindowMagnification(true);
             SetGestureState(MagnificationGestureState::READY_STATE, HANDLER);
             Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
