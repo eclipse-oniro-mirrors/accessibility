@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,9 +24,9 @@ namespace Accessibility {
 class StateObserver : public IAccessibleAbilityManagerStateObserver {
 public:
 
-    virtual void OnStateChanged(const uint32_t stateType) override {}
+    void OnStateChanged(const uint32_t stateType) override {}
 
-    virtual sptr<IRemoteObject> AsObject() override {
+    sptr<IRemoteObject> AsObject() override {
         return nullptr;
     }
 };
@@ -34,9 +34,9 @@ public:
 class CaptionObserver : public IAccessibleAbilityManagerCaptionObserver {
 public:
 
-    virtual void OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property) override {}
+    void OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property) override {}
 
-    virtual sptr<IRemoteObject> AsObject() override {
+    sptr<IRemoteObject> AsObject() override {
         return nullptr;
     }
 };
@@ -44,29 +44,29 @@ public:
 class EnableAbilityListsObserver : public IAccessibilityEnableAbilityListsObserver {
 public:
 
-    virtual void OnAccessibilityEnableAbilityListsChanged() override {}
+    void OnAccessibilityEnableAbilityListsChanged() override {}
 
-    virtual void OnAccessibilityInstallAbilityListsChanged() override {}
+    void OnAccessibilityInstallAbilityListsChanged() override {}
 
-    virtual sptr<IRemoteObject> AsObject() override {
+    sptr<IRemoteObject> AsObject() override {
         return nullptr;
     }
 };
 
 class ConfigObserver : public IAccessibleAbilityManagerConfigObserver {
 
-    virtual void OnConfigStateChanged(const uint32_t stateType) override {}
-    virtual void OnAudioBalanceChanged(const float audioBalance) override {}
-    virtual void OnBrightnessDiscountChanged(const float brightnessDiscount) override {}
-    virtual void OnContentTimeoutChanged(const uint32_t contentTimeout) override {}
-    virtual void OnDaltonizationColorFilterChanged(const uint32_t filterType) override {}
-    virtual void OnMouseAutoClickChanged(const int32_t mouseAutoClick) override {}
-    virtual void OnShortkeyTargetChanged(const std::string &shortkeyTarget) override {}
-    virtual void OnShortkeyMultiTargetChanged(const std::vector<std::string> &shortkeyMultiTarget) override {}
-    virtual void OnClickResponseTimeChanged(const uint32_t clickResponseTime) override {}
-    virtual void OnIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime) override {}
+    void OnConfigStateChanged(const uint32_t stateType) override {}
+    void OnAudioBalanceChanged(const float audioBalance) override {}
+    void OnBrightnessDiscountChanged(const float brightnessDiscount) override {}
+    void OnContentTimeoutChanged(const uint32_t contentTimeout) override {}
+    void OnDaltonizationColorFilterChanged(const uint32_t filterType) override {}
+    void OnMouseAutoClickChanged(const int32_t mouseAutoClick) override {}
+    void OnShortkeyTargetChanged(const std::string &shortkeyTarget) override {}
+    void OnShortkeyMultiTargetChanged(const std::vector<std::string> &shortkeyMultiTarget) override {}
+    void OnClickResponseTimeChanged(const uint32_t clickResponseTime) override {}
+    void OnIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime) override {}
 
-    virtual sptr<IRemoteObject> AsObject() override {
+    sptr<IRemoteObject> AsObject() override {
         return nullptr;
     }
 };
@@ -74,50 +74,50 @@ class ConfigObserver : public IAccessibleAbilityManagerConfigObserver {
 class AccessibilityElementOperator : public IAccessibilityElementOperator {
 public:
 
-    virtual RetError SearchElementInfoByAccessibilityId(const int64_t elementId,
+    RetError SearchElementInfoByAccessibilityId(const int64_t elementId,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
         bool isFliter = false) override {return RET_OK;}
 
-    virtual void SearchDefaultFocusedByWindowId(const int32_t windowId,
+    void SearchDefaultFocusedByWindowId(const int32_t windowId,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
         bool isFliter = false) override {}
 
-    virtual void SearchElementInfosByText(const int64_t elementId, const std::string &text,
+    void SearchElementInfosByText(const int64_t elementId, const std::string &text,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 
-    virtual void FindFocusedElementInfo(const int64_t elementId, const int32_t focusType, const int32_t requestId,
+    void FindFocusedElementInfo(const int64_t elementId, const int32_t focusType, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 
-    virtual void FocusMoveSearch(const int64_t elementId, const int32_t direction, const int32_t requestId,
+    void FocusMoveSearch(const int64_t elementId, const int32_t direction, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 
-    virtual void ExecuteAction(const int64_t elementId, const int32_t action,
+    void ExecuteAction(const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 
-    virtual void GetCursorPosition(const int64_t elementId,
+    void GetCursorPosition(const int64_t elementId,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 
-    virtual void ClearFocus() override {}
+    void ClearFocus() override {}
 
-    virtual void OutsideTouch() override {}
+    void OutsideTouch() override {}
 
-    virtual void SetChildTreeIdAndWinId(const int64_t elementId, const int32_t treeId,
+    void SetChildTreeIdAndWinId(const int64_t elementId, const int32_t treeId,
         const int32_t childWindowId) override {}
 
-    virtual void SetBelongTreeId(const int32_t treeId) override {}
+    void SetBelongTreeId(const int32_t treeId) override {}
 
-    virtual void SetParentWindowId(const int32_t iParentWindowId) override {}
+    void SetParentWindowId(const int32_t iParentWindowId) override {}
 
-    virtual void SearchElementInfoBySpecificProperty(const int64_t elementId,
+    void SearchElementInfoBySpecificProperty(const int64_t elementId,
         const SpecificPropertyParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 
-    virtual void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
+    void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam &param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 
-    virtual sptr<IRemoteObject> AsObject() override {
+    sptr<IRemoteObject> AsObject() override {
         return nullptr;
     }
 };
@@ -125,7 +125,8 @@ public:
 } // namespace Accessibility
 } // namespace OHOS
 
-extern "C" int FuzzIAccessibleAbilityManagerService(FuzzedDataProvider &provider) {
+extern "C" int FuzzIAccessibleAbilityManagerService(FuzzedDataProvider &provider)
+{
     static const int ipccodes[] = {
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
         20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
@@ -590,7 +591,8 @@ extern "C" int FuzzIAccessibleAbilityManagerService(FuzzedDataProvider &provider
     return 0;
 }
 
-extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv) {
+extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
+{
     if (SetSelfTokenID(718336240ull | (1ull << 32)) < 0) {
         return -1;
     }
@@ -598,7 +600,8 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv) {
     return 0;
 }
 
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size){
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
+{
     FuzzedDataProvider fdp(data,size);
     FuzzIAccessibleAbilityManagerService(fdp);
     return 0;
