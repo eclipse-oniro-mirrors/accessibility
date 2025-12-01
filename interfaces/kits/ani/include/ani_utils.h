@@ -206,7 +206,7 @@ public:
     }
 
 public:
-    constexpr static const char *CLASS_NAME_ARRAY = "escompat.Array";
+    constexpr static const char *CLASS_NAME_ARRAY = "std.core.Array";
     constexpr static int32_t INVALID_ANI_VERSION = 1;
     constexpr static int32_t MODULE_NOT_FOUND = 2;
     constexpr static int32_t NAMESPACE_NOT_FOUND = 3;
