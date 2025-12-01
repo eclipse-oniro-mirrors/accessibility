@@ -23,32 +23,32 @@ namespace Accessibility {
 
 class StateObserver : public IAccessibleAbilityManagerStateObserver {
 public:
-
     void OnStateChanged(const uint32_t stateType) override {}
 
-    sptr<IRemoteObject> AsObject() override {
+    sptr<IRemoteObject> AsObject() override
+    {
         return nullptr;
     }
 };
 
 class CaptionObserver : public IAccessibleAbilityManagerCaptionObserver {
 public:
-
     void OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property) override {}
 
-    sptr<IRemoteObject> AsObject() override {
+    sptr<IRemoteObject> AsObject() override
+    {
         return nullptr;
     }
 };
 
 class EnableAbilityListsObserver : public IAccessibilityEnableAbilityListsObserver {
 public:
-
     void OnAccessibilityEnableAbilityListsChanged() override {}
 
     void OnAccessibilityInstallAbilityListsChanged() override {}
 
-    sptr<IRemoteObject> AsObject() override {
+    sptr<IRemoteObject> AsObject() override
+    {
         return nullptr;
     }
 };
@@ -66,7 +66,8 @@ class ConfigObserver : public IAccessibleAbilityManagerConfigObserver {
     void OnClickResponseTimeChanged(const uint32_t clickResponseTime) override {}
     void OnIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime) override {}
 
-    sptr<IRemoteObject> AsObject() override {
+    sptr<IRemoteObject> AsObject() override
+    {
         return nullptr;
     }
 };
@@ -117,11 +118,11 @@ public:
         const AccessibilityFocusMoveParam &param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 
-    sptr<IRemoteObject> AsObject() override {
+    sptr<IRemoteObject> AsObject() override
+    {
         return nullptr;
     }
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 
@@ -587,6 +588,9 @@ extern "C" int FuzzIAccessibleAbilityManagerService(FuzzedDataProvider &provider
                 .GetActiveWindow(windowId, systemApi);
             break;
         }
+        default: {
+            break;
+        }
     }
     return 0;
 }
@@ -602,7 +606,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 {
-    FuzzedDataProvider fdp(data,size);
+    FuzzedDataProvider fdp(data, size);
     FuzzIAccessibleAbilityManagerService(fdp);
     return 0;
 }
