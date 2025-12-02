@@ -1,0 +1,94 @@
+# Copyright (c) 2025 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#####################hydra-fuzz###################
+import("//build/config/features.gni")
+import("//build/test.gni")
+
+##############################fuzztest##########################################
+ohos_fuzztest("AccessibleAbilityManagerServiceFuzzTest") {
+  module_out_path = "accessibility/accessibility/concurrent"
+  fuzz_config_file = "../../fuzztest/accessibleabilitymanagerservice_fuzzer"
+
+  include_dirs = [
+    "../../../../../common/interface/include",
+    "../../../../../common/interface/test/fuzztest/common_fuzzer",
+    "../../../../../services/aams/include",
+  ]
+  configs = [
+    "../../fuzztest:configs_cc_ld",
+    "../../../../../resources/config/build:coverage_flags",
+  ]
+  sources = [
+    "../common_fuzzer/addaamstoken_fuzzer.cpp",
+    "accessibleabilitymanagerservice_fuzzer.cpp",
+  ]
+  deps = [
+    "../../../../../interfaces/innerkits/common:accessibility_common",
+    "../../../../../services/aams:accessibleabilityms",
+    "../../../../interface:accessibility_interface",
+  ]
+  external_deps = [
+    "access_token:libnativetoken",
+    "access_token:libtoken_setproc",
+    "cJSON:cjson_static",
+    "selinux_adapter:librestorecon",
+    "ability_base:want",
+    "ability_base:zuri",
+    "ability_base:configuration",
+    "ability_runtime:ability_connect_callback_stub",
+    "ability_runtime:ability_manager",
+    "ability_runtime:abilitykit_native",
+    "ability_runtime:extension_manager",
+    "ability_runtime:app_manager",
+    "access_token:libaccesstoken_sdk",
+    "access_token:libtokenid_sdk",
+    "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_consumer",
+    "eventhandler:libeventhandler",
+    "ffrt:libffrt",
+    "graphic_2d:2d_graphics",
+    "graphic_2d:librender_service_client",
+    "graphic_2d:librender_service_base",
+    "hicollie:libhicollie",
+    "hilog:libhilog",
+    "hisysevent:libhisysevent",
+    "hitrace:hitrace_meter",
+    "i18n:intl_util",
+    "init:libbeget_proxy",
+    "init:libbegetutil",
+    "input:libmmi-client",
+    "ipc:ipc_single",
+    "memmgr:memmgrclient",
+    "os_account:os_account_innerkits",
+    "power_manager:powermgr_client",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm_lite",
+  ]
+}
+
+###############################################################################
+group("fuzztest") {
+  testonly = true
+  deps = []
+  deps += [
+    # deps file
+    ":AccessibleAbilityManagerServiceFuzzTest",
+  ]
+}
+###############################################################################
