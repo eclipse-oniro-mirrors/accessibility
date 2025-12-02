@@ -136,22 +136,24 @@ bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(
             if (appData.bundleName != appBundleName) {
                 return;
             }
+            
+            if (appData.state == AppExecFwk::AppProcessState::APP_STATE_TERMINATED) {
+                auto obj = weakPtr.promote();
+                auto bundleName = appData.bundleName;
+                auto connection = accountData->GetAppStateObserverAbility(Utils::GetUri(bundleName, abilityName));
+                if (!connection) {
+                    accountData->RemoveAppStateObserverAbility(Utils::GetUri(bundleName, abilityName));
+                    HILOG_ERROR("Failed to find connection!");
+                    return;
+                }
 
-            auto obj = weakPtr.promote();
-            auto bundleName = appData.bundleName;
-            auto connection = accountData->GetAppStateObserverAbility(Utils::GetUri(bundleName, abilityName));
-            if (!connection) {
+                connection->Disconnect();
                 accountData->RemoveAppStateObserverAbility(Utils::GetUri(bundleName, abilityName));
-                HILOG_ERROR("Failed to find connection!");
-                return;
-            }
-
-            connection->Disconnect();
-            accountData->RemoveAppStateObserverAbility(Utils::GetUri(bundleName, abilityName));
-            auto abilityManagerClient = obj->GetAppMgrProxy();
-            int32_t result = abilityManagerClient->UnregisterApplicationStateObserver(appStateObserver);
-            if (result != ERR_OK) {
-                HILOG_ERROR("Failed to unregister application state observer, ret=%{public}d", result);
+                auto abilityManagerClient = obj->GetAppMgrProxy();
+                int32_t result = abilityManagerClient->UnregisterApplicationStateObserver(appStateObserver);
+                if (result != ERR_OK) {
+                    HILOG_ERROR("Failed to unregister application state observer, ret=%{public}d", result);
+                }
             }
         });
 
