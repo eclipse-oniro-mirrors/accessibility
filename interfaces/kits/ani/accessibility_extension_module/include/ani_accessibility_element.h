@@ -59,6 +59,7 @@ struct FindElementParams {
     std::map<std::string, std::string> actionArguments_;
     std::string actionName_ = "";
     std::string rule_ = "";
+    int32_t moveSearchResult_ = -1;
 };
 
 // AccessibilityElement initialization and creation

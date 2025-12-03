@@ -2449,17 +2449,14 @@ void NAccessibilityElement::FindElementsByConditionExecute(napi_env env, void* d
         HILOG_ERROR("elementInfo_ is nullptr");
         return;
     }
-    int64_t elementId = callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityId();
-    int32_t windowId = callbackInfo->accessibilityElement_.elementInfo_->GetWindowId();
-    if (windowId == 1) {
-        windowId = callbackInfo->accessibilityElement_.elementInfo_->GetMainWindowId();
-    }
+
     FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->direction_);
     DetailCondition condition = ConvertStringToDetailCondition(callbackInfo->condition_);
     AccessibilityFocusMoveParam param { direction, condition };
 
     callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
-        *callbackInfo->accessibilityElement_.elementInfo_, param, callbackInfo->nodeInfos_, windowId);
+        *callbackInfo->accessibilityElement_.elementInfo_, param, callbackInfo->nodeInfos_,
+        callbackInfo->moveSearchResult_);
 }
  
 void NAccessibilityElement::FindElementsByConditionComplete(napi_env env, napi_status status, void* data)
@@ -2477,6 +2474,10 @@ void NAccessibilityElement::FindElementsByConditionComplete(napi_env env, napi_s
         return;
     }
 
+    if (callbackInfo->ret_ != RET_OK) {
+        callbackInfo->moveSearchResult_ = -1;
+    }
+
     napi_value napiResultInfo = nullptr;
     napi_create_object(env, &napiResultInfo);
 
@@ -2485,7 +2486,7 @@ void NAccessibilityElement::FindElementsByConditionComplete(napi_env env, napi_s
     ConvertElementInfosToJS(env, value, callbackInfo->nodeInfos_);
 
     napi_value nResult = nullptr;
-    napi_status nStatus = napi_create_int64(env, callbackInfo->ret_, &nResult);
+    napi_status nStatus = napi_create_int64(env, callbackInfo->moveSearchResult_, &nResult);
     if (nStatus != napi_ok) {
         return;
     }

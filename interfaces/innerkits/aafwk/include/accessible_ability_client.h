@@ -524,7 +524,7 @@ public:
 
     virtual RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         AccessibilityFocusMoveParam param,
-        std::vector<AccessibilityElementInfo> &infos, int32_t windowId) = 0;
+        std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

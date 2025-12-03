@@ -821,7 +821,7 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const Acces
 {
     if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr.");
-        return RET_ERR_FAILED;
+        return RET_ERR_NULLPTR;
     }
 
     MessageParcel data;
@@ -830,45 +830,45 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const Acces
     AccessibilityElementInfoParcel infoParcel(info);
 
     if (!WriteInterfaceToken(data)) {
-        return RET_ERR_FAILED;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteParcelable(&infoParcel)) {
         HILOG_ERROR("connection write info failed");
-        return RET_ERR_FAILED;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(param.direction)) {
         HILOG_ERROR("connection write direction failed");
-        return RET_ERR_FAILED;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(param.condition)) {
         HILOG_ERROR("connection write condition failed");
-        return RET_ERR_FAILED;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt64(param.parentId)) {
         HILOG_ERROR("connection write parentId failed");
-        return RET_ERR_FAILED;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(param.detectParent)) {
         HILOG_ERROR("connection write detectParent failed");
-        return RET_ERR_FAILED;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
-        return RET_ERR_FAILED;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
-        return RET_ERR_FAILED;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(windowId)) {
         HILOG_ERROR("windowId write error: %{public}d, ", windowId);
-        return RET_ERR_FAILED;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH_WITH_CONDITION,
         data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by specific property");
-        return RET_ERR_FAILED;
+        return RET_ERR_IPC_FAILED;
     }
     return static_cast<RetError>(reply.ReadInt32());
 }

@@ -987,11 +987,11 @@ RetError AccessibleAbilityChannel::FocusMoveSearchWithCondition(const Accessibil
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
-        return RET_ERR_FAILED;
+        return RET_ERR_NULLPTR;
     }
     if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr.");
-        return RET_ERR_FAILED;
+        return RET_ERR_NULLPTR;
     }
 
     if (!Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
@@ -1034,7 +1034,7 @@ RetError AccessibleAbilityChannel::FocusMoveSearchWithCondition(const Accessibil
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait SearchElementInfosByText result, requestId: %{public}d", requestId);
-        return RET_ERR_FAILED;
+        return RET_ERR_TIME_OUT;
     }
     return syncFuture.get();
 }

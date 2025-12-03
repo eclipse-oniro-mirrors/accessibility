@@ -617,7 +617,7 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithCondition(Message
     sptr<AccessibilityElementInfoParcel> info = data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
     if (info == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityElementInfoParcel> failed");
-        return RET_ERR_FAILED;
+        return ERR_INVALID_VALUE;
     }
     AccessibilityFocusMoveParam param;
     param.direction = static_cast<FocusMoveDirection>(data.ReadInt32());
@@ -630,13 +630,13 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithCondition(Message
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
     if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");
-        return RET_ERR_FAILED;
+        return ERR_INVALID_VALUE;
     }
     sptr<IAccessibilityElementOperatorCallback> callback =
         iface_cast<IAccessibilityElementOperatorCallback>(remote);
     if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr.");
-        return RET_ERR_FAILED;
+        return ERR_INVALID_VALUE;
     }
     int32_t windowId = data.ReadInt32();
 

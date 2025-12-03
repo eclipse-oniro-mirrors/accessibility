@@ -871,8 +871,11 @@ ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string 
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
         return nullptr;
     }
+    if (RET_OK != param.ret_) {
+        param.moveSearchResult_ = -1;
+    }
  
-    return CreateAniAccessibilityRuleResult(env, param.nodeInfos_, param.ret_);
+    return CreateAniAccessibilityRuleResult(env, param.nodeInfos_, param.moveSearchResult_);
 }
 
 FocusMoveDirection ConvertStringToDirection(const std::string &str)
@@ -1104,9 +1107,8 @@ void FindElementExecute(FindElementParams* data)
                 AccessibilityFocusMoveParam param;
                 param.direction = ConvertStringToDirection(data->condition_);
                 param.condition = ConvertStringToDetailCondition(data->rule_);
-                int32_t windowId = data->accessibilityElement_.elementInfo_->GetWindowId();
                 data->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
-                    *data->accessibilityElement_.elementInfo_, param, data->nodeInfos_, windowId);
+                    *data->accessibilityElement_.elementInfo_, param, data->nodeInfos_, data->moveSearchResult_);
             }
             break;
         default:
