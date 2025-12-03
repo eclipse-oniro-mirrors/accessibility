@@ -1860,7 +1860,7 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
     AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult)
 {
     HILOG_DEBUG("start elementId: %{public} " PRId64 ", direction: %{public}d, condition: %{public}d,"
-        "windowId: %{public}d", info.GetAccessibilityId(), param.direction, param.condition, windowId);
+        "windowId: %{public}d", info.GetAccessibilityId(), param.direction, param.condition, info.GetWindowId());
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1875,6 +1875,7 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
     moveSearchResult = result.resultType;
     int32_t treeId = (static_cast<uint64_t>(info.GetAccessibilityId()) >> ELEMENT_MOVE_BIT);
     if (ret != RET_OK || treeId <= 0 || moveSearchResult == FocusMoveResultType::SEARCH_FAIL_LOST_NODE) {
+        HILOG_DEBUG("ret: %{public}d, treeId: %{public}d, result: %{public}d", ret, treeId, moveSearchResult);
         return ret;
     }
 
