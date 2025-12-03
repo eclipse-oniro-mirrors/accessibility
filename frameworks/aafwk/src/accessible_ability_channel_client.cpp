@@ -612,22 +612,25 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearchWithCondition(const Acce
     if (proxy_ == nullptr) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]",
             channelId_);
-        return RET_ERR_SAMGR;
+        return RET_ERR_FAILED;
     }
     sptr<AccessibilityElementOperatorCallbackImpl> callback =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (callback == nullptr) {
         HILOG_ERROR("SearchElementInfosBySpecificProperty Failed to create callback");
-        return RET_ERR_NULLPTR;
+        return RET_ERR_FAILED;
     }
 
     ffrt::future<void> promiseFuture = callback->promise_.get_future();
-    proxy_->FocusMoveSearchWithCondition(info, param, requestId, callback, info.GetWindowId());
+    auto ret = proxy_->FocusMoveSearchWithCondition(info, param, requestId, callback, info.GetWindowId());
+    if (ret != RET_OK) {
+        return ret;
+    }
 
     ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (waitFocus != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait result, requestId: %{public}d", requestId);
-        return RET_ERR_TIME_OUT;
+        return RET_ERR_FAILED;
     }
     infos = callback->elementInfosResult_;
     result.resultType = callback->focusMoveResult_;

@@ -867,6 +867,10 @@ ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string 
     FindElementParams param = {FIND_ELEMENT_BY_CONDITION, conditionStr, *element};
     param.rule_ = ruleStr;
     FindElementExecute(&param);
+    if (RET_ERR_NOT_SYSTEM_APP == param.ret_ || RET_ERR_NO_PERMISSION == param.ret_) {
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
+        return nullptr;
+    }
  
     return CreateAniAccessibilityRuleResult(env, param.nodeInfos_, param.ret_);
 }

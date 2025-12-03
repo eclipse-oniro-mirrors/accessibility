@@ -1863,7 +1863,7 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
         "windowId: %{public}d", info.GetAccessibilityId(), param.direction, param.condition, windowId);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return RET_ERR_NO_CONNECTION;
+        return RET_ERR_FAILED;
     }
     FocusMoveResult result;
     RetError ret = channelClient_->FocusMoveSearchWithCondition(info, param, infos, result);

@@ -979,7 +979,7 @@ void AccessibleAbilityChannel::SearchElementInfoBySpecificProperty(const Element
     }
 }
 
-void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityElementInfo &elementInfo,
+RetError AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityElementInfo &elementInfo,
     const AccessibilityFocusMoveParam &param,  const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId)
 {
@@ -987,11 +987,17 @@ void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityE
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (eventHandler_ == nullptr) {
         HILOG_ERROR("eventHandler_ is nullptr.");
-        return;
+        return RET_ERR_FAILED;
     }
     if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr.");
-        return;
+        return RET_ERR_FAILED;
+    }
+
+    if (!Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
+        OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        HILOG_WARN("SearchElementInfoByAccessibilityId permission denied.");
+        return RET_ERR_NO_PERMISSION;
     }
 
     int32_t accountId = accountId_;
@@ -1028,10 +1034,9 @@ void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityE
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("Failed to wait SearchElementInfosByText result, requestId: %{public}d", requestId);
-        return;
+        return RET_ERR_FAILED;
     }
-    syncFuture.get();
-    return;
+    return syncFuture.get();
 }
 } // namespace Accessibility
 } // namespace OHOS
