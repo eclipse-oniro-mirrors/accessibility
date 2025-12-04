@@ -230,7 +230,7 @@ public:
         const SpecificPropertyParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    virtual void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
+    virtual RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam& param,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int32_t windowId) override;

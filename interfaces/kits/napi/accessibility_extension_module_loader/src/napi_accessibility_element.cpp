@@ -2405,14 +2405,10 @@ napi_value NAccessibilityElement::FindElementsByCondition(napi_env env, napi_cal
     status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
     if (!accessibilityElement || status != napi_ok) {
         HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
-        napi_value err = CreateBusinessError(env, RetError::RET_ERR_NULLPTR);
-        napi_throw(env, err);
         return nullptr;
     }
     if (!accessibilityElement->isElementInfo_) {
         HILOG_ERROR("Type of AccessibilityElement is not right");
-        napi_value err = CreateBusinessError(env, RetError::RET_ERR_FAILED);
-        napi_throw(env, err);
         return nullptr;
     }
     
@@ -2420,8 +2416,6 @@ napi_value NAccessibilityElement::FindElementsByCondition(napi_env env, napi_cal
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
-        napi_value err = CreateBusinessError(env, RetError::RET_ERR_NULLPTR);
-        napi_throw(env, err);
         return nullptr;
     }
     callbackInfo->env_ = env;
@@ -2455,17 +2449,14 @@ void NAccessibilityElement::FindElementsByConditionExecute(napi_env env, void* d
         HILOG_ERROR("elementInfo_ is nullptr");
         return;
     }
-    int64_t elementId = callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityId();
-    int32_t windowId = callbackInfo->accessibilityElement_.elementInfo_->GetWindowId();
-    if (windowId == 1) {
-        windowId = callbackInfo->accessibilityElement_.elementInfo_->GetMainWindowId();
-    }
+
     FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->direction_);
     DetailCondition condition = ConvertStringToDetailCondition(callbackInfo->condition_);
     AccessibilityFocusMoveParam param { direction, condition };
 
     callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
-        *callbackInfo->accessibilityElement_.elementInfo_, param, callbackInfo->nodeInfos_, windowId);
+        *callbackInfo->accessibilityElement_.elementInfo_, param, callbackInfo->nodeInfos_,
+        callbackInfo->moveSearchResult_);
 }
  
 void NAccessibilityElement::FindElementsByConditionComplete(napi_env env, napi_status status, void* data)
@@ -2474,6 +2465,17 @@ void NAccessibilityElement::FindElementsByConditionComplete(napi_env env, napi_s
     if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
         return;
+    }
+    if (callbackInfo->ret_ == RET_ERR_NOT_SYSTEM_APP || callbackInfo->ret_ == RET_ERR_NO_PERMISSION) {
+        napi_reject_deferred(env, callbackInfo->deferred_, CreateBusinessError(env, callbackInfo->ret_));
+        napi_delete_async_work(env, callbackInfo->work_);
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+
+    if (callbackInfo->ret_ != RET_OK) {
+        callbackInfo->moveSearchResult_ = -1;
     }
 
     napi_value napiResultInfo = nullptr;
@@ -2484,7 +2486,7 @@ void NAccessibilityElement::FindElementsByConditionComplete(napi_env env, napi_s
     ConvertElementInfosToJS(env, value, callbackInfo->nodeInfos_);
 
     napi_value nResult = nullptr;
-    napi_status nStatus = napi_create_int64(env, callbackInfo->ret_, &nResult);
+    napi_status nStatus = napi_create_int64(env, callbackInfo->moveSearchResult_, &nResult);
     if (nStatus != napi_ok) {
         return;
     }

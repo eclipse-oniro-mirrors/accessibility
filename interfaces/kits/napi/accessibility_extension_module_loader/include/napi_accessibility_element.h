@@ -61,6 +61,7 @@ struct NAccessibilityElementData {
     std::string condition_ = "";
     std::string direction_ = "";
     int32_t cursorPosition_ = 0;
+    int32_t moveSearchResult_ = -1;
     bool systemApi = false;
     OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RetError::RET_ERR_FAILED;
 };

@@ -423,7 +423,7 @@ public:
         const uint32_t mode, AccessibilityElementInfo &info, bool isFilter = false) override;
 
     RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info, AccessibilityFocusMoveParam param,
-        std::vector<AccessibilityElementInfo> &infos, int32_t windowId) override;
+        std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult) override;
     RetError SearchElementInfoRecursive(int32_t windowId, int64_t elementId, uint32_t mode,
         std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter = false);
     RetError SearchElementInfoRecursiveByWinid(const int32_t windowId, const int64_t elementId,

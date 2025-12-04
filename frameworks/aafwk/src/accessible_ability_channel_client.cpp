@@ -622,7 +622,10 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearchWithCondition(const Acce
     }
 
     ffrt::future<void> promiseFuture = callback->promise_.get_future();
-    proxy_->FocusMoveSearchWithCondition(info, param, requestId, callback, info.GetWindowId());
+    auto ret = proxy_->FocusMoveSearchWithCondition(info, param, requestId, callback, info.GetWindowId());
+    if (ret != RET_OK) {
+        return ret;
+    }
 
     ffrt::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (waitFocus != ffrt::future_status::ready) {

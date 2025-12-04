@@ -125,9 +125,12 @@ public:
     {
         return RET_OK;
     }
-    void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
+    RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam& param, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId) override {}
+        const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId) override
+    {
+        return RET_OK;
+    }
 };
 
 template<class T>

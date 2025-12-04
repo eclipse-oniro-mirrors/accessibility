@@ -401,11 +401,11 @@ RetError AccessibleAbilityChannel::UnholdRunningLock()
     return RET_OK;
 }
 
-void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityElementInfo &elementInfo,
+RetError AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityElementInfo &elementInfo,
     const AccessibilityFocusMoveParam &param, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId)
 {
-    return;
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS
