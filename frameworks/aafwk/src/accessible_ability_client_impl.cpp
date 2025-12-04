@@ -1304,14 +1304,15 @@ void AccessibleAbilityClientImpl::SetCacheElementInfo(const int32_t windowId,
 RetError AccessibleAbilityClientImpl::SearchElementInfoByElementId(const int32_t windowId, const int64_t elementId,
     const uint32_t mode, AccessibilityElementInfo &info, int32_t treeId, bool systemApi)
 {
-    if (channelClient_ == nullptr) {
+    std::shared_ptr<AccessibleAbilityChannelClient> channelClient = channelClient_;
+    if (channelClient == nullptr) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
 
     HILOG_INFO("windowId %{public}d}, elementId %{public}" PRId64 "", windowId, elementId);
     std::vector<AccessibilityElementInfo> elementInfos {};
-    RetError ret = channelClient_->SearchElementInfosByAccessibilityId(
+    RetError ret = channelClient->SearchElementInfosByAccessibilityId(
         windowId, elementId, static_cast<int32_t>(mode), elementInfos, treeId, false, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId failed. windowId[%{public}d] ", windowId);
@@ -1331,7 +1332,8 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByElementId(const int32_t
 RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t windowId, const int64_t elementId,
     const uint32_t mode, AccessibilityElementInfo &info, bool systemApi)
 {
-    if (channelClient_ == nullptr) {
+    std::shared_ptr<AccessibleAbilityChannelClient> channelClient = channelClient_;
+    if (channelClient == nullptr) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
@@ -1341,7 +1343,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t win
     if (elementId != ROOT_NONE_ID) {
         treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
     }
-    RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId,
+    RetError ret = channelClient->SearchElementInfosByAccessibilityId(windowId, elementId,
         static_cast<int32_t>(mode), elementInfos, treeId, false, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("search element info failed. windowId[%{public}d] elementId[%{public}" PRId64 "] mode[%{public}d]",
@@ -1480,11 +1482,12 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursive(int32_t windowI
     std::vector<AccessibilityElementInfo> &elementInfos, bool isFilter)
 {
     HILOG_INFO("windowId %{public}d}, elementId %{public}" PRId64 "", windowId, elementId);
-    if (!channelClient_) {
+    std::shared_ptr<AccessibleAbilityChannelClient> channelClient = channelClient_;
+    if (channelClient == nullptr) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId,
+    RetError ret = channelClient->SearchElementInfosByAccessibilityId(windowId, elementId,
         mode, elementInfos, ROOT_TREE_ID, isFilter);
     if (ret != RET_OK) {
         HILOG_ERROR("search element info failed. windowId %{public}d elementId %{public}" PRId64 "",
@@ -1515,7 +1518,12 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
         return RET_ERR_NO_CONNECTION;
     }
     std::vector<AccessibilityElementInfo> vecElementInfos {};
-    RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId,
+    std::shared_ptr<AccessibleAbilityChannelClient> channelClient = channelClient_;
+    if (channelClient == nullptr) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+    RetError ret = channelClient->SearchElementInfosByAccessibilityId(windowId, elementId,
         mode, vecElementInfos, treeId, isFilter, systemApi);
     if (ret != RET_OK) {
         HILOG_ERROR("search element info failed. windowId %{public}d}", windowId);
@@ -1819,12 +1827,13 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveBySpecificProper
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
     }
     std::vector<AccessibilityElementInfo> vecElementInfos {};
-    if (!channelClient_) {
+    std::shared_ptr<AccessibleAbilityChannelClient> channelClient = channelClient_;
+    if (channelClient == nullptr) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
     std::vector<AccessibilityElementInfo> infos;
-    RetError ret = channelClient_->SearchElementInfosBySpecificProperty(windowId, elementId, param, infos,
+    RetError ret = channelClient->SearchElementInfosBySpecificProperty(windowId, elementId, param, infos,
         vecElementInfos, treeId);
     if (ret != RET_OK) {
         HILOG_ERROR("search element info failed. windowId %{public}d}", windowId);
@@ -1861,12 +1870,13 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
 {
     HILOG_DEBUG("start elementId: %{public} " PRId64 ", direction: %{public}d, condition: %{public}d,"
         "windowId: %{public}d", info.GetAccessibilityId(), param.direction, param.condition, windowId);
-    if (!channelClient_) {
+    std::shared_ptr<AccessibleAbilityChannelClient> channelClient = channelClient_;
+    if (channelClient == nullptr) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
     FocusMoveResult result;
-    RetError ret = channelClient_->FocusMoveSearchWithCondition(info, param, infos, result);
+    RetError ret = channelClient->FocusMoveSearchWithCondition(info, param, infos, result);
     for (auto &elementInfo : infos) {
         elementInfo.SetMainWindowId(windowId);
     }
@@ -1891,7 +1901,7 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
         AccessibilityElementInfo tmpInfo;
         tmpInfo.SetBelongTreeId(treeId);
         tmpInfo.SetWindowId(info.GetParentWindowId());
-        ret = channelClient_->FocusMoveSearchWithCondition(tmpInfo, param, tmpInfos, tmpResult);
+        ret = channelClient->FocusMoveSearchWithCondition(tmpInfo, param, tmpInfos, tmpResult);
         if (ret != RET_OK) {
             return ret;
         }
@@ -1909,7 +1919,7 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
             return static_cast<RetError>(result.resultType);
         }
         param.direction = FocusMoveDirection::DETECT_FOCUSABLE_IN_FOCUS_MOVE;
-        ret = channelClient_->FocusMoveSearchWithCondition(infos[0], param, tmpInfos, tmpResult);
+        ret = channelClient->FocusMoveSearchWithCondition(infos[0], param, tmpInfos, tmpResult);
         if (ret != RET_OK) {
             return ret;
         }
