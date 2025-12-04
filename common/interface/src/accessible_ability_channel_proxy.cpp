@@ -815,13 +815,13 @@ void AccessibleAbilityChannelProxy::SearchElementInfoBySpecificProperty(const El
     }
 }
 
-void AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
+RetError AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
     const AccessibilityFocusMoveParam& param, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId)
 {
     if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr.");
-        return;
+        return RET_ERR_NULLPTR;
     }
 
     MessageParcel data;
@@ -830,46 +830,47 @@ void AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const Accessibi
     AccessibilityElementInfoParcel infoParcel(info);
 
     if (!WriteInterfaceToken(data)) {
-        return;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteParcelable(&infoParcel)) {
         HILOG_ERROR("connection write info failed");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(param.direction)) {
         HILOG_ERROR("connection write direction failed");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(param.condition)) {
         HILOG_ERROR("connection write condition failed");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt64(param.parentId)) {
         HILOG_ERROR("connection write parentId failed");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(param.detectParent)) {
         HILOG_ERROR("connection write detectParent failed");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
-        return;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(windowId)) {
         HILOG_ERROR("windowId write error: %{public}d, ", windowId);
-        return;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH_WITH_CONDITION,
         data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by specific property");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
+    return static_cast<RetError>(reply.ReadInt32());
 }
 } // namespace Accessibility
 } // namespace OHOS

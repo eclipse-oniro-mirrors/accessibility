@@ -30,6 +30,7 @@
 #include "res_type.h"
 #include "res_sched_client.h"
 #endif // ACCESSIBILITY_WATCH_FEATURE
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -247,6 +248,14 @@ void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmi
         HILOG_WARN("invalid magnificationMode");
         ClearMagnificationGesture();
     }
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    if (Utils::IsWideFold() || Utils::IsSmallFold()) {
+        AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+        if (displayMgr.GetFoldStatus() == Rosen::FoldStatus::FOLDED) {
+            ShieldZoomGesture(true);
+        }
+    }
+#endif
 }
 
 void AccessibilityInputInterceptor::CreatZoomGesture()

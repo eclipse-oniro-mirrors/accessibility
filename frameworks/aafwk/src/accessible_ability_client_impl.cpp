@@ -1745,7 +1745,7 @@ RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_p
 {
     HILOG_INFO();
     std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
-    if (callback->handlerRef_ == nullptr) {
+    if (!callback->IsValidRef()) {
         callbackList_.clear();
     } else {
         for (auto it = callbackList_.begin(); it != callbackList_.end();) {
@@ -1866,10 +1866,10 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveBySpecificProper
 }
 
 RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
-    AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t windowId)
+    AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult)
 {
     HILOG_DEBUG("start elementId: %{public} " PRId64 ", direction: %{public}d, condition: %{public}d,"
-        "windowId: %{public}d", info.GetAccessibilityId(), param.direction, param.condition, windowId);
+        "windowId: %{public}d", info.GetAccessibilityId(), param.direction, param.condition, info.GetWindowId());
     std::shared_ptr<AccessibleAbilityChannelClient> channelClient = channelClient_;
     if (channelClient == nullptr) {
         HILOG_ERROR("The channel is invalid.");
@@ -1877,21 +1877,18 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
     }
     FocusMoveResult result;
     RetError ret = channelClient->FocusMoveSearchWithCondition(info, param, infos, result);
-    for (auto &elementInfo : infos) {
-        elementInfo.SetMainWindowId(windowId);
+    if (info.GetWindowId() == 1) {
+        for (auto &elementInfo : infos) {
+            elementInfo.SetMainWindowId(info.GetMainWindowId());
+        }
     }
-    if (ret != RET_OK) {
-        HILOG_ERROR("FocusMoveSearchWithCondition error");
+    moveSearchResult = result.resultType;
+    int32_t treeId = (static_cast<uint64_t>(info.GetAccessibilityId()) >> ELEMENT_MOVE_BIT);
+    if (ret != RET_OK || treeId <= 0 || moveSearchResult == FocusMoveResultType::SEARCH_FAIL_LOST_NODE) {
+        HILOG_DEBUG("ret: %{public}d, treeId: %{public}d, result: %{public}d", ret, treeId, moveSearchResult);
         return ret;
     }
-    int32_t treeId = (static_cast<uint64_t>(info.GetAccessibilityId()) >> ELEMENT_MOVE_BIT);
-    if (treeId <= 0) {
-        return static_cast<RetError>(result.resultType);
-    }
 
-    if (result.resultType == FocusMoveResultType::SEARCH_FAIL_LOST_NODE) {
-        return static_cast<RetError>(result.resultType);
-    }
     param.detectParent = true;
     std::vector<AccessibilityElementInfo> tmpInfos;
     FocusMoveResult tmpResult;
@@ -1902,32 +1899,25 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
         tmpInfo.SetBelongTreeId(treeId);
         tmpInfo.SetWindowId(info.GetParentWindowId());
         ret = channelClient->FocusMoveSearchWithCondition(tmpInfo, param, tmpInfos, tmpResult);
-        if (ret != RET_OK) {
+        moveSearchResult = tmpResult.resultType;
+        if (ret != RET_OK || tmpResult.needTerminate) {
             return ret;
-        }
-        if (tmpResult.needTerminate) {
-            return static_cast<RetError>(tmpResult.resultType);
         }
         if (tmpResult.resultType == FocusMoveResultType::SEARCH_SUCCESS) {
             infos.insert(infos.end(), tmpInfos.begin(), tmpInfos.end());
         }
-        HILOG_INFO("get scroll result %{public}d", result.resultType);
-        auto finalResultType = infos.empty() ? FocusMoveResultType::SEARCH_FAIL : FocusMoveResultType::SEARCH_SUCCESS;
-        return static_cast<RetError>(finalResultType);
+        moveSearchResult = infos.empty() ? FocusMoveResultType::SEARCH_FAIL : FocusMoveResultType::SEARCH_SUCCESS;
+        HILOG_INFO("get scroll result %{public}d", moveSearchResult);
     } else if (param.direction == FocusMoveDirection::FORWARD || param.direction == BACKWARD) {
         if ((infos.empty()) || (result.resultType != FocusMoveResultType::SEARCH_SUCCESS)) {
-            return static_cast<RetError>(result.resultType);
+            return ret;
         }
         param.direction = FocusMoveDirection::DETECT_FOCUSABLE_IN_FOCUS_MOVE;
         ret = channelClient->FocusMoveSearchWithCondition(infos[0], param, tmpInfos, tmpResult);
-        if (ret != RET_OK) {
-            return ret;
-        }
-
-        HILOG_INFO("send to parent result %{public}d", tmpResult.resultType);
-        return static_cast<RetError>(tmpResult.resultType);
+        moveSearchResult = tmpResult.resultType;
+        HILOG_INFO("send to parent result %{public}d", moveSearchResult);
     }
-    return static_cast<RetError>(result.resultType);
+    return ret;
 }
 } // namespace Accessibility
 } // namespace OHOS

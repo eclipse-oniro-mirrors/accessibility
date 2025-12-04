@@ -16,6 +16,7 @@
 #include <vector>
 #include <gtest/gtest.h>
 #include "accessibility_config.h"
+#include "accessibility_common_helper.h"
 #include "parameter.h"
 #include "system_ability_definition.h"
 
@@ -1399,7 +1400,9 @@ HWTEST_F(AccessibilityConfigImplTest, SetScreenMagnificationState_001, TestSize.
     bool state = true;
     bool value = false;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    Accessibility::AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(true);
     instance.InitializeContext();
+    Accessibility::AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     instance.SetScreenMagnificationState(state);
     instance.GetScreenMagnificationState(value);
     EXPECT_TRUE(value);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2024 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -1476,6 +1476,20 @@ public:
     const std::string &GetAccessibilityText() const;
 
     /**
+     * @brief Set accessibility state description
+     * @param accessibilityText The accessibility state description of node
+     * @sysCap Accessibility
+     */
+    void SetAccessibilityStateDescription(const std::string &accessibilityStateDescription);
+
+    /**
+     * @brief Get accessibility state description
+     * @return The accessibility state description of node
+     * @sysCap Accessibility
+     */
+    const std::string &GetAccessibilityStateDescription() const;
+
+    /**
      * @brief Set text type
      * @param textType The text type of node
      * @sysCap Accessibility
@@ -1887,6 +1901,7 @@ protected:
     std::string text_ = "";
     std::string hintText_ = "";
     std::string accessibilityText_ = "";
+    std::string accessibilityStateDescription_ = "";
     std::string contentDescription_ = "";
     std::string resourceName_ = "";
     std::string inspectorKey_ = "";

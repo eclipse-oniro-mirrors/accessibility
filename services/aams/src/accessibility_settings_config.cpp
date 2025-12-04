@@ -1364,8 +1364,8 @@ void AccessibilitySettingsConfig::CloneOnDeviceCapability()
     service->GetIntValue(OLD_DEVICE_CAPABILITY, oldCapability);
     HILOG_INFO("oldCapability: %{public}d", oldCapability);
     for (auto capability : PC_ENABLE_CAPABILITY_LIST) {
-        if ((static_cast<uint32_t>(newCapability) & capability) != (
-            static_cast<uint32_t>(oldCapability) & capability)) {
+        if ((static_cast<uint32_t>(newCapability) & static_cast<uint32_t>(capability)) != (
+            static_cast<uint32_t>(oldCapability) & static_cast<uint32_t>(capability))) {
             HILOG_INFO("capability: %{public}d is not same, need recover", capability);
             recoverCapability(capability);
         }

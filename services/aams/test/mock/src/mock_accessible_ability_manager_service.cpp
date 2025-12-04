@@ -525,6 +525,13 @@ ErrCode AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
     return RET_OK;
 }
 
+ErrCode AccessibleAbilityManagerService::RegisterEnableAbilityCallbackObserver(
+    const sptr<IAccessibilityEnableAbilityCallbackObserver> &observer)
+{
+    (void)observer;
+    return RET_OK;
+}
+
 ErrCode AccessibleAbilityManagerService::RegisterConfigObserver(
     const sptr<IAccessibleAbilityManagerConfigObserver> &callback)
 {
@@ -773,7 +780,7 @@ void AccessibleAbilityManagerService::InitResource(bool needReInit)
 std::string &GetResource(const std::string &resourceName)
 {
     (void)resourceName;
-    std::string resource = "";
+    static std::string resource = "resource";
     return resource;
 }
 
@@ -821,6 +828,13 @@ ErrCode AccessibleAbilityManagerService::DeRegisterCaptionObserver(
 }
 
 ErrCode AccessibleAbilityManagerService::DeRegisterEnableAbilityListsObserver(
+    const sptr<IRemoteObject>& obj)
+{
+    (void)obj;
+    return RET_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::DeRegisterEnableAbilityCallbackObserver(
     const sptr<IRemoteObject>& obj)
 {
     (void)obj;

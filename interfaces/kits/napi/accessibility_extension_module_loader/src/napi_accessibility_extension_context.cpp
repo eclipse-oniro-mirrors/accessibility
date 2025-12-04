@@ -839,7 +839,7 @@ private:
             }
         };
         // NAccessibilityExtensionContext::OnStartAbility
-        if (napi_status::napi_ok != napi_send_event(env, asyncTask, napi_eprio_high)) {
+        if (napi_status::napi_ok != napi_send_event(env, asyncTask, napi_eprio_high, "OnStartAbility")) {
             napiAsyncTask->Reject(env, CreateJsError(env,
                 static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
                 ERROR_MESSAGE_SYSTEM_ABNORMALITY));
@@ -1089,7 +1089,7 @@ private:
         }
 
         if (type == "preDisconnect" && ref != nullptr) {
-            std::shared_ptr<DisconnectCallback> callback = std::make_shared<DisconnectCallback>(env, ref);
+            std::shared_ptr<DisconnectCallback> callback = std::make_shared<NapiDisconnectCallback>(env, ref);
             context_.lock()->RegisterDisconnectCallback(callback);
         }
         return nullptr;
@@ -1115,7 +1115,7 @@ private:
         }
 
         if (type == "preDisconnect") {
-            std::shared_ptr<DisconnectCallback> callback = std::make_shared<DisconnectCallback>(env, ref);
+            std::shared_ptr<DisconnectCallback> callback = std::make_shared<NapiDisconnectCallback>(env, ref);
             context_.lock()->UnRegisterDisconnectCallback(callback);
         }
         return nullptr;

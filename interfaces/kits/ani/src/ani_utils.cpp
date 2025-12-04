@@ -285,7 +285,8 @@ EventType ANIUtils::ConvertStringToEventInfoTypes(const std::string &type)
             EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
         {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY},
         {"announceForAccessibilityNotInterrupt", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT},
-        {"scrolling", EventType::TYPE_VIEW_SCROLLING_EVENT}};
+        {"scrolling", EventType::TYPE_VIEW_SCROLLING_EVENT},
+        {"pageActive", EventType::TYPE_PAGE_ACTIVE}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
@@ -969,6 +970,93 @@ ani_status ANIUtils::CreateAniLong(ani_env* env, int64_t value, ani_object& resu
     return state;
 }
 
+bool ANIUtils::SetStringField(ani_env *env, ani_object &object, const std::string &fieldName,
+    const std::string &value, bool isProperty)
+{
+    if (env == nullptr) {
+        HILOG_ERROR("SetStringField null env");
+        return false;
+    }
+    ani_string string = nullptr;
+    ani_status status;
+    if (value.empty()) {
+        ani_ref nullRef = nullptr;
+        if ((status = env->GetNull(&nullRef)) != ANI_OK) {
+            HILOG_ERROR("get null status : %{public}d", status);
+            return false;
+        }
+        if (isProperty) {
+            if ((status = env->Object_SetPropertyByName_Ref(object, fieldName.c_str(), nullRef)) != ANI_OK) {
+                HILOG_ERROR("set null property status : %{public}d", status);
+                return false;
+            }
+            return true;
+        } else {
+            if ((status = env->Object_SetFieldByName_Ref(object, fieldName.c_str(), nullRef)) != ANI_OK) {
+                HILOG_ERROR("set null status : %{public}d", status);
+                return false;
+            }
+            return true;
+        }
+    }
+    if ((status = env->String_NewUTF8(value.c_str(), value.size(), &string)) != ANI_OK) {
+        HILOG_ERROR("change to ani string status : %{public}d", status);
+        return false;
+    }
+    if (isProperty) {
+        if ((status = env->Object_SetPropertyByName_Ref(object, fieldName.c_str(), string)) != ANI_OK) {
+            HILOG_ERROR("set property status : %{public}d", status);
+            return false;
+        }
+        return true;
+    } else {
+        if ((status = env->Object_SetFieldByName_Ref(object, fieldName.c_str(), string)) != ANI_OK) {
+            HILOG_ERROR("set ref status : %{public}d", status);
+            return false;
+        }
+        return true;
+    }
+}
+
+bool ANIUtils::SetArrayStringField(ani_env *env, ani_object &object, const std::string &fieldName,
+    const std::vector<std::string> &values, bool isProperty)
+{
+    if (env == nullptr) {
+        HILOG_ERROR("SetArrayStringField null env");
+        return false;
+    }
+    ani_array arrayObj = ANIUtils::CreateEmptyAniArray(env, values.size());
+    if (arrayObj == nullptr) {
+        HILOG_ERROR("SetArrayStringField array is null");
+        return false;
+    }
+    ani_size index = 0;
+    for (auto &str : values) {
+        if (ANI_OK != env->Array_Set(arrayObj, index, StdStringToAniString(env, str))) {
+            HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}zu str=%{public}s",
+                fieldName.c_str(), index, str.c_str());
+            return false;
+        }
+        index++;
+    }
+    if (isProperty) {
+        ani_status status = env->Object_SetPropertyByName_Ref(object, fieldName.c_str(), arrayObj);
+        if (status != ANI_OK) {
+            HILOG_ERROR("status : %{public}d", status);
+            return false;
+        }
+        return true;
+    } else {
+        ani_status status = env->Object_SetFieldByName_Ref(object, fieldName.c_str(), arrayObj);
+        if (status != ANI_OK) {
+            HILOG_ERROR("status : %{public}d", status);
+            return false;
+        }
+
+        return true;
+    }
+}
+
 bool ANIUtils::SetIntField(ani_env *env, ani_object &object, const std::string &fieldName,
     int32_t fieldValue, bool isProperty)
 {
@@ -990,6 +1078,121 @@ bool ANIUtils::SetIntField(ani_env *env, ani_object &object, const std::string &
     } else {
         if (env->Object_SetFieldByName_Ref(object, fieldName.c_str(), value) != ANI_OK) {
             HILOG_ERROR("set int field failed %{public}s", fieldName.c_str());
+            return false;
+        }
+        return true;
+    }
+}
+
+bool ANIUtils::SetDoubleField(ani_env *env, ani_object &object, const std::string &fieldName,
+    double fieldValue, bool isProperty)
+{
+    if (env == nullptr) {
+        HILOG_ERROR("SetDoubleField null env");
+        return false;
+    }
+    ani_status status;
+    ani_object value = CreateDouble(env, static_cast<int32_t>(fieldValue));
+    if (isProperty) {
+        if ((status = env->Object_SetPropertyByName_Ref(object, fieldName.c_str(), value)) != ANI_OK) {
+            HILOG_ERROR("set double property failed %{public}s %{public}d", fieldName.c_str(), status);
+            return false;
+        }
+        return true;
+    } else {
+        if ((status = env->Object_SetFieldByName_Ref(object, fieldName.c_str(), value)) != ANI_OK) {
+            HILOG_ERROR("set double field failed %{public}s %{public}d", fieldName.c_str(), status);
+            return false;
+        }
+        return true;
+    }
+}
+
+bool ANIUtils::SetBooleanField(ani_env *env, ani_object &object, const std::string &fieldName,
+    bool fieldValue, bool isProperty)
+{
+    if (env == nullptr) {
+        HILOG_ERROR("SetBoolField null env");
+        return false;
+    }
+    ani_object value;
+    if (CreateAniBoolean(env, fieldValue, value) != ANI_OK) {
+        HILOG_ERROR("CreateAniBoolean failed");
+        return false;
+    }
+    if (isProperty) {
+        if ((env->Object_SetPropertyByName_Ref(object, fieldName.c_str(), value)) != ANI_OK) {
+            HILOG_ERROR("set bool property failed %{public}s", fieldName.c_str());
+            return false;
+        }
+        return true;
+    } else {
+        if ((env->Object_SetFieldByName_Ref(object, fieldName.c_str(), value)) != ANI_OK) {
+            HILOG_ERROR("set bool field failed %{public}s", fieldName.c_str());
+            return false;
+        }
+        return true;
+    }
+}
+
+bool ANIUtils::SetLongField(ani_env *env, ani_object &object, const std::string &fieldName,
+    int64_t fieldValue, bool isProperty)
+{
+    if (env == nullptr) {
+        HILOG_ERROR("SetLongField null env");
+        return false;
+    }
+    ani_object value;
+    if (CreateAniLong(env, fieldValue, value) != ANI_OK) {
+        HILOG_ERROR("CreateAniLong failed");
+        return false;
+    }
+    ani_status status;
+    if (isProperty) {
+        if ((status = env->Object_SetPropertyByName_Ref(object, fieldName.c_str(), value)) != ANI_OK) {
+            HILOG_ERROR("set long property failed %{public}s %{public}d", fieldName.c_str(), status);
+            return false;
+        }
+        return true;
+    } else {
+        if ((status = env->Object_SetFieldByName_Ref(object, fieldName.c_str(), value)) != ANI_OK) {
+            HILOG_ERROR("set long field failed %{public}s %{public}d", fieldName.c_str(), status);
+            return false;
+        }
+        return true;
+    }
+}
+
+bool ANIUtils::SetArrayField(ani_env *env, ani_object &object, const std::string &fieldName,
+    const std::vector<ani_object> &fieldValue, bool isProperty)
+{
+    if (env == nullptr) {
+        HILOG_ERROR("SetArrayField null env");
+        return false;
+    }
+    ani_array array = CreateEmptyAniArray(env, fieldValue.size());
+    if (array == nullptr) {
+        HILOG_ERROR("CreateArray failed");
+        return false;
+    }
+    ani_size index = 0;
+    for (auto &item : fieldValue) {
+        if (ANI_OK != env->Array_Set(array, index, item)) {
+            HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}zu",
+                fieldName.c_str(), index);
+            return false;
+        }
+        index++;
+    }
+    if (isProperty) {
+        if (env->Object_SetPropertyByName_Ref(object, fieldName.c_str(), array) != ANI_OK) {
+            HILOG_ERROR("set array property failed %{public}s", fieldName.c_str());
+            return false;
+        }
+        return true;
+    } else {
+        if (env->Object_SetFieldByName_Ref(object, fieldName.c_str(), array) != ANI_OK) {
+            HILOG_ERROR("set array field failed %{public}s", fieldName.c_str());
             return false;
         }
         return true;
@@ -1073,5 +1276,57 @@ void ANIUtils::SetSelectionParam(ani_env *env, ani_object obj, std::map<std::str
     if (ANI_OK == env->Object_GetFieldByName_Boolean(obj, "selectTextInForWard", &forWard)) {
         std::string value = forWard ? "forWard" : "backWard";
         args.insert(std::pair<std::string, std::string>("selectTextInForWard", value.c_str()));
+    }
+}
+
+void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
+    std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action)
+{
+    ani_ref fiedNameValue;
+    std::string str = "";
+    switch (action) {
+        case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
+        case ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM:
+            if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "htmlItem", &fiedNameValue)) {
+                str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
+                args.insert(std::pair<std::string, std::string>("htmlItem", str.c_str()));
+            }
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_NEXT_TEXT:
+        case ActionType::ACCESSIBILITY_ACTION_PREVIOUS_TEXT:
+            if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "textMoveUnit", &fiedNameValue)) {
+                str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
+                args.insert(std::pair<std::string, std::string>("textMoveUnit", str.c_str()));
+            }
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_SET_SELECTION:
+            SetSelectionParam(env, obj, args);
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION:
+            if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "offset", &fiedNameValue)) {
+                str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
+                CheckNumber(env, str);
+                args.insert(std::pair<std::string, std::string>("offset", str.c_str()));
+            }
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_SET_TEXT:
+            if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "setText", &fiedNameValue)) {
+                str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
+                args.insert(std::pair<std::string, std::string>("setText", str.c_str()));
+            }
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK:
+            if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "spanId", &fiedNameValue)) {
+                str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
+                CheckNumber(env, str);
+                args.insert(std::pair<std::string, std::string>("spanId", str.c_str()));
+            }
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
+        case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
+            SetScrollTypeParam(env, obj, args);
+            break;
+        default:
+            break;
     }
 }

@@ -17,7 +17,8 @@ import accessibility from '@ohos.accessibility';
 import { AsyncCallback, BusinessError, Callback } from '@ohos.base';
 
 native function enableAbilitySync(name: string, capability: Array<accessibility.Capability>): void;
-
+native function enableAbilityWithCallbackSync(name: string, capability: Array<accessibility.Capability>,
+    connectCallback: config.ConnectCallback): void;
 native function disableAbilitySync(name: string): void;
 
 namespace config {
@@ -30,6 +31,16 @@ namespace config {
     export type ClickResponseTime = 'Short' | 'Medium' | 'Long';
 
     export type RepeatClickInterval = 'Shortest' | 'Short' | 'Medium' | 'Long' | 'Longest';
+
+    export type OnDisconnectCallback = () => void;
+
+    export interface ConnectCallback {
+        onDisconnect: OnDisconnectCallback;
+    }
+
+    export class ConnectCallbackImpl implements ConnectCallback {
+        onDisconnect: OnDisconnectCallback;
+    }
 
     export function enableAbility(name: string, capability: Array<accessibility.Capability>): Promise<void> {
         return new Promise<void> ((resolve: (v: undefined) => void, reject: (error: BusinessError) => void): void => {
@@ -56,6 +67,21 @@ namespace config {
             .catch((ret: Any): void => {
                 callback(ret as BusinessError, undefined);
             });
+    }
+
+    export function enableAbilityWithCallback(name: string, capability: Array<accessibility.Capability>,
+        connectCallback: ConnectCallback): Promise<void> {
+        return new Promise<void> ((resolve: (v: undefined) => void, reject: (error: BusinessError) => void): void => {
+            taskpool.execute((): void => {
+                return enableAbilityWithCallbackSync(name, capability, connectCallback);
+            })
+            .then((ret: Any): void => {
+                resolve(ret as undefined);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
     }
 
     export function disableAbility(name: string): Promise<void> {

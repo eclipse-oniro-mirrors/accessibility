@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2023-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,6 +48,9 @@ namespace Accessibility {
 
         ON_ACCESSIBILITY_ENABLE_ABILITY_LISTS_CHANGED = 300,
         ON_ACCESSIBILITY_INSTALL_ABILITY_LISTS_CHANGED,
+        ON_ACCESSIBILITY_ENABLE_ABILITY_REMOTE_DIED,
+        ON_ACCESSIBILITY_ENABLE_ABILITY_APP_STATE_CHANGED,
+        ON_ACCESSIBILITY_ENABLE_ABILITY_ABILITY_STATE_CHANGED,
 
         SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID = 400,
         SEARCH_ELEMENTINFOS_BY_TEXT,

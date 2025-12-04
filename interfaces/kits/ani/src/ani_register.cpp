@@ -76,6 +76,7 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
     ANIAccessibilityClient::accessibilityStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::touchGuideStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::screenReaderStateListeners_->SubscribeToFramework();
+    ANIAccessibilityClient::touchModeStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::captionListeners_->SubscribeToFramework();
 
     *result = ANI_VERSION_1;
@@ -94,8 +95,14 @@ static bool BindMethod(ani_env *env, ani_namespace ns, ani_module mod)
         ani_native_function {"offStateChange", nullptr, reinterpret_cast<void *>(
             ANIAccessibilityClient::UnsubscribeState)},
         ani_native_function {"offAll", nullptr, reinterpret_cast<void *>(ANIAccessibilityClient::UnsubscribeStateAll)},
+        ani_native_function {"onTouchModeChangeNative", nullptr,
+            reinterpret_cast<void *>(ANIAccessibilityClient::SubscribeState)},
+        ani_native_function {"offTouchModeChangeNative", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityClient::UnsubscribeState)},
         ani_native_function {"isScreenReaderOpenSync", nullptr, reinterpret_cast<void *>(
             ANIAccessibilityClient::IsScreenReaderOpenSync)},
+        ani_native_function {"getTouchModeSync", nullptr,
+            reinterpret_cast<void *>(ANIAccessibilityClient::getTouchModeSync)},
         ani_native_function {"getAccessibilityExtensionListSync", nullptr,
             reinterpret_cast<void *>(ANIAccessibilityClient::GetAccessibilityExtensionListSync)},
         ani_native_function {"getCaptionsManager", nullptr,
@@ -155,6 +162,9 @@ ANI_EXPORT ani_status ANI_Destructor(ani_vm *vm)
     }
     if (ANIAccessibilityClient::screenReaderStateListeners_) {
         ANIAccessibilityClient::screenReaderStateListeners_->UnsubscribeFromFramework();
+    }
+    if (ANIAccessibilityClient::touchModeStateListeners_) {
+        ANIAccessibilityClient::touchModeStateListeners_->UnsubscribeFromFramework();
     }
     if (ANIAccessibilityClient::captionListeners_) {
         ANIAccessibilityClient::captionListeners_->UnsubscribeFromFramework();

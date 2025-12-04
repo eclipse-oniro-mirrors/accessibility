@@ -99,6 +99,9 @@ public:
     ErrCode RegisterEnableAbilityListsObserver(
         const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override;
 
+    ErrCode RegisterEnableAbilityCallbackObserver(
+        const sptr<IAccessibilityEnableAbilityCallbackObserver> &observer) override;
+
     ErrCode GetAbilityList(uint32_t abilityTypes, int32_t stateType,
         std::vector<AccessibilityAbilityInfoParcel>& infos) override;
 
@@ -115,6 +118,8 @@ public:
     ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override;
 
     ErrCode DeRegisterEnableAbilityListsObserver(const sptr<IRemoteObject>& obj) override;
+
+    ErrCode DeRegisterEnableAbilityCallbackObserver(const sptr<IRemoteObject>& obj) override;
 
     ErrCode GetCaptionProperty(CaptionPropertyParcel &caption, bool isPermissionRequired) override;
     ErrCode SetCaptionProperty(const CaptionPropertyParcel &caption, bool isPermissionRequired) override;
@@ -466,7 +471,10 @@ private:
         ffrt::mutex stateObserversMutex_;
     };
 
-    RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities);
+    RetError InnerEnableAbility(
+        const std::string &name,
+        const uint32_t capabilities,
+        const std::string callerBundleName = "");
     RetError InnerDisableAbility(const std::string &name);
 
     sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(int32_t windowId);
@@ -544,6 +552,7 @@ private:
     std::map<int32_t, std::map<int32_t, sptr<IRemoteObject::DeathRecipient>>> interactionOperationDeathMap_ {};
     sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityListsObserverDeathRecipient_ = nullptr;
+    sptr<IRemoteObject::DeathRecipient> enableAbilityCallbackObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
     StateObservers stateObservers_;
     ffrt::mutex mutex_; // current used for register state observer

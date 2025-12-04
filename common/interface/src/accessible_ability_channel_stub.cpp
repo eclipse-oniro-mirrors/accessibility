@@ -615,6 +615,10 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithCondition(Message
 {
     HILOG_DEBUG();
     sptr<AccessibilityElementInfoParcel> info = data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
+    if (info == nullptr) {
+        HILOG_ERROR("ReadStrongParcelable<AccessibilityElementInfoParcel> failed");
+        return ERR_INVALID_VALUE;
+    }
     AccessibilityFocusMoveParam param;
     param.direction = static_cast<FocusMoveDirection>(data.ReadInt32());
     param.condition = static_cast<DetailCondition>(data.ReadInt32());
@@ -636,8 +640,7 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithCondition(Message
     }
     int32_t windowId = data.ReadInt32();
 
-    FocusMoveSearchWithCondition(*info, param, requestId, callback, windowId);
-    RetError result = RET_OK;
+    RetError result = FocusMoveSearchWithCondition(*info, param, requestId, callback, windowId);
     reply.WriteInt32(result);
     return NO_ERROR;
 }

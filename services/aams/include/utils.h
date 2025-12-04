@@ -78,6 +78,7 @@ public:
     static bool UpdateColorModeConfiguration(int32_t &accountId);
     static bool IsWideFold();
     static bool IsBigFold();
+    static bool IsSmallFold();
     static std::string FormatString(const std::string& format, const std::string& value);
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);

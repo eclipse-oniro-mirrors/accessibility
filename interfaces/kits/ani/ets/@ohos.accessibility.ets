@@ -18,6 +18,30 @@ import { Resource } from 'global.resource';
 
 native function sendAccessibilityEventSync(event: accessibility.EventInfo): void;
 
+export enum AccessibilityAction {
+  ACCESSIBILITY_FOCUS = 0,
+  CLEAR_ACCESSIBILITY_FOCUS = 1,
+  FOCUS = 2,
+  CLEAR_FOCUS = 3,
+  CLICK = 4,
+  LONG_CLICK = 5,
+  CUT = 6,
+  COPY = 7,
+  PASTE = 8,
+  SELECT = 9,
+  SET_TEXT = 10,
+  SCROLL_FORWARD = 11,
+  SCROLL_BACKWARD = 12,
+  SET_SELECTION = 13,
+  SET_CURSOR_POSITION = 14,
+  HOME = 15,
+  BACK = 16,
+  RECENT_TASK = 17,
+  NOTIFICATION_CENTER = 18,
+  CONTROL_CENTER = 19,
+  SPAN_CLICK = 20
+}
+
 export enum AccessibilityEventType {
   TYPE_ACCESSIBILITY_FOCUS = 0,
   TYPE_ACCESSIBILITY_FOCUS_CLEAR = 1,
@@ -87,7 +111,8 @@ export enum AccessibilityEventType {
   TYPE_FOUR_FINGER_SWIPE_UP = 65,
   TYPE_FOUR_FINGER_SWIPE_DOWN = 66,
   TYPE_FOUR_FINGER_SWIPE_LEFT = 67,
-  TYPE_FOUR_FINGER_SWIPE_RIGHT = 68
+  TYPE_FOUR_FINGER_SWIPE_RIGHT = 68,
+  TYPE_PAGE_ACTIVE = 69
 }
 
 namespace accessibility {
@@ -97,7 +122,7 @@ namespace accessibility {
         'click' | 'longClick' | 'focus' | 'select' | 'hoverEnter' | 'hoverExit' |
         'textUpdate' | 'textSelectionUpdate' | 'scroll' | 'requestFocusForAccessibility' |
         'announceForAccessibility' | 'requestFocusForAccessibilityNotInterrupt' |
-        'announceForAccessibilityNotInterrupt' | 'scrolling';
+        'announceForAccessibilityNotInterrupt' | 'scrolling' | 'pageActive';
 
     export type Action = 'accessibilityFocus' | 'clearAccessibilityFocus' | 'focus' | 'clearFocus' | 'clearSelection' |
         'click' | 'longClick' | 'cut' | 'copy' | 'paste' | 'select' | 'setText' | 'delete' |
@@ -108,7 +133,8 @@ namespace accessibility {
 
     export type TextMoveUnit = 'char' | 'word' | 'line' | 'page' | 'paragraph';
 
-    export type observerType = 'accessibilityStateChange' | 'touchGuideStateChange' | 'screenReaderStateChange';
+    export type observerType = 'accessibilityStateChange' | 'touchGuideStateChange' | 'screenReaderStateChange' |
+        'touchModeChange';
 
     export type AbilityType = 'audible' | 'generic' | 'haptic' | 'spoken' | 'visual' | 'all';
 
@@ -121,6 +147,8 @@ namespace accessibility {
     export native function isOpenAccessibilitySync(): boolean;
 
     export native function isScreenReaderOpenSync(): boolean;
+
+    export native function getTouchModeSync(): string;
 
     export native function getAccessibilityExtensionListSync(abilityType: AbilityType, stateType: AbilityState
         ): Array<AccessibilityAbilityInfo>;
@@ -170,6 +198,14 @@ namespace accessibility {
         onStateChange('screenReaderStateChange', callback);
     }
 
+    native function onTouchModeChangeNative(type: observerType, callback: Callback<string>): void;
+
+    export function onTouchModeChange(callback: Callback<string>): void {
+        onTouchModeChangeNative('touchModeChange', callback);
+    }
+
+    native function offTouchModeChangeNative(type: observerType, callback: Callback<string>): void;
+
     native function offStateChange(type: observerType, callback: Callback<boolean>): void;
 
     native function offAll(type: observerType): void;
@@ -198,6 +234,15 @@ namespace accessibility {
         } else {
             let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
             offStateChange('screenReaderStateChange', callbackFunc);
+        }
+    }
+
+    export function offTouchModeChange(callback?: Callback<string>): void {
+        if (callback === undefined) {
+            offAll('touchModeChange');
+        } else {
+            let callbackFunc: Callback<string> = callback as Callback<string>;
+            offTouchModeChangeNative('touchModeChange', callbackFunc);
         }
     }
 

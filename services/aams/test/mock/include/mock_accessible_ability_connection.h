@@ -55,7 +55,7 @@ public:
     MOCK_METHOD1(SendSimulateGesture, RetError(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath));
     MOCK_METHOD1(SetIsRegisterDisconnectCallback, RetError(bool isRegister));
     MOCK_METHOD0(NotifyDisconnect, RetError());
-    MOCK_METHOD5(FocusMoveSearchWithCondition, void(const AccessibilityElementInfo &info,
+    MOCK_METHOD5(FocusMoveSearchWithCondition, RetError(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam &param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId));
 };

@@ -45,12 +45,13 @@ public:
 
     void RegisterDisplayListener(const std::shared_ptr<MagnificationManager> &manager);
     void UnregisterDisplayListener();
+    void RegisterFoldStatusListener();
+    void UnregisterFoldStatusListener();
     RotationType GetRotationType(Rosen::DisplayOrientation prev, Rosen::DisplayOrientation curr);
 private:
     class DisplayListener : public Rosen::DisplayManager::IDisplayListener {
     public:
-        explicit DisplayListener(const std::shared_ptr<MagnificationManager> &manager)
-            : manager_(manager) {}
+        explicit DisplayListener(const std::shared_ptr<MagnificationManager> &manager);
         ~DisplayListener() = default;
 
         virtual void OnCreate(Rosen::DisplayId dId) override {}
@@ -68,7 +69,15 @@ private:
         std::shared_ptr<MagnificationManager> manager_ = nullptr;
     };
 
+    class FoldStatusListener : public Rosen::DisplayManager::IFoldStatusListener {
+    public:
+        explicit FoldStatusListener() {}
+        ~FoldStatusListener() = default;
+        virtual void OnFoldStatusChanged(Rosen::FoldStatus foldStatus) override;
+    };
+
     sptr<DisplayListener> listener_ = nullptr;
+    sptr<FoldStatusListener> foldListener_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> handler_ = nullptr;
 };
 } // namespace Accessibility

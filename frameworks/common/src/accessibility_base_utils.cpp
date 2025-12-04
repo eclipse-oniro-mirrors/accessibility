@@ -55,6 +55,7 @@ namespace {
     const std::string NUMBER_VALID_CHARS = "0123456789ABCDEFabcdef";
 }
 
+// LCOV_EXCL_START
 AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type)
 {
     std::map<const std::string, AccessibilityAbilityTypes> accessibilityAbilityTypesTable = {
@@ -165,7 +166,8 @@ std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT, "announceForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT,
             "requestFocusForAccessibilityNotInterrupt"},
-        {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"}};
+        {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
+        {EventType::TYPE_PAGE_ACTIVE, "pageActive"}};
 
     for (std::map<EventType, std::string>::iterator itr = accessibilityEventTable.begin();
          itr != accessibilityEventTable.end(); ++itr) {
@@ -441,6 +443,6 @@ std::string ConvertColorToString(uint32_t color)
     HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
     return colorStr;
 }
-
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

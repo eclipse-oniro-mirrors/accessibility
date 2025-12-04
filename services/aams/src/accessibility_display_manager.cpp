@@ -180,7 +180,7 @@ void AccessibilityDisplayManager::RegisterDisplayListener(
 {
     HILOG_DEBUG();
     if (listener_) {
-        HILOG_DEBUG("Display listener is already registed!");
+        HILOG_ERROR("Display listener is already registed!");
         return;
     }
     listener_ = new(std::nothrow) DisplayListener(manager);
@@ -198,6 +198,38 @@ void AccessibilityDisplayManager::UnregisterDisplayListener()
         Rosen::DisplayManager::GetInstance().UnregisterDisplayListener(listener_);
         listener_ = nullptr;
     }
+}
+
+void AccessibilityDisplayManager::RegisterFoldStatusListener()
+{
+    HILOG_DEBUG();
+    if (foldListener_) {
+        HILOG_ERROR("Fold status listener is already registed!");
+        return;
+    }
+    foldListener_ = new(std::nothrow) FoldStatusListener();
+    if (!foldListener_) {
+        HILOG_ERROR("Create fold status listener fail!");
+        return;
+    }
+    Rosen::DisplayManager::GetInstance().RegisterFoldStatusListener(foldListener_);
+}
+
+void AccessibilityDisplayManager::UnregisterFoldStatusListener()
+{
+    HILOG_DEBUG();
+    if (foldListener_) {
+        Rosen::DisplayManager::GetInstance().UnregisterFoldStatusListener(foldListener_);
+        foldListener_ = nullptr;
+    }
+}
+
+AccessibilityDisplayManager::DisplayListener::DisplayListener(const std::shared_ptr<MagnificationManager> &manager)
+    : manager_(manager)
+{
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    orientation_ = displayMgr.GetOrientation();
+    displayMode_ = displayMgr.GetFoldDisplayMode();
 }
 
 RotationType AccessibilityDisplayManager::GetRotationType(Rosen::DisplayOrientation prev,
@@ -260,6 +292,7 @@ void AccessibilityDisplayManager::DisplayListener::OnChangeForWideFold(
         HILOG_INFO("FoldDisplayMode MAIN");
         interceptor->ShieldZoomGesture(true);
         displayMode_ = currentMode;
+        orientation_ = currentOrientation;
         return;
     }
     if (currentMode == Rosen::FoldDisplayMode::FULL) {
@@ -315,6 +348,28 @@ void AccessibilityDisplayManager::DisplayListener::OnChangeDefault(
             manager_->RefreshWindowParam(type);
         }
         orientation_ = currentOrientation;
+    }
+}
+
+void AccessibilityDisplayManager::FoldStatusListener::OnFoldStatusChanged(Rosen::FoldStatus foldStatus)
+{
+    HILOG_DEBUG("status = %{public}d", foldStatus);
+
+    auto interceptor = AccessibilityInputInterceptor::GetInstance();
+    if (interceptor == nullptr) {
+        HILOG_ERROR("interceptor is null");
+        return;
+    }
+    if (foldStatus == Rosen::FoldStatus::FOLDED) {
+        HILOG_INFO("FoldStatus FOLDED");
+        interceptor->ShieldZoomGesture(true);
+        return;
+    }
+
+    if (foldStatus == Rosen::FoldStatus::EXPAND) {
+        HILOG_INFO("FoldStatus EXPAND");
+        interceptor->ShieldZoomGesture(false);
+        return;
     }
 }
 } // namespace Accessibility

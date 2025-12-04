@@ -475,6 +475,13 @@ ErrCode MockAccessibleAbilityManagerServiceStub::RegisterEnableAbilityListsObser
     return RET_OK;
 }
 
+ErrCode MockAccessibleAbilityManagerServiceStub::RegisterEnableAbilityCallbackObserver(
+    const sptr<IAccessibilityEnableAbilityCallbackObserver> &observer)
+{
+    callbackObserver_ = observer;
+    return RET_OK;
+}
+
 ErrCode MockAccessibleAbilityManagerServiceStub::RegisterConfigObserver(
     const sptr<IAccessibleAbilityManagerConfigObserver> &observer)
 {
@@ -551,6 +558,12 @@ ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterCaptionObserver(
 }
 
 ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterEnableAbilityListsObserver(
+    const sptr<IRemoteObject>& obj)
+{
+    return RET_OK;
+}
+
+ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterEnableAbilityCallbackObserver(
     const sptr<IRemoteObject>& obj)
 {
     return RET_OK;
