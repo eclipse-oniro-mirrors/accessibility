@@ -1041,12 +1041,10 @@ int64_t AccessibilityElementInfo::GetNavDestinationId() const
 void AccessibilityElementInfo::AddSpan(const SpanInfo &span)
 {
     spanList_.push_back(span);
-    for (auto array: spanList_) {
-        HILOG_INFO("AddSpanListsize:spanId: %{public}d, spanText: %{public}s, accessibilityText: %{public}s,"
-            "accessibilityDescription: %{public}s, accessibilityLevel: %{public}s", span.GetSpanId(),
-            span.GetSpanText().c_str(), span.GetAccessibilityText().c_str(), span.GetAccessibilityDescription().c_str(),
-            span.GetAccessibilityLevel().c_str());
-    }
+    HILOG_DEBUG("AddSpanListsize:spanId: %{public}d, spanText: %{public}s, accessibilityText: %{public}s,"
+        "accessibilityDescription: %{public}s, accessibilityLevel: %{public}s, spanList_.size: %{public}zu",
+        span.GetSpanId(), span.GetSpanText().c_str(), span.GetAccessibilityText().c_str(),
+        span.GetAccessibilityDescription().c_str(), span.GetAccessibilityLevel().c_str(), spanList_.size());
 }
 
 void AccessibilityElementInfo::SetSpanList(const std::vector<SpanInfo> &spanList)
