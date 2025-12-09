@@ -579,7 +579,7 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
     uint32_t currentMagnificationMode = GetMagnificationMode();
     if (currentMagnificationState && currentMagnificationType == MAGNIFICATION_PART_SCALE_TYPE
         && currentMagnificationMode == MAGNIFICATION_PART_SCALE_MODE
-        && uiEvent.GetEventType == TYPE_PAGE_CLOSE && uiEvent.GetBundleName() == "") {
+        && uiEvent.GetEventType() == TYPE_PAGE_CLOSE && uiEvent.GetBundleName() == "") {
         return RET_OK;
     }
 
