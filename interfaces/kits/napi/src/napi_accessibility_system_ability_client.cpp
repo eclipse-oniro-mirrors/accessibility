@@ -46,6 +46,13 @@ std::shared_ptr<StateListenerImpl> NAccessibilityClient::touchModeListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED);
 std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityClient::captionListeners_ =
     std::make_shared<NAccessibilityConfigObserverImpl>();
+std::shared_ptr<StateListenerImpl> NAccessibilityClient::audioMonoStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_AUDIO_MONO);
+std::shared_ptr<StateListenerImpl> NAccessibilityClient::animationOffStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ANIMATION_OFF);
+std::shared_ptr<StateListenerImpl> NAccessibilityClient::flashReminderSwitchStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_FLASH_REMINDER_SWITCH);
+
 constexpr int32_t REPORTER_THRESHOLD_VALUE = 3000;
 
 napi_ref NAccessibilityClient::aaConsRef_;
@@ -270,6 +277,16 @@ void NAccessibilityClient::Completefunction(napi_env env, std::string type, void
     } else if (type == "IsOpenTouchExploration") {
         NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, callbackInfo->touchEnabled_, &result[PARAM1]));
         HILOG_INFO("IsOpenTouchExploration completed touchEnabled_[%{public}d]", callbackInfo->touchEnabled_);
+    } else if (type == "GetAudioMonoState") {
+        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, callbackInfo->audioMonoState_, &result[PARAM1]));
+        HILOG_INFO("GetAudioMonoState completed audioMonoState_[%{public}d]", callbackInfo->audioMonoState_);
+    } else if (type == "GetAnimationOffState") {
+        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, callbackInfo->animationOffState_, &result[PARAM1]));
+        HILOG_INFO("GetAnimationOffState completed animationOffState_[%{public}d]", callbackInfo->animationOffState_);
+    } else if (type == "GetFlashReminderSwitch") {
+        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, callbackInfo->flashReminderSwitch_, &result[PARAM1]));
+        HILOG_INFO("GetFlashReminderSwitch completed flashReminderSwitch_[%{public}d]",
+            callbackInfo->flashReminderSwitch_);
     } else {
         napi_delete_async_work(env, callbackInfo->work_);
         delete callbackInfo;
@@ -981,6 +998,369 @@ napi_value NAccessibilityClient::GetCaptionsManager(napi_env env, napi_callback_
     napi_value aaCons = nullptr;
     napi_get_reference_value(env, NAccessibilityClient::aaConsRef_, &aaCons);
     napi_new_instance(env, aaCons, 0, nullptr, &result);
+    return result;
+}
+
+napi_value NAccessibilityClient::SubscribeStateAudioMonoState(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.SubscribeStateAudioMonoState");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value args[ARGS_SIZE_ONE] = {0};
+    napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    if (status != napi_ok) {
+        HILOG_ERROR("SubscribeStateAudioMonoState Failed to get event type");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    if (argc < ARGS_SIZE_ONE) {
+        HILOG_ERROR("SubscribeStateAudioMonoState argc is invalid: %{public}zu", argc);
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    audioMonoStateListeners_->SubscribeObserver(env, args[PARAM0]);
+    return nullptr;
+}
+
+napi_value NAccessibilityClient::UnsubscribeStateAudioMonoState(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.UnsubscribeStateAudioMonoState");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value args[ARGS_SIZE_ONE] = {0};
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    if (argc < ARGS_SIZE_ONE - 1) {
+        HILOG_ERROR("UnsubscribeStateAudioMonoState argc is invalid: %{public}zu", argc);
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    if (argc >= ARGS_SIZE_ONE && CheckJsFunction(env, args[PARAM0])) {
+        audioMonoStateListeners_->UnsubscribeObserver(env, args[PARAM0]);
+    } else {
+        audioMonoStateListeners_->UnsubscribeObservers();
+    }
+    return nullptr;
+}
+
+napi_value NAccessibilityClient::GetAudioMonoState(napi_env env, napi_callback_info info)
+{
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.GetAudioMonoState");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv = nullptr;
+    napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+    if (argc != ARGS_SIZE_ZERO) {
+        HILOG_ERROR("GetAudioMonoState argc is invalid: %{public}zu", argc);
+        return nullptr;
+    }
+    NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
+
+    napi_value promise = nullptr;
+    napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "GetAudioMonoState", NAPI_AUTO_LENGTH, &resource);
+
+    auto ret = napi_create_async_work(env, nullptr, resource,
+        [](napi_env env, void* data) {
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
+            auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+            if (asaClient) {
+                callbackInfo->ret_ = asaClient->GetAudioMonoState(callbackInfo->audioMonoState_);
+                HILOG_INFO("GetAudioMonoState enabled[%{public}d]", callbackInfo->audioMonoState_);
+            }
+        },
+        [](napi_env env, napi_status status, void* data) {
+            Completefunction(env, "GetAudioMonoState", data);
+        },
+        reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    return promise;
+}
+
+napi_value NAccessibilityClient::GetAudioMonoStateSync(napi_env env, napi_callback_info info)
+{
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.GetAudioMonoStateSync");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv = nullptr;
+    bool status = false;
+    do {
+        napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+        if (argc != ARGS_SIZE_ZERO) {
+            break;
+        }
+        auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+        if (asaClient == nullptr) {
+            break;
+        }
+        asaClient->GetAudioMonoState(status);
+    } while (0);
+    napi_value result = nullptr;
+    napi_get_boolean(env, status, &result);
+    return result;
+}
+
+napi_value NAccessibilityClient::SubscribeStateAnimationReduce(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.SubscribeStateAnimationReduce");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value args[ARGS_SIZE_ONE] = {0};
+    napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    if (status != napi_ok) {
+        HILOG_ERROR("SubscribeStateAnimationReduce Failed to get event type");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    if (argc < ARGS_SIZE_ONE) {
+        HILOG_ERROR("SubscribeStateAnimationReduce argc is invalid: %{public}zu", argc);
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    animationOffStateListeners_->SubscribeObserver(env, args[PARAM0]);
+    return nullptr;
+}
+
+napi_value NAccessibilityClient::UnsubscribeStateAnimationReduce(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.UnsubscribeStateAnimationReduce");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value args[ARGS_SIZE_ONE] = {0};
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    if (argc < ARGS_SIZE_ONE - 1) {
+        HILOG_ERROR("UnsubscribeStateAnimationReduce argc is invalid: %{public}zu", argc);
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    if (argc >= ARGS_SIZE_ONE && CheckJsFunction(env, args[PARAM0])) {
+        animationOffStateListeners_->UnsubscribeObserver(env, args[PARAM0]);
+    } else {
+        animationOffStateListeners_->UnsubscribeObservers();
+    }
+    return nullptr;
+}
+
+napi_value NAccessibilityClient::GetAnimationOffState(napi_env env, napi_callback_info info)
+{
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.GetAnimationOffState");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv = nullptr;
+    napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+    if (argc != ARGS_SIZE_ZERO) {
+        HILOG_ERROR("GetAnimationOffState argc is invalid: %{public}zu", argc);
+        return nullptr;
+    }
+    NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
+
+    napi_value promise = nullptr;
+    napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "GetAnimationOffState", NAPI_AUTO_LENGTH, &resource);
+
+    auto ret = napi_create_async_work(env, nullptr, resource,
+        [](napi_env env, void* data) {
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
+            auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+            if (asaClient) {
+                callbackInfo->ret_ = asaClient->GetAnimationOffState(callbackInfo->animationOffState_);
+                HILOG_INFO("GetAnimationOffState enabled[%{public}d]", callbackInfo->animationOffState_);
+            }
+        },
+        [](napi_env env, napi_status status, void* data) {
+            Completefunction(env, "GetAnimationOffState", data);
+        },
+        reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    return promise;
+}
+
+napi_value NAccessibilityClient::GetAnimationOffStateSync(napi_env env, napi_callback_info info)
+{
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.GetAnimationOffStateSync");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv = nullptr;
+    bool status = false;
+    do {
+        napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+        if (argc != ARGS_SIZE_ZERO) {
+            break;
+        }
+        auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+        if (asaClient == nullptr) {
+            break;
+        }
+        asaClient->GetAnimationOffState(status);
+    } while (0);
+    napi_value result = nullptr;
+    napi_get_boolean(env, status, &result);
+    return result;
+}
+
+napi_value NAccessibilityClient::SubscribeStateFlashReminder(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.SubscribeStateFlashReminder");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value args[ARGS_SIZE_ONE] = {0};
+    napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    if (status != napi_ok) {
+        HILOG_ERROR("SubscribeStateFlashReminder Failed to get event type");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    if (argc < ARGS_SIZE_ONE) {
+        HILOG_ERROR("SubscribeStateFlashReminder argc is invalid: %{public}zu", argc);
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    flashReminderSwitchStateListeners_->SubscribeObserver(env, args[PARAM0]);
+    return nullptr;
+}
+
+napi_value NAccessibilityClient::UnsubscribeStateFlashReminder(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.UnsubscribeStateFlashReminder");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value args[ARGS_SIZE_ONE] = {0};
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    if (argc < ARGS_SIZE_ONE - 1) {
+        HILOG_ERROR("UnsubscribeStateFlashReminder argc is invalid: %{public}zu", argc);
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    if (argc >= ARGS_SIZE_ONE && CheckJsFunction(env, args[PARAM0])) {
+        flashReminderSwitchStateListeners_->UnsubscribeObserver(env, args[PARAM0]);
+    } else {
+        flashReminderSwitchStateListeners_->UnsubscribeObservers();
+    }
+    return nullptr;
+}
+
+napi_value NAccessibilityClient::GetFlashReminderSwitch(napi_env env, napi_callback_info info)
+{
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.GetFlashReminderSwitch");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv = nullptr;
+    napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+    if (argc != ARGS_SIZE_ZERO) {
+        HILOG_ERROR("GetFlashReminderSwitch argc is invalid: %{public}zu", argc);
+        return nullptr;
+    }
+    NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
+
+    napi_value promise = nullptr;
+    napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "GetFlashReminderSwitch", NAPI_AUTO_LENGTH, &resource);
+
+    auto ret = napi_create_async_work(env, nullptr, resource,
+        [](napi_env env, void* data) {
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
+            auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+            if (asaClient) {
+                callbackInfo->ret_ = asaClient->GetFlashReminderSwitch(callbackInfo->flashReminderSwitch_);
+                HILOG_INFO("GetFlashReminderSwitch enabled[%{public}d]", callbackInfo->flashReminderSwitch_);
+            }
+        },
+        [](napi_env env, napi_status status, void* data) {
+            Completefunction(env, "GetFlashReminderSwitch", data);
+        },
+        reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to create async work.");
+        return nullptr;
+    }
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    return promise;
+}
+
+napi_value NAccessibilityClient::GetFlashReminderSwitchSync(napi_env env, napi_callback_info info)
+{
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("NAccessibilityClient.GetFlashReminderSwitchSync");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv = nullptr;
+    bool status = false;
+    do {
+        napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+        if (argc != ARGS_SIZE_ZERO) {
+            break;
+        }
+        auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+        if (asaClient == nullptr) {
+            break;
+        }
+        asaClient->GetFlashReminderSwitch(status);
+    } while (0);
+    napi_value result = nullptr;
+    napi_get_boolean(env, status, &result);
     return result;
 }
 

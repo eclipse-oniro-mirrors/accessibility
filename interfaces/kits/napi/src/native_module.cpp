@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,6 +42,15 @@ static void Cleanup(void *data)
     }
     if (NAccessibilityClient::captionListeners_) {
         NAccessibilityClient::captionListeners_->UnsubscribeFromFramework();
+    }
+    if (NAccessibilityClient::audioMonoStateListeners_) {
+        NAccessibilityClient::audioMonoStateListeners_->UnsubscribeFromFramework();
+    }
+    if (NAccessibilityClient::animationOffStateListeners_) {
+        NAccessibilityClient::animationOffStateListeners_->UnsubscribeFromFramework();
+    }
+    if (NAccessibilityClient::flashReminderSwitchStateListeners_) {
+        NAccessibilityClient::flashReminderSwitchStateListeners_->UnsubscribeFromFramework();
     }
 }
 
@@ -261,6 +270,18 @@ static napi_value Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("sendEvent", NAccessibilityClient::SendEvent),
         DECLARE_NAPI_FUNCTION("sendAccessibilityEvent", NAccessibilityClient::SendAccessibilityEvent),
         DECLARE_NAPI_FUNCTION("getCaptionsManager", NAccessibilityClient::GetCaptionsManager),
+        DECLARE_NAPI_FUNCTION("onAudioMonoStateChange", NAccessibilityClient::SubscribeStateAudioMonoState),
+        DECLARE_NAPI_FUNCTION("offAudioMonoStateChange", NAccessibilityClient::UnsubscribeStateAudioMonoState),
+        DECLARE_NAPI_FUNCTION("isAudioMonoEnabled", NAccessibilityClient::GetAudioMonoState),
+        DECLARE_NAPI_FUNCTION("isAudioMonoEnabledSync", NAccessibilityClient::GetAudioMonoStateSync),
+        DECLARE_NAPI_FUNCTION("onAnimationReduceStateChange", NAccessibilityClient::SubscribeStateAnimationReduce),
+        DECLARE_NAPI_FUNCTION("offAnimationReduceStateChange", NAccessibilityClient::UnsubscribeStateAnimationReduce),
+        DECLARE_NAPI_FUNCTION("isAnimationReduceEnabled", NAccessibilityClient::GetAnimationOffState),
+        DECLARE_NAPI_FUNCTION("isAnimationReduceEnabledSync", NAccessibilityClient::GetAnimationOffStateSync),
+        DECLARE_NAPI_FUNCTION("onFlashReminderStateChange", NAccessibilityClient::SubscribeStateFlashReminder),
+        DECLARE_NAPI_FUNCTION("offFlashReminderStateChange", NAccessibilityClient::UnsubscribeStateFlashReminder),
+        DECLARE_NAPI_FUNCTION("isFlashReminderEnabled", NAccessibilityClient::GetFlashReminderSwitch),
+        DECLARE_NAPI_FUNCTION("isFlashReminderEnabledSync", NAccessibilityClient::GetFlashReminderSwitchSync),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
@@ -278,6 +299,9 @@ static napi_value Init(napi_env env, napi_value exports)
     NAccessibilityClient::screenReaderStateListeners_->SubscribeToFramework();
     NAccessibilityClient::touchModeListeners_->SubscribeToFramework();
     NAccessibilityClient::captionListeners_->SubscribeToFramework();
+    NAccessibilityClient::audioMonoStateListeners_->SubscribeToFramework();
+    NAccessibilityClient::animationOffStateListeners_->SubscribeToFramework();
+    NAccessibilityClient::flashReminderSwitchStateListeners_->SubscribeToFramework();
     napi_status status = napi_add_env_cleanup_hook(env, Cleanup, &NAccessibilityClient::accessibilityStateListeners_);
     if (status != napi_ok) {
         HILOG_WARN("add cleanup hook failed %{public}d", status);

@@ -134,7 +134,7 @@ namespace accessibility {
     export type TextMoveUnit = 'char' | 'word' | 'line' | 'page' | 'paragraph';
 
     export type observerType = 'accessibilityStateChange' | 'touchGuideStateChange' | 'screenReaderStateChange' |
-        'touchModeChange';
+        'touchModeChange' | 'audioMonoStateChange' | 'animationReduceStateChange' | 'flashReminderStateChange';
 
     export type AbilityType = 'audible' | 'generic' | 'haptic' | 'spoken' | 'visual' | 'all';
 
@@ -247,6 +247,93 @@ namespace accessibility {
     }
 
     export native function getCaptionsManager(): CaptionsManager;
+
+    native function isAudioMonoEnabledSync(): boolean;
+
+    export function isAudioMonoEnabled(): Promise<boolean> {
+        return new Promise<boolean>((resolve: (v: boolean) => void, reject: (error: BusinessError) => void): void => {
+            taskpool.execute((): boolean => {
+                return isAudioMonoEnabledSync();
+            })
+            .then((ret: Any): void => {
+                resolve(ret as boolean);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
+    export function onAudioMonoStateChange(callback: Callback<boolean>): void {
+        onStateChange('audioMonoStateChange', callback);
+    }
+
+    export function offAudioMonoStateChange(callback?: Callback<boolean>): void {
+        if (callback === undefined) {
+            offAll('audioMonoStateChange');
+        } else {
+            let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
+            offStateChange('audioMonoStateChange', callbackFunc);
+        }
+    }
+
+    native function isAnimationReduceEnabledSync(): boolean;
+
+    export function isAnimationReduceEnabled(): Promise<boolean> {
+        return new Promise<boolean>((resolve: (v: boolean) => void, reject: (error: BusinessError) => void): void => {
+            taskpool.execute((): boolean => {
+                return isAnimationReduceEnabledSync();
+            })
+            .then((ret: Any): void => {
+                resolve(ret as boolean);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
+    export function onAnimationReduceStateChange(callback: Callback<boolean>): void {
+        onStateChange('animationReduceStateChange', callback);
+    }
+
+    export function offAnimationReduceStateChange(callback?: Callback<boolean>): void {
+        if (callback === undefined) {
+            offAll('animationReduceStateChange');
+        } else {
+            let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
+            offStateChange('animationReduceStateChange', callbackFunc);
+        }
+    }
+
+    native function isFlashReminderEnabledSync(): boolean;
+
+    export function isFlashReminderEnabled(): Promise<boolean> {
+        return new Promise<boolean>((resolve: (v: boolean) => void, reject: (error: BusinessError) => void): void => {
+            taskpool.execute((): boolean => {
+                return isFlashReminderEnabledSync();
+            })
+            .then((ret: Any): void => {
+                resolve(ret as boolean);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
+    export function onFlashReminderStateChange(callback: Callback<boolean>): void {
+        onStateChange('flashReminderStateChange', callback);
+    }
+
+    export function offFlashReminderStateChange(callback?: Callback<boolean>): void {
+        if (callback === undefined) {
+            offAll('flashReminderStateChange');
+        } else {
+            let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
+            offStateChange('flashReminderStateChange', callbackFunc);
+        }
+    }
 
     export interface CaptionsManager {
         enabled: boolean;

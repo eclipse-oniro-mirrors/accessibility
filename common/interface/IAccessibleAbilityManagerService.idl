@@ -87,6 +87,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void GetClickResponseTime([out] unsigned int time);
     void GetIgnoreRepeatClickState([out] boolean state);
     void GetIgnoreRepeatClickTime([out] unsigned int time);
+    void GetFlashReminderSwitch([out] boolean state);
     void GetAllConfigs([out] AccessibilityConfigData configData, [out] CaptionPropertyParcel caption);
     void GetRealWindowAndElementId([inout] int windowId, [inout] long elementId);
     void GetSceneBoardInnerWinId([in] int windowId, [in] long elementId, [out] int innerWid);

@@ -1974,6 +1974,34 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioMonoState_002, TestSiz
 }
 
 /**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetFlashReminderSwitch_001
+ * @tc.name: GetFlashReminderSwitch
+ * @tc.desc: Test function GetFlashReminderSwitch
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetFlashReminderSwitch_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetFlashReminderSwitch_001 start";
+    bool state = true;
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetFlashReminderSwitch(state));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetFlashReminderSwitch_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetFlashReminderSwitch_002
+ * @tc.name: GetFlashReminderSwitch
+ * @tc.desc: Test function GetFlashReminderSwitch
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetFlashReminderSwitch_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetFlashReminderSwitch_002 start";
+    sleep(SLEEP_TIME_1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    bool state = true;
+    EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetFlashReminderSwitch(state));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetFlashReminderSwitch_002 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetDaltonizationColorFilter_002
  * @tc.name: SetDaltonizationColorFilter
  * @tc.desc: Test function SetDaltonizationColorFilter GetDaltonizationColorFilter

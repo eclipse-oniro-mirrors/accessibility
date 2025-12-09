@@ -115,6 +115,15 @@ uint32_t MockMockAccessibilityAccountData::GetAccessibilityState()
     if (isSingleClickMode_) {
         state |= STATE_SINGLE_CLICK_MODE_ENABLED;
     }
+    if (config_->GetAnimationOffState()) {
+        state |= STATE_ANIMATIONOFF_ENABLED;
+    }
+    if (config_->GetAudioMonoState()) {
+        state |= STATE_AUDIOMONO_ENABLED;
+    }
+    if (config_->GetFlashReminderSwitch()) {
+        state |= STATE_FLASH_REMINDER_ENABLED;
+    }
     return state;
 }
 

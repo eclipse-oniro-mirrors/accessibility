@@ -116,6 +116,7 @@ public:
     ErrCode GetInvertColorState(bool &state) override;
     ErrCode GetAnimationOffState(bool &state) override;
     ErrCode GetAudioMonoState(bool &state) override;
+    ErrCode GetFlashReminderSwitch(bool &state) override;
     ErrCode GetDaltonizationState(bool &state) override;
     ErrCode GetDaltonizationColorFilter(uint32_t &type) override;
     ErrCode GetContentTimeout(uint32_t &timer) override;

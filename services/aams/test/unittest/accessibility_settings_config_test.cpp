@@ -997,6 +997,23 @@ HWTEST_F(AccessibilitySettingsConfigTest,
 }
 
 /**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetFlashReminderSwitch_001
+ * @tc.name: SetFlashReminderSwitch
+ * @tc.desc: Test function SetFlashReminderSwitch
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetFlashReminderSwitch_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetFlashReminderSwitch_001 start";
+    EXPECT_FALSE(settingConfig_->GetFlashReminderSwitch());
+    int32_t ret = settingConfig_->SetFlashReminderSwitch(true);
+    EXPECT_EQ(ret, RET_OK);
+    EXPECT_TRUE(settingConfig_->GetFlashReminderSwitch());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetFlashReminderSwitch_001 end";
+}
+
+/**
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetScreenMagnificationType_001
  * @tc.name: SetScreenMagnificationType
  * @tc.desc: Test function SetScreenMagnificationType GetScreenMagnificationType

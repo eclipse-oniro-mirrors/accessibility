@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -75,6 +75,9 @@ struct NAccessibilitySystemAbilityClient {
     napi_env env_ {};
     bool enabled_ = false;
     bool touchEnabled_ = false;
+    bool audioMonoState_ = false;
+    bool animationOffState_ = false;
+    bool flashReminderSwitch_ = false;
     OHOS::Accessibility::AbilityStateType stateTypes_ = OHOS::Accessibility::ABILITY_STATE_INVALID;
     uint32_t abilityTypes_ = 0;
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList_ {};
@@ -118,6 +121,18 @@ public:
     static void DefineJSCaptionsManager(napi_env env);
     static napi_value AccessibleAbilityConstructor(napi_env env, napi_callback_info info);
     static napi_value GetCaptionsManager(napi_env env, napi_callback_info info);
+    static napi_value SubscribeStateAudioMonoState(napi_env env, napi_callback_info info);
+    static napi_value UnsubscribeStateAudioMonoState(napi_env env, napi_callback_info info);
+    static napi_value GetAudioMonoState(napi_env env, napi_callback_info info);
+    static napi_value GetAudioMonoStateSync(napi_env env, napi_callback_info info);
+    static napi_value SubscribeStateAnimationReduce(napi_env env, napi_callback_info info);
+    static napi_value UnsubscribeStateAnimationReduce(napi_env env, napi_callback_info info);
+    static napi_value GetAnimationOffState(napi_env env, napi_callback_info info);
+    static napi_value GetAnimationOffStateSync(napi_env env, napi_callback_info info);
+    static napi_value SubscribeStateFlashReminder(napi_env env, napi_callback_info info);
+    static napi_value UnsubscribeStateFlashReminder(napi_env env, napi_callback_info info);
+    static napi_value GetFlashReminderSwitch(napi_env env, napi_callback_info info);
+    static napi_value GetFlashReminderSwitchSync(napi_env env, napi_callback_info info);
     static napi_value GetCaptionStateEnabled(napi_env env, napi_callback_info info);
     static napi_value SetCaptionStateEnabled(napi_env env, napi_callback_info info);
     static napi_value GetCaptionStyle(napi_env env, napi_callback_info info);
@@ -147,6 +162,9 @@ public:
     static std::shared_ptr<StateListenerImpl> screenReaderStateListeners_;
     static std::shared_ptr<StateListenerImpl> touchModeListeners_;
     static std::shared_ptr<NAccessibilityConfigObserverImpl> captionListeners_;
+    static std::shared_ptr<StateListenerImpl> audioMonoStateListeners_;
+    static std::shared_ptr<StateListenerImpl> animationOffStateListeners_;
+    static std::shared_ptr<StateListenerImpl> flashReminderSwitchStateListeners_;
 
 private:
     static napi_value GetAccessibilityExtensionListAsync(

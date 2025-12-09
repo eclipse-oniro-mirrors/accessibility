@@ -510,6 +510,12 @@ ErrCode AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &time
     return RET_OK;
 }
 
+ErrCode AccessibleAbilityManagerService::GetFlashReminderSwitch(bool &state)
+{
+    state = false;
+    return RET_OK;
+}
+
 ErrCode AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData& configData,
     CaptionPropertyParcel& caption)
 {

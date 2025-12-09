@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -72,6 +72,7 @@ public:
     RetError SetIgnoreRepeatClickReconfirm(const bool state);
     RetError SetZoomGestureEnabledReconfirm(const bool state);
     RetError SetColorModeState(const A11yDarkModeType &type);
+    RetError SetFlashReminderSwitch(const bool state);
 
     bool GetEnabledState() const;
     bool GetTouchGuideState() const;
@@ -102,6 +103,7 @@ public:
     uint32_t GetScreenMagnificationType() const;
     uint32_t GetScreenMagnificationMode() const;
     float GetScreenMagnificationScale() const;
+    bool GetFlashReminderSwitch() const;
 
     RetError SetEnabledAccessibilityServices(const std::vector<std::string> &services);
     const std::vector<std::string> GetEnabledAccessibilityServices();
@@ -163,6 +165,7 @@ private:
     bool invertColorState_ = false;
     bool animationOffState_ = false;
     bool audioMonoState_ = false;
+    bool flashReminderSwitch_ = false;
     bool daltonizationState_ = false;
     uint32_t daltonizationColorFilter_ = 0;
     uint32_t contentTimeout_ = 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -217,6 +217,13 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t 
 {
     HILOG_DEBUG("screenMagnificationType = [%{public}u]", type);
     screenMagnificationType_ = type;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetFlashReminderSwitch(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    flashReminderSwitch_ = state;
     return RET_OK;
 }
 
@@ -831,6 +838,11 @@ uint32_t AccessibilitySettingsConfig::GetClickResponseTime() const
 uint32_t AccessibilitySettingsConfig::GetScreenMagnificationType() const
 {
     return screenMagnificationType_;
+}
+
+bool AccessibilitySettingsConfig::GetFlashReminderSwitch() const
+{
+    return flashReminderSwitch_;
 }
 
 uint32_t AccessibilitySettingsConfig::GetScreenMagnificationMode() const

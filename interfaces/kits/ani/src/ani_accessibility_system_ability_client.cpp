@@ -39,6 +39,12 @@ std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::touchModeStateListene
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_TOUCH_MODE_CHANGED);
 std::shared_ptr<AccessibilityCaptionsObserverImpl> ANIAccessibilityClient::captionListeners_ =
     std::make_shared<AccessibilityCaptionsObserverImpl>();
+std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::audioMonoStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_AUDIO_MONO);
+std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::animationOffStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ANIMATION_OFF);
+std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::flashReminderSwitchStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_FLASH_REMINDER_SWITCH);
 
 void StateListenerImpl::SubscribeToFramework()
 {
@@ -374,6 +380,12 @@ void ANIAccessibilityClient::SubscribeState(ani_env *env, ani_string type, ani_o
     } else if (std::strcmp(eventType.c_str(), "touchModeChange") == 0) {
         touchModeStateListeners_->SubscribeObserver(env, callback);
         touchGuideStateListeners_->SubscribeObserver(env, callback, false);
+    } else if (std::strcmp(eventType.c_str(), "audioMonoStateChange") == 0) {
+        audioMonoStateListeners_->SubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "animationReduceStateChange") == 0) {
+        animationOffStateListeners_->SubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "flashReminderStateChange") == 0) {
+        flashReminderSwitchStateListeners_->SubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
@@ -393,6 +405,12 @@ void ANIAccessibilityClient::UnsubscribeState(ani_env *env, ani_string type, ani
     } else if (std::strcmp(eventType.c_str(), "touchModeChange") == 0) {
         touchModeStateListeners_->UnsubscribeObserver(env, callback);
         touchGuideStateListeners_->UnsubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "audioMonoStateChange") == 0) {
+        audioMonoStateListeners_->UnsubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "animationReduceStateChange") == 0) {
+        animationOffStateListeners_->UnsubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "flashReminderStateChange") == 0) {
+        flashReminderSwitchStateListeners_->UnsubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("UnsubscribeState eventType[%{public}s] is error", eventType.c_str());
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
@@ -412,6 +430,12 @@ void ANIAccessibilityClient::UnsubscribeStateAll(ani_env *env, ani_string type)
     } else if (std::strcmp(eventType.c_str(), "touchModeChange") == 0) {
         touchModeStateListeners_->UnsubscribeObservers();
         touchGuideStateListeners_->UnsubscribeObservers();
+    } else if (std::strcmp(eventType.c_str(), "audioMonoStateChange") == 0) {
+        audioMonoStateListeners_->UnsubscribeObservers();
+    } else if (std::strcmp(eventType.c_str(), "animationReduceStateChange") == 0) {
+        animationOffStateListeners_->UnsubscribeObservers();
+    } else if (std::strcmp(eventType.c_str(), "flashReminderStateChange") == 0) {
+        flashReminderSwitchStateListeners_->UnsubscribeObservers();
     } else {
         HILOG_ERROR("UnsubscribeStateAll eventType[%{public}s] is error", eventType.c_str());
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
@@ -727,6 +751,60 @@ ani_object ANIAccessibilityClient::GetCaptionsManager(ani_env *env)
         return nullptr;
     }
     return object;
+}
+
+ani_boolean ANIAccessibilityClient::GetAudioMonoStateSync(ani_env *env)
+{
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient == nullptr) {
+        HILOG_ERROR("asaClient is nullptr!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        return false;
+    }
+    bool status = false;
+    auto ret = asaClient->GetAudioMonoState(status);
+    if (ret != RET_OK) {
+        HILOG_ERROR("GetAudioMonoState failed!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return false;
+    }
+    return status;
+}
+
+ani_boolean ANIAccessibilityClient::GetAnimationOffStateSync(ani_env *env)
+{
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient == nullptr) {
+        HILOG_ERROR("asaClient is nullptr!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        return false;
+    }
+    bool status = false;
+    auto ret = asaClient->GetAnimationOffState(status);
+    if (ret != RET_OK) {
+        HILOG_ERROR("GetAnimationOffState failed!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return false;
+    }
+    return status;
+}
+
+ani_boolean ANIAccessibilityClient::GetFlashReminderSwitchSync(ani_env *env)
+{
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient == nullptr) {
+        HILOG_ERROR("asaClient is nullptr!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        return false;
+    }
+    bool status = false;
+    auto ret = asaClient->GetFlashReminderSwitch(status);
+    if (ret != RET_OK) {
+        HILOG_ERROR("GetFlashReminderSwitch failed!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return false;
+    }
+    return status;
 }
 
 ani_boolean ANIAccessibilityClient::GetEnabled(ani_env *env, ani_object object)
