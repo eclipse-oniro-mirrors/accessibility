@@ -113,6 +113,8 @@ namespace {
     constexpr int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     constexpr int32_t WINDOW_ID_INVALID = -1;
     constexpr int64_t ELEMENT_ID_INVALID = -1;
+    constexpr uint32_t MAGNIFICATION_PART_SCALE_TYPE = 3;
+    constexpr uint32_t MAGNIFICATION_PART_SCALE_MODE = 2;
     enum SCREENREADER_STATE : int32_t {
         UNINIT = -1,
         OFF = 0,
@@ -571,6 +573,16 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
     }
+
+    bool currentMagnificationState = GetMagnificationState();
+    uint32_t currentMagnificationType = GetMagnificationType();
+    uint32_t currentMagnificationMode = GetMagnificationMode();
+    if (currentMagnificationState && currentMagnificationType == MAGNIFICATION_PART_SCALE_TYPE
+        && currentMagnificationMode == MAGNIFICATION_PART_SCALE_MODE
+        && uiEvent.GetEventType == TYPE_PAGE_CLOSE && uiEvent.GetBundleName() == "") {
+        return RET_OK;
+    }
+
     RetError res = GetResourceBundleInfo(const_cast<AccessibilityEventInfo&>(uiEvent));
     if (res != RET_OK) {
         HILOG_ERROR("Get Resource BundleInfo failed! RetError is %{public}d", res);
