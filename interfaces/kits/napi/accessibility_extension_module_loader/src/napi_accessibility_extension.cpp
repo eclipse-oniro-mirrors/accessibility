@@ -200,6 +200,9 @@ void NAccessibilityExtension::OnAbilityConnected()
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             ExtensionCallbackInfo *data = static_cast<ExtensionCallbackInfo*>(work->data);
+            napi_env env = data->env_;
+            auto closeScope = [env](napi_handle_scope scope) { napi_close_handle_scope(env, scope); };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(env), closeScope);
             data->extension_->CallObjectMethod("onConnect");
             data->extension_->CallObjectMethod("onAccessibilityConnect");
             delete data;
@@ -253,6 +256,9 @@ void NAccessibilityExtension::OnAbilityDisconnected()
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             ExtensionCallbackInfo *data = static_cast<ExtensionCallbackInfo*>(work->data);
+            napi_env env = data->env_;
+            auto closeScope = [env](napi_handle_scope scope) { napi_close_handle_scope(env, scope); };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(env), closeScope);
             data->extension_->CallObjectMethod("onDisconnect");
             data->extension_->CallObjectMethod("onAccessibilityDisconnect");
             data->syncPromise_.set_value();
