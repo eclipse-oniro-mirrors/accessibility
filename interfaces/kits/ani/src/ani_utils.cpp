@@ -798,8 +798,8 @@ bool ANIUtils::GetColorMember(ani_env *env, ani_object object, const char* name,
         HILOG_INFO("color stringContent = %{public}s, color = %{public}u", stringContent.c_str(), color);
     } else {
         ani_int valueInt;
-        if (env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "unboxed", ":i", &valueInt) != ANI_OK) {
-            HILOG_ERROR(" Unboxed Int failed");
+        if (env->Object_CallMethodByName_Int(static_cast<ani_object>(ref), "toInt", ":i", &valueInt) != ANI_OK) {
+            HILOG_ERROR("Unbox Int failed");
             return false;
         }
         color = static_cast<uint32_t>(valueInt);
