@@ -141,12 +141,9 @@ float AccessibilityDatashareHelper::GetFloatValue(const std::string& key, const 
     float result = defaultValue;
     std::string valueStr = GetStringValue(key, std::to_string(result), readOnlyFlag);
     if (valueStr != "") {
-        float num;
-        auto [ptr, ec] = std::from_chars(valueStr.data(), valueStr.data() + valueStr.size(), num);
-        if (ec == std::errc()) {
-            result = num;
-        }
+        result = Utils::StringToFloat(valueStr);
     }
+    HILOG_INFO("AccessibilityDatashareHelper::GetFloatValue %{public}f).", result);
     return result;
 }
 
@@ -162,6 +159,7 @@ uint64_t AccessibilityDatashareHelper::GetUnsignedLongValue(const std::string& k
             result = num;
         }
     }
+    HILOG_INFO("AccessibilityDatashareHelper::GetUnsignedLongValue %{public}lu).", result);
     return result;
 }
  
