@@ -391,6 +391,12 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetAnimationOffState(bool &stat
 ErrCode MockAccessibleAbilityManagerServiceStub::GetAudioMonoState(bool &state)
 {
     state = audioMono_;
+        return RET_OK;
+}
+
+ErrCode MockAccessibleAbilityManagerServiceStub::GetFlashReminderSwitch(bool &state)
+{
+    state = false;
     return RET_OK;
 }
 

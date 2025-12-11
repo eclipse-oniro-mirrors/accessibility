@@ -311,6 +311,7 @@ public:
     ErrCode GetClickResponseTime(uint32_t &time) override;
     ErrCode GetIgnoreRepeatClickState(bool &state) override;
     ErrCode GetIgnoreRepeatClickTime(uint32_t &time) override;
+    ErrCode GetFlashReminderSwitch(bool &state) override;
     ErrCode GetAllConfigs(AccessibilityConfigData& configData, CaptionPropertyParcel& caption) override;
 
     ErrCode RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
@@ -475,6 +476,8 @@ private:
     void RegisterScreenMagnificationState();
     void OnScreenMagnificationTypeChanged();
     void RegisterScreenMagnificationType();
+    void OnFlashReminderSwitchChanged();
+    void RegisterFlashReminderSwitch();
 
     void OnVoiceRecognitionChanged();
     void RegisterVoiceRecognitionState();

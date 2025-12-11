@@ -83,6 +83,7 @@ namespace {
     const std::string MAGNIFICATION_PARAM = "const.accessibility.magnification";
     const std::string VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
     const std::string VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
+    const std::string FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
     const std::string DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
     const std::string USER_SETUP_COMPLETED = "user_setup_complete";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
@@ -420,6 +421,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         RegisterVoiceRecognitionState();
         if (accessibilitySettings_) {
             accessibilitySettings_->RegisterParamWatcher();
+            UpdateAccessibilityState();
         }
         }, "OnAddSystemAbility");
 }
@@ -1340,6 +1342,7 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
     }
 
     bool state;
+    bool success = false;
     switch (targetAbilityValue) {
         case HIGH_CONTRAST_TEXT:
             state = accountData->GetConfig()->GetHighContrastTextState();
@@ -1351,7 +1354,9 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
         case ANIMATION_OFF:
             state = accountData->GetConfig()->GetAnimationOffState();
             Utils::RecordEnableShortkeyAbilityEvent("ANIMATION_OFF", !state);
-            return accessibilitySettings_->SetAnimationOffState(!state) == RET_OK;
+            success = accessibilitySettings_->SetAnimationOffState(!state) == RET_OK;
+            UpdateAccessibilityState();
+            return success;
         case SCREEN_MAGNIFICATION:
             state = accountData->GetConfig()->GetScreenMagnificationState();
             Utils::RecordEnableShortkeyAbilityEvent("SCREEN_MAGNIFICATION", !state);
@@ -1359,7 +1364,9 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
         case AUDIO_MONO:
             state = accountData->GetConfig()->GetAudioMonoState();
             Utils::RecordEnableShortkeyAbilityEvent("AUDIO_MONO", !state);
-            return accessibilitySettings_->SetAudioMonoState(!state) == RET_OK;
+            success = accessibilitySettings_->SetAudioMonoState(!state) == RET_OK;
+            UpdateAccessibilityState();
+            return success;
         case MOUSE_KEY:
             state = accountData->GetConfig()->GetMouseKeyState();
             Utils::RecordEnableShortkeyAbilityEvent("MOUSE_KEY", !state);
@@ -1930,6 +1937,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     RegisterScreenMagnificationState();
     RegisterScreenMagnificationType();
     RegisterVoiceRecognitionState();
+    RegisterFlashReminderSwitch();
 }
 
 void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
@@ -2381,6 +2389,7 @@ void AccessibleAbilityManagerService::UpdateSettingsInAtoHos()
         return;
     }
     accessibilitySettings_->UpdateSettingsInAtoHos();
+    UpdateAccessibilityState();
 }
 
 void AccessibleAbilityManagerService::UpdateInputFilter()
@@ -2562,7 +2571,9 @@ ErrCode AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
         HILOG_WARN("SetCaptionProperty permission denied.");
         return RET_ERR_NO_PERMISSION;
     }
-    return accessibilitySettings_->SetAnimationOffState(state);
+    auto ret = accessibilitySettings_->SetAnimationOffState(state);
+    UpdateAccessibilityState();
+    return ret;
 }
 
 ErrCode AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
@@ -2572,7 +2583,9 @@ ErrCode AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
         HILOG_WARN("SetCaptionProperty permission denied.");
         return RET_ERR_NO_PERMISSION;
     }
-    return accessibilitySettings_->SetAudioMonoState(state);
+    auto ret = accessibilitySettings_->SetAudioMonoState(state);
+    UpdateAccessibilityState();
+    return ret;
 }
 
 ErrCode AccessibleAbilityManagerService::SetDaltonizationColorFilter(const uint32_t filter)
@@ -2746,10 +2759,6 @@ ErrCode AccessibleAbilityManagerService::GetInvertColorState(bool &state)
 ErrCode AccessibleAbilityManagerService::GetAnimationOffState(bool &state)
 {
     PostDelayUnloadTask();
-    if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
-        return RET_ERR_NOT_SYSTEM_APP;
-    }
     return accessibilitySettings_->GetAnimationOffState(state);
 }
 
@@ -2811,6 +2820,12 @@ ErrCode AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &time
 {
     PostDelayUnloadTask();
     return accessibilitySettings_->GetIgnoreRepeatClickTime(time);
+}
+
+ErrCode AccessibleAbilityManagerService::GetFlashReminderSwitch(bool &state)
+{
+    PostDelayUnloadTask();
+    return accessibilitySettings_->GetFlashReminderSwitch(state);
 }
 
 ErrCode AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData& configData,
@@ -3411,6 +3426,54 @@ void AccessibleAbilityManagerService::RegisterScreenMagnificationType()
             accountData->GetConfig()->GetDbHandle()->RegisterObserver(SCREEN_MAGNIFICATION_TYPE, func);
         }
         }, "REGISTER_SCREEN_ZOOM_TYPE_OBSERVER");
+}
+
+void AccessibleAbilityManagerService::OnFlashReminderSwitchChanged()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    bool flashReminderSwitch = config->GetDbHandle()->GetBoolValue(FLASH_REMINDER_SWITCH_KEY, false);
+    config->SetFlashReminderSwitch(flashReminderSwitch);
+    UpdateAccessibilityState();
+}
+
+void AccessibleAbilityManagerService::RegisterFlashReminderSwitch()
+{
+    HILOG_DEBUG();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().OnFlashReminderSwitchChanged();
+        };
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(FLASH_REMINDER_SWITCH_KEY, func);
+        }
+        }, "FLASH_REMINDER_SWITCH_KEY_OBSERVER");
 }
 
 void AccessibleAbilityManagerService::UpdateVoiceRecognitionState()

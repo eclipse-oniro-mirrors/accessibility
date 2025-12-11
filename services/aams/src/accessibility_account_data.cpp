@@ -86,9 +86,11 @@ int32_t AccessibilityAccountData::GetAccountId()
 uint32_t AccessibilityAccountData::GetAccessibilityState()
 {
     HILOG_INFO("EnabledState[%{public}d], TouchGuideState[%{public}d], KeyEventObserverState[%{public}d], "
-        "GestureState[%{public}d], ScreenReaderState[%{public}d], SingleClickMode[%{public}d]",
+               "GestureState[%{public}d], ScreenReaderState[%{public}d], SingleClickMode[%{public}d], "
+               "AnimationOffState[%{public}d], AudioMonoState[%{public}d], FlashReminderSwitch[%{public}d]",
         config_->GetEnabledState(), config_->GetTouchGuideState(), config_->GetKeyEventObserverState(),
-        config_->GetGestureState(), screenReaderState_, isSingleClickMode_);
+        config_->GetGestureState(), screenReaderState_, isSingleClickMode_, config_->GetAnimationOffState(),
+        config_->GetAudioMonoState(), config_->GetFlashReminderSwitch());
     uint32_t state = 0;
     if (connectedA11yAbilities_.GetSize() != 0 || connectingA11yAbilities_.GetSize() != 0) {
         HILOG_DEBUG("connectingA11yAbilities %{public}zu connectedA11yAbilities %{public}zu",
@@ -120,6 +122,15 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     }
     if (isSingleClickMode_) {
         state |= STATE_SINGLE_CLICK_MODE_ENABLED;
+    }
+    if (config_->GetAnimationOffState()) {
+        state |= STATE_ANIMATIONOFF_ENABLED;
+    }
+    if (config_->GetAudioMonoState()) {
+        state |= STATE_AUDIOMONO_ENABLED;
+    }
+    if (config_->GetFlashReminderSwitch()) {
+        state |= STATE_FLASH_REMINDER_ENABLED;
     }
     return state;
 }

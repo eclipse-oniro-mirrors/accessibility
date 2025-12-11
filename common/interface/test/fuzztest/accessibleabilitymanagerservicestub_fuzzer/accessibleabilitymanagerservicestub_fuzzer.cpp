@@ -268,6 +268,10 @@ public:
     {
         return RET_OK;
     }
+    ErrCode GetFlashReminderSwitch(bool &state) override
+    {
+        return RET_OK;
+    }
     ErrCode GetDaltonizationState(bool &state) override
     {
         return RET_OK;

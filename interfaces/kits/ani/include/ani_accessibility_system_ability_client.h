@@ -109,6 +109,9 @@ public:
     static void UnsubscribeStateAll(ani_env *env, ani_string type);
     static void SendAccessibilityEvent(ani_env *env, ani_object eventObject);
     static ani_object GetCaptionsManager(ani_env *env);
+    static ani_boolean GetAudioMonoStateSync(ani_env *env);
+    static ani_boolean GetAnimationOffStateSync(ani_env *env);
+    static ani_boolean GetFlashReminderSwitchSync(ani_env *env);
     static ani_boolean GetEnabled(ani_env *env, ani_object object);
     static void SetEnabled(ani_env *env, ani_object object, ani_boolean enabled);
     static ani_object GetStyle(ani_env *env, ani_object object);
@@ -129,6 +132,9 @@ public:
     static std::shared_ptr<StateListenerImpl> screenReaderStateListeners_;
     static std::shared_ptr<StateListenerImpl> touchModeStateListeners_;
     static std::shared_ptr<AccessibilityCaptionsObserverImpl> captionListeners_;
+    static std::shared_ptr<StateListenerImpl> audioMonoStateListeners_;
+    static std::shared_ptr<StateListenerImpl> animationOffStateListeners_;
+    static std::shared_ptr<StateListenerImpl> flashReminderSwitchStateListeners_;
 
 private:
     ANIAccessibilityClient() = default;

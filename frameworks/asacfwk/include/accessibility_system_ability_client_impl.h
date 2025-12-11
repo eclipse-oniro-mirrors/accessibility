@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -259,6 +259,27 @@ public:
         const std::shared_ptr<ReadableRulesNode>& node, ReadableSpecificType specificType, bool& isHit) override;
     virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
         const FocusMoveResult &result, const int32_t requestId) override;
+
+    /**
+     * @brief Get the status of whether animation is disabled
+     * @param state(out) true:animation is disabled; false:animation is enabled
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetAnimationOffState(bool &state) override;
+
+    /**
+     * @brief Get the status of whether the audio mono is enabled
+     * @param state(out) true:audio mono is enabled; false:audio mono is disabled
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetAudioMonoState(bool &state) override;
+
+    /**
+     * @brief Get the status of whether the flash reminder is enabled
+     * @param state(out) true: flash reminder is enabled; false: flash reminder is disabled
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetFlashReminderSwitch(bool &state) override;
 
     bool LoadAccessibilityService();
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);

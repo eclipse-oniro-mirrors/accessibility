@@ -80,6 +80,13 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t 
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetFlashReminderSwitch(const bool state)
+{
+    HILOG_DEBUG("start.");
+    flashReminderSwitch_ = state;
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetScreenMagnificationMode(const uint32_t mode)
 {
     HILOG_DEBUG("start.");
@@ -249,6 +256,11 @@ uint32_t AccessibilitySettingsConfig::GetScreenMagnificationType() const
 {
     HILOG_DEBUG("start.");
     return screenMagnificationType_;
+}
+
+bool AccessibilitySettingsConfig::GetFlashReminderSwitch() const
+{
+    return flashReminderSwitch_;
 }
 
 uint32_t AccessibilitySettingsConfig::GetScreenMagnificationMode() const
