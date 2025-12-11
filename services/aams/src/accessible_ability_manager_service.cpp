@@ -571,7 +571,6 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
     }
-
     RetError res = GetResourceBundleInfo(const_cast<AccessibilityEventInfo&>(uiEvent));
     if (res != RET_OK) {
         HILOG_ERROR("Get Resource BundleInfo failed! RetError is %{public}d", res);
