@@ -143,7 +143,6 @@ float AccessibilityDatashareHelper::GetFloatValue(const std::string& key, const 
     if (valueStr != "") {
         result = Utils::StringToFloat(valueStr);
     }
-    HILOG_INFO("AccessibilityDatashareHelper::GetFloatValue %{public}f).", result);
     return result;
 }
 
@@ -159,7 +158,6 @@ uint64_t AccessibilityDatashareHelper::GetUnsignedLongValue(const std::string& k
             result = num;
         }
     }
-    HILOG_INFO("AccessibilityDatashareHelper::GetUnsignedLongValue %{public}lu).", result);
     return result;
 }
  
