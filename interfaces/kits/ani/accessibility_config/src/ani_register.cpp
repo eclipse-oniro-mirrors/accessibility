@@ -47,7 +47,9 @@ static bool NamespaceBindMethod(ani_env *env, ani_namespace ns, ani_module mod)
         ani_native_function{"offObserver", nullptr, reinterpret_cast<void *>(
             ANIAccessibilityConfig::UnsubscribeState)},
         ani_native_function{"offObservers", nullptr, reinterpret_cast<void *>(
-            ANIAccessibilityConfig::UnsubscribeStates)}
+            ANIAccessibilityConfig::UnsubscribeStates)},
+        ani_native_function{"setMagnificationState", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityConfig::SetMagnificationState)}
     };
 
     if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {

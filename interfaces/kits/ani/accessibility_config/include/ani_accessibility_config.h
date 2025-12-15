@@ -163,6 +163,7 @@ public:
     static void SubscribeState(ani_env *env, ani_string type, ani_object observer);
     static void UnsubscribeState(ani_env *env, ani_string type, ani_object observer);
     static void UnsubscribeStates(ani_env *env, ani_string type);
+    static void SetMagnificationState(ani_env *env, ani_boolean state);
     static ani_object CreateJsAccessibilityCaptionProperty(ani_env *env,
         OHOS::AccessibilityConfig::CaptionProperty &captionProperty);
     static ani_object CreateJsCaptionPropertyInfoInner(ani_env *env, ani_class cls,

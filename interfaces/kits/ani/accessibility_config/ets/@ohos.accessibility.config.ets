@@ -140,6 +140,8 @@ namespace config {
         }
     }
 
+    native function setMagnificationState(state: boolean): void;
+
     interface Config<T> {
         set(value: T): Promise<void>;
         set(value: T, callback: AsyncCallback<void>): void;
