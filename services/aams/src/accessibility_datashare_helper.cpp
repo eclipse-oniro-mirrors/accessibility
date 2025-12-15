@@ -141,7 +141,7 @@ float AccessibilityDatashareHelper::GetFloatValue(const std::string& key, const 
     float result = defaultValue;
     std::string valueStr = GetStringValue(key, std::to_string(result), readOnlyFlag);
     if (valueStr != "") {
-        result = Utils::StringToFloat(valueStr);
+        result = Utils::StringToFloat(valueStr, defaultValue);
     }
     return result;
 }
