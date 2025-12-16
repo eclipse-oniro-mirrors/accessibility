@@ -1177,7 +1177,7 @@ RetError AccessibleAbilityManagerService::RegisterElementOperatorChildWork(const
     operation->SetParentWindowId(parameter.parentWindowId);
     sptr<AccessibilityWindowConnection> oldConnection =
         accountData->GetAccessibilityWindowConnection(parameter.windowId);
-    if (isApp && oldConnection) {
+    if (parameter.parentWindowId != parameter.windowId && isApp && oldConnection) {
         if (oldConnection->GetCardProxy(treeId) != nullptr) {
             HILOG_WARN("no need to register again.");
             return RET_ERR_REGISTER_EXIST;
