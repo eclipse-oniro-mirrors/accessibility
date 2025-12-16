@@ -2632,6 +2632,10 @@ void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(cons
 
     switch (evtType) {
         case TYPE_VIEW_HOVER_ENTER_EVENT:
+            if (Singleton<AccessibilityWindowManager>::GetInstance().NeedSetActive(windowId)) {
+                HILOG_DEBUG("needSetActive windowId: %{public}d", windowId);
+                Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(windowId, false);
+            }
             Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(windowId);
             break;
         case TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT:

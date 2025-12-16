@@ -30,6 +30,11 @@ namespace {
     const std::string TIMER_GET_ACCESSIBILITY_WINDOWS = "accessibilty:getAccessibilityWindowInfo";
     const std::string SCB_SCENE_PANEL = "SCBScenePanel";
     const std::string SCB_KEYBOARD_DIALOG = "SCBKeyboardDialog";
+    const std::vector<std::string> UNFOCUSABLE_WINDOW = {
+        "floatingnavigation",
+        "SCBStatusBar",
+        "SCBVolumePanel"
+    };
     constexpr int32_t WMS_TIMEOUT = 10; // s
 }
 
@@ -985,6 +990,26 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow()
     }
 }
 
+bool AccessibilityWindowManager::NeedSetActive(const int32_t windowId)
+{
+    if (windowId == INVALID_WINDOW_ID) {
+        return false;
+    }
+    if (!a11yWindows_.count(windowId)) {
+        return false;
+    }
+
+    std::string currentBundleName = a11yWindows_[windowId].GetBundleName();
+    for (const auto& bundleName : UNFOCUSABLE_WINDOW) {
+        HILOG_DEBUG("NeedSetActive bundleName: %{public}s, currentBundleName: %{public}s",
+            bundleName.c_str(), currentBundleName.c_str());
+        if (currentBundleName.find(bundleName) != std::string::npos) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
@@ -993,10 +1018,15 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     
     const int32_t oldActiveWindowId_ = activeWindowId_;
     bool hasFocusedAndNoMagnificationWindow = false;
+    bool hasMagnificationWindow = false;
     WinDeInit();
     for (auto &window : infos) {
         if (window == nullptr) {
             HILOG_ERROR("window is nullptr");
+            continue;
+        }
+        if(IsMagnificationWindow(window)) {
+            hasMagnificationWindow = true;
             continue;
         }
         int32_t realWid = GetRealWindowId(window);
@@ -1015,10 +1045,14 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         if ((window->focused_ || IsScenePanel(window) || IsKeyboardDialog(window)) &&
             !IsMagnificationWindow(window)) {
             hasFocusedAndNoMagnificationWindow = true;
-            if (oldActiveWindowId_ != realWid) {
-                SetActiveWindow(realWid);
+            if (hasMagnificationWindow) {
+                if (oldActiveWindowId_ != realWid) {
+                S   etActiveWindow(realWid);
+                } else {
+                    activeWindowId_ = oldActiveWindowId_;
+                }
             } else {
-                activeWindowId_ = oldActiveWindowId_;
+                SetActiveWindow(realWid);
             }
         }
 
