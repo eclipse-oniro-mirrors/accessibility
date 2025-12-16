@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -65,6 +65,20 @@ Accessibility::RetError AccessibilityConfig::UnsubscribeConfigObserver(const CON
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
     return pImpl_->UnsubscribeConfigObserver(id, observer);
+}
+
+Accessibility::RetError AccessibilityConfig::SubscribeEnableAbilityCallbackObserver(
+    const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer)
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->SubscribeEnableAbilityCallbackObserver(observer);
+}
+
+Accessibility::RetError AccessibilityConfig::UnsubscribeEnableAbilityCallbackObserver(
+    const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer)
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->UnsubscribeEnableAbilityCallbackObserver(observer);
 }
 
 Accessibility::RetError AccessibilityConfig::SubscribeEnableAbilityListsObserver(

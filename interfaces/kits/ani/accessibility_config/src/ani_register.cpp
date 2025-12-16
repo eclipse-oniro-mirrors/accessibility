@@ -58,6 +58,8 @@ static bool NamespaceBindMethod(ani_env *env, ani_namespace ns, ani_module mod)
     std::array ModuleMethods = {
         ani_native_function{"enableAbilitySync", nullptr,
             reinterpret_cast<void *>(ANIAccessibilityConfig::EnableAbilitySync)},
+        ani_native_function{"enableAbilityWithCallbackSync", nullptr,
+            reinterpret_cast<void *>(ANIAccessibilityConfig::EnableAbilityWithCallbackSync)},
         ani_native_function{"disableAbilitySync", nullptr,
             reinterpret_cast<void *>(ANIAccessibilityConfig::DisableAbilitySync)},
     };
@@ -110,6 +112,10 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
 
     if (ANIAccessibilityConfig::enableAbilityListsObservers_) {
         ANIAccessibilityConfig::enableAbilityListsObservers_->SubscribeToFramework();
+    }
+
+    if (ANIAccessibilityConfig::enableAbilityCallbackObservers_) {
+        ANIAccessibilityConfig::enableAbilityCallbackObservers_->SubscribeToFramework();
     }
 
     *result = ANI_VERSION_1;
@@ -425,6 +431,9 @@ ANI_EXPORT ani_status ANI_Destructor(ani_vm *vm)
     }
     if (ANIAccessibilityConfig::enableAbilityListsObservers_) {
         ANIAccessibilityConfig::enableAbilityListsObservers_->UnsubscribeFromFramework();
+    }
+    if (ANIAccessibilityConfig::enableAbilityCallbackObservers_) {
+        ANIAccessibilityConfig::enableAbilityCallbackObservers_->UnsubscribeFromFramework();
     }
     return ANI_OK;
 }

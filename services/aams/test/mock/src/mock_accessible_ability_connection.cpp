@@ -240,6 +240,17 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
     return;
 }
 
+bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(
+    const std::string& appBundleName,
+    const std::string& abilityName,
+    const sptr<AccessibilityAccountData>& accountData)
+{
+    (void)appBundleName;
+    (void)abilityName;
+    (void)accountData;
+    return true;
+}
+
 bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent& keyEvent, const int32_t sequence)
 {
     (void)sequence;
@@ -390,11 +401,11 @@ RetError AccessibleAbilityChannel::UnholdRunningLock()
     return RET_OK;
 }
 
-void AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityElementInfo &elementInfo,
+RetError AccessibleAbilityChannel::FocusMoveSearchWithCondition(const AccessibilityElementInfo &elementInfo,
     const AccessibilityFocusMoveParam &param, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId)
 {
-    return;
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -31,6 +31,7 @@ struct AccessibilityConfigData {
     boolean captionState_;
     boolean screenMagnifier_;
     boolean shortkey_;
+    boolean flashReminderSwitch_;
     int mouseAutoClick_;
     boolean daltonizationState_;
     unsigned int daltonizationColorFilter_;

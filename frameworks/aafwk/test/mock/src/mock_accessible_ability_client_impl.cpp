@@ -383,7 +383,7 @@ RetError AccessibleAbilityClientImpl::ConfigureEvents(const std::vector<uint32_t
 }
 
 RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
-    AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t windowId)
+    AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult)
 {
     HILOG_DEBUG();
     return RET_OK;

@@ -59,6 +59,7 @@ struct FindElementParams {
     std::map<std::string, std::string> actionArguments_;
     std::string actionName_ = "";
     std::string rule_ = "";
+    int32_t moveSearchResult_ = -1;
 };
 
 // AccessibilityElement initialization and creation
@@ -72,6 +73,7 @@ ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_do
 ani_object FindElements(ani_env *env, ani_object thisObj, ani_string type, ani_string condition);
 ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string rule, ani_string condition);
 void FindElementExecute(FindElementParams* data);
+void AttributeValueExecute(FindElementParams* data);
 ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<AccessibilityWindowInfo>& windowInfos);
 ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<AccessibilityElementInfo>& elementInfos);
 ani_object GetRootElement(ani_env *env, ani_object thisObj);
@@ -82,7 +84,7 @@ ani_object FindElementByFocusDirection(ani_env *env, ani_object thisObj, ani_str
 ani_object FindElementsByAccessibilityHintText(ani_env *env, ani_object thisObj, ani_string hintText);
 ani_object FindElementById(ani_env *env, ani_object thisObj, ani_long elementId);
 void FindElementByText(FindElementParams *data);
-void ExecuteACtion(ani_env *env, ani_object thisObj, ani_enum_item action, ani_object obj);
+void ExecuteAction(ani_env *env, ani_object thisObj, ani_enum_item action, ani_object obj);
 } // namespace Accessibility
 } // namespace OHOS
 #endif // ANI_ACCESSIBILITY_ELEMENT_H

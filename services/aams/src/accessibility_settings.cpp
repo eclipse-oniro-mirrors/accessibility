@@ -31,7 +31,6 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
-    const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
@@ -52,7 +51,7 @@ void AccessibilitySettings::OnParameterChanged(const char *key, const char *valu
     }
     std::string strKey(key);
     std::string strValue(value);
-    if (strKey != GRAPHIC_ANIMATION_SCALE_NAME && strKey != ARKUI_ANIMATION_SCALE_NAME) {
+    if (strKey != GRAPHIC_ANIMATION_SCALE_NAME) {
         return;
     }
     AccessibilitySettings *settingsPtr = static_cast<AccessibilitySettings *>(context);
@@ -78,7 +77,6 @@ void AccessibilitySettings::OnParameterChanged(const char *key, const char *valu
 void AccessibilitySettings::RegisterParamWatcher()
 {
     WatchParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), &OnParameterChanged, this);
-    WatchParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), &OnParameterChanged, this);
 }
 
 RetError AccessibilitySettings::SetScreenMagnificationState(const bool state)
@@ -339,10 +337,8 @@ RetError AccessibilitySettings::SetAnimationOffState(const bool state)
     int setArkuiParamRes = -1;
     if (state) {
         setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "0");
-        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "0");
     } else {
         setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
-        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
     }
     HILOG_INFO("SetParameter results are %{public}d and %{public}d", setGraphicParamRes, setArkuiParamRes);
     return ret;
@@ -1349,6 +1345,38 @@ RetError AccessibilitySettings::GetIgnoreRepeatClickTime(uint32_t &time)
         return RET_ERR_TIME_OUT;
     }
     time = *tmpTime;
+    return syncFuture.get();
+}
+
+RetError AccessibilitySettings::GetFlashReminderSwitch(bool &state)
+{
+    HILOG_DEBUG();
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    auto tmpState = std::make_shared<bool>(state);
+    handler_->PostTask([this, syncPromise, tmpState]() {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData =
+            Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise->set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        *tmpState = accountData->GetConfig()->GetFlashReminderSwitch();
+        syncPromise->set_value(RET_OK);
+        }, "TASK_GET_FLASH_REMINDER_SWITCH");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetFlashReminderSwitch Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
+    state = *tmpState;
     return syncFuture.get();
 }
 

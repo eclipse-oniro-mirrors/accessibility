@@ -510,6 +510,12 @@ ErrCode AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &time
     return RET_OK;
 }
 
+ErrCode AccessibleAbilityManagerService::GetFlashReminderSwitch(bool &state)
+{
+    state = false;
+    return RET_OK;
+}
+
 ErrCode AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData& configData,
     CaptionPropertyParcel& caption)
 {
@@ -520,6 +526,13 @@ ErrCode AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData& 
 
 ErrCode AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
+{
+    (void)observer;
+    return RET_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::RegisterEnableAbilityCallbackObserver(
+    const sptr<IAccessibilityEnableAbilityCallbackObserver> &observer)
 {
     (void)observer;
     return RET_OK;
@@ -773,7 +786,7 @@ void AccessibleAbilityManagerService::InitResource(bool needReInit)
 std::string &GetResource(const std::string &resourceName)
 {
     (void)resourceName;
-    std::string resource = "";
+    static std::string resource = "resource";
     return resource;
 }
 
@@ -821,6 +834,13 @@ ErrCode AccessibleAbilityManagerService::DeRegisterCaptionObserver(
 }
 
 ErrCode AccessibleAbilityManagerService::DeRegisterEnableAbilityListsObserver(
+    const sptr<IRemoteObject>& obj)
+{
+    (void)obj;
+    return RET_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::DeRegisterEnableAbilityCallbackObserver(
     const sptr<IRemoteObject>& obj)
 {
     (void)obj;

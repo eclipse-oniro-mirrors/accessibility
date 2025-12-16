@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,6 +61,7 @@ struct NAccessibilityElementData {
     std::string condition_ = "";
     std::string direction_ = "";
     int32_t cursorPosition_ = 0;
+    int32_t moveSearchResult_ = -1;
     bool systemApi = false;
     OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RetError::RET_ERR_FAILED;
 };
@@ -151,6 +152,7 @@ public:
     static void GetElementInfoValueMin(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoValueNow(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoAccessibilityText(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoAccessibilityStateDescription(NAccessibilityElementData* callbackInfo, napi_value& value);
     static void GetElementInfoTextType(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoOffset(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoGridItem(NAccessibilityElementData *callbackInfo, napi_value &value);

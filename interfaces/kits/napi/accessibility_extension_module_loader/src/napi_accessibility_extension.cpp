@@ -200,6 +200,9 @@ void NAccessibilityExtension::OnAbilityConnected()
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             ExtensionCallbackInfo *data = static_cast<ExtensionCallbackInfo*>(work->data);
+            napi_env env = data->env_;
+            auto closeScope = [env](napi_handle_scope scope) { napi_close_handle_scope(env, scope); };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(env), closeScope);
             data->extension_->CallObjectMethod("onConnect");
             data->extension_->CallObjectMethod("onAccessibilityConnect");
             delete data;
@@ -253,6 +256,9 @@ void NAccessibilityExtension::OnAbilityDisconnected()
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             ExtensionCallbackInfo *data = static_cast<ExtensionCallbackInfo*>(work->data);
+            napi_env env = data->env_;
+            auto closeScope = [env](napi_handle_scope scope) { napi_close_handle_scope(env, scope); };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(env), closeScope);
             data->extension_->CallObjectMethod("onDisconnect");
             data->extension_->CallObjectMethod("onAccessibilityDisconnect");
             data->syncPromise_.set_value();
@@ -302,11 +308,20 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
     } else {
         std::shared_ptr<AccessibilityElementInfo> elementInfo = std::make_shared<AccessibilityElementInfo>();
         std::string inspectorKey = eventInfo.GetInspectorKey();
+        std::string bundleName = eventInfo.GetBundleName();
         RetError ret = RET_ERR_FAILED;
         AccessibilityElementInfo accessibilityElementInfo;
-        if ((eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY ||
-            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT) &&
-            inspectorKey != "") {
+        if (eventInfo.GetEventType() == TYPE_PAGE_ACTIVE && inspectorKey == "") {
+            ret = aaClient->GetRoot(accessibilityElementInfo, true);
+            std::string currentBundleName = accessibilityElementInfo.GetBundleName();
+            if (currentBundleName != bundleName) {
+                accessibilityElementInfo.SetMainWindowId(INVALID_WINDOW_ID);
+                accessibilityElementInfo.SetWindowId(INVALID_WINDOW_ID);
+            }
+            accessibilityElementInfo.SetAccessibilityId(VIRTUAL_COMPONENT_ID);
+        } else if ((eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY ||
+            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT ||
+            eventInfo.GetEventType() == TYPE_PAGE_ACTIVE) && inspectorKey != "") {
             ret = aaClient->SearchElementInfoByInspectorKey(inspectorKey, accessibilityElementInfo);
         }
         if (ret == RET_OK) {

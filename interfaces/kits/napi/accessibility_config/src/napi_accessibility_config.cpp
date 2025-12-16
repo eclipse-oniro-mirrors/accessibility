@@ -97,6 +97,8 @@ std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityConfig::configOb
     std::make_shared<NAccessibilityConfigObserverImpl>();
 std::shared_ptr<EnableAbilityListsObserverImpl> NAccessibilityConfig::enableAbilityListsObservers_ =
     std::make_shared<EnableAbilityListsObserverImpl>();
+std::shared_ptr<EnableAbilityCallbackObserverImpl> NAccessibilityConfig::enableAbilityCallbackObservers_ =
+    std::make_shared<EnableAbilityCallbackObserverImpl>();
 
 void NAccessibilityConfig::EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
     napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo)
@@ -122,6 +124,52 @@ void NAccessibilityConfig::EnableAbilityError(size_t& argc, OHOS::Accessibility:
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
     }
+}
+
+void NAccessibilityConfig::EnableAbilityWithCallbackError(size_t& argc, OHOS::Accessibility::RetError& errCode,
+    napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo)
+{
+    if (argc != ARGS_SIZE_THREE) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        return;
+    }
+
+    //parse name & capability
+    EnableAbilityError(argc, errCode, env, parameters, callbackInfo);
+    if (errCode != OHOS::Accessibility::RET_OK) {
+        return;
+    }
+
+    //parse connectCallback
+    napi_valuetype valueType = napi_null;
+    napi_status status = napi_typeof(env, parameters[PARAM2], &valueType);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi_typeof status is %{public}d", status);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        return;
+    }
+    if (valueType != napi_object) {
+        HILOG_ERROR("valueType %{public}d is not napi_object", valueType);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        return;
+    }
+    napi_value propertyNameValue = nullptr;
+    napi_create_string_utf8(env, "onDisconnect", NAPI_AUTO_LENGTH, &propertyNameValue);
+    bool hasProperty = false;
+    napi_has_property(env, parameters[PARAM2], propertyNameValue, &hasProperty);
+    if (!hasProperty) {
+        HILOG_ERROR("no onDisconnect");
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        return;
+    }
+    napi_value itemValue = nullptr;
+    napi_get_property(env, parameters[PARAM2], propertyNameValue, &itemValue);
+    if (!CheckJsFunction(env, itemValue)) {
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        return;
+    }
+    napi_create_reference(env, itemValue, 1, &callbackInfo->notifyCallback_);
 }
 
 void NAccessibilityConfig::DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
@@ -199,6 +247,66 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
             }
         }, NAccessibilityConfig::AsyncWorkComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    return promise;
+}
+
+napi_value NAccessibilityConfig::EnableAbilityWithCallback(napi_env env, napi_callback_info info)
+{
+    HILOG_DEBUG();
+    NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    size_t argc = ARGS_SIZE_THREE;
+    napi_value parameters[ARGS_SIZE_THREE] = {0};
+    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
+
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    EnableAbilityWithCallbackError(argc, errCode, env, parameters, callbackInfo);
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        napi_value err = CreateBusinessError(env, errCode);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    napi_value promise = nullptr;
+    napi_create_promise(env, &callbackInfo->deferred_, &promise);
+  
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "EnableAbilityWithCallback", NAPI_AUTO_LENGTH, &resource);
+
+    napi_value param = parameters[PARAM2];
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
+        [](napi_env env, void* data) {
+            NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
+            auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+            if (callbackInfo->capabilities_ != 0) {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+                Accessibility::ApiReportHelper reporter(
+                    "AccessibilityConfig.Impl.EnableAbility", REPORTER_THRESHOLD_VALUE);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+                callbackInfo->ret_ = instance.EnableAbility(callbackInfo->abilityName_, callbackInfo->capabilities_);
+                if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
+                    napi_value callback = nullptr;
+                    napi_get_reference_value(env, callbackInfo->notifyCallback_, &callback);
+                    enableAbilityCallbackObservers_->SubscribeObserver(env, callbackInfo->abilityName_, callback);
+                }
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+                reporter.setResult(callbackInfo->ret_);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+            }
+        }, NAccessibilityConfig::AsyncWorkComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+
     return promise;
 }
 
@@ -1128,6 +1236,72 @@ int EnableAbilityListsObserver::OnEnableAbilityListsStateChangedWork(uv_work_t *
     return ret;
 }
 
+void EnableAbilityCallbackObserver::OnEnableAbilityRemoteDied(const std::string& name)
+{
+    HILOG_DEBUG();
+    AccessibilityCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityCallbackInfo();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
+
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create work.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+
+    callbackInfo->env_ = env_;
+    callbackInfo->ref_ = notifyCallback_;
+    work->data = static_cast<void*>(callbackInfo);
+
+    int ret = OnEnableAbilityListsRemoteDiedWork(work);
+    if (ret != 0) {
+        HILOG_ERROR("Failed to execute OnEnableAbilityListsStateChanged work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
+}
+
+int EnableAbilityCallbackObserver::OnEnableAbilityListsRemoteDiedWork(uv_work_t *work)
+{
+    uv_loop_s *loop = nullptr;
+    napi_get_uv_event_loop(env_, &loop);
+    if (loop == nullptr || work == nullptr) {
+        HILOG_ERROR("loop or work is nullptr.");
+        return RET_ERR_FAILED;
+    }
+    int ret = uv_queue_work_with_qos(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            AccessibilityCallbackInfo *callbackInfo = static_cast<AccessibilityCallbackInfo*>(work->data);
+            napi_env env = callbackInfo->env_;
+            auto closeScope = [env](napi_handle_scope scope) {
+                napi_close_handle_scope(env, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
+            napi_value handler = nullptr;
+            napi_value callResult = nullptr;
+            napi_value undefined = nullptr;
+            napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+            napi_get_undefined(callbackInfo->env_, &undefined);
+            napi_call_function(callbackInfo->env_, undefined, handler, 0, nullptr, &callResult);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+            delete work;
+            work = nullptr;
+        },
+        uv_qos_default);
+    return ret;
+}
+
 void EnableAbilityListsObserverImpl::SubscribeToFramework()
 {
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
@@ -1189,6 +1363,58 @@ void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value 
 
     enableAbilityListsObservers_.emplace_back(observerPtr);
     HILOG_DEBUG("observer size%{public}zu", enableAbilityListsObservers_.size());
+}
+
+void EnableAbilityCallbackObserverImpl::OnEnableAbilityRemoteDied(const std::string& name)
+{
+    HILOG_DEBUG("name: %{public}s", name.c_str());
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+
+    auto iter = enableAbilityCallbackObservers_.find(name);
+    if (iter != enableAbilityCallbackObservers_.end()) {
+        iter->second->OnEnableAbilityRemoteDied(name);
+        enableAbilityCallbackObservers_.erase(iter);
+    }
+}
+
+void EnableAbilityCallbackObserverImpl::SubscribeObserver(napi_env env, const std::string& name, napi_value observer)
+{
+    HILOG_DEBUG("name: %{public}s", name.c_str());
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (enableAbilityCallbackObservers_.find(name) != enableAbilityCallbackObservers_.end()) {
+        HILOG_DEBUG("Observer exist");
+        return;
+    }
+    napi_ref notifyCallback = nullptr;
+    napi_create_reference(env, observer, 1, &notifyCallback);
+    std::shared_ptr<EnableAbilityCallbackObserver> observerPtr =
+        std::make_shared<EnableAbilityCallbackObserver>(env, notifyCallback);
+    enableAbilityCallbackObservers_[name] = observerPtr;
+    HILOG_DEBUG("observer size%{public}zu", enableAbilityCallbackObservers_.size());
+}
+
+void EnableAbilityCallbackObserverImpl::UnsubscribeObserver(napi_env env, const std::string& name)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    auto iter = enableAbilityCallbackObservers_.find(name);
+    if (iter != enableAbilityCallbackObservers_.end()) {
+        enableAbilityCallbackObservers_.erase(iter);
+        return;
+    }
+}
+
+void EnableAbilityCallbackObserverImpl::SubscribeToFramework()
+{
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.SubscribeEnableAbilityCallbackObserver(shared_from_this());
+}
+
+void EnableAbilityCallbackObserverImpl::UnsubscribeFromFramework()
+{
+    HILOG_INFO("UnsubscribeFromFramework");
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.UnsubscribeEnableAbilityCallbackObserver(shared_from_this());
 }
 
 void EnableAbilityListsObserverImpl::SubscribeInstallObserver(napi_env env, napi_value observer)

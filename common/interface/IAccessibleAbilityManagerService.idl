@@ -21,6 +21,7 @@ sequenceable parcel.accessibility_event_info_parcel..OHOS.Accessibility.Accessib
 interface OHOS.Accessibility.IAccessibleAbilityManagerStateObserver;
 interface OHOS.Accessibility.IAccessibleAbilityManagerCaptionObserver;
 interface OHOS.Accessibility.IAccessibilityEnableAbilityListsObserver;
+interface OHOS.Accessibility.IAccessibilityEnableAbilityCallbackObserver;
 interface OHOS.Accessibility.IAccessibilityElementOperator;
 interface OHOS.Accessibility.IAccessibleAbilityManagerConfigObserver;
 sequenceable OHOS.IRemoteObject;
@@ -31,6 +32,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void RegisterStateObserver([in] IAccessibleAbilityManagerStateObserver observer, [out] unsigned int state);
     void RegisterCaptionObserver([in] IAccessibleAbilityManagerCaptionObserver observer);
     [oneway] void RegisterEnableAbilityListsObserver([in] IAccessibilityEnableAbilityListsObserver observer);
+    [oneway] void RegisterEnableAbilityCallbackObserver([in] IAccessibilityEnableAbilityCallbackObserver observer);
     void GetAbilityList([in] unsigned int abilityTypes, [in] int stateType, [out] AccessibilityAbilityInfoParcel[] infos);
     [oneway] void RegisterElementOperatorByWindowId([in] int windowId, [in] IAccessibilityElementOperator elementOperator);
     [oneway] void RegisterElementOperatorByParameter([in] RegistrationPara parameter, [in] IAccessibilityElementOperator elementOperator);
@@ -85,6 +87,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void GetClickResponseTime([out] unsigned int time);
     void GetIgnoreRepeatClickState([out] boolean state);
     void GetIgnoreRepeatClickTime([out] unsigned int time);
+    void GetFlashReminderSwitch([out] boolean state);
     void GetAllConfigs([out] AccessibilityConfigData configData, [out] CaptionPropertyParcel caption);
     void GetRealWindowAndElementId([inout] int windowId, [inout] long elementId);
     void GetSceneBoardInnerWinId([in] int windowId, [in] long elementId, [out] int innerWid);
@@ -99,6 +102,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void GetReadableRules([out] String name);
     void DeRegisterCaptionObserver([in] IRemoteObject obj);
     void DeRegisterEnableAbilityListsObserver([in] IRemoteObject obj);
+    void DeRegisterEnableAbilityCallbackObserver([in] IRemoteObject obj);
     void DeRegisterConfigObserver([in] IRemoteObject obj);
     void IsInnerWindowRootElement([in] long elementId, [out] boolean state);
 }

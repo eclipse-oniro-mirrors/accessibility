@@ -55,6 +55,8 @@ accessibility_interface_src = [
   "src/accessibility_element_operator_callback_stub.cpp",
   "src/accessibility_element_operator_proxy.cpp",
   "src/accessibility_element_operator_stub.cpp",
+  "src/accessibility_enable_ability_callback_observer_stub.cpp",
+  "src/accessibility_enable_ability_callback_observer_proxy.cpp",
   "src/accessibility_enable_ability_lists_observer_proxy.cpp",
   "src/accessibility_enable_ability_lists_observer_stub.cpp",
   "src/accessible_ability_channel_proxy.cpp",

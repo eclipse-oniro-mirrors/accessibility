@@ -19,12 +19,15 @@
 #include "ani_accessibility_element.h"
 #include "ani_utils.h"
 #include "hilog_wrapper.h"
+#include "tokenid_kit.h"
+#include "accesstoken_kit.h"
 #include <ani_signature_builder.h>
 
 namespace OHOS {
 namespace Accessibility {
 
 using namespace arkts::ani_signature;
+using namespace Security::AccessToken;
 
 constexpr const char *ANI_EXTENSION_CONTEXT_CLS =
     "application.AccessibilityExtensionContext.AccessibilityExtensionContext";
@@ -194,6 +197,7 @@ static ani_object GetRootInActiveWindow(ani_env *env, ani_object thisObj, ani_ob
         }
         AccessibilityWindowInfo windowInfo;
         windowInfo.SetWindowId(static_cast<int32_t>(id));
+        windowInfo.SetMainWindowId(static_cast<int32_t>(id));
         ret = context->GetRootByWindow(windowInfo, *elementInfo, true);
     }
     HILOG_INFO("GetRootInActiveWindow end, ret: %{public}d", ret);
@@ -205,6 +209,192 @@ static ani_object GetRootInActiveWindow(ani_env *env, ani_object thisObj, ani_ob
         return nullptr;
     }
     return CreateAniAccessibilityElement(env, *elementInfo);
+}
+
+static ani_object GetAccessibilityFocusedElement(ani_env *env, ani_object thisObj)
+{
+    HILOG_DEBUG();
+    AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
+    if (context == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return nullptr;
+    }
+    auto elementInfo = std::make_shared<OHOS::Accessibility::AccessibilityElementInfo>();
+    RetError ret = context->GetFocus(FOCUS_TYPE_ACCESSIBILITY, *elementInfo, true);
+    if (ret != RET_OK) {
+        HILOG_ERROR("Failed to get elementInfo");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+        return nullptr;
+    }
+    return CreateAniAccessibilityElement(env, *elementInfo);
+}
+
+static ani_object GetAccessibilityWindowsSync(ani_env *env, ani_object thisObj, ani_object displayId)
+{
+    HILOG_DEBUG();
+    AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
+    if (context == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return nullptr;
+    }
+    auto accessibilityWindows = std::make_shared<std::vector<OHOS::Accessibility::AccessibilityWindowInfo>>();
+    RetError ret = RET_ERR_FAILED;
+    ani_boolean isUndefined;
+    env->Reference_IsUndefined(displayId, &isUndefined);
+    if (isUndefined) {
+        ret = context->GetWindows(*accessibilityWindows, true);
+    } else {
+        ani_long id;
+        if (env->Object_CallMethodByName_Long(displayId, "longValue", nullptr, &id) != ANI_OK) {
+            ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+            return nullptr;
+        }
+        if (id < 0) {
+            HILOG_ERROR("displayId is error: %{public}" PRId64 "", id);
+            ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+            return nullptr;
+        }
+        ret = context->GetWindows(static_cast<uint64_t>(id), *accessibilityWindows, true);
+    }
+    if (ret != RET_OK) {
+        HILOG_ERROR("Failed to get elementInfo");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+        return nullptr;
+    }
+    return ConvertElementInfosToJs(env, *accessibilityWindows);
+}
+
+static bool CheckExtensionAbilityPermission()
+{
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
+    int result = TypePermissionState::PERMISSION_GRANTED;
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(tokenId);
+    if (tokenType == TOKEN_INVALID) {
+        HILOG_ERROR("AccessToken type invalid!");
+        return false;
+    } else {
+        result = AccessTokenKit::VerifyAccessToken(tokenId, OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY);
+    }
+    if (result == TypePermissionState::PERMISSION_DENIED) {
+        HILOG_ERROR("AccessTokenID denied!");
+        return false;
+    }
+    return true;
+}
+
+static void On(ani_env *env, ani_object thisObj, ani_string type, ani_fn_object callback)
+{
+    HILOG_DEBUG();
+    if (!CheckExtensionAbilityPermission()) {
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NO_PERMISSION));
+        return;
+    }
+    AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
+    if (context == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
+        return;
+    }
+    std::string inputType = ANIUtils::ANIStringToStdString(env, type);
+    ani_ref fnRef;
+    ani_status status = env->GlobalReference_Create(callback, &fnRef);
+    if (inputType == "preDisconnect" && status == ANI_OK) {
+        ani_vm *vm_;
+        env->GetVM(&vm_);
+        std::shared_ptr<AniDisconnectCallback> disCallback = std::make_shared<AniDisconnectCallback>(vm_, fnRef);
+        std::shared_ptr<DisconnectCallback> baseCallback = std::static_pointer_cast<DisconnectCallback>(disCallback);
+        context->RegisterDisconnectCallback(baseCallback);
+    } else {
+        HILOG_ERROR("Unsupported event type, Register callback failed");
+    }
+}
+
+static void Off(ani_env *env, ani_object thisObj, ani_string type, ani_fn_object callback)
+{
+    HILOG_DEBUG();
+    if (!CheckExtensionAbilityPermission()) {
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NO_PERMISSION));
+        return;
+    }
+    AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
+    if (context == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
+        return;
+    }
+    ani_ref fnRef = nullptr;
+    ani_boolean isUndefined;
+    env->Reference_IsUndefined(callback, &isUndefined);
+    if (!isUndefined) {
+        ani_status status = env->GlobalReference_Create(callback, &fnRef);
+        if (status != ANI_OK) {
+            HILOG_ERROR("Failed to create global reference for callback");
+            return;
+        }
+    }
+    std::string inputType = ANIUtils::ANIStringToStdString(env, type);
+    if (inputType == "preDisconnect") {
+        ani_vm *vm_;
+        env->GetVM(&vm_);
+        std::shared_ptr<AniDisconnectCallback> disCallback = std::make_shared<AniDisconnectCallback>(vm_, fnRef);
+        std::shared_ptr<DisconnectCallback> baseCallback = std::static_pointer_cast<DisconnectCallback>(disCallback);
+        context->UnRegisterDisconnectCallback(baseCallback);
+    } else {
+        HILOG_ERROR("Unsupported event type, Unregister callback failed");
+    }
+}
+
+static ani_object NotifyDisconnect(ani_env *env, ani_object thisObj)
+{
+    HILOG_DEBUG();
+    if (!CheckExtensionAbilityPermission()) {
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NO_PERMISSION));
+        return nullptr;
+    }
+    AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
+    if (context == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return nullptr;
+    }
+    RetError ret = context->NotifyDisconnect();
+    if (RET_OK != ret) {
+        HILOG_ERROR("Failed to get elementInfo");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+    }
+    return nullptr;
+}
+
+static void HoldRunningLockSync(ani_env *env, ani_object thisObj)
+{
+    HILOG_DEBUG();
+    AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
+    if (context == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return;
+    }
+    RetError ret = context->HoldRunningLock();
+    if (RET_OK != ret) {
+        HILOG_ERROR("Failed to get elementInfo");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+    }
+}
+
+static void UnholdRunningLockSync(ani_env *env, ani_object thisObj)
+{
+    HILOG_DEBUG();
+    AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
+    if (context == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return;
+    }
+    RetError ret = context->UnholdRunningLock();
+    if (RET_OK != ret) {
+        HILOG_ERROR("Failed to get elementInfo");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+    }
 }
 
 ani_object CreateAniAccessibilityExtensionContext(ani_env *env, std::shared_ptr<AccessibilityExtensionContext> context,
@@ -227,6 +417,15 @@ ani_object CreateAniAccessibilityExtensionContext(ani_env *env, std::shared_ptr<
             reinterpret_cast<void *>(GetDefaultFocusedElementIdsNative)},
         ani_native_function {"getElementsNative", nullptr, reinterpret_cast<void *>(GetElementsNative)},
         ani_native_function {"getRootInActiveWindowNative", nullptr, reinterpret_cast<void *>(GetRootInActiveWindow)},
+        ani_native_function {"getAccessibilityWindowsSync", nullptr,
+            reinterpret_cast<void *>(GetAccessibilityWindowsSync)},
+        ani_native_function {"getAccessibilityFocusedElementNative", nullptr,
+            reinterpret_cast<void *>(GetAccessibilityFocusedElement)},
+        ani_native_function {"notifyDisconnect", nullptr, reinterpret_cast<void *>(NotifyDisconnect)},
+        ani_native_function {"onNative", nullptr, reinterpret_cast<void *>(On)},
+        ani_native_function {"offNative", nullptr, reinterpret_cast<void *>(Off)},
+        ani_native_function {"holdRunningLockSync", nullptr, reinterpret_cast<void *>(HoldRunningLockSync)},
+        ani_native_function {"unholdRunningLockSync", nullptr, reinterpret_cast<void *>(UnholdRunningLockSync)},
     };
     HILOG_DEBUG("CreateAniAccessibilityExtensionContext bind context methods");
     if (ANI_OK != env->Class_BindNativeMethods(cls, methods.data(), methods.size())) {

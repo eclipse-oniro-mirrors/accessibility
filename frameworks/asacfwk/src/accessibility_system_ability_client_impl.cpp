@@ -273,6 +273,15 @@ void AccessibilitySystemAbilityClientImpl::Init()
     if (stateType & STATE_CONFIG_EVENT_CHANGE) {
         stateHandler_.SetState(AccessibilityStateEventType::EVENT_CONFIG_EVENT_CHANGED, true);
     }
+    if (stateType & STATE_AUDIOMONO_ENABLED) {
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_AUDIO_MONO, true);
+    }
+    if (stateType & STATE_ANIMATIONOFF_ENABLED) {
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_ANIMATION_OFF, true);
+    }
+    if (stateType & STATE_FLASH_REMINDER_ENABLED) {
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_FLASH_REMINDER_SWITCH, true);
+    }
 }
 
 void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject> &remote)
@@ -698,6 +707,15 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_CONFIG_EVENT_CHANGED,
         !!(stateType & STATE_CONFIG_EVENT_CHANGE));
+    
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_AUDIO_MONO,
+        !!(stateType & STATE_AUDIOMONO_ENABLED));
+
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_ANIMATION_OFF,
+        !!(stateType & STATE_ANIMATIONOFF_ENABLED));
+
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_FLASH_REMINDER_SWITCH,
+        !!(stateType & STATE_FLASH_REMINDER_ENABLED));
 }
 
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityIdResult(
@@ -1086,6 +1104,54 @@ RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsSpecificType(
         default:
             break;
     }
+    return RET_OK;
+}
+
+RetError AccessibilitySystemAbilityClientImpl::GetAnimationOffState(bool &state)
+{
+    HILOG_DEBUG();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.GetAnimationOffState");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    serviceProxy_->GetAnimationOffState(state);
+    return RET_OK;
+}
+
+RetError AccessibilitySystemAbilityClientImpl::GetAudioMonoState(bool &state)
+{
+    HILOG_DEBUG();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.GetAudioMonoState");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    serviceProxy_->GetAudioMonoState(state);
+    return RET_OK;
+}
+
+RetError AccessibilitySystemAbilityClientImpl::GetFlashReminderSwitch(bool &state)
+{
+    HILOG_DEBUG();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.GetFlashReminderSwitch");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    serviceProxy_->GetFlashReminderSwitch(state);
     return RET_OK;
 }
 } // namespace Accessibility

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2024 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,7 +35,9 @@ static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
     "isModal",
     "isAnco",
     "isScreenReaderFocusable",
-    "childText"
+    "childText",
+    "beginSelected",
+    "endSelected"
 };
 }
 void AccessibilityElementInfo::SetComponentId(const int64_t componentId)
@@ -607,6 +609,16 @@ void AccessibilityElementInfo::SetAccessibilityText(const std::string &accessibi
     accessibilityText_ = accessibilityText;
 }
 
+const std::string &AccessibilityElementInfo::GetAccessibilityStateDescription() const
+{
+    return accessibilityStateDescription_;
+}
+
+void AccessibilityElementInfo::SetAccessibilityStateDescription(const std::string &accessibilityStateDescription)
+{
+    accessibilityStateDescription_ = accessibilityStateDescription;
+}
+
 void AccessibilityElementInfo::SetTextType(const std::string &textType)
 {
     textType_ = textType;
@@ -1031,12 +1043,10 @@ int64_t AccessibilityElementInfo::GetNavDestinationId() const
 void AccessibilityElementInfo::AddSpan(const SpanInfo &span)
 {
     spanList_.push_back(span);
-    for (auto array: spanList_) {
-        HILOG_INFO("AddSpanListsize:spanId: %{public}d, spanText: %{public}s, accessibilityText: %{public}s,"
-            "accessibilityDescription: %{public}s, accessibilityLevel: %{public}s", span.GetSpanId(),
-            span.GetSpanText().c_str(), span.GetAccessibilityText().c_str(), span.GetAccessibilityDescription().c_str(),
-            span.GetAccessibilityLevel().c_str());
-    }
+    HILOG_DEBUG("AddSpanListsize:spanId: %{public}d, spanText: %{public}s, accessibilityText: %{public}s,"
+        "accessibilityDescription: %{public}s, accessibilityLevel: %{public}s, spanList_.size: %{public}zu",
+        span.GetSpanId(), span.GetSpanText().c_str(), span.GetAccessibilityText().c_str(),
+        span.GetAccessibilityDescription().c_str(), span.GetAccessibilityLevel().c_str(), spanList_.size());
 }
 
 void AccessibilityElementInfo::SetSpanList(const std::vector<SpanInfo> &spanList)

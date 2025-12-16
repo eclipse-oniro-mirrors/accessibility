@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,8 +20,10 @@
 #include "accessibility_ability_info.h"
 #include "accessible_ability_channel.h"
 #include "accessible_ability_client_proxy.h"
+#include "accessibility_resource_bundle_manager.h"
 #include "ffrt.h"
 #include "common_event_manager.h"
+#include "app_mgr_interface.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -78,6 +80,12 @@ public:
     void SetIsRegisterDisconnectCallback(bool isRegister);
     void NotifyDisconnect();
     void DisconnectAbility();
+    bool RegisterAppStateObserverToAMS(
+        const std::string& appBundleName,
+        const std::string& abilityName,
+        const sptr<AccessibilityAccountData>& accountData);
+    void SetConnectionKey(const std::string& key) { connectionKey_ = key; }
+    std::string GetConnectionKey() { return connectionKey_; }
 
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -107,6 +115,9 @@ private:
     AppExecFwk::ElementName elementName_ {};
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
     bool isRegisterDisconnectCallback_ = false;
+    std::string connectionKey_;
+    sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
+    sptr<AppExecFwk::IAppMgr> GetAppMgrProxy();
 };
 } // namespace Accessibility
 } // namespace OHOS

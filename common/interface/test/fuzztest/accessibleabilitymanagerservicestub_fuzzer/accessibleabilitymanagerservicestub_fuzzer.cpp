@@ -62,6 +62,12 @@ public:
         return RET_OK;
     }
 
+    ErrCode RegisterEnableAbilityCallbackObserver(
+        const sptr<IAccessibilityEnableAbilityCallbackObserver>& observer) override
+    {
+        return RET_OK;
+    }
+
     ErrCode GetAbilityList(
         uint32_t abilityTypes, int32_t stateType, std::vector<AccessibilityAbilityInfoParcel>& infos) override
     {
@@ -262,6 +268,10 @@ public:
     {
         return RET_OK;
     }
+    ErrCode GetFlashReminderSwitch(bool &state) override
+    {
+        return RET_OK;
+    }
     ErrCode GetDaltonizationState(bool &state) override
     {
         return RET_OK;
@@ -354,6 +364,11 @@ public:
     }
 
     ErrCode DeRegisterEnableAbilityListsObserver(const sptr<IRemoteObject>& obj) override
+    {
+        return RET_OK;
+    }
+
+    ErrCode DeRegisterEnableAbilityCallbackObserver(const sptr<IRemoteObject>& obj) override
     {
         return RET_OK;
     }

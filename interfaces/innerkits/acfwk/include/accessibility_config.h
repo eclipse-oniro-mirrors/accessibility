@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -103,6 +103,19 @@ public:
     virtual void OnInstallAbilityListsStateChanged() = 0;
 };
 
+class AccessibilityEnableAbilityCallbackObserver {
+public:
+    /**
+     * @brief Destruct
+     */
+    virtual ~AccessibilityEnableAbilityCallbackObserver() = default;
+
+    /**
+     * @brief Called when the enable ability lists changed.
+     */
+    virtual void OnEnableAbilityRemoteDied(const std::string& name) = 0;
+};
+
 class AccessibilityConfig {
     ACCESSIBILITY_DECLARE_SINGLETON(AccessibilityConfig)
 public:
@@ -152,13 +165,39 @@ public:
         const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer);
 
     /**
+     * @brief Subscribes the observer of enable Ability lists
+     * @param observer Indicates the observer for listening to enable Ability lists
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError SubscribeEnableAbilityCallbackObserver(
+        const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer);
+
+    /**
+     * @brief Unsubscribe the observer of enable Ability lists
+     * @param observer Indicates the observer for listening to enable Ability lists
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError UnsubscribeEnableAbilityCallbackObserver(
+        const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer);
+
+    /**
      * @brief Enabled specified abilities
      * @param name The string formatted by 'bundleName/abilityName'.
      * @param capabilities The capabilities you permit.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
+
     Accessibility::RetError EnableAbility(const std::string &name, const uint32_t capabilities);
 
+    /**
+     * @brief Enabled specified abilities
+     * @param name The string formatted by 'bundleName/abilityName'.
+     * @param capabilities The capabilities you permit.
+     * @param observer Indicates the observer for listening to enable Ability lists
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError EnableAbilityWithCallback(const std::string &name, const uint32_t capabilities,
+        const std::function<void()> &callback);
     /**
      * @brief Disabled specified ability
      * @param name The string formatted by 'bundleName/abilityName'.

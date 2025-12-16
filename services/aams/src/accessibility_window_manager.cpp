@@ -991,6 +991,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     auto oldA11yWindows_ = a11yWindows_;
     HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
     
+    const int32_t oldActiveWindowId_ = activeWindowId_;
     bool hasFocusedAndNoMagnificationWindow = false;
     WinDeInit();
     for (auto &window : infos) {
@@ -1014,7 +1015,11 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         if ((window->focused_ || IsScenePanel(window) || IsKeyboardDialog(window)) &&
             !IsMagnificationWindow(window)) {
             hasFocusedAndNoMagnificationWindow = true;
-            SetActiveWindow(realWid);
+            if (oldActiveWindowId_ != realWid) {
+                SetActiveWindow(realWid);
+            } else {
+                activeWindowId_ = oldActiveWindowId_;
+            }
         }
 
         WindowUpdateAllExec(oldA11yWindows_, realWid, window);

@@ -16,6 +16,7 @@
 #ifndef ACCESSIBLE_ABILITY_CLIENT_H
 #define ACCESSIBLE_ABILITY_CLIENT_H
 
+#include <ani.h>
 #include <map>
 #include <memory>
 #include "accessibility_element_info.h"
@@ -23,6 +24,7 @@
 #include "accessibility_gesture_inject_path.h"
 #include "accessibility_window_info.h"
 #include "accessible_ability_listener.h"
+#include "event_handler.h"
 #include "iremote_object.h"
 #include "hilog_wrapper.h"
 #include "napi/native_api.h"
@@ -30,9 +32,22 @@
 
 namespace OHOS {
 namespace Accessibility {
+constexpr int32_t ANI_SCOPE_SIZE = 16;
 struct DisconnectCallback {
-    DisconnectCallback(napi_env env, napi_ref ref) : handlerRef_(ref), env_(env) {};
-    ~DisconnectCallback() {};
+    virtual ~DisconnectCallback() = default;
+    virtual void NotifyJS() = 0;
+    virtual bool Equals(const DisconnectCallback& other) const = 0;
+    virtual bool IsValidRef() const = 0;
+
+    bool operator == (const DisconnectCallback& other) const
+    {
+        return Equals(other);
+    }
+};
+
+struct NapiDisconnectCallback : public DisconnectCallback {
+    NapiDisconnectCallback(napi_env env, napi_ref ref) : handlerRef_(ref), env_(env) {};
+    ~NapiDisconnectCallback() {};
     static napi_handle_scope TmpOpenScope(napi_env env)
     {
         napi_handle_scope scope = nullptr;
@@ -40,7 +55,7 @@ struct DisconnectCallback {
         return scope;
     }
 
-    void NotifyJS()
+    void NotifyJS() override
     {
         HILOG_INFO();
         auto task = [this]() {
@@ -62,8 +77,9 @@ struct DisconnectCallback {
         }
     }
 
-    bool operator==(const DisconnectCallback& otherCallback) const
+    bool Equals(const DisconnectCallback& other) const override
     {
+        const auto& otherCallback = static_cast<const NapiDisconnectCallback&>(other);
         if (env_ != otherCallback.env_) {
             return false;
         }
@@ -79,8 +95,110 @@ struct DisconnectCallback {
         return false;
     }
 
+    bool IsValidRef() const override
+    {
+        return handlerRef_ != nullptr;
+    }
+
     napi_ref handlerRef_ = nullptr;
     napi_env env_ = nullptr;
+};
+
+struct ANIDisconnectCallbackInfo {
+    ani_vm* vm_ = nullptr;
+    ani_ref fnRef_;
+};
+
+static thread_local std::shared_ptr<AppExecFwk::EventHandler> mainEventHandler;
+struct AniDisconnectCallback : public  DisconnectCallback {
+    ani_vm* vm_ = nullptr;
+    ani_ref fnRef_;
+
+    AniDisconnectCallback(ani_vm *vm, ani_ref ref)
+        : vm_(vm), fnRef_(ref) {};
+    ~AniDisconnectCallback() {};
+
+    bool PostAsyncTask(const std::function<void()> func)
+    {
+        if (func == nullptr) {
+            HILOG_ERROR("func is nullptr!");
+            return false;
+        }
+
+        if (!mainEventHandler) {
+            std::shared_ptr<AppExecFwk::EventRunner> runner = AppExecFwk::EventRunner::GetMainEventRunner();
+            if (!runner) {
+                HILOG_ERROR("get main event runner failed!");
+                return false;
+            }
+            mainEventHandler = std::make_shared<AppExecFwk::EventHandler>(runner);
+        }
+        mainEventHandler->PostTask(func, "", 0, AppExecFwk::EventQueue::Priority::HIGH, {});
+        return true;
+    }
+
+    void NotifyJS() override
+    {
+        HILOG_INFO();
+        std::shared_ptr<ANIDisconnectCallbackInfo> callbackInfo = std::make_shared<ANIDisconnectCallbackInfo>();
+        if (callbackInfo == nullptr || vm_ == nullptr || fnRef_ == nullptr) {
+            HILOG_ERROR("Failed to create callbackInfo");
+            return;
+        }
+        callbackInfo->vm_ = vm_;
+        callbackInfo->fnRef_ = fnRef_;
+        auto task = [callbackInfo]() {
+            HILOG_INFO("notify disconnect state to ets");
+            ani_env *tmpEnv = nullptr;
+            auto status = callbackInfo->vm_->GetEnv(ANI_VERSION_1, &tmpEnv);
+            if (status != ANI_OK) {
+                HILOG_ERROR("GetEnv failed: %{public}d", status);
+                return;
+            }
+            ani_size nr_refs = ANI_SCOPE_SIZE;
+            tmpEnv->CreateLocalScope(nr_refs);
+            auto fnObj = static_cast<ani_fn_object>(callbackInfo->fnRef_);
+            ani_ref result;
+            if (ANI_OK != tmpEnv->FunctionalObject_Call(fnObj, 0, nullptr, &result)) {
+                HILOG_ERROR("failed to call function");
+            }
+            tmpEnv->DestroyLocalScope();
+        };
+        if (!PostAsyncTask(task)) {
+            HILOG_ERROR("failed to send event");
+        }
+    }
+
+    bool Equals(const DisconnectCallback& other) const override
+    {
+        if (vm_ == nullptr) {
+            HILOG_ERROR("vm_ is null");
+            return false;
+        }
+        const auto& otherCallback = static_cast<const AniDisconnectCallback&>(other);
+        if (vm_ != otherCallback.vm_) {
+            HILOG_DEBUG("vm_ is not equal");
+            return false;
+        }
+        ani_env *tmpEnv = nullptr;
+        auto status = vm_->GetEnv(ANI_VERSION_1, &tmpEnv);
+        if (status != ANI_OK) {
+            HILOG_ERROR("GetEnv failed: %{public}d", status);
+            return false;
+        }
+        ani_boolean isEquals = false;
+        if (tmpEnv->Reference_StrictEquals(fnRef_, otherCallback.fnRef_, &isEquals) != ANI_OK) {
+            HILOG_ERROR("check observer equal failed!");
+            return false;
+        }
+        HILOG_INFO("callbacks are equal: %{public}d", isEquals);
+        return isEquals;
+    }
+
+    bool IsValidRef() const override
+    {
+        return fnRef_ != nullptr;
+    }
 };
 
 class AccessibleAbilityClient : public virtual RefBase {
@@ -406,7 +524,7 @@ public:
 
     virtual RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         AccessibilityFocusMoveParam param,
-        std::vector<AccessibilityElementInfo> &infos, int32_t windowId) = 0;
+        std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

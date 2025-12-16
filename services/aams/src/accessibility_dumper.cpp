@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,11 +31,57 @@
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    const std::string ARG_DUMP_HELP = "-h";
-    const std::string ARG_DUMP_USER = "-u";
-    const std::string ARG_DUMP_CLIENT = "-c";
-    const std::string ARG_DUMP_ACCESSIBILITY_WINDOW = "-w";
+const std::string ARG_DUMP_HELP = "-h";
+const std::string ARG_DUMP_USER = "-u";
+const std::string ARG_DUMP_CLIENT = "-c";
+const std::string ARG_DUMP_ACCESSIBILITY_WINDOW = "-w";
+
+// Helper: dump capabilities and various settings from AccessibilitySettingsConfig
+void AppendCapabilitiesAndSettings(std::ostringstream& oss, const AccessibilitySettingsConfig& config)
+{
+    // Dump Capabilities
+    oss << "accessible:  " << config.GetEnabledState() << std::endl;
+    oss << "touchGuide:  " << config.GetTouchGuideState() << std::endl;
+    oss << "gesture:  " << config.GetGestureState() << std::endl;
+    oss << "keyEventObserver:  " << config.GetKeyEventObserverState() << std::endl;
+
+    // Dump setting info
+    oss << "screenMagnification:  " << config.GetScreenMagnificationState() << std::endl;
+    oss << "mouseKey:  " << config.GetMouseKeyState() << std::endl;
+    oss << "shortKey:  " << config.GetShortKeyState() << std::endl;
+    oss << "shortKeyOnLockScreen:  " << config.GetShortKeyOnLockScreenState() << std::endl;
+    oss << "animationOff:  " << config.GetAnimationOffState() << std::endl;
+    oss << "invertColor:  " << config.GetInvertColorState() << std::endl;
+    oss << "highContrastText:  " << config.GetHighContrastTextState() << std::endl;
+    oss << "audioMono:  " << config.GetAudioMonoState() << std::endl;
+    oss << "shortkeyTarget:  " << config.GetShortkeyTarget() << std::endl;
+    oss << "mouseAutoClick:  " << config.GetMouseAutoClick() << std::endl;
+    oss << "daltonizationState:  " << config.GetDaltonizationState() << std::endl;
+    oss << "daltonizationColorFilter:  " << config.GetDaltonizationColorFilter() << std::endl;
+    oss << "contentTimeout:  " << config.GetContentTimeout() << std::endl;
+    oss << "brightnessDiscount:  " << config.GetBrightnessDiscount() << std::endl;
+    oss << "audioBalance:  " << config.GetAudioBalance() << std::endl;
+    oss << "clickResponseTime:  " << config.GetClickResponseTime() << std::endl;
+    oss << "ignoreRepeatClickState:  " << config.GetIgnoreRepeatClickState() << std::endl;
+    oss << "ignoreRepeatClickTime:  " << config.GetIgnoreRepeatClickTime() << std::endl;
+    oss << "flashReminderSwitch:  " << config.GetFlashReminderSwitch() << std::endl;
 }
+
+// Helper: dump caption state and details
+void AppendCaptionInfo(std::ostringstream &oss, const AccessibilitySettingsConfig& config)
+{
+    oss << "captionState:  " << config.GetCaptionState() << std::endl;
+    if (config.GetCaptionState()) {
+        AccessibilityConfig::CaptionProperty captionProperty = config.GetCaptionProperty();
+        oss << "    fontFamily:  " << captionProperty.GetFontFamily() << std::endl;
+        oss << "    fontScale:  " << captionProperty.GetFontScale() << std::endl;
+        oss << "    fontColor:  " << captionProperty.GetFontColor() << std::endl;
+        oss << "    fontEdgeType:  " << captionProperty.GetFontEdgeType() << std::endl;
+        oss << "    backgroundColor:  " << captionProperty.GetBackgroundColor() << std::endl;
+        oss << "    windowColor:  " << captionProperty.GetWindowColor() << std::endl;
+    }
+}
+} // namespace
 
 int AccessibilityDumper::Dump(int fd, const std::vector<std::u16string>& args) const
 {
@@ -188,7 +234,8 @@ void ConvertEventTypes(const uint32_t value, std::string &eventTypes)
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT, "announceForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT,
             "requestFocusForAccessibilityNotInterrupt"},
-        {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"}};
+        {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
+        {EventType::TYPE_PAGE_ACTIVE, "pageActive"}};
 
     for (auto itr = accessibilityEventTable.begin(); itr != accessibilityEventTable.end(); ++itr) {
         if (value & itr->first) {
@@ -274,45 +321,8 @@ int AccessibilityDumper::DumpAccessibilityUserInfo(std::string& dumpInfo) const
         HILOG_ERROR("config is null");
         return -1;
     }
-
-    // Dump Capabilities
-    oss << "accessible:  " << config->GetEnabledState() << std::endl;
-    oss << "touchGuide:  " << config->GetTouchGuideState() << std::endl;
-    oss << "gesture:  " << config->GetGestureState() << std::endl;
-    oss << "keyEventObserver:  " << config->GetKeyEventObserverState() << std::endl;
-
-    // Dump setting info
-    oss << "screenMagnification:  " << config->GetScreenMagnificationState() << std::endl;
-    oss << "mouseKey:  " << config->GetMouseKeyState() << std::endl;
-    oss << "shortKey:  " << config->GetShortKeyState() << std::endl;
-    oss << "shortKeyOnLockScreen:  " << config->GetShortKeyOnLockScreenState() << std::endl;
-    oss << "animationOff:  " << config->GetAnimationOffState() << std::endl;
-    oss << "invertColor:  " << config->GetInvertColorState() << std::endl;
-    oss << "highContrastText:  " << config->GetHighContrastTextState() << std::endl;
-    oss << "audioMono:  " << config->GetAudioMonoState() << std::endl;
-    oss << "shortkeyTarget:  " << config->GetShortkeyTarget() << std::endl;
-    // need to add
-    oss << "mouseAutoClick:  " << config->GetMouseAutoClick() << std::endl;
-    oss << "daltonizationState:  " << config->GetDaltonizationState() << std::endl;
-    oss << "daltonizationColorFilter:  " << config->GetDaltonizationColorFilter() << std::endl;
-    oss << "contentTimeout:  " << config->GetContentTimeout() << std::endl;
-    oss << "brightnessDiscount:  " << config->GetBrightnessDiscount() << std::endl;
-    oss << "audioBalance:  " << config->GetAudioBalance() << std::endl;
-    oss << "clickResponseTime:  " << config->GetClickResponseTime() << std::endl;
-    oss << "ignoreRepeatClickState:  " << config->GetIgnoreRepeatClickState() << std::endl;
-    oss << "ignoreRepeatClickTime:  " << config->GetIgnoreRepeatClickTime() << std::endl;
-
-    // Dump caption info
-    oss << "captionState:  " << config->GetCaptionState() << std::endl;
-    if (config->GetCaptionState()) {
-        AccessibilityConfig::CaptionProperty captionProperty = config->GetCaptionProperty();
-        oss << "    fontFamily:  " << captionProperty.GetFontFamily() << std::endl;
-        oss << "    fontScale:  " << captionProperty.GetFontScale() << std::endl;
-        oss << "    fontColor:  " << captionProperty.GetFontColor() << std::endl;
-        oss << "    fontEdgeType:  " << captionProperty.GetFontEdgeType() << std::endl;
-        oss << "    backgroundColor:  " << captionProperty.GetBackgroundColor() << std::endl;
-        oss << "    windowColor:  " << captionProperty.GetWindowColor() << std::endl;
-    }
+    AppendCapabilitiesAndSettings(oss, *config);
+    AppendCaptionInfo(oss, *config);
     dumpInfo.append(oss.str());
     return 0;
 }
@@ -365,5 +375,5 @@ void AccessibilityDumper::ShowHelpInfo(std::string& dumpInfo) const
         .append(" -w                    ")
         .append("|dump accessibility window info in the system\n");
 }
-} // Accessibility
+} // namespace Accessibility
 } // OHOS

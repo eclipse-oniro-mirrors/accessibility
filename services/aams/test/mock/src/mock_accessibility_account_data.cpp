@@ -256,7 +256,10 @@ void AccessibilityAccountData::UpdateEnableAbilityListsState()
     return;
 }
 
-RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
+RetError AccessibilityAccountData::EnableAbility(
+    const std::string &name,
+    const uint32_t capabilities,
+    const std::string &callerBundleName)
 {
     HILOG_DEBUG("start.");
     if (std::any_of(enabledAbilities_.begin(), enabledAbilities_.end(),
@@ -321,6 +324,17 @@ void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemo
     (void)observer;
 }
 
+void AccessibilityAccountData::AddEnableAbilityCallbackObserver(
+    const sptr<IAccessibilityEnableAbilityCallbackObserver>& observer)
+{
+    (void)observer;
+}
+
+void AccessibilityAccountData::RemoveEnableAbilityCallbackObserver(const wptr<IRemoteObject>& observer)
+{
+    (void)observer;
+}
+
 void AccessibilityAccountData::AddConfigCallback(
     const sptr<IAccessibleAbilityManagerConfigObserver>& callback)
 {
@@ -377,7 +391,7 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     return 0;
 }
 
-void AccessibilityAccountData::UpdateAbilities()
+void AccessibilityAccountData::UpdateAbilities(std::string callerBundleName)
 {
     HILOG_DEBUG("UpdateAbilities start");
 }

@@ -76,7 +76,11 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
     ANIAccessibilityClient::accessibilityStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::touchGuideStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::screenReaderStateListeners_->SubscribeToFramework();
+    ANIAccessibilityClient::touchModeStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::captionListeners_->SubscribeToFramework();
+    ANIAccessibilityClient::audioMonoStateListeners_->SubscribeToFramework();
+    ANIAccessibilityClient::animationOffStateListeners_->SubscribeToFramework();
+    ANIAccessibilityClient::flashReminderSwitchStateListeners_->SubscribeToFramework();
 
     *result = ANI_VERSION_1;
     return ANI_OK;
@@ -94,12 +98,24 @@ static bool BindMethod(ani_env *env, ani_namespace ns, ani_module mod)
         ani_native_function {"offStateChange", nullptr, reinterpret_cast<void *>(
             ANIAccessibilityClient::UnsubscribeState)},
         ani_native_function {"offAll", nullptr, reinterpret_cast<void *>(ANIAccessibilityClient::UnsubscribeStateAll)},
+        ani_native_function {"onTouchModeChangeNative", nullptr,
+            reinterpret_cast<void *>(ANIAccessibilityClient::SubscribeState)},
+        ani_native_function {"offTouchModeChangeNative", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityClient::UnsubscribeState)},
         ani_native_function {"isScreenReaderOpenSync", nullptr, reinterpret_cast<void *>(
             ANIAccessibilityClient::IsScreenReaderOpenSync)},
+        ani_native_function {"getTouchModeSync", nullptr,
+            reinterpret_cast<void *>(ANIAccessibilityClient::getTouchModeSync)},
         ani_native_function {"getAccessibilityExtensionListSync", nullptr,
             reinterpret_cast<void *>(ANIAccessibilityClient::GetAccessibilityExtensionListSync)},
         ani_native_function {"getCaptionsManager", nullptr,
             reinterpret_cast<void *>(ANIAccessibilityClient::GetCaptionsManager)},
+        ani_native_function {"isAudioMonoEnabledSync", nullptr,
+            reinterpret_cast<void *>(ANIAccessibilityClient::GetAudioMonoStateSync)},
+        ani_native_function {"isAnimationReduceEnabledSync", nullptr,
+            reinterpret_cast<void *>(ANIAccessibilityClient::GetAnimationOffStateSync)},
+        ani_native_function {"isFlashReminderEnabledSync", nullptr,
+            reinterpret_cast<void *>(ANIAccessibilityClient::GetFlashReminderSwitchSync)}
    };
 
     if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
@@ -156,8 +172,20 @@ ANI_EXPORT ani_status ANI_Destructor(ani_vm *vm)
     if (ANIAccessibilityClient::screenReaderStateListeners_) {
         ANIAccessibilityClient::screenReaderStateListeners_->UnsubscribeFromFramework();
     }
+    if (ANIAccessibilityClient::touchModeStateListeners_) {
+        ANIAccessibilityClient::touchModeStateListeners_->UnsubscribeFromFramework();
+    }
     if (ANIAccessibilityClient::captionListeners_) {
         ANIAccessibilityClient::captionListeners_->UnsubscribeFromFramework();
+    }
+    if (ANIAccessibilityClient::audioMonoStateListeners_) {
+        ANIAccessibilityClient::audioMonoStateListeners_->UnsubscribeFromFramework();
+    }
+    if (ANIAccessibilityClient::animationOffStateListeners_) {
+        ANIAccessibilityClient::animationOffStateListeners_->UnsubscribeFromFramework();
+    }
+    if (ANIAccessibilityClient::flashReminderSwitchStateListeners_) {
+        ANIAccessibilityClient::flashReminderSwitchStateListeners_->UnsubscribeFromFramework();
     }
 
     return ANI_OK;

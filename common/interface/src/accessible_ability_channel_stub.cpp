@@ -640,8 +640,7 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithCondition(Message
     }
     int32_t windowId = data.ReadInt32();
 
-    FocusMoveSearchWithCondition(*info, param, requestId, callback, windowId);
-    RetError result = RET_OK;
+    RetError result = FocusMoveSearchWithCondition(*info, param, requestId, callback, windowId);
     reply.WriteInt32(result);
     return NO_ERROR;
 }

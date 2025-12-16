@@ -73,6 +73,29 @@ private:
     std::vector<std::shared_ptr<EnableAbilityListsObserver>> installAbilityListsObservers_ = {};
 };
 
+struct EnableAbilityCallbackObserver {
+    EnableAbilityCallbackObserver(ani_vm *vm, ani_ref callback) : vm_(vm), callback_(callback) {};
+    void OnEnableAbilityRemoteDied(const std::string& name);
+    ani_vm* vm_;
+    ani_ref callback_;
+};
+
+class EnableAbilityCallbackObserverImpl :
+public OHOS::AccessibilityConfig::AccessibilityEnableAbilityCallbackObserver,
+    public std::enable_shared_from_this<EnableAbilityCallbackObserverImpl> {
+public:
+    EnableAbilityCallbackObserverImpl() = default;
+    void OnEnableAbilityRemoteDied(const std::string& name) override;
+    void SubscribeToFramework();
+    void UnsubscribeFromFramework();
+    void SubscribeObserver(ani_vm *vm, const std::string& name, ani_ref observer);
+    void UnsubscribeObserver(const std::string& name);
+
+private:
+    ffrt::mutex mutex_;
+    std::map<std::string, std::shared_ptr<EnableAbilityCallbackObserver>> enableAbilityCallbackObservers_ = {};
+};
+
 struct ANIAccessibilityConfigObserver {
 public:
     ANIAccessibilityConfigObserver(ani_env* env, ani_ref callback, OHOS::AccessibilityConfig::CONFIG_ID id)
@@ -134,6 +157,8 @@ public:
     static void SetSyncCaptionsStyle(ani_env *env, ani_object object, ani_enum_item id, ani_object value);
     static ani_object GetSyncCaptionsStyle(ani_env *env, ani_object object, ani_enum_item id);
     static void EnableAbilitySync(ani_env *env, ani_string name, ani_array capability);
+    static void EnableAbilityWithCallbackSync(
+        ani_env* env, ani_string name, ani_array capability, ani_object connectCallback);
     static void DisableAbilitySync(ani_env *env, ani_string name);
     static void SubscribeState(ani_env *env, ani_string type, ani_object observer);
     static void UnsubscribeState(ani_env *env, ani_string type, ani_object observer);
@@ -144,6 +169,7 @@ public:
         ani_object &object, OHOS::AccessibilityConfig::CaptionProperty &captionProperty);
     static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers_;
     static std::shared_ptr<ANIAccessibilityConfigObserverImpl> configObservers_;
+    static std::shared_ptr<EnableAbilityCallbackObserverImpl> enableAbilityCallbackObservers_;
 private:
     static bool CheckReadPermission(const std::string &permission);
     static bool IsAvailable(ani_env *env);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -114,6 +114,7 @@ const uint32_t STATE_IGNORE_REPEAT_CLICK_ENABLED = 0x00002000;
 const uint32_t STATE_SCREENREADER_ENABLED = 0x00004000;
 const uint32_t STATE_SINGLE_CLICK_MODE_ENABLED = 0x00008000;
 const uint32_t STATE_CONFIG_EVENT_CHANGE = 0x00010000;
+const uint32_t STATE_FLASH_REMINDER_ENABLED = 0x00020000;
 
 const int32_t INVALID_CHANNEL_ID = 0xFFFFFFFF;
 const int32_t MAX_ALLOW_SIZE = 1024 * 1000;

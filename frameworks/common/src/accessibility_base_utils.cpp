@@ -166,7 +166,8 @@ std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT, "announceForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT,
             "requestFocusForAccessibilityNotInterrupt"},
-        {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"}};
+        {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
+        {EventType::TYPE_PAGE_ACTIVE, "pageActive"}};
 
     for (std::map<EventType, std::string>::iterator itr = accessibilityEventTable.begin();
          itr != accessibilityEventTable.end(); ++itr) {

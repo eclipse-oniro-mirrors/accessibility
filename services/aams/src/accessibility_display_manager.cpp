@@ -224,6 +224,14 @@ void AccessibilityDisplayManager::UnregisterFoldStatusListener()
     }
 }
 
+AccessibilityDisplayManager::DisplayListener::DisplayListener(const std::shared_ptr<MagnificationManager> &manager)
+    : manager_(manager)
+{
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    orientation_ = displayMgr.GetOrientation();
+    displayMode_ = displayMgr.GetFoldDisplayMode();
+}
+
 RotationType AccessibilityDisplayManager::GetRotationType(Rosen::DisplayOrientation prev,
     Rosen::DisplayOrientation curr)
 {
@@ -284,6 +292,7 @@ void AccessibilityDisplayManager::DisplayListener::OnChangeForWideFold(
         HILOG_INFO("FoldDisplayMode MAIN");
         interceptor->ShieldZoomGesture(true);
         displayMode_ = currentMode;
+        orientation_ = currentOrientation;
         return;
     }
     if (currentMode == Rosen::FoldDisplayMode::FULL) {

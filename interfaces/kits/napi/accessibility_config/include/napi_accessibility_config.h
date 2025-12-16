@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,6 +33,15 @@ struct EnableAbilityListsObserver {
     napi_ref callback_ = nullptr;
 };
 
+struct EnableAbilityCallbackObserver {
+    EnableAbilityCallbackObserver(
+        napi_env env, napi_ref notifyCallback) : env_(env), notifyCallback_(notifyCallback) {};
+    void OnEnableAbilityRemoteDied(const std::string& name);
+    int OnEnableAbilityListsRemoteDiedWork(uv_work_t *work);
+    napi_env env_ = nullptr;
+    napi_ref notifyCallback_ = nullptr;
+};
+
 class EnableAbilityListsObserverImpl : public OHOS::AccessibilityConfig::AccessibilityEnableAbilityListsObserver,
     public std::enable_shared_from_this<EnableAbilityListsObserverImpl> {
 public:
@@ -54,10 +63,27 @@ private:
     std::vector<std::shared_ptr<EnableAbilityListsObserver>> installAbilityListsObservers_ = {};
 };
 
+class EnableAbilityCallbackObserverImpl :
+public OHOS::AccessibilityConfig::AccessibilityEnableAbilityCallbackObserver,
+    public std::enable_shared_from_this<EnableAbilityCallbackObserverImpl> {
+public:
+    EnableAbilityCallbackObserverImpl() = default;
+    void OnEnableAbilityRemoteDied(const std::string& name) override;
+    void SubscribeToFramework();
+    void UnsubscribeFromFramework();
+    void SubscribeObserver(napi_env env, const std::string& name, napi_value observer);
+    void UnsubscribeObserver(napi_env env, const std::string& name);
+
+private:
+    ffrt::mutex mutex_;
+    std::map<std::string, std::shared_ptr<EnableAbilityCallbackObserver>> enableAbilityCallbackObservers_ = {};
+};
+
 struct NAccessibilityConfigData {
     napi_async_work work_ {};
     napi_deferred deferred_ {};
     napi_ref callback_ {};
+    napi_ref notifyCallback_ {};
     std::string abilityName_ = "";
     uint32_t capabilities_ = 0;
     std::string stringConfig_ = "";
@@ -116,6 +142,7 @@ private:
 class NAccessibilityConfig {
 public:
     static napi_value EnableAbility(napi_env env, napi_callback_info info);
+    static napi_value EnableAbilityWithCallback(napi_env env, napi_callback_info info);
     static napi_value DisableAbility(napi_env env, napi_callback_info info);
     static napi_value SubscribeState(napi_env env, napi_callback_info info);
     static napi_value UnsubscribeState(napi_env env, napi_callback_info info);
@@ -126,6 +153,7 @@ public:
     static napi_value UnSubscribeConfigObserver(napi_env env, napi_callback_info info);
     static std::shared_ptr<NAccessibilityConfigObserverImpl> configObservers_;
     static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers_;
+    static std::shared_ptr<EnableAbilityCallbackObserverImpl> enableAbilityCallbackObservers_;
     static inline napi_value ConfigCreateJsUndefined(napi_env env)
     {
         napi_value result = nullptr;
@@ -142,6 +170,8 @@ private:
     static bool IsAvailable(napi_env env, napi_callback_info info);
     static void GetScreenTouchConfigExecute(NAccessibilityConfigData* callbackInfo);
     static void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
+        napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
+    static void EnableAbilityWithCallbackError(size_t& argc, OHOS::Accessibility::RetError& errCode,
         napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
     static void DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
         napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);

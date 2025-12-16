@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -45,6 +45,7 @@ namespace {
     const char* DALTONIZATION_STATE = "accessibility_display_daltonizer_enabled";
     const char* INVERT_COLOR_KEY = "accessibility_display_inversion_enabled";
     const char* ANIMATION_OFF_KEY = "animation_off";
+    const char* ANIMATION_CACHE_FLAG = "accessibility_animation_cache_flag";
     const char* AUDIO_MONO_KEY = "master_mono";
     const char* IGNORE_REPEAT_CLICK_SWITCH = "ignore_repeat_click_switch";
     const char* SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
@@ -216,6 +217,13 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t 
 {
     HILOG_DEBUG("screenMagnificationType = [%{public}u]", type);
     screenMagnificationType_ = type;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetFlashReminderSwitch(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    flashReminderSwitch_ = state;
     return RET_OK;
 }
 
@@ -832,6 +840,11 @@ uint32_t AccessibilitySettingsConfig::GetScreenMagnificationType() const
     return screenMagnificationType_;
 }
 
+bool AccessibilitySettingsConfig::GetFlashReminderSwitch() const
+{
+    return flashReminderSwitch_;
+}
+
 uint32_t AccessibilitySettingsConfig::GetScreenMagnificationMode() const
 {
     return screenMagnificationMode_;
@@ -1076,14 +1089,20 @@ void AccessibilitySettingsConfig::InitAnimationOffConfig()
 {
     animationOffState_ = datashare_->GetBoolValue(ANIMATION_OFF_KEY, false);
     std::string graphicState = system::GetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "1");
-    std::string arkuiState = system::GetParameter(ARKUI_ANIMATION_SCALE_NAME, "1");
-    bool state = (graphicState == "0" && arkuiState == "0");
+    bool state = (graphicState == "0");
+    bool value = false;
+    value = datashare_->GetBoolValue(ANIMATION_CACHE_FLAG, false);
     if (animationOffState_) {
         system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "0");
-        system::SetParameter(ARKUI_ANIMATION_SCALE_NAME, "0");
+        if (!value) {
+            HILOG_INFO("recovery arkui animationscale success");
+            system::SetParameter(ARKUI_ANIMATION_SCALE_NAME, "1");
+        }
     } else if (!animationOffState_ && state) {
         system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "1");
-        system::SetParameter(ARKUI_ANIMATION_SCALE_NAME, "1");
+    }
+    if (!value) {
+        datashare_->PutBoolValue(ANIMATION_CACHE_FLAG, true);
     }
 }
 
