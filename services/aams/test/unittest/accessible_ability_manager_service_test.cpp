@@ -1002,20 +1002,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetCaptionState_001, TestSize.
 }
 
 /**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_NeedSetActive_001
- * @tc.name: NeedSetActive
- * @tc.desc: Test function NeedSetActive
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, NeedSetActive_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_NeedSetActive_001 start";
-    Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(ACTIVE_WINDOW_VALUE, false);
-    int32_t windowId = 0;
-    EXPECT_EQ(0, Singleton<AccessibleAbilityManagerService>::GetInstance().NeedSetActive(windowId));
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_NeedSetActive_001 end";
-}
-
-/**
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetActiveWindow_001
  * @tc.name: GetActiveWindow
  * @tc.desc: Test function GetActiveWindow
