@@ -1260,6 +1260,20 @@ void ANIAccessibilityConfig::UnsubscribeStates(ani_env *env, ani_string type)
     }
 }
 
+void ANIAccessibilityConfig::SetMagnificationState(ani_env *env, ani_boolean state)
+{
+    if (!IsAvailable(env)) {
+        return;
+    }
+    HILOG_INFO();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    auto ret = instance.SetMagnificationState(static_cast<bool>(state));
+    if (ret != RET_OK) {
+        HILOG_ERROR("SetMagnificationState failed, ret = %{public}d", static_cast<int32_t>(ret));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+    }
+}
+
 void ANIAccessibilityConfig::SubscribeConfigObserver(ani_env *env, ani_object object,
     ani_enum_item id, ani_object callback)
 {
