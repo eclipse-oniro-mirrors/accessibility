@@ -27,7 +27,11 @@ namespace {
         "removeText",
         "isAnco",
         "scrollX",
-        "scrollY"
+        "scrollY",
+        "itemCounts",
+        "beforeText",
+        "addedCount",
+        "removedCount"
     };
 }
 

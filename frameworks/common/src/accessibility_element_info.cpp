@@ -35,7 +35,9 @@ static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
     "isModal",
     "isAnco",
     "isScreenReaderFocusable",
-    "childText"
+    "childText",
+    "beginSelected",
+    "endSelected"
 };
 }
 void AccessibilityElementInfo::SetComponentId(const int64_t componentId)
