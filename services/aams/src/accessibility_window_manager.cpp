@@ -1047,7 +1047,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             hasFocusedAndNoMagnificationWindow = true;
             if (hasMagnificationWindow) {
                 if (oldActiveWindowId_ != realWid) {
-                S   etActiveWindow(realWid);
+                    SetActiveWindow(realWid);
                 } else {
                     activeWindowId_ = oldActiveWindowId_;
                 }
