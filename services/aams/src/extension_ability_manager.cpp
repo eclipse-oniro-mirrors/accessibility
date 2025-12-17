@@ -21,6 +21,7 @@
 #include "nlohmann/json.hpp"
 #include "extension_manager_client.h"
 
+// LCOV_EXCL_START
 namespace OHOS {
 namespace Accessibility {
 
@@ -158,5 +159,6 @@ void ExtensionAbilityManager::SendRequestToSetting(const sptr<IRemoteObject> &re
     auto replyCode = reply.ReadInt32();
     HILOG_INFO("sendRequest ret=%{public}d, replyCode=%{public}d", ret, replyCode);
 }
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

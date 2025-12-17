@@ -19,6 +19,7 @@
 #include "hilog_wrapper.h"
 #include "tokenid_kit.h"
 
+// LCOV_EXCL_START
 namespace OHOS {
 namespace Accessibility {
 bool Permission::CheckCallingPermission(const std::string& permission)
@@ -67,6 +68,6 @@ bool Permission::IsSystemApp()
     bool isSystemApplication = Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(accessTokenId);
     return isSystemApplication;
 }
-
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

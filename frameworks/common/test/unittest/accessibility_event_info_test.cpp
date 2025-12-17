@@ -606,5 +606,48 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetExtraEvent_001, TestSize.Level1)
     EXPECT_TRUE(eventInfo_->GetExtraEvent().GetExtraEventInfoValueStr().size() == 1);
     GTEST_LOG_(INFO) << "SetExtraEvent_001 end";
 }
+
+/**
+ * @tc.number: SetExtraEvent_002
+ * @tc.name: SetExtraEvent
+ * @tc.desc: Test function SetExtraEvent, GetExtraEvent
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, SetExtraEvent_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetExtraEvent_002 start";
+    ExtraEventInfo extraEventInfo {};
+    auto ret = extraEventInfo.SetExtraEventInfo("noValue", "1");
+    EXPECT_TRUE(ret == RET_ERR_FAILED);
+    GTEST_LOG_(INFO) << "SetExtraEvent_002 end";
+}
+ 
+/**
+ * @tc.number: SetExtraEvent_003
+ * @tc.name: SetExtraEvent
+ * @tc.desc: Test function SetExtraEvent, GetExtraEvent
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, SetExtraEvent_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetExtraEvent_003 start";
+    ExtraEventInfo extraEventInfo {};
+    extraEventInfo.SetExtraEventInfo("addText", 1);
+    eventInfo_->SetExtraEvent(extraEventInfo);
+    EXPECT_TRUE(eventInfo_->GetExtraEvent().GetExtraEventInfoValueInt().size() == 1);
+    GTEST_LOG_(INFO) << "SetExtraEvent_003 end";
+}
+ 
+/**
+ * @tc.number: SetExtraEvent_004
+ * @tc.name: SetExtraEvent
+ * @tc.desc: Test function SetExtraEvent, GetExtraEvent
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, SetExtraEvent_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetExtraEvent_004 start";
+    ExtraEventInfo extraEventInfo {};
+    auto ret = extraEventInfo.SetExtraEventInfo("noValue", "1");
+    EXPECT_TRUE(ret == RET_ERR_FAILED);
+    GTEST_LOG_(INFO) << "SetExtraEvent_004 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

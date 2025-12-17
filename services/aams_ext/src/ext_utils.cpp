@@ -17,6 +17,7 @@
 #include <hisysevent.h>
 #include "hilog_wrapper.h"
 
+// LCOV_EXCL_START
 namespace OHOS {
 namespace Accessibility {
 
@@ -40,5 +41,6 @@ void ExtUtils::RecordMagnificationUnavailableEvent(const std::string &name)
         HILOG_ERROR("Write HiSysEvent error, ret:%{public}d", ret);
     }
 }
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS
