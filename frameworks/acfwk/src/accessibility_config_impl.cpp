@@ -25,12 +25,16 @@ namespace AccessibilityConfig {
 namespace {
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
-    constexpr int32_t SA_CONNECT_TIMEOUT = 6 * 1000; // ms
     constexpr uint32_t DISPLAY_DALTONIZER_GREEN = 12;
     constexpr uint32_t DISPLAY_DALTONIZER_RED = 11;
     constexpr uint32_t DISPLAY_DALTONIZER_BLUE = 13;
     constexpr int32_t DESTRUCTOR_DELAY_TIME = 200 * 1000; // 200ms
     constexpr int32_t DESTRUCTOR_DELAY_COUNT = 5;
+#ifdef ACCESSIBILITY_WATCH_FEATURE
+    constexpr int32_t SA_CONNECT_TIMEOUT = 2 * 1000; // ms
+#else
+    constexpr int32_t SA_CONNECT_TIMEOUT = 1000; // ms
+#endif
 }
 
 AccessibilityConfig::Impl::Impl()
