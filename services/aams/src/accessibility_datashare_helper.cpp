@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <charconv>
 #include "accessibility_datashare_helper.h"
 
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
@@ -140,7 +141,7 @@ float AccessibilityDatashareHelper::GetFloatValue(const std::string& key, const 
     float result = defaultValue;
     std::string valueStr = GetStringValue(key, std::to_string(result), readOnlyFlag);
     if (valueStr != "") {
-        result = std::stof(valueStr);
+        result = Utils::StringToFloat(valueStr, defaultValue);
     }
     return result;
 }
@@ -148,10 +149,14 @@ float AccessibilityDatashareHelper::GetFloatValue(const std::string& key, const 
 uint64_t AccessibilityDatashareHelper::GetUnsignedLongValue(const std::string& key, const uint64_t& defaultValue,
     const bool readOnlyFlag)
 {
-    int64_t result = defaultValue;
+    uint64_t result = defaultValue;
     std::string valueStr = GetStringValue(key, std::to_string(result), readOnlyFlag);
-    if (valueStr != "") {
-        result = static_cast<int64_t>(std::stoull(valueStr.c_str(), nullptr, DECIMAL_NOTATION));
+    if (!valueStr.empty()) {
+        uint64_t num;
+        auto [ptr, ec] = std::from_chars(valueStr.data(), valueStr.data() + valueStr.size(), num);
+        if (ec == std::errc()) {
+            result = num;
+        }
     }
     return result;
 }
