@@ -80,6 +80,7 @@ public:
     static bool IsBigFold();
     static bool IsSmallFold();
     static std::string FormatString(const std::string& format, const std::string& value);
+    static float StringToFloat(const std::string& value, const float& defaultValue);
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);
 };

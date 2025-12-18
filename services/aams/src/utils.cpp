@@ -642,6 +642,18 @@ std::string Utils::FormatString(const std::string& format, const std::string& va
     delete[] buffer;
     return result;
 }
+
+float Utils::StringToFloat(const std::string& value, const float& defaultValue)
+{
+    errno = 0;
+    char* pEnd = nullptr;
+    float result = std::strtof(value.c_str(), &pEnd);
+    if (pEnd == value.c_str() || errno == ERANGE) {
+        return defaultValue;
+    } else {
+        return result;
+    }
+}
 // LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS
