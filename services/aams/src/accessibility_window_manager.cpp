@@ -1025,7 +1025,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             HILOG_ERROR("window is nullptr");
             continue;
         }
-        if(IsMagnificationWindow(window)) {
+        if (IsMagnificationWindow(window)) {
             hasMagnificationWindow = true;
             continue;
         }
