@@ -66,7 +66,7 @@ namespace {
     const std::string ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
     const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.screenreader";
     const std::string THP_PATH = "/system/lib64/libthp_extra_innerapi.z.so";
-    const std::string IGNORE_REPEATED_CLICK_CACHE_FLAG = "accessibility_ignore_repeat_click_cache_flag";
+    const std::string IGNORE_REPEATED_CLICK_EXCLUDE_FLAG = "accessibility_ignore_repeat_click_exclude_flag";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -812,7 +812,7 @@ RetError AccessibilityAccountData::EnableAbility(
 
 bool AccessibilityAccountData::DealWithScreenReaderState()
 {
-    bool ignoreStateCache = config_->GetDbHandle()->GetBoolValue(IGNORE_REPEATED_CLICK_CACHE_FLAG, false);
+    bool ignoreStateCache = config_->GetDbHandle()->GetBoolValue(IGNORE_REPEATED_CLICK_EXCLUDE_FLAG, false);
     bool ignoreRepeatClickState = config_->GetIgnoreRepeatClickState();
     HILOG_DEBUG("DealWithScreenReaderState ignoreStateCache: [%{public}d], ignoreRepeatClickState: [%{public}d] ",
         ignoreStateCache, ignoreRepeatClickState);
