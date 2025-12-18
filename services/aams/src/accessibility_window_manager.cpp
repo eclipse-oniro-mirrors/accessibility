@@ -30,7 +30,7 @@ namespace {
     const std::string TIMER_GET_ACCESSIBILITY_WINDOWS = "accessibilty:getAccessibilityWindowInfo";
     const std::string SCB_SCENE_PANEL = "SCBScenePanel";
     const std::string SCB_KEYBOARD_DIALOG = "SCBKeyboardDialog";
-    const std::vector<std::string> UNFOCUSABLE_WINDOW = {
+    const std::set<std::string> UNFOCUSABLE_WINDOW = {
         "floatingnavigation",
         "SCBStatusBar",
         "SCBVolumePanel"
@@ -992,22 +992,22 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow()
 
 bool AccessibilityWindowManager::NeedSetActive(const int32_t windowId)
 {
-    if (windowId == INVALID_WINDOW_ID) {
-        return false;
-    }
-    if (!a11yWindows_.count(windowId)) {
+    if (windowId == INVALID_WINDOW_ID || !a11yWindows_.count(windowId)) {
         return false;
     }
 
-    std::string currentBundleName = a11yWindows_[windowId].GetBundleName();
-    for (const auto& bundleName : UNFOCUSABLE_WINDOW) {
-        HILOG_DEBUG("NeedSetActive bundleName: %{public}s, currentBundleName: %{public}s",
-            bundleName.c_str(), currentBundleName.c_str());
-        if (currentBundleName.find(bundleName) != std::string::npos) {
-            return false;
-        }
+    const std::string& currentBundleName = a11yWindows_[windowId].GetBundleName();
+    auto it = std::find_if(UNFOCUSABLE_WINDOW.begin(), UNFOCUSABLE_WINDOW.end(),
+        [&currentBundleName](const std::string& pattern) {
+            return currentBundleName.find(pattern) != std::string::npos;
+        });
+    if (it == UNFOCUSABLE_WINDOW.end()) {
+        return true;
+    } else {
+        HILOG_INFO("skip set active, current BundleName: %{public}s, windowId: %{public}d",
+            currentBundleName.c_str(), windowId);
+        return false;
     }
-    return true;
 }
 
 void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
@@ -1016,8 +1016,8 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     auto oldA11yWindows_ = a11yWindows_;
     HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
     
-    const int32_t oldActiveWindowId_ = activeWindowId_;
-    bool hasFocusedAndNoMagnificationWindow = false;
+    const int32_t previousActiveWindow = activeWindowId_;
+    bool hasFocusedWindow = false;
     bool hasMagnificationWindow = false;
     WinDeInit();
     for (auto &window : infos) {
@@ -1042,18 +1042,20 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             sceneBoardElementIdMap_.InsertPair(realWid, window->uiNodeId_);
         }
 
-        if ((window->focused_ || IsScenePanel(window) || IsKeyboardDialog(window)) &&
-            !IsMagnificationWindow(window)) {
-            hasFocusedAndNoMagnificationWindow = true;
-            if (hasMagnificationWindow) {
-                if (oldActiveWindowId_ != realWid) {
-                    SetActiveWindow(realWid);
-                } else {
-                    activeWindowId_ = oldActiveWindowId_;
-                }
-            } else {
+        if (!window->focused_ && !IsScenePanel(window) && !IsKeyboardDialog(window)) {
+            WindowUpdateAllExec(oldA11yWindows_, realWid, window);
+            continue;
+        }
+
+        hasFocusedWindow = true;
+        if (hasMagnificationWindow) {
+            if (previousActiveWindow != realWid) {
                 SetActiveWindow(realWid);
+            } else {
+                activeWindowId_ = previousActiveWindow;
             }
+        } else {
+            SetActiveWindow(realWid);
         }
 
         WindowUpdateAllExec(oldA11yWindows_, realWid, window);
@@ -1063,7 +1065,7 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         WindowUpdateTypeEvent(it->first, oldA11yWindows_, WINDOW_UPDATE_REMOVED);
     }
 
-    if (!hasFocusedAndNoMagnificationWindow) {
+    if (!hasFocusedWindow) {
         SetAccessibilityFocusedWindow();
     }
     HILOG_INFO("WindowUpdateAll end activeWindowId_: %{public}d", activeWindowId_);
