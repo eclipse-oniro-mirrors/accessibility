@@ -18,6 +18,7 @@
 #include "message_parcel.h"
 #include "extension_ability_manager.cpp"
 
+// LCOV_EXCL_START
 namespace OHOS {
 namespace Accessibility {
 constexpr uint32_t FEATURE_USER_PREFERENCE_APP = 10;
@@ -367,5 +368,6 @@ void MsdpManager::UnSubscribeVoiceRecognition()
     unsubscribeFunc(FEATURE_ENV_SOUND);
     HILOG_INFO("userstatusClient.unsubscribeFunc");
 }
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

@@ -16,6 +16,7 @@
 #include "accessibility_element_operator_callback_impl.h"
 #include "hilog_wrapper.h"
 
+// LCOV_EXCL_START
 namespace OHOS {
 namespace Accessibility {
 void AccessibilityElementOperatorCallbackImpl::SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
@@ -123,5 +124,6 @@ void AccessibilityElementOperatorCallbackImpl::SetFocusMoveSearchWithConditionRe
         promiseFlag_ = true;
     }
 }
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

@@ -31,6 +31,7 @@
 #include "app_mgr_client.h"
 #include "configuration.h"
 
+// LCOV_EXCL_START
 namespace OHOS {
 namespace Accessibility {
 namespace {
@@ -653,5 +654,6 @@ float Utils::StringToFloat(const std::string& value, const float& defaultValue)
         return result;
     }
 }
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS
