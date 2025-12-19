@@ -926,13 +926,13 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoBySpecifi
 }
 
 /**
- * @tc.number: SearchElementInfoBySpecificProperty_001
+ * @tc.number: SearchElementInfoBySpecificProperty_003
  * @tc.name: SearchElementInfoBySpecificProperty
  * @tc.desc: Test function SearchElementInfoBySpecificProperty
  */
-HWTEST_F(AccessibilityElementOperatorImplUnitTest, SearchElementInfoBySpecificProperty_001, TestSize.Level1)
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SearchElementInfoBySpecificProperty_003, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_001 start";
+    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_003 start";
     if (!mockStub_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
     } else {
@@ -944,17 +944,17 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SearchElementInfoBySpecificPr
         EXPECT_CALL(*operation_, SearchElementInfoBySpecificProperty(_, _, _, _)).Times(1);
         mockStub_->SearchElementInfoBySpecificProperty(ELEMENT_ID, param, REQUEST_ID, elementOperator);
     }
-    GTEST_LOG_(INFO) << "SearchElementInfoByAccessibilityId_001 end";
+    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_003 end";
 }
  
 /**
- * @tc.number: SearchElementInfoBySpecificProperty_002
+ * @tc.number: SearchElementInfoBySpecificProperty_004
  * @tc.name: SearchElementInfoBySpecificProperty
  * @tc.desc: Test function SearchElementInfoBySpecificProperty
  */
-HWTEST_F(AccessibilityElementOperatorImplUnitTest, SearchElementInfoBySpecificProperty_002, TestSize.Level1)
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SearchElementInfoBySpecificProperty_004, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_002 start";
+    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_004 start";
     EXPECT_NE(mockStubNullPtr_, nullptr);
     SpecificPropertyParam param;
     param.propertyTarget = "testText";
@@ -962,7 +962,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SearchElementInfoBySpecificPr
     sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
         = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
     mockStubNullPtr_->SearchElementInfoBySpecificProperty(ELEMENT_ID, param, REQUEST_ID, elementOperator);
-    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_002 end";
+    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_004 end";
 }
  
 /**
@@ -995,7 +995,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, FocusMoveSearchWithCondition_
  */
 HWTEST_F(AccessibilityElementOperatorImplUnitTest, FocusMoveSearchWithCondition_002, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "SearchElementInfoBySpecificProperty_002 start";
+    GTEST_LOG_(INFO) << "FocusMoveSearchWithCondition_002 start";
     EXPECT_NE(mockStubNullPtr_, nullptr);
     FocusMoveDirection direction = FocusMoveDirection::UP;
     DetailCondition condition = DetailCondition::BYPASS_SELF;
