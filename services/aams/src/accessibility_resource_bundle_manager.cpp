@@ -174,6 +174,7 @@ void AccessibilityResourceBundleManager::BundleManagerDeathRecipient::OnRemoteDi
  
 void AccessibilityResourceBundleManager::OnBundleManagerDied(const wptr<IRemoteObject> &remote)
 {
+    std::lock_guard<ffrt::mutex> lock(bundleMutex_);
     HILOG_INFO("OnBundleManagerDied ");
     if (bundleManager_->AsObject() == nullptr) {
         HILOG_ERROR("bundleManager_ is nullptr");
