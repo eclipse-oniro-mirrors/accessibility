@@ -33,16 +33,19 @@ public:
 
     inline sptr<IAccessibilityElementOperator> GetProxy()
     {
+        std::shared_lock<ffrt::shared_mutex> rLock(rwProxyMutex_);
         return proxy_;
     }
 
     inline void SetProxy(sptr<IAccessibilityElementOperator> proxy)
     {
+        std::unique_lock<ffrt::shared_mutex> wLock(rwProxyMutex_);
         proxy_ = proxy;
     }
 
     inline int GetCardProxySize()
     {
+        std::shared_lock<ffrt::shared_mutex> rLock(rwProxyMutex_);
         return cardProxy_.Size();
     }
 
@@ -81,6 +84,7 @@ private:
     SafeMap<int32_t, uint32_t> tokenIdMap_;
     SafeMap<int32_t, int64_t> treeIdParentId_;
     bool isAnco_ = false;
+    ffrt::shared_mutex rwProxyMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
