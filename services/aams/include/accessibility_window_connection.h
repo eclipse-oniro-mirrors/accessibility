@@ -20,6 +20,7 @@
 #include "hilog_wrapper.h"
 #include "ffrt.h"
 #include "safe_map.h"
+#include <mutex>
 
 namespace OHOS {
 namespace Accessibility {
