@@ -144,9 +144,10 @@ bool DisplayPowerMgrClient::CancelBoostBrightness(uint32_t displayId)
     return true;
 }
 
-uint32_t DisplayPowerMgrClient::GetDeviceBrightness(uint32_t displayId)
+uint32_t DisplayPowerMgrClient::GetDeviceBrightness(uint32_t displayId, bool useHbm)
 {
     (void)displayId;
+    (void)useHbm;
     return 0;
 }
 
