@@ -19,9 +19,8 @@
 #include "iaccessibility_element_operator.h"
 #include "hilog_wrapper.h"
 #include "ffrt.h"
-#include "ffrt_inner.h"
 #include "safe_map.h"
-#include <mutex>
+#include <shared_mutex>
 
 namespace OHOS {
 namespace Accessibility {
