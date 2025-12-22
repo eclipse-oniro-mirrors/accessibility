@@ -100,6 +100,11 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
     return info;
 }
 
+bool AccessibilityWindowManager::NeedSetActive(const int32_t windowId)
+{
+    return false;
+}
+
 void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEvent)
 {
     activeWindowId_ = windowId;
