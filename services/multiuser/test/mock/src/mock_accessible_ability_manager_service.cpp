@@ -1993,5 +1993,1995 @@ void MockAccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearch
     }
     promise_.set_value();
 }
+
+void MockAccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoByTextResult(
+    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    for (auto info : infos) {
+        if (Singleton<MockAccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
+            info.GetAccessibilityId()) == RET_OK) {
+            HILOG_DEBUG("VerifyingToKenId ok");
+        } else {
+            HILOG_ERROR("VerifyingToKenId failed");
+            elementInfosResult_.clear();
+            promise_.set_value();
+            return;
+        }
+        elementInfosResult_ = infos;
+    }
+    promise_.set_value();
+}
+
+void MockAccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
+    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    for (auto info : infos) {
+        if (Singleton<MockAccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
+            info.GetAccessibilityId()) == RET_OK) {
+            HILOG_DEBUG("VerifyingToKenId ok");
+        } else {
+            HILOG_ERROR("VerifyingToKenId failed");
+            elementInfosResult_.clear();
+            promise_.set_value();
+            return;
+        }
+        elementInfosResult_ = infos;
+    }
+    promise_.set_value();
+}
+
+void MockAccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoBySpecificPropertyResult(
+    const std::list<AccessibilityElementInfo> &infos, const std::list<AccessibilityElementInfo> &treeInfos,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    if (!infos.empty()) {
+        if (!ValidateElementInfos(infos)) {
+            return;
+        }
+        elementInfosResult_.assign(infos.begin(), infos.end());
+    } else if (!treeInfos.empty()) {
+        if (!ValidateElementInfos(treeInfos)) {
+            return;
+        }
+        elementInfosResult_.assign(treeInfos.begin(), treeInfos.end());
+    }
+    promise_.set_value();
+}
+
+bool MockAccessibleAbilityManagerService::ElementOperatorCallbackImpl::ValidateElementInfos(
+    const std::list<AccessibilityElementInfo>& infos)
+{
+    for (auto info : infos) {
+        if (Singleton<MockAccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
+            info.GetAccessibilityId()) == RET_OK) {
+            HILOG_DEBUG("VerifyingToKenId ok");
+        } else {
+            HILOG_ERROR("VerifyingToKenId failed");
+            elementInfosResult_.clear();
+            promise_.set_value();
+            return false;
+        }
+    }
+    return true;
+}
+
+void MockAccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveSearchResult(
+    const AccessibilityElementInfo &info, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    if (Singleton<MockAccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
+        info.GetAccessibilityId()) == RET_OK) {
+        HILOG_DEBUG("VerifyingToKenId ok");
+        accessibilityInfoResult_ = info;
+        promise_.set_value();
+    } else {
+        HILOG_ERROR("VerifyingToKenId failed");
+        promise_.set_value();
+    }
+}
+
+void MockAccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetExecuteActionResult(const bool succeeded,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("Response [result:%{public}d, requestId:%{public}d]", succeeded, requestId);
+    executeActionResult_ = succeeded;
+    promise_.set_value();
+}
+
+void MockAccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetCursorPositionResult(const int32_t cursorPosition,
+    const int32_t requestId)
+{
+    HILOG_INFO("ElementOperatorCallbackImpl::SetCursorPositionResult [result:%{public}d]",
+        cursorPosition);
+    HILOG_DEBUG("cursorPosition [result:%{public}d, requestId:%{public}d]", cursorPosition, requestId);
+    callCursorPosition_ = cursorPosition;
+    promise_.set_value();
+}
+
+void MockAccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchDefaultFocusByWindowIdResult(
+    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    for (auto info : infos) {
+        if (Singleton<MockAccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
+            info.GetAccessibilityId()) == RET_OK) {
+            HILOG_DEBUG("VerifyingToKenId ok");
+        } else {
+            HILOG_ERROR("VerifyingToKenId failed");
+            elementInfosResult_.clear();
+            promise_.set_value();
+            return;
+        }
+        elementInfosResult_ = infos;
+    }
+    promise_.set_value();
+}
+
+bool MockAccessibleAbilityManagerService::GetParentElementRecursively(int32_t windowId, int64_t elementId,
+    std::vector<AccessibilityElementInfo>& infos)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("GetCurrentAccountData failed");
+        return false;
+    }
+
+    return accountData->GetOperatorManager().GetParentElementRecursively(windowId, elementId, infos);
+}
+
+void MockAccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEventInfo &event, int32_t& windowId)
+{
+    HILOG_DEBUG();
+    auto mapTable = Singleton<AccessibilityWindowManager>::GetInstance().sceneBoardElementIdMap_.GetAllPairs();
+    int64_t elementId = event.GetAccessibilityId();
+    int tmpWindowId = Singleton<AccessibilityWindowManager>::GetInstance().
+        FindTreeIdWindowIdPair(GetTreeIdBySplitElementId(elementId));
+    if (tmpWindowId != 0) {
+        windowId = tmpWindowId;
+        return;
+    }
+    while (1) {
+        auto iter = std::find_if(mapTable.begin(), mapTable.end(),
+            [elementId] (const std::pair<int32_t, int64_t>& p) {
+                return elementId == p.second;
+            });
+        if (iter != mapTable.end()) {
+            windowId = iter->first;
+            break;
+        }
+        if (event.GetWindowId() == 1 && elementId == 0) {
+            HILOG_INFO("parent elementId is 0");
+            break;
+        }
+
+        int32_t treeId = GetTreeIdBySplitElementId(elementId);
+        // handle seprately because event send by UiExtension children tree may carry the root elemnt of children
+        // tree, whose componentType is also root
+        // deal other eventType like this may lead to performance problem
+        if (treeId != 0) {
+            // WindowScene
+            //       \
+            // UiExtensionComponent -> try to find the windowId of the event send by its children node
+            //       \
+            //       root -> node that send event, and it's a UiExtensionNode
+            // when elementId is element that at the UiExtension tree, try to get the id of UiExtensionComponent
+            // by GetRootParentId,
+            elementId = GetRootParentId(windowId, treeId, elementId);
+        } else {
+            // keep find its parent node, until it's a root node or find its elementId in sceneBoardElementIdMap_
+            // which saves mapping of windowId&root-elementId of the window.
+            std::vector<AccessibilityElementInfo> infos = {};
+            if (GetParentElementRecursively(event.GetWindowId(), elementId, infos) == false || infos.size() == 0) {
+                HILOG_ERROR("find parent element failed");
+                break;
+            }
+
+            if (infos[0].GetComponentType() == "root") {
+                HILOG_ERROR("can not find parent element, has reach root node");
+                break;
+            }
+
+            elementId = infos[0].GetParentNodeId();
+        }
+    }
+    int originTreeId = GetTreeIdBySplitElementId(event.GetAccessibilityId());
+    Singleton<AccessibilityWindowManager>::GetInstance().InsertTreeIdWindowIdPair(originTreeId, windowId);
+}
+
+void MockAccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(const AccessibilityEventInfo &event)
+{
+    EventType evtType = event.GetEventType();
+    HILOG_DEBUG("windowId is %{public}d", event.GetWindowId());
+    int32_t windowId = event.GetWindowId();
+    if (windowId == 1) {
+        int32_t innerWindowId = event.GetElementInfo().GetInnerWindowId();
+        if (innerWindowId > 0) {
+            windowId = innerWindowId;
+        } else {
+            FindInnerWindowId(event, windowId);
+        }
+    }
+
+    const_cast<AccessibilityEventInfo&>(event).SetElementMainWindowId(windowId);
+
+    switch (evtType) {
+        case TYPE_VIEW_HOVER_ENTER_EVENT:
+            Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(windowId, false);
+            Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(windowId);
+            break;
+        case TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT:
+            Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(windowId);
+            break;
+        default:
+            break;
+    }
+}
+
+void MockAccessibleAbilityManagerService::UpdateAccessibilityManagerService()
+{
+    HILOG_DEBUG("start.");
+
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("Account data is null");
+        return;
+    }
+
+    accountData->UpdateAccountCapabilities();
+    UpdateInputFilter();
+    UpdateAccessibilityState();
+    UpdateShortKeyRegister();
+}
+
+void MockAccessibleAbilityManagerService::UpdateAccessibilityState()
+{
+    HILOG_DEBUG("start.");
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("Account data is null");
+        return;
+    }
+    uint32_t state = accountData->GetAccessibilityState();
+    if (!(state & STATE_ACCESSIBILITY_ENABLED)) {
+        Singleton<AccessibilityWindowManager>::GetInstance().ClearAccessibilityFocused();
+    }
+
+    stateObservers_.OnStateObservers(state);
+    UpdateCriticalState();
+}
+
+void MockAccessibleAbilityManagerService::UpdateCriticalState()
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("account data is null");
+        return;
+    }
+    uint32_t accessibilityState = accountData->GetAccessibilityState();
+    uint32_t inputFlag = accountData->GetInputFilterFlag();
+    int pid = getpid();
+    if (accessibilityState != 0 || inputFlag != 0) {
+        Memory::MemMgrClient::GetInstance().SetCritical(pid, true, ACCESSIBILITY_MANAGER_SERVICE_ID);
+    } else {
+        Memory::MemMgrClient::GetInstance().SetCritical(pid, false, ACCESSIBILITY_MANAGER_SERVICE_ID);
+    }
+}
+
+void MockAccessibleAbilityManagerService::UpdateCaptionProperty()
+{
+    return accessibilitySettings_->UpdateCaptionProperty();
+}
+
+void MockAccessibleAbilityManagerService::UpdateSettingsInAtoHosTask()
+{
+    HILOG_DEBUG();
+    if (!handler_) {
+        HILOG_ERROR("UpdateSettingsInAtoHosTask: handler is nullptr!");
+        return;
+    }
+    handler_->PostTask([=]() {
+        UpdateSettingsInAtoHos();
+        }, "UPDATE_SETTINGS_IN_ATOHOS_TASK");
+}
+
+void MockAccessibleAbilityManagerService::UpdateAutoStartAbilities()
+{
+    HILOG_DEBUG();
+    if (!handler_) {
+        HILOG_ERROR("UpdateAutoStartAbilities: handler is nullptr.");
+        return;
+    }
+
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Account data is null");
+            return;
+        }
+        for (auto &abilityId : removedAutoStartAbilities_) {
+            if (accountData->GetAbilityAutoStartState(abilityId)) {
+                accountData->SetAbilityAutoStartState(abilityId, false);
+            }
+        }
+        accountData->UpdateAutoStartEnabledAbilities();
+        accountData->UpdateAbilities();
+        }, "UPDATE_AUTO_START_ABILITIES");
+}
+
+void MockAccessibleAbilityManagerService::UpdateSettingsInAtoHos()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return;
+    }
+
+    if (!accountData->GetConfig()->GetStartToHosState() || currentAccountId_ != DEFAULT_ACCOUNT_ID) {
+        HILOG_INFO("Not first start from a to hos.");
+        return;
+    }
+    accessibilitySettings_->UpdateSettingsInAtoHos();
+    UpdateAccessibilityState();
+}
+
+void MockAccessibleAbilityManagerService::UpdateInputFilter()
+{
+    HILOG_DEBUG("start.");
+
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("Account data is null");
+        return;
+    }
+
+    uint32_t flag = accountData->GetInputFilterFlag();
+    HILOG_DEBUG("InputInterceptor flag is %{public}d", flag);
+
+    inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
+    if (!inputInterceptor_) {
+        HILOG_ERROR("inputInterceptor_ is null.");
+        return;
+    }
+    inputInterceptor_->SetAvailableFunctions(flag);
+    Utils::RecordStartingA11yEvent(flag);
+}
+
+void MockAccessibleAbilityManagerService::UpdateAllSetting()
+{
+    accessibilitySettings_->UpdateAllSetting();
+}
+
+void MockAccessibleAbilityManagerService::UpdateShortKeyRegister()
+{
+    HILOG_DEBUG();
+
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("Account data is null!");
+        return;
+    }
+
+    bool shortKeyState = accountData->GetConfig()->GetShortKeyState();
+    if (shortKeyState) {
+        accessibilityShortKey_->Unregister();
+        accessibilityShortKey_->Register();
+    } else {
+        accessibilityShortKey_->Unregister();
+    }
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
+{
+    PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetScreenMagnificationState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetShortKeyState(const bool state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetShortKeyState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetMouseKeyState(const bool state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetMouseKeyState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetMouseAutoClick(time);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetShortkeyTarget(name);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetShortkeyMultiTarget(const std::vector<std::string> &name)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetShortkeyMultiTarget(name);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetHighContrastTextState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetDaltonizationState(const bool state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetDaltonizationState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetInvertColorState(const bool state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetInvertColorState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetAnimationOffState(const bool state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    auto ret = accessibilitySettings_->SetAnimationOffState(state);
+    UpdateAccessibilityState();
+    return ret;
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetAudioMonoState(const bool state)
+{
+    PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    auto ret = accessibilitySettings_->SetAudioMonoState(state);
+    UpdateAccessibilityState();
+    return ret;
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetDaltonizationColorFilter(const uint32_t filter)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetDaltonizationColorFilter(filter);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetContentTimeout(time);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetBrightnessDiscount(const float discount)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetBrightnessDiscount(discount);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetAudioBalance(const float balance)
+{
+    PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetAudioBalance(balance);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetClickResponseTime(const uint32_t time)
+{
+    PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetClickResponseTime(time);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetIgnoreRepeatClickState(const bool state)
+{
+    PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetIgnoreRepeatClickState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::SetIgnoreRepeatClickTime(const uint32_t time)
+{
+    PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->SetIgnoreRepeatClickTime(time);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetScreenMagnificationState(bool &state)
+{
+    PostDelayUnloadTask();
+    return accessibilitySettings_->GetScreenMagnificationState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetShortKeyState(bool &state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return accessibilitySettings_->GetShortKeyState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetMouseKeyState(bool &state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return accessibilitySettings_->GetMouseKeyState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetMouseAutoClick(int32_t &time)
+{
+    PostDelayUnloadTask();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("SetCaptionProperty permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return accessibilitySettings_->GetMouseAutoClick(time);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetShortkeyTarget(std::string &name)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return accessibilitySettings_->GetShortkeyTarget(name);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetShortkeyMultiTarget(std::vector<std::string> &name)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return accessibilitySettings_->GetShortkeyMultiTarget(name);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetHighContrastTextState(bool &state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return accessibilitySettings_->GetHighContrastTextState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetDaltonizationState(bool &state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return accessibilitySettings_->GetDaltonizationState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetInvertColorState(bool &state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return accessibilitySettings_->GetInvertColorState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetAnimationOffState(bool &state)
+{
+    PostDelayUnloadTask();
+    return accessibilitySettings_->GetAnimationOffState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetAudioMonoState(bool &state)
+{
+    PostDelayUnloadTask();
+    return accessibilitySettings_->GetAudioMonoState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetDaltonizationColorFilter(uint32_t &type)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return accessibilitySettings_->GetDaltonizationColorFilter(type);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetContentTimeout(uint32_t &timer)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return accessibilitySettings_->GetContentTimeout(timer);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetBrightnessDiscount(float &brightness)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return accessibilitySettings_->GetBrightnessDiscount(brightness);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetAudioBalance(float &balance)
+{
+    PostDelayUnloadTask();
+    return accessibilitySettings_->GetAudioBalance(balance);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetClickResponseTime(uint32_t &time)
+{
+    PostDelayUnloadTask();
+    return accessibilitySettings_->GetClickResponseTime(time);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetIgnoreRepeatClickState(bool &state)
+{
+    PostDelayUnloadTask();
+    return accessibilitySettings_->GetIgnoreRepeatClickState(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &time)
+{
+    PostDelayUnloadTask();
+    return accessibilitySettings_->GetIgnoreRepeatClickTime(time);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetFlashReminderSwitch(bool &state)
+{
+    PostDelayUnloadTask();
+    return accessibilitySettings_->GetFlashReminderSwitch(state);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData& configData,
+    CaptionPropertyParcel& caption)
+{
+    HILOG_DEBUG();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+
+    XCollieHelper timer(TIMER_GET_ALL_CONFIG, XCOLLIE_TIMEOUT);
+    std::shared_ptr<ffrt::promise<ErrCode>> syncPromise = std::make_shared<ffrt::promise<ErrCode>>();
+    std::shared_ptr<AccessibilityConfigData> config = std::make_shared<AccessibilityConfigData>();
+    std::shared_ptr<CaptionProperty> captionInfo = std::make_shared<CaptionProperty>(caption);
+    if (syncPromise == nullptr || config == nullptr || captionInfo == nullptr) {
+        HILOG_WARN("create syncPromise or config failed");
+        return ERR_INVALID_DATA;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    actionHandler_->PostTask([this, syncPromise, config, captionInfo]() {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise->set_value(ERR_INVALID_DATA);
+            return;
+        }
+
+        config->highContrastText_ = accountData->GetConfig()->GetHighContrastTextState();
+        config->daltonizationState_ = accountData->GetConfig()->GetDaltonizationState();
+        config->invertColor_ = accountData->GetConfig()->GetInvertColorState();
+        config->animationOff_ = accountData->GetConfig()->GetAnimationOffState();
+        config->audioMono_ = accountData->GetConfig()->GetAudioMonoState();
+        config->mouseKey_ = accountData->GetConfig()->GetMouseKeyState();
+        config->captionState_ = accountData->GetConfig()->GetCaptionState();
+        config->screenMagnifier_ = accountData->GetConfig()->GetScreenMagnificationState();
+        config->shortkey_ = accountData->GetConfig()->GetShortKeyState();
+        config->mouseAutoClick_ = accountData->GetConfig()->GetMouseAutoClick();
+        config->daltonizationColorFilter_ = accountData->GetConfig()->GetDaltonizationColorFilter();
+        config->contentTimeout_ = accountData->GetConfig()->GetContentTimeout();
+        config->brightnessDiscount_ = accountData->GetConfig()->GetBrightnessDiscount();
+        config->audioBalance_ = accountData->GetConfig()->GetAudioBalance();
+        config->shortkeyTarget_ = accountData->GetConfig()->GetShortkeyTarget();
+        config->shortkeyMultiTarget_ = accountData->GetConfig()->GetShortkeyMultiTarget();
+        *captionInfo = accountData->GetConfig()->GetCaptionProperty();
+        syncPromise->set_value(ERR_OK);
+        }, "TASK_GET_ALL_CONFIGS");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait GetAllConfigs result");
+        return ERR_TRANSACTION_FAILED;
+    }
+    configData = *config;
+    return syncFuture.get();
+}
+
+bool MockAccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::string &name)
+{
+    HILOG_DEBUG();
+    HILOG_INFO("EnableShortKeyTargetAbility name = %{public}s", name.c_str());
+#ifdef OHOS_BUILD_ENABLE_HITRACE
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableShortKeyTargetAbility");
+#endif // OHOS_BUILD_ENABLE_HITRACE
+
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
+
+    std::string targetAbility;
+    if (name != "") {
+        targetAbility = name;
+    } else {
+        targetAbility = accountData->GetConfig()->GetShortkeyTarget();
+        HILOG_DEBUG("target ability is [%{public}s]", targetAbility.c_str());
+        if (targetAbility == "") {
+            HILOG_ERROR("target ability is null");
+            return false;
+        }
+    }
+
+    auto it = AccessibilityConfigTable.find(targetAbility);
+    if (it != AccessibilityConfigTable.end()) {
+        return SetTargetAbility(it->second);
+    }
+
+    uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
+        CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
+    RetError enableState = accountData->EnableAbility(targetAbility, capabilities);
+    if (enableState == RET_ERR_CONNECTION_EXIST) {
+        HILOG_DEBUG();
+        Utils::RecordEnableShortkeyAbilityEvent(targetAbility, false);
+        return InnerDisableAbility(targetAbility) == RET_OK;
+    } else if (enableState == RET_OK) {
+        Utils::RecordEnableShortkeyAbilityEvent(targetAbility, true);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void MockAccessibleAbilityManagerService::OnShortKeyProcess()
+{
+    HILOG_DEBUG();
+
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilityShortkeyDialog> shortkeyDialog = std::make_shared<AccessibilityShortkeyDialog>();
+
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
+    bool oobeState = false;
+    bool userSetupState = false;
+    service->GetBoolValue(DEVICE_PROVISIONED, oobeState, true);
+    if (accountData->GetConfig()->GetDbHandle()) {
+        userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false, true);
+    }
+    if (oobeState && userSetupState) {
+        int32_t shortKeyTimeout = accountData->GetConfig()->GetShortKeyTimeout();
+        if (shortKeyTimeout == SHORT_KEY_TIMEOUT_BEFORE_USE) {
+            HILOG_INFO("first use short cut key");
+            accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+            shortkeyDialog->ConnectDialog(ShortKeyDialogType::RECONFIRM);
+            return;
+        }
+    }
+
+    std::vector<std::string> shortkeyMultiTarget = accountData->GetConfig()->GetShortkeyMultiTarget();
+    if (shortkeyMultiTarget.size() == 0) {
+        EnableShortKeyTargetAbility();
+    } else if (shortkeyMultiTarget.size() == 1) {
+        EnableShortKeyTargetAbility(shortkeyMultiTarget[0]);
+    } else {
+        // dialog
+        if (shortkeyDialog->ConnectDialog(ShortKeyDialogType::FUNCTION_SELECT)) {
+            HILOG_DEBUG("ready to build dialog");
+        }
+    }
+}
+
+bool MockAccessibleAbilityManagerService::DisableShortKeyTargetAbility()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
+
+    std::string targetAbility = accountData->GetConfig()->GetShortkeyTarget();
+    HILOG_DEBUG("target ability is [%{public}s]", targetAbility.c_str());
+    if (targetAbility == "") {
+        HILOG_ERROR("target ability is null");
+        return false;
+    }
+    return InnerDisableAbility(targetAbility) == RET_OK;
+}
+
+ErrCode MockAccessibleAbilityManagerService::RegisterConfigObserver(
+    const sptr<IAccessibleAbilityManagerConfigObserver> &callback)
+{
+    HILOG_DEBUG();
+    if (!callback || !actionHandler_) {
+        HILOG_ERROR("Parameters check failed!");
+        return ERR_INVALID_VALUE;
+    }
+    XCollieHelper timer(TIMER_REGISTER_CONFIG_OBSERVER, XCOLLIE_TIMEOUT);
+    std::shared_ptr<ffrt::promise<uint32_t>> syncPromisePtr = std::make_shared<ffrt::promise<uint32_t>>();
+    ffrt::future syncFuture = syncPromisePtr->get_future();
+    actionHandler_->PostTask([this, syncPromisePtr, callback]() {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Account data is null");
+            syncPromisePtr->set_value(ERR_INVALID_VALUE);
+            return;
+        }
+        if (!configCallbackDeathRecipient_) {
+            configCallbackDeathRecipient_ = new(std::nothrow) ConfigCallbackDeathRecipient();
+            if (!configCallbackDeathRecipient_) {
+                HILOG_ERROR("configCallbackDeathRecipient_ is null");
+                syncPromisePtr->set_value(ERR_INVALID_VALUE);
+                return;
+            }
+        }
+        if (!callback->AsObject()) {
+            HILOG_ERROR("object is null");
+            syncPromisePtr->set_value(0);
+            return;
+        }
+        callback->AsObject()->AddDeathRecipient(configCallbackDeathRecipient_);
+        accountData->AddConfigCallback(callback);
+        HILOG_DEBUG("the size of caption property callbacks is %{public}zu",
+            accountData->GetConfigCallbacks().size());
+        syncPromisePtr->set_value(NO_ERROR);
+        }, "TASK_REGISTER_CONFIG_OBSERVER");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait RegisterConfigObserver result");
+        return RET_ERR_TIME_OUT;
+    }
+    return syncFuture.get();
+}
+
+void MockAccessibleAbilityManagerService::ConfigCallbackDeathRecipient::OnRemoteDied(
+    const wptr<IRemoteObject> &remote)
+{
+    Singleton<MockAccessibleAbilityManagerService>::GetInstance().RemoveCallback(CONFIG_CALLBACK, this, remote);
+}
+
+void MockAccessibleAbilityManagerService::UpdateConfigState()
+{
+    return accessibilitySettings_->UpdateConfigState();
+}
+
+void MockAccessibleAbilityManagerService::UpdateShortkeyTarget()
+{
+    return accessibilitySettings_->UpdateShortkeyTarget();
+}
+
+void MockAccessibleAbilityManagerService::UpdateShortkeyMultiTarget()
+{
+    return accessibilitySettings_->UpdateShortkeyMultiTarget();
+}
+
+void MockAccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
+    const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote)
+{
+    HILOG_INFO("remove callback[%{public}d]", callback);
+    if (!handler_) {
+        HILOG_ERROR("handler is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        if (!remote.GetRefPtr()) {
+            HILOG_ERROR("remote is null");
+            return;
+        }
+        remote->RemoveDeathRecipient(recipient);
+
+        if (callback == CONFIG_CALLBACK) {
+            RemoveSavedConfigCallback(remote);
+        }
+        auto accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Current account data is null");
+            return;
+        }
+        switch (callback) {
+            case STATE_CALLBACK:
+                stateObservers_.RemoveStateObserver(remote);
+                break;
+            case CAPTION_PROPERTY_CALLBACK:
+                accountData->RemoveCaptionPropertyCallback(remote);
+                break;
+            case ENABLE_ABILITY_LISTS_CALLBACK:
+                accountData->RemoveEnableAbilityListsObserver(remote);
+                break;
+            case CONFIG_CALLBACK:
+                accountData->RemoveConfigCallback(remote);
+                break;
+            default:
+                break;
+        }
+        }, "RemoveCallback");
+}
+
+void MockAccessibleAbilityManagerService::RemoveSavedConfigCallback(const wptr<IRemoteObject>& callback)
+{
+    HILOG_DEBUG("start.");
+    for (auto itr = defaultConfigCallbacks_.begin(); itr != defaultConfigCallbacks_.end(); itr++) {
+        if ((*itr)->AsObject() == callback) {
+            defaultConfigCallbacks_.erase(itr);
+            break;
+        }
+    }
+}
+
+void MockAccessibleAbilityManagerService::StateObservers::AddStateObserver(
+    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver)
+{
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    auto iter = std::find(observersList_.begin(), observersList_.end(), stateObserver);
+    if (iter == observersList_.end()) {
+        observersList_.push_back(stateObserver);
+        HILOG_DEBUG("register state observer successfully");
+        return;
+    }
+
+    HILOG_INFO("state observer is existed");
+}
+
+void MockAccessibleAbilityManagerService::StateObservers::OnStateObservers(uint32_t state)
+{
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    for (auto& stateObserver : observersList_) {
+        if (stateObserver) {
+            stateObserver->OnStateChanged(state);
+        }
+    }
+}
+
+void MockAccessibleAbilityManagerService::StateObservers::RemoveStateObserver(const wptr<IRemoteObject> &remote)
+{
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    auto iter = std::find_if(observersList_.begin(), observersList_.end(),
+        [remote](const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver) {
+            return stateObserver->AsObject() == remote;
+        });
+    if (iter != observersList_.end()) {
+        observersList_.erase(iter);
+    }
+}
+
+void MockAccessibleAbilityManagerService::StateObservers::Clear()
+{
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    observersList_.clear();
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWindowId)
+{
+    HILOG_DEBUG();
+    return Singleton<AccessibilityWindowManager>::GetInstance().GetFocusedWindowId(focusedWindowId);
+}
+
+void MockAccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
+{
+    HILOG_DEBUG("insert event, windowId: %{public}d", windowId);
+    windowFocusEventMap_.EnsureInsert(windowId, event);
+}
+
+bool MockAccessibleAbilityManagerService::CheckWindowIdEventExist(int32_t windowId)
+{
+    AccessibilityEventInfo eventInfo;
+    return windowFocusEventMap_.Find(windowId, eventInfo);
+}
+
+bool MockAccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return false;
+    }
+    return accountData->GetAccessibilityWindowConnection(windowId) != nullptr;
+}
+
+void MockAccessibleAbilityManagerService::OnDeviceProvisioned()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
+    service->UnregisterObserver(DEVICE_PROVISIONED);
+    if (accountData->GetConfig()->GetDbHandle()) {
+        accountData->GetConfig()->GetDbHandle()->UnregisterObserver(USER_SETUP_COMPLETED);
+    }
+    if (accountData->GetDefaultUserScreenReaderState()) {
+        HILOG_INFO("Modify shortKeyTimeout and shortKeyOnLockScreenState");
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+        accountData->GetConfig()->SetShortKeyOnLockScreenState(true);
+        UpdateConfigState();
+    }
+}
+
+void MockAccessibleAbilityManagerService::InitializeShortKeyState()
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    bool shortKeyFlag = false;
+    if (accountData->GetAccountId() != DEFAULT_ACCOUNT_ID && accountData->GetConfig()->GetDbHandle() != nullptr) {
+        if (accountData->GetConfig()->GetDbHandle()->GetIntValue(SHORTCUT_ENABLED, INVALID_SHORTCUT_STATE) ==
+            INVALID_SHORTCUT_STATE) {
+            HILOG_INFO("Initialize the shortcut key state of PrivateSpace");
+            shortKeyFlag = true;
+        }
+    } else if (accountData->GetAccountId() == DEFAULT_ACCOUNT_ID) {
+        HILOG_INFO("Initialize the shortcut key state of MainSpace");
+        shortKeyFlag = true;
+    }
+
+    if (shortKeyFlag) {
+        accountData->GetConfig()->SetShortKeyState(true);
+        std::vector<std::string> tmpVec { SCREEN_READER_BUNDLE_ABILITY_NAME };
+        accountData->GetConfig()->SetShortkeyMultiTarget(tmpVec);
+        UpdateConfigState();
+        Singleton<MockAccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
+    }
+}
+
+void MockAccessibleAbilityManagerService::RegisterProvisionCallback()
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
+    AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+        Singleton<MockAccessibleAbilityManagerService>::GetInstance().OnDeviceProvisioned();
+    };
+    service->RegisterObserver(DEVICE_PROVISIONED, func);
+    if (accountData->GetConfig()->GetDbHandle() != nullptr) {
+        accountData->GetConfig()->GetDbHandle()->RegisterObserver(USER_SETUP_COMPLETED, func);
+    }
+}
+
+void MockAccessibleAbilityManagerService::RegisterShortKeyEvent()
+{
+    HILOG_DEBUG();
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+        std::shared_ptr<AccessibilitySettingProvider> service =
+            AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+        if (service == nullptr) {
+            HILOG_ERROR("service is nullptr");
+            return;
+        }
+        bool oobeState = false;
+        bool userSetupState = false;
+        service->GetBoolValue(DEVICE_PROVISIONED, oobeState, true);
+        if (accountData->GetConfig()->GetDbHandle() != nullptr) {
+            userSetupState = accountData->GetConfig()->GetDbHandle()->GetBoolValue(USER_SETUP_COMPLETED, false, true);
+        }
+        if (accountData->GetAccountId() == DEFAULT_ACCOUNT_ID && (oobeState == false || userSetupState == false)) {
+            InitializeShortKeyState();
+            RegisterProvisionCallback();
+        } else if (accountData->GetAccountId() != DEFAULT_ACCOUNT_ID) {
+            InitializeShortKeyState();
+        }
+        }, "REGISTER_SHORTKEY_OBSERVER");
+}
+
+void MockAccessibleAbilityManagerService::InitMagnification()
+{
+    HILOG_INFO();
+    if (magnificationManager_ != nullptr) {
+        HILOG_WARN("magnification already init.");
+        return;
+    }
+    magnificationManager_ = std::make_shared<MagnificationManager>();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(magnificationManager_);
+#endif
+    SubscribeOsAccount();
+}
+
+void MockAccessibleAbilityManagerService::OffZoomGesture()
+{
+    HILOG_INFO();
+    if (magnificationManager_ == nullptr) {
+        HILOG_ERROR("magnificationManager_ is nullptr.");
+        return;
+    }
+    magnificationManager_->DisableMagnification();
+    magnificationManager_->ResetCurrentMode();
+}
+
+void MockAccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    bool screenMagnificationEnabled = false;
+    screenMagnificationEnabled = config->GetDbHandle()->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
+    config->SetScreenMagnificationState(screenMagnificationEnabled);
+    Singleton<MockAccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
+    if (!screenMagnificationEnabled) {
+        OffZoomGesture();
+    }
+}
+
+void MockAccessibleAbilityManagerService::RegisterScreenMagnificationState()
+{
+    HILOG_DEBUG();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<MockAccessibleAbilityManagerService>::GetInstance().OnScreenMagnificationStateChanged();
+        };
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(SCREEN_MAGNIFICATION_KEY, func);
+        }
+        }, "REGISTER_SCREEN_ZOOM_OBSERVER");
+}
+
+void MockAccessibleAbilityManagerService::OnScreenMagnificationTypeChanged()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    uint32_t screenMagnificationType = 0;
+    screenMagnificationType =
+        static_cast<uint32_t>(config->GetDbHandle()->GetIntValue(SCREEN_MAGNIFICATION_TYPE, 0));
+    config->SetScreenMagnificationType(screenMagnificationType);
+    if (magnificationManager_ != nullptr) {
+        magnificationManager_->OnMagnificationTypeChanged(screenMagnificationType);
+    }
+}
+
+void MockAccessibleAbilityManagerService::RegisterScreenMagnificationType()
+{
+    HILOG_DEBUG();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<MockAccessibleAbilityManagerService>::GetInstance().OnScreenMagnificationTypeChanged();
+        };
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(SCREEN_MAGNIFICATION_TYPE, func);
+        }
+        }, "REGISTER_SCREEN_ZOOM_TYPE_OBSERVER");
+}
+
+void MockAccessibleAbilityManagerService::OnFlashReminderSwitchChanged()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    bool flashReminderSwitch = config->GetDbHandle()->GetBoolValue(FLASH_REMINDER_SWITCH_KEY, false);
+    config->SetFlashReminderSwitch(flashReminderSwitch);
+    UpdateAccessibilityState();
+}
+
+void MockAccessibleAbilityManagerService::RegisterFlashReminderSwitch()
+{
+    HILOG_DEBUG();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<MockAccessibleAbilityManagerService>::GetInstance().OnFlashReminderSwitchChanged();
+        };
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(FLASH_REMINDER_SWITCH_KEY, func);
+        }
+        }, "FLASH_REMINDER_SWITCH_KEY_OBSERVER");
+}
+
+void MockAccessibleAbilityManagerService::UpdateVoiceRecognitionState()
+{
+    HILOG_INFO();
+    {
+        std::lock_guard<ffrt::mutex> lock(subscribeMSDPMutex_);
+        if (isSubscribeMSDPCallback_) {
+            MsdpManager::GetInstance().UnSubscribeVoiceRecognition();
+            isSubscribeMSDPCallback_ = false;
+            HILOG_INFO("userstatusClient.Unsubscribe");
+        }
+    }
+    OnVoiceRecognitionChanged();
+}
+
+void MockAccessibleAbilityManagerService::OnVoiceRecognitionChanged()
+{
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    bool voiceRecognitionEnabled = config->GetDbHandle()->GetBoolValue(VOICE_RECOGNITION_KEY, false);
+    std::string voiceRecognitionTypes = config->GetDbHandle()->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
+
+    std::lock_guard<ffrt::mutex> lock(subscribeMSDPMutex_);
+    if (!isSubscribeMSDPCallback_ && voiceRecognitionEnabled && voiceRecognitionTypes != "DEFAULT") {
+        int32_t ret = MsdpManager::GetInstance().SubscribeVoiceRecognition();
+        isSubscribeMSDPCallback_ = true;
+        HILOG_INFO("SubscribeVoiceRecognition ret: %{public}d", ret);
+        return;
+    }
+
+    if (isSubscribeMSDPCallback_ && (!voiceRecognitionEnabled || voiceRecognitionTypes == "DEFAULT")) {
+        MsdpManager::GetInstance().UnSubscribeVoiceRecognition();
+        isSubscribeMSDPCallback_ = false;
+        return;
+    }
+}
+
+void MockAccessibleAbilityManagerService::RegisterVoiceRecognitionState()
+{
+    HILOG_INFO();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<MockAccessibleAbilityManagerService>::GetInstance().OnVoiceRecognitionChanged();
+        };
+
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(VOICE_RECOGNITION_KEY, func);
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(VOICE_RECOGNITION_TYPES, func);
+        }
+        }, "REGISTER_VOICE_RECOGNITION");
+}
+
+void MockAccessibleAbilityManagerService::PostDelayUnloadTask()
+{
+#ifdef ACCESSIBILITY_WATCH_FEATURE
+    auto task = [=]() {
+        sptr<ISystemAbilityManager> systemAbilityManager =
+            SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+        if (systemAbilityManager == nullptr) {
+            HILOG_ERROR("failed to get system ability mgr");
+            return;
+        }
+        if (!IsNeedUnload()) {
+            Singleton<MockAccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
+            return;
+        }
+        int32_t ret = systemAbilityManager->UnloadSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+        if (ret != ERR_OK) {
+            HILOG_ERROR("unload system ability failed");
+            return;
+        }
+        SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
+    };
+    handler_->RemoveTask(DELAY_UNLOAD_TASK);
+    handler_->PostTask(task, DELAY_UNLOAD_TASK, UNLOAD_TASK_INTERNAL);
+#endif
+}
+
+bool MockAccessibleAbilityManagerService::IsNeedUnload()
+{
+    HILOG_DEBUG();
+#ifndef ACCESSIBILITY_WATCH_FEATURE
+    // always return true to avoid stablity problem
+    return false;
+#else // for watch
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return true;
+    }
+
+    // do not unload when any extension is enabled
+    std::vector<std::string> enableAbilityList = accountData->GetEnabledAbilities();
+    if (enableAbilityList.size() != 0) {
+        return false;
+    }
+    return true;
+#endif // ACCESSIBILITY_WATCH_FEATURE
+}
+
+int32_t MockAccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t elementId)
+{
+    if (elementId < 0) {
+        HILOG_DEBUG("The elementId is -1");
+        return elementId;
+    }
+    int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
+    return treeId;
+}
+
+void MockAccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
+    sptr<IAccessibilityElementOperatorCallback> callback)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    HILOG_DEBUG("Add windowId: %{public}d treeId: %{public}d requestId: %{public}d", windowId, treeId, requestId);
+    if (!windowRequestIdMap_.count(windowId)) {
+        windowRequestIdMap_[windowId] = {};
+    }
+    if (!windowRequestIdMap_[windowId].count(treeId)) {
+        windowRequestIdMap_[windowId][treeId] = {};
+    }
+    if (!windowRequestIdMap_[windowId][treeId].count(requestId)) {
+        windowRequestIdMap_[windowId][treeId].insert(requestId);
+        requestIdMap_[requestId] = callback;
+    }
+}
+
+ErrCode MockAccessibleAbilityManagerService::RemoveRequestId(int32_t requestId)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    HILOG_DEBUG("RemoveRequestId requestId: %{public}d", requestId);
+    for (auto &window : windowRequestIdMap_) {
+        for (auto &tree : window.second) {
+            auto it = tree.second.find(requestId);
+            if (it != tree.second.end()) {
+                HILOG_DEBUG("tree.second.erase requestId:%{public}d", requestId);
+                tree.second.erase(it);
+            }
+            auto ite = requestIdMap_.find(requestId);
+            if (ite != requestIdMap_.end()) {
+                HILOG_DEBUG("requestIdMap_.erase requestId:%{public}d", requestId);
+                requestIdMap_.erase(ite);
+            }
+        }
+    }
+    return ERR_OK;
+}
+
+void MockAccessibleAbilityManagerService::StopCallbackWait(int32_t windowId)
+{
+    HILOG_INFO("StopCallbackWait start windowId: %{public}d", windowId);
+    if (!windowRequestIdMap_.count(windowId)) {
+        HILOG_DEBUG("windowId not exists");
+        return;
+    }
+    for (auto iter = windowRequestIdMap_[windowId].begin(); iter != windowRequestIdMap_[windowId].end(); ++iter) {
+        HILOG_DEBUG("stop callback wait windowId: %{public}d, treeId: %{public}d", windowId, iter->first);
+        StopCallbackWait(windowId, iter->first);
+    }
+}
+
+void MockAccessibleAbilityManagerService::StopCallbackWait(int32_t windowId, int32_t treeId)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    HILOG_DEBUG("StopCallbackWait start windowId: %{public}d treeId: %{public}d", windowId, treeId);
+    if (!windowRequestIdMap_.count(windowId)) {
+        return;
+    }
+    if (!windowRequestIdMap_[windowId].count(treeId)) {
+        return;
+    }
+    auto requestIds = windowRequestIdMap_[windowId][treeId];
+    for (auto requestId = requestIds.begin(); requestId != requestIds.end();) {
+        HILOG_DEBUG("stop callback wait windowId: %{public}d, requestId: %{public}d", windowId, *requestId);
+        auto iter = requestIdMap_.find(*requestId);
+        if (iter != requestIdMap_.end()) {
+            HILOG_DEBUG("requestIdMap_ set callback and erase requestId:%{public}d", *requestId);
+            sptr<IAccessibilityElementOperatorCallback> callback = requestIdMap_[*requestId];
+            if (callback != nullptr) {
+                callback->SetExecuteActionResult(false, *requestId);
+            }
+            requestIdMap_.erase(iter);
+        }
+        requestId = requestIds.erase(requestId);
+    }
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("Get current account data failed!!");
+        return RET_ERR_NULLPTR;
+    }
+    return accountData->GetOperatorManager().GetRootParentId(windowId, treeId, parentId);
+}
+
+ErrCode MockAccessibleAbilityManagerService::GetRootParentId(
+    int32_t windowId, int32_t treeId, int64_t& parentId, bool systemApi)
+{
+    if (systemApi && !CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        HILOG_WARN("GetRootParentId permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    return GetRootParentId(windowId, treeId, parentId);
+}
+
+int32_t MockAccessibleAbilityManagerService::GenerateRequestId()
+{
+    int32_t requestId = requestId_.fetch_add(1, std::memory_order_relaxed);
+    if (requestId == REQUEST_ID_MAX) {
+        requestId_ = REQUEST_ID_MIN;
+        requestId = requestId_.fetch_add(1, std::memory_order_relaxed);
+    }
+    return requestId;
+}
+
+RetError MockAccessibleAbilityManagerService::CheckCallingUid()
+{
+    int32_t accountId = Utils::GetUserIdByCallingUid();
+    if (accountId != currentAccountId_ && accountId != ROOT_UID) {
+        HILOG_WARN("accountId is diff from currentAccountId_.");
+        return RET_ERR_SAMGR;
+    }
+    return RET_OK;
+}
+
+void MockAccessibleAbilityManagerService::OnDataClone()
+{
+    std::shared_ptr<AccessibilitySettingProvider> service =
+        AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    if (service == nullptr) {
+        HILOG_ERROR("service is nullptr");
+        return;
+    }
+    bool cloneState = false;
+    service->GetBoolValue(ACCESSIBILITY_CLONE_FLAG, cloneState);
+    if (cloneState == false) {
+        return;
+    }
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_WARN("accountData is nullptr.");
+        return;
+    }
+    if (accountData->GetConfig() != nullptr) {
+        accountData->GetConfig()->OnDataClone();
+        UpdateAllSetting();
+        UpdateAutoStartAbilities();
+        UpdateInputFilter();
+        UpdateVoiceRecognitionState();
+        HILOG_INFO("accessibility reload config.");
+    } else {
+        HILOG_WARN("config_ is nullptr");
+    }
+}
+
+RetError MockAccessibleAbilityManagerService::GetResourceBundleInfo(AccessibilityEventInfo &eventInfo)
+{
+    HILOG_DEBUG("BundleName is %{public}s, ModuleName is %{public}s, ResourceId is %{public}d",
+        eventInfo.GetResourceBundleName().c_str(), eventInfo.GetResourceModuleName().c_str(),
+        eventInfo.GetResourceId());
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<MockAccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("get accountData failed");
+        return RET_ERR_NULLPTR;
+    }
+    int32_t userId = accountData->GetAccountId();
+
+    AppExecFwk::BundleInfo bundleInfo;
+    ErrCode ret =
+        Singleton<AccessibilityResourceBundleManager>::GetInstance().GetBundleInfoV9(eventInfo.GetResourceBundleName(),
+        static_cast<int32_t>(AppExecFwk::GetBundleInfoFlag::GET_BUNDLE_INFO_WITH_HAP_MODULE), bundleInfo, userId);
+    if (ret != ERR_OK) {
+        HILOG_ERROR("get BundleInfo failed!");
+        return RET_ERR_FAILED;
+    }
+
+    std::string resourceValue;
+    RetError res = GetResourceValue(eventInfo, bundleInfo, userId, resourceValue);
+    if (res != RET_OK) {
+        HILOG_ERROR("Get Resource Value failed");
+        return res;
+    }
+    HILOG_DEBUG("resource value is %{public}s", resourceValue.c_str());
+    eventInfo.SetTextAnnouncedForAccessibility(resourceValue);
+    return RET_OK;
+}
+
+RetError MockAccessibleAbilityManagerService::GetResourceValue(AccessibilityEventInfo &eventInfo,
+    AppExecFwk::BundleInfo bundleInfo, int32_t userId, std::string &result)
+{
+    std::unique_ptr<Global::Resource::ResConfig> resConfig(Global::Resource::CreateResConfig());
+    if (resConfig == nullptr) {
+        HILOG_ERROR("create resConfig failed");
+        return RET_ERR_NULLPTR;
+    }
+    UErrorCode status = U_ZERO_ERROR;
+    icu::Locale locale = icu::Locale::forLanguageTag(Global::I18n::LocaleConfig::GetSystemLanguage(), status);
+    resConfig->SetLocaleInfo(locale.getLanguage(), locale.getScript(), locale.getCountry());
+
+    std::string hapPath;
+    std::vector<std::string> overlayPaths;
+    int32_t appType = 0;
+    std::shared_ptr<Global::Resource::ResourceManager> resourceManager(Global::Resource::CreateResourceManager(
+        eventInfo.GetResourceBundleName(), eventInfo.GetResourceModuleName(), hapPath, overlayPaths, *resConfig,
+        appType, userId));
+    if (resourceManager == nullptr) {
+        HILOG_ERROR("create Resource manager failed");
+        return RET_ERR_NULLPTR;
+    }
+
+    Global::Resource::RState state = resourceManager->UpdateResConfig(*resConfig);
+    if (state != Global::Resource::RState::SUCCESS) {
+        HILOG_ERROR("UpdateResConfig failed! errCode: %{public}d", state);
+        return RET_ERR_FAILED;
+    }
+
+    for (const auto &hapModuleInfo : bundleInfo.hapModuleInfos) {
+        std::string moduleResPath = hapModuleInfo.hapPath.empty() ? hapModuleInfo.resourcePath : hapModuleInfo.hapPath;
+        HILOG_DEBUG("hapModuleInfo.hapPath is %{public}s", hapModuleInfo.hapPath.c_str());
+        if (moduleResPath.empty()) {
+            HILOG_ERROR("moduleResPath is empty");
+            continue;
+        }
+        if (!resourceManager->AddResource(moduleResPath.c_str())) {
+            HILOG_ERROR("AddResource is failed");
+        }
+    }
+
+    Global::Resource::RState res = resourceManager->GetStringById(eventInfo.GetResourceId(), result);
+    if (res != Global::Resource::RState::SUCCESS) {
+        HILOG_ERROR("get resource value failed");
+        return RET_ERR_FAILED;
+    }
+    return RET_OK;
+}
+
+std::shared_ptr<AccessibilityDatashareHelper> MockAccessibleAbilityManagerService::GetCurrentAcountDatashareHelper()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return nullptr;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return nullptr;
+    }
+
+    return config->GetDbHandle();
+}
+
+bool MockAccessibleAbilityManagerService::GetMagnificationState()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return false;
+    }
+    return config->GetScreenMagnificationState();
+}
+
+uint32_t MockAccessibleAbilityManagerService::GetMagnificationType()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return 0;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return 0;
+    }
+    return config->GetScreenMagnificationType();
+}
+
+uint32_t MockAccessibleAbilityManagerService::GetMagnificationMode()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return 0;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return 0;
+    }
+    return config->GetScreenMagnificationMode();
+}
+
+void MockAccessibleAbilityManagerService::SetMagnificationMode(int32_t mode)
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+    config->SetScreenMagnificationMode(mode);
+
+    shared_ptr<AccessibilityDatashareHelper> helper = GetCurrentAcountDatashareHelper();
+    if (helper == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    helper->PutIntValue(SCREEN_MAGNIFICATION_MODE, mode, false);
+}
+
+float MockAccessibleAbilityManagerService::GetMagnificationScale()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return DEFAULT_SCALE;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return DEFAULT_SCALE;
+    }
+    return config->GetScreenMagnificationScale();
+}
+
+void MockAccessibleAbilityManagerService::SetMagnificationScale(float scale)
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+    config->SetScreenMagnificationScale(scale);
+
+    shared_ptr<AccessibilityDatashareHelper> helper = GetCurrentAcountDatashareHelper();
+    if (helper == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+    helper->PutFloatValue(SCREEN_MAGNIFICATION_SCALE, scale, false);
+}
+
+std::shared_ptr<MagnificationManager> MockAccessibleAbilityManagerService::GetMagnificationMgr()
+{
+    HILOG_DEBUG();
+    return magnificationManager_;
+}
+
+std::shared_ptr<WindowMagnificationManager> MockAccessibleAbilityManagerService::GetWindowMagnificationManager()
+{
+    HILOG_DEBUG();
+    if (magnificationManager_ == nullptr) {
+        HILOG_ERROR("magnificationManager_ is nullptr.");
+        return nullptr;
+    }
+    return magnificationManager_->GetWindowMagnificationManager();
+}
+
+std::shared_ptr<FullScreenMagnificationManager> MockAccessibleAbilityManagerService::GetFullScreenMagnificationManager()
+{
+    HILOG_DEBUG();
+    if (magnificationManager_ == nullptr) {
+        HILOG_ERROR("magnificationManager_ is nullptr.");
+        return nullptr;
+    }
+    return magnificationManager_->GetFullScreenMagnificationManager();
+}
+
+std::shared_ptr<MagnificationMenuManager> MockAccessibleAbilityManagerService::GetMenuManager()
+{
+    HILOG_DEBUG();
+    if (magnificationManager_ == nullptr) {
+        HILOG_ERROR("magnificationManager_ is nullptr.");
+        return nullptr;
+    }
+    return magnificationManager_->GetMenuManager();
+}
+
+void MockAccessibleAbilityManagerService::OnModeChanged(uint32_t mode)
+{
+    HILOG_DEBUG();
+    if (magnificationManager_ == nullptr) {
+        HILOG_ERROR("magnificationManager_ is nullptr.");
+        return;
+    }
+    return magnificationManager_->OnModeChanged(mode);
+}
+
+int32_t MockAccessibleAbilityManagerService::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
+{
+    HILOG_INFO();
+    int32_t result = AccessibilitySecurityComponentManager::SetEnhanceConfig(rawData);
+    return result;
+}
+
+void MockAccessibleAbilityManagerService::OnFocusedEvent(const AccessibilityEventInfo &eventInfo)
+{
+    if (magnificationManager_ == nullptr) {
+        return;
+    }
+    if (!magnificationManager_->GetMagnificationState()) {
+        return;
+    }
+    if (eventInfo.GetEventType() != TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT) {
+        return;
+    }
+    Rect rect = eventInfo.GetElementInfo().GetRectInScreen();
+    int32_t centerX = static_cast<int32_t>((rect.GetLeftTopXScreenPostion() +
+        rect.GetRightBottomXScreenPostion()) / static_cast<float>(DIVISOR_TWO));
+    int32_t centerY = static_cast<int32_t>((rect.GetLeftTopYScreenPostion() +
+        rect.GetRightBottomYScreenPostion()) / static_cast<float>(DIVISOR_TWO));
+
+    magnificationManager_->FollowFocuseElement(centerX, centerY);
+}
 } // namespace Accessibility
 } // namespace OHOS
