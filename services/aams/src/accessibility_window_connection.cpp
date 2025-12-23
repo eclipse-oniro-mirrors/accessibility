@@ -48,7 +48,6 @@ RetError AccessibilityWindowConnection::SetCardProxy(const int32_t treeId,
         HILOG_DEBUG("SetCardProxy : operation is nullptr");
         return RET_ERR_FAILED;
     }
-    std::unique_lock<ffrt::shared_mutex> wLock(rwProxyMutex_);
     cardProxy_.EnsureInsert(treeId, operation);
     return RET_OK;
 }
@@ -56,7 +55,6 @@ RetError AccessibilityWindowConnection::SetCardProxy(const int32_t treeId,
 sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetCardProxy(const int32_t treeId)
 {
     sptr<IAccessibilityElementOperator> connection = nullptr;
-    std::shared_lock<ffrt::shared_mutex> rLock(rwProxyMutex_);
     cardProxy_.Find(treeId, connection);
     HILOG_DEBUG("GetCardProxy : operation is %{public}d", connection != nullptr);
     return connection;
@@ -99,7 +97,6 @@ RetError AccessibilityWindowConnection::SetRootParentId(const int32_t treeId, co
 void AccessibilityWindowConnection::EraseProxy(const int32_t treeId)
 {
     sptr<IAccessibilityElementOperator> connection = nullptr;
-    std::unique_lock<ffrt::shared_mutex> wLock(rwProxyMutex_);
     bool ret = cardProxy_.Find(treeId, connection);
     if (ret) {
         cardProxy_.Erase(treeId);

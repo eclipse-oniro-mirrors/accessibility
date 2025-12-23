@@ -20,7 +20,6 @@
 #include "hilog_wrapper.h"
 #include "ffrt.h"
 #include "safe_map.h"
-#include <shared_mutex>
 
 namespace OHOS {
 namespace Accessibility {
@@ -34,19 +33,18 @@ public:
 
     inline sptr<IAccessibilityElementOperator> GetProxy()
     {
-        std::shared_lock<ffrt::shared_mutex> rLock(rwProxyMutex_);
+        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         return proxy_;
     }
 
     inline void SetProxy(sptr<IAccessibilityElementOperator> proxy)
     {
-        std::unique_lock<ffrt::shared_mutex> wLock(rwProxyMutex_);
+        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         proxy_ = proxy;
     }
 
     inline int GetCardProxySize()
     {
-        std::shared_lock<ffrt::shared_mutex> rLock(rwProxyMutex_);
         return cardProxy_.Size();
     }
 
@@ -85,7 +83,7 @@ private:
     SafeMap<int32_t, uint32_t> tokenIdMap_;
     SafeMap<int32_t, int64_t> treeIdParentId_;
     bool isAnco_ = false;
-    ffrt::shared_mutex rwProxyMutex_;
+    ffrt::mutex proxyMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
