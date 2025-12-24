@@ -89,6 +89,7 @@ ohos_shared_library("accessibilityclient") {
     "ipc:ipc_single",
     "samgr:samgr_proxy",
     "json:nlohmann_json_static",
+    "common_event_service:cesfwk_innerkits",
   ]
 
   if (product_name != "qemu-arm-linux-min") {

@@ -26,6 +26,7 @@
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
+#include "common_event_subscriber.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -259,6 +260,8 @@ public:
         const std::shared_ptr<ReadableRulesNode>& node, ReadableSpecificType specificType, bool& isHit) override;
     virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
         const FocusMoveResult &result, const int32_t requestId) override;
+    virtual bool NeedToConnect() override;
+    virtual void ConnectAndInit() override;
 
     /**
      * @brief Get the status of whether animation is disabled
@@ -341,6 +344,27 @@ private:
         StateArray stateArray_;
     };
 
+    class A11yPublishEventSubscriber : public EventFwk::CommonEventSubscriber {
+    public:
+        A11yPublishEventSubscriber(const EventFwk::CommonEventSubscribeInfo &subscribeInfo,
+            const std::function<void(const EventFwk::CommonEventSubscribeInfo &)> &callback)
+            : EventFwk::CommonEventSubscriber(subscribeInfo), callback_(callback)
+        {}
+
+        ~A11yPublishEventSubscriber()
+        {}
+
+        void OnReceiveEvent(const EventFwk::CommonEventData &data) override
+        {
+            if (callback_) {
+                callback_(data);
+            }
+        }
+
+    private:
+        std::function<void(const EventFwk::CommonEventData &)> callback_;
+    };
+
     /**
      * @brief Connect to AAMS Service.
      * @return success : true, failed : false.
@@ -368,6 +392,9 @@ private:
     static void OnParameterChanged(const char *key, const char *value, void *context);
     void ReregisterElementOperator();
 
+    bool SubscribeAccessibilityCommonEvent(const std::string &event);
+    void OnReceiveAccessibilityCommonEvent(const EventFwk::CommonEventData &data);
+
     uint32_t state_{0};
     ffrt::mutex mutex_;
     StateArrayHandler stateHandler_;
@@ -380,6 +407,8 @@ private:
 
     ffrt::condition_variable proxyConVar_;
     ffrt::mutex conVarMutex_; // mutex for proxyConVar
+
+    std::shared_ptr<A11yPublishEventSubscriber> subscriber_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

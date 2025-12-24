@@ -22,6 +22,7 @@
 #include "system_ability_definition.h"
 #include "api_reporter_helper.h"
 #include "rules/rules_checker.h"
+#include "common_event_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -81,9 +82,8 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
         Init();
     }
 
-    retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
-    if (retSysParam) {
-        HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
+    if (!SubscribeAccessibilityCommonEvent(SYSTEM_PARAMETER_AAMS_NAME)) {
+        HILOG_ERROR("Failed to subscribe accessibility common event");
     }
 }
 
@@ -143,6 +143,72 @@ bool AccessibilitySystemAbilityClientImpl::ConnectToService()
     }
 
     return true;
+}
+
+bool AccessibilitySystemAbilityClientImpl::SubscribeAccessibilityCommonEvent(const std::string &event)
+{
+    if (event.empty()) {
+        HILOG_ERROR("event is empty");
+        return false;
+    }
+    HILOG_DEBUG("event = [%{public}s]", event.c_str());
+
+    EventFwk::MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(event);
+    EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+
+    subscriber_ = std::make_shared<A11yPublishEventSubscriber>(subscribeInfo,
+        std::bind(&AccessibilitySystemAbilityClientImpl::OnReceiveAccessibilityCommonEvent, this, std::placeholders::_1));
+    if (!subscriber_) {
+        HILOG_ERROR("subscriber_ is null");
+        return false;
+    }
+
+    return EventFwk::CommonEventManager::SubscribeCommonEvent(subscriber_);
+}
+
+void AccessibilitySystemAbilityClientImpl::OnReceiveAccessibilityCommonEvent(const EventFwk::CommonEventData &data)
+{
+    std::string event = data.GetWant().GetAction();
+    HILOG_INFO("Receive event = [%{public}s]", action.c_str());
+    
+    if (event != SYSTEM_PARAMETER_AAMS_NAME) {
+        HILOG_ERROR("Event is not accessibility.config.ready");
+        return;
+    }
+
+    ConnectAndInit();
+}
+
+bool AccessibilitySystemAbilityClientImpl::NeedToConnect()
+{
+    if (serviceProxy_) {
+        HILOG_DEBUG("Not need to connect");
+        return false;
+    }
+    char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
+    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
+    if (retSysParam >= 0 && !std::strcmp(value, "true")) {
+        HILOG_ERROR("Accessibility service is ready, need to connect");
+        return true;
+    }
+    return false;
+}
+
+void AccessibilitySystemAbilityClientImpl::ConnectAndInit()
+{
+    HILOG_INFO("Connect and init start");
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (serviceProxy_) {
+        HILOG_DEBUG("Service is already connected.");
+        return;
+    }
+
+    if (!ConnectToService()) {
+        HILOG_ERROR("Failed to connect to aams service");
+        return;
+    }
+    Init();
 }
 
 void AccessibilitySystemAbilityClientImpl::OnParameterChanged(const char *key, const char *value, void *context)
