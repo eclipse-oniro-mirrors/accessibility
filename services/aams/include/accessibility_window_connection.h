@@ -33,11 +33,13 @@ public:
 
     inline sptr<IAccessibilityElementOperator> GetProxy()
     {
+        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         return proxy_;
     }
 
     inline void SetProxy(sptr<IAccessibilityElementOperator> proxy)
     {
+        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         proxy_ = proxy;
     }
 
@@ -81,6 +83,7 @@ private:
     SafeMap<int32_t, uint32_t> tokenIdMap_;
     SafeMap<int32_t, int64_t> treeIdParentId_;
     bool isAnco_ = false;
+    ffrt::mutex proxyMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
