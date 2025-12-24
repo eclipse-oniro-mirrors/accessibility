@@ -158,7 +158,10 @@ bool AccessibilitySystemAbilityClientImpl::SubscribeAccessibilityCommonEvent(con
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
 
     subscriber_ = std::make_shared<A11yPublishEventSubscriber>(subscribeInfo,
-        std::bind(&AccessibilitySystemAbilityClientImpl::OnReceiveAccessibilityCommonEvent, this, std::placeholders::_1));
+        std::bind(
+            &AccessibilitySystemAbilityClientImpl::OnReceiveAccessibilityCommonEvent,
+            this,
+            std::placeholders::_1));
     if (!subscriber_) {
         HILOG_ERROR("subscriber_ is null");
         return false;
@@ -170,10 +173,10 @@ bool AccessibilitySystemAbilityClientImpl::SubscribeAccessibilityCommonEvent(con
 void AccessibilitySystemAbilityClientImpl::OnReceiveAccessibilityCommonEvent(const EventFwk::CommonEventData &data)
 {
     std::string event = data.GetWant().GetAction();
-    HILOG_INFO("Receive event = [%{public}s]", action.c_str());
+    HILOG_INFO("Receive event = [%{public}s]", event.c_str());
     
     if (event != SYSTEM_PARAMETER_AAMS_NAME) {
-        HILOG_ERROR("Event is not accessibility.config.ready");
+        HILOG_ERROR("event is not accessibility.config.ready");
         return;
     }
 

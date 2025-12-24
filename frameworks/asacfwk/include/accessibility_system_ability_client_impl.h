@@ -347,7 +347,7 @@ private:
     class A11yPublishEventSubscriber : public EventFwk::CommonEventSubscriber {
     public:
         A11yPublishEventSubscriber(const EventFwk::CommonEventSubscribeInfo &subscribeInfo,
-            const std::function<void(const EventFwk::CommonEventSubscribeInfo &)> &callback)
+            const std::function<void(const EventFwk::CommonEventData &)> &callback)
             : EventFwk::CommonEventSubscriber(subscribeInfo), callback_(callback)
         {}
 
