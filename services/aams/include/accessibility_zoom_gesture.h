@@ -108,6 +108,7 @@ private:
 
     bool startScaling_ = false;
     bool isLongPress_ = false;
+    bool isMoveValid_ = true;
     float preSpan_ = 0.0f;
     float lastSpan_ = 0.0f;
     float screenSpan_ = 0.0f;
