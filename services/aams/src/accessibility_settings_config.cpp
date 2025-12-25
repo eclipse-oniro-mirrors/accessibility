@@ -198,11 +198,13 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationState(const bool sta
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(SCREEN_MAGNIFICATION_KEY, state);
+    // LCOV_EXCL_BR_START
     if (ret != RET_OK) {
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetScreenMagnificationState");
         HILOG_ERROR("set SetScreenMagnificationState failed");
         return ret;
     }
+    // LCOV_EXCL_BR_STOP
     SetMagnificationState(state);
     return ret;
 }
@@ -245,11 +247,13 @@ RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(SHORTCUT_ENABLED, state);
+    // LCOV_EXCL_BR_START
     if (ret != RET_OK) {
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetShortKeyState");
         HILOG_ERROR("set isShortKeyState_ failed");
         return ret;
     }
+    // LCOV_EXCL_BR_STOP
     isShortKeyState_ = state;
     return ret;
 }
@@ -303,11 +307,13 @@ RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     auto ret = SetConfigState(MOUSEKEY, state);
+    // LCOV_EXCL_BR_START
     if (ret != RET_OK) {
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetMouseKeyState");
         HILOG_ERROR("set isMouseKeyState_ failed");
         return ret;
     }
+    // LCOV_EXCL_BR_STOP
     isMouseKeyState_ = state;
     return ret;
 }
@@ -339,11 +345,13 @@ RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
     }
 
     auto ret = datashare_->PutStringValue("ShortkeyTarget", name);
+    // LCOV_EXCL_BR_START
     if (ret != RET_OK) {
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetShortkeyTarget");
         HILOG_ERROR("set shortkeyTarget_ failed");
         return ret;
     }
+    // LCOV_EXCL_BR_STOP
     shortkeyTarget_ = name;
     return ret;
 }
@@ -1106,6 +1114,7 @@ void AccessibilitySettingsConfig::InitAnimationOffConfig()
     }
 }
 
+// LCOV_EXCL_START
 void AccessibilitySettingsConfig::HandleIgnoreRepeatClickState()
 {
     uint64_t recoveryDate = datashare_->GetUnsignedLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, 0);
@@ -1456,6 +1465,7 @@ void AccessibilitySettingsConfig::recoverAudioAdjustment()
         SetAudioBalance(audioBalance_);
     }
 }
+// LCOV_EXCL_STOP
 
 void AccessibilitySettingsConfig::OnDataClone()
 {

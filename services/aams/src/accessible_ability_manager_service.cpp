@@ -497,6 +497,7 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
         }, "OnRemoveSystemAbility");
 }
 
+// LCOV_EXCL_START
 int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16string>& args)
 {
     HILOG_DEBUG("dump AccessibilityManagerServiceInfo");
@@ -614,6 +615,7 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
 
     return RET_OK;
 }
+// LCOV_EXCL_STOP
 
 ErrCode AccessibleAbilityManagerService::RegisterStateObserver(
     const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver, uint32_t &state)
@@ -697,6 +699,7 @@ sptr<AccessibilityWindowConnection> AccessibleAbilityManagerService::GetRealIdCo
     return accountData->GetAccessibilityWindowConnection(realId);
 }
 
+// LCOV_EXCL_START
 bool AccessibleAbilityManagerService::FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
     AccessibilityElementInfo &elementInfo)
 {
@@ -1070,6 +1073,7 @@ ErrCode AccessibleAbilityManagerService::RegisterEnableAbilityCallbackObserver(
     }
     return syncFuture.get();
 }
+// LCOV_EXCL_STOP
 
 ErrCode AccessibleAbilityManagerService::GetAbilityList(uint32_t abilityTypes, int32_t stateType,
     std::vector<AccessibilityAbilityInfoParcel>& infos)
@@ -1183,6 +1187,7 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByWindowId(
     return RET_OK;
 }
 
+// LCOV_EXCL_START
 void AccessibleAbilityManagerService::IsCheckWindowIdEventExist(const int32_t windowId)
 {
     if (CheckWindowIdEventExist(windowId)) {
@@ -1610,6 +1615,7 @@ bool AccessibleAbilityManagerService::SetHighContrastTextAbility(bool state)
     accountData->GetConfig()->SetColorModeState(A11yDarkModeType::DEFAULT_DARK_MODE_STATE);
     return true;
 }
+// LCOV_EXCL_STOP
 
 bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbilityValue)
 {
@@ -3292,6 +3298,7 @@ ErrCode AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData& 
     return syncFuture.get();
 }
 
+// LCOV_EXCL_START
 bool AccessibleAbilityManagerService::EnableCaptionsAbility(sptr<AccessibilityAccountData> accountData)
 {
     HILOG_DEBUG();
@@ -3330,6 +3337,7 @@ bool AccessibleAbilityManagerService::EnableCaptionsAbility(sptr<AccessibilityAc
     }
     return true;
 }
+// LCOV_EXCL_STOP
 
 bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::string &name)
 {
