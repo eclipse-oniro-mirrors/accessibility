@@ -574,7 +574,7 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
         HILOG_ERROR("Parameters check failed!");
         return RET_ERR_NULLPTR;
     }
-    if (uiEvent.GetEventType() == TYPE_PAGE_CLOSE && uiEvent.GetBUndleName() == "") {
+    if (uiEvent.GetEventType() == TYPE_PAGE_CLOSE && uiEvent.GetBundleName() == "") {
         return RET_OK;
     }
     RetError res = GetResourceBundleInfo(const_cast<AccessibilityEventInfo&>(uiEvent));
