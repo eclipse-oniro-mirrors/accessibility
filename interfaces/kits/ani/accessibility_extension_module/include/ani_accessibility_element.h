@@ -85,6 +85,7 @@ ani_object FindElementsByAccessibilityHintText(ani_env *env, ani_object thisObj,
 ani_object FindElementById(ani_env *env, ani_object thisObj, ani_long elementId);
 void FindElementByText(FindElementParams *data);
 void ExecuteAction(ani_env *env, ani_object thisObj, ani_enum_item action, ani_object obj);
+void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const AccessibilityElementInfo& elementInfo);
 } // namespace Accessibility
 } // namespace OHOS
 #endif // ANI_ACCESSIBILITY_ELEMENT_H

@@ -582,7 +582,8 @@ std::shared_ptr<AccessibilityElement> GetElement(const AccessibilityEventInfo& e
     return element;
 }
 
-ani_object  ConvertAccessibilityElementToJS(ani_env *env,  const std::shared_ptr<AccessibilityElement>& element)
+ani_object ConvertAccessibilityElementToJS(ani_env *env,  
+    const std::shared_ptr<AccessibilityElement>& element)
 {
     if (env == nullptr || element == nullptr) {
         HILOG_ERROR("invalid args");
@@ -603,6 +604,10 @@ ani_object  ConvertAccessibilityElementToJS(ani_env *env,  const std::shared_ptr
         pAccessibilityElement = nullptr;
         HILOG_ERROR("Cannot wrap AccessibilityElementInfo");
         return nullptr;
+    }
+    if (element->elementInfo_) {
+        HILOG_DEBUG("ConvertAccessibilityElementToJs for accessibilityEvent Target");
+        SetAccessibilityElementField(env, elementObj, *(element->elementInfo_));
     }
     return elementObj;
 }
