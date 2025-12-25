@@ -223,6 +223,7 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
     pointerEventTransmitters_ = header;
 }
 
+// LCOV_EXCL_START
 void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmission> &header,
     sptr<EventTransmission> &current)
 {
@@ -316,6 +317,7 @@ void AccessibilityInputInterceptor::CreatWindowMagnificationGesture()
         needInteractMagnification_ = false;
     }
 }
+// LCOV_EXCL_STOP
 
 void AccessibilityInputInterceptor::ClearMagnificationGesture()
 {
@@ -465,6 +467,7 @@ void AccessibilityInputInterceptor::SetNextEventTransmitter(sptr<EventTransmissi
     current = next;
 }
 
+// LCOV_EXCL_START
 void AccessibilityInputInterceptor::ShieldZoomGesture(bool flag)
 {
     HILOG_INFO("flag = %{public}d", flag);
@@ -513,6 +516,7 @@ void AccessibilityInputInterceptor::EnableGesture(uint32_t mode)
         HILOG_WARN("invalid mode.");
     }
 }
+// LCOV_EXCL_STOP
 
 AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
 {

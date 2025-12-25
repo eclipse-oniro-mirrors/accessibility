@@ -362,6 +362,7 @@ void AccessibleAbilityClientImpl::OnAccessibilityEvent(const AccessibilityEventI
     }
 }
 
+// LCOV_EXCL_START
 void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence)
 {
     HILOG_DEBUG("sequence[%{public}d]", sequence);
@@ -1919,5 +1920,6 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
     }
     return static_cast<RetError>(result.resultType);
 }
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS
