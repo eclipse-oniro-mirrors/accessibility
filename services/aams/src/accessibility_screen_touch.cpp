@@ -314,20 +314,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
     }
 
     if (event.GetPointerIds().size() > POINTER_COUNT_1) {
-        if (cachedDownPointerEvents_.empty()) {
-            HILOG_ERROR("cached down pointer event is empty!");
-            return;
-        }
-        if (isMoveBeyondThreshold_ == true) {
-            cachedDownPointerEvents_.push_back(event);
-            EventTransmission::OnPointerEvent(event);
-            return;
-        } else if (isStopDrawCircle_ == true) {
-            return;
-        } else {
-            cachedDownPointerEvents_.push_back(event);
-            return;
-        }
+        return;
     }
 
     startTime_ = event.GetActionTime();
@@ -372,9 +359,6 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
     }
 
     if (event.GetPointerId() != startPointer_->GetPointerId()) {
-        if (isStopDrawCircle_ == true) {
-            EventTransmission::OnPointerEvent(event);
-        }
         return;
     }
 
@@ -418,11 +402,15 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent
         isStopDrawCircle_ = true;
         return;
     }
+    if (startPointer_ != nullptr && event.GetPointerId() != startPointer_->GetPointerId()) {
+        return;
+    }
 
     if (isStopDrawCircle_ == true) {
         for (auto iter = cachedDownPointerEvents_.begin(); iter != cachedDownPointerEvents_.end(); ++iter) {
             if (iter->GetPointerId() == event.GetPointerId()) {
                 EventTransmission::OnPointerEvent(event);
+                break;
             }
         }
         if (event.GetPointerIds().size() == POINTER_COUNT_1) {
