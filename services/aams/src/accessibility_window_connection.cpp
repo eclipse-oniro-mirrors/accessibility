@@ -14,6 +14,9 @@
  */
 
 #include "accessibility_window_connection.h"
+#include "utils.h"
+#include "accessibility_account_data.h"
+#include "accessible_ability_manager_service.h"
 
 using namespace std;
 
@@ -100,6 +103,105 @@ void AccessibilityWindowConnection::EraseProxy(const int32_t treeId)
     bool ret = cardProxy_.Find(treeId, connection);
     if (ret) {
         cardProxy_.Erase(treeId);
+    }
+}
+
+void AccessibilityWindowConnection::AddDeathRecipient(int32_t windowId, int32_t accountId, bool isBroker)
+{
+    sptr<IAccessibilityElementOperator> elementOperator = isBroker ? brokerProxy_ : proxy_;
+    if (!elementOperator || !elementOperator->AsObject()) {
+        return;
+    }
+    sptr<IRemoteObject::DeathRecipient> deathRecipient =
+        new(std::nothrow) InteractionOperationDeathRecipient(windowId, accountId);
+    if (!deathRecipient) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
+        HILOG_ERROR("Create interactionOperationDeathRecipient failed");
+        return;
+    }
+    if (elementOperator->AsObject()->AddDeathRecipient(deathRecipient)) {
+        if (isBroker) {
+            brokerProxyDeathRecipient_ = deathRecipient;
+        } else {
+            proxyDeathRecipient_ = deathRecipient;
+        }
+    }
+}
+ 
+void AccessibilityWindowConnection::ResetProxy()
+{
+    if (proxy_ && proxy_->AsObject() && proxyDeathRecipient_) {
+        proxy_->AsObject()->RemoveDeathRecipient(proxyDeathRecipient_);
+    }
+    proxy_ = nullptr;
+    EraseProxy(0);
+    RemoveTreeDeathRecipient(0);
+}
+ 
+void AccessibilityWindowConnection::ResetBrokerProxy()
+{
+    if (brokerProxy_ && brokerProxy_->AsObject() && brokerProxyDeathRecipient_) {
+        brokerProxy_->AsObject()->RemoveDeathRecipient(brokerProxyDeathRecipient_);
+    }
+    brokerProxy_ = nullptr;
+}
+ 
+void AccessibilityWindowConnection::AddTreeDeathRecipient(int32_t windowId, int32_t accountId, int32_t treeId)
+{
+    sptr<IAccessibilityElementOperator> elementOperator = GetCardProxy(treeId);
+    if (!elementOperator || !elementOperator->AsObject()) {
+        return;
+    }
+    sptr<IRemoteObject::DeathRecipient> deathRecipient =
+        new(std::nothrow) InteractionOperationDeathRecipient(windowId, treeId, accountId);
+    if (!deathRecipient) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
+        HILOG_ERROR("Create interactionOperationDeathRecipient failed");
+    }
+    if (elementOperator->AsObject()->AddDeathRecipient(deathRecipient)) {
+        childTreeProxyDeathRecipient_.EnsureInsert(treeId, deathRecipient);
+    }
+}
+ 
+void AccessibilityWindowConnection::RemoveTreeDeathRecipient(int32_t treeId)
+{
+    sptr<IAccessibilityElementOperator> elementOperator = GetCardProxy(treeId);
+    if (!elementOperator || !elementOperator->AsObject()) {
+        return;
+    }
+    sptr<IRemoteObject::DeathRecipient> deathRecipient = nullptr;
+    childTreeProxyDeathRecipient_.Find(treeId, deathRecipient);
+    if (!deathRecipient) {
+        return;
+    }
+    elementOperator->AsObject()->RemoveDeathRecipient(deathRecipient);
+    childTreeProxyDeathRecipient_.Erase(treeId);
+}
+ 
+void AccessibilityWindowConnection::InteractionOperationDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &remote)
+{
+    Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+        A11yError::ERROR_TARGET_APPLICATION_DISCONNECT_ABNORMALLY);
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("get accountData failed");
+        return;
+    }
+    int32_t currentAccountId = accountData->GetAccountId();
+    if (currentAccountId != accountId_) {
+        HILOG_ERROR("check accountId failed");
+        return;
+    }
+ 
+    if (treeId_ > 0) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowIdAndTreeId(
+            windowId_, treeId_);
+    } else {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowId(windowId_);
     }
 }
 } // namespace Accessibility

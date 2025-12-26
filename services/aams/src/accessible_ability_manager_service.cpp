@@ -138,6 +138,7 @@ namespace {
     const char* CAPTION_URL_ADDRESS = "ohos://vassistant/caption?action=close";
     constexpr int32_t XCOLLIE_TIMEOUT = 6; // s
     constexpr int QUANTITY = 2; // plural string
+    constexpr int32_t BROKER_UID = 5557;
 
     static const std::map<std::string, int32_t> AccessibilityConfigTable = {
         {"HIGH_CONTRAST_TEXT", HIGH_CONTRAST_TEXT},
@@ -1143,7 +1144,7 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByWindowId(
     if (CheckCallingUid() != RET_OK) {
         return RET_ERR_SAMGR;
     }
-    bool isApp = IsApp();
+    bool isBroker = IsBroker();
     handler_->PostTask([=]() {
         HILOG_INFO("Register windowId[%{public}d]", windowId);
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1152,37 +1153,32 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByWindowId(
             return;
         }
         sptr<AccessibilityWindowConnection> oldConnection = accountData->GetAccessibilityWindowConnection(windowId);
-        if (isApp && oldConnection) {
+        if (!isBroker && oldConnection && oldConnection->GetRawProxy()) {
             HILOG_WARN("no need to register again.");
             return;
         }
-        DeleteConnectionAndDeathRecipient(windowId, oldConnection);
-        sptr<AccessibilityWindowConnection> connection =
-            new(std::nothrow) AccessibilityWindowConnection(windowId, elementOperator, currentAccountId_);
+        sptr<AccessibilityWindowConnection> connection = oldConnection;
+        if (connection == nullptr) {
+            connection = new (std::nothrow) AccessibilityWindowConnection(windowId, nullptr, currentAccountId_);
+            accountData->AddAccessibilityWindowConnection(windowId, connection);
+        }
         if (!connection) {
             Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
                 A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
             HILOG_ERROR("New  AccessibilityWindowConnection failed!!");
             return;
         }
-        connection->SetTokenIdMap(SINGLE_TREE_ID, tokenId);
-        accountData->AddAccessibilityWindowConnection(windowId, connection);
-        connection->SetAncoFlag(!isApp);
-        IsCheckWindowIdEventExist(windowId);
-        if (elementOperator && elementOperator->AsObject()) {
-            sptr<IRemoteObject::DeathRecipient> deathRecipient =
-                new(std::nothrow) InteractionOperationDeathRecipient(windowId, currentAccountId_);
-            if (!deathRecipient) {
-                Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-                    A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-                HILOG_ERROR("Create interactionOperationDeathRecipient failed");
-                return;
-            }
-
-            bool result = elementOperator->AsObject()->AddDeathRecipient(deathRecipient);
-            interactionOperationDeathRecipients_[windowId] = deathRecipient;
-            HILOG_DEBUG("The result of adding elementOperator's death recipient is %{public}d", result);
+        if (!isBroker) {
+            connection->SetProxy(elementOperator);
+            connection->SetCardProxy(0, elementOperator);
+        } else {
+            connection->SetBrokerProxy(elementOperator);
+            connection->SetUseBrokerFlag(true);
+            connection->SetAncoFlag(isBroker);
         }
+        connection->SetTokenIdMap(SINGLE_TREE_ID, tokenId);
+        IsCheckWindowIdEventExist(windowId);
+        connection->AddDeathRecipient(windowId, currentAccountId_, isBroker);
         }, "TASK_REGISTER_ELEMENT_OPERATOR");
     return RET_OK;
 }
@@ -1315,56 +1311,17 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByParameter(cons
             SendEvent(eventInfoParcel, 0);
             windowFocusEventMap_.Erase(parameter.windowId);
         }
-        if (elementOperator && elementOperator->AsObject()) {
-            sptr<IRemoteObject::DeathRecipient> deathRecipient =
-                new(std::nothrow) InteractionOperationDeathRecipient(parameter.windowId, treeIdSingle,
-                    currentAccountId_);
-            if (deathRecipient == nullptr) {
-                Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-                    A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-                HILOG_ERROR("Create interactionOperationDeathRecipient failed");
-                return;
-            }
-            bool result = elementOperator->AsObject()->AddDeathRecipient(deathRecipient);
-            interactionOperationDeathMap_[parameter.windowId][treeIdSingle] = deathRecipient;
-            HILOG_DEBUG("The result of adding elementOperator's death recipient is %{public}d", result);
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            return;
+        }
+        sptr<AccessibilityWindowConnection> connection =
+            accountData->GetAccessibilityWindowConnection(parameter.windowId);
+        if (connection) {
+            connection->AddTreeDeathRecipient(parameter.windowId, treeIdSingle, currentAccountId_);
         }
         }, "TASK_REGISTER_ELEMENT_OPERATOR");
     return RET_OK;
-}
-
-void AccessibleAbilityManagerService::DeleteConnectionAndDeathRecipient(
-    const int32_t windowId, const sptr<AccessibilityWindowConnection> &connection)
-{
-    HILOG_DEBUG();
-    if (!connection) {
-        HILOG_ERROR("connection is nullptr");
-        return;
-    }
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-        HILOG_ERROR("Get current account data failed!!");
-        return;
-    }
-
-    accountData->RemoveAccessibilityWindowConnection(windowId);
-    if (!connection->GetProxy()) {
-        HILOG_WARN("proxy is null");
-        return;
-    }
-    auto object = connection->GetProxy()->AsObject();
-    if (object) {
-        auto iter = interactionOperationDeathRecipients_.find(windowId);
-        if (iter != interactionOperationDeathRecipients_.end()) {
-            sptr<IRemoteObject::DeathRecipient> deathRecipient = iter->second;
-            bool result = object->RemoveDeathRecipient(deathRecipient);
-            HILOG_DEBUG("The result of deleting connection's death recipient is %{public}d", result);
-            interactionOperationDeathRecipients_.erase(iter);
-        }
-    }
 }
 
 ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(int32_t windowId)
@@ -1373,7 +1330,7 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(int
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
-
+    bool isBroker = IsBroker();
     handler_->PostTask([=]() {
         HILOG_INFO("Deregister windowId[%{public}d]", windowId);
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1386,29 +1343,13 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(int
             HILOG_WARN("The operation of windowId[%{public}d] has not been registered.", windowId);
             return;
         }
-        StopCallbackWait(windowId);
-
-        if (!connection->GetProxy()) {
-            HILOG_ERROR("proxy is null");
+        if (isBroker && connection->IsAnco()) {
+            connection->ResetBrokerProxy();
             return;
         }
-
-        auto object = connection->GetProxy()->AsObject();
-        if (object) {
-            auto iter = interactionOperationDeathRecipients_.find(windowId);
-            if (iter != interactionOperationDeathRecipients_.end()) {
-                HILOG_DEBUG("delete death recipient, window id = %{public}d", windowId);
-                sptr<IRemoteObject::DeathRecipient> deathRecipient = iter->second;
-                bool result = object->RemoveDeathRecipient(deathRecipient);
-                HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
-                interactionOperationDeathRecipients_.erase(iter);
-            } else {
-                HILOG_INFO("cannot find remote object. windowId[%{public}d]", windowId);
-            }
-        }
-
-        connection->SetProxy(nullptr);
-        RemoveTreeDeathRecipient(windowId, 0, connection);
+        StopCallbackWait(windowId);
+        connection->ResetProxy();
+        connection->ResetBrokerProxy();
 
         std::vector<int32_t> treeIds {};
         connection->GetAllTreeId(treeIds);
@@ -1458,27 +1399,12 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndT
 void AccessibleAbilityManagerService::RemoveTreeDeathRecipient(const int32_t windowId, const int32_t treeId,
     const sptr<AccessibilityWindowConnection> connection)
 {
-    auto object = connection->GetCardProxy(treeId);
-    if (object == nullptr) {
-        HILOG_ERROR("GetCardProxy is null");
+    if (connection == nullptr) {
+        HILOG_ERROR("connection is null");
         return;
     }
-    auto remoteObject = object->AsObject();
     connection->EraseProxy(treeId);
-    auto iter = interactionOperationDeathMap_.find(windowId);
-    if (iter != interactionOperationDeathMap_.end()) {
-        auto iterTree = iter->second.find(treeId);
-        if (iterTree != iter->second.end()) {
-            sptr<IRemoteObject::DeathRecipient> deathRecipient = iterTree->second;
-            bool result = remoteObject->RemoveDeathRecipient(deathRecipient);
-            HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
-            iter->second.erase(iterTree);
-        } else {
-            HILOG_ERROR("cannot find remote object. treeId[%{public}d]", treeId);
-        }
-    } else {
-        HILOG_ERROR("cannot find remote object. windowId[%{public}d]", windowId);
-    }
+    connection->RemoveTreeDeathRecipient(treeId);
 }
 
 bool AccessibleAbilityManagerService::IsSystemApp() const
@@ -1494,6 +1420,11 @@ bool AccessibleAbilityManagerService::IsSystemApp() const
     uint64_t accessTokenId = IPCSkeleton::GetCallingFullTokenID();
     bool isSystemApplication = TokenIdKit::IsSystemAppByFullTokenID(accessTokenId);
     return isSystemApplication;
+}
+
+bool AccessibleAbilityManagerService::IsBroker() const
+{
+    return IPCSkeleton::GetCallingUid() == BROKER_UID;
 }
 
 bool AccessibleAbilityManagerService::CheckPermission(const std::string &permission) const
@@ -2024,32 +1955,6 @@ bool AccessibleAbilityManagerService::Init()
 void AccessibleAbilityManagerService::InitInnerResource()
 {
     UpdateSettingsInAtoHosTask();
-}
-
-void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemoteDied(
-    const wptr<IRemoteObject> &remote)
-{
-    Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-        A11yError::ERROR_TARGET_APPLICATION_DISCONNECT_ABNORMALLY);
-    HILOG_INFO();
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (accountData == nullptr) {
-        HILOG_ERROR("get accountData failed");
-        return;
-    }
-    int32_t currentAccountId = accountData->GetAccountId();
-    if (currentAccountId != accountId_) {
-        HILOG_ERROR("check accountId failed");
-        return;
-    }
-
-    if (treeId_ > 0) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowIdAndTreeId(
-            windowId_, treeId_);
-    } else {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowId(windowId_);
-    }
 }
 
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()

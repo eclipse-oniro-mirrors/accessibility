@@ -489,7 +489,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperatorByWin
     EXPECT_EQ(RET_OK, aams.DeregisterElementOperatorByWindowId(0));
     sleep(SLEEP_TIME_1);
     auto map = accountData->GetAsacConnections();
-    EXPECT_EQ(int(map.size()), 1);
+    EXPECT_EQ(int(map.size()), 0);
 
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DeregisterElementOperatorByWindowId_001 end";
 }
@@ -510,7 +510,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperatorByWin
     EXPECT_EQ(RET_OK, aams.DeregisterElementOperatorByWindowId(0));
     sleep(SLEEP_TIME_1);
     auto map = accountData->GetAsacConnections();
-    EXPECT_EQ(int(map.size()), 1);
+    EXPECT_EQ(int(map.size()), 0);
 
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DeregisterElementOperatorByWindowId_002 end";
 }
