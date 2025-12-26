@@ -385,6 +385,7 @@ private:
     RetError CheckCallingUid();
     bool IsApp() const;
     bool IsSystemApp() const;
+    bool IsBroker() const;
     sptr<AccessibilityWindowConnection> GetRealIdConnection();
     bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
         AccessibilityElementInfo &elementInfo);
@@ -403,21 +404,6 @@ private:
         DISALLOW_COPY_AND_MOVE(StateCallbackDeathRecipient);
 
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
-    };
-
-    class InteractionOperationDeathRecipient final : public IRemoteObject::DeathRecipient {
-    public:
-        InteractionOperationDeathRecipient(int32_t windowId, int32_t accountId) : windowId_(windowId),
-            accountId_(accountId) {};
-        InteractionOperationDeathRecipient(int32_t windowId, int32_t treeId, int32_t accountId) : windowId_(windowId),
-            treeId_(treeId), accountId_(accountId) {};
-        ~InteractionOperationDeathRecipient() final = default;
-        DISALLOW_COPY_AND_MOVE(InteractionOperationDeathRecipient);
-
-        void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
-        int32_t windowId_ = INVALID_WINDOW_ID;
-        int32_t treeId_ = INVALID_TREE_ID;
-        int32_t accountId_ = 0;
     };
 
     class CaptionPropertyCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -492,8 +478,6 @@ private:
 
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
     void RemoveSavedConfigCallback(const wptr<IRemoteObject>& callback);
-    void DeleteConnectionAndDeathRecipient(
-        const int32_t windowId, const sptr<AccessibilityWindowConnection> &connection);
     
     void OnDeviceProvisioned();
     void InitializeShortKeyState();
@@ -551,8 +535,6 @@ private:
     int64_t ipcTimeoutNum_ = 0; // count ipc timeout number
 
     sptr<IRemoteObject::DeathRecipient> stateObserversDeathRecipient_ = nullptr;
-    std::map<int32_t, sptr<IRemoteObject::DeathRecipient>> interactionOperationDeathRecipients_ {};
-    std::map<int32_t, std::map<int32_t, sptr<IRemoteObject::DeathRecipient>>> interactionOperationDeathMap_ {};
     sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityListsObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityCallbackObserverDeathRecipient_ = nullptr;

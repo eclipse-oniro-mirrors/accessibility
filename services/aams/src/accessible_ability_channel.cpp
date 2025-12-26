@@ -850,10 +850,10 @@ RetError AccessibleAbilityChannel::GetElementOperator(
         HILOG_ERROR("windowId[%{public}d] has no connection", realId);
         return RET_ERR_NO_WINDOW_CONNECTION;
     }
-    if (connection->IsAnco() == true || treeId <= 0) {
-        elementOperator = connection->GetProxy();
-    } else {
+    if (!connection->GetUseBrokerFlag() && treeId > 0) {
         elementOperator = connection->GetCardProxy(treeId);
+    } else {
+        elementOperator = connection->GetProxy();
     }
     if (!elementOperator) {
         HILOG_ERROR("The proxy of window connection is nullptr");
