@@ -39,6 +39,7 @@ ohos_fuzztest("AccessibilitySystemAbilityClientFuzzTest") {
     "ffrt:libffrt",
     "ipc:ipc_single",
     "samgr:samgr_proxy",
+    "common_event_service:cesfwk_innerkits",
   ]
 }
 
