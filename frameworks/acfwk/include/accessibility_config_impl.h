@@ -301,6 +301,8 @@ private:
     bool LoadAccessibilityService();
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
+    sptr<Accessibility::IAccessibleAbilityManagerService> GetProxySafe();
+    void SetProxySafe(sptr<Accessibility::IAccessibleAbilityManagerService> proxy);
     sptr<Accessibility::IAccessibleAbilityManagerService> GetServiceProxy();
 
     void NotifyCaptionStateChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
