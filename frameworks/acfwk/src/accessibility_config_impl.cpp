@@ -378,7 +378,7 @@ sptr<Accessibility::IAccessibleAbilityManagerService> AccessibilityConfig::Impl:
     return serviceProxy_;
 }
 
-void SetProxySafe(sptr<Accessibility::IAccessibleAbilityManagerService> proxy)
+void AccessibilityConfig::Impl::SetProxySafe(sptr<Accessibility::IAccessibleAbilityManagerService> proxy)
 {
     std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     serviceProxy_ = std::move(proxy);
