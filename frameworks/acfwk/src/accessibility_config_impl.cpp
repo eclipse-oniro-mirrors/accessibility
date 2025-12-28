@@ -272,9 +272,6 @@ void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObjec
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     if (retSysParam >= 0 && std::strcmp(value, "true")) {
         do {
-            if (serviceProxy_ != nullptr) {
-                break;
-            }
             std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
             if (serviceProxy_ != nullptr) {
                 HILOG_WARN("serviceProxy_ is already inited");
