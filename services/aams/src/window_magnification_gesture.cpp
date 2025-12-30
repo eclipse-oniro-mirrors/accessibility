@@ -206,6 +206,11 @@ bool WindowMagnificationGesture::needBypassPointerEvent(MMI::PointerEvent &event
         HILOG_DEBUG("scrollshot injected.");
         return true;
     }
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_MOVE ||
+        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_IN_WINDOW ||
+        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_OUT_WINDOW) {
+        return true;
+    }
     return false;
 }
 
