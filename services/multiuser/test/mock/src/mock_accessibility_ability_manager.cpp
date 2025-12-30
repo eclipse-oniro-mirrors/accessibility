@@ -37,7 +37,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-AccessibilityAbilityManager::AccessibilityAbilityManager(int32_t accountId)
+MockAccessibilityAbilityManager::MockAccessibilityAbilityManager(int32_t accountId)
 {
     accountId_ = accountId;
     ErrCode rtn = AccountSA::OsAccountManager::GetOsAccountType(accountId_, accountType_);
@@ -46,9 +46,9 @@ AccessibilityAbilityManager::AccessibilityAbilityManager(int32_t accountId)
     }
 }
 
-AccessibilityAbilityManager::~AccessibilityAbilityManager() {}
+MockAccessibilityAbilityManager::~MockAccessibilityAbilityManager() {}
 
-void AccessibilityAbilityManager::AddConnectedAbility(sptr<AccessibleAbilityConnection> &connection)
+void MockAccessibilityAbilityManager::AddConnectedAbility(sptr<AccessibleAbilityConnection> &connection)
 {
     HILOG_DEBUG();
     if (!connection) {
@@ -71,7 +71,7 @@ void AccessibilityAbilityManager::AddConnectedAbility(sptr<AccessibleAbilityConn
     HILOG_DEBUG("Added connected ability: %{public}s", uri.c_str());
 }
 
-void AccessibilityAbilityManager::RemoveConnectedAbility(const AppExecFwk::ElementName &element)
+void MockAccessibilityAbilityManager::RemoveConnectedAbility(const AppExecFwk::ElementName &element)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(managerMutex_);
@@ -80,7 +80,7 @@ void AccessibilityAbilityManager::RemoveConnectedAbility(const AppExecFwk::Eleme
     HILOG_DEBUG("Removed connected ability: %{public}s", uri.c_str());
 }
 
-void AccessibilityAbilityManager::RemoveConnectingA11yAbility(const std::string &uri)
+void MockAccessibilityAbilityManager::RemoveConnectingA11yAbility(const std::string &uri)
 {
     HILOG_DEBUG();
     if (uri.empty()) {
@@ -93,14 +93,14 @@ void AccessibilityAbilityManager::RemoveConnectingA11yAbility(const std::string 
     HILOG_DEBUG("Removed connecting ability for URI: %{public}s", uri.c_str());
 }
 
-const sptr<AccessibleAbilityConnection> AccessibilityAbilityManager::GetWaitDisConnectAbility(
+const sptr<AccessibleAbilityConnection> MockAccessibilityAbilityManager::GetWaitDisConnectAbility(
     const std::string &elementName)
 {
     HILOG_DEBUG();
     return waitDisconnectA11yAbilities_.GetAccessibilityAbilityByName(elementName);
 }
 
-void AccessibilityAbilityManager::AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection> &connection)
+void MockAccessibilityAbilityManager::AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection> &connection)
 {
     HILOG_DEBUG();
     if (!connection) {
@@ -114,13 +114,13 @@ void AccessibilityAbilityManager::AddWaitDisconnectAbility(sptr<AccessibleAbilit
     }
 }
 
-void AccessibilityAbilityManager::RemoveWaitDisconnectAbility(const std::string &uri)
+void MockAccessibilityAbilityManager::RemoveWaitDisconnectAbility(const std::string &uri)
 {
     HILOG_DEBUG();
     waitDisconnectA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 
-void AccessibilityAbilityManager::AddEnableAbilityListsObserver(
+void MockAccessibilityAbilityManager::AddEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
 {
     HILOG_DEBUG();
@@ -141,7 +141,7 @@ void AccessibilityAbilityManager::AddEnableAbilityListsObserver(
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
 }
 
-void AccessibilityAbilityManager::RemoveEnableAbilityListsObserver(const wptr<IRemoteObject> &observer)
+void MockAccessibilityAbilityManager::RemoveEnableAbilityListsObserver(const wptr<IRemoteObject> &observer)
 {
     HILOG_DEBUG();
     if (!observer.GetRefPtr()) {
@@ -160,7 +160,7 @@ void AccessibilityAbilityManager::RemoveEnableAbilityListsObserver(const wptr<IR
     }
 }
 
-void AccessibilityAbilityManager::AddConnectingA11yAbility(const std::string &uri,
+void MockAccessibilityAbilityManager::AddConnectingA11yAbility(const std::string &uri,
     const sptr<AccessibleAbilityConnection> &connection)
 {
     HILOG_DEBUG();
@@ -175,7 +175,7 @@ void AccessibilityAbilityManager::AddConnectingA11yAbility(const std::string &ur
 }
 
 // Ability-related
-void AccessibilityAbilityManager::AddEnabledAbility(const std::string &name)
+void MockAccessibilityAbilityManager::AddEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(abilitiesMutex_);
@@ -194,7 +194,7 @@ void AccessibilityAbilityManager::AddEnabledAbility(const std::string &name)
     }
 }
 
-RetError AccessibilityAbilityManager::RemoveEnabledAbility(const std::string &name)
+RetError MockAccessibilityAbilityManager::RemoveEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(abilitiesMutex_);
@@ -216,7 +216,7 @@ RetError AccessibilityAbilityManager::RemoveEnabledAbility(const std::string &na
     return RET_ERR_NOT_ENABLED;
 }
 
-void AccessibilityAbilityManager::AddInstalledAbility(AccessibilityAbilityInfo &abilityInfo)
+void MockAccessibilityAbilityManager::AddInstalledAbility(AccessibilityAbilityInfo &abilityInfo)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(abilitiesMutex_);
@@ -231,7 +231,7 @@ void AccessibilityAbilityManager::AddInstalledAbility(AccessibilityAbilityInfo &
     }
 }
 
-void AccessibilityAbilityManager::RemoveInstalledAbility(const std::string &bundleName)
+void MockAccessibilityAbilityManager::RemoveInstalledAbility(const std::string &bundleName)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(abilitiesMutex_);
@@ -244,7 +244,7 @@ void AccessibilityAbilityManager::RemoveInstalledAbility(const std::string &bund
     }
 }
 
-void AccessibilityAbilityManager::ClearInstalledAbility()
+void MockAccessibilityAbilityManager::ClearInstalledAbility()
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(installedAbilitiesMutex_);
@@ -252,7 +252,7 @@ void AccessibilityAbilityManager::ClearInstalledAbility()
     HILOG_DEBUG("Cleared all installed abilities");
 }
 
-const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAbilityManager::GetConnectedA11yAbilities()
+const std::map<std::string> MockAccessibilityAbilityManager::GetConnectedA11yAbilities()
 {
     HILOG_DEBUG();
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMap;
@@ -261,7 +261,7 @@ const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAbil
     return connectionMap;
 }
 
-const sptr<AccessibleAbilityConnection> AccessibilityAbilityManager::GetAccessibleAbilityConnection(
+const sptr<AccessibleAbilityConnection> MockAccessibilityAbilityManager::GetAccessibleAbilityConnection(
     const std::string &elementName)
 {
     HILOG_DEBUG();
@@ -274,7 +274,7 @@ const sptr<AccessibleAbilityConnection> AccessibilityAbilityManager::GetAccessib
     return connectedA11yAbilities_.GetAccessibilityAbilityByName(elementName);
 }
 
-sptr<AccessibleAbilityConnection> AccessibilityAbilityManager::GetConnectingA11yAbility(const std::string &uri)
+sptr<AccessibleAbilityConnection> MockAccessibilityAbilityManager::GetConnectingA11yAbility(const std::string &uri)
 {
     HILOG_DEBUG();
     if (uri.empty()) {
@@ -286,14 +286,14 @@ sptr<AccessibleAbilityConnection> AccessibilityAbilityManager::GetConnectingA11y
     return connectingA11yAbilities_.GetAccessibilityAbilityByUri(uri);
 }
 
-size_t AccessibilityAbilityManager::GetConnectingAbilitiesCount() const
+size_t MockAccessibilityAbilityManager::GetConnectingAbilitiesCount() const
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(connectingAbilitiesMutex_);
     return connectingA11yAbilities_.GetSize();
 }
 
-void AccessibilityAbilityManager::GetAbilitiesByState(AbilityStateType state,
+void MockAccessibilityAbilityManager::GetAbilitiesByState(AbilityStateType state,
     std::vector<AccessibilityAbilityInfo> &abilities)
 {
     HILOG_DEBUG();
@@ -315,7 +315,7 @@ void AccessibilityAbilityManager::GetAbilitiesByState(AbilityStateType state,
     }
 }
 
-void AccessibilityAbilityManager::GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities)
+void MockAccessibilityAbilityManager::GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities)
 {
     HILOG_DEBUG();
     HILOG_DEBUG("get disable abilities");
@@ -324,21 +324,21 @@ void AccessibilityAbilityManager::GetDisableAbilities(std::vector<AccessibilityA
     connectedA11yAbilities_.GetDisableAbilities(disabledAbilities);
 }
 
-const std::vector<std::string> &AccessibilityAbilityManager::GetEnabledAbilities()
+const std::vector<std::string> &MockAccessibilityAbilityManager::GetEnabledAbilities()
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(abilitiesMutex_);
     return enabledAbilities_;
 }
 
-const std::vector<AccessibilityAbilityInfo> &AccessibilityAbilityManager::GetInstalledAbilities() const
+const std::vector<AccessibilityAbilityInfo> &MockAccessibilityAbilityManager::GetInstalledAbilities() const
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(abilitiesMutex_);
     return installedAbilities_;
 }
 
-bool AccessibilityAbilityManager::GetInstalledAbilitiesFromBMS()
+bool MockAccessibilityAbilityManager::GetInstalledAbilitiesFromBMS()
 {
     HILOG_DEBUG();
 #ifdef OHOS_BUILD_ENABLE_HITRACE
@@ -358,7 +358,7 @@ bool AccessibilityAbilityManager::GetInstalledAbilitiesFromBMS()
     return true;
 }
 
-RetError AccessibilityAbilityManager::EnableAbility(const std::string &name, const uint32_t capabilities)
+RetError MockAccessibilityAbilityManager::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(managerMutex_);
@@ -409,7 +409,7 @@ RetError AccessibilityAbilityManager::EnableAbility(const std::string &name, con
     return RET_OK;
 }
 
-void AccessibilityAbilityManager::UpdateEnableAbilityListsState()
+void MockAccessibilityAbilityManager::UpdateEnableAbilityListsState()
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(observersMutex_);
@@ -421,7 +421,7 @@ void AccessibilityAbilityManager::UpdateEnableAbilityListsState()
     }
 }
 
-void AccessibilityAbilityManager::UpdateInstallAbilityListsState()
+void MockAccessibilityAbilityManager::UpdateInstallAbilityListsState()
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(observersMutex_);
@@ -433,7 +433,7 @@ void AccessibilityAbilityManager::UpdateInstallAbilityListsState()
     }
 }
 
-void AccessibilityAbilityManager::UpdateAbilities()
+void MockAccessibilityAbilityManager::UpdateAbilities()
 {
     HILOG_DEBUG();
     HILOG_DEBUG("installedAbilities size: %{public}zu.", installedAbilities_.size());
@@ -479,7 +479,7 @@ void AccessibilityAbilityManager::UpdateAbilities()
     }
 }
 
-bool AccessibilityAbilityManager::RemoveAbility(const std::string &bundleName)
+bool MockAccessibilityAbilityManager::RemoveAbility(const std::string &bundleName)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(managerMutex_);
@@ -527,7 +527,7 @@ bool AccessibilityAbilityManager::RemoveAbility(const std::string &bundleName)
     return removed;
 }
 
-void AccessibilityAbilityManager::AddAbility(const std::string &bundleName)
+void MockAccessibilityAbilityManager::AddAbility(const std::string &bundleName)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(managerMutex_);
@@ -577,7 +577,7 @@ void AccessibilityAbilityManager::AddAbility(const std::string &bundleName)
     }
 }
 
-void AccessibilityAbilityManager::ChangeAbility(const std::string &bundleName)
+void MockAccessibilityAbilityManager::ChangeAbility(const std::string &bundleName)
 {
     HILOG_DEBUG();
     if (bundleName.empty()) {
@@ -615,7 +615,7 @@ void AccessibilityAbilityManager::ChangeAbility(const std::string &bundleName)
     }
 }
 
-void AccessibilityAbilityManager::AddUITestClient(const sptr<IRemoteObject> &obj, const std::string &bundleName,
+void MockAccessibilityAbilityManager::AddUITestClient(const sptr<IRemoteObject> &obj, const std::string &bundleName,
     const std::string &abilityName)
 {
     HILOG_DEBUG();
@@ -656,7 +656,7 @@ void AccessibilityAbilityManager::AddUITestClient(const sptr<IRemoteObject> &obj
     HILOG_DEBUG("Added UI test client: %{public}s/%{public}s", bundleName.c_str(), abilityName.c_str());
 }
 
-void AccessibilityAbilityManager::RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection,
+void MockAccessibilityAbilityManager::RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection,
     const std::string &bundleName)
 {
     HILOG_DEBUG();
@@ -671,7 +671,7 @@ void AccessibilityAbilityManager::RemoveUITestClient(sptr<AccessibleAbilityConne
     HILOG_DEBUG("Removed UI test client for bundle: %{public}s", bundleName.c_str());
 }
 
-void AccessibilityAbilityManager::SetAbilityAutoStartState(const std::string &name, const bool state)
+void MockAccessibilityAbilityManager::SetAbilityAutoStartState(const std::string &name, const bool state)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(autoStartStateMutex_);
@@ -692,7 +692,7 @@ void AccessibilityAbilityManager::SetAbilityAutoStartState(const std::string &na
     }
 }
 
-bool AccessibilityAbilityManager::GetAbilityAutoStartState(const std::string &name)
+bool MockAccessibilityAbilityManager::GetAbilityAutoStartState(const std::string &name)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(autoStartStateMutex_);
@@ -712,7 +712,7 @@ bool AccessibilityAbilityManager::GetAbilityAutoStartState(const std::string &na
     }
 }
 
-void AccessibilityAbilityManager::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)
+void MockAccessibilityAbilityManager::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)
 {
     HILOG_DEBUG("start and bundleName[%{public}s].", bundleName.c_str());
     if (installedAbilities_.empty()) {
@@ -729,7 +729,7 @@ void AccessibilityAbilityManager::DelAutoStartPrefKeyInRemovePkg(const std::stri
     }
 }
 
-void AccessibilityAbilityManager::TryToSetScreenReaderState(const std::string &ability, bool state)
+void MockAccessibilityAbilityManager::TryToSetScreenReaderState(const std::string &ability, bool state)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(screenReaderMutex_);
@@ -754,14 +754,14 @@ void AccessibilityAbilityManager::TryToSetScreenReaderState(const std::string &a
     }
 }
 
-void AccessibilityAbilityManager::SetScreenReaderState(const bool state)
+void MockAccessibilityAbilityManager::SetScreenReaderState(const bool state)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(screenReaderMutex_);
     screenReaderState_ = state;
 }
 
-bool AccessibilityAbilityManager::GetScreenReaderState()
+bool MockAccessibilityAbilityManager::GetScreenReaderState()
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(screenReaderMutex_);
@@ -769,7 +769,7 @@ bool AccessibilityAbilityManager::GetScreenReaderState()
     return screenReaderState_;
 }
 
-bool AccessibilityAbilityManager::GetDefaultUserScreenReaderState()
+bool MockAccessibilityAbilityManager::GetDefaultUserScreenReaderState()
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(screenReaderMutex_);
@@ -780,7 +780,7 @@ bool AccessibilityAbilityManager::GetDefaultUserScreenReaderState()
 }
 
 // Event-related
-void AccessibilityAbilityManager::AddNeedEvent(const std::string &name, const std::vector<uint32_t> &needEvents)
+void MockAccessibilityAbilityManager::AddNeedEvent(const std::string &name, const std::vector<uint32_t> &needEvents)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(eventsMutex_);
@@ -808,7 +808,7 @@ void AccessibilityAbilityManager::AddNeedEvent(const std::string &name, const st
     UpdateNeedEvents();
 }
 
-void AccessibilityAbilityManager::RemoveNeedEvent(const std::string &name)
+void MockAccessibilityAbilityManager::RemoveNeedEvent(const std::string &name)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(eventsMutex_);
@@ -826,7 +826,7 @@ void AccessibilityAbilityManager::RemoveNeedEvent(const std::string &name)
     UpdateNeedEvents();
 }
 
-std::vector<uint32_t> AccessibilityAbilityManager::UpdateNeedEvents()
+std::vector<uint32_t> MockAccessibilityAbilityManager::UpdateNeedEvents()
 {
     HILOG_DEBUG();
     std::unordered_set<uint32_t> uniqueEvents;
@@ -846,26 +846,26 @@ std::vector<uint32_t> AccessibilityAbilityManager::UpdateNeedEvents()
     return needEvents_;
 }
 
-std::vector<uint32_t> AccessibilityAbilityManager::GetNeedEvents() const
+std::vector<uint32_t> MockAccessibilityAbilityManager::GetNeedEvents() const
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(eventsMutex_);
     return needEvents_;
 }
 
-void AccessibilityAbilityManager::OnAccountSwitched()
+void MockAccessibilityAbilityManager::OnAccountSwitched()
 {
     HILOG_INFO("Account switch cleanup completed for accountId: %{public}d", accountId_);
 }
 
-bool AccessibilityAbilityManager::IsExistCapability(Capability capability)
+bool MockAccessibilityAbilityManager::IsExistCapability(Capability capability)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(connectedAbilitiesMutex_);
     return connectedA11yAbilities_.IsExistCapability(capability);
 }
 
-void AccessibilityAbilityManager::SetConfig(std::shared_ptr<AccessibilitySettingsConfig> config)
+void MockAccessibilityAbilityManager::SetConfig(std::shared_ptr<AccessibilitySettingsConfig> config)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(managerMutex_);
@@ -873,7 +873,7 @@ void AccessibilityAbilityManager::SetConfig(std::shared_ptr<AccessibilitySetting
 }
 
 
-void AccessibilityAbilityManager::GetImportantEnabledAbilities(
+void MockAccessibilityAbilityManager::GetImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities) const
 {
     HILOG_DEBUG();
@@ -906,7 +906,7 @@ void AccessibilityAbilityManager::GetImportantEnabledAbilities(
     }
 }
 
-void AccessibilityAbilityManager::UpdateImportantEnabledAbilities(
+void MockAccessibilityAbilityManager::UpdateImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities)
 {
     HILOG_DEBUG();
@@ -935,7 +935,7 @@ void AccessibilityAbilityManager::UpdateImportantEnabledAbilities(
     }
 }
 
-void AccessibilityAbilityManager::UpdateAutoStartEnabledAbilities()
+void MockAccessibilityAbilityManager::UpdateAutoStartEnabledAbilities()
 {
     HILOG_DEBUG();
     if (accountId_ == -1) {
@@ -968,7 +968,7 @@ void AccessibilityAbilityManager::UpdateAutoStartEnabledAbilities()
 }
 
 // AccessibilityAbility nested class implementation
-void AccessibilityAbilityManager::AccessibilityAbility::AddAccessibilityAbility(const std::string &uri,
+void MockAccessibilityAbilityManager::AccessibilityAbility::AddAccessibilityAbility(const std::string &uri,
     const sptr<AccessibleAbilityConnection> &connection)
 {
     HILOG_DEBUG();
@@ -986,7 +986,7 @@ void AccessibilityAbilityManager::AccessibilityAbility::AddAccessibilityAbility(
     HILOG_DEBUG("Added accessibility ability: %{private}s", uri.c_str());
 }
 
-sptr<AccessibleAbilityConnection> AccessibilityAbilityManager::AccessibilityAbility::GetAccessibilityAbilityByName(
+sptr<AccessibleAbilityConnection> MockAccessibilityAbilityManager::AccessibilityAbility::GetAccessibilityAbilityByName(
     const std::string &elementName)
 {
     HILOG_DEBUG();
@@ -1008,7 +1008,7 @@ sptr<AccessibleAbilityConnection> AccessibilityAbilityManager::AccessibilityAbil
     return nullptr;
 }
 
-sptr<AccessibleAbilityConnection> AccessibilityAbilityManager::AccessibilityAbility::GetAccessibilityAbilityByUri(
+sptr<AccessibleAbilityConnection> MockAccessibilityAbilityManager::AccessibilityAbility::GetAccessibilityAbilityByUri(
     const std::string &uri)
 {
     HILOG_DEBUG();
@@ -1022,7 +1022,7 @@ sptr<AccessibleAbilityConnection> AccessibilityAbilityManager::AccessibilityAbil
     return (it != connectionMap_.end()) ? it->second : nullptr;
 }
 
-void AccessibilityAbilityManager::AccessibilityAbility::GetAccessibilityAbilities(
+void MockAccessibilityAbilityManager::AccessibilityAbility::GetAccessibilityAbilities(
     std::vector<sptr<AccessibleAbilityConnection>> &connectionList)
 {
     HILOG_DEBUG();
@@ -1036,7 +1036,7 @@ void AccessibilityAbilityManager::AccessibilityAbility::GetAccessibilityAbilitie
     }
 }
 
-void AccessibilityAbilityManager::AccessibilityAbility::GetAbilitiesInfo(
+void MockAccessibilityAbilityManager::AccessibilityAbility::GetAbilitiesInfo(
     std::vector<AccessibilityAbilityInfo> &abilities)
 {
     HILOG_DEBUG();
@@ -1050,7 +1050,7 @@ void AccessibilityAbilityManager::AccessibilityAbility::GetAbilitiesInfo(
     }
 }
 
-bool AccessibilityAbilityManager::AccessibilityAbility::IsExistCapability(Capability capability)
+bool MockAccessibilityAbilityManager::AccessibilityAbility::IsExistCapability(Capability capability)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -1065,7 +1065,7 @@ bool AccessibilityAbilityManager::AccessibilityAbility::IsExistCapability(Capabi
     return false;
 }
 
-void AccessibilityAbilityManager::AccessibilityAbility::GetAccessibilityAbilitiesMap(
+void MockAccessibilityAbilityManager::AccessibilityAbility::GetAccessibilityAbilitiesMap(
     std::map<std::string, sptr<AccessibleAbilityConnection>> &connectionMap)
 {
     HILOG_DEBUG();
@@ -1073,7 +1073,7 @@ void AccessibilityAbilityManager::AccessibilityAbility::GetAccessibilityAbilitie
     connectionMap = connectionMap_;
 }
 
-void AccessibilityAbilityManager::AccessibilityAbility::GetDisableAbilities(
+void MockAccessibilityAbilityManager::AccessibilityAbility::GetDisableAbilities(
     std::vector<AccessibilityAbilityInfo> &disabledAbilities)
 {
     HILOG_DEBUG();
@@ -1089,7 +1089,7 @@ void AccessibilityAbilityManager::AccessibilityAbility::GetDisableAbilities(
         disabledAbilities.end());
 }
 
-int32_t AccessibilityAbilityManager::AccessibilityAbility::GetSizeByUri(const std::string &uri)
+int32_t MockAccessibilityAbilityManager::AccessibilityAbility::GetSizeByUri(const std::string &uri)
 {
     HILOG_DEBUG();
     if (uri.empty()) {
@@ -1100,7 +1100,7 @@ int32_t AccessibilityAbilityManager::AccessibilityAbility::GetSizeByUri(const st
     return connectionMap_.count(uri);
 }
 
-void AccessibilityAbilityManager::AccessibilityAbility::RemoveAccessibilityAbilityByName(
+void MockAccessibilityAbilityManager::AccessibilityAbility::RemoveAccessibilityAbilityByName(
     const std::string &bundleName, bool &result)
 {
     HILOG_DEBUG();
@@ -1122,7 +1122,7 @@ void AccessibilityAbilityManager::AccessibilityAbility::RemoveAccessibilityAbili
     }
 }
 
-void AccessibilityAbilityManager::AccessibilityAbility::RemoveAccessibilityAbilityByUri(const std::string &uri)
+void MockAccessibilityAbilityManager::AccessibilityAbility::RemoveAccessibilityAbilityByUri(const std::string &uri)
 {
     HILOG_DEBUG();
     if (uri.empty()) {
@@ -1136,7 +1136,7 @@ void AccessibilityAbilityManager::AccessibilityAbility::RemoveAccessibilityAbili
     }
 }
 
-void AccessibilityAbilityManager::AccessibilityAbility::Clear()
+void MockAccessibilityAbilityManager::AccessibilityAbility::Clear()
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -1144,7 +1144,7 @@ void AccessibilityAbilityManager::AccessibilityAbility::Clear()
     HILOG_DEBUG("Cleared all accessibility abilities");
 }
 
-size_t AccessibilityAbilityManager::AccessibilityAbility::GetSize() const
+size_t MockAccessibilityAbilityManager::AccessibilityAbility::GetSize() const
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
