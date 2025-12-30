@@ -23,6 +23,9 @@
 #include "api_reporter_helper.h"
 #include "rules/rules_checker.h"
 #include "common_event_manager.h"
+#ifdef OHOS_BUILD_ENABLE_HITRACE
+#include <hitrace_meter.h>
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
 namespace OHOS {
 namespace Accessibility {
@@ -200,6 +203,9 @@ bool AccessibilitySystemAbilityClientImpl::NeedToConnect()
 
 void AccessibilitySystemAbilityClientImpl::ConnectAndInit()
 {
+#ifdef OHOS_BUILD_ENABLE_HITRACE
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "ConnectAndInit");
+#endif // OHOS_BUILD_ENABLE_HITRACE
     HILOG_INFO("Connect and init start");
     std::lock_guard<ffrt::mutex> lock(mutex_);
     if (serviceProxy_) {
