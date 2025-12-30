@@ -124,6 +124,13 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
         return false;
     }
 
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_MOVE ||
+        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_IN_WINDOW ||
+        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_OUT_WINDOW) {
+        EventTransmission::OnPointerEvent(event);
+        return false;
+    }
+
     switch (state_) {
         case READY_STATE:
             CacheEvents(event);
