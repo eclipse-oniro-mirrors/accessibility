@@ -449,6 +449,7 @@ RetError AccessibilitySettingsConfig::SetAnimationOffState(const bool state)
         return ret;
     }
     animationOffState_ = state;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityState();
     return ret;
 }
 

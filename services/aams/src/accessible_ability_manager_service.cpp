@@ -2851,7 +2851,6 @@ ErrCode AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
         return RET_ERR_NO_PERMISSION;
     }
     auto ret = accessibilitySettings_->SetAnimationOffState(state);
-    UpdateAccessibilityState();
     return ret;
 }
 
