@@ -63,6 +63,8 @@ public:
     RetError RegisterObserver(const std::string& key, AccessibilitySettingObserver::UpdateFunc& func);
     RetError UnregisterObserver(const std::string& key);
 
+    RetError ClearObservers();
+
 private:
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     std::shared_ptr<DataShare::DataShareHelper> CreateDatashareHelper();

@@ -633,5 +633,25 @@ int32_t AccessibilityAccountData::GetReadableRules(std::string &readableRules)
 {
     return 0;
 }
+
+void AccessibilityAccountData::AddAppStateObserverAbility(
+    const std::string& uri, const sptr<AccessibleAbilityConnection>& connection)
+{
+    (void)uri;
+    (void)connection;
+}
+void AccessibilityAccountData::RemoveAppStateObserverAbility(const std::string& uri)
+{
+    (void)uri;
+}
+sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAppStateObserverAbility(const std::string& uri)
+{
+    return nullptr;
+}
+
+void AccessibilityAccountData::NotifyExtensionServiceDeath(const std::string& uri)
+{
+    (void)uri;
+}
 } // namespace Accessibility
 } // namespace OHOS

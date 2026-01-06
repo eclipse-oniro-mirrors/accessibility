@@ -151,8 +151,17 @@ void AccessibilityAccountData::OnAccountSwitched()
     enabledAbilities_.clear();
     std::lock_guard lock(asacConnectionsMutex_);
     asacConnections_.clear();
-    if (config_ && config_->GetIgnoreRepeatClickState()) {
+    if (!config_) {
+        return;
+    }
+    if (config_->GetIgnoreRepeatClickState()) {
         IgnoreRepeatClickNotification::CancelNotification();
+    }
+    if (config_->GetDbHandle()) {
+        config_->GetDbHandle()->ClearObservers();
+    }
+    if (config_->GetSystemDbHandle()) {
+        config_->GetSystemDbHandle()->ClearObservers();
     }
 }
 
