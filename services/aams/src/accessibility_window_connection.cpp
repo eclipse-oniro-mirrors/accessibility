@@ -131,6 +131,7 @@ void AccessibilityWindowConnection::AddDeathRecipient(int32_t windowId, int32_t 
  
 void AccessibilityWindowConnection::ResetProxy()
 {
+    std::lock_guard<ffrt::mutex> lock(proxyMutex_);
     if (proxy_ && proxy_->AsObject() && proxyDeathRecipient_) {
         proxy_->AsObject()->RemoveDeathRecipient(proxyDeathRecipient_);
     }
@@ -141,6 +142,7 @@ void AccessibilityWindowConnection::ResetProxy()
  
 void AccessibilityWindowConnection::ResetBrokerProxy()
 {
+    std::lock_guard<ffrt::mutex> lock(proxyMutex_);
     if (brokerProxy_ && brokerProxy_->AsObject() && brokerProxyDeathRecipient_) {
         brokerProxy_->AsObject()->RemoveDeathRecipient(brokerProxyDeathRecipient_);
     }
