@@ -97,7 +97,7 @@
           "//foundation/barrierfree/accessibility/services/aams_ext:aams_ext"
         ]
       },
-      "inner_api": [
+      "inner_kits": [
         {
           "type": "so",
           "name": "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
