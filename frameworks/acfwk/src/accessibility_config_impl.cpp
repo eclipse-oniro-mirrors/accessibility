@@ -25,16 +25,12 @@ namespace AccessibilityConfig {
 namespace {
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
+    constexpr int32_t SA_CONNECT_TIMEOUT = 1000; // ms
     constexpr uint32_t DISPLAY_DALTONIZER_GREEN = 12;
     constexpr uint32_t DISPLAY_DALTONIZER_RED = 11;
     constexpr uint32_t DISPLAY_DALTONIZER_BLUE = 13;
     constexpr int32_t DESTRUCTOR_DELAY_TIME = 200 * 1000; // 200ms
     constexpr int32_t DESTRUCTOR_DELAY_COUNT = 5;
-#ifdef ACCESSIBILITY_WATCH_FEATURE
-    constexpr int32_t SA_CONNECT_TIMEOUT = 2 * 1000; // ms
-#else
-    constexpr int32_t SA_CONNECT_TIMEOUT = 1000; // ms
-#endif
 }
 
 AccessibilityConfig::Impl::Impl()
@@ -54,23 +50,22 @@ AccessibilityConfig::Impl::~Impl()
         enableAbilityListsObserver_->OnclientDeleted();
     }
 
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetProxySafe();
-    if (proxy != nullptr) {
+    if (serviceProxy_ != nullptr) {
         ErrCode ret = Accessibility::RET_OK;
-        ret = proxy->DeRegisterCaptionObserver(captionObserver_->AsObject());
+        ret = serviceProxy_->DeRegisterCaptionObserver(captionObserver_->AsObject());
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister captionObserver failed.");
         }
-        ret = proxy->DeRegisterEnableAbilityListsObserver(enableAbilityListsObserver_->AsObject());
+        ret = serviceProxy_->DeRegisterEnableAbilityListsObserver(enableAbilityListsObserver_->AsObject());
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister EnableAbilityListsObserver failed.");
         }
-        ret = proxy->DeRegisterEnableAbilityCallbackObserver(
+        ret = serviceProxy_->DeRegisterEnableAbilityCallbackObserver(
             enableAbilityCallbackObserver_->AsObject());
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister EnableAbilityCallbackObserver failed.");
         }
-        ret = proxy->DeRegisterConfigObserver(configObserver_->AsObject());
+        ret = serviceProxy_->DeRegisterConfigObserver(configObserver_->AsObject());
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister configObserver failed.");
         }
@@ -88,10 +83,10 @@ AccessibilityConfig::Impl::~Impl()
             count++;
         }
  
-        sptr<IRemoteObject> object = proxy->AsObject();
+        sptr<IRemoteObject> object = serviceProxy_->AsObject();
         if (object != nullptr) {
             object->RemoveDeathRecipient(deathRecipient_);
-            SetProxySafe(nullptr);
+            serviceProxy_ = nullptr;
             captionObserver_ = nullptr;
             enableAbilityListsObserver_ = nullptr;
             enableAbilityCallbackObserver_ = nullptr;
@@ -106,6 +101,7 @@ AccessibilityConfig::Impl::~Impl()
 bool AccessibilityConfig::Impl::InitializeContext()
 {
     HILOG_DEBUG();
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     if (isInitialized_) {
         HILOG_DEBUG("Context has initialized");
         return true;
@@ -117,12 +113,11 @@ bool AccessibilityConfig::Impl::InitializeContext()
 void AccessibilityConfig::Impl::UnInitializeContext()
 {
     HILOG_DEBUG();
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetProxySafe();
-    if (proxy == nullptr) {
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Context UnInitializeContext failed");
         return;
     }
-    sptr<IRemoteObject> object = proxy->AsObject();
+    sptr<IRemoteObject> object = serviceProxy_->AsObject();
     ResetService(object);
 }
 
@@ -137,7 +132,6 @@ void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *
     if (strKey != SYSTEM_PARAMETER_AAMS_NAME || strValue != "true") {
         return;
     }
-    HILOG_DEBUG();
     Impl* implPtr = static_cast<Impl*>(context);
     if (implPtr->ConnectToServiceAsync() == true) {
         HILOG_INFO("ConnectToServiceAsync success.");
@@ -175,6 +169,7 @@ bool AccessibilityConfig::Impl::ConnectToService()
 bool AccessibilityConfig::Impl::ConnectToServiceAsync()
 {
     HILOG_DEBUG("ConnectToServiceAsync start.");
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
     if (InitAccessibilityServiceProxy()) {
         (void)RegisterToService();
         InitConfigValues();
@@ -189,10 +184,9 @@ bool AccessibilityConfig::Impl::ConnectToServiceAsync()
 bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
 {
     HILOG_DEBUG();
-    if (GetProxySafe() != nullptr) {
+    if (serviceProxy_ != nullptr) {
         return true;
     }
-    
     auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (samgr == nullptr) {
         return false;
@@ -207,22 +201,15 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
             }
         }
 
-        {
-            std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
-            if (serviceProxy_ != nullptr) {
-                HILOG_WARN("serviceProxy_ is already inited");
-                return true;
-            }
-            if (object->IsProxyObject() && !object->AddDeathRecipient(deathRecipient_)) {
-                HILOG_ERROR("Failed to add death recipient");
-                return false;
-            }
+        if (object->IsProxyObject() && !object->AddDeathRecipient(deathRecipient_)) {
+            HILOG_ERROR("Failed to add death recipient");
+            return false;
+        }
 
-            serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(object);
-            if (serviceProxy_ == nullptr) {
-                HILOG_ERROR("IAccessibleAbilityManagerService iface_cast failed");
-                return false;
-            }
+        serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(object);
+        if (serviceProxy_ == nullptr) {
+            HILOG_ERROR("IAccessibleAbilityManagerService iface_cast failed");
+            return false;
         }
         HILOG_DEBUG("InitAccessibilityServiceProxy success");
         return true;
@@ -239,7 +226,6 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
 
 bool AccessibilityConfig::Impl::LoadAccessibilityService()
 {
-    HILOG_DEBUG();
     std::unique_lock<ffrt::mutex> lock(conVarMutex_);
     sptr<AccessibilityLoadCallback> loadCallback = new AccessibilityLoadCallback(this);
     if (loadCallback == nullptr) {
@@ -254,8 +240,7 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
         return false;
     }
     auto waitStatus = proxyConVar_.wait_for(lock, std::chrono::milliseconds(SA_CONNECT_TIMEOUT),
-        [this]() { return GetProxySafe() != nullptr; });
-    HILOG_DEBUG("LoadAccessibilityService end, waitStatus = %{public}d", waitStatus);
+        [this]() { return serviceProxy_ != nullptr; });
     if (!waitStatus) {
         return false;
     }
@@ -266,20 +251,11 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
 
 void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
-    HILOG_DEBUG("LoadSystemAbilitySuccess.");
     std::lock_guard<ffrt::mutex> lock(conVarMutex_);
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     if (retSysParam >= 0 && std::strcmp(value, "true")) {
         do {
-            if (serviceProxy_ != nullptr) {
-                break;
-            }
-            std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
-            if (serviceProxy_ != nullptr) {
-                HILOG_WARN("serviceProxy_ is already inited");
-                break;
-            }
             auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
             if (samgr == nullptr) {
                 break;
@@ -310,8 +286,7 @@ void AccessibilityConfig::Impl::LoadSystemAbilityFail()
 
 bool AccessibilityConfig::Impl::RegisterToService()
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetProxySafe();
-    if (proxy == nullptr) {
+    if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Service is not connected");
         return false;
     }
@@ -327,7 +302,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
             HILOG_ERROR("Create captionObserver_ failed.");
             return false;
         }
-        ErrCode ret = proxy->RegisterCaptionObserver(captionObserver_);
+        ErrCode ret = serviceProxy_->RegisterCaptionObserver(captionObserver_);
         if (ret != ERR_OK) {
             captionObserver_ = nullptr;
             HILOG_ERROR("Register captionObserver failed.");
@@ -341,7 +316,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
             HILOG_ERROR("Create enableAbilityListsObserver_ failed.");
             return false;
         }
-        proxy->RegisterEnableAbilityListsObserver(enableAbilityListsObserver_);
+        serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserver_);
     }
 
     if (!enableAbilityCallbackObserver_) {
@@ -351,7 +326,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
             HILOG_ERROR("Create enableAbilityCallbackObserver_ failed.");
             return false;
         }
-        proxy->RegisterEnableAbilityCallbackObserver(enableAbilityCallbackObserver_);
+        serviceProxy_->RegisterEnableAbilityCallbackObserver(enableAbilityCallbackObserver_);
     }
 
     if (!configObserver_) {
@@ -360,7 +335,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
             HILOG_ERROR("Create configObserver_ failed.");
             return false;
         }
-        ErrCode ret = proxy->RegisterConfigObserver(configObserver_);
+        ErrCode ret = serviceProxy_->RegisterConfigObserver(configObserver_);
         if (ret != ERR_OK) {
             configObserver_ = nullptr;
             HILOG_ERROR("Register configObserver failed.");
@@ -372,41 +347,28 @@ bool AccessibilityConfig::Impl::RegisterToService()
     return true;
 }
 
-sptr<Accessibility::IAccessibleAbilityManagerService> AccessibilityConfig::Impl::GetProxySafe()
-{
-    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
-    return serviceProxy_;
-}
-
-void AccessibilityConfig::Impl::SetProxySafe(sptr<Accessibility::IAccessibleAbilityManagerService> proxy)
-{
-    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
-    serviceProxy_ = std::move(proxy);
-}
-
 sptr<Accessibility::IAccessibleAbilityManagerService> AccessibilityConfig::Impl::GetServiceProxy()
 {
-    if (GetProxySafe() == nullptr) {
+    if (serviceProxy_ == nullptr) {
         LoadAccessibilityService();
     }
-    return GetProxySafe();
+    return serviceProxy_;
 }
 
 void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
 {
     HILOG_DEBUG();
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetProxySafe();
-    if (proxy != nullptr) {
-        sptr<IRemoteObject> object = proxy->AsObject();
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
+    if (serviceProxy_ != nullptr) {
+        sptr<IRemoteObject> object = serviceProxy_->AsObject();
         if (object != nullptr && (remote == object)) {
             object->RemoveDeathRecipient(deathRecipient_);
-            SetProxySafe(nullptr);
+            serviceProxy_ = nullptr;
             captionObserver_ = nullptr;
             enableAbilityListsObserver_ = nullptr;
             enableAbilityCallbackObserver_ = nullptr;
             configObserver_ = nullptr;
             isInitialized_ = false;
-            isConfigInit_ = false;
             HILOG_INFO("ResetService ok");
         }
     }
@@ -438,13 +400,13 @@ bool AccessibilityConfig::Impl::CheckSaStatus()
 Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_INFO("name = [%{private}s] capabilities = [%{private}u]", name.c_str(), capabilities);
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->EnableAbility(name,
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->EnableAbility(name,
         capabilities));
     return ret;
 }
@@ -452,36 +414,36 @@ Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(const std::stri
 Accessibility::RetError AccessibilityConfig::Impl::DisableAbility(const std::string &name)
 {
     HILOG_INFO("name = [%{private}s]", name.c_str());
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->DisableAbility(name));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->DisableAbility(name));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetMagnificationState(const bool state)
 {
     HILOG_INFO("state = [%{public}d]", state);
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
     Accessibility::RetError ret = static_cast<Accessibility::RetError>(
-        proxy->SetMagnificationState(state));
+        GetServiceProxy()->SetMagnificationState(state));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsState(bool &state, bool isPermissionRequired)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetCaptionState(state,
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetCaptionState(state,
         isPermissionRequired));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
@@ -490,14 +452,14 @@ Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsState(bool &state,
 Accessibility::RetError AccessibilityConfig::Impl::GetCaptionsProperty(CaptionProperty &caption,
     bool isPermissionRequired)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
     CaptionPropertyParcel captionParcel(caption);
     Accessibility::RetError ret = static_cast<Accessibility::RetError>(
-        proxy->GetCaptionProperty(captionParcel, isPermissionRequired));
+        GetServiceProxy()->GetCaptionProperty(captionParcel, isPermissionRequired));
     caption = static_cast<CaptionProperty>(captionParcel);
     HILOG_INFO();
     return ret;
@@ -507,13 +469,13 @@ Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsProperty(const Cap
     bool isPermissionRequired)
 {
     HILOG_INFO();
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
     CaptionPropertyParcel captionParcel(caption);
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetCaptionProperty(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetCaptionProperty(
         captionParcel, isPermissionRequired));
     return ret;
 }
@@ -521,12 +483,12 @@ Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsProperty(const Cap
 Accessibility::RetError AccessibilityConfig::Impl::SetCaptionsState(const bool state, bool isPermissionRequired)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetCaptionState(state,
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetCaptionState(state,
         isPermissionRequired));
     return ret;
 }
@@ -635,12 +597,12 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerCaptionPropertyChanged
 Accessibility::RetError AccessibilityConfig::Impl::SetScreenMagnificationState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetScreenMagnificationState(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetScreenMagnificationState(
         state));
     return ret;
 }
@@ -648,36 +610,36 @@ Accessibility::RetError AccessibilityConfig::Impl::SetScreenMagnificationState(c
 Accessibility::RetError AccessibilityConfig::Impl::SetShortKeyState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetShortKeyState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetShortKeyState(state));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetMouseKeyState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetMouseKeyState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetMouseKeyState(state));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetScreenMagnificationState(bool &state)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetScreenMagnificationState(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetScreenMagnificationState(
         state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
@@ -685,26 +647,26 @@ Accessibility::RetError AccessibilityConfig::Impl::GetScreenMagnificationState(b
 
 Accessibility::RetError AccessibilityConfig::Impl::GetShortKeyState(bool &state)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetShortKeyState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetShortKeyState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetMouseKeyState(bool &state)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetMouseKeyState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetMouseKeyState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
 }
@@ -1032,74 +994,74 @@ void AccessibilityConfig::Impl::NotifyAnimationOffChanged(
 Accessibility::RetError AccessibilityConfig::Impl::SetMouseAutoClick(const int32_t time)
 {
     HILOG_INFO("time = [%{public}d]", time);
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetMouseAutoClick(time));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetMouseAutoClick(time));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetShortkeyTarget(const std::string& name)
 {
     HILOG_INFO("name = [%{public}s]", name.c_str());
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetShortkeyTarget(name));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetShortkeyTarget(name));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetShortkeyMultiTarget(const std::vector<std::string>& name)
 {
     HILOG_INFO("start");
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetShortkeyMultiTarget(name));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetShortkeyMultiTarget(name));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &time)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetMouseAutoClick(time));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetMouseAutoClick(time));
     HILOG_INFO("time = [%{public}d]", time);
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetShortkeyTarget(std::string &name)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetShortkeyTarget(name));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetShortkeyTarget(name));
     HILOG_INFO("name = [%{public}s]", name.c_str());
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetShortkeyMultiTarget(std::vector<std::string> &name)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetShortkeyMultiTarget(name));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetShortkeyMultiTarget(name));
     return ret;
 }
 
@@ -1264,12 +1226,12 @@ void AccessibilityConfig::Impl::NotifyIgnoreRepeatClickStateChanged(
 Accessibility::RetError AccessibilityConfig::Impl::SetHighContrastTextState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetHighContrastTextState(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetHighContrastTextState(
         state));
     return ret;
 }
@@ -1277,36 +1239,36 @@ Accessibility::RetError AccessibilityConfig::Impl::SetHighContrastTextState(cons
 Accessibility::RetError AccessibilityConfig::Impl::SetInvertColorState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetInvertColorState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetInvertColorState(state));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetDaltonizationState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetDaltonizationState(state));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationColorFilter(const DALTONIZATION_TYPE type)
 {
     HILOG_INFO("type = [%{public}u]", static_cast<uint32_t>(type));
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetDaltonizationColorFilter(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetDaltonizationColorFilter(
         type));
     return ret;
 }
@@ -1314,36 +1276,36 @@ Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationColorFilter(c
 Accessibility::RetError AccessibilityConfig::Impl::SetContentTimeout(const uint32_t timer)
 {
     HILOG_INFO("timer = [%{public}u]", timer);
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetContentTimeout(timer));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetContentTimeout(timer));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetAnimationOffState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetAnimationOffState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetAnimationOffState(state));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetBrightnessDiscount(const float brightness)
 {
     HILOG_INFO("brightness = [%{public}f]", brightness);
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetBrightnessDiscount(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetBrightnessDiscount(
         brightness));
     return ret;
 }
@@ -1351,48 +1313,48 @@ Accessibility::RetError AccessibilityConfig::Impl::SetBrightnessDiscount(const f
 Accessibility::RetError AccessibilityConfig::Impl::SetAudioMonoState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetAudioMonoState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetAudioMonoState(state));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetAudioBalance(const float balance)
 {
     HILOG_INFO("balance = [%{public}f]", balance);
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetAudioBalance(balance));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetAudioBalance(balance));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetClickResponseTime(const CLICK_RESPONSE_TIME time)
 {
     HILOG_INFO("click response time = [%{public}u]", time);
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetClickResponseTime(time));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetClickResponseTime(time));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetIgnoreRepeatClickState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetIgnoreRepeatClickState(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetIgnoreRepeatClickState(
         state));
     return ret;
 }
@@ -1400,38 +1362,38 @@ Accessibility::RetError AccessibilityConfig::Impl::SetIgnoreRepeatClickState(con
 Accessibility::RetError AccessibilityConfig::Impl::SetIgnoreRepeatClickTime(const IGNORE_REPEAT_CLICK_TIME time)
 {
     HILOG_INFO("ignore repeat click time = [%{public}u]", time);
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->SetIgnoreRepeatClickTime(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->SetIgnoreRepeatClickTime(
         time));
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetInvertColorState(bool &state)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetInvertColorState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetInvertColorState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetHighContrastTextState(bool &state)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetHighContrastTextState(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetHighContrastTextState(
         state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
@@ -1439,27 +1401,27 @@ Accessibility::RetError AccessibilityConfig::Impl::GetHighContrastTextState(bool
 
 Accessibility::RetError AccessibilityConfig::Impl::GetDaltonizationState(bool &state)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetDaltonizationState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetDaltonizationState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetDaltonizationColorFilter(DALTONIZATION_TYPE &type)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
     uint32_t filterType = 0;
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetDaltonizationColorFilter(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetDaltonizationColorFilter(
         filterType));
     type = static_cast<DALTONIZATION_TYPE>(filterType);
     HILOG_INFO("type = [%{public}u]", static_cast<uint32_t>(type));
@@ -1468,39 +1430,39 @@ Accessibility::RetError AccessibilityConfig::Impl::GetDaltonizationColorFilter(D
 
 Accessibility::RetError AccessibilityConfig::Impl::GetContentTimeout(uint32_t &timer)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetContentTimeout(timer));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetContentTimeout(timer));
     HILOG_INFO("timer = [%{public}u]", timer);
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetAnimationOffState(bool &state)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetAnimationOffState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetAnimationOffState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetBrightnessDiscount(float &brightness)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetBrightnessDiscount(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetBrightnessDiscount(
         brightness));
     HILOG_INFO("brightness = [%{public}f]", brightness);
     return ret;
@@ -1508,40 +1470,40 @@ Accessibility::RetError AccessibilityConfig::Impl::GetBrightnessDiscount(float &
 
 Accessibility::RetError AccessibilityConfig::Impl::GetAudioMonoState(bool &state)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetAudioMonoState(state));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetAudioMonoState(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetAudioBalance(float &balance)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetAudioBalance(balance));
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetAudioBalance(balance));
     HILOG_INFO("balance = [%{public}f]", balance);
     return ret;
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetClickResponseTime(CLICK_RESPONSE_TIME &time)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
     uint32_t responseTime = 0;
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetClickResponseTime(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetClickResponseTime(
         responseTime));
     time = static_cast<CLICK_RESPONSE_TIME>(responseTime);
     HILOG_INFO("click response time = [%{public}u]", time);
@@ -1550,13 +1512,13 @@ Accessibility::RetError AccessibilityConfig::Impl::GetClickResponseTime(CLICK_RE
 
 Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickState(bool &state)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetIgnoreRepeatClickState(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetIgnoreRepeatClickState(
         state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
@@ -1564,14 +1526,14 @@ Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickState(boo
 
 Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_TIME &time)
 {
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
 
     uint32_t ignoreRepeatClickTime = 0;
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetIgnoreRepeatClickTime(
+    Accessibility::RetError ret = static_cast<Accessibility::RetError>(GetServiceProxy()->GetIgnoreRepeatClickTime(
         ignoreRepeatClickTime));
     time = static_cast<IGNORE_REPEAT_CLICK_TIME>(ignoreRepeatClickTime);
     HILOG_INFO("ignore repeat click time = [%{public}u]", time);
@@ -2002,14 +1964,10 @@ void AccessibilityConfig::Impl::InitConfigValues()
     Accessibility::AccessibilityConfigData configData;
     CaptionProperty caption = {};
     CaptionPropertyParcel captionParcel(caption);
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetProxySafe();
-    if (proxy == nullptr) {
+    if (serviceProxy_ == nullptr) {
         return;
     }
-    if (isConfigInit_) {
-        return;
-    }
-    proxy->GetAllConfigs(configData, captionParcel);
+    serviceProxy_->GetAllConfigs(configData, captionParcel);
     
     std::lock_guard<ffrt::mutex> lock(configObserversMutex_);
     highContrastText_ = configData.highContrastText_;
@@ -2032,7 +1990,6 @@ void AccessibilityConfig::Impl::InitConfigValues()
     ignoreRepeatClickTime_ = configData.ignoreRepeatClickTime_;
     ignoreRepeatClickState_ = configData.ignoreRepeatClickState_;
     captionProperty_ = static_cast<CaptionProperty>(captionParcel);
-    isConfigInit_ = true;
     NotifyDefaultConfigs();
     HILOG_DEBUG("ConnectToService Success");
 }
@@ -2155,20 +2112,20 @@ void AccessibilityConfig::Impl::AccessibilityLoadCallback::OnLoadSystemAbilityFa
 Accessibility::RetError AccessibilityConfig::Impl::SetEnhanceConfig(uint8_t *cfg, uint32_t cfgLen)
 {
     HILOG_INFO();
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     if (cfg == nullptr || cfgLen <= 0) {
         HILOG_ERROR("SecCompEnhance cfg info is empty");
         return Accessibility::RET_ERR_NULLPTR;
     }
  
-    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
-    if (proxy == nullptr) {
+    if (GetServiceProxy() == nullptr) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
     }
     AccessibilitySecCompRawdata rawData;
     rawData.size = cfgLen;
     rawData.data = cfg;
-    return static_cast<Accessibility::RetError>(proxy->SetEnhanceConfig(rawData));
+    return static_cast<Accessibility::RetError>(GetServiceProxy()->SetEnhanceConfig(rawData));
 }
 } // namespace AccessibilityConfig
 } // namespace OHOS
