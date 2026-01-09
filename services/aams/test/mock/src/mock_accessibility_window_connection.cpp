@@ -98,5 +98,72 @@ void AccessibilityWindowConnection::EraseProxy(const int32_t treeId)
         cardProxy_.Erase(treeId);
     }
 }
+
+void AccessibilityWindowConnection::AddDeathRecipient(int32_t windowId, int32_t accountId, bool isBroker)
+{
+    sptr<IAccessibilityElementOperator> elementOperator = isBroker ? brokerProxy_ : proxy_;
+    if (!elementOperator || !elementOperator->AsObject()) {
+        return;
+    }
+    sptr<IRemoteObject::DeathRecipient> deathRecipient =
+        new(std::nothrow) InteractionOperationDeathRecipient(windowId, accountId);
+    if (!deathRecipient) {
+        HILOG_ERROR("Create interactionOperationDeathRecipient failed");
+        return;
+    }
+    if (elementOperator->AsObject()->AddDeathRecipient(deathRecipient)) {
+        if (isBroker) {
+            brokerProxyDeathRecipient_ = deathRecipient;
+        } else {
+            proxyDeathRecipient_ = deathRecipient;
+        }
+    }
+}
+ 
+void AccessibilityWindowConnection::AddTreeDeathRecipient(int32_t windowId, int32_t accountId, int32_t treeId)
+{
+    sptr<IAccessibilityElementOperator> elementOperator = GetCardProxy(treeId);
+    if (!elementOperator || !elementOperator->AsObject()) {
+        return;
+    }
+    sptr<IRemoteObject::DeathRecipient> deathRecipient =
+        new(std::nothrow) InteractionOperationDeathRecipient(windowId, treeId, accountId);
+    if (!deathRecipient) {
+        HILOG_ERROR("Create interactionOperationDeathRecipient failed");
+    }
+    if (elementOperator->AsObject()->AddDeathRecipient(deathRecipient)) {
+        childTreeProxyDeathRecipient_.EnsureInsert(treeId, deathRecipient);
+    }
+}
+ 
+void AccessibilityWindowConnection::RemoveTreeDeathRecipient(int32_t treeId)
+{
+    sptr<IAccessibilityElementOperator> elementOperator = GetCardProxy(treeId);
+    if (!elementOperator || !elementOperator->AsObject()) {
+        return;
+    }
+    sptr<IRemoteObject::DeathRecipient> deathRecipient = nullptr;
+    childTreeProxyDeathRecipient_.Find(treeId, deathRecipient);
+    if (!deathRecipient) {
+        return;
+    }
+    elementOperator->AsObject()->RemoveDeathRecipient(deathRecipient);
+    childTreeProxyDeathRecipient_.Erase(treeId);
+}
+ 
+void AccessibilityWindowConnection::InteractionOperationDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &remote)
+{
+    HILOG_INFO();
+}
+ 
+void AccessibilityWindowConnection::ResetProxy()
+{
+    HILOG_INFO();
+}
+ 
+void AccessibilityWindowConnection::ResetBrokerProxy()
+{
+    HILOG_INFO();
+}
 } // namespace Accessibility
 } // namespace OHOS

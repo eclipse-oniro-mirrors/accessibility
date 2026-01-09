@@ -34,6 +34,15 @@ public:
     inline sptr<IAccessibilityElementOperator> GetProxy()
     {
         std::lock_guard<ffrt::mutex> lock(proxyMutex_);
+        if (isUseBrokerProxy_) {
+            return brokerProxy_;
+        } else {
+            return proxy_;
+        }
+    }
+
+    inline sptr<IAccessibilityElementOperator> GetRawProxy()
+    {
         return proxy_;
     }
 
@@ -41,6 +50,12 @@ public:
     {
         std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         proxy_ = proxy;
+    }
+
+    inline void SetBrokerProxy(sptr<IAccessibilityElementOperator> proxy)
+    {
+        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
+        brokerProxy_ = proxy;
     }
 
     inline int GetCardProxySize()
@@ -58,6 +73,20 @@ public:
         return isAnco_;
     }
 
+    inline void SetUseBrokerFlag(bool flag)
+    {
+        isUseBrokerProxy_ = flag;
+    }
+ 
+    inline bool GetUseBrokerFlag()
+    {
+        return isUseBrokerProxy_;
+    }
+ 
+    void ResetProxy();
+ 
+    void ResetBrokerProxy();
+
     sptr<IAccessibilityElementOperator> GetCardProxy(const int32_t treeId);
 
     RetError SetCardProxy(const int32_t treeId, sptr<IAccessibilityElementOperator> operation);
@@ -74,16 +103,44 @@ public:
 
     void EraseProxy(const int32_t treeId);
 
+    void AddDeathRecipient(int32_t windowId, int32_t accountId, bool isBroker);
+ 
+    void AddTreeDeathRecipient(int32_t windowId, int32_t accountId, int32_t treeId);
+ 
+    void RemoveTreeDeathRecipient(int32_t treeId);
+
+private:
+    class InteractionOperationDeathRecipient final : public IRemoteObject::DeathRecipient {
+    public:
+        InteractionOperationDeathRecipient(int32_t windowId, int32_t accountId) : windowId_(windowId),
+            accountId_(accountId) {};
+        InteractionOperationDeathRecipient(int32_t windowId, int32_t treeId, int32_t accountId) : windowId_(windowId),
+            treeId_(treeId), accountId_(accountId) {};
+        ~InteractionOperationDeathRecipient() final = default;
+        DISALLOW_COPY_AND_MOVE(InteractionOperationDeathRecipient);
+ 
+        void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
+        int32_t windowId_ = INVALID_WINDOW_ID;
+        int32_t treeId_ = INVALID_TREE_ID;
+        int32_t accountId_ = 0;
+    };
+
 private:
     int32_t windowId_;
     int32_t accountId_;
     int32_t treeId_ = 0;
     SafeMap<int32_t, sptr<IAccessibilityElementOperator>> cardProxy_;
     sptr<IAccessibilityElementOperator> proxy_;
+    sptr<IAccessibilityElementOperator> brokerProxy_;
+    bool isUseBrokerProxy_ = false;
     SafeMap<int32_t, uint32_t> tokenIdMap_;
     SafeMap<int32_t, int64_t> treeIdParentId_;
     bool isAnco_ = false;
     ffrt::mutex proxyMutex_;
+
+    sptr<IRemoteObject::DeathRecipient> proxyDeathRecipient_;
+    sptr<IRemoteObject::DeathRecipient> brokerProxyDeathRecipient_;
+    SafeMap<int32_t, sptr<IRemoteObject::DeathRecipient>> childTreeProxyDeathRecipient_;
 };
 } // namespace Accessibility
 } // namespace OHOS

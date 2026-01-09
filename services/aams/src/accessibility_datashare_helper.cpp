@@ -339,6 +339,20 @@ RetError AccessibilityDatashareHelper::UnregisterObserver(const std::string& key
     return RET_ERR_FAILED;
 }
 
+RetError AccessibilityDatashareHelper::ClearObservers()
+{
+    std::lock_guard<ffrt::mutex> lock(observerMutex_);
+    RetError ret = RET_OK;
+    for (const auto& [key, observer] : settingObserverMap_) {
+        if (UnregisterObserver(observer) != ERR_OK) {
+            HILOG_ERROR("failed to unregister observer %{public}s", key.c_str());
+            ret = RET_ERR_FAILED;
+        }
+    }
+    settingObserverMap_.clear();
+    return ret;
+}
+
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
 std::shared_ptr<DataShare::DataShareHelper> AccessibilityDatashareHelper::CreateDatashareHelper()
 {

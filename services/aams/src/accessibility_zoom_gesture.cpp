@@ -124,6 +124,13 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
         return false;
     }
 
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_MOVE ||
+        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_IN_WINDOW ||
+        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_OUT_WINDOW) {
+        EventTransmission::OnPointerEvent(event);
+        return false;
+    }
+
     switch (state_) {
         case READY_STATE:
             CacheEvents(event);
@@ -317,6 +324,7 @@ void AccessibilityZoomGesture::RecognizeInZoomStateDownEvent(MMI::PointerEvent &
     zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
     if (pointerCount == POINTER_COUNT_1) {
         isLongPress_ = false;
+        isMoveValid_ = true;
         MMI::PointerEvent::PointerItem pointerItem;
         event.GetPointerItem(event.GetPointerId(), pointerItem);
         gestureType_ = fullScreenManager_->CheckTapOnHotArea(pointerItem.GetDisplayX(), pointerItem.GetDisplayY());
@@ -333,7 +341,7 @@ void AccessibilityZoomGesture::RecognizeInZoomStateDownEvent(MMI::PointerEvent &
         }
     } else if (pointerCount == POINTER_COUNT_2) {
         gestureType_ = INVALID_GESTURE_TYPE;
-        if (isLongPress_ || IsKnuckles(event)) {
+        if (isLongPress_ || IsKnuckles(event) || !isMoveValid_) {
             HILOG_INFO("not transferState sliding.");
             SendCacheEventsToNext();
         } else {
@@ -744,18 +752,22 @@ bool AccessibilityZoomGesture::IsMoveValid()
 
     if (!lastDownEvent_) {
         HILOG_DEBUG("The move event is invailid");
+        isMoveValid_ = false;
         return false;
     }
 
     if (CalcIntervalTime(lastDownEvent_, currentMoveEvent_) >= LONG_PRESS_TIMER) {
         HILOG_DEBUG("The time has exceeded the long press time");
+        isMoveValid_ = false;
         return false;
     }
 
     if (CalcSeparationDistance(lastDownEvent_, currentMoveEvent_) >= tapDistance_) {
         HILOG_DEBUG("The distance has exceeded the threshold");
+        isMoveValid_ = false;
         return false;
     }
+    isMoveValid_ = true;
     return true;
 }
 
