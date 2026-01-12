@@ -31,7 +31,8 @@ namespace {
         "itemCounts",
         "beforeText",
         "addedCount",
-        "removedCount"
+        "removedCount",
+        "currentIndex"
     };
 }
 
