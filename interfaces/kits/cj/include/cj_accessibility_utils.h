@@ -43,7 +43,7 @@ T GetValueFromStr(const std::unordered_map<std::string, T> &rMap, const std::str
     if (it != rMap.end()) {
         return it->second;
     } else {
-        HILOG_DEBUG("GetValueFromStr failed(%{public}s).", it->first.c_str());
+        HILOG_DEBUG("GetValueFromStr failed(%{public}s).", key.c_str());
         return defaultVal;
     }
 }
