@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import AccessibilityExtensionContext from 'application.AccessibilityExtensionContext';
-import AccessibilityElement from 'application.AccessibilityExtensionContext';
+import AccessibilityExtensionContext from './application/AccessibilityExtensionContext';
+import { AccessibilityElement, AccessibilityElementImpl } from './application/AccessibilityExtensionContext';
 import { KeyEvent } from '@ohos.multimodalInput.keyEvent';
 import { Key } from '@ohos.multimodalInput.keyEvent';
 import { Action } from '@ohos.multimodalInput.keyEvent';
@@ -40,7 +40,7 @@ export class AccessibilityExtensionAbility {
     }
 }
 
- interface AccessibilityEventInfo {
+export interface AccessibilityEventInfo {
     eventType: AccessibilityEventType;
     target?: AccessibilityElement;
     timestamp?: long;
@@ -49,7 +49,7 @@ export class AccessibilityExtensionAbility {
 
 export class AccessibilityEventInfoImpl implements AccessibilityEventInfo {
     eventType: AccessibilityEventType = AccessibilityEventType.TYPE_ACCESSIBILITY_FOCUS;
-    target?: AccessibilityElement = new AccessibilityElement();
+    target?: AccessibilityElement = new AccessibilityElementImpl();
     timestamp?: long = 0;
     extraInfo?: string = '';
 }
