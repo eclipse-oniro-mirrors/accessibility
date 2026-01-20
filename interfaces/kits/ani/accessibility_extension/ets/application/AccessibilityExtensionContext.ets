@@ -148,7 +148,7 @@ class AccessibilityElementCleaner {
     native cleanNative(): void
 }
 
-interface AccessibilityElement {
+export interface AccessibilityElement {
   getCursorPosition(callback: AsyncCallback<int>): void;
   getCursorPosition(): Promise<int>;
   enableScreenCurtain(isEnable: boolean): void;
