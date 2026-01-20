@@ -252,9 +252,7 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
 void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
     std::lock_guard<ffrt::mutex> lock(conVarMutex_);
-    char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
-    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
-    if (retSysParam >= 0 && std::strcmp(value, "true")) {
+    if (serviceProxy_ == nullptr) {
         do {
             auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
             if (samgr == nullptr) {
