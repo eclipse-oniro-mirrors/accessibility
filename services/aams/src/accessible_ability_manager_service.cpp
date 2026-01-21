@@ -1084,14 +1084,18 @@ ErrCode AccessibleAbilityManagerService::GetAbilityList(uint32_t abilityTypes, i
         HILOG_ERROR("Parameters check failed! stateType:%{public}d", stateType);
         return RET_ERR_INVALID_PARAM;
     }
-
+    auto resultInfos = std::make_shared<std::vector<AccessibilityAbilityInfoParcel>>();
+    if (resultInfos == nullptr) {
+        HILOG_ERROR("resultInfos is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
     auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
     if (syncPromise == nullptr) {
         HILOG_ERROR("syncPromise is nullptr.");
         return RET_ERR_NULLPTR;
     }
     ffrt::future syncFuture = syncPromise->get_future();
-    handler_->PostTask([this, syncPromise, &infos, abilityTypes, stateType]() {
+    handler_->PostTask([this, syncPromise, resultInfos, abilityTypes, stateType]() {
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Get current account data failed!!");
@@ -1106,10 +1110,10 @@ ErrCode AccessibleAbilityManagerService::GetAbilityList(uint32_t abilityTypes, i
             if (abilityTypes == AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL ||
                 (ability.GetAccessibilityAbilityType() & abilityTypes)) {
                 AccessibilityAbilityInfoParcel info(ability);
-                infos.push_back(info);
+                resultInfos->push_back(info);
             }
         }
-        HILOG_DEBUG("infos count is %{public}zu", infos.size());
+        HILOG_DEBUG("infos count is %{public}zu", resultInfos->size());
         syncPromise->set_value(RET_OK);
         }, "TASK_GET_ABILITY_LIST");
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_1000MS));
@@ -1117,6 +1121,7 @@ ErrCode AccessibleAbilityManagerService::GetAbilityList(uint32_t abilityTypes, i
         HILOG_ERROR("GetAbilityList Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
+    infos = *resultInfos;
     return syncFuture.get();
 }
 
