@@ -301,8 +301,6 @@ private:
     bool LoadAccessibilityService();
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
-    sptr<Accessibility::IAccessibleAbilityManagerService> GetProxySafe();
-    void SetProxySafe(sptr<Accessibility::IAccessibleAbilityManagerService> proxy);
     sptr<Accessibility::IAccessibleAbilityManagerService> GetServiceProxy();
 
     void NotifyCaptionStateChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
@@ -378,7 +376,6 @@ private:
     sptr<AccessibilityEnableAbilityCallbackObserverImpl> enableAbilityCallbackObserver_ = nullptr;
 
     bool isInitialized_ = false;
-    bool isConfigInit_ = false;
     bool shortkey_ = false;
     bool highContrastText_ = false;
     bool screenMagnifier_ = false;
