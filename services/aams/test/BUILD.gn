@@ -662,7 +662,6 @@ ohos_unittest("accessible_ability_connection_test") {
 ohos_unittest("accessibility_display_manager_test") {
   module_out_path = module_output_path
   sources = [
-    "../../../frameworks/common/src/accessibility_constants.cpp",
     "../../../frameworks/common/src/accessibility_event_info.cpp",
     "../../../frameworks/common/src/accessibility_window_info.cpp",
     "../src/accessibility_display_manager.cpp",
