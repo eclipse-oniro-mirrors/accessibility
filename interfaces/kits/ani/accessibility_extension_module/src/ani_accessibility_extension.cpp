@@ -390,7 +390,7 @@ AccessibilityEventType ConvertStringToAccessibilityEventType(const std::string &
         {"fourFingerSwipeLeft", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_LEFT},
         {"fourFingerSwipeRight", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_RIGHT},
         {"pageActive", AccessibilityEventType::TYPE_PAGE_ACTIVE},
-        {"notificationUpdate",EventType::TYPE_NOTIFICATION_UPDATE_EVENT}};
+        {"notificationUpdate",AccessibilityEventType::TYPE_NOTIFICATION_UPDATE_EVENT}};
     if (eventTypeTable.find(eventType) == eventTypeTable.end()) {
         return AccessibilityEventType::TYPE_ERROR;
     }
