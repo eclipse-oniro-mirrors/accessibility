@@ -370,7 +370,7 @@ private:
     napi_value OnGetFocusElementInner(napi_env env, NapiCallbackInfo& info, bool systemApi)
     {
         HILOG_INFO();
-        bool isAccessibilityFocus = false;
+        bool isAccessibilityFocus = systemApi;
         napi_value lastParam = nullptr;
         if (info.argc >= ARGS_SIZE_TWO) {
             GetLastParamForTwo(env, info, lastParam, isAccessibilityFocus);
