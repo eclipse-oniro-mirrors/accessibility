@@ -843,12 +843,16 @@ RetError AccessibleAbilityChannel::GetElementOperator(
         HILOG_ERROR("accountData is nullptr");
         return RET_ERR_NULLPTR;
     }
-    int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, focusType);
+    int32_t realId = windowId;
     sptr<AccessibilityWindowConnection> connection =  nullptr;
     connection = accountData->GetAccessibilityWindowConnection(realId);
     if (connection == nullptr) {
-        HILOG_ERROR("windowId[%{public}d] has no connection", realId);
-        return RET_ERR_NO_WINDOW_CONNECTION;
+        realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, focusType);
+        connection = accountData->GetAccessibilityWindowConnection(realId);
+        if (connection == nullptr) {
+            HILOG_ERROR("windowId[%{public}d], realId[%{public}d] has no connection", windowId, realId);
+            return RET_ERR_NO_WINDOW_CONNECTION;
+        }
     }
     if (!connection->GetUseBrokerFlag() && treeId > 0) {
         elementOperator = connection->GetCardProxy(treeId);
