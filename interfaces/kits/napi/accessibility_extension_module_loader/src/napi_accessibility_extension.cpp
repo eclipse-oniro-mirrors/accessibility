@@ -67,7 +67,7 @@ NAccessibilityExtension::~NAccessibilityExtension()
 napi_handle_scope OpenScope(napi_env env)
 {
     napi_handle_scope scope = nullptr;
-    NAPI_CALL(env, napi_open_handle_scope(env, &scope));
+    napi_open_handle_scope(env, &scope);
     return scope;
 }
 
@@ -76,6 +76,7 @@ void NAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoca
     std::shared_ptr<AppExecFwk::AbilityHandler> &handler, const sptr<IRemoteObject> &token)
 {
     HILOG_INFO();
+    HandleScope handleScope(jsRuntime_);
     AccessibilityExtension::Init(record, application, handler, token);
     std::string srcPath = "";
     std::string moduleName = "";
