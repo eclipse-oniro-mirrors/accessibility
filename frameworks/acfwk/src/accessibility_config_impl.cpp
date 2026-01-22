@@ -19,12 +19,16 @@
 #include "iservice_registry.h"
 #include "parameter.h"
 #include "system_ability_definition.h"
+#include <thread>
+#include <chrono>
 
 namespace OHOS {
 namespace AccessibilityConfig {
 namespace {
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
+    constexpr int32_t CONNECT_POLL_INTERVAL = 200; // ms
+    constexpr int32_t CONNECT_POLL_COUNT = 5;
     constexpr int32_t SA_CONNECT_TIMEOUT = 1000; // ms
     constexpr uint32_t DISPLAY_DALTONIZER_GREEN = 12;
     constexpr uint32_t DISPLAY_DALTONIZER_RED = 11;
@@ -226,7 +230,6 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
 
 bool AccessibilityConfig::Impl::LoadAccessibilityService()
 {
-    std::unique_lock<ffrt::mutex> lock(conVarMutex_);
     sptr<AccessibilityLoadCallback> loadCallback = new AccessibilityLoadCallback(this);
     if (loadCallback == nullptr) {
         return false;
@@ -239,11 +242,31 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
     if (ret != 0) {
         return false;
     }
-    auto waitStatus = proxyConVar_.wait_for(lock, std::chrono::milliseconds(SA_CONNECT_TIMEOUT),
-        [this]() { return serviceProxy_ != nullptr; });
-    if (!waitStatus) {
+
+    sptr<IRemoteObject> object = nullptr;
+    for (int i = 0; i < CONNECT_POLL_COUNT; i++) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(CONNECT_POLL_INTERVAL));
+        object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+        if (object != nullptr) {
+            break;
+        }
+    }
+    if (object == nullptr) {
         return false;
     }
+    deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
+    if (deathRecipient_ == nullptr) {
+        return false;
+    }
+    if (object->IsProxyObject()) {
+        object->AddDeathRecipient(deathRecipient_);
+    }
+    serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(object);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("IAccessibleAbilityManagerService iface_cast failed");
+        return false;
+    }
+
     (void)RegisterToService();
     InitConfigValues();
     return true;
@@ -251,35 +274,12 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
 
 void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
-    std::lock_guard<ffrt::mutex> lock(conVarMutex_);
-    if (serviceProxy_ == nullptr) {
-        do {
-            auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-            if (samgr == nullptr) {
-                break;
-            }
-            auto object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
-            if (object == nullptr) {
-                break;
-            }
-            deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
-            if (deathRecipient_ == nullptr) {
-                break;
-            }
-            if (object->IsProxyObject()) {
-                object->AddDeathRecipient(deathRecipient_);
-            }
-            serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(object);
-        } while (0);
-    }
-    proxyConVar_.notify_one();
+    HILOG_WARN("LoadSystemAbilitySuccess.");
 }
 
 void AccessibilityConfig::Impl::LoadSystemAbilityFail()
 {
-    std::lock_guard<ffrt::mutex> lock(conVarMutex_);
     HILOG_WARN("LoadSystemAbilityFail.");
-    proxyConVar_.notify_one();
 }
 
 bool AccessibilityConfig::Impl::RegisterToService()
