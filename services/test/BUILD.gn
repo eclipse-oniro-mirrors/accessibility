@@ -764,7 +764,6 @@ ohos_moduletest("aams_common_event_registry_test") {
     "./mock/mock_common_event_manager.cpp",
     "./mock/mock_common_event_subscribe_info.cpp",
     "./mock/mock_common_event_subscriber.cpp",
-    "./mock/mock_common_event_support.cpp",
     "./mock/mock_display.cpp",
     "./mock/mock_display_manager.cpp",
     "./mock/mock_matching_skill.cpp",
