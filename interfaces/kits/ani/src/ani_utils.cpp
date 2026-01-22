@@ -286,7 +286,8 @@ EventType ANIUtils::ConvertStringToEventInfoTypes(const std::string &type)
         {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY},
         {"announceForAccessibilityNotInterrupt", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT},
         {"scrolling", EventType::TYPE_VIEW_SCROLLING_EVENT},
-        {"pageActive", EventType::TYPE_PAGE_ACTIVE}};
+        {"pageActive", EventType::TYPE_PAGE_ACTIVE},
+        {"notificationUpdate",EventType::TYPE_NOTIFICATION_UPDATE_EVENT}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());

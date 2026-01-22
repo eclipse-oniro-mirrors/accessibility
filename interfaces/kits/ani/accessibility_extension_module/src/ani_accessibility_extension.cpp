@@ -389,8 +389,8 @@ AccessibilityEventType ConvertStringToAccessibilityEventType(const std::string &
         {"fourFingerSwipeDown", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_DOWN},
         {"fourFingerSwipeLeft", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_LEFT},
         {"fourFingerSwipeRight", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_RIGHT},
-        {"pageActive", AccessibilityEventType::TYPE_PAGE_ACTIVE}
-    };
+        {"pageActive", AccessibilityEventType::TYPE_PAGE_ACTIVE},
+        {"notificationUpdate",AccessibilityEventType::TYPE_NOTIFICATION_UPDATE_EVENT}};
     if (eventTypeTable.find(eventType) == eventTypeTable.end()) {
         return AccessibilityEventType::TYPE_ERROR;
     }
@@ -502,7 +502,8 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT,
             "requestFocusForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
-        {EventType::TYPE_PAGE_ACTIVE, "pageActive"}};
+        {EventType::TYPE_PAGE_ACTIVE, "pageActive"},
+        {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"}};
 
     if (a11yEvtTypeTable.find(type) == a11yEvtTypeTable.end()) {
         return "";

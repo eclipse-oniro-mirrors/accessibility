@@ -378,7 +378,8 @@ static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT,
             "requestFocusForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
-        {EventType::TYPE_PAGE_ACTIVE, "pageActive"}};
+        {EventType::TYPE_PAGE_ACTIVE, "pageActive"},
+        {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"}};
 
     for (std::map<EventType, std::string>::iterator itr = accessibilityEventTable.begin();
          itr != accessibilityEventTable.end(); ++itr) {
@@ -529,7 +530,8 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT,
             "requestFocusForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
-        {EventType::TYPE_PAGE_ACTIVE, "pageActive"}};
+        {EventType::TYPE_PAGE_ACTIVE, "pageActive"},
+        {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"}};
 
     if (a11yEvtTypeTable.find(type) == a11yEvtTypeTable.end()) {
         return "";
@@ -624,7 +626,7 @@ AccessibilityEventType CovertStringToAccessibilityEventType(const std::string &e
         {"fourFingerSwipeLeft", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_LEFT},
         {"fourFingerSwipeRight", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_RIGHT},
         {"pageActive", AccessibilityEventType::TYPE_PAGE_ACTIVE},
-    };
+        {"notificationUpdate", AccessibilityEventType::TYPE_NOTIFICATION_UPDATE_EVENT}};
     if (eventTypeTable.find(eventType) == eventTypeTable.end()) {
         return AccessibilityEventType::TYPE_ERROR;
     }
@@ -797,7 +799,8 @@ static EventType ConvertStringToEventInfoTypes(std::string type)
         {"requestFocusForAccessibilityNotInterrupt",
             EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
         {"scrolling", EventType::TYPE_VIEW_SCROLLING_EVENT},
-        {"pageActive", EventType::TYPE_PAGE_ACTIVE}};
+        {"pageActive", EventType::TYPE_PAGE_ACTIVE},
+        {"notificationUpdate",EventType::TYPE_NOTIFICATION_UPDATE_EVENT}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());

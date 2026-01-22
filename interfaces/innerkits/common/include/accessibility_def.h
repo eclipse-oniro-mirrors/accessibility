@@ -415,7 +415,8 @@ const std::map<std::string, EventType> EvtTypeTable = {
     {"pageClose", EventType::TYPE_PAGE_CLOSE},
     {"allEvents", EventType::TYPES_ALL_MASK},
     {"noneEvents", EventType::TYPE_VIEW_INVALID},
-    {"pageActive", EventType::TYPE_PAGE_ACTIVE}
+    {"pageActive", EventType::TYPE_PAGE_ACTIVE},
+    {"notificationUpdate",EventType::TYPE_NOTIFICATION_UPDATE_EVENT},
 };
 
 enum DetailCondition : int32_t {
@@ -594,7 +595,8 @@ enum AccessibilityEventType : int32_t {
     TYPE_FOUR_FINGER_SWIPE_DOWN = 66,
     TYPE_FOUR_FINGER_SWIPE_LEFT = 67,
     TYPE_FOUR_FINGER_SWIPE_RIGHT = 68,
-    TYPE_PAGE_ACTIVE = 69
+    TYPE_PAGE_ACTIVE = 69,
+    TYPE_NOTIFICATION_UPDATE_EVENT = 70
 };
 
 enum AccessibilityAction : int32_t {
