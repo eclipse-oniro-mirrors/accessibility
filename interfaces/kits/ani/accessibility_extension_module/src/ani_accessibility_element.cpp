@@ -824,7 +824,7 @@ void EnableScreenCurtain(ani_env *env, ani_object thisObj, ani_boolean isEnable)
     }
 }
 
-ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_double condition)
+ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_long condition)
 {
     HILOG_DEBUG("FindElement native method called");
 
