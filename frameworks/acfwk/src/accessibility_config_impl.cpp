@@ -243,13 +243,13 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
         return false;
     }
 
-    sptr<IRemoteObject> object = nullptr;
+    sptr<IRemoteObject> object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     for (int i = 0; i < CONNECT_POLL_COUNT; i++) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(CONNECT_POLL_INTERVAL));
-        object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
         if (object != nullptr) {
             break;
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(CONNECT_POLL_INTERVAL));
+        object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     }
     if (object == nullptr) {
         return false;
