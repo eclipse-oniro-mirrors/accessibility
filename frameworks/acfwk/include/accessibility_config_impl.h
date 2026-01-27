@@ -414,9 +414,6 @@ private:
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AppExecFwk::EventHandler> handler_;
-
-    ffrt::condition_variable proxyConVar_;
-    ffrt::mutex conVarMutex_; // mutex for proxyConVar
 };
 } // namespace AccessibilityConfig
 } // namespace OHOS
