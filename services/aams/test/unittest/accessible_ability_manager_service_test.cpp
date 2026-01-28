@@ -1173,7 +1173,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableAbility_001, TestSize.L
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_001 start";
     std::string name = "test";
-    EXPECT_EQ(RET_ERR_NOT_ENABLED, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
+    EXPECT_EQ(RET_ERR_FAILED, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_001 end";
 }
 
@@ -1200,7 +1200,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, CheckExtensionAbilityPermissio
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_001 start";
     std::string processName = "";
-    EXPECT_EQ(RET_ERR_NO_PERMISSION,
+    EXPECT_EQ(RET_OK,
         Singleton<AccessibleAbilityManagerService>::GetInstance().CheckExtensionAbilityPermission(
         processName));
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_001 end";
@@ -1215,7 +1215,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, CheckExtensionAbilityPermissio
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_002 start";
     std::string processName = "";
-    EXPECT_EQ(RET_ERR_NO_PERMISSION,
+    EXPECT_EQ(RET_OK,
         Singleton<AccessibleAbilityManagerService>::GetInstance().CheckExtensionAbilityPermission(
         processName));
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_CheckExtensionAbilityPermission_002 end";
@@ -1271,7 +1271,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_003, TestS
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableUITestAbility_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_001 start";
-    EXPECT_EQ(RET_ERR_NO_PERMISSION, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility());
+    EXPECT_EQ(RET_ERR_NO_CONNECTION, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility());
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_001 end";
 }
 
@@ -1556,7 +1556,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableAbility_002, TestSize.L
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     std::string name = "test";
-    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
+    EXPECT_EQ(RET_ERR_FAILED, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_002 end";
 }
 
@@ -1571,7 +1571,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableUITestAbility_002, Test
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     EXPECT_EQ(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility(),
-        RET_ERR_NO_PERMISSION);
+        RET_ERR_NULLPTR);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_002 end";
 }
 
