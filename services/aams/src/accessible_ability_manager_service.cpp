@@ -430,7 +430,6 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         }
 
         InitInnerResource();
-
         isReady_ = true;
         SetParameter(SYSTEM_PARAMETER_AAMS_NAME, "true");
         PublishAccessibilityCommonEvent(SYSTEM_PARAMETER_AAMS_NAME);
