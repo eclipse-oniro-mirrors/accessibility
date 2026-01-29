@@ -191,6 +191,8 @@ public:
     virtual RetError CheckNodeIsReadable(const std::shared_ptr<ReadableRulesNode>& node, bool& isReadable) = 0;
     virtual RetError CheckNodeIsSpecificType(const std::shared_ptr<ReadableRulesNode>& node,
         ReadableSpecificType specificType, bool& isHit) = 0;
+    virtual bool NeedToConnect() = 0;
+    virtual void ConnectAndInit() = 0;
     /**
     * @brief Splic ElementId and TreeId.
     * @param treeId: The tree Id.

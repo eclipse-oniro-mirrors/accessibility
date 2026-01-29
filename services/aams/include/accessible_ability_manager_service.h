@@ -397,6 +397,7 @@ private:
     void IsCheckWindowIdEventExist(const int32_t windowId);
     void CalculateClickPosition(const AccessibilityElementInfo &focusedElementInfo,
         int32_t &xPos, int32_t &yPos);
+    void PublishAccessibilityCommonEvent(const std::string &event);
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         StateCallbackDeathRecipient() = default;

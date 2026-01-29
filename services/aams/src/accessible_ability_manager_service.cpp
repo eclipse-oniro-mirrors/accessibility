@@ -57,6 +57,7 @@
 #include "mem_mgr_client.h"
 #include "mem_mgr_proxy.h"
 #include "magnification_def.h"
+#include "common_event_manager.h"
 
 #undef LOG_DOMAIN
 #undef LOG_TAG
@@ -430,9 +431,9 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         }
 
         InitInnerResource();
-
         isReady_ = true;
         SetParameter(SYSTEM_PARAMETER_AAMS_NAME, "true");
+        PublishAccessibilityCommonEvent(SYSTEM_PARAMETER_AAMS_NAME);
         HILOG_COMM_INFO("AAMS is ready!");
         RegisterShortKeyEvent();
         PostDelayUnloadTask();
@@ -915,6 +916,17 @@ void AccessibleAbilityManagerService::CalculateClickPosition(const Accessibility
         displayHeight : focusRightBottomYPos;
     xPos = leftTopXPos + (rightBottomXPos - leftTopXPos) / 2;
     yPos = leftTopYPos + (rightBottomYPos - leftTopYPos) / 2;
+}
+
+void AccessibleAbilityManagerService::PublishAccessibilityCommonEvent(const std::string &event)
+{
+    HILOG_INFO("event: %{public}s", event.c_str());
+    AAFwk::Want want;
+    want.SetAction(event);
+    EventFwk::CommonEventData commonData {want};
+    if (!EventFwk::CommonEventManager::PublishCommonEvent(commonData)) {
+        HILOG_ERROR("PublishCommonEvent failed");
+    }
 }
 
 void AccessibleAbilityManagerService::SetFocusWindowId(const int32_t focusWindowId)

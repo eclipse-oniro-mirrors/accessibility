@@ -89,7 +89,12 @@ ohos_shared_library("accessibilityclient") {
     "ipc:ipc_single",
     "samgr:samgr_proxy",
     "json:nlohmann_json_static",
+    "common_event_service:cesfwk_innerkits",
   ]
+
+  if (accessibility_feature_hiviewdfx_hitrace) {
+    external_deps += [ "hitrace:hitrace_meter" ]
+  }
 
   if (product_name != "qemu-arm-linux-min") {
     external_deps += [ "hiappevent:hiappevent_innerapi" ]
