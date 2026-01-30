@@ -187,6 +187,8 @@ private:
         napi_value* parameters);
     static bool SetConfigParseData(napi_env env, NAccessibilityConfigClass* obj,
         NAccessibilityConfigData* callbackInfo, napi_value* parameters, size_t argc);
+    static void EnableAbilityWithCallbackExecute(napi_env env, void* data);
+    static void EnableAbilityWithCallbackComplete(napi_env env, napi_status status, void* data);
     NAccessibilityConfig() = default;
     ~NAccessibilityConfig() = default;
 };

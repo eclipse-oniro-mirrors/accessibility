@@ -284,30 +284,38 @@ napi_value NAccessibilityConfig::EnableAbilityWithCallback(napi_env env, napi_ca
     napi_create_string_utf8(env, "EnableAbilityWithCallback", NAPI_AUTO_LENGTH, &resource);
 
     napi_value param = parameters[PARAM2];
-    napi_create_async_work(env, nullptr, resource,
-        // Execute async to call c++ function
-        [](napi_env env, void* data) {
-            NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-            auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-            if (callbackInfo->capabilities_ != 0) {
-#ifdef ACCESSIBILITY_EMULATOR_DEFINED
-                Accessibility::ApiReportHelper reporter(
-                    "AccessibilityConfig.Impl.EnableAbility", REPORTER_THRESHOLD_VALUE);
-#endif // ACCESSIBILITY_EMULATOR_DEFINED
-                callbackInfo->ret_ = instance.EnableAbility(callbackInfo->abilityName_, callbackInfo->capabilities_);
-                if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
-                    napi_value callback = nullptr;
-                    napi_get_reference_value(env, callbackInfo->notifyCallback_, &callback);
-                    enableAbilityCallbackObservers_->SubscribeObserver(env, callbackInfo->abilityName_, callback);
-                }
-#ifdef ACCESSIBILITY_EMULATOR_DEFINED
-                reporter.setResult(callbackInfo->ret_);
-#endif // ACCESSIBILITY_EMULATOR_DEFINED
-            }
-        }, NAccessibilityConfig::AsyncWorkComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    napi_create_async_work(env, nullptr, resource, NAccessibilityConfig::EnableAbilityWithCallbackExecute,
+        NAccessibilityConfig::EnableAbilityWithCallbackComplete, reinterpret_cast<void*>(callbackInfo),
+        &callbackInfo->work_);
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
 
     return promise;
+}
+
+void NAccessibilityConfig::EnableAbilityWithCallbackExecute(napi_env env, void* data)
+{
+    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    if (callbackInfo->capabilities_ != 0) {
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+        Accessibility::ApiReportHelper reporter(
+            "AccessibilityConfig.Impl.EnableAbility", REPORTER_THRESHOLD_VALUE);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+        callbackInfo->ret_ = instance.EnableAbility(callbackInfo->abilityName_, callbackInfo->capabilities_);
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+        reporter.setResult(callbackInfo->ret_);
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    }
+}
+
+void NAccessibilityConfig::EnableAbilityWithCallbackComplete(napi_env env, napi_status status, void* data)
+{
+    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
+    if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
+        napi_value callback = nullptr;
+        napi_get_reference_value(env, callbackInfo->notifyCallback_, &callback);
+        enableAbilityCallbackObservers_->SubscribeObserver(env, callbackInfo->abilityName_, callback);
+    }
 }
 
 napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info info)
@@ -1275,30 +1283,29 @@ int EnableAbilityCallbackObserver::OnEnableAbilityListsRemoteDiedWork(uv_work_t 
         HILOG_ERROR("loop or work is nullptr.");
         return RET_ERR_FAILED;
     }
-    int ret = uv_queue_work_with_qos(
-        loop,
-        work,
-        [](uv_work_t *work) {},
-        [](uv_work_t *work, int status) {
-            AccessibilityCallbackInfo *callbackInfo = static_cast<AccessibilityCallbackInfo*>(work->data);
-            napi_env env = callbackInfo->env_;
-            auto closeScope = [env](napi_handle_scope scope) {
-                napi_close_handle_scope(env, scope);
-            };
-            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
-                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
-            napi_value handler = nullptr;
-            napi_value callResult = nullptr;
-            napi_value undefined = nullptr;
-            napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
-            napi_get_undefined(callbackInfo->env_, &undefined);
-            napi_call_function(callbackInfo->env_, undefined, handler, 0, nullptr, &callResult);
-            delete callbackInfo;
-            callbackInfo = nullptr;
-            delete work;
-            work = nullptr;
-        },
-        uv_qos_default);
+    auto task = [&work] () {
+        AccessibilityCallbackInfo *callbackInfo = static_cast<AccessibilityCallbackInfo*>(work->data);
+        napi_env env = callbackInfo->env_;
+        auto closeScope = [env](napi_handle_scope scope) {
+            napi_close_handle_scope(env, scope);
+        };
+        std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+            OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
+        napi_value handler = nullptr;
+        napi_value callResult = nullptr;
+        napi_value undefined = nullptr;
+        napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+        napi_get_undefined(callbackInfo->env_, &undefined);
+        napi_call_function(callbackInfo->env_, undefined, handler, 0, nullptr, &callResult);
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    };
+    int ret = napi_send_event(env_, task, napi_eprio_high, "OnEnableAbilityListsRemoteDiedWork");
+    if (ret != napi_status::napi_ok) {
+        HILOG_ERROR("failed to send event");
+    }
     return ret;
 }
 
