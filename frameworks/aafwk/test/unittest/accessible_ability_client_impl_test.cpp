@@ -1047,5 +1047,18 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetElements_001, TestSize.Level1)
     EXPECT_EQ(instance_->GetElements(-1, -1, infos), RET_ERR_INVALID_PARAM);
     GTEST_LOG_(INFO) << "GetElements_001 end";
 }
+/**
+ * @tc.number: SetParentId_001
+ * @tc.name: SetParentId
+ * @tc.desc: Test function SetParentId
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, SetParentId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetParentId_001 start";
+    AccessibilityFocusMoveParam param;
+    param.SetParentId(1);
+    EXPECT_EQ(1, param.parentId);
+    GTEST_LOG_(INFO) << "SetParentId_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

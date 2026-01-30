@@ -72,6 +72,14 @@ public:
     {}
 };
 
+class MockAccessibilityEnableAbilityCallbackObserverImpl :
+        public OHOS::AccessibilityConfig::AccessibilityEnableAbilityCallbackObserver {
+public:
+    MockAccessibilityEnableAbilityCallbackObserverImpl() = default;
+    void OnEnableAbilityRemoteDied(const std::string& name) override
+    {}
+};
+
 /**
  * @tc.number: SetCaptionProperty_002
  * @tc.name: SetCaptionProperty_002
@@ -1936,6 +1944,61 @@ HWTEST_F(AccessibilityConfigImplTest, UnsubscribeEnableAbilityListsObserver_002,
     instance.InitializeContext();
     instance.UnsubscribeEnableAbilityListsObserver(observer);
     GTEST_LOG_(INFO) << "UnsubscribeEnableAbilityListsObserver_002 end";
+}
+
+/**
+ * @tc.number: SubscribeEnableAbilityCallbackObserver_001
+ * @tc.name: SubscribeEnableAbilityCallbackObserver_001
+ * @tc.desc: Test function SubscribeEnableAbilityCallbackObserver
+ */
+HWTEST_F(AccessibilityConfigImplTest, SubscribeEnableAbilityCallbackObserver_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SubscribeEnableAbilityCallbackObserver_001 start";
+
+    std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> observer =
+        std::make_shared<MockAccessibilityEnableAbilityCallbackObserverImpl>();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    EXPECT_EQ(Accessibility::RET_OK,
+        instance.SubscribeEnableAbilityCallbackObserver(observer));
+    GTEST_LOG_(INFO) << "SubscribeEnableAbilityCallbackObserver_001 end";
+}
+
+/**
+ * @tc.number: UnsubscribeEnableAbilityCallbackObserver_001
+ * @tc.name: UnsubscribeEnableAbilityCallbackObserver_001
+ * @tc.desc: Test function UnsubscribeEnableAbilityCallbackObserver
+ */
+HWTEST_F(AccessibilityConfigImplTest, UnsubscribeEnableAbilityCallbackObserver_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "UnsubscribeEnableAbilityCallbackObserver_001 start";
+
+    std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> observer = nullptr;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    instance.SubscribeEnableAbilityCallbackObserver(observer);
+    instance.UnsubscribeEnableAbilityCallbackObserver(observer);
+    EXPECT_EQ(Accessibility::RET_OK,
+        instance.UnsubscribeEnableAbilityCallbackObserver(observer));
+    GTEST_LOG_(INFO) << "UnsubscribeEnableAbilityCallbackObserver_001 end";
+}
+
+/**
+ * @tc.number: UnsubscribeEnableAbilityCallbackObserver_002
+ * @tc.name: UnsubscribeEnableAbilityCallbackObserver_002
+ * @tc.desc: Test function UnsubscribeEnableAbilityCallbackObserver
+ */
+HWTEST_F(AccessibilityConfigImplTest, UnsubscribeEnableAbilityCallbackObserver_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "UnsubscribeEnableAbilityCallbackObserver_002 start";
+
+    std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> observer = nullptr;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    instance.UnsubscribeEnableAbilityCallbackObserver(observer);
+    EXPECT_EQ(Accessibility::RET_OK,
+        instance.UnsubscribeEnableAbilityCallbackObserver(observer));
+    GTEST_LOG_(INFO) << "UnsubscribeEnableAbilityCallbackObserver_002 end";
 }
 
 /**
