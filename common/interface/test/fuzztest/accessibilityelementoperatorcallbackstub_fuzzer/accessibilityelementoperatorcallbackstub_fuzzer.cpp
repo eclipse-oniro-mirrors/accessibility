@@ -65,13 +65,19 @@ bool OnRemoteRequestFuzzTest(const uint8_t* data, size_t size)
 
     size_t position = 0;
     uint32_t code = 0;
+    int32_t infoSize = 0;
+    int32_t requestId = 0;
     MessageParcel mdata;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
 
     position += GetObject<uint32_t>(code, &data[position], size - position);
+    position += GetObject<int32_t>(infoSize, &data[position], size - position);
+    GetObject<int32_t>(requestId, &data[position], size - position);
     ElementOperatorCallbackImplFuzzTest callBackImp;
     mdata.WriteInterfaceToken(ElementOperatorCallbackImplFuzzTest::GetDescriptor());
+    mdata.WriteInt32(requestId);
+    mdata.WriteInt32(infoSize);
     callBackImp.OnRemoteRequest(code, mdata, reply, option);
     return true;
 }
