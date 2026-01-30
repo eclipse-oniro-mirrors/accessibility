@@ -580,7 +580,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     infos.emplace_back(nullptr);
     AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
     windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED);
-    EXPECT_EQ(WINDOW_UPDATE_BOUNDS,
+    EXPECT_EQ(WINDOW_UPDATE_ACCESSIBILITY_FOCUSED,
         AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType());
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange007 end";
 }
