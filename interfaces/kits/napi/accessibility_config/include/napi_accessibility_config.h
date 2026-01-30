@@ -37,7 +37,8 @@ struct EnableAbilityCallbackObserver {
     EnableAbilityCallbackObserver(
         napi_env env, napi_ref notifyCallback) : env_(env), notifyCallback_(notifyCallback) {};
     void OnEnableAbilityRemoteDied(const std::string& name);
-    int OnEnableAbilityListsRemoteDiedWork(uv_work_t *work);
+    int OnEnableAbilityListsRemoteDiedWork(
+        OHOS::AccessibilityNapi::EnableAbilityCallbackObserverInfo* callbackInfo);
     napi_env env_ = nullptr;
     napi_ref notifyCallback_ = nullptr;
 };

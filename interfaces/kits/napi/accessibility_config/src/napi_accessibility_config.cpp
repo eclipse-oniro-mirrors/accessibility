@@ -1247,44 +1247,34 @@ int EnableAbilityListsObserver::OnEnableAbilityListsStateChangedWork(uv_work_t *
 void EnableAbilityCallbackObserver::OnEnableAbilityRemoteDied(const std::string& name)
 {
     HILOG_DEBUG();
-    AccessibilityCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityCallbackInfo();
+    EnableAbilityCallbackObserverInfo *callbackInfo = new(std::nothrow) EnableAbilityCallbackObserverInfo();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
 
-    uv_work_t *work = new(std::nothrow) uv_work_t;
-    if (!work) {
-        HILOG_ERROR("Failed to create work.");
-        delete callbackInfo;
-        callbackInfo = nullptr;
-        return;
-    }
-
     callbackInfo->env_ = env_;
     callbackInfo->ref_ = notifyCallback_;
-    work->data = static_cast<void*>(callbackInfo);
 
-    int ret = OnEnableAbilityListsRemoteDiedWork(work);
+    int ret = OnEnableAbilityListsRemoteDiedWork(callbackInfo);
     if (ret != 0) {
         HILOG_ERROR("Failed to execute OnEnableAbilityListsStateChanged work queue");
         delete callbackInfo;
         callbackInfo = nullptr;
-        delete work;
-        work = nullptr;
     }
 }
 
-int EnableAbilityCallbackObserver::OnEnableAbilityListsRemoteDiedWork(uv_work_t *work)
+int EnableAbilityCallbackObserver::OnEnableAbilityListsRemoteDiedWork(
+    OHOS::AccessibilityNapi::EnableAbilityCallbackObserverInfo* callbackInfo)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    if (loop == nullptr || work == nullptr) {
-        HILOG_ERROR("loop or work is nullptr.");
+    if (loop == nullptr || callbackInfo == nullptr) {
+        HILOG_ERROR("loop or callbackInfo is nullptr.");
         return RET_ERR_FAILED;
     }
-    auto task = [&work] () {
-        AccessibilityCallbackInfo *callbackInfo = static_cast<AccessibilityCallbackInfo*>(work->data);
+    ffrt::future syncFuture = callbackInfo->syncPromise_.get_future();
+    auto task = [&callbackInfo] () {
         napi_env env = callbackInfo->env_;
         auto closeScope = [env](napi_handle_scope scope) {
             napi_close_handle_scope(env, scope);
@@ -1297,14 +1287,15 @@ int EnableAbilityCallbackObserver::OnEnableAbilityListsRemoteDiedWork(uv_work_t 
         napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
         napi_get_undefined(callbackInfo->env_, &undefined);
         napi_call_function(callbackInfo->env_, undefined, handler, 0, nullptr, &callResult);
+        callbackInfo->syncPromise_.set_value();
         delete callbackInfo;
         callbackInfo = nullptr;
-        delete work;
-        work = nullptr;
     };
     int ret = napi_send_event(env_, task, napi_eprio_high, "OnEnableAbilityListsRemoteDiedWork");
     if (ret != napi_status::napi_ok) {
         HILOG_ERROR("failed to send event");
+    } else {
+        syncFuture.get();
     }
     return ret;
 }
