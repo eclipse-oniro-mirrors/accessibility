@@ -34,6 +34,7 @@ constexpr size_t FUZZ_NUM8 = 8;
 constexpr size_t FUZZ_NUM16 = 16;
 constexpr size_t FUZZ_NUM24 = 24;
 constexpr uint8_t DEVISOR_TWO = 2;
+constexpr size_t DATA_MIN_SIZE = 200;
 } // namespace
 
 class AccessibleAbilityManagerServiceStubFuzzTest : public AccessibleAbilityManagerServiceStub {
@@ -444,8 +445,12 @@ bool HandleRemoveRequestIdTest(const uint8_t *data, size_t size)
     return true;
 }
 
-bool HandleGetScreenReaderStateTest()
+bool HandleGetScreenReaderStateTest(const uint8_t *data, size_t size)
 {
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
     MessageParcel datas;
     std::u16string descriptor = AccessibleAbilityManagerServiceStubFuzzTest::GetDescriptor();
     if (!datas.WriteInterfaceToken(descriptor)) {
@@ -483,7 +488,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     OHOS::Accessibility::OnRemoteRequestSvcFuzzTest(data, size);
     OHOS::Accessibility::HandleSetDaltonizationStateTest(data, size);
-    OHOS::Accessibility::HandleGetScreenReaderStateTest();
+    OHOS::Accessibility::HandleGetScreenReaderStateTest(data, size);
     OHOS::Accessibility::HandleRemoveRequestIdTest(data, size);
     return 0;
 }
