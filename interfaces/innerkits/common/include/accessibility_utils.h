@@ -28,6 +28,7 @@
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "accessibility_def.h"
+#include "ffrt_inner.h"
 
 namespace OHOS {
 namespace AccessibilityNapi {
@@ -157,6 +158,10 @@ struct StateCallbackInfo: public AccessibilityCallbackInfo {
 
 struct CaptionCallbackInfo: public AccessibilityCallbackInfo {
     OHOS::AccessibilityConfig::CaptionProperty caption_;
+};
+
+struct EnableAbilityCallbackObserverInfo: public AccessibilityCallbackInfo {
+    ffrt::promise<void> syncPromise_;
 };
 } // namespace AccessibilityNapi
 } // OHOS
