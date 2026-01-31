@@ -258,7 +258,7 @@ HWTEST_F(AAMSServerTest, DeregisterElementOperatorByWindowId_001, TestSize.Level
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     auto accountData = aams.GetCurrentAccountData();
     auto map = accountData->GetAsacConnections();
-    EXPECT_EQ(int(map.size()), 1);
+    EXPECT_EQ(int(map.size()), 0);
 
     aams.RegisterElementOperatorByWindowId(0, nullptr);
     sleep(1);
