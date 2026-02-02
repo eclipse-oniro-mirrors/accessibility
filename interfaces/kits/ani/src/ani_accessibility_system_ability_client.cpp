@@ -234,6 +234,7 @@ void StateListener::NotifyETS(ani_env *env, bool state, ani_ref fnRef)
         ani_object state = ANIUtils::CreateBoolObject(tmpEnv, static_cast<ani_boolean>(callbackInfo->state_));
         if (state == nullptr) {
             HILOG_ERROR("create boolean object failed");
+            tmpEnv->DestroyLocalScope();
             return;
         }
         std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(state)};
@@ -266,6 +267,7 @@ void StateListener::NotifyETS(ani_env *env, std::string mode, ani_ref fnRef)
         ani_string state = ANIUtils::CreateAniString(tmpEnv, callbackInfo->stringValue_);
         if (state == nullptr) {
             HILOG_ERROR("create boolean object failed");
+            tmpEnv->DestroyLocalScope();
             return;
         }
         std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(state)};
@@ -299,6 +301,7 @@ void AccessibilityCaptionsObserver::NotifyCaptionsStateToETS(ani_env *env, bool 
         ani_object state = ANIUtils::CreateBoolObject(tmpEnv, static_cast<ani_boolean>(callbackInfo->state_));
         if (state == nullptr) {
             HILOG_ERROR("create boolean object failed");
+            tmpEnv->DestroyLocalScope();
             return;
         }
         std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(state)};
@@ -333,6 +336,7 @@ void AccessibilityCaptionsObserver::NotifyCaptionsStyleToETS(ani_env *env,
         ani_object caption = ANIAccessibilityClient::CreateAccessibilityCaptionProperty(tmpEnv, callbackInfo->caption_);
         if (caption == nullptr) {
             HILOG_ERROR("create caption style object failed");
+            tmpEnv->DestroyLocalScope();
             return;
         }
         std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(caption)};
