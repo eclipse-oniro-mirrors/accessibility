@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 #include "accessibility_common_helper.h"
+#include "ipc_skeleton.h"
 #include "iservice_registry.h"
 #include "mock_bundle_manager.h"
 #include "string_ex.h"
@@ -38,7 +39,8 @@ sptr<ISystemAbilityManager> SystemAbilityManagerClient::GetSystemAbilityManager(
         return systemAbilityManager_;
     }
 
-    systemAbilityManager_ = new SystemAbilityManagerProxy(nullptr);
+    sptr<IRemoteObject> registryObject = IPCSkeleton::GetContextObject();
+    systemAbilityManager_ = iface_cast<ISystemAbilityManager>(registryObject);
     return systemAbilityManager_;
 }
 
@@ -100,41 +102,6 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t system
     return nullptr;
 }
 
-int32_t SystemAbilityManagerProxy::AddOnDemandSystemAbilityInfo(int32_t systemAbilityId,
-    const std::u16string& localAbilityManagerName)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::RemoveSystemAbilityWrapper(int32_t code, MessageParcel& data)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::RemoveSystemAbility(int32_t systemAbilityId)
-{
-    return -1;
-}
-
-std::vector<std::u16string> SystemAbilityManagerProxy::ListSystemAbilities(unsigned int dumpFlags)
-{
-    std::vector<std::u16string> saNames;
-
-    return saNames;
-}
-
-int32_t SystemAbilityManagerProxy::SubscribeSystemAbility(int32_t systemAbilityId,
-    const sptr<ISystemAbilityStatusChange>& listener)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::UnSubscribeSystemAbility(int32_t systemAbilityId,
-    const sptr<ISystemAbilityStatusChange>& listener)
-{
-    return -1;
-}
-
 sptr<IRemoteObject> SystemAbilityManagerProxy::LoadSystemAbility(int32_t systemAbilityId, int32_t timeout)
 {
     return nullptr;
@@ -148,124 +115,6 @@ int32_t SystemAbilityManagerProxy::LoadSystemAbility(int32_t systemAbilityId,
 
 int32_t SystemAbilityManagerProxy::LoadSystemAbility(int32_t systemAbilityId, const std::string& deviceId,
     const sptr<ISystemAbilityLoadCallback>& callback)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::UnloadSystemAbility(int32_t systemAbilityId)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::CancelUnloadSystemAbility(int32_t systemAbilityId)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::AddSystemAbility(int32_t systemAbilityId, const sptr<IRemoteObject>& ability,
-    const SAExtraProp& extraProp)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::AddSystemAbilityWrapper(int32_t code, MessageParcel& data)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::AddSystemProcess(
-    const std::u16string& procName, const sptr<IRemoteObject>& procObject)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::GetSystemProcessInfo(
-    int32_t systemAbilityId, SystemProcessInfo& systemProcessInfo)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::GetRunningSystemProcess(std::list<SystemProcessInfo>& systemProcessInfos)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::SubscribeSystemProcess(const sptr<ISystemProcessStatusChange>& listener)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::UnSubscribeSystemProcess(const sptr<ISystemProcessStatusChange>& listener)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::GetOnDemandReasonExtraData(int64_t extraDataId, MessageParcel& extraDataParcel)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::GetOnDemandPolicy(int32_t systemAbilityId, OnDemandPolicyType type,
-    std::vector<SystemAbilityOnDemandEvent>& abilityOnDemandEvents)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::UpdateOnDemandPolicy(int32_t systemAbilityId, OnDemandPolicyType type,
-    const std::vector<SystemAbilityOnDemandEvent>& sabilityOnDemandEvents)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::GetOnDemandSystemAbilityIds(std::vector<int32_t>& systemAbilityIds)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::SendStrategy(int32_t type, std::vector<int32_t>& systemAbilityIds,
-    int32_t level, std::string& action)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::UnloadAllIdleSystemAbility()
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::GetCommonEventExtraDataIdlist(int32_t saId,
-    std::vector<int64_t>& extraDataIdList, const std::string& eventName)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::GetExtensionSaIds(const std::string& extension, std::vector<int32_t> &saIds)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::GetExtensionRunningSaList(const std::string& extension,
-    std::vector<sptr<IRemoteObject>>& saList)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::GetRunningSaExtensionInfoList(const std::string& extension,
-    std::vector<SaExtensionInfo>& infoList)
-{
-    return -1;
-};
-sptr<IRemoteObject> SystemAbilityManagerProxy::GetLocalAbilityManagerProxy(int32_t systemAbilityId)
-{
-    return nullptr;
-}
-
-int32_t SystemAbilityManagerProxy::UnloadProcess(const std::vector<std::u16string>& processList)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::GetLruIdleSystemAbilityProc(std::vector<IdleProcessInfo>& processInfos)
 {
     return -1;
 }
