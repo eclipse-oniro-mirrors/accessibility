@@ -16,7 +16,7 @@
 #ifndef OHOS_ACCESSIBILITY_MOCK_SYSTEM_ABILITY_MANAGER_H
 #define OHOS_ACCESSIBILITY_MOCK_SYSTEM_ABILITY_MANAGER_H
  
-#include "gmock/gmock.h" 
+#include "gmock/gmock.h"
 #include "if_system_ability_manager.h"
  
 namespace OHOS {
@@ -33,7 +33,8 @@ public:
     sptr<IRemoteObject> CheckSystemAbility(int32_t systemAbilityId, bool& isExist);
     sptr<IRemoteObject> LoadSystemAbility(int32_t systemAbilityId, int32_t timeout);
     int32_t LoadSystemAbility(int32_t systemAbilityId, const sptr<ISystemAbilityLoadCallback>& callback);
-    int32_t LoadSystemAbility(int32_t systemAbilityId, const std::string& deviceId, const sptr<ISystemAbilityLoadCallback>& callback);
+    int32_t LoadSystemAbility(int32_t systemAbilityId, const std::string& deviceId,
+        const sptr<ISystemAbilityLoadCallback>& callback);
 };
 } // namespace OHOS
 #endif // OHOS_ACCESSIBILITY_MOCK_SYSTEM_ABILITY_MANAGER_H
