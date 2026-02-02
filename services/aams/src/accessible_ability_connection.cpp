@@ -201,7 +201,6 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
             return;
         }
 
-        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
         std::string bundleName = element.GetBundleName();
         std::string abilityName = element.GetAbilityName();
         auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
