@@ -37,6 +37,7 @@ void AccessibleAppStateObserver::SetStateChangeCallback(
 
 void AccessibleAppStateObserver::OnProcessDied(const AppExecFwk::ProcessData &appStateData)
 {
+    std::lock_guard<std::mutex> lock(callbackMutex_);
     if (stateChangeCallback_) {
         stateChangeCallback_(appStateData);
     }

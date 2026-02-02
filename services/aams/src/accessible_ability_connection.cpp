@@ -140,6 +140,10 @@ bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(
             
             if (appData.state == AppExecFwk::AppProcessState::APP_STATE_TERMINATED) {
                 auto obj = weakPtr.promote();
+                if (!obj) {
+                    HILOG_ERROR("Failed to promote weak pointer!");
+                    return;
+                }
                 auto bundleName = appData.bundleName;
                 auto connection = accountData->GetAppStateObserverAbility(Utils::GetUri(bundleName, abilityName));
                 if (!connection) {
@@ -192,6 +196,12 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
             static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
 #endif // OHOS_BUILD_ENABLE_HITRACE
         auto obj = weakPtr.promote();
+        if (!obj) {
+            HILOG_ERROR("Failed to promote weak pointer!");
+            return;
+        }
+
+        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
         std::string bundleName = element.GetBundleName();
         std::string abilityName = element.GetAbilityName();
         auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
