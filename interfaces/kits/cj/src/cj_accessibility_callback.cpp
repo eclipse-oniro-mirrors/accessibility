@@ -19,6 +19,7 @@ namespace OHOS {
 namespace Accessibility {
 void cjAccessibilityStateObserver::SubscribeObserver(std::function<void(bool)> cbFunc)
 {
+    std::lock_guard<std::mutex> lock(cbMutex_);
     observers_.push_back(cbFunc);
     HILOG_INFO("observer size%{public}zu", observers_.size());
 }
