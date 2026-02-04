@@ -228,7 +228,7 @@ int32_t IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder()
     request.SetContent(notificationContent);
     request.SetCreatorUid(ACCESSIBILITY_SA_UID);
     request.SetCreatorPid(getpid());
-    int32_t userId;
+    int32_t userId = 100;
     AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(ACCESSIBILITY_SA_UID, userId);
 
     request.SetCreatorUserId(userId);
