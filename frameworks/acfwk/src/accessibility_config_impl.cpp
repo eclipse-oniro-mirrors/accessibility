@@ -1606,7 +1606,9 @@ void AccessibilityConfig::Impl::OnEnableAbilityRemoteDied(const std::string& nam
         observers = enableAbilityCallbackObservers_;
     }
     for (auto &enableAbilityCallbackObserver : observers) {
-        enableAbilityCallbackObserver->OnEnableAbilityRemoteDied(name);
+        if (enableAbilityCallbackObserver) {
+            enableAbilityCallbackObserver->OnEnableAbilityRemoteDied(name);
+        }
     }
 }
 
