@@ -170,6 +170,9 @@ void AniAccessibilityExtension::BindContext(ani_env*env, std::shared_ptr<AAFwk::
         return;
     }
     if (env->Object_SetField_Ref(jsObj_->aniObj, contextField, contextRef) != ANI_OK) {
+        if (contextRef != nullptr) {
+            env_->GlobalReference_Delete(contextRef);
+        }
         HILOG_ERROR("Object_SetField_Ref contextObj failed");
         return;
     }
@@ -287,7 +290,7 @@ std::string GetEventExtraInfo(const AccessibilityEventInfo& eventInfo)
         extraInfoValue[iterStr.first] = iterStr.second;
     }
     HILOG_DEBUG("GetEventExtraInfo extraInfoValue is [%{public}s]", extraInfoValue.dump().c_str());
-    return extraInfoValue.dump().c_str();
+    return extraInfoValue.dump();
 }
 
 void CreateElementInfoByEventInfo(const AccessibilityEventInfo& eventInfo,

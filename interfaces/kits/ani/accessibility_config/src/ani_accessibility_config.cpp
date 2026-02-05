@@ -213,6 +213,7 @@ void EnableAbilityCallbackObserver::OnEnableAbilityRemoteDied(const std::string 
             tmpEnv->Object_GetPropertyByName_Ref(reinterpret_cast<ani_object>(callback), "onDisconnect", &call);
         if (status != ANI_OK) {
             HILOG_ERROR("get onDisconnect property failed with %{public}d", status);
+            tmpEnv->DestroyLocalScope();
             return;
         }
         auto fnObj = reinterpret_cast<ani_fn_object>(call);
@@ -220,6 +221,7 @@ void EnableAbilityCallbackObserver::OnEnableAbilityRemoteDied(const std::string 
         status = tmpEnv->FunctionalObject_Call(fnObj, 0, nullptr, &result);
         if (status != ANI_OK) {
             HILOG_ERROR("FunctionalObject_Call failed, status %{public}d", status);
+            tmpEnv->DestroyLocalScope();
             return;
         }
         tmpEnv->DestroyLocalScope();
@@ -235,7 +237,9 @@ void EnableAbilityCallbackObserverImpl::OnEnableAbilityRemoteDied(const std::str
     std::lock_guard<ffrt::mutex> lock(mutex_);
     auto iter = enableAbilityCallbackObservers_.find(name);
     if (iter != enableAbilityCallbackObservers_.end()) {
-        iter->second->OnEnableAbilityRemoteDied(name);
+        if (iter->second) {
+            iter->second->OnEnableAbilityRemoteDied(name);
+        }
         enableAbilityCallbackObservers_.erase(iter);
     }
 }
@@ -363,6 +367,7 @@ void ANIAccessibilityConfigObserver::NotifyStateChangedToJs(bool enabled)
         ani_object state = ANIUtils::CreateBoolObject(tmpEnv, static_cast<ani_boolean>(callbackInfo->state_));
         if (state == nullptr) {
             HILOG_ERROR("create boolean object failed");
+            tmpEnv->DestroyLocalScope();
             return;
         }
         std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(state)};
@@ -398,6 +403,7 @@ void ANIAccessibilityConfigObserver::NotifyPropertyChangedToJs(
         ani_object state = ANIAccessibilityConfig::CreateJsAccessibilityCaptionProperty(tmpEnv, callbackInfo->caption_);
         if (state == nullptr) {
             HILOG_ERROR("create CaptionProperty object failed");
+            tmpEnv->DestroyLocalScope();
             return;
         }
         std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(state)};
@@ -430,6 +436,7 @@ void ANIAccessibilityConfigObserver::NotifyStringChangedToJs(const std::string& 
         ani_object state = ANIUtils::CreateAniString(callbackInfo->env_, callbackInfo->stringValue_);
         if (state == nullptr) {
             HILOG_ERROR("create CreateAniString object failed");
+            tmpEnv->DestroyLocalScope();
             return;
         }
         std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(state)};
@@ -462,6 +469,7 @@ void ANIAccessibilityConfigObserver::NotifyStringVectorChangedToJs(std::vector<s
         ani_object state = ANIUtils::CreateArray(tmpEnv, callbackInfo->stringVector_);
         if (state == nullptr) {
             HILOG_ERROR("create boolean object failed");
+            tmpEnv->DestroyLocalScope();
             return;
         }
         std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(state)};
@@ -495,6 +503,7 @@ void ANIAccessibilityConfigObserver::NotifyIntChangedToJs(int32_t value)
         ani_object state;
         if (ANIUtils::CreateAniInt(tmpEnv, callbackInfo->int32Value_, state) != ANI_OK) {
             HILOG_ERROR("create int32_t object failed");
+            tmpEnv->DestroyLocalScope();
             return;
         }
         std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(state)};
@@ -529,6 +538,7 @@ void ANIAccessibilityConfigObserver::NotifyFloatChangedToJs(float value)
         ani_object state = ANIUtils::CreateDouble(tmpEnv, callbackInfo->floatValue_);
         if (state == nullptr) {
             HILOG_ERROR("create uint32_t object failed");
+            tmpEnv->DestroyLocalScope();
             return;
         }
         std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(state)};
