@@ -719,6 +719,13 @@ private:
         }
 
         auto context = context_.lock();
+        if (!context) {
+            HILOG_ERROR("context is released");
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                ERROR_MESSAGE_SYSTEM_ABNORMALITY));
+            return CreateJsUndefined(env);
+        }
         RetError ret = context->InjectGesture(gesturePath);
         if (ret != RET_OK) {
             HILOG_ERROR("result error, ret %{public}d", ret);
@@ -863,6 +870,13 @@ private:
         bool isEnable = false;
         napi_get_value_bool(env, info.argv[PARAM0], &isEnable);
         auto context = context_.lock();
+        if (!context) {
+            HILOG_ERROR("context is released");
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                ERROR_MESSAGE_SYSTEM_ABNORMALITY));
+            return CreateJsUndefined(env);
+        }
         RetError ret = context->EnableScreenCurtain(isEnable);
         if (ret != RET_OK) {
             HILOG_ERROR("result error, ret %{public}d", ret);
@@ -1033,6 +1047,13 @@ private:
         }
  
         auto context = context_.lock();
+        if (!context) {
+            HILOG_ERROR("context is released");
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                ERROR_MESSAGE_SYSTEM_ABNORMALITY));
+            return CreateJsUndefined(env);
+        }
         RetError ret = context->HoldRunningLock();
         if (ret != RET_OK) {
             HILOG_ERROR("result error, ret %{public}d", ret);
@@ -1057,6 +1078,13 @@ private:
         }
  
         auto context = context_.lock();
+        if (!context) {
+            HILOG_ERROR("context is released");
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                ERROR_MESSAGE_SYSTEM_ABNORMALITY));
+            return CreateJsUndefined(env);
+        }
         RetError ret = context->UnholdRunningLock();
         if (ret != RET_OK) {
             HILOG_ERROR("result error, ret %{public}d", ret);
@@ -1074,6 +1102,7 @@ private:
         HILOG_INFO();
         std::string type;
         napi_ref ref = nullptr;
+        RetError ret = RET_OK;
 
         if (info.argc >= ARGS_SIZE_TWO) {
             if (info.argv[PARAM0] != nullptr && IsNapiString(env, info.argv[PARAM0])) {
@@ -1090,7 +1119,15 @@ private:
 
         if (type == "preDisconnect" && ref != nullptr) {
             std::shared_ptr<DisconnectCallback> callback = std::make_shared<NapiDisconnectCallback>(env, ref);
-            context_.lock()->RegisterDisconnectCallback(callback);
+            auto context = context_.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                napi_throw(env, CreateJsError(env,
+                    static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                    ERROR_MESSAGE_SYSTEM_ABNORMALITY));
+                return CreateJsUndefined(env);
+            }
+            ret = context->RegisterDisconnectCallback(callback);
         }
         return nullptr;
     }
@@ -1100,6 +1137,7 @@ private:
         HILOG_INFO();
         std::string type;
         napi_ref ref = nullptr;
+        RetError ret = RET_OK;
 
         if (info.argc >= ARGS_SIZE_ONE) {
             if (info.argv[PARAM0] != nullptr && IsNapiString(env, info.argv[PARAM0])) {
@@ -1116,7 +1154,15 @@ private:
 
         if (type == "preDisconnect") {
             std::shared_ptr<DisconnectCallback> callback = std::make_shared<NapiDisconnectCallback>(env, ref);
-            context_.lock()->UnRegisterDisconnectCallback(callback);
+            auto context = context_.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                napi_throw(env, CreateJsError(env,
+                    static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                    ERROR_MESSAGE_SYSTEM_ABNORMALITY));
+                return CreateJsUndefined(env);
+            }
+            ret = context->UnRegisterDisconnectCallback(callback);
         }
         return nullptr;
     }
@@ -1124,8 +1170,21 @@ private:
     napi_value OnNotifyDisconnect(napi_env env, NapiCallbackInfo &info)
     {
         HILOG_INFO();
-        context_.lock()->NotifyDisconnect();
-        return nullptr;
+        auto context = context_.lock();
+        if (!context) {
+            HILOG_ERROR("context is released");
+            napi_throw(env, CreateJsError(env,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                ERROR_MESSAGE_SYSTEM_ABNORMALITY));
+            return CreateJsUndefined(env);
+        }
+        RetError ret = context->NotifyDisconnect();
+        if (ret != RET_OK) {
+            NAccessibilityErrMsg errMsg = QueryRetMsg(ret);
+            napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+            return CreateJsUndefined(env);
+        }
+        return CreateJsUndefined(env);
     }
 };
 } // namespace

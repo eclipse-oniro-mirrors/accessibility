@@ -540,11 +540,11 @@ public:
     const std::string &GetAccessibilityLevel() const;
 
 protected:
-    int32_t spanId_;
-    std::string spanText_;
-    std::string accessibilityText_;
-    std::string accessibilityDescription_;
-    std::string accessibilityLevel_;
+    int32_t spanId_ = -1;
+    std::string spanText_  = "";
+    std::string accessibilityText_ = "";
+    std::string accessibilityDescription_ = "";
+    std::string accessibilityLevel_ = "";
 };
 
 /*
