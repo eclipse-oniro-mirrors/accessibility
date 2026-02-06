@@ -1370,7 +1370,13 @@ void EnableAbilityCallbackObserverImpl::OnEnableAbilityRemoteDied(const std::str
 
     auto iter = enableAbilityCallbackObservers_.find(name);
     if (iter != enableAbilityCallbackObservers_.end()) {
-        iter->second->OnEnableAbilityRemoteDied(name);
+        std::shared_ptr<EnableAbilityCallbackObserver> observerPtr;
+        observerPtr = iter->second;
+        if (observerPtr == nullptr) {
+            HILOG_ERROR("observerPtr is nullptr.");
+            return;
+        }
+        observerPtr->OnEnableAbilityRemoteDied(name);
         enableAbilityCallbackObservers_.erase(iter);
     }
 }
