@@ -356,13 +356,19 @@ private:
 
         void OnReceiveEvent(const EventFwk::CommonEventData &data) override
         {
-            if (callback_) {
+            if (callback_ && clientDeleted_ == false) {
                 callback_(data);
             }
         }
 
+        void OnClientDeleted()
+        {
+            clientDeleted_ = true;
+        }
+
     private:
         std::function<void(const EventFwk::CommonEventData &)> callback_;
+        std::atomic<bool> clientDeleted_ = false;
     };
 
     /**

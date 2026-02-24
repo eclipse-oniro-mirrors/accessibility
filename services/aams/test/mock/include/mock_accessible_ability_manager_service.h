@@ -33,7 +33,7 @@ public:
         uint32_t(const sptr<AccessibleAbilityManagerServiceStub>& callback, const int32_t accountId));
     MOCK_METHOD2(RegisterCaptionPropertyCallback,
         uint32_t(const sptr<IAccessibleAbilityManagerCaptionObserver>& callback, const int32_t accountId));
-    MOCK_METHOD3(GetAbilityList, ErrCode(uint32_t abilityTypes, const int32_t stateType,
+    MOCK_METHOD3(GetAbilityList, ErrCode(uint32_t abilityTypes, int32_t stateType,
         std::vector<AccessibilityAbilityInfoParcel>& infos));
     MOCK_METHOD2(RegisterElementOperatorByWindowId,
         ErrCode(const int32_t windowId, const sptr<IAccessibilityElementOperator>& elementOperator));
@@ -47,7 +47,7 @@ public:
         const int32_t treeId));
     MOCK_METHOD2(GetCaptionProperty, ErrCode(CaptionPropertyParcel& caption, bool isPermissionRequired));
     MOCK_METHOD2(SetCaptionProperty, ErrCode(const CaptionPropertyParcel& caption, bool isPermissionRequired));
-    MOCK_METHOD2(SetCaptionState, ErrCode(bool state, bool isPermissionRequired));
+    MOCK_METHOD2(SetCaptionState, ErrCode(const bool state, bool isPermissionRequired));
     MOCK_METHOD1(SetTouchEventInjector, void(const sptr<TouchEventInjector>& touchEventInjector));
 
     inline sptr<TouchEventInjector> GetTouchEventInjector()
@@ -105,10 +105,9 @@ public:
     MOCK_METHOD1(GetFocusedWindowId, ErrCode(int32_t &focusedWindowId));
     MOCK_METHOD1(RemoveRequestId, ErrCode(int32_t requestId));
     MOCK_METHOD3(GetRootParentId, ErrCode(int32_t windowId, int32_t treeId, int64_t &parentId));
-    MOCK_METHOD2(GetAllTreeId, RetError(int32_t windowId, std::vector<int32_t> &treeIds));
     MOCK_METHOD1(CheckPermission, bool(const std::string &permission));
     MOCK_METHOD1(SearchNeedEvents, ErrCode(std::vector<uint32_t> &needEvents));
-    MOCK_METHOD1(UpdateUITestConfigureEvents, RetError(std::vector<uint32_t> needEvents));
+    MOCK_METHOD1(ConfigureEvents, RetError(std::vector<uint32_t> needEvents));
     MOCK_METHOD1(GetReadableRules, ErrCode(std::string &name));
     MOCK_METHOD2(IsInnerWindowRootElement, ErrCode(int64_t elementId, bool &state));
 };

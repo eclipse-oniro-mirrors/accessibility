@@ -189,20 +189,20 @@ private:
     ErrCode HandleNotifyDisconnect(MessageParcel &data, MessageParcel &reply);
 
     /**
-     * @brief Handle the IPC request for the function:HandleConfigureEvents.
-     * @param data The data of process communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleConfigureEvents(MessageParcel &data, MessageParcel &reply);
-
-    /**
      * @brief Handle the IPC request for the function:HandleSearchElementInfoBySpecificProperty.
      * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
     ErrCode HandleSearchElementInfoBySpecificProperty(MessageParcel &data, MessageParcel &reply);
+
+    /**
+     * @brief Handle the IPC request for the function:HandleConfigureEvents.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleConfigureEvents(MessageParcel &data, MessageParcel &reply);
 
     ErrCode HandleFocusMoveSearchWithCondition(MessageParcel &data, MessageParcel &reply);
 

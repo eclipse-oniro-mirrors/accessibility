@@ -75,7 +75,7 @@ public:
         const std::string &bundleName = "", const std::string &abilityName = "");
     static void RecordDatashareInteraction(A11yDatashareValueType type, const std::string &businessName = "",
         const std::string &bundleName = "", const std::string &abilityName = "");
-    static bool UpdateColorModeConfiguration(int32_t &accountId);
+    static bool UpdateColorModeConfiguration(int32_t accountId);
     static bool IsWideFold();
     static bool IsBigFold();
     static bool IsSmallFold();

@@ -546,17 +546,17 @@ int32_t MagnificationWindowProxy::RegisterTimers(uint64_t beginTime)
     }
     return func(beginTime);
 }
-void MagnificationWindowProxy::DestoryTimers()
+void MagnificationWindowProxy::DestroyTimers()
 {
     if (!handle_) {
         HILOG_ERROR("handle is null");
         return;
     }
  
-    using DestoryTimersFunc = void (*)();
-    DestoryTimersFunc func = (DestoryTimersFunc)GetFunc("DestoryTimers");
+    using DestroyTimersFunc = void (*)();
+    DestroyTimersFunc func = (DestroyTimersFunc)GetFunc("DestroyTimers");
     if (!func) {
-        HILOG_ERROR("DestoryTimers func is null");
+        HILOG_ERROR("DestroyTimers func is null");
         return;
     }
     func();
@@ -575,6 +575,74 @@ int64_t MagnificationWindowProxy::GetWallTimeMs()
         return 0;
     }
     return func();
+}
+
+int32_t MagnificationWindowProxy::PublishTransitionAnimationsReminder()
+{
+    if (!handle_) {
+        HILOG_ERROR("handle is null");
+        return -1;
+    }
+ 
+    using PublishTransitionAnimationsReminderFunc = int32_t (*)();
+    PublishTransitionAnimationsReminderFunc func =
+        (PublishTransitionAnimationsReminderFunc)GetFunc("PublishTransitionAnimationsReminder");
+    if (!func) {
+        HILOG_ERROR("PublishTransitionAnimationsReminder func is null");
+        return -1;
+    }
+    return func();
+}
+ 
+void MagnificationWindowProxy::TransitionAnimationsCancelNotification()
+{
+    if (!handle_) {
+        HILOG_ERROR("handle is null");
+        return;
+    }
+ 
+    using TransitionAnimationsCancelNotificationFunc = void (*)();
+    TransitionAnimationsCancelNotificationFunc func =
+        (TransitionAnimationsCancelNotificationFunc)GetFunc("TransitionAnimationsCancelNotification");
+    if (!func) {
+        HILOG_ERROR("TransitionAnimationsCancelNotification func is null");
+        return;
+    }
+    func();
+}
+ 
+int32_t MagnificationWindowProxy::TransitionAnimationsRegisterTimers(uint64_t beginTime)
+{
+    if (!handle_) {
+        HILOG_ERROR("handle is null");
+        return -1;
+    }
+ 
+    using TransitionAnimationsRegisterTimersFunc = int32_t (*)(uint64_t beginTime);
+    TransitionAnimationsRegisterTimersFunc func =
+        (TransitionAnimationsRegisterTimersFunc)GetFunc("TransitionAnimationsRegisterTimers");
+    if (!func) {
+        HILOG_ERROR("TransitionAnimationsRegisterTimers func is null");
+        return -1;
+    }
+    return func(beginTime);
+}
+
+void MagnificationWindowProxy::TransitionAnimationsDestroyTimers()
+{
+    if (!handle_) {
+        HILOG_ERROR("handle is null");
+        return;
+    }
+ 
+    using TransitionAnimationsDestroyTimersFunc = void (*)();
+    TransitionAnimationsDestroyTimersFunc func =
+        (TransitionAnimationsDestroyTimersFunc)GetFunc("TransitionAnimationsDestroyTimers");
+    if (!func) {
+        HILOG_ERROR("TransitionAnimationsDestroyTimers func is null");
+        return;
+    }
+    func();
 }
 } // namespace Accessibility
 } // namespace OHOS

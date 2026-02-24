@@ -59,6 +59,10 @@ void AccessibilityElementOperatorImpl::SearchDefaultFocusedByWindowId(const int3
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode,
     bool isFilter)
 {
+    if (callback == nullptr) {
+        HILOG_ERROR("callback is nullptr");
+        return;
+    }
     int32_t pageId = -1;
     int32_t mRequestId = AddRequest(requestId, callback);
     HILOG_DEBUG("search element add requestId[%{public}d], requestId[%{public}d], windowId is [%{public}d]",
@@ -188,9 +192,12 @@ int32_t AccessibilityElementOperatorImpl::AddRequest(int32_t requestId,
     std::lock_guard<ffrt::mutex> lock(requestsMutex_);
 
     auto iter = requests_.find(requestId);
-    if (iter == requests_.end()) {
-        requests_[requestId] = callback;
+    if (iter != requests_.end()) {
+        if (iter->second != nullptr) {
+            iter->second->SetExecuteActionResult(false, requestId);
+        }
     }
+    requests_[requestId] = callback;
     return requestId;
 }
 

@@ -63,26 +63,26 @@ public:
         return RET_OK;
     }
 
+    ErrCode GetAbilityList(uint32_t abilityTypes, int32_t stateType,
+        std::vector<AccessibilityAbilityInfoParcel>& infos) override
+    {
+        return RET_OK;
+    }
+
     ErrCode RegisterEnableAbilityCallbackObserver(
         const sptr<IAccessibilityEnableAbilityCallbackObserver>& observer) override
     {
         return RET_OK;
     }
 
-    ErrCode GetAbilityList(
-        uint32_t abilityTypes, int32_t stateType, std::vector<AccessibilityAbilityInfoParcel>& infos) override
+    ErrCode RegisterElementOperatorByWindowId(const int32_t windowId,
+        const sptr<IAccessibilityElementOperator> &elementOperator) override
     {
         return RET_OK;
     }
 
-    ErrCode RegisterElementOperatorByWindowId(
-        const int32_t windowId, const sptr<IAccessibilityElementOperator> &elementOperation) override
-    {
-        return RET_OK;
-    }
-
-    ErrCode RegisterElementOperatorByParameter(
-        const RegistrationPara& parameter, const sptr<IAccessibilityElementOperator>& elementOperation) override
+    ErrCode RegisterElementOperatorByParameter(const RegistrationPara& parameter,
+        const sptr<IAccessibilityElementOperator>& elementOperator) override
     {
         return RET_OK;
     }
@@ -119,7 +119,8 @@ public:
         return RET_OK;
     }
 
-    ErrCode EnableAbility(const std::string &name, const uint32_t capabilities) override
+    ErrCode EnableAbility(const std::string &name, const uint32_t capabilities,
+        const bool connectCallBackFlag) override
     {
         return RET_OK;
     }
@@ -332,13 +333,13 @@ public:
     {
         return RET_OK;
     }
-    ErrCode GetRootParentId(int32_t windowsId, int32_t treeId, int64_t &parentId) override
+    ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId) override
     {
         return 0;
     }
     ErrCode GetRootParentId(int32_t windowsId, int32_t treeId, int64_t &parentId, bool systemApi) override
     {
-        return 0;
+        return RET_OK;
     }
     int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override
     {
@@ -349,7 +350,7 @@ public:
         return NO_ERROR;
     }
 
-    RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents)
+    RetError ConfigureEvents(std::vector<uint32_t> needEvents)
     {
         return RET_OK;
     }

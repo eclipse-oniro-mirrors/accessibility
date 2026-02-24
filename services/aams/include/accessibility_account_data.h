@@ -263,9 +263,7 @@ public:
 
     std::shared_ptr<AccessibilitySettingsConfig> GetConfig();
 
-    RetError EnableAbility(
-        const std::string &name,
-        const uint32_t capabilities,
+    RetError EnableAbility(const std::string &name, const uint32_t capabilities,
         const std::string &callerBundleName = "");
 
     void SetScreenReaderState(const std::string &name, const std::string &state);
@@ -308,7 +306,7 @@ public:
     void AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection);
     void RemoveWaitDisconnectAbility(const std::string &uri);
     std::vector<uint32_t> UpdateNeedEvents();
-    void AddNeedEvent(const std::string &name, std::vector<uint32_t> needEvents);
+    void UpdateAbilityNeedEvent(const std::string &name, std::vector<uint32_t> needEvents);
     void RemoveNeedEvent(const std::string &name);
     std::vector<uint32_t> GetNeedEvents();
     void isSendEvent(const AccessibilityEventInfo &eventInfo);

@@ -81,7 +81,7 @@ sptr<AppExecFwk::IBundleMgr> AccessibleAbilityConnection::GetBundleMgrProxy()
 
 sptr<AppExecFwk::IAppMgr> AccessibleAbilityConnection::GetAppMgrProxy()
 {
-    HILOG_DEBUG("GetBundleMgrProxy called");
+    HILOG_DEBUG("GetAppMgrProxy called");
     
     auto systemAbilityManager = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (!systemAbilityManager) {
@@ -91,27 +91,27 @@ sptr<AppExecFwk::IAppMgr> AccessibleAbilityConnection::GetAppMgrProxy()
 
     auto abilityMgrSa = systemAbilityManager->GetSystemAbility(APP_MGR_SERVICE_ID);
     if (!abilityMgrSa) {
-        HILOG_ERROR("Failed to get bundle manager service");
+        HILOG_ERROR("Failed to get app manager service");
         return nullptr;
     }
 
     sptr<AppExecFwk::IAppMgr> abilityMgr = iface_cast<AppExecFwk::IAppMgr>(abilityMgrSa);
     if (!abilityMgr) {
-        HILOG_ERROR("Failed to get bundle manager proxy");
+        HILOG_ERROR("Failed to get app manager service");
         return nullptr;
     }
 
-    HILOG_DEBUG("Successfully get bundle manager proxy");
+    HILOG_DEBUG("Successfully get app manager proxy");
     return abilityMgr;
 }
 
-void AccessibleAbilityConnection::HandleNoEventHandler(const AppExecFwk::ElementName &element)
-{
-    HILOG_ERROR("eventHandler_ is nullptr.");
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
-    if (accountData != nullptr) {
-        accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
-    }
+void AccessibleAbilityConnection::HandleNoEventHandler(const AppExecFwk::ElementName &element)	
+{	
+    HILOG_ERROR("eventHandler_ is nullptr.");	
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);	
+    if (accountData != nullptr) {	
+        accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));	
+    }	
 }
 
 bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(
@@ -134,31 +134,30 @@ bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(
     wptr<AccessibleAbilityConnection> weakPtr = this;
     appStateObserver->SetStateChangeCallback(
         [appBundleName, abilityName, appStateObserver, accountData, weakPtr](const AppExecFwk::ProcessData& appData) {
+            HILOG_INFO("OnProcessDied: bundleName=%{public}s, state=%{public}d",
+                appData.bundleName.c_str(), appData.state);
             if (appData.bundleName != appBundleName) {
                 return;
             }
             
-            if (appData.state == AppExecFwk::AppProcessState::APP_STATE_TERMINATED) {
-                auto obj = weakPtr.promote();
-                if (!obj) {
-                    HILOG_ERROR("Failed to promote weak pointer!");
-                    return;
-                }
-                auto bundleName = appData.bundleName;
-                auto connection = accountData->GetAppStateObserverAbility(Utils::GetUri(bundleName, abilityName));
-                if (!connection) {
-                    accountData->RemoveAppStateObserverAbility(Utils::GetUri(bundleName, abilityName));
-                    HILOG_ERROR("Failed to find connection!");
-                    return;
-                }
-
-                connection->Disconnect();
+            auto obj = weakPtr.promote();
+            auto bundleName = appData.bundleName;
+            auto connection = accountData->GetAppStateObserverAbility(Utils::GetUri(bundleName, abilityName));
+            if (!connection) {
                 accountData->RemoveAppStateObserverAbility(Utils::GetUri(bundleName, abilityName));
-                auto abilityManagerClient = obj->GetAppMgrProxy();
-                int32_t result = abilityManagerClient->UnregisterApplicationStateObserver(appStateObserver);
-                if (result != ERR_OK) {
-                    HILOG_ERROR("Failed to unregister application state observer, ret=%{public}d", result);
-                }
+                HILOG_ERROR("Failed to find connection!");
+                return;
+            }
+            connection->Disconnect();
+            accountData->RemoveAppStateObserverAbility(Utils::GetUri(bundleName, abilityName));
+            if (obj == nullptr) {
+                HILOG_ERROR("obj is nullptr");
+                return;
+            }
+            auto abilityManagerClient = obj->GetAppMgrProxy();
+            int32_t result = abilityManagerClient->UnregisterApplicationStateObserver(appStateObserver);
+            if (result != ERR_OK) {
+                HILOG_ERROR("Failed to unregister application state observer, ret=%{public}d", result);
             }
         });
 
@@ -183,6 +182,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
 {
     HILOG_INFO("ResultCode is %{public}d", resultCode);
     if (!eventHandler_) {
+        HILOG_ERROR("eventHandler_ is nullptr.");
         HandleNoEventHandler(element);
         return;
     }
@@ -200,7 +200,6 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
             HILOG_ERROR("Failed to promote weak pointer!");
             return;
         }
-
         std::string bundleName = element.GetBundleName();
         std::string abilityName = element.GetAbilityName();
         auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
@@ -258,8 +257,10 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
             HILOG_ERROR("Failed to add death recipient");
         }
 
-        if (!obj->RegisterAppStateObserverToAMS(appBundleName, abilityName, accountData)) {
-            HILOG_ERROR("Failed to register app state observer for %{public}s", bundleName.c_str());
+        if (!connection->GetConnectionKey().empty()) {
+            if (!obj->RegisterAppStateObserverToAMS(appBundleName, abilityName, accountData)) {
+                HILOG_ERROR("Failed to register app state observer for %{public}s", bundleName.c_str());
+            }
         }
     }, "OnAbilityConnectDone");
 }
@@ -405,6 +406,7 @@ void AccessibleAbilityConnection::DisconnectAbility()
         HILOG_ERROR("Disconnect failed!");
         return;
     }
+    HILOG_INFO("Disconnect ability.");
 }
 
 void AccessibleAbilityConnection::NotifyDisconnect()
@@ -571,17 +573,15 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         // LCOV_EXCL_BR_STOP
 
         std::string uri = Utils::GetUri(*sharedElementName);
+        if (!uri.empty()) {
+            HILOG_DEBUG("Call NotifyExtensionServiceDeath uri:%{public}s", uri.c_str());
+            accountData->NotifyExtensionServiceDeath(uri);
+        }
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(uri);
         if (!connection) {
             HILOG_ERROR("There is no connection for %{public}s.", uri.c_str());
             return;
         }
-
-        if (!uri.empty()) {
-            HILOG_DEBUG("Call NotifyExtensionServiceDeath uri:%{public}s", uri.c_str());
-            accountData->NotifyExtensionServiceDeath(uri);
-        }
-
         accountData->RemoveConnectedAbility(*sharedElementName);
         accountData->RemoveEnabledAbility(uri);
 

@@ -30,9 +30,9 @@ API_EXPORT int32_t RegisterTimers(uint64_t beginTime)
 {
     return OHOS::Accessibility::IgnoreRepeatClickNotification::RegisterTimers(beginTime);
 }
-API_EXPORT void DestoryTimers()
+API_EXPORT void DestroyTimers()
 {
-    return OHOS::Accessibility::IgnoreRepeatClickNotification::DestoryTimers();
+    return OHOS::Accessibility::IgnoreRepeatClickNotification::DestroyTimers();
 }
 API_EXPORT int64_t GetWallTimeMs()
 {
@@ -40,6 +40,22 @@ API_EXPORT int64_t GetWallTimeMs()
         return OHOS::MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
     }
     return 0;
+}
+API_EXPORT int32_t PublishTransitionAnimationsReminder()
+{
+    return OHOS::Accessibility::TransitionAnimationsNotification::PublishTransitionAnimationsReminder();
+}
+API_EXPORT void TransitionAnimationsCancelNotification()
+{
+    return OHOS::Accessibility::TransitionAnimationsNotification::CancelNotification();
+}
+API_EXPORT int32_t TransitionAnimationsRegisterTimers(uint64_t beginTime)
+{
+    return OHOS::Accessibility::TransitionAnimationsNotification::RegisterTimers(beginTime);
+}
+API_EXPORT void TransitionAnimationsDestroyTimers()
+{
+    return OHOS::Accessibility::TransitionAnimationsNotification::DestroyTimers();
 }
 }
 // LCOV_EXCL_STOP

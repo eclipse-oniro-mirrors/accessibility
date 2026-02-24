@@ -33,6 +33,7 @@ namespace {
     constexpr uint32_t DISPLAY_DALTONIZER_GREEN = 12;
     constexpr uint32_t DISPLAY_DALTONIZER_RED = 11;
     constexpr uint32_t DISPLAY_DALTONIZER_BLUE = 13;
+    bool isParameterWatcherRegistered = false;
     constexpr int32_t DESTRUCTOR_DELAY_TIME = 200 * 1000; // 200ms
     constexpr int32_t DESTRUCTOR_DELAY_COUNT = 5;
 }
@@ -98,8 +99,10 @@ AccessibilityConfig::Impl::~Impl()
         }
     }
     
-    HILOG_INFO("AccessibilityConfig destory");
-    RemoveParameterWatcher(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+    HILOG_INFO("AccessibilityConfig destroy");
+    if (isParameterWatcherRegistered) {
+        RemoveParameterWatcher(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+    }
 }
 
 bool AccessibilityConfig::Impl::InitializeContext()
@@ -112,17 +115,6 @@ bool AccessibilityConfig::Impl::InitializeContext()
     }
     isInitialized_ = ConnectToService();
     return isInitialized_;
-}
-
-void AccessibilityConfig::Impl::UnInitializeContext()
-{
-    HILOG_DEBUG();
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Context UnInitializeContext failed");
-        return;
-    }
-    sptr<IRemoteObject> object = serviceProxy_->AsObject();
-    ResetService(object);
 }
 
 void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *value, void *context)
@@ -164,8 +156,10 @@ bool AccessibilityConfig::Impl::ConnectToService()
         retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
         if (retSysParam) {
             HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
+            isParameterWatcherRegistered = false;
             return false;
         }
+        isParameterWatcherRegistered = true;
     }
     return true;
 }
@@ -195,7 +189,7 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
     if (samgr == nullptr) {
         return false;
     }
-    auto object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+    auto object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (object != nullptr) {
         if (deathRecipient_ == nullptr) {
             deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
@@ -252,6 +246,7 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
         object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     }
     if (object == nullptr) {
+        HILOG_ERROR("get IRemoteObject failed!");
         return false;
     }
     deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
@@ -266,6 +261,7 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
         HILOG_ERROR("IAccessibleAbilityManagerService iface_cast failed");
         return false;
     }
+    HILOG_INFO("LoadAccessibilityService success!");
 
     (void)RegisterToService();
     InitConfigValues();
@@ -274,7 +270,7 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
 
 void AccessibilityConfig::Impl::LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject)
 {
-    HILOG_WARN("LoadSystemAbilitySuccess.");
+    HILOG_INFO("LoadSystemAbilitySuccess.");
 }
 
 void AccessibilityConfig::Impl::LoadSystemAbilityFail()
@@ -403,7 +399,8 @@ bool AccessibilityConfig::Impl::CheckSaStatus()
     return true;
 }
 
-Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(const std::string &name, const uint32_t capabilities)
+Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(
+    const std::string &name, const uint32_t capabilities, const bool connectCallBackFlag)
 {
     HILOG_INFO("name = [%{private}s] capabilities = [%{private}u]", name.c_str(), capabilities);
     sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
@@ -413,7 +410,7 @@ Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(const std::stri
     }
 
     Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->EnableAbility(name,
-        capabilities));
+        capabilities, connectCallBackFlag));
     return ret;
 }
 
@@ -1588,7 +1585,6 @@ Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeEnableAbilityCallb
     auto iter = enableAbilityCallbackObservers_.begin();
     for (;iter != enableAbilityCallbackObservers_.end(); iter++) {
         if (*iter == observer) {
-            HILOG_DEBUG("erase observer");
             enableAbilityCallbackObservers_.erase(iter);
             HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
             return Accessibility::RET_OK;
@@ -1607,6 +1603,7 @@ void AccessibilityConfig::Impl::OnEnableAbilityRemoteDied(const std::string& nam
     }
     for (auto &enableAbilityCallbackObserver : observers) {
         if (enableAbilityCallbackObserver) {
+            HILOG_DEBUG("OnEnableAbilityRemoteDied to observers");
             enableAbilityCallbackObserver->OnEnableAbilityRemoteDied(name);
         }
     }

@@ -176,7 +176,7 @@ void AccessibilityResourceBundleManager::OnBundleManagerDied(const wptr<IRemoteO
 {
     std::lock_guard<ffrt::mutex> lock(bundleMutex_);
     HILOG_INFO("OnBundleManagerDied ");
-    if (bundleManager_->AsObject() == nullptr) {
+    if (!bundleManager_) {
         HILOG_ERROR("bundleManager_ is nullptr");
         return;
     }

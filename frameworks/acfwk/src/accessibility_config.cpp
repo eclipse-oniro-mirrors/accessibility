@@ -44,15 +44,6 @@ bool AccessibilityConfig::InitializeContext()
     return pImpl_->InitializeContext();
 }
 
-void AccessibilityConfig::UnInitializeContext()
-{
-    if (!pImpl_) {
-        HILOG_ERROR("pImpl_ is nullptr");
-        return;
-    }
-    pImpl_->UnInitializeContext();
-}
-
 Accessibility::RetError AccessibilityConfig::SubscribeConfigObserver(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer, const bool retFlag)
 {
@@ -95,10 +86,11 @@ Accessibility::RetError AccessibilityConfig::UnsubscribeEnableAbilityListsObserv
     return pImpl_->UnsubscribeEnableAbilityListsObserver(observer);
 }
 
-Accessibility::RetError AccessibilityConfig::EnableAbility(const std::string &name, const uint32_t capabilities)
+Accessibility::RetError AccessibilityConfig::EnableAbility(
+    const std::string &name, const uint32_t capabilities, const bool connectCallBackFlag)
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
-    return pImpl_->EnableAbility(name, capabilities);
+    return pImpl_->EnableAbility(name, capabilities, connectCallBackFlag);
 }
 
 Accessibility::RetError AccessibilityConfig::DisableAbility(const std::string &name)

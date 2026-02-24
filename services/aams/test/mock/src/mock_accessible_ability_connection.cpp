@@ -202,11 +202,6 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_
     return accountData->GetAccessibleAbilityConnection(clientName);
 }
 
-RetError AccessibleAbilityChannel::ConfigureEvents(const std::vector<uint32_t> needEvents)
-{
-    return RET_OK;
-}
-
 AccessibleAbilityConnection::AccessibleAbilityConnection(
     int32_t accountId, int32_t connectionId, AccessibilityAbilityInfo& abilityInfo)
 {
@@ -359,6 +354,16 @@ RetError AccessibleAbilityChannel::NotifyDisconnect()
     return RET_OK;
 }
 
+RetError AccessibleAbilityChannel::HoldRunningLock()
+{
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannel::UnholdRunningLock()
+{
+    return RET_OK;
+}
+
 void AccessibleAbilityChannel::SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
     const SpecificPropertyParam& param, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
@@ -391,13 +396,10 @@ void AccessibleAbilityConnection::DisconnectAbility()
     return;
 }
 
-RetError AccessibleAbilityChannel::HoldRunningLock()
+RetError AccessibleAbilityChannel::ConfigureEvents(const std::vector<uint32_t> needEvents)
 {
-    return RET_OK;
-}
-
-RetError AccessibleAbilityChannel::UnholdRunningLock()
-{
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilitychannel ConfigureEvents";
+    (void)needEvents;
     return RET_OK;
 }
 

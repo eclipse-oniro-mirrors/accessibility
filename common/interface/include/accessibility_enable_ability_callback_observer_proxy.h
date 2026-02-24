@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_PROXY_H
-#define ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_PROXY_H
+#ifndef ACCESSIBILITY_ENABLE_ABILITY_CALLBACK_OBSERVER_PROXY_H
+#define ACCESSIBILITY_ENABLE_ABILITY_CALLBACK_OBSERVER_PROXY_H
 
 #include "iaccessibility_enable_ability_callback_observer.h"
 #include "iremote_proxy.h"
@@ -48,4 +48,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_ENABLE_ABILITY_LISTS_OBSERVER_PROXY_H
+#endif // ACCESSIBILITY_ENABLE_ABILITY_CALLBACK_OBSERVER_PROXY_H

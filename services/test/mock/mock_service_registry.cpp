@@ -16,12 +16,11 @@
 #include <gtest/gtest.h>
 #include "accessibility_common_helper.h"
 #include "ipc_skeleton.h"
-#include "iservice_registry.h"
 #include "mock_bundle_manager.h"
 #include "string_ex.h"
 #include "system_ability_definition.h"
-#include "system_ability_manager_proxy.h"
 #include "mock_accessible_ability_manager_service_stub.h"
+#include "mock_service_registry.h"
 
 namespace OHOS {
 static sptr<AppExecFwk::BundleMgrService> g_bundleMgrService = nullptr;
@@ -39,8 +38,7 @@ sptr<ISystemAbilityManager> SystemAbilityManagerClient::GetSystemAbilityManager(
         return systemAbilityManager_;
     }
 
-    sptr<IRemoteObject> registryObject = IPCSkeleton::GetContextObject();
-    systemAbilityManager_ = iface_cast<ISystemAbilityManager>(registryObject);
+    systemAbilityManager_ = new SystemAbilityManagerProxy();
     return systemAbilityManager_;
 }
 
@@ -77,43 +75,44 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::GetSystemAbility(int32_t systemAb
     return GetSystemAbility(systemAbilityId);
 }
 
-sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbilityWrapper(int32_t code, MessageParcel& data)
-{
-    return nullptr;
-}
-
 sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t systemAbilityId)
 {
-    return nullptr;
-}
-
-int32_t GetOnDemandSystemAbilityIds(std::vector<int32_t>& systemAbilityIds)
-{
-    return -1;
+    sptr<IRemoteObject> remote = nullptr;
+    switch (systemAbilityId) {
+        case BUNDLE_MGR_SERVICE_SYS_ABILITY_ID:
+            if (!g_bundleMgrService) {
+                g_bundleMgrService = new AppExecFwk::BundleMgrService();
+            }
+            remote = g_bundleMgrService;
+            break;
+        case ACCESSIBILITY_MANAGER_SERVICE_ID: {
+            bool notNullFlag = Accessibility::AccessibilityCommonHelper::GetInstance().GetRemoteObjectNotNullFlag();
+            if (notNullFlag) {
+                if (!g_MgrService) {
+                    g_MgrService = new OHOS::Accessibility::MockAccessibleAbilityManagerServiceStub();
+                }
+                remote = g_MgrService;
+            }
+            break;
+        }
+        default:
+            GTEST_LOG_(INFO) << "This service is not dummy!!!!" << systemAbilityId;
+            break;
+    }
+    return remote;
 }
 
 sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
-    return nullptr;
+    return CheckSystemAbility(systemAbilityId);
 }
 
 sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t systemAbilityId, bool& isExist)
 {
-    return nullptr;
-}
-
-sptr<IRemoteObject> SystemAbilityManagerProxy::LoadSystemAbility(int32_t systemAbilityId, int32_t timeout)
-{
-    return nullptr;
+    return CheckSystemAbility(systemAbilityId);
 }
 
 int32_t SystemAbilityManagerProxy::LoadSystemAbility(int32_t systemAbilityId,
-    const sptr<ISystemAbilityLoadCallback>& callback)
-{
-    return -1;
-}
-
-int32_t SystemAbilityManagerProxy::LoadSystemAbility(int32_t systemAbilityId, const std::string& deviceId,
     const sptr<ISystemAbilityLoadCallback>& callback)
 {
     return -1;

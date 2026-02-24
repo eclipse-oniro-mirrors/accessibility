@@ -179,6 +179,13 @@ ExtraEventInfo::ExtraEventInfo(const std::map<std::string, std::string> extraEve
     extraEventValueStr_ = extraEventValueStr;
 }
 
+ExtraEventInfo::ExtraEventInfo(const std::map<std::string, std::string> extraEventValueStr,
+    const std::map<std::string, int32_t> extraElementValueInt)
+{
+    extraEventValueStr_ = extraEventValueStr;
+    extraEventValueInt_ = extraElementValueInt;
+}
+
 RetError ExtraEventInfo::SetExtraEventInfo(const std::string keyStr, const std::string valueStr)
 {
     auto extraElementInfoIter = EXTRA_EVENTINFO_SET.find(keyStr);
@@ -187,6 +194,21 @@ RetError ExtraEventInfo::SetExtraEventInfo(const std::string keyStr, const std::
         HILOG_DEBUG("SetExtraEventInfo: size is extraEventValueStr : [%{public}zu]",
             extraEventValueStr_.size());
     } else {
+        HILOG_ERROR("Failed to SetExtraEventInfo.");
+        return RET_ERR_FAILED;
+    }
+    return RET_OK;
+}
+
+RetError ExtraEventInfo::SetExtraEventInfo(const std::string keyStr, int32_t valueInt)
+{
+    auto extraElementInfoIter = EXTRA_EVENTINFO_SET.find(keyStr);
+    if (extraElementInfoIter != EXTRA_EVENTINFO_SET.end()) {
+        extraEventValueInt_[keyStr] = valueInt;
+        HILOG_DEBUG("SetExtraEventInfo: size is extraEventValueInt : [%{public}zu]",
+            extraEventValueInt_.size());
+    } else {
+        HILOG_ERROR("Failed to SetExtraEventInfo.");
         return RET_ERR_FAILED;
     }
     return RET_OK;
@@ -195,6 +217,11 @@ RetError ExtraEventInfo::SetExtraEventInfo(const std::string keyStr, const std::
 const std::map<std::string, std::string> &ExtraEventInfo::GetExtraEventInfoValueStr() const
 {
     return extraEventValueStr_;
+}
+
+const std::map<std::string, int32_t> &ExtraEventInfo::GetExtraEventInfoValueInt() const
+{
+    return extraEventValueInt_;
 }
 
 const std::string ExtraEventInfo::GetExtraEventInfoValueByKey(const std::string &key) const
@@ -298,6 +325,18 @@ void AccessibilityEventInfo::SetResourceModuleName(const std::string &moduleName
 {
     resourceModuleName_ = moduleName;
     HILOG_DEBUG("SetResourceModuleName [%{public}s]", resourceModuleName_.c_str());
+}
+
+const std::vector<std::tuple<int32_t, std::string>> &AccessibilityEventInfo::GetResourceParams() const
+{
+    HILOG_DEBUG("Get ResourceParams");
+    return resourceParams_;
+}
+ 
+void AccessibilityEventInfo::SetResourceParams(const std::vector<std::tuple<int32_t, std::string>> &resourceParams)
+{
+    resourceParams_ = resourceParams;
+    HILOG_DEBUG("Set ResourceParams");
 }
 
 const std::string &AccessibilityEventInfo::GetBundleName() const

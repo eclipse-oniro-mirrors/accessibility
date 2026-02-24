@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +20,7 @@
 #include "accessible_ability_manager_caption_observer_proxy.h"
 #include "accessible_ability_manager_config_observer_proxy.h"
 #include "accessibility_enable_ability_lists_observer_proxy.h"
+#include "accessibility_enable_ability_callback_observer_proxy.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -51,6 +52,13 @@ public:
     MOCK_METHOD0(OnAccessibilityEnableAbilityListsChanged, void());
 };
 
+class MockAccessibilityEnableAbilityCallbackObserverProxy : public AccessibilityEnableAbilityCallbackObserverProxy {
+public:
+    MockAccessibilityEnableAbilityCallbackObserverProxy(const sptr<IRemoteObject>& object);
+    virtual ~MockAccessibilityEnableAbilityCallbackObserverProxy() override;
+    MOCK_METHOD1(OnEnableAbilityRemoteDied, void(const std::string& name));
+};
+
 MockAccessibleAbilityManagerCaptionObserverProxy::MockAccessibleAbilityManagerCaptionObserverProxy(
     const sptr<IRemoteObject>& object)
     : AccessibleAbilityManagerCaptionObserverProxy(object)
@@ -77,6 +85,16 @@ MockAccessibilityEnableAbilityListsObserverProxy::MockAccessibilityEnableAbility
 }
 
 MockAccessibilityEnableAbilityListsObserverProxy::~MockAccessibilityEnableAbilityListsObserverProxy()
+{}
+
+MockAccessibilityEnableAbilityCallbackObserverProxy::MockAccessibilityEnableAbilityCallbackObserverProxy(
+    const sptr<IRemoteObject>& object)
+    : AccessibilityEnableAbilityCallbackObserverProxy(object)
+{
+    (void)object;
+}
+
+MockAccessibilityEnableAbilityCallbackObserverProxy::~MockAccessibilityEnableAbilityCallbackObserverProxy()
 {}
 } // namespace Accessibility
 } // namespace OHOS

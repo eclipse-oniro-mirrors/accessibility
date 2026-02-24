@@ -37,8 +37,6 @@ public:
 
     virtual ~AccessibleAbilityConnection();
 
-    void HandleNoEventHandler(const AppExecFwk::ElementName &element);
-
     virtual void OnAbilityConnectDone(const AppExecFwk::ElementName &element,
                                       const sptr<IRemoteObject> &remoteObject,
                                       int32_t resultCode) override;
@@ -80,9 +78,8 @@ public:
     void SetIsRegisterDisconnectCallback(bool isRegister);
     void NotifyDisconnect();
     void DisconnectAbility();
-    bool RegisterAppStateObserverToAMS(
-        const std::string& appBundleName,
-        const std::string& abilityName,
+    void HandleNoEventHandler(const AppExecFwk::ElementName &element);
+    bool RegisterAppStateObserverToAMS(const std::string& appBundleName, const std::string& abilityName,
         const sptr<AccessibilityAccountData>& accountData);
     void SetConnectionKey(const std::string& key) { connectionKey_ = key; }
     std::string GetConnectionKey() { return connectionKey_; }

@@ -70,7 +70,9 @@ private:
 
     uint32_t menuSize_ = 150;
     int32_t margin_ = 50;
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     uint64_t screenId_ = 0;
+#endif
     uint32_t screenWidth_ = 0;
     uint32_t screenHeight_ = 0;
 

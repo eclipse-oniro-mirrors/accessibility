@@ -133,7 +133,7 @@ bool ANIUtils::GetArrayStringField(ani_env *env, std::string fieldName, ani_obje
 
     fieldValue.clear();
     if (!ParseStringArray(env, static_cast<ani_object>(ref), fieldValue)) {
-        HILOG_INFO(" ParseStringArray fail");
+        HILOG_ERROR("ParseStringArray fail");
         return false;
     }
     return true;
@@ -199,7 +199,7 @@ bool ANIUtils::SetStringArrayProperty(ani_env *env, ani_object &object, const st
     }
     ani_size index = 0;
     for (auto &str : values) {
-        if (ANI_OK != env->Array_Set(arrayObj, index, StdStringToAniString(env, str))) {
+        if (env->Array_Set(arrayObj, index, StdStringToAniString(env, str)) != ANI_OK) {
             HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}zu str=%{public}s",
                 name.c_str(), index, str.c_str());
             return false;
@@ -222,7 +222,7 @@ ani_array ANIUtils::CreateEmptyAniArray(ani_env *env, uint32_t size)
         return nullptr;
     }
     ani_ref undefinedRef = nullptr;
-    if (ANI_OK != env->GetUndefined(&undefinedRef)) {
+    if (env->GetUndefined(&undefinedRef) != ANI_OK) {
         HILOG_ERROR("GetUndefined Failed.");
     }
     ani_array resultArray;
@@ -234,18 +234,18 @@ bool ANIUtils::GetEnumInt(ani_env *env, const char *enum_descriptor, ani_int enu
 {
     HILOG_INFO("processEnumInt enum=%{public}s, index=%{public}d", enum_descriptor, enumIndex);
     ani_enum enumType;
-    if (ANI_OK != env->FindEnum(enum_descriptor, &enumType)) {
+    if (env->FindEnum(enum_descriptor, &enumType) != ANI_OK) {
         HILOG_ERROR("Find Enum Faild");
         return false;
     }
 
     ani_enum_item enumItem;
-    if (ANI_OK != env->Enum_GetEnumItemByIndex(enumType, enumIndex, &enumItem)) {
+    if (env->Enum_GetEnumItemByIndex(enumType, enumIndex, &enumItem) != ANI_OK) {
         HILOG_ERROR("Enum_GetEnumItemByIndex FAILD");
         return false;
     }
 
-    if (ANI_OK != env->EnumItem_GetValue_Int(enumItem, &fieldValue)) {
+    if (env->EnumItem_GetValue_Int(enumItem, &fieldValue) != ANI_OK) {
         HILOG_ERROR("Enum_GetEnumItemByIndex FAILD");
         return false;
     }
@@ -725,7 +725,7 @@ ani_object ANIUtils::CreateArray(ani_env *env, const std::vector<std::string> st
     ani_size index = 0;
     for (auto &item : strs) {
         auto aniString = ANIUtils::CreateAniString(env, item);
-        if (ANI_OK != env->Array_Set(array, index, aniString)) {
+        if (env->Array_Set(array, index, aniString) != ANI_OK) {
             HILOG_ERROR("Set array failed, index=%{public}zu", index);
             return nullptr;
         }
@@ -738,15 +738,15 @@ std::string ANIUtils::AniStrToString(ani_env *env, ani_ref aniStr)
 {
     ani_string ani_str = static_cast<ani_string>(aniStr);
     ani_size strSize;
-    if (ANI_OK != env->String_GetUTF8Size(ani_str, &strSize)) {
-        HILOG_ERROR(" Get utf8 size failed");
+    if (env->String_GetUTF8Size(ani_str, &strSize) != ANI_OK) {
+        HILOG_ERROR("Get utf8 size failed");
         return "";
     }
     std::vector<char> buffer(strSize + 1);
     ani_size bytes_written = 0;
 
-    if (ANI_OK != env->String_GetUTF8(ani_str, buffer.data(), buffer.size(), &bytes_written)) {
-        HILOG_ERROR(" Create string failed");
+    if (env->String_GetUTF8(ani_str, buffer.data(), buffer.size(), &bytes_written) != ANI_OK) {
+        HILOG_ERROR("Create string failed");
         return "";
     }
     return std::string(buffer.data(), bytes_written);
@@ -755,17 +755,17 @@ std::string ANIUtils::AniStrToString(ani_env *env, ani_ref aniStr)
 bool ANIUtils::GetStringMember(ani_env *env, ani_object options, const std::string &name, std::string &value)
 {
     ani_ref ref;
-    if (ANI_OK != env->Object_GetPropertyByName_Ref(options, name.c_str(), &ref)) {
-        HILOG_ERROR(" Get property '%{public}s' failed", name.c_str());
+    if (env->Object_GetPropertyByName_Ref(options, name.c_str(), &ref) != ANI_OK) {
+        HILOG_ERROR("Get property '%{public}s' failed", name.c_str());
         return false;
     }
     ani_boolean isUndefined;
-    if (ANI_OK != env->Reference_IsUndefined(ref, &isUndefined)) {
-        HILOG_ERROR(" Reference IsUndefined failed");
+    if (env->Reference_IsUndefined(ref, &isUndefined) != ANI_OK) {
+        HILOG_ERROR("Reference IsUndefined failed");
         return false;
     }
     if (isUndefined) {
-        HILOG_ERROR(" GetStringMember isUndefined");
+        HILOG_ERROR("GetStringMember isUndefined");
         return false;
     }
     value = ANIUtils::AniStrToString(env, ref);
@@ -812,14 +812,14 @@ bool ANIUtils::GetColorMember(ani_env *env, ani_object object, const char* name,
 bool ANIUtils::GetNumberMember(ani_env *env, ani_object options, const std::string &name, uint32_t& value)
 {
     ani_ref ref;
-    if (ANI_OK != env->Object_GetPropertyByName_Ref(options, name.c_str(), &ref)) {
-        HILOG_ERROR(" Get property '%{public}s' failed", name.c_str());
+    if (env->Object_GetPropertyByName_Ref(options, name.c_str(), &ref) != ANI_OK) {
+        HILOG_ERROR("Get property '%{public}s' failed", name.c_str());
         return false;
     }
 
     ani_boolean isUndefined;
-    if (ANI_OK != env->Reference_IsUndefined(ref, &isUndefined)) {
-        HILOG_ERROR(" Reference IsUndefined failed");
+    if (env->Reference_IsUndefined(ref, &isUndefined) != ANI_OK) {
+        HILOG_ERROR("Reference IsUndefined failed");
         return false;
     }
     if (isUndefined) {
@@ -827,11 +827,11 @@ bool ANIUtils::GetNumberMember(ani_env *env, ani_object options, const std::stri
     }
 
     ani_double valueDouble;
-    if (ANI_OK != env->Object_CallMethodByName_Double(static_cast<ani_object>(ref), "toDouble", ":d", &valueDouble)) {
-        HILOG_ERROR(" Unbox Double failed");
+    if (env->Object_CallMethodByName_Double(static_cast<ani_object>(ref), "toDouble", ":d", &valueDouble) != ANI_OK) {
+        HILOG_ERROR("Unbox Double failed");
         return false;
     }
-    HILOG_INFO(" valueDouble:%{public}f", valueDouble);
+    HILOG_INFO("valueDouble:%{public}f", valueDouble);
     value = static_cast<uint32_t>(valueDouble);
     return true;
 }
@@ -840,25 +840,25 @@ bool ANIUtils::SetNumberMember(ani_env *env, ani_object obj, const std::string &
 {
     static const char *className = "std.core.Int";
     ani_class cls;
-    if (ANI_OK != env->FindClass(className, &cls)) {
-        HILOG_ERROR(" Find class '%{public}s' failed", className);
+    if (env->FindClass(className, &cls) != ANI_OK) {
+        HILOG_ERROR("Find class '%{public}s' failed", className);
         return false;
     }
 
     ani_method ctor;
-    if (ANI_OK != env->Class_FindMethod(cls, "<ctor>", "i:", &ctor)) {
-        HILOG_ERROR(" Find method '<ctor>' failed");
+    if (env->Class_FindMethod(cls, "<ctor>", "i:", &ctor) != ANI_OK) {
+        HILOG_ERROR("Find method '<ctor>' failed");
         return false;
     }
 
     ani_object intObj;
-    if (ANI_OK != env->Object_New(cls, ctor, &intObj, value)) {
-        HILOG_ERROR(" New object '%{public}s' failed", className);
+    if (env->Object_New(cls, ctor, &intObj, value) != ANI_OK) {
+        HILOG_ERROR("New object '%{public}s' failed", className);
         return false;
     }
 
-    if (ANI_OK != env->Object_SetPropertyByName_Ref(obj, name.c_str(), intObj)) {
-        HILOG_ERROR(" Set property '%{public}s' failed", name.c_str());
+    if (env->Object_SetPropertyByName_Ref(obj, name.c_str(), intObj) != ANI_OK) {
+        HILOG_ERROR("Set property '%{public}s' failed", name.c_str());
         return false;
     }
 
@@ -868,23 +868,23 @@ bool ANIUtils::SetNumberMember(ani_env *env, ani_object obj, const std::string &
 ani_object ANIUtils::CreateDouble(ani_env *env, float value)
 {
     if (env == nullptr) {
-        HILOG_ERROR(" CreateDouble fail, env is nullptr");
+        HILOG_ERROR("CreateDouble fail, env is nullptr");
         return nullptr;
     }
     ani_class doubleCls;
     ani_status status = ANI_ERROR;
     if ((status = env->FindClass(CLASSNAME_DOUBLE, &doubleCls)) != ANI_OK) {
-        HILOG_ERROR(" status : %{public}d", status);
+        HILOG_ERROR("status : %{public}d", status);
         return nullptr;
     }
     ani_method doubleCtor;
     if ((status = env->Class_FindMethod(doubleCls, "<ctor>", "d:", &doubleCtor)) != ANI_OK) {
-        HILOG_ERROR(" status : %{public}d", status);
+        HILOG_ERROR("status : %{public}d", status);
         return nullptr;
     }
     ani_object doubleObj;
     if ((status = env->Object_New(doubleCls, doubleCtor, &doubleObj, static_cast<ani_double>(value))) != ANI_OK) {
-        HILOG_ERROR(" status : %{public}d", status);
+        HILOG_ERROR("status : %{public}d", status);
         return nullptr;
     }
     return doubleObj;
@@ -1033,7 +1033,7 @@ bool ANIUtils::SetArrayStringField(ani_env *env, ani_object &object, const std::
     }
     ani_size index = 0;
     for (auto &str : values) {
-        if (ANI_OK != env->Array_Set(arrayObj, index, StdStringToAniString(env, str))) {
+        if (env->Array_Set(arrayObj, index, StdStringToAniString(env, str)) != ANI_OK) {
             HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}zu str=%{public}s",
                 fieldName.c_str(), index, str.c_str());
             return false;
@@ -1178,7 +1178,7 @@ bool ANIUtils::SetArrayField(ani_env *env, ani_object &object, const std::string
     }
     ani_size index = 0;
     for (auto &item : fieldValue) {
-        if (ANI_OK != env->Array_Set(array, index, item)) {
+        if (env->Array_Set(array, index, item) != ANI_OK) {
             HILOG_ERROR("Object_CallMethodByName_Void failed name=%{public}s index=%{public}zu",
                 fieldName.c_str(), index);
             return false;
@@ -1205,7 +1205,7 @@ ani_object ANIUtils::CreateObject(ani_env *env, ani_class cls, ...)
     ani_object nullobj {};
 
     ani_method ctor;
-    if (ANI_OK != env->Class_FindMethod(cls, "<ctor>", nullptr, &ctor)) {
+    if (env->Class_FindMethod(cls, "<ctor>", nullptr, &ctor) != ANI_OK) {
         HILOG_ERROR("[ANI] Not found <ctor> for class");
         return nullobj;
     }
@@ -1215,7 +1215,7 @@ ani_object ANIUtils::CreateObject(ani_env *env, ani_class cls, ...)
     va_start(args, cls);
     ani_status status = env->Object_New_V(cls, ctor, &obj, args);
     va_end(args);
-    if (ANI_OK != status) {
+    if (status != ANI_OK) {
         HILOG_ERROR("[ANI] Failed to Object_New for class 1");
         return nullobj;
     }
@@ -1234,6 +1234,7 @@ void ANIUtils::CheckNumber(ani_env *env, std::string value)
     std::stringstream streamStr;
     streamStr << value;
     if (!(streamStr >> num)) {
+        HILOG_ERROR("check number failed!");
         ThrowBusinessError(env, QueryRetMsg(RetError::RET_ERR_INVALID_PARAM));
     }
 }
@@ -1245,14 +1246,13 @@ void ANIUtils::SetScrollTypeParam(ani_env *env, ani_object obj, std::map<std::st
     std::map<std::string, std::string> scrollValueMap = { {"halfScreen", HALF_VALUE}, {"fullScreen", FULL_VALUE} };
     std::string scrollValue = FULL_VALUE;
 
-    if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "scrollType", &fiedNameValue)) {
+    if (env->Object_GetFieldByName_Ref(obj, "scrollType", &fiedNameValue) == ANI_OK) {
         str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
         if (scrollValueMap.find(str) != scrollValueMap.end()) {
             scrollValue = scrollValueMap.find(str)->second;
             HILOG_DEBUG("ScrollValue %{public}s", scrollValue.c_str());
         } else {
-            HILOG_DEBUG("Input is empty, output fullScreen, value is 1");
-            HILOG_DEBUG("Input is empty, throw error");
+            HILOG_ERROR("Input is empty!");
             ThrowBusinessError(env, QueryRetMsg(RetError::RET_ERR_INVALID_PARAM));
         }
         args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
@@ -1264,17 +1264,17 @@ void ANIUtils::SetSelectionParam(ani_env *env, ani_object obj, std::map<std::str
     ani_ref fiedNameValue;
     ani_boolean forWard;
     std::string str = "";
-    if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "selectTextBegin", &fiedNameValue)) {
+    if (env->Object_GetFieldByName_Ref(obj, "selectTextBegin", &fiedNameValue) == ANI_OK) {
         str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
         CheckNumber(env, str);
         args.insert(std::pair<std::string, std::string>("selectTextBegin", str.c_str()));
     }
-    if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "selectTextEnd", &fiedNameValue)) {
+    if (env->Object_GetFieldByName_Ref(obj, "selectTextEnd", &fiedNameValue) == ANI_OK) {
         str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
         CheckNumber(env, str);
         args.insert(std::pair<std::string, std::string>("selectTextEnd", str.c_str()));
     }
-    if (ANI_OK == env->Object_GetFieldByName_Boolean(obj, "selectTextInForWard", &forWard)) {
+    if (env->Object_GetFieldByName_Boolean(obj, "selectTextInForWard", &forWard) == ANI_OK) {
         std::string value = forWard ? "forWard" : "backWard";
         args.insert(std::pair<std::string, std::string>("selectTextInForWard", value.c_str()));
     }
@@ -1288,14 +1288,14 @@ void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
     switch (action) {
         case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
         case ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM:
-            if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "htmlItem", &fiedNameValue)) {
+            if (env->Object_GetFieldByName_Ref(obj, "htmlItem", &fiedNameValue) == ANI_OK) {
                 str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
                 args.insert(std::pair<std::string, std::string>("htmlItem", str.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_NEXT_TEXT:
         case ActionType::ACCESSIBILITY_ACTION_PREVIOUS_TEXT:
-            if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "textMoveUnit", &fiedNameValue)) {
+            if (env->Object_GetFieldByName_Ref(obj, "textMoveUnit", &fiedNameValue) == ANI_OK) {
                 str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
                 args.insert(std::pair<std::string, std::string>("textMoveUnit", str.c_str()));
             }
@@ -1304,20 +1304,20 @@ void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
             SetSelectionParam(env, obj, args);
             break;
         case ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION:
-            if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "offset", &fiedNameValue)) {
+            if (env->Object_GetFieldByName_Ref(obj, "offset", &fiedNameValue) == ANI_OK) {
                 str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
                 CheckNumber(env, str);
                 args.insert(std::pair<std::string, std::string>("offset", str.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SET_TEXT:
-            if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "setText", &fiedNameValue)) {
+            if (env->Object_GetFieldByName_Ref(obj, "setText", &fiedNameValue) == ANI_OK) {
                 str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
                 args.insert(std::pair<std::string, std::string>("setText", str.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK:
-            if (ANI_OK == env->Object_GetFieldByName_Ref(obj, "spanId", &fiedNameValue)) {
+            if (env->Object_GetFieldByName_Ref(obj, "spanId", &fiedNameValue) == ANI_OK) {
                 str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
                 CheckNumber(env, str);
                 args.insert(std::pair<std::string, std::string>("spanId", str.c_str()));

@@ -779,18 +779,15 @@ void MagnificationWindow::RefreshWindowParamPart(RotationType type)
 
 PointerPos MagnificationWindow::TransferCenter(RotationType type, PointerPos center)
 {
-    if (type == RotationType::NO_CHANGE || type == RotationType::UNKNOWN) {
-        return center;
+    if (type == RotationType::NO_CHANGE || type == RotationType::UNKNOWN ||
+        type == RotationType::FLIP_VERTICAL) {
     }
     GetWindowParam();
     if (type == RotationType::LEFT_ROTATE) {
         return {center.posY, static_cast<int32_t>(screenHeight_) - center.posX};
     }
     if (type == RotationType::RIGHT_ROTATE) {
-        return {screenWidth_ - center.posY, center.posX};
-    }
-    if (type == RotationType::FLIP_VERTICAL) {
-        return {screenWidth_ - center.posX, screenHeight_ - center.posY};
+        return {static_cast<int32_t>(screenWidth_) - center.posY, center.posX};
     }
     return center;
 }

@@ -58,9 +58,9 @@
     SWITCH_CASE(                                                                                                      \
         AccessibilityInterfaceCode::SET_IS_REGISTER_DISCONNECT_CALLBACK, HandleSetIsRegisterDisconnectCallback)       \
     SWITCH_CASE(AccessibilityInterfaceCode::NOTIFY_DISCONNECT, HandleNotifyDisconnect)                                \
-    SWITCH_CASE(AccessibilityInterfaceCode::CONFIGURE_EVENTS, HandleConfigureEvents)                                  \
     SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_SPECIFIC_PROPERTY,                                 \
         HandleSearchElementInfoBySpecificProperty)                                                                    \
+    SWITCH_CASE(AccessibilityInterfaceCode::CONFIGURE_EVENTS, HandleConfigureEvents)                                  \
     SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH_WITH_CONDITION,                                         \
         HandleFocusMoveSearchWithCondition)
 
@@ -334,7 +334,7 @@ ErrCode AccessibleAbilityChannelStub::HandleEnableScreenCurtain(MessageParcel &d
     if (!Permission::IsSystemApp()) {
         HILOG_WARN("Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
-        return NO_ERROR;
+        return RET_ERR_NOT_SYSTEM_APP;
     }
 
     bool isEnable = data.ReadBool();
@@ -346,30 +346,26 @@ ErrCode AccessibleAbilityChannelStub::HandleEnableScreenCurtain(MessageParcel &d
 ErrCode AccessibleAbilityChannelStub::HandleHoldRunningLock(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
- 
     if (!Permission::IsSystemApp()) {
         HILOG_WARN("Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return RET_ERR_NOT_SYSTEM_APP;
     }
- 
     RetError result = HoldRunningLock();
-    reply.WriteInt32(result);
+    reply.WriteInt32(static_cast<int32_t>(result));
     return NO_ERROR;
 }
  
 ErrCode AccessibleAbilityChannelStub::HandleUnholdRunningLock(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
- 
     if (!Permission::IsSystemApp()) {
         HILOG_WARN("Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return RET_ERR_NOT_SYSTEM_APP;
     }
- 
     RetError result = UnholdRunningLock();
-    reply.WriteInt32(result);
+    reply.WriteInt32(static_cast<int32_t>(result));
     return NO_ERROR;
 }
 
@@ -552,29 +548,6 @@ ErrCode AccessibleAbilityChannelStub::HandleNotifyDisconnect(MessageParcel &data
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityChannelStub::HandleConfigureEvents(MessageParcel &data, MessageParcel &reply)
-{
-    HILOG_DEBUG();
-    std::vector<uint32_t> needEvents;
-    uint32_t size = data.ReadUint32();
-    bool verifyResult = ContainerSecurityVerify(data, size, needEvents.max_size());
-    if (!verifyResult) {
-        return TRANSACTION_ERR;
-    }
-
-    if (size < 0 || size > MAX_ALLOW_SIZE) {
-        return TRANSACTION_ERR;
-    }
-    
-    for (uint32_t i = 0; i < size; i++) {
-        uint32_t temp = data.ReadUint32();
-        needEvents.emplace_back(temp);
-    }
-    RetError result = ConfigureEvents(needEvents);
-    reply.WriteInt32(result);
-    return NO_ERROR;
-}
-
 ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoBySpecificProperty(MessageParcel &data,
     MessageParcel &reply)
 {
@@ -610,10 +583,39 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoBySpecificProperty(
     return NO_ERROR;
 }
 
+ErrCode AccessibleAbilityChannelStub::HandleConfigureEvents(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    std::vector<uint32_t> needEvents;
+    uint32_t size = data.ReadUint32();
+    bool verifyResult = ContainerSecurityVerify(data, size, needEvents.max_size());
+    if (!verifyResult) {
+        return TRANSACTION_ERR;
+    }
+
+    if (size > static_cast<uint32_t>(MAX_ALLOW_SIZE)) {
+        return TRANSACTION_ERR;
+    }
+    
+    for (uint32_t i = 0; i < size; i++) {
+        uint32_t temp = data.ReadUint32();
+        needEvents.emplace_back(temp);
+    }
+    RetError result = ConfigureEvents(needEvents);
+    reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
 ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithCondition(MessageParcel &data,
     MessageParcel &reply)
 {
     HILOG_DEBUG();
+    if (!Permission::IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+
     sptr<AccessibilityElementInfoParcel> info = data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
     if (info == nullptr) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityElementInfoParcel> failed");

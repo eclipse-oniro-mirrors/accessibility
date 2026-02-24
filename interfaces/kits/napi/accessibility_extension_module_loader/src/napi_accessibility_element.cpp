@@ -102,17 +102,18 @@ namespace {
     constexpr char ACCESSIBILITY_VISIBLE[] = "accessibilityVisible";
     constexpr char IS_ESSENTIAL[] = "isEssential";
 
-    const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = { "componentId", "inspectorKey", "bundleName",
-        "componentType", "inputType", "text", "hintText", "description", "triggerAction", "textMoveUnit", "contents",
-        "lastContent", "itemCount", "currentIndex", "startIndex", "endIndex", "resourceName", "textLengthLimit", "rect",
-        "checkable", "checked", "focusable", "isVisible", "mainWindowId", "selected", "clickable", "longClickable",
-        "isEnable", "isPassword", "scrollable", "navDestinationId", "editable", "pluralLineSupported", "parent",
-        "children", "isFocused", "accessibilityFocused", "error", "isHint", "pageId", "valueMax", "valueMin",
-        "valueNow", "windowId", "accessibilityText", "accessibilityStateDescription", "textType", "offset",
-        "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus", "row", "column",
-        "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible", "allAttribute", "clip",
-        "customComponentType", "extraInfo", "accessibilityNextFocusId", "accessibilityPreviousFocusId", "parentId",
-        "childrenIds", "accessibilityScrollable", "isEssential", "childrenTreeId", "belongTreeId" };
+    const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "inspectorKey",
+        "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
+        "textMoveUnit", "contents", "lastContent", "itemCount", "currentIndex", "startIndex", "endIndex",
+        "resourceName", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible", "mainWindowId",
+        "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable", "navDestinationId",
+        "editable", "pluralLineSupported", "parent", "children", "isFocused", "accessibilityFocused",
+        "error", "isHint", "pageId", "valueMax", "valueMin", "valueNow", "windowId", "accessibilityText",
+        "textType", "offset", "currentItem", "accessibilityGroup", "accessibilityLevel", "checkboxGroupSelectedStatus",
+        "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
+        "allAttribute", "clip", "customComponentType", "extraInfo", "parentId", "childrenIds",
+        "accessibilityNextFocusId", "accessibilityPreviousFocusId", "accessibilityScrollable", "isEssential",
+        "childrenTreeId", "belongTreeId", "accessibilityStateDescription"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
@@ -180,11 +181,11 @@ namespace {
         {"clip", &NAccessibilityElement::GetElementInfoClip},
         {"customComponentType", &NAccessibilityElement::GetElementInfoCustomComponentType},
         {"extraInfo", &NAccessibilityElement::GetElementInfoExtraInfo},
-        {"accessibilityNextFocusId", &NAccessibilityElement::GetElementInfoAccessibilityNextFocusId},
-        {"accessibilityPreviousFocusId", &NAccessibilityElement::GetElementInfoAccessibilityPreviousFocusId},
         {"parentId", &NAccessibilityElement::GetElementInfoAccessibilityParentId},
         {"childrenIds", &NAccessibilityElement::GetElementInfoAccessibilityChildrenIds},
         {"allAttribute", &NAccessibilityElement::GetElementInfoAllAttribute},
+        {"accessibilityNextFocusId", &NAccessibilityElement::GetElementInfoAccessibilityNextFocusId},
+        {"accessibilityPreviousFocusId", &NAccessibilityElement::GetElementInfoAccessibilityPreviousFocusId},
         {"accessibilityScrollable", &NAccessibilityElement::GetElementInfoAccessibilityScrollable},
         {"supportedActionNames", &NAccessibilityElement::GetElementInfoSupportedActionNames},
         {"isEssential", &NAccessibilityElement::GetElementInfoIsEssential},
@@ -414,6 +415,8 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
     callbackInfo->env_ = env;
@@ -440,6 +443,8 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
         HILOG_ERROR("resource is nullptr.");
         delete callbackInfo;
         callbackInfo = nullptr;
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
     napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
@@ -1393,35 +1398,19 @@ void NAccessibilityElement::GetElementInfoExtraInfo(NAccessibilityElementData *c
     std::map<std::string, int32_t> mapValIsInt =
         callbackInfo->accessibilityElement_.elementInfo_->GetExtraElement().GetExtraElementInfoValueInt();
     nlohmann::json extraInfoValue;
-    for (auto &iterStr : mapValIsStr) {
-        extraInfoValue[iterStr.first] = iterStr.second;
+    for (const auto &[key, value] : mapValIsStr) {
+        if (value == "true" || value == "false") {
+            extraInfoValue[key] = (value == "true") ? true : false;
+        } else {
+            extraInfoValue[key] = value;
+        }
     }
-    for (auto &iterInt : mapValIsInt) {
-        extraInfoValue[iterInt.first] = iterInt.second;
+    for (const auto &[key, value] : mapValIsInt) {
+        extraInfoValue[key] = static_cast<int64_t>(value);
     }
     HILOG_DEBUG("GetElementInfoExtraInfo extraInfoValue is [%{public}s]", extraInfoValue.dump().c_str());
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
         extraInfoValue.dump().c_str(), NAPI_AUTO_LENGTH, &value));
-}
-
-void NAccessibilityElement::GetElementInfoAccessibilityNextFocusId(NAccessibilityElementData *callbackInfo,
-    napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityNextFocusId(), &value));
-}
-
-void NAccessibilityElement::GetElementInfoAccessibilityPreviousFocusId(NAccessibilityElementData *callbackInfo,
-    napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityPreviousFocusId(), &value));
 }
 
 void NAccessibilityElement::GetElementInfoAccessibilityParentId(NAccessibilityElementData *callbackInfo,
@@ -1436,6 +1425,26 @@ void NAccessibilityElement::GetElementInfoAccessibilityParentId(NAccessibilityEl
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_, parentId, &value));
+}
+
+void NAccessibilityElement::GetElementInfoAccessibilityNextFocusId(NAccessibilityElementData *callbackInfo,
+    napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityNextFocusId(), &value));
+}
+ 
+void NAccessibilityElement::GetElementInfoAccessibilityPreviousFocusId(NAccessibilityElementData *callbackInfo,
+    napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityPreviousFocusId(), &value));
 }
 
 void NAccessibilityElement::GetElementInfoAccessibilityChildrenIds(NAccessibilityElementData *callbackInfo,
@@ -2013,6 +2022,8 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
     callbackInfo->env_ = env;
@@ -2036,6 +2047,8 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
     napi_create_string_utf8(env, "ActionNames", NAPI_AUTO_LENGTH, &resource);
     if (resource == nullptr) {
         HILOG_ERROR("resource is nullptr.");
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
 
@@ -2103,12 +2116,6 @@ void NAccessibilityElement::ActionNamesComplete(napi_env env, napi_status status
 napi_value NAccessibilityElement::EnableScreenCurtain(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("enter NAccessibilityElement::EnableScreenCurtain");
-    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
-        napi_throw(env, err);
-        HILOG_ERROR("is not system app");
-        return nullptr;
-    }
 
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv[ARGS_SIZE_ONE] = { 0 };
@@ -2128,7 +2135,13 @@ napi_value NAccessibilityElement::EnableScreenCurtain(napi_env env, napi_callbac
     HILOG_INFO("ui argv[0] isEnable = %{public}d", isEnable);
 
     //pass valule to server
-    AccessibleAbilityClient::GetInstance()->EnableScreenCurtain(isEnable);
+    RetError errStatus = AccessibleAbilityClient::GetInstance()->EnableScreenCurtain(isEnable);
+    if (errStatus == RET_ERR_NOT_SYSTEM_APP) {
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
+        napi_throw(env, err);
+        HILOG_ERROR("is not system app");
+        return nullptr;
+    }
     return thisVar;
 }
 
@@ -2249,8 +2262,8 @@ napi_value NAccessibilityElement::PerformActionConstructPromise(napi_env env, si
         napi_typeof(env, argv[PARAM2], &thirdParamType);
         if (thirdParamType == napi_function) {
             if (secondParamType == napi_object) {
-                ConvertActionArgsJSToNAPI(env, argv[PARAM1], actionArguments,
-                    ConvertStringToAccessibleOperationType(actionName));
+                RETURN_NULL_IF_FALSE(ConvertActionArgsJSToNAPI(env, argv[PARAM1], actionArguments,
+                    ConvertStringToAccessibleOperationType(actionName)));
             }
             napi_create_reference(env, argv[PARAM2], 1, &callbackInfo->callback_);
             napi_get_undefined(env, &promise);
@@ -2269,8 +2282,8 @@ napi_value NAccessibilityElement::PerformActionConstructPromise(napi_env env, si
             napi_get_undefined(env, &promise);
         } else {
             if (valueType == napi_object) {
-                ConvertActionArgsJSToNAPI(env, argv[PARAM1], actionArguments,
-                    ConvertStringToAccessibleOperationType(actionName));
+                RETURN_NULL_IF_FALSE(ConvertActionArgsJSToNAPI(env, argv[PARAM1], actionArguments,
+                    ConvertStringToAccessibleOperationType(actionName)));
             }
             HILOG_DEBUG("argc is two, use promise");
             napi_create_promise(env, &callbackInfo->deferred_, &promise);
@@ -2423,8 +2436,6 @@ napi_value NAccessibilityElement::FindElementsByCondition(napi_env env, napi_cal
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     if (status != napi_ok) {
         HILOG_ERROR("Failed to get cb info");
-        delete callbackInfo;
-        callbackInfo = nullptr;
         return promise;
     }
     OHOS::AccessibilityNapi::ParseString(env, callbackInfo->condition_, argv[PARAM0]);
@@ -3151,6 +3162,8 @@ napi_value NAccessibilityElement::ErrorOperation(NAccessibilityElementData *call
     napi_create_string_utf8(env, "ErrorOperation", NAPI_AUTO_LENGTH, &resource);
     if (resource == nullptr) {
         HILOG_ERROR("resource is nullptr.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
         return nullptr;
     }
     napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},

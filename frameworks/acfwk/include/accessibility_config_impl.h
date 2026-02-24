@@ -37,7 +37,6 @@ public:
     ~Impl();
 
     bool InitializeContext();
-    void UnInitializeContext();
 
     Accessibility::RetError SubscribeConfigObserver(const CONFIG_ID id,
         const std::shared_ptr<AccessibilityConfigObserver> &observer, const bool retFlag);
@@ -54,7 +53,8 @@ public:
     Accessibility::RetError UnsubscribeEnableAbilityCallbackObserver(
         const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer);
 
-    Accessibility::RetError EnableAbility(const std::string &name, const uint32_t capabilities);
+    Accessibility::RetError EnableAbility(
+        const std::string &name, const uint32_t capabilities, const bool connectCallBackFlag);
     Accessibility::RetError DisableAbility(const std::string &name);
     Accessibility::RetError SetMagnificationState(const bool state);
 

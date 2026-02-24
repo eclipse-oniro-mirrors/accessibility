@@ -180,7 +180,7 @@ void AccessibilityDisplayManager::RegisterDisplayListener(
 {
     HILOG_DEBUG();
     if (listener_) {
-        HILOG_ERROR("Display listener is already registed!");
+        HILOG_DEBUG("Display listener is already registed!");
         return;
     }
     listener_ = new(std::nothrow) DisplayListener(manager);
@@ -204,7 +204,7 @@ void AccessibilityDisplayManager::RegisterFoldStatusListener()
 {
     HILOG_DEBUG();
     if (foldListener_) {
-        HILOG_ERROR("Fold status listener is already registed!");
+        HILOG_DEBUG("Fold status listener is already registed!");
         return;
     }
     foldListener_ = new(std::nothrow) FoldStatusListener();

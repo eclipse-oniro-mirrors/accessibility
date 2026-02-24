@@ -95,7 +95,13 @@ void MagnificationManager::OnMagnificationTypeChanged(uint32_t magnificationType
     if (currentMode_ == magnificationType) {
         return;
     }
-
+    bool state = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationState();
+    if (!state) {
+        currentMode_ = magnificationType;
+        Singleton<AccessibleAbilityManagerService>::GetInstance().SetMagnificationMode(
+            static_cast<int32_t>(magnificationType));
+        return;
+    }
     OnModeChanged(magnificationType);
 }
 

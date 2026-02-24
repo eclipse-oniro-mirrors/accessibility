@@ -57,7 +57,6 @@ struct AccessibilityEventTypeCallbackInfo : public AccessibilityEventInfoCallbac
 
 AniAccessibilityExtension* AniAccessibilityExtension::Create(const std::unique_ptr<AbilityRuntime::Runtime>& runtime)
 {
-    HILOG_INFO("AniAccessibilityExtension begin Create");
     return new (std::nothrow) AniAccessibilityExtension(static_cast<AbilityRuntime::ETSRuntime&>(*runtime));
 }
 
@@ -182,7 +181,6 @@ void AniAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLo
     const std::shared_ptr<AppExecFwk::OHOSApplication> &application,
     std::shared_ptr<AppExecFwk::AbilityHandler> &handler, const sptr<IRemoteObject> &token)
 {
-    HILOG_INFO("Init begin");
     AccessibilityExtension::Init(record, application, handler, token);
     std::string srcPath = "";
     std::string moduleName = "";
@@ -197,13 +195,11 @@ void AniAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLo
     HILOG_DEBUG("moduleName:%{private}s, srcPath:%{private}s.", moduleName.c_str(), srcPath.c_str());
     jsObj_ = stsRuntime_.LoadModule(moduleName, srcPath, abilityInfo_->hapPath,
         abilityInfo_->compileMode == AppExecFwk::CompileMode::ES_MODULE, false, abilityInfo_->srcEntrance);
-    HILOG_INFO(" AniAccessibilityExtension create end");
     if (jsObj_ == nullptr) {
         HILOG_ERROR("Failed to get jsobj_");
         return;
     }
     BindContext(env_, record->GetWant(), application);
-    HILOG_INFO("Init end");
 }
 
 void AniAccessibilityExtension::onAccessibilityConnect(ani_env *env, ani_object object)
@@ -212,17 +208,17 @@ void AniAccessibilityExtension::onAccessibilityConnect(ani_env *env, ani_object 
     ani_class cls;
     ani_method managedMethod;
     arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(ANI_ACCESSIBILITY_EXTENSION_CLS);
-    if (ANI_OK != env->FindClass(className.Descriptor().c_str(), &cls)) {
+    if (env->FindClass(className.Descriptor().c_str(), &cls) != ANI_OK) {
         HILOG_ERROR("class not found");
-        return ;
+        return;
     }
-    if (ANI_OK != env->Class_FindMethod(cls, "onAccessibilityConnect", ":", &managedMethod)) {
+    if (env->Class_FindMethod(cls, "onAccessibilityConnect", ":", &managedMethod) != ANI_OK) {
         HILOG_ERROR("Class_FindMethod Failed");
-        return ;
+        return;
     }
-    if (ANI_OK != env->Object_CallMethod_Void(object, managedMethod)) {
+    if (env->Object_CallMethod_Void(object, managedMethod) != ANI_OK) {
         HILOG_ERROR("Object_CallMethod_Void Failed");
-        return ;
+        return;
     }
 }
 
@@ -274,12 +270,12 @@ void AniAccessibilityExtension::onAccessibilityDisconnect(ani_env *env, ani_obje
         HILOG_ERROR("OnAccessibilityDisconnect FindClass err: accessibility extension");
         return;
     }
-    if (ANI_OK != env->Class_FindMethod(cls, "onAccessibilityDisconnect", ":", &managedMethod)) {
+    if (env->Class_FindMethod(cls, "onAccessibilityDisconnect", ":", &managedMethod) != ANI_OK) {
         HILOG_ERROR("Class_FindMethod Failed");
-        return ;
+        return;
     }
     env->Object_CallMethod_Void(object, managedMethod);
-    return ;
+    return;
 }
 
 std::string GetEventExtraInfo(const AccessibilityEventInfo& eventInfo)
@@ -558,13 +554,14 @@ std::shared_ptr<AccessibilityElement> GetElement(const AccessibilityEventInfo& e
     } else {
         std::shared_ptr<AccessibilityElementInfo> elementInfo = std::make_shared<AccessibilityElementInfo>();
         std::string inspectorKey = eventInfo.GetInspectorKey();
-        std::string bundleName = eventInfo.GetBundleName();
+        std::string currentBundleName = eventInfo.GetBundleName();
         RetError ret = RET_ERR_FAILED;
         AccessibilityElementInfo accessibilityElementInfo;
         if (eventInfo.GetEventType() == TYPE_PAGE_ACTIVE && inspectorKey == "") {
             ret = aaClient->GetRoot(accessibilityElementInfo, true);
-            std::string currentBundleName = accessibilityElementInfo.GetBundleName();
-            if (currentBundleName != bundleName) {
+            HILOG_DEBUG("GetElement PageActive currentBundleName: %{public}s and targetBundleName: %{public}s",
+                currentBundleName.c_str(), accessibilityElementInfo.GetBundleName().c_str());
+            if (currentBundleName != accessibilityElementInfo.GetBundleName()) {
                 accessibilityElementInfo.SetMainWindowId(INVALID_WINDOW_ID);
                 accessibilityElementInfo.SetWindowId(INVALID_WINDOW_ID);
             }
@@ -602,10 +599,10 @@ ani_object ConvertAccessibilityElementToJS(ani_env *env, const std::shared_ptr<A
         HILOG_ERROR("Failed to create AccessibilityElement.");
         return nullptr;
     }
-    if (ANI_OK != ANIUtils::Wrap(env, elementObj, pAccessibilityElement)) {
+    if (ANIUtils::Wrap(env, elementObj, pAccessibilityElement) != ANI_OK) {
+        HILOG_ERROR("Cannot wrap AccessibilityElementInfo");
         delete pAccessibilityElement;
         pAccessibilityElement = nullptr;
-        HILOG_ERROR("Cannot wrap AccessibilityElementInfo");
         return nullptr;
     }
     if (element->elementInfo_) {
@@ -661,31 +658,31 @@ void CreateAccessibilityAbilityEventInfo(ani_env *env, ani_object object,
     ani_object infoObject = nullptr;
     constexpr const char* AccessibilityEventInfoimpl =
         "@ohos.application.AccessibilityExtensionAbility.AccessibilityEventInfoImpl";
-    if (ANI_OK != env->FindClass(AccessibilityEventInfoimpl, &infoCls)) {
+    if (env->FindClass(AccessibilityEventInfoimpl, &infoCls) != ANI_OK) {
         HILOG_ERROR("class not found: %{public}s", AccessibilityEventInfoimpl);
-        return ;
+        return;
     }
-    if (ANI_OK != env->Class_FindMethod(infoCls, "<ctor>", nullptr, &ctor)) {
+    if (env->Class_FindMethod(infoCls, "<ctor>", nullptr, &ctor) != ANI_OK) {
         HILOG_ERROR("get ctor Failed: %{public}s", AccessibilityEventInfoimpl);
-        return ;
+        return;
     }
     if ((env->Object_New(infoCls, ctor, &infoObject)) != ANI_OK || infoObject == nullptr) {
         HILOG_ERROR("Object_New failed");
-        return ;
+        return;
     }
     static const char *className = ANI_ACCESSIBILITY_EXTENSION_CLS;
-    if (ANI_OK != env->FindClass(className, &abilityCls)) {
+    if (env->FindClass(className, &abilityCls) != ANI_OK) {
         HILOG_ERROR("class not found: %{public}s", className);
-        return ;
+        return;
     }
-    if (ANI_OK != env->Class_FindMethod(abilityCls, "onAccessibilityEventInfo", nullptr, &callback)) {
+    if (env->Class_FindMethod(abilityCls, "onAccessibilityEventInfo", nullptr, &callback) != ANI_OK) {
         HILOG_ERROR("Class_FindMethod Failed");
-        return ;
+        return;
     }
     CreateJsAccessibilityAbilityEventInfoInner(env, infoObject, callbackInfo);
-    if (ANI_OK != env->Object_CallMethod_Void(object, callback, infoObject)) {
+    if (env->Object_CallMethod_Void(object, callback, infoObject) != ANI_OK) {
         HILOG_ERROR("Object_CallMethod_Void Failed");
-        return ;
+        return;
     }
 }
 
@@ -845,7 +842,7 @@ ani_object CreatKeyObject(ani_env *env)
     constexpr const char* KeyImpl = "@ohos.application.AccessibilityExtensionAbility.KeyImpl";
     arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(KeyImpl);
     if (env->FindClass(className.Descriptor().c_str(), &keyCls) != ANI_OK) {
-        HILOG_ERROR(" not found class");
+        HILOG_ERROR("Class KeyImpl not found");
         return nullptr;
     }
     if (env->Class_FindMethod(keyCls, "<ctor>", nullptr, &keyMethod) != ANI_OK) {

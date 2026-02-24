@@ -250,6 +250,9 @@ public:
      * @sysCap Accessibility
      */
     ExtraEventInfo(const std::map<std::string, std::string> extraEventValueStr);
+
+    ExtraEventInfo(const std::map<std::string, std::string> extraEventValueStr,
+        const std::map<std::string, int32_t> extraElementValueInt);
  
     /**
      * @brief Copy the ExtraEventInfo
@@ -258,6 +261,14 @@ public:
      * @sysCap Accessibility
      */
     RetError SetExtraEventInfo(const std::string keyStr, const std::string valueStr);
+
+    /**
+     * @brief Copy the ExtraEventInfo
+     * @param keyStr The key of extraEventValueStr.
+     * @param valueStr The val of extraEventValueStr.
+     * @sysCap Accessibility
+     */
+    RetError SetExtraEventInfo(const std::string keyStr, int32_t valueInt);
  
     /**
      * @brief Gets the map of extraEventValueStr.
@@ -265,6 +276,13 @@ public:
      * @sysCap Accessibility
      */
     const std::map<std::string, std::string> &GetExtraEventInfoValueStr() const;
+
+    /**
+     * @brief Gets the map of extraElementValueInt.
+     * @return The extraElementValueInt map.
+     * @sysCap Accessibility
+     */
+    const std::map<std::string, int32_t> &GetExtraEventInfoValueInt() const;
 
     /**
      * @brief Gets the value by key from extraEventValueStr
@@ -275,7 +293,8 @@ public:
     const std::string GetExtraEventInfoValueByKey(const std::string &strKey) const;
 
 protected:
-    std::map<std::string, std::string> extraEventValueStr_ = {};
+    std::map<std::string, std::string> extraEventValueStr_ {};
+    std::map<std::string, int32_t> extraEventValueInt_ {};
 };
 
 /*
@@ -289,7 +308,7 @@ class AccessibilityEventInfo : public AccessibilityMemo {
 public:
     /**
      * @brief Construct
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     AccessibilityEventInfo() {}
@@ -297,7 +316,7 @@ public:
     /**
      * @brief Construct
      * @param eventType the type of event info
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     AccessibilityEventInfo(EventType eventType);
@@ -306,7 +325,7 @@ public:
      * @brief Construct
      * @param windowId The id of window
      * @param windowChangeTypes the window change type
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     AccessibilityEventInfo(int32_t windowId, WindowUpdateType windowChangeTypes);
@@ -314,7 +333,7 @@ public:
     /**
      * @brief Get the type of the accessibility event.
      * @return The type of the accessibility event.
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     EventType GetEventType() const;
@@ -322,7 +341,7 @@ public:
     /**
      * @brief Get the window content changed types
      * @return The window content changed types. Refer to "WindowsContentChangeTypes"
-     * @since 3
+     * @since 16
      * * @sysCap Accessibility
      */
     WindowsContentChangeTypes GetWindowContentChangeTypes() const;
@@ -330,7 +349,7 @@ public:
     /**
      * @brief Set the window content changed types
      * @param changeTypes The window content changed types. Refer to "WindowsContentChangeTypes"
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     void SetWindowContentChangeTypes(const WindowsContentChangeTypes changeTypes);
@@ -338,7 +357,7 @@ public:
     /**
      * @brief Get the window changed types
      * @return The window changed types.refer to WindowUpdateType
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     WindowUpdateType GetWindowChangeTypes() const;
@@ -346,7 +365,7 @@ public:
     /**
      * @brief Set the window changed types
      * @param changeTypes The window changed types.refer to WindowUpdateType
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     void SetWindowChangeTypes(const WindowUpdateType changeTypes);
@@ -423,6 +442,22 @@ public:
      * @sysCap Accessibility
      */
     void SetResourceBundleName(const std::string &bundleName);
+
+    /**
+     * @brief AA get the resourceParams of event is sent from ASAC.
+     * @return The resourceParams of event is sent from ASAC
+     * @since 16
+     * @sysCap Accessibility
+     */
+    const std::vector<std::tuple<int32_t, std::string>> &GetResourceParams() const;
+
+    /**
+     * @brief ASAC set the resourceParams of is sent to AA
+     * @param resourceParams The resourceParams of event is sent from ASAC
+     * @since 16
+     * @sysCap Accessibility
+     */
+    void SetResourceParams(const std::vector<std::tuple<int32_t, std::string>> &resourceParams);
 
     /**
      * @brief Gets the bundle name of the event source, that is, the bundle name of the target application.
@@ -623,9 +658,10 @@ protected:
     std::string textAnnouncedForAccessibility_ = "";
     std::string inspectorKey_ = "";
     int32_t requestFocusElementId_ = -1;
-    uint32_t resourceId_ = 1;
+    uint32_t resourceId_ = 0;
     std::string resourceModuleName_ = "";
     std::string resourceBundleName_ = "";
+    std::vector<std::tuple<int32_t, std::string>> resourceParams_ {};
 };
 } // namespace Accessibility
 } // namespace OHOS

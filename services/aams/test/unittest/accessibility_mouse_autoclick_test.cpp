@@ -59,18 +59,8 @@ void AccessibilityMouseAutoclickUnitTest::SetUpTestCase()
 void AccessibilityMouseAutoclickUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityMouseAutoclickUnitTest End ######################";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().runner_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().handler_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().actionRunner_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().actionHandler_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().sendEventRunner_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().sendEventHandler_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().channelRunner_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().channelHandler_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().inputManagerRunner_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().gestureRunner_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterRunner_.reset();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().hoverEnterHandler_.reset();
+    AccessibilityCommonHelper::GetInstance().SetIsServicePublished(false);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RecycleEventHandler();
 }
 
 void AccessibilityMouseAutoclickUnitTest::SetUp()

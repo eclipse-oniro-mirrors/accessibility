@@ -71,8 +71,14 @@ public:
     int32_t PublishIgnoreRepeatClickReminder();
     void CancelNotification();
     int32_t RegisterTimers(uint64_t beginTime);
-    void DestoryTimers();
+    void DestroyTimers();
     int64_t GetWallTimeMs();
+
+    // transitionAnimations helper
+    int32_t PublishTransitionAnimationsReminder();
+    void TransitionAnimationsCancelNotification();
+    int32_t TransitionAnimationsRegisterTimers(uint64_t beginTime);
+    void TransitionAnimationsDestroyTimers();
 
 private:
     void* GetFunc(const std::string& funcName);

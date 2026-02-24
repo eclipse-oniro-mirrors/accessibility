@@ -25,7 +25,18 @@ public:
     static int32_t PublishIgnoreRepeatClickReminder();
     static void CancelNotification();
     static int32_t RegisterTimers(uint64_t beginTime);
-    static void DestoryTimers();
+    static void DestroyTimers();
+    static void TimerCallback();
+private:
+    static uint64_t CalculateTimeToMidnight(uint64_t nowTime);
+};
+
+class TransitionAnimationsNotification {
+public:
+    static int32_t PublishTransitionAnimationsReminder();
+    static void CancelNotification();
+    static int32_t RegisterTimers(uint64_t beginTime);
+    static void DestroyTimers();
     static void TimerCallback();
 private:
     static uint64_t CalculateTimeToMidnight(uint64_t nowTime);

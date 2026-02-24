@@ -25,7 +25,7 @@ AccessibleAppStateObserver::AccessibleAppStateObserver()
 
 AccessibleAppStateObserver::~AccessibleAppStateObserver()
 {
-    HILOG_DEBUG("AccessibleAppStateObserver destructed");
+    HILOG_DEBUG("AccessibleAppStateObserver destroyed");
 }
 
 void AccessibleAppStateObserver::SetStateChangeCallback(
