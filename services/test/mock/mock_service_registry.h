@@ -1,9 +1,5 @@
 /*
-<<<<<<< HEAD
- * Copyright (c) 2023 Huawei Device Co., Ltd.
-=======
  * Copyright (c) 2026 Huawei Device Co., Ltd.
->>>>>>> sync_20260210_02
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,21 +22,6 @@
 namespace OHOS {
 class SystemAbilityManagerProxy : public ISystemAbilityManager {
 public:
-<<<<<<< HEAD
-    SystemAbilityManagerProxy() {}
-    ~SystemAbilityManagerProxy() {}
-
-    sptr<IRemoteObject> GetSystemAbility(int32_t systemAbilityId);
-    sptr<IRemoteObject> GetSystemAbility(int32_t systemAbilityId, const std::string& deviceId);
-    sptr<IRemoteObject> CheckSystemAbilityWrapper(int32_t code, MessageParcel& data);
-    sptr<IRemoteObject> CheckSystemAbility(int32_t systemAbilityId);
-    sptr<IRemoteObject> CheckSystemAbility(int32_t systemAbilityId, const std::string& deviceId);
-    sptr<IRemoteObject> CheckSystemAbility(int32_t systemAbilityId, bool& isExist);
-    sptr<IRemoteObject> LoadSystemAbility(int32_t systemAbilityId, int32_t timeout);
-    int32_t LoadSystemAbility(int32_t systemAbilityId, const sptr<ISystemAbilityLoadCallback>& callback);
-    int32_t LoadSystemAbility(int32_t systemAbilityId, const std::string& deviceId,
-        const sptr<ISystemAbilityLoadCallback>& callback);
-=======
     SystemAbilityManagerProxy() = default;
     ~SystemAbilityManagerProxy() = default;
     sptr<IRemoteObject> GetSystemAbility(int32_t systemAbilityId, const std::string &deviceId);
@@ -103,7 +84,6 @@ private:
     sptr<ISystemAbilityManager> systemAbilityManager_;
     SystemAbilityManagerClient() = default;
     ~SystemAbilityManagerClient();
->>>>>>> sync_20260210_02
 };
 } // namespace OHOS
 #endif // OHOS_ACCESSIBILITY_MOCK_SYSTEM_ABILITY_MANAGER_H
