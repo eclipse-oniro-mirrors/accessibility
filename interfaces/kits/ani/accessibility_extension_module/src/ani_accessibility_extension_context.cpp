@@ -135,7 +135,7 @@ static ani_object GetElementsNative(ani_env *env, ani_object thisObj, ani_int wi
     env->Reference_IsUndefined(elementId, &isUndefined);
     if (!isUndefined) {
         ani_long result;
-        if (ANI_OK != env->Object_CallMethodByName_Long(elementId, "longValue", nullptr, &result)) {
+        if (ANI_OK != env->Object_CallMethodByName_Long(elementId, "toLong", nullptr, &result)) {
             HILOG_ERROR("Failed to get elementId from ani_object");
             return nullptr;
         }
@@ -191,7 +191,7 @@ static ani_object GetRootInActiveWindow(ani_env *env, ani_object thisObj, ani_ob
         ret = context->GetRoot(*elementInfo, true);
     } else {
         ani_int id;
-        if (ANI_OK !=env->Object_CallMethodByName_Int(windowId, "intValue", nullptr, &id)) {
+        if (ANI_OK !=env->Object_CallMethodByName_Int(windowId, "toInt", nullptr, &id)) {
             ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
             return nullptr;
         }
@@ -247,7 +247,7 @@ static ani_object GetAccessibilityWindowsSync(ani_env *env, ani_object thisObj, 
         ret = context->GetWindows(*accessibilityWindows, true);
     } else {
         ani_long id;
-        if (env->Object_CallMethodByName_Long(displayId, "longValue", nullptr, &id) != ANI_OK) {
+        if (env->Object_CallMethodByName_Long(displayId, "toLong", nullptr, &id) != ANI_OK) {
             ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
             return nullptr;
         }
