@@ -167,20 +167,6 @@ ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowI
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(const int32_t windowId)
-{
-    (void)windowId;
-    return RET_OK;
-}
-
-ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
-    const int32_t treeId)
-{
-    (void)windowId;
-    (void)treeId;
-    return RET_OK;
-}
-
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
 {
     bool needNullFlag = AccessibilityAbilityHelper::GetInstance().GetNeedAccountDataNullFlag();
