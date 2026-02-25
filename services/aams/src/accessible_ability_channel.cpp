@@ -858,7 +858,7 @@ RetError AccessibleAbilityChannel::GetElementOperator(
     bool isValidTreeId = treeId > 0;
     bool useBroker = connection->GetUseBrokerFlag();
     bool useBrokerAndAnco = connection->GetUseBrokerFlag() && connection->IsAnco();
-    bool defaultTreeIdWithMultipleProxies = (treeId == 0) && connection->GetCardProxySize();
+    bool defaultTreeIdWithMultipleProxies = (treeId == 0) && connection->GetCardProxySize() > 1;
     bool shouldUseCardProxy = 
         (useBrokerAndAnco && (isValidTreeId || defaultTreeIdWithMultipleProxies)) ||
         (!useBroker && isValidTreeId);
