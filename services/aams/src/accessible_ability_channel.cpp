@@ -854,7 +854,16 @@ RetError AccessibleAbilityChannel::GetElementOperator(
             return RET_ERR_NO_WINDOW_CONNECTION;
         }
     }
-    if (!connection->GetUseBrokerFlag() && treeId > 0) {
+
+    bool isValidTreeId = treeId > 0;
+    bool useBroker = connection->GetUseBrokerFlag();
+    bool useBrokerAndAnco = connection->GetUseBrokerFlag() && connection->IsAnco();
+    bool defaultTreeIdWithMultipleProxies = (treeId == 0) && connection->GetCardProxySize();
+    bool shouldUseCardProxy = 
+        (useBrokerAndAnco && (isValidTreeId || defaultTreeIdWithMultipleProxies)) ||
+        (!useBroker && isValidTreeId);
+    
+    if (shouldUseCardProxy && connection->GetCardProxy(treeId)) {
         elementOperator = connection->GetCardProxy(treeId);
     } else {
         elementOperator = connection->GetProxy();
