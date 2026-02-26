@@ -859,7 +859,7 @@ RetError AccessibleAbilityChannel::GetElementOperator(
     bool useBroker = connection->GetUseBrokerFlag();
     bool useBrokerAndAnco = connection->GetUseBrokerFlag() && connection->IsAnco();
     bool defaultTreeIdWithMultipleProxies = (treeId == 0) && connection->GetCardProxySize() > 1;
-    bool shouldUseCardProxy = 
+    bool shouldUseCardProxy =
         (useBrokerAndAnco && (isValidTreeId || defaultTreeIdWithMultipleProxies)) ||
         (!useBroker && isValidTreeId);
     
