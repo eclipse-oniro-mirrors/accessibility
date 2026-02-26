@@ -855,18 +855,17 @@ RetError AccessibleAbilityChannel::GetElementOperator(
         }
     }
 
-    bool isValidTreeId = treeId > 0;
     bool useBroker = connection->GetUseBrokerFlag();
-    bool useBrokerAndAnco = connection->GetUseBrokerFlag() && connection->IsAnco();
-    bool defaultTreeIdWithMultipleProxies = (treeId == 0) && connection->GetCardProxySize() > 1;
-    bool shouldUseCardProxy =
-        (useBrokerAndAnco && (isValidTreeId || defaultTreeIdWithMultipleProxies)) ||
-        (!useBroker && isValidTreeId);
+    bool hasMultipleProxies = (connection->GetCardProxySize() > 1);
+    bool isDefaultTreeId = (treeId == 0);
+    // Note: This prioritizes UEC proxy (card proxy) over broker for default treeId.
+    bool shouldUseCardProxy = (treeId > 0) ||
+        (useBroker && isDefaultTreeId && hasMultipleProxies);
     
     if (shouldUseCardProxy && connection->GetCardProxy(treeId)) {
         elementOperator = connection->GetCardProxy(treeId);
     } else {
-        elementOperator = connection->GetProxy();
+        elementOperator = connection->GetProxy(); 
     }
     if (!elementOperator) {
         HILOG_ERROR("The proxy of window connection is nullptr");
