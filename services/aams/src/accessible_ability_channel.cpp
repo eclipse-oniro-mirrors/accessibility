@@ -865,7 +865,7 @@ RetError AccessibleAbilityChannel::GetElementOperator(
     if (shouldUseCardProxy && connection->GetCardProxy(treeId)) {
         elementOperator = connection->GetCardProxy(treeId);
     } else {
-        elementOperator = connection->GetProxy(); 
+        elementOperator = connection->GetProxy();
     }
     if (!elementOperator) {
         HILOG_ERROR("The proxy of window connection is nullptr");
