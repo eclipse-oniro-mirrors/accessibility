@@ -854,7 +854,15 @@ RetError AccessibleAbilityChannel::GetElementOperator(
             return RET_ERR_NO_WINDOW_CONNECTION;
         }
     }
-    if (!connection->GetUseBrokerFlag() && treeId > 0) {
+
+    bool useBroker = connection->GetUseBrokerFlag();
+    bool hasMultipleProxies = (connection->GetCardProxySize() > 1);
+    bool isDefaultTreeId = (treeId == 0);
+    // Note: This prioritizes UEC proxy (card proxy) over broker for default treeId.
+    bool shouldUseCardProxy = (treeId > 0) ||
+        (useBroker && isDefaultTreeId && hasMultipleProxies);
+    
+    if (shouldUseCardProxy && connection->GetCardProxy(treeId)) {
         elementOperator = connection->GetCardProxy(treeId);
     } else {
         elementOperator = connection->GetProxy();
