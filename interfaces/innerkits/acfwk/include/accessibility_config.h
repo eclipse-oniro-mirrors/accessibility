@@ -126,11 +126,6 @@ public:
     bool InitializeContext();
 
     /**
-     * @brief UnInitialize the run context.
-     */
-    void UnInitializeContext();
-
-    /**
      * @brief Subscribes to accessibility config value.
      * @param id  the config id which is observed.
      * @param observer Indicates the observer for listening to accessibility
@@ -187,7 +182,8 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
 
-    Accessibility::RetError EnableAbility(const std::string &name, const uint32_t capabilities);
+    Accessibility::RetError EnableAbility(const std::string &name, const uint32_t capabilities,
+        const bool connectCallBackFlag = false);
 
     /**
      * @brief Enabled specified abilities

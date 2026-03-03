@@ -116,8 +116,8 @@ ErrCode MockAccessibleAbilityManagerServiceStub::DeregisterElementOperatorByWind
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::DeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId,
-    int32_t treeId)
+ErrCode MockAccessibleAbilityManagerServiceStub::DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
+    const int32_t treeId)
 {
     (void)windowId;
     (void)treeId;
@@ -148,14 +148,16 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetCaptionState(bool &state, bo
 
 ErrCode MockAccessibleAbilityManagerServiceStub::GetScreenReaderState(bool &state)
 {
-    (void)state;
+    state = screenReaderState_;
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::EnableAbility(const std::string &name, const uint32_t capabilities)
+ErrCode MockAccessibleAbilityManagerServiceStub::EnableAbility(const std::string &name, const uint32_t capabilities,
+    const bool connectCallBackFlag)
 {
     (void)name;
     (void)capabilities;
+    (void)connectCallBackFlag;
     if (handler_) {
         handler_->PostTask(std::bind([this]() {
             abilityObserver_->OnAccessibilityEnableAbilityListsChanged();
@@ -212,7 +214,7 @@ ErrCode MockAccessibleAbilityManagerServiceStub::DisableUITestAbility()
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::SetScreenMagnificationState(bool state)
+ErrCode MockAccessibleAbilityManagerServiceStub::SetScreenMagnificationState(const bool state)
 {
     screenMagnifier_ = state;
     return RET_OK;
@@ -547,7 +549,7 @@ ErrCode MockAccessibleAbilityManagerServiceStub::SearchNeedEvents(std::vector<ui
     return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents)
+RetError MockAccessibleAbilityManagerServiceStub::ConfigureEvents(std::vector<uint32_t> needEvents)
 {
     return RET_OK;
 }

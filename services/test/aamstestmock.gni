@@ -16,7 +16,6 @@ AAMS_FRAMEWORKS_PATH = "//foundation/barrierfree/accessibility/frameworks"
 AAMS_INTERFACES_PATH = "//foundation/barrierfree/accessibility/interfaces"
 AAMS_SERVICES_PATH = "//foundation/barrierfree/accessibility/services"
 AAMS_COMMON_PATH = "//foundation/barrierfree/accessibility/common"
-AAMS_FOUNDATION_PATH = "//foundation"
 
 aams_mock_include_dirs = [
   "$AAMS_MOCK_PATH/distributeddatamgr/include",

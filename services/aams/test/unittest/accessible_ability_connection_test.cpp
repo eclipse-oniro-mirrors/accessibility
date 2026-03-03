@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -629,6 +629,41 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(0, CHANNEL_ID, *abilityInfo);
     EXPECT_EQ(connection->GetChannelId(), CHANNEL_ID);
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetChannelId_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityConnection_Unittest_SetConnectionKey_GetConnectionKey_001
+ * @tc.name: SetConnectionKey/GetConnectionKey
+ * @tc.desc: Test set and get connection key.
+ */
+HWTEST_F(AccessibleAbilityConnectionUnitTest,
+    AccessibleAbilityConnection_Unittest_SetConnectionKey_GetConnectionKey_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_SetConnectionKey_GetConnectionKey_001 start";
+    if (connection_ != nullptr) {
+        std::string key = "testKey";
+        connection_->SetConnectionKey(key);
+        EXPECT_EQ(key, connection_->GetConnectionKey());
+    }
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_SetConnectionKey_GetConnectionKey_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityConnection_Unittest_RegisterAppStateObserverToAMS_001
+ * @tc.name: RegisterAppStateObserverToAMS
+ * @tc.desc: Test RegisterAppStateObserverToAMS returns false when accountData is nullptr.
+ */
+HWTEST_F(AccessibleAbilityConnectionUnitTest,
+    AccessibleAbilityConnection_Unittest_RegisterAppStateObserverToAMS_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_RegisterAppStateObserverToAMS_001 start";
+    if (connection_ != nullptr) {
+        std::string bundleName = "testBundle";
+        std::string abilityName = "testAbility";
+        bool ret = connection_->RegisterAppStateObserverToAMS(bundleName, abilityName, nullptr);
+        EXPECT_FALSE(ret);
+    }
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_RegisterAppStateObserverToAMS_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

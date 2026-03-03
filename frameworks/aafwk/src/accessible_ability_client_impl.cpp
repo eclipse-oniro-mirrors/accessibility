@@ -106,7 +106,7 @@ bool AccessibleAbilityClientImpl::InitAccessibilityServiceProxy()
     }
     HILOG_DEBUG("ISystemAbilityManager obtained");
 
-    sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+    sptr<IRemoteObject> object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (object != nullptr) {
         if (accessibilityServiceDeathRecipient_ == nullptr) {
             accessibilityServiceDeathRecipient_ = new(std::nothrow) AccessibilityServiceDeathRecipient(*this);
@@ -210,7 +210,7 @@ void AccessibleAbilityClientImpl::LoadSystemAbilitySuccess(const sptr<IRemoteObj
         if (samgr == nullptr) {
             break;
         }
-        sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+        sptr<IRemoteObject> object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
         if (object == nullptr) {
             break;
         }
@@ -321,10 +321,11 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
 {
     HILOG_DEBUG("channelId[%{public}d]", channelId);
 
-    std::shared_ptr<AccessibleAbilityListener> listener = listener_;
+    std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     {
         isConnected_ = false;
         std::unique_lock<ffrt::shared_mutex> wLock(rwChannelLock_);
+        listener = listener_;
         if (callbackList_.empty()) {
             // Delete death recipient
             if (channelClient_ && channelClient_->GetRemote()) {
@@ -481,8 +482,7 @@ RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<Access
         return RET_ERR_NO_CONNECTION;
     }
 
-    Accessibility::RetError ret = channelClient_->SendSimulateGesture(gesturePath);
-    return ret;
+    return channelClient_->SendSimulateGesture(gesturePath);
 }
 
 RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo, bool systemApi)
@@ -536,12 +536,6 @@ RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowI
 
     int32_t windowId = windowInfo.GetWindowId();
     HILOG_DEBUG("windowId[%{public}d]", windowId);
-    if (GetCacheElementInfo(windowId, ROOT_NONE_ID, elementInfo)) {
-        HILOG_DEBUG("get element info from cache");
-        elementInfo.SetMainWindowId(windowId);
-        return RET_OK;
-    }
-
     RetError ret = SearchElementInfoFromAce(windowId, ROOT_NONE_ID, cacheMode_, elementInfo, systemApi);
     if (ret == RET_OK) {
         elementInfo.SetMainWindowId(windowId);
@@ -565,11 +559,7 @@ RetError AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, Accessib
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
-    Accessibility::RetError ret = channelClient_->GetWindow(windowId, windowInfo);
-#ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    reporter.setResult(ret);
-#endif // ACCESSIBILITY_EMULATOR_DEFINED
-    return ret;
+    return channelClient_->GetWindow(windowId, windowInfo);
 }
 
 RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElementInfo>& elementInfos)
@@ -815,7 +805,7 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
         }
         if (elementInfos.empty()) {
             HILOG_ERROR("elementInfos from ace is empty");
-            return RET_OK;
+            return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
         }
         SortElementInfosIfNecessary(elementInfos);
         children.emplace_back(elementInfos.front());
@@ -1021,6 +1011,10 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     HILOG_DEBUG("windowId[%{public}d], parentWindowId[%{public}d], parentId[%{public}" PRId64 "]",
         windowId, parentWindowId, parentElementId);
 
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return RET_ERR_FAILED;
+    }
     serviceProxy_->IsInnerWindowRootElement(child.GetAccessibilityId(), isInnerWindowRootElement);
     if (windowId == SCENE_BOARD_WINDOW_ID && isInnerWindowRootElement) {
         return RET_OK;
@@ -1387,7 +1381,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
         return RET_ERR_NO_CONNECTION;
     }
 
-    std::shared_lock<ffrt::shared_mutex> rChannelLock(rwChannelLock_);
+    std::shared_lock<ffrt::shared_mutex> rLock(rwChannelLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1538,8 +1532,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveByWinid(const in
     uint64_t elementInfosCountAdded = 0;
     uint64_t elementInfosCount = elementInfos.size();
     for (auto info : vecElementInfos) {
-        if ((info.GetParentNodeId() == ROOT_PARENT_ELEMENT_ID) && parentIndex >=0 &&
-            parentIndex < elementInfos.size()) {
+        if (info.GetParentNodeId() == ROOT_PARENT_ELEMENT_ID && parentIndex >= 0 && parentIndex < elementInfos.size()) {
             elementInfos[parentIndex].AddChild(info.GetAccessibilityId());
             info.SetParent(elementInfos[parentIndex].GetAccessibilityId());
             HILOG_DEBUG("Give the father a child. %{public}" PRId64 ",Give the child a father.  %{public}" PRId64 "",
@@ -1682,7 +1675,7 @@ RetError AccessibleAbilityClientImpl::HoldRunningLock()
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     ApiReportHelper reporter("AccessibleAbilityClientImpl.HoldRunningLock");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
-    std::shared_lock<ffrt::shared_mutex> rLock(rwChannelLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwRunningLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
@@ -1700,7 +1693,7 @@ RetError AccessibleAbilityClientImpl::UnholdRunningLock()
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     ApiReportHelper reporter("AccessibleAbilityClientImpl.UnholdRunningLock");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
-    std::shared_lock<ffrt::shared_mutex> rLock(rwChannelLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwRunningLock_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;

@@ -136,8 +136,8 @@ private:
     void InitCapability();
     void InitPrivacySpaceConfig();
     void InitAnimationOffConfig();
-    void HandleIgnoreRepeatClickCache();
     void HandleIgnoreRepeatClickState();
+    void HandleIgnoreRepeatClickCache();
     RetError SetConfigState(const std::string& key, bool value);
 
     void CloneOnDeviceCapability();

@@ -232,6 +232,7 @@ void AccessibilityCommonEvent::HandleDataShareReady(const EventFwk::CommonEventD
 void AccessibilityCommonEvent::HandlePowerOnEvent(const EventFwk::CommonEventData &data) const
 {
     IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
+    TransitionAnimationsNotification::PublishTransitionAnimationsReminder();
     HILOG_ERROR("HandlePowerOnEvent");
 }
 

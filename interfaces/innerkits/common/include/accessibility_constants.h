@@ -70,6 +70,7 @@ extern const std::string OHOS_PERMISSION_QUERY_ACCESSIBILITY_ELEMENT;
 extern const std::string OHOS_PERMISSION_MANAGE_SECURE_SETTINGS;
 extern const std::string OHOS_PERMISSION_MANAGE_SETTINGS;
 extern const std::string OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY;
+extern const std::string OHOS_PERMISSION_RUNNING_LOCK;
 
 extern const int32_t PREFETCH_PREDECESSORS;
 extern const int32_t PREFETCH_SIBLINGS;
@@ -118,6 +119,7 @@ extern const uint32_t STATE_IGNORE_REPEAT_CLICK_ENABLED;
 extern const uint32_t STATE_SCREENREADER_ENABLED;
 extern const uint32_t STATE_SINGLE_CLICK_MODE_ENABLED;
 extern const uint32_t STATE_CONFIG_EVENT_CHANGE;
+extern const uint32_t STATE_INPUT_INTERCEPTOR_ENABLED;
 extern const uint32_t STATE_FLASH_REMINDER_ENABLED;
 extern const int32_t INVALID_CHANNEL_ID;
 extern const int32_t MAX_ALLOW_SIZE;

@@ -121,11 +121,12 @@ RetError AccessibilitySettingProvider::UnregisterObserver(const std::string& key
     return RET_OK;
 }
 
-RetError AccessibilitySettingProvider::GetStringValue(const std::string& key, std::string& value,
-    const bool readOnlyFlag)
+RetError AccessibilitySettingProvider::GetStringValue(const std::string& key,
+    std::string& value, const bool readOnlyFlag)
 {
     (void)key;
     (void)value;
+    (void)readOnlyFlag;
     return RET_OK;
 }
 

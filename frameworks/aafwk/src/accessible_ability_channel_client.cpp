@@ -223,7 +223,7 @@ RetError AccessibleAbilityChannelClient::EnableScreenCurtain(bool isEnable)
         HILOG_ERROR("EnableScreenCurtain Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
     }
-    return  proxy_->EnableScreenCurtain(isEnable) ? RET_OK : RET_ERR_PERFORM_ACTION_FAILED_BY_ACE;
+    return  proxy_->EnableScreenCurtain(isEnable);
 }
 
 RetError AccessibleAbilityChannelClient::HoldRunningLock()
@@ -510,16 +510,6 @@ RetError AccessibleAbilityChannelClient::NotifyDisconnect()
     return proxy_->NotifyDisconnect();
 }
 
-RetError AccessibleAbilityChannelClient::ConfigureEvents(const std::vector<uint32_t> needEvents)
-{
-    HILOG_INFO("uitest config need events size is %{public}zu", needEvents.size());
-    if (proxy_ == nullptr) {
-        HILOG_ERROR("ConfigureEvents Failed to connect to aams [channelId:%{public}d]", channelId_);
-        return RET_ERR_SAMGR;
-    }
-    return proxy_->ConfigureEvents(needEvents);
-}
-
 RetError AccessibleAbilityChannelClient::SearchElementInfosBySpecificProperty(int32_t accessibilityWindowId,
     int64_t elementId, const SpecificPropertyParam& param, std::vector<AccessibilityElementInfo> &infos,
     std::vector<AccessibilityElementInfo> &treeInfos, int32_t treeId)
@@ -600,6 +590,16 @@ RetError AccessibleAbilityChannelClient::ValidateAndProcessElementInfos(
 
     HILOG_DEBUG("Found results in %{public}s, size: %{public}zu", logType.c_str(), targetInfos.size());
     return RET_OK;
+}
+
+RetError AccessibleAbilityChannelClient::ConfigureEvents(const std::vector<uint32_t> needEvents)
+{
+    HILOG_INFO("uitest config events size is %{public}zu", needEvents.size());
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("ConfigureEvents Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return RET_ERR_SAMGR;
+    }
+    return proxy_->ConfigureEvents(needEvents);
 }
 
 RetError AccessibleAbilityChannelClient::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,

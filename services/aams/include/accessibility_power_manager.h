@@ -29,9 +29,8 @@ public:
     bool DiscountBrightness(const float discount);
     bool RefreshActivity();
     bool InitRunningLock();
-    bool HoldRunningLock(std::string &bundleName);
-    bool UnholdRunningLock(std::string &bundleName);
-    std::set<std::string> GetWakeLockAbilities();
+    bool HoldRunningLock(const std::string &bundleName);
+    bool UnholdRunningLock(const std::string &bundleName = "");
 private:
     std::shared_ptr<PowerMgr::RunningLock> wakeLock_ { nullptr };
     ffrt::mutex powerWakeLockMutex_;

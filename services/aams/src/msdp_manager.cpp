@@ -14,9 +14,12 @@
  */
 #include <string>
 #include <dlfcn.h>
+#include <thread>
 #include "msdp_manager.h"
 #include "message_parcel.h"
 #include "extension_ability_manager.cpp"
+#include "accessibility_def.h"
+#include "utils.h"
 
 // LCOV_EXCL_START
 namespace OHOS {
@@ -26,6 +29,8 @@ constexpr uint32_t FEATURE_USER_FACE_ANGLE = 11;
 constexpr uint32_t FEATURE_TIME_TUNNEL = 14;
 constexpr uint32_t FEATURE_ENV_SOUND = 17;
 constexpr int32_t MAX_APP_SIZE = 50;
+constexpr int32_t MAX_RETRY_TIME = 3;
+constexpr int32_t WAIT_MS = 3000;
 const char* USER_STATUS_SO_NAME = "libuser_status_client.z.so";
 const char* MSDP_SUBSCRIBE_CALLBACK_FUNC_NAME = "SubscribeCallback";
 const char* MSDP_SUBSCRIBE_FUNC_NAME = "Subscribe";
@@ -35,8 +40,8 @@ const std::string KEY_FACE_ANGLE_STATUS = "userFaceAngleStatus";
 const std::string TIME_TUNNEL_STATUS = "timeTunnelStatus";
 
 typedef int32_t (*SubscribeCallbackFunc)(uint32_t feature, UserStatusDataCallbackFunc &callback);
-typedef void (*SubscribeFunc)(uint32_t feature);
-typedef void (*UnsubscribeFunc)(uint32_t feature);
+typedef int32_t (*SubscribeFunc)(uint32_t feature);
+typedef int32_t (*UnsubscribeFunc)(uint32_t feature);
 
 UserStatusData::UserStatusData() {}
 
@@ -87,7 +92,7 @@ std::vector<std::string> UserStatusData::GetResultApps() const
     return resultApps_;
 }
 
-void UserStatusData::SetResultApps(const std::vector<std::string> resultApps)
+void UserStatusData::SetResultApps(const std::vector<std::string>& resultApps)
 {
     resultApps_ = resultApps;
 }
@@ -347,9 +352,24 @@ int32_t MsdpManager::SubscribeVoiceRecognition()
 
         ExtensionAbilityManager::GetInstance().VoiceRecognize(userStatusData->GetResult());
     };
-    int32_t ret = subscribeCallbackFunc(FEATURE_ENV_SOUND, func);
-    subscribeFunc(FEATURE_ENV_SOUND);
-    HILOG_INFO("userstatusClient.SubscribeCallback RET: %{public}d", ret);
+    subscribeCallbackFunc(FEATURE_ENV_SOUND, func);
+    int32_t ret = RET_ERR_FAILED;
+    int32_t retry = 0;
+    while (retry <= MAX_RETRY_TIME) {
+        HILOG_INFO("subscribeFunc START");
+        ret = subscribeFunc(FEATURE_ENV_SOUND);
+        if (ret == RET_OK) {
+            HILOG_INFO("SubscribeVoiceRecognition SUCCESS, RETRY_TIME: %{public}d", retry);
+            return ret;
+        }
+        UnSubscribeVoiceRecognition();
+        std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_MS));
+        retry++;
+    }
+    if (retry > MAX_RETRY_TIME) {
+        Utils::RecordMSDPUnavailableEvent("SubscribeCallback failed, retry more than 3 times.");
+    }
+    HILOG_INFO("userstatusClient.SubscribeCallback RET: %{public}d, RETRY_TIME: %{public}d", ret, retry);
     return ret;
 }
 

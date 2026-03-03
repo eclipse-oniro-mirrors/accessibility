@@ -40,9 +40,11 @@ enum KeyAction : int32_t {
     UNKNOWN = 0xff,
 };
 
-uint32_t ParseResourceIdFromNAPI(napi_env env, napi_value value);
-std::string ParseResourceBundleNameFromNAPI(napi_env env, napi_value value);
-std::string ParseResourceModuleNameFromNAPI(napi_env env, napi_value value);
+napi_status ParseResourceIdFromNAPI(napi_env env, napi_value value, uint32_t &idValue);
+napi_status ParseResourceBundleNameFromNAPI(napi_env env, napi_value value, std::string &bundleNameValue);
+napi_status ParseResourceModuleNameFromNAPI(napi_env env, napi_value value, std::string &moduleNameValue);
+napi_status ParseResourceParamsFromNAPI(napi_env env, napi_value value,
+    std::vector<std::tuple<int32_t, std::string>> &resourceParamsValue);
 std::string GetStringFromNAPI(napi_env env, napi_value value);
 bool ParseBool(napi_env env, bool& param, napi_value args);
 bool ParseString(napi_env env, std::string& param, napi_value args);
@@ -78,12 +80,12 @@ bool ConvertEventInfoJSToNAPIPart3(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
 bool ConvertEventInfoJSToNAPIPart4(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
-void ConvertActionArgsJSToNAPI(
+bool ConvertActionArgsJSToNAPI(
     napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action);
 void SetPermCheckFlagForAction(bool checkPerm, std::map<std::string, std::string>& args);
-void SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, std::string>& args);
-void SetSelectionParam(napi_env env, napi_value object, std::map<std::string, std::string>& args);
-void CheckNumber(napi_env env, std::string value);
+bool SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, std::string>& args);
+bool SetSelectionParam(napi_env env, napi_value object, std::map<std::string, std::string>& args);
+bool CheckNumber(napi_env env, std::string value);
 
 KeyAction TransformKeyActionValue(int32_t keyAction);
 bool HasKeyCode(const std::vector<int32_t>& pressedKeys, int32_t keyCode);
@@ -152,7 +154,7 @@ struct StateCallbackInfo: public AccessibilityCallbackInfo {
     std::string stringValue_;
     uint32_t uint32Value_;
     int32_t int32Value_;
-    float   floatValue_;
+    double doubleValue_;
     std::vector<std::string> stringVector_;
 };
 

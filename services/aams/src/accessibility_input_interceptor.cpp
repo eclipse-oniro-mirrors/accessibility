@@ -120,9 +120,9 @@ void AccessibilityInputInterceptor::OnMoveMouse(int32_t offsetX, int32_t offsetY
 
 void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunctions)
 {
+    std::lock_guard<ffrt::mutex> lock(eventHandlerMutex_);
     HILOG_INFO("function[%{public}d].", availableFunctions);
 
-    std::lock_guard<ffrt::mutex> lock(eventHandlerMutex_);
     if ((availableFunctions_ == availableFunctions) && ((availableFunctions & FEATURE_SCREEN_TOUCH) == 0)) {
         return;
     }
@@ -170,11 +170,8 @@ void AccessibilityInputInterceptor::CreateTransmitters()
 
 void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
 {
-    HILOG_DEBUG();
-
     sptr<EventTransmission> header = nullptr;
     sptr<EventTransmission> current = nullptr;
-
     if (availableFunctions_& FEATURE_MOUSE_AUTOCLICK) {
         sptr<AccessibilityMouseAutoclick> mouseAutoclick = new(std::nothrow) AccessibilityMouseAutoclick();
         if (!mouseAutoclick) {
@@ -183,7 +180,6 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
         }
         SetNextEventTransmitter(header, current, mouseAutoclick);
     }
-
     if (availableFunctions_& FEATURE_INJECT_TOUCH_EVENTS) {
         sptr<TouchEventInjector> touchEventInjector = new(std::nothrow) TouchEventInjector();
         if (!touchEventInjector) {
@@ -199,7 +195,6 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
     } else {
         ClearMagnificationGesture();
     }
-
     if (availableFunctions_& FEATURE_TOUCH_EXPLORATION) {
         sptr<TouchExploration> touchExploration = new(std::nothrow) TouchExploration();
         if (!touchExploration) {
@@ -209,7 +204,6 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
         touchExploration->StartUp();
         SetNextEventTransmitter(header, current, touchExploration);
     }
-
     if ((availableFunctions_ & FEATURE_SCREEN_TOUCH) && ((availableFunctions_ & FEATURE_TOUCH_EXPLORATION) == 0)) {
         sptr<AccessibilityScreenTouch> screenTouch = new(std::nothrow) AccessibilityScreenTouch();
         if (!screenTouch) {
@@ -218,7 +212,6 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
         }
         SetNextEventTransmitter(header, current, screenTouch);
     }
-
     SetNextEventTransmitter(header, current, instance_);
     pointerEventTransmitters_ = header;
 }
@@ -227,6 +220,7 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
 void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmission> &header,
     sptr<EventTransmission> &current)
 {
+    HILOG_INFO("CreatWindowMagnificationGesture start");
     Singleton<AccessibleAbilityManagerService>::GetInstance().InitMagnification();
     uint32_t magnificationMode = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
     if (magnificationMode == FULL_SCREEN_MAGNIFICATION) {
@@ -266,7 +260,7 @@ void AccessibilityInputInterceptor::CreatZoomGesture()
     std::shared_ptr<MagnificationMenuManager> menuManager =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetMenuManager();
     if (fullScreenMagnificationManager == nullptr) {
-        HILOG_ERROR("get windowMagnification manager failed.");
+        HILOG_ERROR("get fullScreenMagnification manager failed.");
         return;
     }
     if (menuManager == nullptr) {
@@ -348,6 +342,7 @@ void AccessibilityInputInterceptor::CreateKeyEventTransmitters()
 
 void AccessibilityInputInterceptor::UpdateInterceptor()
 {
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG();
     if (!inputManager_) {
         HILOG_ERROR("inputManger is null.");
@@ -391,6 +386,7 @@ void AccessibilityInputInterceptor::DestroyInterceptor()
 
 void AccessibilityInputInterceptor::DestroyTransmitters()
 {
+    std::lock_guard<ffrt::mutex> lock(mutex_);
     HILOG_DEBUG();
 
     if ((availableFunctions_ & FEATURE_MOUSE_KEY) != FEATURE_MOUSE_KEY) {
@@ -527,7 +523,7 @@ AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
     eventHandler_->PostTask([] {
         auto pid = getpid();
         auto tid = gettid();
-        uint32_t qosLevel = 7;
+        uint32_t qosLevel = 7; // set thread qos to RT
         std::string strBundleName = "accessibility";
         std::string strPid = std::to_string(pid);
         std::string strTid = std::to_string(tid);

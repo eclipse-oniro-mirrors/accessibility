@@ -79,7 +79,7 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
     if (retSysParam >= 0 && !std::strcmp(value, "true")) {
         HILOG_ERROR("accessibility service is ready");
         if (!ConnectToService()) {
-            HILOG_ERROR("Failed to connect to aams service");
+            HILOG_ERROR("accessibility service is ready.");
             return;
         }
         Init();
@@ -94,6 +94,10 @@ AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (subscriber_ != nullptr) {
+        subscriber_->OnClientDeleted();
+        EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriber_);
+    }
     if (serviceProxy_ != nullptr) {
         sptr<IRemoteObject> object = serviceProxy_->AsObject();
         if (object) {
@@ -122,7 +126,7 @@ bool AccessibilitySystemAbilityClientImpl::ConnectToService()
         return false;
     }
 
-    sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+    sptr<IRemoteObject> object = samgr->CheckSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (object == nullptr) {
         HILOG_ERROR("Get IAccessibleAbilityManagerService object from samgr failed");
         return false;
@@ -235,7 +239,7 @@ void AccessibilitySystemAbilityClientImpl::OnParameterChanged(const char *key, c
     }
 
     if (!context) {
-        HILOG_WARN("accessibility.config.ready context NULL");
+        HILOG_ERROR("accessibility.config.ready context NULL");
         return;
     }
 
@@ -348,6 +352,9 @@ void AccessibilitySystemAbilityClientImpl::Init()
     if (stateType & STATE_CONFIG_EVENT_CHANGE) {
         stateHandler_.SetState(AccessibilityStateEventType::EVENT_CONFIG_EVENT_CHANGED, true);
     }
+    if (stateType & STATE_INPUT_INTERCEPTOR_ENABLED) {
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_INPUT_INTERCEPTOR_ENABLED, true);
+    }
     if (stateType & STATE_AUDIOMONO_ENABLED) {
         stateHandler_.SetState(AccessibilityStateEventType::EVENT_AUDIO_MONO, true);
     }
@@ -392,13 +399,11 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-
     auto iter = elementOperators_.find(windowId);
     if (iter != elementOperators_.end()) {
         HILOG_ERROR("windowID[%{public}d] is exited", windowId);
         return RET_ERR_CONNECTION_EXIST;
     }
-
     sptr<AccessibilityElementOperatorImpl> aamsInteractionOperator =
         new(std::nothrow) AccessibilityElementOperatorImpl(windowId, operation, *this);
     if (aamsInteractionOperator == nullptr) {
@@ -437,13 +442,13 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(Registrat
         HILOG_ERROR("Failed to create aamsInteractionOperator.");
         return RET_ERR_NULLPTR;
     }
-    elementOperators_[parameter.windowId] = aamsInteractionOperator;
     RegistrationPara registrationPara {
         .windowId = parameter.windowId,
         .parentWindowId = parameter.parentWindowId,
         .parentTreeId = parameter.parentTreeId,
         .elementId = parameter.elementId,
     };
+    elementOperators_[parameter.windowId] = aamsInteractionOperator;
     return static_cast<RetError>(serviceProxy_->RegisterElementOperatorByParameter(registrationPara,
         aamsInteractionOperator));
 }
@@ -782,7 +787,10 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_CONFIG_EVENT_CHANGED,
         !!(stateType & STATE_CONFIG_EVENT_CHANGE));
-    
+
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_INPUT_INTERCEPTOR_ENABLED,
+        !!(stateType & STATE_INPUT_INTERCEPTOR_ENABLED));
+
     NotifyStateChanged(AccessibilityStateEventType::EVENT_AUDIO_MONO,
         !!(stateType & STATE_AUDIOMONO_ENABLED));
 
@@ -1046,17 +1054,6 @@ void AccessibilitySystemAbilityClientImpl::AccessibilityLoadCallback::OnLoadSyst
     }
 }
 
-RetError AccessibilitySystemAbilityClientImpl::SearchNeedEvents(std::vector<uint32_t> &needEvents)
-{
-    HILOG_DEBUG();
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
-    }
-    return static_cast<RetError>(serviceProxy_->SearchNeedEvents(needEvents));
-}
-
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoBySpecificPropertyResult(
     const std::list<AccessibilityElementInfo> &infos, const std::list<AccessibilityElementInfo> &treeInfos,
     const int32_t requestId)
@@ -1084,6 +1081,17 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoBySpecificPropert
     } else {
         HILOG_INFO("callback is nullptr");
     }
+}
+
+RetError AccessibilitySystemAbilityClientImpl::SearchNeedEvents(std::vector<uint32_t> &needEvents)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    return static_cast<RetError>(serviceProxy_->SearchNeedEvents(needEvents));
 }
 
 void AccessibilitySystemAbilityClientImpl::SetFocusMoveSearchWithConditionResult(
@@ -1194,7 +1202,11 @@ RetError AccessibilitySystemAbilityClientImpl::GetAnimationOffState(bool &state)
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    serviceProxy_->GetAnimationOffState(state);
+    auto ret = serviceProxy_->GetAnimationOffState(state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("Failed to get AnimationOff state");
+        return RET_ERR_FAILED;
+    }
     return RET_OK;
 }
 
@@ -1210,7 +1222,11 @@ RetError AccessibilitySystemAbilityClientImpl::GetAudioMonoState(bool &state)
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    serviceProxy_->GetAudioMonoState(state);
+    auto ret = serviceProxy_->GetAudioMonoState(state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("Failed to get audioMono switch state");
+        return RET_ERR_FAILED;
+    }
     return RET_OK;
 }
 
@@ -1226,7 +1242,11 @@ RetError AccessibilitySystemAbilityClientImpl::GetFlashReminderSwitch(bool &stat
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    serviceProxy_->GetFlashReminderSwitch(state);
+    auto ret = serviceProxy_->GetFlashReminderSwitch(state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("Failed to get flash reminder switch state");
+        return RET_ERR_FAILED;
+    }
     return RET_OK;
 }
 } // namespace Accessibility

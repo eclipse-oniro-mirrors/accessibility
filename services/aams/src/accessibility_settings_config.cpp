@@ -89,6 +89,7 @@ namespace {
     const char* IGNORE_REPEATED_CLICK_CACHE_FLAG = "accessibility_ignore_repeat_click_cache_flag";
     const char* CLONE_CAPABILITY = "const.accessibility.cloneCapability";
     const char* OLD_DEVICE_CAPABILITY = "accessibility_clone_capability";
+    const char* TRANSITION_ANIMATIONS_TIMESTAMP = "accessibility_transition_animations_timestamp";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -111,11 +112,11 @@ namespace {
     constexpr int CLONE_CAPABILITY_TOUCH_SCREEN = 1 << 8;
     constexpr int CLONE_CAPABILITY_SHORT_KEY = 1 << 9;
     constexpr float INVALID_MASTER_BALANCE_VALUE = 2.0;
-    constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORTEST = 0;
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORT = 1;
     constexpr float DEFAULT_MAGNIFICATION_SCALE = 2.0;
     bool g_ignoreRepeatClickOnceFlag = false;
+    bool g_transitionAnimationsOnceFlag = false;
 
     constexpr int PC_ENABLE_CAPABILITY_LIST[] = {
         CLONE_CAPABILITY_INVERT_COLOR,
@@ -265,6 +266,7 @@ RetError AccessibilitySettingsConfig::SetShortKeyOnLockScreenState(const bool st
     if (ret != RET_OK) {
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetShortKeyOnLockScreenState");
         HILOG_ERROR("set isShortKeyEnabledOnLockScreen_ failed");
+        return ret;
     }
     isShortKeyEnabledOnLockScreen_ = state;
     return ret;
@@ -449,6 +451,17 @@ RetError AccessibilitySettingsConfig::SetAnimationOffState(const bool state)
         return ret;
     }
     animationOffState_ = state;
+    if (state) {
+        int64_t nowTime = IgnoreRepeatClickNotification::GetWallTimeMs();
+        ret = datashare_->PutLongValue(TRANSITION_ANIMATIONS_TIMESTAMP, nowTime);
+        if (nowTime >= 0) {
+            TransitionAnimationsNotification::RegisterTimers(static_cast<uint64_t>(nowTime));
+        }
+    } else {
+        ret = datashare_->PutLongValue(TRANSITION_ANIMATIONS_TIMESTAMP, 0);
+        TransitionAnimationsNotification::DestroyTimers();
+        TransitionAnimationsNotification::CancelNotification();
+    }
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityState();
     return ret;
 }
@@ -596,16 +609,18 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state
         HILOG_ERROR("set ignoreRepeatClickState_ failed");
         return ret;
     }
+    ignoreRepeatClickState_ = state;
     if (state) {
-        uint64_t nowTime = IgnoreRepeatClickNotification::GetWallTimeMs();
-        ret = datashare_->PutUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, nowTime);
-        IgnoreRepeatClickNotification::RegisterTimers(nowTime);
+        int64_t nowTime = IgnoreRepeatClickNotification::GetWallTimeMs();
+        ret = datashare_->PutLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, nowTime);
+        if (nowTime >= 0 ) {
+            IgnoreRepeatClickNotification::RegisterTimers(static_cast<uint64_t>(nowTime));
+        }
     } else {
-        ret = datashare_->PutUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, 0);
-        IgnoreRepeatClickNotification::DestoryTimers();
+        ret = datashare_->PutLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, 0);
+        IgnoreRepeatClickNotification::DestroyTimers();
         IgnoreRepeatClickNotification::CancelNotification();
     }
-    ignoreRepeatClickState_ = state;
     return ret;
 }
 
@@ -735,11 +750,7 @@ bool AccessibilitySettingsConfig::GetShortKeyState() const
 
 bool AccessibilitySettingsConfig::GetShortKeyOnLockScreenState() const
 {
-    if (!datashare_) {
-        HILOG_ERROR("datashare is nullptr!");
-        return false;
-    }
-    return datashare_->GetBoolValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN, false);
+    return isShortKeyEnabledOnLockScreen_;
 }
 
 int32_t AccessibilitySettingsConfig::GetShortKeyTimeout() const
@@ -937,7 +948,7 @@ bool AccessibilitySettingsConfig::GetStartToHosState()
 {
     HILOG_DEBUG();
     if (!datashare_) {
-        return RET_ERR_NULLPTR;
+        return false;
     }
 
     bool value = true;
@@ -1035,30 +1046,14 @@ void AccessibilitySettingsConfig::InitCaption()
 void AccessibilitySettingsConfig::InitShortKeyConfig()
 {
     isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, true);
-    bool isShortKeyEnabledOnLockScreen = datashare_->GetBoolValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN, false);
-    int isShortKeyOnLockScreen = datashare_->GetIntValue(SHORTCUT_ON_LOCK_SCREEN,
-        INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
+    datashare_->GetBoolValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN, true);
     shortKeyTimeout_ = static_cast<int32_t>(datashare_->GetIntValue(SHORTCUT_TIMEOUT, SHORT_KEY_TIMEOUT_BEFORE_USE));
-    bool shortKeyOnLockScreenAutoOn = false;
 
     if (shortKeyTimeout_ == 1) {
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-        if (isShortKeyOnLockScreen == INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
-            shortKeyOnLockScreenAutoOn = true;
-            SetShortKeyOnLockScreenState(true);
-        }
     } else if (shortKeyTimeout_ == 0) {
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
-
-    if (isShortKeyOnLockScreen != INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
-        SetShortKeyOnLockScreenState(isShortKeyOnLockScreen == 1);
-    } else if (!shortKeyOnLockScreenAutoOn) {
-        SetShortKeyOnLockScreenState(isShortKeyEnabledOnLockScreen);
-    }
-
-    auto ret = datashare_->PutIntValue(SHORTCUT_ON_LOCK_SCREEN, INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
-    HILOG_INFO("reset shortcut on lock screen ret = %{public}d", ret);
 
     shortkeyTarget_ = datashare_->GetStringValue("ShortkeyTarget", "none");
 
@@ -1087,6 +1082,11 @@ void AccessibilitySettingsConfig::InitPrivacySpaceConfig()
     bool cloneOrUpgradeFlag = false;
     service->GetBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, cloneOrUpgradeFlag);
     if (cloneOrUpgradeFlag && (accountId_ != DEFAULT_ACCOUNT_ID)) {
+        if (isShortKeyState_) {
+            SetShortKeyOnLockScreenState(true);
+        } else {
+            SetShortKeyOnLockScreenState(false);
+        }
         SetDefaultShortcutKeyService();
         SetIgnoreRepeatClickReconfirm(ignoreRepeatClickState_);
         SetZoomGestureEnabledReconfirm(isScreenMagnificationState_);
@@ -1098,35 +1098,53 @@ void AccessibilitySettingsConfig::InitAnimationOffConfig()
 {
     animationOffState_ = datashare_->GetBoolValue(ANIMATION_OFF_KEY, false);
     std::string graphicState = system::GetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "1");
-    bool state = (graphicState == "0");
-    bool value = false;
-    value = datashare_->GetBoolValue(ANIMATION_CACHE_FLAG, false);
+    std::string arkuiState = system::GetParameter(ARKUI_ANIMATION_SCALE_NAME, "1");
     if (animationOffState_) {
         system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "0");
-        if (!value) {
-            HILOG_INFO("recovery arkui animationscale success");
-            system::SetParameter(ARKUI_ANIMATION_SCALE_NAME, "1");
+        system::SetParameter(ARKUI_ANIMATION_SCALE_NAME, "0");
+    } else {
+        if (graphicState == "0") {
+            system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "1");
+            graphicState = "1";
         }
-    } else if (!animationOffState_ && state) {
-        system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "1");
+        if (arkuiState == "0") {
+            system::SetParameter(ARKUI_ANIMATION_SCALE_NAME, "1");
+            arkuiState = "1";
+        }
+        if (arkuiState != graphicState) {
+            system::SetParameter(ARKUI_ANIMATION_SCALE_NAME, graphicState);
+        }
     }
-    if (!value) {
-        datashare_->PutBoolValue(ANIMATION_CACHE_FLAG, true);
+    if (animationOffState_) {
+        TransitionAnimationsNotification::PublishTransitionAnimationsReminder();
+        int64_t timeStamp = datashare_->GetLongValue(TRANSITION_ANIMATIONS_TIMESTAMP, 0);
+        if (timeStamp == 0) {
+            timeStamp = IgnoreRepeatClickNotification::GetWallTimeMs();
+            datashare_->PutLongValue(TRANSITION_ANIMATIONS_TIMESTAMP, timeStamp);
+        }
+        if (timeStamp > 0) {
+            TransitionAnimationsNotification::RegisterTimers(static_cast<uint64_t>(timeStamp));
+        }
+        if (g_transitionAnimationsOnceFlag) {
+            TransitionAnimationsNotification::PublishTransitionAnimationsReminder();
+        } else {
+            g_transitionAnimationsOnceFlag = true;
+        }
     }
 }
 
 // LCOV_EXCL_START
 void AccessibilitySettingsConfig::HandleIgnoreRepeatClickState()
 {
-    uint64_t recoveryDate = datashare_->GetUnsignedLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, 0);
+    int64_t recoveryDate = datashare_->GetLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, 0);
     if (ignoreRepeatClickState_ && recoveryDate == 0 &&
         (ignoreRepeatClickTime_ == IGNORE_REPEAT_CLICK_SHORTEST ||
             ignoreRepeatClickTime_ == IGNORE_REPEAT_CLICK_SHORT)) {
         ignoreRepeatClickState_ = false;
         SetIgnoreRepeatClickState(false);
         recoveryDate = IgnoreRepeatClickNotification::GetWallTimeMs();
-        datashare_->PutUnsignedLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, recoveryDate);
-        HILOG_INFO("recovery ignore repeat click %{public}" PRIu64, recoveryDate);
+        datashare_->PutLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, recoveryDate);
+        HILOG_INFO("recovery ignore repeat click %{public}lld", recoveryDate);
     }
  
     if (ignoreRepeatClickState_) {
@@ -1140,13 +1158,13 @@ void AccessibilitySettingsConfig::HandleIgnoreRepeatClickState()
             return;
         }
         IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
-        uint64_t timeStamp = datashare_->GetUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, 0);
+        int64_t timeStamp = datashare_->GetLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, 0);
         if (timeStamp == 0) {
             timeStamp = IgnoreRepeatClickNotification::GetWallTimeMs();
-            datashare_->PutUnsignedLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, timeStamp);
+            datashare_->PutLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, timeStamp);
         }
         if (timeStamp > 0) {
-            IgnoreRepeatClickNotification::RegisterTimers(timeStamp);
+            IgnoreRepeatClickNotification::RegisterTimers(static_cast<uint64_t>(timeStamp));
         }
         if (g_ignoreRepeatClickOnceFlag) {
             IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
@@ -1391,7 +1409,7 @@ void AccessibilitySettingsConfig::CloneOnDeviceCapability()
     }
     int32_t oldCapability = 0;
     service->GetIntValue(OLD_DEVICE_CAPABILITY, oldCapability);
-    HILOG_INFO("oldCapability: %{public}d", oldCapability);
+    HILOG_INFO("newCapability: %{public}d, oldCapability: %{public}d", newCapability, oldCapability);
     for (auto capability : PC_ENABLE_CAPABILITY_LIST) {
         if ((static_cast<uint32_t>(newCapability) & static_cast<uint32_t>(capability)) != (
             static_cast<uint32_t>(oldCapability) & static_cast<uint32_t>(capability))) {
@@ -1434,6 +1452,10 @@ void AccessibilitySettingsConfig::recoverCapability(int32_t capability)
 void AccessibilitySettingsConfig::recoverInvertColor()
 {
     HILOG_INFO();
+    if (datashare_ == nullptr) {
+        HILOG_ERROR("datashare_ is nullptr");
+        return;
+    }
     if (invertColorState_ != datashare_->GetBoolValue(INVERT_COLOR_KEY, false)) {
         HILOG_INFO("invertColorState_: %{public}d need recovery", invertColorState_);
         SetInvertColorState(invertColorState_);
@@ -1443,6 +1465,10 @@ void AccessibilitySettingsConfig::recoverInvertColor()
 void AccessibilitySettingsConfig::recoverColorCorrection()
 {
     HILOG_INFO();
+    if (datashare_ == nullptr) {
+        HILOG_ERROR("datashare_ is nullptr");
+        return;
+    }
     if (daltonizationState_ != datashare_->GetBoolValue(DALTONIZATION_STATE, false)) {
         HILOG_INFO("daltonizationState_: %{public}d need recovery", daltonizationState_);
         SetDaltonizationState(daltonizationState_);
@@ -1457,6 +1483,10 @@ void AccessibilitySettingsConfig::recoverColorCorrection()
 void AccessibilitySettingsConfig::recoverAudioAdjustment()
 {
     HILOG_INFO();
+    if (datashare_ == nullptr) {
+        HILOG_ERROR("datashare_ is nullptr");
+        return;
+    }
     if (audioMonoState_ != datashare_->GetBoolValue(AUDIO_MONO_KEY, false)) {
         HILOG_INFO("audioMonoState_: %{public}d need recovery", audioMonoState_);
         SetAudioMonoState(audioMonoState_);
@@ -1475,18 +1505,33 @@ void AccessibilitySettingsConfig::OnDataClone()
     if (ignoreRepeatClickState_) {
         IgnoreRepeatClickNotification::CancelNotification();
     }
+    if (animationOffState_) {
+        TransitionAnimationsNotification::CancelNotification();
+    }
+
+    bool isShortkeyEnabled = GetShortKeyState();
+    bool isShortkeyEnabledOnLockScreen = GetShortKeyOnLockScreenState();
 
     InitSetting();
     SetDefaultShortcutKeyService();
     SetIgnoreRepeatClickReconfirm(ignoreRepeatClickState_);
     SetZoomGestureEnabledReconfirm(isScreenMagnificationState_);
+
+    if (isShortKeyState_) {
+        SetShortKeyOnLockScreenState(true);
+    } else {
+        SetShortKeyOnLockScreenState(false);
+    }
+
     
-    bool isShortkeyEnabled = GetShortKeyState();
-    bool isShortkeyEnabledOnLockScreen = GetShortKeyOnLockScreenState();
-    SetShortKeyState(!isShortkeyEnabled);
-    SetShortKeyState(isShortkeyEnabled);
-    SetShortKeyOnLockScreenState(!isShortkeyEnabledOnLockScreen);
-    SetShortKeyOnLockScreenState(isShortkeyEnabledOnLockScreen);
+    if (isShortkeyEnabled != GetShortKeyState()) {
+        SetShortKeyState(isShortkeyEnabled);
+        SetShortKeyState(!isShortkeyEnabled);
+    }
+    if (isShortkeyEnabledOnLockScreen != GetShortKeyOnLockScreenState()) {
+        SetShortKeyOnLockScreenState(isShortkeyEnabledOnLockScreen);
+        SetShortKeyOnLockScreenState(!isShortkeyEnabledOnLockScreen);
+    }
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortKeyRegister();
 
     std::shared_ptr<AccessibilitySettingProvider> service =
@@ -1500,8 +1545,8 @@ void AccessibilitySettingsConfig::OnDataClone()
         SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
     if (isScreenReaderEnabled) {
         ErrCode ret = service->PutBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, true, true);
-        sptr<AccessibilityAccountData> accountData =
-            Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+        sptr<AccessibilityAccountData> accountData
+            = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
         accountData->screenReaderState_ = true;
         Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "OnDataClone.screenReader");
         HILOG_INFO("set screenReader state, ret = %{public}d", ret);

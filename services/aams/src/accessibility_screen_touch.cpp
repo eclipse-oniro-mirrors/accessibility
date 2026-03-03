@@ -243,11 +243,11 @@ void AccessibilityScreenTouch::ConversionCoordinates(int32_t originalX, int32_t 
 
 void AccessibilityScreenTouch::HandleCoordinates(MMI::PointerEvent::PointerItem &pointerItem)
 {
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     int32_t originalX = pointerItem.GetDisplayX();
     int32_t originalY = pointerItem.GetDisplayY();
 
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     switch (ROTATE_POLICY) {
         case WINDOW_ROTATE:
             ConversionCoordinates(originalX, originalY);
@@ -281,6 +281,11 @@ void AccessibilityScreenTouch::HandleCoordinates(MMI::PointerEvent::PointerItem 
             ConversionCoordinates(originalX, originalY);
             break;
     }
+#else
+    HILOG_WARN("display manager is not enable");
+    circleCenterPhysicalX_ = originalX;
+    circleCenterPhysicalY_ = originalY;
+    startAngle_ = START_ANGLE_PORTRAIT;
 #endif
 }
 
@@ -396,7 +401,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent
 {
     HILOG_DEBUG();
 
-    if (cachedDownPointerEvents_.empty()) {
+    if (startPointer_ != nullptr && event.GetPointerId() != startPointer_->GetPointerId()) {
         HILOG_ERROR("cached down pointer event is empty!");
         handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
         isStopDrawCircle_ = true;

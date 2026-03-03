@@ -318,7 +318,6 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     DoSomethingInterestingGetAbility(abConfig, data, size, startPos);
     DoSomethingInterestingGetConfigFirstPart(abConfig, data, size, startPos);
     DoSomethingInterestingGetConfigSecondPart(abConfig, data, size, startPos);
-    abConfig.UnInitializeContext();
 
     return true;
 }

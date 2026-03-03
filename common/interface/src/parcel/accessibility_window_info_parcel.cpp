@@ -20,6 +20,10 @@
 
 namespace OHOS {
 namespace Accessibility {
+
+namespace {
+    constexpr int32_t TOUCH_HOT_AREA_MAX_SIZE = 1024;
+}
 AccessibilityWindowInfoParcel::AccessibilityWindowInfoParcel(const AccessibilityWindowInfo &accessibilityWindowInfo)
     : AccessibilityWindowInfo(accessibilityWindowInfo)
 {
@@ -50,9 +54,8 @@ bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
     boundsInScreen_ = *boundsInScreen;
 
     int32_t touchHotAreasSize = 0;
-    static const int32_t touchHotAreasMaxSize = 1024;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, touchHotAreasSize);
-    if (touchHotAreasSize > touchHotAreasMaxSize || touchHotAreasSize < 0) {
+    if (touchHotAreasSize > TOUCH_HOT_AREA_MAX_SIZE || touchHotAreasSize < 0) {
         return false;
     }
     std::vector<Rect> touchHotAreas {};

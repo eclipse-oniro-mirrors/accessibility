@@ -1966,11 +1966,11 @@ protected:
     bool clip_ = false;
     static const int backgroundImageMaxLength = 20;
     int32_t mainWindowId_ = -1; // same widowId in uiview
+    std::string customComponentType_ = "";
+    int32_t innerWindowId_ = -1;
     int64_t accessibilityNextFocusId_ = -1;
     int64_t accessibilityPreviousFocusId_ = -1;
     std::string accessibilityNextFocusInspectorKey_ = "";
-    int32_t innerWindowId_ = -1;
-    std::string customComponentType_ = "";
     bool accessibilityScrollable_ = true;
     int64_t uniqueId_ = -1;
     std::string originalText_ = "";

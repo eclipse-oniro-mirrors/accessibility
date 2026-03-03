@@ -23,6 +23,8 @@ namespace Accessibility {
 namespace {
     const std::string INGORE_REPEAT_CLICK_KEY = "ignore_repeat_click_switch";
     const std::string IGNORE_REPEAT_CLICK_NOTIFICATION = "ignore_repeat_click_notification";
+    const std::string TRANSITION_ANIMATIONS_NOTIFICATION = "transition_animations_notification";
+    const std::string ANIMATION_OFF_KEY = "animation_off";
 }  // namespace
 
 
@@ -37,7 +39,7 @@ bool IgnoreRepeatClickNotification::IsSendIgnoreRepeatClickNotification()
 {
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     if (!accountData) {
-        return true;
+        return false;
     }
     bool notificationState = true;
     bool ignoreRepeatClickState = false;
@@ -72,10 +74,10 @@ int32_t IgnoreRepeatClickNotification::RegisterTimers(uint64_t beginTime)
     return -1;
 }
  
-void IgnoreRepeatClickNotification::DestoryTimers()
+void IgnoreRepeatClickNotification::DestroyTimers()
 {
     if (MagnificationWindowProxy::GetInstance()) {
-        MagnificationWindowProxy::GetInstance()->DestoryTimers();
+        MagnificationWindowProxy::GetInstance()->DestroyTimers();
     }
 }
 
@@ -85,6 +87,59 @@ int64_t IgnoreRepeatClickNotification::GetWallTimeMs()
         return MagnificationWindowProxy::GetInstance()->GetWallTimeMs();
     }
     return 0;
+}
+
+int32_t TransitionAnimationsNotification::PublishTransitionAnimationsReminder()
+{
+    if (!IsSendTransitionAnimationsNotification()) {
+        return 0;
+    }
+    if (MagnificationWindowProxy::GetInstance()) {
+        return MagnificationWindowProxy::GetInstance()->PublishTransitionAnimationsReminder();
+    }
+    return -1;
+}
+ 
+void TransitionAnimationsNotification::CancelNotification()
+{
+    if (MagnificationWindowProxy::GetInstance()) {
+        MagnificationWindowProxy::GetInstance()->TransitionAnimationsCancelNotification();
+    }
+}
+ 
+int32_t TransitionAnimationsNotification::RegisterTimers(uint64_t beginTime)
+{
+    if (!IsSendTransitionAnimationsNotification()) {
+        return 0;
+    }
+    if (MagnificationWindowProxy::GetInstance()) {
+        return MagnificationWindowProxy::GetInstance()->TransitionAnimationsRegisterTimers(beginTime);
+    }
+    return 0;
+}
+ 
+void TransitionAnimationsNotification::DestroyTimers()
+{
+    if (MagnificationWindowProxy::GetInstance()) {
+        MagnificationWindowProxy::GetInstance()->TransitionAnimationsDestroyTimers();
+    }
+}
+ 
+bool TransitionAnimationsNotification::IsSendTransitionAnimationsNotification()
+{
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        return false;
+    }
+    bool notificationState = true;
+    bool animationOffState = false;
+    if (accountData->GetConfig() && accountData->GetConfig()->GetDbHandle()) {
+        notificationState =
+            accountData->GetConfig()->GetDbHandle()->GetBoolValue(TRANSITION_ANIMATIONS_NOTIFICATION, true);
+        animationOffState =
+            accountData->GetConfig()->GetDbHandle()->GetBoolValue(ANIMATION_OFF_KEY, false);
+    }
+    return animationOffState && notificationState;
 }
 }  // namespace Accessibility
 }  // namespace OHOS

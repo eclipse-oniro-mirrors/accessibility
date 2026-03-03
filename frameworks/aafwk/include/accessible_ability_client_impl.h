@@ -500,6 +500,7 @@ private:
     ffrt::mutex conVarMutex_;
     ffrt::shared_mutex rwServiceLock_;
     ffrt::shared_mutex rwChannelLock_;
+    ffrt::shared_mutex rwRunningLock_;
     std::list<std::shared_ptr<DisconnectCallback>> callbackList_;
     bool isDisconnectCallbackExecute_ = false;
     ffrt::mutex callbackListMutex_;

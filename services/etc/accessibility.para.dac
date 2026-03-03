@@ -12,3 +12,4 @@
 # limitations under the License.
 
 accessibility.config.ready = accessibility:accessibility:0775
+const.accessibility_broker.version = anco_service_broker:anco_service_broker:0775

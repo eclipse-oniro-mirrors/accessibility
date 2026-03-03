@@ -63,7 +63,7 @@ void AccessibilityEnableAbilityCallbackObserverProxy::OnEnableAbilityRemoteDied(
         static_cast<uint32_t>(AccessibilityInterfaceCode::ON_ACCESSIBILITY_ENABLE_ABILITY_REMOTE_DIED), data, reply,
         option);
     if (result != NO_ERROR) {
-        HILOG_ERROR("OnAccessibilityEnableAbilityListsChanged fail, error: %{public}d", result);
+        HILOG_ERROR("OnEnableAbilityRemoteDied fail, error: %{public}d", result);
     }
 }
 } // namespace Accessibility

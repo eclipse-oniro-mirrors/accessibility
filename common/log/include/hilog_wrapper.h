@@ -16,6 +16,8 @@
 #ifndef HILOG_WRAPPER_H
 #define HILOG_WRAPPER_H
 
+#include <inttypes.h>
+
 #define CONFIG_HILOG
 #ifdef CONFIG_HILOG
 #include "hilog/log.h"

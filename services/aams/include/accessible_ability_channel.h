@@ -82,11 +82,12 @@ public:
 
     RetError NotifyDisconnect() override;
 
-    RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override;
-
     void SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
         const SpecificPropertyParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
+    RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override;
+
     RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam &param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId) override;
@@ -95,7 +96,7 @@ private:
     static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);
     static RetError GetElementOperator(int32_t accountId, int32_t windowId, int32_t focusType,
         const std::string &clientName, sptr<IAccessibilityElementOperator> &elementOperator, const int32_t treeId);
-    static bool CheckWinFromAwm(const int32_t windowId);
+    static bool CheckWinFromAwm(const int32_t windowId, const int32_t getElementOperatorResult);
     RetError GetWindows(
         uint64_t displayId, std::vector<AccessibilityWindowInfo>& windows, bool systemApi = false) const;
     RetError TransmitActionToMmi(const int32_t action);

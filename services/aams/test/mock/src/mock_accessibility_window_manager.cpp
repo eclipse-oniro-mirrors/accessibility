@@ -132,10 +132,10 @@ bool AccessibilityWindowManager::GetAccessibilityWindow(int32_t windowId, Access
     return false;
 }
 
-void AccessibilityWindowManager::SetEventInfoBundleName(const AccessibilityEventInfo& uiEvent)
+void AccessibilityWindowManager::SetEventInfoBundleName(AccessibilityEventInfo &uiEvent)
 {
     std::string windowsBundleNameCache = "";
-    const_cast<AccessibilityEventInfo&>(uiEvent).SetBundleName(windowsBundleNameCache);
+    uiEvent.SetBundleName(windowsBundleNameCache);
 }
 
 bool AccessibilityWindowManager::IsValidWindow(int32_t windowId)
@@ -201,7 +201,7 @@ RetError AccessibilityWindowManager::GetFocusedWindowId(int32_t &focusedWindowId
 bool AccessibilityWindowManager::IsInnerWindowRootElement(int64_t elementId)
 {
     (void)elementId;
-    return true;
+    return false;
 }
 
 int32_t AccessibilityWindowManager::GetActiveWindowId()
@@ -224,6 +224,22 @@ int32_t AccessibilityWindowManager::FindTreeIdWindowIdPair(int32_t treeId)
 {
     (void)treeId;
     return 0;
+}
+
+
+bool AccessibilityWindowManager::SendPointerEventForHover(const std::shared_ptr<MMI::PointerEvent>& pointerEvent)
+{
+    return true;
+}
+
+void AccessibilityWindowManager::ClearSceneBoard()
+{
+    return;
+}
+
+void AccessibilityWindowManager::InitSceneBoard()
+{
+    return;
 }
 } // namespace Accessibility
 } // namespace OHOS

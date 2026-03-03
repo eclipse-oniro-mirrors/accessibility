@@ -41,7 +41,7 @@ public:
     {
         return scale_;
     }
- 
+
     inline void InitMagnificationParam(float scale)
     {
         scale_ = scale;
@@ -106,7 +106,9 @@ private:
     uint32_t screenWidth_ = 0;
     uint32_t screenHeight_ = 0;
     float screenSpan_ = 0.0f;
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     uint64_t screenId_ = 0;
+#endif
     int32_t centerX_ = 0;
     int32_t centerY_ = 0;
     float scale_ = DEFAULT_SCALE;

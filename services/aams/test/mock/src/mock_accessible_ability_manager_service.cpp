@@ -124,18 +124,18 @@ ErrCode AccessibleAbilityManagerService::GetAbilityList(uint32_t abilityTypes, i
 }
 
 ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByWindowId(
-    const int32_t windowId, const sptr<IAccessibilityElementOperator>& elementOperation)
+    const int32_t windowId, const sptr<IAccessibilityElementOperator>& elementOperator)
 {
     (void)windowId;
-    (void)elementOperation;
+    (void)elementOperator;
     return RET_OK;
 }
 
 ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByParameter(const RegistrationPara& parameter,
-    const sptr<IAccessibilityElementOperator>& elementOperation)
+    const sptr<IAccessibilityElementOperator>& elementOperator)
 {
     (void)parameter;
-    (void)elementOperation;
+    (void)elementOperator;
     return RET_OK;
 }
 
@@ -145,7 +145,8 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(con
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId, int32_t treeId)
+ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
+    const int32_t treeId)
 {
     (void)windowId;
     (void)treeId;
@@ -190,7 +191,7 @@ ErrCode AccessibleAbilityManagerService::GetCaptionProperty(CaptionPropertyParce
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetCaptionProperty(const CaptionPropertyParcel& caption,
+ErrCode AccessibleAbilityManagerService::SetCaptionProperty(const CaptionPropertyParcel &caption,
     bool isPermissionRequired)
 {
     (void)caption;
@@ -198,7 +199,7 @@ ErrCode AccessibleAbilityManagerService::SetCaptionProperty(const CaptionPropert
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetCaptionState(bool state, bool isPermissionRequired)
+ErrCode AccessibleAbilityManagerService::SetCaptionState(const bool state, bool isPermissionRequired)
 {
     (void)state;
     (void)isPermissionRequired;
@@ -219,7 +220,7 @@ ErrCode AccessibleAbilityManagerService::GetScreenReaderState(bool &state)
 }
 
 ErrCode AccessibleAbilityManagerService::EnableAbility(const std::string &name,
-    const uint32_t capabilities)
+    const uint32_t capabilities, const bool connectCallBackFlag)
 {
     (void)name;
     (void)capabilities;
@@ -313,19 +314,19 @@ void AccessibleAbilityManagerService::UpdateShortKeyRegister()
     return;
 }
 
-ErrCode AccessibleAbilityManagerService::SetShortKeyState(bool state)
+ErrCode AccessibleAbilityManagerService::SetShortKeyState(const bool state)
 {
     (void)state;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetMouseKeyState(bool state)
+ErrCode AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
 {
     (void)state;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetMouseAutoClick(int32_t time)
+ErrCode AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
 {
     (void)time;
     return RET_OK;
@@ -343,73 +344,73 @@ ErrCode AccessibleAbilityManagerService::SetShortkeyMultiTarget(const std::vecto
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetHighContrastTextState(bool state)
+ErrCode AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
 {
     (void)state;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetDaltonizationState(bool state)
+ErrCode AccessibleAbilityManagerService::SetDaltonizationState(const bool state)
 {
     (void)state;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetInvertColorState(bool state)
+ErrCode AccessibleAbilityManagerService::SetInvertColorState(const bool state)
 {
     (void)state;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetAnimationOffState(bool state)
+ErrCode AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
 {
     (void)state;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetAudioMonoState(bool state)
+ErrCode AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
 {
     (void)state;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetDaltonizationColorFilter(uint32_t filter)
+ErrCode AccessibleAbilityManagerService::SetDaltonizationColorFilter(const uint32_t filter)
 {
     (void)filter;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetContentTimeout(uint32_t time)
+ErrCode AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
 {
     (void)time;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetBrightnessDiscount(float discount)
+ErrCode AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount)
 {
     (void)discount;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetAudioBalance(float balance)
+ErrCode AccessibleAbilityManagerService::SetAudioBalance(const float balance)
 {
     (void)balance;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetClickResponseTime(uint32_t time)
+ErrCode AccessibleAbilityManagerService::SetClickResponseTime(const uint32_t time)
 {
     (void)time;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetIgnoreRepeatClickState(bool state)
+ErrCode AccessibleAbilityManagerService::SetIgnoreRepeatClickState(const bool state)
 {
     (void)state;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::SetIgnoreRepeatClickTime(uint32_t time)
+ErrCode AccessibleAbilityManagerService::SetIgnoreRepeatClickTime(const uint32_t time)
 {
     (void)time;
     return RET_OK;
@@ -781,15 +782,15 @@ std::shared_ptr<MagnificationMenuManager> AccessibleAbilityManagerService::GetMe
     return nullptr;
 }
 
-int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
-{
-    return 0;
-}
-
 ErrCode AccessibleAbilityManagerService::AnnouncedForAccessibility(const std::string &announcedText)
 {
     (void)announcedText;
     return RET_OK;
+}
+
+int32_t AccessibleAbilityManagerService::SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData)
+{
+    return 0;
 }
 
 void AccessibleAbilityManagerService::InitResource(bool needReInit)
@@ -814,7 +815,7 @@ ErrCode AccessibleAbilityManagerService::SearchNeedEvents(std::vector<uint32_t> 
     return NO_ERROR;
 }
 
-RetError AccessibleAbilityManagerService::UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents)
+RetError AccessibleAbilityManagerService::ConfigureEvents(std::vector<uint32_t> needEvents)
 {
     return RET_OK;
 }

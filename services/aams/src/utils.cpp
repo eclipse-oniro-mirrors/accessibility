@@ -95,27 +95,17 @@ public:
         }
 
         auto it = json.find(key);
-        if (it == json.end() || !it->is_array()) {
-            HILOG_ERROR("Key not found or not an array");
-            return false;
-        }
-
-        const auto &array = *it;
-        bool allStrings = true;
-        for (const auto &item : array) {
-            if (!item.is_array()) {
-                allStrings = false;
-                break;
+        if (it != json.end() && it->is_array()) {
+            const auto &array = *it;
+            for (const auto &item : array) {
+                if (!item.is_string()) {
+                    HILOG_ERROR("Array elements are not all strings");
+                    return false;
+                }
             }
+            HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
+            value = array.get<std::vector<std::string>>();
         }
-
-        if (!allStrings) {
-            HILOG_ERROR("Array elements are not all strings");
-            return false;
-        }
-
-        HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
-        value = array.get<std::vector<std::string>>();
         return true;
     }
 
@@ -143,21 +133,6 @@ public:
         if (json.find(key) != json.end() && json.at(key).is_boolean()) {
             HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
             value = json.at(key).get<bool>();
-        }
-        return true;
-    }
-
-    static bool GetUInt32VecFromJson(const nlohmann::json &json, const std::string &key,
-        std::vector<uint32_t> &value)
-    {
-        HILOG_DEBUG("start.");
-        if (!json.is_object()) {
-            HILOG_ERROR("json is not object.");
-            return false;
-        }
-        if (json.find(key) != json.end() && json.at(key).is_array()) {
-            HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
-            value = json.at(key).get<std::vector<uint32_t>>();
         }
         return true;
     }
@@ -262,8 +237,8 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
         return;
     }
 
-    if (!JsonUtils::GetUInt32VecFromJson(sourceJson, KEY_ACCESSIBILITY_EVENT_CONFIGURE, initParams.eventConfigure)) {
-        HILOG_ERROR("Get accessibilityCapabilities from json failed.");
+    if (!JsonUtils::GetStringVecFromJson(sourceJson, KEY_ACCESSIBILITY_EVENT_CONFIGURE, initParams.eventConfigure)) {
+        HILOG_ERROR("Get accessibilityEventConfigure from json failed.");
         return;
     }
 }
@@ -576,7 +551,7 @@ int32_t Utils::GetUserIdByCallingUid()
     return (uid / BASE_USER_RANGE);
 }
 
-bool Utils::UpdateColorModeConfiguration(int32_t &accountId)
+bool Utils::UpdateColorModeConfiguration(int32_t accountId)
 {
     HILOG_DEBUG();
     auto appMgrClient = std::make_unique<AppExecFwk::AppMgrClient>();

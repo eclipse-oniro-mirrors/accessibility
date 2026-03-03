@@ -118,7 +118,7 @@ void AccessibilityElementOperatorProxy::SearchDefaultFocusedByWindowId(const int
     }
  
     if (!data.WriteInt32(windowId)) {
-        HILOG_ERROR("connection write parcelable element id failed");
+        HILOG_ERROR("connection write parcelable window id failed");
         return;
     }
  
@@ -290,46 +290,36 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int64_t elementId, c
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
-
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("connection write token failed");
         return;
     }
-
     if (!data.WriteInt64(elementId)) {
         HILOG_ERROR("connection write element id failed");
         return;
     }
-
     if (!data.WriteInt32(action)) {
         HILOG_ERROR("connection write focus type failed");
         return;
     }
-
-    auto iter = arguments.begin();
     std::vector<std::string> keys;
     std::vector<std::string> values;
-    while (iter != arguments.end()) {
-        keys.push_back(iter->first);
-        values.push_back(iter->second);
-        iter++;
+    for (const auto& [key, value] : arguments) {
+        keys.push_back(key);
+        values.push_back(value);
     }
-
     if (!data.WriteStringVector(keys)) {
         HILOG_ERROR("connection write argument keys failed");
         return;
     }
-
     if (!data.WriteStringVector(values)) {
         HILOG_ERROR("connection write argument values failed");
         return;
     }
-
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("connection write request id failed");
         return;
     }
-
     if (callback == nullptr) {
         HILOG_ERROR("callback is nullptr");
         return;
@@ -338,8 +328,8 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int64_t elementId, c
         HILOG_ERROR("connection write callback failed");
         return;
     }
-
     if (!SendTransactCmd(AccessibilityInterfaceCode::PERFORM_ACTION_ELEMENT, data, reply, option)) {
+        callback->SetExecuteActionResult(false, requestId);
         HILOG_ERROR("execute action failed");
         return;
     }

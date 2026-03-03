@@ -964,7 +964,7 @@ private:
         return result;
     }
 
-    napi_value OnGetDefaultFocusedElementIds(napi_env env, NapiCallbackInfo& info)
+    napi_value OnGetDefaultFocusedElementIds(napi_env env, NapiCallbackInfo &info)
     {
         HILOG_INFO();
         int32_t windowId = INVALID_WINDOW_ID;
@@ -1112,9 +1112,17 @@ private:
                 napi_create_reference(env, info.argv[PARAM1], 1, &ref);
             } else {
                 HILOG_ERROR("argc one is not function");
+                ret = RET_ERR_INVALID_PARAM;
             }
         } else {
             HILOG_ERROR("Not enough params");
+            ret = RET_ERR_INVALID_PARAM;
+        }
+
+        if (ret != RET_OK) {
+            NAccessibilityErrMsg errMsg = QueryRetMsg(ret);
+            napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+            return CreateJsUndefined(env);
         }
 
         if (type == "preDisconnect" && ref != nullptr) {
@@ -1129,7 +1137,12 @@ private:
             }
             ret = context->RegisterDisconnectCallback(callback);
         }
-        return nullptr;
+        if (ret != RET_OK) {
+            NAccessibilityErrMsg errMsg = QueryRetMsg(ret);
+            napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+            return CreateJsUndefined(env);
+        }
+        return CreateJsUndefined(env);
     }
 
     napi_value OnUnRegisterCallback(napi_env env, NapiCallbackInfo &info)
@@ -1147,9 +1160,16 @@ private:
                 napi_create_reference(env, info.argv[PARAM1], 1, &ref);
             } else {
                 HILOG_ERROR("argc one is not function");
+                ret = RET_ERR_INVALID_PARAM;
             }
         } else {
             HILOG_ERROR("Not enough params");
+            ret = RET_ERR_INVALID_PARAM;
+        }
+        if (ret != RET_OK) {
+            NAccessibilityErrMsg errMsg = QueryRetMsg(ret);
+            napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+            return CreateJsUndefined(env);
         }
 
         if (type == "preDisconnect") {
@@ -1164,7 +1184,12 @@ private:
             }
             ret = context->UnRegisterDisconnectCallback(callback);
         }
-        return nullptr;
+        if (ret != RET_OK) {
+            NAccessibilityErrMsg errMsg = QueryRetMsg(ret);
+            napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+            return CreateJsUndefined(env);
+        }
+        return CreateJsUndefined(env);
     }
 
     napi_value OnNotifyDisconnect(napi_env env, NapiCallbackInfo &info)

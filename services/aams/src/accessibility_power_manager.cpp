@@ -66,13 +66,7 @@ bool AccessibilityPowerManager::InitRunningLock()
     return true;
 }
 
-std::set<std::string> AccessibilityPowerManager::GetWakeLockAbilities()
-{
-    std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
-    return wakeLockAbilities_;
-}
-
-bool AccessibilityPowerManager::HoldRunningLock(std::string &bundleName)
+bool AccessibilityPowerManager::HoldRunningLock(const std::string &bundleName)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
@@ -89,7 +83,7 @@ bool AccessibilityPowerManager::HoldRunningLock(std::string &bundleName)
     return true;
 }
 
-bool AccessibilityPowerManager::UnholdRunningLock(std::string &bundleName)
+bool AccessibilityPowerManager::UnholdRunningLock(const std::string &bundleName)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
@@ -98,7 +92,6 @@ bool AccessibilityPowerManager::UnholdRunningLock(std::string &bundleName)
             return false;
         }
     }
-
     if (bundleName == "") {
         wakeLockAbilities_.clear();
         wakeLock_->UnLock();
