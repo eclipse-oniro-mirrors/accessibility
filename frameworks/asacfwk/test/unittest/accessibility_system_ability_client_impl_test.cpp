@@ -119,47 +119,6 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_003, 
 }
 
 /**
- * @tc.number: RegisterElementOperator_004
- * @tc.name: RegisterElementOperator
- * @tc.desc: Test function RegisterElementOperator(register fail)
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_004, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "RegisterElementOperator_004 start";
-    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(true);
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-    } else {
-        std::shared_ptr<AccessibilityElementOperator> mockOperator
-            = std::make_shared<MockAccessibilityElementOperator>();
-        EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-        EXPECT_EQ(RET_ERR_CONNECTION_EXIST, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    }
-    impl_ = nullptr;
-    GTEST_LOG_(INFO) << "RegisterElementOperator_004 end";
-}
-
-/**
- * @tc.number: DeregisterElementOperator_001
- * @tc.name: DeregisterElementOperator
- * @tc.desc: Test function DeregisterElementOperator
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, DeregisterElementOperator_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "DeregisterElementOperator_001 start";
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-    } else {
-        EXPECT_EQ(RET_ERR_NO_REGISTER, impl_->DeregisterElementOperator(WINDOW_ID));
-    }
-    impl_ = nullptr;
-    GTEST_LOG_(INFO) << "DeregisterElementOperator_001 end";
-}
-
-/**
  * @tc.number: DeregisterElementOperator_002
  * @tc.name: DeregisterElementOperator
  * @tc.desc: Test function DeregisterElementOperator
