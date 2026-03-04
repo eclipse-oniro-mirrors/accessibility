@@ -473,9 +473,9 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
 
 std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilityWindows()
 {
-    HILOG_DEBUG("a11yWindows_ size[%{public}zu]", a11yWindows_.size());
     XCollieHelper timer(TIMER_GET_ACCESSIBILITY_WINDOWS, WMS_TIMEOUT);
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
+    HILOG_DEBUG("a11yWindows_ size[%{public}zu]", a11yWindows_.size());
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
     std::vector<AccessibilityWindowInfo> windows;
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
