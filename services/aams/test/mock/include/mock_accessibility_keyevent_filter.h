@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,9 +29,7 @@ public:
     MOCK_METHOD1(OnKeyEvent, void(MMI::KeyEvent& event));
     MOCK_METHOD1(SendEventToNext, void(MMI::KeyEvent& event));
     MOCK_METHOD3(SetServiceOnKeyEventResult,
-        void(AccessibleAbilityConnection& connection, bool isHandled, uint32_t sequenceNum));
-    MOCK_METHOD1(ClearServiceKeyEvents, void(AccessibleAbilityConnection& connection));
-
+        void(int32_t connectionId, bool isHandled, uint32_t sequenceNum));
     MOCK_METHOD0(DestroyEvents, void());
     MOCK_METHOD1(RemoveProcessingEvent, bool(std::shared_ptr<ProcessingEvent> event));
 };

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -515,37 +515,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperatorByWin
     EXPECT_EQ(int(map.size()), 0);
 
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DeregisterElementOperatorByWindowId_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_SetTouchEventInjector_001
- * @tc.name: SetTouchEventInjector
- * @tc.desc: Test function SetTouchEventInjector
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTouchEventInjector_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTouchEventInjector_001 start";
-    sptr<TouchEventInjector> touchEventInjector = new TouchEventInjector();
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SetTouchEventInjector(touchEventInjector);
-    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchEventInjector();
-    EXPECT_TRUE(ret);
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTouchEventInjector_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_SetKeyEventFilter_001
- * @tc.name: SetKeyEventFilter
- * @tc.desc: Test function SetKeyEventFilter
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetKeyEventFilter_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetKeyEventFilter_001 start";
-    sptr<KeyEventFilter> keyEventFilter = new KeyEventFilter();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SetKeyEventFilter(keyEventFilter);
-    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetKeyEventFilter();
-    EXPECT_TRUE(ret);
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetKeyEventFilter_001 end";
 }
 
 /**

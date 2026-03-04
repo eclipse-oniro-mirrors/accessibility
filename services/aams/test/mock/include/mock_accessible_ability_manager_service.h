@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -60,7 +60,6 @@ public:
         return nullptr;
     }
 
-    MOCK_METHOD1(SetKeyEventFilter, void(const sptr<KeyEventFilter>& keyEventFilter));
     MOCK_METHOD5(NotifyDisplayResizeStateChanged,
         void(int32_t displayId, Rect& rect, float scale, float centerX, float centerY));
 
@@ -110,6 +109,7 @@ public:
     MOCK_METHOD1(ConfigureEvents, RetError(std::vector<uint32_t> needEvents));
     MOCK_METHOD1(GetReadableRules, ErrCode(std::string &name));
     MOCK_METHOD2(IsInnerWindowRootElement, ErrCode(int64_t elementId, bool &state));
+    MOCK_METHOD2(SendAccessibilityEventToAA, void(EventType eventType, GestureType gestureId));
 };
 } // namespace Accessibility
 } // namespace OHOS

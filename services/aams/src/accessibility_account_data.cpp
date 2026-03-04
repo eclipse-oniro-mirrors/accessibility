@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,9 +20,6 @@
 #ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
 #endif // OHOS_BUILD_ENABLE_HITRACE
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-#include "accessibility_display_manager.h"
-#endif
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "accessibility_power_manager.h"
 #endif
@@ -68,6 +65,32 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.screenreader";
     const std::string THP_PATH = "/system/lib64/libthp_extra_innerapi.z.so";
     const std::string IGNORE_REPEATED_CLICK_EXCLUDE_FLAG = "accessibility_ignore_repeat_click_exclude_flag";
+
+    // Feature flag for full screen magnification.
+    static constexpr uint32_t FEATURE_SCREEN_MAGNIFICATION = 0x00000001;
+ 
+    // Feature flag for touch exploration.
+    static constexpr uint32_t FEATURE_TOUCH_EXPLORATION = 0x00000002;
+ 
+    // Feature flag for filtering key events.
+    static constexpr uint32_t FEATURE_FILTER_KEY_EVENTS = 0x00000004;
+ 
+    // Feature flag for inject touch events.
+    static constexpr uint32_t FEATURE_INJECT_TOUCH_EVENTS = 0x00000008;
+ 
+    // Feature flag for mouse autoclick.
+    static constexpr uint32_t FEATURE_MOUSE_AUTOCLICK = 0x00000010;
+ 
+    // Feature flag for mouse key.
+    static constexpr uint32_t FEATURE_MOUSE_KEY = 0x00000040;
+ 
+    // Feature flag for screen touch.
+    static constexpr uint32_t FEATURE_SCREEN_TOUCH = 0x00000080;
+ 
+    // Feature flag for window magnification.
+    static constexpr uint32_t FEATURE_WINDOW_MAGNIFICATION = 0x00000100;
+ 
+    static constexpr uint32_t WINDOW_MAGNIFICATION = 2;
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -1079,33 +1102,33 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     uint32_t flag = 0;
     if (config_->GetScreenMagnificationState()) {
         if (config_->GetScreenMagnificationMode() == WINDOW_MAGNIFICATION) {
-            flag |= AccessibilityInputInterceptor::FEATURE_WINDOW_MAGNIFICATION;
+            flag |= FEATURE_WINDOW_MAGNIFICATION;
         } else {
-            flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION;
+            flag |= FEATURE_SCREEN_MAGNIFICATION;
         }
     }
     if (isEventTouchGuideState_) {
-        flag |= AccessibilityInputInterceptor::FEATURE_TOUCH_EXPLORATION;
+        flag |= FEATURE_TOUCH_EXPLORATION;
     }
     if (isFilteringKeyEvents_) {
-        flag |= AccessibilityInputInterceptor::FEATURE_FILTER_KEY_EVENTS;
+        flag |= FEATURE_FILTER_KEY_EVENTS;
     }
     if (isGesturesSimulation_) {
-        flag |= AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
+        flag |= FEATURE_INJECT_TOUCH_EVENTS;
     }
     if (config_->GetMouseKeyState()) {
-        flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_KEY;
+        flag |= FEATURE_MOUSE_KEY;
     }
 
     int32_t autoclickTime = config_->GetMouseAutoClick();
     if (autoclickTime >= AUTOCLICK_DELAY_TIME_MIN && autoclickTime <= AUTOCLICK_DELAY_TIME_MAX) {
-        flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_AUTOCLICK;
+        flag |= FEATURE_MOUSE_AUTOCLICK;
     }
 
     uint32_t clickResponseTime = config_->GetClickResponseTime();
     bool ignoreRepeatClickState = config_->GetIgnoreRepeatClickState();
     if (clickResponseTime > 0 || ignoreRepeatClickState == true) {
-        flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_TOUCH;
+        flag |= FEATURE_SCREEN_TOUCH;
     }
 
     return flag;
@@ -1312,7 +1335,7 @@ void AccessibilityAccountData::AddUITestClient(const sptr<IRemoteObject> &obj,
     }
     abilityInfo->SetPackageName(bundleName);
     abilityInfo->SetName(abilityName);
-    uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_GESTURE;
+    uint32_t capabilities = CAPABILITY_RETRIEVE;
     abilityInfo->SetCapabilityValues(capabilities);
     abilityInfo->SetAccessibilityAbilityType(ACCESSIBILITY_ABILITY_TYPE_ALL);
     abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
@@ -1739,7 +1762,11 @@ void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data
 {
     if (data.state == AccountSA::OsAccountState::SWITCHING) {
         HILOG_INFO("account switching.");
-        Singleton<AccessibleAbilityManagerService>::GetInstance().OffZoomGesture();
+        if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+            if (Singleton<ExtendManagerServiceProxy>::GetInstance().LoadExtProxy()) {
+                Singleton<ExtendManagerServiceProxy>::GetInstance().OffZoomGesture();
+            }
+        }
     }
 }
 

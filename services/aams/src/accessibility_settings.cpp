@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,6 +26,7 @@
 #include "hilog_wrapper.h"
 #include "parameter.h"
 #include "accessibility_notification_helper.h"
+#include "accessible_extend_manager_service_proxy.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -454,9 +455,10 @@ RetError AccessibilitySettings::SetBrightnessDiscount(const float discount)
     }
 
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
-    if (!Singleton<AccessibilityPowerManager>::GetInstance().DiscountBrightness(discount)) {
-        HILOG_ERROR("Failed to set brightness discount");
-        return Accessibility::RET_ERR_FAILED;
+    if (discount != 1 || Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+        if (Singleton<ExtendManagerServiceProxy>::GetInstance().LoadExtProxy()) {
+            Singleton<ExtendManagerServiceProxy>::GetInstance().DiscountBrightness(discount);
+        }
     }
 #endif
     auto syncPromise = std::make_shared<ffrt::promise<RetError>>();

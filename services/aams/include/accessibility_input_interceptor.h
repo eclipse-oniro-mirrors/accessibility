@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,10 +30,11 @@
 #include "key_event.h"
 #include "pointer_event.h"
 #include "window_magnification_gesture.h"
+#include "accessibility_keyevent_filter.h"
+#include "accessibility_gesture_inject_path.h"
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibleAbilityManagerService;
 
 class AccessibilityInputEventConsumer : public MMI::IInputEventConsumer {
 public:
@@ -82,6 +83,7 @@ public:
     bool OnPointerEvent(MMI::PointerEvent &event) override;
     void OnMoveMouse(int32_t offsetX, int32_t offsetY) override;
     void SetAvailableFunctions(uint32_t availableFunctions);
+    RetError InjectEvents(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
 
     // flag = true shield zoom gesture | flag = false restore zoom gesture
     void ShieldZoomGesture(bool flag);
@@ -89,6 +91,13 @@ public:
     void StartMagnificationInteract(uint32_t mode);
     void EnableGesture(uint32_t mode);
     void DisableGesture(uint32_t mode);
+    void InitInputManagerHandler();
+    void SetServiceOnKeyEventResult(int32_t connectionId, bool isHandled, uint32_t sequenceNum);
+
+    inline std::shared_ptr<AppExecFwk::EventRunner> &GetInputManagerRunner()
+    {
+        return inputManagerRunner_;
+    }
 
 private:
     AccessibilityInputInterceptor();
@@ -115,12 +124,14 @@ private:
     MMI::InputManager *inputManager_ = nullptr;
     std::shared_ptr<AccessibilityInputEventConsumer> inputEventConsumer_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
+    std::shared_ptr<AppExecFwk::EventRunner> inputManagerRunner_;
     ffrt::mutex mutex_;
     ffrt::mutex eventHandlerMutex_;
 
     sptr<AccessibilityZoomGesture> zoomGesture_ = nullptr;
     sptr<WindowMagnificationGesture> windowMagnificationGesture_ = nullptr;
     bool needInteractMagnification_ = false;
+    sptr<KeyEventFilter> keyEventFilter_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

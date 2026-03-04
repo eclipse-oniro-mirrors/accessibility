@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,7 +24,12 @@ namespace {
     const std::string WINDOW_PATH = "/system/etc/accessibility/window.png";
     const std::string MENU_NAME = "magnification_menu";
 }
-static MagnificationMenu instance;
+
+MagnificationMenu& MagnificationMenu::GetInstance()
+{
+    static MagnificationMenu instance;
+    return instance;
+}
 
 void MagnificationMenu::CreateMenuWindow()
 {
@@ -295,51 +300,6 @@ void MagnificationMenu::FlushImplicitTransaction()
 bool MagnificationMenu::IsMenuShown()
 {
     return isMenuShown_;
-}
-
-extern "C" API_EXPORT void ShowMenuWindow(uint32_t mode)
-{
-    instance.ShowMenuWindow(mode);
-}
-
-extern "C" API_EXPORT void DisableMenuWindow()
-{
-    instance.DisableMenuWindow();
-}
-
-extern "C" API_EXPORT void MoveMenuWindow(int32_t deltaX, int32_t deltaY)
-{
-    instance.MoveMenuWindow(deltaX, deltaY);
-}
-
-extern "C" API_EXPORT bool IsTapOnMenu(int32_t posX, int32_t posY)
-{
-    return instance.IsTapOnMenu(posX, posY);
-}
-
-extern "C" API_EXPORT void AttachToEdge()
-{
-    instance.AttachToEdge();
-}
-
-extern "C" API_EXPORT void RefreshWindowParamMenu()
-{
-    instance.RefreshWindowParam();
-}
-
-extern "C" API_EXPORT void SetCurrentType(uint32_t type)
-{
-    instance.SetCurrentType(type);
-}
-
-extern "C" API_EXPORT uint32_t ChangeMode()
-{
-    return instance.ChangeMode();
-}
-
-extern "C" API_EXPORT bool IsMenuShown()
-{
-    return instance.IsMenuShown();
 }
 }
 }

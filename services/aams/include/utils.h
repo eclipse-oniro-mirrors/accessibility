@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -70,7 +70,6 @@ public:
     static int32_t GetUserIdByCallingUid();
     static bool GetBundleNameByCallingUid(std::string &bundleName);
     static void RecordEnableShortkeyAbilityEvent(const std::string &name, const bool &enableState);
-    static void RecordOnZoomGestureEvent(const std::string &state, const bool &isFullType);
     static void RecordOnRemoveSystemAbility(int32_t systemAbilityId,
         const std::string &bundleName = "", const std::string &abilityName = "");
     static void RecordDatashareInteraction(A11yDatashareValueType type, const std::string &businessName = "",
