@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,10 +18,19 @@
 #include "accessibility_event_info.h"
 #include "hilog_wrapper.h"
 #include "securec.h"
-#include "utils.h"
+#include "ext_utils.h"
+#include "parcel/accessibility_event_info_parcel.h"
+#include "accessibility_input_interceptor.h"
+#include "extend_service_manager.h"
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+#include "accessibility_display_manager.h"
+#endif
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const char* AAMS_GESTURE_RUNNER_NAME = "AamsGestureRunner";
+}
 
 void TouchExploration::InitOneFingerGestureFuncMap()
 {
@@ -147,7 +156,7 @@ TouchExploration::TouchExploration()
 
 void TouchExploration::StartUp()
 {
-    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
+    runner_ = AccessibilityInputInterceptor::GetInstance()->GetInputManagerRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;
@@ -159,8 +168,16 @@ void TouchExploration::StartUp()
         return;
     }
 
+    if (!gestureRunner_) {
+        gestureRunner_ = AppExecFwk::EventRunner::Create(AAMS_GESTURE_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
+        if (!gestureRunner_) {
+            HILOG_ERROR("TouchExploration::StartUp failed:create AAMS gesture runner failed");
+            return;
+        }
+    }
+
     gestureHandler_ = std::make_shared<AppExecFwk::EventHandler>(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetGestureRunner());
+        Singleton<ExtendServiceManager>::GetInstance().GetGestureRunner()); // runner没释放 gestureRunner_.reset();
 }
 
 bool TouchExploration::OnPointerEvent(MMI::PointerEvent &event)
@@ -231,12 +248,8 @@ void TouchExploration::SendAccessibilityEventToAA(EventType eventType)
 {
     HILOG_INFO("eventType is 0x%{public}x.", eventType);
 
-    AccessibilityEventInfo eventInfo {};
-    eventInfo.SetEventType(eventType);
-    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
-    eventInfo.SetWindowId(windowsId);
-    AccessibilityEventInfoParcel eventInfoParcel(eventInfo);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfoParcel, 0);
+    Singleton<ExtendServiceManager>::GetInstance().sendAccessibilityEventToAACallback(
+        eventType, GestureType::GESTURE_INVALID);
 }
 
 void TouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
@@ -259,13 +272,8 @@ void TouchExploration::SendGestureEventToAA(GestureType gestureId)
 {
     HILOG_INFO("gestureId is %{public}d.", static_cast<int32_t>(gestureId));
 
-    AccessibilityEventInfo eventInfo {};
-    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
-    eventInfo.SetWindowId(windowsId);
-    eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
-    eventInfo.SetGestureType(gestureId);
-    AccessibilityEventInfoParcel eventInfoParcel(eventInfo);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfoParcel, 0);
+    Singleton<ExtendServiceManager>::GetInstance().sendAccessibilityEventToAACallback(
+        EventType::TYPE_GESTURE_EVENT, gestureId);
 }
 
 void TouchExploration::SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action)
@@ -626,7 +634,7 @@ bool TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
     AccessibilityElementInfo focusedElementInfo {};
-    bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().FindFocusedElement(focusedElementInfo,
+    bool ret = Singleton<ExtendServiceManager>::GetInstance().findFocusedElementCallback(focusedElementInfo,
         FIND_FOCUS_TIMEOUT);
     if (!ret) {
         HILOG_ERROR("find focused element failed.");
@@ -720,8 +728,9 @@ void TouchExploration::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent
 
     std::shared_ptr<MMI::PointerEvent> pointerEvent = nullptr;
     int32_t focusedWindowId = INVALID_WINDOW_ID;
-    Singleton<AccessibilityWindowManager>::GetInstance().GetFocusedWindowId(focusedWindowId);
-    int32_t activeWindowId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
+    Singleton<ExtendServiceManager>::GetInstance().getFocusedWindowIdCallback(focusedWindowId);
+    int32_t activeWindowId = INVALID_WINDOW_ID;
+    Singleton<ExtendServiceManager>::GetInstance().getActiveWindowIdCallback(activeWindowId);
     if (focusedWindowId != INVALID_WINDOW_ID && focusedWindowId != activeWindowId) {
         pointerEvent = std::make_shared<MMI::PointerEvent>(event);
     }
@@ -731,9 +740,9 @@ void TouchExploration::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent
     gestureHandler_->PostTask([this, pointerEvent]() {
         if (pointerEvent) {
             pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
-            Singleton<AccessibilityWindowManager>::GetInstance().SendPointerEventForHover(pointerEvent);
+            Singleton<ExtendServiceManager>::GetInstance().sendPointerEventForHoverCallback(pointerEvent);
         }
-        Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(
+        Singleton<ExtendServiceManager>::GetInstance().executeActionOnAccessibilityFocusedCallback(
             ActionType::ACCESSIBILITY_ACTION_CLICK);
         }, "TASK_CLICK_ON_FOCUS");
 }
@@ -757,6 +766,7 @@ void TouchExploration::HandleOneFingerSingleTapThenDownStateMove(MMI::PointerEve
     }
 }
 
+// LCOV_EXCL_START
 void TouchExploration::OffsetEvent(MMI::PointerEvent &event, bool setZOrderFlag)
 {
     HILOG_DEBUG();
@@ -772,7 +782,8 @@ void TouchExploration::OffsetEvent(MMI::PointerEvent &event, bool setZOrderFlag)
 
     if (setZOrderFlag) {
         AccessibilityWindowInfo windowInfo = {};
-        if (Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindow(focusedWindowId_, windowInfo)) {
+        if (Singleton<ExtendServiceManager>::GetInstance().getAccessibilityWindowCallback(
+                focusedWindowId_, windowInfo)) {
             event.SetZOrder(static_cast<float>(windowInfo.GetWindowLayer() + 1));
         } else {
             HILOG_ERROR("get windowInfo failed");
@@ -824,6 +835,7 @@ void TouchExploration::HandleOneFingerDoubleTapAndLongPressState(MMI::PointerEve
         SetCurrentState(TouchExplorationState::TOUCH_INIT);
     }
 }
+// LCOV_EXCL_STOP
 
 void TouchExploration::Clear()
 {

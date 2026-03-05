@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2024 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,13 +14,17 @@
  */
 
 #include "accessibility_zoom_gesture.h"
-#include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "window_accessibility_controller.h"
 #include "accessibility_window_manager.h"
-#include "utils.h"
+#include "ext_utils.h"
+#include "accessibility_input_interceptor.h"
+#include "extend_service_manager.h"
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
-#include "accessibility_power_manager.h"
+#include "accessibility_extend_power_manager.h"
+#endif
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+#include "accessibility_display_manager.h"
 #endif
 
 namespace OHOS {
@@ -45,7 +49,7 @@ AccessibilityZoomGesture::AccessibilityZoomGesture(
 {
     HILOG_DEBUG();
     zoomGestureEventHandler_ = std::make_shared<ZoomGestureEventHandler>(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner(), *this);
+        AccessibilityInputInterceptor::GetInstance()->GetInputManagerRunner(), *this);
 
     tapDistance_ = TAP_MIN_DISTANCE;
 
@@ -72,8 +76,9 @@ bool AccessibilityZoomGesture::IsTapOnInputMethod(MMI::PointerEvent &event)
         HILOG_DEBUG("not single finger.");
         return false;
     }
+
     std::vector<AccessibilityWindowInfo> windowInfos =
-        Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
+        Singleton<ExtendServiceManager>::GetInstance().getAccessibilityWindowsCallback();
     for (auto &window : windowInfos) {
         if (window.GetWindowType() != INPUT_METHOD_WINDOW_TYPE) {
             continue;
@@ -244,7 +249,7 @@ void AccessibilityZoomGesture::SendCacheEventsToNext()
             pointerEvent->AddPointerItem(pointer);
             pointerEvent->SetZOrder(10000); // 10000 is magnification window zorder
         }
-        pointerEvent->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
+        pointerEvent->SetActionTime(ExtUtils::GetSystemTime() * US_TO_MS);
         EventTransmission::OnPointerEvent(*pointerEvent);
     }
 }
@@ -967,12 +972,13 @@ void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY, bool sho
         return;
     }
     fullScreenManager_->EnableMagnification(anchorX, anchorY);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+    HILOG_INFO("announcedForMagnificationCallback start");
+    Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
         AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
     if (showMenu && menuManager_ != nullptr) {
         menuManager_->ShowMenuWindow(FULL_SCREEN_MAGNIFICATION);
     }
-    Utils::RecordOnZoomGestureEvent("on", true);
+    ExtUtils::RecordOnZoomGestureEvent("on", true);
 }
 
 void AccessibilityZoomGesture::OffZoom()
@@ -990,12 +996,13 @@ void AccessibilityZoomGesture::OffZoom()
         HILOG_INFO("full magnification disable.");
         fullScreenManager_->DisableMagnification(false);
         menuManager_->DisableMenuWindow();
-        Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+        Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
             AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
     }
-    Utils::RecordOnZoomGestureEvent("off", true);
+    ExtUtils::RecordOnZoomGestureEvent("off", true);
 }
 
+// LCOV_EXCL_START
 void AccessibilityZoomGesture::OnScroll(float offsetX, float offsetY)
 {
     HILOG_DEBUG("offsetX:%{public}f, offsetY:%{public}f.", offsetX, offsetY);
@@ -1005,10 +1012,8 @@ void AccessibilityZoomGesture::OnScroll(float offsetX, float offsetY)
         return;
     }
     fullScreenManager_->MoveMagnification(static_cast<int32_t>(offsetX), static_cast<int32_t>(offsetY));
-
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
-    AccessibilityPowerManager &powerMgr = Singleton<AccessibilityPowerManager>::GetInstance();
-    powerMgr.RefreshActivity();
+    Singleton<AccessibilityExtendPowerManager>::GetInstance().RefreshActivity();
 #endif
 }
 
@@ -1059,7 +1064,7 @@ void AccessibilityZoomGesture::ShieldZoomGesture(bool state)
             return;
         }
         fullScreenManager_->DisableMagnification(true);
-        Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+        Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
             AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
     }
 }
@@ -1083,5 +1088,6 @@ void AccessibilityZoomGesture::OnDrag()
     isTripleDown_ = false;
     ClearCacheEventsAndMsg();
 }
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

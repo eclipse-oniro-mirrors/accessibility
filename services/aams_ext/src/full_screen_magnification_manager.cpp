@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,33 +15,27 @@
 
 // LCOV_EXCL_START
 #include "full_screen_magnification_manager.h"
-#include "accessible_ability_manager_service.h"
 #include "magnification_menu_manager.h"
-#include "utils.h"
+#include "ext_utils.h"
+#include "magnification_window.h"
+#include "extend_service_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
 namespace {
 }
 
-FullScreenMagnificationManager::FullScreenMagnificationManager(
-    std::shared_ptr<MagnificationWindowProxy> proxy) : windowProxy_(proxy)
-{
-}
-
 void FullScreenMagnificationManager::EnableMagnification(int32_t centerX, int32_t centerY)
 {
     HILOG_INFO("centerX = %{public}d, centerY = %{public}d.", centerX, centerY);
-    CHECK_PROXY_PTR_VOID()
-    float scale = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationScale();
-    windowProxy_->InitMagnificationParam(scale);
-    windowProxy_->EnableMagnification(FULL_SCREEN_MAGNIFICATION, centerX, centerY);
+    float scale = Singleton<ExtendServiceManager>::GetInstance().getMagnificationScaleCallback();
+    MagnificationWindow::GetInstance().InitMagnificationParam(scale);
+    MagnificationWindow::GetInstance().EnableMagnification(FULL_SCREEN_MAGNIFICATION, centerX, centerY);
 }
 
 void FullScreenMagnificationManager::ShowMagnification()
 {
-    CHECK_PROXY_PTR_VOID()
-    windowProxy_->ShowMagnification(FULL_SCREEN_MAGNIFICATION);
+    MagnificationWindow::GetInstance().ShowMagnification(FULL_SCREEN_MAGNIFICATION);
 }
 
 void FullScreenMagnificationManager::ShowMagnificationWithPosition(PointerPos pos)
@@ -56,102 +50,71 @@ void FullScreenMagnificationManager::ShowMagnificationWithPosition(PointerPos po
 void FullScreenMagnificationManager::DisableMagnification(bool needClear)
 {
     HILOG_INFO();
-    CHECK_PROXY_PTR_VOID()
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    windowProxy_->DisableMagnification(FULL_SCREEN_MAGNIFICATION, needClear);
+    MagnificationWindow::GetInstance().DisableMagnification(FULL_SCREEN_MAGNIFICATION, needClear);
 }
 
 void FullScreenMagnificationManager::SetScale(float scaleSpan)
 {
     HILOG_DEBUG();
-    CHECK_PROXY_PTR_VOID()
-    windowProxy_->SetScale(FULL_SCREEN_MAGNIFICATION, scaleSpan);
+    MagnificationWindow::GetInstance().SetScale(FULL_SCREEN_MAGNIFICATION, scaleSpan);
 }
 
 void FullScreenMagnificationManager::MoveMagnification(int32_t deltaX, int32_t deltaY)
 {
-    CHECK_PROXY_PTR_VOID()
-    windowProxy_->MoveMagnification(FULL_SCREEN_MAGNIFICATION, deltaX, deltaY);
+    MagnificationWindow::GetInstance().MoveMagnification(FULL_SCREEN_MAGNIFICATION, deltaX, deltaY);
 }
 
 void FullScreenMagnificationManager::PersistScale()
 {
-    CHECK_PROXY_PTR_VOID()
-    float scale = windowProxy_->GetScale();
+    float scale = MagnificationWindow::GetInstance().GetScale();
     HILOG_DEBUG("scale = %{public}f", scale);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SetMagnificationScale(scale);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+    Singleton<ExtendServiceManager>::GetInstance().magnificationScaleCallback(scale);
+    Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
         AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
 }
 
 void FullScreenMagnificationManager::RefreshWindowParam(RotationType type)
 {
     HILOG_DEBUG();
-    CHECK_PROXY_PTR_VOID()
-    windowProxy_->RefreshWindowParam(FULL_SCREEN_MAGNIFICATION, type);
+    MagnificationWindow::GetInstance().RefreshWindowParam(FULL_SCREEN_MAGNIFICATION, type);
 }
 
 PointerPos FullScreenMagnificationManager::ConvertCoordinates(int32_t posX, int32_t posY)
 {
     PointerPos pos = {posX, posY};
-    if (windowProxy_ == nullptr) {
-        HILOG_ERROR("windowProxy_ is nullptr.");
-        return pos;
-    }
-    return windowProxy_->ConvertCoordinates(posX, posY);
+    return MagnificationWindow::GetInstance().ConvertCoordinates(posX, posY);
 }
 
 PointerPos FullScreenMagnificationManager::ConvertGesture(uint32_t type, PointerPos coordinates)
 {
-    if (windowProxy_ == nullptr) {
-        HILOG_ERROR("windowProxy_ is nullptr.");
-        return coordinates;
-    }
-    return windowProxy_->ConvertGesture(type, coordinates);
+    return MagnificationWindow::GetInstance().ConvertGesture(type, coordinates);
 }
 
 uint32_t FullScreenMagnificationManager::CheckTapOnHotArea(int32_t posX, int32_t posY)
 {
-    if (windowProxy_ == nullptr) {
-        HILOG_ERROR("windowProxy_ is nullptr.");
-        return INVALID_GESTURE_TYPE;
-    }
-    return windowProxy_->CheckTapOnHotArea(posX, posY);
+    return MagnificationWindow::GetInstance().CheckTapOnHotArea(posX, posY);
 }
 
 PointerPos FullScreenMagnificationManager::GetSourceCenter()
 {
-    PointerPos pos = {0, 0};
-    if (windowProxy_ == nullptr) {
-        HILOG_ERROR("windowProxy_ is nullptr.");
-        return pos;
-    }
-    return windowProxy_->GetSourceCenter();
+    return MagnificationWindow::GetInstance().GetSourceCenter();
 }
 
 void FullScreenMagnificationManager::FollowFocuseElement(int32_t centerX, int32_t centerY)
 {
     HILOG_DEBUG();
-    CHECK_PROXY_PTR_VOID()
-    windowProxy_->FollowFocuseElement(FULL_SCREEN_MAGNIFICATION, centerX, centerY);
+    MagnificationWindow::GetInstance().FollowFocuseElement(FULL_SCREEN_MAGNIFICATION, centerX, centerY);
 }
 
 bool FullScreenMagnificationManager::IsMagnificationWindowShow()
 {
-    if (windowProxy_ == nullptr) {
-        HILOG_ERROR("windowProxy_ is nullptr.");
-        return false;
-    }
-    return windowProxy_->IsMagnificationWindowShow(FULL_SCREEN_MAGNIFICATION);
+    return MagnificationWindow::GetInstance().IsMagnificationWindowShow(FULL_SCREEN_MAGNIFICATION);
 }
 
 float FullScreenMagnificationManager::GetScale()
 {
-    if (windowProxy_ == nullptr) {
-        HILOG_ERROR("windowProxy_ is nullptr.");
-        return DEFAULT_SCALE;
-    }
-    return windowProxy_->GetScale();
+    return MagnificationWindow::GetInstance().GetScale();
 }
 } // namespace Accessibility
 } // namespace OHOS

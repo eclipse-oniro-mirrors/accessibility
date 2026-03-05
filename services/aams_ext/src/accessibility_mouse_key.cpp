@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,7 @@
 
 #include "accessibility_mouse_key.h"
 #include "hilog_wrapper.h"
-#include "utils.h"
+#include "ext_utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -298,8 +298,7 @@ void AccessibilityMouseKey::PerformMouseAction(int32_t buttonId, int32_t actionT
 int64_t AccessibilityMouseKey::GetSystemTime() const
 {
     HILOG_DEBUG();
-
-    int64_t microsecond = Utils::GetSystemTime() * 1000;
+    int64_t microsecond = ExtUtils::GetSystemTime() * 1000;
     return microsecond;
 }
 } // namespace Accessibility

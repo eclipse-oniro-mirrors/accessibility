@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2024 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,8 +21,8 @@
 #include "accessibility_touch_exploration.h"
 #include "accessibility_touchEvent_injector.h"
 #include "accessibility_zoom_gesture.h"
+#include "accessibility_display_manager.h"
 #include "window_magnification_gesture.h"
-#include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "key_event.h"
 #include "input_event.h"
@@ -30,10 +30,14 @@
 #include "res_type.h"
 #include "res_sched_client.h"
 #endif // ACCESSIBILITY_WATCH_FEATURE
-#include "utils.h"
+#include "ext_utils.h"
+#include "extend_service_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const char* AAMS_INPUT_MANAGER_RUNNER_NAME = "AamsInputManagerRunner";
+}
 sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::instance_ = nullptr;
 ffrt::mutex AccessibilityInputInterceptor::instanceMutex_;
 sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::GetInstance()
@@ -55,9 +59,9 @@ AccessibilityInputInterceptor::AccessibilityInputInterceptor()
 {
     HILOG_DEBUG();
 
+    InitInputManagerHandler();
     inputManager_ = MMI::InputManager::GetInstance();
-    eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner());
+    eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(inputManagerRunner_);
 }
 
 AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
@@ -71,6 +75,24 @@ AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
     inputManager_ = nullptr;
     inputEventConsumer_ = nullptr;
     eventHandler_ = nullptr;
+    inputManagerRunner_.reset();
+}
+
+void AccessibilityInputInterceptor::InitInputManagerHandler()
+{
+    if (!inputManagerRunner_) {
+#ifdef ACCESSIBILITY_WATCH_FEATURE
+        inputManagerRunner_ = AppExecFwk::EventRunner::Create(AAMS_INPUT_MANAGER_RUNNER_NAME);
+#else
+        inputManagerRunner_ = AppExecFwk::EventRunner::Create(AAMS_INPUT_MANAGER_RUNNER_NAME,
+            AppExecFwk::ThreadMode::FFRT);
+#endif
+        if (!inputManagerRunner_) {
+            HILOG_ERROR(
+                "AccessibilityInputInterceptor::InitInputManagerHandler:create AAMS input manager runner failed");
+            return;
+        }
+    }
 }
 
 bool AccessibilityInputInterceptor::OnKeyEvent(MMI::KeyEvent &event)
@@ -187,7 +209,7 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
             return;
         }
         SetNextEventTransmitter(header, current, touchEventInjector);
-        Singleton<AccessibleAbilityManagerService>::GetInstance().SetTouchEventInjector(touchEventInjector);
+        Singleton<ExtendServiceManager>::GetInstance().SetTouchEventInjector(touchEventInjector);
     }
 
     if ((availableFunctions_& FEATURE_SCREEN_MAGNIFICATION) || (availableFunctions_& FEATURE_WINDOW_MAGNIFICATION)) {
@@ -216,13 +238,26 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
     pointerEventTransmitters_ = header;
 }
 
+RetError AccessibilityInputInterceptor::InjectEvents(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
+{
+    sptr<TouchEventInjector> touchEventInjector =
+        Singleton<ExtendServiceManager>::GetInstance().GetTouchEventInjector();
+    if (!touchEventInjector) {
+        HILOG_ERROR("touchEventInjector is null");
+        return RET_ERR_NULLPTR;
+    }
+    touchEventInjector->InjectEvents(gesturePath);
+    return RET_OK;
+}
+
 // LCOV_EXCL_START
 void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmission> &header,
     sptr<EventTransmission> &current)
 {
     HILOG_INFO("CreatWindowMagnificationGesture start");
-    Singleton<AccessibleAbilityManagerService>::GetInstance().InitMagnification();
-    uint32_t magnificationMode = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
+
+    Singleton<ExtendServiceManager>::GetInstance().InitMagnification();
+    uint32_t magnificationMode = Singleton<ExtendServiceManager>::GetInstance().getMagnificationModeCallback();
     if (magnificationMode == FULL_SCREEN_MAGNIFICATION) {
         HILOG_INFO("create zoomGesture");
         CreatZoomGesture();
@@ -244,7 +279,7 @@ void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmi
         ClearMagnificationGesture();
     }
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    if (Utils::IsWideFold() || Utils::IsSmallFold()) {
+    if (ExtUtils::IsWideFold() || ExtUtils::IsSmallFold()) {
         AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
         if (displayMgr.GetFoldStatus() == Rosen::FoldStatus::FOLDED) {
             ShieldZoomGesture(true);
@@ -256,9 +291,9 @@ void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmi
 void AccessibilityInputInterceptor::CreatZoomGesture()
 {
     std::shared_ptr<FullScreenMagnificationManager> fullScreenMagnificationManager =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetFullScreenMagnificationManager();
+        Singleton<ExtendServiceManager>::GetInstance().GetFullScreenMagnificationManager();
     std::shared_ptr<MagnificationMenuManager> menuManager =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMenuManager();
+        Singleton<ExtendServiceManager>::GetInstance().GetMenuManager();
     if (fullScreenMagnificationManager == nullptr) {
         HILOG_ERROR("get fullScreenMagnification manager failed.");
         return;
@@ -286,9 +321,9 @@ void AccessibilityInputInterceptor::CreatZoomGesture()
 void AccessibilityInputInterceptor::CreatWindowMagnificationGesture()
 {
     std::shared_ptr<WindowMagnificationManager> windowMagnificationManager =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetWindowMagnificationManager();
+        Singleton<ExtendServiceManager>::GetInstance().GetWindowMagnificationManager();
     std::shared_ptr<MagnificationMenuManager> menuManager =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMenuManager();
+        Singleton<ExtendServiceManager>::GetInstance().GetMenuManager();
     if (windowMagnificationManager == nullptr) {
         HILOG_ERROR("get windowMagnification manager failed.");
         return;
@@ -332,7 +367,7 @@ void AccessibilityInputInterceptor::CreateKeyEventTransmitters()
             HILOG_ERROR("keyEventFilter is null");
             return;
         }
-        Singleton<AccessibleAbilityManagerService>::GetInstance().SetKeyEventFilter(keyEventFilter);
+        keyEventFilter_ = keyEventFilter;
         SetNextEventTransmitter(header, current, keyEventFilter);
     }
 
@@ -398,14 +433,14 @@ void AccessibilityInputInterceptor::DestroyTransmitters()
 
     if (pointerEventTransmitters_ != nullptr) {
         pointerEventTransmitters_->DestroyEvents();
-        Singleton<AccessibleAbilityManagerService>::GetInstance().SetTouchEventInjector(nullptr);
+        Singleton<ExtendServiceManager>::GetInstance().SetTouchEventInjector(nullptr);
         pointerEventTransmitters_= nullptr;
         zoomGesture_ = nullptr;
         windowMagnificationGesture_ = nullptr;
     }
     if (keyEventTransmitters_ != nullptr) {
         keyEventTransmitters_->DestroyEvents();
-        Singleton<AccessibleAbilityManagerService>::GetInstance().SetKeyEventFilter(nullptr);
+        keyEventFilter_ = nullptr;
         keyEventTransmitters_ = nullptr;
     }
 }
@@ -512,13 +547,21 @@ void AccessibilityInputInterceptor::EnableGesture(uint32_t mode)
         HILOG_WARN("invalid mode.");
     }
 }
+
+void AccessibilityInputInterceptor::SetServiceOnKeyEventResult(
+    int32_t connectionId, bool isHandled, uint32_t sequenceNum)
+{
+    if (keyEventFilter_) {
+        keyEventFilter_->SetServiceOnKeyEventResult(connectionId, isHandled, sequenceNum);
+    }
+}
 // LCOV_EXCL_STOP
 
 AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
 {
     HILOG_DEBUG();
     eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner());
+        AccessibilityInputInterceptor::GetInstance()->GetInputManagerRunner());
 #ifdef ACCESSIBILITY_WATCH_FEATURE
     eventHandler_->PostTask([] {
         auto pid = getpid();

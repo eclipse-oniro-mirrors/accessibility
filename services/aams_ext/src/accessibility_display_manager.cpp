@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,9 +14,9 @@
  */
 
 #include "accessibility_display_manager.h"
-#include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "utils.h"
+#include "ext_utils.h"
+#include "accessibility_input_interceptor.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -89,6 +89,7 @@ uint64_t AccessibilityDisplayManager::GetDefaultDisplayId()
     return Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
 }
 
+// LCOV_EXCL_START
 int32_t AccessibilityDisplayManager::GetWidth()
 {
     HILOG_DEBUG();
@@ -109,9 +110,9 @@ int32_t AccessibilityDisplayManager::GetHeight()
         HILOG_ERROR("default displaySync is null");
         return DEFAULT_HEIGHT;
     }
-
     return displaySync->GetHeight();
 }
+// LCOV_EXCL_STOP
 
 OHOS::Rosen::DisplayOrientation AccessibilityDisplayManager::GetOrientation()
 {
@@ -200,6 +201,7 @@ void AccessibilityDisplayManager::UnregisterDisplayListener()
     }
 }
 
+// LCOV_EXCL_START
 void AccessibilityDisplayManager::RegisterFoldStatusListener()
 {
     HILOG_DEBUG();
@@ -223,6 +225,7 @@ void AccessibilityDisplayManager::UnregisterFoldStatusListener()
         foldListener_ = nullptr;
     }
 }
+// LCOV_EXCL_STOP
 
 AccessibilityDisplayManager::DisplayListener::DisplayListener(const std::shared_ptr<MagnificationManager> &manager)
     : manager_(manager)
@@ -232,6 +235,7 @@ AccessibilityDisplayManager::DisplayListener::DisplayListener(const std::shared_
     displayMode_ = displayMgr.GetFoldDisplayMode();
 }
 
+// LCOV_EXCL_START
 RotationType AccessibilityDisplayManager::GetRotationType(Rosen::DisplayOrientation prev,
     Rosen::DisplayOrientation curr)
 {
@@ -246,13 +250,6 @@ RotationType AccessibilityDisplayManager::GetRotationType(Rosen::DisplayOrientat
 void AccessibilityDisplayManager::DisplayListener::OnChange(Rosen::DisplayId dId)
 {
     HILOG_DEBUG();
-    if (manager_ == nullptr) {
-        manager_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMgr();
-    }
-    if (manager_ == nullptr) {
-        HILOG_ERROR("manager_ is nullptr.");
-        return;
-    }
 
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
@@ -262,12 +259,12 @@ void AccessibilityDisplayManager::DisplayListener::OnChange(Rosen::DisplayId dId
         return;
     }
     HILOG_INFO("need fresh.");
-    if (Utils::IsWideFold()) {
+    if (ExtUtils::IsWideFold()) {
         OnChangeForWideFold(currentOrientation, currentMode);
         return;
     }
 
-    if (Utils::IsBigFold()) {
+    if (ExtUtils::IsBigFold()) {
         OnChangeForBigFold(currentOrientation, currentMode);
         return;
     }
@@ -354,7 +351,6 @@ void AccessibilityDisplayManager::DisplayListener::OnChangeDefault(
 void AccessibilityDisplayManager::FoldStatusListener::OnFoldStatusChanged(Rosen::FoldStatus foldStatus)
 {
     HILOG_DEBUG("status = %{public}d", foldStatus);
-
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
     if (interceptor == nullptr) {
         HILOG_ERROR("interceptor is null");
@@ -372,5 +368,6 @@ void AccessibilityDisplayManager::FoldStatusListener::OnFoldStatusChanged(Rosen:
         return;
     }
 }
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,10 +16,14 @@
 #include <map>
 #include "accessibility_screen_touch.h"
 #include "accessibility_circle_drawing_manager.h"
-#include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "utils.h"
+#include "ext_utils.h"
 #include "parameters.h"
+#include "accessibility_input_interceptor.h"
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+#include "accessibility_display_manager.h"
+#endif
+#include "extend_service_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -47,18 +51,17 @@ constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONG = 1000; // ms
 constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONGEST = 1300; // ms
 
 constexpr uint32_t CIRCLE_ANGLE = 360;
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 constexpr uint32_t START_ANGLE_PORTRAIT = -90;
 constexpr uint32_t START_ANGLE_LANDSCAPE = 180;
 constexpr uint32_t START_ANGLE_PORTRAIT_INVERTED = 90;
 constexpr uint32_t START_ANGLE_LANDSCAPE_INVERTED = 0;
-#endif
+
 constexpr uint32_t NUMBER_10 = 10;
 
 constexpr float TOUCH_SLOP = 8.0f;
 
-const int32_t ROTATE_POLICY = system::GetIntParameter("const.window.device.rotate_policy", 0);
-const std::string FOLDABLE = system::GetParameter("const.window.foldabledevice.rotate_policy", "");
+const int32_t ROTATE_POLICY = OHOS::system::GetIntParameter("const.window.device.rotate_policy", 0);
+const std::string FOLDABLE = OHOS::system::GetParameter("const.window.foldabledevice.rotate_policy", "");
 constexpr uint64_t FOLD_SCREEN_ID = 5;
 constexpr int32_t WINDOW_ROTATE = 0;
 constexpr int32_t SCREEN_ROTATE = 1;
@@ -92,15 +95,15 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
 {
     HILOG_DEBUG();
     // get from account data directly
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return;
-    }
-    clickResponseTime_ = accountData->GetConfig()->GetClickResponseTime();
-    ignoreRepeatClickState_ = accountData->GetConfig()->GetIgnoreRepeatClickState();
-    ignoreRepeatClickTime_ = accountData->GetConfig()->GetIgnoreRepeatClickTime();
+    clickResponseTime_ = Singleton<ExtendServiceManager>::GetInstance().GetClickResponseTime();
+    ignoreRepeatClickState_ = Singleton<ExtendServiceManager>::GetInstance().GetIgnoreRepeatClickState();
+    ignoreRepeatClickTime_ = Singleton<ExtendServiceManager>::GetInstance().GetIgnoreRepeatClickTime();
+
+    HILOG_INFO(
+        "ignoreRepeatClickTime_ = %{public}u ignoreRepeatClickState_ = %{public}d clickResponseTime_ = %{public}u",
+        ignoreRepeatClickTime_,
+        ignoreRepeatClickState_,
+        clickResponseTime_);
 
     if (clickResponseTime_ > 0 && ignoreRepeatClickState_ == true) {
         currentState_ = BOTH_RESPONSE_DELAY_IGNORE_REPEAT_CLICK;
@@ -116,7 +119,7 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
 
     lastUpTime_ = lastUpTime;
 
-    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
+    runner_ = AccessibilityInputInterceptor::GetInstance()->GetInputManagerRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;
@@ -145,7 +148,6 @@ void AccessibilityScreenTouch::SetTargetScreenId()
 
 void ScreenTouchHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
 {
-    HILOG_DEBUG();
     switch (event->GetInnerEventId()) {
         case AccessibilityScreenTouch::FINGER_DOWN_DELAY_MSG:
             server_.SendInterceptedEvent();
@@ -176,7 +178,7 @@ void AccessibilityScreenTouch::SendInterceptedEvent()
     }
 
     for (auto iter = cachedDownPointerEvents_.begin(); iter != cachedDownPointerEvents_.end(); ++iter) {
-        iter->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
+        iter->SetActionTime(ExtUtils::GetSystemTime() * US_TO_MS);
         EventTransmission::OnPointerEvent(*iter);
     }
 }
@@ -379,7 +381,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
         handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
         if (isStopDrawCircle_ != true && !cachedDownPointerEvents_.empty()) {
             for (auto iter = cachedDownPointerEvents_.begin(); iter != cachedDownPointerEvents_.end(); ++iter) {
-                iter->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
+                iter->SetActionTime(ExtUtils::GetSystemTime() * US_TO_MS);
                 EventTransmission::OnPointerEvent(*iter);
             }
         }
@@ -401,13 +403,13 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent
 {
     HILOG_DEBUG();
 
-    if (startPointer_ != nullptr && event.GetPointerId() != startPointer_->GetPointerId()) {
+    if (cachedDownPointerEvents_.empty()) {
         HILOG_ERROR("cached down pointer event is empty!");
         handler_->RemoveEvent(FINGER_DOWN_DELAY_MSG);
         isStopDrawCircle_ = true;
         return;
     }
-    if (startPointer_ != nullptr && event.GetPointerId() != startPointer_->GetPointerId()) {
+    if (startPointer_ != nullptr && event.GetPointerId() != startPointer_->GetPointerId()){
         return;
     }
 

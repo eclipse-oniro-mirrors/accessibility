@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,7 +17,9 @@
 #include "magnification_menu_manager.h"
 #include "accessibility_def.h"
 #include "accessibility_display_manager.h"
-#include "accessible_ability_manager_service.h"
+#include "magnification_window.h"
+#include "magnification_menu.h"
+#include "extend_service_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -25,82 +27,67 @@ namespace {
     const std::string FULL_SCREEN_PATH = "/system/etc/accessibility/fullScreen.png";
     const std::string WINDOW_PATH = "/system/etc/accessibility/window.png";
 }
-MagnificationMenuManager::MagnificationMenuManager(std::shared_ptr<MagnificationWindowProxy> proxy)
-    : windowProxy_(proxy)
-{
-}
 
 void MagnificationMenuManager::ShowMenuWindow(uint32_t mode)
 {
     HILOG_INFO();
-    CHECK_PROXY_PTR_VOID()
-    if (windowProxy_->IsMenuShown()) {
+    if (MagnificationMenu::GetInstance().IsMenuShown()) {
         HILOG_INFO("no need show menu.");
         return;
     }
-    uint32_t currentType = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationType();
+    uint32_t currentType = Singleton<ExtendServiceManager>::GetInstance().magnificationTypeCallback();
     if (currentType != SWITCH_MAGNIFICATION) {
         HILOG_INFO("no need show menu.");
         return;
     }
-    windowProxy_->SetCurrentType(currentType);
-    windowProxy_->ShowMenuWindow(mode);
+    MagnificationMenu::GetInstance().SetCurrentType(currentType);
+    MagnificationMenu::GetInstance().ShowMenuWindow(mode);
 }
 
 void MagnificationMenuManager::DisableMenuWindow()
 {
     HILOG_INFO();
-    CHECK_PROXY_PTR_VOID()
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    windowProxy_->DisableMenuWindow();
+    MagnificationMenu::GetInstance().DisableMenuWindow();
 }
 
 void MagnificationMenuManager::MoveMenuWindow(int32_t deltaX, int32_t deltaY)
 {
     HILOG_DEBUG();
-    CHECK_PROXY_PTR_VOID()
-    windowProxy_->MoveMenuWindow(deltaX, deltaY);
+    MagnificationMenu::GetInstance().MoveMenuWindow(deltaX, deltaY);
 }
 
 void MagnificationMenuManager::AttachToEdge()
 {
     HILOG_DEBUG();
-    CHECK_PROXY_PTR_VOID()
-    windowProxy_->AttachToEdge();
+    MagnificationMenu::GetInstance().AttachToEdge();
 }
 
 void MagnificationMenuManager::SetCurrentType(uint32_t type)
 {
     HILOG_DEBUG();
-    CHECK_PROXY_PTR_VOID()
-    windowProxy_->SetCurrentType(type);
+    MagnificationMenu::GetInstance().SetCurrentType(type);
 }
 
 bool MagnificationMenuManager::IsTapOnMenu(int32_t posX, int32_t posY)
 {
     HILOG_DEBUG();
-    if (windowProxy_ == nullptr) {
-        HILOG_ERROR("windowProxy_ is nullptr.");
-        return false;
-    }
-    return windowProxy_->IsTapOnMenu(posX, posY);
+    return MagnificationMenu::GetInstance().IsTapOnMenu(posX, posY);
 }
 
 void MagnificationMenuManager::OnMenuTap()
 {
     HILOG_DEBUG();
-    CHECK_PROXY_PTR_VOID()
-    windowProxy_->DisableMenuWindow();
-    uint32_t mode = windowProxy_->ChangeMode();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnModeChanged(mode);
+    MagnificationMenu::GetInstance().DisableMenuWindow();
+    uint32_t mode = MagnificationMenu::GetInstance().ChangeMode();
+    Singleton<MagnificationManager>::GetInstance().OnModeChanged(mode);
     ShowMenuWindow(mode);
 }
 
 void MagnificationMenuManager::RefreshWindowParam()
 {
     HILOG_DEBUG();
-    CHECK_PROXY_PTR_VOID()
-    windowProxy_->RefreshWindowParamMenu();
+    MagnificationMenu::GetInstance().RefreshWindowParam();
 }
 } // namespace Accessibility
 } // namespace OHOS

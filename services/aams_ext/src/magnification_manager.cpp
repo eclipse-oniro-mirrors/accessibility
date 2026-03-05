@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,22 +17,22 @@
 #include "hilog_wrapper.h"
 #include "magnification_manager.h"
 #include "accessibility_display_manager.h"
-#include "accessible_ability_manager_service.h"
 #include "magnification_menu_manager.h"
+#include "magnification_window.h"
+#include "extend_service_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
 MagnificationManager::MagnificationManager()
 {
-    windowProxy_ = MagnificationWindowProxy::GetInstance();
 }
 
 std::shared_ptr<WindowMagnificationManager> MagnificationManager::GetWindowMagnificationManager()
 {
     HILOG_DEBUG();
-    currentMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
+    currentMode_ = Singleton<ExtendServiceManager>::GetInstance().getMagnificationModeCallback();
     if (windowMagnificationManager_ == nullptr) {
-        windowMagnificationManager_ = std::make_shared<WindowMagnificationManager>(windowProxy_);
+        windowMagnificationManager_ = std::make_shared<WindowMagnificationManager>();
     }
     return windowMagnificationManager_;
 }
@@ -40,9 +40,9 @@ std::shared_ptr<WindowMagnificationManager> MagnificationManager::GetWindowMagni
 std::shared_ptr<FullScreenMagnificationManager> MagnificationManager::GetFullScreenMagnificationManager()
 {
     HILOG_DEBUG();
-    currentMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
+    currentMode_ = Singleton<ExtendServiceManager>::GetInstance().getMagnificationModeCallback();
     if (fullScreenMagnificationManager_ == nullptr) {
-        fullScreenMagnificationManager_ = std::make_shared<FullScreenMagnificationManager>(windowProxy_);
+        fullScreenMagnificationManager_ = std::make_shared<FullScreenMagnificationManager>();
     }
     return fullScreenMagnificationManager_;
 }
@@ -51,7 +51,7 @@ std::shared_ptr<MagnificationMenuManager> MagnificationManager::GetMenuManager()
 {
     HILOG_DEBUG();
     if (menuManager_ == nullptr) {
-        menuManager_ = std::make_shared<MagnificationMenuManager>(windowProxy_);
+        menuManager_ = std::make_shared<MagnificationMenuManager>();
     }
     return menuManager_;
 }
@@ -68,37 +68,33 @@ void MagnificationManager::OnMagnificationTypeChanged(uint32_t magnificationType
         GetFullScreenMagnificationManager();
     }
 
-    if (menuManager_ == nullptr) {
-        HILOG_ERROR("menuManager_ is nullptr.");
-        return;
-    }
-    currentMode_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
-    menuManager_->SetCurrentType(magnificationType);
+    currentMode_ = Singleton<ExtendServiceManager>::GetInstance().getMagnificationModeCallback();
+    Singleton<MagnificationMenuManager>::GetInstance().SetCurrentType(magnificationType);
     if (magnificationType == SWITCH_MAGNIFICATION) {
         if (windowMagnificationManager_ != nullptr && windowMagnificationManager_->IsMagnificationWindowShow()) {
-            menuManager_->DisableMenuWindow();
-            menuManager_->ShowMenuWindow(currentMode_);
+            Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+            Singleton<MagnificationMenuManager>::GetInstance().ShowMenuWindow(currentMode_);
             return;
         }
-
+ 
         if (fullScreenMagnificationManager_ != nullptr &&
             fullScreenMagnificationManager_->IsMagnificationWindowShow()) {
-            menuManager_->DisableMenuWindow();
-            menuManager_->ShowMenuWindow(currentMode_);
+            Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
+            Singleton<MagnificationMenuManager>::GetInstance().ShowMenuWindow(currentMode_);
             return;
         }
     }
 
-    menuManager_->DisableMenuWindow();
+    Singleton<MagnificationMenuManager>::GetInstance().DisableMenuWindow();
 
     HILOG_INFO("magnificationType = %{public}d, currentMode_ = %{public}d", magnificationType, currentMode_);
     if (currentMode_ == magnificationType) {
         return;
     }
-    bool state = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationState();
+    bool state = Singleton<ExtendServiceManager>::GetInstance().getMagnificationState();
     if (!state) {
         currentMode_ = magnificationType;
-        Singleton<AccessibleAbilityManagerService>::GetInstance().SetMagnificationMode(
+        Singleton<ExtendServiceManager>::GetInstance().magnificationModeCallback(
             static_cast<int32_t>(magnificationType));
         return;
     }
@@ -109,11 +105,9 @@ void MagnificationManager::OnModeChanged(uint32_t mode)
 {
     HILOG_INFO("mode = %{public}d.", mode);
     if (windowMagnificationManager_ == nullptr) {
-        HILOG_DEBUG("GetWindowMagnificationManager");
         GetWindowMagnificationManager();
     }
     if (fullScreenMagnificationManager_ == nullptr) {
-        HILOG_DEBUG("GetFullScreenMagnificationManager");
         GetFullScreenMagnificationManager();
     }
 
@@ -138,7 +132,7 @@ void MagnificationManager::OnModeChanged(uint32_t mode)
         }
         if (windowMagnificationManager_ != nullptr && needShow) {
             windowMagnificationManager_->ShowWindowMagnificationWithPosition(pos);
-            Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+            Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
                 AnnounceType::ANNOUNCE_SWITCH_WINDOW);
         }
     } else {
@@ -150,16 +144,16 @@ void MagnificationManager::OnModeChanged(uint32_t mode)
         }
         if (fullScreenMagnificationManager_ != nullptr && needShow) {
             fullScreenMagnificationManager_->ShowMagnificationWithPosition(pos);
-            Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+            Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
                 AnnounceType::ANNOUNCE_SWITCH_FULL_SCREEN);
         }
     }
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SetMagnificationMode(static_cast<int32_t>(mode));
+    Singleton<ExtendServiceManager>::GetInstance().magnificationModeCallback(static_cast<int32_t>(mode));
     currentMode_ = mode;
     if (needShow) {
         interceptor->StartMagnificationInteract(mode);
     }
-    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
+    Singleton<ExtendServiceManager>::GetInstance().updateInputFilterCallback();
 }
 
 void MagnificationManager::DisableMagnification()
@@ -242,7 +236,14 @@ void MagnificationManager::RefreshWindowParam(RotationType type)
 
 void MagnificationManager::FollowFocuseElement(int32_t centerX, int32_t centerY)
 {
-    HILOG_INFO();
+    currentMode_ = Singleton<ExtendServiceManager>::GetInstance().getMagnificationModeCallback();
+    HILOG_INFO("currentMode_ is %{public}d", currentMode_);
+    if (windowMagnificationManager_ == nullptr) {
+        windowMagnificationManager_ = std::make_shared<WindowMagnificationManager>();
+    }
+    if (fullScreenMagnificationManager_ == nullptr) {
+        fullScreenMagnificationManager_ = std::make_shared<FullScreenMagnificationManager>();
+    }
     if (currentMode_ == WINDOW_MAGNIFICATION && windowMagnificationManager_ != nullptr) {
         if (windowMagnificationManager_->IsMagnificationWindowShow()) {
             windowMagnificationManager_->FollowFocuseElement(centerX, centerY);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,12 +15,15 @@
 
 // LCOV_EXCL_START
 #include "window_magnification_gesture.h"
-#include "utils.h"
-#include "accessible_ability_manager_service.h"
+#include "ext_utils.h"
 #include "magnification_menu_manager.h"
-#include "accessibility_window_manager.h"
+#include "accessibility_input_interceptor.h"
+#include "extend_service_manager.h"
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
-#include "accessibility_power_manager.h"
+#include "accessibility_extend_power_manager.h"
+#endif
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+#include "accessibility_display_manager.h"
 #endif
 
 namespace OHOS {
@@ -146,7 +149,7 @@ WindowMagnificationGesture::WindowMagnificationGesture(
     : windowMagnificationManager_(windowMagnificationManager), menuManager_(menuManager)
 {
     HILOG_DEBUG();
-    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
+    runner_ = AccessibilityInputInterceptor::GetInstance()->GetInputManagerRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;
@@ -247,7 +250,7 @@ void WindowMagnificationGesture::DestroyEvents()
         }
         isSingleTapOnWindow_ = false;
         isTapOnHotArea_ = false;
-        Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+        Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
             AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
     }
 }
@@ -739,8 +742,7 @@ void WindowMagnificationGesture::HandleTwoFingersDownStateMove(MMI::PointerEvent
         int32_t deltaY = static_cast<int32_t>(currentFocusY - lastFocusY);
         windowMagnificationManager_->MoveMagnificationWindow(deltaX, deltaY);
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
-        AccessibilityPowerManager &powerMgr = Singleton<AccessibilityPowerManager>::GetInstance();
-        powerMgr.RefreshActivity();
+        Singleton<AccessibilityExtendPowerManager>::GetInstance().RefreshActivity();
 #endif
     }
 
@@ -854,7 +856,7 @@ void WindowMagnificationGesture::HandleDraggingStateUp(MMI::PointerEvent &event)
         windowMagnificationManager_->DisableWindowMagnification();
         isSingleTapOnWindow_ = false;
         isTapOnHotArea_ = false;
-        Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+        Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
             AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
     }
 }
@@ -921,17 +923,17 @@ void WindowMagnificationGesture::OnTripleTap(int32_t centerX, int32_t centerY)
     if (windowMagnificationManager_->IsMagnificationWindowShow()) {
         windowMagnificationManager_->DisableWindowMagnification();
         menuManager_->DisableMenuWindow();
-        Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+        Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
             AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
         isSingleTapOnWindow_ = false;
         isTapOnHotArea_ = false;
-        Utils::RecordOnZoomGestureEvent("off", false);
+        ExtUtils::RecordOnZoomGestureEvent("off", false);
     } else {
         windowMagnificationManager_->EnableWindowMagnification(centerX, centerY);
-        Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+        Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
             AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
         menuManager_->ShowMenuWindow(WINDOW_MAGNIFICATION);
-        Utils::RecordOnZoomGestureEvent("on", false);
+        ExtUtils::RecordOnZoomGestureEvent("on", false);
     }
 }
 
@@ -963,7 +965,7 @@ void WindowMagnificationGesture::SendEventToMultimodal(MMI::PointerEvent event, 
     }
 
     if (needResetTime) {
-        event.SetActionTime(Utils::GetSystemTime() * US_TO_MS);
+        event.SetActionTime(ExtUtils::GetSystemTime() * US_TO_MS);
     }
     EventTransmission::OnPointerEvent(event);
 }
@@ -981,7 +983,7 @@ void WindowMagnificationGesture::ShieldZoomGesture(bool state)
             windowMagnificationManager_->IsMagnificationWindowShow()) {
             windowMagnificationManager_->DisableWindowMagnification(true);
             SetGestureState(MagnificationGestureState::READY_STATE, HANDLER);
-            Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
+            Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
                 AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
         }
         if (menuManager_ != nullptr) {
@@ -1011,8 +1013,9 @@ bool WindowMagnificationGesture::IsTapOnInputMethod(MMI::PointerEvent &event)
         HILOG_DEBUG("not single finger.");
         return false;
     }
+
     std::vector<AccessibilityWindowInfo> windowInfos =
-        Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
+        Singleton<ExtendServiceManager>::GetInstance().getAccessibilityWindowsCallback();
     for (auto &window : windowInfos) {
         if (window.GetWindowType() != INPUT_METHOD_WINDOW_TYPE) {
             continue;
@@ -1076,8 +1079,8 @@ void WindowMagnificationGesture::OnDrag()
         return;
     }
     windowMagnificationManager_->EnableWindowMagnification(anchorX, anchorY);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(
-        AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
+    Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
+        AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
     Clear();
 }
 } // namespace Accessibility

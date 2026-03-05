@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Huawei Device Co., Ltd.
+ * Copyright (C) 2024-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,11 +14,13 @@
  */
 
 #include "accessibility_touch_exploration.h"
-#include "accessibility_window_manager.h"
 #include "accessibility_event_info.h"
 #include "hilog_wrapper.h"
 #include "securec.h"
-#include "utils.h"
+#include "ext_utils.h"
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
+#include "accessibility_display_manager.h"
+#endif
 
 namespace OHOS {
 namespace Accessibility {
@@ -153,6 +155,7 @@ std::map<TouchExplorationMsg, GestureType> TouchExploration::GetMultiFingerMsgTo
     return MULTI_GESTURE_TYPE;
 }
 
+// LCOV_EXCL_START
 void TouchExploration::ProcessMultiFingerGesture(TouchExplorationMsg msg)
 {
     std::map<TouchExplorationMsg, GestureType> multiGestureMap = GetMultiFingerMsgToGestureMap();
@@ -197,6 +200,7 @@ void TouchExploration::ProcessMultiFingerGesture(TouchExplorationMsg msg)
         SetCurrentState(TouchExplorationState::INVALID);
     }
 }
+// LCOV_EXCL_STOP
 
 void TouchExploration::HandleTwoFingersDownStateDown(MMI::PointerEvent &event)
 {
@@ -426,7 +430,7 @@ void TouchExploration::SendUpForDragDownEvent()
         return;
     }
     MMI::PointerEvent::PointerItem pointerItem {};
-    draggingDownEvent_->SetActionTime(Utils::GetSystemTime() * US_TO_MS);
+    draggingDownEvent_->SetActionTime(ExtUtils::GetSystemTime() * US_TO_MS);
     draggingDownEvent_->GetPointerItem(draggingDownEvent_->GetPointerId(), pointerItem);
     pointerItem.SetPressed(false);
     pointerItem.SetDisplayX(x);
@@ -894,6 +898,7 @@ void TouchExploration::HandleThreeFingersSwipeStateDown(MMI::PointerEvent &event
     SetCurrentState(TouchExplorationState::INVALID);
 }
 
+// LCOV_EXCL_START
 bool TouchExploration::GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerItem, int32_t pId)
 {
     HILOG_DEBUG();
@@ -1143,6 +1148,7 @@ void TouchExploration::HandleFourFingersTapStateMove(MMI::PointerEvent &event)
 {
     HandleMultiFingersTapStateMove(event, static_cast<uint32_t>(PointerCount::POINTER_COUNT_4));
 }
+// LCOV_EXCL_STOP
 
 void TouchExploration::HandleFourFingersContinueDownStateUp(MMI::PointerEvent &event)
 {

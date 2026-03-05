@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,9 +14,10 @@
  */
 
 #include "accessibility_mouse_autoclick.h"
-#include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "utils.h"
+#include "ext_utils.h"
+#include "accessibility_input_interceptor.h"
+#include "extend_service_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -30,7 +31,7 @@ AccessibilityMouseAutoclick::AccessibilityMouseAutoclick()
     HILOG_DEBUG();
 
     std::shared_ptr<AppExecFwk::EventRunner> runner =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
+        AccessibilityInputInterceptor::GetInstance()->GetInputManagerRunner();
     if (!runner) {
         HILOG_ERROR("get runner failed");
         return;
@@ -178,23 +179,14 @@ int64_t AccessibilityMouseAutoclick::GetSystemTime()
 {
     HILOG_DEBUG();
 
-    int64_t microsecond = Utils::GetSystemTime() * 1000;
+    int64_t microsecond = ExtUtils::GetSystemTime() * 1000;
     return microsecond;
 }
 
 int64_t AccessibilityMouseAutoclick::GetDelayTime()
 {
     HILOG_DEBUG();
-
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("GetCurrentAccountData failed");
-        return 0;
-    }
-
-    int32_t delayTime = accountData->GetConfig()->GetMouseAutoClick();
-    return delayTime;
+    return Singleton<ExtendServiceManager>::GetInstance().getDelayTime();
 }
 
 AccessibilityMouseAutoclick::MouseAutoclickEventHandler::MouseAutoclickEventHandler(

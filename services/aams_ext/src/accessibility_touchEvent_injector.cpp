@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,9 +14,9 @@
  */
 
 #include "accessibility_touchEvent_injector.h"
-#include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "utils.h"
+#include "ext_utils.h"
+#include "accessibility_input_interceptor.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -57,7 +57,7 @@ void TouchInjectHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &eve
 
 TouchEventInjector::TouchEventInjector()
 {
-    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner();
+    runner_ = AccessibilityInputInterceptor::GetInstance()->GetInputManagerRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;
@@ -156,7 +156,7 @@ int64_t TouchEventInjector::GetSystemTime()
 {
     HILOG_DEBUG();
 
-    int64_t microsecond = Utils::GetSystemTime() * 1000;
+    int64_t microsecond = ExtUtils::GetSystemTime() * 1000;
     return microsecond;
 }
 
