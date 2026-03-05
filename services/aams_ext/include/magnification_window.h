@@ -50,7 +50,8 @@ public:
     void RefreshWindowParam(uint32_t magnificationType, RotationType type);
     bool IsTapOnHotArea(int32_t posX, int32_t posY);
     bool IsTapOnMagnificationWindow(int32_t posX, int32_t posY);
-    inline bool IsMagnificationWindowActivate() {
+    inline bool IsMagnificationWindowActivate()
+    {
         return isMagnificationWindowActivate_;
     }
     void FixSourceCenter(bool needFix);
