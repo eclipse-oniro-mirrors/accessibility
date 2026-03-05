@@ -139,6 +139,7 @@ private:
     PointerPos fixedSourceCenter_ = {0, 0};
     bool isMagnificationShowPart_ = false;
     bool isMagnificationShowFull_ = false;
+    bool isMagnificationWindowActivate_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS
