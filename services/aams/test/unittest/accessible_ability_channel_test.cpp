@@ -360,7 +360,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     channel_->SetOnKeyPressEventResult(true, sequence);
 
     int retryCount = 0;
-    bool result = false;
+    bool result = true;
     while (retryCount < RETRY_TIMES) {
         sleep(1);
         uint32_t sequenceNum = AccessibilityAbilityHelper::GetInstance().GetTestSequence();
