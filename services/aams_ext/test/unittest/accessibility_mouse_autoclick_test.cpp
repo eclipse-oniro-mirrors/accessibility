@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,6 @@
 #include "accessibility_ut_helper.h"
 #define private public
 #define protected public
-#include "accessible_ability_manager_service.h"
 #undef private
 #undef protected
 
@@ -52,15 +51,11 @@ public:
 void AccessibilityMouseAutoclickUnitTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityMouseAutoclickUnitTest Start ######################";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
 }
 
 void AccessibilityMouseAutoclickUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityMouseAutoclickUnitTest End ######################";
-    AccessibilityCommonHelper::GetInstance().SetIsServicePublished(false);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RecycleEventHandler();
 }
 
 void AccessibilityMouseAutoclickUnitTest::SetUp()
@@ -89,11 +84,6 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     EXPECT_TRUE(event != nullptr);
 
-    sptr<AccessibilityAccountData> accountData
-        = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetMouseAutoClick(DELAY_TIME);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
@@ -119,11 +109,6 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     EXPECT_TRUE(event != nullptr);
 
-    sptr<AccessibilityAccountData> accountData
-        = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetMouseAutoClick(DELAY_TIME);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     event->SetPointerId(1);
@@ -158,11 +143,6 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     EXPECT_TRUE(event != nullptr);
 
-    sptr<AccessibilityAccountData> accountData
-        = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetMouseAutoClick(DELAY_TIME);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     event->SetPointerId(1);

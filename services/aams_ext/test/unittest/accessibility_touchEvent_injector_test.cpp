@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,8 +18,8 @@
 #include "accessibility_touchEvent_injector.h"
 #include "accessibility_ut_helper.h"
 #include "accessible_ability_client_proxy.h"
-#include "mock_accessible_ability_client_stub_impl.h"
 #include "accessible_ability_manager_service.h"
+#include "accessibility_input_interceptor.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -54,20 +54,17 @@ protected:
 void TouchEventInjectorTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "TouchEventInjectorTest SetUpTestCase";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
 void TouchEventInjectorTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "TouchEventInjectorTest TearDownTestCase";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void TouchEventInjectorTest::SetUp()
 {
     GTEST_LOG_(INFO) << "TouchEventInjectorTest SetUp";
     touchEventInjector_ = new TouchEventInjector();
-    sptr<MockAccessibleAbilityClientStubImpl> stub = new MockAccessibleAbilityClientStubImpl();
     inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
 }
 

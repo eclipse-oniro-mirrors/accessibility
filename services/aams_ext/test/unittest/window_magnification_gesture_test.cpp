@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,6 @@
 #include <memory>
 #include "accessibility_ut_helper.h"
 #include "window_magnification_gesture.h"
-#include "accessible_ability_manager_service.h"
 #include "window_magnification_manager.h"
 #include "magnification_menu_manager.h"
 
@@ -60,13 +59,11 @@ public:
 void WindowMagnificationGestureTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "###################### WindowMagnificationGestureTest Start ######################";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
 void WindowMagnificationGestureTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "###################### WindowMagnificationGestureTest End ######################";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void WindowMagnificationGestureTest::SetUp()

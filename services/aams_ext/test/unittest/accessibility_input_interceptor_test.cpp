@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,9 +17,7 @@
 #include "accessibility_common_helper.h"
 #include "accessibility_input_interceptor.h"
 #include "accessibility_ut_helper.h"
-#include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
-#include "accessible_ability_manager_service.h"
 #include "mock_bundle_manager.h"
 #include "mock_input_manager.h"
 
@@ -50,13 +48,11 @@ public:
 void AccessibilityInputInterceptorTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest SetUpTestCase";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
 void AccessibilityInputInterceptorTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest TearDownTestCase";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AccessibilityInputInterceptorTest::SetUp()

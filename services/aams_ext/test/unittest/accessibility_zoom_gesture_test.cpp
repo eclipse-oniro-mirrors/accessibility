@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,6 @@
 #include <memory>
 #include "accessibility_ut_helper.h"
 #include "accessibility_zoom_gesture.h"
-#include "accessible_ability_manager_service.h"
 #include "full_screen_magnification_manager.h"
 #include "magnification_menu_manager.h"
 
@@ -50,13 +49,11 @@ public:
 void AccessibilityZoomGestureUnitTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityZoomGestureUnitTest Start ######################";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
 void AccessibilityZoomGestureUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityZoomGestureUnitTest End ######################";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AccessibilityZoomGestureUnitTest::SetUp()

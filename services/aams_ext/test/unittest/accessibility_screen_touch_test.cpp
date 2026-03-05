@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,7 +19,8 @@
 #include "accessibility_common_helper.h"
 #include "accessibility_screen_touch.h"
 #include "accessibility_ut_helper.h"
-#include "accessible_ability_manager_service.h"
+#include "extend_service_manager.h"
+#include "accessibility_def.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -32,10 +33,8 @@ namespace {
     constexpr uint32_t CLICK_RESPONSE_TIME_LONG = 600; // ms
     constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100; // ms
     constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_MEDIUM = 700; // ms
+    constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONG = 1000; // ms
     constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONGEST = 1300; // ms
-    constexpr uint32_t CLICK_RESPONSE_DELAY_SHORT = 0;
-    constexpr uint32_t CLICK_RESPONSE_DELAY_MEDIUM = 1;
-    constexpr uint32_t CLICK_RESPONSE_DELAY_LONG = 2;
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORTEST = 0;
     constexpr uint32_t IGNORE_REPEAT_CLICK_MEDIUM = 2;
     constexpr uint32_t IGNORE_REPEAT_CLICK_LONGEST = 4;
@@ -74,13 +73,11 @@ uint32_t AccessibilityScreenTouchUnitTest::lastUpTime_ = 0;
 void AccessibilityScreenTouchUnitTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityScreenTouchUnitTest Start ######################";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
 void AccessibilityScreenTouchUnitTest::TearDownTestCase()
 {
-    GTEST_LOG_(INFO) << "###################### AccessibilityScreenTouchUnitTest End ######################";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
+    GTEST_LOG_(INFO) << "###################### AccessibilityScreenTouchUnitTest End #####################";
 }
 
 void AccessibilityScreenTouchUnitTest::SetUp()
@@ -93,15 +90,6 @@ void AccessibilityScreenTouchUnitTest::TearDown()
     GTEST_LOG_(INFO) << "TearDown";
     screenTouch_ = nullptr;
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
-
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        GTEST_LOG_(INFO) << "accountData is nullptr";
-        return;
-    }
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
 }
 
 std::shared_ptr<MMI::PointerEvent> AccessibilityScreenTouchUnitTest::SetPointerEvent(uint32_t time, uint32_t action)
@@ -145,11 +133,6 @@ std::shared_ptr<MMI::PointerEvent> AccessibilityScreenTouchUnitTest::SetPointerE
 HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_SetClickResponseTime_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetClickResponseTime_001 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
 
     EXPECT_EQ(screenTouch_->GetRealClickResponseTime(), CLICK_RESPONSE_TIME_SHORT);
@@ -164,11 +147,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
 HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_SetClickResponseTime_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetClickResponseTime_002 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayMedium);
 
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
 
     EXPECT_EQ(screenTouch_->GetRealClickResponseTime(), CLICK_RESPONSE_TIME_MEDIUM);
@@ -183,11 +163,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
 HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_SetClickResponseTime_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetClickResponseTime_003 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
 
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayLong);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
 
     EXPECT_EQ(screenTouch_->GetRealClickResponseTime(), CLICK_RESPONSE_TIME_LONG);
@@ -203,11 +180,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetIgnoreRepeatClickState_001 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, true, AccessibilityConfig::ResponseDelayShort);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
 
     EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickState(), true);
@@ -223,11 +196,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetIgnoreRepeatClickState_002 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayShort);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
 
     EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickState(), false);
@@ -243,12 +212,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetIgnoreRepeatClickTime_001 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
 
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_SHORTEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, true, AccessibilityConfig::ResponseDelayShort);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
 
     EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickTime(), IGNORE_REPEAT_CLICK_TIME_SHORTEST);
@@ -264,12 +229,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetIgnoreRepeatClickTime_002 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
 
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_MEDIUM);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutMedium, true, AccessibilityConfig::ResponseDelayShort);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
 
     EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickTime(), IGNORE_REPEAT_CLICK_TIME_MEDIUM);
@@ -285,12 +246,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Set
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_SetIgnoreRepeatClickTime_003 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
 
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, true, AccessibilityConfig::ResponseDelayShort);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
 
     EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickTime(), IGNORE_REPEAT_CLICK_TIME_LONGEST);
@@ -521,13 +478,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_001 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, true, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -562,13 +513,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_002 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, false, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -601,13 +546,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_003 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_SHORTEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, true, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -642,13 +581,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_004 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, true, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -675,13 +608,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_005 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, false, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -714,13 +641,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_006 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, true, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -747,13 +668,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_007 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, true, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -800,13 +715,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_008 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, false, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -857,13 +766,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_009 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, true, AccessibilityConfig::ResponseDelayShort);
+    
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -902,13 +806,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_010 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, true, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -965,13 +863,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_011 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, false, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1020,13 +912,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleIgnoreRepeatClickState_012 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(0);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, true, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1075,12 +961,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_001 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayLong);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1113,12 +994,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_002 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1153,12 +1029,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_003 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayMedium);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1191,12 +1062,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_004 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayLong);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1225,12 +1091,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_005 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1265,12 +1126,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_006 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayMedium);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1299,12 +1155,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_007 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayLong);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1347,12 +1198,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_008 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1395,12 +1241,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_009 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayMedium);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1443,12 +1284,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_010 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayLong);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1499,12 +1335,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_011 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1559,12 +1390,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_012 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayMedium);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1615,12 +1441,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_013 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayLong);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1671,12 +1492,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_014 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_SHORT);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, false, AccessibilityConfig::ResponseDelayShort);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1729,12 +1545,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleResponseDelayState_015 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(false);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayMedium);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1784,13 +1595,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
 HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_HandleBothState_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_001 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, true, AccessibilityConfig::ResponseDelayLong);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1826,13 +1631,8 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
 HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_HandleBothState_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_002 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutMedium, true, AccessibilityConfig::ResponseDelayLong);
 
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_MEDIUM);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1868,13 +1668,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
 HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_HandleBothState_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_003 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_MEDIUM);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutMedium, true, AccessibilityConfig::ResponseDelayMedium);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1910,13 +1704,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
 HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_HandleBothState_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_004 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_LONGEST);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLongest, true, AccessibilityConfig::ResponseDelayLong);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -1972,13 +1760,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
 HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_HandleBothState_005, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_005 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_LONG);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_MEDIUM);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutMedium, true, AccessibilityConfig::ResponseDelayLong);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -2034,13 +1816,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_Han
 HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_HandleBothState_006, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_HandleBothState_006 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(CLICK_RESPONSE_DELAY_MEDIUM);
-    accountData->GetConfig()->SetIgnoreRepeatClickState(true);
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_MEDIUM);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutMedium, true, AccessibilityConfig::ResponseDelayMedium);
 
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     EXPECT_TRUE(screenTouch_ != nullptr);
@@ -2097,14 +1873,10 @@ HWTEST_F(AccessibilityScreenTouchUnitTest,
     AccessibilityScreenTouch_Unittest_GetRealClickResponseTime_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealClickResponseTime_001 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetClickResponseTime(900);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutShortest, false, AccessibilityConfig::ResponseDelayShort);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
 
-    EXPECT_EQ(screenTouch_->GetRealClickResponseTime(), 0);
+    EXPECT_EQ(screenTouch_->GetRealClickResponseTime(), CLICK_RESPONSE_TIME_SHORT);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealClickResponseTime_001 end";
 }
 
@@ -2117,14 +1889,10 @@ HWTEST_F(AccessibilityScreenTouchUnitTest,
     AccessibilityScreenTouch_Unittest_GetRealIgnoreRepeatClickTime_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealIgnoreRepeatClickTime_001 start";
-    sptr<AccessibilityAccountData> accountData =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    EXPECT_TRUE(accountData != nullptr);
-
-    accountData->GetConfig()->SetIgnoreRepeatClickTime(2000);
+    Singleton<ExtendServiceManager>::GetInstance().SetClickConfig(AccessibilityConfig::RepeatClickTimeoutLong, false, AccessibilityConfig::ResponseDelayShort);
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
 
-    EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickTime(), IGNORE_REPEAT_CLICK_TIME_SHORTEST);
+    EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickTime(), IGNORE_REPEAT_CLICK_TIME_LONG);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_GetRealIgnoreRepeatClickTime end";
 }
 
