@@ -69,6 +69,7 @@ public:
     RetError GetIgnoreRepeatClickState(bool &state);
     RetError GetIgnoreRepeatClickTime(uint32_t &time);
     RetError GetFlashReminderSwitch(bool &state);
+    RetError GetSeniorModeState(bool &state);
 
     void UpdateConfigState();
     void UpdateAudioBalance();

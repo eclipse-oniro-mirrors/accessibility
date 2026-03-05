@@ -364,6 +364,9 @@ void AccessibilitySystemAbilityClientImpl::Init()
     if (stateType & STATE_FLASH_REMINDER_ENABLED) {
         stateHandler_.SetState(AccessibilityStateEventType::EVENT_FLASH_REMINDER_SWITCH, true);
     }
+    if (stateType & STATE_ELDER_CARE_ENABLED) {
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED, true);
+    }
 }
 
 void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject> &remote)
@@ -799,6 +802,9 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_FLASH_REMINDER_SWITCH,
         !!(stateType & STATE_FLASH_REMINDER_ENABLED));
+
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED,
+        !!(stateType & STATE_ELDER_CARE_ENABLED));
 }
 
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityIdResult(
@@ -1245,6 +1251,26 @@ RetError AccessibilitySystemAbilityClientImpl::GetFlashReminderSwitch(bool &stat
     auto ret = serviceProxy_->GetFlashReminderSwitch(state);
     if (ret != RET_OK) {
         HILOG_ERROR("Failed to get flash reminder switch state");
+        return RET_ERR_FAILED;
+    }
+    return RET_OK;
+}
+
+RetError AccessibilitySystemAbilityClientImpl::GetSeniorModeState(bool &state)
+{
+    HILOG_DEBUG();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.GetSeniorModeState");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    auto ret = serviceProxy_->GetSeniorModeState(state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("Failed to get seniorMode state");
         return RET_ERR_FAILED;
     }
     return RET_OK;

@@ -86,6 +86,7 @@ namespace {
     const char* SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const char* SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
     const char* SCREEN_MAGNIFICATION_MODE = "accessibility_magnification_mode";
+    const char* ELDER_CARE_ENABLED_KEY = "accessibility_elder_care_switch_enabled";
     const char* SCREEN_MAGNIFICATION_SCALE = "accessibility_display_magnification_scale";
     const char* MAGNIFICATION_PARAM = "const.accessibility.magnification";
     const char* VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
@@ -446,6 +447,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         RegisterScreenMagnificationType();
         RegisterVoiceRecognitionState();
         RegisterFlashReminderSwitch();
+        RegisterSeniorModeState();
         if (accessibilitySettings_) {
             accessibilitySettings_->RegisterParamWatcher();
             UpdateAccessibilityState();
@@ -2300,6 +2302,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     RegisterPcModeSwitch();
     RegisterFlashReminderSwitch();
     RegisterNotificationState();
+    RegisterSeniorModeState();
 }
 
 void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
@@ -3317,6 +3320,12 @@ ErrCode AccessibleAbilityManagerService::GetFlashReminderSwitch(bool &state)
     return accessibilitySettings_->GetFlashReminderSwitch(state);
 }
 
+ErrCode AccessibleAbilityManagerService::GetSeniorModeState(bool &state)
+{
+    PostDelayUnloadTask();
+    return accessibilitySettings_->GetSeniorModeState(state);
+}
+
 ErrCode AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData& configData,
     CaptionPropertyParcel& caption)
 {
@@ -4092,6 +4101,54 @@ void AccessibleAbilityManagerService::RegisterFlashReminderSwitch()
             accountData->GetConfig()->GetDbHandle()->RegisterObserver(FLASH_REMINDER_SWITCH_KEY, func);
         }
         }, "FLASH_REMINDER_SWITCH_KEY_OBSERVER");
+}
+
+void AccessibleAbilityManagerService::OnSeniorModeStateChanged()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    bool seniorModeState = config->GetDbHandle()->GetBoolValue(ELDER_CARE_ENABLED_KEY, false);
+    config->SetSeniorModeState(seniorModeState);
+    UpdateAccessibilityState();
+}
+
+void AccessibleAbilityManagerService::RegisterSeniorModeState()
+{
+    HILOG_DEBUG();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().OnSeniorModeStateChanged();
+        };
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(ELDER_CARE_ENABLED_KEY, func);
+        }
+        }, "ELDER_CARE_ENABLED_KEY_OBSERVER");
 }
 
 void AccessibleAbilityManagerService::UpdateVoiceRecognitionState()

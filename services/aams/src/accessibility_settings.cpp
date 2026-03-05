@@ -1419,6 +1419,42 @@ RetError AccessibilitySettings::GetFlashReminderSwitch(bool &state)
     return syncFuture.get();
 }
 
+RetError AccessibilitySettings::GetSeniorModeState(bool &state)
+{
+    HILOG_DEBUG();
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    auto tmpState = std::make_shared<bool>(state);
+    if (tmpState == nullptr) {
+        HILOG_ERROR("tmpState is nullptr!");
+        return RET_ERR_NULLPTR;
+    }
+    handler_->PostTask([this, syncPromise, tmpState]() {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData =
+            Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise->set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        *tmpState = accountData->GetConfig()->GetSeniorModeState();
+        syncPromise->set_value(RET_OK);
+        }, "TASK_GET_ELDER_CARE_STATE");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetSeniorModeState Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
+    state = *tmpState;
+    return syncFuture.get();
+}
+
 void AccessibilitySettings::UpdateConfigState()
 {
     handler_->PostTask([this]() {

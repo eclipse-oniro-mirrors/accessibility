@@ -121,6 +121,7 @@ extern const uint32_t STATE_SINGLE_CLICK_MODE_ENABLED;
 extern const uint32_t STATE_CONFIG_EVENT_CHANGE;
 extern const uint32_t STATE_INPUT_INTERCEPTOR_ENABLED;
 extern const uint32_t STATE_FLASH_REMINDER_ENABLED;
+extern const uint32_t STATE_ELDER_CARE_ENABLED;
 extern const int32_t INVALID_CHANNEL_ID;
 extern const int32_t MAX_ALLOW_SIZE;
 } // namespace Accessibility

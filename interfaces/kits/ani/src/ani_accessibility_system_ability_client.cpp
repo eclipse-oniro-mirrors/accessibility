@@ -45,6 +45,8 @@ std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::animationOffStateList
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ANIMATION_OFF);
 std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::flashReminderSwitchStateListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_FLASH_REMINDER_SWITCH);
+std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::seniorModeStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED);
 
 void StateListenerImpl::SubscribeToFramework()
 {
@@ -390,6 +392,8 @@ void ANIAccessibilityClient::SubscribeState(ani_env *env, ani_string type, ani_o
         animationOffStateListeners_->SubscribeObserver(env, callback);
     } else if (std::strcmp(eventType.c_str(), "flashReminderStateChange") == 0) {
         flashReminderSwitchStateListeners_->SubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "seniorModeStateChange") == 0) {
+        seniorModeStateListeners_->SubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
@@ -415,6 +419,8 @@ void ANIAccessibilityClient::UnsubscribeState(ani_env *env, ani_string type, ani
         animationOffStateListeners_->UnsubscribeObserver(env, callback);
     } else if (std::strcmp(eventType.c_str(), "flashReminderStateChange") == 0) {
         flashReminderSwitchStateListeners_->UnsubscribeObserver(env, callback);
+    } else if (std::strcmp(eventType.c_str(), "seniorModeStateChange") == 0) {
+        seniorModeStateListeners_->UnsubscribeObserver(env, callback);
     } else {
         HILOG_ERROR("UnsubscribeState eventType[%{public}s] is error", eventType.c_str());
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
@@ -440,6 +446,8 @@ void ANIAccessibilityClient::UnsubscribeStateAll(ani_env *env, ani_string type)
         animationOffStateListeners_->UnsubscribeObservers();
     } else if (std::strcmp(eventType.c_str(), "flashReminderStateChange") == 0) {
         flashReminderSwitchStateListeners_->UnsubscribeObservers();
+    } else if (std::strcmp(eventType.c_str(), "seniorModeStateChange") == 0) {
+        seniorModeStateListeners_->UnsubscribeObservers();
     } else {
         HILOG_ERROR("UnsubscribeStateAll eventType[%{public}s] is error", eventType.c_str());
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
@@ -805,6 +813,24 @@ ani_boolean ANIAccessibilityClient::GetFlashReminderSwitchSync(ani_env *env)
     auto ret = asaClient->GetFlashReminderSwitch(status);
     if (ret != RET_OK) {
         HILOG_ERROR("GetFlashReminderSwitch failed!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return false;
+    }
+    return status;
+}
+
+ani_boolean ANIAccessibilityClient::GetSeniorModeStateSync(ani_env *env)
+{
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient == nullptr) {
+        HILOG_ERROR("asaClient is nullptr!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        return false;
+    }
+    bool status = false;
+    auto ret = asaClient->GetSeniorModeState(status);
+    if (ret != RET_OK) {
+        HILOG_ERROR("GetSeniorModeState failed!");
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
         return false;
     }

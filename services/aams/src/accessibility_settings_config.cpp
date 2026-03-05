@@ -230,6 +230,13 @@ RetError AccessibilitySettingsConfig::SetFlashReminderSwitch(const bool state)
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetSeniorModeState(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    seniorModeState_ = state;
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetScreenMagnificationMode(const uint32_t mode)
 {
     HILOG_DEBUG("screenMagnificationMode = [%{public}u]", mode);
@@ -863,6 +870,11 @@ uint32_t AccessibilitySettingsConfig::GetScreenMagnificationType() const
 bool AccessibilitySettingsConfig::GetFlashReminderSwitch() const
 {
     return flashReminderSwitch_;
+}
+
+bool AccessibilitySettingsConfig::GetSeniorModeState() const
+{
+    return seniorModeState_;
 }
 
 uint32_t AccessibilitySettingsConfig::GetScreenMagnificationMode() const
