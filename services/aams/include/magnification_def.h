@@ -33,13 +33,6 @@ enum class AnnounceType : uint32_t {
     ANNOUNCE_SWITCH_WINDOW
 };
 
-enum class AnnounceType : uint32_t {
-    ANNOUNCE_MAGNIFICATION_SCALE,
-    ANNOUNCE_MAGNIFICATION_DISABLE,
-    ANNOUNCE_SWITCH_FULL_SCREEN,
-    ANNOUNCE_SWITCH_WINDOW
-};
-
 enum class RotationType : uint32_t {
     LEFT_ROTATE = 0,
     RIGHT_ROTATE,
