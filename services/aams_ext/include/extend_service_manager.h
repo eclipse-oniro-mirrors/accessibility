@@ -137,7 +137,6 @@ public:
         return ignoreRepeatClickTime_;
     }
 
-
 private:
     int32_t mouseAutoClick_ = -1;
     uint32_t clickResponseTime_ = 0;

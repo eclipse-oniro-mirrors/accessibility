@@ -409,7 +409,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent
         isStopDrawCircle_ = true;
         return;
     }
-    if (startPointer_ != nullptr && event.GetPointerId() != startPointer_->GetPointerId()){
+    if (startPointer_ != nullptr && event.GetPointerId() != startPointer_->GetPointerId()) {
         return;
     }
 
