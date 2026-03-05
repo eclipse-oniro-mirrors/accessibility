@@ -116,7 +116,7 @@ RetError ExtendManagerServiceProxy::SetMouseAutoClick(int32_t time)
 }
 
 RetError ExtendManagerServiceProxy::SetClickConfig(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME clickTime, bool state,
-        AccessibilityConfig::CLICK_RESPONSE_TIME responseTime)
+    AccessibilityConfig::CLICK_RESPONSE_TIME responseTime)
 {
     (void)clickTime;
     (void)state;
@@ -244,19 +244,23 @@ bool ExtendManagerServiceProxy::ExtendGetMagnificationScaleCallback()
     return true;
 }
 
-bool ExtendManagerServiceProxy::ExtendUpdateInputFilterCallback() {
+bool ExtendManagerServiceProxy::ExtendUpdateInputFilterCallback()
+{
     return true;
 }
 
-bool ExtendManagerServiceProxy::SetMagnificationModeCallback() {
+bool ExtendManagerServiceProxy::SetMagnificationModeCallback()
+{
     return true;
 }
 
-bool ExtendManagerServiceProxy::GetMagnificationTypeCallback() {
+bool ExtendManagerServiceProxy::GetMagnificationTypeCallback()
+{
     return true;
 }
 
-bool ExtendManagerServiceProxy::ExtendAnnouncedForMagnificationCallback() {
+bool ExtendManagerServiceProxy::ExtendAnnouncedForMagnificationCallback()
+{
     return true;
 }
 
@@ -266,11 +270,13 @@ bool ExtendManagerServiceProxy::DiscountBrightness(const float discount)
     return true;
 }
 
-bool ExtendManagerServiceProxy::SetMagnificationScaleCallback() {
+bool ExtendManagerServiceProxy::SetMagnificationScaleCallback()
+{
     return true;
 }
 
-bool ExtendManagerServiceProxy::ExtendGetAccessibilityWindowsCallback() {
+bool ExtendManagerServiceProxy::ExtendGetAccessibilityWindowsCallback()
+{
     return true;
 }
 
@@ -286,7 +292,8 @@ void ExtendManagerServiceProxy::OffZoomGesture()
     return;
 }
 
-bool ExtendManagerServiceProxy::ExtendSubscribeOsAccountCallback() {
+bool ExtendManagerServiceProxy::ExtendSubscribeOsAccountCallback()
+{
     return true;
 }
 

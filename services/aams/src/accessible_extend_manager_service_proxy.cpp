@@ -560,10 +560,10 @@ void ExtendManagerServiceProxy::CancelNotification()
         HILOG_ERROR("handle is null");
         return;
     }
-    if (!func || readyFunc_.find(ExtMethod::CANCEl_NOTIFICATION) == readyFunc_.end()) {
+    if (!func || readyFunc_.find(ExtMethod::CANCEL_NOTIFICATION) == readyFunc_.end()) {
         func = (CancelNotification)GetFunc("CancelNotification");
         if (func) {
-            readyFunc_.insert(ExtMethod::CANCEl_NOTIFICATION);
+            readyFunc_.insert(ExtMethod::CANCEL_NOTIFICATION);
             return func();
         } else {
             HILOG_ERROR("get CancelNotification func failed");
