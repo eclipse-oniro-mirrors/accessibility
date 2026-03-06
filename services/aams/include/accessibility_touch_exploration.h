@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Huawei Device Co., Ltd.
+ * Copyright (C) 2024-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,9 +22,7 @@
 #include <map>
 #include <functional>
 #include "accessibility_element_info.h"
-#include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_event_transmission.h"
-#include "accessible_ability_manager_service.h"
 #include "accessibility_def.h"
 #include "event_handler.h"
 #include "hilog_wrapper.h"
@@ -374,6 +372,7 @@ private:
     std::shared_ptr<TouchExplorationEventHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> gestureHandler_ = nullptr;
+    std::shared_ptr<AppExecFwk::EventRunner> gestureRunner_;
     using HandleEventFunc = std::function<void(MMI::PointerEvent &)>;
     std::map<TouchExplorationState, std::map<int32_t, HandleEventFunc>> handleEventFuncMap_ {};
 

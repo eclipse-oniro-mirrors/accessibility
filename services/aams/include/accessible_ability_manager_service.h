@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,11 +26,7 @@
 #include "accessible_ability_manager_service_event_handler.h"
 #include "accessibility_account_data.h"
 #include "accessibility_common_event.h"
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-#include "accessibility_display_manager.h"
-#endif
 #include "accessibility_element_operator_callback_stub.h"
-#include "accessibility_input_interceptor.h"
 #include "accessibility_keyevent_filter.h"
 #include "accessibility_settings.h"
 #include "accessibility_touchEvent_injector.h"
@@ -43,13 +39,12 @@
 #include "accessibility_short_key.h"
 #include "accessibility_resource_bundle_manager.h"
 #include "refbase.h"
-#include "magnification_manager.h"
 #include "accessibility_security_component_manager.h"
+#include "accessible_extend_manager_service_proxy.h"
 
 namespace OHOS {
 namespace Accessibility {
 class AccessibilityAccountData;
-class TouchEventInjector;
 class AccessibilitySettings;
 class AccessibilityResourceBundleManager;
 
@@ -75,8 +70,6 @@ public:
     void InitActionHandler();
     void InitSendEventHandler();
     void InitChannelHandler();
-    void InitInputManagerHandler();
-    void InitGestureHandler();
     void InitHoverEnterHandler();
     void OnStart() override;
     void OnStop() override;
@@ -86,6 +79,9 @@ public:
     void PostDelayUnloadTask();
 
 public:
+    // for ext so
+    void SendAccessibilityEventToAA(EventType eventType, GestureType gestureId);
+
     /* For AccessibleAbilityManagerServiceStub */
     ErrCode SendEvent(const AccessibilityEventInfoParcel& eventInfoParcel, int32_t flag) override;
 
@@ -181,20 +177,6 @@ public:
     void OnShortKeyProcess();
     void UpdateShortKeyRegister();
 
-    void SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector);
-
-    inline sptr<TouchEventInjector> GetTouchEventInjector()
-    {
-        return touchEventInjector_;
-    }
-
-    inline sptr<KeyEventFilter> GetKeyEventFilter()
-    {
-        return keyEventFilter_;
-    }
-
-    void SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter);
-
     /* For DisplayResize */
     void NotifyDisplayResizeStateChanged(int32_t displayId, Rect& rect, float scale, float centerX, float centerY);
 
@@ -221,16 +203,6 @@ public:
     inline std::shared_ptr<AppExecFwk::EventRunner> &GetChannelRunner()
     {
         return channelRunner_;
-    }
-
-    inline std::shared_ptr<AppExecFwk::EventRunner> &GetInputManagerRunner()
-    {
-        return inputManagerRunner_;
-    }
-
-    inline std::shared_ptr<AppExecFwk::EventRunner> &GetGestureRunner()
-    {
-        return gestureRunner_;
     }
 
     sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
@@ -371,17 +343,10 @@ public:
     void SetMagnificationMode(int32_t mode);
     float GetMagnificationScale();
     void SetMagnificationScale(float scale);
-    std::shared_ptr<MagnificationManager> GetMagnificationMgr();
-    std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
-    std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
-    std::shared_ptr<MagnificationMenuManager> GetMenuManager();
     ErrCode AnnouncedForAccessibility(const std::string &announcedText);
     void InitResource(bool needReInit);
     std::string &GetResource(const std::string &resourceName);
     void AnnouncedForMagnification(AnnounceType announceType);
-    void OffZoomGesture();
-    void InitMagnification();
-    void OnModeChanged(uint32_t mode);
 
     RetError ConfigureEvents(std::vector<uint32_t> needEvents);
 
@@ -519,9 +484,6 @@ private:
     int32_t currentAccountId_ = -1;
     AccessibilityAccountDataMap  a11yAccountsData_;
 
-    sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
-    sptr<TouchEventInjector> touchEventInjector_ = nullptr;
-    sptr<KeyEventFilter> keyEventFilter_ = nullptr;
     sptr<AccessibilityDumper> accessibilityDumper_ = nullptr;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
@@ -535,9 +497,6 @@ private:
 
     std::shared_ptr<AppExecFwk::EventRunner> channelRunner_;
     std::shared_ptr<AAMSEventHandler> channelHandler_;
-
-    std::shared_ptr<AppExecFwk::EventRunner> inputManagerRunner_;
-    std::shared_ptr<AppExecFwk::EventRunner> gestureRunner_;
 
     std::shared_ptr<AppExecFwk::EventRunner> hoverEnterRunner_;
     std::shared_ptr<AAMSEventHandler> hoverEnterHandler_;
@@ -566,7 +525,6 @@ private:
 
     bool isSubscribeMSDPCallback_ = false;
     ffrt::mutex subscribeMSDPMutex_;
-    std::shared_ptr<MagnificationManager> magnificationManager_ = nullptr;
     bool isResourceInit_ = false;
     std::shared_ptr<AccountSubscriber> accountSubscriber_ = nullptr;
     ffrt::mutex resourceMapMutex_;

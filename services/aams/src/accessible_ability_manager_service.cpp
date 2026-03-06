@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -43,7 +43,6 @@
 #include "utils.h"
 #include "xcollie_helper.h"
 #include <ipc_skeleton.h>
-#include "transaction/rs_interfaces.h"
 #include "resource_manager.h"
 #include "res_config.h"
 #include "bundle_info.h"
@@ -58,7 +57,6 @@
 #include "mem_mgr_client.h"
 #include "mem_mgr_proxy.h"
 #include "common_event_manager.h"
-#include "magnification_def.h"
 #include "accessibility_notification_helper.h"
 
 #undef LOG_DOMAIN
@@ -77,8 +75,6 @@ namespace {
     const char* AAMS_ACTION_RUNNER_NAME = "AamsActionRunner";
     const char* AAMS_SEND_EVENT_RUNNER_NAME = "AamsSendEventRunner";
     const char* AAMS_CHANNEL_RUNNER_NAME = "AamsChannelRunner";
-    const char* AAMS_INPUT_MANAGER_RUNNER_NAME = "AamsInputManagerRunner";
-    const char* AAMS_GESTURE_RUNNER_NAME = "AamsGestureRunner";
     const char* AAMS_HOVER_ENTER_RUNNER_NAME = "AamsHoverEnterRunner";
     const char* SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     const char* SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
@@ -191,10 +187,6 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
 AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
 {
     HILOG_INFO("AccessibleAbilityManagerService::~AccessibleAbilityManagerService");
-
-    inputInterceptor_ = nullptr;
-    touchEventInjector_ = nullptr;
-    keyEventFilter_ = nullptr;
     a11yAccountsData_.Clear();
 }
 
@@ -274,33 +266,6 @@ void AccessibleAbilityManagerService::InitChannelHandler()
     }
 }
 
-void AccessibleAbilityManagerService::InitInputManagerHandler()
-{
-    if (!inputManagerRunner_) {
-#ifdef ACCESSIBILITY_WATCH_FEATURE
-        inputManagerRunner_ = AppExecFwk::EventRunner::Create(AAMS_INPUT_MANAGER_RUNNER_NAME);
-#else
-        inputManagerRunner_ = AppExecFwk::EventRunner::Create(AAMS_INPUT_MANAGER_RUNNER_NAME,
-            AppExecFwk::ThreadMode::FFRT);
-#endif
-        if (!inputManagerRunner_) {
-            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS input manager runner failed");
-            return;
-        }
-    }
-}
-
-void AccessibleAbilityManagerService::InitGestureHandler()
-{
-    if (!gestureRunner_) {
-        gestureRunner_ = AppExecFwk::EventRunner::Create(AAMS_GESTURE_RUNNER_NAME, AppExecFwk::ThreadMode::FFRT);
-        if (!gestureRunner_) {
-            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS gesture runner failed");
-            return;
-        }
-    }
-}
-
 void AccessibleAbilityManagerService::InitHoverEnterHandler()
 {
     if (!hoverEnterRunner_) {
@@ -328,8 +293,6 @@ void AccessibleAbilityManagerService::OnStart()
     InitActionHandler();
     InitSendEventHandler();
     InitChannelHandler();
-    InitInputManagerHandler();
-    InitGestureHandler();
     InitHoverEnterHandler();
 
     SetParameter(SYSTEM_PARAMETER_AAMS_NAME, "false");
@@ -361,21 +324,15 @@ void AccessibleAbilityManagerService::OnStop()
         HILOG_DEBUG();
 
         Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-        Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
-        if (Utils::IsSmallFold()) {
-            Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterFoldStatusListener();
+        if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+            Singleton<ExtendManagerServiceProxy>::GetInstance().UnregisterDisplayListener();
         }
-#endif
         Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
         UnsubscribeOsAccount();
 
         currentAccountId_ = -1;
         a11yAccountsData_.Clear();
         stateObservers_.Clear();
-        inputInterceptor_ = nullptr;
-        touchEventInjector_ = nullptr;
-        keyEventFilter_ = nullptr;
         stateObserversDeathRecipient_ = nullptr;
 
         syncPromise.set_value();
@@ -474,12 +431,9 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
         if (isReady_) {
             SwitchedUser(-1);
             Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-            Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
-            if (Utils::IsSmallFold()) {
-                Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterFoldStatusListener();
+            if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+                Singleton<ExtendManagerServiceProxy>::GetInstance().UnregisterDisplayListener();
             }
-#endif
             Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
             Singleton<AccessibilityWindowManager>::GetInstance().DeInit();
 
@@ -568,6 +522,21 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
     return RET_OK;
 }
 
+void AccessibleAbilityManagerService::SendAccessibilityEventToAA(EventType eventType, GestureType gestureId)
+{
+    HILOG_INFO("eventType is 0x%{public}x.", eventType);
+ 
+    AccessibilityEventInfo eventInfo {};
+    int32_t windowId = Singleton<AccessibilityWindowManager>::GetInstance().GetActiveWindowId();
+    eventInfo.SetWindowId(windowId);
+    eventInfo.SetEventType(eventType);
+    if (eventType == EventType::TYPE_GESTURE_EVENT) {
+        eventInfo.SetGestureType(gestureId);
+    }
+    AccessibilityEventInfoParcel eventInfoParcel(eventInfo);
+    SendEvent(eventInfoParcel, 0);
+}
+
 ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoParcel &eventInfoParcel,
     const int32_t flag)
 {
@@ -596,6 +565,7 @@ ErrCode AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfoP
         }
         return RET_OK;
     }
+
     RetError res = GetResourceBundleInfo(const_cast<AccessibilityEventInfo&>(uiEvent));
     if (res != RET_OK) {
         HILOG_ERROR("Get Resource BundleInfo failed! RetError is %{public}d", res);
@@ -874,15 +844,16 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     GetElementOperatorConnection(connection, elementId, elementOperator);
     RETURN_FALSE_IF_NULL(elementOperator);
 
-    std::vector<AccessibleAction> actionList = focusedElementInfo.GetActionList();
-    bool isSupportClick = false;
-    for (const auto& action : actionList) {
-        if (action.GetActionType() == ActionType::ACCESSIBILITY_ACTION_CLICK) {
-            isSupportClick = true;
-            break;
-        }
+    elementOperator->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(), actionCallback);
+    ffrt::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
+    if (waitAction != ffrt::future_status::ready) {
+        HILOG_ERROR("ExecuteAction Failed to wait result");
+        return false;
     }
-    if (isAnco && !isSupportClick && action == ActionType::ACCESSIBILITY_ACTION_CLICK) {
+    HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d",
+        windowId, elementId, action, actionCallback->executeActionResult_);
+
+    if (isAnco && !actionCallback->executeActionResult_ && (action == ActionType::ACCESSIBILITY_ACTION_CLICK)) {
         int32_t xPos = 0;
         int32_t yPos = 0;
         CalculateClickPosition(focusedElementInfo, xPos, yPos);
@@ -905,14 +876,6 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
         MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
         return true;
     }
-    elementOperator->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(), actionCallback);
-    ffrt::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
-    if (waitAction != ffrt::future_status::ready) {
-        HILOG_ERROR("ExecuteAction Failed to wait result");
-        return false;
-    }
-    HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d",
-        windowId, elementId, action, actionCallback->executeActionResult_);
     return actionCallback->executeActionResult_;
 }
 
@@ -922,11 +885,9 @@ void AccessibleAbilityManagerService::CalculateClickPosition(const Accessibility
     Rect focusElement = focusedElementInfo.GetRectInScreen();
     int32_t displayWidth = 0;
     int32_t displayHeight = 0;
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-    displayWidth = displayMgr.GetWidth();
-    displayHeight = displayMgr.GetHeight();
-#endif
+    if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+        Singleton<ExtendManagerServiceProxy>::GetInstance().GetClickPosition(xPos, yPos);
+    }
     int32_t focusLeftTopXPos = focusElement.GetLeftTopXScreenPostion();
     int32_t focusRightBottomXPos = focusElement.GetRightBottomXScreenPostion();
     int32_t focusLeftTopYpos = focusElement.GetLeftTopYScreenPostion();
@@ -1810,13 +1771,9 @@ ErrCode AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::st
 RetError AccessibleAbilityManagerService::SetCurtainScreenUsingStatus(bool isEnable)
 {
     HILOG_DEBUG();
-    auto rsInterfaces = &(Rosen::RSInterfaces::GetInstance());
-    if (rsInterfaces == nullptr) {
-        HILOG_ERROR("rsInterfaces is nullptr.");
-        return RET_ERR_NULLPTR;
+    if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+        Singleton<ExtendManagerServiceProxy>::GetInstance().SetCurtainScreenUsingStatus(isEnable);
     }
-    HILOG_INFO("SetCurtainScreenUsingStatus: status = %{public}d", isEnable);
-    rsInterfaces->SetCurtainScreenUsingStatus(isEnable);
     return RET_OK;
 }
 
@@ -1942,20 +1899,10 @@ ErrCode AccessibleAbilityManagerService::SetMagnificationState(const bool state)
         return RET_ERR_ENABLE_MAGNIFICATION;
     }
 
-    if (magnificationManager_ == nullptr) {
-        HILOG_ERROR("magnificationManager_ is nullptr.");
-        return RET_ERR_ENABLE_MAGNIFICATION;
-    }
-
-    if (state == magnificationManager_->GetMagnificationState()) {
-        HILOG_ERROR("no need change state.");
-        return RET_OK;
-    }
-
-    if (state) {
-        magnificationManager_->TriggerMagnification(type, mode);
-    } else {
-        magnificationManager_->DisableMagnification();
+    if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+        if (Singleton<ExtendManagerServiceProxy>::GetInstance().LoadExtProxy()) {
+            Singleton<ExtendManagerServiceProxy>::GetInstance().SetMagnificationState(state, type, mode);
+        }
     }
     return RET_OK;
 }
@@ -2164,18 +2111,6 @@ void AccessibleAbilityManagerService::OutsideTouch(int32_t windowId)
     }
 }
 
-void AccessibleAbilityManagerService::SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector)
-{
-    HILOG_DEBUG();
-    touchEventInjector_ = touchEventInjector;
-}
-
-void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter)
-{
-    HILOG_DEBUG();
-    keyEventFilter_ = keyEventFilter;
-}
-
 void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &remote)
 {
     Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveCallback(STATE_CALLBACK, this, remote);
@@ -2244,9 +2179,6 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         accountData->GetImportantEnabledAbilities(importantEnabledAbilities);
         accountData->OnAccountSwitched();
         accountData->UpdateAccountCapabilities();
-        if (inputInterceptor_ != nullptr) {
-            inputInterceptor_->SetAvailableFunctions(0);
-        }
         UpdateAccessibilityState();
         UpdateShortKeyRegister();
     }
@@ -2260,8 +2192,10 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     accountData->SetConfigCallbacks(defaultConfigCallbacks_);
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
     float discount = accountData->GetConfig()->GetBrightnessDiscount();
-    if (!Singleton<AccessibilityPowerManager>::GetInstance().DiscountBrightness(discount)) {
-        HILOG_ERROR("Failed to set brightness discount");
+    if (discount != 1 || Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+        if (Singleton<ExtendManagerServiceProxy>::GetInstance().LoadExtProxy()) {
+            Singleton<ExtendManagerServiceProxy>::GetInstance().DiscountBrightness(discount);
+        }
     }
 #endif
     AccountSA::OsAccountType accountType = accountData->GetAccountType();
@@ -2849,15 +2783,27 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     uint32_t flag = accountData->GetInputFilterFlag();
     HILOG_DEBUG("InputInterceptor flag is %{public}d", flag);
 
-    inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
-    if (!inputInterceptor_) {
-        HILOG_ERROR("inputInterceptor_ is null.");
-        return;
+    if (flag != 0 || Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+        if (Singleton<ExtendManagerServiceProxy>::GetInstance().LoadExtProxy()) {
+            uint32_t clickTime = 0;
+            bool state = false;
+            uint32_t responseTime = 0;
+            sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+            if (accountData && accountData->GetConfig()) {
+                clickTime = accountData->GetConfig()->GetIgnoreRepeatClickTime();
+                state = accountData->GetConfig()->GetIgnoreRepeatClickState();
+                responseTime = accountData->GetConfig()->GetClickResponseTime();
+            }
+            Singleton<ExtendManagerServiceProxy>::GetInstance().SetClickConfig(
+                static_cast<AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME>(clickTime),
+                state,
+                static_cast<AccessibilityConfig::CLICK_RESPONSE_TIME>(responseTime));
+            Singleton<ExtendManagerServiceProxy>::GetInstance().UpdateInputFilter(flag);
+        }
+        Utils::RecordStartingA11yEvent(flag);
+        UpdateCriticalState();
+        UpdateAccessibilityState();
     }
-    inputInterceptor_->SetAvailableFunctions(flag);
-    Utils::RecordStartingA11yEvent(flag);
-    UpdateCriticalState();
-    UpdateAccessibilityState();
 }
 
 void AccessibleAbilityManagerService::UpdateAllSetting()
@@ -3872,33 +3818,6 @@ void AccessibleAbilityManagerService::RegisterShortKeyEvent()
         }, "REGISTER_SHORTKEY_OBSERVER");
 }
 
-void AccessibleAbilityManagerService::InitMagnification()
-{
-    HILOG_INFO();
-    if (magnificationManager_ == nullptr) {
-        magnificationManager_ = std::make_shared<MagnificationManager>();
-    }
-
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(magnificationManager_);
-    if (Utils::IsSmallFold()) {
-        Singleton<AccessibilityDisplayManager>::GetInstance().RegisterFoldStatusListener();
-    }
-#endif
-    SubscribeOsAccount();
-}
-
-void AccessibleAbilityManagerService::OffZoomGesture()
-{
-    HILOG_INFO();
-    if (magnificationManager_ == nullptr) {
-        HILOG_ERROR("magnificationManager_ is nullptr.");
-        return;
-    }
-    magnificationManager_->DisableMagnification();
-    magnificationManager_->ResetCurrentMode();
-}
-
 void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
 {
     HILOG_DEBUG();
@@ -3923,13 +3842,9 @@ void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
     screenMagnificationEnabled = config->GetDbHandle()->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
     config->SetMagnificationState(screenMagnificationEnabled);
     if (!screenMagnificationEnabled) {
-        OffZoomGesture();
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-        Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
-        if (Utils::IsSmallFold()) {
-            Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterFoldStatusListener();
+        if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+            Singleton<ExtendManagerServiceProxy>::GetInstance().OnScreenMagnificationStateChanged();
         }
-#endif
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
 }
@@ -4018,8 +3933,8 @@ void AccessibleAbilityManagerService::OnScreenMagnificationTypeChanged()
     screenMagnificationType =
         static_cast<uint32_t>(config->GetDbHandle()->GetIntValue(SCREEN_MAGNIFICATION_TYPE, 0));
     config->SetScreenMagnificationType(screenMagnificationType);
-    if (magnificationManager_ != nullptr) {
-        magnificationManager_->OnMagnificationTypeChanged(screenMagnificationType);
+    if (Singleton<ExtendManagerServiceProxy>::GetInstance().LoadExtProxy()) {
+        Singleton<ExtendManagerServiceProxy>::GetInstance().OnScreenMagnificationTypeChanged(screenMagnificationType);
     }
 }
 
@@ -4492,8 +4407,6 @@ void AccessibleAbilityManagerService::RecycleEventHandler()
     sendEventHandler_.reset();
     channelRunner_.reset();
     channelHandler_.reset();
-    inputManagerRunner_.reset();
-    gestureRunner_.reset();
     hoverEnterRunner_.reset();
     hoverEnterHandler_.reset();
     return;
@@ -4623,58 +4536,9 @@ void AccessibleAbilityManagerService::SetMagnificationScale(float scale)
     helper->PutFloatValue(SCREEN_MAGNIFICATION_SCALE, scale, false);
 }
 
-std::shared_ptr<MagnificationManager> AccessibleAbilityManagerService::GetMagnificationMgr()
-{
-    HILOG_DEBUG();
-    return magnificationManager_;
-}
-
-std::shared_ptr<WindowMagnificationManager> AccessibleAbilityManagerService::GetWindowMagnificationManager()
-{
-    HILOG_DEBUG();
-    if (magnificationManager_ == nullptr) {
-        HILOG_ERROR("magnificationManager_ is nullptr.");
-        return nullptr;
-    }
-    return magnificationManager_->GetWindowMagnificationManager();
-}
-
-std::shared_ptr<FullScreenMagnificationManager> AccessibleAbilityManagerService::GetFullScreenMagnificationManager()
-{
-    HILOG_DEBUG();
-    if (magnificationManager_ == nullptr) {
-        HILOG_ERROR("magnificationManager_ is nullptr.");
-        return nullptr;
-    }
-    return magnificationManager_->GetFullScreenMagnificationManager();
-}
-
-std::shared_ptr<MagnificationMenuManager> AccessibleAbilityManagerService::GetMenuManager()
-{
-    HILOG_DEBUG();
-    if (magnificationManager_ == nullptr) {
-        HILOG_ERROR("magnificationManager_ is nullptr.");
-        return nullptr;
-    }
-    return magnificationManager_->GetMenuManager();
-}
-
-void AccessibleAbilityManagerService::OnModeChanged(uint32_t mode)
-{
-    HILOG_DEBUG();
-    if (magnificationManager_ == nullptr) {
-        HILOG_ERROR("magnificationManager_ is nullptr.");
-        return;
-    }
-    return magnificationManager_->OnModeChanged(mode);
-}
-
 void AccessibleAbilityManagerService::OnFocusedEvent(const AccessibilityEventInfo &eventInfo)
 {
-    if (magnificationManager_ == nullptr) {
-        return;
-    }
-    if (!magnificationManager_->GetMagnificationState()) {
+    if (!GetMagnificationState()) {
         return;
     }
     if (eventInfo.GetEventType() != TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT) {
@@ -4686,7 +4550,11 @@ void AccessibleAbilityManagerService::OnFocusedEvent(const AccessibilityEventInf
     int32_t centerY = static_cast<int32_t>((rect.GetLeftTopYScreenPostion() +
         rect.GetRightBottomYScreenPostion()) / static_cast<float>(DIVISOR_TWO));
 
-    magnificationManager_->FollowFocuseElement(centerX, centerY);
+    if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+        if (Singleton<ExtendManagerServiceProxy>::GetInstance().LoadExtProxy()) {
+            Singleton<ExtendManagerServiceProxy>::GetInstance().FollowFocuseElement(centerX, centerY);
+        }
+    }
 }
 
 void AccessibleAbilityManagerService::InitResource(bool needReInit)

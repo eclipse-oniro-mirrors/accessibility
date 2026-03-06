@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -49,7 +49,6 @@ void AccessibleAbilityManagerService::OnStart()
     GTEST_LOG_(INFO) << "###AccessibleAbilityManagerService::OnStart";
     runner_ = AppExecFwk::EventRunner::Create("AccessibleAbilityManagerService", AppExecFwk::ThreadMode::FFRT);
     handler_ = std::make_shared<AAMSEventHandler>(runner_);
-    inputManagerRunner_ = AppExecFwk::EventRunner::Create("AamsInputManagerRunner", AppExecFwk::ThreadMode::FFRT);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
     channelRunner_ = AppExecFwk::EventRunner::Create("AamsChannelRunner", AppExecFwk::ThreadMode::FFRT);
@@ -62,7 +61,6 @@ void AccessibleAbilityManagerService::OnStop()
     runner_.reset();
     handler_.reset();
     channelRunner_.reset();
-    inputManagerRunner_.reset();
 }
 
 void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
@@ -564,12 +562,6 @@ void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
 {
 }
 
-void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter)
-{
-    HILOG_DEBUG();
-    keyEventFilter_ = keyEventFilter;
-}
-
 bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::string &name)
 {
     AccessibilityAbilityHelper::GetInstance().SetShortKeyTargetAbilityState(true);
@@ -648,12 +640,6 @@ ErrCode AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWind
 {
     focusedWindowId = 1;
     return RET_OK;
-}
-
-void AccessibleAbilityManagerService::SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector)
-{
-    HILOG_DEBUG();
-    touchEventInjector_ = touchEventInjector;
 }
 
 void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
@@ -762,26 +748,6 @@ bool AccessibleAbilityManagerService::GetMagnificationState()
     return true;
 }
 
-std::shared_ptr<MagnificationManager> AccessibleAbilityManagerService::GetMagnificationMgr()
-{
-    return nullptr;
-}
-
-std::shared_ptr<WindowMagnificationManager> AccessibleAbilityManagerService::GetWindowMagnificationManager()
-{
-    return nullptr;
-}
-
-std::shared_ptr<FullScreenMagnificationManager> AccessibleAbilityManagerService::GetFullScreenMagnificationManager()
-{
-    return nullptr;
-}
-
-std::shared_ptr<MagnificationMenuManager> AccessibleAbilityManagerService::GetMenuManager()
-{
-    return nullptr;
-}
-
 ErrCode AccessibleAbilityManagerService::AnnouncedForAccessibility(const std::string &announcedText)
 {
     (void)announcedText;
@@ -818,22 +784,6 @@ ErrCode AccessibleAbilityManagerService::SearchNeedEvents(std::vector<uint32_t> 
 RetError AccessibleAbilityManagerService::ConfigureEvents(std::vector<uint32_t> needEvents)
 {
     return RET_OK;
-}
-
-void AccessibleAbilityManagerService::OffZoomGesture()
-{
-    return;
-}
-
-void AccessibleAbilityManagerService::InitMagnification()
-{
-    return;
-}
-
-void AccessibleAbilityManagerService::OnModeChanged(uint32_t mode)
-{
-    (void)mode;
-    return;
 }
 
 ErrCode AccessibleAbilityManagerService::GetReadableRules(std::string &name)
@@ -874,6 +824,16 @@ ErrCode AccessibleAbilityManagerService::IsInnerWindowRootElement(int64_t elemen
     (void)elementId;
     (void)state;
     return NO_ERROR;
+}
+
+void AccessibleAbilityManagerService::SendAccessibilityEventToAA(EventType eventType, GestureType gestureId)
+{
+    (void)eventType;
+    (void)gestureId;
+}
+ 
+void AccessibleAbilityManagerService::SubscribeOsAccount()
+{
 }
 } // namespace Accessibility
 } // namespace OHOS

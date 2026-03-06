@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -461,25 +461,6 @@ void Utils::RecordEnableShortkeyAbilityEvent(const std::string &name, const bool
         "MSG_NAME", MSG_NAME, "MSG_VALUE", oss.str());
     if (ret != 0) {
         HILOG_ERROR("Write HiSysEvent RecordEnableShortkeyAbilityEvent error, ret:%{public}d", ret);
-    }
-#endif //OHOS_BUILD_ENABLE_HISYSEVENT
-}
-
-void Utils::RecordOnZoomGestureEvent(const std::string &state, const bool &isFullType)
-{
-    std::string MSG_NAME = "on zoom gesture state";
-    if (!isFullType) {
-        MSG_NAME = "on partial zoom gesture state";
-    }
-    HILOG_DEBUG("starting RecordOnZoomGestureEvent on zoom gesture state: %{public}s", state.c_str());
-#ifdef OHOS_BUILD_ENABLE_HISYSEVENT
-    int32_t ret = HiSysEventWrite(
-        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
-        "ZOOM_GESTURE_ACTION",
-        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
-        "MSG_NAME", MSG_NAME, "MSG_VALUE", state);
-    if (ret != 0) {
-        HILOG_ERROR("Write HiSysEvent RecordOnZoomGestureEvent error, ret:%{public}d", ret);
     }
 #endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }

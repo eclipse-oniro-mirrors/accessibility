@@ -1,0 +1,232 @@
+/*
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "accessibility_keyevent_filter.h"
+#include "hilog_wrapper.h"
+#include "accessibility_input_interceptor.h"
+#include "extend_service_manager.h"
+
+namespace OHOS {
+namespace Accessibility {
+namespace {
+    int64_t g_taskTime = 500;
+} // namespace
+
+static bool IsWantedKeyEvent(MMI::KeyEvent &event)
+{
+    HILOG_DEBUG();
+
+    int32_t keyCode = event.GetKeyCode();
+    if (keyCode == MMI::KeyEvent::KEYCODE_VOLUME_UP || keyCode == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
+        return true;
+    }
+    return false;
+}
+
+KeyEventFilter::KeyEventFilter()
+{
+    HILOG_DEBUG();
+
+    runner_ = AccessibilityInputInterceptor::GetInstance()->GetInputManagerRunner();
+    if (!runner_) {
+        HILOG_ERROR("get runner failed");
+        return;
+    }
+
+    timeoutHandler_ = std::make_shared<KeyEventFilterEventHandler>(runner_, *this);
+    if (!timeoutHandler_) {
+        HILOG_ERROR("create event handler failed");
+        return;
+    }
+}
+
+KeyEventFilter::~KeyEventFilter()
+{
+    HILOG_DEBUG();
+
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    eventMaps_.clear();
+}
+
+// LCOV_EXCL_START
+bool KeyEventFilter::OnKeyEvent(MMI::KeyEvent &event)
+{
+    HILOG_DEBUG();
+
+    bool whetherIntercept = IsWantedKeyEvent(event);
+    if (whetherIntercept) {
+        DispatchKeyEvent(event);
+        return true;
+    }
+    EventTransmission::OnKeyEvent(event);
+    return false;
+}
+
+void KeyEventFilter::SetServiceOnKeyEventResult(int32_t connectionId, bool isHandled, uint32_t sequenceNum)
+{
+    HILOG_DEBUG("isHandled[%{public}d], sequenceNum[%{public}u].", isHandled, sequenceNum);
+
+    std::shared_ptr<ProcessingEvent> processingEvent = FindProcessingEvent(connectionId, sequenceNum);
+    if (!processingEvent) {
+        HILOG_DEBUG("No event being processed.");
+        return;
+    }
+
+    if (!isHandled) {
+        if (!processingEvent->usedCount_) {
+            timeoutHandler_->RemoveEvent(processingEvent->seqNum_);
+            EventTransmission::OnKeyEvent(*processingEvent->event_);
+        }
+    } else {
+        timeoutHandler_->RemoveEvent(processingEvent->seqNum_);
+        RemoveProcessingEvent(processingEvent);
+    }
+}
+
+void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
+{
+    HILOG_DEBUG();
+
+    std::shared_ptr<ProcessingEvent> processingEvent = std::make_shared<ProcessingEvent>();
+    std::shared_ptr<MMI::KeyEvent> copyEvent =  std::make_shared<MMI::KeyEvent>(event);
+    sequenceNum_++;
+    processingEvent->event_ = copyEvent;
+    processingEvent->seqNum_ = sequenceNum_;
+    std::vector<int32_t> connectionIds = Singleton<ExtendServiceManager>::GetInstance().dispatchKeyEventCallback(
+        event, sequenceNum_);
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (int32_t connectionId : connectionIds) {
+        processingEvent->usedCount_++;
+        if (eventMaps_.find(connectionId) == eventMaps_.end()) {
+            std::vector<std::shared_ptr<ProcessingEvent>> processingEvens;
+            eventMaps_.insert(std::make_pair(connectionId, processingEvens));
+        }
+        eventMaps_.at(connectionId).emplace_back(processingEvent);
+    }
+
+    if (connectionIds.size() == 0) {
+        HILOG_DEBUG("No service handles the event.");
+        sequenceNum_--;
+        EventTransmission::OnKeyEvent(event);
+        return;
+    }
+    timeoutHandler_->SendEvent(sequenceNum_, processingEvent, g_taskTime);
+}
+
+bool KeyEventFilter::RemoveProcessingEvent(std::shared_ptr<ProcessingEvent> event)
+{
+    HILOG_DEBUG();
+
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    bool haveEvent = false;
+    for (auto iter = eventMaps_.begin(); iter != eventMaps_.end(); iter++) {
+        for (auto val = iter->second.begin(); val != iter->second.end(); val++) {
+            if (*val != event) {
+                continue;
+            }
+            (*val)->usedCount_--;
+            iter->second.erase(val);
+            haveEvent = true;
+            break;
+        }
+    }
+
+    return haveEvent;
+}
+
+std::shared_ptr<KeyEventFilter::ProcessingEvent> KeyEventFilter::FindProcessingEvent(
+    int32_t connectionId, uint32_t sequenceNum)
+{
+    HILOG_DEBUG();
+
+    std::shared_ptr<ProcessingEvent> processingEvent = nullptr;
+
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto iter = eventMaps_.begin(); iter != eventMaps_.end(); iter++) {
+        if (iter->first != connectionId) {
+            continue;
+        }
+
+        for (auto val = iter->second.begin(); val != iter->second.end(); val++) {
+            if ((*val) == nullptr) {
+                HILOG_ERROR("connection is null");
+                continue;
+            }
+            if ((*val)->seqNum_ != sequenceNum) {
+                continue;
+            }
+            processingEvent = *val;
+            iter->second.erase(val);
+            processingEvent->usedCount_--;
+            break;
+        }
+        break;
+    }
+
+    return processingEvent;
+}
+// LCOV_EXCL_STOP
+
+void KeyEventFilter::DestroyEvents()
+{
+    HILOG_DEBUG();
+
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    timeoutHandler_->RemoveAllEvents();
+    eventMaps_.clear();
+    EventTransmission::DestroyEvents();
+}
+
+void KeyEventFilter::SendEventToNext(MMI::KeyEvent &event)
+{
+    HILOG_DEBUG();
+    EventTransmission::OnKeyEvent(event);
+}
+
+KeyEventFilterEventHandler::KeyEventFilterEventHandler(
+    const std::shared_ptr<AppExecFwk::EventRunner> &runner, KeyEventFilter &keyEventFilter)
+    : AppExecFwk::EventHandler(runner), keyEventFilter_(keyEventFilter)
+{
+    HILOG_DEBUG();
+}
+
+// LCOV_EXCL_START
+void KeyEventFilterEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
+{
+    HILOG_DEBUG();
+
+    if (!event) {
+        HILOG_ERROR("event is null.");
+        return;
+    }
+
+    auto processingEvent = event->GetSharedObject<KeyEventFilter::ProcessingEvent>();
+    if (processingEvent == nullptr) {
+        HILOG_ERROR("processingEvent is nullptr");
+        return;
+    }
+    if (processingEvent->seqNum_ != event->GetInnerEventId()) {
+        HILOG_ERROR("event is wrong.");
+        return;
+    }
+
+    bool haveEvent = keyEventFilter_.RemoveProcessingEvent(processingEvent);
+    if (haveEvent) {
+        keyEventFilter_.SendEventToNext(*processingEvent->event_);
+    }
+}
+// LCOV_EXCL_STOP
+} // namespace Accessibility
+} // namespace OHOS

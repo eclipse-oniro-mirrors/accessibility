@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,7 +44,7 @@ static void WaitUntilTaskFinished()
     const uint32_t sleepTime = TEST_NUM_THOUSAND;
     uint32_t count = 0;
     auto handler = std::make_shared<AppExecFwk::EventHandler>(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetInputManagerRunner());
+        AccessibilityInputInterceptor::GetInstance()->GetInputManagerRunner());
     std::atomic<bool> taskCalled(false);
     auto func = [&taskCalled]() { taskCalled.store(true); };
     if (handler->PostTask(func)) {

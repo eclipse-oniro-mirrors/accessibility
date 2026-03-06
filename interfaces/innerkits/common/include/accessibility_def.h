@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -647,6 +647,13 @@ const std::vector<std::string> ACTION_NAMES = {
     "notificationCenter",      //AccessibilityAction.NOTIFICATION_CENTER=18
     "controlCenter",           //AccessibilityAction.CONTROL_CENTER=19
     "spanClick"                //AccessibilityAction.SPAN_CLICK=20
+};
+
+enum class AnnounceType : uint32_t {
+    ANNOUNCE_MAGNIFICATION_SCALE,
+    ANNOUNCE_MAGNIFICATION_DISABLE,
+    ANNOUNCE_SWITCH_FULL_SCREEN,
+    ANNOUNCE_SWITCH_WINDOW
 };
 
 #define RETURN_FALSE_IF_NULL(sptr)                     \

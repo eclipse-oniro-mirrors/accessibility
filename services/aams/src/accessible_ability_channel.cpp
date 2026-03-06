@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +20,6 @@
 #include "accessible_ability_connection.h"
 #include "hilog_wrapper.h"
 #include <cinttypes>
-#include "transaction/rs_interfaces.h"
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "accessibility_power_manager.h"
 #endif
@@ -576,14 +575,8 @@ RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInf
 {
     HILOG_DEBUG();
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    uint64_t displayId = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplayId();
-    HILOG_DEBUG("default display id is %{public}" PRIu64 "", displayId);
+    uint64_t displayId = Singleton<ExtendManagerServiceProxy>::GetInstance().GetDefaultDisplayId();
     return GetWindows(displayId, windows, systemApi);
-#else
-    HILOG_DEBUG("not support display manager");
-    return GetWindows(0, windows, systemApi);
-#endif
 }
 
 RetError AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
@@ -658,18 +651,13 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
     int32_t accountId = accountId_;
     std::string clientName = clientName_;
     eventHandler_->PostTask([accountId, clientName, handled, sequence]() {
-        sptr<KeyEventFilter> keyEventFilter =
-            Singleton<AccessibleAbilityManagerService>::GetInstance().GetKeyEventFilter();
-        if (!keyEventFilter) {
-            return;
-        }
-
         sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId, clientName);
         if (!clientConnection) {
             HILOG_ERROR("There is no client connection");
             return;
         }
-        keyEventFilter->SetServiceOnKeyEventResult(*clientConnection, handled, sequence);
+        Singleton<ExtendManagerServiceProxy>::GetInstance().SetServiceOnKeyEventResult(
+            clientConnection->GetChannelId(), handled, sequence);
         }, "SetOnKeyPressEventResult");
 }
 
@@ -746,14 +734,13 @@ RetError AccessibleAbilityChannel::SendSimulateGesture(
             return;
         }
 
-        sptr<TouchEventInjector> touchEventInjector =
-            Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchEventInjector();
-        if (!touchEventInjector) {
-            HILOG_ERROR("touchEventInjector is null");
-            syncPromise->set_value(RET_ERR_NO_INJECTOR);
-            return;
+        if (Singleton<ExtendManagerServiceProxy>::GetInstance().LoadExtProxy()) {
+            RetError ret = Singleton<ExtendManagerServiceProxy>::GetInstance().InjectEvents(gesturePath);
+            if (ret != RET_OK) {
+                syncPromise->set_value(RET_ERR_NO_INJECTOR);
+                return;
+            }
         }
-        touchEventInjector->InjectEvents(gesturePath);
         syncPromise->set_value(RET_OK);
         }, "SendSimulateGesture");
 

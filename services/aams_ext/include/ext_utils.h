@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,6 +26,11 @@ class ExtUtils {
 public:
     static bool IsInRect(int32_t posX, int32_t posY, Rosen::Rect rect);
     static void RecordMagnificationUnavailableEvent(const std::string &name);
+    static void RecordOnZoomGestureEvent(const std::string &state, const bool &isFullType);
+    static int64_t GetSystemTime();
+    static bool IsWideFold();
+    static bool IsBigFold();
+    static bool IsSmallFold();
 };
 } // namespace Accessibility
 } // namespace OHOS

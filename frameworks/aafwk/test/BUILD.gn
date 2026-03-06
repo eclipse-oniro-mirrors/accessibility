@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+# Copyright (C) 2022-2026 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -116,9 +116,9 @@ ohos_unittest("accessible_ability_test") {
     "../../../common/interface/src/parcel/accessibility_element_info_parcel.cpp",
     "../../../common/interface/src/parcel/accessibility_event_info_parcel.cpp",
     "../../../services/aams/src/accessibility_datashare_helper.cpp",
-    "../../../services/aams/src/accessibility_display_manager.cpp",
     "../../../services/aams/src/accessibility_dumper.cpp",
     "../../../services/aams/src/accessibility_notification_helper.cpp",
+    "../../../services/aams/src/accessible_extend_manager_service_proxy.cpp",
     "../../../services/aams/src/accessibility_power_manager.cpp",
     "../../../services/aams/src/accessibility_resource_bundle_manager.cpp",
     "../../../services/aams/src/accessibility_security_component_manager.cpp",
@@ -127,10 +127,8 @@ ohos_unittest("accessible_ability_test") {
     "../../../services/aams/src/accessibility_settings_config.cpp",
     "../../../services/aams/src/accessible_ability_manager_service.cpp",
     "../../../services/aams/src/accessible_ability_manager_service_event_handler.cpp",
-    "../../../services/aams/src/magnification_window_proxy.cpp",
     "../../../services/aams/src/msdp_manager.cpp",
     "../../../services/aams/src/utils.cpp",
-    "../../../services/aams/src/window_magnification_gesture.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_account_data.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_common_event.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_event_transmission.cpp",

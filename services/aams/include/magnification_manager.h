@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,7 +19,6 @@
 #include "window_magnification_manager.h"
 #include "full_screen_magnification_manager.h"
 #include "magnification_menu_manager.h"
-#include "magnification_window_proxy.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -47,7 +46,6 @@ private:
     std::shared_ptr<FullScreenMagnificationManager> fullScreenMagnificationManager_ = nullptr;
     std::shared_ptr<MagnificationMenuManager> menuManager_ = nullptr;
     uint32_t currentMode_ = 0;
-    std::shared_ptr<MagnificationWindowProxy> windowProxy_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
