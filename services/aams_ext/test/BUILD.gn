@@ -90,7 +90,7 @@ test_external_deps = [
   "samgr:samgr_proxy",
   "selinux_adapter:librestorecon",
   "window_manager:libdm",
-  "window_manager:libwm_lite",
+  "window_manager:libwm",
   "time_service:time_client",
   "distributed_notification_service:ans_innerkits",
 ]
