@@ -51,6 +51,7 @@ public:
         params.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_SPOKEN;
         params.isImportant = true;
         params.needHide = false;
+        params.eventConfigure.push_back("noneEvents");
         abilityInfo_ = std::make_shared<AccessibilityAbilityInfo>(params);
         GTEST_LOG_(INFO) << "AccessibilityAbilityInfoUnitTest SetUp() End";
     };
@@ -314,6 +315,26 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetStaticCapabilityValues_001, TestSi
         EXPECT_EQ(abilityInfo_->GetStaticCapabilityValues(), 1);
     }
     GTEST_LOG_(INFO) << "GetStaticCapabilityValues_001 end";
+}
+
+/**
+ * @tc.number: GetEventConfigure_001
+ * @tc.name: GetEventConfigure
+ * @tc.desc: Test function GetEventConfigure
+ */
+HWTEST_F(AccessibilityAbilityInfoUnitTest, GetEventConfigure_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetEventConfigure_001 start";
+    if (!abilityInfo_) {
+        GTEST_LOG_(INFO) << "abilityInfo_ is null";
+    } else {
+        std::map<std::string, std::vector<uint32_t>> abilityNeedEvents;
+        std::string bundleName = "com.huawei.hmos.screenreader";
+        abilityNeedEvents[bundleName].push_back(EventType::TYPE_WINDOW_UPDATE);
+        abilityInfo_->GetEventConfigure(abilityNeedEvents[bundleName]);
+        EXPECT_TRUE(abilityNeedEvents[bundleName].size() > 1);
+    }
+    GTEST_LOG_(INFO) << "GetEventConfigure_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

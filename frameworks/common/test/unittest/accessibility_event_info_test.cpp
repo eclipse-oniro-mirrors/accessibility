@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+#define private public
+#define protected public
 #include <gtest/gtest.h>
 #include <memory>
 #include "accessibility_event_info.h"
@@ -605,6 +607,23 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetExtraEvent_001, TestSize.Level1)
     eventInfo_->SetExtraEvent(extraEventInfo);
     EXPECT_TRUE(eventInfo_->GetExtraEvent().GetExtraEventInfoValueStr().size() == 1);
     GTEST_LOG_(INFO) << "SetExtraEvent_001 end";
+}
+
+/**
+ * @tc.number: SetElementMainWindowId_001
+ * @tc.name: SetElementMainWindowId
+ * @tc.desc: Test function SetElementMainWindowId, GetExtraEvent
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, SetElementMainWindowId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetElementMainWindowId_001 start";
+    if (!eventInfo_) {
+        GTEST_LOG_(INFO) << "eventInfo_ is null";
+    } else {
+        eventInfo_->SetElementMainWindowId(WINDOW_ID);
+        EXPECT_EQ(eventInfo_->elementInfo_.GetMainWindowId(), WINDOW_ID);
+    }
+    GTEST_LOG_(INFO) << "SetElementMainWindowId_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
