@@ -329,7 +329,7 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetEventConfigure_001, TestSize.Level
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
     } else {
         std::map<std::string, std::vector<uint32_t>> abilityNeedEvents;
-        std::string bundleName = "com.huawei.hmos.screenreader";
+        std::string bundleName = "com.ohos.screenreader";
         abilityNeedEvents[bundleName].push_back(EventType::TYPE_WINDOW_UPDATE);
         abilityInfo_->GetEventConfigure(abilityNeedEvents[bundleName]);
         EXPECT_TRUE(abilityNeedEvents[bundleName].size() > 1);
