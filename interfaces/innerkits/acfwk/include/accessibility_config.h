@@ -186,15 +186,6 @@ public:
         const bool connectCallBackFlag = false);
 
     /**
-     * @brief Enabled specified abilities
-     * @param name The string formatted by 'bundleName/abilityName'.
-     * @param capabilities The capabilities you permit.
-     * @param observer Indicates the observer for listening to enable Ability lists
-     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
-     */
-    Accessibility::RetError EnableAbilityWithCallback(const std::string &name, const uint32_t capabilities,
-        const std::function<void()> &callback);
-    /**
      * @brief Disabled specified ability
      * @param name The string formatted by 'bundleName/abilityName'.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
