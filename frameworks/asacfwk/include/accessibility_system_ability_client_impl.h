@@ -396,7 +396,6 @@ private:
      */
     bool CheckEventType(EventType eventType);
     static void OnParameterChanged(const char *key, const char *value, void *context);
-    void ReregisterElementOperator();
 
     bool SubscribeAccessibilityCommonEvent(const std::string &event);
     void OnReceiveAccessibilityCommonEvent(const EventFwk::CommonEventData &data);
@@ -406,7 +405,6 @@ private:
     StateArrayHandler stateHandler_;
     StateObserversArray stateObserversArray_;
 
-    std::map<int32_t, sptr<AccessibilityElementOperatorImpl>> elementOperators_;
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerStateObserverImpl> stateObserver_ = nullptr;
