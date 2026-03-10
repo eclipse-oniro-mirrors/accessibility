@@ -292,6 +292,7 @@ public:
     ErrCode SetClickResponseTime(const uint32_t time) override;
     ErrCode SetIgnoreRepeatClickState(const bool state) override;
     ErrCode SetIgnoreRepeatClickTime(const uint32_t time) override;
+    ErrCode GetSeniorModeState(bool &state) override;
 
     ErrCode GetScreenMagnificationState(bool &state) override;
     ErrCode GetShortKeyState(bool &state) override;
@@ -463,6 +464,8 @@ private:
     void RegisterScreenMagnificationType();
     void OnFlashReminderSwitchChanged();
     void RegisterFlashReminderSwitch();
+    void OnSeniorModeStateChanged();
+    void RegisterSeniorModeState();
 
     void OnVoiceRecognitionChanged();
     void RegisterVoiceRecognitionState();

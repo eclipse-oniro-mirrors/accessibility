@@ -135,7 +135,8 @@ namespace accessibility {
     export type TextMoveUnit = 'char' | 'word' | 'line' | 'page' | 'paragraph';
 
     export type observerType = 'accessibilityStateChange' | 'touchGuideStateChange' | 'screenReaderStateChange' |
-        'touchModeChange' | 'audioMonoStateChange' | 'animationReduceStateChange' | 'flashReminderStateChange';
+        'touchModeChange' | 'audioMonoStateChange' | 'animationReduceStateChange' | 'flashReminderStateChange'|
+        'seniorModeStateChange';
 
     export type AbilityType = 'audible' | 'generic' | 'haptic' | 'spoken' | 'visual' | 'all';
 
@@ -333,6 +334,35 @@ namespace accessibility {
         } else {
             let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
             offStateChange('flashReminderStateChange', callbackFunc);
+        }
+    }
+
+    export native function isSeniorModeOpenSync(): boolean;
+
+    export function isSeniorModeEnabled(): Promise<boolean> {
+        return new Promise<boolean>((resolve: (v: boolean) => void, reject: (error: BusinessError) => void): void => {
+            taskpool.execute((): boolean => {
+                return isSeniorModeOpenSync();
+            })
+            .then((ret: Any): void => {
+                resolve(ret as boolean);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
+    export function onSeniorModeStateChange(callback: Callback<boolean>): void {
+        onStateChange('seniorModeStateChange', callback);
+    }
+
+    export function offSeniorModeStateChange(callback?: Callback<boolean>): void {
+        if (callback === undefined) {
+            offAll('seniorModeStateChange');
+        } else {
+            let callbackFunc: Callback<boolean> = callback as Callback<boolean>;
+            offStateChange('seniorModeStateChange', callbackFunc);
         }
     }
 

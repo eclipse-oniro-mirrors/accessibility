@@ -529,6 +529,12 @@ ErrCode AccessibleAbilityManagerService::GetFlashReminderSwitch(bool &state)
     return RET_OK;
 }
 
+ErrCode AccessibleAbilityManagerService::GetSeniorModeState(bool &state)
+{
+    state = false;
+    return RET_OK;
+}
+
 ErrCode AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData& configData,
     CaptionPropertyParcel& caption)
 {

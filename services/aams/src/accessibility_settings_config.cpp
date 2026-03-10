@@ -91,6 +91,7 @@ namespace {
     const char* CLONE_CAPABILITY = "const.accessibility.cloneCapability";
     const char* OLD_DEVICE_CAPABILITY = "accessibility_clone_capability";
     const char* TRANSITION_ANIMATIONS_TIMESTAMP = "accessibility_transition_animations_timestamp";
+    const char* ELDER_CARE_ENABLED_KEY = "accessibility_elder_care_switch_enabled";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -228,6 +229,13 @@ RetError AccessibilitySettingsConfig::SetFlashReminderSwitch(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     flashReminderSwitch_ = state;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetSeniorModeState(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    seniorModeState_ = state;
     return RET_OK;
 }
 
@@ -866,6 +874,11 @@ bool AccessibilitySettingsConfig::GetFlashReminderSwitch() const
     return flashReminderSwitch_;
 }
 
+bool AccessibilitySettingsConfig::GetSeniorModeState() const
+{
+    return seniorModeState_;
+}
+
 uint32_t AccessibilitySettingsConfig::GetScreenMagnificationMode() const
 {
     return screenMagnificationMode_;
@@ -1228,6 +1241,8 @@ void AccessibilitySettingsConfig::InitSetting()
     datashare_->GetBoolValue(VOICE_RECOGNITION_KEY, false);
     datashare_->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
     HandleIgnoreRepeatClickState();
+    flashReminderSwitch_ = datashare_->GetBoolValue(FLASH_REMINDER_SWITCH_KEY, false);
+    seniorModeState_ = datashare_->GetBoolValue(ELDER_CARE_ENABLED_KEY, false);
 }
 
 void AccessibilitySettingsConfig::InitCapability()

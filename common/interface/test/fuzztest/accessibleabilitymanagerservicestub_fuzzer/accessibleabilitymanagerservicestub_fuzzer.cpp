@@ -274,6 +274,10 @@ public:
     {
         return RET_OK;
     }
+    ErrCode GetSeniorModeState(bool &state) override
+    {
+        return RET_OK;
+    }
     ErrCode GetDaltonizationState(bool &state) override
     {
         return RET_OK;

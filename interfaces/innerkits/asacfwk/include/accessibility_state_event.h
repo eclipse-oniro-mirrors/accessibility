@@ -35,6 +35,7 @@ enum AccessibilityStateEventType : uint32_t {
     EVENT_AUDIO_MONO,
     EVENT_ANIMATION_OFF,
     EVENT_FLASH_REMINDER_SWITCH,
+    EVENT_ELDER_CARE_ENABLED,
     EVENT_TYPE_MAX,
 };
 

@@ -161,6 +161,9 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     if (config_->GetFlashReminderSwitch()) {
         state |= STATE_FLASH_REMINDER_ENABLED;
     }
+    if (config_->GetSeniorModeState()) {
+        state |= STATE_ELDER_CARE_ENABLED;
+    }
     return state;
 }
 

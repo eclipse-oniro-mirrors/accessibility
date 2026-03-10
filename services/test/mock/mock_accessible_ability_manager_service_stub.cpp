@@ -402,6 +402,12 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetFlashReminderSwitch(bool &st
     return RET_OK;
 }
 
+ErrCode MockAccessibleAbilityManagerServiceStub::GetSeniorModeState(bool &state)
+{
+    state = false;
+    return RET_OK;
+}
+
 ErrCode MockAccessibleAbilityManagerServiceStub::GetDaltonizationState(bool &state)
 {
     state = daltonizationState_;

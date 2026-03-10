@@ -81,6 +81,7 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
     ANIAccessibilityClient::audioMonoStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::animationOffStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::flashReminderSwitchStateListeners_->SubscribeToFramework();
+    ANIAccessibilityClient::seniorModeStateListeners_->SubscribeToFramework();
 
     *result = ANI_VERSION_1;
     return ANI_OK;
@@ -186,6 +187,9 @@ ANI_EXPORT ani_status ANI_Destructor(ani_vm *vm)
     }
     if (ANIAccessibilityClient::flashReminderSwitchStateListeners_) {
         ANIAccessibilityClient::flashReminderSwitchStateListeners_->UnsubscribeFromFramework();
+    }
+    if (ANIAccessibilityClient::seniorModeStateListeners_) {
+        ANIAccessibilityClient::seniorModeStateListeners_->UnsubscribeFromFramework();
     }
 
     return ANI_OK;

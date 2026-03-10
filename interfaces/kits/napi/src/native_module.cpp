@@ -52,6 +52,9 @@ static void Cleanup(void *data)
     if (NAccessibilityClient::flashReminderSwitchStateListeners_) {
         NAccessibilityClient::flashReminderSwitchStateListeners_->UnsubscribeFromFramework();
     }
+    if (NAccessibilityClient::seniorModeStateListeners_) {
+        NAccessibilityClient::seniorModeStateListeners_->UnsubscribeFromFramework();
+    }
 }
 
 static napi_value CreateIntObject(napi_env env, int32_t value)
@@ -284,6 +287,9 @@ static napi_value Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("offFlashReminderStateChange", NAccessibilityClient::UnsubscribeStateFlashReminder),
         DECLARE_NAPI_FUNCTION("isFlashReminderEnabled", NAccessibilityClient::GetFlashReminderSwitch),
         DECLARE_NAPI_FUNCTION("isFlashReminderEnabledSync", NAccessibilityClient::GetFlashReminderSwitchSync),
+        DECLARE_NAPI_FUNCTION("onSeniorModeStateChange", NAccessibilityClient::SubscribeStateSeniorMode),
+        DECLARE_NAPI_FUNCTION("offSeniorModeStateChange", NAccessibilityClient::UnsubscribeStateSeniorMode),
+        DECLARE_NAPI_FUNCTION("isSeniorModeEnabled", NAccessibilityClient::GetSeniorModeState),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
@@ -304,6 +310,7 @@ static napi_value Init(napi_env env, napi_value exports)
     NAccessibilityClient::audioMonoStateListeners_->SubscribeToFramework();
     NAccessibilityClient::animationOffStateListeners_->SubscribeToFramework();
     NAccessibilityClient::flashReminderSwitchStateListeners_->SubscribeToFramework();
+    NAccessibilityClient::seniorModeStateListeners_->SubscribeToFramework();
     napi_status status = napi_add_env_cleanup_hook(env, Cleanup, &NAccessibilityClient::accessibilityStateListeners_);
     if (status != napi_ok) {
         HILOG_WARN("add cleanup hook failed %{public}d", status);
