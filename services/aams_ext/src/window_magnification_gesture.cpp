@@ -1080,7 +1080,7 @@ void WindowMagnificationGesture::OnDrag()
     }
     windowMagnificationManager_->EnableWindowMagnification(anchorX, anchorY);
     Singleton<ExtendServiceManager>::GetInstance().announcedForMagnificationCallback(
-        AnnounceType::ANNOUNCE_MAGNIFICATION_DISABLE);
+        AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
     Clear();
 }
 } // namespace Accessibility
