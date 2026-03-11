@@ -236,7 +236,7 @@ void ConvertEventTypes(const uint32_t value, std::string &eventTypes)
             "requestFocusForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
         {EventType::TYPE_PAGE_ACTIVE, "pageActive"},
-        {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"}};
+        {EventType::TYPE_FOCUS_INVISIBLE, "focusInvisible"}};
 
     for (auto itr = accessibilityEventTable.begin(); itr != accessibilityEventTable.end(); ++itr) {
         if (value & itr->first) {

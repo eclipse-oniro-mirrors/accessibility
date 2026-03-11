@@ -107,6 +107,23 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetEventType_001, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetEventType_002
+ * @tc.name: SetEventType
+ * @tc.desc: Test function SetEventType with TYPE_FOCUS_INVISIBLE
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, SetEventType_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetEventType_002 start";
+    if (!eventInfo_) {
+        GTEST_LOG_(INFO) << "eventInfo_ is null";
+    } else {
+        eventInfo_->SetEventType(EventType::TYPE_FOCUS_INVISIBLE);
+        EXPECT_EQ(eventInfo_->GetEventType(), EventType::TYPE_FOCUS_INVISIBLE);
+    }
+    GTEST_LOG_(INFO) << "SetEventType_002 end";
+}
+
+/**
  * @tc.number: SetWindowContentChangeTypes_001
  * @tc.name: SetWindowContentChangeTypes
  * @tc.desc: Test function SetWindowContentChangeTypes

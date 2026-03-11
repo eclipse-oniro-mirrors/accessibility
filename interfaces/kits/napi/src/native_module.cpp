@@ -165,6 +165,12 @@ static void CreateAccessibilityEventTypePartThree(napi_env env, napi_value objVa
         CreateIntObject(env, AccessibilityEventType::TYPE_NOTIFICATION_UPDATE_EVENT));
 }
 
+static void CreateAccessibilityEventTypePartFour(napi_env env, napi_value objValue)
+{
+    napi_set_named_property(env, objValue, "TYPE_FOCUS_INVISIBLE",
+        CreateIntObject(env, AccessibilityEventType::TYPE_FOCUS_INVISIBLE));
+}
+
 static napi_value CreateAccessibilityEventType(napi_env env)
 {
     napi_value objValue = nullptr;
@@ -213,6 +219,7 @@ static napi_value CreateAccessibilityEventType(napi_env env)
         CreateIntObject(env, AccessibilityEventType::TYPE_WINDOW_PROPERTY));
     CreateAccessibilityEventTypePartTwo(env, objValue);
     CreateAccessibilityEventTypePartThree(env, objValue);
+    CreateAccessibilityEventTypePartFour(env, objValue);
     return objValue;
 }
 

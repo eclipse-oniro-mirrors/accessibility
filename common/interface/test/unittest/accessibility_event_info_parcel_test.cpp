@@ -108,5 +108,26 @@ HWTEST_F(AccessibilityEventInfoParcelTest, Element_Info_Unmarshalling_001, TestS
     }
     GTEST_LOG_(INFO) << "Element_Info_Unmarshalling_001 end";
 }
+
+/**
+ * @tc.number: Event_Info_Focus_Invisible_Type_RoundTrip_001
+ * @tc.name: Event_Info_Focus_Invisible_Type_RoundTrip
+ * @tc.desc: Test TYPE_FOCUS_INVISIBLE is preserved after parcel marshalling/unmarshalling.
+ */
+HWTEST_F(AccessibilityEventInfoParcelTest, Event_Info_Focus_Invisible_Type_RoundTrip_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Event_Info_Focus_Invisible_Type_RoundTrip_001 start";
+    AccessibilityEventInfo eventInfo;
+    eventInfo.SetEventType(EventType::TYPE_FOCUS_INVISIBLE);
+
+    AccessibilityEventInfoParcel writeParcel(eventInfo);
+    Parcel parcel;
+    ASSERT_TRUE(writeParcel.Marshalling(parcel));
+
+    sptr<AccessibilityEventInfoParcel> readParcel = writeParcel.Unmarshalling(parcel);
+    ASSERT_NE(readParcel, nullptr);
+    EXPECT_EQ(readParcel->GetEventType(), EventType::TYPE_FOCUS_INVISIBLE);
+    GTEST_LOG_(INFO) << "Event_Info_Focus_Invisible_Type_RoundTrip_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
