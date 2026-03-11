@@ -116,7 +116,9 @@ static bool BindMethod(ani_env *env, ani_namespace ns, ani_module mod)
         ani_native_function {"isAnimationReduceEnabledSync", nullptr,
             reinterpret_cast<void *>(ANIAccessibilityClient::GetAnimationOffStateSync)},
         ani_native_function {"isFlashReminderEnabledSync", nullptr,
-            reinterpret_cast<void *>(ANIAccessibilityClient::GetFlashReminderSwitchSync)}
+            reinterpret_cast<void *>(ANIAccessibilityClient::GetFlashReminderSwitchSync)},
+        ani_native_function {"isSeniorModeOpenSync", nullptr,
+            reinterpret_cast<void *>(ANIAccessibilityClient::GetSeniorModeStateSync)}
    };
 
     if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
