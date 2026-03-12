@@ -105,13 +105,13 @@ sptr<AppExecFwk::IAppMgr> AccessibleAbilityConnection::GetAppMgrProxy()
     return abilityMgr;
 }
 
-void AccessibleAbilityConnection::HandleNoEventHandler(const AppExecFwk::ElementName &element)	
-{	
-    HILOG_ERROR("eventHandler_ is nullptr.");	
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);	
-    if (accountData != nullptr) {	
-        accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));	
-    }	
+void AccessibleAbilityConnection::HandleNoEventHandler(const AppExecFwk::ElementName &element)
+{
+    HILOG_ERROR("eventHandler_ is nullptr.");
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
+    if (accountData != nullptr) {
+        accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
+    }
 }
 
 bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(

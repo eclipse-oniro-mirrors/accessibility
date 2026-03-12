@@ -270,6 +270,10 @@ bool AccessibilityWindowManager::CheckIntegerOverflow(const Rosen::Rect& rect)
 void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWindowInfo &accWindowInfo,
     const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
 {
+    if (!windowInfo) {
+        HILOG_ERROR("windowInfo is null");
+        return;
+    }
     accWindowInfo.SetScaleVal(windowInfo->scaleVal_);
     accWindowInfo.SetScaleX(windowInfo->scaleX_);
     accWindowInfo.SetScaleY(windowInfo->scaleY_);

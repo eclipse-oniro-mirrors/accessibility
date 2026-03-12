@@ -555,7 +555,6 @@ void MagnificationWindow::FixSourceCenter(bool needFix)
 
     isFixSourceCenter_ = needFix;
     if (needFix) {
-        isFixSourceCenter_ = needFix;
         float sourceCenterX = (sourceRect_.posX_ + sourceRect_.posX_ +
             static_cast<int32_t>(sourceRect_.width_)) / static_cast<float>(DIVISOR_TWO);
         float sourceCenterY = (sourceRect_.posY_ + sourceRect_.posY_ +
