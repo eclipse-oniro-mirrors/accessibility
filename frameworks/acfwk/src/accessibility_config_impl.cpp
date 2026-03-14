@@ -1192,7 +1192,7 @@ void AccessibilityConfig::Impl::NotifyClickResponseTimeChanged(
         if (observer) {
             ConfigValue configValue;
             configValue.clickResponseTime = static_cast<CLICK_RESPONSE_TIME>(clickResponseTime);
-            observer->OnConfigChanged(CONIFG_CLICK_RESPONSE_TIME, configValue);
+            observer->OnConfigChanged(CONFIG_CLICK_RESPONSE_TIME, configValue);
         } else {
             HILOG_ERROR("end configObservers_ is null");
         }
@@ -1888,7 +1888,7 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerClickResponseTimeChang
         }
         clickResponseTime_ = clickResponseTime;
         std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
-            configObservers_.find(CONIFG_CLICK_RESPONSE_TIME);
+            configObservers_.find(CONFIG_CLICK_RESPONSE_TIME);
         if (it == configObservers_.end()) {
             return;
         }

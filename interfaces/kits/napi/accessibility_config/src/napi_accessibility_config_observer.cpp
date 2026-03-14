@@ -57,7 +57,7 @@ void NAccessibilityConfigObserver::OnConfigChangedExtra(const ConfigValue &value
         NotifyStateChanged2JS(value.animationOff);
     } else if (configId_ == CONFIG_AUDIO_MONO) {
         NotifyStateChanged2JS(value.audioMono);
-    } else if (configId_ == CONIFG_CLICK_RESPONSE_TIME) {
+    } else if (configId_ == CONFIG_CLICK_RESPONSE_TIME) {
         NotifyStringChanged2JS(ConvertClickResponseTimeTypeToString(value.clickResponseTime));
     } else if (configId_ == CONFIG_IGNORE_REPEAT_CLICK_TIME) {
         NotifyStringChanged2JS(ConvertIgnoreRepeatClickTimeTypeToString(value.ignoreRepeatClickTime));

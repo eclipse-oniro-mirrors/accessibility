@@ -301,7 +301,7 @@ void ANIAccessibilityConfigObserver::OnConfigChangedExtra(const ConfigValue &val
         NotifyStateChangedToJs(value.animationOff);
     } else if (configId_ == CONFIG_ID::CONFIG_AUDIO_MONO) {
         NotifyStateChangedToJs(value.audioMono);
-    } else if (configId_ == CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME) {
+    } else if (configId_ == CONFIG_ID::CONFIG_CLICK_RESPONSE_TIME) {
         NotifyStringChangedToJs(ConvertClickResponseTimeTypeToString(value.clickResponseTime));
     } else if (configId_ == CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_TIME) {
         NotifyStringChangedToJs(ConvertIgnoreRepeatClickTimeTypeToString(value.ignoreRepeatClickTime));
