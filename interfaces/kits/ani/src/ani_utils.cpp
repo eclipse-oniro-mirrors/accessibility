@@ -48,7 +48,7 @@ std::string ANIUtils::ANIStringToStdString(ani_env *env, ani_string ani_str)
 
 ani_string ANIUtils::StdStringToAniString(ani_env *env, std::string str)
 {
-    ani_string result_string{};
+    ani_string result_string = nullptr;
     env->String_NewUTF8(str.c_str(), str.size(), &result_string);
     return result_string;
 }
@@ -62,7 +62,21 @@ bool ANIUtils::GetStringField(ani_env *env, std::string fieldName, ani_object ob
             HILOG_ERROR("get field %{public}s failed", fieldName.c_str());
             return false;
         }
-        fieldValue = ANIStringToStdString(env, static_cast<ani_string>(ref));
+        ani_string aniStr = static_cast<ani_string>(ref);
+        ani_size strSize;
+        if (env->String_GetUTF8Size(aniStr, &strSize) != ANI_OK) {
+            HILOG_ERROR("get field %{public}s size failed", fieldName.c_str());
+            return false;
+        }
+        std::vector<char> buffer(strSize + 1);
+        char* utf8_buffer = buffer.data();
+        ani_size bytes_written = 0;
+        if (env->String_GetUTF8(aniStr, utf8_buffer, strSize + 1, &bytes_written) != ANI_OK) {
+            HILOG_ERROR("get field %{public}s utf8 failed", fieldName.c_str());
+            return false;
+        }
+        utf8_buffer[bytes_written] = '\0';
+        fieldValue = std::string(utf8_buffer);
         return true;
     }
 
@@ -76,7 +90,21 @@ bool ANIUtils::GetStringField(ani_env *env, std::string fieldName, ani_object ob
         return false;
     }
     if (!isUndefined) {
-        fieldValue = ANIStringToStdString(env, static_cast<ani_string>(ref));
+        ani_string aniStr = static_cast<ani_string>(ref);
+        ani_size strSize;
+        if (env->String_GetUTF8Size(aniStr, &strSize) != ANI_OK) {
+            HILOG_ERROR("get field %{public}s size failed", fieldName.c_str());
+            return false;
+        }
+        std::vector<char> buffer(strSize + 1);
+        char* utf8_buffer = buffer.data();
+        ani_size bytes_written = 0;
+        if (env->String_GetUTF8(aniStr, utf8_buffer, strSize + 1, &bytes_written) != ANI_OK) {
+            HILOG_ERROR("get field %{public}s utf8 failed", fieldName.c_str());
+            return false;
+        }
+        utf8_buffer[bytes_written] = '\0';
+        fieldValue = std::string(utf8_buffer);
         return true;
     }
     return false;
@@ -110,7 +138,7 @@ bool ANIUtils::GetLongProperty(ani_env *env, std::string fieldName, ani_object o
         HILOG_ERROR("get field %{public}s failed", fieldName.c_str());
         return false;
     }
-    fieldValue = static_cast<int64_t>(longValue);
+    fieldValue = longValue;
     return true;
 }
 
@@ -235,18 +263,18 @@ bool ANIUtils::GetEnumInt(ani_env *env, const char *enum_descriptor, ani_int enu
     HILOG_INFO("processEnumInt enum=%{public}s, index=%{public}d", enum_descriptor, enumIndex);
     ani_enum enumType;
     if (ANI_OK != env->FindEnum(enum_descriptor, &enumType)) {
-        HILOG_ERROR("Find Enum Faild");
+        HILOG_ERROR("Find Enum Failed");
         return false;
     }
 
     ani_enum_item enumItem;
     if (ANI_OK != env->Enum_GetEnumItemByIndex(enumType, enumIndex, &enumItem)) {
-        HILOG_ERROR("Enum_GetEnumItemByIndex FAILD");
+        HILOG_ERROR("Enum_GetEnumItemByIndex FAILED");
         return false;
     }
 
     if (ANI_OK != env->EnumItem_GetValue_Int(enumItem, &fieldValue)) {
-        HILOG_ERROR("Enum_GetEnumItemByIndex FAILD");
+        HILOG_ERROR("Enum_GetEnumItemByIndex FAILED");
         return false;
     }
     return true;
@@ -460,7 +488,7 @@ void ANIUtils::ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
 
 ani_string ANIUtils::CreateAniString(ani_env *env, const std::string &str)
 {
-    ani_string aniString {};
+    ani_string aniString = nullptr;
     if (env != nullptr) {
         env->String_NewUTF8(str.c_str(), str.size(), &aniString);
     }
@@ -498,7 +526,7 @@ bool ANIUtils::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObj
 {
     std::string type;
     if (!GetStringField(env, "type", eventObject, type)) {
-        HILOG_ERROR("get type Faild!");
+        HILOG_ERROR("get type Failed!");
         return false;
     }
     OHOS::Accessibility::EventType eventType = ConvertStringToEventInfoTypes(type);
@@ -510,7 +538,7 @@ bool ANIUtils::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObj
 
     std::string bundleName;
     if (!GetStringField(env, "bundleName", eventObject, bundleName)) {
-        HILOG_ERROR("get bundleName Faild!");
+        HILOG_ERROR("get bundleName Failed!");
         return false;
     }
     if (bundleName == "") {
@@ -521,7 +549,7 @@ bool ANIUtils::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObj
 
     std::string triggerAction;
     if (!GetStringField(env, "triggerAction", eventObject, triggerAction)) {
-        HILOG_ERROR("get triggerAction Faild!");
+        HILOG_ERROR("get triggerAction Failed!");
         return false;
     }
     OHOS::Accessibility::ActionType action = ConvertStringToAccessibleOperationType(triggerAction);
@@ -1093,7 +1121,7 @@ bool ANIUtils::SetDoubleField(ani_env *env, ani_object &object, const std::strin
         return false;
     }
     ani_status status;
-    ani_object value = CreateDouble(env, static_cast<int32_t>(fieldValue));
+    ani_object value = CreateDouble(env, static_cast<float>(fieldValue));
     if (isProperty) {
         if ((status = env->Object_SetPropertyByName_Ref(object, fieldName.c_str(), value)) != ANI_OK) {
             HILOG_ERROR("set double property failed %{public}s %{public}d", fieldName.c_str(), status);
