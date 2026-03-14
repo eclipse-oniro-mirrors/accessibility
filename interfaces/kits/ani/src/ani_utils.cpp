@@ -48,7 +48,7 @@ std::string ANIUtils::ANIStringToStdString(ani_env *env, ani_string ani_str)
 
 ani_string ANIUtils::StdStringToAniString(ani_env *env, std::string str)
 {
-    ani_string result_string = nullptr;
+    ani_string result_string{};
     env->String_NewUTF8(str.c_str(), str.size(), &result_string);
     return result_string;
 }
@@ -62,21 +62,7 @@ bool ANIUtils::GetStringField(ani_env *env, std::string fieldName, ani_object ob
             HILOG_ERROR("get field %{public}s failed", fieldName.c_str());
             return false;
         }
-        ani_string aniStr = static_cast<ani_string>(ref);
-        ani_size strSize;
-        if (env->String_GetUTF8Size(aniStr, &strSize) != ANI_OK) {
-            HILOG_ERROR("get field %{public}s size failed", fieldName.c_str());
-            return false;
-        }
-        std::vector<char> buffer(strSize + 1);
-        char* utf8_buffer = buffer.data();
-        ani_size bytes_written = 0;
-        if (env->String_GetUTF8(aniStr, utf8_buffer, strSize + 1, &bytes_written) != ANI_OK) {
-            HILOG_ERROR("get field %{public}s utf8 failed", fieldName.c_str());
-            return false;
-        }
-        utf8_buffer[bytes_written] = '\0';
-        fieldValue = std::string(utf8_buffer);
+        fieldValue = ANIStringToStdString(env, static_cast<ani_string>(ref));
         return true;
     }
 
@@ -90,21 +76,7 @@ bool ANIUtils::GetStringField(ani_env *env, std::string fieldName, ani_object ob
         return false;
     }
     if (!isUndefined) {
-        ani_string aniStr = static_cast<ani_string>(ref);
-        ani_size strSize;
-        if (env->String_GetUTF8Size(aniStr, &strSize) != ANI_OK) {
-            HILOG_ERROR("get field %{public}s size failed", fieldName.c_str());
-            return false;
-        }
-        std::vector<char> buffer(strSize + 1);
-        char* utf8_buffer = buffer.data();
-        ani_size bytes_written = 0;
-        if (env->String_GetUTF8(aniStr, utf8_buffer, strSize + 1, &bytes_written) != ANI_OK) {
-            HILOG_ERROR("get field %{public}s utf8 failed", fieldName.c_str());
-            return false;
-        }
-        utf8_buffer[bytes_written] = '\0';
-        fieldValue = std::string(utf8_buffer);
+        fieldValue = ANIStringToStdString(env, static_cast<ani_string>(ref));
         return true;
     }
     return false;
@@ -138,7 +110,7 @@ bool ANIUtils::GetLongProperty(ani_env *env, std::string fieldName, ani_object o
         HILOG_ERROR("get field %{public}s failed", fieldName.c_str());
         return false;
     }
-    fieldValue = longValue;
+    fieldValue = static_cast<int64_t>(longValue);
     return true;
 }
 
@@ -488,7 +460,7 @@ void ANIUtils::ThrowBusinessError(ani_env *env, NAccessibilityErrMsg errMsg)
 
 ani_string ANIUtils::CreateAniString(ani_env *env, const std::string &str)
 {
-    ani_string aniString = nullptr;
+    ani_string aniString {};
     if (env != nullptr) {
         env->String_NewUTF8(str.c_str(), str.size(), &aniString);
     }
