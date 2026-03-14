@@ -34,6 +34,7 @@ constexpr size_t FUZZ_NUM8 = 8;
 constexpr size_t FUZZ_NUM16 = 16;
 constexpr size_t FUZZ_NUM24 = 24;
 constexpr uint8_t DEVISOR_TWO = 2;
+constexpr size_t DATA_MIN_SIZE = 200;
 } // namespace
 
 class AccessibleAbilityManagerServiceStubFuzzTest : public AccessibleAbilityManagerServiceStub {
@@ -62,26 +63,26 @@ public:
         return RET_OK;
     }
 
+    ErrCode GetAbilityList(uint32_t abilityTypes, int32_t stateType,
+        std::vector<AccessibilityAbilityInfoParcel>& infos) override
+    {
+        return RET_OK;
+    }
+
     ErrCode RegisterEnableAbilityCallbackObserver(
         const sptr<IAccessibilityEnableAbilityCallbackObserver>& observer) override
     {
         return RET_OK;
     }
 
-    ErrCode GetAbilityList(
-        uint32_t abilityTypes, int32_t stateType, std::vector<AccessibilityAbilityInfoParcel>& infos) override
+    ErrCode RegisterElementOperatorByWindowId(const int32_t windowId,
+        const sptr<IAccessibilityElementOperator> &elementOperator) override
     {
         return RET_OK;
     }
 
-    ErrCode RegisterElementOperatorByWindowId(
-        const int32_t windowId, const sptr<IAccessibilityElementOperator> &elementOperation) override
-    {
-        return RET_OK;
-    }
-
-    ErrCode RegisterElementOperatorByParameter(
-        const RegistrationPara& parameter, const sptr<IAccessibilityElementOperator>& elementOperation) override
+    ErrCode RegisterElementOperatorByParameter(const RegistrationPara& parameter,
+        const sptr<IAccessibilityElementOperator>& elementOperator) override
     {
         return RET_OK;
     }
@@ -118,7 +119,8 @@ public:
         return RET_OK;
     }
 
-    ErrCode EnableAbility(const std::string &name, const uint32_t capabilities) override
+    ErrCode EnableAbility(const std::string &name, const uint32_t capabilities,
+        const bool connectCallBackFlag) override
     {
         return RET_OK;
     }
@@ -272,6 +274,10 @@ public:
     {
         return RET_OK;
     }
+    ErrCode GetSeniorModeState(bool &state) override
+    {
+        return RET_OK;
+    }
     ErrCode GetDaltonizationState(bool &state) override
     {
         return RET_OK;
@@ -331,13 +337,13 @@ public:
     {
         return RET_OK;
     }
-    ErrCode GetRootParentId(int32_t windowsId, int32_t treeId, int64_t &parentId) override
+    ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId) override
     {
         return 0;
     }
     ErrCode GetRootParentId(int32_t windowsId, int32_t treeId, int64_t &parentId, bool systemApi) override
     {
-        return 0;
+        return RET_OK;
     }
     int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override
     {
@@ -348,7 +354,7 @@ public:
         return NO_ERROR;
     }
 
-    RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents)
+    RetError ConfigureEvents(std::vector<uint32_t> needEvents)
     {
         return RET_OK;
     }
@@ -444,8 +450,12 @@ bool HandleRemoveRequestIdTest(const uint8_t *data, size_t size)
     return true;
 }
 
-bool HandleGetScreenReaderStateTest()
+bool HandleGetScreenReaderStateTest(const uint8_t *data, size_t size)
 {
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
     MessageParcel datas;
     std::u16string descriptor = AccessibleAbilityManagerServiceStubFuzzTest::GetDescriptor();
     if (!datas.WriteInterfaceToken(descriptor)) {
@@ -483,7 +493,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     OHOS::Accessibility::OnRemoteRequestSvcFuzzTest(data, size);
     OHOS::Accessibility::HandleSetDaltonizationStateTest(data, size);
-    OHOS::Accessibility::HandleGetScreenReaderStateTest();
+    OHOS::Accessibility::HandleGetScreenReaderStateTest(data, size);
     OHOS::Accessibility::HandleRemoveRequestIdTest(data, size);
     return 0;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,9 +15,6 @@
 
 #include "accessibility_power_manager.h"
 #include "running_lock.h"
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-#include "display_power_mgr_client.h"
-#endif
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -33,27 +30,6 @@ AccessibilityPowerManager::~AccessibilityPowerManager()
 {
 }
 
-bool AccessibilityPowerManager::DiscountBrightness(const float discount)
-{
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    auto& displayPowerMgrClient = DisplayPowerMgr::DisplayPowerMgrClient::GetInstance();
-    if (!displayPowerMgrClient.DiscountBrightness(discount)) {
-        HILOG_ERROR("Failed to set brightness discount");
-        return false;
-    }
-#else
-    HILOG_DEBUG("not support display manager");
-#endif
-    return true;
-}
-
-bool AccessibilityPowerManager::RefreshActivity()
-{
-    HILOG_DEBUG();
-    return PowerMgr::PowerMgrClient::GetInstance().RefreshActivity(
-        OHOS::PowerMgr::UserActivityType::USER_ACTIVITY_TYPE_TOUCH);
-}
-
 bool AccessibilityPowerManager::InitRunningLock()
 {
     wakeLock_ = PowerMgr::PowerMgrClient::GetInstance().CreateRunningLock(
@@ -66,13 +42,7 @@ bool AccessibilityPowerManager::InitRunningLock()
     return true;
 }
 
-std::set<std::string> AccessibilityPowerManager::GetWakeLockAbilities()
-{
-    std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
-    return wakeLockAbilities_;
-}
-
-bool AccessibilityPowerManager::HoldRunningLock(std::string &bundleName)
+bool AccessibilityPowerManager::HoldRunningLock(const std::string &bundleName)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
@@ -89,7 +59,7 @@ bool AccessibilityPowerManager::HoldRunningLock(std::string &bundleName)
     return true;
 }
 
-bool AccessibilityPowerManager::UnholdRunningLock(std::string &bundleName)
+bool AccessibilityPowerManager::UnholdRunningLock(const std::string &bundleName)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(powerWakeLockMutex_);
@@ -98,7 +68,6 @@ bool AccessibilityPowerManager::UnholdRunningLock(std::string &bundleName)
             return false;
         }
     }
-
     if (bundleName == "") {
         wakeLockAbilities_.clear();
         wakeLock_->UnLock();

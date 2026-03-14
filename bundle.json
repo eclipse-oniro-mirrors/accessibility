@@ -169,6 +169,7 @@
       "test": [
         "//foundation/barrierfree/accessibility/services/test:moduletest",
         "//foundation/barrierfree/accessibility/services/aams/test:unittest",
+        "//foundation/barrierfree/accessibility/services/aams_ext/test:unittest",
         "//foundation/barrierfree/accessibility/frameworks/aafwk/test:unittest",
         "//foundation/barrierfree/accessibility/frameworks/acfwk/test:unittest",
         "//foundation/barrierfree/accessibility/frameworks/asacfwk/test:unittest",

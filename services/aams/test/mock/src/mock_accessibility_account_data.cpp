@@ -256,9 +256,7 @@ void AccessibilityAccountData::UpdateEnableAbilityListsState()
     return;
 }
 
-RetError AccessibilityAccountData::EnableAbility(
-    const std::string &name,
-    const uint32_t capabilities,
+RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities,
     const std::string &callerBundleName)
 {
     HILOG_DEBUG("start.");
@@ -598,17 +596,12 @@ void AccessibilityAccountData::RemoveWaitDisconnectAbility(const std::string &ur
     waitDisconnectA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 
-void AccessibilityAccountData::isSendEvent(const AccessibilityEventInfo &eventInfo)
-{
-    (void)eventInfo;
-}
-
 std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
 {
     return needEvents_;
 }
 
-void AccessibilityAccountData::AddNeedEvent(const std::string &name, std::vector<uint32_t> needEvents)
+void AccessibilityAccountData::UpdateAbilityNeedEvent(const std::string &name, std::vector<uint32_t> needEvents)
 {
     (void)name;
     (void)needEvents;
@@ -622,6 +615,11 @@ void AccessibilityAccountData::RemoveNeedEvent(const std::string &name)
 std::vector<uint32_t> AccessibilityAccountData::GetNeedEvents()
 {
     return needEvents_;
+}
+
+void AccessibilityAccountData::isSendEvent(const AccessibilityEventInfo &eventInfo)
+{
+    (void)eventInfo;
 }
 
 void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data)

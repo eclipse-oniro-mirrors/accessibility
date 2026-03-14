@@ -44,7 +44,7 @@ struct AccessibilityAbilityInitParams {
     uint32_t abilityTypes = ACCESSIBILITY_ABILITY_TYPE_INVALID;
     bool isImportant = false;
     bool needHide = false;
-    std::vector<uint32_t> eventConfigure;
+    std::vector<std::string> eventConfigure;
     std::string readableRules = "";
 };
 
@@ -231,7 +231,7 @@ protected:
     std::vector<std::string> targetBundleNames_;
     bool isImportant_ = false;
     bool needHide_ = false;
-    std::vector<uint32_t> eventConfigure_ = { TYPES_ALL_MASK };
+    std::vector<std::string> eventConfigure_;
     std::string readableRules_;
 };
 } // namespace Accessibility

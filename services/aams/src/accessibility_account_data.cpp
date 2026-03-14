@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,8 +20,8 @@
 #ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
 #endif // OHOS_BUILD_ENABLE_HITRACE
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-#include "accessibility_display_manager.h"
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+#include "accessibility_power_manager.h"
 #endif
 #include "accessible_ability_manager_service.h"
 #include "extension_ability_info.h"
@@ -41,7 +41,6 @@ namespace {
     constexpr int32_t INIT_DATASHARE_HELPER_SLEEP_TIME = 500;
     constexpr int DEFAULT_ACCOUNT_ID = 100;
     constexpr int SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
-    constexpr int INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
@@ -57,7 +56,6 @@ namespace {
     const std::string ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services";
     const std::string ACCESSIBILITY_SHORTCUT_ENABLED = "accessibility_shortcut_enabled";
     const std::string ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN = "accessibility_shortcut_enabled_on_lock_screen";
-    const std::string ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN = "accessibility_shortcut_on_lock_screen";
     const std::string ACCESSIBILITY_SHORTCUT_TIMEOUT = "accessibility_shortcut_timeout";
     const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const std::string ACCESSIBILITY_CLONE_FLAG = "accessibility_config_clone";
@@ -67,6 +65,32 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.screenreader";
     const std::string THP_PATH = "/system/lib64/libthp_extra_innerapi.z.so";
     const std::string IGNORE_REPEATED_CLICK_EXCLUDE_FLAG = "accessibility_ignore_repeat_click_exclude_flag";
+
+    // Feature flag for full screen magnification.
+    static constexpr uint32_t FEATURE_SCREEN_MAGNIFICATION = 0x00000001;
+ 
+    // Feature flag for touch exploration.
+    static constexpr uint32_t FEATURE_TOUCH_EXPLORATION = 0x00000002;
+ 
+    // Feature flag for filtering key events.
+    static constexpr uint32_t FEATURE_FILTER_KEY_EVENTS = 0x00000004;
+ 
+    // Feature flag for inject touch events.
+    static constexpr uint32_t FEATURE_INJECT_TOUCH_EVENTS = 0x00000008;
+ 
+    // Feature flag for mouse autoclick.
+    static constexpr uint32_t FEATURE_MOUSE_AUTOCLICK = 0x00000010;
+ 
+    // Feature flag for mouse key.
+    static constexpr uint32_t FEATURE_MOUSE_KEY = 0x00000040;
+ 
+    // Feature flag for screen touch.
+    static constexpr uint32_t FEATURE_SCREEN_TOUCH = 0x00000080;
+ 
+    // Feature flag for window magnification.
+    static constexpr uint32_t FEATURE_WINDOW_MAGNIFICATION = 0x00000100;
+ 
+    static constexpr uint32_t WINDOW_MAGNIFICATION = 2;
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -120,8 +144,13 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     if (screenReaderState_) {
         state |= STATE_SCREENREADER_ENABLED;
     }
+
     if (isSingleClickMode_) {
         state |= STATE_SINGLE_CLICK_MODE_ENABLED;
+    }
+    uint32_t inputFlag = GetInputFilterFlag();
+    if (inputFlag > 0) {
+        state |= STATE_INPUT_INTERCEPTOR_ENABLED;
     }
     if (config_->GetAnimationOffState()) {
         state |= STATE_ANIMATIONOFF_ENABLED;
@@ -131,6 +160,9 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     }
     if (config_->GetFlashReminderSwitch()) {
         state |= STATE_FLASH_REMINDER_ENABLED;
+    }
+    if (config_->GetSeniorModeState()) {
+        state |= STATE_ELDER_CARE_ENABLED;
     }
     return state;
 }
@@ -149,6 +181,7 @@ void AccessibilityAccountData::OnAccountSwitched()
 
     connectedA11yAbilities_.Clear();
     enabledAbilities_.clear();
+    Singleton<AccessibilityPowerManager>::GetInstance().UnholdRunningLock();
     std::lock_guard lock(asacConnectionsMutex_);
     asacConnections_.clear();
     if (!config_) {
@@ -156,6 +189,9 @@ void AccessibilityAccountData::OnAccountSwitched()
     }
     if (config_->GetIgnoreRepeatClickState()) {
         IgnoreRepeatClickNotification::CancelNotification();
+    }
+    if (config_->GetAnimationOffState()) {
+        TransitionAnimationsNotification::CancelNotification();
     }
     if (config_->GetDbHandle()) {
         config_->GetDbHandle()->ClearObservers();
@@ -179,7 +215,7 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
         bundleName = uri.substr(0, pos);
     }
     std::vector<uint32_t> events = {};
-    AddNeedEvent(bundleName, events);
+    UpdateAbilityNeedEvent(bundleName, events);
     connectedA11yAbilities_.AddAccessibilityAbility(uri, connection);
 }
 
@@ -572,6 +608,10 @@ void AccessibilityAccountData::SetScreenReaderExtInAllAccounts(const bool state)
     std::vector<int32_t> accountIds = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAllAccountIds();
     for (auto accountId : accountIds) {
         auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
+        if (accountData == nullptr) {
+            HILOG_WARN("accountData is nullptr, accountId = %{public}d", accountId);
+            continue;
+        }
         std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
         if (config == nullptr) {
             HILOG_WARN("config is nullptr, accountId = %{public}d", accountId);
@@ -728,10 +768,7 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     value.displayDaltonizer = config_->GetDbHandle()->GetIntValue(ACCESSIBILITY_DISPLAY_DALTONIZER, 0);
     value.shortcutEnabled = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_SHORTCUT_ENABLED, true);
     value.shortcutEnabledOnLockScreen = config_->GetDbHandle()->GetBoolValue(
-        ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, false);
-    value.shortcutOnLockScreen = config_->GetDbHandle()->GetIntValue(
-        ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN, INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
-    config_->GetDbHandle()->PutIntValue(ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN, INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE);
+        ACCESSIBILITY_SHORTCUT_ENABLED_ON_LOCK_SCREEN, true);
     value.shortcutTimeout = config_->GetDbHandle()->GetIntValue(ACCESSIBILITY_SHORTCUT_TIMEOUT,
         SHORT_KEY_TIMEOUT_BEFORE_USE);
     value.clickResponseTime = config_->GetDbHandle()->GetIntValue(CLICK_RESPONSE_TIME, 0);
@@ -755,9 +792,7 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     service->DeleteInstance();
 }
 
-RetError AccessibilityAccountData::EnableAbility(
-    const std::string &name,
-    const uint32_t capabilities,
+RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities,
     const std::string &callerBundleName)
 {
     HILOG_DEBUG("start and name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
@@ -861,6 +896,7 @@ void AccessibilityAccountData::InitScreenReaderStateObserver()
 {
     if (!config_) {
         HILOG_ERROR("config is nullptr!");
+        return;
     }
     if (!config_->GetDbHandle()) {
         HILOG_ERROR("helper is null!");
@@ -1069,33 +1105,33 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     uint32_t flag = 0;
     if (config_->GetScreenMagnificationState()) {
         if (config_->GetScreenMagnificationMode() == WINDOW_MAGNIFICATION) {
-            flag |= AccessibilityInputInterceptor::FEATURE_WINDOW_MAGNIFICATION;
+            flag |= FEATURE_WINDOW_MAGNIFICATION;
         } else {
-            flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION;
+            flag |= FEATURE_SCREEN_MAGNIFICATION;
         }
     }
     if (isEventTouchGuideState_) {
-        flag |= AccessibilityInputInterceptor::FEATURE_TOUCH_EXPLORATION;
+        flag |= FEATURE_TOUCH_EXPLORATION;
     }
     if (isFilteringKeyEvents_) {
-        flag |= AccessibilityInputInterceptor::FEATURE_FILTER_KEY_EVENTS;
+        flag |= FEATURE_FILTER_KEY_EVENTS;
     }
     if (isGesturesSimulation_) {
-        flag |= AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
+        flag |= FEATURE_INJECT_TOUCH_EVENTS;
     }
     if (config_->GetMouseKeyState()) {
-        flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_KEY;
+        flag |= FEATURE_MOUSE_KEY;
     }
 
     int32_t autoclickTime = config_->GetMouseAutoClick();
     if (autoclickTime >= AUTOCLICK_DELAY_TIME_MIN && autoclickTime <= AUTOCLICK_DELAY_TIME_MAX) {
-        flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_AUTOCLICK;
+        flag |= FEATURE_MOUSE_AUTOCLICK;
     }
 
     uint32_t clickResponseTime = config_->GetClickResponseTime();
     bool ignoreRepeatClickState = config_->GetIgnoreRepeatClickState();
     if (clickResponseTime > 0 || ignoreRepeatClickState == true) {
-        flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_TOUCH;
+        flag |= FEATURE_SCREEN_TOUCH;
     }
 
     return flag;
@@ -1170,7 +1206,9 @@ void AccessibilityAccountData::UpdateAbilities(std::string callerBundleName)
             AppExecFwk::ElementName element("", bundleName, abilityName);
             connection = new(std::nothrow) AccessibleAbilityConnection(id_, connectCounter_++, installAbility);
             if (connection != nullptr && connection->Connect(element)) {
-                connection->SetConnectionKey(callerBundleName);
+                if (!callerBundleName.empty()) {
+                    connection->SetConnectionKey(callerBundleName);
+                }
                 AddConnectingA11yAbility(Utils::GetUri(bundleName, abilityName), connection);
             }
         } else {
@@ -1300,7 +1338,7 @@ void AccessibilityAccountData::AddUITestClient(const sptr<IRemoteObject> &obj,
     }
     abilityInfo->SetPackageName(bundleName);
     abilityInfo->SetName(abilityName);
-    uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_GESTURE;
+    uint32_t capabilities = CAPABILITY_RETRIEVE;
     abilityInfo->SetCapabilityValues(capabilities);
     abilityInfo->SetAccessibilityAbilityType(ACCESSIBILITY_ABILITY_TYPE_ALL);
     abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
@@ -1362,7 +1400,7 @@ void AccessibilityAccountData::OnSingleClickModeChanged()
         HILOG_ERROR("config is nullptr!");
         return;
     }
-    if (!config_->GetDbHandle()) {
+    if (config_->GetDbHandle() == nullptr) {
         HILOG_ERROR("helper is nullptr!");
         return;
     }
@@ -1632,12 +1670,12 @@ void AccessibilityAccountData::isSendEvent(const AccessibilityEventInfo &eventIn
                 ability.second->OnAccessibilityEvent(const_cast<AccessibilityEventInfo&>(eventInfo));
             } else {
                 uint32_t event = it->second.at(0);
-                if (event == TYPES_ALL_MASK) { // all event
+                if (event == TYPES_ALL_MASK) {  // all event
                     ability.second->OnAccessibilityEvent(const_cast<AccessibilityEventInfo&>(eventInfo));
                     continue;
                 }
 
-                if (event == TYPE_VIEW_INVALID) { // none event
+                if (event == TYPE_VIEW_INVALID) {  // none event
                     continue;
                 }
 
@@ -1650,7 +1688,7 @@ void AccessibilityAccountData::isSendEvent(const AccessibilityEventInfo &eventIn
     }
 }
 
-void AccessibilityAccountData::AddNeedEvent(const std::string &name, std::vector<uint32_t> needEvents)
+void AccessibilityAccountData::UpdateAbilityNeedEvent(const std::string &name, std::vector<uint32_t> needEvents)
 {
     std::string packageName = "";
     std::lock_guard<ffrt::mutex> lock(abilityNeedEventsMutex_);
@@ -1668,7 +1706,8 @@ void AccessibilityAccountData::AddNeedEvent(const std::string &name, std::vector
             }
         }
     }
-    HILOG_DEBUG("needEvent size is %{public}zu", abilityNeedEvents_[name].size());
+    HILOG_DEBUG("abilityNeedEvents_ size is %{public}u, needEvent size is %{public}u",
+        abilityNeedEvents_.size(), abilityNeedEvents_[name].size());
     UpdateNeedEvents();
 }
 
@@ -1678,7 +1717,7 @@ void AccessibilityAccountData::RemoveNeedEvent(const std::string &name)
     if (pos != std::string::npos) {
         std::lock_guard<ffrt::mutex> lock(abilityNeedEventsMutex_);
         std::string bundleName = name.substr(0, pos);
-        HILOG_DEBUG("RemoveNeedEvent bundleName is %{public}s, abilityNeedEvents_ size is %{public}zu",
+        HILOG_DEBUG("RemoveNeedEvent bundleName is %{public}s, abilityNeedEvents_ size is %{public}u",
             bundleName.c_str(), abilityNeedEvents_.size());
         abilityNeedEvents_.erase(bundleName);
         UpdateNeedEvents();
@@ -1691,6 +1730,13 @@ std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
     std::vector<uint32_t> needEvents = {};
     for (const auto& pair : abilityNeedEvents_) {
         const std::vector<uint32_t>& events = pair.second;
+        if (events.size() == 0) { // A certain extension service is in the default state.
+            needEvents_ = needEvents;
+            HILOG_DEBUG("default state, needEvent size is %{public}u",
+                needEvents_.size());
+            return needEvents_;
+        }
+
         for (uint32_t event : events) {
             if (std::find(needEvents.begin(), needEvents.end(), event) == needEvents.end()) {
                 needEvents.push_back(event);
@@ -1706,7 +1752,7 @@ std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
     } else {
         needEvents_ = needEvents;
     }
-    HILOG_INFO("needEvents size is %{public}zu", needEvents_.size());
+    HILOG_INFO("needEvents size is %{public}u", needEvents_.size());
     return needEvents_;
 }
 
@@ -1719,7 +1765,11 @@ void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data
 {
     if (data.state == AccountSA::OsAccountState::SWITCHING) {
         HILOG_INFO("account switching.");
-        Singleton<AccessibleAbilityManagerService>::GetInstance().OffZoomGesture();
+        if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+            if (Singleton<ExtendManagerServiceProxy>::GetInstance().LoadExtProxy()) {
+                Singleton<ExtendManagerServiceProxy>::GetInstance().OffZoomGesture();
+            }
+        }
     }
 }
 

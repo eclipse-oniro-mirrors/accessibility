@@ -136,7 +136,46 @@ const std::string &AccessibilityAbilityInfo::GetLabel() const
 void AccessibilityAbilityInfo::GetEventConfigure(std::vector<uint32_t> &needEvents)
 {
     HILOG_DEBUG();
-    needEvents = eventConfigure_;
+    static const std::map<std::string, EventType> EvtTypeTable = {
+        {"accessibilityFocus", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT},
+        {"accessibilityFocusClear", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT},
+        {"click", EventType::TYPE_VIEW_CLICKED_EVENT},
+        {"longClick", EventType::TYPE_VIEW_LONG_CLICKED_EVENT},
+        {"focus", EventType::TYPE_VIEW_FOCUSED_EVENT},
+        {"select", EventType::TYPE_VIEW_SELECTED_EVENT},
+        {"scroll", EventType::TYPE_VIEW_SCROLLED_EVENT},
+        {"scrolling", EventType::TYPE_VIEW_SCROLLING_EVENT},
+        {"hoverEnter", EventType::TYPE_VIEW_HOVER_ENTER_EVENT},
+        {"hoverExit", EventType::TYPE_VIEW_HOVER_EXIT_EVENT},
+        {"textUpdate", EventType::TYPE_VIEW_TEXT_UPDATE_EVENT},
+        {"textSelectionUpdate", EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT},
+        {"requestFocusForAccessibility", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY},
+        {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY},
+        {"announceForAccessibilityNotInterrupt", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT},
+        {"requestFocusForAccessibilityNotInterrupt",
+            EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
+        {"pageContentUpdate", EventType::TYPE_PAGE_CONTENT_UPDATE},
+        {"pageStateUpdate", EventType::TYPE_PAGE_STATE_UPDATE},
+        {"pageOpen", EventType::TYPE_PAGE_OPEN},
+        {"pageClose", EventType::TYPE_PAGE_CLOSE},
+        {"allEvents", EventType::TYPES_ALL_MASK},
+        {"noneEvents", EventType::TYPE_VIEW_INVALID}
+    };
+    
+    for (auto &event : eventConfigure_) {
+        HILOG_DEBUG("ability config event is (%{public}s).", event.c_str());
+        auto evtType = EvtTypeTable.find(event);
+        if (evtType != EvtTypeTable.end()) {
+            needEvents.push_back(evtType->second);
+        } else {
+            auto widType = std::find(needEvents.begin(), needEvents.end(),
+                EventType::TYPE_WINDOW_UPDATE);
+            if (widType == needEvents.end()) {
+                HILOG_DEBUG("ability change widTyp");
+                needEvents.push_back(EventType::TYPE_WINDOW_UPDATE);
+            }
+        }
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

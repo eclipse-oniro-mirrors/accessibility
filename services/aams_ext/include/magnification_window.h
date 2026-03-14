@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,27 +33,44 @@
 namespace OHOS {
 namespace Accessibility {
 class MagnificationWindow {
+
 public:
-    // common
-    PointerPos GetSourceCenter();
+    static MagnificationWindow &GetInstance();
+    void EnableMagnification(uint32_t magnificationType, int32_t posX, int32_t posY);
+    void DisableMagnification(uint32_t magnificationType, bool needClear);
+    void SetScale(uint32_t magnificationType, float scaleSpan);
+    void MoveMagnification(uint32_t magnificationType, int32_t deltaX, int32_t deltaY);
+    PointerPos ConvertGesture(uint32_t type, PointerPos coordinates);
     PointerPos ConvertCoordinates(int32_t posX, int32_t posY);
+    uint32_t CheckTapOnHotArea(int32_t posX, int32_t posY);
+    bool IsMagnificationWindowShow(uint32_t magnificationType);
+    void FollowFocuseElement(uint32_t magnificationType, int32_t centerX, int32_t centerY);
+    PointerPos GetSourceCenter();
+    void ShowMagnification(uint32_t magnificationType);
+    void RefreshWindowParam(uint32_t magnificationType, RotationType type);
+    bool IsTapOnHotArea(int32_t posX, int32_t posY);
+    bool IsTapOnMagnificationWindow(int32_t posX, int32_t posY);
+    inline bool IsMagnificationWindowActivate()
+    {
+        return isMagnificationWindowActivate_;
+    }
+    void FixSourceCenter(bool needFix);
     inline float GetScale()
     {
         return scale_;
     }
- 
     inline void InitMagnificationParam(float scale)
     {
         scale_ = scale;
     }
 
+private:
     // full magnification
     void EnableMagnificationFull(int32_t centerX, int32_t centerY);
     void DisableMagnificationFull(bool needClear = false);
     void SetScaleFull(float scaleSpan);
     void MoveMagnificationFull(int32_t deltaX, int32_t deltaY);
-    PointerPos ConvertGesture(uint32_t type, PointerPos coordinates);
-    uint32_t CheckTapOnHotArea(int32_t posX, int32_t posY);
+
     void FollowFocuseElementFull(int32_t centerX, int32_t centerY);
     void ShowMagnificationFull();
     void RefreshWindowParamFull(RotationType type);
@@ -64,9 +81,6 @@ public:
     void DisableMagnificationPart(bool needClear = false);
     void SetScalePart(float scaleSpan);
     void MoveMagnificationPart(int32_t deltaX, int32_t deltaY);
-    bool IsTapOnHotArea(int32_t posX, int32_t posY);
-    bool IsTapOnMagnificationWindow(int32_t posX, int32_t posY);
-    void FixSourceCenter(bool needFix);
     void FollowFocuseElementPart(int32_t centerX, int32_t centerY);
     void ShowMagnificationPart();
     void RefreshWindowParamPart(RotationType type);
@@ -106,7 +120,9 @@ private:
     uint32_t screenWidth_ = 0;
     uint32_t screenHeight_ = 0;
     float screenSpan_ = 0.0f;
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     uint64_t screenId_ = 0;
+#endif
     int32_t centerX_ = 0;
     int32_t centerY_ = 0;
     float scale_ = DEFAULT_SCALE;
@@ -123,6 +139,7 @@ private:
     PointerPos fixedSourceCenter_ = {0, 0};
     bool isMagnificationShowPart_ = false;
     bool isMagnificationShowFull_ = false;
+    bool isMagnificationWindowActivate_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

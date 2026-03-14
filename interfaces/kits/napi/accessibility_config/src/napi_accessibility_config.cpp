@@ -36,6 +36,7 @@ namespace {
     constexpr int32_t REPORTER_THRESHOLD_VALUE = 10;
     constexpr int32_t SET_FLAG = 0;
     constexpr int32_t GET_FLAG = 1;
+    const int32_t ENABLE_ABILITY_CALLBACK_TIMEOUT = 1 * 1000; // ms
 
     static std::map<OHOS::AccessibilityConfig::CONFIG_ID, std::vector<std::string>> configApiMap = {
         {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT,
@@ -237,10 +238,11 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
             auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
             if (callbackInfo->capabilities_ != 0) {
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
-                Accessibility::ApiReportHelper reporter("AccessibilityConfig.Impl.EnableAbility", REPORTER_THRESHOLD_VALUE);
+                Accessibility::ApiReportHelper reporter(
+                    "AccessibilityConfig.Impl.EnableAbility", REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
                 callbackInfo->ret_ = instance.EnableAbility(
-                    callbackInfo->abilityName_, callbackInfo->capabilities_);
+                    callbackInfo->abilityName_, callbackInfo->capabilities_, false);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
                 reporter.setResult(callbackInfo->ret_);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -294,6 +296,7 @@ napi_value NAccessibilityConfig::EnableAbilityWithCallback(napi_env env, napi_ca
 
 void NAccessibilityConfig::EnableAbilityWithCallbackExecute(napi_env env, void* data)
 {
+    HILOG_DEBUG();
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     if (callbackInfo->capabilities_ != 0) {
@@ -301,7 +304,8 @@ void NAccessibilityConfig::EnableAbilityWithCallbackExecute(napi_env env, void* 
         Accessibility::ApiReportHelper reporter(
             "AccessibilityConfig.Impl.EnableAbility", REPORTER_THRESHOLD_VALUE);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
-        callbackInfo->ret_ = instance.EnableAbility(callbackInfo->abilityName_, callbackInfo->capabilities_);
+        callbackInfo->ret_ = instance.EnableAbility(callbackInfo->abilityName_,
+            callbackInfo->capabilities_, true);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
         reporter.setResult(callbackInfo->ret_);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -311,11 +315,26 @@ void NAccessibilityConfig::EnableAbilityWithCallbackExecute(napi_env env, void* 
 void NAccessibilityConfig::EnableAbilityWithCallbackComplete(napi_env env, napi_status status, void* data)
 {
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
+    napi_value result[ARGS_SIZE_ONE] = {0};
+    napi_value undefined = 0;
+    napi_get_undefined(env, &undefined);
+    result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
     if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
         napi_value callback = nullptr;
         napi_get_reference_value(env, callbackInfo->notifyCallback_, &callback);
         enableAbilityCallbackObservers_->SubscribeObserver(env, callbackInfo->abilityName_, callback);
+        napi_resolve_deferred(env, callbackInfo->deferred_, undefined);
+    } else {
+        napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM0]);
     }
+    HILOG_DEBUG("complete function promise mode");
+    napi_delete_async_work(env, callbackInfo->work_);
+    delete callbackInfo;
+    callbackInfo = nullptr;
 }
 
 napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info info)
@@ -1293,7 +1312,11 @@ int EnableAbilityCallbackObserver::OnEnableAbilityListsRemoteDiedWork(
     };
     int ret = napi_send_event(env_, task, napi_eprio_high, "OnEnableAbilityListsRemoteDiedWork");
     if (ret != napi_status::napi_ok) {
-        HILOG_ERROR("failed to send event");
+        ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(ENABLE_ABILITY_CALLBACK_TIMEOUT));
+        if (wait != ffrt::future_status::ready) {
+            HILOG_ERROR("Failed to wait result");
+            return RET_ERR_TIME_OUT;
+        }
     } else {
         syncFuture.get();
     }
@@ -1367,7 +1390,6 @@ void EnableAbilityCallbackObserverImpl::OnEnableAbilityRemoteDied(const std::str
 {
     HILOG_DEBUG("name: %{public}s", name.c_str());
     std::lock_guard<ffrt::mutex> lock(mutex_);
-
     auto iter = enableAbilityCallbackObservers_.find(name);
     if (iter != enableAbilityCallbackObservers_.end()) {
         std::shared_ptr<EnableAbilityCallbackObserver> observerPtr;
@@ -1378,6 +1400,7 @@ void EnableAbilityCallbackObserverImpl::OnEnableAbilityRemoteDied(const std::str
         }
         observerPtr->OnEnableAbilityRemoteDied(name);
         enableAbilityCallbackObservers_.erase(iter);
+        return;
     }
 }
 

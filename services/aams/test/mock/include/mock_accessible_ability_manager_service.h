@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,7 +33,7 @@ public:
         uint32_t(const sptr<AccessibleAbilityManagerServiceStub>& callback, const int32_t accountId));
     MOCK_METHOD2(RegisterCaptionPropertyCallback,
         uint32_t(const sptr<IAccessibleAbilityManagerCaptionObserver>& callback, const int32_t accountId));
-    MOCK_METHOD3(GetAbilityList, ErrCode(uint32_t abilityTypes, const int32_t stateType,
+    MOCK_METHOD3(GetAbilityList, ErrCode(uint32_t abilityTypes, int32_t stateType,
         std::vector<AccessibilityAbilityInfoParcel>& infos));
     MOCK_METHOD2(RegisterElementOperatorByWindowId,
         ErrCode(const int32_t windowId, const sptr<IAccessibilityElementOperator>& elementOperator));
@@ -42,9 +42,12 @@ public:
     MOCK_METHOD1(DeregisterElementOperatorByWindowId, ErrCode(const int32_t windowId));
     MOCK_METHOD2(DeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
         const int32_t treeId));
+    MOCK_METHOD1(InnerDeregisterElementOperatorByWindowId, ErrCode(const int32_t windowId));
+    MOCK_METHOD2(InnerDeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
+        const int32_t treeId));
     MOCK_METHOD2(GetCaptionProperty, ErrCode(CaptionPropertyParcel& caption, bool isPermissionRequired));
     MOCK_METHOD2(SetCaptionProperty, ErrCode(const CaptionPropertyParcel& caption, bool isPermissionRequired));
-    MOCK_METHOD2(SetCaptionState, ErrCode(bool state, bool isPermissionRequired));
+    MOCK_METHOD2(SetCaptionState, ErrCode(const bool state, bool isPermissionRequired));
     MOCK_METHOD1(SetTouchEventInjector, void(const sptr<TouchEventInjector>& touchEventInjector));
 
     inline sptr<TouchEventInjector> GetTouchEventInjector()
@@ -57,7 +60,6 @@ public:
         return nullptr;
     }
 
-    MOCK_METHOD1(SetKeyEventFilter, void(const sptr<KeyEventFilter>& keyEventFilter));
     MOCK_METHOD5(NotifyDisplayResizeStateChanged,
         void(int32_t displayId, Rect& rect, float scale, float centerX, float centerY));
 
@@ -102,12 +104,12 @@ public:
     MOCK_METHOD1(GetFocusedWindowId, ErrCode(int32_t &focusedWindowId));
     MOCK_METHOD1(RemoveRequestId, ErrCode(int32_t requestId));
     MOCK_METHOD3(GetRootParentId, ErrCode(int32_t windowId, int32_t treeId, int64_t &parentId));
-    MOCK_METHOD2(GetAllTreeId, RetError(int32_t windowId, std::vector<int32_t> &treeIds));
     MOCK_METHOD1(CheckPermission, bool(const std::string &permission));
     MOCK_METHOD1(SearchNeedEvents, ErrCode(std::vector<uint32_t> &needEvents));
-    MOCK_METHOD1(UpdateUITestConfigureEvents, RetError(std::vector<uint32_t> needEvents));
+    MOCK_METHOD1(ConfigureEvents, RetError(std::vector<uint32_t> needEvents));
     MOCK_METHOD1(GetReadableRules, ErrCode(std::string &name));
     MOCK_METHOD2(IsInnerWindowRootElement, ErrCode(int64_t elementId, bool &state));
+    MOCK_METHOD2(SendAccessibilityEventToAA, void(EventType eventType, GestureType gestureId));
 };
 } // namespace Accessibility
 } // namespace OHOS

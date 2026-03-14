@@ -284,6 +284,13 @@ public:
      */
     virtual RetError GetFlashReminderSwitch(bool &state) override;
 
+    /**
+     * @brief Get the status of whether the senior mode is enabled
+     * @param state(out) true: senior mode is enabled; false: senior mode is disabled
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetSeniorModeState(bool &state) override;
+
     bool LoadAccessibilityService();
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();
@@ -356,13 +363,19 @@ private:
 
         void OnReceiveEvent(const EventFwk::CommonEventData &data) override
         {
-            if (callback_) {
+            if (callback_ && clientDeleted_ == false) {
                 callback_(data);
             }
         }
 
+        void OnClientDeleted()
+        {
+            clientDeleted_ = true;
+        }
+
     private:
         std::function<void(const EventFwk::CommonEventData &)> callback_;
+        std::atomic<bool> clientDeleted_ = false;
     };
 
     /**
@@ -390,7 +403,6 @@ private:
      */
     bool CheckEventType(EventType eventType);
     static void OnParameterChanged(const char *key, const char *value, void *context);
-    void ReregisterElementOperator();
 
     bool SubscribeAccessibilityCommonEvent(const std::string &event);
     void OnReceiveAccessibilityCommonEvent(const EventFwk::CommonEventData &data);
@@ -400,7 +412,6 @@ private:
     StateArrayHandler stateHandler_;
     StateObserversArray stateObserversArray_;
 
-    std::map<int32_t, sptr<AccessibilityElementOperatorImpl>> elementOperators_;
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerStateObserverImpl> stateObserver_ = nullptr;

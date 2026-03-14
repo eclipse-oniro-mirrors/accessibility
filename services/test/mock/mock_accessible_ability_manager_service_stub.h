@@ -58,7 +58,7 @@ public:
 
     ErrCode DeregisterElementOperatorByWindowId(int32_t windowId) override;
 
-    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId, int32_t treeId) override;
+    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId) override;
 
     ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override;
 
@@ -75,7 +75,8 @@ public:
     ErrCode GetCaptionState(bool& state, bool isPermissionRequired) override;
     ErrCode GetScreenReaderState(bool& state) override;
 
-    ErrCode EnableAbility(const std::string& name, uint32_t capabilities) override;
+    ErrCode EnableAbility(const std::string& name, uint32_t capabilities,
+        const bool connectCallBackFlag) override;
     ErrCode GetEnabledAbilities(std::vector<std::string>& enabledAbilities) override;
 
     ErrCode DisableAbility(const std::string& name) override;
@@ -117,6 +118,7 @@ public:
     ErrCode GetAnimationOffState(bool &state) override;
     ErrCode GetAudioMonoState(bool &state) override;
     ErrCode GetFlashReminderSwitch(bool &state) override;
+    ErrCode GetSeniorModeState(bool &state) override;
     ErrCode GetDaltonizationState(bool &state) override;
     ErrCode GetDaltonizationColorFilter(uint32_t &type) override;
     ErrCode GetContentTimeout(uint32_t &timer) override;
@@ -135,7 +137,7 @@ public:
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t& parentId, bool systemApi) override;
     int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override;
     ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
-    RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);
+    RetError ConfigureEvents(std::vector<uint32_t> needEvents);
     ErrCode GetReadableRules(std::string &name) override;
     ErrCode IsInnerWindowRootElement(int64_t elementId, bool &state) override;
 
@@ -152,6 +154,7 @@ private:
     bool screenMagnifier_ = false;
     bool invertColor_ = false;
     bool captionState_ = false;
+    bool screenReaderState_ = false;
     bool animationOff_ = false;
     bool audioMono_ = false;
     bool mouseKey_ = false;

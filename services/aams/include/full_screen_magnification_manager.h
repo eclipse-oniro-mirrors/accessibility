@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,15 +19,13 @@
 #include "hilog_wrapper.h"
 #include "magnification_def.h"
 #include "ffrt.h"
-#include "magnification_window_proxy.h"
 
 namespace OHOS {
 namespace Accessibility {
 
 class FullScreenMagnificationManager {
 public:
-    FullScreenMagnificationManager();
-    explicit FullScreenMagnificationManager(std::shared_ptr<MagnificationWindowProxy> proxy);
+    FullScreenMagnificationManager() = default;
     ~FullScreenMagnificationManager() = default;
 
     void EnableMagnification(int32_t centerX, int32_t centerY);
@@ -47,7 +45,6 @@ public:
     float GetScale();
 private:
     ffrt::mutex mutex_;
-    std::shared_ptr<MagnificationWindowProxy> windowProxy_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

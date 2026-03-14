@@ -252,6 +252,13 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetFlashReminderSwitch(bool &state) = 0;
+
+    /**
+     * @brief Get the status of whether the senior mode is enabled
+     * @param state(out) true: senior mode is enabled; false: senior mode is disabled
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetSeniorModeState(bool &state) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -112,6 +112,7 @@ public:
     static ani_boolean GetAudioMonoStateSync(ani_env *env);
     static ani_boolean GetAnimationOffStateSync(ani_env *env);
     static ani_boolean GetFlashReminderSwitchSync(ani_env *env);
+    static ani_boolean GetSeniorModeStateSync(ani_env *env);
     static ani_boolean GetEnabled(ani_env *env, ani_object object);
     static void SetEnabled(ani_env *env, ani_object object, ani_boolean enabled);
     static ani_object GetStyle(ani_env *env, ani_object object);
@@ -135,6 +136,7 @@ public:
     static std::shared_ptr<StateListenerImpl> audioMonoStateListeners_;
     static std::shared_ptr<StateListenerImpl> animationOffStateListeners_;
     static std::shared_ptr<StateListenerImpl> flashReminderSwitchStateListeners_;
+    static std::shared_ptr<StateListenerImpl> seniorModeStateListeners_;
 
 private:
     ANIAccessibilityClient() = default;

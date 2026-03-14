@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,16 +26,17 @@
 #include "hilog_wrapper.h"
 #include "parameter.h"
 #include "accessibility_notification_helper.h"
+#include "accessible_extend_manager_service_proxy.h"
 
 namespace OHOS {
 namespace Accessibility {
 namespace {
     const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
+    const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
     const int32_t DATASHARE_DEFAULT_TIMEOUT = 2 * 1000; // ms
-    const int32_t INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE = 2;
 }
 
 void AccessibilitySettings::RegisterSettingsHandler(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
@@ -51,7 +52,7 @@ void AccessibilitySettings::OnParameterChanged(const char *key, const char *valu
     }
     std::string strKey(key);
     std::string strValue(value);
-    if (strKey != GRAPHIC_ANIMATION_SCALE_NAME) {
+    if (strKey != GRAPHIC_ANIMATION_SCALE_NAME && strKey != ARKUI_ANIMATION_SCALE_NAME) {
         return;
     }
     AccessibilitySettings *settingsPtr = static_cast<AccessibilitySettings *>(context);
@@ -77,6 +78,7 @@ void AccessibilitySettings::OnParameterChanged(const char *key, const char *valu
 void AccessibilitySettings::RegisterParamWatcher()
 {
     WatchParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), &OnParameterChanged, this);
+    WatchParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), &OnParameterChanged, this);
 }
 
 RetError AccessibilitySettings::SetScreenMagnificationState(const bool state)
@@ -337,10 +339,19 @@ RetError AccessibilitySettings::SetAnimationOffState(const bool state)
     int setArkuiParamRes = -1;
     if (state) {
         setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "0");
+        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "0");
     } else {
         setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
+        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
     }
     HILOG_INFO("SetParameter results are %{public}d and %{public}d", setGraphicParamRes, setArkuiParamRes);
+    if (ret == RET_OK) {
+        if (state) {
+            TransitionAnimationsNotification::PublishTransitionAnimationsReminder();
+        } else {
+            TransitionAnimationsNotification::DestroyTimers();
+        }
+    }
     return ret;
 }
 
@@ -444,9 +455,10 @@ RetError AccessibilitySettings::SetBrightnessDiscount(const float discount)
     }
 
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
-    if (!Singleton<AccessibilityPowerManager>::GetInstance().DiscountBrightness(discount)) {
-        HILOG_ERROR("Failed to set brightness discount");
-        return Accessibility::RET_ERR_FAILED;
+    if (discount != 1 || Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
+        if (Singleton<ExtendManagerServiceProxy>::GetInstance().LoadExtProxy()) {
+            Singleton<ExtendManagerServiceProxy>::GetInstance().DiscountBrightness(discount);
+        }
     }
 #endif
     auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
@@ -597,7 +609,7 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickState(const bool state)
         if (state) {
             IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
         } else {
-            IgnoreRepeatClickNotification::DestoryTimers();
+            IgnoreRepeatClickNotification::DestroyTimers();
         }
     }
     return ret;
@@ -670,21 +682,9 @@ void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpd
     }
     if (atoHosValue.shortcutEnabled) {
         accountData->GetConfig()->SetShortKeyState(atoHosValue.shortcutEnabled);
-    }
-    bool shortKeyOnLockScreenAutoOn = false;
-    if (atoHosValue.shortcutTimeout == 1) {
-        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-        if (atoHosValue.shortcutOnLockScreen == INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
-            shortKeyOnLockScreenAutoOn = true;
-            accountData->GetConfig()->SetShortKeyOnLockScreenState(true);
-        }
-    } else if (atoHosValue.shortcutTimeout == 0) {
-        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
-    }
-    if (atoHosValue.shortcutOnLockScreen != INVALID_SHORTCUT_ON_LOCK_SCREEN_STATE) {
-        accountData->GetConfig()->SetShortKeyOnLockScreenState(atoHosValue.shortcutOnLockScreen == 1);
-    } else if (!shortKeyOnLockScreenAutoOn) {
-        accountData->GetConfig()->SetShortKeyOnLockScreenState(atoHosValue.shortcutEnabledOnLockScreen);
+        accountData->GetConfig()->SetShortKeyOnLockScreenState(true);
+    } else {
+        accountData->GetConfig()->SetShortKeyOnLockScreenState(false);
     }
     if (atoHosValue.screenMagnificationState) {
         accountData->GetConfig()->SetScreenMagnificationState(atoHosValue.screenMagnificationState);
@@ -734,10 +734,15 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
         accountData->GetConfig()->SetDaltonizationColorFilter(static_cast<uint32_t>(atoHosValue.displayDaltonizer));
         UpdateDaltonizationColorFilter();
     }
+    if (atoHosValue.shortcutTimeout == 1) {
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
+    } else if (atoHosValue.shortcutTimeout == 0) {
+        accountData->GetConfig()->SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
+    }
     
     if (atoHosValue.isScreenReaderEnabled) {
         if (atoHosValue.ignoreRepeatClickState) {
-            HILOG_INFO("in update settings screenReaderState is true, set ignoreRepeatClickState false.");
+            HILOG_INFO("in update settings screenReaderState is true, recovery ignore repeat click.");
             accountData->GetConfig()->SetIgnoreRepeatClickState(false);
         }
         uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
@@ -1410,6 +1415,42 @@ RetError AccessibilitySettings::GetFlashReminderSwitch(bool &state)
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
     if (wait != ffrt::future_status::ready) {
         HILOG_ERROR("GetFlashReminderSwitch Failed to wait result");
+        return RET_ERR_TIME_OUT;
+    }
+    state = *tmpState;
+    return syncFuture.get();
+}
+
+RetError AccessibilitySettings::GetSeniorModeState(bool &state)
+{
+    HILOG_DEBUG();
+    auto syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    if (syncPromise == nullptr) {
+        HILOG_ERROR("syncPromise is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    ffrt::future syncFuture = syncPromise->get_future();
+    auto tmpState = std::make_shared<bool>(state);
+    if (tmpState == nullptr) {
+        HILOG_ERROR("tmpState is nullptr!");
+        return RET_ERR_NULLPTR;
+    }
+    handler_->PostTask([this, syncPromise, tmpState]() {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData =
+            Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise->set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        *tmpState = accountData->GetConfig()->GetSeniorModeState();
+        syncPromise->set_value(RET_OK);
+        }, "TASK_GET_ELDER_CARE_STATE");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(DATASHARE_DEFAULT_TIMEOUT));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("GetSeniorModeState Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
     state = *tmpState;

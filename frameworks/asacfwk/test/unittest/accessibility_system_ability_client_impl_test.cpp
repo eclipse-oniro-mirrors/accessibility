@@ -28,10 +28,7 @@ namespace {
     constexpr int32_t WINDOW_ID = 1;
     constexpr int32_t REQUEST_ID = 1;
     constexpr int64_t COMPONENT_ID = 1;
-    constexpr int64_t ELEMENT_ID = 1;
     constexpr uint32_t WINDOW_ID_MASK = 16;
-    constexpr int32_t GET_SOURCE_MODE = 0;
-    constexpr int32_t ROOT_TREE_ID = 0;
 } // namespace
 
 class AccessibilitySystemAbilityClientImplTest : public ::testing::Test {
@@ -119,47 +116,6 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_003, 
     }
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "RegisterElementOperator_003 end";
-}
-
-/**
- * @tc.number: RegisterElementOperator_004
- * @tc.name: RegisterElementOperator
- * @tc.desc: Test function RegisterElementOperator(register fail)
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_004, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "RegisterElementOperator_004 start";
-    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(true);
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-    } else {
-        std::shared_ptr<AccessibilityElementOperator> mockOperator
-            = std::make_shared<MockAccessibilityElementOperator>();
-        EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-        EXPECT_EQ(RET_ERR_CONNECTION_EXIST, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-    }
-    impl_ = nullptr;
-    GTEST_LOG_(INFO) << "RegisterElementOperator_004 end";
-}
-
-/**
- * @tc.number: DeregisterElementOperator_001
- * @tc.name: DeregisterElementOperator
- * @tc.desc: Test function DeregisterElementOperator
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, DeregisterElementOperator_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "DeregisterElementOperator_001 start";
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-    } else {
-        EXPECT_EQ(RET_ERR_NO_REGISTER, impl_->DeregisterElementOperator(WINDOW_ID));
-    }
-    impl_ = nullptr;
-    GTEST_LOG_(INFO) << "DeregisterElementOperator_001 end";
 }
 
 /**
@@ -1538,126 +1494,6 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetTreeIdAndElementIdBySplitE
     }
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "GetTreeIdAndElementIdBySplitElementId_001 end";
-}
-
-/**
- * @tc.number: SetSearchElementInfoBySpecificPropertyResult_001
- * @tc.name: SetSearchElementInfoBySpecificPropertyResult
- * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult(success)
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSearchElementInfoBySpecificPropertyResult_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_001 start";
-    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(true);
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_001"
-            "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-    } else {
-        std::shared_ptr<AccessibilityElementOperator> mockOperator
-            = std::make_shared<MockAccessibilityElementOperator>();
-        EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
-        int32_t requestId = REQUEST_ID;
-        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-        std::list<AccessibilityElementInfo> infos;
-        std::list<AccessibilityElementInfo> treeInfos;
-        impl_->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
-        EXPECT_EQ(0, infos.size());
-        EXPECT_EQ(0, treeInfos.size());
-    }
-    impl_ = nullptr;
-    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_001 end";
-}
-
-/**
- * @tc.number: SetSearchElementInfoBySpecificPropertyResult_002
- * @tc.name: SetSearchElementInfoBySpecificPropertyResult
- * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult(no operator)
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSearchElementInfoBySpecificPropertyResult_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_002 start";
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-    } else {
-        int32_t requestId = REQUEST_ID;
-        requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
-        std::list<AccessibilityElementInfo> infos;
-        std::list<AccessibilityElementInfo> treeInfos;
-        impl_->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
-        EXPECT_EQ(0, infos.size());
-        EXPECT_EQ(0, treeInfos.size());
-    }
-    impl_ = nullptr;
-    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_002 end";
-}
-
-/**
- * @tc.number: SetSearchElementInfoBySpecificPropertyResult_003
- * @tc.name: SetSearchElementInfoBySpecificPropertyResult
- * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult(invalid requestId)
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSearchElementInfoBySpecificPropertyResult_003, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_003 start";
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-    } else {
-        std::list<AccessibilityElementInfo> infos;
-        std::list<AccessibilityElementInfo> treeInfos;
-        impl_->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, -1);
-        EXPECT_EQ(0, infos.size());
-        EXPECT_EQ(0, treeInfos.size());
-    }
-    impl_ = nullptr;
-    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_003 end";
-}
-
-/**
- * @tc.number: SetSearchElementInfoBySpecificPropertyResult_004
- * @tc.name: SetSearchElementInfoBySpecificPropertyResult
- * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult with serviceProxy_ is nullptr
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSearchElementInfoBySpecificPropertyResult_004, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_004 start";
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    ASSERT_TRUE(impl_);
-    std::list<AccessibilityElementInfo> infos;
-    std::list<AccessibilityElementInfo> treeInfos;
-    int32_t requestId = REQUEST_ID;
-    impl_->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
-    EXPECT_EQ(0, infos.size());
-    EXPECT_EQ(0, treeInfos.size());
-    impl_ = nullptr;
-    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_004 end";
-}
-
-/**
- * @tc.number: SetSearchElementInfoBySpecificPropertyResult_005
- * @tc.name: SetSearchElementInfoBySpecificPropertyResult
- * @tc.desc: Test function SetSearchElementInfoBySpecificPropertyResult with callback nullptr
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSearchElementInfoBySpecificPropertyResult_005, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_005 start";
-    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(true);
-    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
-    ASSERT_TRUE(impl_);
-    std::list<AccessibilityElementInfo> infos;
-    std::list<AccessibilityElementInfo> treeInfos;
-    AccessibilityElementInfo info;
-    infos.push_back(info);
-    int32_t requestId = 99999;
-    impl_->SetSearchElementInfoBySpecificPropertyResult(infos, treeInfos, requestId);
-    EXPECT_EQ(1, infos.size());
-    EXPECT_EQ(0, treeInfos.size());
-    impl_ = nullptr;
-    GTEST_LOG_(INFO) << "SetSearchElementInfoBySpecificPropertyResult_005 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,7 +24,11 @@ namespace {
     const std::string WINDOW_NAME = "magnification_window";
 }
 
-static MagnificationWindow instance;
+MagnificationWindow& MagnificationWindow::GetInstance()
+{
+    static MagnificationWindow instance;
+    return instance;
+}
 
 //common
 PointerPos MagnificationWindow::GetSourceCenter()
@@ -779,168 +783,120 @@ void MagnificationWindow::RefreshWindowParamPart(RotationType type)
 
 PointerPos MagnificationWindow::TransferCenter(RotationType type, PointerPos center)
 {
-    if (type == RotationType::NO_CHANGE || type == RotationType::UNKNOWN) {
-        return center;
+    if (type == RotationType::NO_CHANGE || type == RotationType::UNKNOWN ||
+        type == RotationType::FLIP_VERTICAL) {
     }
     GetWindowParam();
     if (type == RotationType::LEFT_ROTATE) {
         return {center.posY, static_cast<int32_t>(screenHeight_) - center.posX};
     }
     if (type == RotationType::RIGHT_ROTATE) {
-        return {screenWidth_ - center.posY, center.posX};
-    }
-    if (type == RotationType::FLIP_VERTICAL) {
-        return {screenWidth_ - center.posX, screenHeight_ - center.posY};
+        return {static_cast<int32_t>(screenWidth_) - center.posY, center.posX};
     }
     return center;
 }
 
-extern "C" API_EXPORT void EnableMagnification(uint32_t magnificationType, int32_t posX, int32_t posY)
+void MagnificationWindow::EnableMagnification(uint32_t magnificationType, int32_t posX, int32_t posY)
 {
     if (magnificationType == FULL_SCREEN_MAGNIFICATION) {
-        instance.EnableMagnificationFull(posX, posY);
+        EnableMagnificationFull(posX, posY);
         return;
     }
     if (magnificationType == WINDOW_MAGNIFICATION) {
-        instance.EnableMagnificationPart(posX, posY);
+        EnableMagnificationPart(posX, posY);
         return;
     }
     HILOG_DEBUG("invalid type = %{public}d", magnificationType);
 }
 
-extern "C" API_EXPORT void DisableMagnification(uint32_t magnificationType, bool needClear)
+void MagnificationWindow::DisableMagnification(uint32_t magnificationType, bool needClear)
 {
     if (magnificationType == FULL_SCREEN_MAGNIFICATION) {
-        instance.DisableMagnificationFull(needClear);
+        DisableMagnificationFull(needClear);
         return;
     }
     if (magnificationType == WINDOW_MAGNIFICATION) {
-        instance.DisableMagnificationPart(needClear);
+        DisableMagnificationPart(needClear);
         return;
     }
     HILOG_DEBUG("invalid type = %{public}d", magnificationType);
 }
 
-extern "C" API_EXPORT void SetScale(uint32_t magnificationType, float scaleSpan)
+void MagnificationWindow::SetScale(uint32_t magnificationType, float scaleSpan)
 {
     if (magnificationType == FULL_SCREEN_MAGNIFICATION) {
-        instance.SetScaleFull(scaleSpan);
+        SetScaleFull(scaleSpan);
         return;
     }
     if (magnificationType == WINDOW_MAGNIFICATION) {
-        instance.SetScalePart(scaleSpan);
+        SetScalePart(scaleSpan);
         return;
     }
     HILOG_DEBUG("invalid type = %{public}d", magnificationType);
 }
 
-extern "C" API_EXPORT void MoveMagnification(uint32_t magnificationType, int32_t deltaX, int32_t deltaY)
+void MagnificationWindow::MoveMagnification(uint32_t magnificationType, int32_t deltaX, int32_t deltaY)
 {
     if (magnificationType == FULL_SCREEN_MAGNIFICATION) {
-        instance.MoveMagnificationFull(deltaX, deltaY);
+        MoveMagnificationFull(deltaX, deltaY);
         return;
     }
     if (magnificationType == WINDOW_MAGNIFICATION) {
-        instance.MoveMagnificationPart(deltaX, deltaY);
+        MoveMagnificationPart(deltaX, deltaY);
         return;
     }
     HILOG_DEBUG("invalid type = %{public}d", magnificationType);
 }
 
-extern "C" API_EXPORT PointerPos ConvertGesture(uint32_t type, PointerPos coordinates)
-{
-    return instance.ConvertGesture(type, coordinates);
-}
-
-extern "C" API_EXPORT PointerPos ConvertCoordinates(int32_t posX, int32_t posY)
-{
-    return instance.ConvertCoordinates(posX, posY);
-}
-
-extern "C" API_EXPORT uint32_t CheckTapOnHotArea(int32_t posX, int32_t posY)
-{
-    return instance.CheckTapOnHotArea(posX, posY);
-}
-
-extern "C" API_EXPORT float GetScale()
-{
-    return instance.GetScale();
-}
-
-extern "C" API_EXPORT bool IsMagnificationWindowShow(uint32_t magnificationType)
+bool MagnificationWindow::IsMagnificationWindowShow(uint32_t magnificationType)
 {
     if (magnificationType == FULL_SCREEN_MAGNIFICATION) {
-        return instance.IsMagnificationShowFull();
+        return IsMagnificationShowFull();
     }
     if (magnificationType == WINDOW_MAGNIFICATION) {
-        return instance.IsMagnificationShowPart();
+        return IsMagnificationShowPart();
     }
     HILOG_DEBUG("invalid type = %{public}d", magnificationType);
     return false;
 }
 
-extern "C" API_EXPORT void FollowFocuseElement(uint32_t magnificationType, int32_t centerX, int32_t centerY)
+void MagnificationWindow::FollowFocuseElement(uint32_t magnificationType, int32_t centerX, int32_t centerY)
 {
     if (magnificationType == FULL_SCREEN_MAGNIFICATION) {
-        instance.FollowFocuseElementFull(centerX, centerY);
+        FollowFocuseElementFull(centerX, centerY);
         return;
     }
     if (magnificationType == WINDOW_MAGNIFICATION) {
-        instance.FollowFocuseElementPart(centerX, centerY);
+        FollowFocuseElementPart(centerX, centerY);
         return;
     }
     HILOG_DEBUG("invalid type = %{public}d", magnificationType);
 }
 
-extern "C" API_EXPORT PointerPos GetSourceCenter()
-{
-    return instance.GetSourceCenter();
-}
-
-extern "C" API_EXPORT void ShowMagnification(uint32_t magnificationType)
+void MagnificationWindow::ShowMagnification(uint32_t magnificationType)
 {
     if (magnificationType == FULL_SCREEN_MAGNIFICATION) {
-        instance.ShowMagnificationFull();
+        ShowMagnificationFull();
         return;
     }
     if (magnificationType == WINDOW_MAGNIFICATION) {
-        instance.ShowMagnificationPart();
+        ShowMagnificationPart();
         return;
     }
     HILOG_DEBUG("invalid type = %{public}d", magnificationType);
 }
 
-extern "C" API_EXPORT void RefreshWindowParam(uint32_t magnificationType, RotationType type)
+void MagnificationWindow::RefreshWindowParam(uint32_t magnificationType, RotationType type)
 {
     if (magnificationType == FULL_SCREEN_MAGNIFICATION) {
-        instance.RefreshWindowParamFull(type);
+        RefreshWindowParamFull(type);
         return;
     }
     if (magnificationType == WINDOW_MAGNIFICATION) {
-        instance.RefreshWindowParamPart(type);
+        RefreshWindowParamPart(type);
         return;
     }
     HILOG_DEBUG("invalid type = %{public}d", magnificationType);
-}
-
-extern "C" API_EXPORT bool IsTapOnHotArea(int32_t posX, int32_t posY)
-{
-    return instance.IsTapOnHotArea(posX, posY);
-}
-
-extern "C" API_EXPORT bool IsTapOnMagnificationWindow(int32_t posX, int32_t posY)
-{
-    return instance.IsTapOnMagnificationWindow(posX, posY);
-}
-
-extern "C" API_EXPORT void FixSourceCenter(bool needFix)
-{
-    instance.FixSourceCenter(needFix);
-}
-
-extern "C" API_EXPORT void InitMagnificationParam(float scale)
-{
-    instance.InitMagnificationParam(scale);
 }
 }
 }

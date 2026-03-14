@@ -23,6 +23,9 @@ extern const char _binary_accessibility_extension_abc_end[];
 extern "C" __attribute__((constructor)) void NAPI_application_AccessibilityExtensionAbility_AutoRegister()
 {
     auto moduleManager = NativeModuleManager::GetInstance();
+    if (moduleManager == nullptr) {
+        return;
+    }
     NativeModule newModuleInfo = {
         .name = "application.AccessibilityExtensionAbility",
         .fileName = "application/libaccessibilityextensionability_napi.so/AccessibilityExtensionAbility.js",

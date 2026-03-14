@@ -73,6 +73,7 @@ public:
     RetError SetZoomGestureEnabledReconfirm(const bool state);
     RetError SetColorModeState(const A11yDarkModeType &type);
     RetError SetFlashReminderSwitch(const bool state);
+    RetError SetSeniorModeState(const bool state);
 
     bool GetEnabledState() const;
     bool GetTouchGuideState() const;
@@ -104,6 +105,7 @@ public:
     uint32_t GetScreenMagnificationMode() const;
     float GetScreenMagnificationScale() const;
     bool GetFlashReminderSwitch() const;
+    bool GetSeniorModeState() const;
 
     RetError SetEnabledAccessibilityServices(const std::vector<std::string> &services);
     const std::vector<std::string> GetEnabledAccessibilityServices();
@@ -136,8 +138,8 @@ private:
     void InitCapability();
     void InitPrivacySpaceConfig();
     void InitAnimationOffConfig();
-    void HandleIgnoreRepeatClickCache();
     void HandleIgnoreRepeatClickState();
+    void HandleIgnoreRepeatClickCache();
     RetError SetConfigState(const std::string& key, bool value);
 
     void CloneOnDeviceCapability();
@@ -167,6 +169,7 @@ private:
     bool audioMonoState_ = false;
     bool flashReminderSwitch_ = false;
     bool daltonizationState_ = false;
+    bool seniorModeState_ = false;
     uint32_t daltonizationColorFilter_ = 0;
     uint32_t contentTimeout_ = 0;
     float brightnessDiscount_ = 0.0;

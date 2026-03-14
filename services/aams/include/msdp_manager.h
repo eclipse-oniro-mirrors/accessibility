@@ -45,7 +45,7 @@ public:
     void SetErrorCode(int32_t errorCode);
 
     std::vector<std::string> GetResultApps() const;
-    void SetResultApps(const std::vector<std::string>);
+    void SetResultApps(const std::vector<std::string>& resultApps);
 
     std::string GetHpeDeviceId() const;
     void SetHpeDeviceId(const std::string &hpeDeviceId);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,16 +33,11 @@ bool KeyEventFilter::OnKeyEvent(MMI::KeyEvent& event)
 }
 
 void KeyEventFilter::SetServiceOnKeyEventResult(
-    AccessibleAbilityConnection& connection, bool isHandled, uint32_t sequenceNum)
+    int32_t connectionId, bool isHandled, uint32_t sequenceNum)
 {
     AccessibilityAbilityHelper::GetInstance().SetTestSequence(sequenceNum);
-    (void)connection;
+    (void)connectionId;
     (void)isHandled;
-}
-
-void KeyEventFilter::ClearServiceKeyEvents(AccessibleAbilityConnection& connection)
-{
-    (void)connection;
 }
 
 void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent& event)
@@ -58,9 +53,9 @@ bool KeyEventFilter::RemoveProcessingEvent(std::shared_ptr<ProcessingEvent> even
 }
 
 std::shared_ptr<KeyEventFilter::ProcessingEvent> KeyEventFilter::FindProcessingEvent(
-    AccessibleAbilityConnection& connection, uint32_t sequenceNum)
+    int32_t connectionId, uint32_t sequenceNum)
 {
-    (void)connection;
+    (void)connectionId;
     (void)sequenceNum;
     return nullptr;
 }

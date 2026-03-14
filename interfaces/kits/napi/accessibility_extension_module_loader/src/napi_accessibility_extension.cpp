@@ -201,7 +201,7 @@ void NAccessibilityExtension::OnAbilityConnected()
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             ExtensionCallbackInfo *data = static_cast<ExtensionCallbackInfo*>(work->data);
-            napi_env env = data->env_;
+            napi_env env = data->extension_->env_;
             auto closeScope = [env](napi_handle_scope scope) { napi_close_handle_scope(env, scope); };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(env), closeScope);
             data->extension_->CallObjectMethod("onConnect");
@@ -257,7 +257,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             ExtensionCallbackInfo *data = static_cast<ExtensionCallbackInfo*>(work->data);
-            napi_env env = data->env_;
+            napi_env env = data->extension_->env_;
             auto closeScope = [env](napi_handle_scope scope) { napi_close_handle_scope(env, scope); };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(env), closeScope);
             data->extension_->CallObjectMethod("onDisconnect");
@@ -309,13 +309,14 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
     } else {
         std::shared_ptr<AccessibilityElementInfo> elementInfo = std::make_shared<AccessibilityElementInfo>();
         std::string inspectorKey = eventInfo.GetInspectorKey();
-        std::string bundleName = eventInfo.GetBundleName();
+        std::string currentBundleName = eventInfo.GetBundleName();
         RetError ret = RET_ERR_FAILED;
         AccessibilityElementInfo accessibilityElementInfo;
         if (eventInfo.GetEventType() == TYPE_PAGE_ACTIVE && inspectorKey == "") {
             ret = aaClient->GetRoot(accessibilityElementInfo, true);
-            std::string currentBundleName = accessibilityElementInfo.GetBundleName();
-            if (currentBundleName != bundleName) {
+            HILOG_DEBUG("GetElement PageActive currentBundleName: %{public}s and targetBundleName: %{public}s",
+                currentBundleName.c_str(), accessibilityElementInfo.GetBundleName().c_str());
+            if (currentBundleName != accessibilityElementInfo.GetBundleName()) {
                 accessibilityElementInfo.SetMainWindowId(INVALID_WINDOW_ID);
                 accessibilityElementInfo.SetWindowId(INVALID_WINDOW_ID);
             }
@@ -432,18 +433,27 @@ napi_status SetEventInfoStrProperty(napi_env env, const char *property, std::str
     return napi_set_named_property(env, napiEventInfo, property, nValue);
 }
 
-std::string NAccessibilityExtension::GetEventExtraInfo(const AccessibilityEventInfo& eventInfo)
+std::string NAccessibilityExtension::GetEventExtraInfo(const AccessibilityEventInfo &eventInfo)
 {
-    std::map<std::string, std::string> mapValIsStr = eventInfo.GetExtraEvent().GetExtraEventInfoValueStr();
+    const auto strMap = eventInfo.GetExtraEvent().GetExtraEventInfoValueStr();
+    const auto intMap = eventInfo.GetExtraEvent().GetExtraEventInfoValueInt();
     nlohmann::json extraInfoValue;
-    for (auto &iterStr : mapValIsStr) {
-        extraInfoValue[iterStr.first] = iterStr.second;
+    for (const auto &[key, value] : strMap) {
+        if (value == "true" || value == "false") {
+            extraInfoValue[key] = (value == "true") ? true : false;
+        } else {
+            extraInfoValue[key] = value;
+        }
+    }
+    for (const auto &[key, value] : intMap) {
+        extraInfoValue[key] = static_cast<int64_t>(value);
     }
 
-    extraInfoValue["startIndex"] = std::to_string(eventInfo.GetBeginIndex());
-    extraInfoValue["endIndex"] = std::to_string(eventInfo.GetEndIndex());
+    extraInfoValue["startIndex"] = eventInfo.GetBeginIndex();
+    extraInfoValue["endIndex"] = eventInfo.GetEndIndex();
+
     HILOG_DEBUG("GetEventExtraInfo extraInfoValue is [%{public}s]", extraInfoValue.dump().c_str());
-    return extraInfoValue.dump().c_str();
+    return extraInfoValue.dump();
 }
 
 int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t *loop)
@@ -506,8 +516,8 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
                 ConvertAccessibilityElementToJS(data->env_, napiEvent, napiEventInfo, data->element_);
                 napi_value eventArgv[] = {napiEvent};
                 data->extension_->CallObjectMethod("onAccessibilityEvent", eventArgv, 1);
-                napi_value eventInfoArgv[] = {napiEventInfo};
-                data->extension_->CallObjectMethod("onAccessibilityEventInfo", eventInfoArgv, 1);
+                napi_value eventInfoargv[] = {napiEventInfo};
+                data->extension_->CallObjectMethod("onAccessibilityEventInfo", eventInfoargv, 1);
             } while (0);
             if (data != nullptr) {
                 delete data;

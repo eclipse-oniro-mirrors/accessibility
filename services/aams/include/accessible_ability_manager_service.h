@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,11 +26,7 @@
 #include "accessible_ability_manager_service_event_handler.h"
 #include "accessibility_account_data.h"
 #include "accessibility_common_event.h"
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-#include "accessibility_display_manager.h"
-#endif
 #include "accessibility_element_operator_callback_stub.h"
-#include "accessibility_input_interceptor.h"
 #include "accessibility_keyevent_filter.h"
 #include "accessibility_settings.h"
 #include "accessibility_touchEvent_injector.h"
@@ -43,13 +39,12 @@
 #include "accessibility_short_key.h"
 #include "accessibility_resource_bundle_manager.h"
 #include "refbase.h"
-#include "magnification_manager.h"
 #include "accessibility_security_component_manager.h"
+#include "accessible_extend_manager_service_proxy.h"
 
 namespace OHOS {
 namespace Accessibility {
 class AccessibilityAccountData;
-class TouchEventInjector;
 class AccessibilitySettings;
 class AccessibilityResourceBundleManager;
 
@@ -75,8 +70,6 @@ public:
     void InitActionHandler();
     void InitSendEventHandler();
     void InitChannelHandler();
-    void InitInputManagerHandler();
-    void InitGestureHandler();
     void InitHoverEnterHandler();
     void OnStart() override;
     void OnStop() override;
@@ -86,6 +79,9 @@ public:
     void PostDelayUnloadTask();
 
 public:
+    // for ext so
+    void SendAccessibilityEventToAA(EventType eventType, GestureType gestureId);
+
     /* For AccessibleAbilityManagerServiceStub */
     ErrCode SendEvent(const AccessibilityEventInfoParcel& eventInfoParcel, int32_t flag) override;
 
@@ -115,7 +111,13 @@ public:
 
     ErrCode DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId) override;
 
+    ErrCode InnerDeregisterElementOperatorByWindowId(int32_t windowId);
+
+    ErrCode InnerDeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId);
+
     ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override;
+
+    ErrCode DeRegisterConfigObserver(const sptr<IRemoteObject>& obj) override;
 
     ErrCode DeRegisterEnableAbilityListsObserver(const sptr<IRemoteObject>& obj) override;
 
@@ -127,7 +129,8 @@ public:
 
     ErrCode GetCaptionState(bool &state, bool isPermissionRequired) override;
 
-    ErrCode EnableAbility(const std::string &name, const uint32_t capabilities) override;
+    ErrCode EnableAbility(const std::string &name, const uint32_t capabilities,
+        const bool connectCallBackFlag) override;
     ErrCode GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
     RetError SetCurtainScreenUsingStatus(bool isEnable);
     ErrCode CheckExtensionAbilityPermission(std::string& processName) override;
@@ -163,8 +166,8 @@ public:
     ErrCode GetReadableRules(std::string &readableRules) override;
     ErrCode IsInnerWindowRootElement(int64_t elementId, bool &state) override;
 private:
-    int32_t focusWindowId_ = -1;
-    int64_t focusElementId_ = -1;
+    std::atomic<int32_t> focusWindowId_ = -1;
+    std::atomic<int64_t> focusElementId_ = -1;
     std::atomic<int> requestId_ = REQUEST_ID_INIT;
 public:
     /* For inner modules */
@@ -173,20 +176,6 @@ public:
     bool DisableShortKeyTargetAbility();
     void OnShortKeyProcess();
     void UpdateShortKeyRegister();
-
-    void SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector);
-
-    inline sptr<TouchEventInjector> GetTouchEventInjector()
-    {
-        return touchEventInjector_;
-    }
-
-    inline sptr<KeyEventFilter> GetKeyEventFilter()
-    {
-        return keyEventFilter_;
-    }
-
-    void SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter);
 
     /* For DisplayResize */
     void NotifyDisplayResizeStateChanged(int32_t displayId, Rect& rect, float scale, float centerX, float centerY);
@@ -214,16 +203,6 @@ public:
     inline std::shared_ptr<AppExecFwk::EventRunner> &GetChannelRunner()
     {
         return channelRunner_;
-    }
-
-    inline std::shared_ptr<AppExecFwk::EventRunner> &GetInputManagerRunner()
-    {
-        return inputManagerRunner_;
-    }
-
-    inline std::shared_ptr<AppExecFwk::EventRunner> &GetGestureRunner()
-    {
-        return gestureRunner_;
     }
 
     sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
@@ -313,6 +292,7 @@ public:
     ErrCode SetClickResponseTime(const uint32_t time) override;
     ErrCode SetIgnoreRepeatClickState(const bool state) override;
     ErrCode SetIgnoreRepeatClickTime(const uint32_t time) override;
+    ErrCode GetSeniorModeState(bool &state) override;
 
     ErrCode GetScreenMagnificationState(bool &state) override;
     ErrCode GetShortKeyState(bool &state) override;
@@ -336,7 +316,6 @@ public:
     ErrCode GetAllConfigs(AccessibilityConfigData& configData, CaptionPropertyParcel& caption) override;
 
     ErrCode RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
-    ErrCode DeRegisterConfigObserver(const sptr<IRemoteObject>& obj) override;
     void UpdateConfigState();
     void UpdateAudioBalance();
     void UpdateBrightnessDiscount();
@@ -365,19 +344,12 @@ public:
     void SetMagnificationMode(int32_t mode);
     float GetMagnificationScale();
     void SetMagnificationScale(float scale);
-    std::shared_ptr<MagnificationManager> GetMagnificationMgr();
-    std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
-    std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
-    std::shared_ptr<MagnificationMenuManager> GetMenuManager();
     ErrCode AnnouncedForAccessibility(const std::string &announcedText);
     void InitResource(bool needReInit);
     std::string &GetResource(const std::string &resourceName);
     void AnnouncedForMagnification(AnnounceType announceType);
-    void OffZoomGesture();
-    void InitMagnification();
-    void OnModeChanged(uint32_t mode);
 
-    RetError UpdateUITestConfigureEvents(std::vector<uint32_t> needEvents);
+    RetError ConfigureEvents(std::vector<uint32_t> needEvents);
 
 private:
     void StopCallbackWait(int32_t windowId);
@@ -386,6 +358,7 @@ private:
     bool IsApp() const;
     bool IsSystemApp() const;
     bool IsBroker() const;
+    ErrCode CheckDeregisterTokenId(int32_t windowId);
     sptr<AccessibilityWindowConnection> GetRealIdConnection();
     bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
         AccessibilityElementInfo &elementInfo);
@@ -459,9 +432,7 @@ private:
         ffrt::mutex stateObserversMutex_;
     };
 
-    RetError InnerEnableAbility(
-        const std::string &name,
-        const uint32_t capabilities,
+    RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities,
         const std::string callerBundleName = "");
     RetError InnerDisableAbility(const std::string &name);
 
@@ -488,21 +459,27 @@ private:
     void OnScreenMagnificationStateChanged();
     void RegisterScreenMagnificationState();
     void OnScreenMagnificationTypeChanged();
+    void SetConfigScreenMagnificationScale(float scale);
+    void OnScreenMagnificationScaleChanged();
     void RegisterScreenMagnificationType();
     void OnFlashReminderSwitchChanged();
     void RegisterFlashReminderSwitch();
+    void OnSeniorModeStateChanged();
+    void RegisterSeniorModeState();
 
     void OnVoiceRecognitionChanged();
     void RegisterVoiceRecognitionState();
     void UpdateVoiceRecognitionState();
     void SubscribeOsAccount();
     void UnsubscribeOsAccount();
-    bool InvalidHoverEnterEvent(AccessibilityEventInfo &event);
+    void RegisterNotificationState();
 
     int32_t ApplyTreeId();
     void RecycleTreeId(int32_t treeId);
+    void RecycleEventHandler();
     std::shared_ptr<AccessibilityDatashareHelper> GetCurrentAcountDatashareHelper();
     void OnFocusedEvent(const AccessibilityEventInfo &eventInfo);
+    bool InvalidHoverEnterEvent(AccessibilityEventInfo &event);
 
     bool isReady_ = false;
     bool isPublished_ = false;
@@ -510,9 +487,6 @@ private:
     int32_t currentAccountId_ = -1;
     AccessibilityAccountDataMap  a11yAccountsData_;
 
-    sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
-    sptr<TouchEventInjector> touchEventInjector_ = nullptr;
-    sptr<KeyEventFilter> keyEventFilter_ = nullptr;
     sptr<AccessibilityDumper> accessibilityDumper_ = nullptr;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
@@ -526,9 +500,6 @@ private:
 
     std::shared_ptr<AppExecFwk::EventRunner> channelRunner_;
     std::shared_ptr<AAMSEventHandler> channelHandler_;
-
-    std::shared_ptr<AppExecFwk::EventRunner> inputManagerRunner_;
-    std::shared_ptr<AppExecFwk::EventRunner> gestureRunner_;
 
     std::shared_ptr<AppExecFwk::EventRunner> hoverEnterRunner_;
     std::shared_ptr<AAMSEventHandler> hoverEnterHandler_;
@@ -557,9 +528,9 @@ private:
 
     bool isSubscribeMSDPCallback_ = false;
     ffrt::mutex subscribeMSDPMutex_;
-    std::shared_ptr<MagnificationManager> magnificationManager_ = nullptr;
     bool isResourceInit_ = false;
     std::shared_ptr<AccountSubscriber> accountSubscriber_ = nullptr;
+    ffrt::mutex resourceMapMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

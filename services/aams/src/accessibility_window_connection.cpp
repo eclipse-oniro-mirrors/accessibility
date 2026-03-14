@@ -200,10 +200,10 @@ void AccessibilityWindowConnection::InteractionOperationDeathRecipient::OnRemote
     }
  
     if (treeId_ > 0) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowIdAndTreeId(
+        Singleton<AccessibleAbilityManagerService>::GetInstance().InnerDeregisterElementOperatorByWindowIdAndTreeId(
             windowId_, treeId_);
     } else {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowId(windowId_);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().InnerDeregisterElementOperatorByWindowId(windowId_);
     }
 }
 } // namespace Accessibility

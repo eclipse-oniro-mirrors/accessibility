@@ -62,9 +62,77 @@ bool FuzzHandleSendSimulateGesturePath(const uint8_t *data, size_t size)
     return true;
 }
 
+bool FuzzHandleGetCursorPosition(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    int32_t accessibilityWindowId = 0;
+    int64_t elementId = 0;
+    int32_t treeId = 0;
+    int32_t requestId = 0;
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
+    position += GetObject<int64_t>(elementId, &data[position], size - position);
+    position += GetObject<int32_t>(treeId, &data[position], size - position);
+    GetObject<int32_t>(requestId, &data[position], size - position);
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    if (chanImp == nullptr) {
+        return false;
+    }
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    mdata.WriteInt32(accessibilityWindowId);
+    mdata.WriteInt64(elementId);
+    mdata.WriteInt32(treeId);
+    mdata.WriteInt32(requestId);
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CURSOR_POSITION),
+        mdata, reply, option);
+    return true;
+}
+
+bool FuzzHandleSetIsRegisterDisconnectCallback(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    int32_t accessibilityWindowId = 0;
+    int64_t elementId = 0;
+    int32_t treeId = 0;
+    int32_t requestId = 0;
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
+    position += GetObject<int64_t>(elementId, &data[position], size - position);
+    position += GetObject<int32_t>(treeId, &data[position], size - position);
+    GetObject<int32_t>(requestId, &data[position], size - position);
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    if (chanImp == nullptr) {
+        return false;
+    }
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    mdata.WriteInt32(accessibilityWindowId);
+    mdata.WriteInt64(elementId);
+    mdata.WriteInt32(treeId);
+    mdata.WriteInt32(requestId);
+    chanImp->OnRemoteRequest(static_cast<uint32_t>(AccessibilityInterfaceCode::SET_IS_REGISTER_DISCONNECT_CALLBACK),
+        mdata, reply, option);
+    return true;
+}
+
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
     FuzzHandleSendSimulateGesturePath(data, size);
+    FuzzHandleGetCursorPosition(data, size);
+    FuzzHandleSetIsRegisterDisconnectCallback(data, size);
     return true;
 }
 } // namespace Accessibility

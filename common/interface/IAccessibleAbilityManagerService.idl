@@ -42,7 +42,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void GetCaptionState([out] boolean state, [in] boolean isPermissionRequired);
     void SetCaptionProperty([in] CaptionPropertyParcel caption, [in] boolean isPermissionRequired);
     void SetCaptionState([in] boolean state, [in] boolean isPermissionRequired);
-    void EnableAbility([in] String name, [in] unsigned int capabilities);
+    void EnableAbility([in] String name, [in] unsigned int capabilities, [in] boolean connectCallBackFlag);
     void GetEnabledAbilities([out] String[] enabledAbilities);
     void DisableAbility([in] String name);
     void SetMagnificationState([in] boolean state);
@@ -88,6 +88,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void GetIgnoreRepeatClickState([out] boolean state);
     void GetIgnoreRepeatClickTime([out] unsigned int time);
     void GetFlashReminderSwitch([out] boolean state);
+    void GetSeniorModeState([out] boolean state);
     void GetAllConfigs([out] AccessibilityConfigData configData, [out] CaptionPropertyParcel caption);
     void GetRealWindowAndElementId([inout] int windowId, [inout] long elementId);
     void GetSceneBoardInnerWinId([in] int windowId, [in] long elementId, [out] int innerWid);

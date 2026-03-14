@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,8 +26,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibleAbilityConnection;
-class AccessibleAbilityManagerService;
 class KeyEventFilterEventHandler;
 
 class KeyEventFilter : public EventTransmission {
@@ -68,13 +66,7 @@ public:
      * @param isHandled true if the AccessibleAbility can handle the event else false
      * @param sequenceNum the sequence of keyevent
      */
-    void SetServiceOnKeyEventResult(AccessibleAbilityConnection &connection, bool isHandled, uint32_t sequenceNum);
-
-    /**
-     * @brief Clear AccessibleAbility keyevents.
-     * @param connection the AccessibleAbility
-     */
-    void ClearServiceKeyEvents(AccessibleAbilityConnection &connection);
+    void SetServiceOnKeyEventResult(int32_t connectionId, bool isHandled, uint32_t sequenceNum);
 
     /**
      * @brief Destroy the events.
@@ -101,10 +93,9 @@ private:
      * @param sequenceNum the sequence of event
      * @return the processing event
      */
-    std::shared_ptr<ProcessingEvent> FindProcessingEvent(AccessibleAbilityConnection &connection,
-        uint32_t sequenceNum);
+    std::shared_ptr<ProcessingEvent> FindProcessingEvent(int32_t connectionId, uint32_t sequenceNum);
 
-    std::map<sptr<AccessibleAbilityConnection>, std::vector<std::shared_ptr<ProcessingEvent>>> eventMaps_;
+    std::map<int32_t, std::vector<std::shared_ptr<ProcessingEvent>>> eventMaps_;
     std::shared_ptr<KeyEventFilterEventHandler> timeoutHandler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     uint32_t sequenceNum_ = 0;

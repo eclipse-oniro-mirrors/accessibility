@@ -19,3 +19,10 @@ ohos_prebuilt_etc("ohos.para.dac") {
   subsystem_name = "barrierfree"
   module_install_dir = "etc/param"
 }
+
+ohos_prebuilt_etc("ohos.para") {
+  source = "./accessibility.para"
+  part_name = "accessibility"
+  subsystem_name = "barrierfree"
+  module_install_dir = "etc/param"
+}

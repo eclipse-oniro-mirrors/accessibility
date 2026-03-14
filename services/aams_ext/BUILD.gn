@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Huawei Device Co., Ltd.
+# Copyright (C) 2025-2026 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -38,11 +38,30 @@ config("aams_ext_config") {
 }
 
 aams_ext_files = [
-  "${services_ext_path}/src/magnification_window.cpp",
-  "${services_ext_path}/src/magnification_menu.cpp",
+  "${services_ext_path}/src/accessibility_circle_drawing_manager.cpp",
   "${services_ext_path}/src/ext_utils.cpp",
   "${services_ext_path}/src/accessibility_notification_helper.cpp",
   "${services_ext_path}/src/export_api.cpp",
+  "${services_ext_path}/src/accessibility_input_interceptor.cpp",
+  "${services_ext_path}/src/accessibility_event_transmission.cpp",
+  "${services_ext_path}/src/accessibility_keyevent_filter.cpp",
+  "${services_ext_path}/src/accessibility_mouse_autoclick.cpp",
+  "${services_ext_path}/src/accessibility_mouse_key.cpp",
+  "${services_ext_path}/src/accessibility_screen_touch.cpp",
+  "${services_ext_path}/src/accessibility_touchEvent_injector.cpp",
+  "${services_ext_path}/src/accessibility_zoom_gesture.cpp",
+  "${services_ext_path}/src/full_screen_magnification_manager.cpp",
+  "${services_ext_path}/src/magnification_manager.cpp",
+  "${services_ext_path}/src/magnification_menu_manager.cpp",
+  "${services_ext_path}/src/magnification_menu.cpp",
+  "${services_ext_path}/src/magnification_window.cpp",
+  "${services_ext_path}/src/touch_exploration_multi_finger_gesture.cpp",
+  "${services_ext_path}/src/touch_exploration_single_finger_gesture.cpp",
+  "${services_ext_path}/src/window_magnification_gesture.cpp",
+  "${services_ext_path}/src/window_magnification_manager.cpp",
+  "${services_ext_path}/src/extend_service_manager.cpp",
+  "${services_ext_path}/src/accessible_ability_manager_service_event_handler.cpp",
+  "${services_ext_path}/src/accessibility_extend_power_manager.cpp",
 ]
 
 ohos_shared_library("aams_ext") {
@@ -58,21 +77,34 @@ ohos_shared_library("aams_ext") {
 
   sources = aams_ext_files
 
+  if (accessibility_feature_display_manager) {
+    sources += [ "${services_ext_path}/src/accessibility_display_manager.cpp" ]
+  }
+
   configs = [
     ":aams_ext_config",
     "../../resources/config/build:coverage_flags",
+  ]
+
+  deps = [
+    "../../common/interface:accessibility_interface",
+    "../../interfaces/innerkits/common:accessibility_common"
   ]
 
   external_deps = [
     "ability_base:zuri",
     "ability_runtime:wantagent_innerkits",
     "c_utils:utils",
+    "ffrt:libffrt",
     "graphic_2d:2d_graphics",
     "graphic_2d:librender_service_client",
     "graphic_2d:librender_service_base",
     "hisysevent:libhisysevent",
     "i18n:intl_util",
+    "init:libbegetutil",
+    "input:libmmi-client",
     "os_account:os_account_innerkits",
+    "power_manager:powermgr_client",
     "resource_management:global_resmgr",
     "samgr:samgr_proxy",
     "time_service:time_client",
@@ -84,6 +116,14 @@ ohos_shared_library("aams_ext") {
     defined(
       global_parts_info.notification_distributed_notification_service)) {
     external_deps += [ "distributed_notification_service:ans_innerkits" ]
+  }
+
+  if (accessibility_feature_display_manager) {
+    external_deps += [ "display_manager:displaymgr" ]
+  }
+ 
+  if (accessibility_watch_feature) {
+    external_deps += [ "resource_schedule_service:ressched_client" ]
   }
 
   install_enable = true

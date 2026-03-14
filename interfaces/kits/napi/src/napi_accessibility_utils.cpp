@@ -33,56 +33,126 @@ namespace {
     const uint32_t COLOR_TRANSPARENT = 0x00000000;
     const std::string HALF_VALUE = "0";
     const std::string FULL_VALUE = "1";
+    napi_status status = napi_ok;
 } // namespace
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
 
-uint32_t ParseResourceIdFromNAPI(napi_env env, napi_value value)
+napi_status ParseResourceIdFromNAPI(napi_env env, napi_value value, uint32_t &idValue)
 {
-    uint32_t idValue = 0;
     bool hasProperty = false;
     napi_value propertyName = nullptr;
-    napi_create_string_utf8(env, "id", NAPI_AUTO_LENGTH, &propertyName);
-    napi_has_property(env, value, propertyName, &hasProperty);
-    if (hasProperty) {
-        napi_value itemValue = nullptr;
-        napi_get_property(env, value, propertyName, &itemValue);
-        napi_get_value_uint32(env, itemValue, &idValue);
+    status = napi_create_string_utf8(env, "id", NAPI_AUTO_LENGTH, &propertyName);
+    if (status != napi_ok) {
+
+        HILOG_ERROR("napi create resource id failed");
+        return status;
     }
+    status = napi_has_property(env, value, propertyName, &hasProperty);
+    if (!hasProperty) {
+        HILOG_ERROR("property is null");
+        return status;
+    }
+    napi_value itemValue = nullptr;
+    napi_get_property(env, value, propertyName, &itemValue);
+    napi_get_value_uint32(env, itemValue, &idValue);
     HILOG_DEBUG("get resource id is %{public}d", idValue);
-    return idValue;
+    return status;
 }
  
-std::string ParseResourceBundleNameFromNAPI(napi_env env, napi_value value)
+napi_status ParseResourceBundleNameFromNAPI(napi_env env, napi_value value,
+    std::string &bundleNameValue)
 {
-    std::string bundleNameValue;
     bool hasProperty = false;
     napi_value propertyName = nullptr;
-    napi_create_string_utf8(env, "bundleName", NAPI_AUTO_LENGTH, &propertyName);
-    napi_has_property(env, value, propertyName, &hasProperty);
-    if (hasProperty) {
-        napi_value itemValue = nullptr;
-        napi_get_property(env, value, propertyName, &itemValue);
-        bundleNameValue = GetStringFromNAPI(env, itemValue);
+    status = napi_create_string_utf8(env, "bundleName", NAPI_AUTO_LENGTH, &propertyName);
+    if (status != napi_ok) {
+
+        HILOG_ERROR("napi create bundleName failed");
+        return status;
     }
+    status = napi_has_property(env, value, propertyName, &hasProperty);
+    if (!hasProperty) {
+        HILOG_ERROR("property is null");
+        return status;
+    }
+    napi_value itemValue = nullptr;
+    status = napi_get_property(env, value, propertyName, &itemValue);
+    if (status != napi_ok) {
+        HILOG_ERROR("get bundleName from napi failed");
+        return status;
+    }
+    bundleNameValue = GetStringFromNAPI(env, itemValue);
     HILOG_DEBUG("get resource bundleName is %{public}s", bundleNameValue.c_str());
-    return bundleNameValue;
+    return status;
 }
  
-std::string ParseResourceModuleNameFromNAPI(napi_env env, napi_value value)
+napi_status ParseResourceModuleNameFromNAPI(napi_env env, napi_value value,
+    std::string &moduleNameValue)
 {
-    std::string moduleNameValue;
     bool hasProperty = false;
     napi_value propertyName = nullptr;
-    napi_create_string_utf8(env, "moduleName", NAPI_AUTO_LENGTH, &propertyName);
-    napi_has_property(env, value, propertyName, &hasProperty);
-    if (hasProperty) {
-        napi_value itemValue = nullptr;
-        napi_get_property(env, value, propertyName, &itemValue);
-        moduleNameValue = GetStringFromNAPI(env, itemValue);
+    status = napi_create_string_utf8(env, "moduleName", NAPI_AUTO_LENGTH, &propertyName);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi create moduleName failed");
+        return status;
     }
+    status = napi_has_property(env, value, propertyName, &hasProperty);
+    if (!hasProperty) {
+        HILOG_ERROR("property is null");
+        return status;
+    }
+    napi_value itemValue = nullptr;
+    status = napi_get_property(env, value, propertyName, &itemValue);
+    if (status != napi_ok) {
+        HILOG_ERROR("get moduleName from napi failed");
+        return status;
+    }
+    moduleNameValue = GetStringFromNAPI(env, itemValue);
     HILOG_DEBUG("get resource moduleName is %{public}s", moduleNameValue.c_str());
-    return moduleNameValue;
+    return status;
+}
+
+napi_status ParseResourceParamsFromNAPI(napi_env env, napi_value value,
+    std::vector<std::tuple<int32_t, std::string>> &resourceParamsValue)
+{
+    bool hasProperty = false;
+    napi_value propertyName = nullptr;
+    napi_valuetype valueType = napi_undefined;
+    status = napi_create_string_utf8(env, "params", NAPI_AUTO_LENGTH, &propertyName);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi create params failed");
+        return status;
+    }
+    status = napi_has_property(env, value, propertyName, &hasProperty);
+    if (!hasProperty) {
+        HILOG_ERROR("property is null");
+        return status;
+    }
+    napi_value paramsValue = nullptr;
+    status = napi_get_property(env, value, propertyName, &paramsValue);
+    if (status != napi_ok) {
+        HILOG_ERROR("get params from napi failed");
+        return status;
+    }
+    uint32_t arrayLength = 0;
+    napi_get_array_length(env, paramsValue, &arrayLength);
+    HILOG_DEBUG("resource params size is %{public}d", arrayLength);
+    for (uint32_t i = 0; i < arrayLength; i++) {
+        napi_value indexValue = nullptr;
+        napi_get_element(env, paramsValue, i, &indexValue);
+        napi_typeof(env, indexValue, &valueType);
+        if (valueType == napi_string) {
+            std::string str = "";
+            str = GetStringFromNAPI(env, indexValue);
+            resourceParamsValue.emplace_back(std::make_tuple(1, str));
+        } else if (valueType == napi_number) {
+            int32_t num;
+            napi_get_value_int32(env, indexValue, &num);
+            resourceParamsValue.emplace_back(std::make_tuple(0, std::to_string(num)));
+        }
+    }
+    return status;
 }
 
 std::string GetStringFromNAPI(napi_env env, napi_value value)
@@ -900,12 +970,13 @@ std::string ConvertTextMoveUnitToString(TextMoveUnit type)
     return textMoveUnitTable.at(type);
 }
 
-void ConvertActionArgsJSToNAPI(
+bool ConvertActionArgsJSToNAPI(
     napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action)
 {
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     std::string str = "";
+    bool ret = true;
     switch (action) {
         case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
         case ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM:
@@ -924,12 +995,13 @@ void ConvertActionArgsJSToNAPI(
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SET_SELECTION:
+            ret = SetSelectionParam(env, object, args);
             SetSelectionParam(env, object, args);
             break;
         case ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION:
             napi_create_string_utf8(env, "offset", NAPI_AUTO_LENGTH, &propertyNameValue);
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-            CheckNumber(env, str);
+            ret = CheckNumber(env, str);
             if (hasProperty) {
                 args.insert(std::pair<std::string, std::string>("offset", str.c_str()));
             }
@@ -944,48 +1016,57 @@ void ConvertActionArgsJSToNAPI(
         case ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK:
             napi_create_string_utf8(env, "spanId", NAPI_AUTO_LENGTH, &propertyNameValue);
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-            CheckNumber(env, str);
+            ret = CheckNumber(env, str);
             if (hasProperty) {
                 args.insert(std::pair<std::string, std::string>("spanId", str.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
-            SetScrollTypeParam(env, object, args);
+            ret = SetScrollTypeParam(env, object, args);
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
-            SetScrollTypeParam(env, object, args);
+            ret = SetScrollTypeParam(env, object, args);
             break;
         default:
             break;
     }
+    return ret;
 }
 
-void CheckNumber(napi_env env, std::string value)
+bool CheckNumber(napi_env env, std::string value)
 {
     int num;
     std::stringstream streamStr;
     streamStr << value;
     if (!(streamStr >> num)) {
+        HILOG_ERROR("check number failed!");
         napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
         napi_throw(env, err);
+        return false;   
     }
+    return true;
 }
 
-void SetSelectionParam(napi_env env, napi_value object, std::map<std::string, std::string>& args)
+bool SetSelectionParam(napi_env env, napi_value object, std::map<std::string, std::string>& args)
 {
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     std::string str = "";
     bool seleFlag = false;
+    bool selectionModeFlag = false;
     napi_create_string_utf8(env, "selectTextBegin", NAPI_AUTO_LENGTH, &propertyNameValue);
     str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-    CheckNumber(env, str);
+    if (!CheckNumber(env, str)) {
+        return false;
+    }
     if (hasProperty) {
         args.insert(std::pair<std::string, std::string>("selectTextBegin", str.c_str()));
     }
     napi_create_string_utf8(env, "selectTextEnd", NAPI_AUTO_LENGTH, &propertyNameValue);
     str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-    CheckNumber(env, str);
+    if (!CheckNumber(env, str)) {
+        return false;
+    }
     if (hasProperty) {
         args.insert(std::pair<std::string, std::string>("selectTextEnd", str.c_str()));
     }
@@ -995,9 +1076,16 @@ void SetSelectionParam(napi_env env, napi_value object, std::map<std::string, st
         std::string value = seleFlag ? "forWard" : "backWard";
         args.insert(std::pair<std::string, std::string>("selectTextInForWard", value.c_str()));
     }
+    napi_create_string_utf8(env, "isSelectionMode", NAPI_AUTO_LENGTH, &propertyNameValue);
+    selectionModeFlag = ConvertBoolJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        std::string value = selectionModeFlag ? "true" : "false";
+        args.insert(std::pair<std::string, std::string>("isSelectionMode", value.c_str()));
+    }
+    return true;
 }
 
-void SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, std::string>& args)
+bool SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, std::string>& args)
 {
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
@@ -1019,9 +1107,11 @@ void SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, s
             HILOG_DEBUG("Input is empty, throw error");
             napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
             napi_throw(env, err);
+            return false;
         }
         args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
     }
+    return true;
 }
 
 void SetPermCheckFlagForAction(bool checkPerm, std::map<std::string, std::string>& args)
@@ -1307,6 +1397,7 @@ bool ConvertEventInfoJSToNAPIPart4(
         eventInfo.SetResourceBundleName(resourceInfo.bundleName);
         eventInfo.SetResourceModuleName(resourceInfo.moduleName);
         eventInfo.SetResourceId(resourceInfo.resourceId);
+        eventInfo.SetResourceParams(resourceInfo.params);
     }
     return true;
 }
@@ -1555,9 +1646,10 @@ void ConvertResourceJSToNAPI(napi_env env, napi_value object, napi_value propert
     if (hasProperty) {
         napi_value itemValue = nullptr;
         napi_get_property(env, object, propertyNameValue, &itemValue);
-        resourceInfo.resourceId = ParseResourceIdFromNAPI(env, itemValue);
-        resourceInfo.bundleName = ParseResourceBundleNameFromNAPI(env, itemValue);
-        resourceInfo.moduleName = ParseResourceModuleNameFromNAPI(env, itemValue);
+        ParseResourceIdFromNAPI(env, itemValue, resourceInfo.resourceId);
+        ParseResourceBundleNameFromNAPI(env, itemValue, resourceInfo.bundleName);
+        ParseResourceModuleNameFromNAPI(env, itemValue, resourceInfo.moduleName);
+        ParseResourceParamsFromNAPI(env, itemValue, resourceInfo.params);
     }
     HILOG_DEBUG("resourceId is %{public}d, bundleName is %{public}s, moduleName is %{public}s",
         resourceInfo.resourceId, resourceInfo.bundleName.c_str(), resourceInfo.moduleName.c_str());

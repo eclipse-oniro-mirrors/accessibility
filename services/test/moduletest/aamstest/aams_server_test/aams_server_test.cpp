@@ -62,7 +62,7 @@ void AAMSServerTest::SetUpTestCase(void)
 
 void AAMSServerTest::TearDownTestCase(void)
 {
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
+    GTEST_LOG_(INFO) << "AAMSServerTest TearDownTestCase";
 }
 
 void AAMSServerTest::SetUp()

@@ -43,6 +43,7 @@ public:
 
     inline sptr<IAccessibilityElementOperator> GetRawProxy()
     {
+        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         return proxy_;
     }
 

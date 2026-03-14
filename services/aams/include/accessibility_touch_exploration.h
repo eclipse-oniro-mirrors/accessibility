@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Huawei Device Co., Ltd.
+ * Copyright (C) 2024-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,9 +22,7 @@
 #include <map>
 #include <functional>
 #include "accessibility_element_info.h"
-#include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_event_transmission.h"
-#include "accessible_ability_manager_service.h"
 #include "accessibility_def.h"
 #include "event_handler.h"
 #include "hilog_wrapper.h"
@@ -334,8 +332,8 @@ private:
     std::vector<Pointer> GetOneFingerSwipePath();
     int32_t GetSwipeDirection(const int32_t dx, const int32_t dy);
     bool RecordFocusedLocation(MMI::PointerEvent &event);
-    void OffsetEvent(MMI::PointerEvent &event);
-    bool GetBasePointItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId);
+    void OffsetEvent(MMI::PointerEvent &event, bool setZOrderFlag);
+    bool GetBasePointItem(MMI::PointerEvent::PointerItem &basePointerItem, int32_t pId);
     void GetPointOffset(MMI::PointerEvent &event, std::vector<float> &firstPointOffset,
         std::vector<float> &secondPointOffset);
     float GetAngleCos(float offsetX, float offsetY, bool isGetX);
@@ -357,7 +355,7 @@ private:
     void HandleMultiFingersContinueDownStateUp(MMI::PointerEvent &event, uint32_t fingerNum);
     void HandleMultiFingersContinueDownStateMove(MMI::PointerEvent &event, uint32_t fingerNum);
     void StoreMultiFingerSwipeBaseDownPoint();
-    bool GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerIterm, int32_t pId);
+    bool GetMultiFingerSwipeBasePointerItem(MMI::PointerEvent::PointerItem &basePointerItem, int32_t pId);
     bool SaveMultiFingerSwipeGesturePointerInfo(MMI::PointerEvent &event);
     bool RecognizeMultiFingerSwipePath(const std::vector<Pointer> &path);
     GestureType GetMultiFingerSwipeGestureId(uint32_t fingerNum);
@@ -374,6 +372,7 @@ private:
     std::shared_ptr<TouchExplorationEventHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> gestureHandler_ = nullptr;
+    std::shared_ptr<AppExecFwk::EventRunner> gestureRunner_;
     using HandleEventFunc = std::function<void(MMI::PointerEvent &)>;
     std::map<TouchExplorationState, std::map<int32_t, HandleEventFunc>> handleEventFuncMap_ {};
 
