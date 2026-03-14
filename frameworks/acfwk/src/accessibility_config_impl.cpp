@@ -2017,7 +2017,7 @@ void AccessibilityConfig::Impl::NotifyDefaultDaltonizationConfigs()
 void AccessibilityConfig::Impl::NotifyDefaultScreenTouchConfigs()
 {
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
-        configObservers_.find(CONIFG_CLICK_RESPONSE_TIME);
+        configObservers_.find(CONFIG_CLICK_RESPONSE_TIME);
     if (it != configObservers_.end()) {
         NotifyClickResponseTimeChanged(it->second, clickResponseTime_);
     }
