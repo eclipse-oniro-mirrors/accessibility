@@ -541,7 +541,7 @@ static napi_value InitClickResponseTime(napi_env env)
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
-        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONIFG_CLICK_RESPONSE_TIME);
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_CLICK_RESPONSE_TIME);
     if (nativeObj == nullptr) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;

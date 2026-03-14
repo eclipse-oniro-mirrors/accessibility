@@ -47,7 +47,7 @@ ApiEventReporter::~ApiEventReporter()
     m_thresholdData.clear();
 }
 // LCOV_EXCL_START
-bool ApiEventReporter::IsAppEventProccessorValid()
+bool ApiEventReporter::IsAppEventProcessorValid()
 {
     if (g_processorId <= NULLPTR_PROCCESSORID) {
         g_processorId = AddProcessor();
@@ -345,7 +345,7 @@ void ApiEventReporter::ExecuteThresholdWriteEndEvent(std::string apiName,
     event.AddParam("max_cost_time", maxElement);
     event.AddParam("min_cost_time", minElement);
     event.AddParam("total_cost_time", expandableData->sumTime);
-    if (!IsAppEventProccessorValid()) {
+    if (!IsAppEventProcessorValid()) {
         HILOG_ERROR("ExecuteThresholdWriteEndEvent processorid invalid!");
         return;
     }

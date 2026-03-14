@@ -90,9 +90,9 @@ bool AccessibilityEventInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
     std::string beforeText;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, beforeText);
     SetBeforeText(beforeText);
-    std::string latestConent;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, latestConent);
-    SetLatestContent(latestConent);
+    std::string latestContent;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, latestContent);
+    SetLatestContent(latestContent);
     int64_t elementId = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, elementId);
 

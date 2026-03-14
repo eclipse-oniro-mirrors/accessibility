@@ -68,7 +68,7 @@ private:
         ApiEventConfig &eventConfig);
     std::shared_ptr<EventPeriodExpandableData> CacheEventInfo(std::string apiName,
         int64_t beginTime, int result);
-    bool IsAppEventProccessorValid();
+    bool IsAppEventProcessorValid();
     void ExecuteThresholdWriteEndEvent(std::string apiName,
         std::shared_ptr<EventPeriodExpandableData> expandableData, int32_t dataCount);
     static std::string g_fileContent;

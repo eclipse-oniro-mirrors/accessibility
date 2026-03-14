@@ -234,19 +234,19 @@ bool ANIUtils::GetEnumInt(ani_env *env, const char *enum_descriptor, ani_int enu
 {
     HILOG_INFO("processEnumInt enum=%{public}s, index=%{public}d", enum_descriptor, enumIndex);
     ani_enum enumType;
-    if (env->FindEnum(enum_descriptor, &enumType) != ANI_OK) {
-        HILOG_ERROR("Find Enum Faild");
+    if (ANI_OK != env->FindEnum(enum_descriptor, &enumType)) {
+        HILOG_ERROR("Find Enum Failed");
         return false;
     }
 
     ani_enum_item enumItem;
-    if (env->Enum_GetEnumItemByIndex(enumType, enumIndex, &enumItem) != ANI_OK) {
-        HILOG_ERROR("Enum_GetEnumItemByIndex FAILD");
+    if (ANI_OK != env->Enum_GetEnumItemByIndex(enumType, enumIndex, &enumItem)) {
+        HILOG_ERROR("Enum_GetEnumItemByIndex FAILED");
         return false;
     }
 
-    if (env->EnumItem_GetValue_Int(enumItem, &fieldValue) != ANI_OK) {
-        HILOG_ERROR("Enum_GetEnumItemByIndex FAILD");
+    if (ANI_OK != env->EnumItem_GetValue_Int(enumItem, &fieldValue)) {
+        HILOG_ERROR("Enum_GetEnumItemByIndex FAILED");
         return false;
     }
     return true;
@@ -498,7 +498,7 @@ bool ANIUtils::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObj
 {
     std::string type;
     if (!GetStringField(env, "type", eventObject, type)) {
-        HILOG_ERROR("get type Faild!");
+        HILOG_ERROR("get type Failed!");
         return false;
     }
     OHOS::Accessibility::EventType eventType = ConvertStringToEventInfoTypes(type);
@@ -510,7 +510,7 @@ bool ANIUtils::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObj
 
     std::string bundleName;
     if (!GetStringField(env, "bundleName", eventObject, bundleName)) {
-        HILOG_ERROR("get bundleName Faild!");
+        HILOG_ERROR("get bundleName Failed!");
         return false;
     }
     if (bundleName == "") {
@@ -521,7 +521,7 @@ bool ANIUtils::ConvertEventInfoMandatoryFields(ani_env *env, ani_object eventObj
 
     std::string triggerAction;
     if (!GetStringField(env, "triggerAction", eventObject, triggerAction)) {
-        HILOG_ERROR("get triggerAction Faild!");
+        HILOG_ERROR("get triggerAction Failed!");
         return false;
     }
     OHOS::Accessibility::ActionType action = ConvertStringToAccessibleOperationType(triggerAction);

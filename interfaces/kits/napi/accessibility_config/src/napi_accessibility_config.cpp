@@ -75,7 +75,7 @@ namespace {
         {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER,
             {"AccessibilityConfig.Impl.SetDaltonizationColorFilter",
                 "AccessibilityConfig.Impl.GetDaltonizationColorFilter"}},
-        {OHOS::AccessibilityConfig::CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME,
+        {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CLICK_RESPONSE_TIME,
             {"AccessibilityConfig.Impl.SetClickResponseTime", "AccessibilityConfig.Impl.GetClickResponseTime"}},
         {OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_STATE,
             {"AccessibilityConfig.Impl.SetIgnoreRepeatClickState",
@@ -647,7 +647,7 @@ void NAccessibilityConfig::AsyncWorkComplete(napi_env env, napi_status status, v
 void NAccessibilityConfig::SetScreenTouchConfigExecute(NAccessibilityConfigData* callbackInfo)
 {
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME) {
+    if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CLICK_RESPONSE_TIME) {
         auto time = ConvertStringToClickResponseTimeTypes(callbackInfo->stringConfig_);
         callbackInfo->ret_ = instance.SetClickResponseTime(time);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_TIME) {
@@ -758,7 +758,7 @@ void NAccessibilityConfig::ConfigCompleteInfoById(napi_env env, NAccessibilityCo
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CLICK_RESPONSE_TIME:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_TIME:
             napi_create_string_utf8(env, callbackInfo->stringConfig_.c_str(), NAPI_AUTO_LENGTH, &result[PARAM1]);
             break;
@@ -814,7 +814,7 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
 void NAccessibilityConfig::GetScreenTouchConfigExecute(NAccessibilityConfigData* callbackInfo)
 {
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME) {
+    if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CLICK_RESPONSE_TIME) {
         OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME time;
         callbackInfo->ret_ = instance.GetClickResponseTime(time);
         callbackInfo->stringConfig_ = ConvertClickResponseTimeTypeToString(time);
@@ -972,7 +972,7 @@ bool NAccessibilityConfig::SetConfigParseData(napi_env env, NAccessibilityConfig
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CLICK_RESPONSE_TIME:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_TIME:
             {
                 std::string target = "";

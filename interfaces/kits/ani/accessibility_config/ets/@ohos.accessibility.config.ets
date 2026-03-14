@@ -168,7 +168,7 @@ namespace config {
         CONFIG_SHORT_KEY_TARGET,
         CONFIG_MOUSE_AUTOCLICK,
         CONFIG_DALTONIZATION_STATE,
-        CONIFG_CLICK_RESPONSE_TIME,
+        CONFIG_CLICK_RESPONSE_TIME,
         CONFIG_IGNORE_REPEAT_CLICK_STATE,
         CONFIG_IGNORE_REPEAT_CLICK_TIME,
         CONFIG_SHORT_KEY_MULTI_TARGET,
@@ -897,7 +897,7 @@ namespace config {
     export const shortkeyMultiTargets: Config<Array<string>> = new ConfigImplArrString(CONFIG_ID.CONFIG_SHORT_KEY_MULTI_TARGET);
 
     export let daltonizationColorFilter: Config<DaltonizationColorFilter> = new ConfigImplDalColFilter(CONFIG_ID.CONFIG_DALTONIZATION_COLOR_FILTER);
-    export const clickResponseTime: Config<ClickResponseTime> = new ConfigImplCliResTime(CONFIG_ID.CONIFG_CLICK_RESPONSE_TIME);
+    export const clickResponseTime: Config<ClickResponseTime> = new ConfigImplCliResTime(CONFIG_ID.CONFIG_CLICK_RESPONSE_TIME);
     export const repeatClickInterval: Config<RepeatClickInterval> = new ConfigRepeateClickInterval(CONFIG_ID.CONFIG_IGNORE_REPEAT_CLICK_TIME);
 
     export let captionsStyle: Config<accessibility.CaptionsStyle> = new ConfigImplCaptionsStyle(CONFIG_ID.CONFIG_CAPTION_STYLE);
