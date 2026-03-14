@@ -1093,7 +1093,7 @@ bool ANIUtils::SetDoubleField(ani_env *env, ani_object &object, const std::strin
         return false;
     }
     ani_status status;
-    ani_object value = CreateDouble(env, static_cast<float>(fieldValue));
+    ani_object value = CreateDouble(env, static_cast<int32_t>(fieldValue));
     if (isProperty) {
         if ((status = env->Object_SetPropertyByName_Ref(object, fieldName.c_str(), value)) != ANI_OK) {
             HILOG_ERROR("set double property failed %{public}s %{public}d", fieldName.c_str(), status);
