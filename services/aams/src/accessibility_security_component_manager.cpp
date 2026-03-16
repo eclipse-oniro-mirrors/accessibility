@@ -50,6 +50,10 @@ std::map<std::string, std::string> AccessibilitySecurityComponentManager::Genera
     if (action != ACCESSIBILITY_ACTION_CLICK) {
         return actionArguments;
     }
+    if (bundleName.size() > MAX_BUNDLE_NAME_LEN) {
+        HILOG_ERROR("bundleName is invilid");
+        return actionArguments;
+    }
 
     std::unique_ptr<AccessibilitySecCompPoint> point = std::make_unique<AccessibilitySecCompPoint>();
     if (point == nullptr) {

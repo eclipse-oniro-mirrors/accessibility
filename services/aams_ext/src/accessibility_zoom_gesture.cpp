@@ -940,6 +940,10 @@ void AccessibilityZoomGesture::GetWindowParam(bool needRefresh)
         screenId_ = currentScreen;
         orientation_ = currentOrientation;
         sptr<Rosen::Display> display = displayMgr.GetDisplay(screenId_);
+        if (!display) {
+            HILOG_ERROR("Get display failed for screenId: %{public}" PRIu64, screenId_);
+            return;
+        }
         screenWidth_ = static_cast<uint32_t>(display->GetWidth());
         screenHeight_ = static_cast<uint32_t>(display->GetHeight());
         HILOG_INFO("screenWidth_ = %{public}d, screenHeight_ = %{public}d.", screenWidth_, screenHeight_);
