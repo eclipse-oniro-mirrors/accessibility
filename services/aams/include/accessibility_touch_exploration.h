@@ -46,6 +46,7 @@ const int32_t SCREEN_AXIS_NUM = 2;
 const double MAX_DRAG_GESTURE_COSINE = 0.525321989;
 const double EPSINON = 0.01;
 const float PIXEL_MULTIPLIER = 0.1f;
+const float MIN_CM_BETWEEN_SAMPLES = 0.25f;
 const int32_t DIVIDE_NUM = 2;
 const uint32_t FIND_FOCUS_TIMEOUT = 50;
 const int32_t SIMULATE_POINTER_ID = 10000;

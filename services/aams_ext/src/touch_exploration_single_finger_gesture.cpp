@@ -137,8 +137,9 @@ TouchExploration::TouchExploration()
         return;
     }
     moveThreshold_ = CalculateMoveThreshold(display->GetDpi());
-    xMinPixels_ = display->GetWidth() * PIXEL_MULTIPLIER;
-    yMinPixels_ = display->GetHeight() * PIXEL_MULTIPLIER;
+    float pixelsPerCm = display->GetDpi() / 2.54f;
+    xMinPixels_ = pixelsPerCm * MIN_CM_BETWEEN_SAMPLES;
+    yMinPixels_ = pixelsPerCm * MIN_CM_BETWEEN_SAMPLES;
     float density = display->GetVirtualPixelRatio();
     multiTapOffsetThresh_ = static_cast<int32_t>(density * MULTI_TAP_SLOP + MULTI_TAP_SLOP_DELTA);
     mMinPixelsBetweenSamplesX_ = display->GetWidth() * PIXEL_MULTIPLIER;
