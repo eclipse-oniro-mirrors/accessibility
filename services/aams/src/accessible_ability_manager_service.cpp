@@ -1339,7 +1339,7 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByParameter(cons
 
 ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(int32_t windowId)
 {
-    ErrCode ret = CheckDeregisterTokenId(windowId);
+    ErrCode ret = CheckDeregisterTokenId(windowId, SINGLE_TREE_ID);
     if (ret != RET_OK) {
         return ret;
     }
@@ -1385,7 +1385,7 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(int
 ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
     const int32_t treeId)
 {
-    ErrCode ret = CheckDeregisterTokenId(windowId);
+    ErrCode ret = CheckDeregisterTokenId(windowId, treeId);
     if (ret != RET_OK) {
         return ret;
     }
@@ -1522,7 +1522,7 @@ bool AccessibleAbilityManagerService::IsBroker() const
     return IPCSkeleton::GetCallingUid() == BROKER_UID;
 }
 
-ErrCode AccessibleAbilityManagerService::CheckDeregisterTokenId(int32_t windowId)
+ErrCode AccessibleAbilityManagerService::CheckDeregisterTokenId(int32_t windowId, int32_t treeId)
 {
     uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1535,7 +1535,7 @@ ErrCode AccessibleAbilityManagerService::CheckDeregisterTokenId(int32_t windowId
         HILOG_ERROR("connection is empty.");
         return RET_ERR_REGISTER_EXIST;
     }
-    uint32_t expectTokenId = connection->GetTokenIdMap(SINGLE_TREE_ID);
+    uint32_t expectTokenId = connection->GetTokenIdMap(treeId);
     if (tokenId != expectTokenId) {
         HILOG_ERROR("tokenId error!");
         return RET_ERR_TOKEN_ID;

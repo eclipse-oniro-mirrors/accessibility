@@ -358,7 +358,7 @@ private:
     bool IsApp() const;
     bool IsSystemApp() const;
     bool IsBroker() const;
-    ErrCode CheckDeregisterTokenId(int32_t windowId);
+    ErrCode CheckDeregisterTokenId(int32_t windowId, int32_t treeId);
     sptr<AccessibilityWindowConnection> GetRealIdConnection();
     bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
         AccessibilityElementInfo &elementInfo);
