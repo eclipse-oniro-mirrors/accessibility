@@ -14,6 +14,7 @@
  */
 
 #include "accessible_ability_manager_service.h"
+#include "element_operator_callback_impl.h"
 #include "ability_manager_client.h"
 #include "want.h"
 #include <algorithm>
@@ -111,7 +112,6 @@ namespace {
     constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
     constexpr int32_t ROOT_UID = 0;
     constexpr int32_t TREE_ID_INVALID = 0;
-    constexpr uint32_t ELEMENT_MOVE_BIT = 40;
     constexpr int32_t SINGLE_TREE_ID = 0;
     constexpr int32_t WINDOW_ID_INVALID = -1;
     constexpr int64_t ELEMENT_ID_INVALID = -1;
@@ -489,7 +489,7 @@ RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowI
     if (tokenId == 0) {
         tokenId = IPCSkeleton::GetCallingTokenID();
     }
-    int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
+    int32_t treeId = Utils::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("VerifyingToKenId: treeId[%{public}d], windowId[%{public}d], elementId[%{public}" PRId64 "]",
         treeId, windowId, elementId);
     if (elementId == ELEMENT_ID_INVALID || windowId == WINDOW_ID_INVALID) {
@@ -770,6 +770,7 @@ void AccessibleAbilityManagerService::GetElementOperatorConnection(sptr<Accessib
 {
     int32_t treeId = 0;
     if (elementId > 0) {
+        treeId = Utils::GetTreeIdBySplitElementId(elementId);
         if (!connection->GetUseBrokerFlag() && treeId > 0) {
             elementOperator = connection->GetCardProxy(treeId);
         } else if (connection->IsAnco() && connection->GetUseBrokerFlag() && treeId > 0
@@ -796,7 +797,7 @@ bool AccessibleAbilityManagerService::GetElementOperator(const int32_t windowId,
     RETURN_FALSE_IF_NULL(connection);
     int32_t treeId = 0;
     if (elementId > 0) {
-        treeId = GetTreeIdBySplitElementId(elementId);
+        treeId = Utils::GetTreeIdBySplitElementId(elementId);
         elementOperator = connection->GetCardProxy(treeId);
     } else {
         elementOperator = connection->GetProxy();
@@ -810,7 +811,7 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     int32_t windowId = GetFocusWindowId();
     int64_t elementId = GetFocusElementId();
     uint32_t timeOut = 5000;
-    int32_t treeId = GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = Utils::GetTreeIdBySplitElementId(elementId);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData == nullptr) {
         HILOG_ERROR("GetCurrentAccountData failed");
@@ -2342,162 +2343,6 @@ void AccessibleAbilityManagerService::PackageChanged(const std::string &bundleNa
     }
 }
 
-void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFindFocusedElementInfoResult(
-    const AccessibilityElementInfo &info, const int32_t requestId)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-        info.GetAccessibilityId()) == RET_OK) {
-        HILOG_DEBUG("VerifyingToKenId ok");
-        accessibilityInfoResult_ = info;
-        promise_.set_value();
-    } else {
-        HILOG_ERROR("VerifyingToKenId failed");
-        promise_.set_value();
-    }
-}
-
-void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoByTextResult(
-    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    for (auto info : infos) {
-        if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId()) == RET_OK) {
-            HILOG_DEBUG("VerifyingToKenId ok");
-        } else {
-            HILOG_ERROR("VerifyingToKenId failed");
-            elementInfosResult_.clear();
-            promise_.set_value();
-            return;
-        }
-        elementInfosResult_ = infos;
-    }
-    promise_.set_value();
-}
-
-void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
-    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    for (auto info : infos) {
-        if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId()) == RET_OK) {
-            HILOG_DEBUG("VerifyingToKenId ok");
-        } else {
-            HILOG_ERROR("VerifyingToKenId failed");
-            elementInfosResult_.clear();
-            promise_.set_value();
-            return;
-        }
-        elementInfosResult_ = infos;
-    }
-    promise_.set_value();
-}
-
-void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoBySpecificPropertyResult(
-    const std::list<AccessibilityElementInfo> &infos, const std::list<AccessibilityElementInfo> &treeInfos,
-    const int32_t requestId)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    if (!infos.empty()) {
-        if (!ValidateElementInfos(infos)) {
-            return;
-        }
-        elementInfosResult_.assign(infos.begin(), infos.end());
-    } else if (!treeInfos.empty()) {
-        if (!ValidateElementInfos(treeInfos)) {
-            return;
-        }
-        elementInfosResult_.assign(treeInfos.begin(), treeInfos.end());
-    }
-    promise_.set_value();
-}
-
-void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveSearchWithConditionResult(
-    const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult& result, const int32_t requestId)
-{
-    if (!infos.empty()) {
-        elementInfosResult_.assign(infos.begin(), infos.end());
-    }
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    focusMoveResult_ = result.resultType;
-    nowLevelBelongTreeId_ = result.nowLevelBelongTreeId;
-    parentWindowId_ = result.parentWindowId;
-    changeToNewInfo_ = result.changeToNewInfo;
-    needTerminate_ = result.needTerminate;
-    promise_.set_value();
-}
-
-bool AccessibleAbilityManagerService::ElementOperatorCallbackImpl::ValidateElementInfos(
-    const std::list<AccessibilityElementInfo>& infos)
-{
-    for (auto info : infos) {
-        if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId()) == RET_OK) {
-            HILOG_DEBUG("VerifyingToKenId ok");
-        } else {
-            HILOG_ERROR("VerifyingToKenId failed");
-            elementInfosResult_.clear();
-            promise_.set_value();
-            return false;
-        }
-    }
-    return true;
-}
-
-void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveSearchResult(
-    const AccessibilityElementInfo &info, const int32_t requestId)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-        info.GetAccessibilityId()) == RET_OK) {
-        HILOG_DEBUG("VerifyingToKenId ok");
-        accessibilityInfoResult_ = info;
-        promise_.set_value();
-    } else {
-        HILOG_ERROR("VerifyingToKenId failed");
-        promise_.set_value();
-    }
-}
-
-void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetExecuteActionResult(const bool succeeded,
-    const int32_t requestId)
-{
-    HILOG_DEBUG("Response [result:%{public}d, requestId:%{public}d]", succeeded, requestId);
-    executeActionResult_ = succeeded;
-    promise_.set_value();
-}
-
-void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetCursorPositionResult(const int32_t cursorPosition,
-    const int32_t requestId)
-{
-    HILOG_INFO("ElementOperatorCallbackImpl::SetCursorPositionResult [result:%{public}d]",
-        cursorPosition);
-    HILOG_DEBUG("cursorPosition [result:%{public}d, requestId:%{public}d]", cursorPosition, requestId);
-    callCursorPosition_ = cursorPosition;
-    promise_.set_value();
-}
-
-void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchDefaultFocusByWindowIdResult(
-    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
-{
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
-    for (auto info : infos) {
-        if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId()) == RET_OK) {
-            HILOG_DEBUG("VerifyingToKenId ok");
-        } else {
-            HILOG_ERROR("VerifyingToKenId failed");
-            elementInfosResult_.clear();
-            promise_.set_value();
-            return;
-        }
-        elementInfosResult_ = infos;
-    }
-    promise_.set_value();
-}
-
 bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t windowId, int64_t elementId,
     std::vector<AccessibilityElementInfo>& infos)
 {
@@ -2516,7 +2361,7 @@ bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t window
     }
 
     if (elementId > 0) {
-        treeId = GetTreeIdBySplitElementId(elementId);
+        treeId = Utils::GetTreeIdBySplitElementId(elementId);
         elementOperator = connection->GetCardProxy(treeId);
     } else {
         elementOperator = connection->GetProxy();
@@ -2561,7 +2406,7 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
     auto mapTable = Singleton<AccessibilityWindowManager>::GetInstance().sceneBoardElementIdMap_.GetAllPairs();
     int64_t elementId = event.GetAccessibilityId();
     int tmpWindowId = Singleton<AccessibilityWindowManager>::GetInstance().
-        FindTreeIdWindowIdPair(GetTreeIdBySplitElementId(elementId));
+        FindTreeIdWindowIdPair(Utils::GetTreeIdBySplitElementId(elementId));
     if (tmpWindowId != 0) {
         windowId = tmpWindowId;
         return;
@@ -2580,7 +2425,7 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
             break;
         }
 
-        int32_t treeId = GetTreeIdBySplitElementId(elementId);
+        int32_t treeId = Utils::GetTreeIdBySplitElementId(elementId);
         // handle seprately because event send by UiExtension children tree may carry the root elemnt of children
         // tree, whose componentType is also root
         // deal other eventType like this may lead to performance problem
@@ -2613,7 +2458,7 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
             elementId = infos[0].GetParentNodeId();
         }
     }
-    int originTreeId = GetTreeIdBySplitElementId(event.GetAccessibilityId());
+    int originTreeId = Utils::GetTreeIdBySplitElementId(event.GetAccessibilityId());
     Singleton<AccessibilityWindowManager>::GetInstance().InsertTreeIdWindowIdPair(originTreeId, windowId);
 }
 
@@ -4195,16 +4040,6 @@ bool AccessibleAbilityManagerService::IsNeedUnload()
     }
     return true;
 #endif // ACCESSIBILITY_WATCH_FEATURE
-}
-
-int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t elementId)
-{
-    if (elementId < 0) {
-        HILOG_DEBUG("The elementId is -1");
-        return elementId;
-    }
-    int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
-    return treeId;
 }
 
 void AccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
