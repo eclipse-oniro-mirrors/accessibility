@@ -402,12 +402,18 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
+    auto iter = elementOperators_.find(windowId);
+    if (iter != elementOperators_.end()) {
+        HILOG_ERROR("windowID[%{public}d] is exited", windowId);
+        return RET_ERR_CONNECTION_EXIST;
+    }
     sptr<AccessibilityElementOperatorImpl> aamsInteractionOperator =
         new(std::nothrow) AccessibilityElementOperatorImpl(windowId, operation, *this);
     if (aamsInteractionOperator == nullptr) {
         HILOG_ERROR("Failed to create aamsInteractionOperator.");
         return RET_ERR_NULLPTR;
     }
+    elementOperators_[windowId] = aamsInteractionOperator;
     return static_cast<RetError>(serviceProxy_->RegisterElementOperatorByWindowId(windowId, aamsInteractionOperator));
 }
 
@@ -453,6 +459,14 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
 {
     HILOG_INFO("Deregister windowId[%{public}d] start", windowId);
     std::lock_guard<ffrt::mutex> lock(mutex_);
+    auto iter = elementOperators_.find(windowId);
+    if (iter != elementOperators_.end()) {
+        HILOG_DEBUG("windowID[%{public}d] is erase", windowId);
+        elementOperators_.erase(iter);
+    } else {
+        HILOG_WARN("Not find windowID[%{public}d]", windowId);
+        return RET_ERR_NO_REGISTER;
+    }
     if (serviceProxy_ == nullptr) {
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;

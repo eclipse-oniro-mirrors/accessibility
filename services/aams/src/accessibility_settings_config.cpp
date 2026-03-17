@@ -141,7 +141,7 @@ RetError AccessibilitySettingsConfig::SetEnabled(const bool state)
         HILOG_ERROR("set accessibility failed");
         return ret;
     }
-    enabled_ = state;
+    enabled_.store(state);
     return ret;
 }
 
@@ -154,7 +154,7 @@ RetError AccessibilitySettingsConfig::SetTouchGuideState(const bool state)
         HILOG_ERROR("set eventTouchGuideState_ failed");
         return ret;
     }
-    eventTouchGuideState_ = state;
+    eventTouchGuideState_.store(state);
     return ret;
 }
 
@@ -167,7 +167,7 @@ RetError AccessibilitySettingsConfig::SetGestureState(const bool state)
         HILOG_ERROR("set gesturesSimulation_ failed");
         return ret;
     }
-    gesturesSimulation_ = state;
+    gesturesSimulation_.store(state);
     return ret;
 }
 
@@ -180,7 +180,7 @@ RetError AccessibilitySettingsConfig::SetKeyEventObserverState(const bool state)
         HILOG_ERROR("set filteringKeyEvents_ failed");
         return ret;
     }
-    filteringKeyEvents_ = state;
+    filteringKeyEvents_.store(state);
     return ret;
 }
 
@@ -193,7 +193,7 @@ RetError AccessibilitySettingsConfig::SetCaptionState(const bool state)
         HILOG_ERROR("set isCaptionState_ failed");
         return ret;
     }
-    isCaptionState_ = state;
+    isCaptionState_.store(state);
     return ret;
 }
 
@@ -214,42 +214,42 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationState(const bool sta
 
 RetError AccessibilitySettingsConfig::SetMagnificationState(const bool state)
 {
-    isScreenMagnificationState_ = state;
+    isScreenMagnificationState_.store(state);
     return RET_OK;
 }
 
 RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t type)
 {
     HILOG_DEBUG("screenMagnificationType = [%{public}u]", type);
-    screenMagnificationType_ = type;
+    screenMagnificationType_.store(type);
     return RET_OK;
 }
 
 RetError AccessibilitySettingsConfig::SetFlashReminderSwitch(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
-    flashReminderSwitch_ = state;
+    flashReminderSwitch_.store(state);
     return RET_OK;
 }
 
 RetError AccessibilitySettingsConfig::SetSeniorModeState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
-    seniorModeState_ = state;
+    seniorModeState_.store(state);
     return RET_OK;
 }
 
 RetError AccessibilitySettingsConfig::SetScreenMagnificationMode(const uint32_t mode)
 {
     HILOG_DEBUG("screenMagnificationMode = [%{public}u]", mode);
-    screenMagnificationMode_ = mode;
+    screenMagnificationMode_.store(mode);
     return RET_OK;
 }
 
 RetError AccessibilitySettingsConfig::SetScreenMagnificationScale(const float scale)
 {
     HILOG_DEBUG("screenMagnificationScale = [%{public}f]", scale);
-    screenMagnificationScale_ = scale;
+    screenMagnificationScale_.store(scale);
     return RET_OK;
 }
 
@@ -264,7 +264,7 @@ RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
         return ret;
     }
     // LCOV_EXCL_BR_STOP
-    isShortKeyState_ = state;
+    isShortKeyState_.store(state);
     return ret;
 }
 
@@ -277,7 +277,7 @@ RetError AccessibilitySettingsConfig::SetShortKeyOnLockScreenState(const bool st
         HILOG_ERROR("set isShortKeyEnabledOnLockScreen_ failed");
         return ret;
     }
-    isShortKeyEnabledOnLockScreen_ = state;
+    isShortKeyEnabledOnLockScreen_.store(state);
     return ret;
 }
 
@@ -295,7 +295,7 @@ RetError AccessibilitySettingsConfig::SetShortKeyTimeout(const int32_t time)
         HILOG_ERROR("set shortKeyTimeout_ failed");
         return ret;
     }
-    shortKeyTimeout_ = time;
+    shortKeyTimeout_.store(time);
     return ret;
 }
 
@@ -325,7 +325,7 @@ RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
         return ret;
     }
     // LCOV_EXCL_BR_STOP
-    isMouseKeyState_ = state;
+    isMouseKeyState_.store(state);
     return ret;
 }
 
@@ -343,7 +343,7 @@ RetError AccessibilitySettingsConfig::SetMouseAutoClick(const int32_t time)
         HILOG_ERROR("set mouseAutoClick_ failed");
         return ret;
     }
-    mouseAutoClick_ = time;
+    mouseAutoClick_.store(time);
     return ret;
 }
 
@@ -433,7 +433,7 @@ RetError AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
         HILOG_ERROR("set highContrastTextState_ failed");
         return ret;
     }
-    highContrastTextState_ = state;
+    highContrastTextState_.store(state);
     return ret;
 }
 
@@ -446,7 +446,7 @@ RetError AccessibilitySettingsConfig::SetInvertColorState(const bool state)
         HILOG_ERROR("set invertColorState_ failed");
         return ret;
     }
-    invertColorState_ = state;
+    invertColorState_.store(state);
     return ret;
 }
 
@@ -459,7 +459,7 @@ RetError AccessibilitySettingsConfig::SetAnimationOffState(const bool state)
         HILOG_ERROR("set animationOffState_ failed");
         return ret;
     }
-    animationOffState_ = state;
+    animationOffState_.store(state);
     if (state) {
         int64_t nowTime = IgnoreRepeatClickNotification::GetWallTimeMs();
         ret = datashare_->PutLongValue(TRANSITION_ANIMATIONS_TIMESTAMP, nowTime);
@@ -484,7 +484,7 @@ RetError AccessibilitySettingsConfig::SetAudioMonoState(const bool state)
         HILOG_ERROR("set audioMonoState_ failed");
         return ret;
     }
-    audioMonoState_ = state;
+    audioMonoState_.store(state);
     return ret;
 }
 
@@ -497,7 +497,7 @@ RetError AccessibilitySettingsConfig::SetDaltonizationState(const bool state)
         HILOG_ERROR("set daltonizationState_ failed");
         return ret;
     }
-    daltonizationState_ = state;
+    daltonizationState_.store(state);
     return ret;
 }
 
@@ -525,7 +525,7 @@ RetError AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t
         HILOG_ERROR("set daltonizationColorFilter_ failed");
         return ret;
     }
-    daltonizationColorFilter_ = daltonizationColorFilter;
+    daltonizationColorFilter_.store(daltonizationColorFilter);
     return ret;
 }
 
@@ -544,7 +544,7 @@ RetError AccessibilitySettingsConfig::SetContentTimeout(const uint32_t time)
         HILOG_ERROR("set contentTimeout_ failed");
         return ret;
     }
-    contentTimeout_ = time;
+    contentTimeout_.store(time);
     return ret;
 }
 
@@ -562,7 +562,7 @@ RetError AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount
         HILOG_ERROR("set brightnessDiscount_ failed");
         return ret;
     }
-    brightnessDiscount_ = discount;
+    brightnessDiscount_.store(discount);
     return ret;
 }
 
@@ -581,7 +581,7 @@ RetError AccessibilitySettingsConfig::SetAudioBalance(const float balance)
         HILOG_ERROR("set audioBalance_ failed");
         return ret;
     }
-    audioBalance_ = audioBalance;
+    audioBalance_.store(audioBalance);
     return ret;
 }
 
@@ -605,7 +605,7 @@ RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
         HILOG_ERROR("set clickResponseTime_ failed");
         return ret;
     }
-    clickResponseTime_ = clickResponseTime;
+    clickResponseTime_.store(clickResponseTime);
     return ret;
 }
 
@@ -618,7 +618,7 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state
         HILOG_ERROR("set ignoreRepeatClickState_ failed");
         return ret;
     }
-    ignoreRepeatClickState_ = state;
+    ignoreRepeatClickState_.store(state);
     if (state) {
         int64_t nowTime = IgnoreRepeatClickNotification::GetWallTimeMs();
         ret = datashare_->PutLongValue(IGNORE_REPEAT_CLICK_TIMESTAMP, nowTime);
@@ -701,7 +701,7 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t ti
         HILOG_ERROR("set ignoreRepeatClickTime_ failed");
         return ret;
     }
-    ignoreRepeatClickTime_ = ignoreRepeatClickTime;
+    ignoreRepeatClickTime_.store(ignoreRepeatClickTime);
     return ret;
 }
 
@@ -744,37 +744,37 @@ RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConf
 
 bool AccessibilitySettingsConfig::GetCaptionState() const
 {
-    return isCaptionState_;
+    return isCaptionState_.load();
 }
 
 bool AccessibilitySettingsConfig::GetScreenMagnificationState() const
 {
-    return isScreenMagnificationState_;
+    return isScreenMagnificationState_.load();
 }
 
 bool AccessibilitySettingsConfig::GetShortKeyState() const
 {
-    return isShortKeyState_;
+    return isShortKeyState_.load();
 }
 
 bool AccessibilitySettingsConfig::GetShortKeyOnLockScreenState() const
 {
-    return isShortKeyEnabledOnLockScreen_;
+    return isShortKeyEnabledOnLockScreen_.load();
 }
 
 int32_t AccessibilitySettingsConfig::GetShortKeyTimeout() const
 {
-    return shortKeyTimeout_;
+    return shortKeyTimeout_.load();
 }
 
 bool AccessibilitySettingsConfig::GetMouseKeyState() const
 {
-    return isMouseKeyState_;
+    return isMouseKeyState_.load();
 }
 
 int32_t AccessibilitySettingsConfig::GetMouseAutoClick() const
 {
-    return mouseAutoClick_;
+    return mouseAutoClick_.load();
 }
 
 const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
@@ -791,67 +791,67 @@ const std::vector<std::string> AccessibilitySettingsConfig::GetShortkeyMultiTarg
 
 bool AccessibilitySettingsConfig::GetHighContrastTextState() const
 {
-    return highContrastTextState_;
+    return highContrastTextState_.load();
 }
 
 bool AccessibilitySettingsConfig::GetInvertColorState() const
 {
-    return invertColorState_;
+    return invertColorState_.load();
 }
 
 bool AccessibilitySettingsConfig::GetAnimationOffState() const
 {
-    return animationOffState_;
+    return animationOffState_.load();
 }
 
 bool AccessibilitySettingsConfig::GetAudioMonoState() const
 {
-    return audioMonoState_;
+    return audioMonoState_.load();
 }
 
 bool AccessibilitySettingsConfig::GetDaltonizationState() const
 {
-    return daltonizationState_;
+    return daltonizationState_.load();
 }
 
 uint32_t AccessibilitySettingsConfig::GetDaltonizationColorFilter() const
 {
-    return daltonizationColorFilter_;
+    return daltonizationColorFilter_.load();
 }
 
 uint32_t AccessibilitySettingsConfig::GetContentTimeout() const
 {
-    return contentTimeout_;
+    return contentTimeout_.load();
 }
 
 float AccessibilitySettingsConfig::GetBrightnessDiscount() const
 {
-    return brightnessDiscount_;
+    return brightnessDiscount_.load();
 }
 
 float AccessibilitySettingsConfig::GetAudioBalance() const
 {
-    return audioBalance_;
+    return audioBalance_.load();
 }
 
 bool AccessibilitySettingsConfig::GetEnabledState() const
 {
-    return enabled_;
+    return enabled_.load();
 }
 
 bool AccessibilitySettingsConfig::GetTouchGuideState() const
 {
-    return eventTouchGuideState_;
+    return eventTouchGuideState_.load();
 }
 
 bool AccessibilitySettingsConfig::GetGestureState() const
 {
-    return gesturesSimulation_;
+    return gesturesSimulation_.load();
 }
 
 bool AccessibilitySettingsConfig::GetKeyEventObserverState() const
 {
-    return filteringKeyEvents_;
+    return filteringKeyEvents_.load();
 }
 
 const AccessibilityConfig::CaptionProperty &AccessibilitySettingsConfig::GetCaptionProperty() const
@@ -861,42 +861,42 @@ const AccessibilityConfig::CaptionProperty &AccessibilitySettingsConfig::GetCapt
 
 uint32_t AccessibilitySettingsConfig::GetClickResponseTime() const
 {
-    return clickResponseTime_;
+    return clickResponseTime_.load();
 }
 
 uint32_t AccessibilitySettingsConfig::GetScreenMagnificationType() const
 {
-    return screenMagnificationType_;
+    return screenMagnificationType_.load();
 }
 
 bool AccessibilitySettingsConfig::GetFlashReminderSwitch() const
 {
-    return flashReminderSwitch_;
+    return flashReminderSwitch_.load();
 }
 
 bool AccessibilitySettingsConfig::GetSeniorModeState() const
 {
-    return seniorModeState_;
+    return seniorModeState_.load();
 }
 
 uint32_t AccessibilitySettingsConfig::GetScreenMagnificationMode() const
 {
-    return screenMagnificationMode_;
+    return screenMagnificationMode_.load();
 }
 
 float AccessibilitySettingsConfig::GetScreenMagnificationScale() const
 {
-    return screenMagnificationScale_;
+    return screenMagnificationScale_.load();
 }
 
 bool AccessibilitySettingsConfig::GetIgnoreRepeatClickState() const
 {
-    return ignoreRepeatClickState_;
+    return ignoreRepeatClickState_.load();
 }
 
 uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
 {
-    return ignoreRepeatClickTime_;
+    return ignoreRepeatClickTime_.load();
 }
 
 RetError AccessibilitySettingsConfig::SetEnabledAccessibilityServices(const std::vector<std::string> &services)
@@ -974,43 +974,43 @@ uint32_t AccessibilitySettingsConfig::GetConfigState()
 {
     HILOG_DEBUG();
     uint32_t state = 0;
-    if (isCaptionState_) {
+    if (isCaptionState_.load()) {
         state |= STATE_CAPTION_ENABLED;
     }
 
-    if (isScreenMagnificationState_) {
+    if (isScreenMagnificationState_.load()) {
         state |= STATE_SCREENMAGNIFIER_ENABLED;
     }
 
-    if (isMouseKeyState_) {
+    if (isMouseKeyState_.load()) {
         state |= STATE_MOUSEKEY_ENABLED;
     }
 
-    if (isShortKeyState_) {
+    if (isShortKeyState_.load()) {
         state |= STATE_SHORTKEY_ENABLED;
     }
 
-    if (highContrastTextState_) {
+    if (highContrastTextState_.load()) {
         state |= STATE_HIGHCONTRAST_ENABLED;
     }
 
-    if (daltonizationState_) {
+    if (daltonizationState_.load()) {
         state |= STATE_DALTONIZATION_STATE_ENABLED;
     }
 
-    if (invertColorState_) {
+    if (invertColorState_.load()) {
         state |= STATE_INVETRTCOLOR_ENABLED;
     }
 
-    if (animationOffState_) {
+    if (animationOffState_.load()) {
         state |= STATE_ANIMATIONOFF_ENABLED;
     }
 
-    if (audioMonoState_) {
+    if (audioMonoState_.load()) {
         state |= STATE_AUDIOMONO_ENABLED;
     }
 
-    if (ignoreRepeatClickState_) {
+    if (ignoreRepeatClickState_.load()) {
         state |= STATE_IGNORE_REPEAT_CLICK_ENABLED;
     }
     return state;
@@ -1026,9 +1026,9 @@ void AccessibilitySettingsConfig::InitCaption()
     std::string strValue = datashare_->GetStringValue(CAPTION_KEY, "");
     HILOG_DEBUG(" pref_->GetString() = %{public}s.", strValue.c_str());
     if (!std::strcmp(strValue.c_str(), "on")) {
-        isCaptionState_ = true;
+        isCaptionState_.store(true);
     } else {
-        isCaptionState_ = false;
+        isCaptionState_.store(false);
     }
 
     std::string fontFamliy = datashare_->GetStringValue(FONT_FAMILY, "default");
@@ -1059,13 +1059,14 @@ void AccessibilitySettingsConfig::InitCaption()
 
 void AccessibilitySettingsConfig::InitShortKeyConfig()
 {
-    isShortKeyState_ = datashare_->GetBoolValue(SHORTCUT_ENABLED, true);
+    isShortKeyState_.store(datashare_->GetBoolValue(SHORTCUT_ENABLED, true));
     datashare_->GetBoolValue(SHORTCUT_ENABLED_ON_LOCK_SCREEN, true);
-    shortKeyTimeout_ = static_cast<int32_t>(datashare_->GetIntValue(SHORTCUT_TIMEOUT, SHORT_KEY_TIMEOUT_BEFORE_USE));
+    shortKeyTimeout_.store(static_cast<int32_t>(datashare_->GetIntValue(SHORTCUT_TIMEOUT,
+        SHORT_KEY_TIMEOUT_BEFORE_USE)));
 
-    if (shortKeyTimeout_ == 1) {
+    if (shortKeyTimeout_.load() == 1) {
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_AFTER_USE);
-    } else if (shortKeyTimeout_ == 0) {
+    } else if (shortKeyTimeout_.load() == 0) {
         SetShortKeyTimeout(SHORT_KEY_TIMEOUT_BEFORE_USE);
     }
 
@@ -1096,24 +1097,24 @@ void AccessibilitySettingsConfig::InitPrivacySpaceConfig()
     bool cloneOrUpgradeFlag = false;
     service->GetBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, cloneOrUpgradeFlag);
     if (cloneOrUpgradeFlag && (accountId_ != DEFAULT_ACCOUNT_ID)) {
-        if (isShortKeyState_) {
+        if (isShortKeyState_.load()) {
             SetShortKeyOnLockScreenState(true);
         } else {
             SetShortKeyOnLockScreenState(false);
         }
         SetDefaultShortcutKeyService();
-        SetIgnoreRepeatClickReconfirm(ignoreRepeatClickState_);
-        SetZoomGestureEnabledReconfirm(isScreenMagnificationState_);
+        SetIgnoreRepeatClickReconfirm(ignoreRepeatClickState_.load());
+        SetZoomGestureEnabledReconfirm(isScreenMagnificationState_.load());
         service->PutBoolValue(ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE, false);
     }
 }
 
 void AccessibilitySettingsConfig::InitAnimationOffConfig()
 {
-    animationOffState_ = datashare_->GetBoolValue(ANIMATION_OFF_KEY, false);
+    animationOffState_.store(datashare_->GetBoolValue(ANIMATION_OFF_KEY, false));
     std::string graphicState = system::GetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "1");
     std::string arkuiState = system::GetParameter(ARKUI_ANIMATION_SCALE_NAME, "1");
-    if (animationOffState_) {
+    if (animationOffState_.load()) {
         system::SetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "0");
         system::SetParameter(ARKUI_ANIMATION_SCALE_NAME, "0");
     } else {
@@ -1129,7 +1130,7 @@ void AccessibilitySettingsConfig::InitAnimationOffConfig()
             system::SetParameter(ARKUI_ANIMATION_SCALE_NAME, graphicState);
         }
     }
-    if (animationOffState_) {
+    if (animationOffState_.load()) {
         TransitionAnimationsNotification::PublishTransitionAnimationsReminder();
         int64_t timeStamp = datashare_->GetLongValue(TRANSITION_ANIMATIONS_TIMESTAMP, 0);
         if (timeStamp == 0) {
@@ -1151,17 +1152,17 @@ void AccessibilitySettingsConfig::InitAnimationOffConfig()
 void AccessibilitySettingsConfig::HandleIgnoreRepeatClickState()
 {
     int64_t recoveryDate = datashare_->GetLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, 0);
-    if (ignoreRepeatClickState_ && recoveryDate == 0 &&
-        (ignoreRepeatClickTime_ == IGNORE_REPEAT_CLICK_SHORTEST ||
-            ignoreRepeatClickTime_ == IGNORE_REPEAT_CLICK_SHORT)) {
-        ignoreRepeatClickState_ = false;
+    if (ignoreRepeatClickState_.load() && recoveryDate == 0 &&
+        (ignoreRepeatClickTime_.load() == IGNORE_REPEAT_CLICK_SHORTEST ||
+            ignoreRepeatClickTime_.load() == IGNORE_REPEAT_CLICK_SHORT)) {
+        ignoreRepeatClickState_.store(false);
         SetIgnoreRepeatClickState(false);
         recoveryDate = IgnoreRepeatClickNotification::GetWallTimeMs();
         datashare_->PutLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, recoveryDate);
         HILOG_INFO("recovery ignore repeat click %{public}lld", recoveryDate);
     }
  
-    if (ignoreRepeatClickState_) {
+    if (ignoreRepeatClickState_.load()) {
         bool isScreenReaderEnabled =
             (std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(),
             SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
@@ -1193,11 +1194,11 @@ void AccessibilitySettingsConfig::HandleIgnoreRepeatClickCache()
     bool value = false;
     value = datashare_->GetBoolValue(IGNORE_REPEATED_CLICK_CACHE_FLAG, false);
     if (value) {
-        ignoreRepeatClickState_ = true;
+        ignoreRepeatClickState_.store(true);
         datashare_->PutBoolValue(IGNORE_REPEAT_CLICK_SWITCH, true);
         datashare_->PutBoolValue(IGNORE_REPEATED_CLICK_CACHE_FLAG, false);
     } else {
-        ignoreRepeatClickState_ = datashare_->GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, false);
+        ignoreRepeatClickState_.store(datashare_->GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, false));
     }
 }
 
@@ -1212,37 +1213,37 @@ void AccessibilitySettingsConfig::InitSetting()
     InitPrivacySpaceConfig();
     InitAnimationOffConfig();
     CloneAudioState();
-    isScreenMagnificationState_ = datashare_->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
-    isMouseKeyState_= datashare_->GetBoolValue(MOUSEKEY, false);
-    invertColorState_ = datashare_->GetBoolValue(INVERT_COLOR_KEY, false);
-    highContrastTextState_ = datashare_->GetBoolValue(HIGH_CONTRAST_TEXT_KEY, false);
-    daltonizationState_ = datashare_->GetBoolValue(DALTONIZATION_STATE, false);
-    audioMonoState_ = datashare_->GetBoolValue(AUDIO_MONO_KEY, false);
+    isScreenMagnificationState_.store(datashare_->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false));
+    isMouseKeyState_.store(datashare_->GetBoolValue(MOUSEKEY, false));
+    invertColorState_.store(datashare_->GetBoolValue(INVERT_COLOR_KEY, false));
+    highContrastTextState_.store(datashare_->GetBoolValue(HIGH_CONTRAST_TEXT_KEY, false));
+    daltonizationState_.store(datashare_->GetBoolValue(DALTONIZATION_STATE, false));
+    audioMonoState_.store(datashare_->GetBoolValue(AUDIO_MONO_KEY, false));
     HandleIgnoreRepeatClickCache();
-    mouseAutoClick_ = static_cast<int32_t>(datashare_->GetIntValue("MouseAutoClick", -1));
-    daltonizationColorFilter_ = static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0));
-    SetDaltonizationColorFilter(daltonizationColorFilter_);
-    contentTimeout_ = static_cast<uint32_t>(datashare_->GetIntValue(CONTENT_TIMEOUT_KEY, 0));
-    brightnessDiscount_ = static_cast<float>(datashare_->GetFloatValue(BRIGHTNESS_DISCOUNT_KEY, 1.0));
-    audioBalance_ = static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0));
-    SetAudioBalance(audioBalance_);
-    screenMagnificationType_ = static_cast<uint32_t>(
-        datashare_->GetIntValue(SCREEN_MAGNIFICATION_TYPE, FULL_SCREEN_MAGNIFICATION));
-    screenMagnificationMode_ = static_cast<uint32_t>(
-        datashare_->GetIntValue(SCREEN_MAGNIFICATION_MODE, FULL_SCREEN_MAGNIFICATION));
-    screenMagnificationScale_ = static_cast<float>(
-        datashare_->GetFloatValue(SCREEN_MAGNIFICATION_SCALE, DEFAULT_MAGNIFICATION_SCALE));
-    clickResponseTime_ = static_cast<uint32_t>(datashare_->GetIntValue(CLICK_RESPONCE_TIME, 0));
-    SetClickResponseTime(clickResponseTime_);
-    ignoreRepeatClickTime_ = static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0));
-    SetIgnoreRepeatClickTime(ignoreRepeatClickTime_);
+    mouseAutoClick_.store(static_cast<int32_t>(datashare_->GetIntValue("MouseAutoClick", -1)));
+    daltonizationColorFilter_.store(static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0)));
+    SetDaltonizationColorFilter(daltonizationColorFilter_.load());
+    contentTimeout_.store(static_cast<uint32_t>(datashare_->GetIntValue(CONTENT_TIMEOUT_KEY, 0)));
+    brightnessDiscount_.store(static_cast<float>(datashare_->GetFloatValue(BRIGHTNESS_DISCOUNT_KEY, 1.0)));
+    audioBalance_.store(static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0)));
+    SetAudioBalance(audioBalance_.load());
+    screenMagnificationType_.store(static_cast<uint32_t>(
+        datashare_->GetIntValue(SCREEN_MAGNIFICATION_TYPE, FULL_SCREEN_MAGNIFICATION)));
+    screenMagnificationMode_.store(static_cast<uint32_t>(
+        datashare_->GetIntValue(SCREEN_MAGNIFICATION_MODE, FULL_SCREEN_MAGNIFICATION)));
+    screenMagnificationScale_.store(static_cast<float>(
+        datashare_->GetFloatValue(SCREEN_MAGNIFICATION_SCALE, DEFAULT_MAGNIFICATION_SCALE)));
+    clickResponseTime_.store(static_cast<uint32_t>(datashare_->GetIntValue(CLICK_RESPONCE_TIME, 0)));
+    SetClickResponseTime(clickResponseTime_.load());
+    ignoreRepeatClickTime_.store(static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0)));
+    SetIgnoreRepeatClickTime(ignoreRepeatClickTime_.load());
     datashare_->GetStringValue(FLASH_REMINDER_SWITCH_KEY, "0");
     datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "DEFAULT");
     datashare_->GetBoolValue(VOICE_RECOGNITION_KEY, false);
     datashare_->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
     HandleIgnoreRepeatClickState();
-    flashReminderSwitch_ = datashare_->GetBoolValue(FLASH_REMINDER_SWITCH_KEY, false);
-    seniorModeState_ = datashare_->GetBoolValue(ELDER_CARE_ENABLED_KEY, false);
+    flashReminderSwitch_.store(datashare_->GetBoolValue(FLASH_REMINDER_SWITCH_KEY, false));
+    seniorModeState_.store(datashare_->GetBoolValue(ELDER_CARE_ENABLED_KEY, false));
 }
 
 void AccessibilitySettingsConfig::InitCapability()
@@ -1252,10 +1253,10 @@ void AccessibilitySettingsConfig::InitCapability()
         return;
     }
 
-    enabled_ = datashare_->GetBoolValue(ACCESSIBILITY, false);
-    eventTouchGuideState_ = datashare_->GetBoolValue(TOUCH_GUIDE_STATE, false);
-    gesturesSimulation_ = datashare_->GetBoolValue(GESTURE_KEY, false);
-    filteringKeyEvents_ = datashare_->GetBoolValue(KEYEVENT_OBSERVER, false);
+    enabled_.store(datashare_->GetBoolValue(ACCESSIBILITY, false));
+    eventTouchGuideState_.store(datashare_->GetBoolValue(TOUCH_GUIDE_STATE, false));
+    gesturesSimulation_.store(datashare_->GetBoolValue(GESTURE_KEY, false));
+    filteringKeyEvents_.store(datashare_->GetBoolValue(KEYEVENT_OBSERVER, false));
 }
 
 RetError AccessibilitySettingsConfig::SetConfigState(const std::string& key, bool value)
@@ -1472,9 +1473,9 @@ void AccessibilitySettingsConfig::recoverInvertColor()
         HILOG_ERROR("datashare_ is nullptr");
         return;
     }
-    if (invertColorState_ != datashare_->GetBoolValue(INVERT_COLOR_KEY, false)) {
-        HILOG_INFO("invertColorState_: %{public}d need recovery", invertColorState_);
-        SetInvertColorState(invertColorState_);
+    if (invertColorState_.load() != datashare_->GetBoolValue(INVERT_COLOR_KEY, false)) {
+        HILOG_INFO("invertColorState_: %{public}d need recovery", invertColorState_.load());
+        SetInvertColorState(invertColorState_.load());
     }
 }
 
@@ -1485,14 +1486,14 @@ void AccessibilitySettingsConfig::recoverColorCorrection()
         HILOG_ERROR("datashare_ is nullptr");
         return;
     }
-    if (daltonizationState_ != datashare_->GetBoolValue(DALTONIZATION_STATE, false)) {
-        HILOG_INFO("daltonizationState_: %{public}d need recovery", daltonizationState_);
-        SetDaltonizationState(daltonizationState_);
+    if (daltonizationState_.load() != datashare_->GetBoolValue(DALTONIZATION_STATE, false)) {
+        HILOG_INFO("daltonizationState_: %{public}d need recovery", daltonizationState_.load());
+        SetDaltonizationState(daltonizationState_.load());
     }
-    if (daltonizationColorFilter_ !=
+    if (daltonizationColorFilter_.load() !=
         static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0))) {
-        HILOG_INFO("daltonizationColorFilter_: %{public}d need recovery", daltonizationColorFilter_);
-        SetDaltonizationColorFilter(daltonizationColorFilter_);
+        HILOG_INFO("daltonizationColorFilter_: %{public}d need recovery", daltonizationColorFilter_.load());
+        SetDaltonizationColorFilter(daltonizationColorFilter_.load());
     }
 }
 
@@ -1503,13 +1504,13 @@ void AccessibilitySettingsConfig::recoverAudioAdjustment()
         HILOG_ERROR("datashare_ is nullptr");
         return;
     }
-    if (audioMonoState_ != datashare_->GetBoolValue(AUDIO_MONO_KEY, false)) {
-        HILOG_INFO("audioMonoState_: %{public}d need recovery", audioMonoState_);
-        SetAudioMonoState(audioMonoState_);
+    if (audioMonoState_.load() != datashare_->GetBoolValue(AUDIO_MONO_KEY, false)) {
+        HILOG_INFO("audioMonoState_: %{public}d need recovery", audioMonoState_.load());
+        SetAudioMonoState(audioMonoState_.load());
     }
-    if (audioBalance_ != static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0))) {
-        HILOG_INFO("audioBalance_: %{public}f need recovery", audioBalance_);
-        SetAudioBalance(audioBalance_);
+    if (audioBalance_.load() != static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0))) {
+        HILOG_INFO("audioBalance_: %{public}f need recovery", audioBalance_.load());
+        SetAudioBalance(audioBalance_.load());
     }
 }
 // LCOV_EXCL_STOP
@@ -1518,10 +1519,10 @@ void AccessibilitySettingsConfig::OnDataClone()
 {
     HILOG_INFO();
     CloneOnDeviceCapability();
-    if (ignoreRepeatClickState_) {
+    if (ignoreRepeatClickState_.load()) {
         IgnoreRepeatClickNotification::CancelNotification();
     }
-    if (animationOffState_) {
+    if (animationOffState_.load()) {
         TransitionAnimationsNotification::CancelNotification();
     }
 
@@ -1530,10 +1531,10 @@ void AccessibilitySettingsConfig::OnDataClone()
 
     InitSetting();
     SetDefaultShortcutKeyService();
-    SetIgnoreRepeatClickReconfirm(ignoreRepeatClickState_);
-    SetZoomGestureEnabledReconfirm(isScreenMagnificationState_);
+    SetIgnoreRepeatClickReconfirm(ignoreRepeatClickState_.load());
+    SetZoomGestureEnabledReconfirm(isScreenMagnificationState_.load());
 
-    if (isShortKeyState_) {
+    if (isShortKeyState_.load()) {
         SetShortKeyOnLockScreenState(true);
     } else {
         SetShortKeyOnLockScreenState(false);

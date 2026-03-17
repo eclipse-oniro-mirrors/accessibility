@@ -412,6 +412,7 @@ private:
     StateArrayHandler stateHandler_;
     StateObserversArray stateObserversArray_;
 
+    std::map<int32_t, sptr<AccessibilityElementOperatorImpl>> elementOperators_;
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerStateObserverImpl> stateObserver_ = nullptr;
