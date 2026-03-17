@@ -137,7 +137,7 @@ TouchExploration::TouchExploration()
         return;
     }
     moveThreshold_ = CalculateMoveThreshold(display->GetDpi());
-    float pixelsPerCm = display->GetDpi() / 2.54f;
+    float pixelsPerCm = display->GetDpi() / INCH_TO_CM;
     xMinPixels_ = pixelsPerCm * MIN_CM_BETWEEN_SAMPLES;
     yMinPixels_ = pixelsPerCm * MIN_CM_BETWEEN_SAMPLES;
     float density = display->GetVirtualPixelRatio();
