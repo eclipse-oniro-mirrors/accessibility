@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -495,7 +495,7 @@ export class AccessibilityElementImpl implements AccessibilityElement {
     native findElementByIdNative(condition: long): AccessibilityElement;
 }
 
-interface AccessibilityGrid {
+export interface AccessibilityGrid {
   rowIndex: int ;
   columnIndex: int ;
 }
@@ -505,7 +505,7 @@ export class AccessibilityGridImpl implements AccessibilityGrid {
   columnIndex: int = 0;
 }
 
-interface AccessibilitySpan {
+export interface AccessibilitySpan {
   spanId: int ;
   spanText: string;
   accessibilityText: string;
@@ -535,7 +535,7 @@ export type FocusDirection = 'up' | 'down' | 'left' | 'right' | 'forward' | 'bac
 
 export type WindowType = 'application' | 'system';
 
-interface Rect {
+export interface Rect {
   left: int;
   top: int;
   width: int;
