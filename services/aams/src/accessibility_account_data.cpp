@@ -263,29 +263,12 @@ void AccessibilityAccountData::AddEnableAbilityCallbackObserver(
 
 void AccessibilityAccountData::RemoveEnableAbilityCallbackObserver(const wptr<IRemoteObject>& observer)
 {
-    extensionAbilityManager_.UpdateEnableAbilityListsState();
+    extensionAbilityManager_.RemoveEnableAbilityCallbackObserver(observer);
 }
 
 void AccessibilityAccountData::UpdateEnableAbilityListsState()
 {
-    std::lock_guard<ffrt::mutex> lock(enableAbilityListObserversMutex_);
-    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
-    for (auto &observer : enableAbilityListsObservers_) {
-        if (observer) {
-            observer->OnAccessibilityEnableAbilityListsChanged();
-        }
-    }
-}
-
-void AccessibilityAccountData::UpdateInstallAbilityListsState()
-{
-    std::lock_guard<ffrt::mutex> lock(enableAbilityListObserversMutex_);
-    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
-    for (auto &observer : enableAbilityListsObservers_) {
-        if (observer) {
-            observer->OnAccessibilityInstallAbilityListsChanged();
-        }
-    }
+    extensionAbilityManager_.UpdateEnableAbilityListsState();
 }
 
 void AccessibilityAccountData::AddAccessibilityWindowConnection(

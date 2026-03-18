@@ -284,6 +284,7 @@ public:
     void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
     void UpdateImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities);
     void UpdateAutoStartEnabledAbilities();
+    void UpdateEnableAbilityListsState();
 
     uint32_t GetInputFilterFlag() const;
     void UpdateAbilities(std::string callerBundleName = "");

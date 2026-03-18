@@ -49,6 +49,7 @@ public:
     MOCK_METHOD2(SetCaptionProperty, ErrCode(const CaptionPropertyParcel& caption, bool isPermissionRequired));
     MOCK_METHOD2(SetCaptionState, ErrCode(const bool state, bool isPermissionRequired));
     MOCK_METHOD1(SetTouchEventInjector, void(const sptr<TouchEventInjector>& touchEventInjector));
+    MOCK_METHOD3(VerifyingToKenId, RetError(const int32_t windowId, const int64_t elementId, uint32_t tokenId));
 
     inline sptr<TouchEventInjector> GetTouchEventInjector()
     {
