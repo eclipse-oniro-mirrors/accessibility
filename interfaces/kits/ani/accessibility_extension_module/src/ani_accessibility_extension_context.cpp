@@ -30,8 +30,8 @@ using namespace arkts::ani_signature;
 using namespace Security::AccessToken;
 
 constexpr const char *ANI_EXTENSION_CONTEXT_CLS =
-    "application.AccessibilityExtensionContext.AccessibilityExtensionContext";
-constexpr const char *WANT_CLS = "@ohos.app.ability.Want.Want";
+    "application:AccessibilityExtensionContext.AccessibilityExtensionContext";
+constexpr const char *WANT_CLS = "@ohos:app.ability.Want.Want";
 
 static void StartAbility([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_object object, ani_object wantObj)
 {
