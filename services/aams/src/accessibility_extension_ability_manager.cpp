@@ -79,7 +79,8 @@ void ExtensionAbilityManager::GetConnectedAbilitiesInfo(std::vector<Accessibilit
     connectedA11yAbilities_.GetAbilitiesInfo(abilities);
 }
 
-void ExtensionAbilityManager::GetConnectedAbilitiesMap(std::map<std::string, sptr<AccessibleAbilityConnection>>& connectionMap)
+void ExtensionAbilityManager::GetConnectedAbilitiesMap(
+    std::map<std::string, sptr<AccessibleAbilityConnection>> &connectionMap)
 {
     connectedA11yAbilities_.GetAccessibilityAbilitiesMap(connectionMap);
 }
@@ -99,7 +100,8 @@ size_t ExtensionAbilityManager::GetConnectedAbilitiesSize()
     return connectedA11yAbilities_.GetSize();
 }
 
-void ExtensionAbilityManager::AddConnectingAbility(const std::string &uri, const sptr<AccessibleAbilityConnection> &connection)
+void ExtensionAbilityManager::AddConnectingAbility(
+    const std::string &uri, const sptr<AccessibleAbilityConnection> &connection)
 {
     connectingA11yAbilities_.AddAccessibilityAbility(uri, connection);
 }
@@ -139,7 +141,8 @@ void ExtensionAbilityManager::RemoveWaitDisconnectAbility(const std::string &uri
     waitDisconnectA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 
-const sptr<AccessibleAbilityConnection> ExtensionAbilityManager::GetWaitDisConnectAbility(const std::string &elementName)
+const sptr<AccessibleAbilityConnection> ExtensionAbilityManager::GetWaitDisConnectAbility(
+    const std::string &elementName)
 {
     return waitDisconnectA11yAbilities_.GetAccessibilityAbilityByName(elementName);
 }
@@ -149,13 +152,13 @@ size_t ExtensionAbilityManager::GetWaitDisconnectAbilitiesSize()
     return waitDisconnectA11yAbilities_.GetSize();
 }
 
-void ExtensionAbilityManager::AddAppStateObserverAbility(const std::string& uri, const sptr<AccessibleAbilityConnection>& connection)
+void ExtensionAbilityManager::AddAppStateObserverAbility(
+    const std::string &uri, const sptr<AccessibleAbilityConnection> &connection)
 {
     if (uri.empty() || !connection) {
         HILOG_ERROR("Invalid parameters for AddAppStateObserverAbility");
         return;
     }
-    
     appStateObserverAbilities_.AddAccessibilityAbility(uri, connection);
 }
 
@@ -165,7 +168,6 @@ void ExtensionAbilityManager::RemoveAppStateObserverAbility(const std::string& u
         HILOG_ERROR("Invalid uri for RemoveAppStateObserverAbility");
         return;
     }
-    
     appStateObserverAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 
@@ -267,7 +269,8 @@ const std::vector<AccessibilityAbilityInfo> &ExtensionAbilityManager::GetInstall
     return installedAbilities_;
 }
 
-void ExtensionAbilityManager::GetAbilitiesByState(AbilityStateType state, std::vector<AccessibilityAbilityInfo> &abilities)
+void ExtensionAbilityManager::GetAbilitiesByState(
+    AbilityStateType state, std::vector<AccessibilityAbilityInfo> &abilities)
 {
     HILOG_DEBUG("get abilities by state %{public}d", state);
     if (state == ABILITY_STATE_ENABLE) {
@@ -287,14 +290,16 @@ void ExtensionAbilityManager::GetDisableAbilities(std::vector<AccessibilityAbili
     connectedA11yAbilities_.GetDisableAbilities(disabledAbilities);
 }
 
-void ExtensionAbilityManager::AddEnableAbilityListsObserver(const sptr<IAccessibilityEnableAbilityListsObserver>& observer)
+void ExtensionAbilityManager::AddEnableAbilityListsObserver(
+    const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(enableAbilityListObserversMutex_);
-    if (std::any_of(enableAbilityListsObservers_.begin(), enableAbilityListsObservers_.end(),
-        [observer](const sptr<IAccessibilityEnableAbilityListsObserver> &listObserver) {
-            return listObserver == observer;
-        })) {
+    if (std::any_of(enableAbilityListsObservers_.begin(),
+            enableAbilityListsObservers_.end(),
+            [observer](const sptr<IAccessibilityEnableAbilityListsObserver> &listObserver) {
+                return listObserver == observer;
+            })) {
         HILOG_ERROR("observer is already exist");
         return;
     }
@@ -327,13 +332,15 @@ void ExtensionAbilityManager::UpdateEnableAbilityListsState()
     }
 }
 
-void ExtensionAbilityManager::AddEnableAbilityCallbackObserver(const sptr<IAccessibilityEnableAbilityCallbackObserver>& observer)
+void ExtensionAbilityManager::AddEnableAbilityCallbackObserver(
+    const sptr<IAccessibilityEnableAbilityCallbackObserver> &observer)
 {
     std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
-    if (std::any_of(enableAbilityCallbackObservers_.begin(), enableAbilityCallbackObservers_.end(),
-        [observer](const sptr<IAccessibilityEnableAbilityCallbackObserver> &listObserver) {
-            return listObserver == observer;
-        })) {
+    if (std::any_of(enableAbilityCallbackObservers_.begin(),
+            enableAbilityCallbackObservers_.end(),
+            [observer](const sptr<IAccessibilityEnableAbilityCallbackObserver> &listObserver) {
+                return listObserver == observer;
+            })) {
         HILOG_ERROR("observer is already exist");
         return;
     }
@@ -504,7 +511,8 @@ void ExtensionAbilityManager::DelAutoStartPrefKeyInRemovePkg(const std::string &
     }
 }
 
-void ExtensionAbilityManager::GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const
+void ExtensionAbilityManager::GetImportantEnabledAbilities(
+    std::map<std::string, uint32_t> &importantEnabledAbilities) const
 {
     HILOG_DEBUG("GetImportantEnabledAbilities start.");
     if (installedAbilities_.empty()) {
@@ -535,7 +543,8 @@ void ExtensionAbilityManager::GetImportantEnabledAbilities(std::map<std::string,
     }
 }
 
-void ExtensionAbilityManager::UpdateImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities)
+void ExtensionAbilityManager::UpdateImportantEnabledAbilities(
+    std::map<std::string, uint32_t> &importantEnabledAbilities)
 {
     HILOG_DEBUG();
     if (importantEnabledAbilities.empty()) {

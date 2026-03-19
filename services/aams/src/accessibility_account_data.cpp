@@ -118,9 +118,11 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
         config_->GetGestureState(), screenReaderState_, isSingleClickMode_, config_->GetAnimationOffState(),
         config_->GetAudioMonoState(), config_->GetFlashReminderSwitch());
     uint32_t state = 0;
-    if (extensionAbilityManager_.GetConnectedAbilitiesSize() != 0 || extensionAbilityManager_.GetConnectingAbilitiesSize() != 0) {
+    if (extensionAbilityManager_.GetConnectedAbilitiesSize() != 0 ||
+        extensionAbilityManager_.GetConnectingAbilitiesSize() != 0) {
         HILOG_DEBUG("connectingA11yAbilities %{public}zu connectedA11yAbilities %{public}zu",
-            extensionAbilityManager_.GetConnectingAbilitiesSize(), extensionAbilityManager_.GetConnectedAbilitiesSize());
+            extensionAbilityManager_.GetConnectingAbilitiesSize(),
+            extensionAbilityManager_.GetConnectedAbilitiesSize());
         state |= STATE_ACCESSIBILITY_ENABLED;
         if (!config_->GetEnabledState()) {
             config_->SetEnabled(true);
