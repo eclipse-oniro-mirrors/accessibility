@@ -67,6 +67,7 @@ namespace {
     constexpr int32_t BASE_USER_RANGE = 200000;
     constexpr int32_t INVALID_ID = -1;
     constexpr int32_t INVALID_USER_ID = -1;
+    constexpr uint64_t ELEMENT_MOVE_BIT = 40;
 } // namespace
 
 class JsonUtils {
