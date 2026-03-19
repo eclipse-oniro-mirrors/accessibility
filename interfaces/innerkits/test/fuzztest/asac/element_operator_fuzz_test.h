@@ -13,6 +13,9 @@
  * limitations under the License.
  */
 
+#ifndef ELEMENT_OPERATOR_FUZZ_H
+#define ELEMENT_OPERATOR_FUZZ_H
+
 #include "accessibility_system_ability_client_impl.h"
 #include "securec.h"
 
@@ -221,3 +224,4 @@ static size_t CreateEventInfo(AccessibilityEventInfo &eventInfo, const uint8_t* 
 }
 } // namespace Accessibility
 } // namespace OHOS
+#endif // ELEMENT_OPERATOR_FUZZ_H

@@ -13,6 +13,9 @@
  * limitations under the License.
  */
 
+#ifndef ACCESSIBLE_ABILITY_CLIENT_FUZZ_H
+#define ACCESSIBLE_ABILITY_CLIENT_FUZZ_H
+
 #include "accessibility_element_info.h"
 #include "accessibility_gesture_inject_path.h"
 #include "accessibility_ui_test_ability.h"
@@ -647,3 +650,4 @@ static size_t GenerateAccessibilityEventInfo(OHOS::Accessibility::AccessibilityE
     return position;
 }
 } // namespace OHOS
+#endif // ACCESSIBLE_ABILITY_CLIENT_FUZZ_H
