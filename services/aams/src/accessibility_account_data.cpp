@@ -432,7 +432,7 @@ void AccessibilityAccountData::UpdateEventTouchGuideCapability()
         touchGuideState = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, true);
     }
 
-    if (extensionAbilityManager_.HasConnectedCapability(Capability::CAPABILITY_TOUCH_GUIDE) && touchGuideState) {
+    if (extensionAbilityManager_.IsExistCapability(Capability::CAPABILITY_TOUCH_GUIDE)) {
         isEventTouchGuideState_ = true;
         return;
     }
@@ -442,7 +442,7 @@ void AccessibilityAccountData::UpdateEventTouchGuideCapability()
 
 void AccessibilityAccountData::UpdateGesturesSimulationCapability()
 {
-    if (extensionAbilityManager_.HasConnectedCapability(Capability::CAPABILITY_GESTURE)) {
+    if (extensionAbilityManager_.IsExistCapability(Capability::CAPABILITY_GESTURE)) {
         isGesturesSimulation_ = true;
         return;
     }
@@ -452,7 +452,7 @@ void AccessibilityAccountData::UpdateGesturesSimulationCapability()
 
 void AccessibilityAccountData::UpdateFilteringKeyEventsCapability()
 {
-    if (extensionAbilityManager_.HasConnectedCapability(Capability::CAPABILITY_KEY_EVENT_OBSERVER)) {
+    if (extensionAbilityManager_.IsExistCapability(Capability::CAPABILITY_KEY_EVENT_OBSERVER)) {
         isFilteringKeyEvents_ = true;
         return;
     }
@@ -462,7 +462,7 @@ void AccessibilityAccountData::UpdateFilteringKeyEventsCapability()
 
 void AccessibilityAccountData::UpdateMagnificationCapability()
 {
-    if (extensionAbilityManager_.HasConnectedCapability(Capability::CAPABILITY_ZOOM)) {
+    if (extensionAbilityManager_.IsExistCapability(Capability::CAPABILITY_ZOOM)) {
         isScreenMagnification_ = true;
         return;
     }
@@ -878,63 +878,13 @@ std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetConfig
 void AccessibilityAccountData::GetImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities) const
 {
-    HILOG_DEBUG("GetImportantEnabledAbilities start.");
-    const std::vector<AccessibilityAbilityInfo>& installedAbilities = extensionAbilityManager_.GetInstalledAbilities();
-    if (installedAbilities.empty()) {
-        HILOG_DEBUG("Current user has no installed Abilities.");
-        return;
-    }
-    const std::vector<std::string>& enabledAbilities = extensionAbilityManager_.GetEnabledAbilities();
-    if (enabledAbilities.empty()) {
-        HILOG_DEBUG("Current user has no enabled abilities.");
-        return;
-    }
-    HILOG_DEBUG("installedAbilities' size is %{public}zu.", installedAbilities.size());
-    for (auto &installAbility : installedAbilities) {
-        if (!installAbility.IsImportant()) {
-            HILOG_DEBUG("The ability is not important.");
-            continue;
-        }
-        std::string bundleName = installAbility.GetPackageName();
-        std::string abilityName = installAbility.GetName();
-        HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
-            bundleName.c_str(), abilityName.c_str());
-        std::string uri = Utils::GetUri(bundleName, abilityName);
-        std::vector<std::string>::const_iterator iter = std::find(enabledAbilities.begin(),
-            enabledAbilities.end(), uri);
-        if (iter != enabledAbilities.end()) {
-            uint32_t capabilityValues = installAbility.GetCapabilityValues();
-            importantEnabledAbilities.emplace(std::make_pair(uri, capabilityValues));
-        }
-    }
+    extensionAbilityManager_.GetImportantEnabledAbilities(importantEnabledAbilities);
 }
 
 void AccessibilityAccountData::UpdateImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities)
 {
-    HILOG_DEBUG();
-    if (importantEnabledAbilities.empty()) {
-        HILOG_DEBUG("There is no enabled abilities.");
-        return;
-    }
-    std::vector<AccessibilityAbilityInfo> installedAbilities = extensionAbilityManager_.GetInstalledAbilities();
-    if (installedAbilities.empty()) {
-        HILOG_DEBUG("Current user has no installedAbilities.");
-        return;
-    }
-    HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities.size());
-    for (auto &installAbility : installedAbilities) {
-        std::string bundleName = installAbility.GetPackageName();
-        std::string abilityName = installAbility.GetName();
-        HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
-        bundleName.c_str(), abilityName.c_str());
-        std::string uri = Utils::GetUri(bundleName, abilityName);
-        std::map<std::string, uint32_t>::iterator iter = importantEnabledAbilities.find(uri);
-        if (iter != importantEnabledAbilities.end()) {
-            AddEnabledAbility(uri);
-            installAbility.SetCapabilityValues(iter->second);
-        }
-    }
+    extensionAbilityManager_.UpdateImportantEnabledAbilities(importantEnabledAbilities);
 }
 
 void AccessibilityAccountData::UpdateAutoStartEnabledAbilities()
@@ -944,30 +894,8 @@ void AccessibilityAccountData::UpdateAutoStartEnabledAbilities()
         HILOG_DEBUG("Current user is -1.");
         return;
     }
-    std::vector<AccessibilityAbilityInfo> installedAbilities = extensionAbilityManager_.GetInstalledAbilities();
-    if (installedAbilities.empty()) {
-        HILOG_DEBUG("Current user has no installedAbilities.");
-        return;
-    }
-    if (!config_) {
-        HILOG_DEBUG("config_ is null.");
-        return;
-    }
-    HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities.size());
-    for (auto &installAbility : installedAbilities) {
-        std::string bundleName = installAbility.GetPackageName();
-        std::string abilityName = installAbility.GetName();
-        std::string abilityId = bundleName + "/" + abilityName;
-        if (GetAbilityAutoStartState(abilityId)) {
-            HILOG_INFO("auto start packageName is %{public}s.", bundleName.c_str());
-            uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
-                CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
-            uint32_t resultCapabilities = installAbility.GetStaticCapabilityValues() & capabilities;
-            installAbility.SetCapabilityValues(resultCapabilities);
-            std::string uri = Utils::GetUri(bundleName, abilityName);
-            AddEnabledAbility(uri);
-        }
-    }
+    extensionAbilityManager_.UpdateAutoStartEnabledAbilities(
+        [this](const std::string &name) { return GetAbilityAutoStartState(name); });
 }
 
 uint32_t AccessibilityAccountData::GetInputFilterFlag() const

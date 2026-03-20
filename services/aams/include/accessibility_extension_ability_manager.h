@@ -102,17 +102,13 @@ public:
         std::function<bool(const std::string&)> autoStartChecker,
         std::function<void(const std::string&, bool)> autoStartSetter);
 
-    void SetAbilityAutoStartState(const std::string &name, const bool state);
-    bool GetAbilityAutoStartState(const std::string &name);
-    void DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName);
-
     void AddUITestClient(const sptr<IRemoteObject> &obj,
         const std::string &bundleName, const std::string &abilityName);
     void RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection, const std::string &bundleName);
 
     void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
     void UpdateImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities);
-    void UpdateAutoStartEnabledAbilities();
+    void UpdateAutoStartEnabledAbilities(std::function<bool(const std::string&)> autoStartChecker);
     void Clear();
 
     bool IsExistCapability(Capability capability);

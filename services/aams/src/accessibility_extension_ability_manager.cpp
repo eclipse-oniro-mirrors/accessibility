@@ -41,11 +41,6 @@ void ExtensionAbilityManager::AddConnectedAbility(sptr<AccessibleAbilityConnecti
     }
 
     std::string uri = Utils::GetUri(connection->GetElementName());
-    std::string bundleName = "";
-    size_t pos = uri.find('/');
-    if (pos != std::string::npos) {
-        bundleName = uri.substr(0, pos);
-    }
     connectedA11yAbilities_.AddAccessibilityAbility(uri, connection);
 }
 
@@ -83,11 +78,6 @@ void ExtensionAbilityManager::GetConnectedAbilitiesMap(
     std::map<std::string, sptr<AccessibleAbilityConnection>> &connectionMap)
 {
     connectedA11yAbilities_.GetAccessibilityAbilitiesMap(connectionMap);
-}
-
-bool ExtensionAbilityManager::HasConnectedCapability(Capability capability)
-{
-    return connectedA11yAbilities_.IsExistCapability(capability);
 }
 
 void ExtensionAbilityManager::ClearConnectedAbilities()
@@ -466,51 +456,6 @@ void ExtensionAbilityManager::ChangeAbility(const std::string &bundleName,
         }
 }
 
-void ExtensionAbilityManager::SetAbilityAutoStartState(const std::string &name, const bool state)
-{
-    if (!config_) {
-        HILOG_WARN("conig_ is nullptr.");
-        return;
-    }
-    if (state) {
-        config_->AddEnabledAccessibilityService(name);
-    } else {
-        config_->RemoveEnabledAccessibilityService(name);
-    }
-}
-
-bool ExtensionAbilityManager::GetAbilityAutoStartState(const std::string &name)
-{
-    if (!config_) {
-        HILOG_WARN("config_ is nullptr.");
-        return false;
-    }
-    std::vector<std::string> serviceList = config_->GetEnabledAccessibilityServices();
-    auto iter = std::find(serviceList.begin(), serviceList.end(), name);
-    if (iter != serviceList.end()) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-void ExtensionAbilityManager::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)
-{
-    HILOG_ERROR("start and bundleName[%{public}s].", bundleName.c_str());
-    if (installedAbilities_.empty()) {
-        HILOG_DEBUG("There is no installed abilities.");
-        return;
-    }
-    for (auto &installAbility : installedAbilities_) {
-        if (installAbility.GetPackageName() == bundleName) {
-            std::string abilityName = installAbility.GetName();
-            std::string uri = Utils::GetUri(bundleName, abilityName);
-            SetAbilityAutoStartState(uri, false);
-            break;
-        }
-    }
-}
-
 void ExtensionAbilityManager::GetImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities) const
 {
@@ -570,15 +515,11 @@ void ExtensionAbilityManager::UpdateImportantEnabledAbilities(
     }
 }
 
-void ExtensionAbilityManager::UpdateAutoStartEnabledAbilities()
+void ExtensionAbilityManager::UpdateAutoStartEnabledAbilities(std::function<bool(const std::string&)> autoStartChecker)
 {
     HILOG_DEBUG();
     if (installedAbilities_.empty()) {
         HILOG_DEBUG("Current user has no installedAbilities.");
-        return;
-    }
-    if (!config_) {
-        HILOG_DEBUG("config_ is null.");
         return;
     }
     HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
@@ -586,7 +527,7 @@ void ExtensionAbilityManager::UpdateAutoStartEnabledAbilities()
         std::string bundleName = installAbility.GetPackageName();
         std::string abilityName = installAbility.GetName();
         std::string abilityId = bundleName + "/" + abilityName;
-        if (GetAbilityAutoStartState(abilityId)) {
+        if (autoStartChecker && autoStartChecker(abilityId)) {
             HILOG_DEBUG("auto start packageName is %{public}s.", bundleName.c_str());
             uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
                 CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
