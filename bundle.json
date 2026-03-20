@@ -71,7 +71,9 @@
         "memmgr",
         "distributed_notification_service",
         "time_service",
-        "json"
+        "json",
+        "ets_frontend",
+        "image_framework"
       ],
       "third_party": []
     },
