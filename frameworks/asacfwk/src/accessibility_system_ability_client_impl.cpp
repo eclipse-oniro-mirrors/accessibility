@@ -385,7 +385,20 @@ void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject
         }
     }
     // notify observer when SA died
-    OnAccessibleAbilityManagerStateChanged(0);
+    uint32_t stateType = 0;
+    if (stateHandler_.GetState(AccessibilityStateEventType::EVENT_AUDIO_MONO)) {
+        stateType |= STATE_AUDIOMONO_ENABLED;
+    }
+    if (stateHandler_.GetState(AccessibilityStateEventType::EVENT_ANIMATION_OFF)) {
+        stateType |= STATE_ANIMATIONOFF_ENABLED;
+    }
+    if (stateHandler_.GetState(AccessibilityStateEventType::EVENT_FLASH_REMINDER_SWITCH)) {
+        stateType |= STATE_FLASH_REMINDER_ENABLED;
+    }
+    if (stateHandler_.GetState(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED)) {
+        stateType |= STATE_ELDER_CARE_ENABLED;
+    }
+    OnAccessibleAbilityManagerStateChanged(stateType);
     stateHandler_.Reset();
 }
 
