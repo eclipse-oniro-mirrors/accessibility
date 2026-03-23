@@ -1862,9 +1862,12 @@ ErrCode AccessibleAbilityManagerService::CheckExtensionAbilityPermission(std::st
         HILOG_ERROR("get native token info failed!");
         return RET_ERR_TOKEN_ID;
     }
+    if (processName == "") {
+        HILOG_ERROR("get native token info failed!");
+        return RET_ERR_FAILED;
+    }
 
-    processName = info.processName;
-    
+    processName = info.processName;    
     bool ret = Permission::CheckCallingPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY);
     if (ret == true) {
         HILOG_INFO("get hap permission");
