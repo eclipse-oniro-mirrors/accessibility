@@ -58,7 +58,7 @@ namespace {
 // LCOV_EXCL_START
 AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type)
 {
-    std::map<const std::string, AccessibilityAbilityTypes> accessibilityAbilityTypesTable = {
+    static std::map<const std::string, AccessibilityAbilityTypes> accessibilityAbilityTypesTable = {
         {"spoken", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN},
         {"haptic", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_HAPTIC},
         {"audible", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_AUDIBLE},
@@ -77,10 +77,11 @@ AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::st
 
 AbilityStateType ConvertStringToAbilityStateType(const std::string &type)
 {
-    std::map<const std::string, AbilityStateType> abilityStateTypeTable = {
+    static std::map<const std::string, AbilityStateType> abilityStateTypeTable = {
         {"enable", AbilityStateType::ABILITY_STATE_ENABLE},
         {"disable", AbilityStateType::ABILITY_STATE_DISABLE},
-        {"install", AbilityStateType::ABILITY_STATE_INSTALLED}};
+        {"install", AbilityStateType::ABILITY_STATE_INSTALLED},
+    };
 
     if (abilityStateTypeTable.find(type) == abilityStateTypeTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
@@ -226,7 +227,7 @@ uint32_t ParseCapabilitiesFromVec(const std::vector<std::string> &capabilities)
 
 OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(std::string& type)
 {
-    std::map<const std::string, OHOS::AccessibilityConfig::DALTONIZATION_TYPE> daltonizationTTypesTable = {
+    static std::map<const std::string, OHOS::AccessibilityConfig::DALTONIZATION_TYPE> daltonizationTTypesTable = {
         {"Normal", OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Normal},
         {"Protanomaly", OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Protanomaly},
         {"Deuteranomaly", OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly},
@@ -258,7 +259,7 @@ std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZ
 
 OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME ConvertStringToClickResponseTimeTypes(std::string& type)
 {
-    std::map<const std::string, OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME> clickResponseTimeTypesTable = {
+    static std::map<const std::string, OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME> clickResponseTimeTypesTable = {
         {"Short", OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort},
         {"Medium", OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayMedium},
         {"Long", OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayLong},
@@ -288,7 +289,7 @@ std::string ConvertClickResponseTimeTypeToString(OHOS::AccessibilityConfig::CLIC
 
 OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME ConvertStringToIgnoreRepeatClickTimeTypes(std::string& type)
 {
-    std::map<const std::string, OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME> mapTable = {
+    static std::map<const std::string, OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME> mapTable = {
         {"Shortest", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest},
         {"Short", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShort},
         {"Medium", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutMedium},
