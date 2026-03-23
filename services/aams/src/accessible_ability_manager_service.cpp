@@ -1976,7 +1976,7 @@ ErrCode AccessibleAbilityManagerService::DisableUITestAbility()
         return RET_ERR_NULLPTR;
     }
 
-    std::string processName = "defaultProcessName";
+    std::string processName = "";
     auto ret = CheckExtensionAbilityPermission(processName);
     if (ret != RET_OK) {
         return ret;
@@ -2002,7 +2002,7 @@ ErrCode AccessibleAbilityManagerService::DisableUITestAbility()
         std::function<void()> removeUITestClientFunc =
             std::bind(&AccessibilityAccountData::RemoveUITestClient, accountData, connection, processName);
         handler_->PostTask(removeUITestClientFunc, "RemoveUITestClient");
-        accountData->RemoveEnabledAbility(Utils::GetUri(connection->GetElementName));
+        accountData->RemoveEnabledAbility(uiTestUri);
         syncPromise->set_value(RET_OK);
         }, "TASK_DISABLE_UI_TEST_ABILITIES");
 
