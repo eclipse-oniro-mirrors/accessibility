@@ -3,7 +3,7 @@
 ## 基本信息
 
 无障碍子系统提供在应用程序和辅助应用之间交换信息的标准机制，支持开发辅助应用增强无障碍功能体验。主要功能包括：
-- 为残障人士提供使用应用的能力（如屏幕朗读、语音助手等）
+- 为残障人士提供使用应用的能力（如读屏软件）
 - 为开发者提供与应用交互的能力（如UI自动化测试框架、基于UI响应的辅助应用）
 - 支持多种无障碍能力类型：视觉障碍、听觉障碍、肢体障碍等
 
@@ -150,15 +150,5 @@
 ### 构建命令
 
 ```bash
-# 手机
-./build_system.sh --abi-type generic_generic_arm_64only --device-type general_all_phone_standard --ccache --build-target accessibility --build-variant root
-
-# pc
-./build_system.sh --abi-type generic_generic_arm_64only --device-type general_all_pc_standard --ccache --build-target accessibility  --build-variant root
-
-# 手表
-./build_system.sh --abi-type generic_generic_arm_64only --device-type general_all_watch_standard --ccache --build-target accessibility --build-variant root
-
-# 平板
-./build_system.sh --abi-type generic_generic_arm_64only --device-type general_all_tablet_standard --ccache --build-target accessibility --build-variant root
+./build.sh --product-name {product_name} --build-target accessibility
 ```
