@@ -47,7 +47,6 @@ public:
     void GetConnectedAbilities(std::vector<sptr<AccessibleAbilityConnection>>& connectionList);
     void GetConnectedAbilitiesInfo(std::vector<AccessibilityAbilityInfo>& abilities);
     void GetConnectedAbilitiesMap(std::map<std::string, sptr<AccessibleAbilityConnection>>& connectionMap);
-    bool HasConnectedCapability(Capability capability);
     void ClearConnectedAbilities();
     size_t GetConnectedAbilitiesSize();
 
@@ -73,6 +72,7 @@ public:
     void RemoveInstalledAbility(const std::string &bundleName);
     void ClearInstalledAbility();
     const std::vector<AccessibilityAbilityInfo> &GetInstalledAbilities() const;
+    RetError UpdateInstalledAbility(const std::string &name, uint32_t capabilities);
 
     void GetAbilitiesByState(AbilityStateType state, std::vector<AccessibilityAbilityInfo> &abilities);
     void GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities);

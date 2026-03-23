@@ -259,6 +259,24 @@ const std::vector<AccessibilityAbilityInfo> &ExtensionAbilityManager::GetInstall
     return installedAbilities_;
 }
 
+RetError ExtensionAbilityManager::UpdateInstalledAbility(const std::string &name, uint32_t capabilities)
+{
+    for (auto iter = installedAbilities_.begin(); iter != installedAbilities_.end(); iter++) {
+        if (iter->GetId() == name) {
+            // Judge capabilities
+            uint32_t resultCapabilities = iter->GetStaticCapabilityValues() & capabilities;
+            HILOG_ERROR("testtest resultCapabilities is [%{public}d]  origin = %{public}u", resultCapabilities, iter->GetStaticCapabilityValues());
+            if (resultCapabilities == 0) {
+                HILOG_ERROR("the result of capabilities is wrong");
+                return RET_ERR_NOT_ENABLED;
+            }
+            iter->SetCapabilityValues(resultCapabilities);
+            return RET_OK;
+        }
+    }
+    return RET_ERR_NOT_INSTALLED;
+}
+
 void ExtensionAbilityManager::GetAbilitiesByState(
     AbilityStateType state, std::vector<AccessibilityAbilityInfo> &abilities)
 {

@@ -665,28 +665,10 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     const std::string &callerBundleName)
 {
     HILOG_DEBUG("start and name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
-
-    bool isInstalled = false;
-    std::vector<AccessibilityAbilityInfo> installedAbilities = extensionAbilityManager_.GetInstalledAbilities();
-    for (auto itr = installedAbilities.begin(); itr != installedAbilities.end(); itr++) {
-        if (itr->GetId() == name) {
-            isInstalled = true;
-
-            // Judge capabilities
-            uint32_t resultCapabilities = itr->GetStaticCapabilityValues() & capabilities;
-            HILOG_DEBUG("resultCapabilities is [%{public}d]", resultCapabilities);
-            if (resultCapabilities == 0) {
-                HILOG_ERROR("the result of capabilities is wrong");
-                return RET_ERR_NOT_ENABLED;
-            }
-
-            itr->SetCapabilityValues(resultCapabilities);
-            break;
-        }
-    }
-    if (!isInstalled) {
+    RetError ret = extensionAbilityManager_.UpdateInstalledAbility(name, capabilities);
+    if (ret != RET_OK) {
         HILOG_ERROR("the ability[%{public}s] is not installed", name.c_str());
-        return RET_ERR_NOT_INSTALLED;
+        return ret;
     }
 
     // Add enabled ability
