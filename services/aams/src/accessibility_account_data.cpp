@@ -991,7 +991,7 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
 
     if (!accessibilityInfos.empty()) {
         accessibleAbilityManager_.AddAbility(
-            bundleName, 
+            bundleName,
             accessibilityInfos,
             [this](const std::string& name) { return GetAbilityAutoStartState(name); }
         );

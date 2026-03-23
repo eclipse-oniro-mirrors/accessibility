@@ -95,7 +95,7 @@ public:
         std::function<sptr<AccessibleAbilityConnection>(
             int32_t, int32_t, AccessibilityAbilityInfo&)> connectionCreator);
     bool RemoveAbility(const std::string &bundleName);
-    void AddAbility(const std::string &bundleName, 
+    void AddAbility(const std::string &bundleName,
         const std::vector<AccessibilityAbilityInfo>& abilityInfos,
         std::function<bool(const std::string&)> autoStartChecker);
     void ChangeAbility(const std::string &bundleName,

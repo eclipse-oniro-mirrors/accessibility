@@ -265,7 +265,6 @@ RetError AccessibleAbilityManager::UpdateInstalledAbility(const std::string &nam
         if (iter->GetId() == name) {
             // Judge capabilities
             uint32_t resultCapabilities = iter->GetStaticCapabilityValues() & capabilities;
-            HILOG_ERROR("testtest resultCapabilities is [%{public}d]  origin = %{public}u", resultCapabilities, iter->GetStaticCapabilityValues());
             if (resultCapabilities == 0) {
                 HILOG_ERROR("the result of capabilities is wrong");
                 return RET_ERR_NOT_ENABLED;
@@ -303,11 +302,10 @@ void AccessibleAbilityManager::AddEnableAbilityListsObserver(
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::mutex> lock(enableAbilityListObserversMutex_);
-    if (std::any_of(enableAbilityListsObservers_.begin(),
-            enableAbilityListsObservers_.end(),
-            [observer](const sptr<IAccessibilityEnableAbilityListsObserver> &listObserver) {
-                return listObserver == observer;
-            })) {
+    if (std::any_of(enableAbilityListsObservers_.begin(), enableAbilityListsObservers_.end(),
+        [observer](const sptr<IAccessibilityEnableAbilityListsObserver> &listObserver) {
+            return listObserver == observer;
+        })) {
         HILOG_ERROR("observer is already exist");
         return;
     }
@@ -410,7 +408,7 @@ bool AccessibleAbilityManager::RemoveAbility(const std::string &bundleName)
     return result;
 }
 
-void AccessibleAbilityManager::AddAbility(const std::string &bundleName, 
+void AccessibleAbilityManager::AddAbility(const std::string &bundleName,
     const std::vector<AccessibilityAbilityInfo>& abilityInfos,
     std::function<bool(const std::string&)> autoStartChecker)
 {
@@ -420,7 +418,6 @@ void AccessibleAbilityManager::AddAbility(const std::string &bundleName,
             HILOG_DEBUG("The package%{public}s added", (bundleName + "/" + newAbility.GetName()).c_str());
             AccessibilityAbilityInfo info = newAbility;
             std::string abilityId = info.GetId();
-            
             if (autoStartChecker && autoStartChecker(abilityId)) {
                 HILOG_DEBUG("auto start packageName is %{public}s.", bundleName.c_str());
                 uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
@@ -433,7 +430,6 @@ void AccessibleAbilityManager::AddAbility(const std::string &bundleName,
                 RemoveConnectingAbility(uri);
                 continue;
             }
-            
             AddInstalledAbility(info);
         }
     }
