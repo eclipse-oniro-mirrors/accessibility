@@ -15,7 +15,7 @@
 
 #include "accessibility_account_data.h"
 #include "accessibility_element_operator_manager.h"
-#include "accessibility_extension_ability_manager.h"
+#include "accessible_ability_manager.h"
 
 #include <any>
 #include <dlfcn.h>
@@ -118,11 +118,11 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
         config_->GetGestureState(), screenReaderState_, isSingleClickMode_, config_->GetAnimationOffState(),
         config_->GetAudioMonoState(), config_->GetFlashReminderSwitch());
     uint32_t state = 0;
-    if (extensionAbilityManager_.GetConnectedAbilitiesSize() != 0 ||
-        extensionAbilityManager_.GetConnectingAbilitiesSize() != 0) {
+    if (accessibleAbilityManager_.GetConnectedAbilitiesSize() != 0 ||
+        accessibleAbilityManager_.GetConnectingAbilitiesSize() != 0) {
         HILOG_DEBUG("connectingA11yAbilities %{public}zu connectedA11yAbilities %{public}zu",
-            extensionAbilityManager_.GetConnectingAbilitiesSize(),
-            extensionAbilityManager_.GetConnectedAbilitiesSize());
+            accessibleAbilityManager_.GetConnectingAbilitiesSize(),
+            accessibleAbilityManager_.GetConnectedAbilitiesSize());
         state |= STATE_ACCESSIBILITY_ENABLED;
         if (!config_->GetEnabledState()) {
             config_->SetEnabled(true);
@@ -174,16 +174,16 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
 void AccessibilityAccountData::OnAccountSwitched()
 {
     HILOG_INFO();
-    extensionAbilityManager_.ClearConnectedAbilities();
+    accessibleAbilityManager_.ClearConnectedAbilities();
     std::vector<sptr<AccessibleAbilityConnection>> connectionList;
-    extensionAbilityManager_.GetConnectedAbilities(connectionList);
+    accessibleAbilityManager_.GetConnectedAbilities(connectionList);
     for (auto& connection : connectionList) {
         if (connection) {
             connection->Disconnect();
         }
     }
 
-    extensionAbilityManager_.Clear();
+    accessibleAbilityManager_.Clear();
     Singleton<AccessibilityPowerManager>::GetInstance().UnholdRunningLock();
     elementOperatorManager_.Clear();
     if (!config_) {
@@ -215,7 +215,7 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
     if (pos != std::string::npos) {
         bundleName = uri.substr(0, pos);
     }
-    extensionAbilityManager_.AddConnectedAbility(connection);
+    accessibleAbilityManager_.AddConnectedAbility(connection);
     
     std::vector<uint32_t> events {};
     UpdateAbilityNeedEvent(bundleName, events);
@@ -223,7 +223,7 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
 
 void AccessibilityAccountData::RemoveConnectedAbility(const AppExecFwk::ElementName &element)
 {
-    extensionAbilityManager_.RemoveConnectedAbility(element);
+    accessibleAbilityManager_.RemoveConnectedAbility(element);
 }
 
 void AccessibilityAccountData::AddCaptionPropertyCallback(
@@ -249,28 +249,28 @@ void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteO
 void AccessibilityAccountData::AddEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver>& observer)
 {
-    extensionAbilityManager_.AddEnableAbilityListsObserver(observer);
+    accessibleAbilityManager_.AddEnableAbilityListsObserver(observer);
 }
 
 void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemoteObject>& observer)
 {
-    extensionAbilityManager_.RemoveEnableAbilityListsObserver(observer);
+    accessibleAbilityManager_.RemoveEnableAbilityListsObserver(observer);
 }
 
 void AccessibilityAccountData::AddEnableAbilityCallbackObserver(
     const sptr<IAccessibilityEnableAbilityCallbackObserver>& observer)
 {
-    extensionAbilityManager_.AddEnableAbilityCallbackObserver(observer);
+    accessibleAbilityManager_.AddEnableAbilityCallbackObserver(observer);
 }
 
 void AccessibilityAccountData::RemoveEnableAbilityCallbackObserver(const wptr<IRemoteObject>& observer)
 {
-    extensionAbilityManager_.RemoveEnableAbilityCallbackObserver(observer);
+    accessibleAbilityManager_.RemoveEnableAbilityCallbackObserver(observer);
 }
 
 void AccessibilityAccountData::UpdateEnableAbilityListsState()
 {
-    extensionAbilityManager_.UpdateEnableAbilityListsState();
+    accessibleAbilityManager_.UpdateEnableAbilityListsState();
 }
 
 void AccessibilityAccountData::AddAccessibilityWindowConnection(
@@ -287,22 +287,22 @@ void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int32_t
 void AccessibilityAccountData::AddConnectingA11yAbility(const std::string &uri,
     const sptr<AccessibleAbilityConnection> &connection)
 {
-    extensionAbilityManager_.AddConnectingAbility(uri, connection);
+    accessibleAbilityManager_.AddConnectingAbility(uri, connection);
 }
 
 void AccessibilityAccountData::RemoveConnectingA11yAbility(const std::string &uri)
 {
-    extensionAbilityManager_.RemoveConnectingAbility(uri);
+    accessibleAbilityManager_.RemoveConnectingAbility(uri);
 }
 
 void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
 {
-    extensionAbilityManager_.AddEnabledAbility(name);
+    accessibleAbilityManager_.AddEnabledAbility(name);
 }
 
 RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 {
-    RetError ret = extensionAbilityManager_.RemoveEnabledAbility(name);
+    RetError ret = accessibleAbilityManager_.RemoveEnabledAbility(name);
     if (ret == RET_OK) {
         RemoveNeedEvent(name);
     }
@@ -311,23 +311,23 @@ RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 
 void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
 {
-    extensionAbilityManager_.AddInstalledAbility(abilityInfo);
+    accessibleAbilityManager_.AddInstalledAbility(abilityInfo);
 }
 
 void AccessibilityAccountData::RemoveInstalledAbility(const std::string &bundleName)
 {
-    extensionAbilityManager_.RemoveInstalledAbility(bundleName);
+    accessibleAbilityManager_.RemoveInstalledAbility(bundleName);
 }
 
 void AccessibilityAccountData::ClearInstalledAbility()
 {
-    extensionAbilityManager_.ClearInstalledAbility();
+    accessibleAbilityManager_.ClearInstalledAbility();
 }
 
 const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleAbilityConnection(
     const std::string &elementName)
 {
-    return extensionAbilityManager_.GetConnectedAbilityByName(elementName);
+    return accessibleAbilityManager_.GetConnectedAbilityByName(elementName);
 }
 
 const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibilityWindowConnection(
@@ -340,25 +340,25 @@ const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAcco
 {
     HILOG_DEBUG("GetConnectedA11yAbilities start.");
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMap;
-    extensionAbilityManager_.GetConnectedAbilitiesMap(connectionMap);
+    accessibleAbilityManager_.GetConnectedAbilitiesMap(connectionMap);
     return connectionMap;
 }
 
 const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetWaitDisConnectAbility(
     const std::string &elementName)
 {
-    return extensionAbilityManager_.GetWaitDisConnectAbility(elementName);
+    return accessibleAbilityManager_.GetWaitDisConnectAbility(elementName);
 }
 
 void AccessibilityAccountData::AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    extensionAbilityManager_.AddWaitDisconnectAbility(connection);
+    accessibleAbilityManager_.AddWaitDisconnectAbility(connection);
 }
 
 void AccessibilityAccountData::RemoveWaitDisconnectAbility(const std::string &uri)
 {
     HILOG_INFO();
-    extensionAbilityManager_.RemoveWaitDisconnectAbility(uri);
+    accessibleAbilityManager_.RemoveWaitDisconnectAbility(uri);
 }
 
 const std::map<int32_t, sptr<AccessibilityWindowConnection>> AccessibilityAccountData::GetAsacConnections()
@@ -376,18 +376,18 @@ const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallb
 
 sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbility(const std::string &uri)
 {
-    return extensionAbilityManager_.GetConnectingAbility(uri);
+    return accessibleAbilityManager_.GetConnectingAbility(uri);
 }
 
 const std::vector<std::string> &AccessibilityAccountData::GetEnabledAbilities()
 {
-    return extensionAbilityManager_.GetEnabledAbilities();
+    return accessibleAbilityManager_.GetEnabledAbilities();
 }
 
 const std::vector<AccessibilityAbilityInfo> &AccessibilityAccountData::GetInstalledAbilities() const
 {
     HILOG_DEBUG("GetInstalledAbilities start.");
-    return extensionAbilityManager_.GetInstalledAbilities();
+    return accessibleAbilityManager_.GetInstalledAbilities();
 }
 
 void AccessibilityAccountData::GetAbilitiesByState(AbilityStateType state,
@@ -395,20 +395,20 @@ void AccessibilityAccountData::GetAbilitiesByState(AbilityStateType state,
 {
     HILOG_DEBUG("get abilities by state %{public}d", state);
     if (state == ABILITY_STATE_ENABLE) {
-        extensionAbilityManager_.GetConnectedAbilitiesInfo(abilities);
+        accessibleAbilityManager_.GetConnectedAbilitiesInfo(abilities);
     } else if (state == ABILITY_STATE_DISABLE) {
         GetDisableAbilities(abilities);
         HILOG_DEBUG("the size of disable abilities is %{public}zu", abilities.size());
     } else {
-        abilities = extensionAbilityManager_.GetInstalledAbilities();
+        abilities = accessibleAbilityManager_.GetInstalledAbilities();
     }
 }
 
 void AccessibilityAccountData::GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities)
 {
     HILOG_DEBUG("get disable abilities");
-    disabledAbilities = extensionAbilityManager_.GetInstalledAbilities();
-    extensionAbilityManager_.GetDisableAbilities(disabledAbilities);
+    disabledAbilities = accessibleAbilityManager_.GetInstalledAbilities();
+    accessibleAbilityManager_.GetDisableAbilities(disabledAbilities);
 }
 
 void AccessibilityAccountData::UpdateAccountCapabilities()
@@ -432,7 +432,7 @@ void AccessibilityAccountData::UpdateEventTouchGuideCapability()
         touchGuideState = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, true);
     }
 
-    if (extensionAbilityManager_.IsExistCapability(Capability::CAPABILITY_TOUCH_GUIDE)) {
+    if (accessibleAbilityManager_.IsExistCapability(Capability::CAPABILITY_TOUCH_GUIDE)) {
         isEventTouchGuideState_ = true;
         return;
     }
@@ -442,7 +442,7 @@ void AccessibilityAccountData::UpdateEventTouchGuideCapability()
 
 void AccessibilityAccountData::UpdateGesturesSimulationCapability()
 {
-    if (extensionAbilityManager_.IsExistCapability(Capability::CAPABILITY_GESTURE)) {
+    if (accessibleAbilityManager_.IsExistCapability(Capability::CAPABILITY_GESTURE)) {
         isGesturesSimulation_ = true;
         return;
     }
@@ -452,7 +452,7 @@ void AccessibilityAccountData::UpdateGesturesSimulationCapability()
 
 void AccessibilityAccountData::UpdateFilteringKeyEventsCapability()
 {
-    if (extensionAbilityManager_.IsExistCapability(Capability::CAPABILITY_KEY_EVENT_OBSERVER)) {
+    if (accessibleAbilityManager_.IsExistCapability(Capability::CAPABILITY_KEY_EVENT_OBSERVER)) {
         isFilteringKeyEvents_ = true;
         return;
     }
@@ -462,7 +462,7 @@ void AccessibilityAccountData::UpdateFilteringKeyEventsCapability()
 
 void AccessibilityAccountData::UpdateMagnificationCapability()
 {
-    if (extensionAbilityManager_.IsExistCapability(Capability::CAPABILITY_ZOOM)) {
+    if (accessibleAbilityManager_.IsExistCapability(Capability::CAPABILITY_ZOOM)) {
         isScreenMagnification_ = true;
         return;
     }
@@ -581,7 +581,7 @@ bool AccessibilityAccountData::GetDefaultUserScreenReaderState()
 void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)
 {
     HILOG_ERROR("start and bundleName[%{public}s].", bundleName.c_str());
-    const std::vector<AccessibilityAbilityInfo>& installedAbilities = extensionAbilityManager_.GetInstalledAbilities();
+    const std::vector<AccessibilityAbilityInfo>& installedAbilities = accessibleAbilityManager_.GetInstalledAbilities();
     if (installedAbilities.empty()) {
         HILOG_DEBUG("There is no installed abilities.");
         return;
@@ -665,14 +665,14 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     const std::string &callerBundleName)
 {
     HILOG_DEBUG("start and name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
-    RetError ret = extensionAbilityManager_.UpdateInstalledAbility(name, capabilities);
+    RetError ret = accessibleAbilityManager_.UpdateInstalledAbility(name, capabilities);
     if (ret != RET_OK) {
         HILOG_ERROR("the ability[%{public}s] is not installed", name.c_str());
         return ret;
     }
 
     // Add enabled ability
-    const std::vector<std::string>& enabledAbilities = extensionAbilityManager_.GetEnabledAbilities();
+    const std::vector<std::string>& enabledAbilities = accessibleAbilityManager_.GetEnabledAbilities();
     if (std::any_of(enabledAbilities.begin(), enabledAbilities.end(),
         [name](const std::string &abilityName) {
             return abilityName == name;
@@ -697,7 +697,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableAbility:" + name);
 #endif // OHOS_BUILD_ENABLE_HITRACE
 
-    extensionAbilityManager_.AddEnabledAbility(name);
+    accessibleAbilityManager_.AddEnabledAbility(name);
     SetAbilityAutoStartState(name, true);
     if (name == screenReaderAbilityName_) {
         SetScreenReaderState(screenReaderKey_, "1");
@@ -860,13 +860,13 @@ std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetConfig
 void AccessibilityAccountData::GetImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities) const
 {
-    extensionAbilityManager_.GetImportantEnabledAbilities(importantEnabledAbilities);
+    accessibleAbilityManager_.GetImportantEnabledAbilities(importantEnabledAbilities);
 }
 
 void AccessibilityAccountData::UpdateImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities)
 {
-    extensionAbilityManager_.UpdateImportantEnabledAbilities(importantEnabledAbilities);
+    accessibleAbilityManager_.UpdateImportantEnabledAbilities(importantEnabledAbilities);
 }
 
 void AccessibilityAccountData::UpdateAutoStartEnabledAbilities()
@@ -876,7 +876,7 @@ void AccessibilityAccountData::UpdateAutoStartEnabledAbilities()
         HILOG_DEBUG("Current user is -1.");
         return;
     }
-    extensionAbilityManager_.UpdateAutoStartEnabledAbilities(
+    accessibleAbilityManager_.UpdateAutoStartEnabledAbilities(
         [this](const std::string &name) { return GetAbilityAutoStartState(name); });
 }
 
@@ -930,28 +930,28 @@ void AccessibilityAccountData::NotifyExtensionServiceDeath(const std::string& ur
 
 void AccessibilityAccountData::CallEnableAbilityCallback(const std::string &uri)
 {
-    extensionAbilityManager_.CallEnableAbilityCallback(uri);
+    accessibleAbilityManager_.CallEnableAbilityCallback(uri);
 }
 
 void AccessibilityAccountData::AddAppStateObserverAbility(
     const std::string& uri, const sptr<AccessibleAbilityConnection>& connection)
 {
-    extensionAbilityManager_.AddAppStateObserverAbility(uri, connection);
+    accessibleAbilityManager_.AddAppStateObserverAbility(uri, connection);
 }
 
 void AccessibilityAccountData::RemoveAppStateObserverAbility(const std::string& uri)
 {
-    extensionAbilityManager_.RemoveAppStateObserverAbility(uri);
+    accessibleAbilityManager_.RemoveAppStateObserverAbility(uri);
 }
 
 sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAppStateObserverAbility(const std::string& uri)
 {
-    return extensionAbilityManager_.GetAppStateObserverAbility(uri);
+    return accessibleAbilityManager_.GetAppStateObserverAbility(uri);
 }
 
 void AccessibilityAccountData::UpdateAbilities(std::string callerBundleName)
 {
-    extensionAbilityManager_.UpdateAbilities(
+    accessibleAbilityManager_.UpdateAbilities(
         callerBundleName,
         id_,
         connectCounter_,
@@ -963,7 +963,7 @@ void AccessibilityAccountData::UpdateAbilities(std::string callerBundleName)
 bool AccessibilityAccountData::RemoveAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
-    bool result = extensionAbilityManager_.RemoveAbility(bundleName);
+    bool result = accessibleAbilityManager_.RemoveAbility(bundleName);
     if (result) {
         UpdateAbilities();
     }
@@ -990,7 +990,7 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
     }
 
     if (!accessibilityInfos.empty()) {
-        extensionAbilityManager_.AddAbility(
+        accessibleAbilityManager_.AddAbility(
             bundleName, 
             accessibilityInfos,
             [this](const std::string& name) { return GetAbilityAutoStartState(name); }
@@ -1003,7 +1003,7 @@ void AccessibilityAccountData::ChangeAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
 
-    std::vector<AccessibilityAbilityInfo> installedAbilities = extensionAbilityManager_.GetInstalledAbilities();
+    std::vector<AccessibilityAbilityInfo> installedAbilities = accessibleAbilityManager_.GetInstalledAbilities();
     if (installedAbilities.empty()) {
         HILOG_DEBUG("There is no installed abilities.");
         return;
@@ -1019,7 +1019,7 @@ void AccessibilityAccountData::ChangeAbility(const std::string &bundleName)
         }
     }
     
-    extensionAbilityManager_.ChangeAbility(
+    accessibleAbilityManager_.ChangeAbility(
         bundleName,
         [this](const std::string& name) { return GetAbilityAutoStartState(name); },
         [this](const std::string& name, bool state) { SetAbilityAutoStartState(name, state); }
@@ -1243,7 +1243,7 @@ void AccessibilityAccountData::UpdateAbilityNeedEvent(const std::string &name, s
         abilityNeedEvents_[name] = needEvents;
     } else {
         abilityNeedEvents_[name] = needEvents;
-        std::vector<AccessibilityAbilityInfo> installedAbilities = extensionAbilityManager_.GetInstalledAbilities();
+        std::vector<AccessibilityAbilityInfo> installedAbilities = accessibleAbilityManager_.GetInstalledAbilities();
         for (auto &installAbility : installedAbilities) {
             packageName = installAbility.GetPackageName();
             if (packageName == name) {
@@ -1321,7 +1321,7 @@ void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data
 int32_t AccessibilityAccountData::GetReadableRules(std::string &readableRules)
 {
     HILOG_INFO();
-    for (auto &installAbility : extensionAbilityManager_.GetInstalledAbilities()) {
+    for (auto &installAbility : accessibleAbilityManager_.GetInstalledAbilities()) {
         if (installAbility.GetPackageName() == SCREEN_READER_BUNDLE_NAME) {
             readableRules = installAbility.GetReadableRules();
             return RET_OK;

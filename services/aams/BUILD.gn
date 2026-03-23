@@ -68,7 +68,7 @@ accessibleabilityms_files = [
   "${services_path}/src/utils.cpp",
   "${services_path}/src/accessible_extend_manager_service_proxy.cpp",
   "${services_path}/src/accessibility_element_operator_manager.cpp",
-  "${services_path}/src/accessibility_extension_ability_manager.cpp",
+  "${services_path}/src/accessible_ability_manager.cpp",
   "${services_path}/src/element_operator_callback_impl.cpp"
 ]
 

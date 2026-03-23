@@ -34,10 +34,10 @@ namespace Accessibility {
 
 class AccessibilityAccountData;
 
-class ExtensionAbilityManager {
+class AccessibleAbilityManager {
 public:
-    ExtensionAbilityManager() = default;
-    ~ExtensionAbilityManager();
+    AccessibleAbilityManager() = default;
+    ~AccessibleAbilityManager();
 
     void AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection);
     void RemoveConnectedAbility(const AppExecFwk::ElementName &element);

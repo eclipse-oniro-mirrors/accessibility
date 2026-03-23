@@ -13,13 +13,13 @@
  * limitations under the License.
  */
 
-#include "accessibility_extension_ability_manager.h"
+#include "accessible_ability_manager.h"
 #include "hilog_wrapper.h"
 #include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
-ExtensionAbilityManager::~ExtensionAbilityManager()
+AccessibleAbilityManager::~AccessibleAbilityManager()
 {
     connectedA11yAbilities_.Clear();
     connectingA11yAbilities_.Clear();
@@ -27,13 +27,13 @@ ExtensionAbilityManager::~ExtensionAbilityManager()
     appStateObserverAbilities_.Clear();
 }
 
-void ExtensionAbilityManager::Clear()
+void AccessibleAbilityManager::Clear()
 {
     connectedA11yAbilities_.Clear();
     enabledAbilities_.clear();
 }
 
-void ExtensionAbilityManager::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
+void AccessibleAbilityManager::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
     if (!connection) {
         HILOG_ERROR("connection is nullptr");
@@ -44,74 +44,74 @@ void ExtensionAbilityManager::AddConnectedAbility(sptr<AccessibleAbilityConnecti
     connectedA11yAbilities_.AddAccessibilityAbility(uri, connection);
 }
 
-void ExtensionAbilityManager::RemoveConnectedAbility(const AppExecFwk::ElementName &element)
+void AccessibleAbilityManager::RemoveConnectedAbility(const AppExecFwk::ElementName &element)
 {
     connectedA11yAbilities_.RemoveAccessibilityAbilityByUri(Utils::GetUri(element));
 }
 
-void ExtensionAbilityManager::RemoveConnectedAbilityByUri(const std::string &uri)
+void AccessibleAbilityManager::RemoveConnectedAbilityByUri(const std::string &uri)
 {
     connectedA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 
-void ExtensionAbilityManager::RemoveConnectedAbilityByName(const std::string &bundleName, bool& result)
+void AccessibleAbilityManager::RemoveConnectedAbilityByName(const std::string &bundleName, bool& result)
 {
     connectedA11yAbilities_.RemoveAccessibilityAbilityByName(bundleName, result);
 }
 
-sptr<AccessibleAbilityConnection> ExtensionAbilityManager::GetConnectedAbilityByName(const std::string &elementName)
+sptr<AccessibleAbilityConnection> AccessibleAbilityManager::GetConnectedAbilityByName(const std::string &elementName)
 {
     return connectedA11yAbilities_.GetAccessibilityAbilityByName(elementName);
 }
 
-void ExtensionAbilityManager::GetConnectedAbilities(std::vector<sptr<AccessibleAbilityConnection>>& connectionList)
+void AccessibleAbilityManager::GetConnectedAbilities(std::vector<sptr<AccessibleAbilityConnection>>& connectionList)
 {
     connectedA11yAbilities_.GetAccessibilityAbilities(connectionList);
 }
 
-void ExtensionAbilityManager::GetConnectedAbilitiesInfo(std::vector<AccessibilityAbilityInfo>& abilities)
+void AccessibleAbilityManager::GetConnectedAbilitiesInfo(std::vector<AccessibilityAbilityInfo>& abilities)
 {
     connectedA11yAbilities_.GetAbilitiesInfo(abilities);
 }
 
-void ExtensionAbilityManager::GetConnectedAbilitiesMap(
+void AccessibleAbilityManager::GetConnectedAbilitiesMap(
     std::map<std::string, sptr<AccessibleAbilityConnection>> &connectionMap)
 {
     connectedA11yAbilities_.GetAccessibilityAbilitiesMap(connectionMap);
 }
 
-void ExtensionAbilityManager::ClearConnectedAbilities()
+void AccessibleAbilityManager::ClearConnectedAbilities()
 {
     connectedA11yAbilities_.Clear();
 }
 
-size_t ExtensionAbilityManager::GetConnectedAbilitiesSize()
+size_t AccessibleAbilityManager::GetConnectedAbilitiesSize()
 {
     return connectedA11yAbilities_.GetSize();
 }
 
-void ExtensionAbilityManager::AddConnectingAbility(
+void AccessibleAbilityManager::AddConnectingAbility(
     const std::string &uri, const sptr<AccessibleAbilityConnection> &connection)
 {
     connectingA11yAbilities_.AddAccessibilityAbility(uri, connection);
 }
 
-void ExtensionAbilityManager::RemoveConnectingAbility(const std::string &uri)
+void AccessibleAbilityManager::RemoveConnectingAbility(const std::string &uri)
 {
     connectingA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 
-sptr<AccessibleAbilityConnection> ExtensionAbilityManager::GetConnectingAbility(const std::string &uri)
+sptr<AccessibleAbilityConnection> AccessibleAbilityManager::GetConnectingAbility(const std::string &uri)
 {
     return connectingA11yAbilities_.GetAccessibilityAbilityByUri(uri);
 }
 
-size_t ExtensionAbilityManager::GetConnectingAbilitiesSize()
+size_t AccessibleAbilityManager::GetConnectingAbilitiesSize()
 {
     return connectingA11yAbilities_.GetSize();
 }
 
-void ExtensionAbilityManager::AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection)
+void AccessibleAbilityManager::AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection)
 {
     HILOG_INFO();
     if (!connection) {
@@ -125,24 +125,24 @@ void ExtensionAbilityManager::AddWaitDisconnectAbility(sptr<AccessibleAbilityCon
     }
 }
 
-void ExtensionAbilityManager::RemoveWaitDisconnectAbility(const std::string &uri)
+void AccessibleAbilityManager::RemoveWaitDisconnectAbility(const std::string &uri)
 {
     HILOG_INFO();
     waitDisconnectA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 
-const sptr<AccessibleAbilityConnection> ExtensionAbilityManager::GetWaitDisConnectAbility(
+const sptr<AccessibleAbilityConnection> AccessibleAbilityManager::GetWaitDisConnectAbility(
     const std::string &elementName)
 {
     return waitDisconnectA11yAbilities_.GetAccessibilityAbilityByName(elementName);
 }
 
-size_t ExtensionAbilityManager::GetWaitDisconnectAbilitiesSize()
+size_t AccessibleAbilityManager::GetWaitDisconnectAbilitiesSize()
 {
     return waitDisconnectA11yAbilities_.GetSize();
 }
 
-void ExtensionAbilityManager::AddAppStateObserverAbility(
+void AccessibleAbilityManager::AddAppStateObserverAbility(
     const std::string &uri, const sptr<AccessibleAbilityConnection> &connection)
 {
     if (uri.empty() || !connection) {
@@ -152,7 +152,7 @@ void ExtensionAbilityManager::AddAppStateObserverAbility(
     appStateObserverAbilities_.AddAccessibilityAbility(uri, connection);
 }
 
-void ExtensionAbilityManager::RemoveAppStateObserverAbility(const std::string& uri)
+void AccessibleAbilityManager::RemoveAppStateObserverAbility(const std::string& uri)
 {
     if (uri.empty()) {
         HILOG_ERROR("Invalid uri for RemoveAppStateObserverAbility");
@@ -161,12 +161,12 @@ void ExtensionAbilityManager::RemoveAppStateObserverAbility(const std::string& u
     appStateObserverAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 
-sptr<AccessibleAbilityConnection> ExtensionAbilityManager::GetAppStateObserverAbility(const std::string& uri)
+sptr<AccessibleAbilityConnection> AccessibleAbilityManager::GetAppStateObserverAbility(const std::string& uri)
 {
     return appStateObserverAbilities_.GetAccessibilityAbilityByUri(uri);
 }
 
-void ExtensionAbilityManager::AddEnabledAbility(const std::string &name)
+void AccessibleAbilityManager::AddEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG("AddEnabledAbility start.");
     if (std::any_of(enabledAbilities_.begin(), enabledAbilities_.end(),
@@ -181,7 +181,7 @@ void ExtensionAbilityManager::AddEnabledAbility(const std::string &name)
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
 
-RetError ExtensionAbilityManager::RemoveEnabledAbility(const std::string &name)
+RetError AccessibleAbilityManager::RemoveEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG("RemoveEnabledAbility start");
     for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
@@ -197,7 +197,7 @@ RetError ExtensionAbilityManager::RemoveEnabledAbility(const std::string &name)
     return RET_ERR_NOT_ENABLED;
 }
 
-const std::vector<std::string> &ExtensionAbilityManager::GetEnabledAbilities() const
+const std::vector<std::string> &AccessibleAbilityManager::GetEnabledAbilities() const
 {
     HILOG_DEBUG("enabledAbilities_'s size is (%{public}zu).", enabledAbilities_.size());
     for (auto& ability : enabledAbilities_) {
@@ -206,7 +206,7 @@ const std::vector<std::string> &ExtensionAbilityManager::GetEnabledAbilities() c
     return enabledAbilities_;
 }
 
-void ExtensionAbilityManager::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
+void AccessibleAbilityManager::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
 {
     HILOG_DEBUG("abilityInfo's bundle name is %{public}s", abilityInfo.GetPackageName().c_str());
     for (size_t i = 0; i < installedAbilities_.size(); i++) {
@@ -222,7 +222,7 @@ void ExtensionAbilityManager::AddInstalledAbility(AccessibilityAbilityInfo& abil
         installedAbilities_.size());
 }
 
-void ExtensionAbilityManager::RemoveInstalledAbility(const std::string &bundleName)
+void AccessibleAbilityManager::RemoveInstalledAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("start.");
     for (auto it = installedAbilities_.begin(); it != installedAbilities_.end();) {
@@ -236,7 +236,7 @@ void ExtensionAbilityManager::RemoveInstalledAbility(const std::string &bundleNa
     UpdateInstallAbilityListsState();
 }
 
-void ExtensionAbilityManager::UpdateInstallAbilityListsState()
+void AccessibleAbilityManager::UpdateInstallAbilityListsState()
 {
     std::lock_guard<ffrt::mutex> lock(enableAbilityListObserversMutex_);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
@@ -247,19 +247,19 @@ void ExtensionAbilityManager::UpdateInstallAbilityListsState()
     }
 }
 
-void ExtensionAbilityManager::ClearInstalledAbility()
+void AccessibleAbilityManager::ClearInstalledAbility()
 {
     HILOG_DEBUG("start.");
     installedAbilities_.clear();
 }
 
-const std::vector<AccessibilityAbilityInfo> &ExtensionAbilityManager::GetInstalledAbilities() const
+const std::vector<AccessibilityAbilityInfo> &AccessibleAbilityManager::GetInstalledAbilities() const
 {
     HILOG_DEBUG("GetInstalledAbilities start.");
     return installedAbilities_;
 }
 
-RetError ExtensionAbilityManager::UpdateInstalledAbility(const std::string &name, uint32_t capabilities)
+RetError AccessibleAbilityManager::UpdateInstalledAbility(const std::string &name, uint32_t capabilities)
 {
     for (auto iter = installedAbilities_.begin(); iter != installedAbilities_.end(); iter++) {
         if (iter->GetId() == name) {
@@ -277,7 +277,7 @@ RetError ExtensionAbilityManager::UpdateInstalledAbility(const std::string &name
     return RET_ERR_NOT_INSTALLED;
 }
 
-void ExtensionAbilityManager::GetAbilitiesByState(
+void AccessibleAbilityManager::GetAbilitiesByState(
     AbilityStateType state, std::vector<AccessibilityAbilityInfo> &abilities)
 {
     HILOG_DEBUG("get abilities by state %{public}d", state);
@@ -291,14 +291,14 @@ void ExtensionAbilityManager::GetAbilitiesByState(
     }
 }
 
-void ExtensionAbilityManager::GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities)
+void AccessibleAbilityManager::GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities)
 {
     HILOG_DEBUG("get disable abilities");
     disabledAbilities = installedAbilities_;
     connectedA11yAbilities_.GetDisableAbilities(disabledAbilities);
 }
 
-void ExtensionAbilityManager::AddEnableAbilityListsObserver(
+void AccessibleAbilityManager::AddEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
 {
     HILOG_DEBUG();
@@ -315,7 +315,7 @@ void ExtensionAbilityManager::AddEnableAbilityListsObserver(
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
 }
 
-void ExtensionAbilityManager::RemoveEnableAbilityListsObserver(const wptr<IRemoteObject>& observer)
+void AccessibleAbilityManager::RemoveEnableAbilityListsObserver(const wptr<IRemoteObject>& observer)
 {
     HILOG_INFO();
     std::lock_guard<ffrt::mutex> lock(enableAbilityListObserversMutex_);
@@ -329,7 +329,7 @@ void ExtensionAbilityManager::RemoveEnableAbilityListsObserver(const wptr<IRemot
     }
 }
 
-void ExtensionAbilityManager::UpdateEnableAbilityListsState()
+void AccessibleAbilityManager::UpdateEnableAbilityListsState()
 {
     std::lock_guard<ffrt::mutex> lock(enableAbilityListObserversMutex_);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
@@ -340,7 +340,7 @@ void ExtensionAbilityManager::UpdateEnableAbilityListsState()
     }
 }
 
-void ExtensionAbilityManager::AddEnableAbilityCallbackObserver(
+void AccessibleAbilityManager::AddEnableAbilityCallbackObserver(
     const sptr<IAccessibilityEnableAbilityCallbackObserver> &observer)
 {
     std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
@@ -356,7 +356,7 @@ void ExtensionAbilityManager::AddEnableAbilityCallbackObserver(
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
 }
 
-void ExtensionAbilityManager::RemoveEnableAbilityCallbackObserver(const wptr<IRemoteObject>& observer)
+void AccessibleAbilityManager::RemoveEnableAbilityCallbackObserver(const wptr<IRemoteObject>& observer)
 {
     std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
     auto itr = enableAbilityCallbackObservers_.begin();
@@ -370,7 +370,7 @@ void ExtensionAbilityManager::RemoveEnableAbilityCallbackObserver(const wptr<IRe
     }
 }
 
-void ExtensionAbilityManager::CallEnableAbilityCallback(const std::string &uri)
+void AccessibleAbilityManager::CallEnableAbilityCallback(const std::string &uri)
 {
     std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityCallbackObservers_.size());
@@ -381,14 +381,14 @@ void ExtensionAbilityManager::CallEnableAbilityCallback(const std::string &uri)
     }
 }
 
-void ExtensionAbilityManager::NotifyExtensionServiceDeath(const std::string& uri)
+void AccessibleAbilityManager::NotifyExtensionServiceDeath(const std::string& uri)
 {
     HILOG_DEBUG("Notifying extension service death: uri=%{public}s", uri.c_str());
     CallEnableAbilityCallback(uri);
 }
 
 
-bool ExtensionAbilityManager::RemoveAbility(const std::string &bundleName)
+bool AccessibleAbilityManager::RemoveAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
     if (installedAbilities_.empty()) {
@@ -410,7 +410,7 @@ bool ExtensionAbilityManager::RemoveAbility(const std::string &bundleName)
     return result;
 }
 
-void ExtensionAbilityManager::AddAbility(const std::string &bundleName, 
+void AccessibleAbilityManager::AddAbility(const std::string &bundleName, 
     const std::vector<AccessibilityAbilityInfo>& abilityInfos,
     std::function<bool(const std::string&)> autoStartChecker)
 {
@@ -439,7 +439,7 @@ void ExtensionAbilityManager::AddAbility(const std::string &bundleName,
     }
 }
 
-void ExtensionAbilityManager::ChangeAbility(const std::string &bundleName,
+void AccessibleAbilityManager::ChangeAbility(const std::string &bundleName,
     std::function<bool(const std::string&)> autoStartChecker,
     std::function<void(const std::string&, bool)> autoStartSetter)
 {
@@ -474,7 +474,7 @@ void ExtensionAbilityManager::ChangeAbility(const std::string &bundleName,
         }
 }
 
-void ExtensionAbilityManager::GetImportantEnabledAbilities(
+void AccessibleAbilityManager::GetImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities) const
 {
     HILOG_DEBUG("GetImportantEnabledAbilities start.");
@@ -506,7 +506,7 @@ void ExtensionAbilityManager::GetImportantEnabledAbilities(
     }
 }
 
-void ExtensionAbilityManager::UpdateImportantEnabledAbilities(
+void AccessibleAbilityManager::UpdateImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities)
 {
     HILOG_DEBUG();
@@ -533,7 +533,7 @@ void ExtensionAbilityManager::UpdateImportantEnabledAbilities(
     }
 }
 
-void ExtensionAbilityManager::UpdateAutoStartEnabledAbilities(std::function<bool(const std::string&)> autoStartChecker)
+void AccessibleAbilityManager::UpdateAutoStartEnabledAbilities(std::function<bool(const std::string&)> autoStartChecker)
 {
     HILOG_DEBUG();
     if (installedAbilities_.empty()) {
@@ -557,17 +557,17 @@ void ExtensionAbilityManager::UpdateAutoStartEnabledAbilities(std::function<bool
     }
 }
 
-bool ExtensionAbilityManager::IsExistCapability(Capability capability)
+bool AccessibleAbilityManager::IsExistCapability(Capability capability)
 {
     return connectedA11yAbilities_.IsExistCapability(capability);
 }
 
-int32_t ExtensionAbilityManager::GetSizeByUri(const std::string& uri)
+int32_t AccessibleAbilityManager::GetSizeByUri(const std::string& uri)
 {
     return connectedA11yAbilities_.GetSizeByUri(uri);
 }
 
-void ExtensionAbilityManager::UpdateAbilities(
+void AccessibleAbilityManager::UpdateAbilities(
     const std::string& callerBundleName,
     int32_t accountId,
     uint32_t& connectCounter,
@@ -607,13 +607,13 @@ void ExtensionAbilityManager::UpdateAbilities(
     }
 }
 
-bool ExtensionAbilityManager::IsAbilityEnabled(const std::string& uri)
+bool AccessibleAbilityManager::IsAbilityEnabled(const std::string& uri)
 {
     const auto& enabledAbilities = GetEnabledAbilities();
     return std::find(enabledAbilities.begin(), enabledAbilities.end(), uri) != enabledAbilities.end();
 }
 
-bool ExtensionAbilityManager::ConnectAbility(
+bool AccessibleAbilityManager::ConnectAbility(
     sptr<AccessibleAbilityConnection>& connection,
     const AccessibilityAbilityInfo& ability,
     const std::string& callerBundleName)
@@ -629,7 +629,7 @@ bool ExtensionAbilityManager::ConnectAbility(
     return true;
 }
 
-void ExtensionAbilityManager::DisconnectAbility(
+void AccessibleAbilityManager::DisconnectAbility(
     sptr<AccessibleAbilityConnection>& connection,
     const std::string& uri)
 {
@@ -638,7 +638,7 @@ void ExtensionAbilityManager::DisconnectAbility(
     connection->Disconnect();
 }
 
-void ExtensionAbilityManager::AccessibilityAbility::AddAccessibilityAbility(const std::string& uri,
+void AccessibleAbilityManager::AccessibilityAbility::AddAccessibilityAbility(const std::string& uri,
     const sptr<AccessibleAbilityConnection>& connection)
 {
     HILOG_INFO("uri is %{private}s", uri.c_str());
@@ -652,7 +652,7 @@ void ExtensionAbilityManager::AccessibilityAbility::AddAccessibilityAbility(cons
     HILOG_DEBUG("uri %{private}s, connectionMap_ %{public}zu", uri.c_str(), connectionMap_.size());
 }
 
-sptr<AccessibleAbilityConnection> ExtensionAbilityManager::AccessibilityAbility::GetAccessibilityAbilityByName(
+sptr<AccessibleAbilityConnection> AccessibleAbilityManager::AccessibilityAbility::GetAccessibilityAbilityByName(
     const std::string& elementName)
 {
     HILOG_DEBUG("elementName is %{public}s", elementName.c_str());
@@ -670,7 +670,7 @@ sptr<AccessibleAbilityConnection> ExtensionAbilityManager::AccessibilityAbility:
     return nullptr;
 }
 
-sptr<AccessibleAbilityConnection> ExtensionAbilityManager::AccessibilityAbility::GetAccessibilityAbilityByUri(
+sptr<AccessibleAbilityConnection> AccessibleAbilityManager::AccessibilityAbility::GetAccessibilityAbilityByUri(
     const std::string& uri)
 {
     HILOG_DEBUG("uri is %{private}s", uri.c_str());
@@ -682,7 +682,7 @@ sptr<AccessibleAbilityConnection> ExtensionAbilityManager::AccessibilityAbility:
     return nullptr;
 }
 
-void ExtensionAbilityManager::AccessibilityAbility::GetAccessibilityAbilities(
+void AccessibleAbilityManager::AccessibilityAbility::GetAccessibilityAbilities(
     std::vector<sptr<AccessibleAbilityConnection>>& connectionList)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -691,7 +691,7 @@ void ExtensionAbilityManager::AccessibilityAbility::GetAccessibilityAbilities(
     }
 }
 
-void ExtensionAbilityManager::AccessibilityAbility::GetAbilitiesInfo(std::vector<AccessibilityAbilityInfo>& abilities)
+void AccessibleAbilityManager::AccessibilityAbility::GetAbilitiesInfo(std::vector<AccessibilityAbilityInfo>& abilities)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
     for (auto& connection : connectionMap_) {
@@ -704,7 +704,7 @@ void ExtensionAbilityManager::AccessibilityAbility::GetAbilitiesInfo(std::vector
         connectionMap_.size(), abilities.size());
 }
 
-bool ExtensionAbilityManager::AccessibilityAbility::IsExistCapability(Capability capability)
+bool AccessibleAbilityManager::AccessibilityAbility::IsExistCapability(Capability capability)
 {
     HILOG_DEBUG("capability %{public}d", capability);
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -717,14 +717,14 @@ bool ExtensionAbilityManager::AccessibilityAbility::IsExistCapability(Capability
     return false;
 }
 
-void ExtensionAbilityManager::AccessibilityAbility::GetAccessibilityAbilitiesMap(
+void AccessibleAbilityManager::AccessibilityAbility::GetAccessibilityAbilitiesMap(
     std::map<std::string, sptr<AccessibleAbilityConnection>>& connectionMap)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
     connectionMap = connectionMap_;
 }
 
-void ExtensionAbilityManager::AccessibilityAbility::GetDisableAbilities(
+void AccessibleAbilityManager::AccessibilityAbility::GetDisableAbilities(
     std::vector<AccessibilityAbilityInfo> &disabledAbilities)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -739,13 +739,13 @@ void ExtensionAbilityManager::AccessibilityAbility::GetDisableAbilities(
     }
 }
 
-int32_t ExtensionAbilityManager::AccessibilityAbility::GetSizeByUri(const std::string& uri)
+int32_t AccessibleAbilityManager::AccessibilityAbility::GetSizeByUri(const std::string& uri)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
     return connectionMap_.count(uri);
 }
 
-void ExtensionAbilityManager::AccessibilityAbility::RemoveAccessibilityAbilityByName(const std::string& bundleName,
+void AccessibleAbilityManager::AccessibilityAbility::RemoveAccessibilityAbilityByName(const std::string& bundleName,
     bool& result)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -770,7 +770,7 @@ void ExtensionAbilityManager::AccessibilityAbility::RemoveAccessibilityAbilityBy
     }
 }
 
-void ExtensionAbilityManager::AccessibilityAbility::RemoveAccessibilityAbilityByUri(const std::string& uri)
+void AccessibleAbilityManager::AccessibilityAbility::RemoveAccessibilityAbilityByUri(const std::string& uri)
 {
     HILOG_INFO("uri is %{private}s", uri.c_str());
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -782,13 +782,13 @@ void ExtensionAbilityManager::AccessibilityAbility::RemoveAccessibilityAbilityBy
     HILOG_DEBUG("connectionMap_ %{public}zu", connectionMap_.size());
 }
 
-void ExtensionAbilityManager::AccessibilityAbility::Clear()
+void AccessibleAbilityManager::AccessibilityAbility::Clear()
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
     return connectionMap_.clear();
 }
 
-size_t ExtensionAbilityManager::AccessibilityAbility::GetSize()
+size_t AccessibleAbilityManager::AccessibilityAbility::GetSize()
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
     return connectionMap_.size();

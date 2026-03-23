@@ -35,7 +35,7 @@
 #include "os_account_subscriber.h"
 #include "accessibility_def.h"
 #include "accessibility_element_operator_manager.h"
-#include "accessibility_extension_ability_manager.h"
+#include "accessible_ability_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -313,7 +313,7 @@ public:
     int32_t GetReadableRules(std::string &readableRules);
 
     ElementOperatorManager& GetElementOperatorManager();
-    ExtensionAbilityManager& GetExtensionAbilityManager();
+    AccessibleAbilityManager& GetAccessibleAbilityManager();
 
     bool screenReaderState_ = false;
     std::map<std::string, std::vector<uint32_t>> abilityNeedEvents_;
@@ -368,7 +368,7 @@ private:
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> configCallbacks_;
     ffrt::mutex configCallbacksMutex_; // mutex for vector configCallbacks_
     std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
-    ExtensionAbilityManager extensionAbilityManager_;
+    AccessibleAbilityManager accessibleAbilityManager_;
     ElementOperatorManager elementOperatorManager_;
 };
 

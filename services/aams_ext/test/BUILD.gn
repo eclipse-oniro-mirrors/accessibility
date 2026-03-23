@@ -451,7 +451,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "../src/window_magnification_gesture.cpp",
     "../src/window_magnification_manager.cpp",
     "../../test/mock/mock_common_event_data.cpp",
-    "../../aams/src/accessibility_extension_ability_manager.cpp",
+    "../../aams/src/accessible_ability_manager.cpp",
     "../../aams/src/accessibility_element_operator_manager.cpp",
     "./mock/src/mock_accessibility_account_data.cpp",
     "./mock/src/mock_accessibility_event_transmission.cpp",

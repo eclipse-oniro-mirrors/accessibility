@@ -51,14 +51,14 @@ void AccessibilityAccountData::OnAccountSwitched()
     HILOG_DEBUG("start.");
     // reset AccessibleAbilityConnection
     std::vector<sptr<AccessibleAbilityConnection>> connectionList;
-    extensionAbilityManager_.GetConnectedAbilities(connectionList);
+    accessibleAbilityManager_.GetConnectedAbilities(connectionList);
     for (auto& connection : connectionList) {
         connection->Disconnect();
     }
 
     // Clear all abilities.
-    extensionAbilityManager_.ClearConnectedAbilities();
-    extensionAbilityManager_.Clear();
+    accessibleAbilityManager_.ClearConnectedAbilities();
+    accessibleAbilityManager_.Clear();
 
     // Clear Setting State.
     isEventTouchGuideState_ = false;
@@ -70,13 +70,13 @@ void AccessibilityAccountData::OnAccountSwitched()
 // add connect ability.
 void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    extensionAbilityManager_.AddConnectedAbility(connection);
+    accessibleAbilityManager_.AddConnectedAbility(connection);
 }
 
 // remove connect ability.
 void AccessibilityAccountData::RemoveConnectedAbility(const AppExecFwk::ElementName &element)
 {
-    extensionAbilityManager_.RemoveConnectedAbility(element);
+    accessibleAbilityManager_.RemoveConnectedAbility(element);
 }
 
 void AccessibilityAccountData::AddCaptionPropertyCallback(
@@ -106,23 +106,23 @@ void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int32_t
 void AccessibilityAccountData::AddConnectingA11yAbility(const std::string &uri,
     const sptr<AccessibleAbilityConnection> &connection)
 {
-    extensionAbilityManager_.AddConnectingAbility(uri, connection);
+    accessibleAbilityManager_.AddConnectingAbility(uri, connection);
 }
 
 void AccessibilityAccountData::RemoveConnectingA11yAbility(const std::string &uri)
 {
-    extensionAbilityManager_.RemoveConnectingAbility(uri);
+    accessibleAbilityManager_.RemoveConnectingAbility(uri);
 }
 
 // For UT
 void AccessibilityAccountData::AddEnabledAbility(const std::string& bundleName)
 {
-    extensionAbilityManager_.AddEnabledAbility(bundleName);
+    accessibleAbilityManager_.AddEnabledAbility(bundleName);
 }
 
 RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 {
-    return extensionAbilityManager_.RemoveEnabledAbility(name);
+    return accessibleAbilityManager_.RemoveEnabledAbility(name);
 }
 
 // For UT
@@ -156,7 +156,7 @@ const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAcco
 {
     HILOG_DEBUG("GetConnectedA11yAbilities start.");
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMap;
-    extensionAbilityManager_.GetConnectedAbilitiesMap(connectionMap);
+    accessibleAbilityManager_.GetConnectedAbilitiesMap(connectionMap);
     return connectionMap;
 }
 
@@ -173,17 +173,17 @@ const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallb
 
 sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbility(const std::string &uri)
 {
-    return extensionAbilityManager_.GetConnectingAbility(uri);
+    return accessibleAbilityManager_.GetConnectingAbility(uri);
 }
 
 const std::vector<std::string>& AccessibilityAccountData::GetEnabledAbilities()
 {
-    return extensionAbilityManager_.GetEnabledAbilities();
+    return accessibleAbilityManager_.GetEnabledAbilities();
 }
 
 const std::vector<AccessibilityAbilityInfo> &AccessibilityAccountData::GetInstalledAbilities() const
 {
-    return extensionAbilityManager_.GetInstalledAbilities();
+    return accessibleAbilityManager_.GetInstalledAbilities();
 }
 
 void AccessibilityAccountData::GetAbilitiesByState(
@@ -221,7 +221,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     const std::string &callerBundleName)
 {
     HILOG_DEBUG("start.");
-    const std::vector<std::string>& enabledAbilities = extensionAbilityManager_.GetEnabledAbilities();
+    const std::vector<std::string>& enabledAbilities = accessibleAbilityManager_.GetEnabledAbilities();
     if (std::any_of(enabledAbilities.begin(), enabledAbilities.end(),
         [name](const std::string &abilityName) {
             return abilityName == name;
@@ -229,7 +229,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
         HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
         return RET_ERR_CONNECTION_EXIST;
     }
-    extensionAbilityManager_.AddEnabledAbility(name);
+    accessibleAbilityManager_.AddEnabledAbility(name);
     return RET_OK;
 }
 
@@ -470,7 +470,7 @@ AccountSA::OsAccountType AccessibilityAccountData::GetAccountType()
 const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetWaitDisConnectAbility(
     const std::string &elementName)
 {
-    return extensionAbilityManager_.GetWaitDisConnectAbility(elementName);
+    return accessibleAbilityManager_.GetWaitDisConnectAbility(elementName);
 }
 
 void AccessibilityAccountData::AddWaitDisconnectAbility(sptr<AccessibleAbilityConnection>& connection)
@@ -482,14 +482,14 @@ void AccessibilityAccountData::AddWaitDisconnectAbility(sptr<AccessibleAbilityCo
     }
     if (connection->GetIsRegisterDisconnectCallback()) {
         HILOG_INFO();
-        extensionAbilityManager_.AddWaitDisconnectAbility(connection);
+        accessibleAbilityManager_.AddWaitDisconnectAbility(connection);
     }
 }
 
 void AccessibilityAccountData::RemoveWaitDisconnectAbility(const std::string &uri)
 {
     HILOG_INFO();
-    extensionAbilityManager_.RemoveWaitDisconnectAbility(uri);
+    accessibleAbilityManager_.RemoveWaitDisconnectAbility(uri);
 }
 
 std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
