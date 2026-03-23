@@ -342,11 +342,10 @@ void AccessibleAbilityManager::AddEnableAbilityCallbackObserver(
     const sptr<IAccessibilityEnableAbilityCallbackObserver> &observer)
 {
     std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
-    if (std::any_of(enableAbilityCallbackObservers_.begin(),
-            enableAbilityCallbackObservers_.end(),
-            [observer](const sptr<IAccessibilityEnableAbilityCallbackObserver> &listObserver) {
-                return listObserver == observer;
-            })) {
+    if (std::any_of(enableAbilityCallbackObservers_.begin(), enableAbilityCallbackObservers_.end(),
+        [observer](const sptr<IAccessibilityEnableAbilityCallbackObserver> &listObserver) {
+            return listObserver == observer;
+        })) {
         HILOG_ERROR("observer is already exist");
         return;
     }
@@ -575,18 +574,15 @@ void AccessibleAbilityManager::UpdateAbilities(
         std::string uri = Utils::GetUri(installAbility.GetPackageName(), installAbility.GetName());
         HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
             installAbility.GetPackageName().c_str(), installAbility.GetName().c_str());
-
         if (connectingA11yAbilities_.GetSizeByUri(
-                Utils::GetUri(installAbility.GetPackageName(), installAbility.GetName()))) {
+            Utils::GetUri(installAbility.GetPackageName(), installAbility.GetName()))) {
             HILOG_DEBUG("The ability(bundleName[%{public}s] abilityName[%{public}s]) is connecting.",
                 installAbility.GetPackageName().c_str(),
                 installAbility.GetName().c_str());
             continue;
         }
-
         auto connection = GetConnectedAbilityByName(uri);
         bool isEnabled = IsAbilityEnabled(uri);
-
         if (isEnabled && !connection) {
             if (!connectionCreator) {
                 HILOG_ERROR("connectionCreator is null");
