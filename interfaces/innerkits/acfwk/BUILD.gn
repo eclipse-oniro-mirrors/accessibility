@@ -38,7 +38,10 @@ config("accessibilityconfig_private_config") {
 }
 
 config("accessibilityconfig_public_config") {
-  include_dirs = [ "include" ]
+  include_dirs = [
+    "include",
+    "../common/include",
+  ]
 }
 
 acfwk_src = [
