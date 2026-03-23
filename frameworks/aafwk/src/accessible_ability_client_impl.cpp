@@ -1632,10 +1632,6 @@ RetError AccessibleAbilityClientImpl::GetElements(const int32_t windowId, const 
     }
 
     RetError ret = SearchElementInfoRecursiveByWinid(windowId, elementId, GET_SOURCE_MODE, elementInfos, treeId);
-    if (ret != RET_OK) {
-        HILOG_ERROR("SearchElementInfoRecursiveByWinid failed. windowId[%{public}d]", windowId);
-        return ret;
-    }
     if (!elementInfos.empty() && elementInfos[0].GetAccessibilityId() == elementId) {
         elementInfos.erase(elementInfos.begin());
     }
