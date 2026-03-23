@@ -41,6 +41,7 @@
 #include "refbase.h"
 #include "accessibility_security_component_manager.h"
 #include "accessible_extend_manager_service_proxy.h"
+#include "element_operator_callback_impl.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -149,7 +150,6 @@ public:
     void SetFocusElementId(const int64_t focusElementId);
     int32_t GetFocusWindowId();
     int64_t GetFocusElementId();
-    static int32_t GetTreeIdBySplitElementId(const int64_t elementId);
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId) override;
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId, bool systemApi) override;
     void SetTokenIdMapAndRootParentId(const sptr<AccessibilityWindowConnection> connection,
@@ -231,49 +231,6 @@ public:
         std::vector<AccessibilityElementInfo>& infos);
 
     // used for arkui windowId 1 map to WMS windowId
-    class ElementOperatorCallbackImpl : public AccessibilityElementOperatorCallbackStub {
-    public:
-        ElementOperatorCallbackImpl() = default;
-        ~ElementOperatorCallbackImpl() = default;
-
-        virtual void SetSearchElementInfoByAccessibilityIdResult(const std::vector<AccessibilityElementInfo> &infos,
-            const int32_t requestId) override;
-        virtual void SetSearchDefaultFocusByWindowIdResult(const std::vector<AccessibilityElementInfo> &infos,
-            const int32_t requestId) override;
-        virtual void SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
-            const int32_t requestId) override;
-        virtual void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
-            const int32_t requestId) override;
-        virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) override;
-        virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
-        virtual void SetCursorPositionResult(const int32_t cursorPosition, const int32_t requestId) override;
-        virtual void SetSearchElementInfoBySpecificPropertyResult(const std::list<AccessibilityElementInfo> &infos,
-            const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override;
-        virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
-            const FocusMoveResult &result, const int32_t requestId) override;
-
-    private:
-        ffrt::promise<void> promise_;
-        bool executeActionResult_ = false;
-        AccessibilityElementInfo accessibilityInfoResult_ = {};
-        std::vector<AccessibilityElementInfo> elementInfosResult_;
-        int32_t callCursorPosition_ = 0;
-
-        FocusMoveResultType focusMoveResult_ = FocusMoveResultType::NOT_SUPPORT;
-        int32_t nowLevelBelongTreeId_ = 0;
-        int32_t parentWindowId_ = 0;
-        bool changeToNewInfo_ = false;
-        bool needTerminate_ = false;
-
-        /**
-         * @brief Validate element infos and handle verification failure
-         * @param infos The element infos to validate
-         * @return true if all validations pass, false otherwise
-         */
-        bool ValidateElementInfos(const std::list<AccessibilityElementInfo>& infos);
-
-        friend class AccessibleAbilityManagerService;
-    };
     ErrCode SetScreenMagnificationState(const bool state) override;
     ErrCode SetShortKeyState(const bool state) override;
     ErrCode SetMouseKeyState(const bool state) override;

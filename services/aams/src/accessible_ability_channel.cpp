@@ -193,7 +193,7 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
         HILOG_ERROR("callback is nullptr.");
         return RET_ERR_NULLPTR;
     }
-    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = Utils::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("SearchElementInfosByText :channel SearchElementInfo treeId: %{public}d", treeId);
     int32_t accountId = accountId_;
     std::string clientName = clientName_;
@@ -248,7 +248,7 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
     }
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     ffrt::future syncFuture = syncPromise->get_future();
-    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = Utils::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("FindFocusedElementInfo :channel FindFocusedElementInfo treeId: %{public}d", treeId);
     int32_t accountId = accountId_;
     std::string clientName = clientName_;
@@ -304,7 +304,7 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
     }
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     ffrt::future syncFuture = syncPromise->get_future();
-    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = Utils::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("FocusMoveSearch :channel FocusMoveSearch treeId: %{public}d", treeId);
     int32_t accountId = accountId_;
     std::string clientName = clientName_;
@@ -483,7 +483,7 @@ RetError AccessibleAbilityChannel::ExecuteActionAsync(const int32_t accessibilit
     SetFocusWindowIdAndElementId(accessibilityWindowId, elementId, action);
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     ffrt::future syncFuture = syncPromise->get_future();
-    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = Utils::GetTreeIdBySplitElementId(elementId);
     int32_t accountId = accountId_;
     std::string clientName = clientName_;
     eventHandler_->PostTask([accountId, clientName, syncPromise, accessibilityWindowId, elementId, treeId, action,
@@ -673,7 +673,7 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
     }
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     ffrt::future syncFuture = syncPromise->get_future();
-    int32_t treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = Utils::GetTreeIdBySplitElementId(elementId);
     HILOG_DEBUG("GetCursorPosition :channel GetCursorPosition treeId: %{public}d", treeId);
     int32_t accountId = accountId_;
     std::string clientName = clientName_;
@@ -1009,7 +1009,7 @@ RetError AccessibleAbilityChannel::FocusMoveSearchWithCondition(const Accessibil
             int64_t parentId = -1;
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetRootParentId(windowId, treeId, parentId);
             const_cast<AccessibilityFocusMoveParam&>(param).SetParentId(parentId);
-            treeId = AccessibleAbilityManagerService::GetTreeIdBySplitElementId(parentId);
+            treeId = Utils::GetTreeIdBySplitElementId(parentId);
             HILOG_DEBUG("requestId: %{public}d, treeId: %{public}d", requestId, treeId);
         }
 

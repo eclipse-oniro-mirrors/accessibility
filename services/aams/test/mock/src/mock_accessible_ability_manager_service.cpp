@@ -680,12 +680,6 @@ void AccessibleAbilityManagerService::SetFocusElementId(const int64_t focusEleme
     (void)focusElementId;
 }
 
-int32_t AccessibleAbilityManagerService::GetTreeIdBySplitElementId(const int64_t elementId)
-{
-    (void)elementId;
-    return 0;
-}
-
 ErrCode AccessibleAbilityManagerService::RemoveRequestId(int32_t requestId)
 {
     (void)requestId;
@@ -840,6 +834,18 @@ void AccessibleAbilityManagerService::SendAccessibilityEventToAA(EventType event
  
 void AccessibleAbilityManagerService::SubscribeOsAccount()
 {
+}
+
+RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowId, const int64_t elementId,
+    uint32_t tokenId)
+{
+    return RET_OK;
+}
+
+std::vector<int32_t> AccessibleAbilityManagerService::GetAllAccountIds()
+{
+    HILOG_DEBUG();
+    return a11yAccountsData_.GetAllAccountIds();
 }
 } // namespace Accessibility
 } // namespace OHOS

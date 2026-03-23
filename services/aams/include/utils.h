@@ -80,6 +80,7 @@ public:
     static bool IsSmallFold();
     static std::string FormatString(const std::string& format, const std::string& value);
     static float StringToFloat(const std::string& value, const float& defaultValue);
+    static int32_t GetTreeIdBySplitElementId(const int64_t elementId);
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);
 };

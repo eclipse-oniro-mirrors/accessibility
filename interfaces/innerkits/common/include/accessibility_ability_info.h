@@ -208,7 +208,7 @@ public:
      */
     void GetEventConfigure(std::vector<uint32_t> &needEvents);
 
-    inline std::string GetReadableRules()
+    inline std::string GetReadableRules() const
     {
         return readableRules_;
     }

@@ -67,6 +67,7 @@ namespace {
     constexpr int32_t BASE_USER_RANGE = 200000;
     constexpr int32_t INVALID_ID = -1;
     constexpr int32_t INVALID_USER_ID = -1;
+    constexpr uint64_t ELEMENT_MOVE_BIT = 40;
 } // namespace
 
 class JsonUtils {
@@ -609,6 +610,16 @@ float Utils::StringToFloat(const std::string& value, const float& defaultValue)
     } else {
         return result;
     }
+}
+
+int32_t Utils::GetTreeIdBySplitElementId(const int64_t elementId)
+{
+    if (elementId < 0) {
+        HILOG_DEBUG("The elementId is -1");
+        return elementId;
+    }
+    int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
+    return treeId;
 }
 // LCOV_EXCL_STOP
 } // namespace Accessibility

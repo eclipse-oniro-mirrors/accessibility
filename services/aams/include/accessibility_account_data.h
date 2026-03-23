@@ -34,6 +34,8 @@
 #include "os_account_info.h"
 #include "os_account_subscriber.h"
 #include "accessibility_def.h"
+#include "accessibility_element_operator_manager.h"
+#include "accessible_ability_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -274,9 +276,6 @@ public:
 
     void Init();
 
-    void UpdateEnableAbilityListsState();
-    void UpdateInstallAbilityListsState();
-
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
     const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> GetConfigCallbacks();
@@ -285,6 +284,7 @@ public:
     void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
     void UpdateImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities);
     void UpdateAutoStartEnabledAbilities();
+    void UpdateEnableAbilityListsState();
 
     uint32_t GetInputFilterFlag() const;
     void UpdateAbilities(std::string callerBundleName = "");
@@ -311,6 +311,9 @@ public:
     std::vector<uint32_t> GetNeedEvents();
     void isSendEvent(const AccessibilityEventInfo &eventInfo);
     int32_t GetReadableRules(std::string &readableRules);
+
+    ElementOperatorManager& GetElementOperatorManager();
+    AccessibleAbilityManager& GetAccessibleAbilityManager();
 
     bool screenReaderState_ = false;
     std::map<std::string, std::vector<uint32_t>> abilityNeedEvents_;
@@ -350,28 +353,6 @@ private:
 
     void SetAccessibilityStateToTP(bool state);
 
-    class AccessibilityAbility {
-    public:
-        AccessibilityAbility() = default;
-        ~AccessibilityAbility() = default;
-        void AddAccessibilityAbility(const std::string& uri, const sptr<AccessibleAbilityConnection>& connection);
-        sptr<AccessibleAbilityConnection> GetAccessibilityAbilityByName(const std::string& elementName);
-        sptr<AccessibleAbilityConnection> GetAccessibilityAbilityByUri(const std::string& uri);
-        void GetAccessibilityAbilities(std::vector<sptr<AccessibleAbilityConnection>>& connectionList);
-        void GetAbilitiesInfo(std::vector<AccessibilityAbilityInfo>& abilities);
-        bool IsExistCapability(Capability capability);
-        void GetAccessibilityAbilitiesMap(std::map<std::string, sptr<AccessibleAbilityConnection>>& connectionMap);
-        void GetDisableAbilities(std::vector<AccessibilityAbilityInfo>& disabledAbilities);
-        int32_t GetSizeByUri(const std::string& uri);
-        void RemoveAccessibilityAbilityByName(const std::string& bundleName, bool& result);
-        void RemoveAccessibilityAbilityByUri(const std::string& uri);
-        void Clear();
-        size_t GetSize();
-    private:
-        std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMap_;
-        ffrt::mutex mutex_;
-    };
-
     int32_t id_;
     AccountSA::OsAccountType accountType_ = AccountSA::OsAccountType::END;
     bool isEventTouchGuideState_ = false;
@@ -382,23 +363,13 @@ private:
     std::string screenReaderAbilityName_ = "com.ohos.screenreader/AccessibilityExtAbility";
     std::string screenReaderKey_ = "accessibility_screenreader_enabled";
     uint32_t connectCounter_ = 1;
-    AccessibilityAbility connectedA11yAbilities_;  // key: bundleName/abilityName
-    AccessibilityAbility connectingA11yAbilities_;  // key: bundleName/abilityName
-    AccessibilityAbility waitDisconnectA11yAbilities_;  // key: bundleName/abilityName
-    AccessibilityAbility appStateObserverAbilities_;  // key: bundleName/abilityName
-    std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
-    ffrt::mutex enableAbilityListObserversMutex_; // mutex for enableAbilityListsObservers_
-    std::vector<sptr<IAccessibilityEnableAbilityCallbackObserver>> enableAbilityCallbackObservers_;
-    ffrt::mutex enableAbilityCallbackObserversMutex_; // mutex for enableAbilityCallbackObservers_
-    std::map<int32_t, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
-    ffrt::mutex asacConnectionsMutex_; // mutex for map asacConnections_
     CaptionPropertyCallbacks captionPropertyCallbacks_;
     ffrt::mutex captionPropertyCallbacksMutex_; // mutex for captionPropertyCallbacks_
-    std::vector<AccessibilityAbilityInfo> installedAbilities_;
-    std::vector<std::string> enabledAbilities_; // bundleName/abilityName
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> configCallbacks_;
     ffrt::mutex configCallbacksMutex_; // mutex for vector configCallbacks_
     std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
+    AccessibleAbilityManager accessibleAbilityManager_;
+    ElementOperatorManager elementOperatorManager_;
 };
 
 class AccessibilityAccountDataMap {
