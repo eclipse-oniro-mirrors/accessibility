@@ -2004,7 +2004,7 @@ ErrCode AccessibleAbilityManagerService::DisableUITestAbility()
         handler_->PostTask(removeUITestClientFunc, "RemoveUITestClient");
         accountData->RemoveEnabledAbility(uiTestUri);
         syncPromise->set_value(RET_OK);
-        }, "TASK_DISABLE_UI_TEST_ABILITIES");
+        }, "TASK_DISABLE_UI_TEST_ABILITIES"); 
 
     ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != ffrt::future_status::ready) {
