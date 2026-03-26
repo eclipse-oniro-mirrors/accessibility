@@ -856,7 +856,7 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d",
         windowId, elementId, action, actionCallback->executeActionResult_);
 
-    if (isAnco && !actionCallback->executeActionResult_ && (action == ActionType::ACCESSIBILITY_ACTION_CLICK)) {
+    if (!actionCallback->executeActionResult_ && (action == ActionType::ACCESSIBILITY_ACTION_CLICK)) {
         int32_t xPos = 0;
         int32_t yPos = 0;
         CalculateClickPosition(focusedElementInfo, xPos, yPos);
