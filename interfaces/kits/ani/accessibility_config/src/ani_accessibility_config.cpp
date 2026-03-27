@@ -1050,7 +1050,7 @@ ani_object ANIAccessibilityConfig::CreateJsAccessibilityCaptionProperty(ani_env 
 {
     HILOG_DEBUG();
     arkts::ani_signature::Type className =
-        arkts::ani_signature::Builder::BuildClass("@ohos:accessibility.accessibility.CaptionsStyleImpl");
+        arkts::ani_signature::Builder::BuildClass("@ohos.accessibility.accessibility.CaptionsStyleImpl");
     ani_class cls;
     if (ANI_OK != env->FindClass(className.Descriptor().c_str(), &cls)) {
         HILOG_ERROR(" not found class");

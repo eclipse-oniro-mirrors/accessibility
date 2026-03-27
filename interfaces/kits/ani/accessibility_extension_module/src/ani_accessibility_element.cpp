@@ -35,19 +35,19 @@ static ani_class g_accessibilityElementClass = nullptr;
 static ani_class g_focusMoveResultClass = nullptr;
 
 constexpr const char *ANI_ACCESSIBILITY_ELEMENT_CLS =
-    "application:AccessibilityExtensionContext.AccessibilityElementImpl";
+    "application.AccessibilityExtensionContext.AccessibilityElementImpl";
 constexpr const char *ANI_ACCESSIBILITY_ELEMENT_CLEANER_CLS =
-    "application:AccessibilityExtensionContext.AccessibilityElementCleaner";
+    "application.AccessibilityExtensionContext.AccessibilityElementCleaner";
 constexpr const char *ANI_ACCESSIBILITY_FOCUS_MOVE_RESULT_CLS =
-    "application:AccessibilityExtensionContext.FocusMoveResultImpl";
+    "application.AccessibilityExtensionContext.FocusMoveResultImpl";
 constexpr const char *ANI_ACCESSIBILITY_RECT_CLS =
-    "application:AccessibilityExtensionContext.RectImpl";
+    "application.AccessibilityExtensionContext.RectImpl";
 constexpr const char *ANI_ACCESSIBILITY_GRID_CLS =
-    "application:AccessibilityExtensionContext.AccessibilityGridImpl";
+    "application.AccessibilityExtensionContext.AccessibilityGridImpl";
 constexpr const char *ANI_ACCESSIBILITY_SPANS_CLS =
-    "application:AccessibilityExtensionContext.AccessibilitySpanImpl";
+    "application.AccessibilityExtensionContext.AccessibilitySpanImpl";
 constexpr const char *ANI_ACCESSIBILITY_ACTION_CLS =
-    "@ohos:accessibility.AccessibilityAction";
+    "@ohos.accessibility.AccessibilityAction";
 
 static const std::vector<Getter> FIELD_MAP = {
     {"accessibilityFocused", BoolGetter(&AccessibilityElementInfo::HasAccessibilityFocus)},
