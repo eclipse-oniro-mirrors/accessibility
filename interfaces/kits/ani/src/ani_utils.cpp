@@ -323,7 +323,8 @@ ActionType ANIUtils::ConvertStringToAccessibleOperationType(const std::string &t
         {"back", ActionType::ACCESSIBILITY_ACTION_BACK},
         {"recentTask", ActionType::ACCESSIBILITY_ACTION_RECENTTASK},
         {"notificationCenter", ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER},
-        {"controlCenter", ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER}};
+        {"controlCenter", ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER},
+        {"customActions", ActionType::ACCESSIBILITY_ACTION_CUSTOM}};
 
     if (accessibleOperationTypeTable.find(type) == accessibleOperationTypeTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
@@ -563,6 +564,13 @@ void ANIUtils::ConvertEventInfoStringFields(ani_env *env, ani_object eventObject
     if (GetArrayStringField(env, "contents", eventObject, contents)) {
         for (auto str : contents) {
             eventInfo.AddContent(str);
+        }
+    }
+
+    std::vector<std::string> customActions;
+    if (GetArrayStringField(env, "customActions", eventObject, customActions)) {
+        for (auto str : customActions) {
+            eventInfo.AddCustomAction(str);
         }
     }
 
@@ -1322,6 +1330,12 @@ void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
                 str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
                 CheckNumber(env, str);
                 args.insert(std::pair<std::string, std::string>("spanId", str.c_str()));
+            }
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_CUSTOM:
+            if (env->Object_GetFieldByName_Ref(obj, "customActions", &fiedNameValue) == ANI_OK) {
+                str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
+                args.insert(std::pair<std::string, std::string>("customActions", str.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:

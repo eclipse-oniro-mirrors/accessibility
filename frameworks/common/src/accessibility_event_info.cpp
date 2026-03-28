@@ -139,6 +139,22 @@ const std::vector<std::string> &AccessibilityMemo::GetContentList() const
     return contents_;
 }
 
+void AccessibilityMemo::AddCustomAction(const std::string &customAction)
+{
+    customActions_.push_back(customAction);
+    HILOG_DEBUG("customAction[%{private}s]", customAction.c_str());
+}
+
+const std::vector<std::string> &AccessibilityMemo::GetCustomActionList() const
+{
+    return customActions_;
+}
+
+void AccessibilityMemo::SetCustomActionList(const std::vector<std::string> &customActions)
+{
+    customActions_ = customActions;
+}
+
 const std::string &AccessibilityMemo::GetLatestContent() const
 {
     HILOG_DEBUG("latestContent_[%{private}s]", latestContent_.c_str());

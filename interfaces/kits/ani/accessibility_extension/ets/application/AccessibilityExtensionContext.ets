@@ -172,6 +172,7 @@ export interface AccessibilityElement {
   componentId?: long;
   componentType?: string;
   contents?: Array<string>;
+  customActions?: Array<string>;
   currentIndex?: int;
   description?: string;
   editable?: boolean;
@@ -243,6 +244,7 @@ export class AccessibilityElementImpl implements AccessibilityElement {
     componentId?: long = 0;
     componentType?: string = "";
     contents?: Array<string> = [];
+    customActions?:Array<string> = [];
     currentIndex?: int = 0;
     description?: string = "";
     editable?: boolean = false;

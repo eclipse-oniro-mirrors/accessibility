@@ -1448,6 +1448,19 @@ public:
     void GetContentList(std::vector<std::string> &contentList) const;
 
     /**
+     * @brief Set custom action list
+     * @param customActionList The list of custom actions
+     * @sysCap Accessibility
+     */
+    void SetCustomActionList(const std::vector<std::string> &customActions);
+
+    /**
+     * @brief Get custom action list
+     * @param customActionList(out) The list of custom actions
+     * @sysCap Accessibility
+     */
+    void GetCustomActionList(std::vector<std::string> &customActions) const;
+    /**
      * @brief Set latest content
      * @param content The latest content
      * @sysCap Accessibility
@@ -1947,6 +1960,7 @@ protected:
     int32_t itemCounts_ = 0;
     ActionType triggerAction_ = ACCESSIBILITY_ACTION_INVALID;
     std::vector<std::string> contentList_ {};
+    std::vector<std::string> customActions_ {};
     std::string latestContent_ = "";
     std::string textType_ = "";
     float offset_ = 0.0f;

@@ -466,6 +466,7 @@ std::string ConvertActionTypeToString(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_SET_TEXT, "setText"},
         {ActionType::ACCESSIBILITY_ACTION_DELETED, "delete"},
         {ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK, "spanClick"},
+        {ActionType::ACCESSIBILITY_ACTION_CUSTOM, "customActions"},
         {ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM, "nextHtmlItem"},
         {ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM, "previousHtmlItem"}
     };
@@ -527,7 +528,8 @@ int32_t ConvertOperationTypeToTarget(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_SET_SELECTION, AccessibilityAction::SET_SELECTION},
         {ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION, AccessibilityAction::SET_CURSOR_POSITION},
         {ActionType::ACCESSIBILITY_ACTION_SET_TEXT, AccessibilityAction::SET_TEXT},
-        {ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK, AccessibilityAction::SPAN_CLICK}
+        {ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK, AccessibilityAction::SPAN_CLICK},
+        {ActionType::ACCESSIBILITY_ACTION_CUSTOM, AccessibilityAction::CUSTOM_ACTION}
     };
 
     if (actionTable.find(type) == actionTable.end()) {
@@ -577,6 +579,11 @@ void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const Ac
     elementInfo.GetContentList(contents);
     if (!ANIUtils::SetArrayStringField(env, elementObj, "contents", contents)) {
         HILOG_ERROR("Failed to set contents");
+    }
+    std::vector<std::string> customActionList {};
+    elementInfo.GetCustomActionList(customActionList);
+    if (!ANIUtils::SetArrayStringField(env, elementObj, "customActions", customActionList)) {
+        HILOG_ERROR("Failed to set customActions");
     }
     SetElementRectField(env, elementObj, elementInfo.GetRectInScreen(), "rect");
     if (!ANIUtils::SetStringField(env, elementObj, "textMoveUnit",

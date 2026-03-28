@@ -44,6 +44,7 @@ const std::string DESCRIPTION = "descripion";
 const std::string TEXT_ANNOUNCED_FOR_ACCESSIBILITY = "textAnnouncedForAccessibility";
 const std::string INSPECTOR_KEY = "inspectorKey";
 const std::vector<std::string> CONTENT_LIST = {"content1", "content2"};
+const std::vector<std::string> CUSTOM_ACTION_LIST = {"copy", "paste"};
 
 class AccessibilityEventInfoUnitTest : public ::testing::Test {
 public:
@@ -574,6 +575,34 @@ HWTEST_F(AccessibilityEventInfoUnitTest, AddContent_001, TestSize.Level1)
         }
     }
     GTEST_LOG_(INFO) << "AddContent_001 end";
+}
+
+/**
+ * @tc.number: CustomActionList_001
+ * @tc.name: CustomActionList
+ * @tc.desc: Test AddCustomAction, GetCustomActionList and SetCustomActionList
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, CustomActionList_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "CustomActionList_001 start";
+    if (!eventInfo_) {
+        GTEST_LOG_(INFO) << "eventInfo_ is null";
+    } else {
+        for (auto &customAction : CUSTOM_ACTION_LIST) {
+            eventInfo_->AddCustomAction(customAction);
+        }
+        std::vector<std::string> customActionList = eventInfo_->GetCustomActionList();
+        ASSERT_EQ(customActionList.size(), CUSTOM_ACTION_LIST.size());
+        EXPECT_EQ(customActionList[0], CUSTOM_ACTION_LIST[0]);
+        EXPECT_EQ(customActionList[1], CUSTOM_ACTION_LIST[1]);
+
+        std::vector<std::string> setActions = {"customActions"};
+        eventInfo_->SetCustomActionList(setActions);
+        customActionList = eventInfo_->GetCustomActionList();
+        ASSERT_EQ(customActionList.size(), setActions.size());
+        EXPECT_EQ(customActionList[0], setActions[0]);
+    }
+    GTEST_LOG_(INFO) << "CustomActionList_001 end";
 }
 
 /**

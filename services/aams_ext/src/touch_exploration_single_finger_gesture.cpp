@@ -738,11 +738,28 @@ void TouchExploration::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent
     if (activeWindowId != INVALID_WINDOW_ID && pointerEvent) {
         pointerEvent->SetAgentWindowId(activeWindowId);
     }
-    gestureHandler_->PostTask([this, pointerEvent]() {
+
+    bool hasCustomActions = false;
+    AccessibilityElementInfo focusedElementInfo {};
+    bool ret = Singleton<ExtendServiceManager>::GetInstance().findFocusedElementCallback(focusedElementInfo,
+        FIND_FOCUS_TIMEOUT);
+    if (ret) {
+        std::vector<std::string> customActions;
+        focusedElementInfo.GetCustomActionList(customActions);
+        hasCustomActions = !customActions.empty();
+    }
+
+    gestureHandler_->PostTask([this, pointerEvent, hasCustomActions]() {
         if (pointerEvent) {
             pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
             Singleton<ExtendServiceManager>::GetInstance().sendPointerEventForHoverCallback(pointerEvent);
         }
+
+        if (hasCustomActions) {
+            SendGestureEventToAA(GestureType::GESTURE_DOUBLETAP);
+            return;
+        }
+
         Singleton<ExtendServiceManager>::GetInstance().executeActionOnAccessibilityFocusedCallback(
             ActionType::ACCESSIBILITY_ACTION_CLICK);
         }, "TASK_CLICK_ON_FOCUS");

@@ -848,6 +848,20 @@ void AccessibilityElementInfo::GetContentList(std::vector<std::string> &contentL
     std::copy(contentList_.begin(), contentList_.end(), contentList.begin());
 }
 
+void AccessibilityElementInfo::SetCustomActionList(const std::vector<std::string> &customActions)
+{
+    customActions_.clear();
+    customActions_.resize(customActions.size());
+    std::copy(customActions.begin(), customActions.end(), customActions_.begin());
+}
+
+void AccessibilityElementInfo::GetCustomActionList(std::vector<std::string> &customActions) const
+{
+    customActions.clear();
+    customActions.resize(customActions_.size());
+    std::copy(customActions_.begin(), customActions_.end(), customActions.begin());
+}
+
 void AccessibilityElementInfo::SetLatestContent(const std::string &content)
 {
     latestContent_ = content;

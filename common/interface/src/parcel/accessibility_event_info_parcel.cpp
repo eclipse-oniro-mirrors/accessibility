@@ -147,7 +147,16 @@ bool AccessibilityEventInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
         READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, params);
         resourceParams_.emplace_back(std::make_tuple(paramsType, params));
     }
-
+    uint32_t customActionsSize = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, customActionsSize);
+    std::string customAction;
+    if (!ContainerSecurityVerify(parcel, customActionsSize, customActions_.max_size())) {
+        return false;
+    }
+    for (uint32_t i = 0 ; i < customActionsSize; i++) {
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, customAction);
+        AddCustomAction(customAction);
+    }
     sptr<ExtraEventInfoParcel> extraEventInfo = parcel.ReadStrongParcelable<ExtraEventInfoParcel>();
     if (extraEventInfo == nullptr) {
         return false;
@@ -218,6 +227,11 @@ bool AccessibilityEventInfoParcel::MarshallingFirstPart(Parcel &parcel) const
 
 bool AccessibilityEventInfoParcel::MarshallingSecondPart(Parcel &parcel) const
 {
+    auto customActionList = GetCustomActionList();
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, customActionList.size());
+    for (auto &customAction : customActionList) {
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, customAction);
+    }
     ExtraEventInfoParcel extraEventInfoParcel(extraEventInfo_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &extraEventInfoParcel);
     return true;

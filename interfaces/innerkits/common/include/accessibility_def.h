@@ -190,6 +190,7 @@ enum ActionType : int32_t {
     ACCESSIBILITY_ACTION_RECENTTASK = 0x00040000,
     ACCESSIBILITY_ACTION_NOTIFICATIONCENTER = 0x00080000,
     ACCESSIBILITY_ACTION_CONTROLCENTER = 0x00008000,
+    ACCESSIBILITY_ACTION_CUSTOM = 0x20000000,
     ACCESSIBILITY_ACTION_TYPE_MASK = 0x1FFFFFFF,
 };
 
@@ -625,7 +626,8 @@ enum AccessibilityAction : int32_t {
     RECENT_TASK = 17,
     NOTIFICATION_CENTER = 18,
     CONTROL_CENTER = 19,
-    SPAN_CLICK = 20
+    SPAN_CLICK = 20,
+    CUSTOM_ACTION = 21
 };
 
 const std::vector<std::string> ACTION_NAMES = {
@@ -649,7 +651,8 @@ const std::vector<std::string> ACTION_NAMES = {
     "recentTask",              //AccessibilityAction.RECENT_TASK=17
     "notificationCenter",      //AccessibilityAction.NOTIFICATION_CENTER=18
     "controlCenter",           //AccessibilityAction.CONTROL_CENTER=19
-    "spanClick"                //AccessibilityAction.SPAN_CLICK=20
+    "spanClick",               //AccessibilityAction.SPAN_CLICK=20
+    "customActions"            //AccessibilityAction.CUSTOM_ACTION=21
 };
 
 enum class AnnounceType : uint32_t {

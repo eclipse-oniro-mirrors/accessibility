@@ -39,7 +39,8 @@ export enum AccessibilityAction {
   RECENT_TASK = 17,
   NOTIFICATION_CENTER = 18,
   CONTROL_CENTER = 19,
-  SPAN_CLICK = 20
+  SPAN_CLICK = 20,
+  CUSTOM_ACTION = 21
 }
 
 export enum AccessibilityEventType {
@@ -129,7 +130,7 @@ namespace accessibility {
     export type Action = 'accessibilityFocus' | 'clearAccessibilityFocus' | 'focus' | 'clearFocus' | 'clearSelection' |
         'click' | 'longClick' | 'cut' | 'copy' | 'paste' | 'select' | 'setText' | 'delete' |
         'scrollForward' | 'scrollBackward' | 'setSelection' | 'setCursorPosition' | 'home' |
-        'back' | 'recentTask' | 'notificationCenter' | 'controlCenter' | 'common';
+        'back' | 'recentTask' | 'notificationCenter' | 'controlCenter' | 'common' | 'customActions';
 
     export type WindowUpdateType = 'add' | 'remove' | 'bounds' | 'active' | 'focus';
 
@@ -493,6 +494,7 @@ namespace accessibility {
         triggerAction: Action;
         textMoveUnit?: TextMoveUnit;
         contents?: Array<string>;
+        customActions?: Array<string>;
         lastContent?: string;
         beginIndex?: int;
         currentIndex?: int;

@@ -191,6 +191,30 @@ public:
     const std::vector<std::string> &GetContentList() const;
 
     /**
+     * @brief Adds an action info to the action info list.
+     * @param customAction Indicates the action info to add.
+     * @since 23
+     * @sysCap Accessibility
+     */
+    void AddCustomAction(const std::string &customAction);
+
+    /**
+     * @brief Get the action info list in the event.
+     * @return The action info list in the event.
+     * @since 23
+     * @sysCap Accessibility
+     */
+    const std::vector<std::string> &GetCustomActionList() const;
+
+    /**
+     * @brief Set the action info list in the event.
+     * @param customActions Indicates the action info list to set.
+     * @since 23
+     * @sysCap Accessibility
+     */
+    void SetCustomActionList(const std::vector<std::string> &customActions);
+
+    /**
      * @brief Gets the last content of the component(The text of changed after).
      * @return The last content of the component(The text of changed after).
      * @since 3
@@ -229,6 +253,7 @@ protected:
     int32_t beginIndex_ = 0;
     int32_t endIndex_ = 0;
     std::vector<std::string> contents_ {};
+    std::vector<std::string> customActions_ {};
     std::string componentType_ = "";
     std::string description_ = "";
     std::string beforeText_ = "";
