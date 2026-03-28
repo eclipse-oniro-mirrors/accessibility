@@ -2647,9 +2647,9 @@ void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(cons
 
     switch (evtType) {
         case TYPE_VIEW_HOVER_ENTER_EVENT:
-            if (Singleton<AccessibilityWindowManager>::GetInstance().NeedSetActive(windowId)) {
-                Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(windowId, false);
-            }
+            // if (Singleton<AccessibilityWindowManager>::GetInstance().NeedSetActive(windowId)) {
+            //     Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(windowId, false);
+            // }
             Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(windowId);
             if (scbWindowFlag) {
                 HILOG_INFO("windowId set to subWindows_ is %{public}d", windowId);
