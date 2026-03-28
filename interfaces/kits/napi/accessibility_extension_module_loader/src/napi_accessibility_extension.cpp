@@ -356,6 +356,7 @@ void NAccessibilityExtension::CreateElementInfoByEventInfo(const AccessibilityEv
     elementInfo->SetTriggerAction(eventInfo.GetTriggerAction());
     elementInfo->SetTextMovementStep(eventInfo.GetTextMovementStep());
     elementInfo->SetContentList(eventInfo.GetContentList());
+    elementInfo->SetCustomActionList(eventInfo.GetCustomActionList());
     elementInfo->SetLatestContent(eventInfo.GetLatestContent());
     elementInfo->SetBeginIndex(eventInfo.GetBeginIndex());
     elementInfo->SetCurrentIndex(eventInfo.GetCurrentIndex());

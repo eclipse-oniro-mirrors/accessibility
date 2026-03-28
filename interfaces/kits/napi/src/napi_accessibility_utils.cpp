@@ -817,6 +817,7 @@ std::string ConvertOperationTypeToString(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_SET_TEXT, "setText"},
         {ActionType::ACCESSIBILITY_ACTION_DELETED, "delete"},
         {ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK, "spanClick"},
+        {ActionType::ACCESSIBILITY_ACTION_CUSTOM, "customActions"},
         {ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM, "nextHtmlItem"},
         {ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM, "previousHtmlItem"}
     };
@@ -929,6 +930,7 @@ ActionType ConvertStringToAccessibleOperationType(const std::string &type)
         {"notificationCenter", ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER},
         {"controlCenter", ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER},
         {"spanClick", ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK},
+        {"customActions", ActionType::ACCESSIBILITY_ACTION_CUSTOM},
         {"nextHtmlItem", ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM},
         {"previousHtmlItem", ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM}};
 
@@ -1023,6 +1025,13 @@ bool ConvertActionArgsJSToNAPI(
             ret = CheckNumber(env, str);
             if (hasProperty) {
                 args.insert(std::pair<std::string, std::string>("spanId", str.c_str()));
+            }
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_CUSTOM:
+            napi_create_string_utf8(env, "customActions", NAPI_AUTO_LENGTH, &propertyNameValue);
+            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+            if (hasProperty) {
+                args.insert(std::pair<std::string, std::string>("customActions", str.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
@@ -1344,7 +1353,6 @@ bool ConvertEventInfoJSToNAPIPart3(
             eventInfo.AddContent(str);
         }
     }
-
     napi_create_string_utf8(env, "lastContent", NAPI_AUTO_LENGTH, &propertyNameValue);
     std::string strNapi = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
@@ -1402,6 +1410,14 @@ bool ConvertEventInfoJSToNAPIPart4(
         eventInfo.SetResourceModuleName(resourceInfo.moduleName);
         eventInfo.SetResourceId(resourceInfo.resourceId);
         eventInfo.SetResourceParams(resourceInfo.params);
+    }
+    napi_create_string_utf8(env, "customActions", NAPI_AUTO_LENGTH, &propertyNameValue);
+    std::vector<std::string> stringArrayCustomAction {};
+    ConvertStringArrayJSToNAPI(env, object, propertyNameValue, hasProperty, stringArrayCustomAction);
+    if (hasProperty) {
+        for (auto str : stringArrayCustomAction) {
+            eventInfo.AddCustomAction(str);
+        }
     }
     return true;
 }

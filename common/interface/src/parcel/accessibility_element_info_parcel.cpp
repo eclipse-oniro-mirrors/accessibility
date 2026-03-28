@@ -168,6 +168,17 @@ bool AccessibilityElementInfoParcel::ReadFromParcelFourthPart(Parcel &parcel)
         spanList_.emplace_back(*spanList);
     }
 
+    uint32_t customActionsSize = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, customActionsSize);
+    std::string customAction;
+    if (!ContainerSecurityVerify(parcel, customActionsSize, customActions_.max_size())) {
+        return false;
+    }
+    for (uint32_t i = 0; i < customActionsSize; i++) {
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, customAction);
+        customActions_.push_back(customAction);
+    }
+
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isActive_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityVisible_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, clip_);
@@ -296,7 +307,10 @@ bool AccessibilityElementInfoParcel::MarshallingThirdPart(Parcel &parcel) const
         SpanInfoParcel spanList(span);
         WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &spanList);
     }
-
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, customActions_.size());
+    for (auto &customAction : customActions_) {
+        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, customAction);
+    }
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isActive_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityVisible_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, clip_);

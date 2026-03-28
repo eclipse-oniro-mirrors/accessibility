@@ -1100,6 +1100,25 @@ HWTEST_F(AccessibilityElementInfoTest, SetContentList_001, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetCustomActionList_001
+ * @tc.name: SetCustomActionList
+ * @tc.desc: Test function SetCustomActionList, GetCustomActionList
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetCustomActionList_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetCustomActionList_001 start";
+    std::vector<std::string> customActions = {"copy", "paste"};
+    elementInfo_->SetCustomActionList(customActions);
+
+    std::vector<std::string> result;
+    elementInfo_->GetCustomActionList(result);
+    ASSERT_EQ(result.size(), customActions.size());
+    EXPECT_STREQ(result[0].c_str(), customActions[0].c_str());
+    EXPECT_STREQ(result[1].c_str(), customActions[1].c_str());
+    GTEST_LOG_(INFO) << "SetCustomActionList_001 end";
+}
+
+/**
  * @tc.number: SetLatestContent_001
  * @tc.name: SetLatestContent
  * @tc.desc: Test function SetLatestContent, GetLatestContent

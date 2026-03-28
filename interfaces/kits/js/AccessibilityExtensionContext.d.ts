@@ -733,6 +733,13 @@ type ElementAttributeValues = {
    */
   'contents': Array<string>;
   /**
+   * The action info list.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 23
+   */
+  'customActions': Array<string>;
+  /**
    * Indicates the index of the current item.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core

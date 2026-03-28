@@ -129,5 +129,32 @@ HWTEST_F(AccessibilityEventInfoParcelTest, Event_Info_Focus_Invisible_Type_Round
     EXPECT_EQ(readParcel->GetEventType(), EventType::TYPE_FOCUS_INVISIBLE);
     GTEST_LOG_(INFO) << "Event_Info_Focus_Invisible_Type_RoundTrip_001 end";
 }
+
+/**
+ * @tc.number: Event_Info_Custom_Action_RoundTrip_001
+ * @tc.name: Event_Info_Custom_Action_RoundTrip
+ * @tc.desc: Test customActions marshalling and unmarshalling round-trip.
+ */
+HWTEST_F(AccessibilityEventInfoParcelTest, Event_Info_Custom_Action_RoundTrip_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Event_Info_Custom_Action_RoundTrip_001 start";
+    AccessibilityEventInfo eventInfo;
+    eventInfo.AddCustomAction("copy");
+    eventInfo.AddCustomAction("paste");
+
+    AccessibilityEventInfoParcel writeParcel(eventInfo);
+    Parcel parcel;
+    ASSERT_TRUE(writeParcel.Marshalling(parcel));
+
+    sptr<AccessibilityEventInfoParcel> readParcel = writeParcel.Unmarshalling(parcel);
+    ASSERT_NE(readParcel, nullptr);
+
+    std::vector<std::string> customActions = readParcel->GetCustomActionList();
+    const size_t customActionsSize = 2;
+    ASSERT_EQ(customActions.size(), customActionsSize);
+    EXPECT_EQ(customActions[0], "copy");
+    EXPECT_EQ(customActions[1], "paste");
+    GTEST_LOG_(INFO) << "Event_Info_Custom_Action_RoundTrip_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

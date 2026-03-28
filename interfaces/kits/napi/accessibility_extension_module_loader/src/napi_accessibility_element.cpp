@@ -43,6 +43,7 @@ namespace {
     constexpr char COMPONENT_ID[] = "componentId";
     constexpr char COMPONENT_TYPE[] = "componentType";
     constexpr char CONTENTS[] = "contents";
+    constexpr char CUSTOMACTIONS[] = "customActions";
     constexpr char CURRENT_INDEX[] = "currentIndex";
     constexpr char DESCRIPTION[] = "description";
     constexpr char ERROR[] = "error";
@@ -113,7 +114,7 @@ namespace {
         "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
         "allAttribute", "clip", "customComponentType", "extraInfo", "parentId", "childrenIds",
         "accessibilityNextFocusId", "accessibilityPreviousFocusId", "accessibilityScrollable", "isEssential",
-        "childrenTreeId", "belongTreeId", "accessibilityStateDescription"};
+        "childrenTreeId", "belongTreeId", "accessibilityStateDescription", "customActions"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
@@ -151,6 +152,7 @@ namespace {
         {"children", &NAccessibilityElement::GetElementInfoChildren},
         {"triggerAction", &NAccessibilityElement::GetElementInfoTriggerAction},
         {"contents", &NAccessibilityElement::GetElementInfoContents},
+        {"customActions", &NAccessibilityElement::GetElementInfoCustomActions},
         {"lastContent", &NAccessibilityElement::GetElementInfoLastContent},
         {"isFocused", &NAccessibilityElement::GetElementInfoIsFocused},
         {"accessibilityFocused", &NAccessibilityElement::GetElementInfoAccessibilityFocused},
@@ -230,6 +232,7 @@ namespace {
         DECLARE_NAPI_GETTER(COMPONENT_ID, GetElementProperty<ElementProperty<COMPONENT_ID>>),
         DECLARE_NAPI_GETTER(COMPONENT_TYPE, GetElementProperty<ElementProperty<COMPONENT_TYPE>>),
         DECLARE_NAPI_GETTER(CONTENTS, GetElementProperty<ElementProperty<CONTENTS>>),
+        DECLARE_NAPI_GETTER(CUSTOMACTIONS, GetElementProperty<ElementProperty<CUSTOMACTIONS>>),
         DECLARE_NAPI_GETTER(CURRENT_INDEX, GetElementProperty<ElementProperty<CURRENT_INDEX>>),
         DECLARE_NAPI_GETTER(DESCRIPTION, GetElementProperty<ElementProperty<DESCRIPTION>>),
         DECLARE_NAPI_GETTER(EDITABLE, GetElementProperty<ElementProperty<EDITABLE>>),
@@ -1209,6 +1212,26 @@ void NAccessibilityElement::GetElementInfoContents(NAccessibilityElementData *ca
     }
 }
 
+void NAccessibilityElement::GetElementInfoCustomActions(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    std::vector<std::string> customActions {};
+    callbackInfo->accessibilityElement_.elementInfo_->GetCustomActionList(customActions);
+    HILOG_DEBUG("customActions size: [%{public}zu]", customActions.size());
+
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_array(callbackInfo->env_, &value));
+    size_t index = 0;
+    for (auto& customAction : customActions) {
+        napi_value nCustomAction = nullptr;
+        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
+            customAction.c_str(), NAPI_AUTO_LENGTH, &nCustomAction));
+        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_set_element(callbackInfo->env_, value, index, nCustomAction));
+        index++;
+    }
+}
+
 void NAccessibilityElement::GetElementInfoLastContent(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!CheckElementInfoParameter(callbackInfo, value)) {
@@ -1690,6 +1713,10 @@ void NAccessibilityElement::GetElementInfoAllAttribute3(NAccessibilityElementDat
     napi_value contents = nullptr;
     GetElementInfoContents(callbackInfo, contents);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "contents", contents));
+
+    napi_value customActions = nullptr;
+    GetElementInfoCustomActions(callbackInfo, customActions);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "customActions", customActions));
 
     napi_value navDestinationId = nullptr;
     GetElementInfoNavDestinationId(callbackInfo, navDestinationId);
