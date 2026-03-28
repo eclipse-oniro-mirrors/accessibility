@@ -401,7 +401,7 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
             if (downPid_ == event.GetPointerId()) {
                 isLongPress_ = false;
             }
-            if ((pointerCount == POINTER_COUNT_1) && IsUpValid() && !(IsTapOnInputMethod(event))) {
+            if ((pointerCount == POINTER_COUNT_1) && IsUpValid()) {
                 if (isTapOnMenu_ && menuManager_ != nullptr) {
                     menuManager_->OnMenuTap();
                     ClearCacheEventsAndMsg();

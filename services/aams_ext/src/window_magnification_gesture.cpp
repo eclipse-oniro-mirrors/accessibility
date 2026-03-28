@@ -565,11 +565,6 @@ void WindowMagnificationGesture::HandleZoomInStateOneFingerDownStateUp(MMI::Poin
         SetGestureState(MagnificationGestureState::PASSING_THROUGH, event.GetPointerAction());
         return;
     }
-    if (IsTapOnInputMethod(event)) {
-        SendCacheEventsToNext();
-        SetGestureState(MagnificationGestureState::ZOOMIN_STATE, event.GetPointerAction());
-        return;
-    }
     AddTapCount();
     if (GetTapCount() == TAP_COUNT_THREE) {
         MMI::PointerEvent::PointerItem pointerItem;
