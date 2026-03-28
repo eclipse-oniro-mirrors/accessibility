@@ -170,6 +170,7 @@ std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
         {EventType::TYPE_PAGE_ACTIVE, "pageActive"},
         {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"},
+        {EventType::TYPE_FOCUS_INVISIBLE, "focusInvisible"},
     };
 
     for (std::map<EventType, std::string>::iterator itr = accessibilityEventTable.begin();

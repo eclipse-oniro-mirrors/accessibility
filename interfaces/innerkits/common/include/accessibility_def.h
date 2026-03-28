@@ -279,6 +279,7 @@ enum EventType : uint32_t {
     TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT = 0x40000002,
     TYPE_VIEW_SCROLLING_EVENT = 0x40000003,
     TYPE_PAGE_ACTIVE = 0x40000004,
+    TYPE_FOCUS_INVISIBLE = 0x40000005,
     TYPE_MAX_NUM = 0x80000000,
     TYPES_ALL_MASK = 0xFFFFFFFF,
 };
@@ -417,7 +418,8 @@ const std::map<std::string, EventType> EvtTypeTable = {
     {"allEvents", EventType::TYPES_ALL_MASK},
     {"noneEvents", EventType::TYPE_VIEW_INVALID},
     {"pageActive", EventType::TYPE_PAGE_ACTIVE},
-    {"notificationUpdate",EventType::TYPE_NOTIFICATION_UPDATE_EVENT},
+    {"notificationUpdate", EventType::TYPE_NOTIFICATION_UPDATE_EVENT},
+    {"focusInvisible", EventType::TYPE_FOCUS_INVISIBLE},
 };
 
 enum DetailCondition : int32_t {
@@ -597,7 +599,8 @@ enum AccessibilityEventType : int32_t {
     TYPE_FOUR_FINGER_SWIPE_LEFT = 67,
     TYPE_FOUR_FINGER_SWIPE_RIGHT = 68,
     TYPE_PAGE_ACTIVE = 69,
-    TYPE_NOTIFICATION_UPDATE_EVENT = 70
+    TYPE_NOTIFICATION_UPDATE_EVENT = 70,
+    TYPE_FOCUS_INVISIBLE = 71
 };
 
 enum AccessibilityAction : int32_t {
