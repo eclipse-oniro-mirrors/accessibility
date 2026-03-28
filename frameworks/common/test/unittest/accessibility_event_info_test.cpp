@@ -117,12 +117,9 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetEventType_001, TestSize.Level1)
 HWTEST_F(AccessibilityEventInfoUnitTest, SetEventType_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetEventType_002 start";
-    if (!eventInfo_) {
-        GTEST_LOG_(INFO) << "eventInfo_ is null";
-    } else {
-        eventInfo_->SetEventType(EventType::TYPE_FOCUS_INVISIBLE);
-        EXPECT_EQ(eventInfo_->GetEventType(), EventType::TYPE_FOCUS_INVISIBLE);
-    }
+    ASSERT_TRUE(eventInfo_ != nullptr) << "eventInfo_ is null";
+    eventInfo_->SetEventType(EventType::TYPE_FOCUS_INVISIBLE);
+    EXPECT_EQ(eventInfo_->GetEventType(), EventType::TYPE_FOCUS_INVISIBLE);
     GTEST_LOG_(INFO) << "SetEventType_002 end";
 }
 
