@@ -15,6 +15,7 @@
 #ifndef ACCESSIBILITY_SETTINGS_CONFIG_H
 #define ACCESSIBILITY_SETTINGS_CONFIG_H
 
+#include <atomic>
 #include <map>
 #include <set>
 #include <string>
@@ -149,36 +150,36 @@ private:
     void recoverAudioAdjustment();
 
     int32_t accountId_;
-    bool enabled_ = false;
-    bool eventTouchGuideState_ = false;
-    bool gesturesSimulation_ = false;
-    bool filteringKeyEvents_ = false;
-    bool isScreenMagnificationState_ = false;
-    uint32_t screenMagnificationType_ = 0;
-    uint32_t screenMagnificationMode_ = 0;
-    float screenMagnificationScale_ = 2.0f;
-    bool isCaptionState_ = false;
+    std::atomic<bool> enabled_ = false;
+    std::atomic<bool> eventTouchGuideState_ = false;
+    std::atomic<bool> gesturesSimulation_ = false;
+    std::atomic<bool> filteringKeyEvents_ = false;
+    std::atomic<bool> isScreenMagnificationState_ = false;
+    std::atomic<uint32_t> screenMagnificationType_ = 0;
+    std::atomic<uint32_t> screenMagnificationMode_ = 0;
+    std::atomic<float> screenMagnificationScale_ = 2.0f;
+    std::atomic<bool> isCaptionState_ = false;
     AccessibilityConfig::CaptionProperty captionProperty_;
-    bool isMouseKeyState_ = false;
-    bool isShortKeyState_ = false;
-    int32_t mouseAutoClick_ = -1;
+    std::atomic<bool> isMouseKeyState_ = false;
+    std::atomic<bool> isShortKeyState_ = false;
+    std::atomic<int32_t> mouseAutoClick_ = -1;
     std::string shortkeyTarget_ = "";
-    bool highContrastTextState_ = false;
-    bool invertColorState_ = false;
-    bool animationOffState_ = false;
-    bool audioMonoState_ = false;
-    bool flashReminderSwitch_ = false;
-    bool daltonizationState_ = false;
-    bool seniorModeState_ = false;
-    uint32_t daltonizationColorFilter_ = 0;
-    uint32_t contentTimeout_ = 0;
-    float brightnessDiscount_ = 0.0;
-    float audioBalance_ = 0.0;
-    uint32_t clickResponseTime_ = 0;
-    bool ignoreRepeatClickState_ = false;
-    uint32_t ignoreRepeatClickTime_ = 0;
-    bool isShortKeyEnabledOnLockScreen_ = false;
-    int32_t shortKeyTimeout_ = 3;
+    std::atomic<bool> highContrastTextState_ = false;
+    std::atomic<bool> invertColorState_ = false;
+    std::atomic<bool> animationOffState_ = false;
+    std::atomic<bool> audioMonoState_ = false;
+    std::atomic<bool> flashReminderSwitch_ = false;
+    std::atomic<bool> daltonizationState_ = false;
+    std::atomic<bool> seniorModeState_ = false;
+    std::atomic<uint32_t> daltonizationColorFilter_ = 0;
+    std::atomic<uint32_t> contentTimeout_ = 0;
+    std::atomic<float> brightnessDiscount_ = 0.0;
+    std::atomic<float> audioBalance_ = 0.0;
+    std::atomic<uint32_t> clickResponseTime_ = 0;
+    std::atomic<bool> ignoreRepeatClickState_ = false;
+    std::atomic<uint32_t> ignoreRepeatClickTime_ = 0;
+    std::atomic<bool> isShortKeyEnabledOnLockScreen_ = false;
+    std::atomic<int32_t> shortKeyTimeout_ = 3;
 
     std::vector<std::string> shortkeyMultiTarget_ {};
     std::vector<std::string> enabledAccessibilityServices_ {}; // bundleName/abilityName
