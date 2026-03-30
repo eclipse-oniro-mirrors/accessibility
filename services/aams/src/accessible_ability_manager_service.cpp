@@ -4375,8 +4375,8 @@ RetError AccessibleAbilityManagerService::GetResourceBundleInfo(AccessibilityEve
         AppExecFwk::BundleInfo bundleInfo;
         ErrCode ret = Singleton<AccessibilityResourceBundleManager>::GetInstance().GetBundleInfoV9(
             eventInfo.GetResourceBundleName(),
-            static_cast<int32_t>(AppExecFwk::GetBundleInfoFlag::GET_BUNDLE_INFO_WITH_HAP_MODULE |
-                                AppExecFwk::GetBundleInfoFlag::GET_BUNDLE_INFO_EXCLUDE_EXT),
+            static_cast<int32_t>(AppExecFwk::GetBundleInfoFlag::GET_BUNDLE_INFO_WITH_HAP_MODULE) +
+            static_cast<int32_t>(AppExecFwk::GetBundleInfoFlag::GET_BUNDLE_INFO_EXCLUDE_EXT),
             bundleInfo, userId);
         if (ret != ERR_OK) {
             HILOG_ERROR("get BundleInfo failed!");
