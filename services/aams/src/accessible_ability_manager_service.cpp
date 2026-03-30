@@ -1863,8 +1863,10 @@ ErrCode AccessibleAbilityManagerService::CheckExtensionAbilityPermission(std::st
     }
     
     auto id = IPCSkeleton::GetCallingTokenID();
+    HILOG_INFO("yjl id : %{public}d", id);
     Security::AccessToken::NativeTokenInfo info;
     auto result = Security::AccessToken::AccessTokenKit::GetNativeTokenInfo(id, info);
+    HILOG_INFO("yjl Security::AccessToken::AccessTokenKit::GetNativeTokenInfo : %{public}d", result);
     if (result != 0) {
         HILOG_ERROR("get native token info failed!");
         return RET_ERR_TOKEN_ID;
