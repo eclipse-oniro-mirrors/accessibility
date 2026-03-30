@@ -1855,24 +1855,26 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
 }
 
 ErrCode AccessibleAbilityManagerService::CheckExtensionAbilityPermission(std::string& processName)
-{
+{       
     auto id = IPCSkeleton::GetCallingTokenID();
-    HILOG_INFO("yjl id : %{public}d", id);
     Security::AccessToken::NativeTokenInfo info;
     auto result = Security::AccessToken::AccessTokenKit::GetNativeTokenInfo(id, info);
-    HILOG_INFO("yjl Security::AccessToken::AccessTokenKit::GetNativeTokenInfo : %{public}d", result);
     if (result != 0) {
         HILOG_ERROR("get native token info failed!");
         return RET_ERR_TOKEN_ID;
     }
-    
+    if (info.processName == "") {
+        HILOG_ERROR("get native processName failed!");
+        return RET_ERR_FAILED;
+    }
+
+    processName = info.processName;
     bool ret = Permission::CheckCallingPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY);
     if (ret == true) {
         HILOG_INFO("get hap permission");
         return RET_OK;
     }
-
-    processName = info.processName;
+    
     if (processName.compare("hdcd") != 0) {
         HILOG_ERROR("permission check failed, processName = %{public}s", processName.c_str());
         return RET_ERR_NO_PERMISSION;
