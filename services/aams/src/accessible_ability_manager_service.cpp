@@ -1855,7 +1855,7 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
 }
 
 ErrCode AccessibleAbilityManagerService::CheckExtensionAbilityPermission(std::string& processName)
-{       
+{
     auto id = IPCSkeleton::GetCallingTokenID();
     Security::AccessToken::NativeTokenInfo info;
     auto result = Security::AccessToken::AccessTokenKit::GetNativeTokenInfo(id, info);
@@ -1874,7 +1874,7 @@ ErrCode AccessibleAbilityManagerService::CheckExtensionAbilityPermission(std::st
         HILOG_INFO("get hap permission");
         return RET_OK;
     }
-    
+
     if (processName.compare("hdcd") != 0) {
         HILOG_ERROR("permission check failed, processName = %{public}s", processName.c_str());
         return RET_ERR_NO_PERMISSION;
