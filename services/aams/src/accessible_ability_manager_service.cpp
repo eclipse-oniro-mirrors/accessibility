@@ -1863,8 +1863,8 @@ ErrCode AccessibleAbilityManagerService::CheckExtensionAbilityPermission(std::st
         HILOG_ERROR("get native token info failed!");
         return RET_ERR_TOKEN_ID;
     }
-    if (processName == "") {
-        HILOG_ERROR("get native token info failed!");
+    if (info.processName == "") {
+        HILOG_ERROR("get native processName failed!");
         return RET_ERR_FAILED;
     }
 
