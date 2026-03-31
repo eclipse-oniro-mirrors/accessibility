@@ -632,7 +632,7 @@ ani_object ANIAccessibilityClient::CreateJsAccessibilityAbilityInfo(ani_env *env
     ani_method ctor = nullptr;
     ani_object object = nullptr;
 
-    if ((status = env->FindClass(Builder::BuildClass("@ohos:accessibility.accessibility.AccessibilityAbilityInfoImpl")
+    if ((status = env->FindClass(Builder::BuildClass("@ohos.accessibility.accessibility.AccessibilityAbilityInfoImpl")
         .Descriptor().c_str(), &cls)) != ANI_OK || cls == nullptr) {
         HILOG_ERROR("FindClass status : %{public}d or null cls", status);
         return nullptr;
@@ -746,7 +746,7 @@ ani_object ANIAccessibilityClient::GetCaptionsManager(ani_env *env)
     ani_method ctor = nullptr;
     ani_object object = nullptr;
 
-    if ((env->FindClass(Builder::BuildClass("@ohos:accessibility.accessibility.CaptionsManagerImpl")
+    if ((env->FindClass(Builder::BuildClass("@ohos.accessibility.accessibility.CaptionsManagerImpl")
         .Descriptor().c_str(), &cls)) != ANI_OK || cls == nullptr) {
         HILOG_ERROR("FindClass CaptionsManagerImpl failed");
         return nullptr;
@@ -880,7 +880,7 @@ ani_object ANIAccessibilityClient::CreateAccessibilityCaptionProperty(ani_env *e
     OHOS::AccessibilityConfig::CaptionProperty &captionProperty)
 {
     arkts::ani_signature::Type className =
-        arkts::ani_signature::Builder::BuildClass("@ohos:accessibility.accessibility.CaptionsStyleImpl");
+        arkts::ani_signature::Builder::BuildClass("@ohos.accessibility.accessibility.CaptionsStyleImpl");
     ani_class cls;
     if (env->FindClass(className.Descriptor().c_str(), &cls) != ANI_OK) {
         HILOG_ERROR(" not found class");

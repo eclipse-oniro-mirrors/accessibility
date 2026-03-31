@@ -31,7 +31,7 @@ using namespace arkts::ani_signature;
 
 constexpr int64_t VIRTUAL_COMPONENT_ID = -1;
 constexpr const char* ANI_ACCESSIBILITY_EXTENSION_CLS =
-    "@ohos:application.AccessibilityExtensionAbility.AccessibilityExtensionAbility";
+    "@ohos.application.AccessibilityExtensionAbility.AccessibilityExtensionAbility";
 
 struct ExtensionCallbackInfo {
     ani_env *env_;
@@ -625,7 +625,7 @@ void CreateJsAccessibilityAbilityEventInfoInner(ani_env *env,
 
     do {
         constexpr const char* eventTypeCls =
-            "@ohos:accessibility.AccessibilityEventType";
+            "@ohos.accessibility.AccessibilityEventType";
         if (!ANIUtils::SetEnumProperty(env, object, eventTypeCls, "eventType",
             callbackInfo->AccessibilityEventType_)) {
             HILOG_ERROR("Failed to set eventType");
@@ -660,7 +660,7 @@ void CreateAccessibilityAbilityEventInfo(ani_env *env, ani_object object,
     ani_method callback = nullptr;
     ani_object infoObject = nullptr;
     constexpr const char* AccessibilityEventInfoimpl =
-        "@ohos:application.AccessibilityExtensionAbility.AccessibilityEventInfoImpl";
+        "@ohos.application.AccessibilityExtensionAbility.AccessibilityEventInfoImpl";
     if (env->FindClass(AccessibilityEventInfoimpl, &infoCls) != ANI_OK) {
         HILOG_ERROR("class not found: %{public}s", AccessibilityEventInfoimpl);
         return;
@@ -822,7 +822,7 @@ void GetKeyValue(ani_env *env, ani_object keyObject, std::optional<MMI::KeyEvent
         return;
     }
     ani_status status;
-    constexpr const char* keyCodeCls = "@ohos:multimodalInput.keyCode.KeyCode";
+    constexpr const char* keyCodeCls = "@ohos.multimodalInput.keyCode.KeyCode";
     int32_t keyCode = keyItem->GetKeyCode();
     if (!ANIUtils::SetEnumProperty(env, keyObject, keyCodeCls, "code", keyCode)) {
         HILOG_ERROR("Failed to set keycode");
@@ -842,7 +842,7 @@ ani_object CreatKeyObject(ani_env *env)
     ani_class keyCls = nullptr;
     ani_method keyMethod = nullptr;
     ani_object keyObj = nullptr;
-    constexpr const char* KeyImpl = "@ohos:application.AccessibilityExtensionAbility.KeyImpl";
+    constexpr const char* KeyImpl = "@ohos.application.AccessibilityExtensionAbility.KeyImpl";
     arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(KeyImpl);
     if (env->FindClass(className.Descriptor().c_str(), &keyCls) != ANI_OK) {
         HILOG_ERROR("Class KeyImpl not found");
@@ -972,7 +972,7 @@ ani_object ConvertKeyEventToJS(ani_env *env, ani_object object, const std::share
     }
     SetInputEventProperty(env, object, keyEvent);
     ani_enum enumType;
-    constexpr const char* ActionEnum = "@ohos:multimodalInput.keyEvent.Action";
+    constexpr const char* ActionEnum = "@ohos.multimodalInput.keyEvent.Action";
     int32_t keyAction = TransformKeyActionValue(keyEvent->GetKeyAction());
     if (!ANIUtils::SetEnumProperty(env, object, ActionEnum, "action", keyAction)) {
         HILOG_ERROR("Failed to set action");
@@ -1008,7 +1008,7 @@ void CreateKeyEventObject(ani_env *env, ani_object object, std::shared_ptr<OHOS:
     ani_method ctor = nullptr;
     ani_method callback = nullptr;
     ani_object keyEventObj = nullptr;
-    constexpr const char* KeyEventCls = "@ohos:application.AccessibilityExtensionAbility.KeyEventImpl";
+    constexpr const char* KeyEventCls = "@ohos.application.AccessibilityExtensionAbility.KeyEventImpl";
     if (env->FindClass(KeyEventCls, &eventCls) != ANI_OK) {
         HILOG_ERROR("class not found: %{public}s", KeyEventCls);
         return;

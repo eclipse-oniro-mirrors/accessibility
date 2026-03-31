@@ -40,14 +40,14 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
         return (ani_status)INVALID_ANI_VERSION;
     }
 
-    Namespace accessibilityNamespace = Builder::BuildNamespace("@ohos:accessibility.accessibility");
+    Namespace accessibilityNamespace = Builder::BuildNamespace("@ohos.accessibility.accessibility");
     ani_namespace ns;
     if (env->FindNamespace(accessibilityNamespace.Descriptor().c_str(), &ns) != ANI_OK) {
         HILOG_ERROR("namespace accessibility not found");
         return (ani_status)NAMESPACE_NOT_FOUND;
     }
 
-    Module accessibilityModule = Builder::BuildModule("@ohos:accessibility");
+    Module accessibilityModule = Builder::BuildModule("@ohos.accessibility");
     ani_module mod;
     if (env->FindModule(accessibilityModule.Descriptor().c_str(), &mod) != ANI_OK) {
         HILOG_ERROR("module accessibility not found");
@@ -60,7 +60,7 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
     }
 
     ani_class cls = nullptr;
-    if (env->FindClass(Builder::BuildClass("@ohos:accessibility.accessibility.CaptionsManagerImpl")
+    if (env->FindClass(Builder::BuildClass("@ohos.accessibility.accessibility.CaptionsManagerImpl")
         .Descriptor().c_str(), &cls) != ANI_OK) {
         HILOG_ERROR("class CaptionsManagerImpl not found");
         return (ani_status)CLASS_NOT_FOUND;

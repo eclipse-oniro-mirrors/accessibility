@@ -81,14 +81,14 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
         return (ani_status)INVALID_ANI_VERSION;
     }
 
-    Namespace nsName = Builder::BuildNamespace("@ohos:accessibility.config.config");
+    Namespace nsName = Builder::BuildNamespace("@ohos.accessibility.config.config");
     ani_namespace ns;
     if (env->FindNamespace(nsName.Descriptor().c_str(), &ns) != ANI_OK) {
         HILOG_ERROR("namespace config not found");
         return (ani_status)NAMESPACE_NOT_FOUND;
     }
 
-    Module moduleName = Builder::BuildModule("@ohos:accessibility.config");
+    Module moduleName = Builder::BuildModule("@ohos.accessibility.config");
     ani_module mod;
     if (env->FindModule(moduleName.Descriptor().c_str(), &mod) != ANI_OK) {
         HILOG_ERROR("module config not found");
@@ -175,7 +175,7 @@ static bool BindAllMethod(ani_env *env)
 
 static bool BindBooleanMethod(ani_env *env)
 {
-    Type classNameBoolean = Builder::BuildClass("@ohos:accessibility.config.config.ConfigImplBoolean");
+    Type classNameBoolean = Builder::BuildClass("@ohos.accessibility.config.config.ConfigImplBoolean");
     ani_class clsBoolean;
     if (env->FindClass(classNameBoolean.Descriptor().c_str(), &clsBoolean) != ANI_OK) {
         HILOG_ERROR(" config class ConfigImplBoolean not found");
@@ -203,7 +203,7 @@ static bool BindBooleanMethod(ani_env *env)
 
 static bool BindDoubleMethod(ani_env *env)
 {
-    Type classNameDouble = Builder::BuildClass("@ohos:accessibility.config.config.ConfigImplDouble");
+    Type classNameDouble = Builder::BuildClass("@ohos.accessibility.config.config.ConfigImplDouble");
     ani_class clsDouble;
     if (env->FindClass(classNameDouble.Descriptor().c_str(), &clsDouble) != ANI_OK) {
         HILOG_ERROR(" config class ConfigImplDouble not found");
@@ -231,7 +231,7 @@ static bool BindDoubleMethod(ani_env *env)
 
 static bool BindIntMethod(ani_env *env)
 {
-    Type classNameInt = Builder::BuildClass("@ohos:accessibility.config.config.ConfigImplInt");
+    Type classNameInt = Builder::BuildClass("@ohos.accessibility.config.config.ConfigImplInt");
     ani_class clsInt;
     if (env->FindClass(classNameInt.Descriptor().c_str(), &clsInt) != ANI_OK) {
         HILOG_ERROR(" config class ConfigImplInt not found");
@@ -259,7 +259,7 @@ static bool BindIntMethod(ani_env *env)
 
 static bool BindStringMethod(ani_env *env)
 {
-    Type classNameString = Builder::BuildClass("@ohos:accessibility.config.config.ConfigImplString");
+    Type classNameString = Builder::BuildClass("@ohos.accessibility.config.config.ConfigImplString");
     ani_class clsString;
     if (env->FindClass(classNameString.Descriptor().c_str(), &clsString) != ANI_OK) {
         HILOG_ERROR(" config class ConfigImplString not found");
@@ -287,7 +287,7 @@ static bool BindStringMethod(ani_env *env)
 
 static bool BindVectorStringMethod(ani_env *env)
 {
-    Type classNameArrString = Builder::BuildClass("@ohos:accessibility.config.config.ConfigImplArrString");
+    Type classNameArrString = Builder::BuildClass("@ohos.accessibility.config.config.ConfigImplArrString");
     ani_class clsArrString;
     if (env->FindClass(classNameArrString.Descriptor().c_str(), &clsArrString) != ANI_OK) {
         HILOG_ERROR(" config class ConfigImplArrString not found");
@@ -315,7 +315,7 @@ static bool BindVectorStringMethod(ani_env *env)
 
 static bool BindDaltonizationColorFilterMethod(ani_env *env)
 {
-    Type classNameDalColFilte = Builder::BuildClass("@ohos:accessibility.config.config.ConfigImplDalColFilter");
+    Type classNameDalColFilte = Builder::BuildClass("@ohos.accessibility.config.config.ConfigImplDalColFilter");
     ani_class clsDalColFilte;
     if (env->FindClass(classNameDalColFilte.Descriptor().c_str(), &clsDalColFilte) != ANI_OK) {
         HILOG_ERROR(" config class ConfigImplDalColFilter not found");
@@ -343,7 +343,7 @@ static bool BindDaltonizationColorFilterMethod(ani_env *env)
 
 static bool BindClickResponseTimeMethod(ani_env *env)
 {
-    Type classNameCliResTime = Builder::BuildClass("@ohos:accessibility.config.config.ConfigImplCliResTime");
+    Type classNameCliResTime = Builder::BuildClass("@ohos.accessibility.config.config.ConfigImplCliResTime");
     ani_class clsCliResTime;
     if (env->FindClass(classNameCliResTime.Descriptor().c_str(), &clsCliResTime) != ANI_OK) {
         HILOG_ERROR(" config class ConfigImplCliResTime not found");
@@ -372,7 +372,7 @@ static bool BindClickResponseTimeMethod(ani_env *env)
 static bool BindRepeatClickIntervalMethod(ani_env *env)
 {
     Type classNameRepeateClickInterval =
-        Builder::BuildClass("@ohos:accessibility.config.config.ConfigRepeateClickInterval");
+        Builder::BuildClass("@ohos.accessibility.config.config.ConfigRepeateClickInterval");
     ani_class clsRepeateClickInterval;
     if (env->FindClass(classNameRepeateClickInterval.Descriptor().c_str(), &clsRepeateClickInterval) != ANI_OK) {
         HILOG_ERROR(" config class ConfigRepeateClickInterval not found");
@@ -400,7 +400,7 @@ static bool BindRepeatClickIntervalMethod(ani_env *env)
 
 static bool BindCaptionsStyleMethod(ani_env *env)
 {
-    Type classNameCaptionsStyle = Builder::BuildClass("@ohos:accessibility.config.config.ConfigImplCaptionsStyle");
+    Type classNameCaptionsStyle = Builder::BuildClass("@ohos.accessibility.config.config.ConfigImplCaptionsStyle");
     ani_class clsCaptionsStyle;
     if (env->FindClass(classNameCaptionsStyle.Descriptor().c_str(), &clsCaptionsStyle) != ANI_OK) {
         HILOG_ERROR(" config class ConfigImplCaptionsStyle not found");
