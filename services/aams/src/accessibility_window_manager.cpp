@@ -1032,7 +1032,6 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     
     const int32_t previousActiveWindowId  = activeWindowId_;
     bool hasFocusedWindow = false;
-    bool hasMagnificationWindow = false;
     WinDeInit();
     for (auto &window : infos) {
         if (window == nullptr) {
@@ -1040,7 +1039,6 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
             continue;
         }
         if (IsMagnificationWindow(window)) {
-            hasMagnificationWindow = true;
             continue;
         }
         int32_t realWid = GetRealWindowId(window);
@@ -1062,14 +1060,10 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
         }
 
         hasFocusedWindow = true;
-        if (hasMagnificationWindow) {
-            if (previousActiveWindowId  != realWid) {
-                SetActiveWindow(realWid);
-            } else {
-                activeWindowId_ = previousActiveWindowId;
-            }
-        } else {
+        if (previousActiveWindowId  != realWid) {
             SetActiveWindow(realWid);
+        } else {
+            activeWindowId_ = previousActiveWindowId;
         }
 
         WindowUpdateAllExec(oldA11yWindows_, realWid, window);
