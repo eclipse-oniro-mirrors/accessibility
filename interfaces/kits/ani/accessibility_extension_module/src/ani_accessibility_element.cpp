@@ -434,7 +434,7 @@ bool SetElementChildrenProperty(ani_env *env, ani_object& elementObj, const std:
     std::vector<ani_object> childrenArray;
     for (const auto &childId : children) {
         if (ANIUtils::CreateAniLong(env, childId, value) != ANI_OK) {
-            HILOG_ERROR("CreateAniLong failed for childId %{public}lld", childId);
+            HILOG_ERROR("CreateAniLong failed for childId %{public}" PRId64, childId);
             return false;
         }
         childrenArray.push_back(value);
@@ -842,7 +842,7 @@ ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_lo
     }
 
     int64_t elementId = static_cast<int64_t>(condition);
-    HILOG_DEBUG("Finding element by ID: %{public}lld", elementId);
+    HILOG_DEBUG("Finding element by ID: %{public}" PRId64, elementId);
 
     FindElementParams param = {FIND_ELEMENT_CONDITION_ELEMENT_ID, std::to_string(elementId), *element};
 
@@ -1096,7 +1096,7 @@ void FindElementExecute(FindElementParams* data)
                 if (windowId == 1) {
                     windowId = data->accessibilityElement_.elementInfo_->GetMainWindowId();
                 }
-                HILOG_DEBUG("elementId is %{public}lld windowId: %{public}d", elementId, windowId);
+                HILOG_DEBUG("elementId is %{public}" PRId64 " windowId: %{public}d", elementId, windowId);
                 data->ret_ = AccessibleAbilityClient::GetInstance()->GetByElementId(
                     elementId, windowId, data->nodeInfo_);
             }
