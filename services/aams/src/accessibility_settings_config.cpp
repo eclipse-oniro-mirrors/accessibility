@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <inttypes.h>
 #include "accessibility_settings_config.h"
 #include "hilog_wrapper.h"
 #include "system_ability_definition.h"
@@ -1158,7 +1158,7 @@ void AccessibilitySettingsConfig::HandleIgnoreRepeatClickState()
         SetIgnoreRepeatClickState(false);
         recoveryDate = IgnoreRepeatClickNotification::GetWallTimeMs();
         datashare_->PutLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, recoveryDate);
-        HILOG_INFO("recovery ignore repeat click %{public}lld", recoveryDate);
+        HILOG_INFO("recovery ignore repeat click %{public}" PRId64, recoveryDate);
     }
  
     if (ignoreRepeatClickState_) {

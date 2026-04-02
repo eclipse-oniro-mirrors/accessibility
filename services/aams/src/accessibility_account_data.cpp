@@ -15,6 +15,7 @@
 
 #include "accessibility_account_data.h"
 
+#include <inttypes.h>
 #include <any>
 #include <dlfcn.h>
 #ifdef OHOS_BUILD_ENABLE_HITRACE
@@ -1706,7 +1707,7 @@ void AccessibilityAccountData::UpdateAbilityNeedEvent(const std::string &name, s
             }
         }
     }
-    HILOG_DEBUG("abilityNeedEvents_ size is %{public}u, needEvent size is %{public}u",
+    HILOG_DEBUG("abilityNeedEvents_ size is %{public}zu, needEvent size is %{public}zu",
         abilityNeedEvents_.size(), abilityNeedEvents_[name].size());
     UpdateNeedEvents();
 }
@@ -1717,7 +1718,7 @@ void AccessibilityAccountData::RemoveNeedEvent(const std::string &name)
     if (pos != std::string::npos) {
         std::lock_guard<ffrt::mutex> lock(abilityNeedEventsMutex_);
         std::string bundleName = name.substr(0, pos);
-        HILOG_DEBUG("RemoveNeedEvent bundleName is %{public}s, abilityNeedEvents_ size is %{public}u",
+        HILOG_DEBUG("RemoveNeedEvent bundleName is %{public}s, abilityNeedEvents_ size is %{public}zu",
             bundleName.c_str(), abilityNeedEvents_.size());
         abilityNeedEvents_.erase(bundleName);
         UpdateNeedEvents();
@@ -1732,7 +1733,7 @@ std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
         const std::vector<uint32_t>& events = pair.second;
         if (events.size() == 0) { // A certain extension service is in the default state.
             needEvents_ = needEvents;
-            HILOG_DEBUG("default state, needEvent size is %{public}u",
+            HILOG_DEBUG("default state, needEvent size is %{public}zu",
                 needEvents_.size());
             return needEvents_;
         }
@@ -1752,7 +1753,7 @@ std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
     } else {
         needEvents_ = needEvents;
     }
-    HILOG_INFO("needEvents size is %{public}u", needEvents_.size());
+    HILOG_INFO("needEvents size is %{public}zu", needEvents_.size());
     return needEvents_;
 }
 
