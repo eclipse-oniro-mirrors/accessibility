@@ -54,6 +54,7 @@ public:
     RetError PutUnsignedLongValue(const std::string& key, uint64_t value, bool needNotify = true);
 
     RetError Initialize(int32_t systemAbilityId);
+    void Uninitialize();
 
     sptr<AccessibilitySettingObserver> CreateObserver(const std::string& key,
         AccessibilitySettingObserver::UpdateFunc& func);
@@ -82,6 +83,7 @@ private:
 #endif
     static ffrt::mutex observerMutex_;
     std::map<std::string, sptr<AccessibilitySettingObserver>> settingObserverMap_;
+    ffrt::shared_mutex proxyMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
