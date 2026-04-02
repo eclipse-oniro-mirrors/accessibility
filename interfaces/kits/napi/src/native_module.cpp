@@ -25,38 +25,6 @@
 #include "napi/native_node_api.h"
 
 EXTERN_C_START
-static void Cleanup(void *data)
-{
-    HILOG_INFO("cleanup hook");
-    if (NAccessibilityClient::accessibilityStateListeners_) {
-        NAccessibilityClient::accessibilityStateListeners_->UnsubscribeFromFramework();
-    }
-    if (NAccessibilityClient::touchGuideStateListeners_) {
-        NAccessibilityClient::touchGuideStateListeners_->UnsubscribeFromFramework();
-    }
-    if (NAccessibilityClient::screenReaderStateListeners_) {
-        NAccessibilityClient::screenReaderStateListeners_->UnsubscribeFromFramework();
-    }
-    if (NAccessibilityClient::touchModeListeners_) {
-        NAccessibilityClient::touchModeListeners_->UnsubscribeFromFramework();
-    }
-    if (NAccessibilityClient::captionListeners_) {
-        NAccessibilityClient::captionListeners_->UnsubscribeFromFramework();
-    }
-    if (NAccessibilityClient::audioMonoStateListeners_) {
-        NAccessibilityClient::audioMonoStateListeners_->UnsubscribeFromFramework();
-    }
-    if (NAccessibilityClient::animationOffStateListeners_) {
-        NAccessibilityClient::animationOffStateListeners_->UnsubscribeFromFramework();
-    }
-    if (NAccessibilityClient::flashReminderSwitchStateListeners_) {
-        NAccessibilityClient::flashReminderSwitchStateListeners_->UnsubscribeFromFramework();
-    }
-    if (NAccessibilityClient::seniorModeStateListeners_) {
-        NAccessibilityClient::seniorModeStateListeners_->UnsubscribeFromFramework();
-    }
-}
-
 static napi_value CreateIntObject(napi_env env, int32_t value)
 {
     napi_value jsObject = nullptr;
@@ -318,10 +286,7 @@ static napi_value Init(napi_env env, napi_value exports)
     NAccessibilityClient::animationOffStateListeners_->SubscribeToFramework();
     NAccessibilityClient::flashReminderSwitchStateListeners_->SubscribeToFramework();
     NAccessibilityClient::seniorModeStateListeners_->SubscribeToFramework();
-    napi_status status = napi_add_env_cleanup_hook(env, Cleanup, &NAccessibilityClient::accessibilityStateListeners_);
-    if (status != napi_ok) {
-        HILOG_WARN("add cleanup hook failed %{public}d", status);
-    }
+
     HILOG_INFO("-----Init end------");
     return exports;
 }
