@@ -19,6 +19,8 @@
 #include <sstream>
 #include <vector>
 #include <charconv>
+#include <inttypes.h>
+
 #include "hilog_wrapper.h"
 #include "ani_utils.h"
 #include <ani_signature_builder.h>
@@ -651,7 +653,7 @@ void ANIUtils::ConvertEventInfoRefFields(ani_env *env, ani_object eventObject,
     eventInfo.SetResourceId(id);
     eventInfo.SetResourceBundleName(bundleName);
     eventInfo.SetResourceModuleName(moduleName);
-    HILOG_DEBUG("resourceId is %{public}lld, bundleName is %{public}s, moduleName is %{public}s",
+    HILOG_DEBUG("resourceId is %{public}" PRId64 ", bundleName is %{public}s, moduleName is %{public}s",
         id, bundleName.c_str(), moduleName.c_str());
 }
 

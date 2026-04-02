@@ -15,6 +15,7 @@
 
 #include "accessibility_account_data.h"
 
+#include <inttypes.h>
 #include <any>
 #include <dlfcn.h>
 #ifdef OHOS_BUILD_ENABLE_HITRACE
