@@ -55,6 +55,7 @@ AccessibilityDatashareHelper::AccessibilityDatashareHelper(DATASHARE_TYPE type, 
 AccessibilityDatashareHelper::~AccessibilityDatashareHelper()
 {
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
+    std::unique_lock<ffrt::shared_mutex> wlock(proxyMutex_);
     if (dataShareHelper_ != nullptr) {
         DestoryDatashareHelper(dataShareHelper_);
         dataShareHelper_ = nullptr;
@@ -74,6 +75,7 @@ std::string AccessibilityDatashareHelper::GetStringValue(const std::string& key,
         DataShare::DataSharePredicates predicates;
         Uri uri(AssembleUri(key));
         int32_t count = 0;
+        std::shared_lock<ffrt::shared_mutex> rlock(proxyMutex_);
         predicates.EqualTo(SETTING_COLUMN_KEYWORD, key);
         if (dataShareHelper_ == nullptr) {
             break;
@@ -168,6 +170,7 @@ RetError AccessibilityDatashareHelper::PutStringValue(const std::string& key, co
     RetError rtn = RET_OK;
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
     do {
+        std::shared_lock<ffrt::shared_mutex> rlock(proxyMutex_);
         if (dataShareHelper_ == nullptr) {
             rtn = RET_ERR_NULLPTR;
             break;
@@ -252,6 +255,7 @@ RetError AccessibilityDatashareHelper::Initialize(int32_t systemAbilityId)
             break;
     }
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
+    std::unique_lock<ffrt::shared_mutex> wlock(proxyMutex_);
     dataShareHelper_ = CreateDatashareHelper();
     if (dataShareHelper_ == nullptr) {
         HILOG_ERROR("create dataShareHelper_ failed");
@@ -259,6 +263,17 @@ RetError AccessibilityDatashareHelper::Initialize(int32_t systemAbilityId)
     }
 #endif
     return RET_OK;
+}
+
+void AccessibilityDatashareHelper::Uninitialize()
+{
+#ifdef OHOS_BUILD_ENABLE_DATA_SHARE
+    std::unique_lock<ffrt::shared_mutex> wlock(proxyMutex_);
+    if (dataShareHelper_ != nullptr) {
+        DestoryDatashareHelper(dataShareHelper_);
+        dataShareHelper_ = nullptr;
+    }
+#endif
 }
 
 sptr<AccessibilitySettingObserver> AccessibilityDatashareHelper::CreateObserver(const std::string& key,
@@ -275,6 +290,7 @@ RetError AccessibilityDatashareHelper::RegisterObserver(const sptr<Accessibility
     std::string callingIdentity = IPCSkeleton::ResetCallingIdentity();
     auto uri = AssembleUri(observer->GetKey());
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
+    std::shared_lock<ffrt::shared_mutex> rlock(proxyMutex_);
     if (dataShareHelper_ == nullptr) {
         IPCSkeleton::SetCallingIdentity(callingIdentity);
         return RET_ERR_NULLPTR;
@@ -311,6 +327,7 @@ RetError AccessibilityDatashareHelper::UnregisterObserver(const sptr<Accessibili
     std::string callingIdentity = IPCSkeleton::ResetCallingIdentity();
     auto uri = AssembleUri(observer->GetKey());
 #ifdef OHOS_BUILD_ENABLE_DATA_SHARE
+    std::shared_lock<ffrt::shared_mutex> rlock(proxyMutex_);
     if (dataShareHelper_ == nullptr) {
         IPCSkeleton::SetCallingIdentity(callingIdentity);
         return RET_ERR_NULLPTR;

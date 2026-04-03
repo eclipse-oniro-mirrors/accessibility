@@ -1274,7 +1274,9 @@ RetError AccessibilitySettingsConfig::SetConfigState(const std::string& key, boo
 void AccessibilitySettingsConfig::Init()
 {
     HILOG_DEBUG();
-    datashare_ = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SECURE, accountId_);
+    if (!datashare_) {
+        datashare_ = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SECURE, accountId_);
+    }
     if (datashare_ == nullptr) {
         return;
     }
@@ -1282,7 +1284,9 @@ void AccessibilitySettingsConfig::Init()
     InitCaption();
     InitSetting();
 
-    systemDatashare_ = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SYSTEM, accountId_);
+    if (!systemDatashare_) {
+        systemDatashare_ = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::SYSTEM, accountId_);
+    }
     if (systemDatashare_ == nullptr) {
         return;
     }
@@ -1580,6 +1584,15 @@ bool AccessibilitySettingsConfig::GetInitializeState()
 void AccessibilitySettingsConfig::SetInitializeState(bool isInitialized)
 {
     isInitialized_ = isInitialized;
+    if (isInitialized) {
+        return;
+    }
+    if (datashare_) {
+        datashare_->Uninitialize();
+    }
+    if (systemDatashare_) {
+        systemDatashare_->Uninitialize();
+    }
 }
 
 } // namespace Accessibility
