@@ -230,6 +230,9 @@ export interface AccessibilityElement {
   parentId?: long;
   childrenIds?: Array<long>;
   accessibilityStateDescription?: string;
+  isEssential?: boolean;
+  belongTreeId?: int;
+  childrenTreeId?: int;
 }
 
 export class AccessibilityElementImpl implements AccessibilityElement {
@@ -302,6 +305,9 @@ export class AccessibilityElementImpl implements AccessibilityElement {
     parentId?: long = 0;
     childrenIds?: Array<long> = [];
     accessibilityStateDescription?: string = '';
+    isEssential?: boolean = false;
+    belongTreeId?: int = 0;
+    childrenTreeId?: int = 0;
 
     constructor() {
         super();

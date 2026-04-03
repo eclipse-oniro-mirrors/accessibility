@@ -99,6 +99,9 @@ static const std::vector<Getter> FIELD_MAP = {
     {"mainWindowId", IntGetter(&AccessibilityElementInfo::GetMainWindowId)},
     {"clip", BoolGetter(&AccessibilityElementInfo::GetClip)},
     {"accessibilityStateDescription", StringGetter(&AccessibilityElementInfo::GetAccessibilityStateDescription)},
+    {"isEssential", BoolGetter(&AccessibilityElementInfo::IsEssential)},
+    {"belongTreeId", IntGetter(&AccessibilityElementInfo::GetBelongTreeId)},
+    {"childrenTreeId", IntGetter(&AccessibilityElementInfo::GetChildTreeId)},
 };
 
 bool InitializeAccessibilityElementClass(ani_env *env)

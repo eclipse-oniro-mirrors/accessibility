@@ -102,6 +102,8 @@ namespace {
     constexpr char SUPPORTED_ACTION_NAMES[] = "supportedActionNames";
     constexpr char ACCESSIBILITY_VISIBLE[] = "accessibilityVisible";
     constexpr char IS_ESSENTIAL[] = "isEssential";
+    constexpr char CHILDREN_TREE_ID[] = "childrenTreeId";
+    constexpr char BELONG_TREE_ID[] = "belongTreeId";
 
     const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "inspectorKey",
         "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
@@ -294,6 +296,8 @@ namespace {
         DECLARE_NAPI_GETTER(CLIP, GetElementProperty<ElementProperty<CLIP>>),
         DECLARE_NAPI_GETTER(PARENT_ID, GetElementProperty<ElementProperty<PARENT_ID>>),
         DECLARE_NAPI_GETTER(CHILDREN_IDS, GetElementProperty<ElementProperty<CHILDREN_IDS>>),
+        DECLARE_NAPI_GETTER(CHILDREN_TREE_ID, GetElementProperty<ElementProperty<CHILDREN_TREE_ID>>),
+        DECLARE_NAPI_GETTER(BELONG_TREE_ID, GetElementProperty<ElementProperty<BELONG_TREE_ID>>),
     };
 } // namespace
 
