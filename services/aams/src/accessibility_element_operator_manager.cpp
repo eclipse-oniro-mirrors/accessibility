@@ -170,7 +170,7 @@ void ElementOperatorManager::Clear()
 RetError ElementOperatorManager::RegisterElementOperatorByWindowId(
     int32_t windowId, const sptr<IAccessibilityElementOperator> &elementOperator, uint32_t tokenId, bool isBroker, uint64_t displayId)
 {
-    HILOG_ERROR("testtest RegisterElementOperatorByWindowId %{public}d %{public}lu", windowId, displayId);
+    HILOG_INFO("RegisterElementOperatorByWindowId %{public}d %{public}llu", windowId, displayId);
     sptr<AccessibilityWindowConnection> oldConnection = GetAccessibilityWindowConnection(windowId);
     if (!isBroker && oldConnection && oldConnection->GetRawProxy(displayId)) {
         HILOG_WARN("no need to register again.");
@@ -250,8 +250,8 @@ RetError ElementOperatorManager::RegisterElementOperatorByParameter(const Regist
 
 RetError ElementOperatorManager::DeregisterElementOperatorByWindowId(int32_t windowId, uint64_t displayId, bool isBroker)
 {
+    HILOG_INFO("DeregisterElementOperatorByWindowId %{public}d %{public}llu", windowId, displayId);
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
-    HILOG_ERROR("DeregisterElementOperatorByWindowId %{public}d %{public}lu", windowId, displayId);
     if (!connection) {
         HILOG_WARN("The operation of windowId[%{public}d] has not been registered.", windowId);
         return RET_ERR_FAILED;
@@ -431,7 +431,7 @@ RetError ElementOperatorManager::VerifyingToKenId(const int32_t windowId, const 
     }
     uint64_t displayId = 0;
     sptr<AccessibilityWindowConnection> connection = GetRealIdWindowConnection(windowId, FOCUS_TYPE_INVALID, displayId);
-    HILOG_DEBUG("treeId %{public}d, windowId %{public}d displayId %{public}lu", treeId, windowId, displayId);
+    HILOG_DEBUG("treeId %{public}d, windowId %{public}d displayId %{public}llu", treeId, windowId, displayId);
     if (connection == nullptr) {
         HILOG_ERROR("connection is empty.");
         return RET_ERR_REGISTER_EXIST;
@@ -656,8 +656,7 @@ void ElementOperatorManager::UpdateAccessibilityWindowStateByEvent(const Accessi
     }
     switch (evtType) {
         case TYPE_VIEW_HOVER_ENTER_EVENT:
-            if (accountData->GetWindowManager().NeedSetActive(windowId) &&
-                !Singleton<ExtendManagerServiceProxy>::GetInstance().IsMagnificationWindowActivate()) {
+            if (accountData->GetWindowManager().NeedSetActive(windowId)) {
                 accountData->GetWindowManager().SetActiveWindow(windowId, false);
             }
             accountData->GetWindowManager().SetAccessibilityFocusedWindow(windowId);

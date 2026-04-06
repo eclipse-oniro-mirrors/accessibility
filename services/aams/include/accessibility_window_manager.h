@@ -34,7 +34,6 @@ constexpr int64_t INVALID_SCENE_BOARD_ELEMENT_ID = -1; // invalid scene board el
 
 class AccessibilityAccountData;
 class AccessibilityWindowManager {
-    DECLARE_SINGLETON(AccessibilityWindowManager)
 public:
     AccessibilityWindowManager();
     ~AccessibilityWindowManager();

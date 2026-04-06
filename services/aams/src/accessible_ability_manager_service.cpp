@@ -909,7 +909,7 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(int
     if (ret != RET_OK) {
         return ret;
     }
-    InnerDeregisterElementOperatorByWindowId(windowId, userId, displayId);
+    return InnerDeregisterElementOperatorByWindowId(windowId, userId, displayId);
 }
 
 ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
@@ -920,7 +920,7 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndT
     if (ret != RET_OK) {
         return ret;
     }
-    InnerDeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, userId, displayId);
+    return InnerDeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, userId, displayId);
 }
 
 ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(int32_t windowId, int32_t userId, uint64_t displayId)
@@ -1526,7 +1526,6 @@ bool AccessibleAbilityManagerService::Init()
 
     int32_t retry = QUERY_USER_ID_RETRY_COUNT;
     int32_t sleepTime = QUERY_USER_ID_SLEEP_TIME;
-    std::vector<int32_t> accountIds;
     std::vector<AccountSA::ForegroundOsAccount> accountIds;
     ErrCode ret = AccountSA::OsAccountManager::GetForegroundOsAccounts(accountIds);
     while (ret != ERR_OK || accountIds.size() == 0) {

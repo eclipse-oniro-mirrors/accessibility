@@ -25,7 +25,6 @@ namespace Accessibility {
 AccessibilityWindowConnection::AccessibilityWindowConnection(const int32_t windowId, const int32_t accountId)
 {
     windowId_ = windowId;
-    proxy_ = connection;
     accountId_ = accountId;
 }
 
@@ -138,7 +137,6 @@ void AccessibilityWindowConnection::SetBrokerProxy(sptr<IAccessibilityElementOpe
 
 void AccessibilityWindowConnection::AddDeathRecipient(sptr<IAccessibilityElementOperator> elementOperator, bool isBroker, uint64_t displayId)
 {
-    sptr<IAccessibilityElementOperator> elementOperator = isBroker ? brokerProxy_ : proxy_;
     if (!elementOperator || !elementOperator->AsObject()) {
         return;
     }
@@ -152,9 +150,10 @@ void AccessibilityWindowConnection::AddDeathRecipient(sptr<IAccessibilityElement
     }
     if (elementOperator->AsObject()->AddDeathRecipient(deathRecipient)) {
         if (isBroker) {
+            brokerProxy_ = elementOperator;
             brokerProxyDeathRecipient_ = deathRecipient;
         } else {
-            proxyDeathRecipient_ = deathRecipient;
+            proxyMap_.insert({displayId, {elementOperator, deathRecipient}});
         }
     }
 }
@@ -167,7 +166,6 @@ void AccessibilityWindowConnection::ResetProxy()
             value.first->AsObject()->RemoveDeathRecipient(value.second);
         }
     }
-    proxy_ = nullptr;
 }
  
 void AccessibilityWindowConnection::ResetBrokerProxy()

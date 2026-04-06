@@ -33,7 +33,7 @@ public:
     ~AccessibilityWindowConnection();
 
     sptr<IAccessibilityElementOperator> GetProxy(uint64_t displayId);
-    inline sptr<IAccessibilityElementOperator> GetRawProxy()
+    inline sptr<IAccessibilityElementOperator> GetRawProxy(uint64_t displayId)
     {
         std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         return proxyMap_[displayId].first;

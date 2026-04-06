@@ -140,8 +140,9 @@ public:
     ErrCode DisableUITestAbility(int userId) override;
     ErrCode SetMagnificationState(const bool state) override;
     ErrCode GetActiveWindow(int32_t &windowId) override;
+    ErrCode GetActiveWindow(int32_t &windowId, bool systemApi) override;
     ErrCode InnerGetActiveWindow(int32_t &windowId, int32_t userId);
-    bool FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout = TIME_OUT_OPERATOR, int32_t userId);
+    bool FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout, int32_t userId);
     bool ExecuteActionOnAccessibilityFocused(const ActionType &action, int32_t userId);
     ErrCode GetFocusedWindowId(int32_t &focusedWindowId) override;
     ErrCode InnerGetFocusedWindowId(int32_t &focusedWindowId, int32_t userId);

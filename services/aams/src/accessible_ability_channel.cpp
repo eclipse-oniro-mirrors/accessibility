@@ -77,7 +77,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
     std::string clientName = clientName_;
     std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
     ffrt::future syncFuture = syncPromise->get_future();
-    eventHandler_->PostTask([accountId, clientName, syncPromise, windowId, elementId, treeId, requestId,
+    eventHandler_->PostTask([this, accountId, clientName, syncPromise, windowId, elementId, treeId, requestId,
         callback, mode, isFilter]() {
         HILOG_DEBUG("search element accountId[%{public}d], name[%{public}s]", accountId, clientName.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
@@ -633,7 +633,7 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
     int32_t accountId = accountId_;
     std::string clientName = clientName_;
     ffrt::future syncFuture = syncPromise->get_future();
-    eventHandler_->PostTask([accountId, clientName, displayId, tmpWindows, syncPromise]() {
+    eventHandler_->PostTask([this, accountId, clientName, displayId, tmpWindows, syncPromise]() {
         HILOG_DEBUG();
         sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId, clientName);
         if (!clientConnection) {
@@ -1014,7 +1014,11 @@ void AccessibleAbilityChannel::SearchElementInfoBySpecificProperty(const Element
 RetError AccessibleAbilityChannel::ConfigureEvents(const std::vector<uint32_t> needEvents)
 {
     HILOG_INFO();
-    RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().ConfigureEvents(needEvents);
+    sptr<AccessibilityAccountData> accountData = accountData_.promote();
+    if (!accountData) {
+        return RET_ERR_FAILED;
+    }
+    RetError ret = accountData->ConfigureEvents(needEvents);
     if (ret != RET_OK) {
         HILOG_ERROR("Configure Events failed!");
         return RET_ERR_FAILED;

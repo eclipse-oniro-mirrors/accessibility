@@ -50,7 +50,7 @@ bool AccessibilityWindowManager::Init()
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryWindowInfo");
 #endif // OHOS_BUILD_ENABLE_HITRACE
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
-    Rosen::WMError err = OHOS::Rosen::WindowManagerLite::GetInstance(accountId_).GetAccessibilityWindowInfo(windowInfos);
+    Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance(accountId_).GetAccessibilityWindowInfo(windowInfos);
     if (err != Rosen::WMError::WM_OK) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_WINDOW_INFO_FAILED);
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
@@ -1146,7 +1146,7 @@ void AccessibilityWindowManager::ClearAccessibilityFocused()
     if (a11yWindows_.count(a11yFocusedWindowId_)) {
         a11yWindows_[a11yFocusedWindowId_].SetAccessibilityFocused(false);
     }
-
+    int32_t windowId = a11yFocusedWindowId_;
     int32_t subWindowsCount = std::count_if(subWindows_.begin(), subWindows_.end(),
         [this] (const auto &window) { return window.first == a11yFocusedWindowId_; });
     if (subWindowsCount) {

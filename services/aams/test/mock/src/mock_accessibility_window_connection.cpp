@@ -112,7 +112,6 @@ void AccessibilityWindowConnection::SetBrokerProxy(sptr<IAccessibilityElementOpe
 
 void AccessibilityWindowConnection::AddDeathRecipient(sptr<IAccessibilityElementOperator> elementOperator, bool isBroker, uint64_t displayId)
 {
-    sptr<IAccessibilityElementOperator> elementOperator = isBroker ? brokerProxy_ : proxy_;
     if (!elementOperator || !elementOperator->AsObject()) {
         return;
     }
@@ -181,9 +180,6 @@ void AccessibilityWindowConnection::ResetBrokerProxy()
 
 bool AccessibilityWindowConnection::CheckScbTokenIdMap(uint32_t tokenId)
 {
-    if (windowId_ == 1) {
-        HILOG_ERROR("testtest tokenId = %{public}u count = %{public}lu", tokenId, scbTokenMap_.count(tokenId));
-    }
     return scbTokenMap_.count(tokenId) != 0;
 }
  

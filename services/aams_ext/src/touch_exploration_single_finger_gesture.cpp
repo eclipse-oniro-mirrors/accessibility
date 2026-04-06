@@ -753,7 +753,7 @@ void TouchExploration::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent
     bool hasCustomActions = false;
     AccessibilityElementInfo focusedElementInfo {};
     bool ret = Singleton<ExtendServiceManager>::GetInstance().findFocusedElementCallback(focusedElementInfo,
-        FIND_FOCUS_TIMEOUT);
+        FIND_FOCUS_TIMEOUT, event.GetTargetDisplayId());
     if (ret) {
         std::vector<std::string> customActions;
         focusedElementInfo.GetCustomActionList(customActions);

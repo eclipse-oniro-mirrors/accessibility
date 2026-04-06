@@ -1377,10 +1377,8 @@ void AccessibilityAccountData::StateObservers::AddStateObserver(
     if (iter == observersList_.end()) {
         observersList_.push_back(stateObserver);
         HILOG_DEBUG("register state observer successfully");
-        HILOG_ERROR("stateObservers_ size = %{public}lu", observersList_.size());
         return;
     }
-    HILOG_ERROR("stateObservers_ size = %{public}lu", observersList_.size());
     HILOG_INFO("state observer is existed");
 }
 // LCOV_EXCL_STOP

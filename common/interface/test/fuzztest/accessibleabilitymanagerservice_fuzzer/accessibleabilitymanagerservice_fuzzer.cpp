@@ -272,8 +272,9 @@ extern "C" int FuzzIAccessibleAbilityManagerService(FuzzedDataProvider &provider
             break;
         }
         case 19: {
+            int32_t userId = provider.ConsumeIntegral<int32_t>();
             OHOS::Singleton<OHOS::Accessibility::AccessibleAbilityManagerService>::GetInstance()
-                .DisableUITestAbility();
+                .DisableUITestAbility(userId);
             break;
         }
         case 20: {
