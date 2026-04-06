@@ -795,7 +795,8 @@ void AccessibilityAccountData::Init()
         config_->InitSetting();
     }
 
-    GetWindowManager().RegisterWindowListener(Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler());
+    GetWindowManager().RegisterWindowListener(
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler());
     bool result = GetWindowManager().Init();
     HILOG_ERROR("wms init result is %{public}d", result);
 
@@ -1342,7 +1343,8 @@ void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data
     }
 }
 
-RetError AccessibilityAccountData::RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver, uint32_t &state)
+RetError AccessibilityAccountData::RegisterStateObserver(
+    const sptr<IAccessibleAbilityManagerStateObserver> &stateObserver, uint32_t &state)
 {
     HILOG_DEBUG();
     if (!stateObserver) {

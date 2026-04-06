@@ -110,7 +110,8 @@ ErrCode MockAccessibleAbilityManagerServiceStub::RegisterElementOperatorByParame
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::DeregisterElementOperatorByWindowId(int32_t windowId, uint64_t displayId)
+ErrCode MockAccessibleAbilityManagerServiceStub::DeregisterElementOperatorByWindowId(
+    int32_t windowId, uint64_t displayId)
 {
     (void)windowId;
     (void)displayId;

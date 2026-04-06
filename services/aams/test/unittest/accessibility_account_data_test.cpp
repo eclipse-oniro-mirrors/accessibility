@@ -951,7 +951,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
     /* add connecting A11y ability */
     AccessibilityAbilityInitParams initParams;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
-    sptr<AccessibleAbilityConnection> connection = new MockAccessibleAbilityConnection(accountId, 0, *abilityInfo, accountData);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountId, 0, *abilityInfo, accountData);
     accountData->AddConnectingA11yAbility(bundleName, connection);
     accountData->AddConnectingA11yAbility(bundleName, connection);
     EXPECT_TRUE(accountData->GetConnectingA11yAbility(bundleName));
@@ -1312,7 +1313,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_UpdateA
         std::make_shared<AccessibilityAbilityInfo>(initParams);
     accountData->AddInstalledAbility(*connectingAbilityInfo);
 
-    sptr<AccessibleAbilityConnection> connection = new MockAccessibleAbilityConnection(0, 0, *connectingAbilityInfo, accountData);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(0, 0, *connectingAbilityInfo, accountData);
     accountData->AddConnectingA11yAbility("connectingBundle/connectingAbility", connection);
     accountData->UpdateAbilities();
     EXPECT_TRUE(accountData->GetConnectingA11yAbility("connectingBundle/connectingAbility"));

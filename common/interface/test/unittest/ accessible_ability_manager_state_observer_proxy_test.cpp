@@ -921,13 +921,15 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
 {
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_033 start";
     const int32_t accountId = 1;
-    sptr<AccessibleAbilityManagerStateObserverProxy> accountData = new AccessibleAbilityManagerStateObserverProxy(accountId);
+    sptr<AccessibleAbilityManagerStateObserverProxy> accountData =
+        new AccessibleAbilityManagerStateObserverProxy(accountId);
     const std::string bundleName = "bbb";
     EXPECT_FALSE(accountData->GetConnectingA11yAbility(bundleName));
     /* add connecting A11y ability */
     AccessibilityAbilityInitParams initParams;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
-    sptr<AccessibleAbilityConnection> connection = new MockAccessibleAbilityConnection(accountId, 0, *abilityInfo, accountData);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountId, 0, *abilityInfo, accountData);
     accountData->AddConnectingA11yAbility(bundleName, connection);
     accountData->AddConnectingA11yAbility(bundleName, connection);
     EXPECT_TRUE(accountData->GetConnectingA11yAbility(bundleName));
@@ -938,7 +940,8 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
 {
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_034 start";
     const int32_t accountId = 1;
-    sptr<AccessibleAbilityManagerStateObserverProxy> accountData = new AccessibleAbilityManagerStateObserverProxy(accountId);
+    sptr<AccessibleAbilityManagerStateObserverProxy> accountData =
+        new AccessibleAbilityManagerStateObserverProxy(accountId);
 
     accountData->Init();
     bool state = true;
@@ -955,7 +958,8 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
 {
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_035 start";
     const int32_t accountId = 1;
-    sptr<AccessibleAbilityManagerStateObserverProxy> accountData = new AccessibleAbilityManagerStateObserverProxy(accountId);
+    sptr<AccessibleAbilityManagerStateObserverProxy> accountData =
+        new AccessibleAbilityManagerStateObserverProxy(accountId);
 
     accountData->Init();
     bool state = false;
@@ -972,7 +976,8 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
 {
     GTEST_LOG_(INFO) << "ManagerStateObserverProxy_Unittest_Test_036 start";
     const int32_t accountId = 1;
-    sptr<AccessibleAbilityManagerStateObserverProxy> accountData = new AccessibleAbilityManagerStateObserverProxy(accountId);
+    sptr<AccessibleAbilityManagerStateObserverProxy> accountData =
+        new AccessibleAbilityManagerStateObserverProxy(accountId);
 
     accountData->Init();
     bool state = true;
@@ -1283,7 +1288,8 @@ HWTEST_F(AccessibleAbilityManagerStateObserverProxyTest, ManagerStateObserverPro
         std::make_shared<AccessibilityAbilityInfo>(initParams);
     accountData->AddInstalledAbility(*connectingAbilityInfo);
 
-    sptr<AccessibleAbilityConnection> connection = new MockAccessibleAbilityConnection(0, 0, *connectingAbilityInfo, accountData);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(0, 0, *connectingAbilityInfo, accountData);
     accountData->AddConnectingA11yAbility("connectingBundle/connectingAbility", connection);
     accountData->UpdateAbilities();
     EXPECT_TRUE(accountData->GetConnectingA11yAbility("connectingBundle/connectingAbility"));

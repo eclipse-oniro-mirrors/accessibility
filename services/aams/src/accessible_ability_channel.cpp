@@ -224,7 +224,8 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
             syncPromise->set_value(RET_ERR_FAILED);
             return;
         }
-        int64_t realElementId = accountData->GetWindowManager().GetSceneBoardElementId(accessibilityWindowId, elementId);
+        int64_t realElementId =
+            accountData->GetWindowManager().GetSceneBoardElementId(accessibilityWindowId, elementId);
         accountData->GetElementOperatorManager().AddRequestId(accessibilityWindowId, treeId, requestId, callback);
         elementOperator->SearchElementInfosByText(realElementId, text, requestId, callback);
         syncPromise->set_value(RET_OK);
@@ -341,7 +342,8 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
             HILOG_ERROR("accountData is nullptr");
             return;
         }
-        int64_t realElementId = accountData->GetWindowManager().GetSceneBoardElementId(accessibilityWindowId, elementId);
+        int64_t realElementId =
+            accountData->GetWindowManager().GetSceneBoardElementId(accessibilityWindowId, elementId);
         accountData->GetElementOperatorManager().AddRequestId(accessibilityWindowId, treeId, requestId, callback);
         elementOperator->FocusMoveSearch(realElementId, direction, requestId, callback);
         syncPromise->set_value(RET_OK);
@@ -520,7 +522,8 @@ RetError AccessibleAbilityChannel::ExecuteActionAsync(const int32_t accessibilit
             syncPromise->set_value(RET_ERR_FAILED);
             return;
         }
-        int32_t realElementId = accountData->GetWindowManager().GetSceneBoardElementId(accessibilityWindowId, elementId);
+        int32_t realElementId =
+            accountData->GetWindowManager().GetSceneBoardElementId(accessibilityWindowId, elementId);
         accountData->GetElementOperatorManager().AddRequestId(accessibilityWindowId, treeId, requestId, callback);
         elementOperator->ExecuteAction(realElementId, action, actionArguments, requestId, callback);
         syncPromise->set_value(RET_OK);

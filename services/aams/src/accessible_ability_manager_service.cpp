@@ -508,7 +508,8 @@ int32_t AccessibleAbilityManagerService::GetUserIdByDisplayId(uint64_t displayId
     return localId;
 }
 
-void AccessibleAbilityManagerService::SendAccessibilityEventToAA(EventType eventType, GestureType gestureId, uint64_t displayId)
+void AccessibleAbilityManagerService::SendAccessibilityEventToAA(
+    EventType eventType, GestureType gestureId, uint64_t displayId)
 {
     HILOG_INFO("eventType is 0x%{public}x.", eventType);
     int32_t userId = GetUserIdByDisplayId(displayId);
@@ -591,7 +592,8 @@ ErrCode AccessibleAbilityManagerService::RegisterStateObserver(
     return ERR_OK;
 }
 
-bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout, int32_t userId)
+bool AccessibleAbilityManagerService::FindFocusedElement(
+    AccessibilityElementInfo &elementInfo, uint32_t timeout, int32_t userId)
 {
     HILOG_DEBUG();
     if (timeout > TIME_OUT_OPERATOR) {
@@ -610,7 +612,8 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     return accountData->GetElementOperatorManager().ExecuteActionOnAccessibilityFocused(action);
 }
 
-bool AccessibleAbilityManagerService::InnerGetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window, int32_t userId)
+bool AccessibleAbilityManagerService::InnerGetAccessibilityWindow(
+    int32_t windowId, AccessibilityWindowInfo &window, int32_t userId)
 {
     sptr<AccessibilityAccountData> accountData = GetAccountData(userId);
     RETURN_FALSE_IF_NULL(accountData);
@@ -892,7 +895,7 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByParameter(cons
             return;
         }
         if (RET_OK != accountData->GetElementOperatorManager().RegisterElementOperatorByParameter(
-                          parameter, elementOperator, tokenId, isApp)) {
+            parameter, elementOperator, tokenId, isApp)) {
             return;
         }
         accountData->GetWindowManager().IsCheckWindowIdEventExist(parameter.windowId);
@@ -937,7 +940,7 @@ ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowI
             return;
         }
         if (accountData->GetElementOperatorManager().DeregisterElementOperatorByWindowId(
-                windowId, displayId, isBroker) != RET_OK) {
+            windowId, displayId, isBroker) != RET_OK) {
             return;
         }
         if (windowId == SCENE_BOARD_WINDOW_ID) {
@@ -956,13 +959,15 @@ ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowI
     }
 
     handler_->PostTask([=]() {
-        HILOG_INFO("Deregister windowId[%{public}d], treeId[%{public}d], userId[%{public}d] start", windowId, treeId, userId);
+        HILOG_INFO("Deregister windowId[%{public}d], treeId[%{public}d], userId[%{public}d] start",
+            windowId, treeId, userId);
         sptr<AccessibilityAccountData> accountData = GetAccountData(userId);
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetElementOperatorManager().DeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, displayId);
+        accountData->GetElementOperatorManager().DeregisterElementOperatorByWindowIdAndTreeId(
+            windowId, treeId, displayId);
         }, "TASK_DEREGISTER_ELEMENT_OPERATOR");
     return RET_OK;
 }

@@ -167,8 +167,8 @@ void ElementOperatorManager::Clear()
     asacConnections_.clear();
 }
 
-RetError ElementOperatorManager::RegisterElementOperatorByWindowId(
-    int32_t windowId, const sptr<IAccessibilityElementOperator> &elementOperator, uint32_t tokenId, bool isBroker, uint64_t displayId)
+RetError ElementOperatorManager::RegisterElementOperatorByWindowId(int32_t windowId,
+    const sptr<IAccessibilityElementOperator> &elementOperator, uint32_t tokenId, bool isBroker, uint64_t displayId)
 {
     HILOG_INFO("RegisterElementOperatorByWindowId %{public}d %{public}llu", windowId, displayId);
     sptr<AccessibilityWindowConnection> oldConnection = GetAccessibilityWindowConnection(windowId);
@@ -248,7 +248,8 @@ RetError ElementOperatorManager::RegisterElementOperatorByParameter(const Regist
     return RET_OK;
 }
 
-RetError ElementOperatorManager::DeregisterElementOperatorByWindowId(int32_t windowId, uint64_t displayId, bool isBroker)
+RetError ElementOperatorManager::DeregisterElementOperatorByWindowId(
+    int32_t windowId, uint64_t displayId, bool isBroker)
 {
     HILOG_INFO("DeregisterElementOperatorByWindowId %{public}d %{public}llu", windowId, displayId);
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
@@ -574,7 +575,8 @@ void ElementOperatorManager::FindInnerWindowId(const AccessibilityEventInfo &eve
     }
     auto mapTable = accountData->GetWindowManager().sceneBoardElementIdMap_.GetAllPairs();
     int64_t elementId = event.GetAccessibilityId();
-    int tmpWindowId = accountData->GetWindowManager().FindTreeIdWindowIdPair(Utils::GetTreeIdBySplitElementId(elementId));
+    int tmpWindowId =
+        accountData->GetWindowManager().FindTreeIdWindowIdPair(Utils::GetTreeIdBySplitElementId(elementId));
     if (tmpWindowId != 0) {
         windowId = tmpWindowId;
         return;
@@ -911,7 +913,8 @@ void ElementOperatorManager::SetFocusElementId(const int64_t focusElementId)
     focusElementId_ = focusElementId;
 }
  
-sptr<AccessibilityWindowConnection> ElementOperatorManager::GetRealIdWindowConnection(int32_t windowId, int32_t focusType, uint64_t &displayId)
+sptr<AccessibilityWindowConnection> ElementOperatorManager::GetRealIdWindowConnection(
+    int32_t windowId, int32_t focusType, uint64_t &displayId)
 {
     sptr<AccessibilityAccountData> accountData = accountData_.promote();
     if (!accountData) {

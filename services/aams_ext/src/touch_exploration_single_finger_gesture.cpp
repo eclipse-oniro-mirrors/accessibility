@@ -740,9 +740,11 @@ void TouchExploration::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent
 
     std::shared_ptr<MMI::PointerEvent> pointerEvent = nullptr;
     int32_t focusedWindowId = INVALID_WINDOW_ID;
-    Singleton<ExtendServiceManager>::GetInstance().getFocusedWindowIdCallback(focusedWindowId, event.GetTargetDisplayId());
+    Singleton<ExtendServiceManager>::GetInstance().getFocusedWindowIdCallback(
+        focusedWindowId, event.GetTargetDisplayId());
     int32_t activeWindowId = INVALID_WINDOW_ID;
-    Singleton<ExtendServiceManager>::GetInstance().getActiveWindowIdCallback(activeWindowId, event.GetTargetDisplayId());
+    Singleton<ExtendServiceManager>::GetInstance().getActiveWindowIdCallback(
+        activeWindowId, event.GetTargetDisplayId());
     if (focusedWindowId != INVALID_WINDOW_ID && focusedWindowId != activeWindowId) {
         pointerEvent = std::make_shared<MMI::PointerEvent>(event);
     }

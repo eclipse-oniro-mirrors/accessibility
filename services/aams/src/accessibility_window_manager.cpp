@@ -211,8 +211,8 @@ std::pair<int32_t, uint64_t> AccessibilityWindowManager::ConvertToRealWindowId(i
         }
     }
 
-    auto iter =
-        std::find_if(subWindows_.begin(), subWindows_.end(), [winId](const auto &window) { return window.first == winId; });
+    auto iter = std::find_if(
+        subWindows_.begin(), subWindows_.end(), [winId](const auto &window) { return window.first == winId; });
     if (iter != subWindows_.end()) {
         HILOG_ERROR("After convert normal windowId[%{public}d]", SCENE_BOARD_WINDOW_ID);
         return {SCENE_BOARD_WINDOW_ID, iter->second};
@@ -1168,8 +1168,8 @@ int64_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowI
     if (elementId != INVALID_SCENE_BOARD_ELEMENT_ID) {
         return elementId;
     }
-    int32_t subWindowsCount =
-        std::count_if(subWindows_.begin(), subWindows_.end(), [windowId](const auto &window) { return window.first == windowId; });
+    int32_t subWindowsCount = std::count_if(
+        subWindows_.begin(), subWindows_.end(), [windowId](const auto &window) { return window.first == windowId; });
     if (subWindowsCount) {
         auto iter = a11yWindows_.find(windowId);
         if (iter != a11yWindows_.end()) {

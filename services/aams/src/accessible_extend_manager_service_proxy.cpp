@@ -170,7 +170,8 @@ bool ExtendManagerServiceProxy::SetFindFocusedElementCallback()
         HILOG_ERROR("Extension Proxy is not load");
         return false;
     }
-    using FindFocusedElementCallback = bool (*)(AccessibilityElementInfo &elementInfo, uint32_t timeout, uint64_t displayId);
+    using FindFocusedElementCallback =
+        bool (*)(AccessibilityElementInfo &elementInfo, uint32_t timeout, uint64_t displayId);
     using SetCallback = void (*)(FindFocusedElementCallback cb);
     SetCallback setCallback = (SetCallback)GetFunc("SetFindFocusedElementCallback");
     setCallback(FindFocusedElement);
@@ -180,7 +181,8 @@ bool ExtendManagerServiceProxy::SetFindFocusedElementCallback()
 static bool ExecuteActionOnAccessibilityFocused(const ActionType &action, uint64_t displayId)
 {
     int userId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetUserIdByDisplayId(displayId);
-    return Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(action, userId);
+    return Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(
+        action, userId);
 }
 
 bool ExtendManagerServiceProxy::SetExecuteActionOnAccessibilityFocusedCallback()
@@ -237,7 +239,8 @@ bool ExtendManagerServiceProxy::SetGetActiveWindowIdCallback()
 static bool GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window, uint64_t displayId)
 {
     int userId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetUserIdByDisplayId(displayId);
-    return Singleton<AccessibleAbilityManagerService>::GetInstance().InnerGetAccessibilityWindow(windowId, window, userId);
+    return Singleton<AccessibleAbilityManagerService>::GetInstance().InnerGetAccessibilityWindow(
+        windowId, window, userId);
 }
 
 bool ExtendManagerServiceProxy::SetGetAccessibilityWindowCallback()
@@ -246,7 +249,8 @@ bool ExtendManagerServiceProxy::SetGetAccessibilityWindowCallback()
         HILOG_ERROR("Extension Proxy is not load");
         return false;
     }
-    using GetAccessibilityWindowCallback = bool (*)(int32_t windowId, AccessibilityWindowInfo &window, uint64_t displayId);
+    using GetAccessibilityWindowCallback =
+        bool (*)(int32_t windowId, AccessibilityWindowInfo &window, uint64_t displayId);
     using SetCallback = void (*)(GetAccessibilityWindowCallback cb);
     SetCallback setCallback = (SetCallback)GetFunc("SetGetAccessibilityWindowCallback");
     setCallback(GetAccessibilityWindow);
@@ -269,7 +273,8 @@ bool ExtendManagerServiceProxy::SetSendPointerEventForHoverCallback()
         HILOG_ERROR("Extension Proxy is not load");
         return false;
     }
-    using SendPointerEventForHoverCallback = void (*)(const std::shared_ptr<MMI::PointerEvent>& pointerEvent, uint64_t displayId);
+    using SendPointerEventForHoverCallback =
+        void (*)(const std::shared_ptr<MMI::PointerEvent> &pointerEvent, uint64_t displayId);
     using SetCallback = void (*)(SendPointerEventForHoverCallback cb);
     SetCallback setCallback = (SetCallback)GetFunc("SetSendPointerEventForHoverCallback");
     setCallback(SendPointerEventForHover);

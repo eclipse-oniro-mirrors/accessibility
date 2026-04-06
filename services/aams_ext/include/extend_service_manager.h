@@ -32,12 +32,14 @@ namespace OHOS {
 namespace Accessibility {
 class TouchEventInjector;
 using SendAccessibilityEventToAACallback = void (*)(EventType eventType, GestureType gestureId, uint64_t displayId);
-using FindFocusedElementCallback = bool (*)(AccessibilityElementInfo &elementInfo, uint32_t timeout, uint64_t displayId);
+using FindFocusedElementCallback = bool (*)(
+    AccessibilityElementInfo &elementInfo, uint32_t timeout, uint64_t displayId);
 using ExecuteActionOnAccessibilityFocusedCallback = bool (*)(const ActionType &action, uint64_t displayId);
 using GetFocusedWindowIdCallback = void (*)(int32_t &focusedWindowId, uint64_t displayId);
 using GetActiveWindowIdCallback = void (*)(int32_t &activeWindowId, uint64_t displayId);
 using GetAccessibilityWindowCallback = bool (*)(int32_t windowId, AccessibilityWindowInfo &window, uint64_t displayId);
-using SendPointerEventForHoverCallback = void (*)(const std::shared_ptr<MMI::PointerEvent>& pointerEvent, uint64_t displayId);
+using SendPointerEventForHoverCallback = void (*)(
+    const std::shared_ptr<MMI::PointerEvent> &pointerEvent, uint64_t displayId);
 using GetDelayTime = int64_t(*)();
 using GetMagnificationState = bool(*)();
 using GetMagnificationModeCallback = uint32_t(*)();  // get

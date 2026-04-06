@@ -151,7 +151,8 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndT
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(int32_t windowId, int32_t userId, uint64_t displayId)
+ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(
+    int32_t windowId, int32_t userId, uint64_t displayId)
 {
     (void)windowId;
     return RET_OK;
@@ -781,7 +782,8 @@ ErrCode AccessibleAbilityManagerService::IsInnerWindowRootElement(int64_t elemen
     return NO_ERROR;
 }
 
-void AccessibleAbilityManagerService::SendAccessibilityEventToAA(EventType eventType, GestureType gestureId, uint64_t displayId)
+void AccessibleAbilityManagerService::SendAccessibilityEventToAA(
+    EventType eventType, GestureType gestureId, uint64_t displayId)
 {
     (void)eventType;
     (void)gestureId;
@@ -792,8 +794,8 @@ void AccessibleAbilityManagerService::SubscribeOsAccount()
 {
 }
 
-RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowId, const int64_t elementId, int32_t userId,
-    uint32_t tokenId)
+RetError AccessibleAbilityManagerService::VerifyingToKenId(
+    const int32_t windowId, const int64_t elementId, int32_t userId, uint32_t tokenId)
 {
     return RET_OK;
 }

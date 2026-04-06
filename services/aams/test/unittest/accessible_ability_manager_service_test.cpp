@@ -2318,7 +2318,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_004, TestS
 {
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_004 start";
     sptr<IRemoteObject> obj = nullptr;
-    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj, AccessibilityAbilityHelper::accountId_);
+    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(
+        obj, AccessibilityAbilityHelper::accountId_);
     EXPECT_EQ(ret, RET_ERR_NULLPTR);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_004 end";
 }

@@ -90,7 +90,8 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     if (accountData_ != nullptr) {
         accountData_->AddAccessibilityWindowConnection(0, connection);
     }
-    connection_ = new AccessibleAbilityConnection(AccessibilityAbilityHelper::accountId_, 0, *abilityInfo, accountData_);
+    connection_ =
+        new AccessibleAbilityConnection(AccessibilityAbilityHelper::accountId_, 0, *abilityInfo, accountData_);
     elementName_ = new AppExecFwk::ElementName("1", "2", "3");
     obj_ = new IPCObjectProxy(0);
     if (obj_ != nullptr && connection_ != nullptr) {
@@ -533,8 +534,9 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
 
     // add aa client
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId(), CHANNEL_ID, *abilityInfo, accountData);
+    sptr<AccessibleAbilityConnection> connection =
+        new AccessibleAbilityConnection(Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId(),
+            CHANNEL_ID, *abilityInfo, accountData);
     sptr<AppExecFwk::ElementName> name =
         new AppExecFwk::ElementName("clientDevice", "clientBundleName", "clientAbilityName");
     sptr<AccessibleAbilityClientStub> client = new MockAccessibleAbilityClientStubImpl();
@@ -625,8 +627,8 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
     AccessibleAbilityConnection_Unittest_GetChannelId_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetChannelId_001 start";
-    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(0, CHANNEL_ID, *abilityInfo, accountData_);
+    sptr<AccessibleAbilityConnection> connection =
+        new AccessibleAbilityConnection(0, CHANNEL_ID, *abilityInfo, accountData_);
     EXPECT_EQ(connection->GetChannelId(), CHANNEL_ID);
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetChannelId_001 end";
 }

@@ -92,7 +92,8 @@ public:
         return RET_OK;
     }
 
-    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId, uint64_t displayId) override
+    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(
+        const int32_t windowId, const int32_t treeId, uint64_t displayId) override
     {
         return RET_OK;
     }

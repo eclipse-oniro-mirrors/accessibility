@@ -61,8 +61,9 @@ public:
         const sptr<AccessibilityWindowConnection> connection);
 
     void Clear();
-    RetError RegisterElementOperatorByWindowId(
-        int32_t windowId, const sptr<IAccessibilityElementOperator> &elementOperator, uint32_t tokenId, bool isBroker, uint64_t displayId);
+    RetError RegisterElementOperatorByWindowId(int32_t windowId,
+        const sptr<IAccessibilityElementOperator> &elementOperator, uint32_t tokenId, bool isBroker,
+        uint64_t displayId);
     RetError RegisterElementOperatorByParameter(const RegistrationPara &parameter,
         const sptr<IAccessibilityElementOperator> &elementOperator, uint32_t tokenId, bool isApp);
     RetError DeregisterElementOperatorByWindowId(int32_t windowId, uint64_t displayId, bool isBroker);
@@ -82,7 +83,8 @@ public:
     RetError VerifyingToKenId(const int32_t windowId, const int64_t elementId, uint32_t tokenId);
 private:
     bool InvalidHoverEnterEvent(AccessibilityEventInfo &event);
-    bool InnerGetElementOperator(int32_t windowId, int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
+    bool InnerGetElementOperator(
+        int32_t windowId, int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
     void OnFocusedEvent(const AccessibilityEventInfo &eventInfo);
     void UpdateAccessibilityWindowStateByEvent(const AccessibilityEventInfo &event);
     // used for arkui windowId 1 map to WMS windowId

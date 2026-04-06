@@ -28,7 +28,8 @@ class AccessibleAbilityConnection;
 class AccessibilityAccountData;
 class AccessibleAbilityChannel : public AccessibleAbilityChannelStub {
 public:
-    AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName, const wptr<AccessibilityAccountData>& accountData);
+    AccessibleAbilityChannel(
+        const int32_t accountId, const std::string &clientName, const wptr<AccessibilityAccountData> &accountData);
     ~AccessibleAbilityChannel() = default;
     RetError SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,

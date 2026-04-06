@@ -426,7 +426,8 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
         new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo, accountData);
     AppExecFwk::ElementName elementName("device", "bundle", "ability");
     std::string ability = "bundle/ability";
-    sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), ability, accountData);
+    sptr<AccessibleAbilityChannel> channel =
+        new AccessibleAbilityChannel(accountData->GetAccountId(), ability, accountData);
     connection->OnAbilityConnectDoneSync(elementName, channel);
     EXPECT_TRUE(accountData->GetAccessibleAbilityConnection(ability));
     EXPECT_EQ(channel->SendSimulateGesture(nullptr), RET_ERR_NO_CAPABILITY);
@@ -461,7 +462,8 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     ASSERT_TRUE(accountData);
     std::string abilityName = "testSetTargetBundleName";
     EXPECT_FALSE(accountData->GetAccessibleAbilityConnection(abilityName));
-    sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName, accountData);
+    sptr<AccessibleAbilityChannel> channel =
+        new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName, accountData);
     std::vector<std::string> targetBundleNames;
     EXPECT_EQ(channel->SetTargetBundleName(targetBundleNames), RET_ERR_NO_CONNECTION);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SetTargetBundleName_002 end";
@@ -481,7 +483,8 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     ASSERT_TRUE(accountData);
     std::string abilityName = "testSetTargetBundleName";
     EXPECT_FALSE(accountData->GetAccessibleAbilityConnection(abilityName));
-    sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName, accountData);
+    sptr<AccessibleAbilityChannel> channel =
+        new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName, accountData);
 
     EXPECT_EQ(channel->GetCursorPosition(WINDOW_ID, ELEMENT_ID, 0, nullptr), RET_ERR_NO_CONNECTION);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetCursorPosition_001 end";

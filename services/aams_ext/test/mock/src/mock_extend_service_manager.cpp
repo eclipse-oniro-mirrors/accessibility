@@ -66,7 +66,8 @@ static bool MockGetAccessibilityWindowCallback(int32_t windowId, AccessibilityWi
     (void) window;
     return true;
 }
-static void MockSendPointerEventForHoverCallback(const std::shared_ptr<MMI::PointerEvent>& pointerEvent, uint64_t displayId)
+static void MockSendPointerEventForHoverCallback(
+    const std::shared_ptr<MMI::PointerEvent> &pointerEvent, uint64_t displayId)
 {
     (void) pointerEvent;
 }

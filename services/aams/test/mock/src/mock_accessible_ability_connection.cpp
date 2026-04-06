@@ -38,7 +38,8 @@ MockAccessibleAbilityConnection::MockAccessibleAbilityConnection(int32_t account
 MockAccessibleAbilityConnection::~MockAccessibleAbilityConnection()
 {}
 
-AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName, const wptr<AccessibilityAccountData>& accountData)
+AccessibleAbilityChannel::AccessibleAbilityChannel(
+    const int32_t accountId, const std::string &clientName, const wptr<AccessibilityAccountData> &accountData)
     : clientName_(clientName), accountId_(accountId), accountData_(accountData)
 {
 }
@@ -203,8 +204,8 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_
     return accountData->GetAccessibleAbilityConnection(clientName);
 }
 
-AccessibleAbilityConnection::AccessibleAbilityConnection(
-    int32_t accountId, int32_t connectionId, AccessibilityAbilityInfo& abilityInfo, const wptr<AccessibilityAccountData> &accountData)
+AccessibleAbilityConnection::AccessibleAbilityConnection(int32_t accountId, int32_t connectionId,
+    AccessibilityAbilityInfo &abilityInfo, const wptr<AccessibilityAccountData> &accountData)
 {
     accountId_ = accountId;
     connectionId_ = connectionId;

@@ -572,7 +572,8 @@ RetError AccessibilityAccountData::ConfigureEvents(std::vector<uint32_t> needEve
     return RET_OK;
 }
  
-RetError AccessibilityAccountData::RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver, uint32_t &state)
+RetError AccessibilityAccountData::RegisterStateObserver(
+    const sptr<IAccessibleAbilityManagerStateObserver> &stateObserver, uint32_t &state)
 {
     return RET_OK;
 }

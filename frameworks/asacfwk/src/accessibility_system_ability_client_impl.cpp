@@ -427,7 +427,8 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
         return RET_ERR_NULLPTR;
     }
     elementOperators_[{windowId, displayId}] = aamsInteractionOperator;
-    return static_cast<RetError>(serviceProxy_->RegisterElementOperatorByWindowId(windowId, aamsInteractionOperator, displayId));
+    return static_cast<RetError>(
+        serviceProxy_->RegisterElementOperatorByWindowId(windowId, aamsInteractionOperator, displayId));
 }
 
 RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(Registration parameter,

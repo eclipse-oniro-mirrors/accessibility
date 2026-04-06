@@ -114,7 +114,8 @@ public:
 
     ErrCode InnerDeregisterElementOperatorByWindowId(int32_t windowId, int32_t userId, uint64_t displayId);
 
-    ErrCode InnerDeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId, int32_t treeId, int32_t userId, uint64_t displayId);
+    ErrCode InnerDeregisterElementOperatorByWindowIdAndTreeId(
+        int32_t windowId, int32_t treeId, int32_t userId, uint64_t displayId);
 
     ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override;
 

@@ -132,7 +132,8 @@ private:
     sptr<IRemoteObject::DeathRecipient> brokerProxyDeathRecipient_;
     SafeMap<int32_t, sptr<IRemoteObject::DeathRecipient>> childTreeProxyDeathRecipient_;
     ffrt::mutex proxyMapMutex_;
-    std::unordered_map<uint64_t, std::pair<sptr<IAccessibilityElementOperator>, sptr<IRemoteObject::DeathRecipient>>> proxyMap_;
+    std::unordered_map<uint64_t, std::pair<sptr<IAccessibilityElementOperator>, sptr<IRemoteObject::DeathRecipient>>>
+        proxyMap_;
     std::unordered_set<uint32_t> scbTokenMap_;
 };
 } // namespace Accessibility

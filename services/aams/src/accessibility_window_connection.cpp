@@ -135,7 +135,8 @@ void AccessibilityWindowConnection::SetBrokerProxy(sptr<IAccessibilityElementOpe
     AddDeathRecipient(proxy, true, 0);
 }
 
-void AccessibilityWindowConnection::AddDeathRecipient(sptr<IAccessibilityElementOperator> elementOperator, bool isBroker, uint64_t displayId)
+void AccessibilityWindowConnection::AddDeathRecipient(
+    sptr<IAccessibilityElementOperator> elementOperator, bool isBroker, uint64_t displayId)
 {
     if (!elementOperator || !elementOperator->AsObject()) {
         return;
@@ -176,8 +177,9 @@ void AccessibilityWindowConnection::ResetBrokerProxy()
     }
     brokerProxy_ = nullptr;
 }
- 
-void AccessibilityWindowConnection::AddTreeDeathRecipient(int32_t windowId, int32_t accountId, int32_t treeId, uint64_t displayId)
+
+void AccessibilityWindowConnection::AddTreeDeathRecipient(
+    int32_t windowId, int32_t accountId, int32_t treeId, uint64_t displayId)
 {
     sptr<IAccessibilityElementOperator> elementOperator = GetCardProxy(treeId);
     if (!elementOperator || !elementOperator->AsObject()) {
@@ -219,7 +221,8 @@ void AccessibilityWindowConnection::InteractionOperationDeathRecipient::OnRemote
         Singleton<AccessibleAbilityManagerService>::GetInstance().InnerDeregisterElementOperatorByWindowIdAndTreeId(
             windowId_, treeId_, accountId_, displayId_);
     } else {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().InnerDeregisterElementOperatorByWindowId(windowId_, accountId_, displayId_);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().InnerDeregisterElementOperatorByWindowId(
+            windowId_, accountId_, displayId_);
     }
 }
 

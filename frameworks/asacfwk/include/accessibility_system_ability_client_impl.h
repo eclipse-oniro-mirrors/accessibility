@@ -77,7 +77,8 @@ public:
      * @param treeId Tree ID
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual RetError DeregisterElementOperator(const int32_t windowId, const int32_t treeId, uint64_t displayId = 0) override;
+    virtual RetError DeregisterElementOperator(
+        const int32_t windowId, const int32_t treeId, uint64_t displayId = 0) override;
 
     /**
      * @brief Checks whether screenreader ability is enabled.
