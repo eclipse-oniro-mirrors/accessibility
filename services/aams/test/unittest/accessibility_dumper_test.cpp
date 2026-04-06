@@ -158,7 +158,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_005, Tes
         = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     EXPECT_TRUE(currentAccount != nullptr);
     sptr<AccessibleAbilityConnection> connection
-        = new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo);
+        = new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo, currentAccount);
     EXPECT_TRUE(connection != nullptr);
     currentAccount->AddConnectedAbility(connection);
 
@@ -188,7 +188,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_006, Tes
         GTEST_LOG_(ERROR) << "Account data is nullptr";
     } else {
         sptr<AccessibilityWindowConnection> operationConnection
-            = new AccessibilityWindowConnection(windowId, nullptr, accountId);
+            = new AccessibilityWindowConnection(windowId, accountId);
         /* add asacConnections */
         currentAccount->AddAccessibilityWindowConnection(windowId, operationConnection);
 
@@ -249,7 +249,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_008, Tes
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     EXPECT_TRUE(currentAccount != nullptr);
     sptr<AccessibleAbilityConnection> connection =
-        new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo);
+        new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo, currentAccount);
     EXPECT_TRUE(connection != nullptr);
     currentAccount->AddConnectedAbility(connection);
 
@@ -281,7 +281,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_009, Tes
         GTEST_LOG_(ERROR) << "Account data is nullptr";
     } else {
         sptr<AccessibilityWindowConnection> operationConnection
-            = new AccessibilityWindowConnection(windowId, nullptr, accountId);
+            = new AccessibilityWindowConnection(windowId, accountId);
         /* add asacConnections */
         currentAccount->AddAccessibilityWindowConnection(windowId, operationConnection);
 

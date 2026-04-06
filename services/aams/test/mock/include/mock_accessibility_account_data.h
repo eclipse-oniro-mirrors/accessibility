@@ -88,7 +88,6 @@ public:
     MOCK_METHOD1(RemoveNeedEvent, void(const std::string &name));
     MOCK_METHOD0(GetNeedEvents, std::vector<uint32_t>());
     MOCK_METHOD1(isSendEvent, void(const AccessibilityEventInfo &eventInfo));
-    MOCK_METHOD1(GetReadableRules, int32_t(std::string &readableRules));
     MOCK_METHOD2(
         AddAppStateObserverAbility, void(const std::string& uri, const sptr<AccessibleAbilityConnection>& connection));
     MOCK_METHOD1(RemoveAppStateObserverAbility, void(const std::string& uri));

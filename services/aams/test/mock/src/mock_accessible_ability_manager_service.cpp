@@ -122,7 +122,7 @@ ErrCode AccessibleAbilityManagerService::GetAbilityList(uint32_t abilityTypes, i
 }
 
 ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByWindowId(
-    const int32_t windowId, const sptr<IAccessibilityElementOperator>& elementOperator)
+    const int32_t windowId, const sptr<IAccessibilityElementOperator>& elementOperator, uint64_t displayId)
 {
     (void)windowId;
     (void)elementOperator;
@@ -137,28 +137,28 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByParameter(cons
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(const int32_t windowId)
+ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(const int32_t windowId, uint64_t displayId)
 {
     (void)windowId;
     return RET_OK;
 }
 
 ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
-    const int32_t treeId)
+    const int32_t treeId, uint64_t displayId)
 {
     (void)windowId;
     (void)treeId;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(const int32_t windowId)
+ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(int32_t windowId, int32_t userId, uint64_t displayId)
 {
     (void)windowId;
     return RET_OK;
 }
 
 ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
-    const int32_t treeId)
+    const int32_t treeId, int32_t userId, uint64_t displayId)
 {
     (void)windowId;
     (void)treeId;
@@ -256,13 +256,13 @@ ErrCode AccessibleAbilityManagerService::DisableAbility(const std::string &name)
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject>& obj)
+ErrCode AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject>& obj, int userId)
 {
     (void)obj;
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::DisableUITestAbility()
+ErrCode AccessibleAbilityManagerService::DisableUITestAbility(int userId)
 {
     return RET_OK;
 }
@@ -616,28 +616,12 @@ void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName)
     AccessibilityAbilityHelper::GetInstance().AddPackage(bundleName);
 }
 
-ErrCode AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
-{
-    (void)windowId;
-    (void)elementId;
-    return RET_OK;
-}
-
-ErrCode AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId,
-    int64_t elementId, int32_t& innerWid)
-{
-    (void)windowId;
-    (void)elementId;
-    (void)innerWid;
-    return RET_OK;
-}
-
-bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
+bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action, int32_t userId)
 {
     return true;
 }
 
-bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout)
+bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout, int32_t userId)
 {
     return true;
 }
@@ -646,12 +630,6 @@ ErrCode AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWind
 {
     focusedWindowId = 1;
     return RET_OK;
-}
-
-void AccessibleAbilityManagerService::InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event)
-{
-    (void)windowId;
-    (void)event;
 }
 
 bool AccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)
@@ -670,29 +648,10 @@ void AccessibleAbilityManagerService::PostDelayUnloadTask()
 {
 }
 
-void AccessibleAbilityManagerService::SetFocusWindowId(const int32_t focusWindowId)
-{
-    (void)focusWindowId;
-}
-
-void AccessibleAbilityManagerService::SetFocusElementId(const int64_t focusElementId)
-{
-    (void)focusElementId;
-}
-
 ErrCode AccessibleAbilityManagerService::RemoveRequestId(int32_t requestId)
 {
     (void)requestId;
     return RET_OK;
-}
-
-void AccessibleAbilityManagerService::AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
-    sptr<IAccessibilityElementOperatorCallback> callback)
-{
-    (void)windowId;
-    (void)treeId;
-    (void)requestId;
-    (void)callback;
 }
 
 ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId,
@@ -781,11 +740,6 @@ ErrCode AccessibleAbilityManagerService::SearchNeedEvents(std::vector<uint32_t> 
     return NO_ERROR;
 }
 
-RetError AccessibleAbilityManagerService::ConfigureEvents(std::vector<uint32_t> needEvents)
-{
-    return RET_OK;
-}
-
 ErrCode AccessibleAbilityManagerService::GetReadableRules(std::string &name)
 {
     return NO_ERROR;
@@ -826,17 +780,18 @@ ErrCode AccessibleAbilityManagerService::IsInnerWindowRootElement(int64_t elemen
     return NO_ERROR;
 }
 
-void AccessibleAbilityManagerService::SendAccessibilityEventToAA(EventType eventType, GestureType gestureId)
+void AccessibleAbilityManagerService::SendAccessibilityEventToAA(EventType eventType, GestureType gestureId, uint64_t displayId)
 {
     (void)eventType;
     (void)gestureId;
+    (void)displayId;
 }
  
 void AccessibleAbilityManagerService::SubscribeOsAccount()
 {
 }
 
-RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowId, const int64_t elementId,
+RetError AccessibleAbilityManagerService::VerifyingToKenId(const int32_t windowId, const int64_t elementId, int32_t userId,
     uint32_t tokenId)
 {
     return RET_OK;
@@ -846,6 +801,35 @@ std::vector<int32_t> AccessibleAbilityManagerService::GetAllAccountIds()
 {
     HILOG_DEBUG();
     return a11yAccountsData_.GetAllAccountIds();
+}
+
+int32_t AccessibleAbilityManagerService::GetUserIdByDisplayId(uint64_t displayId)
+{
+    return 0;
+}
+ 
+ErrCode AccessibleAbilityManagerService::InnerGetFocusedWindowId(int32_t &focusedWindowId, int32_t userId)
+{
+    return RET_OK;
+}
+ 
+ErrCode AccessibleAbilityManagerService::InnerGetActiveWindow(int32_t &windowId, int32_t userId)
+{
+    return RET_OK;
+}
+std::vector<AccessibilityWindowInfo> AccessibleAbilityManagerService::GetAccessibilityWindows(int32_t userId)
+{  
+    return std::vector<AccessibilityWindowInfo>();
+}
+ 
+bool AccessibleAbilityManagerService::InnerGetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window, int32_t userId)
+{
+    return true;
+}
+ 
+ErrCode AccessibleAbilityManagerService::InnerSendEvent(const AccessibilityEventInfoParcel &eventInfoParcel, int32_t flag, int32_t userId)
+{
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS
