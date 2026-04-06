@@ -36,6 +36,7 @@
 #include "accessibility_def.h"
 #include "accessibility_element_operator_manager.h"
 #include "accessible_ability_manager.h"
+#include "accessibility_window_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -310,10 +311,14 @@ public:
     void RemoveNeedEvent(const std::string &name);
     std::vector<uint32_t> GetNeedEvents();
     void isSendEvent(const AccessibilityEventInfo &eventInfo);
-    int32_t GetReadableRules(std::string &readableRules);
 
     ElementOperatorManager& GetElementOperatorManager();
     AccessibleAbilityManager& GetAccessibleAbilityManager();
+    AccessibilityWindowManager& GetWindowManager();
+    RetError RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver, uint32_t &state);
+    uint32_t UpdateAccessibilityState();
+    void RemoveStateObserver(const wptr<IRemoteObject> &remote);
+    RetError ConfigureEvents(std::vector<uint32_t> needEvents);
 
     bool screenReaderState_ = false;
     std::map<std::string, std::vector<uint32_t>> abilityNeedEvents_;
@@ -352,6 +357,19 @@ private:
     void InitScreenReaderStateObserver();
 
     void SetAccessibilityStateToTP(bool state);
+private:
+    class StateObservers {
+    public:
+        StateObservers() = default;
+        ~StateObservers() = default;
+        void AddStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver);
+        void OnStateObservers(uint32_t state);
+        void RemoveStateObserver(const wptr<IRemoteObject>& remote);
+        void Clear();
+    private:
+        std::vector<sptr<IAccessibleAbilityManagerStateObserver>> observersList_;
+        ffrt::mutex stateObserversMutex_;
+    };
 
     int32_t id_;
     AccountSA::OsAccountType accountType_ = AccountSA::OsAccountType::END;
@@ -370,6 +388,8 @@ private:
     std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
     AccessibleAbilityManager accessibleAbilityManager_;
     ElementOperatorManager elementOperatorManager_;
+    AccessibilityWindowManager windowManager_;
+    StateObservers stateObservers_;
 };
 
 class AccessibilityAccountDataMap {

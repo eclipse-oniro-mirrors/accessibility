@@ -32,17 +32,21 @@ namespace Accessibility {
 constexpr int32_t SCENE_BOARD_WINDOW_ID = 1; // default scene board window id 1
 constexpr int64_t INVALID_SCENE_BOARD_ELEMENT_ID = -1; // invalid scene board element id -1
 
+class AccessibilityAccountData;
 class AccessibilityWindowManager {
     DECLARE_SINGLETON(AccessibilityWindowManager)
 public:
+    AccessibilityWindowManager();
+    ~AccessibilityWindowManager();
+    void SetAccountData(int32_t accountId, const wptr<AccessibilityAccountData>& accountData);
     bool Init();
     void DeInit();
     void WinDeInit();
-    static AccessibilityWindowInfo CreateAccessibilityWindowInfo(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
-    static void UpdateAccessibilityWindowInfo(AccessibilityWindowInfo &accWindowInfo,
+    AccessibilityWindowInfo CreateAccessibilityWindowInfo(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
+    void UpdateAccessibilityWindowInfo(AccessibilityWindowInfo &accWindowInfo,
         const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     static bool CheckIntegerOverflow(const Rosen::Rect& rect);
-    int32_t ConvertToRealWindowId(int32_t windowId, int32_t focusType);
+    std::pair<int32_t, uint64_t> ConvertToRealWindowId(int32_t windowId, int32_t focusType);
     void RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void DeregisterWindowListener();
     void SetActiveWindow(int32_t windowId, bool isSendEvent = true);
@@ -67,10 +71,6 @@ public:
     bool IsScenePanel(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     bool IsKeyboardDialog(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
 
-    // used for batch query, provide window and element id translation
-    void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId);
-    void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid);
-
     RetError GetFocusedWindowId(int32_t &focusedWindowId);
 
     // test for ut to resize a window
@@ -92,11 +92,13 @@ public:
     bool CheckEvents();
     void ClearSceneBoard();
     void InitSceneBoard();
+    bool CheckWindowIdEventExist(int32_t windowId);
+    void IsCheckWindowIdEventExist(int32_t windowId);
 
     std::map<int32_t, AccessibilityWindowInfo> a11yWindows_ {};
     int32_t activeWindowId_ = INVALID_WINDOW_ID;
     int32_t a11yFocusedWindowId_ = INVALID_WINDOW_ID;
-    std::set<int32_t> subWindows_ {}; // used for window id 1, scene board
+    std::set<std::pair<int32_t, uint64_t>> subWindows_ {}; // used for windowId 1, windowId-displayId
 
     // used for arkui windowId 1 map to WMS windowId
     class SceneBoardElementIdMap {
@@ -174,10 +176,13 @@ private:
         int32_t realWid, const sptr<Rosen::AccessibilityWindowInfo>& window);
     void ClearOldActiveWindow();
 
+    int32_t accountId_ = -1;
     sptr<AccessibilityWindowListener> windowListener_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
     ffrt::recursive_mutex interfaceMutex_; // mutex for interface to make sure AccessibilityWindowManager thread-safe
     SafeMap<int32_t, int32_t> windowTreeIdMap_; // map for tree id to window id
+    SafeMap<int32_t, AccessibilityEventInfo> windowFocusEventMap_ {};
+    wptr<AccessibilityAccountData> accountData_;
 };
 } // namespace Accessibility
 } // namespace OHOS
