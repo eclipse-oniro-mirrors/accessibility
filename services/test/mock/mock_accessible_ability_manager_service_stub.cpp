@@ -95,7 +95,7 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetAbilityList(const uint32_t a
 }
 
 ErrCode MockAccessibleAbilityManagerServiceStub::RegisterElementOperatorByWindowId(int32_t windowId,
-    const sptr<IAccessibilityElementOperator> &elementOperator)
+    const sptr<IAccessibilityElementOperator> &elementOperator, uint64_t displayId)
 {
     (void)windowId;
     (void)elementOperator;
@@ -110,14 +110,15 @@ ErrCode MockAccessibleAbilityManagerServiceStub::RegisterElementOperatorByParame
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::DeregisterElementOperatorByWindowId(int32_t windowId)
+ErrCode MockAccessibleAbilityManagerServiceStub::DeregisterElementOperatorByWindowId(int32_t windowId, uint64_t displayId)
 {
     (void)windowId;
+    (void)displayId;
     return RET_OK;
 }
 
 ErrCode MockAccessibleAbilityManagerServiceStub::DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
-    const int32_t treeId)
+    const int32_t treeId, uint64_t displayId)
 {
     (void)windowId;
     (void)treeId;
@@ -203,13 +204,13 @@ ErrCode MockAccessibleAbilityManagerServiceStub::CheckExtensionAbilityPermission
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::EnableUITestAbility(const sptr<IRemoteObject> &obj)
+ErrCode MockAccessibleAbilityManagerServiceStub::EnableUITestAbility(const sptr<IRemoteObject> &obj, int32_t userId)
 {
     (void)obj;
     return RET_ERR_IPC_FAILED;
 }
-
-ErrCode MockAccessibleAbilityManagerServiceStub::DisableUITestAbility()
+ 
+ErrCode MockAccessibleAbilityManagerServiceStub::DisableUITestAbility(int32_t userId)
 {
     return RET_OK;
 }
@@ -500,17 +501,6 @@ ErrCode MockAccessibleAbilityManagerServiceStub::RegisterConfigObserver(
     const sptr<IAccessibleAbilityManagerConfigObserver> &observer)
 {
     observer_ = observer;
-    return RET_OK;
-}
-
-ErrCode MockAccessibleAbilityManagerServiceStub::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
-{
-    return RET_OK;
-}
-
-ErrCode MockAccessibleAbilityManagerServiceStub::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
-    int32_t& innerWid)
-{
     return RET_OK;
 }
 

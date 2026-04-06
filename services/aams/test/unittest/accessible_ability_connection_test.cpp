@@ -79,7 +79,7 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     // new Interaction proxy
     sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
     sptr<IAccessibilityElementOperator> proxy = new MockAccessibilityElementOperatorProxy(stub);
-    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(0, proxy, 0);
+    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(0, 0);
 
     // new AAconnection
     AccessibilityAbilityInitParams initParams;
@@ -90,7 +90,7 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     if (accountData_ != nullptr) {
         accountData_->AddAccessibilityWindowConnection(0, connection);
     }
-    connection_ = new AccessibleAbilityConnection(AccessibilityAbilityHelper::accountId_, 0, *abilityInfo);
+    connection_ = new AccessibleAbilityConnection(AccessibilityAbilityHelper::accountId_, 0, *abilityInfo, accountData_);
     elementName_ = new AppExecFwk::ElementName("1", "2", "3");
     obj_ = new IPCObjectProxy(0);
     if (obj_ != nullptr && connection_ != nullptr) {
@@ -261,7 +261,7 @@ HWTEST_F(
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
     sptr<AccessibleAbilityConnection> connection =
-        new AccessibleAbilityConnection(AccessibilityAbilityHelper::accountId_, 0, *abilityInfo);
+        new AccessibleAbilityConnection(AccessibilityAbilityHelper::accountId_, 0, *abilityInfo, accountData_);
     if (connection != nullptr) {
         AccessibilityEventInfo eventInfo;
         /* EventType is not in the allowed list */
@@ -291,7 +291,7 @@ HWTEST_F(
     abilityInfo->SetEventTypes(EventType::TYPE_VIEW_INVALID);
 
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
-        AccessibilityAbilityHelper::accountId_, 0, *abilityInfo);
+        AccessibilityAbilityHelper::accountId_, 0, *abilityInfo, accountData_);
     sptr<AppExecFwk::ElementName> elementName = new AppExecFwk::ElementName("1", "2", "3");
     sptr<IRemoteObject> obj = new IPCObjectProxy(0);
     if (obj != nullptr && connection != nullptr) {
@@ -338,7 +338,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
     sptr<AccessibleAbilityConnection> connection =
-        new AccessibleAbilityConnection(AccessibilityAbilityHelper::accountId_, 0, *abilityInfo);
+        new AccessibleAbilityConnection(AccessibilityAbilityHelper::accountId_, 0, *abilityInfo, accountData_);
     if (connection != nullptr) {
         AccessibilityEventInfo eventInfo;
         /* EventType is not in the allowed list */
@@ -401,7 +401,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
 
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId(), 0, *abilityInfo);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId(), 0, *abilityInfo, accountData_);
     accountData->AddConnectingA11yAbility(Utils::GetUri(*elementName), connection);
     EXPECT_TRUE(accountData->GetConnectingA11yAbility(Utils::GetUri(*elementName)));
 
@@ -437,7 +437,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
     // add aa client
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId(), CHANNEL_ID, *abilityInfo);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId(), CHANNEL_ID, *abilityInfo, accountData);
     sptr<AppExecFwk::ElementName> name = new AppExecFwk::ElementName("device", "bundle", "ability");
     accountData->AddConnectingA11yAbility(Utils::GetUri(*name), connection);
     EXPECT_TRUE(accountData->GetConnectingA11yAbility(Utils::GetUri(*name)));
@@ -470,7 +470,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
     ASSERT_TRUE(accountData);
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
-        accountData->GetAccountId(), CHANNEL_ID, *abilityInfo);
+        accountData->GetAccountId(), CHANNEL_ID, *abilityInfo, accountData);
     sptr<AppExecFwk::ElementName> elementName = new AppExecFwk::ElementName("device", "bundle", "ability");
     accountData->AddConnectingA11yAbility(Utils::GetUri(*elementName), connection);
     EXPECT_TRUE(accountData->GetConnectingA11yAbility(Utils::GetUri(*elementName)));
@@ -499,7 +499,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAbilityConnectDone_004 start";
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
-        INVALID_ACCOUNT_ID, CHANNEL_ID, *abilityInfo);
+        INVALID_ACCOUNT_ID, CHANNEL_ID, *abilityInfo, accountData_);
     sptr<AppExecFwk::ElementName> elementName = new AppExecFwk::ElementName("device", "bundle", "ability");
 
     EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(INVALID_ACCOUNT_ID));
@@ -534,7 +534,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
     // add aa client
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId(), CHANNEL_ID, *abilityInfo);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId(), CHANNEL_ID, *abilityInfo, accountData);
     sptr<AppExecFwk::ElementName> name =
         new AppExecFwk::ElementName("clientDevice", "clientBundleName", "clientAbilityName");
     sptr<AccessibleAbilityClientStub> client = new MockAccessibleAbilityClientStubImpl();
@@ -586,7 +586,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
     abilityInfo->SetCapabilityValues(0);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
-        accountData->GetAccountId(), CHANNEL_ID, *abilityInfo);
+        accountData->GetAccountId(), CHANNEL_ID, *abilityInfo, accountData);
     ASSERT_TRUE(connection);
     AppExecFwk::ElementName element("deviceId", "bundleName", "abilityName");
     sptr<AccessibleAbilityClientStub> obj = new MockAccessibleAbilityClientStubImpl();
@@ -626,7 +626,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetChannelId_001 start";
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(0, CHANNEL_ID, *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(0, CHANNEL_ID, *abilityInfo, accountData_);
     EXPECT_EQ(connection->GetChannelId(), CHANNEL_ID);
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetChannelId_001 end";
 }

@@ -133,7 +133,7 @@ void AccessibleAbilityManagerServiceUnitTest::RegisterAbilityConnectionClient(co
     } else {
         accountData->AddInstalledAbility(*abilityInfo);
         sptr<AccessibleAbilityConnection> connection
-            = new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
+            = new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo, accountData);
         connection->OnAbilityConnectDoneSync(elementName, obj);
         sleep(SLEEP_TIME_1);
     }
@@ -238,49 +238,13 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperatorByWindo
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
     // add parameter whether an application
-    EXPECT_EQ(RET_OK, aams.RegisterElementOperatorByWindowId(0, nullptr));
+    EXPECT_EQ(RET_OK, aams.RegisterElementOperatorByWindowId(0, nullptr, 0));
     sleep(SLEEP_TIME_1);
     GTEST_LOG_(INFO) << "RegisterElementOperatorByWindowId OK";
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperatorByWindowId_001 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_GetRealWindowAndElementId_001
- * @tc.name: GetRealWindowAndElementId
- * @tc.desc: Test function GetRealWindowAndElementId
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetRealWindowAndElementId_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetRealWindowAndElementId_001 start";
-    int32_t windowId = 0;
-    int64_t elementId = 0;
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    int32_t ret = aams.GetRealWindowAndElementId(windowId, elementId);
-    EXPECT_EQ(ret, 0);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetRealWindowAndElementId_001 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_GetSceneBoardInnerWinId_001
- * @tc.name: GetSceneBoardInnerWinId
- * @tc.desc: Test function GetSceneBoardInnerWinId
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetSceneBoardInnerWinId_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetSceneBoardInnerWinId_001 start";
-    int32_t windowId = 0;
-    int64_t elementId = 0;
-    int32_t innerWid = 0;
-
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    int32_t ret = aams.GetSceneBoardInnerWinId(windowId, elementId, innerWid);
-    EXPECT_EQ(ret, 0);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetSceneBoardInnerWinId_001 end";
 }
 
 /**
@@ -460,24 +424,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnScreenMagnificationStateChan
 }
 
 /**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_StopCallbackWait_001
- * @tc.name: StopCallbackWait
- * @tc.desc: Test function StopCallbackWait
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, StopCallbackWait_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_StopCallbackWait_001 start";
-
-    int32_t windowId = 0;
-    int32_t treeId = 0;
-
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    aams.StopCallbackWait(windowId, treeId);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_StopCallbackWait_001 end";
-}
-
-/**
  * @tc.number: AccessibleAbility_ManagerService_UnitTest_DeregisterElementOperatorByWindowId_001
  * @tc.name: DeregisterElementOperatorByWindowId
  * @tc.desc: Test function DeregisterElementOperatorByWindowId
@@ -488,7 +434,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperatorByWin
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     auto accountData = aams.GetCurrentAccountData();
     ASSERT_TRUE(accountData);
-    EXPECT_EQ(RET_OK, aams.DeregisterElementOperatorByWindowId(0));
+    EXPECT_EQ(RET_OK, aams.DeregisterElementOperatorByWindowId(0, 0));
     sleep(SLEEP_TIME_1);
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
@@ -507,9 +453,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperatorByWin
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     auto accountData = aams.GetCurrentAccountData();
     ASSERT_TRUE(accountData);
-    EXPECT_EQ(RET_OK, aams.RegisterElementOperatorByWindowId(0, nullptr));
+    EXPECT_EQ(RET_OK, aams.RegisterElementOperatorByWindowId(0, nullptr, 0));
     sleep(SLEEP_TIME_1);
-    EXPECT_EQ(RET_OK, aams.DeregisterElementOperatorByWindowId(0));
+    EXPECT_EQ(RET_OK, aams.DeregisterElementOperatorByWindowId(0, 0));
     sleep(SLEEP_TIME_1);
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
@@ -1185,7 +1131,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_001, TestS
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_EnableUITestAbility_001 start";
     sptr<IRemoteObject> obj;
-    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj));
+    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj, AccessibilityAbilityHelper::accountId_));
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_EnableUITestAbility_001 end";
 }
 
@@ -1200,7 +1146,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_002, TestS
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     sptr<IRemoteObject> obj;
-    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj));
+    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj, AccessibilityAbilityHelper::accountId_));
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_EnableUITestAbility_002 end";
 }
 
@@ -1213,7 +1159,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_003, TestS
 {
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_003 start";
     sptr<IRemoteObject> obj = nullptr;
-    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj);
+    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj, AccessibilityAbilityHelper::accountId_);
     EXPECT_EQ(ret, RET_ERR_NULLPTR);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_003 end";
 }
@@ -1226,7 +1172,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_003, TestS
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableUITestAbility_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_001 start";
-    EXPECT_NE(RET_ERR_NO_PERMISSION, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility());
+    EXPECT_NE(RET_ERR_NO_PERMISSION, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility(AccessibilityAbilityHelper::accountId_));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_001 end";
 }
 
@@ -1308,7 +1254,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperatorByWindo
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperatorByWindowId_002 start";
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(0, nullptr);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(0, nullptr, 0);
     EXPECT_NE(stub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperatorByWindowId_002 end";
 }
@@ -1324,9 +1270,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperatorByWindo
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     ASSERT_TRUE(accountData);
     sptr<IAccessibilityElementOperator> operation;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(0, operation);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(0, operation, 0);
     sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(0, operation);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(0, operation, 0);
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperatorByWindowId_003 end";
@@ -1525,7 +1471,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableUITestAbility_002, Test
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_002 start";
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    EXPECT_NE(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility(), RET_ERR_NO_PERMISSION);
+    EXPECT_NE(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility(AccessibilityAbilityHelper::accountId_), RET_ERR_NO_PERMISSION);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_002 end";
 }
 
@@ -2324,24 +2270,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, AddAccountData_001, TestSize.L
 }
 
 /**
- * @tc.number: Accessible_Ability_Manager_ServiceUnittest_FindInnerWindowId_001
- * @tc.name: FindInnerWindowId
- * @tc.desc: Test function find inner windowId
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, FindInnerWindowId_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_FindInnerWindowId_001 start";
-    AccessibilityEventInfo event;
-    int32_t eventWindowId = 1;
-    event.SetWindowId(eventWindowId);
-    event.SetSource(1);
-    EXPECT_EQ(event.GetWindowId(), eventWindowId);
-    int32_t windowId = 0;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().FindInnerWindowId(event, windowId);
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_FindInnerWindowId_001 end";
-}
-
-/**
  * @tc.number: Accessible_Ability_Manager_ServiceUnittest_GetFocusedWindowId_001
  * @tc.name: GetFocusedWindowId
  * @tc.desc: Test function find focused windowId
@@ -2354,24 +2282,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetFocusedWindowId_001, TestSi
     ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetFocusedWindowId(windowId);
     EXPECT_EQ(ret, RET_OK);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetFocusedWindowId_001 end";
-}
-
-/**
- * @tc.number: Accessible_Ability_Manager_ServiceUnittest_InsertWindowIdEventPair_001
- * @tc.name: InsertWindowIdEventPair
- * @tc.desc: Test insert foucus window event.
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, InsertWindowIdEventPair_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_InsertWindowIdEventPair_001 start";
-    AccessibilityEventInfo event;
-    event.SetWindowId(1);
-    event.SetSource(1);
-    int32_t windowId = 1;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().InsertWindowIdEventPair(windowId, event);
-    bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().CheckWindowIdEventExist(windowId);
-    EXPECT_TRUE(ret);
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_InsertWindowIdEventPair_001 end";
 }
 
 /**
@@ -2400,26 +2310,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_004, TestS
 {
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_004 start";
     sptr<IRemoteObject> obj = nullptr;
-    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj);
+    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj, AccessibilityAbilityHelper::accountId_);
     EXPECT_EQ(ret, RET_ERR_NULLPTR);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_004 end";
-}
-
-/**
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_RemoveRequestId_001
- * @tc.name: RemoveRequestId
- * @tc.desc: Test function AddRequestId RemoveRequestId
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemoveRequestId_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_RemoveRequestId_001 start";
-    int32_t windowId = 1;
-    int32_t treeId = 2;
-    int32_t requestId = 3;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().AddRequestId(windowId, treeId, requestId, nullptr);
-    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveRequestId(requestId);
-    EXPECT_EQ(ret, RET_OK);
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_RemoveRequestId_001 end";
 }
 
 /**
