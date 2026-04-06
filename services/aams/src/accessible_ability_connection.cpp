@@ -36,8 +36,8 @@
 namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityConnection::AccessibleAbilityConnection(int32_t accountId, int32_t connectionId,
-    AccessibilityAbilityInfo &abilityInfo)
-    : accountId_(accountId), connectionId_(connectionId), abilityInfo_(abilityInfo)
+    AccessibilityAbilityInfo &abilityInfo, const wptr<AccessibilityAccountData> &accountData)
+    : accountId_(accountId), connectionId_(connectionId), abilityInfo_(abilityInfo), accountData_(accountData)
 {
     eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner());
@@ -235,7 +235,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
         accountData->AddConnectedAbility(connection);
         accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
-        connection->InitAbilityClient(remoteObject);
+        channel_ = new(std::nothrow) AccessibleAbilityChannel(accountId_, abilityInfo_.GetId(), accountData_);
         accountData->UpdateEnableAbilityListsState();
 
         std::string appBundleName = connection->GetConnectionKey();
