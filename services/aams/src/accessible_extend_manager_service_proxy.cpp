@@ -42,7 +42,8 @@ ExtendManagerServiceProxy::~ExtendManagerServiceProxy()
 
 static void SendAccessibilityEventToAA(EventType eventType, GestureType gestureId, uint64_t displayId)
 {
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendAccessibilityEventToAA(eventType, gestureId, displayId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendAccessibilityEventToAA(
+        eventType, gestureId, displayId);
 }
 
 static std::vector<int32_t> DispatchKeyEvent(MMI::KeyEvent &event, uint32_t sequenceNum)

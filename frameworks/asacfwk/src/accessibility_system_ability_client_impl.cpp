@@ -488,7 +488,8 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
     return static_cast<RetError>(serviceProxy_->DeregisterElementOperatorByWindowId(windowId, displayId));
 }
 
-RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const int32_t windowId, const int32_t treeId, uint64_t displayId)
+RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(
+    const int32_t windowId, const int32_t treeId, uint64_t displayId)
 {
     HILOG_INFO("Deregister windowId[%{public}d] treeId[%{public}d] start", windowId, treeId);
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -498,7 +499,8 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
         return RET_ERR_SAMGR;
     }
 
-    return static_cast<RetError>(serviceProxy_->DeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, displayId));
+    return static_cast<RetError>(
+        serviceProxy_->DeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, displayId));
 }
 
 RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderEnabled(bool &isEnabled)

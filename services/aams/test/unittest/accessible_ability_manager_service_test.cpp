@@ -1477,7 +1477,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableUITestAbility_002, Test
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_002 start";
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    EXPECT_NE(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility(AccessibilityAbilityHelper::accountId_), RET_ERR_NO_PERMISSION);
+    EXPECT_NE(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility(
+                  AccessibilityAbilityHelper::accountId_),
+        RET_ERR_NO_PERMISSION);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_002 end";
 }
 

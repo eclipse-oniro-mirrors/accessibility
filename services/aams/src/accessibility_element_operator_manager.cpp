@@ -683,7 +683,7 @@ RetError ElementOperatorManager::SendEvent(const AccessibilityEventInfo &uiEvent
         uiEvent.GetElementInfo().GetAccessibilityId(), uiEvent.GetElementInfo().GetWindowId(),
         uiEvent.GetElementInfo().GetInnerWindowId(), uiEvent.GetElementInfo().GetBelongTreeId());
     EventType eventType = uiEvent.GetEventType();
-    if (eventType == TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY && uiEvent.GetBundleName() == "com.huawei.shell_assistant") {
+    if (eventType == TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY && uiEvent.GetBundleName() == "com.ohos.shell_assistant") {
         sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(uiEvent.GetPageId());
         if (connection && uiEvent.GetTextAnnouncedForAccessibility() == "UIExtension begin") {
             connection->SetUseBrokerFlag(false);

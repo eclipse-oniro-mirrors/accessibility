@@ -812,7 +812,7 @@ void TouchExploration::OffsetEvent(MMI::PointerEvent &event, bool setZOrderFlag)
     if (setZOrderFlag) {
         AccessibilityWindowInfo windowInfo = {};
         if (Singleton<ExtendServiceManager>::GetInstance().getAccessibilityWindowCallback(
-                focusedWindowId_, windowInfo, event.GetTargetDisplayId())) {
+            focusedWindowId_, windowInfo, event.GetTargetDisplayId())) {
             event.SetZOrder(static_cast<float>(windowInfo.GetWindowLayer() + 1));
         } else {
             HILOG_ERROR("get windowInfo failed");

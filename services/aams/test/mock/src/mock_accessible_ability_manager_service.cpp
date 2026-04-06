@@ -819,16 +819,18 @@ ErrCode AccessibleAbilityManagerService::InnerGetActiveWindow(int32_t &windowId,
     return RET_OK;
 }
 std::vector<AccessibilityWindowInfo> AccessibleAbilityManagerService::GetAccessibilityWindows(int32_t userId)
-{  
+{
     return std::vector<AccessibilityWindowInfo>();
 }
  
-bool AccessibleAbilityManagerService::InnerGetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window, int32_t userId)
+bool AccessibleAbilityManagerService::InnerGetAccessibilityWindow(
+    int32_t windowId, AccessibilityWindowInfo &window, int32_t userId)
 {
     return true;
 }
  
-ErrCode AccessibleAbilityManagerService::InnerSendEvent(const AccessibilityEventInfoParcel &eventInfoParcel, int32_t flag, int32_t userId)
+ErrCode AccessibleAbilityManagerService::InnerSendEvent(
+    const AccessibilityEventInfoParcel &eventInfoParcel, int32_t flag, int32_t userId)
 {
     return RET_OK;
 }

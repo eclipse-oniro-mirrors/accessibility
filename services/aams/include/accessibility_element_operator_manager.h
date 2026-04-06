@@ -91,9 +91,11 @@ private:
     void CalculateClickPosition(const AccessibilityElementInfo &focusedElementInfo, int32_t &xPos, int32_t &yPos);
     void GetElementOperatorConnection(const sptr<AccessibilityWindowConnection> &connection, int64_t elementId,
         sptr<IAccessibilityElementOperator> &elementOperator, uint64_t displayid);
-    sptr<AccessibilityWindowConnection> GetRealIdWindowConnection(int32_t windowId, int32_t focusType, uint64_t &displayId);
+    sptr<AccessibilityWindowConnection> GetRealIdWindowConnection(
+        int32_t windowId, int32_t focusType, uint64_t &displayId);
     bool GetMagnificationState();
-    bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection, AccessibilityElementInfo &elementInfo, uint64_t displayId);
+    bool FindFocusedElementByConnection(
+        sptr<AccessibilityWindowConnection> connection, AccessibilityElementInfo &elementInfo, uint64_t displayId);
 
 private:
     int32_t ApplyTreeId();

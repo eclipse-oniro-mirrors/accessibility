@@ -891,7 +891,8 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByParameter(cons
         if (!accountData) {
             return;
         }
-        if (RET_OK != accountData->GetElementOperatorManager().RegisterElementOperatorByParameter(parameter, elementOperator, tokenId, isApp)) {
+        if (RET_OK != accountData->GetElementOperatorManager().RegisterElementOperatorByParameter(
+                          parameter, elementOperator, tokenId, isApp)) {
             return;
         }
         accountData->GetWindowManager().IsCheckWindowIdEventExist(parameter.windowId);
@@ -920,7 +921,8 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndT
     return InnerDeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, userId, displayId);
 }
 
-ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(int32_t windowId, int32_t userId, uint64_t displayId)
+ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(
+    int32_t windowId, int32_t userId, uint64_t displayId)
 {
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -934,7 +936,8 @@ ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowI
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        if (accountData->GetElementOperatorManager().DeregisterElementOperatorByWindowId(windowId, displayId, isBroker) != RET_OK) {
+        if (accountData->GetElementOperatorManager().DeregisterElementOperatorByWindowId(
+                windowId, displayId, isBroker) != RET_OK) {
             return;
         }
         if (windowId == SCENE_BOARD_WINDOW_ID) {
@@ -944,7 +947,8 @@ ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowI
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId, int32_t treeId, int32_t userId, uint64_t displayId)
+ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowIdAndTreeId(
+    int32_t windowId, int32_t treeId, int32_t userId, uint64_t displayId)
 {
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");

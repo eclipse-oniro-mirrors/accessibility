@@ -87,7 +87,8 @@ public:
     static RetError GetResourceBundleInfo(AccessibilityEventInfo &eventInfo, int32_t userId);
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);
-    static RetError GetResourceValue(AccessibilityEventInfo &eventInfo, AppExecFwk::BundleInfo bundleInfo, int32_t userId, std::string &result);
+    static RetError GetResourceValue(
+        AccessibilityEventInfo &eventInfo, AppExecFwk::BundleInfo bundleInfo, int32_t userId, std::string &result);
 };
 } // namespace Accessibility
 } // namespace OHOS
