@@ -274,7 +274,8 @@ RetError ElementOperatorManager::DeregisterElementOperatorByWindowId(int32_t win
     return RET_OK;
 }
 
-RetError ElementOperatorManager::DeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId, int32_t treeId, uint64_t displayId)
+RetError ElementOperatorManager::DeregisterElementOperatorByWindowIdAndTreeId(
+    int32_t windowId, int32_t treeId, uint64_t displayId)
 {
     RecycleTreeId(treeId);
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
@@ -296,7 +297,8 @@ RetError ElementOperatorManager::DeregisterElementOperatorByWindowIdAndTreeId(in
     return RET_OK;
 }
  
-void ElementOperatorManager::AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId, sptr<IAccessibilityElementOperatorCallback> callback)
+void ElementOperatorManager::AddRequestId(
+    int32_t windowId, int32_t treeId, int32_t requestId, sptr<IAccessibilityElementOperatorCallback> callback)
 {
     std::lock_guard<ffrt::mutex> lock(requestIdmutex_);
     HILOG_DEBUG("Add windowId: %{public}d treeId: %{public}d requestId: %{public}d", windowId, treeId, requestId);
@@ -690,19 +692,16 @@ RetError ElementOperatorManager::SendEvent(const AccessibilityEventInfo &uiEvent
         }
         return RET_OK;
     }
- 
     RetError res = Utils::GetResourceBundleInfo(const_cast<AccessibilityEventInfo&>(uiEvent), accountId_);
     if (res != RET_OK) {
         HILOG_ERROR("Get Resource BundleInfo failed! RetError is %{public}d", res);
     }
     std::string isAncoFlag = uiEvent.GetExtraEvent().GetExtraEventInfoValueByKey("isAnco");
- 
     if (flag && isAncoFlag != "true" && VerifyingToKenId(uiEvent.GetElementInfo().GetWindowId(),
         uiEvent.GetElementInfo().GetAccessibilityId(), tokenId) != RET_OK) {
         HILOG_ERROR("VerifyingToKenId failed");
         return RET_ERR_TOKEN_ID;
     }
- 
     if (isAncoFlag != "true" && InvalidHoverEnterEvent(const_cast<AccessibilityEventInfo&>(uiEvent))) {
         HILOG_ERROR("CheckNodeIsReadableOverChildTree failed");
         return RET_ERR_INVALID_PARAM;
@@ -805,8 +804,8 @@ void ElementOperatorManager::CalculateClickPosition(const AccessibilityElementIn
         displayWidth : focusRightBottomXPos;
     int32_t rightBottomYPos = displayHeight > 0 && displayHeight < focusRightBottomYPos ?
         displayHeight : focusRightBottomYPos;
-    xPos = leftTopXPos + (rightBottomXPos - leftTopXPos) / 2;
-    yPos = leftTopYPos + (rightBottomYPos - leftTopYPos) / 2;
+    xPos = leftTopXPos + (rightBottomXPos - leftTopXPos) / DIVISOR_TWO;
+    yPos = leftTopYPos + (rightBottomYPos - leftTopYPos) / DIVISOR_TWO;
 }
 
 void ElementOperatorManager::GetElementOperatorConnection(const sptr<AccessibilityWindowConnection> &connection,

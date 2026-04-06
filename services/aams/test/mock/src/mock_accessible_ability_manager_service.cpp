@@ -621,7 +621,8 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
     return true;
 }
 
-bool AccessibleAbilityManagerService::FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout, int32_t userId)
+bool AccessibleAbilityManagerService::FindFocusedElement(
+    AccessibilityElementInfo &elementInfo, uint32_t timeout, int32_t userId)
 {
     return true;
 }

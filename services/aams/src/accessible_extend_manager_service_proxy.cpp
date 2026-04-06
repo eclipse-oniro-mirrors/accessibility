@@ -255,11 +255,11 @@ bool ExtendManagerServiceProxy::SetGetAccessibilityWindowCallback()
 static void SendPointerEventForHover(const std::shared_ptr<MMI::PointerEvent>& pointerEvent, uint64_t displayId)
 {
     int userId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetUserIdByDisplayId(displayId);
-    sptr<AccessibilityAccountData> accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(userId);
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(userId);
     if (accountData) {
         accountData->GetWindowManager().SendPointerEventForHover(pointerEvent);
     }
- 
 }
 
 bool ExtendManagerServiceProxy::SetSendPointerEventForHoverCallback()
@@ -278,7 +278,8 @@ bool ExtendManagerServiceProxy::SetSendPointerEventForHoverCallback()
 static bool CheckDisplayId(uint64_t displayId)
 {
     int userId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetUserIdByDisplayId(displayId);
-    sptr<AccessibilityAccountData> accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(userId);
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(userId);
     if (accountData) {
         return accountData != 0;
     }
@@ -1006,7 +1007,8 @@ bool ExtendManagerServiceProxy::SetMagnificationScaleCallback()
     return true;
 }
 
-static std::vector<AccessibilityWindowInfo> GetAccessibilityWindowsCallback(uint64_t displayId) {
+static std::vector<AccessibilityWindowInfo> GetAccessibilityWindowsCallback(uint64_t displayId)
+{
     int userId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetUserIdByDisplayId(displayId);
     return Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccessibilityWindows(userId);
 }

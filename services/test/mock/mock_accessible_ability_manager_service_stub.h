@@ -58,7 +58,8 @@ public:
 
     ErrCode DeregisterElementOperatorByWindowId(int32_t windowId, uint64_t displayId) override;
 
-    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId, uint64_t displayId) override;
+    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(
+        const int32_t windowId, const int32_t treeId, uint64_t displayId) override;
 
     ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override;
 

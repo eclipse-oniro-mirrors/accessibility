@@ -1322,7 +1322,7 @@ std::vector<uint32_t> AccessibilityAccountData::GetNeedEvents()
 }
 
 RetError AccessibilityAccountData::ConfigureEvents(std::vector<uint32_t> needEvents)
-{ 
+{
     UpdateAbilityNeedEvent(UI_TEST_ABILITY_NAME, needEvents);
     uint32_t state = GetAccessibilityState();
     state |= STATE_CONFIG_EVENT_CHANGE;
@@ -1385,7 +1385,7 @@ void AccessibilityAccountData::StateObservers::AddStateObserver(
  
 void AccessibilityAccountData::StateObservers::OnStateObservers(uint32_t state)
 {
-    HILOG_INFO("state is %{public}d size = %{public}lu", state, observersList_.size());
+    HILOG_INFO("state is %{public}d size = %{public}u", state, observersList_.size());
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
     for (auto& stateObserver : observersList_) {
         if (stateObserver) {
@@ -1397,7 +1397,7 @@ void AccessibilityAccountData::StateObservers::OnStateObservers(uint32_t state)
 void AccessibilityAccountData::StateObservers::RemoveStateObserver(const wptr<IRemoteObject> &remote)
 {
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
-    HILOG_ERROR("stateObservers_ size = %{public}lu", observersList_.size());
+    HILOG_ERROR("stateObservers_ size = %{public}u", observersList_.size());
     auto iter = std::find_if(observersList_.begin(), observersList_.end(),
         [remote](const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver) {
             return stateObserver->AsObject() == remote;

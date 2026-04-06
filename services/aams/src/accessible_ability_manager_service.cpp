@@ -325,7 +325,6 @@ void AccessibleAbilityManagerService::OnStop()
         if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
             Singleton<ExtendManagerServiceProxy>::GetInstance().UnregisterDisplayListener();
         }
-        // Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
         UnsubscribeOsAccount();
 
         currentAccountId_ = -1;
@@ -432,8 +431,6 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
             if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
                 Singleton<ExtendManagerServiceProxy>::GetInstance().UnregisterDisplayListener();
             }
-            // Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
-            // Singleton<AccessibilityWindowManager>::GetInstance().DeInit();
 
             isReady_ = false;
             SetParameter(SYSTEM_PARAMETER_AAMS_NAME, "false");

@@ -1131,7 +1131,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_001, TestS
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_EnableUITestAbility_001 start";
     sptr<IRemoteObject> obj;
-    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj, AccessibilityAbilityHelper::accountId_));
+    EXPECT_EQ(RET_ERR_NULLPTR,
+        Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(
+            obj, AccessibilityAbilityHelper::accountId_));
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_EnableUITestAbility_001 end";
 }
 
@@ -1146,7 +1148,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_002, TestS
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     sptr<IRemoteObject> obj;
-    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj, AccessibilityAbilityHelper::accountId_));
+    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(
+        obj, AccessibilityAbilityHelper::accountId_);
     GTEST_LOG_(INFO) << "Accessib le_Ability_Manager_ServiceUnittest_EnableUITestAbility_002 end";
 }
 
@@ -1159,7 +1162,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_003, TestS
 {
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_003 start";
     sptr<IRemoteObject> obj = nullptr;
-    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(obj, AccessibilityAbilityHelper::accountId_);
+    ErrCode ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableUITestAbility(
+        obj, AccessibilityAbilityHelper::accountId_);
     EXPECT_EQ(ret, RET_ERR_NULLPTR);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_003 end";
 }
@@ -1172,7 +1176,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_003, TestS
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableUITestAbility_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_001 start";
-    EXPECT_NE(RET_ERR_NO_PERMISSION, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility(AccessibilityAbilityHelper::accountId_));
+    EXPECT_NE(RET_ERR_NO_PERMISSION,
+        Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility(
+            AccessibilityAbilityHelper::accountId_));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_001 end";
 }
 

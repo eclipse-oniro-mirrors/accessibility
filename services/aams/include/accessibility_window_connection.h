@@ -102,10 +102,10 @@ public:
 private:
     class InteractionOperationDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        InteractionOperationDeathRecipient(int32_t windowId, int32_t accountId, uint64_t displayId) : windowId_(windowId),
-            accountId_(accountId), displayId_(displayId) {};
-        InteractionOperationDeathRecipient(int32_t windowId, int32_t treeId, int32_t accountId, uint64_t displayId) : windowId_(windowId),
-            treeId_(treeId), accountId_(accountId), displayId_(displayId) {};
+        InteractionOperationDeathRecipient(int32_t windowId, int32_t accountId, uint64_t displayId)
+            : windowId_(windowId), accountId_(accountId), displayId_(displayId){};
+        InteractionOperationDeathRecipient(int32_t windowId, int32_t treeId, int32_t accountId, uint64_t displayId)
+            : windowId_(windowId), treeId_(treeId), accountId_(accountId), displayId_(displayId){};
         ~InteractionOperationDeathRecipient() final = default;
         DISALLOW_COPY_AND_MOVE(InteractionOperationDeathRecipient);
  

@@ -159,7 +159,7 @@ RetError AccessibleAbilityChannel::SearchDefaultFocusedByWindowId(const ElementB
  
         sptr<AccessibilityAccountData> accountData = accountData_.promote();
         if (!accountData) {
-            syncPromise->set_value(RET_ERR_FAILED);    
+            syncPromise->set_value(RET_ERR_FAILED);
             return;
         }
         if (windowId == SCENE_BOARD_WINDOW_ID && accountData->GetWindowManager().IsInnerWindowRootElement(elementId)) {
@@ -728,7 +728,8 @@ RetError AccessibleAbilityChannel::GetCursorPosition(const int32_t accessibility
             HILOG_ERROR("accountData is nullptr");
             return;
         }
-        int64_t realElementId = accountData->GetWindowManager().GetSceneBoardElementId(accessibilityWindowId, elementId);
+        int64_t realElementId =
+            accountData->GetWindowManager().GetSceneBoardElementId(accessibilityWindowId, elementId);
         accountData->GetElementOperatorManager().AddRequestId(accessibilityWindowId, treeId, requestId, callback);
         elementOperator->GetCursorPosition(realElementId, requestId, callback);
         syncPromise->set_value(RET_OK);

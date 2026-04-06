@@ -20,7 +20,7 @@
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    const std::string SCREEN_READER_BUNDLE_NAME = "com.huawei.hmos.screenreader";
+    const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.hmos.screenreader";
 }
 AccessibleAbilityManager::~AccessibleAbilityManager()
 {
