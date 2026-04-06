@@ -59,7 +59,7 @@ RetError AccessibilityUITestAbilityImpl::RegisterAbilityListener(
     return aaClient->RegisterAbilityListener(listener);
 }
 
-RetError AccessibilityUITestAbilityImpl::Connect()
+RetError AccessibilityUITestAbilityImpl::Connect(int32_t userId)
 {
     HILOG_INFO();
     sptr<AccessibleAbilityClientImpl> aaClient = AccessibleAbilityClientImpl::GetAbilityClientImplement();
@@ -67,10 +67,10 @@ RetError AccessibilityUITestAbilityImpl::Connect()
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return aaClient->Connect();
+    return aaClient->EnableUITestAbility(userId);
 }
 
-RetError AccessibilityUITestAbilityImpl::Disconnect()
+RetError AccessibilityUITestAbilityImpl::Disconnect(int32_t userId)
 {
     HILOG_INFO();
     sptr<AccessibleAbilityClientImpl> aaClient = AccessibleAbilityClientImpl::GetAbilityClientImplement();
@@ -78,7 +78,18 @@ RetError AccessibilityUITestAbilityImpl::Disconnect()
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return aaClient->Disconnect();
+    return aaClient->DisableUITestAbility(userId);
+}
+
+int32_t AccessibilityUITestAbilityImpl::GetCurrentUserId()
+{
+    HILOG_INFO();
+    sptr<AccessibleAbilityClientImpl> aaClient = AccessibleAbilityClientImpl::GetAbilityClientImplement();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
+        return 0;
+    }
+    return aaClient->GetCurrentUserId();
 }
 
 RetError AccessibilityUITestAbilityImpl::GetFocus(

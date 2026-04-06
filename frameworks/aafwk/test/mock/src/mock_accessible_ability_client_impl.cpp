@@ -309,13 +309,13 @@ RetError AccessibleAbilityClientImpl::SetCacheMode(const int32_t cacheMode)
     return RET_OK;
 }
 
-RetError AccessibleAbilityClientImpl::Connect()
+RetError AccessibleAbilityClientImpl::EnableUITestAbility(int32_t userId)
 {
     HILOG_DEBUG();
     return RET_OK;
 }
 
-RetError AccessibleAbilityClientImpl::Disconnect()
+RetError AccessibleAbilityClientImpl::DisableUITestAbility(int32_t userId)
 {
     HILOG_DEBUG();
     return RET_OK;
@@ -387,6 +387,11 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
 {
     HILOG_DEBUG();
     return RET_OK;
+}
+
+int32_t AccessibleAbilityClientImpl::GetCurrentUserId()
+{
+    return userId_;
 }
 } // namespace Accessibility
 } // namespace OHOS
