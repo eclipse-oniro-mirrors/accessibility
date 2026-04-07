@@ -235,7 +235,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
         accountData->AddConnectedAbility(connection);
         accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
-        channel_ = new(std::nothrow) AccessibleAbilityChannel(accountId_, abilityInfo_.GetId(), accountData_);
+        connection->InitAbilityClient(remoteObject);
         accountData->UpdateEnableAbilityListsState();
 
         std::string appBundleName = connection->GetConnectionKey();
