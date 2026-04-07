@@ -627,6 +627,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
     AccessibleAbilityConnection_Unittest_GetChannelId_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetChannelId_001 start";
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
     sptr<AccessibleAbilityConnection> connection =
         new AccessibleAbilityConnection(0, CHANNEL_ID, *abilityInfo, accountData_);
     EXPECT_EQ(connection->GetChannelId(), CHANNEL_ID);
