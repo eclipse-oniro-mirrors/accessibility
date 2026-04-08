@@ -25,9 +25,11 @@
 namespace OHOS {
 namespace Accessibility {
 class AccessibleAbilityConnection;
+class AccessibilityAccountData;
 class AccessibleAbilityChannel : public AccessibleAbilityChannelStub {
 public:
-    AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName);
+    AccessibleAbilityChannel(
+        const int32_t accountId, const std::string &clientName, const wptr<AccessibilityAccountData> &accountData);
     ~AccessibleAbilityChannel() = default;
     RetError SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
@@ -93,14 +95,14 @@ public:
         const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId) override;
 
 private:
-    static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);
-    static RetError GetElementOperator(int32_t accountId, int32_t windowId, int32_t focusType,
+    sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName) const;
+    RetError GetElementOperator(int32_t accountId, int32_t windowId, int32_t focusType,
         const std::string &clientName, sptr<IAccessibilityElementOperator> &elementOperator, const int32_t treeId);
-    static bool CheckWinFromAwm(const int32_t windowId, const int32_t getElementOperatorResult);
+    bool CheckWinFromAwm(const int32_t windowId, const int32_t getElementOperatorResult);
     RetError GetWindows(
         uint64_t displayId, std::vector<AccessibilityWindowInfo>& windows, bool systemApi = false) const;
     RetError TransmitActionToMmi(const int32_t action);
-    static void SetKeyCodeToMmi(std::shared_ptr<MMI::KeyEvent>& keyEvent, const bool isPress,
+    void SetKeyCodeToMmi(std::shared_ptr<MMI::KeyEvent>& keyEvent, const bool isPress,
         const int32_t keyCode);
     RetError ExecuteActionAsync(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
@@ -108,6 +110,7 @@ private:
     std::string clientName_ = "";
     int32_t accountId_ = -1;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
+    wptr<AccessibilityAccountData> accountData_;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -113,6 +113,7 @@ public:
 
     bool IsExistCapability(Capability capability);
     int32_t GetSizeByUri(const std::string& uri);
+    RetError GetReadableRules(std::string &readableRules);
 
     class AccessibilityAbility {
     public:

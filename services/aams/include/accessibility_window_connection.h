@@ -21,44 +21,23 @@
 #include "ffrt.h"
 #include "safe_map.h"
 
+#include <unordered_set>
+
 namespace OHOS {
 namespace Accessibility {
 class AccessibilityWindowConnection : public RefBase {
 public:
-    AccessibilityWindowConnection(const int32_t windowId, const sptr<IAccessibilityElementOperator> &connection,
-        const int32_t accountId);
+    AccessibilityWindowConnection(const int32_t windowId, const int32_t accountId);
     AccessibilityWindowConnection(const int32_t windowId, const int32_t treeId,
-        const sptr<IAccessibilityElementOperator> &connection, const int32_t accountId);
+        const sptr<IAccessibilityElementOperator> &elementOperator, const int32_t accountId);
     ~AccessibilityWindowConnection();
 
-    inline sptr<IAccessibilityElementOperator> GetProxy()
+    sptr<IAccessibilityElementOperator> GetProxy(uint64_t displayId);
+    inline sptr<IAccessibilityElementOperator> GetRawProxy(uint64_t displayId)
     {
         std::lock_guard<ffrt::mutex> lock(proxyMutex_);
-        if (isUseBrokerProxy_) {
-            return brokerProxy_;
-        } else {
-            return proxy_;
-        }
+        return proxyMap_[displayId].first;
     }
-
-    inline sptr<IAccessibilityElementOperator> GetRawProxy()
-    {
-        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
-        return proxy_;
-    }
-
-    inline void SetProxy(sptr<IAccessibilityElementOperator> proxy)
-    {
-        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
-        proxy_ = proxy;
-    }
-
-    inline void SetBrokerProxy(sptr<IAccessibilityElementOperator> proxy)
-    {
-        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
-        brokerProxy_ = proxy;
-    }
-
     inline int GetCardProxySize()
     {
         return cardProxy_.Size();
@@ -83,6 +62,10 @@ public:
     {
         return isUseBrokerProxy_;
     }
+
+    void SetProxy(uint64_t displayId, sptr<IAccessibilityElementOperator> proxy);
+    
+    void SetBrokerProxy(sptr<IAccessibilityElementOperator> proxy);
  
     void ResetProxy();
  
@@ -96,6 +79,8 @@ public:
 
     RetError SetTokenIdMap(const int32_t treeId, const uint32_t tokenId);
 
+    bool CheckScbTokenIdMap(uint32_t tokenId);
+
     void GetAllTreeId(std::vector<int32_t> &treeIds);
 
     RetError GetRootParentId(int32_t treeId, int64_t &elementId);
@@ -104,19 +89,23 @@ public:
 
     void EraseProxy(const int32_t treeId);
 
-    void AddDeathRecipient(int32_t windowId, int32_t accountId, bool isBroker);
+    void AddDeathRecipient(sptr<IAccessibilityElementOperator> elementOperator, bool isBroker, uint64_t displayId);
  
-    void AddTreeDeathRecipient(int32_t windowId, int32_t accountId, int32_t treeId);
+    void AddTreeDeathRecipient(int32_t windowId, int32_t accountId, int32_t treeId, uint64_t displayId);
  
     void RemoveTreeDeathRecipient(int32_t treeId);
+
+    void ClearFocus();
+ 
+    void OutsideTouch();
 
 private:
     class InteractionOperationDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        InteractionOperationDeathRecipient(int32_t windowId, int32_t accountId) : windowId_(windowId),
-            accountId_(accountId) {};
-        InteractionOperationDeathRecipient(int32_t windowId, int32_t treeId, int32_t accountId) : windowId_(windowId),
-            treeId_(treeId), accountId_(accountId) {};
+        InteractionOperationDeathRecipient(int32_t windowId, int32_t accountId, uint64_t displayId)
+            : windowId_(windowId), accountId_(accountId), displayId_(displayId){};
+        InteractionOperationDeathRecipient(int32_t windowId, int32_t treeId, int32_t accountId, uint64_t displayId)
+            : windowId_(windowId), treeId_(treeId), accountId_(accountId), displayId_(displayId){};
         ~InteractionOperationDeathRecipient() final = default;
         DISALLOW_COPY_AND_MOVE(InteractionOperationDeathRecipient);
  
@@ -124,6 +113,7 @@ private:
         int32_t windowId_ = INVALID_WINDOW_ID;
         int32_t treeId_ = INVALID_TREE_ID;
         int32_t accountId_ = 0;
+        uint64_t displayId_ = 0;
     };
 
 private:
@@ -131,7 +121,6 @@ private:
     int32_t accountId_;
     int32_t treeId_ = 0;
     SafeMap<int32_t, sptr<IAccessibilityElementOperator>> cardProxy_;
-    sptr<IAccessibilityElementOperator> proxy_;
     sptr<IAccessibilityElementOperator> brokerProxy_;
     bool isUseBrokerProxy_ = false;
     SafeMap<int32_t, uint32_t> tokenIdMap_;
@@ -139,9 +128,13 @@ private:
     bool isAnco_ = false;
     ffrt::mutex proxyMutex_;
 
-    sptr<IRemoteObject::DeathRecipient> proxyDeathRecipient_;
+    SafeMap<uint64_t, sptr<IRemoteObject::DeathRecipient>> proxyDeathRecipientMap_;
     sptr<IRemoteObject::DeathRecipient> brokerProxyDeathRecipient_;
     SafeMap<int32_t, sptr<IRemoteObject::DeathRecipient>> childTreeProxyDeathRecipient_;
+    ffrt::mutex proxyMapMutex_;
+    std::unordered_map<uint64_t, std::pair<sptr<IAccessibilityElementOperator>, sptr<IRemoteObject::DeathRecipient>>>
+        proxyMap_;
+    std::unordered_set<uint32_t> scbTokenMap_;
 };
 } // namespace Accessibility
 } // namespace OHOS

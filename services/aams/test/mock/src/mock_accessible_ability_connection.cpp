@@ -27,18 +27,20 @@
 namespace OHOS {
 namespace Accessibility {
 MockAccessibleAbilityConnection::MockAccessibleAbilityConnection(int32_t accountId, int32_t connectionId,
-    AccessibilityAbilityInfo& abilityInfo)
-    : AccessibleAbilityConnection(accountId, connectionId, abilityInfo)
+    AccessibilityAbilityInfo& abilityInfo, const wptr<AccessibilityAccountData> &accountData)
+    : AccessibleAbilityConnection(accountId, connectionId, abilityInfo, accountData)
 {
     (void)accountId;
     (void)connectionId;
     (void)abilityInfo;
+    (void)accountData;
 }
 MockAccessibleAbilityConnection::~MockAccessibleAbilityConnection()
 {}
 
-AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName)
-    : clientName_(clientName), accountId_(accountId)
+AccessibleAbilityChannel::AccessibleAbilityChannel(
+    const int32_t accountId, const std::string &clientName, const wptr<AccessibilityAccountData> &accountData)
+    : clientName_(clientName), accountId_(accountId), accountData_(accountData)
 {
 }
 
@@ -190,7 +192,7 @@ RetError AccessibleAbilityChannel::SendSimulateGesture(
 }
 
 sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_t accountId,
-    const std::string &clientName)
+    const std::string &clientName) const
 {
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
@@ -202,12 +204,13 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_
     return accountData->GetAccessibleAbilityConnection(clientName);
 }
 
-AccessibleAbilityConnection::AccessibleAbilityConnection(
-    int32_t accountId, int32_t connectionId, AccessibilityAbilityInfo& abilityInfo)
+AccessibleAbilityConnection::AccessibleAbilityConnection(int32_t accountId, int32_t connectionId,
+    AccessibilityAbilityInfo &abilityInfo, const wptr<AccessibilityAccountData> &accountData)
 {
     accountId_ = accountId;
     connectionId_ = connectionId;
     abilityInfo_ = abilityInfo;
+    accountData_ = accountData;
 }
 
 AccessibleAbilityConnection::~AccessibleAbilityConnection()

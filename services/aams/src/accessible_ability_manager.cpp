@@ -19,6 +19,9 @@
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.hmos.screenreader";
+}
 AccessibleAbilityManager::~AccessibleAbilityManager()
 {
     connectedA11yAbilities_.Clear();
@@ -628,6 +631,18 @@ void AccessibleAbilityManager::DisconnectAbility(
     AddWaitDisconnectAbility(connection);
     RemoveConnectedAbility(connection->GetElementName());
     connection->Disconnect();
+}
+
+RetError AccessibleAbilityManager::GetReadableRules(std::string &readableRules)
+{
+    HILOG_INFO();
+    for (auto &installAbility : installedAbilities_) {
+        if (installAbility.GetPackageName() == SCREEN_READER_BUNDLE_NAME) {
+            readableRules = installAbility.GetReadableRules();
+            return RET_OK;
+        }
+    }
+    return RET_ERR_NOT_INSTALLED;
 }
 
 void AccessibleAbilityManager::AccessibilityAbility::AddAccessibilityAbility(const std::string& uri,

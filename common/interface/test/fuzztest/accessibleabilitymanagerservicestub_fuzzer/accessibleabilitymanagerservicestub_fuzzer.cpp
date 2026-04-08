@@ -76,7 +76,7 @@ public:
     }
 
     ErrCode RegisterElementOperatorByWindowId(const int32_t windowId,
-        const sptr<IAccessibilityElementOperator> &elementOperator) override
+        const sptr<IAccessibilityElementOperator> &elementOperator, uint64_t displayId) override
     {
         return RET_OK;
     }
@@ -87,12 +87,13 @@ public:
         return RET_OK;
     }
 
-    ErrCode DeregisterElementOperatorByWindowId(const int32_t windowId) override
+    ErrCode DeregisterElementOperatorByWindowId(const int32_t windowId, uint64_t displayId) override
     {
         return RET_OK;
     }
 
-    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId) override
+    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(
+        const int32_t windowId, const int32_t treeId, uint64_t displayId) override
     {
         return RET_OK;
     }
@@ -148,11 +149,11 @@ public:
     {
         return RET_OK;
     }
-    ErrCode EnableUITestAbility(const sptr<IRemoteObject> &obj) override
+    ErrCode EnableUITestAbility(const sptr<IRemoteObject> &obj, int32_t userId) override
     {
         return RET_OK;
     }
-    ErrCode DisableUITestAbility() override
+    ErrCode DisableUITestAbility(int32_t userId) override
     {
         return RET_OK;
     }
@@ -311,14 +312,6 @@ public:
         return RET_OK;
     }
     ErrCode GetAllConfigs(AccessibilityConfigData& configData, CaptionPropertyParcel& caption) override
-    {
-        return RET_OK;
-    }
-    ErrCode GetRealWindowAndElementId(int32_t &windowId, int64_t &elementId) override
-    {
-        return RET_OK;
-    }
-    ErrCode GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t &innerWid) override
     {
         return RET_OK;
     }

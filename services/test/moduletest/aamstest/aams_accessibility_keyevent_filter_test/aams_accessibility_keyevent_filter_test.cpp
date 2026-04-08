@@ -105,8 +105,8 @@ void AamsKeyEventFilterTest::SetUp()
     accountData->AddInstalledAbility(*abilityInfo);
     sleep(TEST_NUM_2);
     sptr<AccessibleAbilityConnection> connection =
-        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
-    aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
+        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo, accountData);
+    aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId(), accountData);
     connection->OnAbilityConnectDoneSync(elementName, aastub_);
     interceptorId_ = std::make_shared<AccessibilityInputEventConsumer>();
     MMI::InputManager::GetInstance()->AddInterceptor(interceptorId_);
@@ -170,7 +170,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent001
     sptr<AccessibleAbilityConnection> ptr_connect = iter->second;
     ASSERT_TRUE(ptr_connect);
     aacs_ = new AccessibleAbilityChannel(accountData->GetAccountId(),
-        ptr_connect->GetAbilityInfo().GetId());
+        ptr_connect->GetAbilityInfo().GetId(), accountData);
 
     aacs_->SetOnKeyPressEventResult(handled, sequence);
     WaitUntilTaskFinished();
@@ -207,7 +207,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002
     sptr<AccessibleAbilityConnection> ptr_connect = iter->second;
     ASSERT_TRUE(ptr_connect);
     aacs_ = new AccessibleAbilityChannel(accountData->GetAccountId(),
-        ptr_connect->GetAbilityInfo().GetId());
+        ptr_connect->GetAbilityInfo().GetId(), accountData);
 
     aacs_->SetOnKeyPressEventResult(handled, sequence);
     sleep(1);

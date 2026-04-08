@@ -32,7 +32,7 @@ public:
     ~MockAccessibilityWindowInfoManager() = default;
     MOCK_METHOD1(CreateAccessibilityWindowInfo, AccessibilityWindowInfo(
         sptr<Rosen::AccessibilityWindowInfo> windowInfo));
-    MOCK_METHOD2(ConvertToRealWindowId, int32_t(int32_t windowId, int32_t focusType));
+    MOCK_METHOD2(ConvertToRealWindowId, std::pair<int32_t, uint64_t>(int32_t windowId, int32_t focusType));
     MOCK_METHOD1(RegisterWindowListener, void(const std::shared_ptr<AppExecFwk::EventHandler> &handler));
     MOCK_METHOD0(DeregisterWindowListener, void());
     MOCK_METHOD1(NeedSetActive, bool(const int32_t windowId));
@@ -44,8 +44,6 @@ public:
     MOCK_METHOD1(IsValidWindow, bool(int32_t windowId));
     MOCK_METHOD2(SetWindowSize, void(int32_t windowId, Rect rect));
     MOCK_METHOD2(GetSceneBoardElementId, int32_t(const int32_t windowId, const int64_t elementId));
-    MOCK_METHOD2(GetRealWindowAndElementId, void(int32_t windowId, int64_t elementId));
-    MOCK_METHOD3(GetSceneBoardInnerWinId, void(int32_t windowId, int64_t elementId, int32_t& innerWid));
     MOCK_METHOD1(GetFocusedWindowId, RetError(int32_t &focusedWindowId));
     MOCK_METHOD0(GetActiveWindowId, int32_t());
     MOCK_METHOD0(InsertTreeIdWindowIdPair, void(int32_t treeId, int32_t windowId));
@@ -53,6 +51,8 @@ public:
     MOCK_METHOD0(FindTreeIdWindowIdPair, int32_t(int32_t treeId));
     MOCK_METHOD0(ClearSceneBoard, void());
     MOCK_METHOD0(InitSceneBoard, void());
+    MOCK_METHOD1(IsCheckWindowIdEventExist, void(int32_t windowId));
+    MOCK_METHOD1(SetAccountId, void(int32_t accountId));
 };
 } // namespace Accessibility
 } // namespace OHOS

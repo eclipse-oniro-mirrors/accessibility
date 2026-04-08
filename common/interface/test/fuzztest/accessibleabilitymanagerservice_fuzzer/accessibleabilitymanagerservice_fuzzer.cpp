@@ -129,7 +129,7 @@ extern "C" int FuzzIAccessibleAbilityManagerService(FuzzedDataProvider &provider
     static const int ipccodes[] = {
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
         20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-        40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+        40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 59,
         60, 61, 62, 63, 64, 65, 66, 67, 68
     };
     int code = provider.PickValueInArray(ipccodes);
@@ -176,7 +176,7 @@ extern "C" int FuzzIAccessibleAbilityManagerService(FuzzedDataProvider &provider
             OHOS::sptr<IAccessibilityElementOperator> elementOperator =
                 new OHOS::Accessibility::AccessibilityElementOperator();
             OHOS::Singleton<OHOS::Accessibility::AccessibleAbilityManagerService>::GetInstance()
-                .RegisterElementOperatorByWindowId(windowId, elementOperator);
+                .RegisterElementOperatorByWindowId(windowId, elementOperator, 0);
             break;
         }
         case 6: {
@@ -195,14 +195,14 @@ extern "C" int FuzzIAccessibleAbilityManagerService(FuzzedDataProvider &provider
         case 7: {
             int32_t windowId = provider.ConsumeIntegral<int32_t>();
             OHOS::Singleton<OHOS::Accessibility::AccessibleAbilityManagerService>::GetInstance()
-                .DeregisterElementOperatorByWindowId(windowId);
+                .DeregisterElementOperatorByWindowId(windowId, 0);
             break;
         }
         case 8: {
             int32_t windowId = provider.ConsumeIntegral<int32_t>();
             int32_t treeId = provider.ConsumeIntegral<int32_t>();
             OHOS::Singleton<OHOS::Accessibility::AccessibleAbilityManagerService>::GetInstance()
-                .DeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId);
+                .DeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, 0);
             break;
         }
         case 9: {
@@ -272,8 +272,9 @@ extern "C" int FuzzIAccessibleAbilityManagerService(FuzzedDataProvider &provider
             break;
         }
         case 19: {
+            int32_t userId = provider.ConsumeIntegral<int32_t>();
             OHOS::Singleton<OHOS::Accessibility::AccessibleAbilityManagerService>::GetInstance()
-                .DisableUITestAbility();
+                .DisableUITestAbility(userId);
             break;
         }
         case 20: {
@@ -503,21 +504,6 @@ extern "C" int FuzzIAccessibleAbilityManagerService(FuzzedDataProvider &provider
             OHOS::Accessibility::CaptionPropertyParcel caption;
             OHOS::Singleton<OHOS::Accessibility::AccessibleAbilityManagerService>::GetInstance()
                 .GetAllConfigs(configData, caption);
-            break;
-        }
-        case 57: {
-            int32_t windowId = provider.ConsumeIntegral<int32_t>();
-            int64_t elementId = provider.ConsumeIntegral<int64_t>();
-            OHOS::Singleton<OHOS::Accessibility::AccessibleAbilityManagerService>::GetInstance()
-                .GetRealWindowAndElementId(windowId, elementId);
-            break;
-        }
-        case 58: {
-            int32_t windowId = provider.ConsumeIntegral<int32_t>();
-            int64_t elementId = provider.ConsumeIntegral<int64_t>();
-            int32_t innerWindowId = provider.ConsumeIntegral<int32_t>();
-            OHOS::Singleton<OHOS::Accessibility::AccessibleAbilityManagerService>::GetInstance()
-                .GetSceneBoardInnerWinId(windowId, elementId, innerWindowId);
             break;
         }
         case 59: {

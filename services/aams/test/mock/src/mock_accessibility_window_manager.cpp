@@ -64,12 +64,12 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
     (void)type;
 }
 
-int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int32_t focusType)
+std::pair<int32_t, uint64_t> AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int32_t focusType)
 {
     (void)windowId;
     (void)focusType;
     int32_t realId = AccessibilityAbilityHelper::GetInstance().GetRealId();
-    return realId;
+    return {realId, 0};
 }
 
 AccessibilityWindowType ConvertWindowType(Rosen::WindowType type)
@@ -166,15 +166,6 @@ int64_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowI
     return elementId;
 }
 
-void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
-{
-}
-
-void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
-    int32_t& innerWid)
-{
-}
-
 void AccessibilityWindowManager::SceneBoardElementIdMap::InsertPair(const int32_t windowId, const int64_t elementId)
 {
 }
@@ -240,6 +231,17 @@ void AccessibilityWindowManager::ClearSceneBoard()
 void AccessibilityWindowManager::InitSceneBoard()
 {
     return;
+}
+
+void AccessibilityWindowManager::IsCheckWindowIdEventExist(int32_t windowId)
+{
+    return;
+}
+ 
+void AccessibilityWindowManager::SetAccountData(int32_t accountId, const wptr<AccessibilityAccountData>& accountData)
+{
+    accountId_ = accountId;
+    accountData_ = accountData;
 }
 } // namespace Accessibility
 } // namespace OHOS

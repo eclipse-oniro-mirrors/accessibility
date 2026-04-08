@@ -98,6 +98,8 @@ namespace {
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
 {
     id_ = accountId;
+    elementOperatorManager_.SetAccountData(accountId, this);
+    windowManager_.SetAccountData(accountId, this);
 }
 
 AccessibilityAccountData::~AccessibilityAccountData()
@@ -109,14 +111,22 @@ int32_t AccessibilityAccountData::GetAccountId()
     return id_;
 }
 
+ElementOperatorManager& AccessibilityAccountData::GetElementOperatorManager()
+{
+    return elementOperatorManager_;
+}
+AccessibleAbilityManager& AccessibilityAccountData::GetAccessibleAbilityManager()
+{
+    return accessibleAbilityManager_;
+}
+ 
+AccessibilityWindowManager& AccessibilityAccountData::GetWindowManager()
+{
+    return windowManager_;
+}
+
 uint32_t AccessibilityAccountData::GetAccessibilityState()
 {
-    HILOG_INFO("EnabledState[%{public}d], TouchGuideState[%{public}d], KeyEventObserverState[%{public}d], "
-               "GestureState[%{public}d], ScreenReaderState[%{public}d], SingleClickMode[%{public}d], "
-               "AnimationOffState[%{public}d], AudioMonoState[%{public}d], FlashReminderSwitch[%{public}d]",
-        config_->GetEnabledState(), config_->GetTouchGuideState(), config_->GetKeyEventObserverState(),
-        config_->GetGestureState(), screenReaderState_, isSingleClickMode_, config_->GetAnimationOffState(),
-        config_->GetAudioMonoState(), config_->GetFlashReminderSwitch());
     uint32_t state = 0;
     if (accessibleAbilityManager_.GetConnectedAbilitiesSize() != 0 ||
         accessibleAbilityManager_.GetConnectingAbilitiesSize() != 0) {
@@ -168,6 +178,7 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     if (config_->GetSeniorModeState()) {
         state |= STATE_ELDER_CARE_ENABLED;
     }
+    HILOG_INFO("GetAccessibilityState [%{public}u]", state);
     return state;
 }
 
@@ -783,6 +794,12 @@ void AccessibilityAccountData::Init()
     } else {
         config_->InitSetting();
     }
+
+    GetWindowManager().RegisterWindowListener(
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler());
+    bool result = GetWindowManager().Init();
+    HILOG_ERROR("wms init result is %{public}d", result);
+
     ErrCode rtn = AccountSA::OsAccountManager::GetOsAccountType(id_, accountType_);
     if (rtn != ERR_OK) {
         HILOG_ERROR("get account type failed for accountId [%{public}d]", id_);
@@ -956,7 +973,7 @@ void AccessibilityAccountData::UpdateAbilities(std::string callerBundleName)
         id_,
         connectCounter_,
         [this](int32_t accountId, int32_t counter, AccessibilityAbilityInfo& info) {
-            return new(std::nothrow) AccessibleAbilityConnection(accountId, counter, info);
+            return new(std::nothrow) AccessibleAbilityConnection(accountId, counter, info, this);
         });
 }
 
@@ -1054,7 +1071,7 @@ void AccessibilityAccountData::AddUITestClient(const sptr<IRemoteObject> &obj,
     elementName->SetBundleName(bundleName);
     elementName->SetAbilityName(abilityName);
     sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(
-        id_, connectCounter_++, *abilityInfo);
+        id_, connectCounter_++, *abilityInfo, this);
     if (!connection) {
         HILOG_ERROR("connection is null");
         return;
@@ -1090,8 +1107,7 @@ void AccessibilityAccountData::OnTouchGuideStateChanged()
         return;
     }
     if (!config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, true)) {
-        Singleton<AccessibleAbilityManagerService>::GetInstance().ExecuteActionOnAccessibilityFocused(
-            ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
+        GetElementOperatorManager().ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
     }
 }
 
@@ -1306,6 +1322,15 @@ std::vector<uint32_t> AccessibilityAccountData::GetNeedEvents()
     return needEvents_;
 }
 
+RetError AccessibilityAccountData::ConfigureEvents(std::vector<uint32_t> needEvents)
+{
+    UpdateAbilityNeedEvent(UI_TEST_ABILITY_NAME, needEvents);
+    uint32_t state = GetAccessibilityState();
+    state |= STATE_CONFIG_EVENT_CHANGE;
+    stateObservers_.OnStateObservers(state);
+    return RET_OK;
+}
+
 void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data)
 {
     if (data.state == AccountSA::OsAccountState::SWITCHING) {
@@ -1318,16 +1343,76 @@ void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data
     }
 }
 
-int32_t AccessibilityAccountData::GetReadableRules(std::string &readableRules)
+RetError AccessibilityAccountData::RegisterStateObserver(
+    const sptr<IAccessibleAbilityManagerStateObserver> &stateObserver, uint32_t &state)
 {
-    HILOG_INFO();
-    for (auto &installAbility : accessibleAbilityManager_.GetInstalledAbilities()) {
-        if (installAbility.GetPackageName() == SCREEN_READER_BUNDLE_NAME) {
-            readableRules = installAbility.GetReadableRules();
-            return RET_OK;
+    HILOG_DEBUG();
+    if (!stateObserver) {
+        HILOG_ERROR("parameters check failed!");
+        return RET_ERR_INVALID_PARAM;
+    }
+    stateObservers_.AddStateObserver(stateObserver);
+    state = GetAccessibilityState();
+    return RET_OK;
+}
+
+uint32_t AccessibilityAccountData::UpdateAccessibilityState()
+{
+    uint32_t state = GetAccessibilityState();
+    if (!(state & STATE_ACCESSIBILITY_ENABLED)) {
+        GetWindowManager().ClearAccessibilityFocused();
+    }
+    stateObservers_.OnStateObservers(state);
+    return state;
+}
+ 
+void AccessibilityAccountData::RemoveStateObserver(const wptr<IRemoteObject> &remote)
+{
+    stateObservers_.RemoveStateObserver(remote);
+}
+ 
+void AccessibilityAccountData::StateObservers::AddStateObserver(
+    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver)
+{
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    auto iter = std::find(observersList_.begin(), observersList_.end(), stateObserver);
+    if (iter == observersList_.end()) {
+        observersList_.push_back(stateObserver);
+        HILOG_DEBUG("register state observer successfully");
+        return;
+    }
+    HILOG_INFO("state observer is existed");
+}
+// LCOV_EXCL_STOP
+ 
+void AccessibilityAccountData::StateObservers::OnStateObservers(uint32_t state)
+{
+    HILOG_INFO("state is %{public}d size = %{public}u", state, observersList_.size());
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    for (auto& stateObserver : observersList_) {
+        if (stateObserver) {
+            stateObserver->OnStateChanged(state);
         }
     }
-    return RET_ERR_NOT_INSTALLED;
+}
+
+void AccessibilityAccountData::StateObservers::RemoveStateObserver(const wptr<IRemoteObject> &remote)
+{
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    HILOG_ERROR("stateObservers_ size = %{public}u", observersList_.size());
+    auto iter = std::find_if(observersList_.begin(), observersList_.end(),
+        [remote](const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver) {
+            return stateObserver->AsObject() == remote;
+        });
+    if (iter != observersList_.end()) {
+        observersList_.erase(iter);
+    }
+}
+ 
+void AccessibilityAccountData::StateObservers::Clear()
+{
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    observersList_.clear();
 }
 } // namespace Accessibility
 } // namespace OHOS
