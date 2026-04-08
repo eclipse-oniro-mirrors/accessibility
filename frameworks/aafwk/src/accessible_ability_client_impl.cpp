@@ -1470,7 +1470,7 @@ RetError AccessibleAbilityClientImpl::DisableUITestAbility(int32_t userId)
         return RET_ERR_SAMGR;
     }
     userId_ = -1;
-    return static_cast<RetError>(serviceProxy_->DisableUITestAbility(userId), userId);
+    return static_cast<RetError>(serviceProxy_->DisableUITestAbility(userId));
 }
 
 int32_t AccessibleAbilityClientImpl::GetCurrentUserId()

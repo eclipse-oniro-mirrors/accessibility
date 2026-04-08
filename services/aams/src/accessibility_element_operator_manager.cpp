@@ -212,8 +212,12 @@ RetError ElementOperatorManager::RegisterElementOperatorByParameter(const Regist
     uint64_t displayId = parameter.displayId;
     sptr<AccessibilityWindowConnection> parentConnection = GetAccessibilityWindowConnection(parameter.parentWindowId);
     if (isApp && parentConnection) {
-        sptr<IAccessibilityElementOperator> parentAamsOper =
-            parentConnection->GetCardProxy(parameter.parentTreeId);
+        sptr<IAccessibilityElementOperator> parentAamsOper = nullptr;
+        if (parameter.parentTreeId == 0) {
+            parentAamsOper = parentConnection->GetProxy(displayId);
+        } else {
+            parentAamsOper = parentConnection->GetCardProxy(parameter.parentTreeId);
+        }
         if (parentAamsOper != nullptr) {
             parentAamsOper->SetChildTreeIdAndWinId(parameter.elementId, treeId, parameter.windowId);
         } else {
