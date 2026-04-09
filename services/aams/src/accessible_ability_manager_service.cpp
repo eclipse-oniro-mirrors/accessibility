@@ -1532,25 +1532,21 @@ bool AccessibleAbilityManagerService::Init()
 
     int32_t retry = QUERY_USER_ID_RETRY_COUNT;
     int32_t sleepTime = QUERY_USER_ID_SLEEP_TIME;
-    std::vector<AccountSA::ForegroundOsAccount> accountIds;
-    ErrCode ret = AccountSA::OsAccountManager::GetForegroundOsAccounts(accountIds);
+    std::vector<int32_t> accountIds;
+    ErrCode ret = AccountSA::OsAccountManager::QueryActiveOsAccountIds(accountIds);
     while (ret != ERR_OK || accountIds.size() == 0) {
         HILOG_DEBUG("Query account information failed, left retry count:%{public}d", retry);
         if (retry == 0) {
             HILOG_ERROR("Query account information failed!!!");
             break;
         }
-        ret = AccountSA::OsAccountManager::GetForegroundOsAccounts(accountIds);
+        std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+        ret = AccountSA::OsAccountManager::QueryActiveOsAccountIds(accountIds);
         retry--;
     }
-
     if (accountIds.size() > 0) {
-        HILOG_DEBUG("Query account information success, account id:%{public}d", accountIds[0].localId);
-        SwitchedUser(accountIds[0].localId);
-    }
-    for (const auto& iter : accountIds) {
-        HILOG_ERROR("testtest init accountId = %{public}d", iter.localId);
-        AddedUser(iter.localId);
+        HILOG_DEBUG("Query account information success, account id:%{public}d", accountIds[0]);
+        SwitchedUser(accountIds[0]);
     }
     return true;
 }
