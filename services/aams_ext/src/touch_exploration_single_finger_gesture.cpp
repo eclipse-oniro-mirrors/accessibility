@@ -117,17 +117,7 @@ void TouchExplorationEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Po
             }
             break;
         default:
-            std::shared_ptr<SendEventArgs> parameters = nullptr;
-            if (!event) {
-                HILOG_ERROR("event is nullptr");
-                return;
-            }
-            parameters = event->GetSharedObject<SendEventArgs>();
-            if (!parameters || !parameters->event_) {
-                HILOG_ERROR("parameters is nullptr");
-                return;
-            }
-            server_.ProcessMultiFingerGesture(msg, parameters->event_->GetTargetDisplayId());
+            server_.ProcessMultiFingerGesture(msg);
             break;
     }
 }
@@ -255,12 +245,12 @@ void TouchExploration::HandlePointerEvent(MMI::PointerEvent &event)
     }
 }
 
-void TouchExploration::SendAccessibilityEventToAA(EventType eventType, uint64_t displayId)
+void TouchExploration::SendAccessibilityEventToAA(EventType eventType)
 {
     HILOG_INFO("eventType is 0x%{public}x.", eventType);
- 
+
     Singleton<ExtendServiceManager>::GetInstance().sendAccessibilityEventToAACallback(
-        eventType, GestureType::GESTURE_INVALID, displayId);
+        eventType, GestureType::GESTURE_INVALID);
 }
 
 void TouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
@@ -271,21 +261,20 @@ void TouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
     }
 
     MMI::PointerEvent::PointerItem pointerItem {};
-    uint64_t displayId = event.GetTargetDisplayId();
     event.GetPointerItem(event.GetPointerId(), pointerItem);
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN) {
-        SendAccessibilityEventToAA(EventType::TYPE_TOUCH_BEGIN, displayId);
+        SendAccessibilityEventToAA(EventType::TYPE_TOUCH_BEGIN);
     } else if (!pointerItem.IsPressed()) {
-        SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END, displayId);
+        SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
     }
 }
 
-void TouchExploration::SendGestureEventToAA(GestureType gestureId, uint64_t displayId)
+void TouchExploration::SendGestureEventToAA(GestureType gestureId)
 {
     HILOG_INFO("gestureId is %{public}d.", static_cast<int32_t>(gestureId));
 
     Singleton<ExtendServiceManager>::GetInstance().sendAccessibilityEventToAACallback(
-        EventType::TYPE_GESTURE_EVENT, gestureId, displayId);
+        EventType::TYPE_GESTURE_EVENT, gestureId);
 }
 
 void TouchExploration::SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action)
@@ -623,13 +612,13 @@ void TouchExploration::HandleOneFingerSwipeStateUp(MMI::PointerEvent &event)
     if (pointerPath.size() == LIMIT_SIZE_TWO) {
         int32_t swipeDirection = GetSwipeDirection(pointerPath[1].px_ - pointerPath[0].px_,
             pointerPath[1].py_ - pointerPath[0].py_);
-        SendGestureEventToAA(GESTURE_DIRECTION[swipeDirection], event.GetTargetDisplayId());
+        SendGestureEventToAA(GESTURE_DIRECTION[swipeDirection]);
     } else if (pointerPath.size() == LIMIT_SIZE_THREE) {
         int32_t swipeDirectionH = GetSwipeDirection(pointerPath[1].px_ - pointerPath[0].px_,
             pointerPath[1].py_ - pointerPath[0].py_);
         int32_t swipeDirectionHV = GetSwipeDirection(pointerPath[2].px_ - pointerPath[1].px_,
             pointerPath[2].py_ - pointerPath[1].py_);
-        SendGestureEventToAA(GESTURE_DIRECTION_TO_ID[swipeDirectionH][swipeDirectionHV], event.GetTargetDisplayId());
+        SendGestureEventToAA(GESTURE_DIRECTION_TO_ID[swipeDirectionH][swipeDirectionHV]);
     }
 
     Clear();
@@ -647,7 +636,7 @@ bool TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)
     HILOG_DEBUG();
     AccessibilityElementInfo focusedElementInfo {};
     bool ret = Singleton<ExtendServiceManager>::GetInstance().findFocusedElementCallback(focusedElementInfo,
-        FIND_FOCUS_TIMEOUT, event.GetTargetDisplayId());
+        FIND_FOCUS_TIMEOUT);
     if (!ret) {
         HILOG_ERROR("find focused element failed.");
         return false;
@@ -740,11 +729,9 @@ void TouchExploration::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent
 
     std::shared_ptr<MMI::PointerEvent> pointerEvent = nullptr;
     int32_t focusedWindowId = INVALID_WINDOW_ID;
-    Singleton<ExtendServiceManager>::GetInstance().getFocusedWindowIdCallback(
-        focusedWindowId, event.GetTargetDisplayId());
+    Singleton<ExtendServiceManager>::GetInstance().getFocusedWindowIdCallback(focusedWindowId);
     int32_t activeWindowId = INVALID_WINDOW_ID;
-    Singleton<ExtendServiceManager>::GetInstance().getActiveWindowIdCallback(
-        activeWindowId, event.GetTargetDisplayId());
+    Singleton<ExtendServiceManager>::GetInstance().getActiveWindowIdCallback(activeWindowId);
     if (focusedWindowId != INVALID_WINDOW_ID && focusedWindowId != activeWindowId) {
         pointerEvent = std::make_shared<MMI::PointerEvent>(event);
     }
@@ -755,26 +742,26 @@ void TouchExploration::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent
     bool hasCustomActions = false;
     AccessibilityElementInfo focusedElementInfo {};
     bool ret = Singleton<ExtendServiceManager>::GetInstance().findFocusedElementCallback(focusedElementInfo,
-        FIND_FOCUS_TIMEOUT, event.GetTargetDisplayId());
+        FIND_FOCUS_TIMEOUT);
     if (ret) {
         std::vector<std::string> customActions;
         focusedElementInfo.GetCustomActionList(customActions);
         hasCustomActions = !customActions.empty();
     }
-    int32_t displayId = event.GetTargetDisplayId();
-    gestureHandler_->PostTask([this, pointerEvent, hasCustomActions, displayId]() {
+
+    gestureHandler_->PostTask([this, pointerEvent, hasCustomActions]() {
         if (pointerEvent) {
             pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_HOVER_ENTER);
-            Singleton<ExtendServiceManager>::GetInstance().sendPointerEventForHoverCallback(pointerEvent, displayId);
+            Singleton<ExtendServiceManager>::GetInstance().sendPointerEventForHoverCallback(pointerEvent);
         }
 
         if (hasCustomActions) {
-            SendGestureEventToAA(GestureType::GESTURE_DOUBLETAP, displayId);
+            SendGestureEventToAA(GestureType::GESTURE_DOUBLETAP);
             return;
         }
 
         Singleton<ExtendServiceManager>::GetInstance().executeActionOnAccessibilityFocusedCallback(
-            ActionType::ACCESSIBILITY_ACTION_CLICK, displayId);
+            ActionType::ACCESSIBILITY_ACTION_CLICK);
         }, "TASK_CLICK_ON_FOCUS");
 }
 
@@ -814,7 +801,7 @@ void TouchExploration::OffsetEvent(MMI::PointerEvent &event, bool setZOrderFlag)
     if (setZOrderFlag) {
         AccessibilityWindowInfo windowInfo = {};
         if (Singleton<ExtendServiceManager>::GetInstance().getAccessibilityWindowCallback(
-            focusedWindowId_, windowInfo, event.GetTargetDisplayId())) {
+            focusedWindowId_, windowInfo)) {
             event.SetZOrder(static_cast<float>(windowInfo.GetWindowLayer() + 1));
         } else {
             HILOG_ERROR("get windowInfo failed");

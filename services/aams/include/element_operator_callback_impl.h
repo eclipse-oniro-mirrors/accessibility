@@ -31,7 +31,7 @@ namespace Accessibility {
 
 class ElementOperatorCallbackImpl : public AccessibilityElementOperatorCallbackStub {
 public:
-    ElementOperatorCallbackImpl(int32_t accountId);
+    ElementOperatorCallbackImpl() = default;
     virtual ~ElementOperatorCallbackImpl() = default;
 
     virtual void SetSearchElementInfoByAccessibilityIdResult(const std::vector<AccessibilityElementInfo> &infos,
@@ -62,7 +62,6 @@ public:
     int32_t parentWindowId_ = 0;
     bool changeToNewInfo_ = false;
     bool needTerminate_ = false;
-    int32_t accountId_ = -1;
 
     bool ValidateElementInfos(const std::list<AccessibilityElementInfo>& infos);
 };

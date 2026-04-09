@@ -62,8 +62,7 @@ public:
 
 class MockAccessibleAbilityConnection : public AccessibleAbilityConnection {
 public:
-    MockAccessibleAbilityConnection(int32_t accountId, int32_t connectionId, AccessibilityAbilityInfo &abilityInfo,
-        const wptr<AccessibilityAccountData> &accountData);
+    MockAccessibleAbilityConnection(int32_t accountId, int32_t connectionId, AccessibilityAbilityInfo& abilityInfo);
 
     virtual ~MockAccessibleAbilityConnection();
 

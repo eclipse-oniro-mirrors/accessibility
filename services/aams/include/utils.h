@@ -19,9 +19,6 @@
 #include "accessibility_ability_info.h"
 #include "element_name.h"
 #include "extension_ability_info.h"
-#include "accessibility_event_info.h"
-#include "bundle_info.h"
-#include <atomic>
 
 namespace OHOS {
 namespace Accessibility {
@@ -84,11 +81,8 @@ public:
     static std::string FormatString(const std::string& format, const std::string& value);
     static float StringToFloat(const std::string& value, const float& defaultValue);
     static int32_t GetTreeIdBySplitElementId(const int64_t elementId);
-    static RetError GetResourceBundleInfo(AccessibilityEventInfo &eventInfo, int32_t userId);
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);
-    static RetError GetResourceValue(
-        AccessibilityEventInfo &eventInfo, AppExecFwk::BundleInfo bundleInfo, int32_t userId, std::string &result);
 };
 } // namespace Accessibility
 } // namespace OHOS

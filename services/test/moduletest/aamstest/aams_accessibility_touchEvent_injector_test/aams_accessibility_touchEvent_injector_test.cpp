@@ -92,8 +92,8 @@ void AamsInjectorTest::SetUp()
     accountData->AddInstalledAbility(*abilityInfo);
     sleep(1);
     sptr<AccessibleAbilityConnection> connection =
-        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo, accountData);
-    aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId(), accountData);
+        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
+    aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
     connection->OnAbilityConnectDoneSync(elementName, aastub_);
 
     AddAccessibilityWindowConnection();
@@ -104,7 +104,7 @@ void AamsInjectorTest::SetUp()
     sptr<AccessibleAbilityConnection> ptr_connect = iter->second;
     if (ptr_connect) {
         aacs_ = new AccessibleAbilityChannel(accountData->GetAccountId(),
-            ptr_connect->GetAbilityInfo().GetId(), accountData);
+            ptr_connect->GetAbilityInfo().GetId());
     }
     GTEST_LOG_(INFO) << "AamsInjectorTest SetUp end";
 }
@@ -114,7 +114,7 @@ void AamsInjectorTest::TearDown()
     GTEST_LOG_(INFO) << "TouchEventInjectorTest TearDown";
     aacs_ = nullptr;
     aastub_ = nullptr;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowId(0, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowId(0);
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
         if (aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
@@ -140,7 +140,7 @@ void AamsInjectorTest::AddAccessibilityWindowConnection()
         new MockAccessibilityElementOperatorImpl(windowId, nullptr, *mockCallback);
     sptr<IAccessibilityElementOperator> proxy = new MockAccessibilityElementOperatorProxy(stub);
     GTEST_LOG_(INFO) << "aams  RegisterElementOperatorByWindowId";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(windowId, proxy, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(windowId, proxy);
 }
 
 /**

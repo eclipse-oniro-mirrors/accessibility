@@ -78,7 +78,7 @@ bool AccessibilityZoomGesture::IsTapOnInputMethod(MMI::PointerEvent &event)
     }
 
     std::vector<AccessibilityWindowInfo> windowInfos =
-        Singleton<ExtendServiceManager>::GetInstance().getAccessibilityWindowsCallback(event.GetTargetDisplayId());
+        Singleton<ExtendServiceManager>::GetInstance().getAccessibilityWindowsCallback();
     for (auto &window : windowInfos) {
         if (window.GetWindowType() != INPUT_METHOD_WINDOW_TYPE) {
             continue;

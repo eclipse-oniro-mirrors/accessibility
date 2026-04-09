@@ -156,7 +156,7 @@ std::map<TouchExplorationMsg, GestureType> TouchExploration::GetMultiFingerMsgTo
 }
 
 // LCOV_EXCL_START
-void TouchExploration::ProcessMultiFingerGesture(TouchExplorationMsg msg, uint64_t displayId)
+void TouchExploration::ProcessMultiFingerGesture(TouchExplorationMsg msg)
 {
     std::map<TouchExplorationMsg, GestureType> multiGestureMap = GetMultiFingerMsgToGestureMap();
     if (multiGestureMap.find(msg) == multiGestureMap.end()) {
@@ -178,7 +178,7 @@ void TouchExploration::ProcessMultiFingerGesture(TouchExplorationMsg msg, uint64
     if (MULTI_FINGER_TAP_GESTURE_TO_STATE.find(gestureType) != MULTI_FINGER_TAP_GESTURE_TO_STATE.end()) {
         // multi-finger multi-tap gesture
         if (GetCurrentState() == MULTI_FINGER_TAP_GESTURE_TO_STATE.at(gestureType)) {
-            SendGestureEventToAA(gestureType, displayId);
+            SendGestureEventToAA(gestureType);
             Clear();
             SetCurrentState(TouchExplorationState::TOUCH_INIT);
         }
@@ -195,7 +195,7 @@ void TouchExploration::ProcessMultiFingerGesture(TouchExplorationMsg msg, uint64
         SetCurrentState(TouchExplorationState::INVALID);
     } else {
         // multi-finger multi-tap-and-hold gesture
-        SendGestureEventToAA(gestureType, displayId);
+        SendGestureEventToAA(gestureType);
         Clear();
         SetCurrentState(TouchExplorationState::INVALID);
     }
@@ -1029,7 +1029,7 @@ void TouchExploration::HandleMultiFingersSwipeStateUp(MMI::PointerEvent &event, 
         }
 
         GestureType gestureId = GetMultiFingerSwipeGestureId(fingerNum);
-        SendGestureEventToAA(gestureId, event.GetTargetDisplayId());
+        SendGestureEventToAA(gestureId);
         Clear();
         SetCurrentState(TouchExplorationState::TOUCH_INIT);
     }

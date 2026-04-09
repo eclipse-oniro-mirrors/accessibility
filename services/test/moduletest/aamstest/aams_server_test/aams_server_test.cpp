@@ -78,8 +78,8 @@ void AAMSServerTest::SetUp()
     accountData->AddInstalledAbility(*abilityInfo);
     sleep(TEST_NUM_2);
     sptr<AccessibleAbilityConnection> connection =
-        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo, accountData);
-    aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId(), accountData);
+        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
+    aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
     connection->OnAbilityConnectDoneSync(elementName, aastub_);
 }
 
@@ -112,7 +112,8 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "AAMSServerTestSendEvent_001 start";
     // make an event
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    AccessibilityEventInfo evtInf(0, WINDOW_UPDATE_ACTIVE);
+    int32_t tempWindowId = aams.GetFocusWindowId();
+    AccessibilityEventInfo evtInf(tempWindowId, WINDOW_UPDATE_ACTIVE);
     evtInf.SetEventType(EventType::TYPE_WINDOW_UPDATE);
     AccessibilityEventInfoParcel evtInfParcel(evtInf);
     // aams send event
@@ -235,13 +236,13 @@ HWTEST_F(AAMSServerTest, RegisterElementOperatorByWindowId_001, TestSize.Level1)
     auto accountData = aams.GetCurrentAccountData();
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
-    EXPECT_EQ(RET_OK, aams.RegisterElementOperatorByWindowId(0, nullptr, 0));
+    EXPECT_EQ(RET_OK, aams.RegisterElementOperatorByWindowId(0, nullptr));
     sleep(1);
     GTEST_LOG_(INFO) << "RegisterElementOperatorByWindowId OK";
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
-    aams.DeregisterElementOperatorByWindowId(0, 0);
+    aams.DeregisterElementOperatorByWindowId(0);
     GTEST_LOG_(INFO) << "AAMSServerTestRegisterElementOperatorByWindowId_001 end";
 }
 
@@ -259,19 +260,19 @@ HWTEST_F(AAMSServerTest, DeregisterElementOperatorByWindowId_001, TestSize.Level
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
 
-    aams.RegisterElementOperatorByWindowId(0, nullptr, 0);
+    aams.RegisterElementOperatorByWindowId(0, nullptr);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
     // wrong windowId
-    aams.DeregisterElementOperatorByWindowId(1, 0);
+    aams.DeregisterElementOperatorByWindowId(1);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
     // true windowId
-    aams.DeregisterElementOperatorByWindowId(0, 0);
+    aams.DeregisterElementOperatorByWindowId(0);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);

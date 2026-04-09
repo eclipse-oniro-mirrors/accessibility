@@ -68,11 +68,6 @@ API_EXPORT void SetSendPointerEventForHoverCallback(
 {
     serviceManagerInstance.sendPointerEventForHoverCallback = cb;
 }
-API_EXPORT void SetCheckDisplayIdCallback(
-    OHOS::Accessibility::CheckDisplayIdCallback cb)
-{
-    serviceManagerInstance.checkDisplayIdCallback = cb;
-}
 // method export To sa
 API_EXPORT int32_t PublishIgnoreRepeatClickReminder()
 {

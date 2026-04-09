@@ -19,16 +19,13 @@
 
 namespace OHOS {
 namespace Accessibility {
-ElementOperatorCallbackImpl::ElementOperatorCallbackImpl(int32_t accountId) : accountId_(accountId)
-{
-}
 
 void ElementOperatorCallbackImpl::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
     if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-        info.GetAccessibilityId(), accountId_) == RET_OK) {
+        info.GetAccessibilityId()) == RET_OK) {
         HILOG_DEBUG("VerifyingToKenId ok");
         accessibilityInfoResult_ = info;
         promise_.set_value();
@@ -44,7 +41,7 @@ void ElementOperatorCallbackImpl::SetSearchElementInfoByTextResult(
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId(), accountId_) == RET_OK) {
+            info.GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
@@ -63,7 +60,7 @@ void ElementOperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId(), accountId_) == RET_OK) {
+            info.GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
@@ -115,7 +112,7 @@ bool ElementOperatorCallbackImpl::ValidateElementInfos(
 {
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId(), accountId_) == RET_OK) {
+            info.GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");
@@ -132,7 +129,7 @@ void ElementOperatorCallbackImpl::SetFocusMoveSearchResult(
 {
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
     if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-        info.GetAccessibilityId(), accountId_) == RET_OK) {
+        info.GetAccessibilityId()) == RET_OK) {
         HILOG_DEBUG("VerifyingToKenId ok");
         accessibilityInfoResult_ = info;
         promise_.set_value();
@@ -166,7 +163,7 @@ void ElementOperatorCallbackImpl::SetSearchDefaultFocusByWindowIdResult(
     HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
     for (auto info : infos) {
         if (Singleton<AccessibleAbilityManagerService>::GetInstance().VerifyingToKenId(info.GetWindowId(),
-            info.GetAccessibilityId(), accountId_) == RET_OK) {
+            info.GetAccessibilityId()) == RET_OK) {
             HILOG_DEBUG("VerifyingToKenId ok");
         } else {
             HILOG_ERROR("VerifyingToKenId failed");

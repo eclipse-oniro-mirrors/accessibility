@@ -36,38 +36,37 @@ static void MockAnnouncedForMagnificationCallback(AnnounceType announceType)
 {
     (void) announceType;
 }
-static void MockSendAccessibilityEventToAACallback(EventType eventType, GestureType gestureId, uint64_t displayId)
+static void MockSendAccessibilityEventToAACallback(EventType eventType, GestureType gestureId)
 {
     (void) eventType;
     (void) gestureId;
 }
-static bool MockFindFocusedElementCallback(AccessibilityElementInfo &elementInfo, uint32_t timeout, uint64_t displayId)
+static bool MockFindFocusedElementCallback(AccessibilityElementInfo &elementInfo, uint32_t timeout)
 {
     (void) elementInfo;
     (void) timeout;
     return true;
 }
-static bool MockExecuteActionOnAccessibilityFocusedCallback(const ActionType &action, uint64_t displayId)
+static bool MockExecuteActionOnAccessibilityFocusedCallback(const ActionType &action)
 {
     (void) action;
     return true;
 }
-static void MockGetFocusedWindowIdCallback(int32_t &focusedWindowId, uint64_t displayId)
+static void MockGetFocusedWindowIdCallback(int32_t &focusedWindowId)
 {
     (void) focusedWindowId;
 }
-static void MockGetActiveWindowIdCallback(int32_t &activeWindowId, uint64_t displayId)
+static void MockGetActiveWindowIdCallback(int32_t &activeWindowId)
 {
     (void) activeWindowId;
 }
-static bool MockGetAccessibilityWindowCallback(int32_t windowId, AccessibilityWindowInfo &window, uint64_t displayId)
+static bool MockGetAccessibilityWindowCallback(int32_t windowId, AccessibilityWindowInfo &window)
 {
     (void) windowId;
     (void) window;
     return true;
 }
-static void MockSendPointerEventForHoverCallback(
-    const std::shared_ptr<MMI::PointerEvent> &pointerEvent, uint64_t displayId)
+static void MockSendPointerEventForHoverCallback(const std::shared_ptr<MMI::PointerEvent>& pointerEvent)
 {
     (void) pointerEvent;
 }
@@ -105,7 +104,7 @@ static void MockMagnificationScaleCallback(float scale)
 {
     (void) scale;
 }
-static std::vector<AccessibilityWindowInfo> MockGetAccessibilityWindowsCallback(uint64_t displayId)
+static std::vector<AccessibilityWindowInfo> MockGetAccessibilityWindowsCallback()
 {
     std::vector<AccessibilityWindowInfo> result = {};
     return result;

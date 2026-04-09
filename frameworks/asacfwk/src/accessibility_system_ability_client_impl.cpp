@@ -403,7 +403,7 @@ void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject
 }
 
 RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
-    const int32_t windowId, const std::shared_ptr<AccessibilityElementOperator> &operation, uint64_t displayId)
+    const int32_t windowId, const std::shared_ptr<AccessibilityElementOperator> &operation)
 {
     HILOG_INFO("Register windowId[%{public}d] start", windowId);
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -415,7 +415,7 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    auto iter = elementOperators_.find({windowId, displayId});
+    auto iter = elementOperators_.find(windowId);
     if (iter != elementOperators_.end()) {
         HILOG_ERROR("windowID[%{public}d] is exited", windowId);
         return RET_ERR_CONNECTION_EXIST;
@@ -426,13 +426,12 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
         HILOG_ERROR("Failed to create aamsInteractionOperator.");
         return RET_ERR_NULLPTR;
     }
-    elementOperators_[{windowId, displayId}] = aamsInteractionOperator;
-    return static_cast<RetError>(
-        serviceProxy_->RegisterElementOperatorByWindowId(windowId, aamsInteractionOperator, displayId));
+    elementOperators_[windowId] = aamsInteractionOperator;
+    return static_cast<RetError>(serviceProxy_->RegisterElementOperatorByWindowId(windowId, aamsInteractionOperator));
 }
 
 RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(Registration parameter,
-    const std::shared_ptr<AccessibilityElementOperator> &operation, uint64_t displayId)
+    const std::shared_ptr<AccessibilityElementOperator> &operation)
 {
     HILOG_DEBUG("parentWindowId:%{public}d, parentTreeId:%{public}d, windowId:%{public}d,nodeId:%{public}" PRId64 "",
         parameter.parentWindowId, parameter.parentTreeId, parameter.windowId, parameter.elementId);
@@ -464,17 +463,16 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(Registrat
         .parentWindowId = parameter.parentWindowId,
         .parentTreeId = parameter.parentTreeId,
         .elementId = parameter.elementId,
-        .displayId = displayId,
     };
     return static_cast<RetError>(serviceProxy_->RegisterElementOperatorByParameter(registrationPara,
         aamsInteractionOperator));
 }
 
-RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const int32_t windowId, uint64_t displayId)
+RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const int32_t windowId)
 {
     HILOG_INFO("Deregister windowId[%{public}d] start", windowId);
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    auto iter = elementOperators_.find({windowId, displayId});
+    auto iter = elementOperators_.find(windowId);
     if (iter != elementOperators_.end()) {
         HILOG_DEBUG("windowID[%{public}d] is erase", windowId);
         elementOperators_.erase(iter);
@@ -486,11 +484,10 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const i
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
-    return static_cast<RetError>(serviceProxy_->DeregisterElementOperatorByWindowId(windowId, displayId));
+    return static_cast<RetError>(serviceProxy_->DeregisterElementOperatorByWindowId(windowId));
 }
 
-RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(
-    const int32_t windowId, const int32_t treeId, uint64_t displayId)
+RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const int32_t windowId, const int32_t treeId)
 {
     HILOG_INFO("Deregister windowId[%{public}d] treeId[%{public}d] start", windowId, treeId);
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -500,8 +497,7 @@ RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(
         return RET_ERR_SAMGR;
     }
 
-    return static_cast<RetError>(
-        serviceProxy_->DeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, displayId));
+    return static_cast<RetError>(serviceProxy_->DeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId));
 }
 
 RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderEnabled(bool &isEnabled)

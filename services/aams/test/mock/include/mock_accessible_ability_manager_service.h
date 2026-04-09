@@ -35,24 +35,21 @@ public:
         uint32_t(const sptr<IAccessibleAbilityManagerCaptionObserver>& callback, const int32_t accountId));
     MOCK_METHOD3(GetAbilityList, ErrCode(uint32_t abilityTypes, int32_t stateType,
         std::vector<AccessibilityAbilityInfoParcel>& infos));
-    MOCK_METHOD3(RegisterElementOperatorByWindowId,
-        ErrCode(
-            const int32_t windowId, const sptr<IAccessibilityElementOperator> &elementOperator, uint64_t displayId));
+    MOCK_METHOD2(RegisterElementOperatorByWindowId,
+        ErrCode(const int32_t windowId, const sptr<IAccessibilityElementOperator>& elementOperator));
     MOCK_METHOD2(RegisterElementOperatorByParameter, ErrCode(const RegistrationPara& parameter,
         const sptr<IAccessibilityElementOperator>& elementOperator));
-    MOCK_METHOD2(DeregisterElementOperatorByWindowId, ErrCode(const int32_t windowId, uint64_t displayId));
-    MOCK_METHOD3(DeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
-        const int32_t treeId, uint64_t displayId));
-    MOCK_METHOD3(
-        InnerDeregisterElementOperatorByWindowId, ErrCode(const int32_t windowId, int32_t userId, uint64_t displayId));
-    MOCK_METHOD4(InnerDeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
-        const int32_t treeId, int32_t userId, uint64_t displayId));
+    MOCK_METHOD1(DeregisterElementOperatorByWindowId, ErrCode(const int32_t windowId));
+    MOCK_METHOD2(DeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
+        const int32_t treeId));
+    MOCK_METHOD1(InnerDeregisterElementOperatorByWindowId, ErrCode(const int32_t windowId));
+    MOCK_METHOD2(InnerDeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
+        const int32_t treeId));
     MOCK_METHOD2(GetCaptionProperty, ErrCode(CaptionPropertyParcel& caption, bool isPermissionRequired));
     MOCK_METHOD2(SetCaptionProperty, ErrCode(const CaptionPropertyParcel& caption, bool isPermissionRequired));
     MOCK_METHOD2(SetCaptionState, ErrCode(const bool state, bool isPermissionRequired));
     MOCK_METHOD1(SetTouchEventInjector, void(const sptr<TouchEventInjector>& touchEventInjector));
-    MOCK_METHOD4(
-        VerifyingToKenId, RetError(const int32_t windowId, const int64_t elementId, int32_t userId, uint32_t tokenId));
+    MOCK_METHOD3(VerifyingToKenId, RetError(const int32_t windowId, const int64_t elementId, uint32_t tokenId));
 
     inline sptr<TouchEventInjector> GetTouchEventInjector()
     {
@@ -101,6 +98,8 @@ public:
     MOCK_METHOD1(SetEnabledObj, bool(std::map<std::string, AppExecFwk::ElementName> it));
     MOCK_METHOD1(GetEnabledAbilities, ErrCode(std::vector<std::string> &enabledAbilities));
     MOCK_METHOD1(GetActiveWindow, ErrCode(int32_t &windowId));
+    MOCK_METHOD2(GetRealWindowAndElementId, ErrCode(int32_t& windowId, int64_t& elementId));
+    MOCK_METHOD3(GetSceneBoardInnerWinId, ErrCode(int32_t windowId, int64_t elementId, int32_t& innerWid));
     MOCK_METHOD1(ExecuteActionOnAccessibilityFocused, bool(const ActionType &action));
     MOCK_METHOD1(FindFocusedElement, bool(AccessibilityElementInfo &elementInfo));
     MOCK_METHOD1(GetFocusedWindowId, ErrCode(int32_t &focusedWindowId));
@@ -111,7 +110,7 @@ public:
     MOCK_METHOD1(ConfigureEvents, RetError(std::vector<uint32_t> needEvents));
     MOCK_METHOD1(GetReadableRules, ErrCode(std::string &name));
     MOCK_METHOD2(IsInnerWindowRootElement, ErrCode(int64_t elementId, bool &state));
-    MOCK_METHOD3(SendAccessibilityEventToAA, void(EventType eventType, GestureType gestureId, uint64_t displayId));
+    MOCK_METHOD2(SendAccessibilityEventToAA, void(EventType eventType, GestureType gestureId));
 };
 } // namespace Accessibility
 } // namespace OHOS

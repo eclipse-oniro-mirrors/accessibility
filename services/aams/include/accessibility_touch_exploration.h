@@ -237,7 +237,7 @@ public:
     void Clear();
     void HoverEventRunner();
     bool SendDoubleTapAndLongPressDownEvent();
-    void ProcessMultiFingerGesture(TouchExplorationMsg msg, uint64_t displayId);
+    void ProcessMultiFingerGesture(TouchExplorationMsg msg);
     void CancelPostEvent(TouchExplorationMsg msg);
 
     /**
@@ -341,9 +341,9 @@ private:
     float GetAngleCos(float offsetX, float offsetY, bool isGetX);
     bool IsRealMove(MMI::PointerEvent &event);
     bool IsDragGestureAccept(MMI::PointerEvent &event);
-    void SendAccessibilityEventToAA(EventType eventType, uint64_t displayId);
+    void SendAccessibilityEventToAA(EventType eventType);
     void SendTouchEventToAA(MMI::PointerEvent &event);
-    void SendGestureEventToAA(GestureType gestureId, uint64_t displayId);
+    void SendGestureEventToAA(GestureType gestureId);
     void SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action);
     void SendScreenWakeUpEvent(MMI::PointerEvent &event);
     void SendDragDownEventToMultimodal(MMI::PointerEvent event);

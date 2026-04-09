@@ -57,6 +57,7 @@ enum CallBackID {
 };
 
 constexpr int REQUEST_ID_INIT = 65535;
+constexpr int32_t TREE_ID_MAX = 0x00001FFF;
 constexpr uint32_t TIME_OUT_OPERATOR = 5000;
 constexpr uint32_t TIME_OUT_1000MS = 1000;
 constexpr int32_t WAIT_NOTIFY_DISCONNECT_TIMEOUT = 30 * 1000; // 30s
@@ -80,13 +81,12 @@ public:
 
 public:
     // for ext so
-    void SendAccessibilityEventToAA(EventType eventType, GestureType gestureId, uint64_t displayId);
+    void SendAccessibilityEventToAA(EventType eventType, GestureType gestureId);
 
     /* For AccessibleAbilityManagerServiceStub */
     ErrCode SendEvent(const AccessibilityEventInfoParcel& eventInfoParcel, int32_t flag) override;
-    ErrCode InnerSendEvent(const AccessibilityEventInfoParcel& eventInfoParcel, int32_t flag, int32_t userId);
 
-    RetError VerifyingToKenId(const int32_t windowId, const int64_t elementId, int32_t userId, uint32_t tokenId = 0);
+    RetError VerifyingToKenId(const int32_t windowId, const int64_t elementId, uint32_t tokenId = 0);
 
     ErrCode RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback,
         uint32_t &state) override;
@@ -103,19 +103,18 @@ public:
         std::vector<AccessibilityAbilityInfoParcel>& infos) override;
 
     ErrCode RegisterElementOperatorByWindowId(const int32_t windowId,
-        const sptr<IAccessibilityElementOperator> &elementOperator, uint64_t displayId) override;
+        const sptr<IAccessibilityElementOperator> &elementOperator) override;
 
     ErrCode RegisterElementOperatorByParameter(const RegistrationPara& parameter,
         const sptr<IAccessibilityElementOperator>& elementOperator) override;
 
-    ErrCode DeregisterElementOperatorByWindowId(const int32_t windowId, uint64_t displayId) override;
+    ErrCode DeregisterElementOperatorByWindowId(const int32_t windowId) override;
 
-    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId, int32_t treeId, uint64_t displayId) override;
+    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId) override;
 
-    ErrCode InnerDeregisterElementOperatorByWindowId(int32_t windowId, int32_t userId, uint64_t displayId);
+    ErrCode InnerDeregisterElementOperatorByWindowId(int32_t windowId);
 
-    ErrCode InnerDeregisterElementOperatorByWindowIdAndTreeId(
-        int32_t windowId, int32_t treeId, int32_t userId, uint64_t displayId);
+    ErrCode InnerDeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId);
 
     ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override;
 
@@ -137,29 +136,39 @@ public:
     RetError SetCurtainScreenUsingStatus(bool isEnable);
     ErrCode CheckExtensionAbilityPermission(std::string& processName) override;
     ErrCode DisableAbility(const std::string &name) override;
-    ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj, int userId) override;
-    ErrCode DisableUITestAbility(int userId) override;
+    ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
+    ErrCode DisableUITestAbility() override;
     ErrCode SetMagnificationState(const bool state) override;
     ErrCode GetActiveWindow(int32_t &windowId) override;
     ErrCode GetActiveWindow(int32_t &windowId, bool systemApi) override;
-    ErrCode InnerGetActiveWindow(int32_t &windowId, int32_t userId);
-    bool FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout, int32_t userId);
-    bool ExecuteActionOnAccessibilityFocused(const ActionType &action, int32_t userId);
+    ErrCode GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
+    ErrCode GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
+    bool FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout = TIME_OUT_OPERATOR);
+    bool ExecuteActionOnAccessibilityFocused(const ActionType &action);
     ErrCode GetFocusedWindowId(int32_t &focusedWindowId) override;
-    ErrCode InnerGetFocusedWindowId(int32_t &focusedWindowId, int32_t userId);
+    void SetFocusWindowId(const int32_t focusWindowId);
+    void SetFocusElementId(const int64_t focusElementId);
+    int32_t GetFocusWindowId();
+    int64_t GetFocusElementId();
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId) override;
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId, bool systemApi) override;
+    void SetTokenIdMapAndRootParentId(const sptr<AccessibilityWindowConnection> connection,
+        const int32_t treeId, const int64_t nodeId, const uint32_t tokenId);
+    void RemoveTreeDeathRecipient(const int32_t windowId, const int32_t treeId,
+        const sptr<AccessibilityWindowConnection> connection);
+    int32_t GenerateRequestId();
+    void GetElementOperatorConnection(sptr<AccessibilityWindowConnection> &connection,
+        const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
     bool GetElementOperator(const int32_t windowId,
         const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
     ErrCode GetScreenReaderState(bool &state) override;
     ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
     ErrCode GetReadableRules(std::string &readableRules) override;
     ErrCode IsInnerWindowRootElement(int64_t elementId, bool &state) override;
-    std::vector<AccessibilityWindowInfo> GetAccessibilityWindows(int32_t userId);
-    bool InnerGetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window, int32_t userId);
 private:
     std::atomic<int32_t> focusWindowId_ = -1;
     std::atomic<int64_t> focusElementId_ = -1;
+    std::atomic<int> requestId_ = REQUEST_ID_INIT;
 public:
     /* For inner modules */
     bool EnableShortKeyTargetAbility(const std::string &name = "");
@@ -209,8 +218,17 @@ public:
     void PackageAdd(const std::string &bundleName);
 
     void UpdateAccessibilityManagerService();
+    void InsertWindowIdEventPair(int32_t windowId, const AccessibilityEventInfo &event);
     bool CheckWindowIdEventExist(int32_t windowId);
     bool CheckWindowRegister(int32_t windowId);
+    RetError GetResourceBundleInfo(AccessibilityEventInfo &eventInfo);
+    RetError GetResourceValue(AccessibilityEventInfo &eventInfo, AppExecFwk::BundleInfo bundleInfo,
+        int32_t userId, std::string &result);
+
+    // used for arkui windowId 1 map to WMS windowId
+    void FindInnerWindowId(const AccessibilityEventInfo &event, int32_t& windowId);
+    bool GetParentElementRecursively(int32_t windowId, int64_t elementId,
+        std::vector<AccessibilityElementInfo>& infos);
 
     // used for arkui windowId 1 map to WMS windowId
     ErrCode SetScreenMagnificationState(const bool state) override;
@@ -268,6 +286,8 @@ public:
 
     void UpdateInputFilter();
     void UpdateAccessibilityState();
+    void AddRequestId(int32_t windowId, int32_t treeId, int32_t requestId,
+        sptr<IAccessibilityElementOperatorCallback> callback);
     ErrCode RemoveRequestId(int32_t requestId) override;
     void OnDataClone();
     bool CheckPermission(const std::string &permission) const;
@@ -285,16 +305,29 @@ public:
     void InitResource(bool needReInit);
     std::string &GetResource(const std::string &resourceName);
     void AnnouncedForMagnification(AnnounceType announceType);
+
+    RetError ConfigureEvents(std::vector<uint32_t> needEvents);
+
 private:
-    int32_t InnerGetCallingUid();
+    void StopCallbackWait(int32_t windowId);
+    void StopCallbackWait(int32_t windowId, int32_t treeId);
+    RetError CheckCallingUid();
     bool IsApp() const;
     bool IsSystemApp() const;
     bool IsBroker() const;
-    ErrCode CheckDeregisterTokenId(int32_t windowId, int32_t treeId, int32_t userId);
+    ErrCode CheckDeregisterTokenId(int32_t windowId, int32_t treeId);
+    sptr<AccessibilityWindowConnection> GetRealIdConnection();
+    bool FindFocusedElementByConnection(sptr<AccessibilityWindowConnection> connection,
+        AccessibilityElementInfo &elementInfo);
     bool SetTargetAbility(const int32_t targetAbilityValue);
     bool SetHighContrastTextAbility(bool state);
+    RetError RegisterElementOperatorChildWork(const RegistrationPara &parameter, const int32_t treeId,
+        const int64_t nodeId, const sptr<IAccessibilityElementOperator> &operation,
+        const uint32_t tokenId, bool isApp);
+    void IsCheckWindowIdEventExist(const int32_t windowId);
+    void CalculateClickPosition(const AccessibilityElementInfo &focusedElementInfo,
+        int32_t &xPos, int32_t &yPos);
     void PublishAccessibilityCommonEvent(const std::string &event);
-    int32_t GetUserIdByDisplayId(uint64_t displayId);
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         StateCallbackDeathRecipient() = default;
@@ -343,12 +376,27 @@ private:
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
 
+    class StateObservers {
+    public:
+        StateObservers() = default;
+        ~StateObservers() = default;
+        void AddStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver);
+        void OnStateObservers(uint32_t state);
+        void RemoveStateObserver(const wptr<IRemoteObject>& remote);
+        void Clear();
+    private:
+        std::vector<sptr<IAccessibleAbilityManagerStateObserver>> observersList_;
+        ffrt::mutex stateObserversMutex_;
+    };
+
     RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities,
         const std::string callerBundleName = "");
     RetError InnerDisableAbility(const std::string &name);
 
+    sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(int32_t windowId);
     void ClearFocus(int32_t windowId);
     void OutsideTouch(int32_t windowId);
+    void UpdateAccessibilityWindowStateByEvent(const AccessibilityEventInfo &event);
 
     void UpdateCaptionProperty();
     void UpdateSettingsInAtoHosTask();
@@ -383,14 +431,17 @@ private:
     void UnsubscribeOsAccount();
     void RegisterNotificationState();
 
+    int32_t ApplyTreeId();
+    void RecycleTreeId(int32_t treeId);
     void RecycleEventHandler();
     std::shared_ptr<AccessibilityDatashareHelper> GetCurrentAcountDatashareHelper();
+    void OnFocusedEvent(const AccessibilityEventInfo &eventInfo);
+    bool InvalidHoverEnterEvent(AccessibilityEventInfo &event);
 
     bool isReady_ = false;
     bool isPublished_ = false;
     std::map<int32_t, bool> dependentServicesStatus_;
     int32_t currentAccountId_ = -1;
-    uint32_t currentAccessibilityState_ = 0;
     AccessibilityAccountDataMap  a11yAccountsData_;
 
     sptr<AccessibilityDumper> accessibilityDumper_ = nullptr;
@@ -417,14 +468,20 @@ private:
     sptr<IRemoteObject::DeathRecipient> enableAbilityListsObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityCallbackObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
+    StateObservers stateObservers_;
     ffrt::mutex mutex_; // current used for register state observer
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;
     std::shared_ptr<AccessibilitySettings> accessibilitySettings_ = nullptr;
     std::shared_ptr<AccessibilityShortKey> accessibilityShortKey_ = nullptr;
     std::vector<std::string> removedAutoStartAbilities_ {};
+    SafeMap<int32_t, AccessibilityEventInfo> windowFocusEventMap_ {};
 
     std::map<int32_t, std::map<int32_t, std::set<int32_t>>> windowRequestIdMap_ {}; // windowId->treeId->requestId
     std::map<int32_t, sptr<IAccessibilityElementOperatorCallback>> requestIdMap_ {}; // requestId->callback
+
+    std::bitset<TREE_ID_MAX> treeIdPool_;
+    int32_t preTreeId_ = -1;
+    ffrt::mutex treeIdPoolMutex_;
 
     bool isSubscribeMSDPCallback_ = false;
     ffrt::mutex subscribeMSDPMutex_;

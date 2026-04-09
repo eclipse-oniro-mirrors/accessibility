@@ -30,10 +30,6 @@
 #include "accessibility_resource_bundle_manager.h"
 #include "app_mgr_client.h"
 #include "configuration.h"
-#include "res_config.h"
-#include "locale_config.h"
-#include "locale_info.h"
-#include "os_account_manager.h"
 
 // LCOV_EXCL_START
 namespace OHOS {
@@ -624,94 +620,6 @@ int32_t Utils::GetTreeIdBySplitElementId(const int64_t elementId)
     }
     int32_t treeId = (static_cast<uint64_t>(elementId) >> ELEMENT_MOVE_BIT);
     return treeId;
-}
-
-RetError Utils::GetResourceBundleInfo(AccessibilityEventInfo &eventInfo, int32_t userId)
-{
-    HILOG_DEBUG("BundleName is %{public}s, ModuleName is %{public}s, ResourceId is %{public}d",
-        eventInfo.GetResourceBundleName().c_str(), eventInfo.GetResourceModuleName().c_str(),
-        eventInfo.GetResourceId());
-    if (eventInfo.GetResourceId() > 0) {
-        AppExecFwk::BundleInfo bundleInfo;
-        ErrCode ret = Singleton<AccessibilityResourceBundleManager>::GetInstance().GetBundleInfoV9(
-            eventInfo.GetResourceBundleName(),
-            static_cast<int32_t>(AppExecFwk::GetBundleInfoFlag::GET_BUNDLE_INFO_WITH_HAP_MODULE),
-            bundleInfo, userId);
-        if (ret != ERR_OK) {
-            HILOG_ERROR("get BundleInfo failed!");
-            return RET_ERR_FAILED;
-        }
- 
-        std::string resourceValue;
-        RetError res = GetResourceValue(eventInfo, bundleInfo, userId, resourceValue);
-        if (res != RET_OK) {
-            HILOG_ERROR("Get Resource Value failed");
-            return res;
-        }
-        HILOG_DEBUG("resource value is %{public}s", resourceValue.c_str());
-        eventInfo.SetTextAnnouncedForAccessibility(resourceValue);
-    }
-    return RET_OK;
-}
- 
-RetError Utils::GetResourceValue(AccessibilityEventInfo &eventInfo,
-    AppExecFwk::BundleInfo bundleInfo, int32_t userId, std::string &result)
-{
-    std::unique_ptr<Global::Resource::ResConfig> resConfig(Global::Resource::CreateResConfig());
-    if (resConfig == nullptr) {
-        HILOG_ERROR("create resConfig failed");
-        return RET_ERR_NULLPTR;
-    }
-    UErrorCode status = U_ZERO_ERROR;
-    icu::Locale locale = icu::Locale::forLanguageTag(Global::I18n::LocaleConfig::GetSystemLanguage(), status);
-    resConfig->SetLocaleInfo(locale.getLanguage(), locale.getScript(), locale.getCountry());
- 
-    std::string hapPath;
-    std::vector<std::string> overlayPaths;
-    int32_t appType = 0;
-    std::shared_ptr<Global::Resource::ResourceManager> resourceManager(Global::Resource::CreateResourceManager(
-        eventInfo.GetResourceBundleName(), eventInfo.GetResourceModuleName(), hapPath, overlayPaths, *resConfig,
-        appType, userId));
-    if (resourceManager == nullptr) {
-        HILOG_ERROR("create Resource manager failed");
-        return RET_ERR_NULLPTR;
-    }
- 
-    Global::Resource::RState state = resourceManager->UpdateResConfig(*resConfig);
-    if (state != Global::Resource::RState::SUCCESS) {
-        HILOG_ERROR("UpdateResConfig failed! errCode: %{public}d", state);
-        return RET_ERR_FAILED;
-    }
- 
-    for (const auto &hapModuleInfo : bundleInfo.hapModuleInfos) {
-        std::string moduleResPath = hapModuleInfo.hapPath.empty() ? hapModuleInfo.resourcePath : hapModuleInfo.hapPath;
-        HILOG_DEBUG("hapModuleInfo.hapPath is %{public}s", hapModuleInfo.hapPath.c_str());
-        if (moduleResPath.empty()) {
-            HILOG_ERROR("moduleResPath is empty");
-            continue;
-        }
-        if (!resourceManager->AddResource(moduleResPath.c_str())) {
-            HILOG_ERROR("AddResource is failed");
-        }
-    }
- 
-    std::vector<std::tuple<Global::Resource::ResourceManager::NapiValueType, std::string>> arg;
-    for (auto &param : eventInfo.GetResourceParams()) {
-        HILOG_DEBUG("resource param valueType is %{public}d, value is %{public}s",
-            std::get<0>(param), (std::get<1>(param)).c_str());
-        if (std::get<0>(param) == 0) {
-            arg.emplace_back(std::make_tuple(Global::Resource::ResourceManager::NapiValueType::NAPI_NUMBER,
-                std::get<1>(param)));
-        } else if (std::get<0>(param) == 1)
-            arg.emplace_back(std::make_tuple(Global::Resource::ResourceManager::NapiValueType::NAPI_STRING,
-                std::get<1>(param)));
-    }
-    Global::Resource::RState res = resourceManager->GetStringFormatById(eventInfo.GetResourceId(), result, arg);
-    if (res != Global::Resource::RState::SUCCESS) {
-        HILOG_ERROR("get resource value failed");
-        return RET_ERR_FAILED;
-    }
-    return RET_OK;
 }
 // LCOV_EXCL_STOP
 } // namespace Accessibility

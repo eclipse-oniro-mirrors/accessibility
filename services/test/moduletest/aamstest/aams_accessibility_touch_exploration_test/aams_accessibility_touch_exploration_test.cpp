@@ -506,8 +506,8 @@ void AamsTouchExplorationTest::SetUp()
     accountData->AddInstalledAbility(*abilityInfo);
     sleep(1);
     sptr<AccessibleAbilityConnection> connection =
-        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo, accountData);
-    aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId(), accountData);
+        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
+    aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
     connection->OnAbilityConnectDoneSync(elementName, aastub_);
 
     AddAccessibilityWindowConnection();
@@ -517,7 +517,7 @@ void AamsTouchExplorationTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AamsTouchExplorationTest TearDown";
 
-    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowId(0, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperatorByWindowId(0);
     sleep(SLEEP_TIME_3);
     aastub_ = nullptr;
     interceptorId_ = nullptr;
@@ -592,7 +592,7 @@ void AamsTouchExplorationTest::AddAccessibilityWindowConnection()
         new MockAccessibilityElementOperatorImpl(windowId, nullptr, *mockCallback);
     sptr<IAccessibilityElementOperator> proxy = new MockAccessibilityElementOperatorProxy(stub);
     GTEST_LOG_(INFO) << "aams  RegisterElementOperatorByWindowId";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(windowId, proxy, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(windowId, proxy);
 }
 
 /**

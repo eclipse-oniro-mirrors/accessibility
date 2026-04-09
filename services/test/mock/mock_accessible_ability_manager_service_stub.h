@@ -51,15 +51,14 @@ public:
         std::vector<AccessibilityAbilityInfoParcel>& infos) override;
 
     ErrCode RegisterElementOperatorByWindowId(const int32_t windowId,
-        const sptr<IAccessibilityElementOperator>& elementOperator, uint64_t displayId) override;
+        const sptr<IAccessibilityElementOperator>& elementOperator) override;
 
     ErrCode RegisterElementOperatorByParameter(const RegistrationPara& parameter,
         const sptr<IAccessibilityElementOperator> &elementOperator) override;
 
-    ErrCode DeregisterElementOperatorByWindowId(int32_t windowId, uint64_t displayId) override;
+    ErrCode DeregisterElementOperatorByWindowId(int32_t windowId) override;
 
-    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(
-        const int32_t windowId, const int32_t treeId, uint64_t displayId) override;
+    ErrCode DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId, const int32_t treeId) override;
 
     ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override;
 
@@ -86,8 +85,8 @@ public:
     ErrCode GetActiveWindow(int32_t& windowId, bool systemApi) override;
 
     ErrCode CheckExtensionAbilityPermission(std::string& processName) override;
-    ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj, int32_t userId) override;
-    ErrCode DisableUITestAbility(int32_t userId) override;
+    ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
+    ErrCode DisableUITestAbility() override;
 
     ErrCode SetScreenMagnificationState(bool state) override;
     ErrCode SetShortKeyState(bool state) override;
@@ -130,6 +129,8 @@ public:
     ErrCode GetIgnoreRepeatClickTime(uint32_t &time) override;
     ErrCode GetAllConfigs(AccessibilityConfigData& configData, CaptionPropertyParcel& caption) override;
     ErrCode RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver>& observer) override;
+    ErrCode GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
+    ErrCode GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
     ErrCode GetFocusedWindowId(int32_t &focusedWindowId) override;
     ErrCode RemoveRequestId(int32_t requestId) override;
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t& parentId) override;

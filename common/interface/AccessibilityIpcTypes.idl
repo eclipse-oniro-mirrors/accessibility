@@ -20,7 +20,6 @@ struct RegistrationPara {
     int parentWindowId;
     int parentTreeId;
     long elementId;
-    unsigned long displayId;
 };
  
 struct AccessibilityConfigData {

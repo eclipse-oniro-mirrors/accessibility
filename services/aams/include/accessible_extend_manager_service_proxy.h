@@ -113,7 +113,6 @@ public:
     bool SetMagnificationScaleCallback();
     bool ExtendGetAccessibilityWindowsCallback();
     bool ExtendSubscribeOsAccountCallback();
-    bool SetCheckDisplayIdCallback();
  
 private:
     void* GetFunc(const std::string& funcName);

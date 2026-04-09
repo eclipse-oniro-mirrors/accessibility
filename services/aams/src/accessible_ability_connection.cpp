@@ -36,8 +36,8 @@
 namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityConnection::AccessibleAbilityConnection(int32_t accountId, int32_t connectionId,
-    AccessibilityAbilityInfo &abilityInfo, const wptr<AccessibilityAccountData> &accountData)
-    : accountId_(accountId), connectionId_(connectionId), abilityInfo_(abilityInfo), accountData_(accountData)
+    AccessibilityAbilityInfo &abilityInfo)
+    : accountId_(accountId), connectionId_(connectionId), abilityInfo_(abilityInfo)
 {
     eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner());
@@ -190,7 +190,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     int32_t accountId = accountId_;
     wptr<AccessibleAbilityConnection> weakPtr = this;
 
-    eventHandler_->PostTask([this, accountId, element, remoteObject, resultCode, weakPtr]() {
+    eventHandler_->PostTask([accountId, element, remoteObject, resultCode, weakPtr]() {
 #ifdef OHOS_BUILD_ENABLE_HITRACE
         FinishAsyncTrace(HITRACE_TAG_ACCESSIBILITY_MANAGER, "AccessibleAbilityConnect",
             static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
@@ -530,7 +530,7 @@ void AccessibleAbilityConnection::InitAbilityClient(const sptr<IRemoteObject> &r
         HILOG_ERROR("Failed to add death recipient");
     }
 
-    channel_ = new(std::nothrow) AccessibleAbilityChannel(accountId_, abilityInfo_.GetId(), accountData_);
+    channel_ = new(std::nothrow) AccessibleAbilityChannel(accountId_, abilityInfo_.GetId());
     if (!channel_) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
             A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);

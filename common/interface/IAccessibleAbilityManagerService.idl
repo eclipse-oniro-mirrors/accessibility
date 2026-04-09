@@ -34,10 +34,10 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     [oneway] void RegisterEnableAbilityListsObserver([in] IAccessibilityEnableAbilityListsObserver observer);
     [oneway] void RegisterEnableAbilityCallbackObserver([in] IAccessibilityEnableAbilityCallbackObserver observer);
     void GetAbilityList([in] unsigned int abilityTypes, [in] int stateType, [out] AccessibilityAbilityInfoParcel[] infos);
-    [oneway] void RegisterElementOperatorByWindowId([in] int windowId, [in] IAccessibilityElementOperator elementOperator, [in] unsigned long displayId);
+    [oneway] void RegisterElementOperatorByWindowId([in] int windowId, [in] IAccessibilityElementOperator elementOperator);
     [oneway] void RegisterElementOperatorByParameter([in] RegistrationPara parameter, [in] IAccessibilityElementOperator elementOperator);
-    [oneway] void DeregisterElementOperatorByWindowId([in] int windowId, [in] unsigned long displayId);
-    [oneway] void DeregisterElementOperatorByWindowIdAndTreeId([in] int windowId, [in] int treeId, [in] unsigned long displayId);
+    [oneway] void DeregisterElementOperatorByWindowId([in] int windowId);
+    [oneway] void DeregisterElementOperatorByWindowIdAndTreeId([in] int windowId, [in] int treeId);
     void GetCaptionProperty([out] CaptionPropertyParcel caption, [in] boolean isPermissionRequired);
     void GetCaptionState([out] boolean state, [in] boolean isPermissionRequired);
     void SetCaptionProperty([in] CaptionPropertyParcel caption, [in] boolean isPermissionRequired);
@@ -49,8 +49,8 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void GetActiveWindow([out] int windowId);
     void GetActiveWindow([out] int windowId, [in] boolean systemApi);
     void CheckExtensionAbilityPermission([inout] String processName);
-    void EnableUITestAbility([in] IRemoteObject obj, [in] int userId);
-    void DisableUITestAbility([in] int userId);
+    void EnableUITestAbility([in] IRemoteObject obj);
+    void DisableUITestAbility();
     void SetScreenMagnificationState([in] boolean state);
     void SetShortKeyState([in] boolean state);
     void SetMouseKeyState([in] boolean state);
@@ -90,6 +90,8 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void GetFlashReminderSwitch([out] boolean state);
     void GetSeniorModeState([out] boolean state);
     void GetAllConfigs([out] AccessibilityConfigData configData, [out] CaptionPropertyParcel caption);
+    void GetRealWindowAndElementId([inout] int windowId, [inout] long elementId);
+    void GetSceneBoardInnerWinId([in] int windowId, [in] long elementId, [out] int innerWid);
     void GetFocusedWindowId([out] int focusedWindowId);
     void RegisterConfigObserver([in] IAccessibleAbilityManagerConfigObserver observer);
     void RemoveRequestId([in] int requestId);

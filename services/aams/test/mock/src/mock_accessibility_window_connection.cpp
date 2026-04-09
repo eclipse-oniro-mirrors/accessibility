@@ -17,23 +17,22 @@
 
 namespace OHOS {
 namespace Accessibility {
-namespace {
-    constexpr int32_t SCENE_BOARD_WINDOW_ID = 1;
-}
 AccessibilityWindowConnection::AccessibilityWindowConnection(
-    const int32_t windowId, const int32_t accountId)
+    const int32_t windowId, const sptr<IAccessibilityElementOperator>& connection, const int32_t accountId)
 {
     windowId_ = windowId;
+    proxy_ = connection;
     accountId_ = accountId;
 }
 
-AccessibilityWindowConnection::AccessibilityWindowConnection(const int32_t windowId, const int32_t treeId,
-    const sptr<IAccessibilityElementOperator> &elementOperator, const int32_t accountId)
+AccessibilityWindowConnection::AccessibilityWindowConnection(
+    const int32_t windowId, const int32_t treeId,
+    const sptr<IAccessibilityElementOperator>& connection, const int32_t accountId)
 {
     windowId_ = windowId;
     treeId_ = treeId;
+    proxy_ = connection;
     accountId_ = accountId;
-    cardProxy_.EnsureInsert(treeId, elementOperator);
 }
 
 AccessibilityWindowConnection::~AccessibilityWindowConnection()
@@ -100,48 +99,35 @@ void AccessibilityWindowConnection::EraseProxy(const int32_t treeId)
     }
 }
 
-void AccessibilityWindowConnection::SetProxy(uint64_t displayId, sptr<IAccessibilityElementOperator> proxy)
+void AccessibilityWindowConnection::AddDeathRecipient(int32_t windowId, int32_t accountId, bool isBroker)
 {
-    AddDeathRecipient(proxy, false, displayId);
-}
- 
-void AccessibilityWindowConnection::SetBrokerProxy(sptr<IAccessibilityElementOperator> proxy)
-{
-    AddDeathRecipient(proxy, true, 0);
-}
-
-void AccessibilityWindowConnection::AddDeathRecipient(
-    sptr<IAccessibilityElementOperator> elementOperator, bool isBroker, uint64_t displayId)
-{
+    sptr<IAccessibilityElementOperator> elementOperator = isBroker ? brokerProxy_ : proxy_;
     if (!elementOperator || !elementOperator->AsObject()) {
         return;
     }
     sptr<IRemoteObject::DeathRecipient> deathRecipient =
-        new(std::nothrow) InteractionOperationDeathRecipient(windowId_, accountId_, displayId);
+        new(std::nothrow) InteractionOperationDeathRecipient(windowId, accountId);
     if (!deathRecipient) {
         HILOG_ERROR("Create interactionOperationDeathRecipient failed");
         return;
     }
     if (elementOperator->AsObject()->AddDeathRecipient(deathRecipient)) {
-        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         if (isBroker) {
-            brokerProxy_ = elementOperator;
             brokerProxyDeathRecipient_ = deathRecipient;
         } else {
-            proxyMap_.insert({displayId, {elementOperator, deathRecipient}});
+            proxyDeathRecipient_ = deathRecipient;
         }
     }
 }
  
-void AccessibilityWindowConnection::AddTreeDeathRecipient(
-    int32_t windowId, int32_t accountId, int32_t treeId, uint64_t displayId)
+void AccessibilityWindowConnection::AddTreeDeathRecipient(int32_t windowId, int32_t accountId, int32_t treeId)
 {
     sptr<IAccessibilityElementOperator> elementOperator = GetCardProxy(treeId);
     if (!elementOperator || !elementOperator->AsObject()) {
         return;
     }
     sptr<IRemoteObject::DeathRecipient> deathRecipient =
-        new(std::nothrow) InteractionOperationDeathRecipient(windowId, treeId, accountId, displayId);
+        new(std::nothrow) InteractionOperationDeathRecipient(windowId, treeId, accountId);
     if (!deathRecipient) {
         HILOG_ERROR("Create interactionOperationDeathRecipient failed");
     }
@@ -178,24 +164,6 @@ void AccessibilityWindowConnection::ResetProxy()
 void AccessibilityWindowConnection::ResetBrokerProxy()
 {
     HILOG_INFO();
-}
-
-bool AccessibilityWindowConnection::CheckScbTokenIdMap(uint32_t tokenId)
-{
-    return scbTokenMap_.count(tokenId) != 0;
-}
- 
-sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetProxy(uint64_t displayId)
-{
-    std::lock_guard<ffrt::mutex> lock(proxyMutex_);
-    if (windowId_ != SCENE_BOARD_WINDOW_ID) {
-        displayId = 0;
-    }
-    if (isUseBrokerProxy_) {
-        return brokerProxy_;
-    } else {
-        return proxyMap_[displayId].first;
-    }
 }
 } // namespace Accessibility
 } // namespace OHOS

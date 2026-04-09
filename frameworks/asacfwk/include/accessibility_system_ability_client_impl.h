@@ -53,7 +53,7 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     virtual RetError RegisterElementOperator(const int32_t windowId,
-        const std::shared_ptr<AccessibilityElementOperator> &operation, uint64_t displayId = 0) override;
+        const std::shared_ptr<AccessibilityElementOperator> &operation) override;
 
     /**
      * @brief Register the element operator, so the AA can get node info from ACE.
@@ -62,14 +62,14 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     virtual RetError RegisterElementOperator(Registration parameter,
-        const std::shared_ptr<AccessibilityElementOperator> &operation, uint64_t displayId = 0) override;
+        const std::shared_ptr<AccessibilityElementOperator> &operation) override;
 
     /**
      * @brief Deregister the element operator.
      * @param windowId Window ID
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual RetError DeregisterElementOperator(const int32_t windowId, uint64_t displayId = 0) override;
+    virtual RetError DeregisterElementOperator(const int32_t windowId) override;
 
     /**
      * @brief Deregister the element operator.
@@ -77,8 +77,7 @@ public:
      * @param treeId Tree ID
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual RetError DeregisterElementOperator(
-        const int32_t windowId, const int32_t treeId, uint64_t displayId = 0) override;
+    virtual RetError DeregisterElementOperator(const int32_t windowId, const int32_t treeId) override;
 
     /**
      * @brief Checks whether screenreader ability is enabled.
@@ -413,7 +412,7 @@ private:
     StateArrayHandler stateHandler_;
     StateObserversArray stateObserversArray_;
 
-    std::map<std::pair<int32_t, uint64_t>, sptr<AccessibilityElementOperatorImpl>> elementOperators_;
+    std::map<int32_t, sptr<AccessibilityElementOperatorImpl>> elementOperators_;
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerStateObserverImpl> stateObserver_ = nullptr;

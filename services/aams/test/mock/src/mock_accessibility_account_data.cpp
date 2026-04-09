@@ -457,16 +457,6 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::RemoveAccountData(
     return accountData;
 }
 
-std::vector<int32_t> AccessibilityAccountDataMap::GetAllAccountIds()
-{
-    std::lock_guard<ffrt::mutex> lock(accountDataMutex_);
-    std::vector<int32_t> accountIds;
-    for (auto it = accountDataMap_.begin(); it != accountDataMap_.end(); it++) {
-        accountIds.push_back(it->first);
-    }
-    return accountIds;
-}
-
 void AccessibilityAccountDataMap::Clear()
 {
     accountDataMap_.clear();
@@ -533,6 +523,11 @@ void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data
     (void)data;
 }
 
+int32_t AccessibilityAccountData::GetReadableRules(std::string &readableRules)
+{
+    return 0;
+}
+
 void AccessibilityAccountData::AddAppStateObserverAbility(
     const std::string& uri, const sptr<AccessibleAbilityConnection>& connection)
 {
@@ -551,41 +546,6 @@ sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAppStateObserverA
 void AccessibilityAccountData::NotifyExtensionServiceDeath(const std::string& uri)
 {
     (void)uri;
-}
-
-ElementOperatorManager& AccessibilityAccountData::GetElementOperatorManager()
-{
-    return elementOperatorManager_;
-}
-AccessibleAbilityManager& AccessibilityAccountData::GetAccessibleAbilityManager()
-{
-    return accessibleAbilityManager_;
-}
- 
-AccessibilityWindowManager& AccessibilityAccountData::GetWindowManager()
-{
-    return windowManager_;
-}
- 
-RetError AccessibilityAccountData::ConfigureEvents(std::vector<uint32_t> needEvents)
-{
-    return RET_OK;
-}
- 
-RetError AccessibilityAccountData::RegisterStateObserver(
-    const sptr<IAccessibleAbilityManagerStateObserver> &stateObserver, uint32_t &state)
-{
-    return RET_OK;
-}
- 
-uint32_t AccessibilityAccountData::UpdateAccessibilityState()
-{
-    return 0;
-}
- 
-void AccessibilityAccountData::RemoveStateObserver(const wptr<IRemoteObject> &remote)
-{
-    (void)remote;
 }
 } // namespace Accessibility
 } // namespace OHOS

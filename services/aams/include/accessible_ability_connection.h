@@ -33,8 +33,7 @@ class AccessibilityAccountData;
 
 class AccessibleAbilityConnection : public AAFwk::AbilityConnectionStub {
 public:
-    AccessibleAbilityConnection(int32_t accountId, int32_t connectionId, AccessibilityAbilityInfo &abilityInfo,
-        const wptr<AccessibilityAccountData> &accountData);
+    AccessibleAbilityConnection(int32_t accountId, int32_t connectionId, AccessibilityAbilityInfo &abilityInfo);
 
     virtual ~AccessibleAbilityConnection();
 
@@ -116,7 +115,6 @@ private:
     std::string connectionKey_;
     sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
     sptr<AppExecFwk::IAppMgr> GetAppMgrProxy();
-    wptr<AccessibilityAccountData> accountData_;
 };
 } // namespace Accessibility
 } // namespace OHOS

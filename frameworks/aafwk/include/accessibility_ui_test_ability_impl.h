@@ -45,15 +45,14 @@ public:
      * @return Return RET_OK if the command of connection is sent successfully,
      *         otherwise refer to the RetError for the failure.
      */
-    virtual RetError Connect(int32_t userId = 0) override;
+    virtual RetError Connect() override;
 
     /**
      * @brief disconnect to AAMS. For UI test.
      * @return Return RET_OK if the command of disconnect is sent successfully,
      *         otherwise refer to the RetError for the failure.
      */
-    virtual RetError Disconnect(int32_t userId = 0) override;
-    virtual int32_t GetCurrentUserId() override;
+    virtual RetError Disconnect() override;
 
     /**
      * @brief Obtains elementInfo of focus.
