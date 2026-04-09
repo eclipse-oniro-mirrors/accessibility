@@ -93,6 +93,7 @@ public:
     void InitSceneBoard();
     bool CheckWindowIdEventExist(int32_t windowId);
     void IsCheckWindowIdEventExist(int32_t windowId);
+    bool CheckWindowRegister(int32_t windowId);
 
     std::map<int32_t, AccessibilityWindowInfo> a11yWindows_ {};
     int32_t activeWindowId_ = INVALID_WINDOW_ID;

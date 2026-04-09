@@ -50,7 +50,11 @@ sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetProxy(uint
     if (isUseBrokerProxy_) {
         return brokerProxy_;
     } else {
-        return proxyMap_[displayId].first;
+        auto iter = proxyMap_.find(displayId);
+        if (iter != proxyMap_.end()) {
+            return iter->second.first;
+        }
+        return nullptr;
     }
 }
 

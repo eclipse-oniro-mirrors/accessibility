@@ -440,7 +440,7 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEv
             winId = SCENE_BOARD_WINDOW_ID;
         }
         SetEventInfoBundleName(evtInfParcel);
-        if (aams.CheckWindowRegister(winId)) {
+        if (CheckWindowRegister(winId)) {
             HILOG_DEBUG("send active event, windowId: %{public}d", winId);
             aams.InnerSendEvent(evtInfParcel, 0, accountId_);
         } else {
@@ -449,6 +449,16 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId, bool isSendEv
         }
     }
     HILOG_DEBUG("activeWindowId is %{public}d", activeWindowId_);
+}
+
+bool AccessibilityWindowManager::CheckWindowRegister(int32_t windowId)
+{
+    sptr<AccessibilityAccountData> accountData = accountData_.promote();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
+    return accountData_->GetElementOperatorManager().GetAccessibilityWindowConnection(windowId) != nullptr;
 }
 
 int32_t AccessibilityWindowManager::GetActiveWindowId()
@@ -758,7 +768,6 @@ void AccessibilityWindowManager::WindowUpdateFocused(const std::vector<sptr<Rose
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
             HILOG_ERROR("invalid windowInfo");
@@ -790,7 +799,6 @@ void AccessibilityWindowManager::WindowUpdateBounds(const std::vector<sptr<Rosen
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
             HILOG_ERROR("invalid windowInfo");

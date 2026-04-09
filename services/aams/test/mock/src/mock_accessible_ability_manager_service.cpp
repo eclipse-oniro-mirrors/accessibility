@@ -634,12 +634,6 @@ ErrCode AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWind
     return RET_OK;
 }
 
-bool AccessibleAbilityManagerService::CheckWindowRegister(int32_t windowId)
-{
-    (void)windowId;
-    return true;
-}
-
 bool AccessibleAbilityManagerService::CheckPermission(const std::string &permission) const
 {
     (void)permission;

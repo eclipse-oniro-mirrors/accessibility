@@ -35,8 +35,11 @@ public:
     sptr<IAccessibilityElementOperator> GetProxy(uint64_t displayId);
     inline sptr<IAccessibilityElementOperator> GetRawProxy(uint64_t displayId)
     {
-        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
-        return proxyMap_[displayId].first;
+        auto iter = proxyMap_.find(displayId);
+        if (iter != proxyMap_.end()) {
+            return iter->second.first;
+        }
+        return nullptr;
     }
     inline int GetCardProxySize()
     {
