@@ -210,7 +210,6 @@ public:
 
     void UpdateAccessibilityManagerService();
     bool CheckWindowIdEventExist(int32_t windowId);
-    bool CheckWindowRegister(int32_t windowId);
 
     // used for arkui windowId 1 map to WMS windowId
     ErrCode SetScreenMagnificationState(const bool state) override;
