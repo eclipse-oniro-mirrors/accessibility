@@ -1176,8 +1176,14 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::GetAccountData(
         return iter->second;
     }
 
-    HILOG_DEBUG("accountId is not existed");
-    return nullptr;
+    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
+    if (!accountData) {
+        HILOG_ERROR("accountData is null");
+        return nullptr;
+    }
+
+    accountDataMap_[accountId] = accountData;
+    return accountData;
 }
 
 sptr<AccessibilityAccountData> AccessibilityAccountDataMap::RemoveAccountData(
