@@ -768,6 +768,7 @@ void AccessibilityWindowManager::WindowUpdateFocused(const std::vector<sptr<Rose
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
             HILOG_ERROR("invalid windowInfo");
@@ -790,7 +791,7 @@ void AccessibilityWindowManager::WindowUpdateFocused(const std::vector<sptr<Rose
         if (isSendWindowEvent) {
             AccessibilityEventInfo evtInfFocused(realWidId, WINDOW_UPDATE_FOCUSED);
             AccessibilityEventInfoParcel evtInfParcel(evtInfFocused);
-            subWindows_.insert({realWidId, windowInfo->displayId_});
+            aams.InnerSendEvent(evtInfParcel, 0, accountId_);
         }
     }
 }
@@ -799,6 +800,7 @@ void AccessibilityWindowManager::WindowUpdateBounds(const std::vector<sptr<Rosen
 {
     HILOG_DEBUG();
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
             HILOG_ERROR("invalid windowInfo");
@@ -814,7 +816,7 @@ void AccessibilityWindowManager::WindowUpdateBounds(const std::vector<sptr<Rosen
         if (isSendWindowEvent) {
             AccessibilityEventInfo evtInfBounds(realWidId, WINDOW_UPDATE_BOUNDS);
             AccessibilityEventInfoParcel evtInfParcel(evtInfBounds);
-            subWindows_.insert({realWidId, windowInfo->displayId_});
+            aams.InnerSendEvent(evtInfParcel, 0, accountId_);
         }
     }
 }
