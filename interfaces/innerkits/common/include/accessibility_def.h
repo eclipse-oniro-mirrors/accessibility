@@ -507,6 +507,21 @@ inline constexpr const char* ERROR_MESSAGE_TARGET_ABILITY_ALREADY_ENABLED = "Tar
 inline constexpr const char* ERROR_MESSAGE_ENABLE_MAGNIFICATION = "Failed to trigger magnification.";
 inline constexpr const char* ERROR_MESSAGE_CAPABILITY_NOT_SUPPORT = "Capability not supported."
     "Failed to call the API due to limited device capabilities.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_FAILED = "System abnormality. Internal operation failed.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_NULLPTR = "System abnormality. A required service or client object is null.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_IPC_FAILED = "System abnormality. IPC communication failed.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_SAMGR = "System abnormality. Failed to obtain the accessibility service from SAMGR.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_TIMEOUT = "System abnormality. Waiting for the asynchronous operation result timed out.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_REGISTER_EXIST = "System abnormality. The listener or observer is already registered.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_REGISTER = "System abnormality. The window element operator is not registered.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_CONNECTION = "System abnormality. The accessibility ability is not connected to the accessibility service.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_WINDOW_CONNECTION = "System abnormality. The specified window is not connected to ACE.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_INVALID_ELEMENT_INFO = "System abnormality. The element information received from ACE is invalid.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_PERFORM_ACTION_FAILED = "System abnormality. Failed to perform the action in ACE.";
+inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_INJECTOR = "System abnormality. The gesture injector is unavailable.";
+inline constexpr const char* ERROR_MESSAGE_EXTENSION_NOT_INSTALLED = "Invalid bundle name or ability name. The accessibility ability is not installed.";
+inline constexpr const char* ERROR_MESSAGE_EXTENSION_NOT_ENABLED = "Invalid bundle name or ability name. The accessibility ability is not enabled.";
+inline constexpr const char* ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED = "The target application failed to connect to accessibility service.";
 
 enum class NAccessibilityErrorCode : int32_t {
     ACCESSIBILITY_OK = 0,
@@ -520,6 +535,7 @@ enum class NAccessibilityErrorCode : int32_t {
     ACCESSIBILITY_ERROR_NO_RIGHT = 9300003,
     ACCESSIBILITY_ERROR_PROPERTY_NOT_EXIST = 9300004,
     ACCESSIBILITY_ERROR_ACTION_NOT_SUPPORT = 9300005,
+    ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED = 9300006,
     ACCESSIBILITY_ERROR_ENABLE_MAGNIFICATION = 9300007,
 };
 
