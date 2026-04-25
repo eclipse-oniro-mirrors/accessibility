@@ -1032,6 +1032,11 @@ bool ConvertActionArgsJSToNAPI(
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
                 args.insert(std::pair<std::string, std::string>("customActions", str.c_str()));
+            } else {
+                HILOG_ERROR("customActions is required for CUSTOM action");
+                napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
+                napi_throw(env, err);
+                ret = false;
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:

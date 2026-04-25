@@ -537,6 +537,7 @@ export class Parameter {
     offset?: string = '';
     spanId?: string = '';
     scrollType?: string = '';
+    customActions?: string = '';
     accessibilityFocusScene?: AccessibilityFocusScene;
 }
 

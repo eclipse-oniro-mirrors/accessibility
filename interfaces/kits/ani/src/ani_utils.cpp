@@ -1354,6 +1354,9 @@ void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
             if (env->Object_GetFieldByName_Ref(obj, "customActions", &fiedNameValue) == ANI_OK) {
                 str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
                 args.insert(std::pair<std::string, std::string>("customActions", str.c_str()));
+            } else {
+                HILOG_ERROR("customActions is required for CUSTOM action");
+                ThrowBusinessError(env, QueryRetMsg(RetError::RET_ERR_INVALID_PARAM));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
