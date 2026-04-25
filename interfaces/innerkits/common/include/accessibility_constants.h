@@ -41,6 +41,7 @@ extern const std::string ACTION_ARGU_SPAN_ID;
 extern const std::string ACTION_ARGU_CLICK_ENHANCE_DATA;
 extern const std::string ACTION_ARGU_CLICK_TIMESTAMP;
 extern const std::string ACTION_ARGU_CUSTOM_ACTION;
+extern const std::string ACTION_ARGU_ACCESSIBILITY_FOCUS_SCENE;
 
 // HtmlItemType
 extern const std::string HTML_ITEM_INVALID;

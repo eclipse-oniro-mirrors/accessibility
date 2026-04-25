@@ -95,6 +95,7 @@ public:
     static void CheckNumber(ani_env *env, std::string value);
     static void SetScrollTypeParam(ani_env *env, ani_object obj, std::map<std::string, std::string>& args);
     static void SetSelectionParam(ani_env *env, ani_object obj, std::map<std::string, std::string>& args);
+    static void SetAccessibilityFocusSceneParam(ani_env *env, ani_object obj, std::map<std::string, std::string>& args);
     static void ConvertActionArgsJSToANI(ani_env *env, ani_object obj, std::map<std::string, std::string>& args,
         OHOS::Accessibility::ActionType action);
 

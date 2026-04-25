@@ -37,6 +37,7 @@ const std::string ACTION_ARGU_SPAN_ID = "spanId";
 const std::string ACTION_ARGU_CLICK_ENHANCE_DATA = "enhanceData";
 const std::string ACTION_ARGU_CLICK_TIMESTAMP = "timeStamp";
 const std::string ACTION_ARGU_CUSTOM_ACTION = "customActions";
+const std::string ACTION_ARGU_ACCESSIBILITY_FOCUS_SCENE = "accessibilityFocusScene";
 
 // HtmlItemType
 const std::string HTML_ITEM_INVALID = "invalid";

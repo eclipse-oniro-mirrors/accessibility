@@ -194,6 +194,12 @@ enum ActionType : int32_t {
     ACCESSIBILITY_ACTION_TYPE_MASK = 0x1FFFFFFF,
 };
 
+enum AccessibilityFocusScene : int32_t {
+    HOVER_FOCUS = 1,
+    SWIPE_FOCUS = 2,
+    SCROLL_FOCUS = 3,
+};
+
 // text move step
 enum TextMoveUnit : int32_t {
     STEP_INVALID = 0,

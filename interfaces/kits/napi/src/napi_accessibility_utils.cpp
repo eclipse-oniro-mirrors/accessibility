@@ -1040,6 +1040,9 @@ bool ConvertActionArgsJSToNAPI(
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
             ret = SetScrollTypeParam(env, object, args);
             break;
+        case ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS:
+            ret = SetAccessibilityFocusSceneParam(env, object, args);
+            break;
         default:
             break;
     }
@@ -1123,6 +1126,33 @@ bool SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, s
             return false;
         }
         args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
+    }
+    return true;
+}
+
+bool SetAccessibilityFocusSceneParam(napi_env env, napi_value object, std::map<std::string, std::string>& args)
+{
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
+    std::string str = "";
+    static const std::map<std::string, std::string> focusSceneMap = {
+        {"HOVER_FOCUS", "1"},
+        {"SWIPE_FOCUS", "2"},
+        {"SCROLL_FOCUS", "3"}
+    };
+
+    napi_create_string_utf8(env, "accessibilityFocusScene", NAPI_AUTO_LENGTH, &propertyNameValue);
+    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        auto it = focusSceneMap.find(str);
+        if (it != focusSceneMap.end()) {
+            args.insert(std::pair<std::string, std::string>("accessibilityFocusScene", it->second.c_str()));
+        } else {
+            HILOG_ERROR("Invalid accessibilityFocusScene value: %{public}s", str.c_str());
+            napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
+            napi_throw(env, err);
+            return false;
+        }
     }
     return true;
 }

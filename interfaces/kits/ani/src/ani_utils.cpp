@@ -1290,6 +1290,23 @@ void ANIUtils::SetSelectionParam(ani_env *env, ani_object obj, std::map<std::str
     }
 }
 
+void ANIUtils::SetAccessibilityFocusSceneParam(ani_env *env, ani_object obj, std::map<std::string, std::string>& args)
+{
+    ani_ref fiedNameValue;
+    if (env->Object_GetFieldByName_Ref(obj, "accessibilityFocusScene", &fiedNameValue) == ANI_OK) {
+        ani_enum_item enumItem = static_cast<ani_enum_item>(fiedNameValue);
+        ani_int intValue = 0;
+        if (env->EnumItem_GetValue_Int(enumItem, &intValue) == ANI_OK) {
+            if (intValue >= AccessibilityFocusScene::HOVER_FOCUS && intValue <= AccessibilityFocusScene::SCROLL_FOCUS) {
+                args.insert(std::pair<std::string, std::string>("accessibilityFocusScene", std::to_string(intValue)));
+            } else {
+                HILOG_ERROR("Invalid AccessibilityFocusScene value: %{public}d", intValue);
+                ThrowBusinessError(env, QueryRetMsg(RetError::RET_ERR_INVALID_PARAM));
+            }
+        }
+    }
+}
+
 void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
     std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action)
 {
@@ -1342,6 +1359,9 @@ void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
             SetScrollTypeParam(env, obj, args);
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS:
+            SetAccessibilityFocusSceneParam(env, obj, args);
             break;
         default:
             break;

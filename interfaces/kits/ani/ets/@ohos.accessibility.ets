@@ -43,6 +43,12 @@ export enum AccessibilityAction {
   CUSTOM_ACTION = 21
 }
 
+export enum AccessibilityFocusScene {
+  HOVER_FOCUS = 1,
+  SWIPE_FOCUS = 2,
+  SCROLL_FOCUS = 3
+}
+
 export enum AccessibilityEventType {
   TYPE_ACCESSIBILITY_FOCUS = 0,
   TYPE_ACCESSIBILITY_FOCUS_CLEAR = 1,
