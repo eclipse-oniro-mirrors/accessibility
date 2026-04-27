@@ -381,6 +381,31 @@ public:
     {
         return RET_OK;
     }
+    ErrCode RegisterSeniorModeStateObserver(
+        const sptr<IAccessibilityAppSeniorModeStateObserver> &observer) override
+    {
+        return RET_OK;
+    }
+    ErrCode DeRegisterSeniorModeStateObserver(const sptr<IRemoteObject>& obj) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetSeniorModeStateForApp(bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode SetSeniorModeStateForApp(const bool state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode SetSeniorModeStateForApp(const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos) override
+    {
+        return RET_OK;
+    }
 };
 
 uint32_t GetU32Data(const uint8_t *ptr)

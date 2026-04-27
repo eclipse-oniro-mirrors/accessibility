@@ -139,6 +139,13 @@ public:
     RetError ConfigureEvents(std::vector<uint32_t> needEvents);
     ErrCode GetReadableRules(std::string &name) override;
     ErrCode IsInnerWindowRootElement(int64_t elementId, bool &state) override;
+    ErrCode RegisterSeniorModeStateObserver(
+        const sptr<IAccessibilityAppSeniorModeStateObserver> &observer) override;
+    ErrCode DeRegisterSeniorModeStateObserver(const sptr<IRemoteObject>& obj) override;
+    ErrCode GetSeniorModeStateForApp(bool &state) override;
+    ErrCode SetSeniorModeStateForApp(const bool state) override;
+    ErrCode GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, bool &state) override;
+    ErrCode SetSeniorModeStateForApp(const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos) override;
 
 private:
     std::shared_ptr<AppExecFwk::EventRunner> runner_;

@@ -34,7 +34,8 @@ public:
     static std::string ANIStringToStdString(ani_env *env, ani_string ani_str);
     static ani_string StdStringToAniString(ani_env *env, std::string str);
     static bool GetStringField(ani_env *env, std::string fieldName, ani_object object, std::string &fieldValue,
-         bool isProperty = false);
+        bool isProperty = false);
+    static bool GetBoolField(ani_env *env, std::string fieldName, ani_object object, bool &fieldValue);
     static bool GetIntField(ani_env *env, std::string fieldName, ani_object object, int32_t &fieldValue);
     static bool GetLongProperty(ani_env *env, std::string fieldName, ani_object object, int64_t &fieldValue);
     static bool GetArrayStringField(ani_env *env, std::string fieldName, ani_object object,

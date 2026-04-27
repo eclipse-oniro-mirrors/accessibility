@@ -83,6 +83,7 @@ namespace {
     const char* SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
     const char* SCREEN_MAGNIFICATION_MODE = "accessibility_magnification_mode";
     const char* ELDER_CARE_ENABLED_KEY = "accessibility_elder_care_switch_enabled";
+    const char* SENIOR_MODE_STATE_KEY = "accessibility_senior_mode_state_for_app";
     const char* SCREEN_MAGNIFICATION_SCALE = "accessibility_display_magnification_scale";
     const char* SCREEN_MAGNIFICATION_TRIGGER_METHOD = "accessibility_display_magnification_trigger_method";
     const char* ZOOM_GESTURE_CONFLICT_DIALOG_OPEN = "accessibility_zoom_gesture_conflict_dialog_open";
@@ -402,6 +403,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         RegisterVoiceRecognitionState();
         RegisterFlashReminderSwitch();
         RegisterSeniorModeState();
+        RegisterSeniorModeStateForAppObserver();
         if (accessibilitySettings_) {
             accessibilitySettings_->RegisterParamWatcher();
             UpdateAccessibilityState();
@@ -1728,6 +1730,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     RegisterFlashReminderSwitch();
     RegisterNotificationState();
     RegisterSeniorModeState();
+    RegisterSeniorModeStateForAppObserver();
 }
 
 void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
@@ -2800,6 +2803,9 @@ void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
                 break;
             case CONFIG_CALLBACK:
                 accountData->RemoveConfigCallback(remote);
+                break;
+            case SENIOR_MODE_STATE_CALLBACK:
+                accountData->RemoveSeniorModeStateObserver(remote);
                 break;
             default:
                 break;
@@ -3878,6 +3884,237 @@ void AccessibleAbilityManagerService::RegisterNotificationState()
         accountData->GetConfig()->GetDbHandle()->RegisterObserver(
             TRANSITION_ANIMATIONS_NOTIFICATION, transitionAnimationsfunc);
     }
+}
+
+void AccessibleAbilityManagerService::OnSeniorModeStateForAppChanged()
+{
+    HILOG_INFO("OnSeniorModeStateForAppChanged");
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::map<std::string, bool> changes;
+    accountData->GetSeniorModeStateForAppChanges(changes);
+
+    for (const auto& item : changes) {
+        std::string bundleName;
+        int32_t appIndex = 0;
+        if (!Utils::ParseSeniorModeStateKey(item.first, bundleName, appIndex)) {
+            continue;
+        }
+
+        accountData->NotifySeniorModeStateObservers(bundleName, appIndex, item.second);
+    }
+}
+
+void AccessibleAbilityManagerService::RegisterSeniorModeStateForAppObserver()
+{
+    HILOG_INFO();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        HILOG_INFO("RegisterSeniorModeStateForAppObserver");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().OnSeniorModeStateForAppChanged();
+        };
+
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(SENIOR_MODE_STATE_KEY, func);
+        }
+        }, "REGISTER_VOICE_RECOGNITION");
+}
+
+ErrCode AccessibleAbilityManagerService::RegisterSeniorModeStateObserver(
+    const sptr<IAccessibilityAppSeniorModeStateObserver> &observer)
+{
+    HILOG_DEBUG();
+    if (!observer || !actionHandler_) {
+        HILOG_ERROR("Parameters check failed!");
+        return ERR_INVALID_DATA;
+    }
+    XCollieHelper timer(TIMER_REGISTER_ENABLEABILITY_OBSERVER, XCOLLIE_TIMEOUT);
+    std::shared_ptr<ffrt::promise<ErrCode>> syncPromisePtr = std::make_shared<ffrt::promise<ErrCode>>();
+    ffrt::future syncFuture = syncPromisePtr->get_future();
+    actionHandler_->PostTask([this, syncPromisePtr, observer]() {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Account data is null");
+            syncPromisePtr->set_value(ERR_INVALID_DATA);
+            return;
+        }
+        if (!seniorModeStateObserverDeathRecipient_) {
+            seniorModeStateObserverDeathRecipient_ = new(std::nothrow) SeniorModeStateObserverDeathRecipient();
+            if (!seniorModeStateObserverDeathRecipient_) {
+                HILOG_ERROR("seniorModeStateObserverDeathRecipient_ is null");
+                syncPromisePtr->set_value(ERR_INVALID_DATA);
+                return;
+            }
+        }
+        if (!observer->AsObject()) {
+            HILOG_ERROR("object is null");
+            syncPromisePtr->set_value(ERR_OK);
+            return;
+        }
+        observer->AsObject()->AddDeathRecipient(seniorModeStateObserverDeathRecipient_);
+        accountData->AddSeniorModeStateObserver(observer);
+        syncPromisePtr->set_value(ERR_OK);
+        }, "TASK_REGISTER_SENIOR_MODE_STATE_OBSERVER");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait RegisterSeniorModeStateObserver result");
+        return ERR_TRANSACTION_FAILED;
+    }
+    return syncFuture.get();
+}
+
+ErrCode AccessibleAbilityManagerService::DeRegisterSeniorModeStateObserver(
+    const sptr<IRemoteObject>& obj)
+{
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    accountData->RemoveSeniorModeStateObserver(obj);
+    return RET_OK;
+}
+
+void AccessibleAbilityManagerService::SeniorModeStateObserverDeathRecipient::OnRemoteDied(
+    const wptr<IRemoteObject> &remote)
+{
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveCallback(
+        SENIOR_MODE_STATE_CALLBACK, this, remote);
+}
+
+ErrCode AccessibleAbilityManagerService::GetSeniorModeStateForApp(bool &state)
+{
+    PostDelayUnloadTask();
+    auto id = IPCSkeleton::GetCallingTokenID();
+    Security::AccessToken::HapTokenInfo info;
+    auto result = Security::AccessToken::AccessTokenKit::GetHapTokenInfo(id, info);
+    if (result != 0) {
+        HILOG_ERROR("get native token info failed!, result: %{public}d", result);
+        return RET_ERR_NULLPTR;
+    }
+
+    std::string bundleName = info.bundleName;
+    auto instIndex = info.instIndex;
+    HILOG_INFO("processName: %{public}s, instIndex: %{public}d", bundleName.c_str(), instIndex);
+    return accessibilitySettings_->GetSeniorModeStateForApp(bundleName, instIndex, state);
+}
+
+ErrCode AccessibleAbilityManagerService::SetSeniorModeStateForApp(const bool state)
+{
+    PostDelayUnloadTask();
+    auto id = IPCSkeleton::GetCallingTokenID();
+    HILOG_INFO("id :%{public}d", id);
+    Security::AccessToken::HapTokenInfo info;
+    auto result = Security::AccessToken::AccessTokenKit::GetHapTokenInfo(id, info);
+    if (result != 0) {
+        HILOG_ERROR("get native token info failed!, result: %{public}d", result);
+    }
+
+    std::string bundleName = info.bundleName;
+    auto instIndex = info.instIndex;
+    HILOG_INFO("processName: %{public}s, instIndex: %{public}d", bundleName.c_str(), instIndex);
+    return accessibilitySettings_->SetSeniorModeStateForApp(bundleName, instIndex, state);
+}
+
+ErrCode AccessibleAbilityManagerService::GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,
+    bool &state)
+{
+    HILOG_INFO();
+    return accessibilitySettings_->GetSeniorModeStateForApp(bundleName, appIndex, state);
+}
+
+ErrCode AccessibleAbilityManagerService::SetSeniorModeStateForApp(
+    const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos)
+{
+    auto ret = RET_OK;
+    for (auto &info : infos) {
+        auto tmpRet = accessibilitySettings_->SetSeniorModeStateForApp(info.bundleName_, info.appIndex_,
+            info.seniorModeState_);
+        if (tmpRet != RET_OK) {
+            ret = tmpRet;
+        }
+    }
+    return ret;
+}
+
+void AccessibleAbilityManagerService::StateObservers::AddStateObserver(
+    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver, const std::string &bundleName)
+{
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    auto iter = observersMap_.find(bundleName);
+    if (iter == observersMap_.end()) {
+        observersMap_[bundleName] = stateObserver;
+        HILOG_DEBUG("register state observer successfully");
+        return;
+    }
+    HILOG_INFO("state observer is existed");
+}
+
+void AccessibleAbilityManagerService::StateObservers::OnStateObservers(uint32_t state)
+{
+    HILOG_INFO("state is %{public}d", state);
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+
+    for (auto& stateObserver : observersMap_) {
+        if (stateObserver.second) {
+            stateObserver.second->OnStateChanged(state);
+        }
+    }
+}
+
+void AccessibleAbilityManagerService::StateObservers::OnSeniorModeStateObservers(const std::string &bundleName,
+    bool seniorModeStateForApp)
+{
+    HILOG_INFO("bundleName: %{public}s", bundleName.c_str());
+    auto iter = observersMap_.find(bundleName);
+    if (iter != observersMap_.end()) {
+        auto stateObserver = observersMap_[bundleName];
+        if (stateObserver) {
+            sptr<AccessibilityAccountData> accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+            uint32_t state = accountData->GetAccessibilityState();
+            if (seniorModeStateForApp) {
+                state |= STATE_SELF_SENIOR_MODE_STATE_ENABLED;
+            }
+            stateObserver->OnStateChanged(state);
+        }
+        HILOG_INFO("OnSeniorModeStateObservers successfully");
+        return;
+    }
+}
+
+void AccessibleAbilityManagerService::StateObservers::RemoveStateObserver(const wptr<IRemoteObject> &remote)
+{
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    for (auto iter = observersMap_.begin(); iter != observersMap_.end(); ++iter) {
+        if (iter->second && iter->second->AsObject() == remote) {
+            HILOG_INFO("RemoveStateObserver");
+            observersMap_.erase(iter);
+            return;
+        }
+    }
+}
+
+void AccessibleAbilityManagerService::StateObservers::Clear()
+{
+    std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    observersMap_.clear();
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -279,6 +279,10 @@ static napi_value Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("onSeniorModeStateChange", NAccessibilityClient::SubscribeStateSeniorMode),
         DECLARE_NAPI_FUNCTION("offSeniorModeStateChange", NAccessibilityClient::UnsubscribeStateSeniorMode),
         DECLARE_NAPI_FUNCTION("isSeniorModeEnabled", NAccessibilityClient::GetSeniorModeState),
+        DECLARE_NAPI_FUNCTION("onSeniorModeStateChangeForSelf", NAccessibilityClient::SubscribeSelfSeniorMode),
+        DECLARE_NAPI_FUNCTION("offSeniorModeStateChangeForSelf", NAccessibilityClient::UnsubscribeSelfSeniorMode),
+        DECLARE_NAPI_FUNCTION("getSeniorModeStateForSelf", NAccessibilityClient::GetSeniorModeStateForApp),
+        DECLARE_NAPI_FUNCTION("setSeniorModeStateForSelf", NAccessibilityClient::SetSeniorModeStateForApp),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
@@ -301,6 +305,7 @@ static napi_value Init(napi_env env, napi_value exports)
     NAccessibilityClient::animationOffStateListeners_->SubscribeToFramework();
     NAccessibilityClient::flashReminderSwitchStateListeners_->SubscribeToFramework();
     NAccessibilityClient::seniorModeStateListeners_->SubscribeToFramework();
+    NAccessibilityClient::seniorModeStateForAppListeners_->SubscribeToFramework();
 
     HILOG_INFO("-----Init end------");
     return exports;

@@ -118,6 +118,14 @@ public:
     void RemoveAppStateObserverAbility(const std::string& uri);
     sptr<AccessibleAbilityConnection> GetAppStateObserverAbility(const std::string& uri);
 
+    void AddSeniorModeStateObserver(const sptr<IAccessibilityAppSeniorModeStateObserver>& observer);
+    void RemoveSeniorModeStateObserver(const wptr<IRemoteObject>& observer);
+    void NotifySeniorModeStateObservers(const std::string&bundleName, int32_t appIndex, bool state);
+    void GetSeniorModeStateForAppChanges(std::map<std::string, bool>& changes);
+    void ParseSeniorModeStateJson(const std::string& jsonStr, std::map<std::string, bool>& map);
+    void CompareSeniorModeStateMap(const std::map<std::string, bool>& newMap,
+        const std::map<std::string, bool>& oldMap, std::map<std::string, bool>& changes);
+
     /**
      * @brief Add interface operation interactive connection.
      * @param windowId Interface operation interactive connection the
@@ -362,12 +370,15 @@ private:
     public:
         StateObservers() = default;
         ~StateObservers() = default;
-        void AddStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver);
+        void AddStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver,
+            const std::string &bundleName);
         void OnStateObservers(uint32_t state);
+        void OnSeniorModeStateObservers(const std::string &bundleName, int32_t appIndex, bool state);
         void RemoveStateObserver(const wptr<IRemoteObject>& remote);
         void Clear();
     private:
         std::vector<sptr<IAccessibleAbilityManagerStateObserver>> observersList_;
+        std::map<std::string, sptr<IAccessibleAbilityManagerStateObserver>> observersMap_;
         ffrt::mutex stateObserversMutex_;
     };
 
@@ -390,6 +401,8 @@ private:
     ElementOperatorManager elementOperatorManager_;
     AccessibilityWindowManager windowManager_;
     StateObservers stateObservers_;
+    std::vector<sptr<IAccessibilityAppSeniorModeStateObserver>> seniorModeStateObservers_;
+    ffrt::mutex seniorModeStateObserversMutex_;
 };
 
 class AccessibilityAccountDataMap {

@@ -18,12 +18,14 @@ import AccessibilityIpcTypes;
 sequenceable parcel.accessibility_ability_info_parcel..OHOS.Accessibility.AccessibilityAbilityInfoParcel;
 sequenceable parcel.accessibility_caption_parcel..OHOS.Accessibility.CaptionPropertyParcel;
 sequenceable parcel.accessibility_event_info_parcel..OHOS.Accessibility.AccessibilityEventInfoParcel;
+sequenceable parcel.accessibility_bundle_senior_mode_info_parcel..OHOS.Accessibility.AccessibilityBundleSeniorModeInfoParcel;
 interface OHOS.Accessibility.IAccessibleAbilityManagerStateObserver;
 interface OHOS.Accessibility.IAccessibleAbilityManagerCaptionObserver;
 interface OHOS.Accessibility.IAccessibilityEnableAbilityListsObserver;
 interface OHOS.Accessibility.IAccessibilityEnableAbilityCallbackObserver;
 interface OHOS.Accessibility.IAccessibilityElementOperator;
 interface OHOS.Accessibility.IAccessibleAbilityManagerConfigObserver;
+interface OHOS.Accessibility.IAccessibilityAppSeniorModeStateObserver;
 sequenceable OHOS.IRemoteObject;
 rawdata OHOS.Accessibility.AccessibilitySecCompRawdata;
 
@@ -38,6 +40,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     [oneway] void RegisterElementOperatorByParameter([in] RegistrationPara parameter, [in] IAccessibilityElementOperator elementOperator);
     [oneway] void DeregisterElementOperatorByWindowId([in] int windowId, [in] unsigned long displayId);
     [oneway] void DeregisterElementOperatorByWindowIdAndTreeId([in] int windowId, [in] int treeId, [in] unsigned long displayId);
+    [oneway] void RegisterSeniorModeStateObserver([in] IAccessibilityAppSeniorModeStateObserver observer);
     void GetCaptionProperty([out] CaptionPropertyParcel caption, [in] boolean isPermissionRequired);
     void GetCaptionState([out] boolean state, [in] boolean isPermissionRequired);
     void SetCaptionProperty([in] CaptionPropertyParcel caption, [in] boolean isPermissionRequired);
@@ -104,4 +107,9 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void DeRegisterEnableAbilityCallbackObserver([in] IRemoteObject obj);
     void DeRegisterConfigObserver([in] IRemoteObject obj);
     void IsInnerWindowRootElement([in] long elementId, [out] boolean state);
+    void GetSeniorModeStateForApp([out] boolean state);
+    void SetSeniorModeStateForApp([in] boolean state);
+    void GetSeniorModeStateForApp([in] String name, [in] int appIndex, [out] boolean state);
+    void SetSeniorModeStateForApp([in] AccessibilityBundleSeniorModeInfoParcel[] infos);
+    void DeRegisterSeniorModeStateObserver([in] IRemoteObject obj);
 }

@@ -45,6 +45,12 @@ enum IGNORE_REPEAT_CLICK_TIME : uint32_t {
     RepeatClickTimeoutLong,
     RepeatClickTimeoutLongest,
 };
+
+struct AccessibilityBundleSeniorModeInfo {
+    std::string bundleName_ = "";
+    bool seniorModeState_ = false;
+    int32_t appIndex_ = 0;
+};
 }
 }
 

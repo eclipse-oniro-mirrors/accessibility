@@ -53,7 +53,8 @@ enum CallBackID {
     STATE_CALLBACK,
     CAPTION_PROPERTY_CALLBACK,
     ENABLE_ABILITY_LISTS_CALLBACK,
-    CONFIG_CALLBACK
+    CONFIG_CALLBACK,
+    SENIOR_MODE_STATE_CALLBACK
 };
 
 constexpr int REQUEST_ID_INIT = 65535;
@@ -108,6 +109,9 @@ public:
     ErrCode RegisterElementOperatorByParameter(const RegistrationPara& parameter,
         const sptr<IAccessibilityElementOperator>& elementOperator) override;
 
+    ErrCode RegisterSeniorModeStateObserver(
+        const sptr<IAccessibilityAppSeniorModeStateObserver> &observer) override;
+
     ErrCode DeregisterElementOperatorByWindowId(const int32_t windowId, uint64_t displayId) override;
 
     ErrCode DeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId, int32_t treeId, uint64_t displayId) override;
@@ -124,6 +128,8 @@ public:
     ErrCode DeRegisterEnableAbilityListsObserver(const sptr<IRemoteObject>& obj) override;
 
     ErrCode DeRegisterEnableAbilityCallbackObserver(const sptr<IRemoteObject>& obj) override;
+
+    ErrCode DeRegisterSeniorModeStateObserver(const sptr<IRemoteObject>& obj) override;
 
     ErrCode GetCaptionProperty(CaptionPropertyParcel &caption, bool isPermissionRequired) override;
     ErrCode SetCaptionProperty(const CaptionPropertyParcel &caption, bool isPermissionRequired) override;
@@ -230,7 +236,8 @@ public:
     ErrCode SetClickResponseTime(const uint32_t time) override;
     ErrCode SetIgnoreRepeatClickState(const bool state) override;
     ErrCode SetIgnoreRepeatClickTime(const uint32_t time) override;
-    ErrCode GetSeniorModeState(bool &state) override;
+    ErrCode SetSeniorModeStateForApp(const bool state) override; // asac
+    ErrCode SetSeniorModeStateForApp(const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos) override; // ac
 
     ErrCode GetScreenMagnificationState(bool &state) override;
     ErrCode GetShortKeyState(bool &state) override;
@@ -252,6 +259,9 @@ public:
     ErrCode GetIgnoreRepeatClickTime(uint32_t &time) override;
     ErrCode GetFlashReminderSwitch(bool &state) override;
     ErrCode GetAllConfigs(AccessibilityConfigData& configData, CaptionPropertyParcel& caption) override;
+    ErrCode GetSeniorModeState(bool &state) override;
+    ErrCode GetSeniorModeStateForApp(bool &state) override; // asac
+    ErrCode GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, bool &state) override; // ac
 
     ErrCode RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
     void UpdateConfigState();
@@ -343,6 +353,31 @@ private:
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
 
+    class SeniorModeStateObserverDeathRecipient final : public IRemoteObject::DeathRecipient {
+    public:
+        SeniorModeStateObserverDeathRecipient() = default;
+        ~SeniorModeStateObserverDeathRecipient() final = default;
+        DISALLOW_COPY_AND_MOVE(SeniorModeStateObserverDeathRecipient);
+
+        void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
+    };
+
+    class StateObservers {
+    public:
+        StateObservers() = default;
+        ~StateObservers() = default;
+        void AddStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver,
+            const std::string &bundleName);
+        void OnStateObservers(uint32_t state);
+        void OnSeniorModeStateObservers(const std::string &bundleName, bool state);
+        void RemoveStateObserver(const wptr<IRemoteObject>& remote);
+        void Clear();
+    private:
+        std::vector<sptr<IAccessibleAbilityManagerStateObserver>> observersList_;
+        std::map<std::string, sptr<IAccessibleAbilityManagerStateObserver>> observersMap_;
+        ffrt::mutex stateObserversMutex_;
+    };
+
     RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities,
         const std::string callerBundleName = "");
     RetError InnerDisableAbility(const std::string &name);
@@ -384,6 +419,8 @@ private:
     void SubscribeOsAccount();
     void UnsubscribeOsAccount();
     void RegisterNotificationState();
+    void OnSeniorModeStateForAppChanged();
+    void RegisterSeniorModeStateForAppObserver();
 
     void RecycleEventHandler();
     std::shared_ptr<AccessibilityDatashareHelper> GetCurrentAcountDatashareHelper();
@@ -418,6 +455,7 @@ private:
     sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityListsObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityCallbackObserverDeathRecipient_ = nullptr;
+    sptr<IRemoteObject::DeathRecipient> seniorModeStateObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
     ffrt::mutex mutex_; // current used for register state observer
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;

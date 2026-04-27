@@ -703,7 +703,7 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
         return;
     }
 
-    if (eventType != EVENT_CONFIG_EVENT_CHANGED) {
+    if (eventType != EVENT_CONFIG_EVENT_CHANGED && eventType != EVENT_SELF_SENIOR_MODE_STATE_CHANGE) {
         if (stateHandler_.GetState(static_cast<AccessibilityStateEventType>(eventType)) == value) {
             HILOG_DEBUG("State value is not changed");
             return;
@@ -808,6 +808,9 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED,
         !!(stateType & STATE_ELDER_CARE_ENABLED));
+
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_SELF_SENIOR_MODE_STATE_CHANGE,
+        !!(stateType & STATE_SELF_SENIOR_MODE_STATE_ENABLED));
 }
 
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityIdResult(
@@ -1274,6 +1277,38 @@ RetError AccessibilitySystemAbilityClientImpl::GetSeniorModeState(bool &state)
     auto ret = serviceProxy_->GetSeniorModeState(state);
     if (ret != RET_OK) {
         HILOG_ERROR("Failed to get seniorMode state");
+        return RET_ERR_FAILED;
+    }
+    return RET_OK;
+}
+
+RetError AccessibilitySystemAbilityClientImpl::GetSeniorModeStateForApp(bool &state)
+{
+    HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    auto ret = serviceProxy_->GetSeniorModeStateForApp(state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("Failed to get self seniorMode state");
+        return RET_ERR_FAILED;
+    }
+    return RET_OK;
+}
+
+RetError AccessibilitySystemAbilityClientImpl::SetSeniorModeStateForApp(const bool state)
+{
+    HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    auto ret = serviceProxy_->SetSeniorModeStateForApp(state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("Failed to set self seniorMode state");
         return RET_ERR_FAILED;
     }
     return RET_OK;

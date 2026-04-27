@@ -70,6 +70,8 @@ public:
     RetError GetIgnoreRepeatClickTime(uint32_t &time);
     RetError GetFlashReminderSwitch(bool &state);
     RetError GetSeniorModeState(bool &state);
+    RetError GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, bool &state);
+    RetError SetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, const bool state);
 
     void UpdateConfigState();
     void UpdateAudioBalance();

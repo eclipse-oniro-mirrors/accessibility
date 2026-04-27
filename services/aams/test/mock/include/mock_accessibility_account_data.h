@@ -93,6 +93,10 @@ public:
     MOCK_METHOD1(RemoveAppStateObserverAbility, void(const std::string& uri));
     MOCK_METHOD1(GetAppStateObserverAbility, sptr<AccessibleAbilityConnection>(const std::string& uri));
     MOCK_METHOD1(NotifyExtensionServiceDeath, void(const std::string& uri));
+    MOCK_METHOD1(GetSeniorModeStateForAppChanges, void(std::map<std::string, bool>& changes));
+    MOCK_METHOD3(NotifySeniorModeStateObservers, void(const std::string& bundleName, int32_t appIndex, bool state));
+    MOCK_METHOD1(RemoveSeniorModeStateObserver, void(const wptr<IRemoteObject>& observer));
+    MOCK_METHOD1(AddSeniorModeStateObserver, void(const sptr<IAccessibilityAppSeniorModeStateObserver>& observer));
 };
 } // namespace Accessibility
 } // namespace OHOS

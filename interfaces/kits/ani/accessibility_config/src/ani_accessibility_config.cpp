@@ -41,6 +41,8 @@ std::shared_ptr<ANIAccessibilityConfigObserverImpl> ANIAccessibilityConfig::conf
     std::make_shared<ANIAccessibilityConfigObserverImpl>();
 std::shared_ptr<EnableAbilityCallbackObserverImpl> ANIAccessibilityConfig::enableAbilityCallbackObservers_ =
     std::make_shared<EnableAbilityCallbackObserverImpl>();
+std::shared_ptr<SeniorModeStateObserverImpl> ANIAccessibilityConfig::seniorModeStateObservers_ =
+    std::make_shared<SeniorModeStateObserverImpl>();
 
 void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
 {
@@ -1326,4 +1328,190 @@ void ANIAccessibilityConfig::UnSubscribeConfigObserver(ani_env *env, ani_object 
     }
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
     configObservers_->UnsubscribeObserver(env, configId, observer);
+}
+
+void SeniorModeStateObserverImpl::SubscribeToFramework()
+{
+    HILOG_INFO("SubscribeToFramework");
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.SubscribeAppSeniorModeStateObserver(shared_from_this());
+}
+
+void SeniorModeStateObserverImpl::UnsubscribeFromFramework()
+{
+    HILOG_INFO("UnsubscribeFromFramework");
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.UnsubscribeAppSeniorModeStateObserver(shared_from_this());
+}
+
+void SeniorModeStateObserverImpl::SubscribeObserver(ani_env *env, ani_object observer)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    ani_ref fnRef;
+    env->GlobalReference_Create(observer, &fnRef);
+    for (auto iter = seniorModeStateObservers_.begin(); iter != seniorModeStateObservers_.end(); iter++) {
+        if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->callback_)) {
+            env->GlobalReference_Delete(fnRef);
+            HILOG_DEBUG("SubscribeObserver Observer exist");
+            return;
+        }
+    }
+    std::shared_ptr<SeniorModeStateObserver> observerPtr = std::make_shared<SeniorModeStateObserver>(env, fnRef);
+    seniorModeStateObservers_.emplace_back(observerPtr);
+    HILOG_DEBUG("seniorModeStateObservers_ size%{public}zu", seniorModeStateObservers_.size());
+}
+
+void SeniorModeStateObserverImpl::UnsubscribeObserver(ani_env *env, ani_object observer)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    ani_ref fnRef;
+    env->GlobalReference_Create(observer, &fnRef);
+    for (auto iter = seniorModeStateObservers_.begin(); iter != seniorModeStateObservers_.end(); iter++) {
+        if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->callback_)) {
+            env->GlobalReference_Delete((*iter)->callback_);
+            seniorModeStateObservers_.erase(iter);
+            break;
+        }
+    }
+    env->GlobalReference_Delete(fnRef);
+}
+
+void SeniorModeStateObserverImpl::UnsubscribeObservers()
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto iter = seniorModeStateObservers_.begin(); iter != seniorModeStateObservers_.end(); iter++) {
+        ((*iter)->env_)->GlobalReference_Delete((*iter)->callback_);
+    }
+    seniorModeStateObservers_.clear();
+}
+
+void SeniorModeStateObserverImpl::OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex,
+    const bool state)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto &observer : seniorModeStateObservers_) {
+        if (observer) {
+            observer->OnSeniorModeStateChanged(bundleName, appIndex, state);
+        } else {
+            HILOG_ERROR("observer is null");
+        }
+    }
+}
+
+void SeniorModeStateObserver::OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, bool state)
+{
+    std::shared_ptr<AccessibilityCallbackInfo> callbackInfo = std::make_shared<AccessibilityCallbackInfo>();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("Failed to create callbackInfo");
+        return;
+    }
+    callbackInfo->env_ = env_;
+    callbackInfo->fnRef_ = callback_;
+    auto task = [callbackInfo, bundleName, appIndex, state]() {
+        HILOG_INFO("OnSeniorModeStateChanged");
+        ani_env *tmpEnv = callbackInfo->env_;
+        ani_class cls;
+        arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(
+            "@ohos.accessibility.config.config.AppSeniorModeInfoImpl");
+        if (tmpEnv->FindClass(className.Descriptor().c_str(), &cls) != ANI_OK) {
+            HILOG_ERROR("Class AppSeniorModeInfoImpl not found");
+            return;
+        }
+
+        ani_object spanObj = ANIUtils::CreateObject(tmpEnv, cls);
+        ANIUtils::SetStringField(tmpEnv, spanObj, "bundleName", bundleName);
+        ANIUtils::SetIntField(tmpEnv, spanObj, "appIndex", appIndex);
+        ANIUtils::SetBooleanField(tmpEnv, spanObj, "seniorModeState", state);
+
+        ani_ref fnRef;
+        tmpEnv->GlobalReference_Create(spanObj, &fnRef);
+
+        auto fnObj = reinterpret_cast<ani_fn_object>(callbackInfo->fnRef_);
+        ani_ref result;
+        tmpEnv->FunctionalObject_Call(fnObj, 1, &fnRef, &result);
+        tmpEnv->DestroyLocalScope();
+    };
+    if (!ANIUtils::SendEventToMainThread(task)) {
+        HILOG_ERROR("failed to send event");
+    }
+}
+
+void ANIAccessibilityConfig::OnSeniorModeStateChangeForApp(ani_env *env, ani_object observer)
+{
+    HILOG_INFO();
+    seniorModeStateObservers_->SubscribeObserver(env, observer);
+}
+
+void ANIAccessibilityConfig::OffSeniorModeStateChangeForApp(ani_env *env, ani_object observer)
+{
+    HILOG_INFO();
+    seniorModeStateObservers_->UnsubscribeObserver(env, observer);
+}
+
+void ANIAccessibilityConfig::OffSeniorModeStateChangeForApps()
+{
+    HILOG_INFO();
+    seniorModeStateObservers_->UnsubscribeObservers();
+}
+
+ani_boolean ANIAccessibilityConfig::GetSeniorModeStateForApp(ani_env *env, ani_string bundleName, ani_int appIndex)
+{
+    HILOG_INFO();
+    bool state = false;
+    std::string bundleNameStr = ANIUtils::ANIStringToStdString(env, bundleName);
+    int32_t appIndexInt = static_cast<int32_t>(appIndex);
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    OHOS::Accessibility::RetError ret = instance.GetSeniorModeStateForApp(bundleNameStr, appIndexInt, state);
+    if (ret != OHOS::Accessibility::RET_OK) {
+        HILOG_ERROR("GetSeniorModeStateForApp failed: %{public}d", ret);
+        return static_cast<ani_boolean>(false);
+    }
+    return static_cast<ani_boolean>(state);
+}
+
+void ANIAccessibilityConfig::SetSeniorModeStateForApp(ani_env *env, ani_array seniorModeInfoArray)
+{
+    HILOG_INFO();
+
+    ani_size arrayLength = 0;
+    if (env->Array_GetLength(static_cast<ani_array>(seniorModeInfoArray), &arrayLength) != ANI_OK) {
+        HILOG_ERROR("get array length failed.");
+        return;
+    }
+
+    HILOG_INFO("setSeniorModeStateForApp arrayLength: %{public}zu", arrayLength);
+
+    for (ani_size i = 0; i < arrayLength; i++) {
+        ani_ref elementRef;
+        if (env->Array_Get(seniorModeInfoArray, i, &elementRef) != ANI_OK) {
+            HILOG_ERROR("Object_CallMethodByName_Ref Failed");
+            return;
+        }
+        ani_object element = reinterpret_cast<ani_object>(elementRef);
+
+        std::string bundleName;
+        if (!ANIUtils::GetStringField(env, "bundleName", element, bundleName)) {
+            HILOG_ERROR("get bundleName failed.");
+            continue;
+        }
+
+        int32_t appIndex;
+        if (!ANIUtils::GetIntField(env, "appIndex", element, appIndex)) {
+            HILOG_ERROR("get appIndex int value failed.");
+            continue;
+        }
+
+        ani_boolean state;
+        if (env->Object_GetPropertyByName_Boolean(element, "seniorModeState", &state) != ANI_OK) {
+            HILOG_ERROR("get seniorModeState boolean value failed.");
+            continue;
+        }
+        HILOG_INFO("SetSeniorModeStateForApp bundleName: %{public}s, appIndex: %{public}d, state: %{public}d",
+            bundleName.c_str(), static_cast<int32_t>(appIndex), static_cast<bool>(state));
+
+    }
 }

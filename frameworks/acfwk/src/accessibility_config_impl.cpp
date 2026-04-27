@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_config_impl.h"
+#include "parcel/accessibility_bundle_senior_mode_info_parcel.h"
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"
@@ -73,6 +74,10 @@ AccessibilityConfig::Impl::~Impl()
         ret = serviceProxy_->DeRegisterConfigObserver(configObserver_->AsObject());
         if (ret != ERR_OK) {
             HILOG_ERROR("DeRegister configObserver failed.");
+        }
+        ret = serviceProxy_->DeRegisterSeniorModeStateObserver(seniorModeStateObserver_->AsObject());
+        if (ret != ERR_OK) {
+            HILOG_ERROR("DeRegister seniorModeStateObserver failed.");
         }
 
         int32_t count = 0;
@@ -285,7 +290,7 @@ bool AccessibilityConfig::Impl::RegisterToService()
         return false;
     }
 
-    if (captionObserver_ && enableAbilityListsObserver_ && configObserver_) {
+    if (captionObserver_ && enableAbilityListsObserver_ && configObserver_ && seniorModeStateObserver_) {
         HILOG_DEBUG("Observers is registered");
         return true;
     }
@@ -335,6 +340,15 @@ bool AccessibilityConfig::Impl::RegisterToService()
             HILOG_ERROR("Register configObserver failed.");
             return false;
         }
+    }
+
+    if (!seniorModeStateObserver_) {
+        seniorModeStateObserver_ = new(std::nothrow) AccessibilityAppSeniorModeStateObserverImpl(*this);
+        if (seniorModeStateObserver_ == nullptr) {
+            HILOG_ERROR("Create seniorModeStateObserver_ failed.");
+            return false;
+        }
+        serviceProxy_->RegisterSeniorModeStateObserver(seniorModeStateObserver_);
     }
 
     HILOG_DEBUG("RegisterToService succeaddss");
@@ -2131,6 +2145,96 @@ Accessibility::RetError AccessibilityConfig::Impl::SetEnhanceConfig(uint8_t *cfg
     rawData.size = cfgLen;
     rawData.data = cfg;
     return static_cast<Accessibility::RetError>(proxy->SetEnhanceConfig(rawData));
+}
+
+void AccessibilityConfig::Impl::OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, bool state)
+{
+    HILOG_INFO("observer's size is %{public}zu", seniorModeStateObservers_.size());
+    std::vector<std::shared_ptr<AccessibilityAppSeniorModeStateObserver>> observers;
+    {
+        std::lock_guard<ffrt::mutex> lock(seniorModeStateObserversMutex_);
+        observers = seniorModeStateObservers_;
+    }
+    for (auto &observer : observers) {
+        if (observer != nullptr) {
+            observer->OnSeniorModeStateChanged(bundleName, appIndex, state);
+        } else {
+            HILOG_ERROR("seniorModeStateObserver is null");
+        }
+    }
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::GetSeniorModeStateForApp(const std::string &bundleName,
+    int32_t appIndex, bool &state)
+{
+    HILOG_INFO();
+    if (appIndex < 0) {
+        HILOG_ERROR("appIndex < 0");
+        return Accessibility::RET_ERR_NULLPTR;
+    }
+ 
+    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
+    if (proxy == nullptr) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+    return static_cast<Accessibility::RetError>(proxy->GetSeniorModeStateForApp(bundleName, appIndex, state));
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::SetSeniorModeStateForApp(
+    const std::vector<AccessibilityBundleSeniorModeInfo> &infos)
+{
+    HILOG_INFO();
+    if (infos.size() == 0) {
+        HILOG_ERROR("infos is empty");
+        return Accessibility::RET_ERR_NULLPTR;
+    }
+
+    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
+    if (proxy == nullptr) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+
+    // Convert AccessibilityBundleSeniorModeInfo to AccessibilityBundleSeniorModeInfoParcel
+    std::vector<Accessibility::AccessibilityBundleSeniorModeInfoParcel> parcelInfos;
+    for (const auto &info : infos) {
+        parcelInfos.emplace_back(info);
+    }
+    return static_cast<Accessibility::RetError>(proxy->SetSeniorModeStateForApp(parcelInfos));
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::SubscribeAppSeniorModeStateObserver(
+    const std::shared_ptr<AccessibilityAppSeniorModeStateObserver> &observer)
+{
+    HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(seniorModeStateObserversMutex_);
+    if (std::any_of(seniorModeStateObservers_.begin(), seniorModeStateObservers_.end(),
+        [&observer](const std::shared_ptr<AccessibilityAppSeniorModeStateObserver> &listObserver) {
+            return listObserver == observer;
+            })) {
+        HILOG_ERROR("the observer is exist");
+        return Accessibility::RET_OK;
+    }
+    seniorModeStateObservers_.push_back(observer);
+    HILOG_DEBUG("observer's size is %{public}zu", seniorModeStateObservers_.size());
+    return Accessibility::RET_OK;
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeAppSeniorModeStateObserver(
+    const std::shared_ptr<AccessibilityAppSeniorModeStateObserver> &observer)
+{
+    HILOG_INFO();
+    std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+    auto iter = seniorModeStateObservers_.begin();
+    for (;iter != seniorModeStateObservers_.end(); iter++) {
+        if (*iter == observer) {
+            seniorModeStateObservers_.erase(iter);
+            HILOG_DEBUG("observer's size is %{public}zu", seniorModeStateObservers_.size());
+            return Accessibility::RET_OK;
+        }
+    }
+    return Accessibility::RET_OK;
 }
 } // namespace AccessibilityConfig
 } // namespace OHOS

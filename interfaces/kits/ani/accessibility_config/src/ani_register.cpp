@@ -49,7 +49,17 @@ static bool NamespaceBindMethod(ani_env *env, ani_namespace ns, ani_module mod)
         ani_native_function{"offObservers", nullptr, reinterpret_cast<void *>(
             ANIAccessibilityConfig::UnsubscribeStates)},
         ani_native_function{"setMagnificationState", nullptr, reinterpret_cast<void *>(
-            ANIAccessibilityConfig::SetMagnificationState)}
+            ANIAccessibilityConfig::SetMagnificationState)},
+        ani_native_function{"setSeniorModeStateForAppSync", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityConfig::SetSeniorModeStateForApp)},
+        ani_native_function{"getSeniorModeStateForAppSync", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityConfig::GetSeniorModeStateForApp)},
+        ani_native_function{"onSeniorModeStateChangeForAppSync", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityConfig::OnSeniorModeStateChangeForApp)},
+        ani_native_function{"offSeniorModeStateChangeForAppObserver", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityConfig::OffSeniorModeStateChangeForApp)},
+        ani_native_function{"offSeniorModeStateChangeForAppObservers", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityConfig::OffSeniorModeStateChangeForApps)}
     };
 
     if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
@@ -118,6 +128,10 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
 
     if (ANIAccessibilityConfig::enableAbilityCallbackObservers_) {
         ANIAccessibilityConfig::enableAbilityCallbackObservers_->SubscribeToFramework();
+    }
+
+    if (ANIAccessibilityConfig::seniorModeStateObservers_) {
+        ANIAccessibilityConfig::seniorModeStateObservers_->SubscribeToFramework();
     }
 
     *result = ANI_VERSION_1;
@@ -436,6 +450,9 @@ ANI_EXPORT ani_status ANI_Destructor(ani_vm *vm)
     }
     if (ANIAccessibilityConfig::enableAbilityCallbackObservers_) {
         ANIAccessibilityConfig::enableAbilityCallbackObservers_->UnsubscribeFromFramework();
+    }
+    if (ANIAccessibilityConfig::seniorModeStateObservers_) {
+        ANIAccessibilityConfig::seniorModeStateObservers_->UnsubscribeFromFramework();
     }
     return ANI_OK;
 }

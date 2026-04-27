@@ -116,6 +116,19 @@ public:
     virtual void OnEnableAbilityRemoteDied(const std::string& name) = 0;
 };
 
+class AccessibilityAppSeniorModeStateObserver {
+public:
+    /**
+     * @brief Destruct
+     */
+    virtual ~AccessibilityAppSeniorModeStateObserver() = default;
+
+    /**
+     * @brief Called when the enable ability lists changed.
+     */
+    virtual void OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, const bool state) = 0;
+};
+
 class AccessibilityConfig {
     ACCESSIBILITY_DECLARE_SINGLETON(AccessibilityConfig)
 public:
@@ -492,6 +505,39 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     Accessibility::RetError SetEnhanceConfig(uint8_t *cfg, uint32_t cfgLen) const;
+
+    /**
+     * @brief get senior mode state for app
+     * @param bundleName The bundleName
+     * @param appIndex The app index
+     * @param state The senior mode state
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,
+        bool &state) const;
+    
+    /**
+     * @brief set senior mode state for app
+     * @param infos The seniro mode state
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError SetSeniorModeStateForApp(const std::vector<AccessibilityBundleSeniorModeInfo> &infos);
+    
+    /**
+     * @brief Subscribes the observer of senior mode state for app
+     * @param observer Indicates the observer for listening to senior mode state change
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError SubscribeAppSeniorModeStateObserver(
+        const std::shared_ptr<AccessibilityAppSeniorModeStateObserver> &observer);
+    
+    /**
+     * @brief Unsubscribe the observer of senior mode state for app
+     * @param observer Indicates the observer for listening to senior mode state change
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError UnsubscribeAppSeniorModeStateObserver(
+        const std::shared_ptr<AccessibilityAppSeniorModeStateObserver> &observer);
 
 private:
     class Impl;

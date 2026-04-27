@@ -59,6 +59,8 @@ accessibility_interface_src = [
   "src/accessibility_enable_ability_callback_observer_proxy.cpp",
   "src/accessibility_enable_ability_lists_observer_proxy.cpp",
   "src/accessibility_enable_ability_lists_observer_stub.cpp",
+  "src/accessibility_senior_mode_state_observer_proxy.cpp",
+  "src/accessibility_senior_mode_state_observer_stub.cpp",
   "src/accessible_ability_channel_proxy.cpp",
   "src/accessible_ability_channel_stub.cpp",
   "src/accessible_ability_client_proxy.cpp",
@@ -73,6 +75,7 @@ accessibility_interface_src = [
 
 accessibility_data_parcel_src = [
   "src/parcel/accessibility_ability_info_parcel.cpp",
+  "src/parcel/accessibility_bundle_senior_mode_info_parcel.cpp",
   "src/parcel/accessibility_caption_parcel.cpp",
   "src/parcel/accessibility_element_info_parcel.cpp",
   "src/parcel/accessibility_event_info_parcel.cpp",

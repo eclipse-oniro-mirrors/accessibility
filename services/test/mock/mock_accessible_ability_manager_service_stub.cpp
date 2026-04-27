@@ -584,5 +584,35 @@ ErrCode MockAccessibleAbilityManagerServiceStub::IsInnerWindowRootElement(int64_
 {
     return RET_OK;
 }
+
+ErrCode MockAccessibleAbilityManagerServiceStub::RegisterSeniorModeStateObserver(
+    const sptr<IAccessibilityAppSeniorModeStateObserver> &observer)
+{
+    return RET_OK;
+}
+ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterSeniorModeStateObserver(const sptr<IRemoteObject>& obj)
+{
+    return RET_OK;
+}
+ErrCode MockAccessibleAbilityManagerServiceStub::GetSeniorModeStateForApp(bool &state)
+{
+    state = false;
+    return RET_OK;
+}
+ErrCode MockAccessibleAbilityManagerServiceStub::SetSeniorModeStateForApp(const bool state)
+{
+    return RET_OK;
+}
+ErrCode MockAccessibleAbilityManagerServiceStub::GetSeniorModeStateForApp(const std::string &bundleName,
+    int32_t appIndex, bool &state)
+{
+    state = false;
+    return RET_OK;
+}
+ErrCode MockAccessibleAbilityManagerServiceStub::SetSeniorModeStateForApp(
+    const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos)
+{
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -587,5 +587,19 @@ void AccessibilityAccountData::RemoveStateObserver(const wptr<IRemoteObject> &re
 {
     (void)remote;
 }
+void AccessibilityAccountData::GetSeniorModeStateForAppChanges(std::map<std::string, bool>& changes) {}
+
+void AccessibilityAccountData::NotifySeniorModeStateObservers(const std::string& bundleName,
+    int32_t appIndex, bool state)
+{
+    (void)bundleName;
+    (void)appIndex;
+    (void)state;
+}
+
+void AccessibilityAccountData::RemoveSeniorModeStateObserver(const wptr<IRemoteObject>& observer) {}
+
+void AccessibilityAccountData::AddSeniorModeStateObserver(
+    const sptr<IAccessibilityAppSeniorModeStateObserver>& observer) {}
 } // namespace Accessibility
 } // namespace OHOS

@@ -23,6 +23,7 @@
 #include "parameters.h"
 #include "accessibility_notification_helper.h"
 #include "magnification_def.h"
+#include "nlohmann/json.hpp"
 
 namespace OHOS {
 namespace Accessibility {
@@ -1597,5 +1598,87 @@ void AccessibilitySettingsConfig::SetInitializeState(bool isInitialized)
     }
 }
 
+void AccessibilitySettingsConfig::SetSeniorModeStateForAppMap(const std::map<std::string, bool>& map)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(seniorModeStateForAppMapMutex_);
+    seniorModeStateForAppMap_ = map;
+}
+
+std::map<std::string, bool> AccessibilitySettingsConfig::GetSeniorModeStateForAppMap() const
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(seniorModeStateForAppMapMutex_);
+    return seniorModeStateForAppMap_;
+}
+
+bool AccessibilitySettingsConfig::GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex)
+{
+    HILOG_DEBUG();
+    if (!datashare_) {
+        HILOG_ERROR("datashare_ is nullptr");
+        return false;
+    }
+
+    constexpr char SENIOR_MODE_STATE_KEY[] = "accessibility_senior_mode_state_for_app";
+    std::string seniorModeStateInfo = datashare_->GetStringValue(SENIOR_MODE_STATE_KEY, "{}");
+
+    if (!nlohmann::json::accept(seniorModeStateInfo)) {
+        HILOG_ERROR("Invalid json format");
+        return false;
+    }
+
+    nlohmann::json jsonObj = nlohmann::json::parse(seniorModeStateInfo);
+    if (!jsonObj.is_object()) {
+        HILOG_ERROR("Json is not an object");
+        return false;
+    }
+    std::string key = Utils::GetSeniorModeStateKey(bundleName, appIndex);
+    if (jsonObj.contains(key) && jsonObj[key].is_boolean()) {
+        return jsonObj[key].get<bool>();
+    }
+
+    return false;
+}
+
+RetError AccessibilitySettingsConfig::SetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,
+    const bool state)
+{
+    HILOG_INFO("bundleName: %{public}s, state: %{public}d", bundleName.c_str(), state);
+    if (!datashare_) {
+        return RET_ERR_NULLPTR;
+    }
+
+    constexpr char SENIOR_MODE_STATE_KEY[] = "accessibility_senior_mode_state_for_app";
+    std::string seniorModeStateInfo = datashare_->GetStringValue(SENIOR_MODE_STATE_KEY, "{}");
+
+    nlohmann::json jsonObj;
+    if (nlohmann::json::accept(seniorModeStateInfo)) {
+        jsonObj = nlohmann::json::parse(seniorModeStateInfo);
+    }
+
+    if (!jsonObj.is_object()) {
+        jsonObj = nlohmann::json::object();
+    }
+
+    std::string key = Utils::GetSeniorModeStateKey(bundleName, appIndex);
+
+    if (jsonObj.contains(key) && jsonObj[key].is_boolean() && jsonObj[key].get<bool>() == state) {
+        HILOG_DEBUG("Value unchanged, skip database update");
+        return RET_OK;
+    }
+
+    jsonObj[key] = state;
+
+    std::string newJsonStr = jsonObj.dump();
+    auto ret = datashare_->PutStringValue(SENIOR_MODE_STATE_KEY, newJsonStr);
+    if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetSeniorModeStateForApp");
+        HILOG_ERROR("SetSeniorModeStateForApp failed");
+        return ret;
+    }
+
+    return ret;
+}
 } // namespace Accessibility
 } // namespace OHOS

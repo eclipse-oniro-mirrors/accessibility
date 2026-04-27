@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -260,6 +260,20 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetSeniorModeState(bool &state) = 0;
+
+    /**
+     * @brief Get the status of whether the app senior mode is enabled
+     * @param state(out) true: senior mode is enabled; false: senior mode is disabled
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetSeniorModeStateForApp(bool &state) = 0;
+
+    /**
+     * @brief Set the app senior mode status
+     * @param state(out) true: senior mode is enabled; false: senior mode is disabled
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError SetSeniorModeStateForApp(const bool state) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

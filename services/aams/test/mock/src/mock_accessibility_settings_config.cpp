@@ -564,5 +564,24 @@ void AccessibilitySettingsConfig::SetInitializeState(bool isInitialized)
 {
     isInitialized_ = isInitialized;
 }
+
+RetError AccessibilitySettingsConfig::SetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,
+    const bool state)
+{
+    return RET_OK;
+}
+
+bool AccessibilitySettingsConfig::GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex)
+{
+    return false;
+}
+
+void AccessibilitySettingsConfig::SetSeniorModeStateForAppMap(const std::map<std::string, bool>& map) {}
+
+std::map<std::string, bool> AccessibilitySettingsConfig::GetSeniorModeStateForAppMap() const
+{
+    std::map<std::string, bool> ret;
+    return ret;
+}
 } // namespace Accessibility
 } // namespace OHOS

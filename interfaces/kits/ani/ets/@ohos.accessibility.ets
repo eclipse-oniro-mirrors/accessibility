@@ -369,6 +369,50 @@ namespace accessibility {
         }
     }
 
+    export native function onSeniorModeStateChangeForSelfSync(callback: Callback<boolean>): void;
+
+    export function onSeniorModeStateChangeForSelf(callback: Callback<boolean>): void {
+        onSeniorModeStateChangeForSelfSync(callback);
+    }
+
+    export native function offSeniorModeStateChangeForSelf(callback?: Callback<boolean>): void;
+
+    export function offSeniorModeStateChangeForSelfSync(callback: Callback<boolean>): void {
+        offSeniorModeStateChangeForSelfSync(callback);
+    }
+
+    export native function getSeniorModeStateForSelfSync(): boolean;
+
+    export function getSeniorModeStateForSelf(): Promise<boolean> {
+        return new Promise<boolean>((resolve: (v: boolean) => void, reject: (error: BusinessError) => void): void => {
+            taskpool.execute((): boolean => {
+                return getSeniorModeStateForSelfSync();
+            })
+            .then((ret: Any): void => {
+                resolve(ret as boolean);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
+    export native function setSeniorModeStateForSelfSync(state: boolean): void;
+
+    export function setSeniorModeStateForSelf(state: boolean): Promise<void> {
+        return new Promise<void>((resolve, reject): void => {
+            taskpool.execute((): void => {
+                return setSeniorModeStateForSelfSync(state);
+            })
+            .then((ret: Any): void => {
+                resolve(ret as undefined);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
     export interface CaptionsManager {
         enabled: boolean;
         style: CaptionsStyle;
