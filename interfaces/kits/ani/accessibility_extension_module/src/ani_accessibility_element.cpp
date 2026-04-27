@@ -945,8 +945,11 @@ ani_object FindElementByContent(ani_env *env, ani_object thisObj, ani_string con
     FindElementExecute(&param);
     if (param.ret_ != RET_OK) {
         if (param.ret_ == RET_ERR_NO_WINDOW_CONNECTION) {
-            ANIUtils::ThrowBusinessError(env, {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
-                ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED});
+            ANIUtils::ThrowBusinessError(
+                env,
+                {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
+                 ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED}
+            );
         } else {
             ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
         }
@@ -976,8 +979,11 @@ ani_object FindElementByFocusDirection(ani_env *env, ani_object thisObj, ani_str
     FindElementExecute(&param);
     if (param.ret_ != RET_OK) {
         if (param.ret_ == RET_ERR_NO_WINDOW_CONNECTION) {
-            ANIUtils::ThrowBusinessError(env, {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
-                ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED});
+            ANIUtils::ThrowBusinessError(
+                env,
+                {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
+                 ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED}
+            );
         } else {
             ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
         }
@@ -1006,8 +1012,11 @@ ani_object FindElementsByAccessibilityHintText(ani_env *env, ani_object thisObj,
     FindElementExecute(&param);
     if (param.ret_ != RET_OK) {
         if (param.ret_ == RET_ERR_NO_WINDOW_CONNECTION) {
-            ANIUtils::ThrowBusinessError(env, {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
-                ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED});
+            ANIUtils::ThrowBusinessError(
+                env,
+                {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
+                 ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED}
+            );
         } else {
             ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
         }
@@ -1037,8 +1046,11 @@ ani_object FindElementById(ani_env *env, ani_object thisObj, ani_long elementId)
     FindElementExecute(&param);
     if (param.ret_ != RET_OK) {
         if (param.ret_ == RET_ERR_NO_WINDOW_CONNECTION) {
-            ANIUtils::ThrowBusinessError(env, {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
-                ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED});
+            ANIUtils::ThrowBusinessError(
+                env,
+                {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
+                 ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED}
+            );
         } else {
             ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
         }
