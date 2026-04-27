@@ -233,8 +233,11 @@ static ani_object GetAccessibilityFocusedElement(ani_env *env, ani_object thisOb
     if (ret != RET_OK) {
         HILOG_ERROR("Failed to get elementInfo");
         if (ret == RET_ERR_NO_WINDOW_CONNECTION) {
-            ANIUtils::ThrowBusinessError(env, {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
-                ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED});
+            ANIUtils::ThrowBusinessError(
+                env,
+                {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
+                 ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED}
+            );
         } else {
             ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
         }
