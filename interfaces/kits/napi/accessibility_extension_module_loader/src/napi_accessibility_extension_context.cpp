@@ -421,9 +421,16 @@ private:
             } else {
                 HILOG_ERROR("Get focus elementInfo failed. ret: %{public}d", *ret);
                 if (*ret == RET_ERR_NO_WINDOW_CONNECTION && systemApi) {
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED),
-                        ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED));
+                    task.Reject(
+                        env,
+                        CreateJsError(
+                            env,
+                            static_cast<int32_t>(
+                                NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED
+                            ),
+                            ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED
+                        )
+                    );
                 } else {
                     NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
                     task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
@@ -520,9 +527,16 @@ private:
             } else {
                 HILOG_ERROR("Get root elementInfo failed. ret : %{public}d", *ret);
                 if (*ret == RET_ERR_NO_WINDOW_CONNECTION && systemApi) {
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED),
-                        ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED));
+                    task.Reject(
+                        env,
+                        CreateJsError(
+                            env,
+                            static_cast<int32_t>(
+                                NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED
+                            ),
+                            ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED
+                        )
+                    );
                 } else {
                     NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
                     task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
