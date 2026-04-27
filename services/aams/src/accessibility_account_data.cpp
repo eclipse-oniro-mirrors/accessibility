@@ -1459,7 +1459,7 @@ void AccessibilityAccountData::AddSeniorModeStateObserver(
     const sptr<IAccessibilityAppSeniorModeStateObserver>& observer)
 {
     std::lock_guard<ffrt::mutex> lock(seniorModeStateObserversMutex_);
-    HILOG_INFO("QC123");
+    HILOG_INFO();
     if (std::any_of(seniorModeStateObservers_.begin(), seniorModeStateObservers_.end(),
         [observer](const sptr<IAccessibilityAppSeniorModeStateObserver> &listObserver) {
             return listObserver == observer;
@@ -1474,7 +1474,7 @@ void AccessibilityAccountData::AddSeniorModeStateObserver(
 void AccessibilityAccountData::RemoveSeniorModeStateObserver(const wptr<IRemoteObject>& observer)
 {
     std::lock_guard<ffrt::mutex> lock(seniorModeStateObserversMutex_);
-    HILOG_INFO("QC123");
+    HILOG_INFO();
     auto itr = seniorModeStateObservers_.begin();
     for (; itr != seniorModeStateObservers_.end(); itr++) {
         if ((*itr)->AsObject() == observer) {
@@ -1490,7 +1490,7 @@ void AccessibilityAccountData::NotifySeniorModeStateObservers(const std::string&
     int32_t appIndex, bool state)
 {
     std::lock_guard<ffrt::mutex> lock(seniorModeStateObserversMutex_);
-    HILOG_INFO("qc123 observer's size is %{public}zu", seniorModeStateObservers_.size());
+    HILOG_INFO("observer's size is %{public}zu", seniorModeStateObservers_.size());
     for (auto &observer : seniorModeStateObservers_) {
         if (observer) {
             observer->OnSeniorModeStateChanged(bundleName, appIndex, state);

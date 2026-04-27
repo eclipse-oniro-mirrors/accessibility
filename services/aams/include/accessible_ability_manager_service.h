@@ -362,22 +362,6 @@ private:
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
 
-    class StateObservers {
-    public:
-        StateObservers() = default;
-        ~StateObservers() = default;
-        void AddStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver,
-            const std::string &bundleName);
-        void OnStateObservers(uint32_t state);
-        void OnSeniorModeStateObservers(const std::string &bundleName, bool state);
-        void RemoveStateObserver(const wptr<IRemoteObject>& remote);
-        void Clear();
-    private:
-        std::vector<sptr<IAccessibleAbilityManagerStateObserver>> observersList_;
-        std::map<std::string, sptr<IAccessibleAbilityManagerStateObserver>> observersMap_;
-        ffrt::mutex stateObserversMutex_;
-    };
-
     RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities,
         const std::string callerBundleName = "");
     RetError InnerDisableAbility(const std::string &name);
