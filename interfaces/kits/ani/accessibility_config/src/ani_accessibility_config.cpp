@@ -1512,6 +1512,5 @@ void ANIAccessibilityConfig::SetSeniorModeStateForApp(ani_env *env, ani_array se
         }
         HILOG_INFO("SetSeniorModeStateForApp bundleName: %{public}s, appIndex: %{public}d, state: %{public}d",
             bundleName.c_str(), static_cast<int32_t>(appIndex), static_cast<bool>(state));
-
     }
 }
