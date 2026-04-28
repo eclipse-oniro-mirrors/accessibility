@@ -112,10 +112,11 @@ public:
 
     ErrCode DeregisterElementOperatorByWindowIdAndTreeId(int32_t windowId, int32_t treeId, uint64_t displayId) override;
 
-    ErrCode InnerDeregisterElementOperatorByWindowId(int32_t windowId, int32_t userId, uint64_t displayId);
+    ErrCode InnerDeregisterElementOperatorByWindowId(
+        int32_t windowId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken);
 
     ErrCode InnerDeregisterElementOperatorByWindowIdAndTreeId(
-        int32_t windowId, int32_t treeId, int32_t userId, uint64_t displayId);
+        int32_t windowId, int32_t treeId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken);
 
     ErrCode DeRegisterCaptionObserver(const sptr<IRemoteObject>& obj) override;
 
@@ -290,7 +291,8 @@ private:
     bool IsApp() const;
     bool IsSystemApp() const;
     bool IsBroker() const;
-    ErrCode CheckDeregisterTokenId(int32_t windowId, int32_t treeId, int32_t userId);
+    ErrCode CheckDeregisterTokenId(
+        int32_t windowId, int32_t treeId, uint32_t tokenId, sptr<AccessibilityAccountData> &accountData);
     bool SetTargetAbility(const int32_t targetAbilityValue);
     bool SetHighContrastTextAbility(bool state);
     void PublishAccessibilityCommonEvent(const std::string &event);

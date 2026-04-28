@@ -908,26 +908,20 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByParameter(cons
 ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(int32_t windowId, uint64_t displayId)
 {
     int32_t userId = InnerGetCallingUid();
-    ErrCode ret = CheckDeregisterTokenId(windowId, SINGLE_TREE_ID, userId);
-    if (ret != RET_OK) {
-        return ret;
-    }
-    return InnerDeregisterElementOperatorByWindowId(windowId, userId, displayId);
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
+    return InnerDeregisterElementOperatorByWindowId(windowId, userId, displayId, tokenId, true);
 }
 
 ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
     const int32_t treeId, uint64_t displayId)
 {
     int32_t userId = InnerGetCallingUid();
-    ErrCode ret = CheckDeregisterTokenId(windowId, treeId, userId);
-    if (ret != RET_OK) {
-        return ret;
-    }
-    return InnerDeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, userId, displayId);
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
+    return InnerDeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, userId, displayId, tokenId, true);
 }
 
 ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(
-    int32_t windowId, int32_t userId, uint64_t displayId)
+    int32_t windowId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken)
 {
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -941,6 +935,13 @@ ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowI
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
+        if (needCheckToken) {
+            ErrCode ret = CheckDeregisterTokenId(windowId, SINGLE_TREE_ID, tokenId, accountData);
+            if (ret != RET_OK) {
+                HILOG_ERROR("CheckDeregisterTokenId failed %{public}d", ret);
+                return;
+            }
+        }
         if (accountData->GetElementOperatorManager().DeregisterElementOperatorByWindowId(
             windowId, displayId, isBroker) != RET_OK) {
             return;
@@ -953,7 +954,7 @@ ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowI
 }
 
 ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowIdAndTreeId(
-    int32_t windowId, int32_t treeId, int32_t userId, uint64_t displayId)
+    int32_t windowId, int32_t treeId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken)
 {
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -967,6 +968,13 @@ ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowI
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
             return;
+        }
+        if (needCheckToken) {
+            ErrCode ret = CheckDeregisterTokenId(windowId, treeId, tokenId, accountData);
+            if (ret != RET_OK) {
+                HILOG_ERROR("CheckDeregisterTokenId failed %{public}d", ret);
+                return;
+            }
         }
         accountData->GetElementOperatorManager().DeregisterElementOperatorByWindowIdAndTreeId(
             windowId, treeId, displayId);
@@ -1003,10 +1011,9 @@ int32_t AccessibleAbilityManagerService::InnerGetCallingUid()
     return userId;
 }
 
-ErrCode AccessibleAbilityManagerService::CheckDeregisterTokenId(int32_t windowId, int32_t treeId, int32_t userId)
+ErrCode AccessibleAbilityManagerService::CheckDeregisterTokenId(
+    int32_t windowId, int32_t treeId, uint32_t tokenId, sptr<AccessibilityAccountData> &accountData)
 {
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
-    sptr<AccessibilityAccountData> accountData = GetAccountData(userId);
     if (accountData == nullptr) {
         HILOG_ERROR("accountData is nullptr");
         return RET_ERR_CONNECTION_EXIST;
