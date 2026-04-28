@@ -1371,7 +1371,7 @@ RetError AccessibilityAccountData::RegisterStateObserver(
 
     std::string bundleName = info.bundleName;
     auto instIndex = info.instIndex;
-    stateObservers_.AddStateObserver(stateObserver, Utils::GetSeniorModeStateKey(bundleName, appIndex));
+    stateObservers_.AddStateObserver(stateObserver, Utils::GetSeniorModeStateKey(bundleName, instIndex));
     state = GetAccessibilityState();
     return RET_OK;
 }
@@ -1426,7 +1426,9 @@ void AccessibilityAccountData::StateObservers::OnSeniorModeStateObservers(const 
     if (iter != observersMap_.end()) {
         auto stateObserver = observersMap_[mapKdy];
         if (stateObserver) {
-            uint32_t state = GetAccessibilityState();
+            sptr<AccessibilityAccountData> accountData =
+                Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+            uint32_t state = accountData->GetAccessibilityState();
             if (seniorModeStateForApp) {
                 state |= STATE_SELF_SENIOR_MODE_STATE_ENABLED;
             }
