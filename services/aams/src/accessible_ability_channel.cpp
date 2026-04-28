@@ -1005,17 +1005,17 @@ RetError AccessibleAbilityChannel::GetElementOperator(
         return RET_ERR_NO_WINDOW_CONNECTION;
     }
 
+    bool isAnco = connection->IsAnco();
     bool useBroker = connection->GetUseBrokerFlag();
     bool hasMultipleProxies = (connection->GetCardProxySize() > 1);
-    bool isDefaultTreeId = (treeId == 0);
-    // Note: This prioritizes UEC proxy (card proxy) over broker for default treeId.
-    bool shouldUseCardProxy = (treeId > 0) ||
-        (useBroker && isDefaultTreeId && hasMultipleProxies);
     
-    if (shouldUseCardProxy && connection->GetCardProxy(treeId)) {
+    if (!useBroker && treeId > 0) {
         elementOperator = connection->GetCardProxy(treeId);
-    } else if (connection->IsAnco() && connection->GetUseBrokerFlag()
-        && treeId > 0 && connection->GetCardProxy(treeId)) {
+    } else if (isAnco && useBroker && treeId > 0
+        && connection->GetCardProxy(treeId)) {
+        elementOperator = connection->GetCardProxy(treeId);
+    } else if (isAnco && useBroker && treeId == 0
+        && hasMultipleProxies && connection->GetCardProxy(treeId)) {
         elementOperator = connection->GetCardProxy(treeId);
     } else {
         elementOperator = connection->GetProxy(displayId);
