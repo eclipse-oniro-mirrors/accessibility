@@ -120,7 +120,7 @@ public:
 
     void AddSeniorModeStateObserver(const sptr<IAccessibilityAppSeniorModeStateObserver>& observer);
     void RemoveSeniorModeStateObserver(const wptr<IRemoteObject>& observer);
-    void NotifySeniorModeStateObservers(const std::string&bundleName, int32_t appIndex, bool state);
+    void NotifySeniorModeStateObservers(const std::string &bundleName, int32_t appIndex, bool state);
     void GetSeniorModeStateForAppChanges(std::map<std::string, bool>& changes);
     void ParseSeniorModeStateJson(const std::string& jsonStr, std::map<std::string, bool>& map);
     void CompareSeniorModeStateMap(const std::map<std::string, bool>& newMap,

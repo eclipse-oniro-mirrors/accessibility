@@ -1619,15 +1619,12 @@ bool AccessibilitySettingsConfig::GetSeniorModeStateForApp(const std::string &bu
         HILOG_ERROR("datashare_ is nullptr");
         return false;
     }
-
     constexpr char SENIOR_MODE_STATE_KEY[] = "accessibility_senior_mode_state_for_app";
     std::string seniorModeStateInfo = datashare_->GetStringValue(SENIOR_MODE_STATE_KEY, "{}");
-
     if (!nlohmann::json::accept(seniorModeStateInfo)) {
         HILOG_ERROR("Invalid json format");
         return false;
     }
-
     nlohmann::json jsonObj = nlohmann::json::parse(seniorModeStateInfo);
     if (!jsonObj.is_object()) {
         HILOG_ERROR("Json is not an object");
@@ -1637,7 +1634,6 @@ bool AccessibilitySettingsConfig::GetSeniorModeStateForApp(const std::string &bu
     if (jsonObj.contains(key) && jsonObj[key].is_boolean()) {
         return jsonObj[key].get<bool>();
     }
-
     return false;
 }
 
@@ -1648,7 +1644,6 @@ RetError AccessibilitySettingsConfig::SetSeniorModeStateForApp(const std::string
     if (!datashare_) {
         return RET_ERR_NULLPTR;
     }
-
     constexpr char SENIOR_MODE_STATE_KEY[] = "accessibility_senior_mode_state_for_app";
     std::string seniorModeStateInfo = datashare_->GetStringValue(SENIOR_MODE_STATE_KEY, "{}");
 
@@ -1656,20 +1651,15 @@ RetError AccessibilitySettingsConfig::SetSeniorModeStateForApp(const std::string
     if (nlohmann::json::accept(seniorModeStateInfo)) {
         jsonObj = nlohmann::json::parse(seniorModeStateInfo);
     }
-
     if (!jsonObj.is_object()) {
         jsonObj = nlohmann::json::object();
     }
-
     std::string key = Utils::GetSeniorModeStateKey(bundleName, appIndex);
-
     if (jsonObj.contains(key) && jsonObj[key].is_boolean() && jsonObj[key].get<bool>() == state) {
         HILOG_DEBUG("Value unchanged, skip database update");
         return RET_OK;
     }
-
     jsonObj[key] = state;
-
     std::string newJsonStr = jsonObj.dump();
     auto ret = datashare_->PutStringValue(SENIOR_MODE_STATE_KEY, newJsonStr);
     if (ret != RET_OK) {
@@ -1677,7 +1667,6 @@ RetError AccessibilitySettingsConfig::SetSeniorModeStateForApp(const std::string
         HILOG_ERROR("SetSeniorModeStateForApp failed");
         return ret;
     }
-
     return ret;
 }
 } // namespace Accessibility

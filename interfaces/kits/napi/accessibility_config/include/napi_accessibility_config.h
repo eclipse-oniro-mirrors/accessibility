@@ -121,7 +121,6 @@ struct NAccessibilityConfigData {
     bool boolConfig_ = false;
     OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RET_ERR_FAILED;
     std::vector<OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo> seniorModeInfos_ {};
-
 };
 
 class NAccessibilityConfigClass {
@@ -222,6 +221,12 @@ private:
         NAccessibilityConfigData* callbackInfo, napi_value* parameters, size_t argc);
     static void EnableAbilityWithCallbackExecute(napi_env env, void* data);
     static void EnableAbilityWithCallbackComplete(napi_env env, napi_status status, void* data);
+    static bool ParseSeniorModeInfos(napi_env env, napi_callback_info info,
+        std::vector<OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo> &seniorModeInfos);
+    static void SetSeniorModeStateComplete(napi_env env, napi_status status, void* data);
+    static void GetSeniorModeStateComplete(napi_env env, napi_status status, void* data);
+    static bool ParseGetSeniorModeParam(napi_env env, napi_callback_info info,
+        std::string &bundleName, int32_t &appIndex);
     NAccessibilityConfig() = default;
     ~NAccessibilityConfig() = default;
 };

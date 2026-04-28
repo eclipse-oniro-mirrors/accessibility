@@ -42,6 +42,8 @@ enum KeyAction : int32_t {
 
 napi_status ParseResourceIdFromNAPI(napi_env env, napi_value value, uint32_t &idValue);
 napi_status ParseResourceBundleNameFromNAPI(napi_env env, napi_value value, std::string &bundleNameValue);
+napi_status ParseSeniorModeStateFromNAPI(napi_env env, napi_value value, bool &state);
+napi_status ParseAppIndexFromNAPI(napi_env env, napi_value value, int32_t &appIndex);
 napi_status ParseResourceModuleNameFromNAPI(napi_env env, napi_value value, std::string &moduleNameValue);
 napi_status ParseResourceParamsFromNAPI(napi_env env, napi_value value,
     std::vector<std::tuple<int32_t, std::string>> &resourceParamsValue);

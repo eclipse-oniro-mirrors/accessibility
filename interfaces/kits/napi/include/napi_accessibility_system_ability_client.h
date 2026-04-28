@@ -149,7 +149,6 @@ public:
     static napi_value GetSeniorModeStateForApp(napi_env env, napi_callback_info info);
     static napi_value SetSeniorModeStateForApp(napi_env env, napi_callback_info info);
 
-
     static void DefineJSCaptionsStyle(napi_env env);
     static napi_value AccessibleAbilityConstructorStyle(napi_env env, napi_callback_info info);
     static napi_value GetCaptionsFontFamily(napi_env env, napi_callback_info info);
