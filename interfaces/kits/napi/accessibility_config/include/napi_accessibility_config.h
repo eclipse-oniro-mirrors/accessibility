@@ -177,16 +177,15 @@ public:
     static napi_value GetConfig(napi_env env, napi_callback_info info);
     static napi_value SubscribeConfigObserver(napi_env env, napi_callback_info info);
     static napi_value UnSubscribeConfigObserver(napi_env env, napi_callback_info info);
-    static std::shared_ptr<NAccessibilityConfigObserverImpl> configObservers_;
-    static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers_;
-    static std::shared_ptr<EnableAbilityCallbackObserverImpl> enableAbilityCallbackObservers_;
-    static inline napi_value ConfigCreateJsUndefined(napi_env env)
     static napi_value SubscribeSelfSeniorMode(napi_env env, napi_callback_info info);
     static napi_value UnsubscribeSelfSeniorMode(napi_env env, napi_callback_info info);
     static napi_value GetSeniorModeStateForApp(napi_env env, napi_callback_info info);
     static napi_value SetSeniorModeStateForApp(napi_env env, napi_callback_info info);
     static std::shared_ptr<SeniorModeStateObserverImpl> seniorModeStateObservers_;
-
+    static std::shared_ptr<NAccessibilityConfigObserverImpl> configObservers_;
+    static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers_;
+    static std::shared_ptr<EnableAbilityCallbackObserverImpl> enableAbilityCallbackObservers_;
+    static inline napi_value ConfigCreateJsUndefined(napi_env env)
     {
         napi_value result = nullptr;
         napi_get_undefined(env, &result);
