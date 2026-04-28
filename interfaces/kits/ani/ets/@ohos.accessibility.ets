@@ -375,9 +375,9 @@ namespace accessibility {
         onSeniorModeStateChangeForSelfSync(callback);
     }
 
-    export native function offSeniorModeStateChangeForSelf(callback?: Callback<boolean>): void;
+    export native function offSeniorModeStateChangeForSelfSync(callback?: Callback<boolean>): void;
 
-    export function offSeniorModeStateChangeForSelfSync(callback: Callback<boolean>): void {
+    export function offSeniorModeStateChangeForSelf(callback: Callback<boolean>): void {
         offSeniorModeStateChangeForSelfSync(callback);
     }
 
