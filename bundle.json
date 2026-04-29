@@ -96,7 +96,8 @@
           "//foundation/barrierfree/accessibility/sa_profile:accessibility_cfg",
           "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
           "//foundation/barrierfree/accessibility/services/etc:ohos.para.dac",
-          "//foundation/barrierfree/accessibility/services/aams_ext:aams_ext"
+          "//foundation/barrierfree/accessibility/services/aams_ext:aams_ext",
+          "//foundation/barrierfree/accessibility/tools/ohos-accessibilityManager:ohos-a11yManager"
         ]
       },
       "inner_kits": [
