@@ -152,16 +152,20 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndT
 }
 
 ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(
-    int32_t windowId, int32_t userId, uint64_t displayId)
+    int32_t windowId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken)
 {
     (void)windowId;
+    (void)tokenId;
+    (void)needCheckToken;
     return RET_OK;
 }
 
 ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
-    const int32_t treeId, int32_t userId, uint64_t displayId)
+    const int32_t treeId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken)
 {
     (void)windowId;
+    (void)tokenId;
+    (void)needCheckToken;
     (void)treeId;
     return RET_OK;
 }

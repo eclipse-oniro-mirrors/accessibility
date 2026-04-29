@@ -43,10 +43,11 @@ public:
     MOCK_METHOD2(DeregisterElementOperatorByWindowId, ErrCode(const int32_t windowId, uint64_t displayId));
     MOCK_METHOD3(DeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
         const int32_t treeId, uint64_t displayId));
-    MOCK_METHOD3(
-        InnerDeregisterElementOperatorByWindowId, ErrCode(const int32_t windowId, int32_t userId, uint64_t displayId));
-    MOCK_METHOD4(InnerDeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
-        const int32_t treeId, int32_t userId, uint64_t displayId));
+    MOCK_METHOD5(
+        InnerDeregisterElementOperatorByWindowId,
+        ErrCode(const int32_t windowId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken));
+    MOCK_METHOD6(InnerDeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
+        const int32_t treeId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken));
     MOCK_METHOD2(GetCaptionProperty, ErrCode(CaptionPropertyParcel& caption, bool isPermissionRequired));
     MOCK_METHOD2(SetCaptionProperty, ErrCode(const CaptionPropertyParcel& caption, bool isPermissionRequired));
     MOCK_METHOD2(SetCaptionState, ErrCode(const bool state, bool isPermissionRequired));
