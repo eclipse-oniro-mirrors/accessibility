@@ -40,14 +40,14 @@ namespace config {
 
     export interface AppSeniorModeInfo {
         bundleName: string;
-        appIndex: int;
+        appIndex?: int;
 		seniorModeState: boolean;
     }
 
     export class AppSeniorModeInfoImpl implements AppSeniorModeInfo {
         bundleName: string = "";
-        appIndex: int = 0;
-		seniorModeState: boolean = false;
+        appIndex?: int = 0;
+        seniorModeState: boolean = false;
     }
 
     export class ConnectCallbackImpl implements ConnectCallback {

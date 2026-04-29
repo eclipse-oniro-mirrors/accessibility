@@ -1412,7 +1412,6 @@ void SeniorModeStateObserver::OnSeniorModeStateChanged(const std::string& bundle
     callbackInfo->env_ = env_;
     callbackInfo->fnRef_ = callback_;
     auto task = [callbackInfo, bundleName, appIndex, state]() {
-        HILOG_INFO("OnSeniorModeStateChanged");
         ani_env *tmpEnv = callbackInfo->env_;
         ani_class cls;
         arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(
@@ -1421,19 +1420,24 @@ void SeniorModeStateObserver::OnSeniorModeStateChanged(const std::string& bundle
             HILOG_ERROR("Class AppSeniorModeInfoImpl not found");
             return;
         }
-
         ani_object spanObj = ANIUtils::CreateObject(tmpEnv, cls);
-        ANIUtils::SetStringField(tmpEnv, spanObj, "bundleName", bundleName);
-        ANIUtils::SetIntField(tmpEnv, spanObj, "appIndex", appIndex);
-        ANIUtils::SetBooleanField(tmpEnv, spanObj, "seniorModeState", state);
+        if (!ANIUtils::SetStringField(tmpEnv, spanObj, "bundleName", bundleName)) {
+            return;
+        }
+        if (!ANIUtils::SetIntField(tmpEnv, spanObj, "appIndex", appIndex)) {
+            return;
+        }
+        if (tmpEnv->Object_SetPropertyByName_Boolean(spanObj, "seniorModeState",
+            static_cast<ani_boolean>(state)) != ANI_OK) {
+            HILOG_ERROR("set property seniorModeState failed.");
+            return;
+        }
 
         ani_ref fnRef;
         tmpEnv->GlobalReference_Create(spanObj, &fnRef);
-
         auto fnObj = reinterpret_cast<ani_fn_object>(callbackInfo->fnRef_);
         ani_ref result;
         tmpEnv->FunctionalObject_Call(fnObj, 1, &fnRef, &result);
-        tmpEnv->DestroyLocalScope();
     };
     if (!ANIUtils::SendEventToMainThread(task)) {
         HILOG_ERROR("failed to send event");
@@ -1442,25 +1446,25 @@ void SeniorModeStateObserver::OnSeniorModeStateChanged(const std::string& bundle
 
 void ANIAccessibilityConfig::OnSeniorModeStateChangeForApp(ani_env *env, ani_object observer)
 {
-    HILOG_INFO();
+    HILOG_INFO("onSeniorModeStateChangeForApp");
     seniorModeStateObservers_->SubscribeObserver(env, observer);
 }
 
 void ANIAccessibilityConfig::OffSeniorModeStateChangeForApp(ani_env *env, ani_object observer)
 {
-    HILOG_INFO();
+    HILOG_INFO("offSeniorModeStateChangeForApp");
     seniorModeStateObservers_->UnsubscribeObserver(env, observer);
 }
 
 void ANIAccessibilityConfig::OffSeniorModeStateChangeForApps()
 {
-    HILOG_INFO();
+    HILOG_INFO("offSeniorModeStateChangeForApp");
     seniorModeStateObservers_->UnsubscribeObservers();
 }
 
 ani_boolean ANIAccessibilityConfig::GetSeniorModeStateForApp(ani_env *env, ani_string bundleName, ani_int appIndex)
 {
-    HILOG_INFO();
+    HILOG_INFO("getSeniorModeStateForApp");
     bool state = false;
     std::string bundleNameStr = ANIUtils::ANIStringToStdString(env, bundleName);
     int32_t appIndexInt = static_cast<int32_t>(appIndex);
@@ -1475,16 +1479,14 @@ ani_boolean ANIAccessibilityConfig::GetSeniorModeStateForApp(ani_env *env, ani_s
 
 void ANIAccessibilityConfig::SetSeniorModeStateForApp(ani_env *env, ani_array seniorModeInfoArray)
 {
-    HILOG_INFO();
+    HILOG_INFO("setSeniorModeStateForApp");
 
     ani_size arrayLength = 0;
     if (env->Array_GetLength(static_cast<ani_array>(seniorModeInfoArray), &arrayLength) != ANI_OK) {
         HILOG_ERROR("get array length failed.");
         return;
     }
-
-    HILOG_INFO("setSeniorModeStateForApp arrayLength: %{public}zu", arrayLength);
-
+    std::vector<OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo> infos;
     for (ani_size i = 0; i < arrayLength; i++) {
         ani_ref elementRef;
         if (env->Array_Get(seniorModeInfoArray, i, &elementRef) != ANI_OK) {
@@ -1502,7 +1504,7 @@ void ANIAccessibilityConfig::SetSeniorModeStateForApp(ani_env *env, ani_array se
         int32_t appIndex;
         if (!ANIUtils::GetIntField(env, "appIndex", element, appIndex)) {
             HILOG_ERROR("get appIndex int value failed.");
-            continue;
+            appIndex = 0;
         }
 
         ani_boolean state;
@@ -1510,7 +1512,16 @@ void ANIAccessibilityConfig::SetSeniorModeStateForApp(ani_env *env, ani_array se
             HILOG_ERROR("get seniorModeState boolean value failed.");
             continue;
         }
-        HILOG_INFO("SetSeniorModeStateForApp bundleName: %{public}s, appIndex: %{public}d, state: %{public}d",
-            bundleName.c_str(), static_cast<int32_t>(appIndex), static_cast<bool>(state));
+
+        OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo info;
+        info.bundleName_ = bundleName;
+        info.appIndex_ = appIndex;
+        info.seniorModeState_ = static_cast<bool>(state);
+        infos.push_back(info);
+    }
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    OHOS::Accessibility::RetError ret = instance.SetSeniorModeStateForApp(infos);
+    if (ret != OHOS::Accessibility::RET_OK) {
+        HILOG_ERROR("SetSeniorModeStateForApp failed: %{public}d", ret);
     }
 }
