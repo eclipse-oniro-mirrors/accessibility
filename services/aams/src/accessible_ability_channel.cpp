@@ -18,8 +18,10 @@
 #include "accessibility_window_connection.h"
 #include "accessibility_window_manager.h"
 #include "accessible_ability_connection.h"
+#include "display_manager.h"
 #include "hilog_wrapper.h"
 #include <cinttypes>
+#include <unordered_map>
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "accessibility_power_manager.h"
 #endif
@@ -30,6 +32,7 @@ namespace Accessibility {
 namespace {
     constexpr int32_t WINDOW_ID_INVALID = -1;
     constexpr int64_t ELEMENT_ID_INVALID = -1;
+    const int32_t LONG_PRESS_EVENT_INTERVAL = 500;
     MMI::InputManager* inputManager_ = MMI::InputManager::GetInstance();
     std::map<int32_t, std::pair<bool, std::pair<int32_t, int32_t>>> accessibleKeyCodeTable = {
         {ActionType::ACCESSIBILITY_ACTION_HOME,
@@ -42,6 +45,24 @@ namespace {
             {true, {MMI::KeyEvent::KEYCODE_CALL_NOTIFICATION_CENTER, MMI::KeyEvent::KEYCODE_CALL_NOTIFICATION_CENTER}}},
         {ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER,
             {true, {MMI::KeyEvent::KEYCODE_CALL_CONTROL_CENTER, MMI::KeyEvent::KEYCODE_CALL_CONTROL_CENTER}}}};
+
+    InjectActionType StringToInjectAction(const std::string& injectActionType)
+    {
+        static const std::unordered_map<std::string, InjectActionType> actionMap = {
+            {"click", INJECT_ACTION_TYPE_CLICK},
+            {"doubleClick", INJECT_ACTION_TYPE_DOUBLE_CLICK},
+            {"longClick", INJECT_ACTION_TYPE_LONG_CLICK},
+            {"1", INJECT_ACTION_TYPE_CLICK},
+            {"2", INJECT_ACTION_TYPE_DOUBLE_CLICK},
+            {"3", INJECT_ACTION_TYPE_LONG_CLICK}
+        };
+ 
+        auto it = actionMap.find(injectActionType);
+        if (it != actionMap.end()) {
+            return it->second;
+        }
+        return INJECT_ACTION_TYPE_INVALID;
+    }
 } // namespace
 
 AccessibleAbilityChannel::AccessibleAbilityChannel(
@@ -464,7 +485,7 @@ RetError AccessibleAbilityChannel::UnholdRunningLock()
 
 RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback, const Rect &rect)
 {
     HILOG_DEBUG("ExecuteAction elementId:%{public}" PRId64 " winId:%{public}d, action:%{public}d, requestId:%{public}d",
         elementId, accessibilityWindowId, action, requestId);
@@ -493,7 +514,123 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         callback->SetExecuteActionResult(true, requestId);
         return RET_OK;
     }
+
+    if (action == ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION) {
+        RetError ret = HandleInjectAction(actionArguments, rect);
+        if (ret != RET_OK) {
+            HILOG_ERROR("Handle Inject Click failed!");
+            callback->SetExecuteActionResult(false, requestId);
+            return RET_ERR_FAILED;
+        }
+        callback->SetExecuteActionResult(true, requestId);
+        return RET_OK;
+    }
     return ExecuteActionAsync(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
+}
+
+RetError AccessibleAbilityChannel::HandleInjectAction(const std::map<std::string, std::string> &actionArguments,
+    const Rect &rect)
+{
+    HILOG_DEBUG();
+    auto it = actionArguments.find("injectActionType");
+    if (it == actionArguments.end()) {
+        HILOG_ERROR("HandleInjectAction injectActionType not found in actionArguments");
+        return RET_ERR_INVALID_PARAM;
+    }
+    std::string clickTypeStr = it->second;
+    HILOG_INFO("HandleInjectAction clickType: %{public}s", clickTypeStr.c_str());
+ 
+    InjectActionType injectActionType = StringToInjectAction(clickTypeStr);
+    if (injectActionType == INJECT_ACTION_TYPE_INVALID) {
+        HILOG_ERROR("HandleInjectAction invalid clickType: %{public}s", clickTypeStr.c_str());
+        return RET_ERR_INVALID_PARAM;
+    }
+ 
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+    uint64_t displayId = Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
+    sptr<Rosen::Display> display = Rosen::DisplayManager::GetInstance().GetDisplayById(displayId);
+    if (!display) {
+        HILOG_ERROR("Get display failed");
+        return RET_ERR_FAILED;
+    }
+    int32_t displayWidth = display->GetWidth();
+    int32_t displayHeight = display->GetHeight();
+    HILOG_INFO("HandleInjectAction displayWidth: %{public}d, displayHeight: %{public}d", displayWidth, displayHeight);
+    CalculateCenterPosition(rect, xPos, yPos, displayWidth, displayHeight);
+ 
+    InjectEventToInput(xPos, yPos, injectActionType, displayWidth, displayHeight);
+    return RET_OK;
+}
+ 
+void AccessibleAbilityChannel::CalculateCenterPosition(const Rect &rect, int32_t &xPos, int32_t &yPos,
+    int32_t displayWidth, int32_t displayHeight)
+{
+    int32_t leftTopXPos = rect.GetLeftTopXScreenPostion();
+    int32_t rightBottomXPos = rect.GetRightBottomXScreenPostion();
+    int32_t leftTopYPos = rect.GetLeftTopYScreenPostion();
+    int32_t rightBottomYPos = rect.GetRightBottomYScreenPostion();
+ 
+    HILOG_DEBUG("CalculateCenterPosition leftTopXPos: %{public}d, rightBottomXPos: %{public}d, "
+        "leftTopYPos: %{public}d, rightBottomYPos: %{public}d",
+        leftTopXPos, rightBottomXPos, leftTopYPos, rightBottomYPos);
+ 
+    leftTopXPos = leftTopXPos > 0 ? leftTopXPos : 0;
+    leftTopYPos = leftTopYPos > 0 ? leftTopYPos : 0;
+ 
+    rightBottomXPos = (displayWidth > 0 && displayWidth < rightBottomXPos) ?
+        displayWidth : rightBottomXPos;
+    rightBottomYPos = (displayHeight > 0 && displayHeight < rightBottomYPos) ?
+        displayHeight : rightBottomYPos;
+ 
+    xPos = leftTopXPos + (rightBottomXPos - leftTopXPos) / DIVISOR_TWO;
+    yPos = leftTopYPos + (rightBottomYPos - leftTopYPos) / DIVISOR_TWO;
+    HILOG_DEBUG("CalculateCenterPosition xPos: %{public}d, yPos: %{public}d", xPos, yPos);
+}
+ 
+void AccessibleAbilityChannel::InjectEventToInput(int32_t xPos, int32_t yPos, InjectActionType injectActionType,
+    int32_t displayWidth, int32_t displayHeight)
+{
+    HILOG_INFO("InjectEventToInput injectActionType: %{public}d, position: [%{public}d, %{public}d]",
+        injectActionType, xPos, yPos);
+ 
+    if (xPos < 0 || yPos < 0 || (displayWidth > 0 && xPos >= displayWidth) ||
+        (displayHeight > 0 && yPos >= displayHeight)) {
+        HILOG_ERROR("InjectEventToInput invalid position: [%{public}d, %{public}d], "
+            "displaySize: [%{public}d, %{public}d]", xPos, yPos, displayWidth, displayHeight);
+        return;
+    }
+ 
+    auto injectTouchEvent = [](int32_t x, int32_t y, int32_t action) {
+        std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
+        pointerEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
+        pointerEvent->SetPointerAction(action);
+        pointerEvent->AddFlag(MMI::InputEvent::EVENT_FLAG_ACCESSIBILITY);
+        pointerEvent->AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
+        MMI::PointerEvent::PointerItem item;
+        item.SetDisplayX(x);
+        item.SetDisplayY(y);
+        item.SetRawDisplayX(x);
+        item.SetRawDisplayY(y);
+        item.SetPointerId(1);
+        pointerEvent->AddPointerItem(item);
+        pointerEvent->SetPointerId(1);
+        MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
+    };
+ 
+    if (injectActionType == INJECT_ACTION_TYPE_CLICK) {
+        injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_DOWN);
+        injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_UP);
+    } else if (injectActionType == INJECT_ACTION_TYPE_DOUBLE_CLICK) {
+        for (int i = 0; i < DIVISOR_TWO; i++) {
+            injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_DOWN);
+            injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_UP);
+        }
+    } else if (injectActionType == INJECT_ACTION_TYPE_LONG_CLICK) {
+        injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_DOWN);
+        std::this_thread::sleep_for(std::chrono::milliseconds(LONG_PRESS_EVENT_INTERVAL));
+        injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_UP);
+    }
 }
 
 RetError AccessibleAbilityChannel::ExecuteActionAsync(const int32_t accessibilityWindowId, const int64_t elementId,
@@ -868,17 +1005,17 @@ RetError AccessibleAbilityChannel::GetElementOperator(
         return RET_ERR_NO_WINDOW_CONNECTION;
     }
 
+    bool isAnco = connection->IsAnco();
     bool useBroker = connection->GetUseBrokerFlag();
     bool hasMultipleProxies = (connection->GetCardProxySize() > 1);
-    bool isDefaultTreeId = (treeId == 0);
-    // Note: This prioritizes UEC proxy (card proxy) over broker for default treeId.
-    bool shouldUseCardProxy = (treeId > 0) ||
-        (useBroker && isDefaultTreeId && hasMultipleProxies);
     
-    if (shouldUseCardProxy && connection->GetCardProxy(treeId)) {
+    if (!useBroker && treeId > 0) {
         elementOperator = connection->GetCardProxy(treeId);
-    } else if (connection->IsAnco() && connection->GetUseBrokerFlag()
-        && treeId > 0 && connection->GetCardProxy(treeId)) {
+    } else if (isAnco && useBroker && treeId > 0
+        && connection->GetCardProxy(treeId)) {
+        elementOperator = connection->GetCardProxy(treeId);
+    } else if (isAnco && useBroker && treeId == 0
+        && hasMultipleProxies && connection->GetCardProxy(treeId)) {
         elementOperator = connection->GetCardProxy(treeId);
     } else {
         elementOperator = connection->GetProxy(displayId);

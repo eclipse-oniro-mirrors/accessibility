@@ -92,6 +92,7 @@ namespace {
     const char* IGNORE_REPEATED_CLICK_EXCLUDE_FLAG = "accessibility_ignore_repeat_click_exclude_flag";
     const char* CLONE_CAPABILITY = "const.accessibility.cloneCapability";
     const char* OLD_DEVICE_CAPABILITY = "accessibility_clone_capability";
+    const char* SUPPORT_THREE_FINGER_ZOOM = "accessibility_support_three_finger_zoom";
     const char* TRANSITION_ANIMATIONS_TIMESTAMP = "accessibility_transition_animations_timestamp";
     const char* ELDER_CARE_ENABLED_KEY = "accessibility_elder_care_switch_enabled";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
@@ -119,6 +120,7 @@ namespace {
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORTEST = 0;
     constexpr uint32_t IGNORE_REPEAT_CLICK_SHORT = 1;
     constexpr float DEFAULT_MAGNIFICATION_SCALE = 2.0;
+    constexpr int32_t INVALID_TRIGGER_METHOD = -1;
     bool g_ignoreRepeatClickOnceFlag = false;
     bool g_transitionAnimationsOnceFlag = false;
 
@@ -1240,8 +1242,13 @@ void AccessibilitySettingsConfig::InitSetting()
         datashare_->GetIntValue(SCREEN_MAGNIFICATION_MODE, FULL_SCREEN_MAGNIFICATION)));
     screenMagnificationScale_.store(static_cast<float>(
         datashare_->GetFloatValue(SCREEN_MAGNIFICATION_SCALE, DEFAULT_MAGNIFICATION_SCALE)));
-    screenMagnificationTriggerMethod_.store(static_cast<int32_t>(
-        datashare_->GetIntValue(SCREEN_MAGNIFICATION_TRIGGER_METHOD, THREE_FINGER_DOUBLE_TAP_MODE)));
+    int32_t triggerMethodValue = datashare_->GetIntValue(SCREEN_MAGNIFICATION_TRIGGER_METHOD, INVALID_TRIGGER_METHOD);
+    if (triggerMethodValue == INVALID_TRIGGER_METHOD) {
+        int32_t defaultTriggerMethod = isScreenMagnificationState_.load() ?
+            SINGLE_FINGER_TRIPLE_TAP_MODE : THREE_FINGER_DOUBLE_TAP_MODE;
+        screenMagnificationTriggerMethod_.store(defaultTriggerMethod);
+        datashare_->PutIntValue(SCREEN_MAGNIFICATION_TRIGGER_METHOD, defaultTriggerMethod);
+    }
     clickResponseTime_.store(static_cast<uint32_t>(datashare_->GetIntValue(CLICK_RESPONCE_TIME, 0)));
     SetClickResponseTime(clickResponseTime_.load());
     ignoreRepeatClickTime_.store(static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0)));
@@ -1303,11 +1310,6 @@ void AccessibilitySettingsConfig::Init()
     if (ret == RET_OK && systemRet == RET_OK) {
         isInitialized_ = true;
     }
-}
-
-void AccessibilitySettingsConfig::ClearData()
-{
-    HILOG_DEBUG();
 }
 
 void AccessibilitySettingsConfig::CloneAudioState()
@@ -1568,6 +1570,18 @@ void AccessibilitySettingsConfig::OnDataClone()
         HILOG_ERROR("service is nullptr");
         return;
     }
+    int32_t isSupportThreeFingerZoom = -1;
+    service->GetIntValue(SUPPORT_THREE_FINGER_ZOOM, isSupportThreeFingerZoom);
+    HILOG_INFO("isSupportThreeFingerZoom: %{public}d", isSupportThreeFingerZoom);
+    if (isSupportThreeFingerZoom == -1) {
+        bool screenMagnificationEnabled = datashare_->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
+        int32_t triggerMethod = screenMagnificationEnabled ?
+            SINGLE_FINGER_TRIPLE_TAP_MODE : THREE_FINGER_DOUBLE_TAP_MODE;
+        datashare_->PutIntValue(SCREEN_MAGNIFICATION_TRIGGER_METHOD, triggerMethod);
+        screenMagnificationTriggerMethod_.store(triggerMethod);
+        HILOG_INFO("low version clone, set triggerMethod: %{public}d", triggerMethod);
+    }
+    datashare_->PutIntValue(SUPPORT_THREE_FINGER_ZOOM, -1);
     bool isScreenReaderEnabled =
         (std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(),
         SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());

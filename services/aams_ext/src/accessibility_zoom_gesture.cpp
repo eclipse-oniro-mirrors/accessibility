@@ -202,6 +202,7 @@ void AccessibilityZoomGesture::OnPointerEventExecute(MMI::PointerEvent &event)
         HILOG_ERROR("no handler for gestureMode=%{public}d, magState=%{public}d, state=%{public}d, action=%{public}d",
                     gestureMode_, zoomState_, zoomGestureState_, action);
         if (action == MMI::PointerEvent::POINTER_ACTION_UP && event.GetPointerIds().size() == 1) {
+            TransferState(INIT);
             return;
         }
         TransferState(PASSING_THROUGH);
@@ -214,7 +215,7 @@ void AccessibilityZoomGesture::InitGestureFuncMap()
 
     InitSingleFingerTripleTapFuncMap();
     InitThreeFingerDoubleTapFuncMap();
-            }
+}
 
 void AccessibilityZoomGesture::InitSingleFingerTripleTapFuncMap()
 {

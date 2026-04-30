@@ -66,7 +66,7 @@ public:
     }
     RetError ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override
+        const sptr<IAccessibilityElementOperatorCallback> &callback, const Rect &rect) override
     {
         return RET_OK;
     }

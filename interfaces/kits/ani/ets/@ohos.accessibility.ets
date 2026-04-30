@@ -40,7 +40,8 @@ export enum AccessibilityAction {
   NOTIFICATION_CENTER = 18,
   CONTROL_CENTER = 19,
   SPAN_CLICK = 20,
-  CUSTOM_ACTION = 21
+  INJECT_ACTION = 21,
+  CUSTOM_ACTION = 22
 }
 
 export enum AccessibilityFocusScene {
@@ -136,7 +137,7 @@ namespace accessibility {
     export type Action = 'accessibilityFocus' | 'clearAccessibilityFocus' | 'focus' | 'clearFocus' | 'clearSelection' |
         'click' | 'longClick' | 'cut' | 'copy' | 'paste' | 'select' | 'setText' | 'delete' |
         'scrollForward' | 'scrollBackward' | 'setSelection' | 'setCursorPosition' | 'home' |
-        'back' | 'recentTask' | 'notificationCenter' | 'controlCenter' | 'common' | 'customActions';
+        'back' | 'recentTask' | 'notificationCenter' | 'controlCenter' | 'common' | 'injectAction' | 'customActions';
 
     export type WindowUpdateType = 'add' | 'remove' | 'bounds' | 'active' | 'focus';
 
@@ -551,4 +552,10 @@ export enum FocusMoveResultCode {
   DOUBLE_CHECK_CHILD_PROPERTY = 6,
   DOUBLE_CHECK_CHILD_PROPERTY_AND_GET_LAST = 7,
   SEARCH_FAILURE_IN_SCROLL = 8
+}
+
+export enum InjectActionType {
+  CLICK = 1,
+  DOUBLE_CLICK = 2,
+  LONG_CLICK = 3
 }

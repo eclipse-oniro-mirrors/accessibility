@@ -905,20 +905,6 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_G
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_ClearData_001
- * @tc.name: ClearData
- * @tc.desc: Test function ClearData
- */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_ClearData_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_ClearData_001 start";
-    settingConfig_->Init();
-    EXPECT_TRUE(settingConfig_->GetInitializeState());
-    settingConfig_->ClearData();
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_ClearData_001 end";
-}
-
-/**
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001
  * @tc.name: SetShortkeyMultiTargetInPkgRemove
  * @tc.desc: Test function SetShortkeyMultiTargetInPkgRemove

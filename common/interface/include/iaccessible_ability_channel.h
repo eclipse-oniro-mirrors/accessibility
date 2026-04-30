@@ -111,11 +111,12 @@ public:
      * @param actionArguments The parameter for action type.
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
+     * @param rect The element's boundary rectangle info.
      * @return Return RET_OK if perform action successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, const Rect &rect) = 0;
 
     /**
      * @brief Get the result of Cursor Position through the proxy object.

@@ -471,7 +471,8 @@ std::string ConvertActionTypeToString(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK, "spanClick"},
         {ActionType::ACCESSIBILITY_ACTION_CUSTOM, "customActions"},
         {ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM, "nextHtmlItem"},
-        {ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM, "previousHtmlItem"}
+        {ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM, "previousHtmlItem"},
+        {ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, "injectAction"}
     };
 
     if (triggerActionTable.find(type) == triggerActionTable.end()) {
@@ -532,6 +533,7 @@ int32_t ConvertOperationTypeToTarget(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION, AccessibilityAction::SET_CURSOR_POSITION},
         {ActionType::ACCESSIBILITY_ACTION_SET_TEXT, AccessibilityAction::SET_TEXT},
         {ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK, AccessibilityAction::SPAN_CLICK},
+        {ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, AccessibilityAction::INJECT_ACTION},
         {ActionType::ACCESSIBILITY_ACTION_CUSTOM, AccessibilityAction::CUSTOM_ACTION}
     };
 

@@ -321,7 +321,15 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
         return ERR_INVALID_VALUE;
     }
 
-    RetError result = ExecuteAction(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
+    sptr<RectParcel> rectParcel = data.ReadStrongParcelable<RectParcel>();
+    if (rectParcel == nullptr) {
+        HILOG_ERROR("Read RectParcel failed");
+        return ERR_INVALID_VALUE;
+    }
+    Rect rect = *rectParcel;
+ 
+    RetError result = ExecuteAction(accessibilityWindowId, elementId, action,
+        actionArguments, requestId, callback, rect);
     HILOG_DEBUG("ExecuteAction ret = %{public}d", result);
     reply.WriteInt32(result);
     return NO_ERROR;

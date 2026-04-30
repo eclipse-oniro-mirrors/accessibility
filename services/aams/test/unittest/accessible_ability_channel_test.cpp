@@ -192,7 +192,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_001 start";
     std::map<std::string, std::string> actionArguments;
-    EXPECT_EQ(channel_->ExecuteAction(WINDOW_ID, ELEMENT_ID, 1, actionArguments, 0, nullptr), RET_ERR_NULLPTR);
+    EXPECT_EQ(channel_->ExecuteAction(WINDOW_ID, ELEMENT_ID, 1, actionArguments, 0, nullptr, Rect()), RET_ERR_NULLPTR);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_001 end";
 }
 

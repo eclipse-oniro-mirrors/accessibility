@@ -819,7 +819,8 @@ std::string ConvertOperationTypeToString(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK, "spanClick"},
         {ActionType::ACCESSIBILITY_ACTION_CUSTOM, "customActions"},
         {ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM, "nextHtmlItem"},
-        {ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM, "previousHtmlItem"}
+        {ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM, "previousHtmlItem"},
+        {ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, "injectAction"}
     };
 
     if (triggerActionTable.find(type) == triggerActionTable.end()) {
@@ -932,7 +933,9 @@ ActionType ConvertStringToAccessibleOperationType(const std::string &type)
         {"spanClick", ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK},
         {"customActions", ActionType::ACCESSIBILITY_ACTION_CUSTOM},
         {"nextHtmlItem", ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM},
-        {"previousHtmlItem", ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM}};
+        {"previousHtmlItem", ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM},
+        {"injectAction", ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION}
+    };
 
     if (accessibleOperationTypeTable.find(type) == accessibleOperationTypeTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
@@ -1037,6 +1040,13 @@ bool ConvertActionArgsJSToNAPI(
                 napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
                 napi_throw(env, err);
                 ret = false;
+            }
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION:
+            napi_create_string_utf8(env, "injectActionType", NAPI_AUTO_LENGTH, &propertyNameValue);
+            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+            if (hasProperty) {
+                args.insert(std::pair<std::string, std::string>("injectActionType", str.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
@@ -1200,7 +1210,21 @@ std::string ConvertStringJSToNAPI(napi_env env, napi_value object, napi_value pr
     if (hasProperty) {
         napi_value itemValue = nullptr;
         napi_get_property(env, object, propertyNameValue, &itemValue);
-        str = GetStringFromNAPI(env, itemValue);
+ 
+        napi_status status;
+        napi_valuetype valuetype = napi_null;
+        status = napi_typeof(env, itemValue, &valuetype);
+        if (status != napi_ok) {
+            HILOG_ERROR("ConvertStringJSToNAPI napi_typeof error and status is %{public}d", status);
+            return str;
+        }
+        if (valuetype == napi_string) {
+            str = GetStringFromNAPI(env, itemValue);
+        } else if (valuetype == napi_number) {
+            int32_t num;
+            napi_get_value_int32(env, itemValue, &num);
+            str = std::to_string(num);
+        }
     }
     return str;
 }

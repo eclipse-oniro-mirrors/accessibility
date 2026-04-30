@@ -325,7 +325,9 @@ ActionType ANIUtils::ConvertStringToAccessibleOperationType(const std::string &t
         {"recentTask", ActionType::ACCESSIBILITY_ACTION_RECENTTASK},
         {"notificationCenter", ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER},
         {"controlCenter", ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER},
-        {"customActions", ActionType::ACCESSIBILITY_ACTION_CUSTOM}};
+        {"injectAction", ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION},
+        {"customActions", ActionType::ACCESSIBILITY_ACTION_CUSTOM}
+    };
 
     if (accessibleOperationTypeTable.find(type) == accessibleOperationTypeTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
@@ -1359,6 +1361,18 @@ void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
                 ThrowBusinessError(env, QueryRetMsg(RetError::RET_ERR_INVALID_PARAM));
             }
             break;
+        case ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION: {
+            if (env->Object_GetFieldByName_Ref(obj, "injectActionType", &fiedNameValue) == ANI_OK) {
+                int32_t injectActionType = 0;
+                if (env->EnumItem_GetValue_Int(static_cast<ani_enum_item>(fiedNameValue),
+                    &injectActionType) != ANI_OK) {
+                    HILOG_ERROR("Failed to get injectActionType enum value");
+                    break;
+                }
+                args.insert(std::pair<std::string, std::string>("injectActionType", std::to_string(injectActionType)));
+            }
+            break;
+        }
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
             SetScrollTypeParam(env, obj, args);

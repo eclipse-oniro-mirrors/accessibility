@@ -45,9 +45,9 @@ public:
     MOCK_METHOD6(
         FocusMoveSearch, RetError(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t direction,
             const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, bool systemApi));
-    MOCK_METHOD6(ExecuteAction, RetError(const int32_t accessibilityWindowId, const int64_t elementId,
+    MOCK_METHOD7(ExecuteAction, RetError(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback>& callback));
+        const sptr<IAccessibilityElementOperatorCallback>& callback, const Rect& rect));
     MOCK_METHOD2(GetWindows, RetError(std::vector<AccessibilityWindowInfo> &windows, bool systemApi));
     MOCK_METHOD3(GetWindowsByDisplayId, RetError(const uint64_t displayId,
         std::vector<AccessibilityWindowInfo> &windows, bool systemApi));

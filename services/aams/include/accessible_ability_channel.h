@@ -59,7 +59,7 @@ public:
 
     RetError ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback, const Rect &rect) override;
 
     RetError GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override;
 
@@ -107,6 +107,11 @@ private:
     RetError ExecuteActionAsync(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback);
+    RetError HandleInjectAction(const std::map<std::string, std::string> &actionArguments, const Rect &rect);
+    void InjectEventToInput(int32_t xPos, int32_t yPos, InjectActionType injectActionType,
+        int32_t displayWidth, int32_t displayHeight);
+    void CalculateCenterPosition(const Rect &rect, int32_t &xPos, int32_t &yPos,
+        int32_t displayWidth, int32_t displayHeight);
     std::string clientName_ = "";
     int32_t accountId_ = -1;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;

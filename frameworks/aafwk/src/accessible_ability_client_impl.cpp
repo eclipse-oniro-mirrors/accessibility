@@ -1173,9 +1173,10 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
         windowId = elementInfo.GetWindowId();
     }
     int64_t elementId = elementInfo.GetAccessibilityId();
+    const Rect rect = elementInfo.GetRectInScreen();
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d", windowId, elementId, action);
     Accessibility::RetError ret = channelClient_->ExecuteAction(windowId, elementId, action,
-        const_cast<std::map<std::string, std::string> &>(actionArguments));
+        const_cast<std::map<std::string, std::string> &>(actionArguments), rect);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED

@@ -476,11 +476,6 @@ void AccessibilitySettingsConfig::Init()
     HILOG_DEBUG("start.");
 }
 
-void AccessibilitySettingsConfig::ClearData()
-{
-    HILOG_DEBUG("start.");
-}
-
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state)
 {
     HILOG_DEBUG("start.");

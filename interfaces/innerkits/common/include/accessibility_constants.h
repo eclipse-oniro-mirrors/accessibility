@@ -40,6 +40,7 @@ extern const std::string ACTION_ARGU_MOVE_UNIT;
 extern const std::string ACTION_ARGU_SPAN_ID;
 extern const std::string ACTION_ARGU_CLICK_ENHANCE_DATA;
 extern const std::string ACTION_ARGU_CLICK_TIMESTAMP;
+extern const std::string ACTION_ARGU_INJECT_ACTION_TYPE;
 extern const std::string ACTION_ARGU_CUSTOM_ACTION;
 extern const std::string ACTION_ARGU_ACCESSIBILITY_FOCUS_SCENE;
 

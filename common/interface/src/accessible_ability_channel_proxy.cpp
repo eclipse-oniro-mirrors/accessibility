@@ -59,6 +59,26 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(AccessibilityInterfaceCode c
     return true;
 }
 
+bool AccessibleAbilityChannelProxy::WriteActionArguments(MessageParcel &data,
+    const std::map<std::string, std::string> &actionArguments)
+{
+    std::vector<std::string> actionArgumentsKey {};
+    std::vector<std::string> actionArgumentsValue {};
+    for (auto iter = actionArguments.begin(); iter != actionArguments.end(); iter++) {
+        actionArgumentsKey.push_back(iter->first);
+        actionArgumentsValue.push_back(iter->second);
+    }
+    if (!data.WriteStringVector(actionArgumentsKey)) {
+        HILOG_ERROR("actionArgumentsKey write error");
+        return false;
+    }
+    if (!data.WriteStringVector(actionArgumentsValue)) {
+        HILOG_ERROR("actionArgumentsValue write error");
+        return false;
+    }
+    return true;
+}
+
 RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int32_t mode, bool isFilter, bool systemApi)
@@ -384,7 +404,7 @@ RetError AccessibleAbilityChannelProxy::UnholdRunningLock()
 
 RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback, const Rect &rect)
 {
     HILOG_DEBUG();
 
@@ -407,22 +427,9 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
         HILOG_ERROR("action write error: %{public}d, ", action);
         return RET_ERR_IPC_FAILED;
     }
-
-    std::vector<std::string> actionArgumentsKey {};
-    std::vector<std::string> actionArgumentsValue {};
-    for (auto iter = actionArguments.begin(); iter != actionArguments.end(); iter++) {
-        actionArgumentsKey.push_back(iter->first);
-        actionArgumentsValue.push_back(iter->second);
-    }
-    if (!data.WriteStringVector(actionArgumentsKey)) {
-        HILOG_ERROR("actionArgumentsKey write error");
+    if (!WriteActionArguments(data, actionArguments)) {
         return RET_ERR_IPC_FAILED;
     }
-    if (!data.WriteStringVector(actionArgumentsValue)) {
-        HILOG_ERROR("actionArgumentsValue write error");
-        return RET_ERR_IPC_FAILED;
-    }
-
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
         return RET_ERR_IPC_FAILED;
@@ -431,7 +438,11 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
         HILOG_ERROR("callback write error");
         return RET_ERR_IPC_FAILED;
     }
-
+    RectParcel rectParcel(rect);
+    if (!data.WriteParcelable(&rectParcel)) {
+        HILOG_ERROR("rect write error");
+        return RET_ERR_IPC_FAILED;
+    }
     if (!SendTransactCmd(AccessibilityInterfaceCode::PERFORM_ACTION,
         data, reply, option)) {
         HILOG_ERROR("fail to perform accessibility action");

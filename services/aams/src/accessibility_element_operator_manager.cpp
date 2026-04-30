@@ -663,9 +663,6 @@ void ElementOperatorManager::UpdateAccessibilityWindowStateByEvent(const Accessi
     }
     switch (evtType) {
         case TYPE_VIEW_HOVER_ENTER_EVENT:
-            if (accountData->GetWindowManager().NeedSetActive(windowId)) {
-                accountData->GetWindowManager().SetActiveWindow(windowId, false);
-            }
             accountData->GetWindowManager().SetAccessibilityFocusedWindow(windowId);
             if (scbWindowFlag) {
                 HILOG_INFO("windowId set to subWindows_ is %{public}d", windowId);

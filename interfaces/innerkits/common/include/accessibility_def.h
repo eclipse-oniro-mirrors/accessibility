@@ -191,6 +191,7 @@ enum ActionType : int32_t {
     ACCESSIBILITY_ACTION_NOTIFICATIONCENTER = 0x00080000,
     ACCESSIBILITY_ACTION_CONTROLCENTER = 0x00008000,
     ACCESSIBILITY_ACTION_CUSTOM = 0x20000000,
+    ACCESSIBILITY_ACTION_INJECT_ACTION = 0x40000000,
     ACCESSIBILITY_ACTION_TYPE_MASK = 0x1FFFFFFF,
 };
 
@@ -610,6 +611,13 @@ enum AccessibilityEventType : int32_t {
     TYPE_FOCUS_INVISIBLE = 71
 };
 
+enum InjectActionType : int32_t {
+    INJECT_ACTION_TYPE_INVALID = -1,
+    INJECT_ACTION_TYPE_CLICK = 1,
+    INJECT_ACTION_TYPE_DOUBLE_CLICK = 2,
+    INJECT_ACTION_TYPE_LONG_CLICK = 3,
+};
+
 enum AccessibilityAction : int32_t {
     ERROR = -1,
     ACCESSIBILITY_FOCUS = 0,
@@ -633,7 +641,8 @@ enum AccessibilityAction : int32_t {
     NOTIFICATION_CENTER = 18,
     CONTROL_CENTER = 19,
     SPAN_CLICK = 20,
-    CUSTOM_ACTION = 21
+    INJECT_ACTION = 21,
+    CUSTOM_ACTION = 22
 };
 
 const std::vector<std::string> ACTION_NAMES = {
@@ -658,7 +667,8 @@ const std::vector<std::string> ACTION_NAMES = {
     "notificationCenter",      //AccessibilityAction.NOTIFICATION_CENTER=18
     "controlCenter",           //AccessibilityAction.CONTROL_CENTER=19
     "spanClick",               //AccessibilityAction.SPAN_CLICK=20
-    "customActions"            //AccessibilityAction.CUSTOM_ACTION=21
+    "injectAction",            //AccessibilityAction.INJECT_ACTION=21
+    "customActions"            //AccessibilityAction.CUSTOM_ACTION=22
 };
 
 enum class AnnounceType : uint32_t {

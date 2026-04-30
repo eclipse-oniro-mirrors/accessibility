@@ -92,7 +92,7 @@ public:
      * @return RET_OK: execute action successfully; otherwise refer to the RetError for the failure.
      */
     RetError ExecuteAction(int32_t accessibilityWindowId,
-        int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments);
+        int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments, const Rect &rect);
 
     /**
      * @brief Package status to send server data.

@@ -160,7 +160,7 @@ RetError AccessibleAbilityChannelClient::GetCursorPosition(
 }
 
 RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId,
-    int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments)
+    int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments, const Rect &rect)
 {
 #ifdef OHOS_BUILD_ENABLE_HITRACE
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "ExecuteAction");
@@ -172,7 +172,7 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
     if (action == ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS &&
         accessibilityFocusedElementId_ != INVALID_WINDOW_ID && accessibilityFocusedWindowId_ != INVALID_WINDOW_ID) {
         ExecuteAction(accessibilityFocusedWindowId_, accessibilityFocusedElementId_,
-            ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS, actionArguments);
+            ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS, actionArguments, rect);
     }
 
     int32_t requestId = GenerateRequestId();
@@ -185,7 +185,7 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
     ffrt::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     RetError ret = proxy_->ExecuteAction(accessibilityWindowId,
-        elementId, action, actionArguments, requestId, elementOperator);
+        elementId, action, actionArguments, requestId, elementOperator, rect);
     if (ret != RET_OK) {
         HILOG_ERROR("ExecuteAction failed. action[%{public}d], ret[%{public}d]", action, ret);
         return ret;

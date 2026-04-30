@@ -115,7 +115,7 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
 
 RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback>& callback)
+    const sptr<IAccessibilityElementOperatorCallback>& callback, const Rect &rect)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel ExecuteAction";
     (void)accessibilityWindowId;
@@ -124,6 +124,7 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
     (void)actionArguments;
     (void)requestId;
     (void)callback;
+    (void)rect;
     return RET_OK;
 }
 
