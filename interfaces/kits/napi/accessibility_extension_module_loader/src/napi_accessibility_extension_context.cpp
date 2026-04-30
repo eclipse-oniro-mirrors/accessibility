@@ -410,7 +410,7 @@ private:
             *ret = context->GetFocus(focus, *elementInfo, systemApi);
         };
         NapiAsyncTask::CompleteCallback complete =
-            [ret, elementInfo](napi_env env, NapiAsyncTask& task, int32_t status) {
+            [ret, elementInfo, systemApi](napi_env env, NapiAsyncTask& task, int32_t status) {
             if (*ret == RET_OK) {
                 napi_value constructor = nullptr;
                 napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
@@ -420,8 +420,21 @@ private:
                 task.Resolve(env, napiElementInfo);
             } else {
                 HILOG_ERROR("Get focus elementInfo failed. ret: %{public}d", *ret);
-                NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
-                task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+                if (*ret == RET_ERR_NO_WINDOW_CONNECTION && systemApi) {
+                    task.Reject(
+                        env,
+                        CreateJsError(
+                            env,
+                            static_cast<int32_t>(
+                                NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED
+                            ),
+                            ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED
+                        )
+                    );
+                } else {
+                    NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
+                    task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+                }
             }
         };
 
@@ -502,7 +515,7 @@ private:
         };
 
         NapiAsyncTask::CompleteCallback complete =
-            [ret, elementInfo](napi_env env, NapiAsyncTask& task, int32_t status) {
+            [ret, elementInfo, systemApi](napi_env env, NapiAsyncTask& task, int32_t status) {
             if (*ret == RET_OK) {
                 napi_value constructor = nullptr;
                 napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
@@ -513,8 +526,21 @@ private:
                 task.Resolve(env, napiElementInfo);
             } else {
                 HILOG_ERROR("Get root elementInfo failed. ret : %{public}d", *ret);
-                NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
-                task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+                if (*ret == RET_ERR_NO_WINDOW_CONNECTION && systemApi) {
+                    task.Reject(
+                        env,
+                        CreateJsError(
+                            env,
+                            static_cast<int32_t>(
+                                NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED
+                            ),
+                            ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED
+                        )
+                    );
+                } else {
+                    NAccessibilityErrMsg errMsg = QueryRetMsg(*ret);
+                    task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+                }
             }
         };
 

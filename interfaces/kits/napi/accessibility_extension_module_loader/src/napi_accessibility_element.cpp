@@ -3098,7 +3098,15 @@ void NAccessibilityElement::FindElementComplete(napi_env env, napi_status status
     napi_value result[ARGS_SIZE_TWO] = {0};
 
     GetElement(callbackInfo, result[PARAM1]);
-    result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
+    if (callbackInfo->ret_ == RET_ERR_NO_WINDOW_CONNECTION && callbackInfo->systemApi) {
+        result[PARAM0] = CreateBusinessError(
+            env,
+            NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
+            ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED
+        );
+    } else {
+        result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
+    }
     if (callbackInfo->callback_) {
         HILOG_DEBUG("callback mode. result is %{public}d", callbackInfo->ret_);
         napi_value callback = 0;
