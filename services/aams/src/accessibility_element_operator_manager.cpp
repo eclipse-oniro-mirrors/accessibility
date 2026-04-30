@@ -786,17 +786,15 @@ bool ElementOperatorManager::FindFocusedElement(AccessibilityElementInfo &elemen
     return true;
 }
 
-void ElementOperatorManager::CalculateClickPosition(const AccessibilityElementInfo &focusedElementInfo,
-    int32_t &xPos, int32_t &yPos)
+void ElementOperatorManager::CalculateClickPosition(const Rect &rect, int32_t &xPos, int32_t &yPos, int32_t &windowId)
 {
-    Rect focusElement = focusedElementInfo.GetRectInScreen();
+    HILOG_DEBUG("CalculateClickPosition windowId: %{public}d", windowId);
     int32_t boundLeftTopXPos = 0;
     int32_t boundRightBottomXPos = 0;
     int32_t boundLeftTopYpos = 0;
     int32_t boundRightBottomYPos = 0;
-    int32_t windowId = focusWindowId_.load();
-    AccessibilityWindowInfo focusWindowInfo;
 
+    AccessibilityWindowInfo focusWindowInfo;
     sptr<AccessibilityAccountData> accountData = accountData_.promote();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
@@ -805,16 +803,20 @@ void ElementOperatorManager::CalculateClickPosition(const AccessibilityElementIn
 
     if (accountData->GetWindowManager().GetA11yWindowById(windowId, focusWindowInfo)) {
         Rect winRect = focusWindowInfo.GetRectInScreen();
+        float scaleX = focusWindowInfo.GetScaleX();
+        float scaleY = focusWindowInfo.GetScaleY();
         boundLeftTopXPos = winRect.GetLeftTopXScreenPostion();
-        boundRightBottomXPos = winRect.GetRightBottomXScreenPostion();
         boundLeftTopYpos = winRect.GetLeftTopYScreenPostion();
-        boundRightBottomYPos = winRect.GetRightBottomYScreenPostion();
+        boundRightBottomXPos = ((winRect.GetRightBottomXScreenPostion() - boundLeftTopXPos) * scaleX) + boundLeftTopXPos;
+        boundRightBottomYPos = ((winRect.GetRightBottomYScreenPostion() - boundLeftTopYpos) * scaleY) + boundLeftTopYpos;
     } else if (accountData->GetWindowManager().GetAccessibilityWindow(windowId, focusWindowInfo)) {
         Rect winRect = focusWindowInfo.GetRectInScreen();
+        float scaleX = focusWindowInfo.GetScaleX();
+        float scaleY = focusWindowInfo.GetScaleY();
         boundLeftTopXPos = winRect.GetLeftTopXScreenPostion();
-        boundRightBottomXPos = winRect.GetRightBottomXScreenPostion();
         boundLeftTopYpos = winRect.GetLeftTopYScreenPostion();
-        boundRightBottomYPos = winRect.GetRightBottomYScreenPostion();
+        boundRightBottomXPos = ((winRect.GetRightBottomXScreenPostion() - boundLeftTopXPos) * scaleX) + boundLeftTopXPos;
+        boundRightBottomYPos = ((winRect.GetRightBottomYScreenPostion() - boundLeftTopYpos) * scaleY) + boundLeftTopYpos;
     } else {
         HILOG_DEBUG("Failed to get window rect!");
         if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
@@ -824,9 +826,9 @@ void ElementOperatorManager::CalculateClickPosition(const AccessibilityElementIn
     }
 
     int32_t focusLeftTopXPos = focusElement.GetLeftTopXScreenPostion();
-    int32_t focusRightBottomXPos = focusElement.GetRightBottomXScreenPostion();
     int32_t focusLeftTopYpos = focusElement.GetLeftTopYScreenPostion();
-    int32_t focusRightBottomYPos = focusElement.GetRightBottomYScreenPostion();
+    int32_t focusRightBottomXPos = std::min(rect.GetRightBottomXScreenPostion(), boundRightBottomXPos);
+    int32_t focusRightBottomYPos = std::min(rect.GetRightBottomYScreenPostion(), boundRightBottomYPos);
  
     int32_t leftTopXPos = focusLeftTopXPos > boundLeftTopXPos ? focusLeftTopXPos : boundLeftTopXPos;
     int32_t leftTopYPos = focusLeftTopYpos > boundLeftTopYpos ? focusLeftTopYpos : boundLeftTopYpos;
@@ -836,6 +838,7 @@ void ElementOperatorManager::CalculateClickPosition(const AccessibilityElementIn
         boundRightBottomYPos : focusRightBottomYPos;
     xPos = leftTopXPos + (rightBottomXPos - leftTopXPos) / DIVISOR_TWO;
     yPos = leftTopYPos + (rightBottomYPos - leftTopYPos) / DIVISOR_TWO;
+    HILOG_DEBUG("CalculateClickPosition position: [%{public}d, %{public}d]", xPos, yPos);
 }
 
 void ElementOperatorManager::GetElementOperatorConnection(const sptr<AccessibilityWindowConnection> &connection,
@@ -908,7 +911,9 @@ bool ElementOperatorManager::ExecuteActionOnAccessibilityFocused(ActionType acti
     if (!actionCallback->executeActionResult_ && (action == ActionType::ACCESSIBILITY_ACTION_CLICK)) {
         int32_t xPos = 0;
         int32_t yPos = 0;
-        CalculateClickPosition(focusedElementInfo, xPos, yPos);
+        const Rect rect = focusedElementInfo.GetRectInScreen();
+        int32_t windowId = focusWindowId_.load();
+        CalculateClickPosition(rect, xPos, yPos, windowId);
         std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
         pointerEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
         pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);

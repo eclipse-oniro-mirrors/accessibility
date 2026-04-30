@@ -81,6 +81,7 @@ public:
     void SetFocusWindowId(int32_t focusWindowId);
     void SetFocusElementId(int64_t focusElementId);
     RetError VerifyingToKenId(const int32_t windowId, const int64_t elementId, uint32_t tokenId);
+    void CalculateClickPosition(const Rect &rect, int32_t &xPos, int32_t &yPos, int32_t &windowId);
 private:
     bool InvalidHoverEnterEvent(AccessibilityEventInfo &event);
     bool InnerGetElementOperator(
@@ -90,7 +91,6 @@ private:
     // used for arkui windowId 1 map to WMS windowId
     void FindInnerWindowId(const AccessibilityEventInfo &event, int32_t& windowId);
     int32_t GenerateRequestId();
-    void CalculateClickPosition(const AccessibilityElementInfo &focusedElementInfo, int32_t &xPos, int32_t &yPos);
     void GetElementOperatorConnection(const sptr<AccessibilityWindowConnection> &connection, int64_t elementId,
         sptr<IAccessibilityElementOperator> &elementOperator, uint64_t displayid);
     sptr<AccessibilityWindowConnection> GetRealIdWindowConnection(
