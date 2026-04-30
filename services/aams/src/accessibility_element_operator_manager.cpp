@@ -825,8 +825,8 @@ void ElementOperatorManager::CalculateClickPosition(const Rect &rect, int32_t &x
         }
     }
 
-    int32_t focusLeftTopXPos = focusElement.GetLeftTopXScreenPostion();
-    int32_t focusLeftTopYpos = focusElement.GetLeftTopYScreenPostion();
+    int32_t focusLeftTopXPos = rect.GetLeftTopXScreenPostion();
+    int32_t focusLeftTopYpos = rect.GetLeftTopYScreenPostion();
     int32_t focusRightBottomXPos = std::min(rect.GetRightBottomXScreenPostion(), boundRightBottomXPos);
     int32_t focusRightBottomYPos = std::min(rect.GetRightBottomYScreenPostion(), boundRightBottomYPos);
  
