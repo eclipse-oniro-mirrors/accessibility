@@ -592,7 +592,7 @@ void AccessibleAbilityChannel::InjectEventToInput(int32_t xPos, int32_t yPos, In
         injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_DOWN);
         injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_UP);
     } else if (injectActionType == INJECT_ACTION_TYPE_DOUBLE_CLICK) {
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < DIVISOR_TWO; i++) {
             injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_DOWN);
             injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_UP);
         }
