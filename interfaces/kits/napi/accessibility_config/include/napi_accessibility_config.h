@@ -43,6 +43,14 @@ struct EnableAbilityCallbackObserver {
     napi_ref notifyCallback_ = nullptr;
 };
 
+struct SeniorModeStateObserver {
+    SeniorModeStateObserver(napi_env env, napi_ref callback) : env_(env), callback_(callback) {};
+    void OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, bool state);
+    int OnSeniorModeStateChangedWork(uv_work_t *work);
+    napi_env env_ = nullptr;
+    napi_ref callback_ = nullptr;
+};
+
 class EnableAbilityListsObserverImpl : public OHOS::AccessibilityConfig::AccessibilityEnableAbilityListsObserver,
     public std::enable_shared_from_this<EnableAbilityListsObserverImpl> {
 public:
@@ -80,6 +88,22 @@ private:
     std::map<std::string, std::shared_ptr<EnableAbilityCallbackObserver>> enableAbilityCallbackObservers_ = {};
 };
 
+class SeniorModeStateObserverImpl : public OHOS::AccessibilityConfig::AccessibilityAppSeniorModeStateObserver,
+    public std::enable_shared_from_this<SeniorModeStateObserverImpl> {
+public:
+    SeniorModeStateObserverImpl() = default;
+    void OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, bool state) override;
+    void SubscribeToFramework();
+    void UnsubscribeFromFramework();
+    void SubscribeObserver(napi_env env, napi_value observer);
+    void UnsubscribeObserver(napi_env env, napi_value observer);
+    void UnsubscribeObservers();
+
+private:
+    ffrt::mutex mutex_;
+    std::vector<std::shared_ptr<SeniorModeStateObserver>> observers_ = {};
+};
+
 struct NAccessibilityConfigData {
     napi_async_work work_ {};
     napi_deferred deferred_ {};
@@ -96,6 +120,7 @@ struct NAccessibilityConfigData {
     OHOS::AccessibilityConfig::CONFIG_ID id_ = OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ID_MAX;
     bool boolConfig_ = false;
     OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RET_ERR_FAILED;
+    std::vector<OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo> seniorModeInfos_ {};
 };
 
 class NAccessibilityConfigClass {
@@ -152,6 +177,11 @@ public:
     static napi_value GetConfig(napi_env env, napi_callback_info info);
     static napi_value SubscribeConfigObserver(napi_env env, napi_callback_info info);
     static napi_value UnSubscribeConfigObserver(napi_env env, napi_callback_info info);
+    static napi_value SubscribeSelfSeniorMode(napi_env env, napi_callback_info info);
+    static napi_value UnsubscribeSelfSeniorMode(napi_env env, napi_callback_info info);
+    static napi_value GetSeniorModeStateForApp(napi_env env, napi_callback_info info);
+    static napi_value SetSeniorModeStateForApp(napi_env env, napi_callback_info info);
+    static std::shared_ptr<SeniorModeStateObserverImpl> seniorModeStateObservers_;
     static std::shared_ptr<NAccessibilityConfigObserverImpl> configObservers_;
     static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers_;
     static std::shared_ptr<EnableAbilityCallbackObserverImpl> enableAbilityCallbackObservers_;
@@ -190,6 +220,12 @@ private:
         NAccessibilityConfigData* callbackInfo, napi_value* parameters, size_t argc);
     static void EnableAbilityWithCallbackExecute(napi_env env, void* data);
     static void EnableAbilityWithCallbackComplete(napi_env env, napi_status status, void* data);
+    static bool ParseSeniorModeInfos(napi_env env, napi_callback_info info,
+        std::vector<OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo> &seniorModeInfos);
+    static void SetSeniorModeStateComplete(napi_env env, napi_status status, void* data);
+    static void GetSeniorModeStateComplete(napi_env env, napi_status status, void* data);
+    static bool ParseGetSeniorModeParam(napi_env env, napi_callback_info info,
+        std::string &bundleName, int32_t &appIndex);
     NAccessibilityConfig() = default;
     ~NAccessibilityConfig() = default;
 };

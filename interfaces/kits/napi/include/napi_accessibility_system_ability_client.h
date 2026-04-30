@@ -79,6 +79,7 @@ struct NAccessibilitySystemAbilityClient {
     bool animationOffState_ = false;
     bool flashReminderSwitch_ = false;
     bool seniorModeState_ = false;
+    bool seniorModeStateForApp_ = false;
     OHOS::Accessibility::AbilityStateType stateTypes_ = OHOS::Accessibility::ABILITY_STATE_INVALID;
     uint32_t abilityTypes_ = 0;
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList_ {};
@@ -143,6 +144,10 @@ public:
     static napi_value SubscribeStateSeniorMode(napi_env env, napi_callback_info info);
     static napi_value UnsubscribeStateSeniorMode(napi_env env, napi_callback_info info);
     static napi_value GetSeniorModeState(napi_env env, napi_callback_info info);
+    static napi_value SubscribeSelfSeniorMode(napi_env env, napi_callback_info info);
+    static napi_value UnsubscribeSelfSeniorMode(napi_env env, napi_callback_info info);
+    static napi_value GetSeniorModeStateForApp(napi_env env, napi_callback_info info);
+    static napi_value SetSeniorModeStateForApp(napi_env env, napi_callback_info info);
 
     static void DefineJSCaptionsStyle(napi_env env);
     static napi_value AccessibleAbilityConstructorStyle(napi_env env, napi_callback_info info);
@@ -170,6 +175,7 @@ public:
     static std::shared_ptr<StateListenerImpl> animationOffStateListeners_;
     static std::shared_ptr<StateListenerImpl> flashReminderSwitchStateListeners_;
     static std::shared_ptr<StateListenerImpl> seniorModeStateListeners_;
+    static std::shared_ptr<StateListenerImpl> seniorModeStateForAppListeners_;
 
 private:
     static napi_value GetAccessibilityExtensionListAsync(

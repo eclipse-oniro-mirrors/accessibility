@@ -86,6 +86,54 @@ napi_status ParseResourceBundleNameFromNAPI(napi_env env, napi_value value,
     HILOG_DEBUG("get resource bundleName is %{public}s", bundleNameValue.c_str());
     return status;
 }
+
+napi_status ParseSeniorModeStateFromNAPI(napi_env env, napi_value value, bool &state)
+{
+    bool hasProperty = false;
+    napi_value propertyName = nullptr;
+    status = napi_create_string_utf8(env, "seniorModeState", NAPI_AUTO_LENGTH, &propertyName);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi create bundleName failed");
+        return status;
+    }
+    status = napi_has_property(env, value, propertyName, &hasProperty);
+    if (!hasProperty) {
+        HILOG_ERROR("property is null");
+        return status;
+    }
+    napi_value itemValue = nullptr;
+    status = napi_get_property(env, value, propertyName, &itemValue);
+    if (status != napi_ok) {
+        HILOG_ERROR("get bundleName from napi failed");
+        return status;
+    }
+    ParseBool(env, state, itemValue);
+    return status;
+}
+
+napi_status ParseAppIndexFromNAPI(napi_env env, napi_value value, int32_t &appIndex)
+{
+    bool hasProperty = false;
+    napi_value propertyName = nullptr;
+    status = napi_create_string_utf8(env, "appIndex", NAPI_AUTO_LENGTH, &propertyName);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi create bundleName failed");
+        return status;
+    }
+    status = napi_has_property(env, value, propertyName, &hasProperty);
+    if (!hasProperty) {
+        HILOG_ERROR("property is null");
+        return status;
+    }
+    napi_value itemValue = nullptr;
+    status = napi_get_property(env, value, propertyName, &itemValue);
+    if (status != napi_ok) {
+        HILOG_ERROR("get bundleName from napi failed");
+        return status;
+    }
+    ParseInt32(env, appIndex, itemValue);
+    return status;
+}
  
 napi_status ParseResourceModuleNameFromNAPI(napi_env env, napi_value value,
     std::string &moduleNameValue)

@@ -77,6 +77,7 @@ public:
     RetError SetColorModeState(const A11yDarkModeType &type);
     RetError SetFlashReminderSwitch(const bool state);
     RetError SetSeniorModeState(const bool state);
+    RetError SetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, const bool state);
 
     bool GetEnabledState() const;
     bool GetTouchGuideState() const;
@@ -110,6 +111,9 @@ public:
     int32_t GetScreenMagnificationTriggerMethod() const;
     bool GetFlashReminderSwitch() const;
     bool GetSeniorModeState() const;
+    bool GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex);
+    void SetSeniorModeStateForAppMap(const std::map<std::string, bool>& map);
+    std::map<std::string, bool> GetSeniorModeStateForAppMap() const;
 
     RetError SetEnabledAccessibilityServices(const std::vector<std::string> &services);
     const std::vector<std::string> GetEnabledAccessibilityServices();
@@ -191,6 +195,8 @@ private:
     std::shared_ptr<AccessibilityDatashareHelper> systemDatashare_ = nullptr;
     ffrt::mutex interfaceMutex_;
     bool isInitialized_ = false;
+    mutable ffrt::mutex seniorModeStateForAppMapMutex_;
+    std::map<std::string, bool> seniorModeStateForAppMap_;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -855,5 +855,35 @@ ErrCode AccessibleAbilityManagerService::InnerSendEvent(
         }), "TASK_SEND_EVENT");
     return RET_OK;
 }
+
+ErrCode AccessibleAbilityManagerService::RegisterSeniorModeStateObserver(
+    const sptr<IAccessibilityAppSeniorModeStateObserver> &observer)
+{
+    return RET_OK;
+}
+ErrCode AccessibleAbilityManagerService::DeRegisterSeniorModeStateObserver(const sptr<IRemoteObject>& obj)
+{
+    return RET_OK;
+}
+ErrCode AccessibleAbilityManagerService::GetSeniorModeStateForApp(bool &state)
+{
+    state = false;
+    return RET_OK;
+}
+ErrCode AccessibleAbilityManagerService::SetSeniorModeStateForApp(const bool state)
+{
+    return RET_OK;
+}
+ErrCode AccessibleAbilityManagerService::GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,
+    bool &state)
+{
+    state = false;
+    return RET_OK;
+}
+ErrCode AccessibleAbilityManagerService::SetSeniorModeStateForApp(
+    const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos)
+{
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

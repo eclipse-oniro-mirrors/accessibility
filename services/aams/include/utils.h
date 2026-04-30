@@ -85,6 +85,8 @@ public:
     static float StringToFloat(const std::string& value, const float& defaultValue);
     static int32_t GetTreeIdBySplitElementId(const int64_t elementId);
     static RetError GetResourceBundleInfo(AccessibilityEventInfo &eventInfo, int32_t userId);
+    static std::string GetSeniorModeStateKey(const std::string& bundleName, int32_t appIndex);
+    static bool ParseSeniorModeStateKey(const std::string& key, std::string& bundleName, int32_t& appIndex);
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);
     static RetError GetResourceValue(

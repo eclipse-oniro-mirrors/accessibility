@@ -19,6 +19,7 @@
 
 #include <any>
 #include <dlfcn.h>
+#include <ipc_skeleton.h>
 #ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
 #endif // OHOS_BUILD_ENABLE_HITRACE
@@ -34,6 +35,11 @@
 #include "accessibility_resource_bundle_manager.h"
 #include "accessibility_notification_helper.h"
 #include "accessibility_short_key_dialog.h"
+#include "nlohmann/json.hpp"
+#include "accesstoken_kit.h"
+#include "tokenid_kit.h"
+
+using namespace OHOS::Security::AccessToken;
 
 namespace OHOS {
 namespace Accessibility {
@@ -1355,7 +1361,17 @@ RetError AccessibilityAccountData::RegisterStateObserver(
         HILOG_ERROR("parameters check failed!");
         return RET_ERR_INVALID_PARAM;
     }
-    stateObservers_.AddStateObserver(stateObserver);
+    auto id = IPCSkeleton::GetCallingTokenID();
+    Security::AccessToken::HapTokenInfo info;
+    auto result = Security::AccessToken::AccessTokenKit::GetHapTokenInfo(id, info);
+    if (result != 0) {
+        HILOG_ERROR("get native token info failed!, result: %{public}d", result);
+        return RET_ERR_INVALID_PARAM;
+    }
+
+    std::string bundleName = info.bundleName;
+    auto instIndex = info.instIndex;
+    stateObservers_.AddStateObserver(stateObserver, Utils::GetSeniorModeStateKey(bundleName, instIndex));
     state = GetAccessibilityState();
     return RET_OK;
 }
@@ -1376,47 +1392,190 @@ void AccessibilityAccountData::RemoveStateObserver(const wptr<IRemoteObject> &re
 }
  
 void AccessibilityAccountData::StateObservers::AddStateObserver(
-    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver)
+    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver, const std::string &bundleName)
 {
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
-    auto iter = std::find(observersList_.begin(), observersList_.end(), stateObserver);
-    if (iter == observersList_.end()) {
-        observersList_.push_back(stateObserver);
+    auto iter = observersMap_.find(bundleName);
+    if (iter == observersMap_.end()) {
+        observersMap_[bundleName] = stateObserver;
         HILOG_DEBUG("register state observer successfully");
         return;
     }
     HILOG_INFO("state observer is existed");
 }
-// LCOV_EXCL_STOP
  
 void AccessibilityAccountData::StateObservers::OnStateObservers(uint32_t state)
 {
-    HILOG_INFO("state is %{public}d size = %{public}zu", state, observersList_.size());
+    HILOG_INFO("state is %{public}d", state);
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
-    for (auto& stateObserver : observersList_) {
-        if (stateObserver) {
-            stateObserver->OnStateChanged(state);
+
+    for (auto& stateObserver : observersMap_) {
+        if (stateObserver.second) {
+            stateObserver.second->OnStateChanged(state);
         }
+    }
+}
+
+void AccessibilityAccountData::StateObservers::OnSeniorModeStateObservers(const std::string &bundleName,
+    int32_t appIndex, bool seniorModeStateForApp)
+{
+    HILOG_INFO("bundleName: %{public}s, appIndex: %{public}d", bundleName.c_str(), appIndex);
+    std::string mapKdy = Utils::GetSeniorModeStateKey(bundleName, appIndex);
+
+    auto iter = observersMap_.find(mapKdy);
+    if (iter != observersMap_.end()) {
+        auto stateObserver = observersMap_[mapKdy];
+        if (stateObserver) {
+            sptr<AccessibilityAccountData> accountData =
+                Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+            uint32_t state = accountData->GetAccessibilityState();
+            if (seniorModeStateForApp) {
+                state |= STATE_SELF_SENIOR_MODE_STATE_ENABLED;
+            }
+            stateObserver->OnStateChanged(state);
+            HILOG_INFO("OnSeniorModeStateObservers, state: %{public}d", state);
+        }
+        return;
     }
 }
 
 void AccessibilityAccountData::StateObservers::RemoveStateObserver(const wptr<IRemoteObject> &remote)
 {
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
-    HILOG_ERROR("stateObservers_ size = %{public}zu", observersList_.size());
-    auto iter = std::find_if(observersList_.begin(), observersList_.end(),
-        [remote](const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver) {
-            return stateObserver->AsObject() == remote;
-        });
-    if (iter != observersList_.end()) {
-        observersList_.erase(iter);
+    for (auto iter = observersMap_.begin(); iter != observersMap_.end(); ++iter) {
+        if (iter->second && iter->second->AsObject() == remote) {
+            HILOG_INFO("RemoveStateObserver");
+            observersMap_.erase(iter);
+            return;
+        }
     }
 }
  
 void AccessibilityAccountData::StateObservers::Clear()
 {
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
-    observersList_.clear();
+    observersMap_.clear();
 }
+
+void AccessibilityAccountData::AddSeniorModeStateObserver(
+    const sptr<IAccessibilityAppSeniorModeStateObserver>& observer)
+{
+    std::lock_guard<ffrt::mutex> lock(seniorModeStateObserversMutex_);
+    HILOG_INFO();
+    if (std::any_of(seniorModeStateObservers_.begin(), seniorModeStateObservers_.end(),
+        [observer](const sptr<IAccessibilityAppSeniorModeStateObserver> &listObserver) {
+            return listObserver == observer;
+        })) {
+        HILOG_ERROR("observer is already exist");
+        return;
+    }
+    seniorModeStateObservers_.push_back(observer);
+    HILOG_DEBUG("observer's size is %{public}zu", seniorModeStateObservers_.size());
+}
+
+void AccessibilityAccountData::RemoveSeniorModeStateObserver(const wptr<IRemoteObject>& observer)
+{
+    std::lock_guard<ffrt::mutex> lock(seniorModeStateObserversMutex_);
+    HILOG_INFO();
+    auto itr = seniorModeStateObservers_.begin();
+    for (; itr != seniorModeStateObservers_.end(); itr++) {
+        if ((*itr)->AsObject() == observer) {
+            HILOG_DEBUG("erase observer");
+            seniorModeStateObservers_.erase(itr);
+            HILOG_DEBUG("observer's size is %{public}zu", seniorModeStateObservers_.size());
+            return;
+        }
+    }
+}
+
+void AccessibilityAccountData::NotifySeniorModeStateObservers(const std::string& bundleName,
+    int32_t appIndex, bool state)
+{
+    std::lock_guard<ffrt::mutex> lock(seniorModeStateObserversMutex_);
+    HILOG_INFO("observer's size is %{public}zu", seniorModeStateObservers_.size());
+    for (auto &observer : seniorModeStateObservers_) {
+        if (observer) {
+            observer->OnSeniorModeStateChanged(bundleName, appIndex, state);
+        }
+    }
+    stateObservers_.OnSeniorModeStateObservers(bundleName, appIndex, state);
+}
+
+void AccessibilityAccountData::GetSeniorModeStateForAppChanges(std::map<std::string, bool>& changes)
+{
+    constexpr char SENIOR_MODE_STATE_KEY[] = "accessibility_senior_mode_state_for_app";
+
+    if (config_ == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config_->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    std::string seniorModeStateInfo = config_->GetDbHandle()->GetStringValue(SENIOR_MODE_STATE_KEY, "{}");
+    HILOG_INFO("seniorModeStateForApp from db: %{public}s", seniorModeStateInfo.c_str());
+
+    std::map<std::string, bool> newMap;
+    ParseSeniorModeStateJson(seniorModeStateInfo, newMap);
+
+    std::map<std::string, bool> oldMap = config_->GetSeniorModeStateForAppMap();
+    CompareSeniorModeStateMap(newMap, oldMap, changes);
+
+    config_->SetSeniorModeStateForAppMap(newMap);
+}
+
+void AccessibilityAccountData::ParseSeniorModeStateJson(const std::string& jsonStr, std::map<std::string, bool>& map)
+{
+    if (!nlohmann::json::accept(jsonStr)) {
+        HILOG_ERROR("Invalid json format");
+        return;
+    }
+
+    nlohmann::json jsonObj = nlohmann::json::parse(jsonStr);
+    if (!jsonObj.is_object()) {
+        HILOG_ERROR("Json is not an object");
+        return;
+    }
+
+    for (auto& item : jsonObj.items()) {
+        if (item.value().is_boolean()) {
+            map[item.key()] = item.value().get<bool>();
+        }
+    }
+}
+
+void AccessibilityAccountData::CompareSeniorModeStateMap(const std::map<std::string, bool>& newMap,
+    const std::map<std::string, bool>& oldMap, std::map<std::string, bool>& changes)
+{
+    for (const auto& item : newMap) {
+        const std::string& key = item.first;
+        bool newValue = item.second;
+
+        bool isChanged = false;
+        auto oldIter = oldMap.find(key);
+        if (oldIter == oldMap.end()) {
+            isChanged = true;
+        } else if (oldIter->second != newValue) {
+            isChanged = true;
+        }
+
+        if (isChanged) {
+            HILOG_INFO("Senior mode state changed for %{public}s: %{public}d", key.c_str(), newValue);
+            changes[key] = newValue;
+        }
+    }
+
+    for (const auto& item : oldMap) {
+        const std::string& key = item.first;
+        if (newMap.find(key) == newMap.end()) {
+            HILOG_INFO("Senior mode state removed for %{public}s", key.c_str());
+            changes[key] = false;
+        }
+    }
+}
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

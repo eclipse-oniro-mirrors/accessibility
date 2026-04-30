@@ -113,6 +113,13 @@ public:
     MOCK_METHOD1(GetReadableRules, ErrCode(std::string &name));
     MOCK_METHOD2(IsInnerWindowRootElement, ErrCode(int64_t elementId, bool &state));
     MOCK_METHOD3(SendAccessibilityEventToAA, void(EventType eventType, GestureType gestureId, uint64_t displayId));
+    MOCK_METHOD1(RegisterSeniorModeStateObserver, ErrCode(
+        const sptr<IAccessibilityAppSeniorModeStateObserver> &observer));
+    MOCK_METHOD1(DeRegisterSeniorModeStateObserver, ErrCode(const sptr<IRemoteObject>& obj));
+    MOCK_METHOD1(GetSeniorModeStateForApp, ErrCode(bool &state));
+    MOCK_METHOD1(SetSeniorModeStateForApp, ErrCode(const bool state));
+    MOCK_METHOD3(GetSeniorModeStateForApp, ErrCode(const std::string &bundleName, int32_t appIndex, bool &state));
+    MOCK_METHOD1(SetSeniorModeStateForApp, ErrCode(const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos));
 };
 } // namespace Accessibility
 } // namespace OHOS

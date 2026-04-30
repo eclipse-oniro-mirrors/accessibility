@@ -357,5 +357,45 @@ Accessibility::RetError AccessibilityConfig::SetEnhanceConfig(uint8_t *cfg, uint
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
     return pImpl_->SetEnhanceConfig(cfg, cfgLen);
 }
+
+Accessibility::RetError AccessibilityConfig::GetSeniorModeStateForApp(const std::string &bundleName,
+    int32_t appIndex, bool &state) const
+{
+    HILOG_INFO();
+    if (appIndex < 0) {
+        HILOG_ERROR("appIndex < 0");
+        return Accessibility::RET_ERR_INVALID_PARAM;
+    }
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->GetSeniorModeStateForApp(bundleName, appIndex, state);
+}
+
+Accessibility::RetError AccessibilityConfig::SetSeniorModeStateForApp(
+    const std::vector<AccessibilityBundleSeniorModeInfo> &infos)
+{
+    HILOG_INFO();
+    if (infos.size() == 0) {
+        HILOG_ERROR("infos is empty");
+        return Accessibility::RET_ERR_INVALID_PARAM;
+    }
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->SetSeniorModeStateForApp(infos);
+}
+
+Accessibility::RetError AccessibilityConfig::SubscribeAppSeniorModeStateObserver(
+    const std::shared_ptr<AccessibilityAppSeniorModeStateObserver> &observer)
+{
+    HILOG_INFO();
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->SubscribeAppSeniorModeStateObserver(observer);
+}
+
+Accessibility::RetError AccessibilityConfig::UnsubscribeAppSeniorModeStateObserver(
+    const std::shared_ptr<AccessibilityAppSeniorModeStateObserver> &observer)
+{
+    HILOG_INFO();
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->UnsubscribeAppSeniorModeStateObserver(observer);
+}
 } // Accessibility
 } // OHOS

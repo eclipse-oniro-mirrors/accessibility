@@ -21,6 +21,7 @@
 #include "accessibility_enable_ability_callback_observer_stub.h"
 #include "accessible_ability_manager_caption_observer_stub.h"
 #include "accessible_ability_manager_config_observer_stub.h"
+#include "accessibility_senior_mode_state_observer_stub.h"
 #include "accessible_ability_manager_service_proxy.h"
 #include "ffrt.h"
 #include "ffrt_inner.h"
@@ -52,6 +53,11 @@ public:
         const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer);
     Accessibility::RetError UnsubscribeEnableAbilityCallbackObserver(
         const std::shared_ptr<AccessibilityEnableAbilityCallbackObserver> &observer);
+
+    Accessibility::RetError SubscribeAppSeniorModeStateObserver(
+        const std::shared_ptr<AccessibilityAppSeniorModeStateObserver> &observer);
+    Accessibility::RetError UnsubscribeAppSeniorModeStateObserver(
+        const std::shared_ptr<AccessibilityAppSeniorModeStateObserver> &observer);
 
     Accessibility::RetError EnableAbility(
         const std::string &name, const uint32_t capabilities, const bool connectCallBackFlag);
@@ -100,6 +106,8 @@ public:
     Accessibility::RetError GetIgnoreRepeatClickState(bool &state);
     Accessibility::RetError GetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_TIME &time);
     Accessibility::RetError SetEnhanceConfig(uint8_t *cfg, uint32_t cfgLen);
+    Accessibility::RetError GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, bool &state);
+    Accessibility::RetError SetSeniorModeStateForApp(const std::vector<AccessibilityBundleSeniorModeInfo> &infos);
 
     void ResetService(const wptr<IRemoteObject> &remote);
     void OnAccessibleAbilityManagerCaptionPropertyChanged(const CaptionProperty &property);
@@ -292,6 +300,28 @@ private:
         Impl &config_;
     };
 
+    class AccessibilityAppSeniorModeStateObserverImpl
+        : public Accessibility::AccessibilityAppSeniorModeStateObserverStub {
+    public:
+        explicit AccessibilityAppSeniorModeStateObserverImpl(Impl &config) : config_(config) {}
+        ~AccessibilityAppSeniorModeStateObserverImpl() = default;
+
+        virtual void OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, bool state) override
+        {
+            if (seniorModeClientDeleted_ == false) {
+                config_.OnSeniorModeStateChanged(bundleName, appIndex, state);
+            }
+        }
+
+        void OnclientDeleted()
+        {
+            seniorModeClientDeleted_ = true;
+        }
+    private:
+        Impl &config_;
+        std::atomic<bool> seniorModeClientDeleted_ = false;
+    };
+
     bool ConnectToService();
     bool ConnectToServiceAsync();
 
@@ -365,10 +395,12 @@ private:
     void InitConfigValues();
     uint32_t InvertDaltonizationColorInAtoHos(uint32_t filter);
     static void OnParameterChanged(const char *key, const char *value, void *context);
+    void OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, bool state);
 
     void OnIgnoreRepeatClickStateChanged(const uint32_t stateType);
     bool CheckSaStatus();
 
+    sptr<AccessibilityAppSeniorModeStateObserverImpl> seniorModeStateObserver_ = nullptr;
     sptr<Accessibility::IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver_ = nullptr;
     sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver_ = nullptr;
@@ -405,6 +437,8 @@ private:
     ffrt::mutex enableAbilityCallbackObserversMutex_;
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>> configObservers_;
     ffrt::mutex configObserversMutex_;
+    std::vector<std::shared_ptr<AccessibilityAppSeniorModeStateObserver>> seniorModeStateObservers_;
+    ffrt::mutex seniorModeStateObserversMutex_;
     
     // use write-first-rwLock to protect serviceProxy_ to make sure when serviceProxy_ multi-thread used
     // and one thread which calls interface like SetAudioMonoState timeout,

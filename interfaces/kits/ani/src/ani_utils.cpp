@@ -83,6 +83,17 @@ bool ANIUtils::GetStringField(ani_env *env, std::string fieldName, ani_object ob
     return false;
 }
 
+bool ANIUtils::GetBoolField(ani_env *env, std::string fieldName, ani_object object, bool &fieldValue)
+{
+    ani_boolean booleanValue;
+    if (env->Object_GetPropertyByName_Boolean(object, fieldName.c_str(), &booleanValue) != ANI_OK) {
+        HILOG_ERROR("get field %{public}s failed", fieldName.c_str());
+        return false;
+    }
+    fieldValue = static_cast<bool>(booleanValue);
+    return false;
+}
+
 bool ANIUtils::GetIntField(ani_env *env, std::string fieldName, ani_object object, int32_t &fieldValue)
 {
     ani_ref ref;
