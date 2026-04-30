@@ -98,7 +98,8 @@ private:
     bool GetMagnificationState();
     bool FindFocusedElementByConnection(
         sptr<AccessibilityWindowConnection> connection, AccessibilityElementInfo &elementInfo, uint64_t displayId);
-
+    bool GetWindowBounds(int32_t windowId, int32_t &leftTopX, int32_t &leftTopY,
+        int32_t &rightBottomX, int32_t &rightBottomY);
 private:
     int32_t ApplyTreeId();
     void RecycleTreeId(int32_t treeId);
