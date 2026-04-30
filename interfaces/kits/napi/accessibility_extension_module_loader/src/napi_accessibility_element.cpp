@@ -3099,11 +3099,9 @@ void NAccessibilityElement::FindElementComplete(napi_env env, napi_status status
 
     GetElement(callbackInfo, result[PARAM1]);
     if (callbackInfo->ret_ == RET_ERR_NO_WINDOW_CONNECTION && callbackInfo->systemApi) {
-        result[PARAM0] = CreateJsError(
+        result[PARAM0] = CreateBusinessError(
             env,
-            static_cast<int32_t>(
-                NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED
-            ),
+            NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
             ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED
         );
     } else {

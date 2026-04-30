@@ -373,6 +373,18 @@ napi_value CreateBusinessError(napi_env env, OHOS::Accessibility::RetError errCo
     return result;
 }
 
+napi_value CreateBusinessError(napi_env env, NAccessibilityErrorCode errCode, const std::string& errMsg)
+{
+    napi_value result = nullptr;
+    napi_value eCode = nullptr;
+    napi_create_int32(env, static_cast<int32_t>(errCode), &eCode);
+    napi_value eMsg = nullptr;
+    napi_create_string_utf8(env, errMsg.c_str(), NAPI_AUTO_LENGTH, &eMsg);
+    napi_create_error(env, nullptr, eMsg, &result);
+    napi_set_named_property(env, result, "code", eCode);
+    return result;
+}
+
 napi_value GetErrorValue(napi_env env, int errCode)
 {
     napi_value result = nullptr;
