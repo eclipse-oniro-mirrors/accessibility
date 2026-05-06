@@ -539,68 +539,38 @@ RetError AccessibleAbilityChannel::HandleInjectAction(const std::map<std::string
     }
     std::string clickTypeStr = it->second;
     HILOG_INFO("HandleInjectAction clickType: %{public}s", clickTypeStr.c_str());
- 
+
     InjectActionType injectActionType = StringToInjectAction(clickTypeStr);
     if (injectActionType == INJECT_ACTION_TYPE_INVALID) {
         HILOG_ERROR("HandleInjectAction invalid clickType: %{public}s", clickTypeStr.c_str());
         return RET_ERR_INVALID_PARAM;
     }
- 
-    int32_t xPos = 0;
-    int32_t yPos = 0;
-    uint64_t displayId = Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
-    sptr<Rosen::Display> display = Rosen::DisplayManager::GetInstance().GetDisplayById(displayId);
-    if (!display) {
-        HILOG_ERROR("Get display failed");
+
+    sptr<AccessibilityAccountData> accountData = accountData_.promote();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
         return RET_ERR_FAILED;
     }
-    int32_t displayWidth = display->GetWidth();
-    int32_t displayHeight = display->GetHeight();
-    HILOG_INFO("HandleInjectAction displayWidth: %{public}d, displayHeight: %{public}d", displayWidth, displayHeight);
-    CalculateCenterPosition(rect, xPos, yPos, displayWidth, displayHeight);
- 
-    InjectEventToInput(xPos, yPos, injectActionType, displayWidth, displayHeight);
+
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+    int32_t windowId = accountData->GetWindowManager().GetActiveWindowId();
+    accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+
+    InjectEventToInput(xPos, yPos, injectActionType);
     return RET_OK;
 }
- 
-void AccessibleAbilityChannel::CalculateCenterPosition(const Rect &rect, int32_t &xPos, int32_t &yPos,
-    int32_t displayWidth, int32_t displayHeight)
-{
-    int32_t leftTopXPos = rect.GetLeftTopXScreenPostion();
-    int32_t rightBottomXPos = rect.GetRightBottomXScreenPostion();
-    int32_t leftTopYPos = rect.GetLeftTopYScreenPostion();
-    int32_t rightBottomYPos = rect.GetRightBottomYScreenPostion();
- 
-    HILOG_DEBUG("CalculateCenterPosition leftTopXPos: %{public}d, rightBottomXPos: %{public}d, "
-        "leftTopYPos: %{public}d, rightBottomYPos: %{public}d",
-        leftTopXPos, rightBottomXPos, leftTopYPos, rightBottomYPos);
- 
-    leftTopXPos = leftTopXPos > 0 ? leftTopXPos : 0;
-    leftTopYPos = leftTopYPos > 0 ? leftTopYPos : 0;
- 
-    rightBottomXPos = (displayWidth > 0 && displayWidth < rightBottomXPos) ?
-        displayWidth : rightBottomXPos;
-    rightBottomYPos = (displayHeight > 0 && displayHeight < rightBottomYPos) ?
-        displayHeight : rightBottomYPos;
- 
-    xPos = leftTopXPos + (rightBottomXPos - leftTopXPos) / DIVISOR_TWO;
-    yPos = leftTopYPos + (rightBottomYPos - leftTopYPos) / DIVISOR_TWO;
-    HILOG_DEBUG("CalculateCenterPosition xPos: %{public}d, yPos: %{public}d", xPos, yPos);
-}
- 
-void AccessibleAbilityChannel::InjectEventToInput(int32_t xPos, int32_t yPos, InjectActionType injectActionType,
-    int32_t displayWidth, int32_t displayHeight)
+
+void AccessibleAbilityChannel::InjectEventToInput(int32_t xPos, int32_t yPos, InjectActionType injectActionType)
 {
     HILOG_INFO("InjectEventToInput injectActionType: %{public}d, position: [%{public}d, %{public}d]",
         injectActionType, xPos, yPos);
- 
-    if (xPos < 0 || yPos < 0 || (displayWidth > 0 && xPos >= displayWidth) ||
-        (displayHeight > 0 && yPos >= displayHeight)) {
-        HILOG_ERROR("InjectEventToInput invalid position: [%{public}d, %{public}d], "
-            "displaySize: [%{public}d, %{public}d]", xPos, yPos, displayWidth, displayHeight);
+
+    if (xPos < 0 || yPos < 0) {
+        HILOG_ERROR("InjectEventToInput invalid position: [%{public}d, %{public}d]", xPos, yPos);
         return;
     }
- 
+
     auto injectTouchEvent = [](int32_t x, int32_t y, int32_t action) {
         std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
         pointerEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
@@ -617,7 +587,7 @@ void AccessibleAbilityChannel::InjectEventToInput(int32_t xPos, int32_t yPos, In
         pointerEvent->SetPointerId(1);
         MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
     };
- 
+
     if (injectActionType == INJECT_ACTION_TYPE_CLICK) {
         injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_DOWN);
         injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_UP);

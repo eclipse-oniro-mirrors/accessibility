@@ -108,10 +108,7 @@ private:
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback);
     RetError HandleInjectAction(const std::map<std::string, std::string> &actionArguments, const Rect &rect);
-    void InjectEventToInput(int32_t xPos, int32_t yPos, InjectActionType injectActionType,
-        int32_t displayWidth, int32_t displayHeight);
-    void CalculateCenterPosition(const Rect &rect, int32_t &xPos, int32_t &yPos,
-        int32_t displayWidth, int32_t displayHeight);
+    void InjectEventToInput(int32_t xPos, int32_t yPos, InjectActionType injectActionType);
     std::string clientName_ = "";
     int32_t accountId_ = -1;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
