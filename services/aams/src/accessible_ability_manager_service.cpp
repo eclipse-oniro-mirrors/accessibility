@@ -1186,10 +1186,17 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
             success = accessibilitySettings_->SetAnimationOffState(!state) == RET_OK;
             UpdateAccessibilityState();
             return success;
-        case SCREEN_MAGNIFICATION:
+        case SCREEN_MAGNIFICATION: {
             state = accountData->GetConfig()->GetScreenMagnificationState();
             Utils::RecordEnableShortkeyAbilityEvent("SCREEN_MAGNIFICATION", !state);
-            return accessibilitySettings_->SetScreenMagnificationState(!state) == RET_OK;
+            RetError ret = accessibilitySettings_->SetScreenMagnificationState(!state);
+            if (!state) {
+                uint32_t type = GetMagnificationType();
+                uint32_t mode = GetMagnificationMode();
+                Singleton<ExtendManagerServiceProxy>::GetInstance().SetMagnificationState(true, type, mode);
+            }
+            return ret == RET_OK;
+        }
         case AUDIO_MONO:
             state = accountData->GetConfig()->GetAudioMonoState();
             Utils::RecordEnableShortkeyAbilityEvent("AUDIO_MONO", !state);

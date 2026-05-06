@@ -637,7 +637,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
         DECLARE_NAPI_STATIC_PROPERTY("contentTimeout", InitContentTimeout(env)),
         DECLARE_NAPI_STATIC_PROPERTY("animationOff", InitAnimationOff(env)),
         DECLARE_NAPI_STATIC_PROPERTY("brightnessDiscount", InitBrightnessDiscount(env)),
-        DECLARE_NAPI_STATIC_PROPERTY("screenMagnifier", InitScreenMagnifier(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("screenMagnification", InitScreenMagnifier(env)),
         DECLARE_NAPI_STATIC_PROPERTY("audioMono", InitAudioMono(env)),
         DECLARE_NAPI_STATIC_PROPERTY("audioBalance", InitAudioBalance(env)),
         DECLARE_NAPI_STATIC_PROPERTY("mouseKey", InitMouseKey(env)),
