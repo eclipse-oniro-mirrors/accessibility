@@ -820,7 +820,7 @@ bool ElementOperatorManager::GetWindowBounds(int32_t windowId, int32_t &leftTopX
     return false;
 }
 
-void ElementOperatorManager::CalculateClickPosition(const Rect &rect, int32_t &xPos, int32_t &yPos, int32_t &windowId)
+bool ElementOperatorManager::CalculateClickPosition(const Rect &rect, int32_t &xPos, int32_t &yPos, int32_t &windowId)
 {
     HILOG_DEBUG("CalculateClickPosition windowId: %{public}d", windowId);
     int32_t boundLeftTopXPos = 0;
@@ -832,8 +832,17 @@ void ElementOperatorManager::CalculateClickPosition(const Rect &rect, int32_t &x
 
     int32_t focusLeftTopXPos = rect.GetLeftTopXScreenPostion();
     int32_t focusLeftTopYpos = rect.GetLeftTopYScreenPostion();
-    int32_t focusRightBottomXPos = std::min(rect.GetRightBottomXScreenPostion(), boundRightBottomXPos);
-    int32_t focusRightBottomYPos = std::min(rect.GetRightBottomYScreenPostion(), boundRightBottomYPos);
+    int32_t focusRightBottomXPos = rect.GetRightBottomXScreenPostion();
+    int32_t focusRightBottomYPos = rect.GetRightBottomYScreenPostion();
+
+    if (focusRightBottomXPos < boundLeftTopXPos || focusLeftTopXPos > boundRightBottomXPos ||
+        focusRightBottomYPos < boundLeftTopYpos || focusLeftTopYpos > boundRightBottomYPos) {
+        HILOG_WARN("CalculateClickPosition element is out of window bounds, return false");
+        return false;
+    }
+
+    focusRightBottomXPos = std::min(focusRightBottomXPos, boundRightBottomXPos);
+    focusRightBottomYPos = std::min(focusRightBottomYPos, boundRightBottomYPos);
 
     int32_t leftTopXPos = focusLeftTopXPos > boundLeftTopXPos ? focusLeftTopXPos : boundLeftTopXPos;
     int32_t leftTopYPos = focusLeftTopYpos > boundLeftTopYpos ? focusLeftTopYpos : boundLeftTopYpos;
@@ -844,6 +853,7 @@ void ElementOperatorManager::CalculateClickPosition(const Rect &rect, int32_t &x
     xPos = leftTopXPos + (rightBottomXPos - leftTopXPos) / DIVISOR_TWO;
     yPos = leftTopYPos + (rightBottomYPos - leftTopYPos) / DIVISOR_TWO;
     HILOG_DEBUG("CalculateClickPosition position: [%{public}d, %{public}d]", xPos, yPos);
+    return true;
 }
 
 void ElementOperatorManager::GetElementOperatorConnection(const sptr<AccessibilityWindowConnection> &connection,
@@ -918,7 +928,10 @@ bool ElementOperatorManager::ExecuteActionOnAccessibilityFocused(ActionType acti
         int32_t yPos = 0;
         const Rect rect = focusedElementInfo.GetRectInScreen();
         int32_t windowId = focusWindowId_.load();
-        CalculateClickPosition(rect, xPos, yPos, windowId);
+        if (!CalculateClickPosition(rect, xPos, yPos, windowId)) {
+            HILOG_ERROR("CalculateClickPosition failed, element is out of window bounds");
+            return false;
+        }
         std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
         pointerEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
         pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);

@@ -81,7 +81,7 @@ public:
     void SetFocusWindowId(int32_t focusWindowId);
     void SetFocusElementId(int64_t focusElementId);
     RetError VerifyingToKenId(const int32_t windowId, const int64_t elementId, uint32_t tokenId);
-    void CalculateClickPosition(const Rect &rect, int32_t &xPos, int32_t &yPos, int32_t &windowId);
+    boolean CalculateClickPosition(const Rect &rect, int32_t &xPos, int32_t &yPos, int32_t &windowId);
 private:
     bool InvalidHoverEnterEvent(AccessibilityEventInfo &event);
     bool InnerGetElementOperator(

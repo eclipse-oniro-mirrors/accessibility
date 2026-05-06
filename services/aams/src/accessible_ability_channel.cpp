@@ -555,7 +555,10 @@ RetError AccessibleAbilityChannel::HandleInjectAction(const std::map<std::string
     int32_t xPos = 0;
     int32_t yPos = 0;
     int32_t windowId = accountData->GetWindowManager().GetActiveWindowId();
-    accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+    if (!accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId)) {
+        HILOG_ERROR("CalculateClickPosition failed, element is out of window bounds");
+        return RET_ERR_FAILED;
+    }
 
     InjectEventToInput(xPos, yPos, injectActionType);
     return RET_OK;
