@@ -453,6 +453,7 @@ void AccessibilityScreenTouch::HandleResponseDelayState(MMI::PointerEvent &event
             HandleResponseDelayStateInnerMove(event);
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
+        case MMI::PointerEvent::POINTER_ACTION_CANCEL:
             HandleResponseDelayStateInnerUp(event);
             break;
         default:
@@ -510,6 +511,7 @@ void AccessibilityScreenTouch::HandleIgnoreRepeatClickState(MMI::PointerEvent &e
             HandleIgnoreRepeatClickStateInnerMove(event);
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
+        case MMI::PointerEvent::POINTER_ACTION_CANCEL:
             HandleIgnoreRepeatClickStateInnerUp(event);
             break;
         default:
@@ -573,6 +575,7 @@ void AccessibilityScreenTouch::HandleBothState(MMI::PointerEvent &event)
             HandleBothStateInnerMove(event);
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
+        case MMI::PointerEvent::POINTER_ACTION_CANCEL:
             HandleBothStateInnerUp(event);
             break;
         default:
@@ -604,11 +607,6 @@ bool AccessibilityScreenTouch::OnPointerEvent(MMI::PointerEvent &event)
     if (event.GetSourceType() != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
         EventTransmission::OnPointerEvent(event);
         return false;
-    }
-
-    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_CANCEL) {
-        Clear();
-        return true;
     }
 
     switch (currentState_) {
