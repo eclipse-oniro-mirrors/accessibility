@@ -57,13 +57,13 @@ ohos-a11yManager <command> [options]
 | audio-get-balance | 获取音频平衡值 | 无 | READ_ACCESSIBILITY_CONFIG | 无 |
 | daltonization-set-state | 设置色盲校正功能的状态 | --state | WRITE_ACCESSIBILITY_CONFIG | 无 |
 | daltonization-get-state | 获取色盲校正功能的状态 | 无 | READ_ACCESSIBILITY_CONFIG | 无 |
-| daltonization-set-filter | 设置色盲校正滤镜类型 | --type | WRITE_ACCESSIBILITY_CONFIG | 无 |
+| daltonization-set-filter | 设置色盲校正滤镜类型 | --type | WRITE_ACCESSIBILITY_CONFIG | 设置色盲校正功能开启 |
 | daltonization-get-filter | 获取色盲校正滤镜类型 | 无 | READ_ACCESSIBILITY_CONFIG | 无 |
 | click-set-response-time | 设置点击响应时间 | --time | WRITE_ACCESSIBILITY_CONFIG | 无 |
 | click-get-response-time | 获取点击响应时间 | 无 | READ_ACCESSIBILITY_CONFIG | 无 |
 | ignore-repeat-click-set-state | 设置忽略重复点击功能的状态 | --state | WRITE_ACCESSIBILITY_CONFIG | 无 |
 | ignore-repeat-click-get-state | 获取忽略重复点击功能的状态 | 无 | READ_ACCESSIBILITY_CONFIG | 无 |
-| ignore-repeat-click-set-time | 设置忽略重复点击的时间间隔 | --interval | WRITE_ACCESSIBILITY_CONFIG | 无 |
+| ignore-repeat-click-set-time | 设置忽略重复点击的时间间隔 | --interval | WRITE_ACCESSIBILITY_CONFIG | 设置忽略重复点击功能开启 |
 | ignore-repeat-click-get-time | 获取忽略重复点击的时间间隔 | 无 | READ_ACCESSIBILITY_CONFIG | 无 |
 
 **前置依赖说明**：
