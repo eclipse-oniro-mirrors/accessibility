@@ -1309,7 +1309,15 @@ void AccessibilitySettingsConfig::Init()
         return;
     }
     RetError systemRet = systemDatashare_->Initialize(POWER_MANAGER_SERVICE_ID);
-    if (ret == RET_OK && systemRet == RET_OK) {
+
+    if (!globalDatashare_) {
+        globalDatashare_ = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::GLOBAL, accountId_);
+    }
+    if (globalDatashare_ == nullptr) {
+        return;
+    }
+    RetError globalRet = globalDatashare_->Initialize(POWER_MANAGER_SERVICE_ID);
+    if (ret == RET_OK && systemRet == RET_OK && globalRet == RET_OK) {
         isInitialized_ = true;
     }
 }
@@ -1580,8 +1588,7 @@ void AccessibilitySettingsConfig::OnDataClone()
         HILOG_ERROR("service is nullptr");
         return;
     }
-    int32_t isSupportThreeFingerZoom = -1;
-    service->GetIntValue(SUPPORT_THREE_FINGER_ZOOM, isSupportThreeFingerZoom);
+    int32_t isSupportThreeFingerZoom = globalDatashare_->GetIntValue(SUPPORT_THREE_FINGER_ZOOM, -1);
     HILOG_INFO("isSupportThreeFingerZoom: %{public}d", isSupportThreeFingerZoom);
     if (isSupportThreeFingerZoom == -1) {
         bool screenMagnificationEnabled = datashare_->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
@@ -1591,7 +1598,7 @@ void AccessibilitySettingsConfig::OnDataClone()
         screenMagnificationTriggerMethod_.store(triggerMethod);
         HILOG_INFO("low version clone, set triggerMethod: %{public}d", triggerMethod);
     }
-    datashare_->PutIntValue(SUPPORT_THREE_FINGER_ZOOM, -1);
+    globalDatashare_->PutIntValue(SUPPORT_THREE_FINGER_ZOOM, -1);
     bool isScreenReaderEnabled =
         (std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(),
         SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
