@@ -615,7 +615,7 @@ int CommandDaltonizationSetFilter(const std::vector<std::string>& args)
             "Please provide filter type using --type parameter");
     }
 
-	int64_t type = 0;
+    int64_t type = 0;
     if (!ConvertStringToInt64(typeStr, type) ||
     type < static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Normal) ||
     type > static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Tritanomaly)) {
@@ -660,7 +660,7 @@ int CommandClickSetResponseTime(const std::vector<std::string>& args)
             "Please provide time value using --time parameter (0=short(default), 1=medium, 2=long)");
     }
 
-	int64_t time = 0;
+    int64_t time = 0;
     if (!ConvertStringToInt64(timeStr, time) ||
     time < static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort) ||
     time > static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayLong)) {

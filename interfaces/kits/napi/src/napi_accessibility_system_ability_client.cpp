@@ -713,7 +713,7 @@ napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callb
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
-    }    
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
 
     return promise;
