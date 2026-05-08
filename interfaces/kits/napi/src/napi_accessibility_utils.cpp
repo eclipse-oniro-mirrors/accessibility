@@ -86,6 +86,54 @@ napi_status ParseResourceBundleNameFromNAPI(napi_env env, napi_value value,
     HILOG_DEBUG("get resource bundleName is %{public}s", bundleNameValue.c_str());
     return status;
 }
+
+napi_status ParseSeniorModeStateFromNAPI(napi_env env, napi_value value, bool &state)
+{
+    bool hasProperty = false;
+    napi_value propertyName = nullptr;
+    status = napi_create_string_utf8(env, "seniorModeState", NAPI_AUTO_LENGTH, &propertyName);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi create bundleName failed");
+        return status;
+    }
+    status = napi_has_property(env, value, propertyName, &hasProperty);
+    if (!hasProperty) {
+        HILOG_ERROR("property is null");
+        return status;
+    }
+    napi_value itemValue = nullptr;
+    status = napi_get_property(env, value, propertyName, &itemValue);
+    if (status != napi_ok) {
+        HILOG_ERROR("get bundleName from napi failed");
+        return status;
+    }
+    ParseBool(env, state, itemValue);
+    return status;
+}
+
+napi_status ParseAppIndexFromNAPI(napi_env env, napi_value value, int32_t &appIndex)
+{
+    bool hasProperty = false;
+    napi_value propertyName = nullptr;
+    status = napi_create_string_utf8(env, "appIndex", NAPI_AUTO_LENGTH, &propertyName);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi create bundleName failed");
+        return status;
+    }
+    status = napi_has_property(env, value, propertyName, &hasProperty);
+    if (!hasProperty) {
+        HILOG_ERROR("property is null");
+        return status;
+    }
+    napi_value itemValue = nullptr;
+    status = napi_get_property(env, value, propertyName, &itemValue);
+    if (status != napi_ok) {
+        HILOG_ERROR("get bundleName from napi failed");
+        return status;
+    }
+    ParseInt32(env, appIndex, itemValue);
+    return status;
+}
  
 napi_status ParseResourceModuleNameFromNAPI(napi_env env, napi_value value,
     std::string &moduleNameValue)
@@ -285,19 +333,41 @@ NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode)
         case OHOS::Accessibility::RetError::RET_OK:
             return { NAccessibilityErrorCode::ACCESSIBILITY_OK, "" };
         case OHOS::Accessibility::RetError::RET_ERR_FAILED:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_FAILED };
         case OHOS::Accessibility::RetError::RET_ERR_NULLPTR:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_NULLPTR };
         case OHOS::Accessibility::RetError::RET_ERR_IPC_FAILED:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_IPC_FAILED };
         case OHOS::Accessibility::RetError::RET_ERR_SAMGR:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_SAMGR };
         case OHOS::Accessibility::RetError::RET_ERR_TIME_OUT:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_TIMEOUT };
         case OHOS::Accessibility::RetError::RET_ERR_REGISTER_EXIST:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_REGISTER_EXIST };
         case OHOS::Accessibility::RetError::RET_ERR_NO_REGISTER:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_REGISTER };
         case OHOS::Accessibility::RetError::RET_ERR_NO_CONNECTION:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_CONNECTION };
         case OHOS::Accessibility::RetError::RET_ERR_NO_WINDOW_CONNECTION:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_WINDOW_CONNECTION };
         case OHOS::Accessibility::RetError::RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_INVALID_ELEMENT_INFO };
         case OHOS::Accessibility::RetError::RET_ERR_PERFORM_ACTION_FAILED_BY_ACE:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_PERFORM_ACTION_FAILED };
         case OHOS::Accessibility::RetError::RET_ERR_NO_INJECTOR:
             return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
-                     ERROR_MESSAGE_SYSTEM_ABNORMALITY };
+                     ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_INJECTOR };
         case OHOS::Accessibility::RetError::RET_ERR_INVALID_PARAM:
             return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM, ERROR_MESSAGE_PARAMETER_ERROR };
         case OHOS::Accessibility::RetError::RET_ERR_NO_PERMISSION:
@@ -308,9 +378,11 @@ NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode)
         case OHOS::Accessibility::RetError::RET_ERR_NO_CAPABILITY:
             return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_NO_RIGHT, ERROR_MESSAGE_NO_RIGHT };
         case OHOS::Accessibility::RetError::RET_ERR_NOT_INSTALLED:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_ERROR_EXTENSION_NAME,
+                     ERROR_MESSAGE_EXTENSION_NOT_INSTALLED };
         case OHOS::Accessibility::RetError::RET_ERR_NOT_ENABLED:
             return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_ERROR_EXTENSION_NAME,
-                     ERROR_MESSAGE_INVALID_BUNDLE_NAME_OR_ABILITY_NAME};
+                     ERROR_MESSAGE_EXTENSION_NOT_ENABLED };
         case OHOS::Accessibility::RetError::RET_ERR_PROPERTY_NOT_EXIST:
             return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_PROPERTY_NOT_EXIST,
                      ERROR_MESSAGE_PROPERTY_NOT_EXIST };
@@ -346,6 +418,18 @@ napi_value CreateBusinessError(napi_env env, OHOS::Accessibility::RetError errCo
         napi_create_error(env, nullptr, eMsg, &result);
         napi_set_named_property(env, result, "code", eCode);
     }
+    return result;
+}
+
+napi_value CreateBusinessError(napi_env env, NAccessibilityErrorCode errCode, const std::string& errMsg)
+{
+    napi_value result = nullptr;
+    napi_value eCode = nullptr;
+    napi_create_int32(env, static_cast<int32_t>(errCode), &eCode);
+    napi_value eMsg = nullptr;
+    napi_create_string_utf8(env, errMsg.c_str(), NAPI_AUTO_LENGTH, &eMsg);
+    napi_create_error(env, nullptr, eMsg, &result);
+    napi_set_named_property(env, result, "code", eCode);
     return result;
 }
 

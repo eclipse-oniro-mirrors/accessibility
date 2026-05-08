@@ -71,6 +71,7 @@ namespace {
     constexpr int32_t BASE_USER_RANGE = 200000;
     constexpr int32_t INVALID_ID = -1;
     constexpr int32_t INVALID_USER_ID = -1;
+    constexpr int32_t DECIMAL_BASE = 10;
     constexpr uint64_t ELEMENT_MOVE_BIT = 40;
 } // namespace
 
@@ -712,6 +713,33 @@ RetError Utils::GetResourceValue(AccessibilityEventInfo &eventInfo,
         return RET_ERR_FAILED;
     }
     return RET_OK;
+}
+
+std::string Utils::GetSeniorModeStateKey(const std::string& bundleName, int32_t appIndex)
+{
+    return bundleName + "_" + std::to_string(appIndex);
+}
+
+bool Utils::ParseSeniorModeStateKey(const std::string& key, std::string& bundleName, int32_t& appIndex)
+{
+    size_t pos = key.find_last_of('_');
+    if (pos == std::string::npos || pos == key.length() - 1) {
+        HILOG_ERROR("Invalid key format: %{public}s", key.c_str());
+        return false;
+    }
+
+    bundleName = key.substr(0, pos);
+    std::string appIndexStr = key.substr(pos + 1);
+
+    for (char c : appIndexStr) {
+        if (!std::isdigit(c)) {
+            HILOG_ERROR("Invalid appIndex: %{public}s", appIndexStr.c_str());
+            return false;
+        }
+    }
+
+    appIndex = static_cast<int32_t>(std::strtol(appIndexStr.c_str(), nullptr, DECIMAL_BASE));
+    return true;
 }
 // LCOV_EXCL_STOP
 } // namespace Accessibility

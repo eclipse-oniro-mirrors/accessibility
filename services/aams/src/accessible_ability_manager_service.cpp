@@ -83,6 +83,7 @@ namespace {
     const char* SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";
     const char* SCREEN_MAGNIFICATION_MODE = "accessibility_magnification_mode";
     const char* ELDER_CARE_ENABLED_KEY = "accessibility_elder_care_switch_enabled";
+    const char* SENIOR_MODE_STATE_KEY = "accessibility_senior_mode_state_for_app";
     const char* SCREEN_MAGNIFICATION_SCALE = "accessibility_display_magnification_scale";
     const char* SCREEN_MAGNIFICATION_TRIGGER_METHOD = "accessibility_display_magnification_trigger_method";
     const char* ZOOM_GESTURE_CONFLICT_DIALOG_OPEN = "accessibility_zoom_gesture_conflict_dialog_open";
@@ -402,6 +403,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         RegisterVoiceRecognitionState();
         RegisterFlashReminderSwitch();
         RegisterSeniorModeState();
+        RegisterSeniorModeStateForAppObserver();
         if (accessibilitySettings_) {
             accessibilitySettings_->RegisterParamWatcher();
             UpdateAccessibilityState();
@@ -908,26 +910,20 @@ ErrCode AccessibleAbilityManagerService::RegisterElementOperatorByParameter(cons
 ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowId(int32_t windowId, uint64_t displayId)
 {
     int32_t userId = InnerGetCallingUid();
-    ErrCode ret = CheckDeregisterTokenId(windowId, SINGLE_TREE_ID, userId);
-    if (ret != RET_OK) {
-        return ret;
-    }
-    return InnerDeregisterElementOperatorByWindowId(windowId, userId, displayId);
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
+    return InnerDeregisterElementOperatorByWindowId(windowId, userId, displayId, tokenId, true);
 }
 
 ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
     const int32_t treeId, uint64_t displayId)
 {
     int32_t userId = InnerGetCallingUid();
-    ErrCode ret = CheckDeregisterTokenId(windowId, treeId, userId);
-    if (ret != RET_OK) {
-        return ret;
-    }
-    return InnerDeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, userId, displayId);
+    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
+    return InnerDeregisterElementOperatorByWindowIdAndTreeId(windowId, treeId, userId, displayId, tokenId, true);
 }
 
 ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(
-    int32_t windowId, int32_t userId, uint64_t displayId)
+    int32_t windowId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken)
 {
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -941,6 +937,13 @@ ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowI
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
+        if (needCheckToken) {
+            ErrCode ret = CheckDeregisterTokenId(windowId, SINGLE_TREE_ID, tokenId, accountData);
+            if (ret != RET_OK) {
+                HILOG_ERROR("CheckDeregisterTokenId failed %{public}d", ret);
+                return;
+            }
+        }
         if (accountData->GetElementOperatorManager().DeregisterElementOperatorByWindowId(
             windowId, displayId, isBroker) != RET_OK) {
             return;
@@ -953,7 +956,7 @@ ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowI
 }
 
 ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowIdAndTreeId(
-    int32_t windowId, int32_t treeId, int32_t userId, uint64_t displayId)
+    int32_t windowId, int32_t treeId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken)
 {
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
@@ -967,6 +970,13 @@ ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowI
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
             return;
+        }
+        if (needCheckToken) {
+            ErrCode ret = CheckDeregisterTokenId(windowId, treeId, tokenId, accountData);
+            if (ret != RET_OK) {
+                HILOG_ERROR("CheckDeregisterTokenId failed %{public}d", ret);
+                return;
+            }
         }
         accountData->GetElementOperatorManager().DeregisterElementOperatorByWindowIdAndTreeId(
             windowId, treeId, displayId);
@@ -1003,10 +1013,9 @@ int32_t AccessibleAbilityManagerService::InnerGetCallingUid()
     return userId;
 }
 
-ErrCode AccessibleAbilityManagerService::CheckDeregisterTokenId(int32_t windowId, int32_t treeId, int32_t userId)
+ErrCode AccessibleAbilityManagerService::CheckDeregisterTokenId(
+    int32_t windowId, int32_t treeId, uint32_t tokenId, sptr<AccessibilityAccountData> &accountData)
 {
-    uint32_t tokenId = IPCSkeleton::GetCallingTokenID();
-    sptr<AccessibilityAccountData> accountData = GetAccountData(userId);
     if (accountData == nullptr) {
         HILOG_ERROR("accountData is nullptr");
         return RET_ERR_CONNECTION_EXIST;
@@ -1177,10 +1186,17 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
             success = accessibilitySettings_->SetAnimationOffState(!state) == RET_OK;
             UpdateAccessibilityState();
             return success;
-        case SCREEN_MAGNIFICATION:
+        case SCREEN_MAGNIFICATION: {
             state = accountData->GetConfig()->GetScreenMagnificationState();
             Utils::RecordEnableShortkeyAbilityEvent("SCREEN_MAGNIFICATION", !state);
-            return accessibilitySettings_->SetScreenMagnificationState(!state) == RET_OK;
+            RetError ret = accessibilitySettings_->SetScreenMagnificationState(!state);
+            if (!state) {
+                uint32_t type = GetMagnificationType();
+                uint32_t mode = GetMagnificationMode();
+                Singleton<ExtendManagerServiceProxy>::GetInstance().SetMagnificationState(true, type, mode);
+            }
+            return ret == RET_OK;
+        }
         case AUDIO_MONO:
             state = accountData->GetConfig()->GetAudioMonoState();
             Utils::RecordEnableShortkeyAbilityEvent("AUDIO_MONO", !state);
@@ -1728,6 +1744,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     RegisterFlashReminderSwitch();
     RegisterNotificationState();
     RegisterSeniorModeState();
+    RegisterSeniorModeStateForAppObserver();
 }
 
 void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
@@ -2800,6 +2817,9 @@ void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
                 break;
             case CONFIG_CALLBACK:
                 accountData->RemoveConfigCallback(remote);
+                break;
+            case SENIOR_MODE_STATE_CALLBACK:
+                accountData->RemoveSeniorModeStateObserver(remote);
                 break;
             default:
                 break;
@@ -3878,6 +3898,174 @@ void AccessibleAbilityManagerService::RegisterNotificationState()
         accountData->GetConfig()->GetDbHandle()->RegisterObserver(
             TRANSITION_ANIMATIONS_NOTIFICATION, transitionAnimationsfunc);
     }
+}
+
+void AccessibleAbilityManagerService::OnSeniorModeStateForAppChanged()
+{
+    HILOG_INFO("OnSeniorModeStateForAppChanged");
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::map<std::string, bool> changes;
+    accountData->GetSeniorModeStateForAppChanges(changes);
+
+    for (const auto& item : changes) {
+        std::string bundleName;
+        int32_t appIndex = 0;
+        if (!Utils::ParseSeniorModeStateKey(item.first, bundleName, appIndex)) {
+            continue;
+        }
+
+        accountData->NotifySeniorModeStateObservers(bundleName, appIndex, item.second);
+    }
+}
+
+void AccessibleAbilityManagerService::RegisterSeniorModeStateForAppObserver()
+{
+    HILOG_INFO();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        HILOG_INFO("RegisterSeniorModeStateForAppObserver");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().OnSeniorModeStateForAppChanged();
+        };
+
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(SENIOR_MODE_STATE_KEY, func);
+        }
+        }, "REGISTER_VOICE_RECOGNITION");
+}
+
+ErrCode AccessibleAbilityManagerService::RegisterSeniorModeStateObserver(
+    const sptr<IAccessibilityAppSeniorModeStateObserver> &observer)
+{
+    HILOG_DEBUG();
+    if (!observer || !actionHandler_) {
+        HILOG_ERROR("Parameters check failed!");
+        return ERR_INVALID_DATA;
+    }
+    XCollieHelper timer(TIMER_REGISTER_ENABLEABILITY_OBSERVER, XCOLLIE_TIMEOUT);
+    std::shared_ptr<ffrt::promise<ErrCode>> syncPromisePtr = std::make_shared<ffrt::promise<ErrCode>>();
+    ffrt::future syncFuture = syncPromisePtr->get_future();
+    actionHandler_->PostTask([this, syncPromisePtr, observer]() {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Account data is null");
+            syncPromisePtr->set_value(ERR_INVALID_DATA);
+            return;
+        }
+        if (!seniorModeStateObserverDeathRecipient_) {
+            seniorModeStateObserverDeathRecipient_ = new(std::nothrow) SeniorModeStateObserverDeathRecipient();
+            if (!seniorModeStateObserverDeathRecipient_) {
+                HILOG_ERROR("seniorModeStateObserverDeathRecipient_ is null");
+                syncPromisePtr->set_value(ERR_INVALID_DATA);
+                return;
+            }
+        }
+        if (!observer->AsObject()) {
+            HILOG_ERROR("object is null");
+            syncPromisePtr->set_value(ERR_OK);
+            return;
+        }
+        observer->AsObject()->AddDeathRecipient(seniorModeStateObserverDeathRecipient_);
+        accountData->AddSeniorModeStateObserver(observer);
+        syncPromisePtr->set_value(ERR_OK);
+        }, "TASK_REGISTER_SENIOR_MODE_STATE_OBSERVER");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait RegisterSeniorModeStateObserver result");
+        return ERR_TRANSACTION_FAILED;
+    }
+    return syncFuture.get();
+}
+
+ErrCode AccessibleAbilityManagerService::DeRegisterSeniorModeStateObserver(
+    const sptr<IRemoteObject>& obj)
+{
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    accountData->RemoveSeniorModeStateObserver(obj);
+    return RET_OK;
+}
+
+void AccessibleAbilityManagerService::SeniorModeStateObserverDeathRecipient::OnRemoteDied(
+    const wptr<IRemoteObject> &remote)
+{
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveCallback(
+        SENIOR_MODE_STATE_CALLBACK, this, remote);
+}
+
+ErrCode AccessibleAbilityManagerService::GetSeniorModeStateForApp(bool &state)
+{
+    PostDelayUnloadTask();
+    auto id = IPCSkeleton::GetCallingTokenID();
+    Security::AccessToken::HapTokenInfo info;
+    auto result = Security::AccessToken::AccessTokenKit::GetHapTokenInfo(id, info);
+    if (result != 0) {
+        HILOG_ERROR("get native token info failed!, result: %{public}d", result);
+        return RET_ERR_NULLPTR;
+    }
+
+    std::string bundleName = info.bundleName;
+    auto instIndex = info.instIndex;
+    HILOG_INFO("processName: %{public}s, instIndex: %{public}d", bundleName.c_str(), instIndex);
+    return accessibilitySettings_->GetSeniorModeStateForApp(bundleName, instIndex, state);
+}
+
+ErrCode AccessibleAbilityManagerService::SetSeniorModeStateForApp(const bool state)
+{
+    PostDelayUnloadTask();
+    auto id = IPCSkeleton::GetCallingTokenID();
+    HILOG_INFO("id :%{public}d", id);
+    Security::AccessToken::HapTokenInfo info;
+    auto result = Security::AccessToken::AccessTokenKit::GetHapTokenInfo(id, info);
+    if (result != 0) {
+        HILOG_ERROR("get native token info failed!, result: %{public}d", result);
+    }
+
+    std::string bundleName = info.bundleName;
+    auto instIndex = info.instIndex;
+    HILOG_INFO("processName: %{public}s, instIndex: %{public}d", bundleName.c_str(), instIndex);
+    return accessibilitySettings_->SetSeniorModeStateForApp(bundleName, instIndex, state);
+}
+
+ErrCode AccessibleAbilityManagerService::GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,
+    bool &state)
+{
+    HILOG_INFO();
+    return accessibilitySettings_->GetSeniorModeStateForApp(bundleName, appIndex, state);
+}
+
+ErrCode AccessibleAbilityManagerService::SetSeniorModeStateForApp(
+    const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos)
+{
+    auto ret = RET_OK;
+    for (auto &info : infos) {
+        auto tmpRet = accessibilitySettings_->SetSeniorModeStateForApp(info.bundleName_, info.appIndex_,
+            info.seniorModeState_);
+        if (tmpRet != RET_OK) {
+            ret = tmpRet;
+        }
+    }
+    return ret;
 }
 } // namespace Accessibility
 } // namespace OHOS

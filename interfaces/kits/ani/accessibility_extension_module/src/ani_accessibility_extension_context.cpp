@@ -205,7 +205,15 @@ static ani_object GetRootInActiveWindow(ani_env *env, ani_object thisObj, ani_ob
         elementInfo->GetMainWindowId(), elementInfo->GetBundleName().c_str());
     if (RET_OK != ret) {
         HILOG_ERROR("Failed to get elementInfo");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+        if (ret == RET_ERR_NO_WINDOW_CONNECTION) {
+            ANIUtils::ThrowBusinessError(
+                env,
+                {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
+                 ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED}
+            );
+        } else {
+            ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+        }
         return nullptr;
     }
     return CreateAniAccessibilityElement(env, *elementInfo);
@@ -224,7 +232,15 @@ static ani_object GetAccessibilityFocusedElement(ani_env *env, ani_object thisOb
     RetError ret = context->GetFocus(FOCUS_TYPE_ACCESSIBILITY, *elementInfo, true);
     if (ret != RET_OK) {
         HILOG_ERROR("Failed to get elementInfo");
-        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+        if (ret == RET_ERR_NO_WINDOW_CONNECTION) {
+            ANIUtils::ThrowBusinessError(
+                env,
+                {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
+                 ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED}
+            );
+        } else {
+            ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+        }
         return nullptr;
     }
     return CreateAniAccessibilityElement(env, *elementInfo);

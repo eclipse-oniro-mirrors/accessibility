@@ -223,10 +223,10 @@ void AccessibilityWindowConnection::InteractionOperationDeathRecipient::OnRemote
     HILOG_INFO();
     if (treeId_ > 0) {
         Singleton<AccessibleAbilityManagerService>::GetInstance().InnerDeregisterElementOperatorByWindowIdAndTreeId(
-            windowId_, treeId_, accountId_, displayId_);
+            windowId_, treeId_, accountId_, displayId_, 0, false);
     } else {
         Singleton<AccessibleAbilityManagerService>::GetInstance().InnerDeregisterElementOperatorByWindowId(
-            windowId_, accountId_, displayId_);
+            windowId_, accountId_, displayId_, 0, false);
     }
 }
 

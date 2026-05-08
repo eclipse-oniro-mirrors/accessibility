@@ -127,6 +127,10 @@ public:
         OHOS::AccessibilityConfig::CaptionProperty &captionProperty);
     static ani_object CreateCaptionPropertyInfoInner(ani_env *env, ani_class cls,
         ani_object &object, OHOS::AccessibilityConfig::CaptionProperty &captionProperty);
+    static void OnSeniorModeStateChangeForSelfSync(ani_env *env, ani_object observer);
+    static void OffSeniorModeStateChangeForSelfSync(ani_env *env, ani_object observer);
+    static ani_boolean GetSeniorModeStateForSelfSync(ani_env *env);
+    static void SetSeniorModeStateForSelfSync(ani_env *env, ani_boolean state);
 
     static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;
     static std::shared_ptr<StateListenerImpl> touchGuideStateListeners_;
@@ -137,6 +141,7 @@ public:
     static std::shared_ptr<StateListenerImpl> animationOffStateListeners_;
     static std::shared_ptr<StateListenerImpl> flashReminderSwitchStateListeners_;
     static std::shared_ptr<StateListenerImpl> seniorModeStateListeners_;
+    static std::shared_ptr<StateListenerImpl> seniorModeStateForAppListeners_;
 
 private:
     ANIAccessibilityClient() = default;

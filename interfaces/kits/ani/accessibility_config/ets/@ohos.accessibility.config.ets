@@ -38,6 +38,18 @@ namespace config {
         onDisconnect: OnDisconnectCallback;
     }
 
+    export interface AppSeniorModeInfo {
+        bundleName: string;
+        appIndex?: int;
+		seniorModeState: boolean;
+    }
+
+    export class AppSeniorModeInfoImpl implements AppSeniorModeInfo {
+        bundleName: string = "";
+        appIndex?: int = 0;
+        seniorModeState: boolean = false;
+    }
+
     export class ConnectCallbackImpl implements ConnectCallback {
         onDisconnect: OnDisconnectCallback;
     }
@@ -141,6 +153,59 @@ namespace config {
     }
 
     native function setMagnificationState(state: boolean): void;
+
+    native function setSeniorModeStateForAppSync(seniorModeInfoArray: Array<AppSeniorModeInfo>): void;
+
+    native function getSeniorModeStateForAppSync(bundleName: string, appIndex: int): boolean;
+
+    native function onSeniorModeStateChangeForAppSync(observer: Callback<Array<AppSeniorModeInfo>>): void;
+
+    native function offSeniorModeStateChangeForAppObserver(observer: Callback<Array<AppSeniorModeInfo>>): void;
+
+    native function offSeniorModeStateChangeForAppObservers(): void;
+
+    export function setSeniorModeStateForApp(appSeniorModeInfos: Array<AppSeniorModeInfo>): Promise<void> {
+        return new Promise<void> ((resolve: (v: undefined) => void,
+            reject: (error: BusinessError) => void): void => {
+            taskpool.execute((): void => {
+                return setSeniorModeStateForAppSync(appSeniorModeInfos);
+            })
+            .then((ret: Any): void => {
+                resolve(ret as undefined);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
+    export function getSeniorModeStateForApp(bundleName: string, appIndex?: int): Promise<boolean> {
+        return new Promise<boolean> ((resolve: (v: boolean) => void,
+            reject: (error: BusinessError) => void): void => {
+            taskpool.execute((): boolean => {
+                let index = (appIndex === undefined) ? 0 : appIndex;
+                return getSeniorModeStateForAppSync(bundleName, index);
+            })
+            .then((ret: Any): void => {
+                resolve(ret as boolean);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
+    export function onSeniorModeStateChangeForApp(callback: Callback<Array<AppSeniorModeInfo>>): void {
+        onSeniorModeStateChangeForAppSync(callback);
+    }
+
+    export function offSeniorModeStateChangeForApp(callback?: Callback<Array<AppSeniorModeInfo>>): void {
+        if (callback === undefined) {
+            offSeniorModeStateChangeForAppObservers();
+        } else {
+            offSeniorModeStateChangeForAppObserver(callback);
+        }
+    }
 
     interface Config<T> {
         set(value: T): Promise<void>;

@@ -23,6 +23,7 @@
 #include "parameters.h"
 #include "accessibility_notification_helper.h"
 #include "magnification_def.h"
+#include "nlohmann/json.hpp"
 
 namespace OHOS {
 namespace Accessibility {
@@ -75,6 +76,7 @@ namespace {
     const char* AUDIO_MONO_TAG = "AUDIO_MONO";
     const char* HIGH_CONTRAST_TEXT_TAG = "HIGH_CONTRAST_TEXT";
     const char* CAPTIONS_ASSISTANT_HMOS_TAG = "CAPTIONS_ASSISTANT";
+    const char* SCREEN_MAGNIFICATION_TAG = "SCREEN_MAGNIFICATION";
     const char* SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
     const char* ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
     const char* ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
@@ -1307,7 +1309,15 @@ void AccessibilitySettingsConfig::Init()
         return;
     }
     RetError systemRet = systemDatashare_->Initialize(POWER_MANAGER_SERVICE_ID);
-    if (ret == RET_OK && systemRet == RET_OK) {
+
+    if (!globalDatashare_) {
+        globalDatashare_ = std::make_shared<AccessibilityDatashareHelper>(DATASHARE_TYPE::GLOBAL, accountId_);
+    }
+    if (globalDatashare_ == nullptr) {
+        return;
+    }
+    RetError globalRet = globalDatashare_->Initialize(POWER_MANAGER_SERVICE_ID);
+    if (ret == RET_OK && systemRet == RET_OK && globalRet == RET_OK) {
         isInitialized_ = true;
     }
 }
@@ -1372,6 +1382,11 @@ uint32_t AccessibilitySettingsConfig::GetShortKeyService(std::vector<std::string
     });
     serviceFlag = captionsAssistant != services.end() ? (serviceFlag | STATE_CAPTION_ENABLED) : serviceFlag;
 
+    auto screenMagnification = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+        return service.find(SCREEN_MAGNIFICATION_TAG) != std::string::npos;
+    });
+    serviceFlag = screenMagnification != services.end() ? (serviceFlag | STATE_SCREENMAGNIFIER_ENABLED) : serviceFlag;
+
     return serviceFlag;
 }
 
@@ -1394,6 +1409,9 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     }
     if (shortkeyServiceFlag & STATE_CAPTION_ENABLED) {
         shortkeyService.push_back(CAPTIONS_ASSISTANT_HMOS_TAG);
+    }
+    if (shortkeyServiceFlag & STATE_SCREENMAGNIFIER_ENABLED) {
+        shortkeyService.push_back(SCREEN_MAGNIFICATION_TAG);
     }
     SetShortkeyMultiTarget(shortkeyService);
 
@@ -1570,8 +1588,7 @@ void AccessibilitySettingsConfig::OnDataClone()
         HILOG_ERROR("service is nullptr");
         return;
     }
-    int32_t isSupportThreeFingerZoom = -1;
-    service->GetIntValue(SUPPORT_THREE_FINGER_ZOOM, isSupportThreeFingerZoom);
+    int32_t isSupportThreeFingerZoom = globalDatashare_->GetIntValue(SUPPORT_THREE_FINGER_ZOOM, -1);
     HILOG_INFO("isSupportThreeFingerZoom: %{public}d", isSupportThreeFingerZoom);
     if (isSupportThreeFingerZoom == -1) {
         bool screenMagnificationEnabled = datashare_->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
@@ -1581,7 +1598,7 @@ void AccessibilitySettingsConfig::OnDataClone()
         screenMagnificationTriggerMethod_.store(triggerMethod);
         HILOG_INFO("low version clone, set triggerMethod: %{public}d", triggerMethod);
     }
-    datashare_->PutIntValue(SUPPORT_THREE_FINGER_ZOOM, -1);
+    globalDatashare_->PutIntValue(SUPPORT_THREE_FINGER_ZOOM, -1);
     bool isScreenReaderEnabled =
         (std::find(enabledAccessibilityServices_.begin(), enabledAccessibilityServices_.end(),
         SCREEN_READER_BUNDLE_ABILITY_NAME) != enabledAccessibilityServices_.end());
@@ -1616,5 +1633,76 @@ void AccessibilitySettingsConfig::SetInitializeState(bool isInitialized)
     }
 }
 
+void AccessibilitySettingsConfig::SetSeniorModeStateForAppMap(const std::map<std::string, bool>& map)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(seniorModeStateForAppMapMutex_);
+    seniorModeStateForAppMap_ = map;
+}
+
+std::map<std::string, bool> AccessibilitySettingsConfig::GetSeniorModeStateForAppMap() const
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(seniorModeStateForAppMapMutex_);
+    return seniorModeStateForAppMap_;
+}
+
+bool AccessibilitySettingsConfig::GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex)
+{
+    HILOG_DEBUG();
+    if (!datashare_) {
+        HILOG_ERROR("datashare_ is nullptr");
+        return false;
+    }
+    constexpr char SENIOR_MODE_STATE_KEY[] = "accessibility_senior_mode_state_for_app";
+    std::string seniorModeStateInfo = datashare_->GetStringValue(SENIOR_MODE_STATE_KEY, "{}");
+    if (!nlohmann::json::accept(seniorModeStateInfo)) {
+        HILOG_ERROR("Invalid json format");
+        return false;
+    }
+    nlohmann::json jsonObj = nlohmann::json::parse(seniorModeStateInfo);
+    if (!jsonObj.is_object()) {
+        HILOG_ERROR("Json is not an object");
+        return false;
+    }
+    std::string key = Utils::GetSeniorModeStateKey(bundleName, appIndex);
+    if (jsonObj.contains(key) && jsonObj[key].is_boolean()) {
+        return jsonObj[key].get<bool>();
+    }
+    return false;
+}
+
+RetError AccessibilitySettingsConfig::SetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,
+    const bool state)
+{
+    HILOG_INFO("bundleName: %{public}s, state: %{public}d", bundleName.c_str(), state);
+    if (!datashare_) {
+        return RET_ERR_NULLPTR;
+    }
+    constexpr char SENIOR_MODE_STATE_KEY[] = "accessibility_senior_mode_state_for_app";
+    std::string seniorModeStateInfo = datashare_->GetStringValue(SENIOR_MODE_STATE_KEY, "{}");
+
+    nlohmann::json jsonObj;
+    if (nlohmann::json::accept(seniorModeStateInfo)) {
+        jsonObj = nlohmann::json::parse(seniorModeStateInfo);
+    }
+    if (!jsonObj.is_object()) {
+        jsonObj = nlohmann::json::object();
+    }
+    std::string key = Utils::GetSeniorModeStateKey(bundleName, appIndex);
+    if (jsonObj.contains(key) && jsonObj[key].is_boolean() && jsonObj[key].get<bool>() == state) {
+        HILOG_DEBUG("Value unchanged, skip database update");
+        return RET_OK;
+    }
+    jsonObj[key] = state;
+    std::string newJsonStr = jsonObj.dump();
+    auto ret = datashare_->PutStringValue(SENIOR_MODE_STATE_KEY, newJsonStr);
+    if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetSeniorModeStateForApp");
+        HILOG_ERROR("SetSeniorModeStateForApp failed");
+        return ret;
+    }
+    return ret;
+}
 } // namespace Accessibility
 } // namespace OHOS

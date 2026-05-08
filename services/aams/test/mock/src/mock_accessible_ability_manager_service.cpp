@@ -152,16 +152,20 @@ ErrCode AccessibleAbilityManagerService::DeregisterElementOperatorByWindowIdAndT
 }
 
 ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowId(
-    int32_t windowId, int32_t userId, uint64_t displayId)
+    int32_t windowId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken)
 {
     (void)windowId;
+    (void)tokenId;
+    (void)needCheckToken;
     return RET_OK;
 }
 
 ErrCode AccessibleAbilityManagerService::InnerDeregisterElementOperatorByWindowIdAndTreeId(const int32_t windowId,
-    const int32_t treeId, int32_t userId, uint64_t displayId)
+    const int32_t treeId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken)
 {
     (void)windowId;
+    (void)tokenId;
+    (void)needCheckToken;
     (void)treeId;
     return RET_OK;
 }
@@ -849,6 +853,36 @@ ErrCode AccessibleAbilityManagerService::InnerSendEvent(
         HILOG_DEBUG("start");
         AccessibilityAbilityHelper::GetInstance().AddSendEventTimes();
         }), "TASK_SEND_EVENT");
+    return RET_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::RegisterSeniorModeStateObserver(
+    const sptr<IAccessibilityAppSeniorModeStateObserver> &observer)
+{
+    return RET_OK;
+}
+ErrCode AccessibleAbilityManagerService::DeRegisterSeniorModeStateObserver(const sptr<IRemoteObject>& obj)
+{
+    return RET_OK;
+}
+ErrCode AccessibleAbilityManagerService::GetSeniorModeStateForApp(bool &state)
+{
+    state = false;
+    return RET_OK;
+}
+ErrCode AccessibleAbilityManagerService::SetSeniorModeStateForApp(const bool state)
+{
+    return RET_OK;
+}
+ErrCode AccessibleAbilityManagerService::GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,
+    bool &state)
+{
+    state = false;
+    return RET_OK;
+}
+ErrCode AccessibleAbilityManagerService::SetSeniorModeStateForApp(
+    const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos)
+{
     return RET_OK;
 }
 } // namespace Accessibility

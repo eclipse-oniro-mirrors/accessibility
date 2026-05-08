@@ -43,10 +43,11 @@ public:
     MOCK_METHOD2(DeregisterElementOperatorByWindowId, ErrCode(const int32_t windowId, uint64_t displayId));
     MOCK_METHOD3(DeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
         const int32_t treeId, uint64_t displayId));
-    MOCK_METHOD3(
-        InnerDeregisterElementOperatorByWindowId, ErrCode(const int32_t windowId, int32_t userId, uint64_t displayId));
-    MOCK_METHOD4(InnerDeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
-        const int32_t treeId, int32_t userId, uint64_t displayId));
+    MOCK_METHOD5(
+        InnerDeregisterElementOperatorByWindowId,
+        ErrCode(const int32_t windowId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken));
+    MOCK_METHOD6(InnerDeregisterElementOperatorByWindowIdAndTreeId, ErrCode(const int32_t windowId,
+        const int32_t treeId, int32_t userId, uint64_t displayId, uint32_t tokenId, bool needCheckToken));
     MOCK_METHOD2(GetCaptionProperty, ErrCode(CaptionPropertyParcel& caption, bool isPermissionRequired));
     MOCK_METHOD2(SetCaptionProperty, ErrCode(const CaptionPropertyParcel& caption, bool isPermissionRequired));
     MOCK_METHOD2(SetCaptionState, ErrCode(const bool state, bool isPermissionRequired));
@@ -112,6 +113,13 @@ public:
     MOCK_METHOD1(GetReadableRules, ErrCode(std::string &name));
     MOCK_METHOD2(IsInnerWindowRootElement, ErrCode(int64_t elementId, bool &state));
     MOCK_METHOD3(SendAccessibilityEventToAA, void(EventType eventType, GestureType gestureId, uint64_t displayId));
+    MOCK_METHOD1(RegisterSeniorModeStateObserver, ErrCode(
+        const sptr<IAccessibilityAppSeniorModeStateObserver> &observer));
+    MOCK_METHOD1(DeRegisterSeniorModeStateObserver, ErrCode(const sptr<IRemoteObject>& obj));
+    MOCK_METHOD1(GetSeniorModeStateForApp, ErrCode(bool &state));
+    MOCK_METHOD1(SetSeniorModeStateForApp, ErrCode(const bool state));
+    MOCK_METHOD3(GetSeniorModeStateForApp, ErrCode(const std::string &bundleName, int32_t appIndex, bool &state));
+    MOCK_METHOD1(SetSeniorModeStateForApp, ErrCode(const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos));
 };
 } // namespace Accessibility
 } // namespace OHOS

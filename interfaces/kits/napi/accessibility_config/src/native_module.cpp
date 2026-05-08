@@ -626,6 +626,10 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
             "enableAbilityWithCallback", NAccessibilityConfig::EnableAbilityWithCallback),
         DECLARE_NAPI_FUNCTION("disableAbility", NAccessibilityConfig::DisableAbility),
         DECLARE_NAPI_FUNCTION("setMagnificationState", NAccessibilityConfig::SetMagnificationState),
+        DECLARE_NAPI_FUNCTION("onSeniorModeStateChangeForApp", NAccessibilityConfig::SubscribeSelfSeniorMode),
+        DECLARE_NAPI_FUNCTION("offSeniorModeStateChangeForApp", NAccessibilityConfig::UnsubscribeSelfSeniorMode),
+        DECLARE_NAPI_FUNCTION("getSeniorModeStateForApp", NAccessibilityConfig::GetSeniorModeStateForApp),
+        DECLARE_NAPI_FUNCTION("setSeniorModeStateForApp", NAccessibilityConfig::SetSeniorModeStateForApp),
         DECLARE_NAPI_STATIC_PROPERTY("highContrastText", InitHighContrastText(env)),
         DECLARE_NAPI_STATIC_PROPERTY("invertColor", InitInvertColor(env)),
         DECLARE_NAPI_STATIC_PROPERTY("daltonizationState", InitDaltonizationState(env)),
@@ -633,7 +637,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
         DECLARE_NAPI_STATIC_PROPERTY("contentTimeout", InitContentTimeout(env)),
         DECLARE_NAPI_STATIC_PROPERTY("animationOff", InitAnimationOff(env)),
         DECLARE_NAPI_STATIC_PROPERTY("brightnessDiscount", InitBrightnessDiscount(env)),
-        DECLARE_NAPI_STATIC_PROPERTY("screenMagnifier", InitScreenMagnifier(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("screenMagnification", InitScreenMagnifier(env)),
         DECLARE_NAPI_STATIC_PROPERTY("audioMono", InitAudioMono(env)),
         DECLARE_NAPI_STATIC_PROPERTY("audioBalance", InitAudioBalance(env)),
         DECLARE_NAPI_STATIC_PROPERTY("mouseKey", InitMouseKey(env)),
@@ -655,6 +659,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
     NAccessibilityConfig::configObservers_->SubscribeToFramework();
     NAccessibilityConfig::enableAbilityListsObservers_->SubscribeToFramework();
     NAccessibilityConfig::enableAbilityCallbackObservers_->SubscribeToFramework();
+    NAccessibilityConfig::seniorModeStateObservers_->SubscribeToFramework();
 
     HILOG_INFO("-----Init config module end------");
     return exports;

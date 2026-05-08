@@ -47,6 +47,8 @@ std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::flashReminderSwitchSt
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_FLASH_REMINDER_SWITCH);
 std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::seniorModeStateListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED);
+std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::seniorModeStateForAppListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_SELF_SENIOR_MODE_STATE_CHANGE);
 
 void StateListenerImpl::SubscribeToFramework()
 {
@@ -1006,4 +1008,64 @@ void ANIAccessibilityClient::SendAccessibilityEvent(ani_env *env, ani_object eve
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(result));
     }
     return;
+}
+
+void ANIAccessibilityClient::OnSeniorModeStateChangeForSelfSync(ani_env *env, ani_object observer)
+{
+    HILOG_INFO("OnSeniorModeStateChangeForSelf");
+    seniorModeStateForAppListeners_->SubscribeObserver(env, observer);
+}
+
+void ANIAccessibilityClient::OffSeniorModeStateChangeForSelfSync(ani_env *env, ani_object observer)
+{
+    HILOG_INFO("OffSeniorModeStateChangeForSelf");
+    ani_boolean isUndefined = true;
+    if (env->Reference_IsUndefined(observer, &isUndefined) != ANI_OK) {
+        HILOG_ERROR("OffSeniorModeStateChangeForSelf Reference_IsUndefined failed");
+        return;
+    }
+
+    if (!isUndefined) {
+        seniorModeStateForAppListeners_->UnsubscribeObserver(env, observer);
+    } else {
+        seniorModeStateForAppListeners_->UnsubscribeObservers();
+    }
+}
+
+ani_boolean ANIAccessibilityClient::GetSeniorModeStateForSelfSync(ani_env *env)
+{
+    HILOG_INFO("GetSeniorModeStateForSelf");
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient == nullptr) {
+        HILOG_ERROR("asaClient is nullptr!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        return false;
+    }
+    bool state = false;
+    auto ret = asaClient->GetSeniorModeStateForApp(state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("GetSeniorModeStateForApp failed!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return false;
+    }
+    HILOG_INFO("GetSeniorModeStateForSelf state: %{public}d", state);
+    return state;
+}
+
+void ANIAccessibilityClient::SetSeniorModeStateForSelfSync(ani_env *env, ani_boolean state)
+{
+    HILOG_INFO("SetSeniorModeStateForSelf state: %{public}d", state);
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient == nullptr) {
+        HILOG_ERROR("asaClient is nullptr!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        return;
+    }
+    auto ret = asaClient->SetSeniorModeStateForApp(state);
+    if (ret != RET_OK) {
+        HILOG_ERROR("SetSeniorModeStateForApp failed!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return;
+    }
+    HILOG_INFO("SetSeniorModeStateForSelf success");
 }

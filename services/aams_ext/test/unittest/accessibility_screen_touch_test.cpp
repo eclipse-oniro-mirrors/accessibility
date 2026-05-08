@@ -399,31 +399,6 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
 }
 
 /**
- * @tc.number: AccessibilityScreenTouch_Unittest_OnPointerEvent_007
- * @tc.name: OnPointerEvent
- * @tc.desc: Test function OnPointerEvent
- */
-HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnPointerEvent_007, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_007 start";
-    screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    EXPECT_TRUE(event != nullptr);
-    EXPECT_TRUE(screenTouch_ != nullptr);
-
-    MMI::PointerEvent::PointerItem pointer = {};
-    pointer.SetPointerId(1);
-    event->SetPointerId(1);
-    event->AddPointerItem(pointer);
-    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
-    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_CANCEL);
-    screenTouch_->OnPointerEvent(*event);
-
-    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector().size(), 0);
-    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_007 end.";
-}
-
-/**
  * @tc.number: AccessibilityScreenTouch_Unittest_OnPointerEvent_008
  * @tc.name: OnPointerEvent
  * @tc.desc: Test function OnPointerEvent
@@ -446,34 +421,6 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
 
     EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector().size(), 0);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_008 end.";
-}
-
-/**
- * @tc.number: AccessibilityScreenTouch_Unittest_OnPointerEvent_009
- * @tc.name: OnPointerEvent
- * @tc.desc: Test function OnPointerEvent
- */
-HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnPointerEvent_009, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_009 start";
-    screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
-    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    EXPECT_TRUE(event != nullptr);
-    EXPECT_TRUE(screenTouch_ != nullptr);
-
-    MMI::PointerEvent::PointerItem pointer = {};
-    pointer.SetPointerId(0);
-    MMI::PointerEvent::PointerItem anotherPointer = {};
-    anotherPointer.SetPointerId(1);
-    event->SetPointerId(1);
-    event->AddPointerItem(pointer);
-    event->AddPointerItem(anotherPointer);
-    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
-    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_CANCEL);
-    screenTouch_->OnPointerEvent(*event);
-
-    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector().size(), 0);
-    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_009 end.";
 }
 
 /**

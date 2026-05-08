@@ -96,6 +96,29 @@ private:
     std::map<std::string, std::shared_ptr<EnableAbilityCallbackObserver>> enableAbilityCallbackObservers_ = {};
 };
 
+struct SeniorModeStateObserver {
+    SeniorModeStateObserver(ani_env *env, ani_ref callback) : env_(env), callback_(callback) {};
+    void OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, bool state);
+    ani_env* env_;
+    ani_ref callback_;
+};
+
+class SeniorModeStateObserverImpl : public OHOS::AccessibilityConfig::AccessibilityAppSeniorModeStateObserver,
+    public std::enable_shared_from_this<SeniorModeStateObserverImpl> {
+public:
+    SeniorModeStateObserverImpl() = default;
+    void OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, const bool state) override;
+    void SubscribeToFramework();
+    void UnsubscribeFromFramework();
+    void SubscribeObserver(ani_env *env, ani_object observer);
+    void UnsubscribeObserver(ani_env *env, ani_object observer);
+    void UnsubscribeObservers();
+
+private:
+    ffrt::mutex mutex_;
+    std::vector<std::shared_ptr<SeniorModeStateObserver>> seniorModeStateObservers_ = {};
+};
+
 struct ANIAccessibilityConfigObserver {
 public:
     ANIAccessibilityConfigObserver(ani_env* env, ani_ref callback, OHOS::AccessibilityConfig::CONFIG_ID id)
@@ -168,9 +191,16 @@ public:
         OHOS::AccessibilityConfig::CaptionProperty &captionProperty);
     static ani_object CreateJsCaptionPropertyInfoInner(ani_env *env, ani_class cls,
         ani_object &object, OHOS::AccessibilityConfig::CaptionProperty &captionProperty);
+    static void OnSeniorModeStateChangeForApp(ani_env *env, ani_object observer);
+    static void OffSeniorModeStateChangeForApp(ani_env *env, ani_object observer);
+    static void OffSeniorModeStateChangeForApps();
+    static ani_boolean GetSeniorModeStateForApp(ani_env *env, ani_string bundleName, ani_int appIndex);
+    static void SetSeniorModeStateForApp(ani_env *env, ani_array seniorModeInfoArray);
+
     static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers_;
     static std::shared_ptr<ANIAccessibilityConfigObserverImpl> configObservers_;
     static std::shared_ptr<EnableAbilityCallbackObserverImpl> enableAbilityCallbackObservers_;
+    static std::shared_ptr<SeniorModeStateObserverImpl> seniorModeStateObservers_;
 private:
     static bool CheckReadPermission(const std::string &permission);
     static bool IsAvailable(ani_env *env);
