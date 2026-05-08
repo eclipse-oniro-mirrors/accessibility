@@ -670,8 +670,8 @@ AccessibilityZoomGesture::ZoomGestureEventHandler::ZoomGestureEventHandler(
 
 void AccessibilityZoomGesture::ZoomGestureEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
 {
-    HILOG_DEBUG();
     uint32_t eventId = event->GetInnerEventId();
+    HILOG_DEBUG("process msg: %{public}d", eventId);
     switch (eventId) {
         case MULTI_TAP_MSG:
             HILOG_DEBUG("process multi tap msg.");
@@ -723,16 +723,16 @@ void AccessibilityZoomGesture::ZoomGestureEventHandler::ProcessEvent(const AppEx
         case TOUCH_EXPLORATION_ZOOM_DELAY_MSG:
             {
                 HILOG_DEBUG("process touch exploration zoom delay msg.");
-                int32_t anchorX = 0;
-                int32_t anchorY = 0;
-                for (int i = 0; i < POINTER_COUNT_3; i++) {
-                    MMI::PointerEvent::PointerItem pointerItem;
-                    zoomGesture_.lastTripleTapEvents_[i]->GetPointerItem(
-                        zoomGesture_.lastTripleTapEvents_[i]->GetPointerId(), pointerItem);
-                    anchorX += pointerItem.GetDisplayX();
-                    anchorY += pointerItem.GetDisplayY();
-                }
                 if (zoomGesture_.zoomState_ == READY) {
+                    int32_t anchorX = 0;
+                    int32_t anchorY = 0;
+                    for (int i = 0; i < POINTER_COUNT_3; i++) {
+                        MMI::PointerEvent::PointerItem pointerItem;
+                        zoomGesture_.lastTripleTapEvents_[i]->GetPointerItem(
+                            zoomGesture_.lastTripleTapEvents_[i]->GetPointerId(), pointerItem);
+                        anchorX += pointerItem.GetDisplayX();
+                        anchorY += pointerItem.GetDisplayY();
+                    }
                     zoomGesture_.OnZoom(anchorX / POINTER_COUNT_3, anchorY / POINTER_COUNT_3, true);
                 } else if (zoomGesture_.zoomState_ == ZOOM) {
                     zoomGesture_.OffZoom();
@@ -1345,6 +1345,7 @@ void AccessibilityZoomGesture::HandleTDReadyThreeFingersContinueDownStateUp(MMI:
         if (AccessibilityInputInterceptor::GetInstance()->IsTouchExplorationEnabled()) {
             HILOG_INFO("Touch exploration enabled, set delay timer for zoom.");
             TransferState(THREE_FINGER_DOUBLE_TAP);
+            zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
             zoomGestureEventHandler_->SendEvent(TOUCH_EXPLORATION_ZOOM_DELAY_MSG, 0,
                 TOUCH_EXPLORATION_ZOOM_DELAY_TIMER);
         } else {
@@ -1718,6 +1719,7 @@ void AccessibilityZoomGesture::HandleTDZoomThreeFingersContinueDownStateUp(MMI::
         if (AccessibilityInputInterceptor::GetInstance()->IsTouchExplorationEnabled()) {
             HILOG_INFO("Touch exploration enabled in ZOOM state, set delay timer for off zoom.");
             TransferState(THREE_FINGER_DOUBLE_TAP);
+            zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
             zoomGestureEventHandler_->SendEvent(TOUCH_EXPLORATION_ZOOM_DELAY_MSG, 0,
                 TOUCH_EXPLORATION_ZOOM_DELAY_TIMER);
         } else {
