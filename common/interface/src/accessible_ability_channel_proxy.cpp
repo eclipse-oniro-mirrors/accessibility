@@ -22,6 +22,7 @@
 #include "accessibility_ipc_interface_code.h"
 #include "accessibility_window_info_parcel.h"
 #include "hilog_wrapper.h"
+#include "accessibility_constants.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -678,6 +679,10 @@ RetError AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<st
     if (!WriteInterfaceToken(data)) {
         return RET_ERR_IPC_FAILED;
     }
+    if (targetBundleNames.size() > static_cast<size_t>(MAX_ALLOW_SIZE)) {
+        HILOG_ERROR("targetBundleNames.size() exceeds MAX_ALLOW_SIZE: %{public}zu", targetBundleNames.size());
+        return RET_ERR_INVALID_PARAM;
+    }
     if (!data.WriteInt32(targetBundleNames.size())) {
         HILOG_ERROR("targetBundleNames.size() write error: %{public}zu, ", targetBundleNames.size());
         return RET_ERR_IPC_FAILED;
@@ -805,6 +810,10 @@ RetError AccessibleAbilityChannelProxy::ConfigureEvents(const std::vector<uint32
 
     if (!WriteInterfaceToken(data)) {
         return RET_ERR_IPC_FAILED;
+    }
+    if (needEvents.size() > static_cast<size_t>(MAX_ALLOW_SIZE)) {
+        HILOG_ERROR("needEvents.size() exceeds MAX_ALLOW_SIZE: %{public}zu", needEvents.size());
+        return RET_ERR_INVALID_PARAM;
     }
     if (!data.WriteInt32(needEvents.size())) {
         HILOG_ERROR("needEvents size write error: %{public}zu", needEvents.size());

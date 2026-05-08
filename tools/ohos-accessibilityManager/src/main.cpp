@@ -15,6 +15,7 @@
 
 // LCOV_EXCL_START
 #include <iostream>
+#include <charconv>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -150,6 +151,24 @@ void PrintHelp(const std::string& subcommand = "")
             std::cout << "  # Get current state" << std::endl;
             std::cout << "  ohos-a11yManager " << subcommand << std::endl;
         }
+    }
+}
+
+bool ConvertStringToInt64(std::string &str, int64_t &value)
+{
+    auto [ptr, errCode] = std::from_chars(str.data(), str.data() + str.size(), value);
+    return errCode == std::errc{} && ptr == str.data() + str.size();
+}
+ 
+float StringToFloat(const std::string& value, const float& defaultValue)
+{
+    errno = 0;
+    char* pEnd = nullptr;
+    float result = std::strtof(value.c_str(), &pEnd);
+    if (pEnd == value.c_str() || errno == ERANGE) {
+        return defaultValue;
+    } else {
+        return result;
     }
 }
 
@@ -514,7 +533,8 @@ int CommandAudioSetBalance(const std::vector<std::string>& args)
             "Please provide balance value using --balance parameter");
     }
 
-    float balance = std::stof(balanceStr);
+    float defaultValue = 0.0f;
+    float balance = StringToFloat(balanceStr, defaultValue);
     if (balance < -1.0f || balance > 1.0f) {
         return OutputError("ERR_ARG_INVALID",
             "Set audio balance failed: Invalid parameter value. Parameter: --balance", \
@@ -595,9 +615,10 @@ int CommandDaltonizationSetFilter(const std::vector<std::string>& args)
             "Please provide filter type using --type parameter");
     }
 
-    int type = std::stoi(typeStr);
-    if (type < static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Normal) ||
-        type > static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Tritanomaly)) {
+	int64_t type = 0;
+    if (!ConvertStringToInt64(typeStr, type) ||
+    type < static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Normal) ||
+    type > static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Tritanomaly)) {
         return OutputError("ERR_ARG_INVALID",
             "Set daltonization filter failed: Invalid parameter value. Parameter: --type", \
             "Please provide valid filter type using --type parameter " \
@@ -639,9 +660,10 @@ int CommandClickSetResponseTime(const std::vector<std::string>& args)
             "Please provide time value using --time parameter (0=short(default), 1=medium, 2=long)");
     }
 
-    int time = std::stoi(timeStr);
-    if (time < static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort) ||
-        time > static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayLong)) {
+	int64_t time = 0;
+    if (!ConvertStringToInt64(timeStr, time) ||
+    time < static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort) ||
+    time > static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayLong)) {
         return OutputError("ERR_ARG_INVALID",
             "Set click response time failed: Invalid parameter value. Parameter: --time", \
             "Please provide valid time value using --time parameter (0=short(default), 1=medium, 2=long)");
@@ -724,9 +746,10 @@ int CommandRepeatClickSetTime(const std::vector<std::string>& args)
             "(0=0.1s, 1=0.4s, 2=0.7s, 3=1.0s, 4=1.3s)");
     }
 
-    int interval = std::stoi(intervalStr);
-    if (interval < static_cast<int>(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest) ||
-        interval > static_cast<int>(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLongest)) {
+    int64_t interval = 0;
+    if (!ConvertStringToInt64(intervalStr, interval) ||
+    interval < static_cast<int>(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest) ||
+    interval > static_cast<int>(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLongest)) {
         return OutputError("ERR_ARG_INVALID",
             "Set ignore repeat click time failed: Invalid parameter value. Parameter: --interval", \
             "Please provide valid interval value using --interval parameter " \

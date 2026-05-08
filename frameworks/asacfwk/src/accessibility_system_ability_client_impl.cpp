@@ -582,7 +582,7 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
     std::vector<AccessibilityAbilityInfoParcel> infosParcel = {};
     RetError ret = static_cast<RetError>(serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType,
         infosParcel));
-    if (infosParcel.size() < 0 || infosParcel.size() > ABILITY_SIZE_MAX) {
+    if (infosParcel.size() > ABILITY_SIZE_MAX) {
         HILOG_ERROR("abilityInfoSize is invalid");
         return RET_ERR_INVALID_PARAM;
     }

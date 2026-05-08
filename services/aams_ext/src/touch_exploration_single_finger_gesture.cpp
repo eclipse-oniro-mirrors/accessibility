@@ -271,7 +271,7 @@ void TouchExploration::SendTouchEventToAA(MMI::PointerEvent &event)
     }
 
     MMI::PointerEvent::PointerItem pointerItem {};
-    uint64_t displayId = event.GetTargetDisplayId();
+    uint64_t displayId = static_cast<uint32_t>(event.GetTargetDisplayId());
     event.GetPointerItem(event.GetPointerId(), pointerItem);
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_DOWN) {
         SendAccessibilityEventToAA(EventType::TYPE_TOUCH_BEGIN, displayId);

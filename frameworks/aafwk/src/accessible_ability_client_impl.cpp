@@ -598,6 +598,10 @@ RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElem
 void AccessibleAbilityClientImpl::SortElementInfosIfNecessary(std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG();
+    if (elementInfos.empty()) {
+        HILOG_ERROR("elementInfos is empty");
+        return;
+    }
     std::map<int64_t, std::shared_ptr<AccessibilityElementInfo>> elementInfosMap;
     std::vector<AccessibilityElementInfo> sortedElementInfos;
     int64_t nodeId = NODE_ID_MAX;
@@ -1223,6 +1227,7 @@ void AccessibleAbilityClientImpl::AccessibilityServiceDeathRecipient::OnRemoteDi
 void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &remote)
 {
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
+    bool needReset = false;
     {
         std::unique_lock<ffrt::shared_mutex> wLock(rwServiceLock_);
         if (!serviceProxy_) {
@@ -1233,12 +1238,16 @@ void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &r
         if (object && (remote == object)) {
             object->RemoveDeathRecipient(accessibilityServiceDeathRecipient_);
             serviceProxy_ = nullptr;
-            std::unique_lock<ffrt::shared_mutex> wLock(rwChannelLock_);
-            channelClient_ = nullptr;
-            listener = listener_;
-            listener_ = nullptr;
-            HILOG_INFO("NotifyServiceDied OK");
+            needReset = true;
         }
+    }
+
+    if (needReset) {
+        std::unique_lock<ffrt::shared_mutex> wLock(rwChannelLock_);
+        channelClient_ = nullptr;
+        listener = listener_;
+        listener_ = nullptr;
+        HILOG_INFO("NotifyServiceDied OK");
     }
 
     isConnected_ = false;
@@ -1786,7 +1795,7 @@ RetError AccessibleAbilityClientImpl::NotifyDisconnect()
         return RET_OK;
     }
 
-    std::shared_lock<ffrt::shared_mutex> rLock(rwChannelLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwChannelLock_);
     // NotifyDisconnect and Delete death recipient
     if (channelClient_ && channelClient_->GetRemote()) {
         channelClient_->NotifyDisconnect();
