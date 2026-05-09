@@ -1227,7 +1227,6 @@ void AccessibleAbilityClientImpl::AccessibilityServiceDeathRecipient::OnRemoteDi
 void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &remote)
 {
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
-    bool needReset = false;
     {
         std::unique_lock<ffrt::shared_mutex> wLock(rwServiceLock_);
         if (!serviceProxy_) {
@@ -1238,11 +1237,10 @@ void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &r
         if (object && (remote == object)) {
             object->RemoveDeathRecipient(accessibilityServiceDeathRecipient_);
             serviceProxy_ = nullptr;
-            needReset = true;
         }
     }
 
-    if (needReset) {
+    {
         std::unique_lock<ffrt::shared_mutex> wLock(rwChannelLock_);
         channelClient_ = nullptr;
         listener = listener_;
@@ -1785,10 +1783,12 @@ RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_p
 RetError AccessibleAbilityClientImpl::NotifyDisconnect()
 {
     HILOG_INFO();
-    std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
-    if (callbackList_.empty()) {
-        HILOG_INFO("callbackList_ is empty");
-        return RET_OK;
+    {
+        std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
+        if (callbackList_.empty()) {
+            HILOG_INFO("callbackList_ is empty");
+            return RET_OK;
+        }
     }
     if (!isDisconnectCallbackExecute_) {
         HILOG_INFO("callback has not executed");

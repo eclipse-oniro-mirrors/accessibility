@@ -462,8 +462,6 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
     if (ret != napi_ok) {
         delete callbackInfo;
         callbackInfo = nullptr;
-        napi_value err = CreateBusinessError(env, RetError::RET_ERR_FAILED);
-        napi_throw(env, err);
         return nullptr;
     }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
@@ -2103,8 +2101,6 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
     if (ret != napi_ok) {
         delete callbackInfo;
         callbackInfo = nullptr;
-        napi_value err = CreateBusinessError(env, RetError::RET_ERR_FAILED);
-        napi_throw(env, err);
         return nullptr;
     }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);

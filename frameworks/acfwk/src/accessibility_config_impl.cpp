@@ -62,44 +62,33 @@ AccessibilityConfig::Impl::~Impl()
 
     if (serviceProxy_ != nullptr) {
         ErrCode ret = Accessibility::RET_OK;
-        if (captionObserver_ != nullptr) {
-            ret = serviceProxy_->DeRegisterCaptionObserver(captionObserver_->AsObject());
-            if (ret != ERR_OK) {
-                HILOG_ERROR("DeRegister captionObserver failed.");
-            }
+        ret = serviceProxy_->DeRegisterCaptionObserver(captionObserver_->AsObject());
+        if (ret != ERR_OK) {
+            HILOG_ERROR("DeRegister captionObserver failed.");
         }
-        if (enableAbilityListsObserver_ != nullptr) {
-            ret = serviceProxy_->DeRegisterEnableAbilityListsObserver(enableAbilityListsObserver_->AsObject());
-            if (ret != ERR_OK) {
-                HILOG_ERROR("DeRegister EnableAbilityListsObserver failed.");
-            }
+        ret = serviceProxy_->DeRegisterEnableAbilityListsObserver(enableAbilityListsObserver_->AsObject());
+        if (ret != ERR_OK) {
+            HILOG_ERROR("DeRegister EnableAbilityListsObserver failed.");
         }
-        if (enableAbilityCallbackObserver_ != nullptr) {
-            ret = serviceProxy_->DeRegisterEnableAbilityCallbackObserver(
-                enableAbilityCallbackObserver_->AsObject());
-            if (ret != ERR_OK) {
-                HILOG_ERROR("DeRegister EnableAbilityCallbackObserver failed.");
-            }
+        ret = serviceProxy_->DeRegisterEnableAbilityCallbackObserver(
+            enableAbilityCallbackObserver_->AsObject());
+        if (ret != ERR_OK) {
+            HILOG_ERROR("DeRegister EnableAbilityCallbackObserver failed.");
         }
-        if (configObserver_ != nullptr) {
-            ret = serviceProxy_->DeRegisterConfigObserver(configObserver_->AsObject());
-            if (ret != ERR_OK) {
-                HILOG_ERROR("DeRegister configObserver failed.");
-            }
+        ret = serviceProxy_->DeRegisterConfigObserver(configObserver_->AsObject());
+        if (ret != ERR_OK) {
+            HILOG_ERROR("DeRegister configObserver failed.");
         }
-        if (seniorModeStateObserver_ != nullptr) {
-            ret = serviceProxy_->DeRegisterSeniorModeStateObserver(seniorModeStateObserver_->AsObject());
-            if (ret != ERR_OK) {
-                HILOG_ERROR("DeRegister seniorModeStateObserver failed.");
-            }
+        ret = serviceProxy_->DeRegisterSeniorModeStateObserver(seniorModeStateObserver_->AsObject());
+        if (ret != ERR_OK) {
+            HILOG_ERROR("DeRegister seniorModeStateObserver failed.");
         }
 
         int32_t count = 0;
         while (count < DESTRUCTOR_DELAY_COUNT) {
-            int32_t captionObserverRef = captionObserver_ ? captionObserver_->GetSptrRefCount() : 1;
-            int32_t enableAbilityListsObserverRef = enableAbilityListsObserver_ ?
-                enableAbilityListsObserver_->GetSptrRefCount() : 1;
-            int32_t configObserverRef = configObserver_ ? configObserver_->GetSptrRefCount() : 1;
+            int32_t captionObserverRef = captionObserver_->GetSptrRefCount();
+            int32_t enableAbilityListsObserverRef = enableAbilityListsObserver_->GetSptrRefCount();
+            int32_t configObserverRef = configObserver_->GetSptrRefCount();
             if (captionObserverRef == 1 && enableAbilityListsObserverRef == 1 && configObserverRef == 1) {
                 HILOG_INFO("Observer RefCount is 1");
                 break;

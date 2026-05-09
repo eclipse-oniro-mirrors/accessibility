@@ -154,21 +154,22 @@ void PrintHelp(const std::string& subcommand = "")
     }
 }
 
-bool ConvertStringToInt64(std::string &str, int64_t &value)
+bool ConvertStringToInt64(std::string &str, int32_t &value)
 {
     auto [ptr, errCode] = std::from_chars(str.data(), str.data() + str.size(), value);
     return errCode == std::errc{} && ptr == str.data() + str.size();
 }
  
-float StringToFloat(const std::string& value, const float& defaultValue)
+bool StringToFloat(const std::string& value, float& balance)
 {
     errno = 0;
     char* pEnd = nullptr;
     float result = std::strtof(value.c_str(), &pEnd);
     if (pEnd == value.c_str() || errno == ERANGE) {
-        return defaultValue;
+        return false;
     } else {
-        return result;
+        balance = result;
+        return true;
     }
 }
 
@@ -533,9 +534,8 @@ int CommandAudioSetBalance(const std::vector<std::string>& args)
             "Please provide balance value using --balance parameter");
     }
 
-    float defaultValue = 0.0f;
-    float balance = StringToFloat(balanceStr, defaultValue);
-    if (balance < -1.0f || balance > 1.0f) {
+    float balance = 0.0f;
+    if (!StringToFloat(balanceStr, balance) || balance < -1.0f || balance > 1.0f) {
         return OutputError("ERR_ARG_INVALID",
             "Set audio balance failed: Invalid parameter value. Parameter: --balance", \
             "Please provide valid balance value using --balance parameter (range: -1.0 to 1.0)");
@@ -615,7 +615,7 @@ int CommandDaltonizationSetFilter(const std::vector<std::string>& args)
             "Please provide filter type using --type parameter");
     }
 
-    int64_t type = 0;
+    int32_t type = 0;
     if (!ConvertStringToInt64(typeStr, type) ||
     type < static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Normal) ||
     type > static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Tritanomaly)) {
@@ -660,7 +660,7 @@ int CommandClickSetResponseTime(const std::vector<std::string>& args)
             "Please provide time value using --time parameter (0=short(default), 1=medium, 2=long)");
     }
 
-    int64_t time = 0;
+    int32_t time = 0;
     if (!ConvertStringToInt64(timeStr, time) ||
     time < static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort) ||
     time > static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayLong)) {
@@ -746,7 +746,7 @@ int CommandRepeatClickSetTime(const std::vector<std::string>& args)
             "(0=0.1s, 1=0.4s, 2=0.7s, 3=1.0s, 4=1.3s)");
     }
 
-    int64_t interval = 0;
+    int32_t interval = 0;
     if (!ConvertStringToInt64(intervalStr, interval) ||
     interval < static_cast<int>(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest) ||
     interval > static_cast<int>(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLongest)) {

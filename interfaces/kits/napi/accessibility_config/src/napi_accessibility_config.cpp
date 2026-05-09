@@ -254,8 +254,6 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("Failed to create async work for EnableAbility");
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
-        napi_throw(env, err);
         return nullptr;
     }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
@@ -303,8 +301,6 @@ napi_value NAccessibilityConfig::EnableAbilityWithCallback(napi_env env, napi_ca
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("Failed to create async work for EnableAbilityWithCallback");
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
-        napi_throw(env, err);
         return nullptr;
     }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
@@ -413,8 +409,6 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("Failed to create async work for DisableAbility");
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
-        napi_throw(env, err);
         return nullptr;
     }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
@@ -1076,8 +1070,6 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("Failed to create async work for SetConfig");
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
-        napi_throw(env, err);
         return nullptr;
     }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
@@ -1139,8 +1131,6 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("Failed to create async work for GetConfig");
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
-        napi_throw(env, err);
         return nullptr;
     }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
