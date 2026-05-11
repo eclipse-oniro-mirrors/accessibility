@@ -598,6 +598,10 @@ RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElem
 void AccessibleAbilityClientImpl::SortElementInfosIfNecessary(std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG();
+    if (elementInfos.empty()) {
+        HILOG_ERROR("elementInfos is empty");
+        return;
+    }
     std::map<int64_t, std::shared_ptr<AccessibilityElementInfo>> elementInfosMap;
     std::vector<AccessibilityElementInfo> sortedElementInfos;
     int64_t nodeId = NODE_ID_MAX;
@@ -1233,12 +1237,15 @@ void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &r
         if (object && (remote == object)) {
             object->RemoveDeathRecipient(accessibilityServiceDeathRecipient_);
             serviceProxy_ = nullptr;
-            std::unique_lock<ffrt::shared_mutex> wLock(rwChannelLock_);
-            channelClient_ = nullptr;
-            listener = listener_;
-            listener_ = nullptr;
-            HILOG_INFO("NotifyServiceDied OK");
         }
+    }
+
+    {
+        std::unique_lock<ffrt::shared_mutex> wLock(rwChannelLock_);
+        channelClient_ = nullptr;
+        listener = listener_;
+        listener_ = nullptr;
+        HILOG_INFO("NotifyServiceDied OK");
     }
 
     isConnected_ = false;
@@ -1776,17 +1783,19 @@ RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_p
 RetError AccessibleAbilityClientImpl::NotifyDisconnect()
 {
     HILOG_INFO();
-    std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
-    if (callbackList_.empty()) {
-        HILOG_INFO("callbackList_ is empty");
-        return RET_OK;
+    {
+        std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
+        if (callbackList_.empty()) {
+            HILOG_INFO("callbackList_ is empty");
+            return RET_OK;
+        }
     }
     if (!isDisconnectCallbackExecute_) {
         HILOG_INFO("callback has not executed");
         return RET_OK;
     }
 
-    std::shared_lock<ffrt::shared_mutex> rLock(rwChannelLock_);
+    std::unique_lock<ffrt::shared_mutex> wLock(rwChannelLock_);
     // NotifyDisconnect and Delete death recipient
     if (channelClient_ && channelClient_->GetRemote()) {
         channelClient_->NotifyDisconnect();

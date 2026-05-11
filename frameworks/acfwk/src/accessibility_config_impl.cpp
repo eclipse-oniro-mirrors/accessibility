@@ -56,6 +56,10 @@ AccessibilityConfig::Impl::~Impl()
         enableAbilityListsObserver_->OnclientDeleted();
     }
 
+    if (seniorModeStateObserver_ != nullptr) {
+        seniorModeStateObserver_->OnclientDeleted();
+    }
+
     if (serviceProxy_ != nullptr) {
         ErrCode ret = Accessibility::RET_OK;
         ret = serviceProxy_->DeRegisterCaptionObserver(captionObserver_->AsObject());
@@ -101,6 +105,7 @@ AccessibilityConfig::Impl::~Impl()
             enableAbilityListsObserver_ = nullptr;
             enableAbilityCallbackObserver_ = nullptr;
             configObserver_ = nullptr;
+            seniorModeStateObserver_ = nullptr;
         }
     }
     
@@ -254,9 +259,11 @@ bool AccessibilityConfig::Impl::LoadAccessibilityService()
         HILOG_ERROR("get IRemoteObject failed!");
         return false;
     }
-    deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
     if (deathRecipient_ == nullptr) {
-        return false;
+        deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
+        if (deathRecipient_ == nullptr) {
+            return false;
+        }
     }
     if (object->IsProxyObject()) {
         object->AddDeathRecipient(deathRecipient_);
@@ -384,6 +391,7 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
             enableAbilityListsObserver_ = nullptr;
             enableAbilityCallbackObserver_ = nullptr;
             configObserver_ = nullptr;
+            seniorModeStateObserver_ = nullptr;
             isInitialized_ = false;
             HILOG_INFO("ResetService ok");
         }
@@ -1648,7 +1656,11 @@ void AccessibilityConfig::Impl::OnAccessibilityEnableAbilityListsChanged()
         observers = enableAbilityListsObservers_;
     }
     for (auto &enableAbilityListsObserver : observers) {
-        enableAbilityListsObserver->OnEnableAbilityListsStateChanged();
+        if (enableAbilityListsObserver != nullptr) {
+            enableAbilityListsObserver->OnEnableAbilityListsStateChanged();
+        } else {
+            HILOG_ERROR("enableAbilityLists enableAbilityListsObserver is null");
+        }
     }
 }
 

@@ -106,7 +106,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
         HILOG_ERROR("setSearchElementInfoByAccessibilityIdResult failed");
         return;
     }
-    if (static_cast<RetError>(reply.ReadInt32() != RET_OK)) {
+    if (static_cast<RetError>(reply.ReadInt32()) != RET_OK) {
         HILOG_ERROR("read reply code failed");
     }
     return;
@@ -161,7 +161,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchDefaultFocusByWindowIdR
         HILOG_ERROR("setSearchDefaultFocusByWindowIdResult failed");
         return;
     }
-    if (static_cast<RetError>(reply.ReadInt32() != RET_OK)) {
+    if (static_cast<RetError>(reply.ReadInt32()) != RET_OK) {
         HILOG_ERROR("read reply code failed");
     }
     return;
@@ -370,7 +370,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoBySpecificPr
         HILOG_ERROR("setSearchElementInfoBySpecificPropertyResult failed");
         return;
     }
-    if (static_cast<RetError>(reply.ReadInt32() != RET_OK)) {
+    if (static_cast<RetError>(reply.ReadInt32()) != RET_OK) {
         HILOG_ERROR("read reply code failed");
     }
     return;
@@ -431,7 +431,7 @@ void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchWithConditionR
         HILOG_ERROR("setSearchElementInfoBySpecificPropertyResult failed");
         return;
     }
-    if (static_cast<RetError>(reply.ReadInt32() != RET_OK)) {
+    if (static_cast<RetError>(reply.ReadInt32()) != RET_OK) {
         HILOG_ERROR("read reply code failed");
     }
     return;

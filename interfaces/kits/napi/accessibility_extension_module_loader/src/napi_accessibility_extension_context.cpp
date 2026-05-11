@@ -62,7 +62,7 @@ static void ConvertAccessibilityWindowInfoToJS(
         pAccessibilityElement = nullptr;
         HILOG_ERROR("failed to wrap JS object");
     }
-    HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
+    HILOG_DEBUG("napi_wrap status: %{public}d", static_cast<int32_t>(sts));
 }
 
 static void ConvertAccessibilityWindowInfosToJS(

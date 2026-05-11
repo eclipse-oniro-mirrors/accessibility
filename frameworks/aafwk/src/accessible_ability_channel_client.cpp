@@ -39,6 +39,10 @@ int32_t AccessibleAbilityChannelClient::GenerateRequestId()
 
 sptr<IRemoteObject> AccessibleAbilityChannelClient::GetRemote()
 {
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("proxy_ is nullptr");
+        return nullptr;
+    }
     return proxy_->AsObject();
 }
 

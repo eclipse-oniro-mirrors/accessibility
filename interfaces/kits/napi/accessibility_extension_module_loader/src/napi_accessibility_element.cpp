@@ -454,11 +454,16 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
         napi_throw(env, err);
         return nullptr;
     }
-    napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
+    auto ret = napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
         // Execute the complete function
         AttributeNamesComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -592,8 +597,13 @@ napi_value NAccessibilityElement::AttributeValueAsync(
 
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "AttributeValue", NAPI_AUTO_LENGTH, &resource);
-    napi_create_async_work(env, nullptr, resource, NAccessibilityElement::AttributeValueExecute,
+    auto ret = napi_create_async_work(env, nullptr, resource, NAccessibilityElement::AttributeValueExecute,
         NAccessibilityElement::AttributeValueComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -2083,11 +2093,16 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
         return nullptr;
     }
 
-    napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
+    auto ret = napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
         // Execute the complete function
         ActionNamesComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -2330,8 +2345,13 @@ napi_value NAccessibilityElement::PerformActionConstructPromise(napi_env env, si
     callbackInfo->actionArguments_ = actionArguments;
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "PerformAction", NAPI_AUTO_LENGTH, &resource);
-    napi_create_async_work(env, nullptr, resource, PerformActionExecute, PerformActionComplete,
+    auto ret = napi_create_async_work(env, nullptr, resource, PerformActionExecute, PerformActionComplete,
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -2474,8 +2494,13 @@ napi_value NAccessibilityElement::FindElementsByCondition(napi_env env, napi_cal
  
     napi_value resource = nullptr;
     napi_create_string_utf8(callbackInfo->env_, "FindElementsByCondition", NAPI_AUTO_LENGTH, &resource);
-    napi_create_async_work(callbackInfo->env_, nullptr, resource, FindElementsByConditionExecute,
+    auto ret = napi_create_async_work(callbackInfo->env_, nullptr, resource, FindElementsByConditionExecute,
         FindElementsByConditionComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(callbackInfo->env_, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -2864,8 +2889,13 @@ napi_value NAccessibilityElement::GetCursorPositionAsync(napi_env env, size_t ar
 
     napi_value resource = nullptr;
     napi_create_string_utf8(callbackInfo->env_, "GetCursorPosition", NAPI_AUTO_LENGTH, &resource);
-    napi_create_async_work(callbackInfo->env_, nullptr, resource, GetCursorPositionExecute,
+    auto ret = napi_create_async_work(callbackInfo->env_, nullptr, resource, GetCursorPositionExecute,
         GetCursorPositionComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(callbackInfo->env_, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
@@ -2891,8 +2921,13 @@ napi_value NAccessibilityElement::FindElementAsync(napi_env env, size_t argc, na
 
     napi_value resource = nullptr;
     napi_create_string_utf8(callbackInfo->env_, "FindElement", NAPI_AUTO_LENGTH, &resource);
-    napi_create_async_work(callbackInfo->env_, nullptr, resource, FindElementExecute,
+    auto ret = napi_create_async_work(callbackInfo->env_, nullptr, resource, FindElementExecute,
         FindElementComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return nullptr;
+    }
     napi_queue_async_work_with_qos(callbackInfo->env_, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }

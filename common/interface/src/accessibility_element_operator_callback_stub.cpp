@@ -132,7 +132,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
             return TRANSACTION_ERR;
         }
 
-        if (infoSize < 0 || infoSize > static_cast<uint32_t>(MAX_ALLOW_SIZE)) {
+        if (infoSize > static_cast<uint32_t>(MAX_ALLOW_SIZE)) {
             reply.WriteInt32(RET_ERR_FAILED);
             return TRANSACTION_ERR;
         }
@@ -178,7 +178,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchDefaultFocusByW
             return TRANSACTION_ERR;
         }
  
-        if (infoSize < 0 || infoSize > static_cast<uint32_t>(MAX_ALLOW_SIZE)) {
+        if (infoSize > static_cast<uint32_t>(MAX_ALLOW_SIZE)) {
             HILOG_ERROR("The infoSize is abnormal");
             reply.WriteInt32(RET_ERR_FAILED);
             return TRANSACTION_ERR;
@@ -304,6 +304,8 @@ ErrCode AccessibilityElementOperatorCallbackStub::ReadAccessibilityElementInfoLi
         return TRANSACTION_ERR;
     }
     if (!tmpParcel.ParseFrom(reinterpret_cast<uintptr_t>(buffer), rawDataSize)) {
+        free(buffer);
+        buffer = nullptr;
         reply.WriteInt32(RET_ERR_FAILED);
         return TRANSACTION_ERR;
     }

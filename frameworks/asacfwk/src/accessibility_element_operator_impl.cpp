@@ -171,19 +171,31 @@ void AccessibilityElementOperatorImpl::SetChildTreeIdAndWinId(const int64_t elem
 {
     HILOG_DEBUG("elementId:%{public}" PRId64 ", childTreeId:%{public}d, childWind:%{public}d",
         elementId, childTreeId, childWindowId);
-    operator_->SetChildTreeIdAndWinId(elementId, childTreeId, childWindowId);
+    if (operator_) {
+        operator_->SetChildTreeIdAndWinId(elementId, childTreeId, childWindowId);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
 }
 
 void AccessibilityElementOperatorImpl::SetBelongTreeId(const int32_t treeId)
 {
     HILOG_DEBUG("treeId:[%{public}d]", treeId);
-    operator_->SetBelongTreeId(treeId);
+    if (operator_) {
+        operator_->SetBelongTreeId(treeId);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
 }
 
 void AccessibilityElementOperatorImpl::SetParentWindowId(const int32_t parentWindowId)
 {
     HILOG_DEBUG("parentWindowId:[%{public}d]", parentWindowId);
-    operator_->SetParentWindowId(parentWindowId);
+    if (operator_) {
+        operator_->SetParentWindowId(parentWindowId);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
 }
 
 int32_t AccessibilityElementOperatorImpl::AddRequest(int32_t requestId,

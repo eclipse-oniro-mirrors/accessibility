@@ -295,27 +295,47 @@ RetError AccessibilityUITestAbilityImpl::GetChildren(const AccessibilityElementI
     std::vector<AccessibilityElementInfo> &children)
 {
     HILOG_DEBUG();
-    return AccessibleAbilityClient::GetInstance()->GetChildren(parent, children);
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->GetChildren(parent, children);
 }
 
 RetError AccessibilityUITestAbilityImpl::SetCacheMode(const int32_t cacheMode)
 {
     HILOG_DEBUG();
-    return AccessibleAbilityClient::GetInstance()->SetCacheMode(cacheMode);
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->SetCacheMode(cacheMode);
 }
 
 RetError AccessibilityUITestAbilityImpl::SearchElementInfoByAccessibilityId(const int32_t windowId,
     const int64_t elementId, const uint32_t mode, AccessibilityElementInfo &info, bool isFilter)
 {
     HILOG_DEBUG();
-    return AccessibleAbilityClient::GetInstance()->SearchElementInfoByAccessibilityId(windowId,
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->SearchElementInfoByAccessibilityId(windowId,
         elementId, mode, info, isFilter);
 }
 
 RetError AccessibilityUITestAbilityImpl::ConfigureEvents(const std::vector<uint32_t> needEvents)
 {
     HILOG_DEBUG();
-    return AccessibleAbilityClient::GetInstance()->ConfigureEvents(needEvents);
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->ConfigureEvents(needEvents);
 }
 } // namespace Accessibility
 } // namespace OHOS

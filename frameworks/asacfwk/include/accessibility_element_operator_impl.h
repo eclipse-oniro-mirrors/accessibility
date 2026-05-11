@@ -290,7 +290,7 @@ std::vector<T> TranslateListToVector(const std::list<T> &originList)
 template<class T>
 std::list<T> TranslateVectorToList(const std::vector<T> &originVector)
 {
-    size_t len = originVector.length();
+    size_t len = originVector.size();
     std::list<T> destList(len);
     std::copy(originVector.begin(), originVector.end(), destList.begin());
     return destList;
