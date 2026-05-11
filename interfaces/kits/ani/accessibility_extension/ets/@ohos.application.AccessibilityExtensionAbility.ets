@@ -22,11 +22,11 @@ import { KeyCode } from '@ohos.multimodalInput.keyCode';
 
 export class AccessibilityExtensionAbility {
     context: AccessibilityExtensionContext = new AccessibilityExtensionContext();
-    onAccessibilityConnect() {
+    onAccessibilityConnect(): void {
         console.log('onAccessibilityConnect');
     }
 
-    onAccessibilityDisconnect() {
+    onAccessibilityDisconnect(): void {
         console.log('onAccessibilityDisconnect');
     }
 
