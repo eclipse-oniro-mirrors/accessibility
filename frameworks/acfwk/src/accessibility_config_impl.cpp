@@ -161,16 +161,15 @@ bool AccessibilityConfig::Impl::ConnectToService()
         }
 
         InitConfigValues();
-    } else {
-        HILOG_DEBUG("Start watching accessibility service.");
-        retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
-        if (retSysParam) {
-            HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
-            isParameterWatcherRegistered = false;
-            return false;
-        }
-        isParameterWatcherRegistered = true;
     }
+    HILOG_DEBUG("Start watching accessibility service.");
+    retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+    if (retSysParam) {
+        HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
+        isParameterWatcherRegistered = false;
+        return false;
+    }
+    isParameterWatcherRegistered = true;
     return true;
 }
 
