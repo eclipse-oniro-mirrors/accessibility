@@ -19,8 +19,6 @@
 #include "accessibility_account_data.h"
 #include "accessibility_common_helper.h"
 #include "accessibility_constants.h"
-#include "accessibility_enable_ability_lists_observer_stub.h"
-#include "accessibility_enable_ability_callback_observer_stub.h"
 #include "accessibility_ut_helper.h"
 #include "accessible_ability_manager.h"
 #include "mock_accessible_ability_connection.h"
@@ -42,19 +40,6 @@ namespace {
     const std::string TEST_URI = "testBundle/testAbility";
     const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.hmos.screenreader";
 }
-
-class MockAccessibilityEnableAbilityListsObserver : public AccessibilityEnableAbilityListsObserverStub {
-public:
-    MOCK_METHOD4(OnRemoteRequest, int(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option));
-    MOCK_METHOD0(OnAccessibilityEnableAbilityListsChanged, void());
-    MOCK_METHOD0(OnAccessibilityInstallAbilityListsChanged, void());
-};
-
-class MockAccessibilityEnableAbilityCallbackObserver : public AccessibilityEnableAbilityCallbackObserverStub {
-public:
-    MOCK_METHOD4(OnRemoteRequest, int(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option));
-    MOCK_METHOD1(OnEnableAbilityRemoteDied, void(const std::string& uri));
-};
 
 class AccessibleAbilityManagerTest : public testing::Test {
 public:
