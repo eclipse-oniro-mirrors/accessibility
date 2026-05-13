@@ -14,21 +14,17 @@
  */
 
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include "accessibility_ability_info.h"
 #include "accessibility_constants.h"
 #include "accessibility_ut_helper.h"
 #include "accessible_ability_manager.h"
-#include "mock_accessible_ability_connection.h"
 #include "utils.h"
 
-using namespace testing;
 using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    constexpr int32_t ACCOUNT_ID = 100;
     const std::string TEST_BUNDLE_NAME = "testBundle";
     const std::string TEST_ABILITY_NAME = "testAbility";
     const std::string TEST_URI = "testBundle/testAbility";
@@ -81,14 +77,8 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_Destructor_001, 
 HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_Clear_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_Clear_001 start";
-    AccessibilityAbilityInitParams initParams;
-    initParams.bundleName = TEST_BUNDLE_NAME;
-    initParams.name = TEST_ABILITY_NAME;
-    AccessibilityAbilityInfo abilityInfo(initParams);
-    
     manager_->AddEnabledAbility(TEST_URI);
     EXPECT_EQ(manager_->GetEnabledAbilities().size(), 1);
-    
     manager_->Clear();
     EXPECT_EQ(manager_->GetEnabledAbilities().size(), 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_Clear_001 end";
@@ -118,7 +108,6 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_RemoveEnabledAbi
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_RemoveEnabledAbility_001 start";
     manager_->AddEnabledAbility(TEST_URI);
     EXPECT_EQ(manager_->GetEnabledAbilities().size(), 1);
-    
     RetError result = manager_->RemoveEnabledAbility(TEST_URI);
     EXPECT_EQ(result, RET_OK);
     EXPECT_EQ(manager_->GetEnabledAbilities().size(), 0);
@@ -138,7 +127,6 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_GetEnabledAbilit
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_GetEnabledAbilities_001 start";
     manager_->AddEnabledAbility(TEST_URI);
     manager_->AddEnabledAbility("testBundle/testAbility2");
-    
     const auto& abilities = manager_->GetEnabledAbilities();
     EXPECT_EQ(abilities.size(), 2);
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_GetEnabledAbilities_001 end";
@@ -151,7 +139,6 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_AddInstalledAbil
     initParams.bundleName = TEST_BUNDLE_NAME;
     initParams.name = TEST_ABILITY_NAME;
     AccessibilityAbilityInfo abilityInfo(initParams);
-    
     EXPECT_EQ(manager_->GetInstalledAbilities().size(), 0);
     manager_->AddInstalledAbility(abilityInfo);
     EXPECT_EQ(manager_->GetInstalledAbilities().size(), 1);
@@ -165,7 +152,6 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_AddInstalledAbil
     initParams.bundleName = TEST_BUNDLE_NAME;
     initParams.name = TEST_ABILITY_NAME;
     AccessibilityAbilityInfo abilityInfo(initParams);
-    
     manager_->AddInstalledAbility(abilityInfo);
     EXPECT_EQ(manager_->GetInstalledAbilities().size(), 1);
     manager_->AddInstalledAbility(abilityInfo);
@@ -180,10 +166,8 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_RemoveInstalledA
     initParams.bundleName = TEST_BUNDLE_NAME;
     initParams.name = TEST_ABILITY_NAME;
     AccessibilityAbilityInfo abilityInfo(initParams);
-    
     manager_->AddInstalledAbility(abilityInfo);
     EXPECT_EQ(manager_->GetInstalledAbilities().size(), 1);
-    
     manager_->RemoveInstalledAbility(TEST_BUNDLE_NAME);
     EXPECT_EQ(manager_->GetInstalledAbilities().size(), 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_RemoveInstalledAbility_001 end";
@@ -196,10 +180,8 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_ClearInstalledAb
     initParams.bundleName = TEST_BUNDLE_NAME;
     initParams.name = TEST_ABILITY_NAME;
     AccessibilityAbilityInfo abilityInfo(initParams);
-    
     manager_->AddInstalledAbility(abilityInfo);
     EXPECT_EQ(manager_->GetInstalledAbilities().size(), 1);
-    
     manager_->ClearInstalledAbility();
     EXPECT_EQ(manager_->GetInstalledAbilities().size(), 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_ClearInstalledAbility_001 end";
@@ -212,9 +194,7 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_GetAbilitiesBySt
     initParams.bundleName = TEST_BUNDLE_NAME;
     initParams.name = TEST_ABILITY_NAME;
     AccessibilityAbilityInfo abilityInfo(initParams);
-    
     manager_->AddInstalledAbility(abilityInfo);
-    
     std::vector<AccessibilityAbilityInfo> abilities;
     manager_->GetAbilitiesByState(ABILITY_STATE_INSTALLED, abilities);
     EXPECT_EQ(abilities.size(), 1);
@@ -237,9 +217,7 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_GetDisableAbilit
     initParams.bundleName = TEST_BUNDLE_NAME;
     initParams.name = TEST_ABILITY_NAME;
     AccessibilityAbilityInfo abilityInfo(initParams);
-    
     manager_->AddInstalledAbility(abilityInfo);
-    
     std::vector<AccessibilityAbilityInfo> disabledAbilities;
     manager_->GetDisableAbilities(disabledAbilities);
     EXPECT_EQ(disabledAbilities.size(), 1);
@@ -253,10 +231,8 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_RemoveAbility_00
     initParams.bundleName = TEST_BUNDLE_NAME;
     initParams.name = TEST_ABILITY_NAME;
     AccessibilityAbilityInfo abilityInfo(initParams);
-    
     manager_->AddInstalledAbility(abilityInfo);
     manager_->AddEnabledAbility(TEST_URI);
-    
     bool result = manager_->RemoveAbility(TEST_BUNDLE_NAME);
     EXPECT_TRUE(result);
     EXPECT_EQ(manager_->GetInstalledAbilities().size(), 0);
@@ -320,50 +296,55 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_NotifyExtensionS
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_NotifyExtensionServiceDeath_001 end";
 }
 
-HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_AddAccessibilityAbility_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetSize_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_AddAccessibilityAbility_001 start";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetSize_001 start";
     AccessibleAbilityManager::AccessibilityAbility ability;
     EXPECT_EQ(ability.GetSize(), 0);
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_AddAccessibilityAbility_001 end";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetSize_001 end";
 }
 
-HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetAccessibilityAbilityByName_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_Clear_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAccessibilityAbilityByName_001 start";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_Clear_001 start";
     AccessibleAbilityManager::AccessibilityAbility ability;
-    
+    ability.Clear();
+    EXPECT_EQ(ability.GetSize(), 0);
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_Clear_001 end";
+}
+
+HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetAbilityByName_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAbilityByName_001 start";
+    AccessibleAbilityManager::AccessibilityAbility ability;
     auto result = ability.GetAccessibilityAbilityByName("nonexistent");
     EXPECT_EQ(result, nullptr);
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAccessibilityAbilityByName_001 end";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAbilityByName_001 end";
 }
 
-HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetAccessibilityAbilityByUri_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetAbilityByUri_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAccessibilityAbilityByUri_001 start";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAbilityByUri_001 start";
     AccessibleAbilityManager::AccessibilityAbility ability;
-    
     auto result = ability.GetAccessibilityAbilityByUri("nonexistent");
     EXPECT_EQ(result, nullptr);
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAccessibilityAbilityByUri_001 end";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAbilityByUri_001 end";
 }
 
-HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetAccessibilityAbilities_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetAbilities_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAccessibilityAbilities_001 start";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAbilities_001 start";
     AccessibleAbilityManager::AccessibilityAbility ability;
-    
     std::vector<sptr<AccessibleAbilityConnection>> connectionList;
     ability.GetAccessibilityAbilities(connectionList);
     EXPECT_EQ(connectionList.size(), 0);
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAccessibilityAbilities_001 end";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAbilities_001 end";
 }
 
 HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetAbilitiesInfo_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAbilitiesInfo_001 start";
     AccessibleAbilityManager::AccessibilityAbility ability;
-    
     std::vector<AccessibilityAbilityInfo> abilities;
     ability.GetAbilitiesInfo(abilities);
     EXPECT_EQ(abilities.size(), 0);
@@ -374,28 +355,25 @@ HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_IsExistCapabilit
 {
     GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_IsExistCapability_001 start";
     AccessibleAbilityManager::AccessibilityAbility ability;
-    
     bool result = ability.IsExistCapability(CAPABILITY_RETRIEVE);
     EXPECT_FALSE(result);
     GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_IsExistCapability_001 end";
 }
 
-HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetAccessibilityAbilitiesMap_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetAbilitiesMap_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAccessibilityAbilitiesMap_001 start";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAbilitiesMap_001 start";
     AccessibleAbilityManager::AccessibilityAbility ability;
-    
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMap;
     ability.GetAccessibilityAbilitiesMap(connectionMap);
     EXPECT_EQ(connectionMap.size(), 0);
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAccessibilityAbilitiesMap_001 end";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetAbilitiesMap_001 end";
 }
 
 HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetDisableAbilities_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetDisableAbilities_001 start";
     AccessibleAbilityManager::AccessibilityAbility ability;
-    
     std::vector<AccessibilityAbilityInfo> disabledAbilities;
     ability.GetDisableAbilities(disabledAbilities);
     EXPECT_EQ(disabledAbilities.size(), 0);
@@ -406,40 +384,18 @@ HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetSizeByUri_001
 {
     GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetSizeByUri_001 start";
     AccessibleAbilityManager::AccessibilityAbility ability;
-    
     int32_t result = ability.GetSizeByUri("nonexistent");
     EXPECT_EQ(result, 0);
     GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetSizeByUri_001 end";
 }
 
-HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_RemoveAccessibilityAbilityByUri_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_RemoveByUri_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_RemoveAccessibilityAbilityByUri_001 start";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_RemoveByUri_001 start";
     AccessibleAbilityManager::AccessibilityAbility ability;
-    
     ability.RemoveAccessibilityAbilityByUri("nonexistent");
     EXPECT_EQ(ability.GetSize(), 0);
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_RemoveAccessibilityAbilityByUri_001 end";
+    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_RemoveByUri_001 end";
 }
-
-HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_Clear_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_Clear_001 start";
-    AccessibleAbilityManager::AccessibilityAbility ability;
-    
-    ability.Clear();
-    EXPECT_EQ(ability.GetSize(), 0);
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_Clear_001 end";
-}
-
-HWTEST_F(AccessibleAbilityManagerTest, AAM_AccessibilityAbility_GetSize_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetSize_001 start";
-    AccessibleAbilityManager::AccessibilityAbility ability;
-    
-    EXPECT_EQ(ability.GetSize(), 0);
-    GTEST_LOG_(INFO) << "AAM_AccessibilityAbility_GetSize_001 end";
-}
-
 } // namespace Accessibility
 } // namespace OHOS
