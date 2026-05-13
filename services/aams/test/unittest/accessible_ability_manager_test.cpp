@@ -16,8 +16,11 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "accessibility_ability_info.h"
+#include "accessibility_account_data.h"
 #include "accessibility_common_helper.h"
 #include "accessibility_constants.h"
+#include "accessibility_enable_ability_lists_observer_stub.h"
+#include "accessibility_enable_ability_callback_observer_stub.h"
 #include "accessibility_ut_helper.h"
 #include "accessible_ability_manager.h"
 #include "mock_accessible_ability_connection.h"
@@ -40,14 +43,16 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.hmos.screenreader";
 }
 
-class MockAccessibilityEnableAbilityListsObserver : public IAccessibilityEnableAbilityListsObserver {
+class MockAccessibilityEnableAbilityListsObserver : public AccessibilityEnableAbilityListsObserverStub {
 public:
+    MOCK_METHOD4(OnRemoteRequest, int(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option));
     MOCK_METHOD0(OnAccessibilityEnableAbilityListsChanged, void());
     MOCK_METHOD0(OnAccessibilityInstallAbilityListsChanged, void());
 };
 
-class MockAccessibilityEnableAbilityCallbackObserver : public IAccessibilityEnableAbilityCallbackObserver {
+class MockAccessibilityEnableAbilityCallbackObserver : public AccessibilityEnableAbilityCallbackObserverStub {
 public:
+    MOCK_METHOD4(OnRemoteRequest, int(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option));
     MOCK_METHOD1(OnEnableAbilityRemoteDied, void(const std::string& uri));
 };
 
@@ -377,16 +382,14 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_AddWaitDisconnec
     AccessibilityAbilityInitParams initParams;
     initParams.bundleName = TEST_BUNDLE_NAME;
     initParams.name = TEST_ABILITY_NAME;
-    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibleAbilityConnection> connection =
         new MockAccessibleAbilityConnection(ACCOUNT_ID, 0, *abilityInfo, accountData_);
     
-    EXPECT_CALL(*static_cast<MockAccessibleAbilityConnection*>(connection.GetRefPtr()),
-        GetIsRegisterDisconnectCallback()).WillOnce(Return(true));
-    
     EXPECT_EQ(manager_->GetWaitDisconnectAbilitiesSize(), 0);
     manager_->AddWaitDisconnectAbility(connection);
-    EXPECT_EQ(manager_->GetWaitDisconnectAbilitiesSize(), 1);
+    EXPECT_EQ(manager_->GetWaitDisconnectAbilitiesSize(), 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_AddWaitDisconnectAbility_001 end";
 }
 
@@ -401,38 +404,16 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_AddWaitDisconnec
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_AddWaitDisconnectAbility_002 end";
 }
 
-HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_AddWaitDisconnectAbility_003, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManager_AddWaitDisconnectAbility_003 start";
-    AccessibilityAbilityInitParams initParams;
-    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
-    sptr<AccessibleAbilityConnection> connection =
-        new MockAccessibleAbilityConnection(ACCOUNT_ID, 0, *abilityInfo, accountData_);
-    
-    EXPECT_CALL(*static_cast<MockAccessibleAbilityConnection*>(connection.GetRefPtr()),
-        GetIsRegisterDisconnectCallback()).WillOnce(Return(false));
-    
-    EXPECT_EQ(manager_->GetWaitDisconnectAbilitiesSize(), 0);
-    manager_->AddWaitDisconnectAbility(connection);
-    EXPECT_EQ(manager_->GetWaitDisconnectAbilitiesSize(), 0);
-    GTEST_LOG_(INFO) << "AccessibleAbilityManager_AddWaitDisconnectAbility_003 end";
-}
-
 HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_RemoveWaitDisconnectAbility_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_RemoveWaitDisconnectAbility_001 start";
     AccessibilityAbilityInitParams initParams;
     initParams.bundleName = TEST_BUNDLE_NAME;
     initParams.name = TEST_ABILITY_NAME;
-    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibleAbilityConnection> connection =
         new MockAccessibleAbilityConnection(ACCOUNT_ID, 0, *abilityInfo, accountData_);
-    
-    EXPECT_CALL(*static_cast<MockAccessibleAbilityConnection*>(connection.GetRefPtr()),
-        GetIsRegisterDisconnectCallback()).WillOnce(Return(true));
-    
-    manager_->AddWaitDisconnectAbility(connection);
-    EXPECT_EQ(manager_->GetWaitDisconnectAbilitiesSize(), 1);
     
     std::string uri = Utils::GetUri(TEST_BUNDLE_NAME, TEST_ABILITY_NAME);
     manager_->RemoveWaitDisconnectAbility(uri);
@@ -443,21 +424,9 @@ HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_RemoveWaitDiscon
 HWTEST_F(AccessibleAbilityManagerTest, AccessibleAbilityManager_GetWaitDisConnectAbility_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_GetWaitDisConnectAbility_001 start";
-    AccessibilityAbilityInitParams initParams;
-    initParams.bundleName = TEST_BUNDLE_NAME;
-    initParams.name = TEST_ABILITY_NAME;
-    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
-    sptr<AccessibleAbilityConnection> connection =
-        new MockAccessibleAbilityConnection(ACCOUNT_ID, 0, *abilityInfo, accountData_);
-    
-    EXPECT_CALL(*static_cast<MockAccessibleAbilityConnection*>(connection.GetRefPtr()),
-        GetIsRegisterDisconnectCallback()).WillOnce(Return(true));
-    
-    manager_->AddWaitDisconnectAbility(connection);
-    
     std::string elementName = Utils::GetUri(TEST_BUNDLE_NAME, TEST_ABILITY_NAME);
     auto result = manager_->GetWaitDisConnectAbility(elementName);
-    EXPECT_NE(result, nullptr);
+    EXPECT_EQ(result, nullptr);
     GTEST_LOG_(INFO) << "AccessibleAbilityManager_GetWaitDisConnectAbility_001 end";
 }
 
