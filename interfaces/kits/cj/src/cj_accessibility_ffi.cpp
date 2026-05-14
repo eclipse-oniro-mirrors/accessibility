@@ -66,6 +66,10 @@ bool FfiAccIsScreenReaderOpen(int32_t *errorCode)
 {
     auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
     bool status = false;
+    if (asaClient == nullptr) {
+        HILOG_ERROR("FfiAccSendAccessibilityEvent failed.");
+        return status;
+    }
     auto ret = asaClient->IsScreenReaderEnabled(status);
     if (ret != RET_OK) {
         *errorCode = ERR_INPUT_INVALID;
