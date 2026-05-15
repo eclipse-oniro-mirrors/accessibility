@@ -1630,6 +1630,8 @@ napi_value NAccessibilityConfig::GetSeniorModeStateForApp(napi_env env, napi_cal
 
     if (!ParseGetSeniorModeParam(env, info, callbackInfo->stringConfig_, callbackInfo->int32Config_)) {
         HILOG_ERROR("Failed to parse param");
+        delete callbackInfo;
+        callbackInfo = nullptr;
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
         napi_throw(env, err);
         return nullptr;
@@ -1753,6 +1755,8 @@ napi_value NAccessibilityConfig::SetSeniorModeStateForApp(napi_env env, napi_cal
     }
     if (!ParseSeniorModeInfos(env, info, callbackInfo->seniorModeInfos_)) {
         HILOG_ERROR("Failed to parse seniorModeInfo");
+        delete callbackInfo;
+        callbackInfo = nullptr;
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
         napi_throw(env, err);
         return nullptr;

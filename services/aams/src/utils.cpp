@@ -124,7 +124,7 @@ public:
         }
         if (json.contains(key) && json.at(key).is_object()) {
             HILOG_INFO("Find key[%{public}s] successful.", key.c_str());
-            value = json[key].dump();
+            value = json.at(key).dump();
         }
         return true;
     }

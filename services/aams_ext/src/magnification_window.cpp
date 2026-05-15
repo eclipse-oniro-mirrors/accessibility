@@ -21,7 +21,7 @@ namespace OHOS {
 namespace Accessibility {
 
 namespace {
-    const std::string WINDOW_NAME = "magnification_window";
+const std::string WINDOW_NAME = "magnification_window";
 }
 
 MagnificationWindow& MagnificationWindow::GetInstance()
@@ -30,7 +30,7 @@ MagnificationWindow& MagnificationWindow::GetInstance()
     return instance;
 }
 
-//common
+// common
 PointerPos MagnificationWindow::GetSourceCenter()
 {
     PointerPos point = {0, 0};
@@ -55,7 +55,7 @@ PointerPos MagnificationWindow::ConvertCoordinates(int32_t posX, int32_t posY)
 void MagnificationWindow::CreateMagnificationWindow()
 {
     HILOG_DEBUG();
-    sptr<Rosen::WindowOption> windowOption = new(std::nothrow) Rosen::WindowOption();
+    sptr<Rosen::WindowOption> windowOption = new (std::nothrow) Rosen::WindowOption();
     if (windowOption == nullptr) {
         HILOG_ERROR("windowOption is null.");
         return;
@@ -137,12 +137,13 @@ Rosen::Rect MagnificationWindow::GetSourceRectFromPointer(int32_t centerX, int32
     int32_t y = centerY - static_cast<int32_t>(sourceRect.height_ / DIVISOR_TWO);
 
     x = (x < 0) ? 0 : x;
-    x = (x + static_cast<int32_t>(sourceRect.width_)) > static_cast<int32_t>(
-        screenWidth_) ? static_cast<int32_t>(screenWidth_ - sourceRect.width_) : x;
- 
+    x = (x + static_cast<int32_t>(sourceRect.width_)) > static_cast<int32_t>(screenWidth_)
+            ? static_cast<int32_t>(screenWidth_) - static_cast<int32_t>(sourceRect.width_)
+            : x;
     y = (y < 0) ? 0 : y;
-    y = (y + static_cast<int32_t>(sourceRect.height_)) > static_cast<int32_t>(
-        screenHeight_) ? static_cast<int32_t>(screenHeight_ - sourceRect.height_) : y;
+    y = (y + static_cast<int32_t>(sourceRect.height_)) > static_cast<int32_t>(screenHeight_)
+            ? static_cast<int32_t>(screenHeight_) - static_cast<int32_t>(sourceRect.height_)
+            : y;
 
     sourceRect.posX_ = x;
     sourceRect.posY_ = y;
@@ -178,8 +179,8 @@ PointerPos MagnificationWindow::ConvertGesture(uint32_t type, PointerPos coordin
     PointerPos point = {posX, posY};
 
     if (type == BOTTOM_BACK_GESTURE) {
-        int32_t offsetY = static_cast<int32_t>(screenHeight_) -
-            (sourceRect_.posY_ + static_cast<int32_t>(sourceRect_.height_));
+        int32_t offsetY =
+            static_cast<int32_t>(screenHeight_) - (sourceRect_.posY_ + static_cast<int32_t>(sourceRect_.height_));
         point.posY = posY + offsetY;
         return point;
     }
@@ -190,8 +191,8 @@ PointerPos MagnificationWindow::ConvertGesture(uint32_t type, PointerPos coordin
     }
 
     if (type == RIGHT_BACK_GESTURE) {
-        int32_t offsetX = static_cast<int32_t>(screenWidth_) -
-            (sourceRect_.posX_ + static_cast<int32_t>(sourceRect_.width_));
+        int32_t offsetX =
+            static_cast<int32_t>(screenWidth_) - (sourceRect_.posX_ + static_cast<int32_t>(sourceRect_.width_));
         point.posX = posX + offsetX;
         return point;
     }
@@ -201,8 +202,8 @@ PointerPos MagnificationWindow::ConvertGesture(uint32_t type, PointerPos coordin
 
 uint32_t MagnificationWindow::CheckTapOnHotArea(int32_t posX, int32_t posY)
 {
-    bool isTapOnBottom = posY <= static_cast<int32_t>(screenHeight_) &&
-        posY >= static_cast<int32_t>(screenHeight_) - GESTURE_OFFSET;
+    bool isTapOnBottom =
+        posY <= static_cast<int32_t>(screenHeight_) && posY >= static_cast<int32_t>(screenHeight_) - GESTURE_OFFSET;
     if (isTapOnBottom) {
         HILOG_DEBUG("Tap On Bottom");
         return BOTTOM_BACK_GESTURE;
@@ -212,8 +213,8 @@ uint32_t MagnificationWindow::CheckTapOnHotArea(int32_t posX, int32_t posY)
         HILOG_DEBUG("Tap On Left Side");
         return LEFT_BACK_GESTURE;
     }
-    bool isTapOnRightSide = posX >= static_cast<int32_t>(screenWidth_) - GESTURE_OFFSET &&
-        posX <= static_cast<int32_t>(screenWidth_);
+    bool isTapOnRightSide =
+        posX >= static_cast<int32_t>(screenWidth_) - GESTURE_OFFSET && posX <= static_cast<int32_t>(screenWidth_);
     if (isTapOnRightSide) {
         HILOG_DEBUG("Tap On Right Side");
         return RIGHT_BACK_GESTURE;
@@ -237,10 +238,10 @@ void MagnificationWindow::FollowFocuseElementFull(int32_t centerX, int32_t cente
 
 void MagnificationWindow::UpdateAnchor()
 {
-    centerX_ = static_cast<int32_t>((sourceRect_.posX_ + sourceRect_.posX_ +
-        static_cast<int32_t>(sourceRect_.width_)) / DIVISOR_TWO);
-    centerY_ = static_cast<int32_t>((sourceRect_.posY_ + sourceRect_.posY_ +
-        static_cast<int32_t>(sourceRect_.height_)) / DIVISOR_TWO);
+    centerX_ = static_cast<int32_t>(
+        (sourceRect_.posX_ + sourceRect_.posX_ + static_cast<int32_t>(sourceRect_.width_)) / DIVISOR_TWO);
+    centerY_ = static_cast<int32_t>(
+        (sourceRect_.posY_ + sourceRect_.posY_ + static_cast<int32_t>(sourceRect_.height_)) / DIVISOR_TWO);
 }
 
 void MagnificationWindow::DrawRuoundRectFrameFull()
@@ -272,9 +273,11 @@ void MagnificationWindow::DrawRuoundRectFrameFull()
     pen.SetWidth(PEN_WIDTH);
     canvas->AttachPen(pen);
     Rosen::Drawing::Path path;
-    path.AddRoundRect({ROUND_RECT_MARGIN, ROUND_RECT_MARGIN,
-        screenWidth_ - ROUND_RECT_MARGIN, screenHeight_ - ROUND_RECT_MARGIN},
-        CORNER_RADIUS, CORNER_RADIUS, Rosen::Drawing::PathDirection::CW_DIRECTION);
+    path.AddRoundRect(
+        {ROUND_RECT_MARGIN, ROUND_RECT_MARGIN, screenWidth_ - ROUND_RECT_MARGIN, screenHeight_ - ROUND_RECT_MARGIN},
+        CORNER_RADIUS,
+        CORNER_RADIUS,
+        Rosen::Drawing::PathDirection::CW_DIRECTION);
     canvas->DrawPath(path);
     canvas->DetachPen();
     canvasNode_->FinishRecording();
@@ -433,12 +436,14 @@ Rosen::Rect MagnificationWindow::GetWindowRectFromPointer(int32_t centerX, int32
     int32_t y = centerY - static_cast<int32_t>(windowHeight_ / DIVISOR_TWO);
 
     x = (x < 0) ? 0 : x;
-    x = (x + static_cast<int32_t>(windowWidth_)) > static_cast<int32_t>(
-        screenWidth_) ? static_cast<int32_t>(screenWidth_ - windowWidth_) : x;
+    x = (x + static_cast<int32_t>(windowWidth_)) > static_cast<int32_t>(screenWidth_)
+            ? static_cast<int32_t>(screenWidth_) - static_cast<int32_t>(windowWidth_)
+            : x;
 
     y = (y < 0) ? 0 : y;
-    y = (y + static_cast<int32_t>(windowHeight_)) > static_cast<int32_t>(
-        screenHeight_) ? static_cast<int32_t>(screenHeight_ - windowHeight_) : y;
+    y = (y + static_cast<int32_t>(windowHeight_)) > static_cast<int32_t>(screenHeight_)
+            ? static_cast<int32_t>(screenHeight_) - static_cast<int32_t>(windowHeight_)
+            : y;
 
     windowRect.posX_ = x;
     windowRect.posY_ = y;
@@ -552,10 +557,10 @@ void MagnificationWindow::FixSourceCenter(bool needFix)
 
     isFixSourceCenter_ = needFix;
     if (needFix) {
-        float sourceCenterX = (sourceRect_.posX_ + sourceRect_.posX_ +
-            static_cast<int32_t>(sourceRect_.width_)) / static_cast<float>(DIVISOR_TWO);
-        float sourceCenterY = (sourceRect_.posY_ + sourceRect_.posY_ +
-            static_cast<int32_t>(sourceRect_.height_)) / static_cast<float>(DIVISOR_TWO);
+        float sourceCenterX = (sourceRect_.posX_ + sourceRect_.posX_ + static_cast<int32_t>(sourceRect_.width_)) /
+                              static_cast<float>(DIVISOR_TWO);
+        float sourceCenterY = (sourceRect_.posY_ + sourceRect_.posY_ + static_cast<int32_t>(sourceRect_.height_)) /
+                              static_cast<float>(DIVISOR_TWO);
         fixedSourceCenter_ = {static_cast<int32_t>(sourceCenterX), static_cast<int32_t>(sourceCenterY)};
     } else {
         fixedSourceCenter_ = {0, 0};
@@ -591,9 +596,11 @@ void MagnificationWindow::DrawRuoundRectFramePart()
     pen.SetWidth(PEN_WIDTH);
     canvas->AttachPen(pen);
     Rosen::Drawing::Path path;
-    path.AddRoundRect({ROUND_RECT_MARGIN, ROUND_RECT_MARGIN,
-        windowWidth_ - ROUND_RECT_MARGIN, windowHeight_ - ROUND_RECT_MARGIN},
-        CORNER_RADIUS, CORNER_RADIUS, Rosen::Drawing::PathDirection::CW_DIRECTION);
+    path.AddRoundRect(
+        {ROUND_RECT_MARGIN, ROUND_RECT_MARGIN, windowWidth_ - ROUND_RECT_MARGIN, windowHeight_ - ROUND_RECT_MARGIN},
+        CORNER_RADIUS,
+        CORNER_RADIUS,
+        Rosen::Drawing::PathDirection::CW_DIRECTION);
     canvas->DrawPath(path);
     canvas->DetachPen();
 
@@ -779,8 +786,8 @@ void MagnificationWindow::RefreshWindowParamPart(RotationType type)
 
 PointerPos MagnificationWindow::TransferCenter(RotationType type, PointerPos center)
 {
-    if (type == RotationType::NO_CHANGE || type == RotationType::UNKNOWN ||
-        type == RotationType::FLIP_VERTICAL) {
+    if (type == RotationType::NO_CHANGE || type == RotationType::UNKNOWN || type == RotationType::FLIP_VERTICAL) {
+        return center;
     }
     GetWindowParam();
     if (type == RotationType::LEFT_ROTATE) {
@@ -894,6 +901,6 @@ void MagnificationWindow::RefreshWindowParam(uint32_t magnificationType, Rotatio
     }
     HILOG_DEBUG("invalid type = %{public}d", magnificationType);
 }
-}
-}
-// LCOV_EXCL_STOP
+}  // namespace Accessibility
+}  // namespace OHOS
+   // LCOV_EXCL_STOP
