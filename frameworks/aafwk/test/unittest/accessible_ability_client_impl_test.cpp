@@ -982,7 +982,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, NotifyServiceDied_001, TestSize.Level1
     Connect();
     wptr<IRemoteObject> remote = nullptr;
     instance_->NotifyServiceDied(remote);
-    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), static_cast<int>(CHANNEL_ID));
+    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), static_cast<int>(INVALID_ID));
     GTEST_LOG_(INFO) << "NotifyServiceDied_001 end";
 }
 

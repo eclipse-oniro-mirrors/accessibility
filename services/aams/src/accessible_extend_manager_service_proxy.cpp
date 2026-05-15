@@ -356,8 +356,21 @@ bool ExtendManagerServiceProxy::SetNotifyZoomGesutureConflictDialogCallback()
 static bool GetNotifyZoomGestureConflict()
 {
     HILOG_DEBUG();
-    return Singleton<AccessibleAbilityManagerService>::GetInstance()
-        .GetCurrentAccountData()->GetConfig()->GetDbHandle()->GetBoolValue(ZOOM_GESTURE_CONFLICT_DIALOG_OPEN, false);
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("GetCurrentAccountData failed");
+        return false;
+    }
+    if (!accountData->GetConfig()) {
+        HILOG_ERROR("GetConfig failed");
+        return false;
+    }
+    if (!accountData->GetConfig()->GetDbHandle()) {
+        HILOG_ERROR("GetDbHandle failed");
+        return false;
+    }
+    return accountData->GetConfig()->GetDbHandle()->GetBoolValue(ZOOM_GESTURE_CONFLICT_DIALOG_OPEN, false);
 }
  
 bool ExtendManagerServiceProxy::SetGetNotifyZoomGestureConflictCallback()
