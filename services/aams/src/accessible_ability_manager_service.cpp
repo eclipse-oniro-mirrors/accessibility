@@ -25,7 +25,7 @@
 #include <functional>
 #ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
-#endif // OHOS_BUILD_ENABLE_HITRACE
+#endif // OHOS_BUILD_ENABLE_HITRACEGetAccountData
 
 #include "ability_info.h"
 #include "accessibility_event_info.h"
@@ -1588,10 +1588,15 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(int32_t accountId)
 {
     HILOG_DEBUG();
-    if (currentAccountId_ == -1) {
+    if (accountId == -1) {
         HILOG_ERROR("account id is wrong");
         return nullptr;
     }
+    auto accountData = a11yAccountsData_.GetAccountData(accountId);
+    if (accountData != nullptr) {
+        return accountData;
+    }
+    AddedUser(accountId);
     return a11yAccountsData_.GetAccountData(accountId);
 }
 
@@ -1652,6 +1657,11 @@ void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
     HILOG_DEBUG();
     if (accountId == currentAccountId_) {
         HILOG_ERROR("Remove user failed, this account is current account.");
+        return;
+    }
+    auto accountData = a11yAccountsData_.RemoveAccountData(accountId);
+    if (accountData) {
+        accountData->GetConfig()->ClearData();
         return;
     }
     HILOG_ERROR("accountId is not exist");
