@@ -25,7 +25,7 @@
 #include <functional>
 #ifdef OHOS_BUILD_ENABLE_HITRACE
 #include <hitrace_meter.h>
-#endif // OHOS_BUILD_ENABLE_HITRACEGetAccountData
+#endif // OHOS_BUILD_ENABLE_HITRACE
 
 #include "ability_info.h"
 #include "accessibility_event_info.h"
