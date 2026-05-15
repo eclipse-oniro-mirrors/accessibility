@@ -142,7 +142,7 @@ DisplayState DisplayManager::GetDisplayState(DisplayId displayId)
     return state;
 }
 
-bool DisplayManager::SetScreenBrightness(uint64_t screenId, uint32_t level)
+bool DisplayManager::SetScreenBrightness(const DmsScreenBrightnessData& brightnessData)
 {
     return true;
 }
