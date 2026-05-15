@@ -1659,11 +1659,6 @@ void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
         HILOG_ERROR("Remove user failed, this account is current account.");
         return;
     }
-    auto accountData = a11yAccountsData_.RemoveAccountData(accountId);
-    if (accountData) {
-        accountData->GetConfig()->ClearData();
-        return;
-    }
     HILOG_ERROR("accountId is not exist");
 }
 
