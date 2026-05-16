@@ -80,6 +80,14 @@ public:
     {}
 };
 
+class MockAccessibilityAppSeniorModeStateObserverImpl :
+        public OHOS::AccessibilityConfig::AccessibilityAppSeniorModeStateObserver {
+public:
+    MockAccessibilityAppSeniorModeStateObserverImpl() = default;
+    void OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, const bool state) override
+    {}
+};
+
 /**
  * @tc.number: SetCaptionProperty_002
  * @tc.name: SetCaptionProperty_002
@@ -2060,6 +2068,110 @@ HWTEST_F(AccessibilityConfigImplTest, SetEnhanceConfig_001, TestSize.Level1)
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     EXPECT_NE(Accessibility::RET_OK, instance.SetEnhanceConfig(nullptr, 0));
     GTEST_LOG_(INFO) << "SetEnhanceConfig_001 end";
+}
+
+/**
+ * @tc.number: GetSeniorModeStateForApp_001
+ * @tc.name: GetSeniorModeStateForApp_001
+ * @tc.desc: Test function GetSeniorModeStateForApp with invalid appIndex
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetSeniorModeStateForApp_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetSeniorModeStateForApp_001 start";
+    std::string bundleName = "com.test.app";
+    int32_t appIndex = -1;
+    bool state = false;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    Accessibility::RetError ret = instance.GetSeniorModeStateForApp(bundleName, appIndex, state);
+    EXPECT_EQ(Accessibility::RET_ERR_INVALID_PARAM, ret);
+    GTEST_LOG_(INFO) << "GetSeniorModeStateForApp_001 end";
+}
+
+/**
+ * @tc.number: GetSeniorModeStateForApp_002
+ * @tc.name: GetSeniorModeStateForApp_002
+ * @tc.desc: Test function GetSeniorModeStateForApp with valid params
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetSeniorModeStateForApp_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetSeniorModeStateForApp_002 start";
+    std::string bundleName = "com.test.app";
+    int32_t appIndex = 0;
+    bool state = false;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    Accessibility::RetError ret = instance.GetSeniorModeStateForApp(bundleName, appIndex, state);
+    EXPECT_EQ(Accessibility::RET_OK, ret);
+    GTEST_LOG_(INFO) << "GetSeniorModeStateForApp_002 end";
+}
+
+/**
+ * @tc.number: SetSeniorModeStateForApp_001
+ * @tc.name: SetSeniorModeStateForApp_001
+ * @tc.desc: Test function SetSeniorModeStateForApp with empty infos
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetSeniorModeStateForApp_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSeniorModeStateForApp_001 start";
+    std::vector<OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo> infos;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    Accessibility::RetError ret = instance.SetSeniorModeStateForApp(infos);
+    EXPECT_EQ(Accessibility::RET_ERR_INVALID_PARAM, ret);
+    GTEST_LOG_(INFO) << "SetSeniorModeStateForApp_001 end";
+}
+
+/**
+ * @tc.number: SetSeniorModeStateForApp_002
+ * @tc.name: SetSeniorModeStateForApp_002
+ * @tc.desc: Test function SetSeniorModeStateForApp with valid infos
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetSeniorModeStateForApp_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSeniorModeStateForApp_002 start";
+    std::vector<OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo> infos;
+    OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo info;
+    info.bundleName_ = "com.test.app";
+    info.seniorModeState_ = true;
+    info.appIndex_ = 0;
+    infos.push_back(info);
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    Accessibility::RetError ret = instance.SetSeniorModeStateForApp(infos);
+    EXPECT_EQ(Accessibility::RET_OK, ret);
+    GTEST_LOG_(INFO) << "SetSeniorModeStateForApp_002 end";
+}
+
+/**
+ * @tc.number: SubscribeAppSeniorModeStateObserver_001
+ * @tc.name: SubscribeAppSeniorModeStateObserver_001
+ * @tc.desc: Test function SubscribeAppSeniorModeStateObserver
+ */
+HWTEST_F(AccessibilityConfigImplTest, SubscribeAppSeniorModeStateObserver_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SubscribeAppSeniorModeStateObserver_001 start";
+    auto observer = std::make_shared<MockAccessibilityAppSeniorModeStateObserverImpl>();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    Accessibility::RetError ret = instance.SubscribeAppSeniorModeStateObserver(observer);
+    EXPECT_EQ(Accessibility::RET_OK, ret);
+    GTEST_LOG_(INFO) << "SubscribeAppSeniorModeStateObserver_001 end";
+}
+
+/**
+ * @tc.number: UnsubscribeAppSeniorModeStateObserver_001
+ * @tc.name: UnsubscribeAppSeniorModeStateObserver_001
+ * @tc.desc: Test function UnsubscribeAppSeniorModeStateObserver
+ */
+HWTEST_F(AccessibilityConfigImplTest, UnsubscribeAppSeniorModeStateObserver_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "UnsubscribeAppSeniorModeStateObserver_001 start";
+    auto observer = std::make_shared<MockAccessibilityAppSeniorModeStateObserverImpl>();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    instance.SubscribeAppSeniorModeStateObserver(observer);
+    Accessibility::RetError ret = instance.UnsubscribeAppSeniorModeStateObserver(observer);
+    EXPECT_EQ(Accessibility::RET_OK, ret);
+    GTEST_LOG_(INFO) << "UnsubscribeAppSeniorModeStateObserver_001 end";
 }
 } // namespace AccessibilityConfig
 } // namespace OHOS

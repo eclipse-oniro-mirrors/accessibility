@@ -22,6 +22,7 @@
 #include "extend_service_manager.h"
 #include "accessibility_def.h"
 #include "magnification_window.h"
+#include <set>
 #ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
 #include "accessibility_extend_power_manager.h"
 #endif
@@ -42,6 +43,15 @@ namespace {
     constexpr float MIN_SCROLL_SPAN = 2.0f;
     constexpr float MIN_SCALE_SPAN = 2.0f;
     constexpr float MIN_SCALE = 0.1f;
+    const std::set<int32_t> LEVITATE_ACTIONS = {
+        MMI::PointerEvent::POINTER_ACTION_PROXIMITY_IN,
+        MMI::PointerEvent::POINTER_ACTION_PROXIMITY_OUT,
+        MMI::PointerEvent::POINTER_ACTION_LEVITATE_MOVE,
+        MMI::PointerEvent::POINTER_ACTION_LEVITATE_IN_WINDOW,
+        MMI::PointerEvent::POINTER_ACTION_LEVITATE_OUT_WINDOW,
+        MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN,
+        MMI::PointerEvent::POINTER_ACTION_BUTTON_UP
+    };
 } // namespace
 
 AccessibilityZoomGesture::AccessibilityZoomGesture(
@@ -161,11 +171,9 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
         return false;
     }
 
-    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_MOVE ||
-        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_IN_WINDOW ||
-        event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_OUT_WINDOW) {
-        EventTransmission::OnPointerEvent(event);
-        return false;
+    if (LEVITATE_ACTIONS.count(event.GetPointerAction()) > 0) {
+        SendEventToMultimodal(event);
+        return true;
     }
 
     OnPointerEventExecute(event);
