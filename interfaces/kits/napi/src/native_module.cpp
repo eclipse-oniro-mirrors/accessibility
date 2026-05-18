@@ -253,6 +253,8 @@ static napi_value CreateAccessibilityAction(napi_env env)
         CreateIntObject(env, AccessibilityAction::CONTROL_CENTER));
     napi_set_named_property(env, objValue, "SPAN_CLICK", CreateIntObject(env, AccessibilityAction::SPAN_CLICK));
     napi_set_named_property(env, objValue, "INJECT_ACTION", CreateIntObject(env, AccessibilityAction::INJECT_ACTION));
+    napi_set_named_property(env, objValue, "EXECUTE_CUSTOM_ACTION",
+        CreateIntObject(env, AccessibilityAction::EXECUTE_CUSTOM_ACTION));
     return objValue;
 }
 
