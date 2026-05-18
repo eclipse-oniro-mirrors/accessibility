@@ -40,6 +40,7 @@ enum ACCESSIBILITY_ZOOM_GESTURE_MSG : uint32_t {
     TWO_FINGER_SLIDING_MSG,
     HOT_AREA_SLIDING_MSG,
     MENU_SLIDING_MSG,
+    TOUCH_EXPLORATION_ZOOM_DELAY_MSG,
 };
 
 struct ZOOM_FOCUS_COORDINATE {
@@ -218,10 +219,11 @@ private:
     static constexpr int32_t SLIDING = 9;
     static constexpr int32_t HOT_AREA_SLIDING = 10;
     static constexpr int32_t MENU_SLIDING = 11;
+    static constexpr int32_t THREE_FINGER_DOUBLE_TAP = 12;
 
     static constexpr int32_t GESTURE_MODE_COUNT = 2;
     static constexpr int32_t MAGNIFICATION_STATE_COUNT = 2;
-    static constexpr int32_t GESTURE_STATE_COUNT = 12;
+    static constexpr int32_t GESTURE_STATE_COUNT = 13;
     static constexpr int32_t POINTER_ACTION_MAX = 5;
 
     using GestureEventFunc = std::function<void(MMI::PointerEvent&)>;

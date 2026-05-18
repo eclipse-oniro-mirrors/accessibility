@@ -36,6 +36,7 @@ namespace {
     constexpr int32_t MULTI_FINGER_TAP_INTERVAL_TIMER = 100; // ms
     constexpr int32_t MULTI_TAP_TIMER = 250; // ms
     constexpr int32_t LONG_PRESS_TIMER = 300; // ms
+    constexpr int32_t TOUCH_EXPLORATION_ZOOM_DELAY_TIMER = 250; // ms
     constexpr float DOUBLE_TAP_SLOP = 100.0f;
     constexpr uint32_t DOUBLE_TAP_COUNT = 2;
     constexpr uint32_t TRIPLE_TAP_COUNT = 3;
@@ -472,6 +473,7 @@ void AccessibilityZoomGesture::ClearCacheEventsAndMsg()
     zoomGestureEventHandler_->RemoveEvent(WAIT_ANOTHER_FINGER_DOWN_MSG);
     zoomGestureEventHandler_->RemoveEvent(HOT_AREA_SLIDING_MSG);
     zoomGestureEventHandler_->RemoveEvent(MENU_SLIDING_MSG);
+    zoomGestureEventHandler_->RemoveEvent(TOUCH_EXPLORATION_ZOOM_DELAY_MSG);
 }
 
 
@@ -668,8 +670,8 @@ AccessibilityZoomGesture::ZoomGestureEventHandler::ZoomGestureEventHandler(
 
 void AccessibilityZoomGesture::ZoomGestureEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
 {
-    HILOG_DEBUG();
     uint32_t eventId = event->GetInnerEventId();
+    HILOG_DEBUG("process msg: %{public}d", eventId);
     switch (eventId) {
         case MULTI_TAP_MSG:
             HILOG_DEBUG("process multi tap msg.");
@@ -718,6 +720,27 @@ void AccessibilityZoomGesture::ZoomGestureEventHandler::ProcessEvent(const AppEx
             zoomGesture_.TransferState(MENU_SLIDING);
             zoomGesture_.ClearCacheEventsAndMsg();
             break;
+        case TOUCH_EXPLORATION_ZOOM_DELAY_MSG:
+            {
+                HILOG_DEBUG("process touch exploration zoom delay msg.");
+                if (zoomGesture_.zoomState_ == READY) {
+                    int32_t anchorX = 0;
+                    int32_t anchorY = 0;
+                    for (int i = 0; i < POINTER_COUNT_3; i++) {
+                        MMI::PointerEvent::PointerItem pointerItem;
+                        zoomGesture_.lastTripleTapEvents_[i]->GetPointerItem(
+                            zoomGesture_.lastTripleTapEvents_[i]->GetPointerId(), pointerItem);
+                        anchorX += pointerItem.GetDisplayX();
+                        anchorY += pointerItem.GetDisplayY();
+                    }
+                    zoomGesture_.OnZoom(anchorX / POINTER_COUNT_3, anchorY / POINTER_COUNT_3, true);
+                } else if (zoomGesture_.zoomState_ == ZOOM) {
+                    zoomGesture_.OffZoom();
+                }
+                zoomGesture_.TransferState(INIT);
+                zoomGesture_.ClearCacheEventsAndMsg();
+                break;
+            }
         default:
             break;
     }
@@ -1319,20 +1342,25 @@ void AccessibilityZoomGesture::HandleTDReadyThreeFingersContinueDownStateUp(MMI:
 
     uint32_t pointerSize = event.GetPointerIds().size();
     if (pointerSize == POINTER_COUNT_1) {
-        int32_t anchorX = 0;
-        int32_t anchorY = 0;
-        for (int i = 0; i < POINTER_COUNT_3; i++) {
-            MMI::PointerEvent::PointerItem pointerItem;
-            lastTripleTapEvents_[i]->GetPointerItem(lastTripleTapEvents_[i]->GetPointerId(), pointerItem);
-            anchorX += pointerItem.GetDisplayX();
-            anchorY += pointerItem.GetDisplayY();
+        if (AccessibilityInputInterceptor::GetInstance()->IsTouchExplorationEnabled()) {
+            HILOG_INFO("Touch exploration enabled, set delay timer for zoom.");
+            TransferState(THREE_FINGER_DOUBLE_TAP);
+            zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
+            zoomGestureEventHandler_->SendEvent(TOUCH_EXPLORATION_ZOOM_DELAY_MSG, 0,
+                TOUCH_EXPLORATION_ZOOM_DELAY_TIMER);
+        } else {
+            int32_t anchorX = 0;
+            int32_t anchorY = 0;
+            for (int i = 0; i < POINTER_COUNT_3; i++) {
+                MMI::PointerEvent::PointerItem pointerItem;
+                lastTripleTapEvents_[i]->GetPointerItem(lastTripleTapEvents_[i]->GetPointerId(), pointerItem);
+                anchorX += pointerItem.GetDisplayX();
+                anchorY += pointerItem.GetDisplayY();
+            }
+            OnZoom(anchorX / POINTER_COUNT_3, anchorY / POINTER_COUNT_3, true);
+            ClearCacheEventsAndMsg();
+            TransferState(INIT);
         }
-        OnZoom(anchorX / POINTER_COUNT_3, anchorY / POINTER_COUNT_3, true);
-        ClearCacheEventsAndMsg();
-        TransferState(INIT);
-    } else if (pointerSize > POINTER_COUNT_3) {
-        SendCacheEventsToNext();
-        TransferState(PASSING_THROUGH);
     }
 }
 
@@ -1688,12 +1716,17 @@ void AccessibilityZoomGesture::HandleTDZoomThreeFingersContinueDownStateUp(MMI::
 
     uint32_t pointerSize = event.GetPointerIds().size();
     if (pointerSize == POINTER_COUNT_1) {
-        OffZoom();
-        ClearCacheEventsAndMsg();
-        TransferState(INIT);
-    } else if (pointerSize > POINTER_COUNT_3) {
-        SendCacheEventsToNext();
-        TransferState(PASSING_THROUGH);
+        if (AccessibilityInputInterceptor::GetInstance()->IsTouchExplorationEnabled()) {
+            HILOG_INFO("Touch exploration enabled in ZOOM state, set delay timer for off zoom.");
+            TransferState(THREE_FINGER_DOUBLE_TAP);
+            zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
+            zoomGestureEventHandler_->SendEvent(TOUCH_EXPLORATION_ZOOM_DELAY_MSG, 0,
+                TOUCH_EXPLORATION_ZOOM_DELAY_TIMER);
+        } else {
+            OffZoom();
+            ClearCacheEventsAndMsg();
+            TransferState(INIT);
+        }
     }
 }
 
