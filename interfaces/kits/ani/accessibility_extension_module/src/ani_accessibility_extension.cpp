@@ -391,6 +391,7 @@ AccessibilityEventType ConvertStringToAccessibilityEventType(const std::string &
         {"fourFingerSwipeRight", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_RIGHT},
         {"pageActive", AccessibilityEventType::TYPE_PAGE_ACTIVE},
         {"notificationUpdate", AccessibilityEventType::TYPE_NOTIFICATION_UPDATE_EVENT},
+        {"oneFingerDoubleTap", AccessibilityEventType::TYPE_ONE_FINGER_DOUBLE_TAP},
         {"focusInvisible", AccessibilityEventType::TYPE_FOCUS_INVISIBLE}};
     if (eventTypeTable.find(eventType) == eventTypeTable.end()) {
         return AccessibilityEventType::TYPE_ERROR;
@@ -450,7 +451,8 @@ std::string ConvertGestureTypeToString(GestureType type)
         {GestureType::GESTURE_FOUR_FINGER_SWIPE_UP, "fourFingerSwipeUp"},
         {GestureType::GESTURE_FOUR_FINGER_SWIPE_DOWN, "fourFingerSwipeDown"},
         {GestureType::GESTURE_FOUR_FINGER_SWIPE_LEFT, "fourFingerSwipeLeft"},
-        {GestureType::GESTURE_FOUR_FINGER_SWIPE_RIGHT, "fourFingerSwipeRight"}
+        {GestureType::GESTURE_FOUR_FINGER_SWIPE_RIGHT, "fourFingerSwipeRight"},
+        {GestureType::GESTURE_DOUBLETAP, "oneFingerDoubleTap"}
     };
 
     if (gestureTypeTable.find(type) == gestureTypeTable.end()) {

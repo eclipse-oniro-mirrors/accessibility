@@ -538,7 +538,7 @@ export class Parameter {
     spanId?: string = '';
     scrollType?: string = '';
     injectActionType?: InjectActionType;
-    customActions?: string = '';
+    customAction?: string = '';
     accessibilityFocusScene?: AccessibilityFocusScene;
 }
 

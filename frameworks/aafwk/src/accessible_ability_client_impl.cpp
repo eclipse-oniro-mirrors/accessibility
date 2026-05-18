@@ -1131,7 +1131,7 @@ RetError AccessibleAbilityClientImpl::CheckActionArguments(const ActionType acti
     const std::map<std::string, std::string> &actionArguments)
 {
     if (action == ACCESSIBILITY_ACTION_CUSTOM) {
-        if (actionArguments.find("customActions") == actionArguments.end()) {
+        if (actionArguments.find("customAction") == actionArguments.end()) {
             HILOG_ERROR("customActions is required for CUSTOM action.");
             return RET_ERR_INVALID_PARAM;
         }

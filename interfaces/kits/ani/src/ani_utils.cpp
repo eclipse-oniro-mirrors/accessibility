@@ -326,7 +326,7 @@ ActionType ANIUtils::ConvertStringToAccessibleOperationType(const std::string &t
         {"notificationCenter", ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER},
         {"controlCenter", ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER},
         {"injectAction", ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION},
-        {"customActions", ActionType::ACCESSIBILITY_ACTION_CUSTOM}
+        {"executeCustomAction", ActionType::ACCESSIBILITY_ACTION_CUSTOM}
     };
 
     if (accessibleOperationTypeTable.find(type) == accessibleOperationTypeTable.end()) {
@@ -567,13 +567,6 @@ void ANIUtils::ConvertEventInfoStringFields(ani_env *env, ani_object eventObject
     if (GetArrayStringField(env, "contents", eventObject, contents)) {
         for (auto str : contents) {
             eventInfo.AddContent(str);
-        }
-    }
-
-    std::vector<std::string> customActions;
-    if (GetArrayStringField(env, "customActions", eventObject, customActions)) {
-        for (auto str : customActions) {
-            eventInfo.AddCustomAction(str);
         }
     }
 
@@ -1353,11 +1346,11 @@ void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_CUSTOM:
-            if (env->Object_GetFieldByName_Ref(obj, "customActions", &fiedNameValue) == ANI_OK) {
+            if (env->Object_GetFieldByName_Ref(obj, "customAction", &fiedNameValue) == ANI_OK) {
                 str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
-                args.insert(std::pair<std::string, std::string>("customActions", str.c_str()));
+                args.insert(std::pair<std::string, std::string>("customAction", str.c_str()));
             } else {
-                HILOG_ERROR("customActions is required for CUSTOM action");
+                HILOG_ERROR("customAction is required for CUSTOM action");
                 ThrowBusinessError(env, QueryRetMsg(RetError::RET_ERR_INVALID_PARAM));
             }
             break;

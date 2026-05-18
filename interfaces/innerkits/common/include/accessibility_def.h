@@ -608,7 +608,8 @@ enum AccessibilityEventType : int32_t {
     TYPE_FOUR_FINGER_SWIPE_RIGHT = 68,
     TYPE_PAGE_ACTIVE = 69,
     TYPE_NOTIFICATION_UPDATE_EVENT = 70,
-    TYPE_FOCUS_INVISIBLE = 71
+    TYPE_FOCUS_INVISIBLE = 71,
+    TYPE_ONE_FINGER_DOUBLE_TAP = 72
 };
 
 enum InjectActionType : int32_t {
@@ -642,7 +643,7 @@ enum AccessibilityAction : int32_t {
     CONTROL_CENTER = 19,
     SPAN_CLICK = 20,
     INJECT_ACTION = 21,
-    CUSTOM_ACTION = 22
+    EXECUTE_CUSTOM_ACTION = 22
 };
 
 const std::vector<std::string> ACTION_NAMES = {
@@ -668,7 +669,7 @@ const std::vector<std::string> ACTION_NAMES = {
     "controlCenter",           //AccessibilityAction.CONTROL_CENTER=19
     "spanClick",               //AccessibilityAction.SPAN_CLICK=20
     "injectAction",            //AccessibilityAction.INJECT_ACTION=21
-    "customActions"            //AccessibilityAction.CUSTOM_ACTION=22
+    "executeCustomAction"            //AccessibilityAction.EXECUTE_CUSTOM_ACTION=22
 };
 
 enum class AnnounceType : uint32_t {
