@@ -110,6 +110,7 @@ ohos_shared_library("aams_ext") {
     "time_service:time_client",
     "window_manager:libdm",
     "window_manager:libwm",
+    "eventhandler:libeventhandler",
   ]
 
   if (defined(global_parts_info) &&

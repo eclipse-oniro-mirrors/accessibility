@@ -88,6 +88,7 @@ ohos_shared_library("accessibility_extension_module") {
     "ipc:ipc_core",
     "ipc:ipc_napi",
     "napi:ace_napi",
+    "eventhandler:libeventhandler",
   ]
 
   include_dirs = ani_accessibility_extension_module.include_dirs
