@@ -207,6 +207,19 @@ static napi_value CreateInjectActionType(napi_env env)
     return objValue;
 }
 
+static napi_value CreateAccessibilityFocusScene(napi_env env)
+{
+    napi_value objValue = nullptr;
+    napi_create_object(env, &objValue);
+    napi_set_named_property(env, objValue, "HOVER_FOCUS",
+        CreateIntObject(env, OHOS::Accessibility::AccessibilityFocusScene::HOVER_FOCUS));
+    napi_set_named_property(env, objValue, "SWIPE_FOCUS",
+        CreateIntObject(env, OHOS::Accessibility::AccessibilityFocusScene::SWIPE_FOCUS));
+    napi_set_named_property(env, objValue, "SCROLL_FOCUS",
+        CreateIntObject(env, OHOS::Accessibility::AccessibilityFocusScene::SCROLL_FOCUS));
+    return objValue;
+}
+
 static napi_value CreateAccessibilityAction(napi_env env)
 {
     napi_value objValue = nullptr;
@@ -240,6 +253,8 @@ static napi_value CreateAccessibilityAction(napi_env env)
         CreateIntObject(env, AccessibilityAction::CONTROL_CENTER));
     napi_set_named_property(env, objValue, "SPAN_CLICK", CreateIntObject(env, AccessibilityAction::SPAN_CLICK));
     napi_set_named_property(env, objValue, "INJECT_ACTION", CreateIntObject(env, AccessibilityAction::INJECT_ACTION));
+    napi_set_named_property(env, objValue, "EXECUTE_CUSTOM_ACTION",
+        CreateIntObject(env, AccessibilityAction::EXECUTE_CUSTOM_ACTION));
     return objValue;
 }
 
@@ -290,6 +305,7 @@ static napi_value Init(napi_env env, napi_value exports)
     napi_set_named_property(env, exports, "AccessibilityEventType", CreateAccessibilityEventType(env));
     napi_set_named_property(env, exports, "AccessibilityAction", CreateAccessibilityAction(env));
     napi_set_named_property(env, exports, "InjectActionType", CreateInjectActionType(env));
+    napi_set_named_property(env, exports, "AccessibilityFocusScene", CreateAccessibilityFocusScene(env));
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     (void)instance.InitializeContext();
