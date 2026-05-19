@@ -337,7 +337,7 @@ ActionType ANIUtils::ConvertStringToAccessibleOperationType(const std::string &t
         {"notificationCenter", ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER},
         {"controlCenter", ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER},
         {"injectAction", ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION},
-        {"customActions", ActionType::ACCESSIBILITY_ACTION_CUSTOM}
+        {"executeCustomAction", ActionType::ACCESSIBILITY_ACTION_CUSTOM}
     };
 
     if (accessibleOperationTypeTable.find(type) == accessibleOperationTypeTable.end()) {
@@ -602,13 +602,6 @@ void ANIUtils::ConvertEventInfoStringFields(ani_env *env, ani_object eventObject
     if (GetArrayStringField(env, "contents", eventObject, contents)) {
         for (auto str : contents) {
             eventInfo.AddContent(str);
-        }
-    }
-
-    std::vector<std::string> customActions;
-    if (GetArrayStringField(env, "customActions", eventObject, customActions)) {
-        for (auto str : customActions) {
-            eventInfo.AddCustomAction(str);
         }
     }
 
@@ -1327,6 +1320,23 @@ void ANIUtils::SetSelectionParam(ani_env *env, ani_object obj, std::map<std::str
     }
 }
 
+void ANIUtils::SetAccessibilityFocusSceneParam(ani_env *env, ani_object obj, std::map<std::string, std::string>& args)
+{
+    ani_ref fiedNameValue;
+    if (env->Object_GetFieldByName_Ref(obj, "accessibilityFocusScene", &fiedNameValue) == ANI_OK) {
+        ani_enum_item enumItem = static_cast<ani_enum_item>(fiedNameValue);
+        ani_int intValue = 0;
+        if (env->EnumItem_GetValue_Int(enumItem, &intValue) == ANI_OK) {
+            if (intValue >= AccessibilityFocusScene::HOVER_FOCUS && intValue <= AccessibilityFocusScene::SCROLL_FOCUS) {
+                args.insert(std::pair<std::string, std::string>("accessibilityFocusScene", std::to_string(intValue)));
+            } else {
+                HILOG_ERROR("Invalid AccessibilityFocusScene value: %{public}d", intValue);
+                ThrowBusinessError(env, QueryRetMsg(RetError::RET_ERR_INVALID_PARAM));
+            }
+        }
+    }
+}
+
 void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
     std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action)
 {
@@ -1371,9 +1381,12 @@ void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_CUSTOM:
-            if (env->Object_GetFieldByName_Ref(obj, "customActions", &fiedNameValue) == ANI_OK) {
+            if (env->Object_GetFieldByName_Ref(obj, "customAction", &fiedNameValue) == ANI_OK) {
                 str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
-                args.insert(std::pair<std::string, std::string>("customActions", str.c_str()));
+                args.insert(std::pair<std::string, std::string>("customAction", str.c_str()));
+            } else {
+                HILOG_ERROR("customAction is required for CUSTOM action");
+                ThrowBusinessError(env, QueryRetMsg(RetError::RET_ERR_INVALID_PARAM));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION: {
@@ -1391,6 +1404,9 @@ void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
             SetScrollTypeParam(env, obj, args);
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS:
+            SetAccessibilityFocusSceneParam(env, obj, args);
             break;
         default:
             break;

@@ -783,6 +783,7 @@ AccessibilityEventType CovertStringToAccessibilityEventType(const std::string &e
         {"fourFingerSwipeRight", AccessibilityEventType::TYPE_FOUR_FINGER_SWIPE_RIGHT},
         {"pageActive", AccessibilityEventType::TYPE_PAGE_ACTIVE},
         {"notificationUpdate", AccessibilityEventType::TYPE_NOTIFICATION_UPDATE_EVENT},
+        {"oneFingerDoubleTap", AccessibilityEventType::TYPE_ONE_FINGER_DOUBLE_TAP},
         {"focusInvisible", AccessibilityEventType::TYPE_FOCUS_INVISIBLE}};
     if (eventTypeTable.find(eventType) == eventTypeTable.end()) {
         return AccessibilityEventType::TYPE_ERROR;
@@ -831,7 +832,8 @@ std::string CoverGestureTypeToString(GestureType type)
         {GestureType::GESTURE_FOUR_FINGER_SWIPE_UP, "fourFingerSwipeUp"},
         {GestureType::GESTURE_FOUR_FINGER_SWIPE_DOWN, "fourFingerSwipeDown"},
         {GestureType::GESTURE_FOUR_FINGER_SWIPE_LEFT, "fourFingerSwipeLeft"},
-        {GestureType::GESTURE_FOUR_FINGER_SWIPE_RIGHT, "fourFingerSwipeRight"}
+        {GestureType::GESTURE_FOUR_FINGER_SWIPE_RIGHT, "fourFingerSwipeRight"},
+        {GestureType::GESTURE_DOUBLETAP, "oneFingerDoubleTap"}
     };
 
     if (gestureTypeTable.find(type) == gestureTypeTable.end()) {
@@ -901,7 +903,7 @@ std::string ConvertOperationTypeToString(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_SET_TEXT, "setText"},
         {ActionType::ACCESSIBILITY_ACTION_DELETED, "delete"},
         {ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK, "spanClick"},
-        {ActionType::ACCESSIBILITY_ACTION_CUSTOM, "customActions"},
+        {ActionType::ACCESSIBILITY_ACTION_CUSTOM, "executeCustomAction"},
         {ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM, "nextHtmlItem"},
         {ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM, "previousHtmlItem"},
         {ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, "injectAction"}
@@ -1015,7 +1017,7 @@ ActionType ConvertStringToAccessibleOperationType(const std::string &type)
         {"notificationCenter", ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER},
         {"controlCenter", ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER},
         {"spanClick", ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK},
-        {"customActions", ActionType::ACCESSIBILITY_ACTION_CUSTOM},
+        {"executeCustomAction", ActionType::ACCESSIBILITY_ACTION_CUSTOM},
         {"nextHtmlItem", ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM},
         {"previousHtmlItem", ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM},
         {"injectAction", ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION}
@@ -1115,10 +1117,15 @@ bool ConvertActionArgsJSToNAPI(
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_CUSTOM:
-            napi_create_string_utf8(env, "customActions", NAPI_AUTO_LENGTH, &propertyNameValue);
+            napi_create_string_utf8(env, "customAction", NAPI_AUTO_LENGTH, &propertyNameValue);
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
-                args.insert(std::pair<std::string, std::string>("customActions", str.c_str()));
+                args.insert(std::pair<std::string, std::string>("customAction", str.c_str()));
+            } else {
+                HILOG_ERROR("customAction is required for CUSTOM action");
+                napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
+                napi_throw(env, err);
+                ret = false;
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION:
@@ -1133,6 +1140,9 @@ bool ConvertActionArgsJSToNAPI(
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
             ret = SetScrollTypeParam(env, object, args);
+            break;
+        case ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS:
+            ret = SetAccessibilityFocusSceneParam(env, object, args);
             break;
         default:
             break;
@@ -1217,6 +1227,33 @@ bool SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, s
             return false;
         }
         args.insert(std::pair<std::string, std::string>("scrolltype", scrollValue.c_str()));
+    }
+    return true;
+}
+
+bool SetAccessibilityFocusSceneParam(napi_env env, napi_value object, std::map<std::string, std::string>& args)
+{
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
+    std::string str = "";
+    static const std::map<std::string, std::string> focusSceneMap = {
+        {"HOVER_FOCUS", "1"},
+        {"SWIPE_FOCUS", "2"},
+        {"SCROLL_FOCUS", "3"}
+    };
+
+    napi_create_string_utf8(env, "accessibilityFocusScene", NAPI_AUTO_LENGTH, &propertyNameValue);
+    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        auto it = focusSceneMap.find(str);
+        if (it != focusSceneMap.end()) {
+            args.insert(std::pair<std::string, std::string>("accessibilityFocusScene", it->second.c_str()));
+        } else {
+            HILOG_ERROR("Invalid accessibilityFocusScene value: %{public}s", str.c_str());
+            napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
+            napi_throw(env, err);
+            return false;
+        }
     }
     return true;
 }
@@ -1518,14 +1555,6 @@ bool ConvertEventInfoJSToNAPIPart4(
         eventInfo.SetResourceModuleName(resourceInfo.moduleName);
         eventInfo.SetResourceId(resourceInfo.resourceId);
         eventInfo.SetResourceParams(resourceInfo.params);
-    }
-    napi_create_string_utf8(env, "customActions", NAPI_AUTO_LENGTH, &propertyNameValue);
-    std::vector<std::string> stringArrayCustomAction {};
-    ConvertStringArrayJSToNAPI(env, object, propertyNameValue, hasProperty, stringArrayCustomAction);
-    if (hasProperty) {
-        for (auto str : stringArrayCustomAction) {
-            eventInfo.AddCustomAction(str);
-        }
     }
     return true;
 }

@@ -17,7 +17,7 @@ import ExtensionContext from 'application.ExtensionContext';
 import Want from '@ohos.app.ability.Want';
 import { AsyncCallback, BusinessError, Callback } from '@ohos.base';
 import accessibility from '@ohos.accessibility';
-import { AccessibilityAction, FocusMoveResultCode, InjectActionType } from '@ohos.accessibility';
+import { AccessibilityAction, FocusMoveResultCode, InjectActionType, AccessibilityFocusScene } from '@ohos.accessibility';
 
 export interface FocusMoveResult {
   target: Array<AccessibilityElement>;
@@ -538,6 +538,8 @@ export class Parameter {
     spanId?: string = '';
     scrollType?: string = '';
     injectActionType?: InjectActionType;
+    customAction?: string = '';
+    accessibilityFocusScene?: AccessibilityFocusScene;
 }
 
 export type FocusDirection = 'up' | 'down' | 'left' | 'right' | 'forward' | 'backward';

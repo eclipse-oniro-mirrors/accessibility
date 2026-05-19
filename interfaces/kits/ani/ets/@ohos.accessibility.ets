@@ -41,7 +41,13 @@ export enum AccessibilityAction {
   CONTROL_CENTER = 19,
   SPAN_CLICK = 20,
   INJECT_ACTION = 21,
-  CUSTOM_ACTION = 22
+  EXECUTE_CUSTOM_ACTION = 22
+}
+
+export enum AccessibilityFocusScene {
+  HOVER_FOCUS = 1,
+  SWIPE_FOCUS = 2,
+  SCROLL_FOCUS = 3
 }
 
 export enum AccessibilityEventType {
@@ -116,7 +122,8 @@ export enum AccessibilityEventType {
   TYPE_FOUR_FINGER_SWIPE_RIGHT = 68,
   TYPE_PAGE_ACTIVE = 69,
   TYPE_NOTIFICATION_UPDATE_EVENT = 70,
-  TYPE_FOCUS_INVISIBLE = 71
+  TYPE_FOCUS_INVISIBLE = 71,
+  TYPE_ONE_FINGER_DOUBLE_TAP = 72
 }
 
 namespace accessibility {
@@ -131,7 +138,7 @@ namespace accessibility {
     export type Action = 'accessibilityFocus' | 'clearAccessibilityFocus' | 'focus' | 'clearFocus' | 'clearSelection' |
         'click' | 'longClick' | 'cut' | 'copy' | 'paste' | 'select' | 'setText' | 'delete' |
         'scrollForward' | 'scrollBackward' | 'setSelection' | 'setCursorPosition' | 'home' |
-        'back' | 'recentTask' | 'notificationCenter' | 'controlCenter' | 'common' | 'injectAction' | 'customActions';
+        'back' | 'recentTask' | 'notificationCenter' | 'controlCenter' | 'common' | 'injectAction' | 'executeCustomAction';
 
     export type WindowUpdateType = 'add' | 'remove' | 'bounds' | 'active' | 'focus';
 
@@ -539,7 +546,6 @@ namespace accessibility {
         triggerAction: Action;
         textMoveUnit?: TextMoveUnit;
         contents?: Array<string>;
-        customActions?: Array<string>;
         lastContent?: string;
         beginIndex?: int;
         currentIndex?: int;

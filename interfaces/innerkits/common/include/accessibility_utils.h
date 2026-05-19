@@ -88,6 +88,7 @@ bool ConvertActionArgsJSToNAPI(
 void SetPermCheckFlagForAction(bool checkPerm, std::map<std::string, std::string>& args);
 bool SetScrollTypeParam(napi_env env, napi_value object, std::map<std::string, std::string>& args);
 bool SetSelectionParam(napi_env env, napi_value object, std::map<std::string, std::string>& args);
+bool SetAccessibilityFocusSceneParam(napi_env env, napi_value object, std::map<std::string, std::string>& args);
 bool CheckNumber(napi_env env, std::string value);
 
 KeyAction TransformKeyActionValue(int32_t keyAction);

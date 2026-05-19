@@ -481,6 +481,8 @@ private:
     static void OnParameterChanged(const char *key, const char *value, void *context);
     bool CheckServiceProxy(); // should be used in mutex
     RetError CheckConnection(); // should be used in mutex, to check isConnected_ and channelClient_
+    RetError CheckActionArguments(const ActionType action,
+        const std::map<std::string, std::string> &actionArguments);
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> accessibilityServiceDeathRecipient_ = nullptr;

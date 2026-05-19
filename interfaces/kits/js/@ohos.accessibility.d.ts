@@ -48,7 +48,7 @@ declare namespace accessibility {
    */
   type Action = 'accessibilityFocus' | 'clearAccessibilityFocus' | 'focus' | 'clearFocus' | 'clearSelection' |
     'click' | 'longClick' | 'cut' | 'copy' | 'paste' | 'select' | 'setText' | 'delete' |
-    'scrollForward' | 'scrollBackward' | 'setSelection' | 'setCursorPosition' | 'common' | 'customActions';
+    'scrollForward' | 'scrollBackward' | 'setSelection' | 'setCursorPosition' | 'common' | 'executeCustomAction';
 
   /**
    * The type of the accessibility event.
@@ -696,14 +696,6 @@ declare namespace accessibility {
      * @since 7
      */
     contents?: Array<string>;
-
-    /**
-     * The action info list.
-     *
-     * @syscap SystemCapability.BarrierFree.Accessibility.Core
-     * @since 23
-     */
-    customActions?: Array<string>;
 
     /**
      * The content changed before.

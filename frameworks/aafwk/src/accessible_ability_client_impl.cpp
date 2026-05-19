@@ -1131,6 +1131,18 @@ RetError AccessibleAbilityClientImpl::GetCursorPosition(const AccessibilityEleme
     return ret;
 }
 
+RetError AccessibleAbilityClientImpl::CheckActionArguments(const ActionType action,
+    const std::map<std::string, std::string> &actionArguments)
+{
+    if (action == ACCESSIBILITY_ACTION_CUSTOM) {
+        if (actionArguments.find("customAction") == actionArguments.end()) {
+            HILOG_ERROR("customActions is required for CUSTOM action.");
+            return RET_ERR_INVALID_PARAM;
+        }
+    }
+    return RET_OK;
+}
+
 RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &elementInfo,
     const ActionType action, const std::map<std::string, std::string> &actionArguments)
 {
@@ -1151,6 +1163,10 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
     if (action == ACCESSIBILITY_ACTION_INVALID) {
         HILOG_ERROR("action is invalid.");
         return RET_ERR_INVALID_PARAM;
+    }
+    RetError checkRet = CheckActionArguments(action, actionArguments);
+    if (checkRet != RET_OK) {
+        return checkRet;
     }
     int32_t windowId;
     if (elementInfo.GetInnerWindowId() > 0) {
