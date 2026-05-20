@@ -32,7 +32,7 @@ namespace Accessibility {
 namespace {
     constexpr int32_t WINDOW_ID_INVALID = -1;
     constexpr int64_t ELEMENT_ID_INVALID = -1;
-    const int32_t LONG_PRESS_EVENT_INTERVAL = 500;
+    const int32_t LONG_PRESS_EVENT_INTERVAL = 550;
     MMI::InputManager* inputManager_ = MMI::InputManager::GetInstance();
     std::map<int32_t, std::pair<bool, std::pair<int32_t, int32_t>>> accessibleKeyCodeTable = {
         {ActionType::ACCESSIBILITY_ACTION_HOME,
