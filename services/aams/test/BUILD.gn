@@ -712,6 +712,7 @@ ohos_unittest("accessible_ability_manager_test") {
 
 config("settings_config_test_no_datashare_config") {
   cflags_cc = [ "-UOHOS_BUILD_ENABLE_DATA_SHARE" ]
+  include_dirs = [ "../../../frameworks/acfwk/include" ]
 }
 
 ################################################################################
