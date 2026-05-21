@@ -52,7 +52,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void GetActiveWindow([out] int windowId);
     void GetActiveWindow([out] int windowId, [in] boolean systemApi);
     void CheckExtensionAbilityPermission([inout] String processName);
-    void EnableUITestAbility([in] IRemoteObject obj, [in] int userId);
+    void EnableUITestAbility([in] IRemoteObject obj, [in] int userId, [out] int actualUserId);
     void DisableUITestAbility([in] int userId);
     void SetScreenMagnificationState([in] boolean state);
     void SetShortKeyState([in] boolean state);

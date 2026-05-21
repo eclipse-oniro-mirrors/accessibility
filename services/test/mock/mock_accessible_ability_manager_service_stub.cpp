@@ -205,7 +205,8 @@ ErrCode MockAccessibleAbilityManagerServiceStub::CheckExtensionAbilityPermission
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::EnableUITestAbility(const sptr<IRemoteObject> &obj, int32_t userId)
+ErrCode MockAccessibleAbilityManagerServiceStub::EnableUITestAbility(
+    const sptr<IRemoteObject> &obj, int32_t userId, int32_t& actualUserId)
 {
     (void)obj;
     return RET_ERR_IPC_FAILED;

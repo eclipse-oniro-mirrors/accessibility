@@ -261,7 +261,8 @@ ErrCode AccessibleAbilityManagerService::DisableAbility(const std::string &name)
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject>& obj, int userId)
+ErrCode AccessibleAbilityManagerService::EnableUITestAbility(
+    const sptr<IRemoteObject> &obj, int userId, int32_t &actualUserId)
 {
     (void)obj;
     return RET_OK;

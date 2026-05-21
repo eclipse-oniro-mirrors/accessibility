@@ -86,7 +86,7 @@ public:
     ErrCode GetActiveWindow(int32_t& windowId, bool systemApi) override;
 
     ErrCode CheckExtensionAbilityPermission(std::string& processName) override;
-    ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj, int32_t userId) override;
+    ErrCode EnableUITestAbility(const sptr<IRemoteObject> &obj, int32_t userId, int32_t &actualUserId) override;
     ErrCode DisableUITestAbility(int32_t userId) override;
 
     ErrCode SetScreenMagnificationState(bool state) override;

@@ -144,7 +144,7 @@ public:
     RetError SetCurtainScreenUsingStatus(bool isEnable);
     ErrCode CheckExtensionAbilityPermission(std::string& processName) override;
     ErrCode DisableAbility(const std::string &name) override;
-    ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj, int userId) override;
+    ErrCode EnableUITestAbility(const sptr<IRemoteObject>& obj, int userId, int32_t& actualUserId) override;
     ErrCode DisableUITestAbility(int userId) override;
     ErrCode SetMagnificationState(const bool state) override;
     ErrCode GetActiveWindow(int32_t &windowId) override;

@@ -380,7 +380,7 @@ public:
      * @return Return RET_OK if the command of connection is sent successfully,
      *         otherwise refer to the RetError for the failure.
      */
-    RetError EnableUITestAbility(int32_t userId = 0);
+    RetError EnableUITestAbility(int32_t userId, int32_t& actualUserId);
 
     /**
      * @brief disconnect to AAMS. For UI test.
@@ -389,8 +389,6 @@ public:
      */
     RetError DisableUITestAbility(int32_t userId = 0);
  
-    int32_t GetCurrentUserId();
-
     /**
      * @brief Set connection state.
      * @param state Connnection state.
@@ -493,7 +491,6 @@ private:
     int32_t cacheWindowId_ = -1;
     SafeMap<int64_t, AccessibilityElementInfo> cacheElementInfos_;
     std::atomic<bool> isConnected_ = false;
-    int32_t userId_ = -1;
 
     ffrt::condition_variable proxyConVar_;
     ffrt::mutex conVarMutex_;

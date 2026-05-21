@@ -1473,7 +1473,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoByInspectorKey(const std:
     return RET_ERR_FAILED;
 }
 
-RetError AccessibleAbilityClientImpl::EnableUITestAbility(int32_t userId)
+RetError AccessibleAbilityClientImpl::EnableUITestAbility(int32_t userId, int32_t& actualUserId)
 {
     HILOG_DEBUG();
     std::shared_lock<ffrt::shared_mutex> rLock(rwServiceLock_);
@@ -1481,8 +1481,7 @@ RetError AccessibleAbilityClientImpl::EnableUITestAbility(int32_t userId)
         HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
     }
-    userId_ = userId;
-    return static_cast<RetError>(serviceProxy_->EnableUITestAbility(this->AsObject(), userId));
+    return static_cast<RetError>(serviceProxy_->EnableUITestAbility(this->AsObject(), userId, actualUserId));
 }
 
 RetError AccessibleAbilityClientImpl::DisableUITestAbility(int32_t userId)
@@ -1493,13 +1492,7 @@ RetError AccessibleAbilityClientImpl::DisableUITestAbility(int32_t userId)
         HILOG_ERROR("failed to connect to aams.");
         return RET_ERR_SAMGR;
     }
-    userId_ = -1;
     return static_cast<RetError>(serviceProxy_->DisableUITestAbility(userId));
-}
-
-int32_t AccessibleAbilityClientImpl::GetCurrentUserId()
-{
-    return userId_;
 }
 
 void AccessibleAbilityClientImpl::SetConnectionState(bool state)
