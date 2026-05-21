@@ -754,6 +754,8 @@ ohos_unittest("accessibility_settings_config_test") {
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
     "../../../services/test/mock/mock_service_registry.cpp",
+    "../../../services/test/mock/mock_accessible_ability_manager_service_stub.cpp",
+    "../../../services/test/mock/mock_bundle_manager.cpp",
     "mock/src/mock_magnification_manager.cpp",
     "mock/src/mock_permission.cpp",
     "unittest/accessibility_settings_config_test.cpp",
