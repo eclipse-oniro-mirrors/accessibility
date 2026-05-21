@@ -149,7 +149,7 @@ public:
     {
         return RET_OK;
     }
-    ErrCode EnableUITestAbility(const sptr<IRemoteObject> &obj, int32_t userId) override
+    ErrCode EnableUITestAbility(const sptr<IRemoteObject> &obj, int32_t userId, int32_t& actualUserId) override
     {
         return RET_OK;
     }

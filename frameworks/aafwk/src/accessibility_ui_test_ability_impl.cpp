@@ -67,7 +67,7 @@ RetError AccessibilityUITestAbilityImpl::Connect(int32_t userId)
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return aaClient->EnableUITestAbility(userId);
+    return aaClient->EnableUITestAbility(userId, currentUserId_);
 }
 
 RetError AccessibilityUITestAbilityImpl::Disconnect(int32_t userId)
@@ -78,18 +78,14 @@ RetError AccessibilityUITestAbilityImpl::Disconnect(int32_t userId)
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
+    currentUserId_ = -1;
     return aaClient->DisableUITestAbility(userId);
 }
 
 int32_t AccessibilityUITestAbilityImpl::GetCurrentUserId()
 {
     HILOG_INFO();
-    sptr<AccessibleAbilityClientImpl> aaClient = AccessibleAbilityClientImpl::GetAbilityClientImplement();
-    if (!aaClient) {
-        HILOG_ERROR("aaClient is nullptr");
-        return 0;
-    }
-    return aaClient->GetCurrentUserId();
+    return currentUserId_;
 }
 
 RetError AccessibilityUITestAbilityImpl::GetFocus(

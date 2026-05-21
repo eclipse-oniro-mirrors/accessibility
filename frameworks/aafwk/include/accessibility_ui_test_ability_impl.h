@@ -260,6 +260,7 @@ public:
 
 private:
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
+    int32_t currentUserId_ = -1;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -1414,7 +1414,8 @@ ErrCode AccessibleAbilityManagerService::SetMagnificationState(const bool state)
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject> &obj, int32_t userId)
+ErrCode AccessibleAbilityManagerService::EnableUITestAbility(
+    const sptr<IRemoteObject> &obj, int32_t userId, int32_t &actualUserId)
 {
     HILOG_DEBUG();
     if (!IsSystemApp()) {
@@ -1439,6 +1440,7 @@ ErrCode AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteO
     if (userId == 0) {
         userId = GetCurrentAccountId();
     }
+    actualUserId = userId;
     ffrt::promise<RetError> syncPromise;
     ffrt::future syncFuture = syncPromise.get_future();
     handler_->PostTask([this, &syncPromise, obj, processName, userId]() {
