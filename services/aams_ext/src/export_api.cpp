@@ -53,10 +53,10 @@ API_EXPORT void SetGetFocusedWindowIdCallback(
 {
     serviceManagerInstance.getFocusedWindowIdCallback = cb;
 }
-API_EXPORT void SetGetActiveWindowIdCallback(
-    OHOS::Accessibility::GetActiveWindowIdCallback cb)
+API_EXPORT void SetGetAccessibilityFocusedWindowIdCallback(
+    OHOS::Accessibility::GetAccessibilityFocusedWindowIdCallback cb)
 {
-    serviceManagerInstance.getActiveWindowIdCallback = cb;
+    serviceManagerInstance.getAccessibilityFocusedWindowIdCallback = cb;
 }
 API_EXPORT void SetGetAccessibilityWindowCallback(
     OHOS::Accessibility::GetAccessibilityWindowCallback cb)

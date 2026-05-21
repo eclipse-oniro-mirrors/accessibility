@@ -56,7 +56,7 @@ static void MockGetFocusedWindowIdCallback(int32_t &focusedWindowId, uint64_t di
 {
     (void) focusedWindowId;
 }
-static void MockGetActiveWindowIdCallback(int32_t &activeWindowId, uint64_t displayId)
+static void MockGetAccessibilityFocusedWindowIdCallback(int32_t &activeWindowId, uint64_t displayId)
 {
     (void) activeWindowId;
 }
@@ -126,7 +126,7 @@ ExtendServiceManager::ExtendServiceManager()
     findFocusedElementCallback = MockFindFocusedElementCallback;
     executeActionOnAccessibilityFocusedCallback = MockExecuteActionOnAccessibilityFocusedCallback;
     getFocusedWindowIdCallback = MockGetFocusedWindowIdCallback;
-    getActiveWindowIdCallback = MockGetActiveWindowIdCallback;
+    getAccessibilityFocusedWindowIdCallback = MockGetAccessibilityFocusedWindowIdCallback;
     getAccessibilityWindowCallback = MockGetAccessibilityWindowCallback;
     sendPointerEventForHoverCallback = MockSendPointerEventForHoverCallback;
     getDelayTime = MockGetDelayTime;
