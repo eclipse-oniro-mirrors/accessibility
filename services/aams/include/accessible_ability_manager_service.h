@@ -154,6 +154,7 @@ public:
     bool ExecuteActionOnAccessibilityFocused(const ActionType &action, int32_t userId);
     ErrCode GetFocusedWindowId(int32_t &focusedWindowId) override;
     ErrCode InnerGetFocusedWindowId(int32_t &focusedWindowId, int32_t userId);
+    ErrCode GetAccessibilityFocusedWindowId(int32_t &windowId, int32_t accountId);
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId) override;
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId, bool systemApi) override;
     bool GetElementOperator(const int32_t windowId,

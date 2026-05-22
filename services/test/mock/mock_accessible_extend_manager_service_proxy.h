@@ -104,7 +104,7 @@ public:
     bool SetFindFocusedElementCallback();
     bool SetExecuteActionOnAccessibilityFocusedCallback();
     bool SetGetFocusedWindowIdCallback();
-    bool SetGetActiveWindowIdCallback();
+    bool SetGetAccessibilityFocusedWindowIdCallback();
     bool SetGetAccessibilityWindowCallback();
     bool SetSendPointerEventForHoverCallback();
     bool SetGetDelayTimeCallback();

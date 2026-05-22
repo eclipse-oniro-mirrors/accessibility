@@ -36,7 +36,7 @@ using FindFocusedElementCallback = bool (*)(
     AccessibilityElementInfo &elementInfo, uint32_t timeout, uint64_t displayId);
 using ExecuteActionOnAccessibilityFocusedCallback = bool (*)(const ActionType &action, uint64_t displayId);
 using GetFocusedWindowIdCallback = void (*)(int32_t &focusedWindowId, uint64_t displayId);
-using GetActiveWindowIdCallback = void (*)(int32_t &activeWindowId, uint64_t displayId);
+using GetAccessibilityFocusedWindowIdCallback = void (*)(int32_t &activeWindowId, uint64_t displayId);
 using GetAccessibilityWindowCallback = bool (*)(int32_t windowId, AccessibilityWindowInfo &window, uint64_t displayId);
 using SendPointerEventForHoverCallback = void (*)(
     const std::shared_ptr<MMI::PointerEvent> &pointerEvent, uint64_t displayId);
@@ -65,7 +65,7 @@ public:
     FindFocusedElementCallback findFocusedElementCallback = nullptr;
     ExecuteActionOnAccessibilityFocusedCallback executeActionOnAccessibilityFocusedCallback = nullptr;
     GetFocusedWindowIdCallback getFocusedWindowIdCallback = nullptr;
-    GetActiveWindowIdCallback getActiveWindowIdCallback = nullptr;
+    GetAccessibilityFocusedWindowIdCallback getAccessibilityFocusedWindowIdCallback = nullptr;
     GetAccessibilityWindowCallback getAccessibilityWindowCallback = nullptr;
     SendPointerEventForHoverCallback sendPointerEventForHoverCallback = nullptr;
     GetDelayTime getDelayTime = nullptr;

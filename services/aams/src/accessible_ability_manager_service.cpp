@@ -2873,6 +2873,18 @@ ErrCode AccessibleAbilityManagerService::InnerGetFocusedWindowId(int32_t &focuse
     return RET_OK;
 }
 
+ErrCode AccessibleAbilityManagerService::GetAccessibilityFocusedWindowId(int32_t &windowId, int32_t accountId)
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetAccountData(accountId);
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return false;
+    }
+    windowId = accountData->GetWindowManager().a11yFocusedWindowId_;
+    return RET_OK;
+}
+
 void AccessibleAbilityManagerService::OnDeviceProvisioned()
 {
     HILOG_DEBUG();

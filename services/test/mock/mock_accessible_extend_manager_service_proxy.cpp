@@ -69,7 +69,7 @@ bool ExtendManagerServiceProxy::SetGetFocusedWindowIdCallback()
     return true;
 }
 
-bool ExtendManagerServiceProxy::SetGetActiveWindowIdCallback()
+bool ExtendManagerServiceProxy::SetGetAccessibilityFocusedWindowIdCallback()
 {
     return true;
 }
