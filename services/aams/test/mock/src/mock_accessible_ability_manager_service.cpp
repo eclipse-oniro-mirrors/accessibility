@@ -819,6 +819,11 @@ ErrCode AccessibleAbilityManagerService::InnerGetFocusedWindowId(int32_t &focuse
 {
     return RET_OK;
 }
+
+ErrCode AccessibleAbilityManagerService::GetAccessibilityFocusedWindowId(int32_t &windowId, int32_t accountId)
+{
+    return RET_OK;
+}
  
 ErrCode AccessibleAbilityManagerService::InnerGetActiveWindow(int32_t &windowId, int32_t userId)
 {
