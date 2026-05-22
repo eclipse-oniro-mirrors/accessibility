@@ -39,7 +39,7 @@ namespace {
     const std::string SETTING_COLUMN_VALUE = "VALUE";
 #endif
     constexpr int32_t DECIMAL_NOTATION = 10;
-    const std::string SETTINGS_DATA_EXT_URI = "datashare_ext";
+    const std::string SETTINGS_DATA_EXT_URI = "com.ohos.settingsdata.DataAbility";
     const std::string SETTING_GLOBAL_URI = "datashare:///com.ohos.settingsdata/entry/settingsdata/SETTINGSDATA";
     const std::string SETTING_SYSTEM_URI = "datashare:///com.ohos.settingsdata/entry/settingsdata/USER_SETTINGSDATA_";
     const std::string SETTING_SECURE_URI =
