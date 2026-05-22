@@ -90,6 +90,7 @@ ohos_shared_library("accessibilityclient") {
     "samgr:samgr_proxy",
     "json:nlohmann_json_static",
     "common_event_service:cesfwk_innerkits",
+    "ability_base:want",
   ]
 
   if (accessibility_feature_hiviewdfx_hitrace) {
