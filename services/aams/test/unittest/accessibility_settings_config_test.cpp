@@ -913,7 +913,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, Unittest_SetShortkeyMultiTargetInPkgRe
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001 start";
     settingConfig_->Init();
-    std::string name = "com.ohos.screenreader/AccessibilityExtAbility";
+    std::string name = "TEST";
     settingConfig_->SetShortkeyMultiTargetInPkgRemove(name);
     EXPECT_EQ(settingConfig_->GetShortkeyMultiTarget().size(), 0);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyMultiTargetInPkgRemove_001 end";

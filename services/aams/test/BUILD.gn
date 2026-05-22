@@ -710,11 +710,6 @@ ohos_unittest("accessible_ability_manager_test") {
   external_deps = test_external_deps
 }
 
-config("settings_config_test_no_datashare_config") {
-  cflags_cc = [ "-UOHOS_BUILD_ENABLE_DATA_SHARE" ]
-  include_dirs = [ "../../../frameworks/acfwk/include" ]
-}
-
 ################################################################################
 ohos_unittest("accessibility_settings_config_test") {
   sanitize = {
@@ -754,9 +749,6 @@ ohos_unittest("accessibility_settings_config_test") {
     "../src/accessible_ability_manager.cpp",
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
-    "../../../services/test/mock/mock_service_registry.cpp",
-    "../../../services/test/mock/mock_accessible_ability_manager_service_stub.cpp",
-    "../../../services/test/mock/mock_bundle_manager.cpp",
     "mock/src/mock_magnification_manager.cpp",
     "mock/src/mock_permission.cpp",
     "unittest/accessibility_settings_config_test.cpp",
@@ -764,7 +756,6 @@ ohos_unittest("accessibility_settings_config_test") {
 
   configs = [
     ":module_private_config",
-    ":settings_config_test_no_datashare_config",
     "../../../resources/config/build:coverage_flags",
   ]
 

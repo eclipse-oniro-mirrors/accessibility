@@ -10,7 +10,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License.
+* limitations under the License.
  */
 
 #include <gtest/gtest.h>
@@ -62,13 +62,6 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::GetSystemAbility(int32_t systemAb
             }
             break;
         }
-        case POWER_MANAGER_SERVICE_ID: {
-            if (!g_MgrService) {
-                g_MgrService = new OHOS::Accessibility::MockAccessibleAbilityManagerServiceStub();
-            }
-            remote = g_MgrService;
-            break;
-        }
         default:
             GTEST_LOG_(INFO) << "This service is not dummy!!!!" << systemAbilityId;
             break;
@@ -100,13 +93,6 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t system
                 }
                 remote = g_MgrService;
             }
-            break;
-        }
-        case POWER_MANAGER_SERVICE_ID: {
-            if (!g_MgrService) {
-                g_MgrService = new OHOS::Accessibility::MockAccessibleAbilityManagerServiceStub();
-            }
-            remote = g_MgrService;
             break;
         }
         default:
