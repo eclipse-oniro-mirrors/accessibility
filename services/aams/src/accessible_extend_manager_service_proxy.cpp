@@ -68,37 +68,41 @@ static std::vector<int32_t> DispatchKeyEvent(MMI::KeyEvent &event, uint32_t sequ
 
 bool ExtendManagerServiceProxy::LoadExtProxy()
 {
-    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
-    if (!handle_) {
-        handle_ = dlopen(extendServiceName_.c_str(), RTLD_LAZY);
-        SetSendAccessibilityEventToAACallback();
-        SetFindFocusedElementCallback();
-        SetExecuteActionOnAccessibilityFocusedCallback();
-        SetGetFocusedWindowIdCallback();
-        SetGetAccessibilityFocusedWindowIdCallback();
-        SetGetAccessibilityWindowCallback();
-        SetSendPointerEventForHoverCallback();
-        SetGetDelayTimeCallback();
-        SetGetMagnificationStateCallback();
-        ExtendGetMagnificationTriggerMethodCallback();
-        ExtendGetMagnificationModeCallback();
-        ExtendGetMagnificationScaleCallback();
-        ExtendUpdateInputFilterCallback();
-        SetMagnificationModeCallback();
-        GetMagnificationTypeCallback();
-        ExtendAnnouncedForMagnificationCallback();
-        SetDispatchKeyEventCallback();
-        SetMagnificationScaleCallback();
-        ExtendGetAccessibilityWindowsCallback();
-        ExtendSubscribeOsAccountCallback();
-        SetCheckDisplayIdCallback();
-        SetNotifyZoomGesutureConflictDialogCallback();
-        SetGetNotifyZoomGestureConflictCallback();
+    {
+        std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
+        if (!handle_) {
+            handle_ = dlopen(extendServiceName_.c_str(), RTLD_LAZY);
+            SetSendAccessibilityEventToAACallback();
+            SetFindFocusedElementCallback();
+            SetExecuteActionOnAccessibilityFocusedCallback();
+            SetGetFocusedWindowIdCallback();
+            SetGetAccessibilityFocusedWindowIdCallback();
+            SetGetAccessibilityWindowCallback();
+            SetSendPointerEventForHoverCallback();
+            SetGetDelayTimeCallback();
+            SetGetMagnificationStateCallback();
+            ExtendGetMagnificationTriggerMethodCallback();
+            ExtendGetMagnificationModeCallback();
+            ExtendGetMagnificationScaleCallback();
+            ExtendUpdateInputFilterCallback();
+            SetMagnificationModeCallback();
+            GetMagnificationTypeCallback();
+            ExtendAnnouncedForMagnificationCallback();
+            SetDispatchKeyEventCallback();
+            SetMagnificationScaleCallback();
+            ExtendGetAccessibilityWindowsCallback();
+            ExtendSubscribeOsAccountCallback();
+            SetCheckDisplayIdCallback();
+            SetNotifyZoomGesutureConflictDialogCallback();
+            SetGetNotifyZoomGestureConflictCallback();
+        }
+        if (!handle_) {
+            HILOG_ERROR("dlopen error: %{public}s", dlerror());
+            return false;
+        }
     }
-    if (!handle_) {
-        HILOG_ERROR("dlopen error: %{public}s", dlerror());
-        return false;
-    }
+    int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
+    SetCurrentAccountId(accountId);
     return true;
 }
 
@@ -1234,6 +1238,29 @@ void ExtendManagerServiceProxy::SetMagnificationState(const bool state, const ui
         }
     }
     return func(state, type, mode);
+}
+
+void ExtendManagerServiceProxy::SetCurrentAccountId(int32_t accountId)
+{
+    HILOG_DEBUG();
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    using SetCurrentAccountIdFunc = void(*)(int32_t accountId);
+    static SetCurrentAccountIdFunc func = nullptr;
+    if (!handle_) {
+        HILOG_ERROR("handle is null");
+        return;
+    }
+    if (!func || readyFunc_.find(ExtMethod::SET_CURRENT_ACCOUNT_ID) == readyFunc_.end()) {
+        func = (SetCurrentAccountIdFunc)GetFunc("SetCurrentAccountId");
+        if (func) {
+            readyFunc_.insert(ExtMethod::SET_CURRENT_ACCOUNT_ID);
+            return func(accountId);
+        } else {
+            HILOG_ERROR("get SetCurrentAccountId func failed");
+            return;
+        }
+    }
+    return func(accountId);
 }
 } // namespace Accessibility
 } // namespace OHOS

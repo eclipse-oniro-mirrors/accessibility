@@ -166,12 +166,6 @@ bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
         return false;
     }
 
-    if (event.GetPointerId() == SCROLL_SHOT_POINTER_ID) {
-        HILOG_DEBUG("scrollshot injected.");
-        EventTransmission::OnPointerEvent(event);
-        return false;
-    }
-
     if (LEVITATE_ACTIONS.count(event.GetPointerAction()) > 0) {
         SendEventToMultimodal(event);
         return true;

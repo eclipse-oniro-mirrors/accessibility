@@ -95,6 +95,10 @@ public:
     void SetMagnificationTriggerMethod(int32_t screenMagnificationTriggerMethod);
     void InitInputManagerHandler();
     void SetServiceOnKeyEventResult(int32_t connectionId, bool isHandled, uint32_t sequenceNum);
+    inline void ReSetScreenShotUid()
+    {
+        screenShotUid_ = -2;
+    }
     inline bool IsTouchExplorationEnabled()
     {
         return availableFunctions_ & FEATURE_TOUCH_EXPLORATION;
@@ -120,6 +124,7 @@ private:
     void CreateMagnificationGesture(sptr<EventTransmission> &header, sptr<EventTransmission> &current);
     void CreateZoomGesture();
     void ClearMagnificationGesture();
+    void GetScreenShotUID();
 
     sptr<EventTransmission> pointerEventTransmitters_ = nullptr;
     sptr<EventTransmission> keyEventTransmitters_ = nullptr;
@@ -136,6 +141,7 @@ private:
     sptr<AccessibilityZoomGesture> zoomGesture_ = nullptr;
     bool needInteractMagnification_ = false;
     sptr<KeyEventFilter> keyEventFilter_ = nullptr;
+    int32_t screenShotUid_ = -2;
 };
 } // namespace Accessibility
 } // namespace OHOS

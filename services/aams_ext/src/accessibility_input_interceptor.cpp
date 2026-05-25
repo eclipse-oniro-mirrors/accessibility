@@ -32,6 +32,11 @@
 #endif // ACCESSIBILITY_WATCH_FEATURE
 #include "ext_utils.h"
 #include "extend_service_manager.h"
+#include "bundle_info.h"
+#include "bundlemgr/bundle_mgr_interface.h"
+#include "if_system_ability_manager.h"
+#include "iservice_registry.h"
+#include "system_ability_definition.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -421,6 +426,27 @@ void AccessibilityInputInterceptor::DestroyTransmitters()
         keyEventTransmitters_ = nullptr;
     }
 }
+void AccessibilityInputInterceptor::GetScreenShotUID()
+{
+    sptr<ISystemAbilityManager> systemAbilityManager =
+        SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (!systemAbilityManager) {
+        HILOG_ERROR("fail to get system ability mgr.");
+        return;
+    }
+    sptr<IRemoteObject> remoteObject = systemAbilityManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+    if (!remoteObject) {
+        HILOG_ERROR("fail to get bundle manager proxy.");
+        return;
+    }
+    auto bundleMgr = iface_cast<AppExecFwk::IBundleMgr>(remoteObject);
+    if (!bundleMgr) {
+        HILOG_ERROR("fail to new bundle manager.");
+        return;
+    }
+    screenShotUid_ = bundleMgr->GetUidByBundleName("com.ohos.screenshot",
+        Singleton<ExtendServiceManager>::GetInstance().GetCurrentAccountId());
+}
 
 void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event)
 {
@@ -429,6 +455,19 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
 
     if (mouseKey_) {
         mouseKey_->OnPointerEvent(*event);
+    }
+    if (screenShotUid_ == -2) {
+        GetScreenShotUID();
+    }
+    if (screenShotUid_ == event->GetCallingUid()) {
+        event->AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
+        if (inputManager_) {
+            HILOG_INFO("inject screenshot event");
+            inputManager_->SimulateInputEvent(event);
+        } else {
+            HILOG_ERROR("inputManager_ is null.");
+        }
+        return;
     }
 
     if (!pointerEventTransmitters_) {

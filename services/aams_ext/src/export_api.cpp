@@ -268,5 +268,10 @@ API_EXPORT void SetMagnificationState(bool state, uint32_t type, uint32_t mode)
     HILOG_INFO();
     serviceManagerInstance.SetMagnificationState(state, type, mode);
 }
+API_EXPORT void SetCurrentAccountId(int32_t accountId)
+{
+    HILOG_DEBUG();
+    serviceManagerInstance.SetCurrentAccountId(accountId);
+}
 }
 // LCOV_EXCL_STOP

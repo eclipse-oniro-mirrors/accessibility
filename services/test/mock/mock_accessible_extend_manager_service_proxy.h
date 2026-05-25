@@ -98,6 +98,7 @@ public:
     void OffZoomGesture();
     void SetMagnificationState(const bool state, const uint32_t type, const uint32_t mode);
     bool IsMagnificationWindowActivate();
+    void SetCurrentAccountId(int32_t accountId);
 
     // callback
     bool SetSendAccessibilityEventToAACallback();

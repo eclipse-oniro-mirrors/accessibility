@@ -205,10 +205,6 @@ bool WindowMagnificationGesture::needBypassPointerEvent(MMI::PointerEvent &event
     if (event.GetSourceType() != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
         return true;
     }
-    if (event.GetPointerId() == SCROLL_SHOT_POINTER_ID) {
-        HILOG_DEBUG("scrollshot injected.");
-        return true;
-    }
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_MOVE ||
         event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_IN_WINDOW ||
         event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_LEVITATE_OUT_WINDOW) {
