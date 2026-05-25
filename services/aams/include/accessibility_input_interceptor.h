@@ -75,6 +75,8 @@ public:
 
     static constexpr uint32_t PRIORITY_EVENT = 500;
 
+    static constexpr int32_t INVALID_UID = -2;
+
     static sptr<AccessibilityInputInterceptor> GetInstance();
     ~AccessibilityInputInterceptor();
     void ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event);
@@ -97,7 +99,7 @@ public:
     void SetServiceOnKeyEventResult(int32_t connectionId, bool isHandled, uint32_t sequenceNum);
     inline void ReSetScreenShotUid()
     {
-        screenShotUid_ = -2;
+        screenShotUid_ = INVALID_UID;
     }
     inline bool IsTouchExplorationEnabled()
     {

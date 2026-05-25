@@ -456,7 +456,7 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
     if (mouseKey_) {
         mouseKey_->OnPointerEvent(*event);
     }
-    if (screenShotUid_ == -2) {
+    if (screenShotUid_ == INVALID_UID) {
         GetScreenShotUID();
     }
     if (screenShotUid_ == event->GetCallingUid()) {

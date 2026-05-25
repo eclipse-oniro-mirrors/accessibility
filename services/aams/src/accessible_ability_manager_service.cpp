@@ -1700,8 +1700,8 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     }
     currentAccountId_ = accountId;
     if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
- 	    Singleton<ExtendManagerServiceProxy>::GetInstance().SetCurrentAccountId(accountId);
- 	}
+        Singleton<ExtendManagerServiceProxy>::GetInstance().SetCurrentAccountId(accountId);
+    }
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr.");
