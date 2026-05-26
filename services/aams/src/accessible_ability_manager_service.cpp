@@ -1588,10 +1588,15 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(int32_t accountId)
 {
     HILOG_DEBUG();
-    if (currentAccountId_ == -1) {
+    if (accountId == -1) {
         HILOG_ERROR("account id is wrong");
         return nullptr;
     }
+    auto accountData = a11yAccountsData_.GetAccountData(accountId);
+    if (accountData != nullptr) {
+        return accountData;
+    }
+    AddedUser(accountId);
     return a11yAccountsData_.GetAccountData(accountId);
 }
 
