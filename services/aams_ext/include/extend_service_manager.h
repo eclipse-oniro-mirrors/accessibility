@@ -27,6 +27,7 @@
 #include "accessible_ability_manager_service_event_handler.h"
 #include "accessibility_touchEvent_injector.h"
 #include "magnification_manager.h"
+#include <atomic>
 
 namespace OHOS {
 namespace Accessibility {
@@ -148,8 +149,22 @@ public:
     {
         return ignoreRepeatClickTime_;
     }
+    inline int32_t GetCurrentAccountId()
+    {
+        return currentAccountId_.load();
+    }
+    inline void SetCurrentAccountId(int32_t accountId)
+    {
+        HILOG_DEBUG("SetCurrentAccountId: %{public}d", accountId);
+        currentAccountId_.store(accountId);
+        auto interceptor = AccessibilityInputInterceptor::GetInstance();
+        if (interceptor) {
+            interceptor->ReSetScreenShotUid();
+        }
+    }
 
 private:
+    std::atomic<int32_t> currentAccountId_ = -1;
     int32_t mouseAutoClick_ = -1;
     uint32_t clickResponseTime_ = 0;
     bool ignoreRepeatClickState_ = false;

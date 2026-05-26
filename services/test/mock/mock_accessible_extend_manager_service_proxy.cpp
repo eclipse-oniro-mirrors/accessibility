@@ -319,6 +319,10 @@ bool ExtendManagerServiceProxy::IsMagnificationWindowActivate()
 {
     return true;
 }
+void ExtendManagerServiceProxy::SetCurrentAccountId(int32_t accountId)
+{
+    (void)accountId;
+}
 } // namespace Accessibility
 } // namespace OHOS
 // LCOV_EXCL_STOP

@@ -56,7 +56,8 @@ enum class ExtMethod : int32_t {
     ON_SCREEN_MAGNIFICATION_TRIGGER_METHOD_CHANGE,
     ON_SCREEN_MAGNIFICATION_STATE_CHANGED,
     OFF_ZOOM_GESTURE,
-    SET_MAGNIFICATION_STATE
+    SET_MAGNIFICATION_STATE,
+    SET_CURRENT_ACCOUNT_ID
 };
 class ExtendManagerServiceProxy {
     DECLARE_SINGLETON(ExtendManagerServiceProxy);
@@ -94,6 +95,7 @@ public:
     void GetClickPosition(int32_t &xPos, int32_t &yPos);
     void OffZoomGesture();
     void SetMagnificationState(const bool state, const uint32_t type, const uint32_t mode);
+    void SetCurrentAccountId(int32_t accountId);
  
     // callback
     bool SetSendAccessibilityEventToAACallback();

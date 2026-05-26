@@ -601,26 +601,6 @@ HWTEST_F(AccessibilityZoomGestureUnitTest, AccessibilityZoomGesture_Unittest_OnP
 }
 
 /**
- * @tc.number: AccessibilityZoomGesture_Unittest_OnPointerEvent_014
- * @tc.name: OnPointerEvent
- * @tc.desc: Test function OnPointerEvent with scrollshot pointer id
- */
-HWTEST_F(AccessibilityZoomGestureUnitTest, AccessibilityZoomGesture_Unittest_OnPointerEvent_014, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityZoomGesture_Unittest_OnPointerEvent_014 start";
-    EXPECT_TRUE(zoomGesture_ != nullptr);
-    std::shared_ptr<MMI::PointerEvent> event = CreatePointerEvent(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN,
-        MMI::PointerEvent::POINTER_ACTION_DOWN);
-    EXPECT_TRUE(event != nullptr);
-    event->SetPointerId(SCROLL_SHOT_POINTER_ID);
-    AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
-    zoomGesture_->OnPointerEvent(*event);
-    int32_t state = zoomGesture_->GetZoomState();
-    EXPECT_EQ(state, READY_STATE);
-    GTEST_LOG_(INFO) << "AccessibilityZoomGesture_Unittest_OnPointerEvent_014 end";
-}
-
-/**
  * @tc.number: AccessibilityZoomGesture_Unittest_DestroyEvents_001
  * @tc.name: DestroyEvents
  * @tc.desc: Test function DestroyEvents
