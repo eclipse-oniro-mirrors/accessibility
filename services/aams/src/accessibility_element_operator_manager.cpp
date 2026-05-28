@@ -923,9 +923,9 @@ bool ElementOperatorManager::ExecuteActionOnAccessibilityFocused(ActionType acti
         item.SetDisplayY(yPos);
         item.SetRawDisplayX(xPos);
         item.SetRawDisplayY(yPos);
-        item.SetPointerId(1);
+        item.SetPointerId(0);
         pointerEvent->AddPointerItem(item);
-        pointerEvent->SetPointerId(1);
+        pointerEvent->SetPointerId(0);
         MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
  
         pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
