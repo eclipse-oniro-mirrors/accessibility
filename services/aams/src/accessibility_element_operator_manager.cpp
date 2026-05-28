@@ -904,6 +904,39 @@ bool ElementOperatorManager::ExecuteActionOnAccessibilityFocused(ActionType acti
         actionArguments = AccessibilitySecurityComponentManager::GenerateActionArgumentsWithHMAC(
             action, focusedElementInfo.GetUniqueId(), focusedElementInfo.GetBundleName(), actionArguments);
     }
+
+    auto injectClickGesture = [&focusedElementInfo, &windowId, this]() -> bool {
+        int32_t xPos = 0;
+        int32_t yPos = 0;
+        const Rect rect = focusedElementInfo.GetRectInScreen();
+        if (!CalculateClickPosition(rect, xPos, yPos, windowId)) {
+            HILOG_ERROR("CalculateClickPosition failed, element is out of window bounds");
+            return false;
+        }
+        std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
+        pointerEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
+        pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
+        pointerEvent->AddFlag(MMI::InputEvent::EVENT_FLAG_ACCESSIBILITY);
+        pointerEvent->AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
+        MMI::PointerEvent::PointerItem item;
+        item.SetDisplayX(xPos);
+        item.SetDisplayY(yPos);
+        item.SetRawDisplayX(xPos);
+        item.SetRawDisplayY(yPos);
+        item.SetPointerId(0);
+        pointerEvent->AddPointerItem(item);
+        pointerEvent->SetPointerId(0);
+        MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
+ 
+        pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
+        MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
+        return true;
+    };
+
+    if (action == ActionType::ACCESSIBILITY_ACTION_CLICK && !focusedElementInfo.IsClickable()) {
+        HILOG_DEBUG("ExecuteActionOnAccessibilityFocused, action is click, but element is not clickable");
+        return injectClickGesture();
+    }
  
     sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl(accountId_);
     if (actionCallback == nullptr) {
@@ -923,33 +956,8 @@ bool ElementOperatorManager::ExecuteActionOnAccessibilityFocused(ActionType acti
     HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d",
         windowId, elementId, action, actionCallback->executeActionResult_);
  
-    if (!actionCallback->executeActionResult_ && (action == ActionType::ACCESSIBILITY_ACTION_CLICK)) {
-        int32_t xPos = 0;
-        int32_t yPos = 0;
-        const Rect rect = focusedElementInfo.GetRectInScreen();
-        int32_t windowId = focusWindowId_.load();
-        if (!CalculateClickPosition(rect, xPos, yPos, windowId)) {
-            HILOG_ERROR("CalculateClickPosition failed, element is out of window bounds");
-            return false;
-        }
-        std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
-        pointerEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
-        pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
-        pointerEvent->AddFlag(MMI::InputEvent::EVENT_FLAG_ACCESSIBILITY);
-        pointerEvent->AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
-        MMI::PointerEvent::PointerItem item;
-        item.SetDisplayX(xPos);
-        item.SetDisplayY(yPos);
-        item.SetRawDisplayX(xPos);
-        item.SetRawDisplayY(yPos);
-        item.SetPointerId(1);
-        pointerEvent->AddPointerItem(item);
-        pointerEvent->SetPointerId(1);
-        MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
- 
-        pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
-        MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
-        return true;
+    if (action == ActionType::ACCESSIBILITY_ACTION_CLICK && !actionCallback->executeActionResult_) {
+        return injectClickGesture();
     }
     return actionCallback->executeActionResult_;
 }
