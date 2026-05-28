@@ -904,30 +904,11 @@ bool ElementOperatorManager::ExecuteActionOnAccessibilityFocused(ActionType acti
         actionArguments = AccessibilitySecurityComponentManager::GenerateActionArgumentsWithHMAC(
             action, focusedElementInfo.GetUniqueId(), focusedElementInfo.GetBundleName(), actionArguments);
     }
- 
-    sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl(accountId_);
-    if (actionCallback == nullptr) {
-        HILOG_ERROR("Failed to create actionCallback.");
-        return false;
-    }
-    ffrt::future<void> actionFuture = actionCallback->promise_.get_future();
-    sptr<IAccessibilityElementOperator> elementOperator = nullptr;
-    GetElementOperatorConnection(connection, elementId, elementOperator, displayId);
-    RETURN_FALSE_IF_NULL(elementOperator);
-    elementOperator->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(), actionCallback);
-    ffrt::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
-    if (waitAction != ffrt::future_status::ready) {
-        HILOG_ERROR("ExecuteAction Failed to wait result");
-        return false;
-    }
-    HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d",
-        windowId, elementId, action, actionCallback->executeActionResult_);
- 
-    if (!actionCallback->executeActionResult_ && (action == ActionType::ACCESSIBILITY_ACTION_CLICK)) {
+
+    auto injectClickGesture = [&focusedElementInfo, &windowId, this]() -> bool {
         int32_t xPos = 0;
         int32_t yPos = 0;
         const Rect rect = focusedElementInfo.GetRectInScreen();
-        int32_t windowId = focusWindowId_.load();
         if (!CalculateClickPosition(rect, xPos, yPos, windowId)) {
             HILOG_ERROR("CalculateClickPosition failed, element is out of window bounds");
             return false;
@@ -950,6 +931,33 @@ bool ElementOperatorManager::ExecuteActionOnAccessibilityFocused(ActionType acti
         pointerEvent->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
         MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
         return true;
+    };
+
+    if (action == ActionType::ACCESSIBILITY_ACTION_CLICK && !focusedElementInfo.IsClickable()) {
+        HILOG_DEBUG("ExecuteActionOnAccessibilityFocused, action is click, but element is not clickable");
+        return injectClickGesture();
+    }
+ 
+    sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl(accountId_);
+    if (actionCallback == nullptr) {
+        HILOG_ERROR("Failed to create actionCallback.");
+        return false;
+    }
+    ffrt::future<void> actionFuture = actionCallback->promise_.get_future();
+    sptr<IAccessibilityElementOperator> elementOperator = nullptr;
+    GetElementOperatorConnection(connection, elementId, elementOperator, displayId);
+    RETURN_FALSE_IF_NULL(elementOperator);
+    elementOperator->ExecuteAction(elementId, action, actionArguments, GenerateRequestId(), actionCallback);
+    ffrt::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitAction != ffrt::future_status::ready) {
+        HILOG_ERROR("ExecuteAction Failed to wait result");
+        return false;
+    }
+    HILOG_INFO("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d, result: %{public}d",
+        windowId, elementId, action, actionCallback->executeActionResult_);
+ 
+    if (action == ActionType::ACCESSIBILITY_ACTION_CLICK && !actionCallback->executeActionResult_) {
+        return injectClickGesture();
     }
     return actionCallback->executeActionResult_;
 }
