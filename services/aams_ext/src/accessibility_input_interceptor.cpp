@@ -446,6 +446,9 @@ void AccessibilityInputInterceptor::GetScreenShotUID()
     }
     screenShotUid_ = bundleMgr->GetUidByBundleName("com.ohos.screenshot",
         Singleton<ExtendServiceManager>::GetInstance().GetCurrentAccountId());
+    if (screenShotUid_ == -1) {
+        HILOG_ERROR("screenShotUid_ is invalid");
+    }
 }
 
 void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event)
@@ -456,18 +459,20 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
     if (mouseKey_) {
         mouseKey_->OnPointerEvent(*event);
     }
-    if (screenShotUid_ == INVALID_UID) {
-        GetScreenShotUID();
-    }
-    if (screenShotUid_ == event->GetCallingUid()) {
-        event->AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
-        if (inputManager_) {
-            HILOG_INFO("inject screenshot event");
-            inputManager_->SimulateInputEvent(event);
-        } else {
-            HILOG_ERROR("inputManager_ is null.");
+    if (event->GetCallingUid() > 0) {
+        if (screenShotUid_ == INVALID_UID) {
+            GetScreenShotUID();
         }
-        return;
+        if (screenShotUid_ == event->GetCallingUid()) {
+            event->AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
+            if (inputManager_) {
+                HILOG_DEBUG("inject screenshot event");
+                inputManager_->SimulateInputEvent(event);
+            } else {
+                HILOG_ERROR("inputManager_ is null.");
+            }
+            return;
+        }
     }
 
     if (!pointerEventTransmitters_) {
