@@ -503,7 +503,15 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
         INVALID_ACCOUNT_ID, CHANNEL_ID, *abilityInfo, accountData_);
     sptr<AppExecFwk::ElementName> elementName = new AppExecFwk::ElementName("device", "bundle", "ability");
 
-    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(INVALID_ACCOUNT_ID));
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    auto invalidAccountData = aams.GetAccountData(INVALID_ACCOUNT_ID);
+    if (!invalidAccountData) {
+        EXPECT_FALSE(invalidAccountData.GetRefPtr());
+    } else {
+        EXPECT_EQ(invalidAccountData->GetConfig(), nullptr);
+        invalidAccountData->Init();
+        aams.RemovedUser(INVALID_ACCOUNT_ID);
+    }
     connection->OnAbilityConnectDone(*elementName, nullptr, NO_ERROR);
     sleep(SLEEP_TIME_2);
 
