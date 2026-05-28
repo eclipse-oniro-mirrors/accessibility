@@ -58,6 +58,16 @@ sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetProxy(uint
     }
 }
 
+sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetRawProxy(uint64_t displayId)
+{
+    std::lock_guard<ffrt::mutex> lock(proxyMutex_);
+    auto iter = proxyMap_.find(displayId);
+    if (iter != proxyMap_.end()) {
+        return iter->second.first;
+    }
+    return nullptr;
+}
+
 RetError AccessibilityWindowConnection::SetCardProxy(const int32_t treeId,
     sptr<IAccessibilityElementOperator> operation)
 {
@@ -154,6 +164,7 @@ void AccessibilityWindowConnection::AddDeathRecipient(
         return;
     }
     if (elementOperator->AsObject()->AddDeathRecipient(deathRecipient)) {
+        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         if (isBroker) {
             brokerProxy_ = elementOperator;
             brokerProxyDeathRecipient_ = deathRecipient;

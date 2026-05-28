@@ -33,14 +33,7 @@ public:
     ~AccessibilityWindowConnection();
 
     sptr<IAccessibilityElementOperator> GetProxy(uint64_t displayId);
-    inline sptr<IAccessibilityElementOperator> GetRawProxy(uint64_t displayId)
-    {
-        auto iter = proxyMap_.find(displayId);
-        if (iter != proxyMap_.end()) {
-            return iter->second.first;
-        }
-        return nullptr;
-    }
+    sptr<IAccessibilityElementOperator> GetRawProxy(uint64_t displayId);
     inline int GetCardProxySize()
     {
         return cardProxy_.Size();
@@ -58,11 +51,13 @@ public:
 
     inline void SetUseBrokerFlag(bool flag)
     {
+        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         isUseBrokerProxy_ = flag;
     }
  
     inline bool GetUseBrokerFlag()
     {
+        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         return isUseBrokerProxy_;
     }
 
@@ -130,7 +125,7 @@ private:
     SafeMap<int32_t, int64_t> treeIdParentId_;
     bool isAnco_ = false;
     ffrt::mutex proxyMutex_;
-
+    
     SafeMap<uint64_t, sptr<IRemoteObject::DeathRecipient>> proxyDeathRecipientMap_;
     sptr<IRemoteObject::DeathRecipient> brokerProxyDeathRecipient_;
     SafeMap<int32_t, sptr<IRemoteObject::DeathRecipient>> childTreeProxyDeathRecipient_;
