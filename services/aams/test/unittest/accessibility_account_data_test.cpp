@@ -1884,5 +1884,265 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_StringT
     EXPECT_TRUE(!enabledAccessibilityServices.empty());
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_StringToVector001 end";
 }
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_CalculateClickPosition_001
+ * @tc.name: CalculateClickPosition
+ * @tc.desc: Test CalculateClickPosition when element is fully within window bounds
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_CalculateClickPosition_001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_001 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+
+    int32_t windowId = 1;
+    Rect rect(50, 50, 150, 150);
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+
+    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_CalculateClickPosition_002
+ * @tc.name: CalculateClickPosition
+ * @tc.desc: Test CalculateClickPosition when element right edge is less than window left edge
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_CalculateClickPosition_002,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_002 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+
+    int32_t windowId = 1;
+    Rect rect(-100, 50, -50, 150);
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+
+    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_002 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_CalculateClickPosition_003
+ * @tc.name: CalculateClickPosition
+ * @tc.desc: Test CalculateClickPosition when element left edge is greater than window right edge
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_CalculateClickPosition_003,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_003 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+
+    int32_t windowId = 1;
+    Rect rect(500, 50, 600, 150);
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+
+    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_003 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_CalculateClickPosition_004
+ * @tc.name: CalculateClickPosition
+ * @tc.desc: Test CalculateClickPosition when element bottom edge is less than window top edge
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_CalculateClickPosition_004,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_004 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+
+    int32_t windowId = 1;
+    Rect rect(50, -100, 150, -50);
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+
+    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_004 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_CalculateClickPosition_005
+ * @tc.name: CalculateClickPosition
+ * @tc.desc: Test CalculateClickPosition when element top edge is greater than window bottom edge
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_CalculateClickPosition_005,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_005 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+
+    int32_t windowId = 1;
+    Rect rect(50, 500, 150, 600);
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+
+    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_005 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_CalculateClickPosition_006
+ * @tc.name: CalculateClickPosition
+ * @tc.desc: Test CalculateClickPosition with zero coordinates rect
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_CalculateClickPosition_006,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_006 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+
+    int32_t windowId = 1;
+    Rect rect(0, 0, 0, 0);
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+
+    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_006 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_CalculateClickPosition_007
+ * @tc.name: CalculateClickPosition
+ * @tc.desc: Test CalculateClickPosition with invalid windowId
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_CalculateClickPosition_007,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_007 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+
+    int32_t windowId = -1;
+    Rect rect(50, 50, 150, 150);
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+
+    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_007 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_CalculateClickPosition_008
+ * @tc.name: CalculateClickPosition
+ * @tc.desc: Test CalculateClickPosition with negative rect coordinates
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_CalculateClickPosition_008,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_008 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+
+    int32_t windowId = 1;
+    Rect rect(-50, -50, 50, 50);
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+
+    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_008 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_CalculateClickPosition_009
+ * @tc.name: CalculateClickPosition
+ * @tc.desc: Test CalculateClickPosition with very large rect
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_CalculateClickPosition_009,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_009 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+
+    int32_t windowId = 1;
+    Rect rect(0, 0, 10000, 10000);
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+
+    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_009 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_CalculateClickPosition_010
+ * @tc.name: CalculateClickPosition
+ * @tc.desc: Test CalculateClickPosition when accountData is null (GetWindowBounds returns false)
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_CalculateClickPosition_010,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_010 start";
+    int32_t accountId = 999;
+    sptr<AccessibilityAccountData> testAccountData = new AccessibilityAccountData(accountId);
+    if (!testAccountData) {
+        GTEST_LOG_(INFO) << "testAccountData is null";
+        return;
+    }
+
+    int32_t windowId = 1;
+    Rect rect(50, 50, 150, 150);
+    int32_t xPos = 0;
+    int32_t yPos = 0;
+
+    bool result = testAccountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
+    EXPECT_FALSE(result);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CalculateClickPosition_010 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

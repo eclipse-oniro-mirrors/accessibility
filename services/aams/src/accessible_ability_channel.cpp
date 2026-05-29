@@ -585,9 +585,9 @@ void AccessibleAbilityChannel::InjectEventToInput(int32_t xPos, int32_t yPos, In
         item.SetDisplayY(y);
         item.SetRawDisplayX(x);
         item.SetRawDisplayY(y);
-        item.SetPointerId(1);
+        item.SetPointerId(0);
         pointerEvent->AddPointerItem(item);
-        pointerEvent->SetPointerId(1);
+        pointerEvent->SetPointerId(0);
         MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
     };
 
