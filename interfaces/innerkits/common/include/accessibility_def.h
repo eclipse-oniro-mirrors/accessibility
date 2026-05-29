@@ -523,27 +523,27 @@ inline constexpr const char* ERROR_MESSAGE_CAPABILITY_NOT_SUPPORT = "Capability 
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_FAILED = "System abnormality. "
     "Internal operation failed.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_NULLPTR = "System abnormality. "
-    "Failed to get required service or client object (null pointer).";
+    "Failed to obtain the required service or client object (null pointer).";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_IPC_FAILED = "System abnormality. "
     "IPC communication failed.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_SAMGR = "System abnormality. "
-    "Failed to obtain accessibility service proxy.";
+    "Failed to obtain the accessibility service proxy.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_TIMEOUT = "System abnormality. "
-    "Waiting for asynchronous operation result timed out.";
+    "Timed out while waiting for the result of an asynchronous operation.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_REGISTER_EXIST = "System abnormality. "
-    "The listener or observer is already registered.";
+    "The listener or observer has already been registered.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_REGISTER = "System abnormality. "
     "The listener or observer is not registered.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_CONNECTION = "System abnormality. "
-    "Client is not connected.";
+    "The client is not connected.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_WINDOW_CONNECTION = "System abnormality. "
-    "The target application failed to connect to accessibility service.";
+    "The target application failed to connect to the accessibility service.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_INVALID_ELEMENT_INFO = "System abnormality. "
     "The element information received from ACE is invalid.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_PERFORM_ACTION_FAILED = "System abnormality. "
-    "Failed to perform action in ACE.";
+    "Failed to perform an action in ACE.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_NO_INJECTOR = "System abnormality. "
-    "Failed to inject gesture event.";
+    "Failed to inject a gesture event.";
 inline constexpr const char* ERROR_MESSAGE_EXTENSION_NOT_INSTALLED = "Invalid bundle name or ability name. "
     "The accessibility ability is not installed.";
 inline constexpr const char* ERROR_MESSAGE_EXTENSION_NOT_ENABLED = "Invalid bundle name or ability name. "
