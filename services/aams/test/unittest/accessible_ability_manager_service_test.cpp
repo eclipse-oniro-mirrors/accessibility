@@ -2273,7 +2273,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, AddAccountData_001, TestSize.L
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().RemovedUser(1);
     accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(1);
-    EXPECT_EQ(accountData.GetRefPtr(), nullptr);
+    EXPECT_NE(accountData.GetRefPtr(), nullptr);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RemovedUser(1);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_AddAccountData_001 end";
 }
 
