@@ -125,7 +125,7 @@ private:
     SafeMap<int32_t, int64_t> treeIdParentId_;
     bool isAnco_ = false;
     ffrt::mutex proxyMutex_;
-    
+
     SafeMap<uint64_t, sptr<IRemoteObject::DeathRecipient>> proxyDeathRecipientMap_;
     sptr<IRemoteObject::DeathRecipient> brokerProxyDeathRecipient_;
     SafeMap<int32_t, sptr<IRemoteObject::DeathRecipient>> childTreeProxyDeathRecipient_;
