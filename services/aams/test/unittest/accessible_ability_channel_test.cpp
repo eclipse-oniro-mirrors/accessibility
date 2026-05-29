@@ -489,5 +489,164 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     EXPECT_EQ(channel->GetCursorPosition(WINDOW_ID, ELEMENT_ID, 0, nullptr), RET_ERR_NO_CONNECTION);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetCursorPosition_001 end";
 }
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_001
+ * @tc.name: ExecuteAction_InjectAction
+ * @tc.desc: Test ExecuteAction with injectAction when actionArguments does not contain injectActionType
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_001 start";
+    std::map<std::string, std::string> actionArguments;
+    Rect rect(0, 0, 100, 100);
+    EXPECT_EQ(channel_->ExecuteAction(WINDOW_ID, ELEMENT_ID,
+        ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, actionArguments, 0, nullptr, rect), RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_002
+ * @tc.name: ExecuteAction_InjectAction
+ * @tc.desc: Test ExecuteAction with injectAction when injectActionType is invalid
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_002 start";
+    std::map<std::string, std::string> actionArguments;
+    actionArguments["injectActionType"] = "invalidAction";
+    Rect rect(0, 0, 100, 100);
+    EXPECT_EQ(channel_->ExecuteAction(WINDOW_ID, ELEMENT_ID,
+        ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, actionArguments, 0, nullptr, rect), RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_003
+ * @tc.name: ExecuteAction_InjectAction
+ * @tc.desc: Test ExecuteAction with injectAction when callback is nullptr
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_003 start";
+    std::map<std::string, std::string> actionArguments;
+    actionArguments["injectActionType"] = "click";
+    Rect rect(0, 0, 100, 100);
+    EXPECT_EQ(channel_->ExecuteAction(WINDOW_ID, ELEMENT_ID,
+        ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, actionArguments, 0, nullptr, rect), RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_003 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_004
+ * @tc.name: ExecuteAction_InjectAction
+ * @tc.desc: Test ExecuteAction with injectAction using click type with numeric value
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_004 start";
+    std::map<std::string, std::string> actionArguments;
+    actionArguments["injectActionType"] = "1";
+    Rect rect(0, 0, 100, 100);
+    EXPECT_EQ(channel_->ExecuteAction(WINDOW_ID, ELEMENT_ID,
+        ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, actionArguments, 0, nullptr, rect), RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_004 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_005
+ * @tc.name: ExecuteAction_InjectAction
+ * @tc.desc: Test ExecuteAction with injectAction using doubleClick type
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_005 start";
+    std::map<std::string, std::string> actionArguments;
+    actionArguments["injectActionType"] = "doubleClick";
+    Rect rect(0, 0, 100, 100);
+    EXPECT_EQ(channel_->ExecuteAction(WINDOW_ID, ELEMENT_ID,
+        ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, actionArguments, 0, nullptr, rect), RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_005 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_006
+ * @tc.name: ExecuteAction_InjectAction
+ * @tc.desc: Test ExecuteAction with injectAction using doubleClick type with numeric value
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_006, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_006 start";
+    std::map<std::string, std::string> actionArguments;
+    actionArguments["injectActionType"] = "2";
+    Rect rect(0, 0, 100, 100);
+    EXPECT_EQ(channel_->ExecuteAction(WINDOW_ID, ELEMENT_ID,
+        ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, actionArguments, 0, nullptr, rect), RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_006 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_007
+ * @tc.name: ExecuteAction_InjectAction
+ * @tc.desc: Test ExecuteAction with injectAction using longClick type
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_007, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_007 start";
+    std::map<std::string, std::string> actionArguments;
+    actionArguments["injectActionType"] = "longClick";
+    Rect rect(0, 0, 100, 100);
+    EXPECT_EQ(channel_->ExecuteAction(WINDOW_ID, ELEMENT_ID,
+        ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, actionArguments, 0, nullptr, rect), RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_007 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_008
+ * @tc.name: ExecuteAction_InjectAction
+ * @tc.desc: Test ExecuteAction with injectAction using longClick type with numeric value
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_008, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_008 start";
+    std::map<std::string, std::string> actionArguments;
+    actionArguments["injectActionType"] = "3";
+    Rect rect(0, 0, 100, 100);
+    EXPECT_EQ(channel_->ExecuteAction(WINDOW_ID, ELEMENT_ID,
+        ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, actionArguments, 0, nullptr, rect), RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_008 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_009
+ * @tc.name: ExecuteAction_InjectAction
+ * @tc.desc: Test ExecuteAction with injectAction when accountData is null
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_009, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_009 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    std::string abilityName = "testInjectActionNullAccount";
+    sptr<AccessibleAbilityChannel> channel =
+        new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName, nullptr);
+    
+    std::map<std::string, std::string> actionArguments;
+    actionArguments["injectActionType"] = "click";
+    Rect rect(0, 0, 100, 100);
+    EXPECT_EQ(channel->ExecuteAction(WINDOW_ID, ELEMENT_ID,
+        ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, actionArguments, 0, nullptr, rect), RET_ERR_NULLPTR);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_ExecuteAction_InjectAction_009 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
