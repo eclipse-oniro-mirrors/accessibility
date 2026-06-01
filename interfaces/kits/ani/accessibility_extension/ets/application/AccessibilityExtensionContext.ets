@@ -17,7 +17,7 @@ import ExtensionContext from 'application.ExtensionContext';
 import Want from '@ohos.app.ability.Want';
 import { AsyncCallback, BusinessError, Callback } from '@ohos.base';
 import accessibility from '@ohos.accessibility';
-import { AccessibilityAction, FocusMoveResultCode, InjectActionType, AccessibilityFocusScene } from '@ohos.accessibility';
+import { AccessibilityAction, FocusMoveResultCode, InjectActionType, AccessibilityFocusScene, FocusRuleType } from '@ohos.accessibility';
 
 export interface FocusMoveResult {
   target: Array<AccessibilityElement>;
@@ -155,11 +155,13 @@ export interface AccessibilityElement {
   findElementByTextType(condition: string): Promise<Array<AccessibilityElement>>;
   findElementByElementId(condition: long): Promise<AccessibilityElement>;
   findElementsByCondition(rule: FocusRule, condition: FocusCondition): Promise<FocusMoveResult>;
+  findElementsByCondition(rule: FocusRule, condition: FocusCondition, type: FocusRuleType): Promise<FocusMoveResult>;
   getParent(): Promise<AccessibilityElement>;
   getChildren(): Promise<Array<AccessibilityElement>>;
   getRoot(): Promise<AccessibilityElement>;
   findElementByContent(condition: string): Promise<Array<AccessibilityElement>>;
   findElementByFocusDirection(condition: FocusDirection): Promise<AccessibilityElement>;
+  findElementByFocusDirection(condition: FocusDirection, type: FocusRuleType): Promise<AccessibilityElement>;
   findElementsByAccessibilityHintText(condition: string): Promise<Array<AccessibilityElement>>;
   findElementById(condition: long): Promise<AccessibilityElement>;
   executeAction(action: AccessibilityAction, parameters?: Parameter): Promise<void>;
@@ -386,6 +388,20 @@ export class AccessibilityElementImpl implements AccessibilityElement {
         });
     }
 
+    findElementsByCondition(rule: string, condition: string, type: FocusRuleType): Promise<FocusMoveResult> {
+        console.log("findElements by condition with type");
+        return new Promise<FocusMoveResult>((resolve: (data: FocusMoveResult) => void,
+            reject: (err: BusinessError) => void): void => {
+            let p1 = taskpool.execute(this.findElementsByConditionWithTypeNative, rule, condition, type) as Promise<FocusMoveResult>;
+            p1.then((code: FocusMoveResult) => {
+                console.log("resolve findElementsByCondition with type");
+                resolve(code);
+            }).catch((err: Error) => {
+                reject(err as BusinessError);
+            });
+        });
+    }
+
     executeAction(action: AccessibilityAction, parameters?: Parameter): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
             let actualParameter: Parameter = parameters ?? new Parameter();
@@ -462,6 +478,18 @@ export class AccessibilityElementImpl implements AccessibilityElement {
         });
   }
 
+  findElementByFocusDirection(condition: FocusDirection, type: FocusRuleType): Promise<AccessibilityElement> {
+    return new Promise<AccessibilityElement>((resolve: (data: AccessibilityElement) => void,
+        reject: (err: BusinessError) => void): void => {
+            let p1 = taskpool.execute(this.findElementByFocusDirectionWithTypeNative, condition, type) as Promise<AccessibilityElement>;
+            p1.then((code: AccessibilityElement) => {
+                resolve(code);
+            }).catch((err: Error) => {
+                reject(err as BusinessError);
+            });
+        });
+  }
+
   findElementsByAccessibilityHintText(condition: string): Promise<Array<AccessibilityElement>> {
     return new Promise<Array<AccessibilityElement>>((resolve: (data: Array<AccessibilityElement>) => void,
         reject: (err: BusinessError) => void): void => {
@@ -493,12 +521,14 @@ export class AccessibilityElementImpl implements AccessibilityElement {
     native findElementNative(type: string, condition: long): AccessibilityElement;
     native findElementsNative(type: string, condition: string): Array<AccessibilityElement>;
     native findElementsByConditionNative(rule: string, condition: string): FocusMoveResult;
+    native findElementsByConditionWithTypeNative(rule: string, condition: string, type: FocusRuleType): FocusMoveResult;
     native executeActionNative(action: AccessibilityAction, parameters: Parameter): void;
     native getParentNative(): AccessibilityElement;
     native getChildrenNative(): Array<AccessibilityElement>;
     native getRootNative(): AccessibilityElement;
     native findElementByContentNative(condition: string): Array<AccessibilityElement>;
     native findElementByFocusDirectionNative(condition: FocusDirection): AccessibilityElement;
+    native findElementByFocusDirectionWithTypeNative(condition: FocusDirection, type: FocusRuleType): AccessibilityElement;
     native findElementsByAccessibilityHintTextNative(condition: string): Array<AccessibilityElement>;
     native findElementByIdNative(condition: long): AccessibilityElement;
 }
