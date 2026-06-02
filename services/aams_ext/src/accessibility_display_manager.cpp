@@ -233,6 +233,7 @@ AccessibilityDisplayManager::DisplayListener::DisplayListener(const std::shared_
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     orientation_ = displayMgr.GetOrientation();
     displayMode_ = displayMgr.GetFoldDisplayMode();
+    foldStatus_ = displayMgr.GetFoldStatus();
 }
 
 // LCOV_EXCL_START
@@ -255,10 +256,18 @@ void AccessibilityDisplayManager::DisplayListener::OnChange(Rosen::DisplayId dId
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     OHOS::Rosen::DisplayOrientation currentOrientation = displayMgr.GetOrientation();
     OHOS::Rosen::FoldDisplayMode currentMode = displayMgr.GetFoldDisplayMode();
-    if (orientation_ == currentOrientation && displayMode_ == currentMode) {
+    OHOS::Rosen::FoldStatus currentFoldStatus = displayMgr.GetFoldStatus();
+    if (orientation_ == currentOrientation && displayMode_ == currentMode && foldStatus_ == currentFoldStatus) {
         return;
     }
     HILOG_INFO("need fresh.");
+    if (foldStatus_ != currentFoldStatus) {
+        auto interceptor = AccessibilityInputInterceptor::GetInstance();
+        if (interceptor != nullptr) {
+            interceptor->NotifyScreenTouchUpdate();
+        }
+        foldStatus_ = currentFoldStatus;
+    }
     if (ExtUtils::IsWideFold()) {
         OnChangeForWideFold(currentOrientation, currentMode);
         return;

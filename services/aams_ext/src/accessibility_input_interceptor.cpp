@@ -232,12 +232,12 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
         SetNextEventTransmitter(header, current, touchExploration);
     }
     if ((availableFunctions_ & FEATURE_SCREEN_TOUCH) && ((availableFunctions_ & FEATURE_TOUCH_EXPLORATION) == 0)) {
-        sptr<AccessibilityScreenTouch> screenTouch = new(std::nothrow) AccessibilityScreenTouch();
-        if (!screenTouch) {
+        screenTouch_ = new(std::nothrow) AccessibilityScreenTouch();
+        if (!screenTouch_) {
             HILOG_ERROR("screenTouch is null");
             return;
         }
-        SetNextEventTransmitter(header, current, screenTouch);
+        SetNextEventTransmitter(header, current, screenTouch_);
     }
     SetNextEventTransmitter(header, current, instance_);
     pointerEventTransmitters_ = header;
@@ -533,6 +533,14 @@ void AccessibilityInputInterceptor::RefreshDisplayInfo()
         return;
     }
     zoomGesture_->GetWindowParam(true);
+}
+
+void AccessibilityInputInterceptor::NotifyScreenTouchUpdate()
+{
+    HILOG_DEBUG();
+    if (screenTouch_) {
+        screenTouch_->UpdateScreenId();
+    }
 }
 
 void AccessibilityInputInterceptor::StartMagnificationInteract(uint32_t mode)

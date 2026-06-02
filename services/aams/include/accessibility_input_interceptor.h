@@ -32,6 +32,7 @@
 #include "window_magnification_gesture.h"
 #include "accessibility_keyevent_filter.h"
 #include "accessibility_gesture_inject_path.h"
+#include "accessibility_screen_touch.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -90,6 +91,7 @@ public:
     // flag = true shield zoom gesture | flag = false restore zoom gesture
     void ShieldZoomGesture(bool flag);
     void RefreshDisplayInfo();
+    void NotifyScreenTouchUpdate();
     void StartMagnificationInteract(uint32_t mode);
     void EnableGesture(uint32_t mode);
     void DisableGesture(uint32_t mode);
@@ -144,6 +146,7 @@ private:
     bool needInteractMagnification_ = false;
     sptr<KeyEventFilter> keyEventFilter_ = nullptr;
     int32_t screenShotUid_ = -2;
+    sptr<AccessibilityScreenTouch> screenTouch_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
