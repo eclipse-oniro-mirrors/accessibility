@@ -47,7 +47,7 @@ sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetProxy(uint
     if (windowId_ != SCENE_BOARD_WINDOW_ID) {
         displayId = 0;
     }
-    if (isUseBrokerProxy_) {
+    if (isUseBrokerProxy_.load()) {
         return brokerProxy_;
     } else {
         auto iter = proxyMap_.find(displayId);

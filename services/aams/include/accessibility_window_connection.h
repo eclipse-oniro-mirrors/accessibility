@@ -21,6 +21,7 @@
 #include "ffrt.h"
 #include "safe_map.h"
 
+#include <atomic>
 #include <unordered_set>
 
 namespace OHOS {
@@ -51,14 +52,12 @@ public:
 
     inline void SetUseBrokerFlag(bool flag)
     {
-        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
-        isUseBrokerProxy_ = flag;
+        isUseBrokerProxy_.store(flag);
     }
  
     inline bool GetUseBrokerFlag()
     {
-        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
-        return isUseBrokerProxy_;
+        return isUseBrokerProxy_.load();
     }
 
     void SetProxy(uint64_t displayId, sptr<IAccessibilityElementOperator> proxy);
@@ -120,7 +119,7 @@ private:
     int32_t treeId_ = 0;
     SafeMap<int32_t, sptr<IAccessibilityElementOperator>> cardProxy_;
     sptr<IAccessibilityElementOperator> brokerProxy_;
-    bool isUseBrokerProxy_ = false;
+    std::atomic<bool> isUseBrokerProxy_ = false;
     SafeMap<int32_t, uint32_t> tokenIdMap_;
     SafeMap<int32_t, int64_t> treeIdParentId_;
     bool isAnco_ = false;
