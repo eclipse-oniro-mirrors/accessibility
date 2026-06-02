@@ -191,11 +191,20 @@ sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetProxy(uint
     if (windowId_ != SCENE_BOARD_WINDOW_ID) {
         displayId = 0;
     }
-    if (isUseBrokerProxy_) {
+    if (isUseBrokerProxy_.load()) {
         return brokerProxy_;
     } else {
         return proxyMap_[displayId].first;
     }
+}
+sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetRawProxy(uint64_t displayId)
+{
+    std::lock_guard<ffrt::mutex> lock(proxyMutex_);
+    auto iter = proxyMap_.find(displayId);
+    if (iter != proxyMap_.end()) {
+        return iter->second.first;
+    }
+    return nullptr;
 }
 } // namespace Accessibility
 } // namespace OHOS

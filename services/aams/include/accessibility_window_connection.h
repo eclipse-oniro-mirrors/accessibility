@@ -21,6 +21,7 @@
 #include "ffrt.h"
 #include "safe_map.h"
 
+#include <atomic>
 #include <unordered_set>
 
 namespace OHOS {
@@ -33,14 +34,7 @@ public:
     ~AccessibilityWindowConnection();
 
     sptr<IAccessibilityElementOperator> GetProxy(uint64_t displayId);
-    inline sptr<IAccessibilityElementOperator> GetRawProxy(uint64_t displayId)
-    {
-        auto iter = proxyMap_.find(displayId);
-        if (iter != proxyMap_.end()) {
-            return iter->second.first;
-        }
-        return nullptr;
-    }
+    sptr<IAccessibilityElementOperator> GetRawProxy(uint64_t displayId);
     inline int GetCardProxySize()
     {
         return cardProxy_.Size();
@@ -58,12 +52,12 @@ public:
 
     inline void SetUseBrokerFlag(bool flag)
     {
-        isUseBrokerProxy_ = flag;
+        isUseBrokerProxy_.store(flag);
     }
  
     inline bool GetUseBrokerFlag()
     {
-        return isUseBrokerProxy_;
+        return isUseBrokerProxy_.load();
     }
 
     void SetProxy(uint64_t displayId, sptr<IAccessibilityElementOperator> proxy);
@@ -125,7 +119,7 @@ private:
     int32_t treeId_ = 0;
     SafeMap<int32_t, sptr<IAccessibilityElementOperator>> cardProxy_;
     sptr<IAccessibilityElementOperator> brokerProxy_;
-    bool isUseBrokerProxy_ = false;
+    std::atomic<bool> isUseBrokerProxy_ = false;
     SafeMap<int32_t, uint32_t> tokenIdMap_;
     SafeMap<int32_t, int64_t> treeIdParentId_;
     bool isAnco_ = false;

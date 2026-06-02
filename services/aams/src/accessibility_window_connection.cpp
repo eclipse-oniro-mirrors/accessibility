@@ -47,7 +47,7 @@ sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetProxy(uint
     if (windowId_ != SCENE_BOARD_WINDOW_ID) {
         displayId = 0;
     }
-    if (isUseBrokerProxy_) {
+    if (isUseBrokerProxy_.load()) {
         return brokerProxy_;
     } else {
         auto iter = proxyMap_.find(displayId);
@@ -56,6 +56,16 @@ sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetProxy(uint
         }
         return nullptr;
     }
+}
+
+sptr<IAccessibilityElementOperator> AccessibilityWindowConnection::GetRawProxy(uint64_t displayId)
+{
+    std::lock_guard<ffrt::mutex> lock(proxyMutex_);
+    auto iter = proxyMap_.find(displayId);
+    if (iter != proxyMap_.end()) {
+        return iter->second.first;
+    }
+    return nullptr;
 }
 
 RetError AccessibilityWindowConnection::SetCardProxy(const int32_t treeId,
@@ -154,6 +164,7 @@ void AccessibilityWindowConnection::AddDeathRecipient(
         return;
     }
     if (elementOperator->AsObject()->AddDeathRecipient(deathRecipient)) {
+        std::lock_guard<ffrt::mutex> lock(proxyMutex_);
         if (isBroker) {
             brokerProxy_ = elementOperator;
             brokerProxyDeathRecipient_ = deathRecipient;
