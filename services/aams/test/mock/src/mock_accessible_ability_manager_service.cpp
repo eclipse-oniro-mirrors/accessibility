@@ -184,6 +184,9 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
 
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(int32_t accountId)
 {
+    if (accountId == -1) {
+        return nullptr;
+    }
     return a11yAccountsData_.GetAccountData(accountId);
 }
 
