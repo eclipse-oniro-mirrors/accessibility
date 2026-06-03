@@ -582,7 +582,8 @@ HWTEST_F(AccessibleAbilityClientImplTest, HoldRunningLock_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "HoldRunningLock_001 start";
     Connect();
-    EXPECT_EQ(instance_->EnableScreenCurtain(true), RET_OK);
+    EXPECT_CALL(*stub_, HoldRunningLock()).Times(1).WillOnce(Return(RET_OK));
+    EXPECT_EQ(instance_->HoldRunningLock(), RET_OK);
     GTEST_LOG_(INFO) << "HoldRunningLock_001 end";
 }
 
