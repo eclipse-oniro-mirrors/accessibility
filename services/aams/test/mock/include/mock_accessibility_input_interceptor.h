@@ -41,6 +41,7 @@ public:
     MOCK_METHOD1(SetAvailableFunctions, void(uint32_t availableFunctions));
     MOCK_METHOD1(SetMagnificationMode, void(uint32_t mode));
     MOCK_METHOD1(SetMagnificationTriggerMethod, void(int32_t screenMagnificationTriggerMethod));
+    MOCK_METHOD0(NotifyScreenTouchUpdate, void());
 };
 } // namespace Accessibility
 } // namespace OHOS
