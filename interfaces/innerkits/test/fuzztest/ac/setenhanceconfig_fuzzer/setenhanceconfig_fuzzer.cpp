@@ -22,6 +22,16 @@ namespace {
     constexpr size_t DATA_MIN_SIZE = 1;
 }
 
+template<class T>
+size_t GetObject(T &object, const uint8_t *data, size_t size)
+{
+    size_t objectSize = sizeof(object);
+    if (objectSize > size) {
+        return 0;
+    }
+    return memcpy_s(&object, objectSize, data, objectSize) == EOK ? objectSize : 0;
+}
+
 bool SetEnhanceConfigFuzzTest(const uint8_t* data, size_t size)
 {
     if (data == nullptr || size < DATA_MIN_SIZE) {
@@ -33,8 +43,9 @@ bool SetEnhanceConfigFuzzTest(const uint8_t* data, size_t size)
         return false;
     }
 
-    // 使用fuzz数据作为配置数据
-    uint32_t cfgLen = size;
+    size_t position = 0;
+    uint32_t cfgLen = 0;
+    GetObject<uint32_t>(cfgLen, &data[position], size - position);
     config.SetEnhanceConfig(const_cast<uint8_t*>(data), cfgLen);
 
     return true;
