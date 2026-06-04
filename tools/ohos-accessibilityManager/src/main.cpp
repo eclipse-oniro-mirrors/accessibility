@@ -24,11 +24,15 @@
 #include "accessibility_config.h"
 #include "accessibility_system_ability_client.h"
 #include "accessibility_def.h"
+#include "privacy_kit.h"
+#include "token_setproc.h"
 
 using namespace OHOS;
 using namespace Accessibility;
 
 constexpr int32_t ARGC_COUNT_TWO = 2;
+
+uint32_t g_callerTokenId = 0;
 
 void PrintHelp(const std::string& subcommand = "")
 {
@@ -41,6 +45,7 @@ void PrintHelp(const std::string& subcommand = "")
         std::cout << std::endl;
         std::cout << "Parameters:" << std::endl;
         std::cout << "  --help                  Display this help message" << std::endl;
+        std::cout << "  --token-id  <value>     Caller's access token ID for permission usage recording" << std::endl;
         std::cout << std::endl;
         std::cout << "SubCommands:" << std::endl;
         std::cout << "  state-is-screen-reader-enabled      Check if screen reader is enabled" << std::endl;
@@ -111,6 +116,7 @@ void PrintHelp(const std::string& subcommand = "")
                 "3=1.0s, 4=1.3s])" << std::endl;
         }
         std::cout << "  --help                  Display this help message" << std::endl;
+        std::cout << "  --token-id  <value>     Caller's access token ID for permission usage recording" << std::endl;
         std::cout << std::endl;
         std::cout << "Examples:" << std::endl;
 
@@ -154,7 +160,7 @@ void PrintHelp(const std::string& subcommand = "")
     }
 }
 
-bool ConvertStringToInt64(std::string &str, int32_t &value)
+bool ConvertStringToInt(std::string &str, int32_t &value)
 {
     auto [ptr, errCode] = std::from_chars(str.data(), str.data() + str.size(), value);
     return errCode == std::errc{} && ptr == str.data() + str.size();
@@ -247,9 +253,13 @@ int CommandAbilityEnable(const std::vector<std::string>& args)
 
     RetError ret = config.EnableAbility(name, capabilities);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 1, 0);
         std::string data = "{\"name\":\"" + name + "\",\"capabilities\":" + std::to_string(capabilities) + "}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 0, 1);
     std::cout << "Failed to enable screen reader. Error: " << ret << std::endl;
     if (ret == RetError::RET_ERR_CONNECTION_EXIST) {
         return OutputError("ERR_ENABLE_SCREEN_READER", "Screen reader is already enabled.", "Do not enable again.");
@@ -269,9 +279,13 @@ int CommandAbilityDisable(const std::vector<std::string>& args)
 
     RetError ret = config.DisableAbility(name);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 1, 0);
         std::string data = "{\"name\":\"" + name + "\"}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 0, 1);
     std::cout << "Failed to disable screen reader. Error: " << ret << std::endl;
     if (ret == RetError::RET_ERR_NOT_ENABLED) {
         return OutputError("ERR_DISABLE_SCREEN_READER", "Screen reader is not enabled.", "Do not disable again.");
@@ -302,9 +316,13 @@ int CommandMagnificationSetState(const std::vector<std::string>& args)
     bool state = (stateStr == "true");
     RetError ret = config.SetScreenMagnificationState(state);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 1, 0);
         std::string data = "{\"state\":" + std::string(state ? "true" : "false") + "}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 0, 1);
     std::cout << "Failed to set screen magnification state. Error: " << ret << std::endl;
     return OutputError("ERR_SET_MAGNIFICATION", "Failed to set screen magnification state", \
         "Please check if accessibility service is running");
@@ -342,9 +360,13 @@ int CommandShortkeySetState(const std::vector<std::string>& args)
     bool state = (stateStr == "true");
     RetError ret = config.SetShortKeyState(state);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 1, 0);
         std::string data = "{\"state\":" + std::string(state ? "true" : "false") + "}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 0, 1);
     std::cout << "Failed to set shortkey state. Error: " << ret << std::endl;
     return OutputError("ERR_SET_SHORTKEY", "Failed to set shortkey state", \
         "Please check if accessibility service is running");
@@ -382,9 +404,13 @@ int CommandContrastSetState(const std::vector<std::string>& args)
     bool state = (stateStr == "true");
     RetError ret = config.SetHighContrastTextState(state);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 1, 0);
         std::string data = "{\"state\":\"" + std::string(state ? "true" : "false") + "\"}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 0, 1);
     std::cout << "Failed to set high contrast state. Error: " << ret << std::endl;
     return OutputError("ERR_SET_HIGH_CONTRAST", "Failed to set high contrast state", \
         "Please check if accessibility service is running");
@@ -422,9 +448,13 @@ int CommandInvertSetState(const std::vector<std::string>& args)
     bool state = (stateStr == "true");
     RetError ret = config.SetInvertColorState(state);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 1, 0);
         std::string data = "{\"state\":\"" + std::string(state ? "true" : "false") + "\"}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 0, 1);
     std::cout << "Failed to set invert color state. Error: " << ret << std::endl;
     return OutputError("ERR_SET_INVERT_COLOR", "Failed to set invert color state", \
         "Please check if accessibility service is running");
@@ -462,9 +492,13 @@ int CommandAnimationSetState(const std::vector<std::string>& args)
     bool state = (stateStr == "true");
     RetError ret = config.SetAnimationOffState(state);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 1, 0);
         std::string data = "{\"state\":\"" + std::string(state ? "true" : "false") + "\"}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 0, 1);
     std::cout << "Failed to set animation off state. Error: " << ret << std::endl;
     return OutputError("ERR_SET_ANIMATION_OFF", "Failed to set animation off state", \
         "Please check if accessibility service is running");
@@ -502,9 +536,13 @@ int CommandAudioSetMono(const std::vector<std::string>& args)
     bool state = (stateStr == "true");
     RetError ret = config.SetAudioMonoState(state);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_HEARING", 1, 0);
         std::string data = "{\"state\":" + std::string(state ? "true" : "false") + "}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_HEARING", 0, 1);
     std::cout << "Failed to set audio mono state. Error: " << ret << std::endl;
     return OutputError("ERR_SET_AUDIO_MONO", "Failed to set audio mono state", \
         "Please check if accessibility service is running");
@@ -543,9 +581,13 @@ int CommandAudioSetBalance(const std::vector<std::string>& args)
 
     RetError ret = config.SetAudioBalance(balance);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_HEARING", 1, 0);
         std::string data = "{\"balance\":" + balanceStr + "}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_HEARING", 0, 1);
     std::cout << "Failed to set audio balance. Error: " << ret << std::endl;
     return OutputError("ERR_SET_AUDIO_BALANCE", "Failed to set audio balance", \
         "Please check if the balance value is valid");
@@ -583,9 +625,13 @@ int CommandDaltonizationSetState(const std::vector<std::string>& args)
     bool state = (stateStr == "true");
     RetError ret = config.SetDaltonizationState(state);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 1, 0);
         std::string data = "{\"state\":" + std::string(state ? "true" : "false") + "}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 0, 1);
     std::cout << "Failed to set daltonization state. Error: " << ret << std::endl;
     return OutputError("ERR_SET_DALTONIZATION","Failed to set daltonization state", \
         "Please check if accessibility service is running");
@@ -616,7 +662,7 @@ int CommandDaltonizationSetFilter(const std::vector<std::string>& args)
     }
 
     int32_t type = 0;
-    if (!ConvertStringToInt64(typeStr, type) ||
+    if (!ConvertStringToInt(typeStr, type) ||
     type < static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Normal) ||
     type > static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Tritanomaly)) {
         return OutputError("ERR_ARG_INVALID",
@@ -628,9 +674,13 @@ int CommandDaltonizationSetFilter(const std::vector<std::string>& args)
     AccessibilityConfig::DALTONIZATION_TYPE typeValue = static_cast<AccessibilityConfig::DALTONIZATION_TYPE>(type);
     RetError ret = config.SetDaltonizationColorFilter(typeValue);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 1, 0);
         std::string data = "{\"type\":" + typeStr + "}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_VISION", 0, 1);
     std::cout << "Failed to set daltonization filter type. Error: " << ret << std::endl;
     return OutputError("ERR_SET_DALTONIZATION_FILTER", "Failed to set daltonization filter type", \
         "Please check if the filter type is valid");
@@ -661,7 +711,7 @@ int CommandClickSetResponseTime(const std::vector<std::string>& args)
     }
 
     int32_t time = 0;
-    if (!ConvertStringToInt64(timeStr, time) ||
+    if (!ConvertStringToInt(timeStr, time) ||
     time < static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort) ||
     time > static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayLong)) {
         return OutputError("ERR_ARG_INVALID",
@@ -672,9 +722,13 @@ int CommandClickSetResponseTime(const std::vector<std::string>& args)
     AccessibilityConfig::CLICK_RESPONSE_TIME timeValue = static_cast<AccessibilityConfig::CLICK_RESPONSE_TIME>(time);
     RetError ret = config.SetClickResponseTime(timeValue);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_ACTION", 1, 0);
         std::string data = "{\"time\":" + timeStr + "}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_ACTION", 0, 1);
     std::cout << "Failed to set click response time. Error: " << ret << std::endl;
     return OutputError("ERR_SET_CLICK_RESPONSE", "Failed to set click response time", \
         "Please check if the time value is valid (0=short(default), 1=medium, 2=long)");
@@ -712,9 +766,13 @@ int CommandRepeatClickSetState(const std::vector<std::string>& args)
     bool state = (stateStr == "true");
     RetError ret = config.SetIgnoreRepeatClickState(state);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_ACTION", 1, 0);
         std::string data = "{\"state\":" + std::string(state ? "true" : "false") + "}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_ACTION", 0, 1);
     std::cout << "Failed to set ignore repeat click state. Error: " << ret << std::endl;
     return OutputError("ERR_SET_REPEAT_CLICK",
         "Failed to set ignore repeat click state", \
@@ -747,7 +805,7 @@ int CommandRepeatClickSetTime(const std::vector<std::string>& args)
     }
 
     int32_t interval = 0;
-    if (!ConvertStringToInt64(intervalStr, interval) ||
+    if (!ConvertStringToInt(intervalStr, interval) ||
     interval < static_cast<int>(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest) ||
     interval > static_cast<int>(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLongest)) {
         return OutputError("ERR_ARG_INVALID",
@@ -760,9 +818,13 @@ int CommandRepeatClickSetTime(const std::vector<std::string>& args)
         static_cast<AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME>(interval);
     RetError ret = config.SetIgnoreRepeatClickTime(time);
     if (ret == RetError::RET_OK) {
+        Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+            "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_ACTION", 1, 0);
         std::string data = "{\"interval\":" + intervalStr + "}";
         return OutputSuccess(data);
     }
+    Security::AccessToken::PrivacyKit::AddPermissionUsedRecord(g_callerTokenId,
+        "ohos.permission.cli.WRITE_ACCESSIBILITY_CONFIG_ACTION", 0, 1);
     std::cout << "Failed to set ignore repeat click time. Error: " << ret << std::endl;
     return OutputError("ERR_SET_REPEAT_CLICK_TIME", "Failed to set ignore repeat click time", \
         "Please check if the interval value is valid (0=0.1s, 1=0.4s, 2=0.7s, 3=1.0s, 4=1.3s)");
@@ -825,6 +887,17 @@ int main(int argc, char* argv[])
     std::vector<std::string> args;
     for (int i = ARGC_COUNT_TWO; i < argc; i++) {
         args.push_back(argv[i]);
+    }
+
+    std::string tokenIdStr = GetOption(args, "--token-id");
+    if (!tokenIdStr.empty()) {
+        int32_t tokenIdValue = 0;
+        if (ConvertStringToInt(tokenIdStr, tokenIdValue) && tokenIdValue > 0) {
+            g_callerTokenId = static_cast<uint32_t>(tokenIdValue);
+        }
+    }
+    if (g_callerTokenId == 0) {
+        g_callerTokenId = static_cast<uint32_t>(GetSelfTokenID());
     }
 
     std::string command = argv[1];
