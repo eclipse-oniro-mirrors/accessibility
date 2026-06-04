@@ -16,9 +16,9 @@ import("//build/config/features.gni")
 import("//build/test.gni")
 
 ##############################fuzztest##########################################
-ohos_fuzztest("AccessibilitySystemAbilityClientRegisterFuzzTest") {
+ohos_fuzztest("GetFocusedWindowIdFuzzTest") {
   module_out_path = "accessibility/accessibility"
-  fuzz_config_file = "../../../fuzztest/asac/accessibilitysystemabilityclientregister_fuzzer"
+  fuzz_config_file = "../../../fuzztest/asac/getfocusedwindowid_fuzzer"
 
   include_dirs = [
     "../../../../../../common/interface/include",
@@ -29,7 +29,7 @@ ohos_fuzztest("AccessibilitySystemAbilityClientRegisterFuzzTest") {
     "../../../fuzztest:configs_cc_ld",
     "../../../../../../resources/config/build:coverage_flags",
   ]
-  sources = [ "accessibilitysystemabilityclientregister_fuzzer.cpp" ]
+  sources = [ "getfocusedwindowid_fuzzer.cpp" ]
   deps = [
     "../../../../../../common/interface:accessibility_interface",
     "../../../../asacfwk:accessibilityclient",
@@ -50,7 +50,7 @@ group("fuzztest") {
   deps = []
   deps += [
     # deps file
-    ":AccessibilitySystemAbilityClientRegisterFuzzTest",
+    ":GetFocusedWindowIdFuzzTest",
   ]
 }
 ###############################################################################

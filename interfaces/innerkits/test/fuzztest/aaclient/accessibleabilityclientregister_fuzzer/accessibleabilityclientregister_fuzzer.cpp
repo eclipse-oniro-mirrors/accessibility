@@ -32,13 +32,35 @@ bool FuzzWithConnect()
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->Disconnect();
     return true;
 }
+
+bool DoSomethingInterestingWithSetTargetBundleName(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    std::vector<std::string> targetBundleNames;
+    for (size_t count = 0; count < VEC_SIZE; count++) {
+        char name[LEN + 1];
+        name[LEN] = END_CHAR;
+        for (size_t i = 0; i < LEN; i++) {
+            startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
+        }
+        std::string targetBundleName(name);
+        targetBundleNames.push_back(targetBundleName);
+    }
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->SetTargetBundleName(targetBundleNames);
+    DoSomethingInterestingWithRegisterAbilityListener();
+    FuzzWithConnect();
+    return true;
+}
 } // namespace OHOS
 
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    OHOS::DoSomethingInterestingWithRegisterAbilityListener();
-    OHOS::FuzzWithConnect();
+    OHOS::DoSomethingInterestingWithSetTargetBundleName(data, size);
     return 0;
 }

@@ -1,4 +1,4 @@
-# Copyright (c) 2022 Huawei Device Co., Ltd.
+# Copyright (C) 2022 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -15,14 +15,9 @@ group("fuzztest") {
   testonly = true
 
   deps = [
-    "accessibilitysystemabilityclientability_fuzzer:fuzztest",
-    "accessibilitysystemabilityclientisenabled_fuzzer:fuzztest",
-    "accessibilitysystemabilityclientistouch_fuzzer:fuzztest",
-    "accessibilitysystemabilityclientregister_fuzzer:fuzztest",
-    "accessibilitysystemabilityclientsendevent_fuzzer:fuzztest",
-    "accessibilitysystemabilityclientsetexecuteresult_fuzzer:fuzztest",
-    "accessibilitysystemabilityclientsetsearchresult_fuzzer:fuzztest",
-    "getfocusedwindowid_fuzzer:fuzztest",
-    "isscreenreaderenabled_fuzzer:fuzztest",
+    "setmagnificationstate_fuzzer:fuzztest",
+    "getanimationoffstate_fuzzer:fuzztest",
+    "setenhanceconfig_fuzzer:fuzztest",
+    "seniormodeforapp_fuzzer:fuzztest",
   ]
 }

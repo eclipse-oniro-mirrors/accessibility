@@ -36,6 +36,7 @@ ohos_fuzztest("AccessibilitySystemAbilityClientAbilityFuzzTest") {
     "../../../../common:accessibility_common",
   ]
   external_deps = [
+    "ability_runtime:application_image_observer_manager",
     "c_utils:utils",
     "ffrt:libffrt",
     "ipc:ipc_single",

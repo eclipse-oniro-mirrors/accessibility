@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Copyright (c) 2022 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -16,31 +16,32 @@ import("//build/config/features.gni")
 import("//build/test.gni")
 
 ##############################fuzztest##########################################
-ohos_fuzztest("AccessibilitySystemAbilityClientRegisterFuzzTest") {
+ohos_fuzztest("SetMagnificationStateFuzzTest") {
   module_out_path = "accessibility/accessibility"
-  fuzz_config_file = "../../../fuzztest/asac/accessibilitysystemabilityclientregister_fuzzer"
+  fuzz_config_file = "../../../fuzztest/ac/setmagnificationstate_fuzzer"
 
   include_dirs = [
     "../../../../../../common/interface/include",
-    "../../../../../../frameworks/asacfwk/include",
+    "../../../../../../frameworks/acfwk/include",
     "..",
   ]
   configs = [
     "../../../fuzztest:configs_cc_ld",
     "../../../../../../resources/config/build:coverage_flags",
   ]
-  sources = [ "accessibilitysystemabilityclientregister_fuzzer.cpp" ]
+  sources = [ "setmagnificationstate_fuzzer.cpp" ]
   deps = [
     "../../../../../../common/interface:accessibility_interface",
-    "../../../../asacfwk:accessibilityclient",
+    "../../../../acfwk:accessibilityconfig",
     "../../../../common:accessibility_common",
   ]
   external_deps = [
+    "access_token:libaccesstoken_sdk",
+    "access_token:libnativetoken",
+    "access_token:libtoken_setproc",
+    "cJSON:cjson_static",
+    "selinux_adapter:librestorecon",
     "c_utils:utils",
-    "ffrt:libffrt",
-    "ipc:ipc_single",
-    "samgr:samgr_proxy",
-    "ability_runtime:application_image_observer_manager",
   ]
 }
 
@@ -50,7 +51,7 @@ group("fuzztest") {
   deps = []
   deps += [
     # deps file
-    ":AccessibilitySystemAbilityClientRegisterFuzzTest",
+    ":SetMagnificationStateFuzzTest",
   ]
 }
 ###############################################################################
