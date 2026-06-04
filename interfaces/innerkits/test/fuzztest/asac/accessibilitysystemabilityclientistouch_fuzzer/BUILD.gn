@@ -41,6 +41,7 @@ ohos_fuzztest("AccessibilitySystemAbilityClientIsTouchFuzzTest") {
     "ipc:ipc_single",
     "samgr:samgr_proxy",
     "ability_runtime:application_image_observer_manager",
+    "common_event_service:cesfwk_innerkits"
   ]
 }
 
