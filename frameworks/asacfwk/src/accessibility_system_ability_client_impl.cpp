@@ -1165,11 +1165,19 @@ RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderRulesEnabled(bool &
 RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsReadable(
     const std::shared_ptr<ReadableRulesNode>& node, bool& isReadable)
 {
+    return CheckNodeIsReadable(node, FocusRuleType::DEFAULT, isReadable);
+}
+
+RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsReadable(
+    const std::shared_ptr<ReadableRulesNode>& node, FocusRuleType type, bool& isReadable)
+{
     auto& rulesChecker = ReadableRulesChecker::GetInstance();
     isReadable = false;
     if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy_)) {
         return RET_ERR_NOT_ENABLED;
     }
+    // TODO: 后续需要根据type参数选择对应的规则集
+    // 暂时使用原有逻辑，等待规则解析部分完善
     isReadable = rulesChecker.IsReadable(node);
     return RET_OK;
 }
