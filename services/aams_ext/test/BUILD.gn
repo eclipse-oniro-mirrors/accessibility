@@ -119,6 +119,7 @@ ohos_unittest("accessibility_display_manager_test") {
     "../src/window_magnification_manager.cpp",
     "../src/magnification_manager.cpp",
     "../src/magnification_window.cpp",
+    "../src/accessibility_screen_touch.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
     "mock/src/mock_extend_service_manager.cpp",
     "mock/src/mock_full_screen_magnification_manager.cpp",
