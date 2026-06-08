@@ -1672,6 +1672,7 @@ void AccessibilityZoomGesture::HandleTDZoomThreeFingersTapStateDown(MMI::Pointer
     HILOG_DEBUG();
     CacheEvents(event);
     zoomGestureEventHandler_->RemoveEvent(WAIT_ANOTHER_FINGER_DOWN_MSG);
+    zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
     if (event.GetPointerId() < POINTER_COUNT_3) {
         lastTripleTapEvents_[event.GetPointerId()] = std::make_shared<MMI::PointerEvent>(event);
     }
