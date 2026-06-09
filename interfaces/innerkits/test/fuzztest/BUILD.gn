@@ -24,7 +24,8 @@ group("fuzztest") {
   deps = [
     "../../common:accessibility_common",
     "accessibilityconfig_fuzzer:fuzztest",
-    "accessibilitysystemabilityclient_fuzzer:fuzztest",
-    "accessibleabilityclient_fuzzer:fuzztest",
+    "ac:fuzztest",
+    "asac:fuzztest",
+    "aaclient:fuzztest",
   ]
 }
