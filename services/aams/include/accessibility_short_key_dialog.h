@@ -121,7 +121,7 @@ public:
     {
         HILOG_DEBUG();
         AAFwk::Want want;
-        std::string bundleName = "com.huawei.hmos.settings";
+        std::string bundleName = "com.ohos.settings";
         std::string abilityName = "SettingsExtService";
         want.SetElementName(bundleName, abilityName);
         auto settingsExtServiceAbilityConnection = new(std::nothrow) SettingsExtServiceAbilityConnection(enable);
