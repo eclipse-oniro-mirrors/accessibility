@@ -146,5 +146,8 @@ void AccessibilityInputInterceptor::SetMagnificationTriggerMethod(int32_t screen
 {
     (void)screenMagnificationTriggerMethod;
 }
+
+void AccessibilityInputInterceptor::NotifyScreenTouchUpdate()
+{}
 } // namespace Accessibility
 } // namespace OHOS

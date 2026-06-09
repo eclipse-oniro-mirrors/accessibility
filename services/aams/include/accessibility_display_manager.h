@@ -68,6 +68,7 @@ private:
         void OnChangeDefault(OHOS::Rosen::DisplayOrientation currentOrientation);
         OHOS::Rosen::DisplayOrientation orientation_ = OHOS::Rosen::DisplayOrientation::UNKNOWN;
         OHOS::Rosen::FoldDisplayMode displayMode_ = Rosen::FoldDisplayMode::UNKNOWN;
+        OHOS::Rosen::FoldStatus foldStatus_ = Rosen::FoldStatus::UNKNOWN;
     private:
         std::shared_ptr<MagnificationManager> manager_ = nullptr;
     };

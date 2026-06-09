@@ -74,6 +74,7 @@ public:
     uint32_t GetRealIgnoreRepeatClickTime();
     bool GetRealIgnoreRepeatClickState();
     void SendInterceptedEvent();
+    void UpdateScreenId();
 private:
     void HandleResponseDelayStateInnerDown(MMI::PointerEvent &event);
     void HandleResponseDelayStateInnerMove(MMI::PointerEvent &event);

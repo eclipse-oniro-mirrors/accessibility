@@ -208,6 +208,12 @@ bool AccessibilityScreenTouch::GetRealIgnoreRepeatClickState()
     return ignoreRepeatClickState_;
 }
 
+void AccessibilityScreenTouch::UpdateScreenId()
+{
+    HILOG_DEBUG();
+    SetTargetScreenId();
+}
+
 void AccessibilityScreenTouch::ConversionCoordinates(int32_t originalX, int32_t originalY)
 {
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
