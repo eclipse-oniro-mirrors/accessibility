@@ -136,9 +136,9 @@ public:
             MessageParcel reply;
             MessageOption option;
             if (enable_) {
-                data.WriteString16(GetEnableCommandStr());
+                data.WriteString16(Str8ToStr16(GetEnableCommandStr()));
             } else {
-                data.WriteString16(GetDisableCommandStr());
+                data.WriteString16(Str8ToStr16(GetDisableCommandStr()));
             }
             
             int32_t enbaleSearch = 2;
