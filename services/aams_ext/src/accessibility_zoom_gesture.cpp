@@ -518,7 +518,7 @@ bool AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event)
                 HILOG_ERROR("fullScreenManager_ is nullptr.");
                     return false;
             }
-            fullScreenManager_->SetScale(curDistance / lastDistance_);
+            fullScreenManager_->SetScale(curDistance - lastDistance_);
             lastDistance_ = curDistance;
             return true;
         }

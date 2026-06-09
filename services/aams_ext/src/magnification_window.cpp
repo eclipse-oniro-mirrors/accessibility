@@ -317,7 +317,7 @@ void MagnificationWindow::DisableMagnificationFull(bool needClear)
     isMagnificationShowFull_ = false;
 }
 
-void MagnificationWindow::SetScaleFull(float ratio)
+void MagnificationWindow::SetScaleFull(float scaleSpan)
 {
     HILOG_DEBUG();
     if (window_ == nullptr) {
@@ -328,7 +328,8 @@ void MagnificationWindow::SetScaleFull(float ratio)
         HILOG_ERROR("screen param invalid.");
         return;
     }
-    float tmpScale = ratio * scale_;
+    float ratio = scaleSpan / screenSpan_;
+    float tmpScale = scale_ + ratio * scale_;
 
     if (tmpScale > MAX_SCALE) {
         tmpScale = MAX_SCALE;
