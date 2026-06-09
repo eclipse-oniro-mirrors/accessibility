@@ -24,6 +24,8 @@
 #include "message_parcel.h"
 #include "nocopyable.h"
 #include <cstdint>
+#include "extension_manager_client.h"
+#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -105,6 +107,60 @@ public:
  
 private:
     std::string commandStr_;
+};
+
+
+class SettingsExtServiceAbilityConnection : public AAFwk::AbilityConnectionStub {
+public:
+    explicit SettingsExtServiceAbilityConnection(bool &enable)
+    {
+        enable_ = enable;
+    }
+    virtual ~SettingsExtServiceAbilityConnection() = default;
+    static void UpdateSearchItem(bool enable)
+    {
+        HILOG_DEBUG();
+        AAFwk::Want want;
+        std::string bundleName = "com.ohos.settings";
+        std::string abilityName = "SettingsExtService";
+        want.SetElementName(bundleName, abilityName);
+        auto settingsExtServiceAbilityConnection = new(std::nothrow) SettingsExtServiceAbilityConnection(enable);
+        AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
+            settingsExtServiceAbilityConnection, nullptr, -1);
+    }
+    void OnAbilityConnectDone(const AppExecFwk::ElementName &element,
+        const sptr<IRemoteObject> &remoteObject, int32_t resultCode) override
+        {
+            HILOG_INFO("on ability connected");
+            MessageParcel data;
+            MessageParcel reply;
+            MessageOption option;
+            if (enable_) {
+                data.WriteString16(Str8ToStr16(GetEnableCommandStr()));
+            } else {
+                data.WriteString16(Str8ToStr16(GetDisableCommandStr()));
+            }
+            
+            int32_t enbaleSearch = 2;
+            remoteObject->SendRequest(enbaleSearch, data, reply, option);
+            AAFwk::ExtensionManagerClient::GetInstance().DisconnectAbility(this);
+        }
+    void OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int32_t resultCode) override
+    {
+        HILOG_INFO("on ability disconnected");
+    }
+private:
+    bool enable_ = false;
+    inline std::string GetEnableCommandStr()
+    {
+        return "{\"method\":\"enableSearchItems\",\"extra\":{\"itemList\":[\"zoom_zone_text\", "
+               "\"zoom_trigger_method\"]}}";
+    }
+    inline std::string GetDisableCommandStr()
+    {
+        return "{\"method\":\"disableSearchItems\",\"extra\":{\"itemList\":[\"zoom_zone_text\", "
+               "\"zoom_trigger_method\"]}}";
+    }
 };
 
 class AccessibilityShortkeyDialog {

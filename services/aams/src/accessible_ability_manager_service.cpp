@@ -1195,6 +1195,7 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
                 uint32_t mode = GetMagnificationMode();
                 Singleton<ExtendManagerServiceProxy>::GetInstance().SetMagnificationState(true, type, mode);
             }
+            SettingsExtServiceAbilityConnection::UpdateSearchItem(!state);
             return ret == RET_OK;
         }
         case AUDIO_MONO:
