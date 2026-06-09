@@ -1160,18 +1160,6 @@ bool AccessibleAbilityManagerService::SetHighContrastTextAbility(bool state)
 }
 // LCOV_EXCL_STOP
 
-static void UpdateSearchItem(bool enable)
-{
-    HILOG_DEBUG();
-    AAFwk::Want want;
-    std::string bundleName = "com.ohos.settings";
-    std::string abilityName = "SettingsExtService";
-    want.SetElementName(bundleName, abilityName);
-    auto settingsExtServiceAbilityConn_ = new(std::nothrow) SettingsExtServiceAbilityConnection(enable);
-    AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
-        settingsExtServiceAbilityConn_, nullptr, -1);
-}
-
 bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbilityValue)
 {
     HILOG_DEBUG();
@@ -1207,7 +1195,7 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
                 uint32_t mode = GetMagnificationMode();
                 Singleton<ExtendManagerServiceProxy>::GetInstance().SetMagnificationState(true, type, mode);
             }
-            UpdateSearchItem(!state);
+            SettingsExtServiceAbilityConnection::UpdateSearchItem(!state);
             return ret == RET_OK;
         }
         case AUDIO_MONO:

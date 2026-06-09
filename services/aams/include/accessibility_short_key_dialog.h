@@ -117,6 +117,17 @@ public:
         enable_ = enable;
     }
     virtual ~SettingsExtServiceAbilityConnection() = default;
+    static void UpdateSearchItem(bool enable)
+    {
+        HILOG_DEBUG();
+        AAFwk::Want want;
+        std::string bundleName = "com.huawei.hmos.settings";
+        std::string abilityName = "SettingsExtService";
+        want.SetElementName(bundleName, abilityName);
+        auto settingsExtServiceAbilityConnection = new(std::nothrow) SettingsExtServiceAbilityConnection(enable);
+        AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
+            settingsExtServiceAbilityConnection, nullptr, -1);
+    }
     void OnAbilityConnectDone(const AppExecFwk::ElementName &element,
         const sptr<IRemoteObject> &remoteObject, int32_t resultCode) override
         {
@@ -142,13 +153,13 @@ private:
     bool enable_ = false;
     inline std::string GetEnableCommandStr()
     {
-        return "{\"method\":\"enableSearchItems\",
-            \"extra\":{\"itemList\":[\"zoom_zone_text\", \"zoom_trigger_method\"]}}";
+        return "{\"method\":\"enableSearchItems\",\"extra\":{\"itemList\":[\"zoom_zone_text\", "
+               "\"zoom_trigger_method\"]}}";
     }
     inline std::string GetDisableCommandStr()
     {
-        return "{\"method\":\"disableSearchItems\",
-            \"extra\":{\"itemList\":[\"zoom_zone_text\", \"zoom_trigger_method\"]}}";
+        return "{\"method\":\"disableSearchItems\",\"extra\":{\"itemList\":[\"zoom_zone_text\", "
+               "\"zoom_trigger_method\"]}}";
     }
 };
 
