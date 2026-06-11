@@ -33,6 +33,7 @@ namespace {
     constexpr int32_t WINDOW_ID_INVALID = -1;
     constexpr int64_t ELEMENT_ID_INVALID = -1;
     const int32_t LONG_PRESS_EVENT_INTERVAL = 550;
+    const int32_t DOUBLE_CLICK_EVENT_INTERVAL = 100;
     MMI::InputManager* inputManager_ = MMI::InputManager::GetInstance();
     std::map<int32_t, std::pair<bool, std::pair<int32_t, int32_t>>> accessibleKeyCodeTable = {
         {ActionType::ACCESSIBILITY_ACTION_HOME,
@@ -595,10 +596,11 @@ void AccessibleAbilityChannel::InjectEventToInput(int32_t xPos, int32_t yPos, In
         injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_DOWN);
         injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_UP);
     } else if (injectActionType == INJECT_ACTION_TYPE_DOUBLE_CLICK) {
-        for (int i = 0; i < DIVISOR_TWO; i++) {
-            injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_DOWN);
-            injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_UP);
-        }
+        injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_DOWN);
+        injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_UP);
+        std::this_thread::sleep_for(std::chrono::milliseconds(DOUBLE_CLICK_EVENT_INTERVAL));
+        injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_DOWN);
+        injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_UP);
     } else if (injectActionType == INJECT_ACTION_TYPE_LONG_CLICK) {
         injectTouchEvent(xPos, yPos, MMI::PointerEvent::POINTER_ACTION_DOWN);
         std::this_thread::sleep_for(std::chrono::milliseconds(LONG_PRESS_EVENT_INTERVAL));
