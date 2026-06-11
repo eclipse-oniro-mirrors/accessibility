@@ -230,6 +230,43 @@ public:
     virtual RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId) = 0;
+    
+    /**
+     * @brief Update accessibility element info attributes.
+     * @param elementId The element id to update.
+     * @param windowId The window id of the element.
+     * @param accessibilityVirtualNode The element attributes to update.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param callback The callback to return the result.
+     * @return Return RET_OK if update successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError UpdateCustomAccessibilityProperty(const int64_t elementId, const int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+ 
+    /**
+     * @brief Add accessibility virtual nodes.
+     * @param rootId The root element id.
+     * @param windowId The window id.
+     * @param nodes The virtual nodes to add.
+     * @param requestId Matched the request and response.
+     * @param callback To transfer the result to ASAC.
+     * @return RetError: ERR_OK if success, otherwise error code.
+     */
+    virtual RetError AddAccessibilityVirtualNode(const int64_t rootId, const int32_t windowId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+ 
+    /**
+     * @brief Remove accessibility virtual node.
+     * @param id The virtual node id to remove.
+     * @param windowId The window id.
+     * @param requestId Matched the request and response.
+     * @param callback To transfer the result to ASAC.
+     * @return RetError: ERR_OK if success, otherwise error code.
+     */
+    virtual RetError RemoveAccessibilityVirtualNode(const int64_t id, const int32_t windowId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

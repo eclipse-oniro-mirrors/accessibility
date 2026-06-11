@@ -185,6 +185,37 @@ public:
     virtual void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam &param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+
+    /**
+     * @brief Update accessibility virtual nodes.
+     * @param rootId The element id.
+     * @param nodes The virtual node.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param callback The callback to return the result.
+     */
+    virtual void UpdateCustomAccessibilityProperty(const int64_t elementId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+
+    /**
+     * @brief Add accessibility virtual nodes.
+     * @param rootId The root element id.
+     * @param nodes The virtual nodes to add.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param callback The callback to return the result.
+     */
+    virtual void AddAccessibilityVirtualNode(const int64_t rootId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
+
+    /**
+     * @brief Remove accessibility virtual node.
+     * @param id The virtual node id to remove.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param callback The callback to return the result.
+     */
+    virtual void RemoveAccessibilityVirtualNode(const int64_t id, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

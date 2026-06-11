@@ -62,7 +62,11 @@
         HandleSearchElementInfoBySpecificProperty)                                                                    \
     SWITCH_CASE(AccessibilityInterfaceCode::CONFIGURE_EVENTS, HandleConfigureEvents)                                  \
     SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH_WITH_CONDITION,                                         \
-        HandleFocusMoveSearchWithCondition)
+        HandleFocusMoveSearchWithCondition)                                                                           \
+    SWITCH_CASE(AccessibilityInterfaceCode::UPDATE_ACCESSIBILITY_ELEMENT_INFO,                                        \
+        HandleUpdateCustomAccessibilityProperty)                                                                      \
+    SWITCH_CASE(AccessibilityInterfaceCode::ADD_ACCESSIBILITY_VIRTUAL_NODE, HandleAddAccessibilityVirtualNode)        \
+    SWITCH_CASE(AccessibilityInterfaceCode::REMOVE_ACCESSIBILITY_VIRTUAL_NODE, HandleRemoveAccessibilityVirtualNode)
 
 namespace OHOS {
 namespace Accessibility {

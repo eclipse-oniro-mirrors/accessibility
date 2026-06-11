@@ -194,6 +194,37 @@ public:
     virtual void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam &param,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+    
+    /**
+     * @brief Update accessibility virtual nodes.
+     * @param elementId The element id.
+     * @param accessibilityVirtualNode The virtual node.
+     * @param requestId Matched the request and response.
+     * @param callback To transfer the result to ASAC.
+     */
+    virtual void UpdateCustomAccessibilityProperty(const int64_t elementId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+ 
+    /**
+     * @brief Add accessibility virtual nodes.
+     * @param rootId The root element id.
+     * @param nodes The virtual nodes to add.
+     * @param requestId Matched the request and response.
+     * @param callback To transfer the result to ASAC.
+     */
+    virtual void AddAccessibilityVirtualNode(const int64_t rootId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+ 
+    /**
+     * @brief Remove accessibility virtual node.
+     * @param id The virtual node id to remove.
+     * @param requestId Matched the request and response.
+     * @param callback To transfer the result to ASAC.
+     */
+    virtual void RemoveAccessibilityVirtualNode(const int64_t id, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
 private:
     bool isFilter = false;

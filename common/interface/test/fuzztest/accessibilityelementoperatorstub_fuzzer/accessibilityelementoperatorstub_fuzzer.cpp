@@ -58,6 +58,14 @@ public:
     void SetParentWindowId(const int32_t parentWindowId) override {}
     void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info, const AccessibilityFocusMoveParam &param,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
+    void UpdateCustomAccessibilityProperty(const int64_t elementId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
+    void AddAccessibilityVirtualNode(const int64_t rootId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
+    void RemoveAccessibilityVirtualNode(const int64_t id, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 };
 
 template<class T>

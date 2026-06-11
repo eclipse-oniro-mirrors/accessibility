@@ -106,6 +106,28 @@ public:
      */
     void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
         const FocusMoveResult &result, const int32_t requestId) override;
+    
+    /**
+     * @brief Set the result of UpdateAccessibilityVirtualNode to AA.
+     * @param result The result of the operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetUpdateCustomAccessibilityPropertyResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override;
+ 
+    /**
+     * @brief Set the result of AddAccessibilityVirtualNode to AA.
+     * @param result The result of the operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetAddAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result, const int32_t requestId) override;
+ 
+    /**
+     * @brief Set the result of RemoveAccessibilityVirtualNode to AA.
+     * @param result The result of the operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result, const int32_t requestId) override;
 
 private:
     /**

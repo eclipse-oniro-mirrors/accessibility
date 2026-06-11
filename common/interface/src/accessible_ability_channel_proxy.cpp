@@ -893,5 +893,316 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const Acces
     return static_cast<RetError>(reply.ReadInt32());
 }
 
+RetError AccessibleAbilityChannelProxy::UpdateCustomAccessibilityProperty(const int64_t elementId,
+    const int32_t windowId, const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("elementId[%{public}" PRId64 "], windowId[%{public}d]", elementId, windowId);
+ 
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+ 
+    if (!WriteInterfaceToken(data)) {
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt64(elementId)) {
+        HILOG_ERROR("elementId write error: %{public}" PRId64 "", elementId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(windowId)) {
+        HILOG_ERROR("windowId write error: %{public}d", windowId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt64(accessibilityVirtualNode.GetId())) {
+        HILOG_ERROR("id write error: %{public}" PRId64 "", accessibilityVirtualNode.GetId());
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteString(accessibilityVirtualNode.GetText())) {
+        HILOG_ERROR("text write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteString(accessibilityVirtualNode.GetAccessibilityText())) {
+        HILOG_ERROR("accessibilityText write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteBool(accessibilityVirtualNode.GetAccessibilityGroup())) {
+        HILOG_ERROR("accessibilityGroup write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteString(accessibilityVirtualNode.GetAccessibilityLevel())) {
+        HILOG_ERROR("accessibilityLevel write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(accessibilityVirtualNode.GetRect().GetLeftTopXScreenPostion())) {
+        HILOG_ERROR("rect leftTopX write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(accessibilityVirtualNode.GetRect().GetLeftTopYScreenPostion())) {
+        HILOG_ERROR("rect leftTopY write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(accessibilityVirtualNode.GetRect().GetRightBottomXScreenPostion())) {
+        HILOG_ERROR("rect rightBottomX write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(accessibilityVirtualNode.GetRect().GetRightBottomYScreenPostion())) {
+        HILOG_ERROR("rect rightBottomY write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteBool(accessibilityVirtualNode.GetCheckable())) {
+        HILOG_ERROR("checkable write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteBool(accessibilityVirtualNode.GetChecked())) {
+        HILOG_ERROR("checked write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteBool(accessibilityVirtualNode.GetClickable())) {
+        HILOG_ERROR("clickable write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteBool(accessibilityVirtualNode.GetEnabled())) {
+        HILOG_ERROR("enabled write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteBool(accessibilityVirtualNode.GetSelected())) {
+        HILOG_ERROR("selected write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteString(accessibilityVirtualNode.GetCustomComponentType())) {
+        HILOG_ERROR("customComponentType write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(accessibilityVirtualNode.GetPoint().GetX())) {
+        HILOG_ERROR("point.x write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(accessibilityVirtualNode.GetPoint().GetY())) {
+        HILOG_ERROR("point.y write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteBool(accessibilityVirtualNode.GetAccessibilityFocused())) {
+        HILOG_ERROR("accessibilityFocused write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt64(accessibilityVirtualNode.GetParentId())) {
+        HILOG_ERROR("parentId write error: %{public}" PRId64 "", accessibilityVirtualNode.GetParentId());
+        return RET_ERR_IPC_FAILED;
+    }
+    int32_t childNodeCount = accessibilityVirtualNode.GetChildNodeIds().size();
+    if (!data.WriteInt32(childNodeCount)) {
+        HILOG_ERROR("childNodeCount write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    for (int32_t i = 0; i < childNodeCount; i++) {
+        if (!data.WriteInt64(accessibilityVirtualNode.GetChildNodeIds()[i])) {
+            HILOG_ERROR("childNodeId[%{public}d] write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+    }
+    if (!data.WriteInt64(accessibilityVirtualNode.GetElementId())) {
+        HILOG_ERROR("elementId write error: %{public}" PRId64 "", accessibilityVirtualNode.GetElementId());
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(accessibilityVirtualNode.GetWindowId())) {
+        HILOG_ERROR("windowId write error: %{public}d", accessibilityVirtualNode.GetWindowId());
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("requestId write error: %{public}d", requestId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("callback write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::UPDATE_ACCESSIBILITY_ELEMENT_INFO,
+        data, reply, option)) {
+        HILOG_ERROR("fail to update accessibility element info");
+        return RET_ERR_IPC_FAILED;
+    }
+    return static_cast<RetError>(reply.ReadInt32());
+}
+ 
+RetError AccessibleAbilityChannelProxy::AddAccessibilityVirtualNode(const int64_t rootId,
+    const int32_t windowId, const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("rootId[%{public}" PRId64 "], windowId[%{public}d]", rootId, windowId);
+ 
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+ 
+    if (!WriteInterfaceToken(data)) {
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt64(rootId)) {
+        HILOG_ERROR("rootId write error: %{public}" PRId64 "", rootId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(windowId)) {
+        HILOG_ERROR("windowId write error: %{public}d", windowId);
+        return RET_ERR_IPC_FAILED;
+    }
+ 
+    int32_t nodeCount = nodes.size();
+    if (!data.WriteInt32(nodeCount)) {
+        HILOG_ERROR("nodeCount write error");
+        return RET_ERR_IPC_FAILED;
+    }
+ 
+    for (int32_t i = 0; i < nodeCount; i++) {
+        const AccessibilityVirtualNode &node = nodes[i];
+        if (!data.WriteInt64(node.GetId())) {
+            HILOG_ERROR("node[%{public}d].id write error: %{public}" PRId64 "", i, node.GetId());
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteString(node.GetText())) {
+            HILOG_ERROR("node[%{public}d].text write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteString(node.GetAccessibilityText())) {
+            HILOG_ERROR("node[%{public}d].accessibilityText write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteBool(node.GetAccessibilityGroup())) {
+            HILOG_ERROR("node[%{public}d].accessibilityGroup write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteString(node.GetAccessibilityLevel())) {
+            HILOG_ERROR("node[%{public}d].accessibilityLevel write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteInt32(node.GetRect().GetLeftTopXScreenPostion())) {
+            HILOG_ERROR("node[%{public}d].rect leftTopX write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteInt32(node.GetRect().GetLeftTopYScreenPostion())) {
+            HILOG_ERROR("node[%{public}d].rect leftTopY write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteInt32(node.GetRect().GetRightBottomXScreenPostion())) {
+            HILOG_ERROR("node[%{public}d].rect rightBottomX write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteInt32(node.GetRect().GetRightBottomYScreenPostion())) {
+            HILOG_ERROR("node[%{public}d].rect rightBottomY write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteBool(node.GetCheckable())) {
+            HILOG_ERROR("node[%{public}d].checkable write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteBool(node.GetChecked())) {
+            HILOG_ERROR("node[%{public}d].checked write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteBool(node.GetClickable())) {
+            HILOG_ERROR("node[%{public}d].clickable write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteBool(node.GetEnabled())) {
+            HILOG_ERROR("node[%{public}d].enabled write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteBool(node.GetSelected())) {
+            HILOG_ERROR("node[%{public}d].selected write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteString(node.GetCustomComponentType())) {
+            HILOG_ERROR("node[%{public}d].customComponentType write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteInt32(node.GetPoint().GetX())) {
+            HILOG_ERROR("node[%{public}d].point.x write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteInt32(node.GetPoint().GetY())) {
+            HILOG_ERROR("node[%{public}d].point.y write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteBool(node.GetAccessibilityFocused())) {
+            HILOG_ERROR("node[%{public}d].accessibilityFocused write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteInt64(node.GetParentId())) {
+            HILOG_ERROR("node[%{public}d].parentId write error: %{public}" PRId64 "", i, node.GetParentId());
+            return RET_ERR_IPC_FAILED;
+        }
+        int32_t childNodeCount = node.GetChildNodeIds().size();
+        if (!data.WriteInt32(childNodeCount)) {
+            HILOG_ERROR("node[%{public}d].childNodeCount write error", i);
+            return RET_ERR_IPC_FAILED;
+        }
+        for (int32_t j = 0; j < childNodeCount; j++) {
+            if (!data.WriteInt64(node.GetChildNodeIds()[j])) {
+                HILOG_ERROR("node[%{public}d].childNodeId[%{public}d] write error", i, j);
+                return RET_ERR_IPC_FAILED;
+            }
+        }
+        if (!data.WriteInt64(node.GetElementId())) {
+            HILOG_ERROR("node[%{public}d].elementId write error: %{public}" PRId64 "", i, node.GetElementId());
+            return RET_ERR_IPC_FAILED;
+        }
+        if (!data.WriteInt32(node.GetWindowId())) {
+            HILOG_ERROR("node[%{public}d].windowId write error: %{public}d", i, node.GetWindowId());
+            return RET_ERR_IPC_FAILED;
+        }
+    }
+ 
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("requestId write error: %{public}d", requestId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("callback write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::ADD_ACCESSIBILITY_VIRTUAL_NODE,
+        data, reply, option)) {
+        HILOG_ERROR("fail to add accessibility virtual node");
+        return RET_ERR_IPC_FAILED;
+    }
+    return static_cast<RetError>(reply.ReadInt32());
+}
+ 
+RetError AccessibleAbilityChannelProxy::RemoveAccessibilityVirtualNode(const int64_t id,
+    const int32_t windowId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("id[%{public}" PRId64 "], windowId[%{public}d]", id, windowId);
+ 
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+ 
+    if (!WriteInterfaceToken(data)) {
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt64(id)) {
+        HILOG_ERROR("id write error: %{public}" PRId64 "", id);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(windowId)) {
+        HILOG_ERROR("windowId write error: %{public}d", windowId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("requestId write error: %{public}d", requestId);
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!data.WriteRemoteObject(callback->AsObject())) {
+        HILOG_ERROR("callback write error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::REMOVE_ACCESSIBILITY_VIRTUAL_NODE,
+        data, reply, option)) {
+        HILOG_ERROR("fail to remove accessibility virtual node");
+        return RET_ERR_IPC_FAILED;
+    }
+    return static_cast<RetError>(reply.ReadInt32());
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -48,7 +48,13 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_BY_SPECIFIC_PROPERTY,                                \
         HandleSetSearchElementInfoBySpecificPropertyResult)                                                 \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE_SEARCH_WITH_CONDITION,                    \
-        HandleSetFocusMoveSearchWithConditionResult)
+        HandleSetFocusMoveSearchWithConditionResult)                                                        \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_UPDATE_ACCESSIBILITY_ELEMENT_INFO,                   \
+        HandleSetUpdateCustomAccessibilityPropertyResult)                                                   \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_ADD_ACCESSIBILITY_VIRTUAL_NODE,                      \
+        HandleSetAddAccessibilityVirtualNodeResult)                                                         \
+    SWITCH_CASE(AccessibilityInterfaceCode::SET_RESULT_REMOVE_ACCESSIBILITY_VIRTUAL_NODE,                   \
+        HandleSetRemoveAccessibilityVirtualNodeResult)
 
 namespace OHOS {
 namespace Accessibility {
@@ -368,6 +374,39 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchWithCo
     int32_t requestId = data.ReadInt32();
     reply.WriteInt32(RET_OK);
     SetFocusMoveSearchWithConditionResult(infos, result, requestId);
+    return NO_ERROR;
+}
+
+ErrCode AccessibilityElementOperatorCallbackStub::HandleSetUpdateCustomAccessibilityPropertyResult(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    OperateVirtualNodeResult result = static_cast<OperateVirtualNodeResult>(data.ReadInt32());
+    int32_t requestId = data.ReadInt32();
+    HILOG_DEBUG("requestId[%{public}d], result[%{public}d]", requestId, result);
+    SetUpdateCustomAccessibilityPropertyResult(result, requestId);
+    return NO_ERROR;
+}
+ 
+ErrCode AccessibilityElementOperatorCallbackStub::HandleSetAddAccessibilityVirtualNodeResult(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    OperateVirtualNodeResult result = static_cast<OperateVirtualNodeResult>(data.ReadInt32());
+    int32_t requestId = data.ReadInt32();
+    HILOG_DEBUG("requestId[%{public}d], result[%{public}d]", requestId, result);
+    SetAddAccessibilityVirtualNodeResult(result, requestId);
+    return NO_ERROR;
+}
+ 
+ErrCode AccessibilityElementOperatorCallbackStub::HandleSetRemoveAccessibilityVirtualNodeResult(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    OperateVirtualNodeResult result = static_cast<OperateVirtualNodeResult>(data.ReadInt32());
+    int32_t requestId = data.ReadInt32();
+    HILOG_DEBUG("requestId[%{public}d], result[%{public}d]", requestId, result);
+    SetRemoveAccessibilityVirtualNodeResult(result, requestId);
     return NO_ERROR;
 }
 } // namespace Accessibility
