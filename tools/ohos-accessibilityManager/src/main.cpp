@@ -31,7 +31,6 @@ using namespace OHOS;
 using namespace Accessibility;
 
 constexpr int32_t ARGC_COUNT_TWO = 2;
-
 uint32_t g_callerTokenId = 0;
 
 void PrintHelp(const std::string& subcommand = "")
