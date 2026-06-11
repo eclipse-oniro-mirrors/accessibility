@@ -1200,5 +1200,143 @@ RetError AccessibleAbilityChannel::FocusMoveSearchWithCondition(const Accessibil
     }
     return syncFuture.get();
 }
+
+RetError AccessibleAbilityChannel::UpdateCustomAccessibilityProperty(const int64_t elementId,
+    const int32_t windowId, const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("elementId[%{public}" PRId64 "], windowId[%{public}d], requestId[%{public}d]",
+        elementId, windowId, requestId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
+    if (eventHandler_ == nullptr) {
+        HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    int32_t accountId = accountId_;
+    std::string clientName = clientName_;
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
+    int32_t tree = Utils::GetTreeIdBySplitElementId(elementId);
+    eventHandler_->PostTask([accountId, clientName, syncPromise, windowId, elementId, tree,
+        accessibilityVirtualNode, requestId, callback, this]() {
+        sptr<IAccessibilityElementOperator> elementOperator = nullptr;
+        RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID,
+            clientName, elementOperator, tree);
+        if (ret != RET_OK) {
+            HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", windowId);
+            if (callback != nullptr) {
+                callback->SetUpdateCustomAccessibilityPropertyResult(
+                    OperateVirtualNodeResult::ACCESSIBILITY_ELEMENT_NOT_EXIST, requestId);
+            }
+            syncPromise->set_value(ret);
+            return;
+        }
+
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        int64_t realElementId = awm.GetSceneBoardElementId(windowId, elementId);
+        elementOperator->UpdateCustomAccessibilityProperty(realElementId, accessibilityVirtualNode, requestId, callback);
+        syncPromise->set_value(RET_OK);
+        }, "UpdateCustomAccessibilityProperty");
+
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait UpdateCustomAccessibilityProperty result");
+        return RET_ERR_TIME_OUT;
+    }
+    return syncFuture.get();
+}
+
+RetError AccessibleAbilityChannel::AddAccessibilityVirtualNode(const int64_t rootId,
+    const int32_t windowId, const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("rootId[%{public}" PRId64 "], windowId[%{public}d], requestId[%{public}d]",
+        rootId, windowId, requestId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
+    if (eventHandler_ == nullptr) {
+        HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    int32_t accountId = accountId_;
+    std::string clientName = clientName_;
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
+    int32_t tree = Utils::GetTreeIdBySplitElementId(rootId);
+    eventHandler_->PostTask([accountId, clientName, syncPromise, windowId, rootId, tree,
+        nodes, requestId, callback, this]() {
+        sptr<IAccessibilityElementOperator> elementOperator = nullptr;
+        RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID,
+            clientName, elementOperator, tree);
+        if (ret != RET_OK) {
+            HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", windowId);
+            if (callback != nullptr) {
+                callback->SetAddAccessibilityVirtualNodeResult(
+                    OperateVirtualNodeResult::ACCESSIBILITY_ELEMENT_NOT_EXIST, requestId);
+            }
+            syncPromise->set_value(ret);
+            return;
+        }
+
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        int64_t realRootId = awm.GetSceneBoardElementId(windowId, rootId);
+        elementOperator->AddAccessibilityVirtualNode(realRootId, nodes, requestId, callback);
+        syncPromise->set_value(RET_OK);
+        }, "AddAccessibilityVirtualNode");
+ 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait AddAccessibilityVirtualNode result");
+        return RET_ERR_TIME_OUT;
+    }
+    return syncFuture.get();
+}
+
+RetError AccessibleAbilityChannel::RemoveAccessibilityVirtualNode(const int64_t id,
+    const int32_t windowId, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("id[%{public}" PRId64 "], windowId[%{public}d], requestId[%{public}d]",
+        id, windowId, requestId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
+    if (eventHandler_ == nullptr) {
+        HILOG_ERROR("eventHandler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    int32_t accountId = accountId_;
+    std::string clientName = clientName_;
+    std::shared_ptr<ffrt::promise<RetError>> syncPromise = std::make_shared<ffrt::promise<RetError>>();
+    ffrt::future syncFuture = syncPromise->get_future();
+    int32_t tree = Utils::GetTreeIdBySplitElementId(id);
+    eventHandler_->PostTask([accountId, clientName, syncPromise, windowId, id, tree,
+        requestId, callback, this]() {
+        sptr<IAccessibilityElementOperator> elementOperator = nullptr;
+        RetError ret = GetElementOperator(accountId, windowId, FOCUS_TYPE_INVALID,
+            clientName, elementOperator, tree);
+        if (ret != RET_OK) {
+            HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", windowId);
+            if (callback != nullptr) {
+                callback->SetRemoveAccessibilityVirtualNodeResult(
+                    OperateVirtualNodeResult::ACCESSIBILITY_ELEMENT_NOT_EXIST, requestId);
+            }
+            syncPromise->set_value(ret);
+            return;
+        }
+ 
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        int64_t realId = awm.GetSceneBoardElementId(windowId, id);
+        elementOperator->RemoveAccessibilityVirtualNode(realId, requestId, callback);
+        syncPromise->set_value(RET_OK);
+        }, "RemoveAccessibilityVirtualNode");
+ 
+    ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait RemoveAccessibilityVirtualNode result");
+        return RET_ERR_TIME_OUT;
+    }
+    return syncFuture.get();
+}
 } // namespace Accessibility
 } // namespace OHOS

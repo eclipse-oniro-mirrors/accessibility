@@ -29,6 +29,7 @@
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
 #include "safe_map.h"
+#include "accessibility_def.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -436,6 +437,12 @@ public:
     RetError SearchElementInfoRecursiveBySpecificProperty(const int32_t windowId, const int64_t elementId,
         std::vector<AccessibilityElementInfo> &elementInfos, int32_t treeId, uint64_t parentIndex = 0,
         const SpecificPropertyParam& param = {});
+    RetError UpdateCustomAccessibilityProperty(const int64_t elementId, const int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result) override;
+    RetError AddAccessibilityVirtualNode(const int64_t rootId, const int32_t windowId,
+        const std::vector<AccessibilityVirtualNode> &nodes, OperateVirtualNodeResult &result) override;
+    RetError RemoveAccessibilityVirtualNode(const int64_t id, const int32_t windowId,
+        OperateVirtualNodeResult &result) override;
 
 private:
     class AccessibleAbilityDeathRecipient final : public IRemoteObject::DeathRecipient {

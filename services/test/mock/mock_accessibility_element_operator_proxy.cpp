@@ -174,5 +174,33 @@ void MockAccessibilityElementOperatorProxy::FocusMoveSearchWithCondition(const A
     (void)requestId;
     (void)callback;
 }
+
+void MockAccessibilityElementOperatorProxy::UpdateCustomAccessibilityProperty(const int64_t elementId,
+    const AccessibilityVirtualNode& accessibilityVirtualNode,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    (void)elementId;
+    (void)accessibilityVirtualNode;
+    (void)requestId;
+    (void)callback;
+}
+
+void MockAccessibilityElementOperatorProxy::AddAccessibilityVirtualNode(const int64_t rootId,
+    const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    (void)rootId;
+    (void)nodes;
+    (void)requestId;
+    (void)callback;
+}
+
+void MockAccessibilityElementOperatorProxy::RemoveAccessibilityVirtualNode(const int64_t id,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    (void)id;
+    (void)requestId;
+    (void)callback;
+}
 } // namespace Accessibility
 } // namespace OHOS

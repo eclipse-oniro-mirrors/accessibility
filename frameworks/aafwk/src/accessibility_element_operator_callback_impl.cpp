@@ -124,6 +124,39 @@ void AccessibilityElementOperatorCallbackImpl::SetFocusMoveSearchWithConditionRe
         promiseFlag_ = true;
     }
 }
+
+void AccessibilityElementOperatorCallbackImpl::SetUpdateCustomAccessibilityPropertyResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    HILOG_INFO("requestId[%{public}d], result[%{public}d]", requestId, result);
+    operateVirtualNodeResult_ = result;
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
+}
+
+void AccessibilityElementOperatorCallbackImpl::SetAddAccessibilityVirtualNodeResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    HILOG_INFO("requestId[%{public}d], result[%{public}d]", requestId, result);
+    operateVirtualNodeResult_ = result;
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
+}
+
+void AccessibilityElementOperatorCallbackImpl::SetRemoveAccessibilityVirtualNodeResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    HILOG_INFO("requestId[%{public}d], result[%{public}d]", requestId, result);
+    operateVirtualNodeResult_ = result;
+    if (promiseFlag_ == false) {
+        promise_.set_value();
+        promiseFlag_ = true;
+    }
+}
 // LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

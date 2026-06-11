@@ -48,6 +48,14 @@ public:
         const int32_t childWindowId));
     MOCK_METHOD1(SetBelongTreeId, void(const int32_t treeId));
     MOCK_METHOD1(SetParentWindowId, void(const int32_t parentWindowId));
+    MOCK_METHOD4(UpdateCustomAccessibilityProperty, void(const int64_t elementId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        AccessibilityElementOperatorCallback &callback));
+    MOCK_METHOD4(AddAccessibilityVirtualNode, void(const int64_t rootId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        AccessibilityElementOperatorCallback &callback));
+ 
+    MOCK_METHOD2(SetAddAccessibilityVirtualNodeResult, void(const OperateVirtualNodeResult result, const int32_t requestId));
 };
 } // namespace Accessibility
 } // namespace OHOS

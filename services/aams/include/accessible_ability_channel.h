@@ -93,6 +93,17 @@ public:
     RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam &param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId) override;
+    
+    RetError UpdateCustomAccessibilityProperty(const int64_t elementId, const int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+ 
+    RetError AddAccessibilityVirtualNode(const int64_t rootId, const int32_t windowId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+ 
+    RetError RemoveAccessibilityVirtualNode(const int64_t id, const int32_t windowId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
 private:
     sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName) const;

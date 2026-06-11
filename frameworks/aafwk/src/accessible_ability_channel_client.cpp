@@ -648,5 +648,119 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearchWithCondition(const Acce
         result.needTerminate);
     return RET_OK;
 }
+
+RetError AccessibleAbilityChannelClient::UpdateCustomAccessibilityProperty(const int64_t elementId,
+    const int32_t windowId, const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result)
+{
+    HILOG_INFO("elementId[%{public}" PRId64 "], windowId[%{public}d]", elementId, windowId);
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("UpdateCustomAccessibilityProperty Failed to connect to aams [channelId:%{public}d]",
+            channelId_);
+        return RET_ERR_SAMGR;
+    }
+
+    int32_t requestId = GenerateRequestId();
+    HILOG_INFO("channelId:%{public}d, elementId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
+        channelId_, elementId, windowId, requestId);
+
+    sptr<AccessibilityElementOperatorCallbackImpl> callback =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (callback == nullptr) {
+        HILOG_ERROR("UpdateCustomAccessibilityProperty Failed to create callback");
+        return RET_ERR_NULLPTR;
+    }
+
+    ffrt::future<void> promiseFuture = callback->promise_.get_future();
+    auto ret = proxy_->UpdateCustomAccessibilityProperty(elementId, windowId, accessibilityVirtualNode, requestId, callback);
+    if (ret != RET_OK) {
+        return ret;
+    }
+
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait UpdateCustomAccessibilityProperty result, requestId: %{public}d", requestId);
+        return RET_ERR_TIME_OUT;
+    }
+
+    result = static_cast<OperateVirtualNodeResult>(callback->operateVirtualNodeResult_);
+    HILOG_INFO("UpdateCustomAccessibilityProperty result: %{public}d", static_cast<int32_t>(result));
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannelClient::AddAccessibilityVirtualNode(const int64_t rootId,
+    const int32_t windowId, const std::vector<AccessibilityVirtualNode> &nodes, OperateVirtualNodeResult &result)
+{
+    HILOG_INFO("rootId[%{public}" PRId64 "], windowId[%{public}d]", rootId, windowId);
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("AddAccessibilityVirtualNode Failed to connect to aams [channelId:%{public}d]",
+            channelId_);
+        return RET_ERR_SAMGR;
+    }
+
+    int32_t requestId = GenerateRequestId();
+    HILOG_INFO("channelId:%{public}d, rootId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
+        channelId_, rootId, windowId, requestId);
+
+    sptr<AccessibilityElementOperatorCallbackImpl> callback =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (callback == nullptr) {
+        HILOG_ERROR("AddAccessibilityVirtualNode Failed to create callback");
+        return RET_ERR_NULLPTR;
+    }
+
+    ffrt::future<void> promiseFuture = callback->promise_.get_future();
+    auto ret = proxy_->AddAccessibilityVirtualNode(rootId, windowId, nodes, requestId, callback);
+    if (ret != RET_OK) {
+        return ret;
+    }
+
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait AddAccessibilityVirtualNode result, requestId: %{public}d", requestId);
+        return RET_ERR_TIME_OUT;
+    }
+
+    result = static_cast<OperateVirtualNodeResult>(callback->executeActionResult_);
+    HILOG_INFO("AddAccessibilityVirtualNode result: %{public}d", static_cast<int32_t>(result));
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannelClient::RemoveAccessibilityVirtualNode(const int64_t id,
+    const int32_t windowId, OperateVirtualNodeResult &result)
+{
+    HILOG_INFO("id[%{public}" PRId64 "], windowId[%{public}d]", id, windowId);
+    if (proxy_ == nullptr) {
+        HILOG_ERROR("RemoveAccessibilityVirtualNode Failed to connect to aams [channelId:%{public}d]",
+            channelId_);
+        return RET_ERR_SAMGR;
+    }
+
+    int32_t requestId = GenerateRequestId();
+    HILOG_INFO("channelId:%{public}d, id:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
+        channelId_, id, windowId, requestId);
+
+    sptr<AccessibilityElementOperatorCallbackImpl> callback =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (callback == nullptr) {
+        HILOG_ERROR("RemoveAccessibilityVirtualNode Failed to create callback");
+        return RET_ERR_NULLPTR;
+    }
+
+    ffrt::future<void> promiseFuture = callback->promise_.get_future();
+    auto ret = proxy_->RemoveAccessibilityVirtualNode(id, windowId, requestId, callback);
+    if (ret != RET_OK) {
+        return ret;
+    }
+
+    ffrt::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != ffrt::future_status::ready) {
+        HILOG_ERROR("Failed to wait RemoveAccessibilityVirtualNode result, requestId: %{public}d", requestId);
+        return RET_ERR_TIME_OUT;
+    }
+
+    result = static_cast<OperateVirtualNodeResult>(callback->executeActionResult_);
+    HILOG_INFO("RemoveAccessibilityVirtualNode result: %{public}d", static_cast<int32_t>(result));
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

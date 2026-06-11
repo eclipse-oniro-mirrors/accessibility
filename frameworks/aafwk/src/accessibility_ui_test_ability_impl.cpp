@@ -333,5 +333,53 @@ RetError AccessibilityUITestAbilityImpl::ConfigureEvents(const std::vector<uint3
     }
     return aaClient->ConfigureEvents(needEvents);
 }
+
+RetError AccessibilityUITestAbilityImpl::UpdateCustomAccessibilityProperty(const int64_t elementId,
+    const int32_t windowId, const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result)
+{
+    HILOG_INFO();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->UpdateCustomAccessibilityProperty(elementId, windowId, accessibilityVirtualNode, result);
+}
+
+RetError AccessibilityUITestAbilityImpl::AddAccessibilityVirtualNode(const int64_t elementId, const int32_t windowId,
+    const std::vector<AccessibilityVirtualNode> &nodes, OperateVirtualNodeResult &result)
+{
+    HILOG_INFO();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->AddAccessibilityVirtualNode(elementId, windowId, nodes, result);
+}
+
+RetError AccessibilityUITestAbilityImpl::RemoveAccessibilityVirtualNode(const int64_t elementId, const int32_t windowId,
+    OperateVirtualNodeResult &result)
+{
+    HILOG_INFO();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->RemoveAccessibilityVirtualNode(elementId, windowId, result);
+}
+
+RetError AccessibilityUITestAbilityImpl::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
+    AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult)
+{
+    HILOG_INFO();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->FocusMoveSearchWithCondition(info, param, infos, moveSearchResult);
+}
 } // namespace Accessibility
 } // namespace OHOS

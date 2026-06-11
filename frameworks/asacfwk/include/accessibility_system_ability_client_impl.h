@@ -306,6 +306,30 @@ public:
      */
     virtual RetError SetSeniorModeStateForApp(const bool state) override;
 
+    /**
+     * @brief Set the result of update accessibility virtual node.
+     * @param result The result of add operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetUpdateCustomAccessibilityPropertyResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override;
+
+    /**
+     * @brief Set the result of add accessibility virtual node.
+     * @param result The result of add operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetAddAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override;
+
+    /**
+     * @brief Set the result of remove accessibility virtual node.
+     * @param result The result of remove operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override;
+
     bool LoadAccessibilityService();
     void LoadSystemAbilitySuccess(const sptr<IRemoteObject> &remoteObject);
     void LoadSystemAbilityFail();

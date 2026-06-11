@@ -266,6 +266,20 @@ public:
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
     void SetFocusMoveSearchWithConditionResult(
         const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult& result, const int32_t requestId);
+    
+    virtual void UpdateCustomAccessibilityProperty(const int64_t elementId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+    void SetUpdateCustomAccessibilityPropertyResult(const OperateVirtualNodeResult result, const int32_t requestId);
+ 
+    virtual void AddAccessibilityVirtualNode(const int64_t rootId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+    void SetAddAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result, const int32_t requestId);
+ 
+    virtual void RemoveAccessibilityVirtualNode(const int64_t id, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+    void SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result, const int32_t requestId);
 
 private:
     int32_t AddRequest(int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);

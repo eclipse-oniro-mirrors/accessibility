@@ -29,6 +29,7 @@
 #include "hilog_wrapper.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
+#include "accessibility_def.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -525,6 +526,35 @@ public:
     virtual RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         AccessibilityFocusMoveParam param,
         std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult) = 0;
+
+    /**
+     * @brief Update accessibility virtual nodes.
+     * @param elementId The element id.
+     * @param windowId The window id.
+     * @param accessibilityVirtualNode The virtual node.
+     * @return RetError: ERR_OK if success, otherwise error code.
+     */
+    virtual RetError UpdateCustomAccessibilityProperty(const int64_t elementId, const int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result) = 0;
+ 
+    /**
+     * @brief Add accessibility virtual nodes.
+     * @param rootId The root element id.
+     * @param windowId The window id.
+     * @param nodes The virtual nodes to add.
+     * @return RetError: ERR_OK if success, otherwise error code.
+     */
+    virtual RetError AddAccessibilityVirtualNode(const int64_t rootId, const int32_t windowId,
+        const std::vector<AccessibilityVirtualNode> &nodes, OperateVirtualNodeResult &result) = 0;
+ 
+    /**
+     * @brief Remove accessibility virtual node.
+     * @param id The virtual node id to remove.
+     * @param windowId The window id.
+     * @return RetError: ERR_OK if success, otherwise error code.
+     */
+    virtual RetError RemoveAccessibilityVirtualNode(const int64_t id, const int32_t windowId,
+        OperateVirtualNodeResult &result) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

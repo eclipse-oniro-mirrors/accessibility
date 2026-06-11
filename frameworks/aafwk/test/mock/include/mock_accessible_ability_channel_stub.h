@@ -68,6 +68,14 @@ public:
     MOCK_METHOD5(FocusMoveSearchWithCondition, RetError(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t windowId));
+    MOCK_METHOD5(UpdateCustomAccessibilityProperty, RetError(const int64_t elementId, const int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback));
+    MOCK_METHOD5(AddAccessibilityVirtualNode, RetError(const int64_t rootId, const int32_t windowId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback));
+    MOCK_METHOD4(RemoveAccessibilityVirtualNode, RetError(const int64_t id, const int32_t windowId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback));
 };
 } // namespace Accessibility
 } // namespace OHOS

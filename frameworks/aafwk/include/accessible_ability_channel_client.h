@@ -18,6 +18,7 @@
 
 #include <atomic>
 #include "iaccessible_ability_channel.h"
+#include "accessibility_def.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -244,6 +245,35 @@ public:
     
     RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info, AccessibilityFocusMoveParam param,
         std::vector<AccessibilityElementInfo> &infos, FocusMoveResult &result);
+    
+    /**
+     * @brief Update accessibility element info attributes.
+     * @param elementId The element id to update.
+     * @param windowId The window id of the element.
+     * @param accessibilityVirtualNode The element attributes to update.
+     * @return Return RET_OK if update successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError UpdateCustomAccessibilityProperty(const int64_t elementId, const int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result);
+ 
+    /**
+     * @brief Add accessibility virtual nodes.
+     * @param rootId The root element id.
+     * @param windowId The window id.
+     * @param nodes The virtual nodes to add.
+     * @return RetError: ERR_OK if success, otherwise error code.
+     */
+    RetError AddAccessibilityVirtualNode(const int64_t rootId, const int32_t windowId,
+        const std::vector<AccessibilityVirtualNode> &nodes, OperateVirtualNodeResult &result);
+ 
+    /**
+     * @brief Remove accessibility virtual node.
+     * @param id The virtual node id to remove.
+     * @param windowId The window id.
+     * @return RetError: ERR_OK if success, otherwise error code.
+     */
+    RetError RemoveAccessibilityVirtualNode(const int64_t id, const int32_t windowId,
+        OperateVirtualNodeResult &result);
 
 private:
     int32_t GenerateRequestId();

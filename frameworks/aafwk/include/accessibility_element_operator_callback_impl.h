@@ -17,6 +17,7 @@
 #define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_IMPL_H
 
 #include "accessibility_element_operator_callback_stub.h"
+#include "accessibility_def.h"
 #include "ffrt_inner.h"
 
 namespace OHOS {
@@ -104,6 +105,30 @@ public:
 
     virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
         const FocusMoveResult &result, const int32_t requestId) override;
+    
+    /**
+     * @brief Set result of update accessibility element info to AA.
+     * @param result The result code of update operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetUpdateCustomAccessibilityPropertyResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override;
+    
+    /**
+     * @brief Set result of add accessibility element info to AA.
+     * @param result The result code of update operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetAddAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override;
+    
+    /**
+     * @brief Set result of remove accessibility element info to AA.
+     * @param result The result code of update operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override;
 
 private:
     ffrt::promise<void> promise_;
@@ -120,6 +145,7 @@ private:
     bool changeToNewInfo_ = false;
     bool needTerminate_ = false;
     friend class AccessibleAbilityChannelClient;
+    OperateVirtualNodeResult operateVirtualNodeResult_ = OperateVirtualNodeResult::VIRTUAL_NODE_NOT_SUPPORT;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -332,5 +332,43 @@ void MockAccessibilityElementOperatorImpl::SetParentWindowId(const int32_t paren
     }
     return;
 }
+
+void MockAccessibilityElementOperatorImpl::UpdateCustomAccessibilityProperty(const int64_t elementId,
+    const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    int32_t mRequestId = AddRequest(requestId, callback);
+    if (operator_) {
+        operator_->UpdateCustomAccessibilityProperty(elementId, accessibilityVirtualNode, mRequestId, operatorCallback_);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
+    return;
+}
+
+void MockAccessibilityElementOperatorImpl::AddAccessibilityVirtualNode(const int64_t rootId,
+    const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    int32_t mRequestId = AddRequest(requestId, callback);
+    if (operator_) {
+        operator_->AddAccessibilityVirtualNode(rootId, nodes, mRequestId, operatorCallback_);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
+    return;
+}
+
+void MockAccessibilityElementOperatorImpl::RemoveAccessibilityVirtualNode(const int64_t id,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    int32_t mRequestId = AddRequest(requestId, callback);
+    if (operator_) {
+        operator_->RemoveAccessibilityVirtualNode(id, mRequestId, operatorCallback_);
+    } else {
+        HILOG_DEBUG("Can not find interaction object");
+    }
+    return;
+}
 } // namespace Accessibility
 } // namespace OHOS

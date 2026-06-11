@@ -1942,6 +1942,61 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
     }
     return ret;
 }
+
+RetError AccessibleAbilityClientImpl::UpdateCustomAccessibilityProperty(const int64_t elementId,
+    const int32_t windowId, const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result)
+{
+    HILOG_INFO("elementId[%{public}" PRId64 "], windowId[%{public}d], VirtualNode.id: %{public}ld, VirtualNode.windowid: %{public}d",
+        elementId, windowId, accessibilityVirtualNode.GetId(), accessibilityVirtualNode.GetWindowId());
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    std::shared_lock<ffrt::shared_mutex> rLock(rwChannelLock_);
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    return channelClient_->UpdateCustomAccessibilityProperty(elementId, windowId, accessibilityVirtualNode, result);
+}
+
+RetError AccessibleAbilityClientImpl::AddAccessibilityVirtualNode(const int64_t rootId,
+    const int32_t windowId, const std::vector<AccessibilityVirtualNode> &nodes, OperateVirtualNodeResult &result)
+{
+    HILOG_INFO("rootId[%{public}" PRId64 "], windowId[%{public}d]", rootId, windowId);
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    std::shared_lock<ffrt::shared_mutex> rLock(rwChannelLock_);
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    return channelClient_->AddAccessibilityVirtualNode(rootId, windowId, nodes, result);
+}
+
+RetError AccessibleAbilityClientImpl::RemoveAccessibilityVirtualNode(const int64_t id,
+    const int32_t windowId, OperateVirtualNodeResult &result)
+{
+    HILOG_INFO("id[%{public}" PRId64 "], windowId[%{public}d]", id, windowId);
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    std::shared_lock<ffrt::shared_mutex> rLock(rwChannelLock_);
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return RET_ERR_NO_CONNECTION;
+    }
+
+    return channelClient_->RemoveAccessibilityVirtualNode(id, windowId, result);
+}
 // LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS
