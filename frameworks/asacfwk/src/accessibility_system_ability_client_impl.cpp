@@ -1165,19 +1165,11 @@ RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderRulesEnabled(bool &
 RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsReadable(
     const std::shared_ptr<ReadableRulesNode>& node, bool& isReadable)
 {
-    return CheckNodeIsReadable(node, FocusRuleType::DEFAULT, isReadable);
-}
-
-RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsReadable(
-    const std::shared_ptr<ReadableRulesNode>& node, FocusRuleType type, bool& isReadable)
-{
     auto& rulesChecker = ReadableRulesChecker::GetInstance();
     isReadable = false;
     if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy_)) {
         return RET_ERR_NOT_ENABLED;
     }
-    // TODO: 后续需要根据type参数选择对应的规则集
-    // 暂时使用原有逻辑，等待规则解析部分完善
     isReadable = rulesChecker.IsReadable(node);
     return RET_OK;
 }
@@ -1203,6 +1195,32 @@ RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsSpecificType(
             break;
         case ReadableSpecificType::AVAILABLE_TYPE:
             isHit = rulesChecker.IsAvailable(node);
+            break;
+        default:
+            break;
+    }
+    return RET_OK;
+}
+
+RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsFocusType(
+    const std::shared_ptr<ReadableRulesNode>& node, FocusRuleType focusType, bool& isHit)
+{
+    auto& rulesChecker = ReadableRulesChecker::GetInstance();
+    if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy_)) {
+        isHit = false;
+        return RET_ERR_NOT_ENABLED;
+    }
+
+    isHit = false;
+    switch (focusType) {
+        case FocusRuleType::DEFAULT:
+            isHit = true;
+            break;
+        case FocusRuleType::FOCUS_BY_TITLE:
+            isHit = rulesChecker.IsTitleTypes(node);
+            break;
+        case FocusRuleType::FOCUS_BY_LINK:
+            isHit = rulesChecker.IsLinkTypes(node);
             break;
         default:
             break;
