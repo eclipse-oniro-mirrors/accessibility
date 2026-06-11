@@ -1537,5 +1537,90 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetTreeIdAndElementIdBySplitE
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "GetTreeIdAndElementIdBySplitElementId_001 end";
 }
+
+/**
+ * @tc.number: CheckNodeIsFocusType_002
+ * @tc.name: CheckNodeIsFocusType
+ * @tc.desc: Test function CheckNodeIsFocusType with DEFAULT type
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckNodeIsFocusType_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "CheckNodeIsFocusType_002 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+    } else {
+        bool isHit = false;
+        EXPECT_EQ(RET_ERR_NOT_ENABLED,
+            impl_->CheckNodeIsFocusType(nullptr, FocusRuleType::DEFAULT, isHit));
+        // DEFAULT类型逻辑：即使未初始化也返回RET_ERR_NOT_ENABLED
+        EXPECT_FALSE(isHit);
+    }
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "CheckNodeIsFocusType_002 end";
+}
+
+/**
+ * @tc.number: CheckNodeIsFocusType_003
+ * @tc.name: CheckNodeIsFocusType
+ * @tc.desc: Test function CheckNodeIsFocusType with FOCUS_BY_TITLE type
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckNodeIsFocusType_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "CheckNodeIsFocusType_003 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+    } else {
+        bool isHit = false;
+        EXPECT_EQ(RET_ERR_NOT_ENABLED,
+            impl_->CheckNodeIsFocusType(nullptr, FocusRuleType::FOCUS_BY_TITLE, isHit));
+        EXPECT_FALSE(isHit);
+    }
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "CheckNodeIsFocusType_003 end";
+}
+
+/**
+ * @tc.number: CheckNodeIsFocusType_004
+ * @tc.name: CheckNodeIsFocusType
+ * @tc.desc: Test function CheckNodeIsFocusType with FOCUS_BY_LINK type
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckNodeIsFocusType_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "CheckNodeIsFocusType_004 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+    } else {
+        bool isHit = false;
+        EXPECT_EQ(RET_ERR_NOT_ENABLED,
+            impl_->CheckNodeIsFocusType(nullptr, FocusRuleType::FOCUS_BY_LINK, isHit));
+        EXPECT_FALSE(isHit);
+    }
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "CheckNodeIsFocusType_004 end";
+}
+
+/**
+ * @tc.number: CheckNodeIsFocusType_005
+ * @tc.name: CheckNodeIsFocusType
+ * @tc.desc: Test function CheckNodeIsFocusType with invalid FocusRuleType
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckNodeIsFocusType_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "CheckNodeIsFocusType_005 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+    } else {
+        bool isHit = false;
+        FocusRuleType invalidType = static_cast<FocusRuleType>(999);
+        EXPECT_EQ(RET_ERR_NOT_ENABLED, impl_->CheckNodeIsFocusType(nullptr, invalidType, isHit));
+        EXPECT_FALSE(isHit);
+    }
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "CheckNodeIsFocusType_005 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
