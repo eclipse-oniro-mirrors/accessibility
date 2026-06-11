@@ -22,9 +22,6 @@
 #include "parcel/accessibility_event_info_parcel.h"
 #include "accessibility_input_interceptor.h"
 #include "extend_service_manager.h"
-#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
-#include "accessibility_extend_power_manager.h"
-#endif
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 #include "accessibility_display_manager.h"
 #endif
@@ -320,10 +317,18 @@ void TouchExploration::SendEventToMultimodal(MMI::PointerEvent event, ChangeActi
     EventTransmission::OnPointerEvent(event);
 }
 
-void TouchExploration::SendScreenWakeUpEvent()
+void TouchExploration::SendScreenWakeUpEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    Singleton<AccessibilityExtendPowerManager>::GetInstance().RefreshActivity();
+    // Send move event to wake up the screen and prevent the screen from turning off.
+    MMI::PointerEvent::PointerItem pointerItem {};
+    for (auto& pId : event.GetPointerIds()) {
+        event.GetPointerItem(pId, pointerItem);
+        pointerItem.SetPressed(false);
+        event.RemovePointerItem(pId);
+        event.AddPointerItem(pointerItem);
+    }
+    SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
 }
 
 void TouchExploration::HoverEventRunner()
@@ -392,7 +397,7 @@ void TouchExploration::HandleInvalidState(MMI::PointerEvent &event)
     event.GetPointerItem(event.GetPointerId(), pointerItem);
 
     if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_MOVE) {
-        SendScreenWakeUpEvent();
+        SendScreenWakeUpEvent(event);
     }
 
     // the last finger is lifted
@@ -478,7 +483,7 @@ void TouchExploration::HandleOneFingerDownStateMove(MMI::PointerEvent &event)
         handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::SWIPE_COMPLETE_TIMEOUT_MSG), 0,
             static_cast<int32_t>(TimeoutDuration::SWIPE_COMPLETE_TIMEOUT));
         SetCurrentState(TouchExplorationState::ONE_FINGER_SWIPE);
-        SendScreenWakeUpEvent();
+        SendScreenWakeUpEvent(event);
     }
 }
 
@@ -634,7 +639,7 @@ void TouchExploration::HandleOneFingerSwipeStateUp(MMI::PointerEvent &event)
 void TouchExploration::HandleOneFingerSwipeStateMove(MMI::PointerEvent &event)
 {
     AddOneFingerSwipeEvent(event);
-    SendScreenWakeUpEvent();
+    SendScreenWakeUpEvent(event);
 }
 
 bool TouchExploration::RecordFocusedLocation(MMI::PointerEvent &event)

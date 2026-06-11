@@ -345,7 +345,7 @@ private:
     void SendTouchEventToAA(MMI::PointerEvent &event);
     void SendGestureEventToAA(GestureType gestureId, uint64_t displayId);
     void SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action);
-    void SendScreenWakeUpEvent();
+    void SendScreenWakeUpEvent(MMI::PointerEvent &event);
     void SendDragDownEventToMultimodal(MMI::PointerEvent event);
     void SendUpForDragDownEvent();
     bool GetPointerItemWithFingerNum(uint32_t fingerNum, std::vector<MMI::PointerEvent::PointerItem> &curPoints,
