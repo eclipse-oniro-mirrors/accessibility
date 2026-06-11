@@ -894,7 +894,8 @@ ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string 
     return CreateAniAccessibilityRuleResult(env, param.nodeInfos_, param.moveSearchResult_);
 }
 
-ani_object FindElementsByConditionWithType(ani_env *env, ani_object thisObj, ani_string rule, ani_string condition, ani_int type)
+ani_object FindElementsByConditionWithType(
+    ani_env *env, ani_object thisObj, ani_string rule, ani_string condition, ani_int type)
 {
     HILOG_DEBUG("FindElementsByConditionWithType native method called");
     AccessibilityElement* element = ANIUtils::Unwrap<AccessibilityElement>(env, thisObj);
