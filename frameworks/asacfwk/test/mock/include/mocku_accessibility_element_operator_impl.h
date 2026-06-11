@@ -55,7 +55,8 @@ public:
         const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
         AccessibilityElementOperatorCallback &callback));
  
-    MOCK_METHOD2(SetAddAccessibilityVirtualNodeResult, void(const OperateVirtualNodeResult result, const int32_t requestId));
+    MOCK_METHOD2(SetAddAccessibilityVirtualNodeResult, void(const OperateVirtualNodeResult result,
+        const int32_t requestId));
 };
 } // namespace Accessibility
 } // namespace OHOS

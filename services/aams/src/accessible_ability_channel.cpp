@@ -1235,7 +1235,8 @@ RetError AccessibleAbilityChannel::UpdateCustomAccessibilityProperty(const int64
 
         auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
         int64_t realElementId = awm.GetSceneBoardElementId(windowId, elementId);
-        elementOperator->UpdateCustomAccessibilityProperty(realElementId, accessibilityVirtualNode, requestId, callback);
+        elementOperator->UpdateCustomAccessibilityProperty(realElementId, accessibilityVirtualNode,
+            requestId, callback);
         syncPromise->set_value(RET_OK);
         }, "UpdateCustomAccessibilityProperty");
 

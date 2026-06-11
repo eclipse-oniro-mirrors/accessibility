@@ -127,7 +127,8 @@ public:
      * @param result The result of the operation, refer to OperateVirtualNodeResult.
      * @param requestId The request id from AA, it is used to match with request and response.
      */
-    void SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result, const int32_t requestId) override;
+    void SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override;
 
 private:
     /**

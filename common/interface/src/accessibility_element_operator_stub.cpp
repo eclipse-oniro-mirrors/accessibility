@@ -49,9 +49,12 @@
     SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_BY_WINDOW_ID, HandleSearchDefaultFocusedByWindowId)            \
     SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_BY_SPECIFIC_PROPERTY, HandleSearchElementInfoBySpecificProperty) \
     SWITCH_CASE(AccessibilityInterfaceCode::ASAC_FOCUS_MOVE_SEARCH_WITH_CONDITION, HandleFocusMoveSearchWithCondition) \
-    SWITCH_CASE(AccessibilityInterfaceCode::ASAC_UPDATE_ACCESSIBILITY_ELEMENT_INFO, HandleUpdateCustomAccessibilityProperty) \
-    SWITCH_CASE(AccessibilityInterfaceCode::ASAC_ADD_ACCESSIBILITY_VIRTUAL_NODE, HandleAddAccessibilityVirtualNode) \
-    SWITCH_CASE(AccessibilityInterfaceCode::ASAC_REMOVE_ACCESSIBILITY_VIRTUAL_NODE, HandleRemoveAccessibilityVirtualNode) \
+    SWITCH_CASE(AccessibilityInterfaceCode::ASAC_UPDATE_ACCESSIBILITY_ELEMENT_INFO,                               \
+        HandleUpdateCustomAccessibilityProperty)                                                                  \
+    SWITCH_CASE(AccessibilityInterfaceCode::ASAC_ADD_ACCESSIBILITY_VIRTUAL_NODE,                                  \
+        HandleAddAccessibilityVirtualNode)                                                                        \
+    SWITCH_CASE(AccessibilityInterfaceCode::ASAC_REMOVE_ACCESSIBILITY_VIRTUAL_NODE,                               \
+        HandleRemoveAccessibilityVirtualNode)                                                                     \
 
 namespace OHOS {
 namespace Accessibility {
@@ -431,7 +434,6 @@ ErrCode AccessibilityElementOperatorStub::HandleAddAccessibilityVirtualNode(Mess
 {
     HILOG_DEBUG();
     int64_t rootId = data.ReadInt64();
- 
     int32_t nodeCount = data.ReadInt32();
     std::vector<AccessibilityVirtualNode> nodes;
     for (int32_t i = 0; i < nodeCount; i++) {
@@ -441,7 +443,6 @@ ErrCode AccessibilityElementOperatorStub::HandleAddAccessibilityVirtualNode(Mess
         node.SetAccessibilityText(data.ReadString());
         node.SetAccessibilityGroup(data.ReadBool());
         node.SetAccessibilityLevel(data.ReadString());
- 
         Rect rect;
         int32_t leftTopX = data.ReadInt32();
         int32_t leftTopY = data.ReadInt32();
@@ -450,7 +451,6 @@ ErrCode AccessibilityElementOperatorStub::HandleAddAccessibilityVirtualNode(Mess
         rect.SetLeftTopScreenPostion(leftTopX, leftTopY);
         rect.SetRightBottomScreenPostion(rightBottomX, rightBottomY);
         node.SetRect(rect);
- 
         node.SetCheckable(data.ReadBool());
         node.SetChecked(data.ReadBool());
         node.SetClickable(data.ReadBool());
@@ -463,7 +463,6 @@ ErrCode AccessibilityElementOperatorStub::HandleAddAccessibilityVirtualNode(Mess
         node.SetPoint(point);
         node.SetAccessibilityFocused(data.ReadBool());
         node.SetParentId(data.ReadInt64());
- 
         int32_t childNodeCount = data.ReadInt32();
         std::vector<int64_t> childNodeIds;
         for (int32_t j = 0; j < childNodeCount; j++) {
@@ -472,12 +471,9 @@ ErrCode AccessibilityElementOperatorStub::HandleAddAccessibilityVirtualNode(Mess
         node.SetChildNodeIds(childNodeIds);
         node.SetElementId(data.ReadInt64());
         node.SetWindowId(data.ReadInt32());
- 
         nodes.push_back(node);
     }
- 
     int32_t requestId = data.ReadInt32();
- 
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
     if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");

@@ -282,7 +282,8 @@ public:
         OperateVirtualNodeResult &result) override;
  
     virtual RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
-        AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult) override;
+        AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos,
+        int32_t &moveSearchResult) override;
 
 private:
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;

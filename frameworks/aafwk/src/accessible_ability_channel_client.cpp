@@ -671,7 +671,8 @@ RetError AccessibleAbilityChannelClient::UpdateCustomAccessibilityProperty(const
     }
 
     ffrt::future<void> promiseFuture = callback->promise_.get_future();
-    auto ret = proxy_->UpdateCustomAccessibilityProperty(elementId, windowId, accessibilityVirtualNode, requestId, callback);
+    auto ret = proxy_->UpdateCustomAccessibilityProperty(elementId, windowId, accessibilityVirtualNode,
+        requestId, callback);
     if (ret != RET_OK) {
         return ret;
     }

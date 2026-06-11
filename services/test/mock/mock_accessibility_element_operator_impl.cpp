@@ -339,7 +339,8 @@ void MockAccessibilityElementOperatorImpl::UpdateCustomAccessibilityProperty(con
 {
     int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {
-        operator_->UpdateCustomAccessibilityProperty(elementId, accessibilityVirtualNode, mRequestId, operatorCallback_);
+        operator_->UpdateCustomAccessibilityProperty(elementId, accessibilityVirtualNode,
+            mRequestId, operatorCallback_);
     } else {
         HILOG_DEBUG("Can not find interaction object");
     }

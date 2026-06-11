@@ -528,8 +528,8 @@ void AccessibilityElementOperatorCallbackProxy::SetAddAccessibilityVirtualNodeRe
     }
 }
 
-void AccessibilityElementOperatorCallbackProxy::SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
-    const int32_t requestId)
+void AccessibilityElementOperatorCallbackProxy::SetRemoveAccessibilityVirtualNodeResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
 {
     HILOG_INFO();
     MessageParcel data;

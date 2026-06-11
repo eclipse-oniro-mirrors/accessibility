@@ -1946,8 +1946,7 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
 RetError AccessibleAbilityClientImpl::UpdateCustomAccessibilityProperty(const int64_t elementId,
     const int32_t windowId, const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result)
 {
-    HILOG_INFO("elementId[%{public}" PRId64 "], windowId[%{public}d], VirtualNode.id: %{public}ld, VirtualNode.windowid: %{public}d",
-        elementId, windowId, accessibilityVirtualNode.GetId(), accessibilityVirtualNode.GetWindowId());
+    HILOG_INFO("elementId[%{public}" PRId64 "], windowId[%{public}d]", elementId, windowId);
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
         return RET_ERR_NO_CONNECTION;
