@@ -156,7 +156,7 @@ void PrintHelp(const std::string& subcommand = "")
     }
 }
 
-bool ConvertStringToInt(std::string &str, int32_t &value)
+bool ConvertStringToInt64(std::string &str, int32_t &value)
 {
     auto [ptr, errCode] = std::from_chars(str.data(), str.data() + str.size(), value);
     return errCode == std::errc{} && ptr == str.data() + str.size();
@@ -244,7 +244,7 @@ int CommandStateIsScreenReaderEnabled(const std::vector<std::string>& args)
 int CommandAbilityEnable(const std::vector<std::string>& args)
 {
     auto& config = AccessibilityConfig::AccessibilityConfig::GetInstance();
-    std::string name = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    std::string name = "com.ohos.screenreader/AccessibilityExtAbility";
     uint32_t capabilities = 31;
 
     RetError ret = config.EnableAbility(name, capabilities);
@@ -271,7 +271,7 @@ int CommandAbilityEnable(const std::vector<std::string>& args)
 int CommandAbilityDisable(const std::vector<std::string>& args)
 {
     auto& config = AccessibilityConfig::AccessibilityConfig::GetInstance();
-    std::string name = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
+    std::string name = "com.ohos.screenreader/AccessibilityExtAbility";
 
     RetError ret = config.DisableAbility(name);
     if (ret == RetError::RET_OK) {
@@ -658,7 +658,7 @@ int CommandDaltonizationSetFilter(const std::vector<std::string>& args)
     }
 
     int32_t type = 0;
-    if (!ConvertStringToInt(typeStr, type) ||
+    if (!ConvertStringToInt64(typeStr, type) ||
     type < static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Normal) ||
     type > static_cast<int>(AccessibilityConfig::DALTONIZATION_TYPE::Tritanomaly)) {
         return OutputError("ERR_ARG_INVALID",
@@ -707,7 +707,7 @@ int CommandClickSetResponseTime(const std::vector<std::string>& args)
     }
 
     int32_t time = 0;
-    if (!ConvertStringToInt(timeStr, time) ||
+    if (!ConvertStringToInt64(timeStr, time) ||
     time < static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort) ||
     time > static_cast<int>(AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayLong)) {
         return OutputError("ERR_ARG_INVALID",
@@ -801,7 +801,7 @@ int CommandRepeatClickSetTime(const std::vector<std::string>& args)
     }
 
     int32_t interval = 0;
-    if (!ConvertStringToInt(intervalStr, interval) ||
+    if (!ConvertStringToInt64(intervalStr, interval) ||
     interval < static_cast<int>(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest) ||
     interval > static_cast<int>(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLongest)) {
         return OutputError("ERR_ARG_INVALID",
