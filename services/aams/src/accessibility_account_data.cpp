@@ -94,9 +94,6 @@ namespace {
  
     // Feature flag for screen touch.
     static constexpr uint32_t FEATURE_SCREEN_TOUCH = 0x00000080;
- 
-    // Feature flag for window magnification.
-    static constexpr uint32_t FEATURE_WINDOW_MAGNIFICATION = 0x00000100;
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -910,11 +907,7 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     }
     uint32_t flag = 0;
     if (config_->GetScreenMagnificationState()) {
-        if (config_->GetScreenMagnificationMode() == WINDOW_MAGNIFICATION) {
-            flag |= FEATURE_WINDOW_MAGNIFICATION;
-        } else {
-            flag |= FEATURE_SCREEN_MAGNIFICATION;
-        }
+        flag |= FEATURE_SCREEN_MAGNIFICATION;
     }
     if (isEventTouchGuideState_) {
         flag |= FEATURE_TOUCH_EXPLORATION;

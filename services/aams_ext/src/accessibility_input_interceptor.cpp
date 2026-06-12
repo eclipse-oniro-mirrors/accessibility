@@ -185,7 +185,6 @@ void AccessibilityInputInterceptor::CreateTransmitters()
         (availableFunctions_ & FEATURE_INJECT_TOUCH_EVENTS) ||
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
         (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) ||
-        (availableFunctions_ & FEATURE_WINDOW_MAGNIFICATION) ||
         (availableFunctions_ & FEATURE_SCREEN_TOUCH)) {
         CreatePointerEventTransmitters();
     }
@@ -217,7 +216,7 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
         Singleton<ExtendServiceManager>::GetInstance().SetTouchEventInjector(touchEventInjector);
     }
 
-    if ((availableFunctions_& FEATURE_SCREEN_MAGNIFICATION) || (availableFunctions_& FEATURE_WINDOW_MAGNIFICATION)) {
+    if ((availableFunctions_& FEATURE_SCREEN_MAGNIFICATION)) {
         CreateMagnificationGesture(header, current);
     } else {
         ClearMagnificationGesture();
@@ -369,7 +368,6 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
     if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
         (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) ||
-        (availableFunctions_ & FEATURE_WINDOW_MAGNIFICATION) ||
         (availableFunctions_ & FEATURE_MOUSE_KEY) ||
         (availableFunctions_ & FEATURE_SCREEN_TOUCH)) {
             inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
