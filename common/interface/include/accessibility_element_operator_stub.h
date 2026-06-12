@@ -158,6 +158,14 @@ private:
     ErrCode HandleFocusMoveSearchWithCondition(MessageParcel &data, MessageParcel &reply);
 
     /**
+     * @brief Read AccessibilityVirtualNode from MessageParcel
+     * @param data The data of process communication
+     * @param accessibilityVirtualNode The output AccessibilityVirtualNode object
+     * @return true: successful; false: failed.
+     */
+    bool ReadAccessibilityVirtualNode(MessageParcel &data, AccessibilityVirtualNode &accessibilityVirtualNode);
+
+    /**
      * @brief Handle the IPC request for the function:UpdateCustomAccessibilityProperty.
      * @param data The data of process communication
      * @param reply The response of IPC request

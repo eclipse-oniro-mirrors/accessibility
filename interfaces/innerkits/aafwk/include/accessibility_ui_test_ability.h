@@ -271,7 +271,7 @@ public:
      */
     virtual RetError UpdateCustomAccessibilityProperty(const int64_t elementId, const int32_t windowId,
         const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result) = 0;
- 
+
     /**
      * @brief Add accessibility virtual node.
      * @param elementId The element id.
@@ -282,7 +282,7 @@ public:
      */
     virtual RetError AddAccessibilityVirtualNode(const int64_t elementId, const int32_t windowId,
         const std::vector<AccessibilityVirtualNode> &nodes, OperateVirtualNodeResult &result) = 0;
- 
+
     /**
      * @brief Remove accessibility virtual node.
      * @param windowId The window id.
@@ -292,9 +292,6 @@ public:
      */
     virtual RetError RemoveAccessibilityVirtualNode(const int64_t elementId, const int32_t windowId,
         OperateVirtualNodeResult &result) = 0;
- 
-    virtual RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
-        AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

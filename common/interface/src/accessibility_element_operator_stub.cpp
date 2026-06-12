@@ -368,13 +368,9 @@ ErrCode AccessibilityElementOperatorStub::HandleFocusMoveSearchWithCondition(Mes
     return NO_ERROR;
 }
 
-ErrCode AccessibilityElementOperatorStub::HandleUpdateCustomAccessibilityProperty(MessageParcel &data,
-    MessageParcel &reply)
+bool AccessibilityElementOperatorStub::ReadAccessibilityVirtualNode(MessageParcel &data, 
+    AccessibilityVirtualNode &accessibilityVirtualNode)
 {
-    HILOG_DEBUG();
-    int64_t elementId = data.ReadInt64();
-    AccessibilityVirtualNode accessibilityVirtualNode;
-    
     accessibilityVirtualNode.SetId(data.ReadInt64());
     accessibilityVirtualNode.SetText(data.ReadString());
     accessibilityVirtualNode.SetAccessibilityText(data.ReadString());
@@ -396,6 +392,7 @@ ErrCode AccessibilityElementOperatorStub::HandleUpdateCustomAccessibilityPropert
     accessibilityVirtualNode.SetEnabled(data.ReadBool());
     accessibilityVirtualNode.SetSelected(data.ReadBool());
     accessibilityVirtualNode.SetCustomComponentType(data.ReadString());
+    
     Accessibility::AccessibilityVirtualPoint point;
     point.SetX(data.ReadInt32());
     point.SetY(data.ReadInt32());
@@ -411,9 +408,24 @@ ErrCode AccessibilityElementOperatorStub::HandleUpdateCustomAccessibilityPropert
     accessibilityVirtualNode.SetChildNodeIds(childNodeIds);
     accessibilityVirtualNode.SetElementId(data.ReadInt64());
     accessibilityVirtualNode.SetWindowId(data.ReadInt32());
- 
+    
+    return true;
+}
+
+ErrCode AccessibilityElementOperatorStub::HandleUpdateCustomAccessibilityProperty(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_INFO();
+    int64_t elementId = data.ReadInt64();
+    AccessibilityVirtualNode accessibilityVirtualNode;
+    
+    if (!ReadAccessibilityVirtualNode(data, accessibilityVirtualNode)) {
+        HILOG_ERROR("ReadAccessibilityVirtualNode failed");
+        return ERR_INVALID_VALUE;
+    }
+
     int32_t requestId = data.ReadInt32();
- 
+
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
     if (remote == nullptr) {
         HILOG_ERROR("remote is nullptr.");
@@ -438,39 +450,10 @@ ErrCode AccessibilityElementOperatorStub::HandleAddAccessibilityVirtualNode(Mess
     std::vector<AccessibilityVirtualNode> nodes;
     for (int32_t i = 0; i < nodeCount; i++) {
         AccessibilityVirtualNode node;
-        node.SetId(data.ReadInt64());
-        node.SetText(data.ReadString());
-        node.SetAccessibilityText(data.ReadString());
-        node.SetAccessibilityGroup(data.ReadBool());
-        node.SetAccessibilityLevel(data.ReadString());
-        Rect rect;
-        int32_t leftTopX = data.ReadInt32();
-        int32_t leftTopY = data.ReadInt32();
-        int32_t rightBottomX = data.ReadInt32();
-        int32_t rightBottomY = data.ReadInt32();
-        rect.SetLeftTopScreenPostion(leftTopX, leftTopY);
-        rect.SetRightBottomScreenPostion(rightBottomX, rightBottomY);
-        node.SetRect(rect);
-        node.SetCheckable(data.ReadBool());
-        node.SetChecked(data.ReadBool());
-        node.SetClickable(data.ReadBool());
-        node.SetEnabled(data.ReadBool());
-        node.SetSelected(data.ReadBool());
-        node.SetCustomComponentType(data.ReadString());
-        Accessibility::AccessibilityVirtualPoint point;
-        point.SetX(data.ReadInt32());
-        point.SetY(data.ReadInt32());
-        node.SetPoint(point);
-        node.SetAccessibilityFocused(data.ReadBool());
-        node.SetParentId(data.ReadInt64());
-        int32_t childNodeCount = data.ReadInt32();
-        std::vector<int64_t> childNodeIds;
-        for (int32_t j = 0; j < childNodeCount; j++) {
-            childNodeIds.push_back(data.ReadInt64());
+        if (!ReadAccessibilityVirtualNode(data, node)) {
+            HILOG_ERROR("ReadAccessibilityVirtualNode failed for node[%{public}d]", i);
+            return ERR_INVALID_VALUE;
         }
-        node.SetChildNodeIds(childNodeIds);
-        node.SetElementId(data.ReadInt64());
-        node.SetWindowId(data.ReadInt32());
         nodes.push_back(node);
     }
     int32_t requestId = data.ReadInt32();

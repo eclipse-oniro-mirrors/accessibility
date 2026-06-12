@@ -369,17 +369,5 @@ RetError AccessibilityUITestAbilityImpl::RemoveAccessibilityVirtualNode(const in
     }
     return aaClient->RemoveAccessibilityVirtualNode(elementId, windowId, result);
 }
-
-RetError AccessibilityUITestAbilityImpl::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
-    AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult)
-{
-    HILOG_INFO();
-    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
-        HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
-    }
-    return aaClient->FocusMoveSearchWithCondition(info, param, infos, moveSearchResult);
-}
 } // namespace Accessibility
 } // namespace OHOS
