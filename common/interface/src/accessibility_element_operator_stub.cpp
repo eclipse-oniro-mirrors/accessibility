@@ -368,7 +368,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFocusMoveSearchWithCondition(Mes
     return NO_ERROR;
 }
 
-bool AccessibilityElementOperatorStub::ReadAccessibilityVirtualNode(MessageParcel &data, 
+bool AccessibilityElementOperatorStub::ReadAccessibilityVirtualNode(MessageParcel &data,
     AccessibilityVirtualNode &accessibilityVirtualNode)
 {
     accessibilityVirtualNode.SetId(data.ReadInt64());
@@ -376,7 +376,7 @@ bool AccessibilityElementOperatorStub::ReadAccessibilityVirtualNode(MessageParce
     accessibilityVirtualNode.SetAccessibilityText(data.ReadString());
     accessibilityVirtualNode.SetAccessibilityGroup(data.ReadBool());
     accessibilityVirtualNode.SetAccessibilityLevel(data.ReadString());
-    
+
     Rect rect;
     int32_t leftTopX = data.ReadInt32();
     int32_t leftTopY = data.ReadInt32();
@@ -385,21 +385,20 @@ bool AccessibilityElementOperatorStub::ReadAccessibilityVirtualNode(MessageParce
     rect.SetLeftTopScreenPostion(leftTopX, leftTopY);
     rect.SetRightBottomScreenPostion(rightBottomX, rightBottomY);
     accessibilityVirtualNode.SetRect(rect);
-    
+
     accessibilityVirtualNode.SetCheckable(data.ReadBool());
     accessibilityVirtualNode.SetChecked(data.ReadBool());
     accessibilityVirtualNode.SetClickable(data.ReadBool());
     accessibilityVirtualNode.SetEnabled(data.ReadBool());
     accessibilityVirtualNode.SetSelected(data.ReadBool());
     accessibilityVirtualNode.SetCustomComponentType(data.ReadString());
-    
+
     Accessibility::AccessibilityVirtualPoint point;
     point.SetX(data.ReadInt32());
     point.SetY(data.ReadInt32());
     accessibilityVirtualNode.SetPoint(point);
     accessibilityVirtualNode.SetAccessibilityFocused(data.ReadBool());
     accessibilityVirtualNode.SetParentId(data.ReadInt64());
-    
     int32_t childNodeCount = data.ReadInt32();
     std::vector<int64_t> childNodeIds;
     for (int32_t i = 0; i < childNodeCount; i++) {
@@ -408,7 +407,6 @@ bool AccessibilityElementOperatorStub::ReadAccessibilityVirtualNode(MessageParce
     accessibilityVirtualNode.SetChildNodeIds(childNodeIds);
     accessibilityVirtualNode.SetElementId(data.ReadInt64());
     accessibilityVirtualNode.SetWindowId(data.ReadInt32());
-    
     return true;
 }
 
