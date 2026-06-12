@@ -71,9 +71,6 @@ public:
     // Feature flag for screen touch.
     static constexpr uint32_t FEATURE_SCREEN_TOUCH = 0x00000080;
 
-    // Feature flag for window magnification.
-    static constexpr uint32_t FEATURE_WINDOW_MAGNIFICATION = 0x00000100;
-
     static constexpr uint32_t PRIORITY_EVENT = 500;
 
     static constexpr int32_t INVALID_UID = -2;
