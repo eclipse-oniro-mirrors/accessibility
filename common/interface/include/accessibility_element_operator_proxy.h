@@ -246,6 +246,61 @@ private:
      */
     bool SendTransactCmd(AccessibilityInterfaceCode code, MessageParcel &data,
         MessageParcel &reply,  MessageOption &option);
+    
+    /**
+     * @brief Write accessibility virtual node properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteAccessibilityVirtualNode(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+    
+    /**
+     * @brief Write virtual node basic properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteVirtualNodeBasicProperties(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+    
+    /**
+     * @brief Write virtual node rectangle properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteVirtualNodeRectProperties(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+    
+    /**
+     * @brief Write virtual node boolean properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteVirtualNodeBoolProperties(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+    
+    /**
+     * @brief Write virtual node other properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteVirtualNodeOtherProperties(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+    
+    /**
+     * @brief Write virtual node relation properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteVirtualNodeRelationProperties(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+
     static inline BrokerDelegator<AccessibilityElementOperatorProxy> delegator;
 };
 } // namespace Accessibility
