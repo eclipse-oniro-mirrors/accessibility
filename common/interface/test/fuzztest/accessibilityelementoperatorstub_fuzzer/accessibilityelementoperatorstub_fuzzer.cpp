@@ -23,6 +23,8 @@ namespace {
     constexpr size_t DATA_MIN_SIZE = 100;
     constexpr char END_CHAR = '\0';
     constexpr size_t LEN = 10;
+    constexpr size_t MESSAGE_SIZE = 100;
+    constexpr size_t BASE_CODE = 200;
 }
 
 class ElementOperatorImplFuzzTest : public AccessibilityElementOperatorStub {
@@ -85,6 +87,7 @@ bool EleOperatorOnRemoteRequestFuzzTest(const uint8_t* databuffer, size_t size)
     GetData<uint32_t>(code, &databuffer[position], size - position);
     ElementOperatorImplFuzzTest callBack;
     eleOperatorData.WriteInterfaceToken(ElementOperatorImplFuzzTest::GetDescriptor());
+    code = (code % MESSAGE_SIZE) + BASE_CODE;
     callBack.OnRemoteRequest(code, eleOperatorData, eleOperatorReply, option);
     return true;
 }

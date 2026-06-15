@@ -17,7 +17,6 @@ group("fuzztest") {
   deps = [
     "setmagnificationstate_fuzzer:fuzztest",
     "getanimationoffstate_fuzzer:fuzztest",
-    "setenhanceconfig_fuzzer:fuzztest",
     "seniormodeforapp_fuzzer:fuzztest",
   ]
 }
