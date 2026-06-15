@@ -77,7 +77,6 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     if (retSysParam >= 0 && !std::strcmp(value, "true")) {
-        HILOG_ERROR("accessibility service is ready");
         if (!ConnectToService()) {
             HILOG_ERROR("accessibility service is ready.");
             return;
@@ -659,7 +658,6 @@ RetError AccessibilitySystemAbilityClientImpl::SubscribeStateObserver(
     StateObserverVector &observerVector = stateObserversArray_[eventType];
     for (auto iter = observerVector.begin(); iter != observerVector.end(); ++iter) {
         if (*iter == observer) {
-            HILOG_INFO("Observer has subscribed!");
             return RET_ERR_REGISTER_EXIST;
         }
     }
