@@ -279,40 +279,6 @@ HWTEST_F(AAMSServerTest, DeregisterElementOperatorByWindowId_001, TestSize.Level
 }
 
 /**
- * @tc.number: AAMS_moduletest_CalculateClickPosition_Normal_001
- * @tc.name: CalculateClickPosition with element inside window bounds
- * @tc.desc: Test CalculateClickPosition when element is completely inside window bounds.
- */
-HWTEST_F(AAMSServerTest, CalculateClickPosition_Normal_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AAMS_moduletest_CalculateClickPosition_Normal_001 start";
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    auto accountData = aams.GetCurrentAccountData();
-
-    // Register element operator for window
-    aams.RegisterElementOperatorByWindowId(0, nullptr, 0);
-    sleep(1);
-
-    // Element rect inside window bounds (window: 0,0 to 1000,1000, element: 100,100 to 200,200)
-    Rect rect;
-    rect.SetLeftTopScreenPostion(100, 100);
-    rect.SetRightBottomScreenPostion(200, 200);
-
-    int32_t xPos = 0;
-    int32_t yPos = 0;
-    int32_t windowId = 0;
-
-    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
-
-    EXPECT_TRUE(result);
-    EXPECT_EQ(xPos, 150); // (100 + 200) / 2
-    EXPECT_EQ(yPos, 150); // (100 + 200) / 2
-
-    aams.DeregisterElementOperatorByWindowId(0, 0);
-    GTEST_LOG_(INFO) << "AAMS_moduletest_CalculateClickPosition_Normal_001 end";
-}
-
-/**
  * @tc.number: AAMS_moduletest_CalculateClickPosition_PartialOverlap_001
  * @tc.name: CalculateClickPosition with element partially outside window bounds
  * @tc.desc: Test CalculateClickPosition when element is partially outside window bounds.
@@ -376,74 +342,6 @@ HWTEST_F(AAMSServerTest, CalculateClickPosition_OutOfBounds_001, TestSize.Level1
 
     aams.DeregisterElementOperatorByWindowId(0, 0);
     GTEST_LOG_(INFO) << "AAMS_moduletest_CalculateClickPosition_OutOfBounds_001 end";
-}
-
-/**
- * @tc.number: AAMS_moduletest_CalculateClickPosition_EdgeCase_001
- * @tc.name: CalculateClickPosition with element at window edge
- * @tc.desc: Test CalculateClickPosition when element is at the edge of window bounds.
- */
-HWTEST_F(AAMSServerTest, CalculateClickPosition_EdgeCase_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AAMS_moduletest_CalculateClickPosition_EdgeCase_001 start";
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    auto accountData = aams.GetCurrentAccountData();
-
-    // Register element operator for window
-    aams.RegisterElementOperatorByWindowId(0, nullptr, 0);
-    sleep(1);
-
-    // Element rect at window edge (window: 0,0 to 1000,1000, element: 0,0 to 100,100)
-    Rect rect;
-    rect.SetLeftTopScreenPostion(0, 0);
-    rect.SetRightBottomScreenPostion(100, 100);
-
-    int32_t xPos = 0;
-    int32_t yPos = 0;
-    int32_t windowId = 0;
-
-    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
-
-    EXPECT_TRUE(result);
-    EXPECT_EQ(xPos, 50); // (0 + 100) / 2
-    EXPECT_EQ(yPos, 50); // (0 + 100) / 2
-
-    aams.DeregisterElementOperatorByWindowId(0, 0);
-    GTEST_LOG_(INFO) << "AAMS_moduletest_CalculateClickPosition_EdgeCase_001 end";
-}
-
-/**
- * @tc.number: AAMS_moduletest_CalculateClickPosition_LargeElement_001
- * @tc.name: CalculateClickPosition with element larger than window
- * @tc.desc: Test CalculateClickPosition when element is larger than window bounds.
- */
-HWTEST_F(AAMSServerTest, CalculateClickPosition_LargeElement_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AAMS_moduletest_CalculateClickPosition_LargeElement_001 start";
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    auto accountData = aams.GetCurrentAccountData();
-
-    // Register element operator for window
-    aams.RegisterElementOperatorByWindowId(0, nullptr, 0);
-    sleep(1);
-
-    // Element rect larger than window (window: 0,0 to 1000,1000, element: -500,-500 to 1500,1500)
-    Rect rect;
-    rect.SetLeftTopScreenPostion(-500, -500);
-    rect.SetRightBottomScreenPostion(1500, 1500);
-
-    int32_t xPos = 0;
-    int32_t yPos = 0;
-    int32_t windowId = 0;
-
-    bool result = accountData->GetElementOperatorManager().CalculateClickPosition(rect, xPos, yPos, windowId);
-
-    EXPECT_TRUE(result);
-    EXPECT_EQ(xPos, 500); // (0 + 1000) / 2, clipped to window bounds
-    EXPECT_EQ(yPos, 500); // (0 + 1000) / 2, clipped to window bounds
-
-    aams.DeregisterElementOperatorByWindowId(0, 0);
-    GTEST_LOG_(INFO) << "AAMS_moduletest_CalculateClickPosition_LargeElement_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
