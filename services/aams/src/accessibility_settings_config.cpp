@@ -24,6 +24,7 @@
 #include "accessibility_notification_helper.h"
 #include "magnification_def.h"
 #include "nlohmann/json.hpp"
+#include "accessibility_base_utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -92,6 +93,9 @@ namespace {
     const char* RECOVERY_IGNORE_REPEAT_CLICK_DATE = "recovery_ignore_repeat_click_switch_date";
     const char* IGNORE_REPEATED_CLICK_CACHE_FLAG = "accessibility_ignore_repeat_click_cache_flag";
     const char* IGNORE_REPEATED_CLICK_EXCLUDE_FLAG = "accessibility_ignore_repeat_click_exclude_flag";
+    const char* OOBE_COLOR_FILTER_CACHE_FLAG = "accessibility_oobe_color_filter_cache_flag";
+    const char* OOBE_COLOR_FILTER_SWITCH_CACHE = "accessibility_oobe_color_filter_switch_cache";
+    const char* OOBE_COLOR_FILTER_DALTONIZER_CACHE = "accessibility_oobe_color_filter_daltonizer_cache";
     const char* CLONE_CAPABILITY = "const.accessibility.cloneCapability";
     const char* OLD_DEVICE_CAPABILITY = "accessibility_clone_capability";
     const char* SUPPORT_THREE_FINGER_ZOOM = "accessibility_support_three_finger_zoom";
@@ -1213,6 +1217,41 @@ void AccessibilitySettingsConfig::HandleIgnoreRepeatClickCache()
     datashare_->PutBoolValue(IGNORE_REPEATED_CLICK_EXCLUDE_FLAG, false);
 }
 
+void AccessibilitySettingsConfig::HandleDaltonizationColorCache()
+{
+    if (!datashare_) {
+        HILOG_ERROR("helper is nullptr");
+        return;
+    }
+ 
+    uint32_t daltonizationColorFilter = static_cast<uint32_t>(datashare_->GetIntValue(
+        DALTONIZATION_COLOR_FILTER_KEY, AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly));
+    bool colorFilterCacheFlag = datashare_->GetBoolValue(OOBE_COLOR_FILTER_CACHE_FLAG, false);
+    if (colorFilterCacheFlag) {
+        HILOG_INFO("HandleDaltonizationColorCache recovery");
+        bool ColorFilterSwitchCache = datashare_->GetBoolValue(OOBE_COLOR_FILTER_SWITCH_CACHE, false);
+        std::string daltonizerModeCache = datashare_->GetStringValue(OOBE_COLOR_FILTER_DALTONIZER_CACHE, "");
+        daltonizationColorFilter = ConvertStringToDaltonizationTypes(daltonizerModeCache);
+        datashare_->PutBoolValue(DALTONIZATION_STATE, ColorFilterSwitchCache);
+        daltonizationState_.store(ColorFilterSwitchCache);
+    }
+ 
+    if (daltonizationState_ && daltonizationColorFilter_ == AccessibilityConfig::DALTONIZATION_TYPE::Normal) {
+        HILOG_INFO("HandleDaltonizationColorCache to default");
+        daltonizationColorFilter = AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly;
+        datashare_->PutBoolValue(DALTONIZATION_STATE, false);
+        daltonizationState_.store(false);
+    }
+    auto ret = datashare_->PutIntValue(DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(daltonizationColorFilter));
+    if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "HandleDaltonizationColorCache");
+        HILOG_ERROR("set daltonizationColorFilter_ failed");
+        return;
+    }
+    daltonizationColorFilter_.store(daltonizationColorFilter);
+    return;
+}
+
 void AccessibilitySettingsConfig::InitSetting()
 {
     HILOG_DEBUG();
@@ -1232,8 +1271,10 @@ void AccessibilitySettingsConfig::InitSetting()
     audioMonoState_.store(datashare_->GetBoolValue(AUDIO_MONO_KEY, false));
     HandleIgnoreRepeatClickCache();
     mouseAutoClick_.store(static_cast<int32_t>(datashare_->GetIntValue("MouseAutoClick", -1)));
-    daltonizationColorFilter_.store(static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0)));
+    daltonizationColorFilter_.store(static_cast<uint32_t>(datashare_->GetIntValue(
+        DALTONIZATION_COLOR_FILTER_KEY, AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly)));
     SetDaltonizationColorFilter(daltonizationColorFilter_.load());
+    HandleDaltonizationColorCache();
     contentTimeout_.store(static_cast<uint32_t>(datashare_->GetIntValue(CONTENT_TIMEOUT_KEY, 0)));
     brightnessDiscount_.store(static_cast<float>(datashare_->GetFloatValue(BRIGHTNESS_DISCOUNT_KEY, 1.0)));
     audioBalance_.store(static_cast<float>(datashare_->GetFloatValue(AUDIO_BALANCE_KEY, 0)));
@@ -1524,7 +1565,8 @@ void AccessibilitySettingsConfig::recoverColorCorrection()
         SetDaltonizationState(daltonizationState_.load());
     }
     if (daltonizationColorFilter_.load() !=
-        static_cast<uint32_t>(datashare_->GetIntValue(DALTONIZATION_COLOR_FILTER_KEY, 0))) {
+        static_cast<uint32_t>(datashare_->GetIntValue(
+            DALTONIZATION_COLOR_FILTER_KEY, AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly))) {
         HILOG_INFO("daltonizationColorFilter_: %{public}d need recovery", daltonizationColorFilter_.load());
         SetDaltonizationColorFilter(daltonizationColorFilter_.load());
     }

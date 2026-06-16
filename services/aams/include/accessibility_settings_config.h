@@ -147,6 +147,7 @@ private:
     void InitAnimationOffConfig();
     void HandleIgnoreRepeatClickState();
     void HandleIgnoreRepeatClickCache();
+    void HandleDaltonizationColorCache();
     RetError SetConfigState(const std::string& key, bool value);
 
     void CloneOnDeviceCapability();
