@@ -524,6 +524,14 @@ bool ElementOperatorManager::InvalidHoverEnterEvent(AccessibilityEventInfo &even
     if (treeId <= 0) {
         return false;
     }
+    auto actionList = originElementInfo.GetActionList();
+    for (const auto& action : actionList) {
+        if (action.GetActionType() == ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM ||
+            action.GetActionType() == ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM) {
+            HILOG_DEBUG("isWebNode");
+            return false;
+        }
+    }
     auto windowId = event.GetWindowId();
     int64_t parentId = -1;
     GetRootParentId(windowId, treeId, parentId);
