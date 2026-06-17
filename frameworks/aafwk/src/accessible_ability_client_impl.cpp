@@ -182,7 +182,7 @@ RetError AccessibleAbilityClientImpl::CheckConnection()
 bool AccessibleAbilityClientImpl::LoadAccessibilityService()
 {
     std::unique_lock<ffrt::mutex> lock(conVarMutex_);
-    sptr<AccessibilityLoadCallback> loadCallback = new AccessibilityLoadCallback();
+    sptr<AccessibilityLoadCallback> loadCallback = new(std::nothrow) AccessibilityLoadCallback();
     if (loadCallback == nullptr) {
         return false;
     }

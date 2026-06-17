@@ -233,7 +233,7 @@ bool AccessibilityConfig::Impl::InitAccessibilityServiceProxy()
 
 bool AccessibilityConfig::Impl::LoadAccessibilityService()
 {
-    sptr<AccessibilityLoadCallback> loadCallback = new AccessibilityLoadCallback(this);
+    sptr<AccessibilityLoadCallback> loadCallback = new(std::nothrow) AccessibilityLoadCallback(this);
     if (loadCallback == nullptr) {
         return false;
     }
