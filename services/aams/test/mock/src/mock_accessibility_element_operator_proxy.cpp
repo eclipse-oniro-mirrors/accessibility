@@ -148,14 +148,5 @@ void AccessibilityElementOperatorProxy::SearchElementInfoBySpecificProperty(cons
     (void)requestId;
     (void)callback;
 }
-
-void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info, const AccessibilityFocusMoveParam &param,
-    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
-{
-    (void)info;
-    (void)param;
-    (void)requestId;
-    (void)callback;
-}
 } // namespace Accessibility
 } // namespace OHOS

@@ -467,5 +467,95 @@ bool AccessibilityElementOperatorCallbackProxy::WriteElementInfosToRawData(
     }
     return true;
 }
+
+void AccessibilityElementOperatorCallbackProxy::SetUpdateCustomAccessibilityPropertyResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    HILOG_INFO();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+
+    if (!data.WriteInt32(result)) {
+        HILOG_ERROR("connection write result failed");
+        return;
+    }
+
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_UPDATE_ACCESSIBILITY_ELEMENT_INFO,
+        data, reply, option)) {
+        HILOG_ERROR("set execute action result failed");
+        return;
+    }
+}
+
+void AccessibilityElementOperatorCallbackProxy::SetAddAccessibilityVirtualNodeResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    HILOG_INFO();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+
+    if (!data.WriteInt32(result)) {
+        HILOG_ERROR("connection write failed");
+        return;
+    }
+
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_ADD_ACCESSIBILITY_VIRTUAL_NODE,
+        data, reply, option)) {
+        HILOG_ERROR("set add accessibility virtual node result failed");
+        return;
+    }
+}
+
+void AccessibilityElementOperatorCallbackProxy::SetRemoveAccessibilityVirtualNodeResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    HILOG_INFO();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("connection write token failed");
+        return;
+    }
+
+    if (!data.WriteInt32(result)) {
+        HILOG_ERROR("connection write failed");
+        return;
+    }
+
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("connection write request id failed");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_REMOVE_ACCESSIBILITY_VIRTUAL_NODE,
+        data, reply, option)) {
+        HILOG_ERROR("set remove accessibility virtual node result failed");
+        return;
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

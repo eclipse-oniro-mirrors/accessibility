@@ -388,5 +388,26 @@ RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const Accessi
     HILOG_DEBUG();
     return RET_OK;
 }
+
+RetError AccessibleAbilityClientImpl::UpdateCustomAccessibilityProperty(const int64_t elementId,
+    const int32_t windowId, const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result)
+{
+    HILOG_DEBUG();
+    return RET_OK;
+}
+
+RetError AccessibleAbilityClientImpl::AddAccessibilityVirtualNode(const int64_t rootId,
+    const int32_t windowId, const std::vector<AccessibilityVirtualNode> &nodes, OperateVirtualNodeResult &result)
+{
+    HILOG_DEBUG();
+    return RET_OK;
+}
+
+RetError AccessibleAbilityClientImpl::RemoveAccessibilityVirtualNode(const int64_t id,
+    const int32_t windowId, OperateVirtualNodeResult &result)
+{
+    HILOG_DEBUG();
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

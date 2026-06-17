@@ -413,5 +413,25 @@ RetError AccessibleAbilityChannel::FocusMoveSearchWithCondition(const Accessibil
 {
     return RET_OK;
 }
+
+RetError AccessibleAbilityChannel::UpdateCustomAccessibilityProperty(const int64_t elementId, int32_t windowId,
+    const AccessibilityVirtualNode& accessibilityVirtualNode,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannel::AddAccessibilityVirtualNode(const int64_t rootId, int32_t windowId,
+    const std::vector<AccessibilityVirtualNode> &nodes,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannel::RemoveAccessibilityVirtualNode(const int64_t id, int32_t windowId,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

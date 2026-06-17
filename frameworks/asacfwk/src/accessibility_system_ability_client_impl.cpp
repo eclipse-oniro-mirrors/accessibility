@@ -1311,5 +1311,77 @@ RetError AccessibilitySystemAbilityClientImpl::SetSeniorModeStateForApp(const bo
     }
     return RET_OK;
 }
+
+void AccessibilitySystemAbilityClientImpl::SetUpdateCustomAccessibilityPropertyResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    HILOG_DEBUG("search element result: %{public}d, requestId[%{public}d]", result, requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
+    if (requestId < 0) {
+        HILOG_ERROR("requestId is invalid");
+        return;
+    }
+    if (callback != nullptr) {
+        serviceProxy_->RemoveRequestId(requestId);
+        callback->SetUpdateCustomAccessibilityPropertyResult(result, requestId);
+        AccessibilityElementOperatorImpl::EraseCallback(requestId);
+    } else {
+        HILOG_ERROR("callback is nullptr");
+    }
+}
+ 
+void AccessibilitySystemAbilityClientImpl::SetAddAccessibilityVirtualNodeResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    HILOG_DEBUG("search element result: %{public}d, requestId[%{public}d]", result, requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
+    if (requestId < 0) {
+        HILOG_ERROR("requestId is invalid");
+        return;
+    }
+    if (callback != nullptr) {
+        serviceProxy_->RemoveRequestId(requestId);
+        callback->SetAddAccessibilityVirtualNodeResult(result, requestId);
+        AccessibilityElementOperatorImpl::EraseCallback(requestId);
+    } else {
+        HILOG_ERROR("callback is nullptr");
+    }
+}
+ 
+void AccessibilitySystemAbilityClientImpl::SetRemoveAccessibilityVirtualNodeResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    HILOG_DEBUG("search element result: %{public}d, requestId[%{public}d]", result, requestId);
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("serviceProxy_ is nullptr");
+        return;
+    }
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        AccessibilityElementOperatorImpl::GetCallbackByRequestId(requestId);
+    if (requestId < 0) {
+        HILOG_ERROR("requestId is invalid");
+        return;
+    }
+    if (callback != nullptr) {
+        serviceProxy_->RemoveRequestId(requestId);
+        callback->SetRemoveAccessibilityVirtualNodeResult(result, requestId);
+        AccessibilityElementOperatorImpl::EraseCallback(requestId);
+    } else {
+        HILOG_ERROR("callback is nullptr");
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

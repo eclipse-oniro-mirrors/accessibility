@@ -50,6 +50,12 @@ public:
         const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override;
     virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
         const FocusMoveResult &result, const int32_t requestId) override;
+    virtual void SetUpdateCustomAccessibilityPropertyResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override;
+    virtual void SetAddAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override;
+    virtual void SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override;
 
     ffrt::promise<void> promise_;
     bool executeActionResult_ = false;
@@ -63,6 +69,7 @@ public:
     bool changeToNewInfo_ = false;
     bool needTerminate_ = false;
     int32_t accountId_ = -1;
+    OperateVirtualNodeResult operateVirtualNodeResult_ = OperateVirtualNodeResult::VIRTUAL_NODE_NOT_SUPPORT;
 
     bool ValidateElementInfos(const std::list<AccessibilityElementInfo>& infos);
 };

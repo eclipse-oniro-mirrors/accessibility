@@ -116,6 +116,10 @@ public:
         const AccessibilityFocusMoveParam &param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
 
+    void UpdateCustomAccessibilityProperty(const int64_t elementId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override {}
+
     sptr<IRemoteObject> AsObject() override
     {
         return nullptr;

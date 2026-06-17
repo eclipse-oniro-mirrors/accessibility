@@ -97,6 +97,30 @@ public:
         const std::list<AccessibilityElementInfo> &infos, const FocusMoveResult &result, const int32_t requestId) = 0;
 
     /**
+     * @brief Set result of update accessibility element info to AA.
+     * @param result The result code of update operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetUpdateCustomAccessibilityPropertyResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) = 0;
+ 
+    /**
+     * @brief Set result of add accessibility virtual node to AA.
+     * @param result The result of add operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetAddAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) = 0;
+ 
+    /**
+     * @brief Set result of remove accessibility virtual node to AA.
+     * @param result The result of remove operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) = 0;
+
+    /**
      * @brief Set isFilter.
      * @param enableFilter True : Perform filtering ;otherwise is false.
      */

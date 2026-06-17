@@ -58,6 +58,14 @@ public:
     MOCK_METHOD5(FocusMoveSearchWithCondition, RetError(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam &param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback, int32_t windowId));
+    MOCK_METHOD5(UpdateCustomAccessibilityProperty, RetError(const int64_t elementId, int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback));
+    MOCK_METHOD5(AddAccessibilityVirtualNode, RetError(const int64_t rootId, int32_t windowId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback));
+    MOCK_METHOD4(RemoveAccessibilityVirtualNode, RetError(const int64_t id, int32_t windowId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback));
 };
 
 class MockAccessibleAbilityConnection : public AccessibleAbilityConnection {
@@ -104,6 +112,12 @@ public:
     MOCK_METHOD1(SetIsRegisterDisconnectCallback, void(bool isRegister));
     MOCK_METHOD0(NotifyDisconnect, void());
     MOCK_METHOD0(DisconnectAbility, void());
+    MOCK_METHOD2(SetUpdateCustomAccessibilityPropertyResult, void(const OperateVirtualNodeResult result,
+        const int32_t requestId));
+    MOCK_METHOD2(SetAddAccessibilityVirtualNodeResult, void(const OperateVirtualNodeResult result,
+        const int32_t requestId));
+    MOCK_METHOD2(SetRemoveAccessibilityVirtualNodeResult, void(const OperateVirtualNodeResult result,
+        const int32_t requestId));
 };
 } // namespace Accessibility
 } // namespace OHOS

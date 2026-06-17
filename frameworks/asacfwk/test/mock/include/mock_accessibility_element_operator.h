@@ -51,6 +51,14 @@ public:
     MOCK_METHOD4(FocusMoveSearchWithCondition, void(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam param,
         const int32_t requestId, AccessibilityElementOperatorCallback &callback));
+    MOCK_METHOD4(UpdateCustomAccessibilityProperty, void(const int64_t elementId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        AccessibilityElementOperatorCallback &callback));
+    MOCK_METHOD4(AddAccessibilityVirtualNode, void(const int64_t rootId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        AccessibilityElementOperatorCallback &callback));
+    MOCK_METHOD3(RemoveAccessibilityVirtualNode, void(const int64_t id, const int32_t requestId,
+        AccessibilityElementOperatorCallback &callback));
 };
 } // namespace Accessibility
 } // namespace OHOS

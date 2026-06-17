@@ -94,6 +94,31 @@ public:
 
     virtual void SetFocusMoveSearchWithConditionResult(
         const std::list<AccessibilityElementInfo> &info, const FocusMoveResult &result, const int32_t requestId) = 0;
+    
+    /**
+     * @brief Set the element information by specific property to AA.
+     * @param infos The element information searched by specific property.
+     * @param treeInfos The element info searched by specific property.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetUpdateCustomAccessibilityPropertyResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) = 0;
+ 
+    /**
+     * @brief Set the result of add accessibility virtual node.
+     * @param result The result of add operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetAddAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) = 0;
+ 
+    /**
+     * @brief Set the result of remove accessibility virtual node.
+     * @param result The result of remove operation, refer to OperateVirtualNodeResult.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

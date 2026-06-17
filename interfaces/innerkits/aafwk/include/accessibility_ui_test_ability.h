@@ -21,6 +21,7 @@
 #include "accessibility_gesture_inject_path.h"
 #include "accessibility_window_info.h"
 #include "accessible_ability_listener.h"
+#include "accessibility_def.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -259,6 +260,38 @@ public:
      * @return Return RET_OK if config need events successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError ConfigureEvents(std::vector<uint32_t> needEvents) = 0;
+
+    /**
+     * @brief Update accessibility virtual node.
+     * @param elementId The element id.
+     * @param windowId The window id.
+     * @param accessibilityVirtualNode The accessibility virtual node information.
+     * @return Return RET_OK if update accessibility virtual node successfully,
+     *          otherwise refer to the RetError for the failure.
+     */
+    virtual RetError UpdateCustomAccessibilityProperty(const int64_t elementId, const int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result) = 0;
+
+    /**
+     * @brief Add accessibility virtual node.
+     * @param elementId The element id.
+     * @param windowId The window id.
+     * @param accessibilityVirtualNode The accessibility virtual node information.
+     * @return Return RET_OK if adds accessibility virtual node successfully,
+     *          otherwise refer to the RetError for the failure.
+     */
+    virtual RetError AddAccessibilityVirtualNode(const int64_t elementId, const int32_t windowId,
+        const std::vector<AccessibilityVirtualNode> &nodes, OperateVirtualNodeResult &result) = 0;
+
+    /**
+     * @brief Remove accessibility virtual node.
+     * @param windowId The window id.
+     * @param elementId The element id.
+     * @return Return RET_OK if removes accessibility virtual node successfully,
+     *                 otherwise refer to the RetError for the failure.
+     */
+    virtual RetError RemoveAccessibilityVirtualNode(const int64_t elementId, const int32_t windowId,
+        OperateVirtualNodeResult &result) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

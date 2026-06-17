@@ -180,6 +180,37 @@ public:
     virtual void FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam param,
         const int32_t requestId, AccessibilityElementOperatorCallback &callback) = 0;
+
+    /**
+     * @brief Update accessibility virtual node.
+     * @param elementId: The unique id of the component ID.
+     * @param accessibilityVirtualNode: The accessibility virtual node information.
+     * @param requestId Matched the request and response. It needn\'t cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the result to ASAC and it defined by ASAC.
+     */
+    virtual void UpdateCustomAccessibilityProperty(const int64_t elementId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        AccessibilityElementOperatorCallback &callback) = 0;
+
+    /**
+     * @brief Add accessibility virtual node.
+     * @param elementId: The unique id of the component ID.
+     * @param accessibilityVirtualNode: The accessibility virtual node information.
+     * @param requestId Matched the request and response. It needn\'t cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the result to ASAC and it defined by ASAC.
+     */
+    virtual void AddAccessibilityVirtualNode(const int64_t elementId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        AccessibilityElementOperatorCallback &callback) = 0;
+
+    /**
+     * @brief Remove accessibility virtual node.
+     * @param elementId: The unique id of the component ID.
+     * @param requestId Matched the request and response. It needn\'t cared by ACE, transfer it by callback only.
+     * @param callback  To transfer the result to ASAC and it defined by ASAC.
+     */
+    virtual void RemoveAccessibilityVirtualNode(const int64_t elementId, const int32_t requestId,
+        AccessibilityElementOperatorCallback &callback) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

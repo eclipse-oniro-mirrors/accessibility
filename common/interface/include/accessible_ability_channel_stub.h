@@ -206,6 +206,38 @@ private:
 
     ErrCode HandleFocusMoveSearchWithCondition(MessageParcel &data, MessageParcel &reply);
 
+    /**
+     * @brief Read AccessibilityVirtualNode from MessageParcel
+     * @param data The data of process communication
+     * @param accessibilityVirtualNode The output AccessibilityVirtualNode object
+     * @return true: successful; false: failed.
+     */
+    bool ReadAccessibilityVirtualNode(MessageParcel &data, AccessibilityVirtualNode &accessibilityVirtualNode);
+
+    /**
+     * @brief Handle IPC request for function:HandleUpdateCustomAccessibilityProperty.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleUpdateCustomAccessibilityProperty(MessageParcel &data, MessageParcel &reply);
+ 
+    /**
+     * @brief Handle IPC request for function:HandleAddAccessibilityVirtualNode.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleAddAccessibilityVirtualNode(MessageParcel &data, MessageParcel &reply);
+ 
+    /**
+     * @brief Handle IPC request for function:HandleRemoveAccessibilityVirtualNode.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleRemoveAccessibilityVirtualNode(MessageParcel &data, MessageParcel &reply);
+
     using AccessibleAbilityConnectionFunc =
         ErrCode (AccessibleAbilityChannelStub::*)(MessageParcel &data, MessageParcel &reply);
 };

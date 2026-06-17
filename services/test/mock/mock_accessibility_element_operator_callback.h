@@ -38,6 +38,12 @@ public:
         const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId));
     MOCK_METHOD3(SetFocusMoveSearchWithConditionResult, void(const std::list<AccessibilityElementInfo> &info,
         const FocusMoveResult &result, const int32_t requestId));
+    MOCK_METHOD2(SetUpdateCustomAccessibilityPropertyResult, void(const OperateVirtualNodeResult result,
+        const int32_t requestId));
+    MOCK_METHOD2(SetAddAccessibilityVirtualNodeResult, void(const OperateVirtualNodeResult result,
+        const int32_t requestId));
+    MOCK_METHOD2(SetRemoveAccessibilityVirtualNodeResult, void(const OperateVirtualNodeResult result,
+        const int32_t requestId));
 };
 } // namespace Accessibility
 } // namespace OHOS

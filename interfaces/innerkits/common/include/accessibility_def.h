@@ -480,6 +480,17 @@ enum FocusMoveResultType : int32_t {
     SEARCH_FAIL_IN_SCROLL = 8,
 };
 
+enum OperateVirtualNodeResult : int32_t {
+    SUCCESS = 0,
+    ACCESSIBILITY_ELEMENT_NOT_EXIST = 1,
+    CANNOT_MODIFY_ROOT_NODE = 2,
+    ACCESSIBILITY_PROPERTY_EMPTY = 3,
+    ALLOCATE_ID_FAILED = 4,
+    ADD_NODE_IS_EMPTY = 5,
+    INTERNAL_ERROR = 6,
+    VIRTUAL_NODE_NOT_SUPPORT = 7,
+};
+
 struct FocusMoveResult {
     FocusMoveResultType resultType = FocusMoveResultType::NOT_SUPPORT;
     int32_t nowLevelBelongTreeId;

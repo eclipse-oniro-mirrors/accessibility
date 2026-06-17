@@ -179,5 +179,28 @@ void ElementOperatorCallbackImpl::SetSearchDefaultFocusByWindowIdResult(
     promise_.set_value();
 }
 
+void ElementOperatorCallbackImpl::SetUpdateCustomAccessibilityPropertyResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    operateVirtualNodeResult_ = result;
+    promise_.set_value();
+}
+
+void ElementOperatorCallbackImpl::SetAddAccessibilityVirtualNodeResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    operateVirtualNodeResult_ = result;
+    promise_.set_value();
+}
+
+void ElementOperatorCallbackImpl::SetRemoveAccessibilityVirtualNodeResult(
+    const OperateVirtualNodeResult result, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    operateVirtualNodeResult_ = result;
+    promise_.set_value();
+}
 } // namespace Accessibility
 } // namespace OHOS

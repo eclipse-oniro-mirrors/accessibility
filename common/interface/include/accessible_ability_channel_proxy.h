@@ -235,6 +235,43 @@ public:
         const AccessibilityFocusMoveParam& param,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int32_t windowId) override;
+    
+    /**
+     * @brief Update accessibility element info attributes through the proxy object.
+     * @param elementId The element id to update.
+     * @param windowId The window id of the element.
+     * @param accessibilityVirtualNode The element attributes to update.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param callback The callback to return the result.
+     * @return Return RET_OK if update successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError UpdateCustomAccessibilityProperty(const int64_t elementId, const int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+ 
+    /**
+     * @brief Add accessibility virtual nodes.
+     * @param rootId The root element id.
+     * @param windowId The window id.
+     * @param nodes The virtual nodes to add.
+     * @param requestId Matched the request and response.
+     * @param callback To transfer the result to ASAC.
+     * @return RetError: ERR_OK if success, otherwise error code.
+     */
+    virtual RetError AddAccessibilityVirtualNode(const int64_t rootId, const int32_t windowId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+ 
+    /**
+     * @brief Remove accessibility virtual node.
+     * @param id The virtual node id to remove.
+     * @param windowId The window id.
+     * @param requestId Matched the request and response.
+     * @param callback To transfer the result to ASAC.
+     * @return RetError: ERR_OK if success, otherwise error code.
+     */
+    virtual RetError RemoveAccessibilityVirtualNode(const int64_t id, const int32_t windowId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
 private:
     /**
@@ -253,6 +290,7 @@ private:
      */
     bool SendTransactCmd(AccessibilityInterfaceCode code, MessageParcel &data,
         MessageParcel &reply,  MessageOption &option);
+
     /**
      * @brief Write action arguments to message parcel.
      * @param data The message parcel to write to.
@@ -261,6 +299,61 @@ private:
      */
     bool WriteActionArguments(MessageParcel &data,
         const std::map<std::string, std::string> &actionArguments);
+
+    /**
+     * @brief Write accessibility virtual node properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteAccessibilityVirtualNode(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+
+    /**
+     * @brief Write virtual node basic properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteVirtualNodeBasicProperties(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+
+    /**
+     * @brief Write virtual node rectangle properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteVirtualNodeRectProperties(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+
+    /**
+     * @brief Write virtual node boolean properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteVirtualNodeBoolProperties(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+
+    /**
+     * @brief Write virtual node other properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteVirtualNodeOtherProperties(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+
+    /**
+     * @brief Write virtual node relation properties to message parcel.
+     * @param data The message parcel to write to.
+     * @param accessibilityVirtualNode The virtual node to write.
+     * @return true: Write successfully; otherwise is not.
+     */
+    bool WriteVirtualNodeRelationProperties(MessageParcel &data,
+        const AccessibilityVirtualNode& accessibilityVirtualNode);
+
     static inline BrokerDelegator<AccessibleAbilityChannelProxy> delegator;
 };
 } // namespace Accessibility

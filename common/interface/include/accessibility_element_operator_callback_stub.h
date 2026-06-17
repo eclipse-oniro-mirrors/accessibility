@@ -128,6 +128,30 @@ private:
     
     ErrCode HandleSetFocusMoveSearchWithConditionResult(MessageParcel &data, MessageParcel &reply);
 
+    /**
+     * @brief Handle IPC request for function:SetUpdateCustomAccessibilityPropertyResult.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleSetUpdateCustomAccessibilityPropertyResult(MessageParcel &data, MessageParcel &reply);
+ 
+    /**
+     * @brief Handle IPC request for function:SetAddAccessibilityVirtualNodeResult.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleSetAddAccessibilityVirtualNodeResult(MessageParcel &data, MessageParcel &reply);
+ 
+    /**
+     * @brief Handle IPC request for function:SetRemoveAccessibilityVirtualNodeResult.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleSetRemoveAccessibilityVirtualNodeResult(MessageParcel &data, MessageParcel &reply);
+
     using AccessibilityElementOperatorCallbackFunc =
         ErrCode (AccessibilityElementOperatorCallbackStub::*)(MessageParcel &data, MessageParcel &reply);
 };

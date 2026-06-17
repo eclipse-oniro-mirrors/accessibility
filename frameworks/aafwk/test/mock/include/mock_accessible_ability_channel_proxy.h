@@ -59,6 +59,14 @@ public:
     MOCK_METHOD1(SetTargetBundleName, RetError(const std::vector<std::string> &targetBundleNames));
     MOCK_METHOD1(SetIsRegisterDisconnectCallback, RetError(bool isRegister));
     MOCK_METHOD0(NotifyDisconnect, RetError());
+    MOCK_METHOD5(UpdateCustomAccessibilityProperty, RetError(const int64_t elementId, const int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback));
+    MOCK_METHOD5(AddAccessibilityVirtualNode, RetError(const int64_t rootId, const int32_t windowId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback));
+    MOCK_METHOD4(RemoveAccessibilityVirtualNode, RetError(const int64_t id, const int32_t windowId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback));
 };
 } // namespace Accessibility
 } // namespace OHOS

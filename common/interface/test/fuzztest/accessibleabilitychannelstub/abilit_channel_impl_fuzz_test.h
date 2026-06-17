@@ -131,6 +131,23 @@ public:
     {
         return RET_OK;
     }
+    RetError UpdateCustomAccessibilityProperty(const int64_t elementId, const int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override
+    {
+        return RET_OK;
+    }
+    RetError AddAccessibilityVirtualNode(const int64_t rootId, const int32_t windowId,
+        const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override
+    {
+        return RET_OK;
+    }
+    RetError RemoveAccessibilityVirtualNode(const int64_t id, const int32_t windowId,
+        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override
+    {
+        return RET_OK;
+    }
 };
 
 template<class T>

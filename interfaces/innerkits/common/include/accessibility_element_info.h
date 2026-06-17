@@ -349,6 +349,54 @@ protected:
     std::map<std::string, int32_t> extraElementValueInt_ = {};
 };
 
+struct AccessibilityVirtualPoint {
+    int32_t x_ = 0;
+    int32_t y_ = 0;
+
+    AccessibilityVirtualPoint() = default;
+    AccessibilityVirtualPoint(int32_t x, int32_t y)
+    {
+        SetX(x);
+        SetY(y);
+    }
+
+    /**
+     * @brief Gets the x coordinate.
+     * @return The x coordinate.
+     */
+    int32_t GetX() const
+    {
+        return x_;
+    }
+
+    /**
+     * @brief Sets the x coordinate.
+     * @param x The x coordinate.
+     */
+    void SetX(int32_t x)
+    {
+        x_ = x;
+    }
+
+    /**
+     * @brief Gets the y coordinate.
+     * @return The y coordinate.
+     */
+    int32_t GetY() const
+    {
+        return y_;
+    }
+
+    /**
+     * @brief Sets the y coordinate.
+     * @param y The y coordinate.
+     */
+    void SetY(int32_t y)
+    {
+        y_ = y;
+    }
+};
+
 class Rect {
 public:
     /**
@@ -1988,6 +2036,359 @@ protected:
     bool accessibilityScrollable_ = true;
     int64_t uniqueId_ = -1;
     std::string originalText_ = "";
+};
+
+/**
+ * @brief Define element attribute for updating accessibility element info
+ */
+class AccessibilityVirtualNode {
+public:
+    AccessibilityVirtualNode() {}
+    ~AccessibilityVirtualNode() = default;
+ 
+    /**
+     * @brief Gets the elementId.
+     * @return The elementId.
+     */
+    int64_t GetId() const
+    {
+        return id_;
+    }
+ 
+    /**
+     * @brief Sets the elementId.
+     * @param id The elementId.
+     */
+    void SetId(int64_t id)
+    {
+        id_ = id;
+    }
+ 
+    /**
+     * @brief Gets the text.
+     * @return The text.
+     */
+    const std::string &GetText() const
+    {
+        return text_;
+    }
+ 
+    /**
+     * @brief Sets the text.
+     * @param text The text.
+     */
+    void SetText(const std::string &text)
+    {
+        text_ = text;
+    }
+ 
+    /**
+     * @brief Gets the accessibility text.
+     * @return The accessibility text.
+     */
+    const std::string &GetAccessibilityText() const
+    {
+        return accessibilityText_;
+    }
+ 
+    /**
+     * @brief Sets the accessibility text.
+     * @param accessibilityText The accessibility text.
+     */
+    void SetAccessibilityText(const std::string &accessibilityText)
+    {
+        accessibilityText_ = accessibilityText;
+    }
+ 
+    /**
+     * @brief Gets the accessibility group.
+     * @return The accessibility group.
+     */
+    bool GetAccessibilityGroup() const
+    {
+        return accessibilityGroup_;
+    }
+ 
+    /**
+     * @brief Sets the accessibility group.
+     * @param accessibilityGroup The accessibility group.
+     */
+    void SetAccessibilityGroup(bool accessibilityGroup)
+    {
+        accessibilityGroup_ = accessibilityGroup;
+    }
+ 
+    /**
+     * @brief Gets the accessibility level.
+     * @return The accessibility level.
+     */
+    const std::string &GetAccessibilityLevel() const
+    {
+        return accessibilityLevel_;
+    }
+ 
+    /**
+     * @brief Sets the accessibility level.
+     * @param accessibilityLevel The accessibility level.
+     */
+    void SetAccessibilityLevel(const std::string &accessibilityLevel)
+    {
+        accessibilityLevel_ = accessibilityLevel;
+    }
+ 
+    /**
+     * @brief Gets the rect.
+     * @return The rect.
+     */
+    const Rect &GetRect() const
+    {
+        return rect_;
+    }
+ 
+    /**
+     * @brief Sets the rect.
+     * @param rect The rect.
+     */
+    void SetRect(const Rect &rect)
+    {
+        rect_ = rect;
+    }
+ 
+    /**
+     * @brief Gets the checkable.
+     * @return The checkable.
+     */
+    bool GetCheckable() const
+    {
+        return checkable_;
+    }
+ 
+    /**
+     * @brief Sets the checkable.
+     * @param checkable The checkable.
+     */
+    void SetCheckable(bool checkable)
+    {
+        checkable_ = checkable;
+    }
+ 
+    /**
+     * @brief Gets the checked.
+     * @return The checked.
+     */
+    bool GetChecked() const
+    {
+        return checked_;
+    }
+ 
+    /**
+     * @brief Sets the checked.
+     * @param checked The checked.
+     */
+    void SetChecked(bool checked)
+    {
+        checked_ = checked;
+    }
+ 
+    /**
+     * @brief Gets the clickable.
+     * @return The clickable.
+     */
+    bool GetClickable() const
+    {
+        return clickable_;
+    }
+ 
+    /**
+     * @brief Sets the clickable.
+     * @param clickable The clickable.
+     */
+    void SetClickable(bool clickable)
+    {
+        clickable_ = clickable;
+    }
+ 
+    /**
+     * @brief Gets the enabled.
+     * @return The enabled.
+     */
+    bool GetEnabled() const
+    {
+        return enabled_;
+    }
+ 
+    /**
+     * @brief Sets the enabled.
+     * @param enabled The enabled.
+     */
+    void SetEnabled(bool enabled)
+    {
+        enabled_ = enabled;
+    }
+ 
+    /**
+     * @brief Gets the selected.
+     * @return The selected.
+     */
+    bool GetSelected() const
+    {
+        return selected_;
+    }
+ 
+    /**
+     * @brief Sets the selected.
+     * @param selected The selected.
+     */
+    void SetSelected(bool selected)
+    {
+        selected_ = selected;
+    }
+ 
+    /**
+     * @brief Gets the custom component type.
+     * @return The custom component type.
+     */
+    const std::string &GetCustomComponentType() const
+    {
+        return customComponentType_;
+    }
+ 
+    /**
+     * @brief Sets the custom component type.
+     * @param customComponentType The custom component type.
+     */
+    void SetCustomComponentType(const std::string &customComponentType)
+    {
+        customComponentType_ = customComponentType;
+    }
+ 
+    /**
+     * @brief Gets the point.
+     * @return The point.
+     */
+    const AccessibilityVirtualPoint &GetPoint() const
+    {
+        return point_;
+    }
+ 
+    /**
+     * @brief Sets the point.
+     * @param point The point.
+     */
+    void SetPoint(const AccessibilityVirtualPoint &point)
+    {
+        point_ = point;
+    }
+ 
+    /**
+     * @brief Gets the accessibility focused.
+     * @return The accessibility focused.
+     */
+    bool GetAccessibilityFocused() const
+    {
+        return accessibilityFocused_;
+    }
+ 
+    /**
+     * @brief Sets the accessibility focused.
+     * @param accessibilityFocused The accessibility focused.
+     */
+    void SetAccessibilityFocused(bool accessibilityFocused)
+    {
+        accessibilityFocused_ = accessibilityFocused;
+    }
+ 
+    /**
+     * @brief Gets the parent id.
+     * @return The parent id.
+     */
+    int64_t GetParentId() const
+    {
+        return parentId_;
+    }
+ 
+    /**
+     * @brief Sets the parent id.
+     * @param parentId The parent id.
+     */
+    void SetParentId(int64_t parentId)
+    {
+        parentId_ = parentId;
+    }
+ 
+    /**
+     * @brief Gets the child node ids.
+     * @return The child node ids.
+     */
+    const std::vector<int64_t> &GetChildNodeIds() const
+    {
+        return childNodeIds_;
+    }
+ 
+    /**
+     * @brief Sets the child node ids.
+     * @param childNodeIds The child node ids.
+     */
+    void SetChildNodeIds(const std::vector<int64_t> &childNodeIds)
+    {
+        childNodeIds_ = childNodeIds;
+    }
+ 
+    /**
+     * @brief Gets the elementId.
+     * @return The elementId.
+     */
+    int64_t GetElementId() const
+    {
+        return elementId_;
+    }
+ 
+    /**
+     * @brief Sets the elementId.
+     * @param elementId The elementId.
+     */
+    void SetElementId(int64_t elementId)
+    {
+        elementId_ = elementId;
+    }
+ 
+    /**
+     * @brief Gets the windowId.
+     * @return The windowId.
+     */
+    int32_t GetWindowId() const
+    {
+        return windowId_;
+    }
+ 
+    /**
+     * @brief Sets the windowId.
+     * @param windowId The windowId.
+     */
+    void SetWindowId(int32_t windowId)
+    {
+        windowId_ = windowId;
+    }
+ 
+protected:
+    int64_t id_ = -1;
+    std::string text_ = "";
+    std::string accessibilityText_ = "";
+    bool accessibilityGroup_ = true;
+    std::string accessibilityLevel_ = "";
+    Rect rect_ {};
+    bool checkable_ = false;
+    bool checked_ = false;
+    bool clickable_ = false;
+    bool enabled_ = false;
+    bool selected_ = false;
+    std::string customComponentType_ = "";
+    AccessibilityVirtualPoint point_ {};
+    bool accessibilityFocused_ = false;
+    int64_t parentId_ = -1;
+    std::vector<int64_t> childNodeIds_;
+    int64_t elementId_ = -1;
+    int32_t windowId_ = -1;
 };
 } // namespace Accessibility
 } // namespace OHOS

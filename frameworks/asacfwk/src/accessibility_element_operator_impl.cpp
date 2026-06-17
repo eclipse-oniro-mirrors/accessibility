@@ -436,5 +436,94 @@ void AccessibilityElementOperatorImpl::SetFocusMoveSearchWithConditionResult(
         HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
 }
+
+void AccessibilityElementOperatorImpl::UpdateCustomAccessibilityProperty(const int64_t elementId,
+    const AccessibilityVirtualNode& accessibilityVirtualNode, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("elementId[%{public}" PRId64 "]", elementId);
+    int32_t mRequestId = AddRequest(requestId, callback);
+    if (!operator_) {
+        HILOG_ERROR("Operator is nullptr");
+        return;
+    }
+ 
+    operator_->UpdateCustomAccessibilityProperty(elementId, accessibilityVirtualNode, mRequestId, operatorCallback_);
+}
+
+void AccessibilityElementOperatorImpl::SetUpdateCustomAccessibilityPropertyResult(const OperateVirtualNodeResult result,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("requestId is %{public}d", requestId);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
+    auto iter = requests_.find(requestId);
+    if (iter != requests_.end()) {
+        if (iter->second != nullptr) {
+            iter->second->SetUpdateCustomAccessibilityPropertyResult(result, requestId);
+        }
+        requests_.erase(iter);
+    } else {
+        HILOG_DEBUG("Can't find the callback [requestId:%{public}d]", requestId);
+    }
+}
+
+void AccessibilityElementOperatorImpl::AddAccessibilityVirtualNode(const int64_t rootId,
+    const std::vector<AccessibilityVirtualNode> &nodes, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("rootId[%{public}" PRId64 "]", rootId);
+    int32_t mRequestId = AddRequest(requestId, callback);
+    if (!operator_) {
+        HILOG_ERROR("Operator is nullptr");
+        return;
+    }
+
+    operator_->AddAccessibilityVirtualNode(rootId, nodes, mRequestId, operatorCallback_);
+}
+
+void AccessibilityElementOperatorImpl::SetAddAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("requestId is %{public}d", requestId);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
+    auto iter = requests_.find(requestId);
+    if (iter != requests_.end()) {
+        if (iter->second != nullptr) {
+            iter->second->SetAddAccessibilityVirtualNodeResult(result, requestId);
+        }
+        requests_.erase(iter);
+    } else {
+        HILOG_DEBUG("Can't find the callback [requestId:%{public}d]", requestId);
+    }
+}
+
+void AccessibilityElementOperatorImpl::RemoveAccessibilityVirtualNode(const int64_t id,
+    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("id[%{public}" PRId64 "]", id);
+    int32_t mRequestId = AddRequest(requestId, callback);
+    if (!operator_) {
+        HILOG_ERROR("Operator is nullptr");
+        return;
+    }
+
+    operator_->RemoveAccessibilityVirtualNode(id, mRequestId, operatorCallback_);
+}
+
+void AccessibilityElementOperatorImpl::SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("requestId is %{public}d", requestId);
+    std::lock_guard<ffrt::mutex> lock(requestsMutex_);
+    auto iter = requests_.find(requestId);
+    if (iter != requests_.end()) {
+        if (iter->second != nullptr) {
+            iter->second->SetRemoveAccessibilityVirtualNodeResult(result, requestId);
+        }
+        requests_.erase(iter);
+    } else {
+        HILOG_DEBUG("Can't find the callback [requestId:%{public}d]", requestId);
+    }
+}
 } // namespace Accessibility
 } // namespace OHOS

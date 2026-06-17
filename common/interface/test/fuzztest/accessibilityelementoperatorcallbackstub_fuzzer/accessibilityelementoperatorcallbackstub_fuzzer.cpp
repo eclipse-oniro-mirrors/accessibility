@@ -47,6 +47,12 @@ public:
         const std::list<AccessibilityElementInfo> &treeInfos, const int32_t requestId) override {}
     void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &info,
         const FocusMoveResult &result, const int32_t requestId) override {}
+    void SetUpdateCustomAccessibilityPropertyResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override {}
+    void SetAddAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override {}
+    void SetRemoveAccessibilityVirtualNodeResult(const OperateVirtualNodeResult result,
+        const int32_t requestId) override {}
 };
 
 template<class T>
