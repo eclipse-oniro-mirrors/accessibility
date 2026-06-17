@@ -261,7 +261,7 @@ void AccessibilitySystemAbilityClientImpl::OnParameterChanged(const char *key, c
 bool AccessibilitySystemAbilityClientImpl::LoadAccessibilityService()
 {
     std::unique_lock<ffrt::mutex> lock(conVarMutex_);
-    sptr<AccessibilityLoadCallback> loadCallback = new AccessibilityLoadCallback();
+    sptr<AccessibilityLoadCallback> loadCallback = new(std::nothrow) AccessibilityLoadCallback();
     if (loadCallback == nullptr) {
         return false;
     }

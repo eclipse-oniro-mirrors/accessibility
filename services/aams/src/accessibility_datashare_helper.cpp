@@ -113,8 +113,12 @@ int64_t AccessibilityDatashareHelper::GetLongValue(const std::string& key, const
 {
     int64_t result = defaultValue;
     std::string valueStr = GetStringValue(key, std::to_string(result), readOnlyFlag);
-    if (valueStr != "") {
-        result = static_cast<int64_t>(std::strtoll(valueStr.c_str(), nullptr, DECIMAL_NOTATION));
+    if (!valueStr.empty()) {
+        int64_t num;
+        auto [ptr, ec] = std::from_chars(valueStr.data(), valueStr.data() + valueStr.size(), num);
+        if (ec == std::errc()) {
+            result = num;
+        }
     }
     return result;
 }

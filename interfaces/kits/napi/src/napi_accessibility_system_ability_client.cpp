@@ -163,12 +163,25 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
+        napi_delete_async_work(env, callbackInfo->work_);
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
     return promise;
 }
 
@@ -240,12 +253,24 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
     return promise;
 }
 
@@ -406,12 +431,21 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
     return promise;
 }
 
@@ -498,12 +532,24 @@ napi_value NAccessibilityClient::GetAccessibilityExtensionListAsync(
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
     return promise;
 }
 
@@ -642,13 +688,24 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
-
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
     return promise;
 }
 
@@ -709,12 +766,24 @@ napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callb
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
 
     return promise;
 }
@@ -1107,12 +1176,24 @@ napi_value NAccessibilityClient::GetAudioMonoState(napi_env env, napi_callback_i
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
     return promise;
 }
 
@@ -1228,12 +1309,24 @@ napi_value NAccessibilityClient::GetAnimationOffState(napi_env env, napi_callbac
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
     return promise;
 }
 
@@ -1349,12 +1442,24 @@ napi_value NAccessibilityClient::GetFlashReminderSwitch(napi_env env, napi_callb
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
     return promise;
 }
 
@@ -1969,12 +2074,24 @@ napi_value NAccessibilityClient::GetSeniorModeState(napi_env env, napi_callback_
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
     return promise;
 }
 
@@ -2175,12 +2292,24 @@ napi_value NAccessibilityClient::GetSeniorModeStateForApp(napi_env env, napi_cal
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
     return promise;
 }
 
@@ -2221,11 +2350,23 @@ napi_value NAccessibilityClient::SetSeniorModeStateForApp(napi_env env, napi_cal
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     if (ret != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
         delete callbackInfo;
         callbackInfo = nullptr;
         HILOG_ERROR("failed to create async work.");
         return nullptr;
     }
-    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    auto queueRet = napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
+    if (queueRet != napi_ok) {
+        if (callbackInfo->callback_) {
+            napi_delete_reference(env, callbackInfo->callback_);
+        }
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        HILOG_ERROR("failed to queue async work.");
+        return nullptr;
+    }
     return promise;
 }
