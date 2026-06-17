@@ -187,6 +187,8 @@ private:
     static void GetAbilityListComplete(napi_env env, napi_status status, void* data);
     static void SendEventExecute(napi_env env, void* data);
     static void SendEventComplete(napi_env env, napi_status status, void* data);
+    static bool DeleteAndQueueAsyncWork(
+        napi_env env, napi_async_work work, NAccessibilitySystemAbilityClient* callbackInfo);
     NAccessibilityClient() = default;
     ~NAccessibilityClient() = default;
 };
