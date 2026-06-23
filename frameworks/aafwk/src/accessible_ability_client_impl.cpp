@@ -1891,8 +1891,9 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursiveBySpecificProper
 RetError AccessibleAbilityClientImpl::FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
     AccessibilityFocusMoveParam param, std::vector<AccessibilityElementInfo> &infos, int32_t &moveSearchResult)
 {
-    HILOG_DEBUG("start elementId: %{public} " PRId64 ", direction: %{public}d, condition: %{public}d,"
-        "windowId: %{public}d", info.GetAccessibilityId(), param.direction, param.condition, info.GetWindowId());
+    HILOG_DEBUG("start elementId: %{public} " PRId64 ", direction: %{public}d, condition: %{public}d,
+        type: %{public}d", "windowId: %{public}d", info.GetAccessibilityId(), param.direction, param.condition,
+        param.type, info.GetWindowId());
     std::shared_ptr<AccessibleAbilityChannelClient> channelClient = channelClient_;
     if (channelClient == nullptr) {
         HILOG_ERROR("The channel is invalid.");

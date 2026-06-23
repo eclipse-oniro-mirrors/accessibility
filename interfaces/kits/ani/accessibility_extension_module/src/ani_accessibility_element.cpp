@@ -895,7 +895,7 @@ ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string 
 }
 
 ani_object FindElementsByConditionWithType(
-    ani_env *env, ani_object thisObj, ani_string rule, ani_string condition, ani_int type)
+    ani_env *env, ani_object thisObj, ani_string rule, ani_string condition, ani_enum_item type)
 {
     HILOG_DEBUG("FindElementsByConditionWithType native method called");
     AccessibilityElement* element = ANIUtils::Unwrap<AccessibilityElement>(env, thisObj);
@@ -905,9 +905,14 @@ ani_object FindElementsByConditionWithType(
     }
     std::string ruleStr = ANIUtils::ANIStringToStdString(env, rule);
     std::string conditionStr = ANIUtils::ANIStringToStdString(env, condition);
+    ani_int intType = 0;
+    if (env->EnumItem_GetValue_Int(type, &intType) != ANI_OK) {
+        HILOG_ERROR("Failed to get enum value");
+        return nullptr;
+    }
     FindElementParams param = {FIND_ELEMENT_BY_CONDITION, conditionStr, *element};
     param.rule_ = ruleStr;
-    param.focusRuleType_ = static_cast<FocusRuleType>(type);
+    param.focusRuleType_ = static_cast<FocusRuleType>(intType);
     FindElementExecute(&param);
     if (RET_ERR_NOT_SYSTEM_APP == param.ret_ || RET_ERR_NO_PERMISSION == param.ret_) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
@@ -1024,7 +1029,7 @@ ani_object FindElementByFocusDirection(ani_env *env, ani_object thisObj, ani_str
     return CreateAniAccessibilityElement(env, param.nodeInfo_);
 }
 
-ani_object FindElementByFocusDirectionWithType(ani_env *env, ani_object thisObj, ani_string direction, ani_int type)
+ani_object FindElementByFocusDirectionWithType(ani_env *env, ani_object thisObj, ani_string direction, ani_enum_item type)
 {
     HILOG_DEBUG();
 
@@ -1035,12 +1040,17 @@ ani_object FindElementByFocusDirectionWithType(ani_env *env, ani_object thisObj,
         return nullptr;
     }
     std::string directionStr = ANIUtils::ANIStringToStdString(env, direction);
+    ani_int intType = 0;
+    if (env->EnumItem_GetValue_Int(type, &intType) != ANI_OK) {
+        HILOG_ERROR("Failed to get enum value");
+        return nullptr;
+    }
     FindElementParams param = {
         .conditionId_ = FIND_ELEMENT_CONDITION_FOCUS_DIRECTION,
         .condition_ = directionStr,
         .accessibilityElement_ = *element
     };
-    param.focusRuleType_ = static_cast<FocusRuleType>(type);
+    param.focusRuleType_ = static_cast<FocusRuleType>(intType);
 
     FindElementExecute(&param);
     if (param.ret_ != RET_OK) {
