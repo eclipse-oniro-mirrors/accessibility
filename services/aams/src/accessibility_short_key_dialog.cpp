@@ -312,13 +312,13 @@ bool AccessibilityShortkeyDialog::ConnectExtension(ShortKeyDialogType dialogType
     if (!ret) {
         //如果失败，尝试连接 systemui的对话框 Ability
         bundleName = "com.ohos.systemui";
- 	    abilityName = "com.ohos.systemui.dialog";
- 	    want.SetElementName(bundleName, abilityName);
- 	    bool retNot = ConnectExtensionAbility(want, tmp, dialogType);
- 	    if (!retNot) {
- 	        HILOGE("ConnectExtensionAbility failed.");
- 	        return false;
- 	    }
+        abilityName = "com.ohos.systemui.dialog";
+        want.SetElementName(bundleName, abilityName);
+        bool retNot = ConnectExtensionAbility(want, tmp, dialogType);
+        if (!retNot) {
+            HILOGE("ConnectExtensionAbility failed.");
+            return false;
+        }
     }
     HILOG_DEBUG("ConnectExtensionAbility successed.");
     return true;
