@@ -479,7 +479,7 @@ void AccessibilityZoomGesture::ClearCacheEventsAndMsg()
 }
 
 
-void AccessibilityZoomGesture::RecognizeScroll(ZOOM_FOCUS_COORDINATE &coordinate)
+void AccessibilityZoomGesture::RecognizeScroll(ZOOM_FOCUS_COORDINATE &coordinate, bool reverse)
 {
     HILOG_DEBUG();
     if (abs(lastCenter.centerX) < EPS && abs(lastCenter.centerY) < EPS) {
@@ -493,7 +493,11 @@ void AccessibilityZoomGesture::RecognizeScroll(ZOOM_FOCUS_COORDINATE &coordinate
     if ((abs(offsetX) > MIN_SCROLL_SPAN) || (abs(offsetY) > MIN_SCROLL_SPAN)) {
         lastCenter.centerX = coordinate.centerX;
         lastCenter.centerY = coordinate.centerY;
-        OnScroll(offsetX, offsetY);
+        if (reverse) {
+            OnScroll(0.0f - offsetX, 0.0f - offsetY);
+        } else {
+            OnScroll(offsetX, offsetY);
+        }
     }
 }
 
@@ -1468,7 +1472,7 @@ void AccessibilityZoomGesture::HandleHoldStateMove(MMI::PointerEvent &event)
     HILOG_DEBUG();
     ZOOM_FOCUS_COORDINATE coordinate = {0.0f, 0.0f};
     CalcFocusCoordinate(event, coordinate);
-    RecognizeScroll(coordinate);
+    RecognizeScroll(coordinate, true);
 }
 
 void AccessibilityZoomGesture::HandleTDZoomInitStateDown(MMI::PointerEvent &event)
