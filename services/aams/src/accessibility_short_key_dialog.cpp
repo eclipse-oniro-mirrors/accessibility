@@ -304,13 +304,11 @@ bool AccessibilityShortkeyDialog::ConnectExtension(ShortKeyDialogType dialogType
     HILOG_DEBUG("start command: %{public}s", tmp.c_str());
 
     AAFwk::Want want;
-    // 首先尝试连接 sceneboard 的系统对话框 Ability
     std::string bundleName = "com.ohos.sceneboard";
     std::string abilityName = "com.ohos.sceneboard.systemdialog";
     want.SetElementName(bundleName, abilityName);
     bool ret = ConnectExtensionAbility(want, tmp, dialogType);
     if (!ret) {
-        //如果失败，尝试连接 systemui的对话框 Ability
         bundleName = "com.ohos.systemui";
         abilityName = "com.ohos.systemui.dialog";
         want.SetElementName(bundleName, abilityName);
