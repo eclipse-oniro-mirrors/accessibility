@@ -1437,7 +1437,7 @@ void AccessibilityAccountData::StateObservers::RemoveStateObserver(const wptr<IR
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
     for (auto iter = observersMap_.begin(); iter != observersMap_.end(); ++iter) {
         if (iter->second && iter->second->AsObject() == remote) {
-            HILOG_INFO("RemoveStateObserver");
+            HILOG_DEBUG("RemoveStateObserver");
             observersMap_.erase(iter);
             return;
         }
@@ -1469,7 +1469,7 @@ void AccessibilityAccountData::AddSeniorModeStateObserver(
 void AccessibilityAccountData::RemoveSeniorModeStateObserver(const wptr<IRemoteObject>& observer)
 {
     std::lock_guard<ffrt::mutex> lock(seniorModeStateObserversMutex_);
-    HILOG_INFO();
+    HILOG_DEBUG();
     auto itr = seniorModeStateObservers_.begin();
     for (; itr != seniorModeStateObservers_.end(); itr++) {
         if ((*itr)->AsObject() == observer) {
