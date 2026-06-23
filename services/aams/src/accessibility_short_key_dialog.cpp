@@ -316,7 +316,7 @@ bool AccessibilityShortkeyDialog::ConnectExtension(ShortKeyDialogType dialogType
         want.SetElementName(bundleName, abilityName);
         bool retNot = ConnectExtensionAbility(want, tmp, dialogType);
         if (!retNot) {
-            HILOGE("ConnectExtensionAbility failed.");
+            HILOG_ERROR("ConnectExtensionAbility failed.");
             return false;
         }
     }
