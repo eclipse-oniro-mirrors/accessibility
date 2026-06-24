@@ -1029,7 +1029,8 @@ ani_object FindElementByFocusDirection(ani_env *env, ani_object thisObj, ani_str
     return CreateAniAccessibilityElement(env, param.nodeInfo_);
 }
 
-ani_object FindElementByFocusDirectionWithType(ani_env *env, ani_object thisObj, ani_string direction, ani_enum_item type)
+ani_object FindElementByFocusDirectionWithType(
+    ani_env *env, ani_object thisObj, ani_string direction, ani_enum_item type)
 {
     HILOG_DEBUG();
 

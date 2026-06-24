@@ -84,7 +84,8 @@ ani_object GetChildren(ani_env *env, ani_object thisObj);
 ani_object GetParent(ani_env *env, ani_object thisObj);
 ani_object FindElementByContent(ani_env *env, ani_object thisObj, ani_string content);
 ani_object FindElementByFocusDirection(ani_env *env, ani_object thisObj, ani_string direction);
-ani_object FindElementByFocusDirectionWithType(ani_env *env, ani_object thisObj, ani_string direction, ani_enum_item type);
+ani_object FindElementByFocusDirectionWithType(
+    ani_env *env, ani_object thisObj, ani_string direction, ani_enum_item type);
 ani_object FindElementsByAccessibilityHintText(ani_env *env, ani_object thisObj, ani_string hintText);
 ani_object FindElementById(ani_env *env, ani_object thisObj, ani_long elementId);
 void FindElementByText(FindElementParams *data);
