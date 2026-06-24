@@ -304,13 +304,19 @@ bool AccessibilityShortkeyDialog::ConnectExtension(ShortKeyDialogType dialogType
     HILOG_DEBUG("start command: %{public}s", tmp.c_str());
 
     AAFwk::Want want;
-    std::string bundleName = "com.ohos.systemui";
-    std::string abilityName = "com.ohos.systemui.dialog";
+    std::string bundleName = "com.ohos.sceneboard";
+    std::string abilityName = "com.ohos.sceneboard.systemdialog";
     want.SetElementName(bundleName, abilityName);
     bool ret = ConnectExtensionAbility(want, tmp, dialogType);
     if (!ret) {
-        HILOG_ERROR("ConnectExtensionAbility failed.");
-        return false;
+        bundleName = "com.ohos.systemui";
+        abilityName = "com.ohos.systemui.dialog";
+        want.SetElementName(bundleName, abilityName);
+        bool retNot = ConnectExtensionAbility(want, tmp, dialogType);
+        if (!retNot) {
+            HILOG_ERROR("ConnectExtensionAbility failed.");
+            return false;
+        }
     }
     HILOG_DEBUG("ConnectExtensionAbility successed.");
     return true;
