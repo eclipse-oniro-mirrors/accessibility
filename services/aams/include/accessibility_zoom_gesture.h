@@ -94,7 +94,7 @@ private:
 
     void RecognizeInZoomStateDownEvent(MMI::PointerEvent &event);
     void RecognizeInZoomStateMoveEvent(MMI::PointerEvent &event);
-    void RecognizeScroll(ZOOM_FOCUS_COORDINATE &coordinate);
+    void RecognizeScroll(ZOOM_FOCUS_COORDINATE &coordinate, bool reverse = false);
     bool RecognizeScale(MMI::PointerEvent &event);
     void CalcFocusCoordinate(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE &coordinate);
     float CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE coordinate);
