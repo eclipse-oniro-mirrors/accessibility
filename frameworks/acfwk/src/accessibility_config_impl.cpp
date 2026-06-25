@@ -172,10 +172,8 @@ bool AccessibilityConfig::Impl::ConnectToService()
     retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
     if (retSysParam) {
         HILOG_WARN("Watch parameter failed, error = %{public}d", retSysParam);
-        isParameterWatcherRegistered.store(false);
-    } else {
-        isParameterWatcherRegistered.store(true);
     }
+    isParameterWatcherRegistered.store(true);
     return true;
 }
 

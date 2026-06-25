@@ -125,10 +125,6 @@ public:
     void OnAccessibilityEnableAbilityListsChanged();
     void OnAccessibilityInstallAbilityListsChanged();
     void OnEnableAbilityRemoteDied(const std::string& name);
-    void SetInitializeFlag(bool flag)
-    {
-        isInitialized_.store(flag);
-    }
 private:
     class AccessibilityEnableAbilityListsObserverImpl :
         public Accessibility::AccessibilityEnableAbilityListsObserverStub {
