@@ -1050,7 +1050,6 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
 {
     std::lock_guard<ffrt::recursive_mutex> lock(interfaceMutex_);
     auto oldA11yWindows_ = a11yWindows_;
-    HILOG_INFO("WindowUpdateAll start activeWindowId_: %{public}d", activeWindowId_);
     
     const int32_t previousActiveWindowId  = activeWindowId_;
     bool hasFocusedWindow = false;
@@ -1098,7 +1097,8 @@ void AccessibilityWindowManager::WindowUpdateAll(const std::vector<sptr<Rosen::A
     if (!hasFocusedWindow) {
         SetAccessibilityFocusedWindow();
     }
-    HILOG_INFO("WindowUpdateAll end activeWindowId_: %{public}d", activeWindowId_);
+    HILOG_INFO("start activeWindowId_: %{public}d, end activeWindowId_: %{public}d",
+        previousActiveWindowId, activeWindowId_);
 }
 
 void AccessibilityWindowManager::WindowUpdateAllExec(std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows,
