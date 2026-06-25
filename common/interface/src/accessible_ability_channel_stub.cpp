@@ -636,6 +636,7 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithCondition(Message
     AccessibilityFocusMoveParam param;
     param.direction = static_cast<FocusMoveDirection>(data.ReadInt32());
     param.condition = static_cast<DetailCondition>(data.ReadInt32());
+    param.type = static_cast<FocusRuleType>(data.ReadInt32());
     param.parentId = data.ReadInt64();
     param.detectParent = data.ReadBool();
 

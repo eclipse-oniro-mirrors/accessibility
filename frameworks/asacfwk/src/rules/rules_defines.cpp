@@ -28,18 +28,23 @@ bool RulesDefines::Parse(const nlohmann::json& jsonRoot)
     CHECK_NE_RETURN(result, true, false);
     result = ParseScrollableTypes(defines);
     CHECK_NE_RETURN(result, true, false);
+    result = ParseTitleTypes(defines);
+    CHECK_NE_RETURN(result, true, false);
+    result = ParseLinkTypes(defines);
+    CHECK_NE_RETURN(result, true, false);
     return result;
 }
 
-bool RulesDefines::ParseRootTypes(const nlohmann::json& defines)
+bool RulesDefines::ParseTypesFromJson(const nlohmann::json& defines, const std::string& key,
+    std::set<std::string>& typeSet)
 {
     if (!defines.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
     }
-
-    std::vector<std::string> rootTypes;
-    auto it = defines.find("root_types");
+    
+    std::vector<std::string> types;
+    auto it = defines.find(key);
     if (it != defines.end() && it->is_array()) {
         const auto &array = *it;
         for (const auto &item : array) {
@@ -48,18 +53,25 @@ bool RulesDefines::ParseRootTypes(const nlohmann::json& defines)
                 return false;
             }
         }
-        HILOG_DEBUG("Find key root_types successful.");
-        rootTypes = array.get<std::vector<std::string>>();
+        HILOG_DEBUG("Find key %{public}s successful.", key.c_str());
+        types = array.get<std::vector<std::string>>();
     }
-    rootTypes_.clear();
-    for (auto& type : rootTypes) {
+    typeSet.clear();
+    for (auto& type : types) {
         std::transform(type.begin(), type.end(), type.begin(),
             [](unsigned char c) { return std::tolower(c); });
-        rootTypes_.insert(type);
+        typeSet.insert(type);
     }
-
-    PrintRootTypes();
     return true;
+}
+
+bool RulesDefines::ParseRootTypes(const nlohmann::json& defines)
+{
+    auto result = ParseTypesFromJson(defines, "root_types", rootTypes_);
+    if (result) {
+        PrintRootTypes();
+    }
+    return result;
 }
 
 void RulesDefines::PrintRootTypes()
@@ -82,31 +94,7 @@ bool RulesDefines::IsRootType(const std::string& type)
 
 bool RulesDefines::ParseScrollIgnoreTypes(const nlohmann::json& defines)
 {
-    if (!defines.is_object()) {
-        HILOG_ERROR("json is not object.");
-        return false;
-    }
-    
-    std::vector<std::string> scrollIgnoreTypes;
-    auto it = defines.find("disabled_scroll_types");
-    if (it != defines.end() && it->is_array()) {
-        const auto &array = *it;
-        for (const auto &item : array) {
-            if (!item.is_string()) {
-                HILOG_ERROR("Array elements are not all strings");
-                return false;
-            }
-        }
-        HILOG_DEBUG("Find key disabled_scroll_types successful.");
-        scrollIgnoreTypes = array.get<std::vector<std::string>>();
-    }
-    scrollIgnoreTypes_.clear();
-    for (auto& type : scrollIgnoreTypes) {
-        std::transform(type.begin(), type.end(), type.begin(),
-            [](unsigned char c) { return std::tolower(c); });
-        scrollIgnoreTypes_.insert(type);
-    }
-    return true;
+    return ParseTypesFromJson(defines, "disabled_scroll_types", scrollIgnoreTypes_);
 }
 
 bool RulesDefines::IsScrollIgnoreTypes(const std::string& type)
@@ -116,36 +104,32 @@ bool RulesDefines::IsScrollIgnoreTypes(const std::string& type)
 
 bool RulesDefines::ParseScrollableTypes(const nlohmann::json& defines)
 {
-    if (!defines.is_object()) {
-        HILOG_ERROR("json is not object.");
-        return true;
-    }
-    
-    std::vector<std::string> scrollableTypes;
-    auto it = defines.find("scrollable_types");
-    if (it != defines.end() && it->is_array()) {
-        const auto &array = *it;
-        for (const auto &item : array) {
-            if (!item.is_string()) {
-                HILOG_ERROR("Array elements are not all strings");
-                return false;
-            }
-        }
-        HILOG_DEBUG("Find key scrollable_types successful.");
-        scrollableTypes = array.get<std::vector<std::string>>();
-    }
-    scrollableTypes_.clear();
-    for (auto& type : scrollableTypes) {
-        std::transform(type.begin(), type.end(), type.begin(),
-            [](unsigned char c) { return std::tolower(c); });
-        scrollableTypes_.insert(type);
-    }
-    return true;
+    return ParseTypesFromJson(defines, "scrollable_types", scrollableTypes_);
 }
  
 bool RulesDefines::IsScrollableTypes(const std::string& type)
 {
     return scrollableTypes_.find(type) != scrollableTypes_.end();
+}
+
+bool RulesDefines::ParseTitleTypes(const nlohmann::json& defines)
+{
+    return ParseTypesFromJson(defines, "title_types", titleTypes_);
+}
+
+bool RulesDefines::IsTitleTypes(const std::string& type)
+{
+    return titleTypes_.find(type) != titleTypes_.end();
+}
+
+bool RulesDefines::ParseLinkTypes(const nlohmann::json& defines)
+{
+    return ParseTypesFromJson(defines, "link_types", linkTypes_);
+}
+
+bool RulesDefines::IsLinkTypes(const std::string& type)
+{
+    return linkTypes_.find(type) != linkTypes_.end();
 }
 } // namespace OHOS::Accessibility
 // LCOV_EXCL_STOP

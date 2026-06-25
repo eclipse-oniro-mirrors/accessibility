@@ -192,6 +192,8 @@ public:
     virtual RetError CheckNodeIsReadable(const std::shared_ptr<ReadableRulesNode>& node, bool& isReadable) = 0;
     virtual RetError CheckNodeIsSpecificType(const std::shared_ptr<ReadableRulesNode>& node,
         ReadableSpecificType specificType, bool& isHit) = 0;
+    virtual RetError CheckNodeIsFocusType(const std::shared_ptr<ReadableRulesNode>& node,
+        FocusRuleType focusType, bool& isHit) = 0;
     virtual bool NeedToConnect() = 0;
     virtual void ConnectAndInit() = 0;
     /**

@@ -1010,6 +1010,10 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const Acces
         HILOG_ERROR("connection write condition failed");
         return RET_ERR_IPC_FAILED;
     }
+    if (!data.WriteInt32(param.type)) {
+        HILOG_ERROR("connection write type failed");
+        return RET_ERR_IPC_FAILED;
+    }
     if (!data.WriteInt64(param.parentId)) {
         HILOG_ERROR("connection write parentId failed");
         return RET_ERR_IPC_FAILED;

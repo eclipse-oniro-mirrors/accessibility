@@ -16,6 +16,7 @@
 // LCOV_EXCL_START
 #include "rules_checker.h"
 #include "hilog_wrapper.h"
+
 namespace OHOS::Accessibility {
 ReadableRulesChecker& ReadableRulesChecker::GetInstance()
 {
@@ -170,5 +171,29 @@ bool ReadableRulesChecker::IsScrollableTypes(const std::shared_ptr<ReadableRules
         [](unsigned char c) { return std::tolower(c); });
     return rulesDefines_.IsScrollableTypes(type);
 }
-} // namespace OHOS::Ace::Accessibility
+
+bool ReadableRulesChecker::IsTitleTypes(const std::shared_ptr<ReadableRulesNode>& node)
+{
+    CHECK_NULL_RETURN(node, false);
+    PropValue value;
+    auto result = node->GetPropType(value);
+    CHECK_NE_RETURN(result, true, false);
+    std::string type = value.valueStr;
+    std::transform(type.begin(), type.end(), type.begin(),
+        [](unsigned char c) { return std::tolower(c); });
+    return rulesDefines_.IsTitleTypes(type);
+}
+
+bool ReadableRulesChecker::IsLinkTypes(const std::shared_ptr<ReadableRulesNode>& node)
+{
+    CHECK_NULL_RETURN(node, false);
+    PropValue value;
+    auto result = node->GetPropType(value);
+    CHECK_NE_RETURN(result, true, false);
+    std::string type = value.valueStr;
+    std::transform(type.begin(), type.end(), type.begin(),
+        [](unsigned char c) { return std::tolower(c); });
+    return rulesDefines_.IsLinkTypes(type);
+}
+} // namespace OHOS::Accessibility
 // LCOV_EXCL_STOP

@@ -598,6 +598,12 @@ export enum FocusMoveResultCode {
   SEARCH_FAILURE_IN_SCROLL = 8
 }
 
+export enum FocusRuleType {
+  DEFAULT = 1,
+  FOCUS_BY_LINK = 2,
+  FOCUS_BY_TITLE = 3,
+}
+
 export enum InjectActionType {
   CLICK = 1,
   DOUBLE_CLICK = 2,

@@ -1200,6 +1200,32 @@ RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsSpecificType(
     return RET_OK;
 }
 
+RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsFocusType(
+    const std::shared_ptr<ReadableRulesNode>& node, FocusRuleType focusType, bool& isHit)
+{
+    auto& rulesChecker = ReadableRulesChecker::GetInstance();
+    if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy_)) {
+        isHit = false;
+        return RET_ERR_NOT_ENABLED;
+    }
+
+    isHit = false;
+    switch (focusType) {
+        case FocusRuleType::DEFAULT:
+            isHit = true;
+            break;
+        case FocusRuleType::FOCUS_BY_TITLE:
+            isHit = rulesChecker.IsTitleTypes(node);
+            break;
+        case FocusRuleType::FOCUS_BY_LINK:
+            isHit = rulesChecker.IsLinkTypes(node);
+            break;
+        default:
+            break;
+    }
+    return RET_OK;
+}
+
 RetError AccessibilitySystemAbilityClientImpl::GetAnimationOffState(bool &state)
 {
     HILOG_DEBUG();

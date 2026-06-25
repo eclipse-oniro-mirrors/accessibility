@@ -259,6 +259,8 @@ public:
     virtual RetError CheckNodeIsReadable(const std::shared_ptr<ReadableRulesNode>& node, bool& isReadable) override;
     virtual RetError CheckNodeIsSpecificType(
         const std::shared_ptr<ReadableRulesNode>& node, ReadableSpecificType specificType, bool& isHit) override;
+    virtual RetError CheckNodeIsFocusType(
+        const std::shared_ptr<ReadableRulesNode>& node, FocusRuleType focusType, bool& isHit) override;
     virtual void SetFocusMoveSearchWithConditionResult(const std::list<AccessibilityElementInfo> &infos,
         const FocusMoveResult &result, const int32_t requestId) override;
     virtual bool NeedToConnect() override;

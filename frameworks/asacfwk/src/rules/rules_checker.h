@@ -58,6 +58,8 @@ public:
     bool IsReadable(const std::shared_ptr<ReadableRulesNode>& node);
     bool IsScrollableTypes(const std::shared_ptr<ReadableRulesNode>& node);
     bool IsAvailable(const std::shared_ptr<ReadableRulesNode>& node);
+    bool IsTitleTypes(const std::shared_ptr<ReadableRulesNode>& node);
+    bool IsLinkTypes(const std::shared_ptr<ReadableRulesNode>& node);
     bool CheckInit(const std::string& readableRules);
     static const CustomProps& GetCustomProps();
     static const RulesDefines& GetRulesDefines();

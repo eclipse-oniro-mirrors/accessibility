@@ -824,29 +824,6 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SearchElementInfoBySpecificPr
 }
  
 /**
- * @tc.number: FocusMoveSearchWithCondition_001
- * @tc.name: FocusMoveSearchWithCondition
- * @tc.desc: Test function FocusMoveSearchWithCondition
- */
-HWTEST_F(AccessibilityElementOperatorImplUnitTest, FocusMoveSearchWithCondition_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "FocusMoveSearchWithCondition_001 start";
-    if (!mockStub_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
-    } else {
-        FocusMoveDirection direction = FocusMoveDirection::UP;
-        DetailCondition condition = DetailCondition::BYPASS_SELF;
-        AccessibilityFocusMoveParam param { direction, condition };
-        AccessibilityElementInfo info = {};
-        sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
-            = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
-        EXPECT_CALL(*operation_, FocusMoveSearchWithCondition(_, _, _, _)).Times(1);
-        mockStub_->FocusMoveSearchWithCondition(info, param, REQUEST_ID, elementOperator);
-    }
-    GTEST_LOG_(INFO) << "FocusMoveSearchWithCondition_001 end";
-}
- 
-/**
  * @tc.number: FocusMoveSearchWithCondition_002
  * @tc.name: FocusMoveSearchWithCondition
  * @tc.desc: Test function FocusMoveSearchWithCondition
@@ -854,15 +831,90 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, FocusMoveSearchWithCondition_
 HWTEST_F(AccessibilityElementOperatorImplUnitTest, FocusMoveSearchWithCondition_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "FocusMoveSearchWithCondition_002 start";
-    EXPECT_NE(mockStubNullPtr_, nullptr);
-    FocusMoveDirection direction = FocusMoveDirection::UP;
-    DetailCondition condition = DetailCondition::BYPASS_SELF;
-    AccessibilityFocusMoveParam param { direction, condition };
-    AccessibilityElementInfo info = {};
-    sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
-        = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
-    mockStubNullPtr_->FocusMoveSearchWithCondition(info, param, REQUEST_ID, elementOperator);
+    if (!mockStubNullPtr_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStubNullPtr_";
+    } else {
+        FocusMoveDirection direction = FocusMoveDirection::UP;
+        DetailCondition condition = DetailCondition::BYPASS_SELF;
+        AccessibilityFocusMoveParam param { direction, condition };
+        AccessibilityElementInfo info = {};
+        sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
+            = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
+        mockStubNullPtr_->FocusMoveSearchWithCondition(info, param, REQUEST_ID, elementOperator);
+    }
     GTEST_LOG_(INFO) << "FocusMoveSearchWithCondition_002 end";
+}
+
+/**
+ * @tc.number: FocusMoveSearchWithCondition_003
+ * @tc.name: FocusMoveSearchWithCondition
+ * @tc.desc: Test function FocusMoveSearchWithCondition with DEFAULT FocusRuleType
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, FocusMoveSearchWithCondition_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "FocusMoveSearchWithCondition_003 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+    } else {
+        FocusMoveDirection direction = FocusMoveDirection::UP;
+        DetailCondition condition = DetailCondition::BYPASS_SELF;
+        AccessibilityFocusMoveParam param { direction, condition };
+        param.type = FocusRuleType::DEFAULT;
+        AccessibilityElementInfo info = {};
+        sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
+            = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
+        EXPECT_CALL(*operation_, FocusMoveSearchWithCondition(_, _, _, _)).Times(1);
+        mockStub_->FocusMoveSearchWithCondition(info, param, REQUEST_ID, elementOperator);
+    }
+    GTEST_LOG_(INFO) << "FocusMoveSearchWithCondition_003 end";
+}
+
+/**
+ * @tc.number: FocusMoveSearchWithCondition_004
+ * @tc.name: FocusMoveSearchWithCondition
+ * @tc.desc: Test function FocusMoveSearchWithCondition with FOCUS_BY_TITLE FocusRuleType
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, FocusMoveSearchWithCondition_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "FocusMoveSearchWithCondition_004 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+    } else {
+        FocusMoveDirection direction = FocusMoveDirection::UP;
+        DetailCondition condition = DetailCondition::BYPASS_SELF;
+        AccessibilityFocusMoveParam param { direction, condition };
+        param.type = FocusRuleType::FOCUS_BY_TITLE;
+        AccessibilityElementInfo info = {};
+        sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
+            = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
+        EXPECT_CALL(*operation_, FocusMoveSearchWithCondition(_, _, _, _)).Times(1);
+        mockStub_->FocusMoveSearchWithCondition(info, param, REQUEST_ID, elementOperator);
+    }
+    GTEST_LOG_(INFO) << "FocusMoveSearchWithCondition_004 end";
+}
+
+/**
+ * @tc.number: FocusMoveSearchWithCondition_005
+ * @tc.name: FocusMoveSearchWithCondition
+ * @tc.desc: Test function FocusMoveSearchWithCondition with FOCUS_BY_LINK FocusRuleType
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, FocusMoveSearchWithCondition_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "FocusMoveSearchWithCondition_005 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+    } else {
+        FocusMoveDirection direction = FocusMoveDirection::UP;
+        DetailCondition condition = DetailCondition::BYPASS_SELF;
+        AccessibilityFocusMoveParam param { direction, condition };
+        param.type = FocusRuleType::FOCUS_BY_LINK;
+        AccessibilityElementInfo info = {};
+        sptr<MockAccessibilityElementOperatorCallbackImpl> elementOperator
+            = new(std::nothrow) MockAccessibilityElementOperatorCallbackImpl();
+        EXPECT_CALL(*operation_, FocusMoveSearchWithCondition(_, _, _, _)).Times(1);
+        mockStub_->FocusMoveSearchWithCondition(info, param, REQUEST_ID, elementOperator);
+    }
+    GTEST_LOG_(INFO) << "FocusMoveSearchWithCondition_005 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

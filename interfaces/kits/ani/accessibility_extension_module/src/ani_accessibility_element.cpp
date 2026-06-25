@@ -123,12 +123,16 @@ bool InitializeAccessibilityElementClass(ani_env *env)
         ani_native_function {"findElementsNative", nullptr, reinterpret_cast<void *>(FindElements)},
         ani_native_function {"findElementsByConditionNative", nullptr,
             reinterpret_cast<void *>(FindElementsByCondition)},
+        ani_native_function {"findElementsByConditionWithTypeNative", nullptr,
+            reinterpret_cast<void *>(FindElementsByConditionWithType)},
         ani_native_function {"getRootNative", nullptr, reinterpret_cast<void *>(GetRootElement)},
         ani_native_function {"getParentNative", nullptr, reinterpret_cast<void *>(GetParent)},
         ani_native_function {"getChildrenNative", nullptr, reinterpret_cast<void *>(GetChildren)},
         ani_native_function {"findElementByContentNative", nullptr, reinterpret_cast<void *>(FindElementByContent)},
         ani_native_function {"findElementByFocusDirectionNative", nullptr,
             reinterpret_cast<void *>(FindElementByFocusDirection)},
+        ani_native_function {"findElementByFocusDirectionWithTypeNative", nullptr,
+            reinterpret_cast<void *>(FindElementByFocusDirectionWithType)},
         ani_native_function {"findElementsByAccessibilityHintTextNative", nullptr,
             reinterpret_cast<void *>(FindElementsByAccessibilityHintText)},
         ani_native_function {"findElementByIdNative", nullptr, reinterpret_cast<void *>(FindElementById)},
@@ -890,6 +894,37 @@ ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string 
     return CreateAniAccessibilityRuleResult(env, param.nodeInfos_, param.moveSearchResult_);
 }
 
+ani_object FindElementsByConditionWithType(
+    ani_env *env, ani_object thisObj, ani_string rule, ani_string condition, ani_enum_item type)
+{
+    HILOG_DEBUG("FindElementsByConditionWithType native method called");
+    AccessibilityElement* element = ANIUtils::Unwrap<AccessibilityElement>(env, thisObj);
+    if (element == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityElementInfo");
+        return nullptr;
+    }
+    std::string ruleStr = ANIUtils::ANIStringToStdString(env, rule);
+    std::string conditionStr = ANIUtils::ANIStringToStdString(env, condition);
+    ani_int intType = 0;
+    if (env->EnumItem_GetValue_Int(type, &intType) != ANI_OK) {
+        HILOG_ERROR("Failed to get enum value");
+        return nullptr;
+    }
+    FindElementParams param = {FIND_ELEMENT_BY_CONDITION, conditionStr, *element};
+    param.rule_ = ruleStr;
+    param.focusRuleType_ = static_cast<FocusRuleType>(intType);
+    FindElementExecute(&param);
+    if (RET_ERR_NOT_SYSTEM_APP == param.ret_ || RET_ERR_NO_PERMISSION == param.ret_) {
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
+        return nullptr;
+    }
+    if (RET_OK != param.ret_) {
+        param.moveSearchResult_ = -1;
+    }
+ 
+    return CreateAniAccessibilityRuleResult(env, param.nodeInfos_, param.moveSearchResult_);
+}
+
 FocusMoveDirection ConvertStringToDirection(const std::string &str)
 {
     static const std::map<std::string, FocusMoveDirection> focusMoveDirectionTable = {
@@ -977,6 +1012,46 @@ ani_object FindElementByFocusDirection(ani_env *env, ani_object thisObj, ani_str
         .condition_ = directionStr,
         .accessibilityElement_ = *element
     };
+
+    FindElementExecute(&param);
+    if (param.ret_ != RET_OK) {
+        if (param.ret_ == RET_ERR_NO_WINDOW_CONNECTION) {
+            ANIUtils::ThrowBusinessError(
+                env,
+                {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED,
+                 ERROR_MESSAGE_TARGET_WINDOW_CONNECTION_FAILED}
+            );
+        } else {
+            ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
+        }
+        return nullptr;
+    }
+    return CreateAniAccessibilityElement(env, param.nodeInfo_);
+}
+
+ani_object FindElementByFocusDirectionWithType(
+    ani_env *env, ani_object thisObj, ani_string direction, ani_enum_item type)
+{
+    HILOG_DEBUG();
+
+    AccessibilityElement* element = ANIUtils::Unwrap<AccessibilityElement>(env, thisObj);
+    if (element == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityElementInfo");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return nullptr;
+    }
+    std::string directionStr = ANIUtils::ANIStringToStdString(env, direction);
+    ani_int intType = 0;
+    if (env->EnumItem_GetValue_Int(type, &intType) != ANI_OK) {
+        HILOG_ERROR("Failed to get enum value");
+        return nullptr;
+    }
+    FindElementParams param = {
+        .conditionId_ = FIND_ELEMENT_CONDITION_FOCUS_DIRECTION,
+        .condition_ = directionStr,
+        .accessibilityElement_ = *element
+    };
+    param.focusRuleType_ = static_cast<FocusRuleType>(intType);
 
     FindElementExecute(&param);
     if (param.ret_ != RET_OK) {
@@ -1120,8 +1195,14 @@ void FindElementExecute(FindElementParams* data)
             {
                 FocusMoveDirection direction = ConvertStringToDirection(data->condition_);
                 HILOG_DEBUG("direction is %{public}d", direction);
-                data->ret_ = AccessibleAbilityClient::GetInstance()->GetNext(
-                    *(data->accessibilityElement_.elementInfo_), direction, data->nodeInfo_, systemApi);
+                AccessibilityFocusMoveParam param;
+                param.direction = direction;
+                param.type = data->focusRuleType_;
+                data->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
+                    *(data->accessibilityElement_.elementInfo_), param, data->nodeInfos_, data->moveSearchResult_);
+                if (data->ret_ == RET_OK && !data->nodeInfos_.empty()) {
+                    data->nodeInfo_ = data->nodeInfos_[0];
+                }
             }
             break;
         case FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT:
@@ -1151,6 +1232,7 @@ void FindElementExecute(FindElementParams* data)
                 AccessibilityFocusMoveParam param;
                 param.direction = ConvertStringToDirection(data->condition_);
                 param.condition = ConvertStringToDetailCondition(data->rule_);
+                param.type = data->focusRuleType_;
                 data->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
                     *data->accessibilityElement_.elementInfo_, param, data->nodeInfos_, data->moveSearchResult_);
             }

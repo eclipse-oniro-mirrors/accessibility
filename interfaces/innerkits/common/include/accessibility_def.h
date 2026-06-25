@@ -443,9 +443,16 @@ enum DetailCondition : int32_t {
     CHECK_SELF_BYPASS_DESCENDANTS = 0x00000008,
 };
 
+enum FocusRuleType : int32_t {
+    DEFAULT = 1,
+    FOCUS_BY_LINK = 2,
+    FOCUS_BY_TITLE = 3,
+};
+
 struct AccessibilityFocusMoveParam {
     FocusMoveDirection direction;
     DetailCondition condition;
+    FocusRuleType type = FocusRuleType::DEFAULT;
     int64_t parentId;
     bool detectParent = false;
 

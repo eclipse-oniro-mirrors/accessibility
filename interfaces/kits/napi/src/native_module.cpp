@@ -220,6 +220,19 @@ static napi_value CreateAccessibilityFocusScene(napi_env env)
     return objValue;
 }
 
+static napi_value CreateFocusRuleType(napi_env env)
+{
+    napi_value objValue = nullptr;
+    napi_create_object(env, &objValue);
+    napi_set_named_property(env, objValue, "DEFAULT",
+        CreateIntObject(env, OHOS::Accessibility::FocusRuleType::DEFAULT));
+    napi_set_named_property(env, objValue, "FOCUS_BY_LINK",
+        CreateIntObject(env, OHOS::Accessibility::FocusRuleType::FOCUS_BY_LINK));
+    napi_set_named_property(env, objValue, "FOCUS_BY_TITLE",
+        CreateIntObject(env, OHOS::Accessibility::FocusRuleType::FOCUS_BY_TITLE));
+    return objValue;
+}
+
 static napi_value CreateAccessibilityAction(napi_env env)
 {
     napi_value objValue = nullptr;
@@ -306,6 +319,7 @@ static napi_value Init(napi_env env, napi_value exports)
     napi_set_named_property(env, exports, "AccessibilityAction", CreateAccessibilityAction(env));
     napi_set_named_property(env, exports, "InjectActionType", CreateInjectActionType(env));
     napi_set_named_property(env, exports, "AccessibilityFocusScene", CreateAccessibilityFocusScene(env));
+    napi_set_named_property(env, exports, "FocusRuleType", CreateFocusRuleType(env));
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     (void)instance.InitializeContext();

@@ -2461,8 +2461,8 @@ napi_value NAccessibilityElement::FindElementsByCondition(napi_env env, napi_cal
     int32_t windowId = 0;
     int64_t elementId = 0;
     napi_value thisVar = nullptr;
-    size_t argc = ARGS_SIZE_TWO;
-    napi_value argv[ARGS_SIZE_TWO] = {0};
+    size_t argc = ARGS_SIZE_THREE;
+    napi_value argv[ARGS_SIZE_THREE] = {0};
     napi_status status = napi_get_cb_info(env, info, &argc, argv, &thisVar, nullptr);
  
     AccessibilityElement* accessibilityElement = nullptr;
@@ -2491,6 +2491,17 @@ napi_value NAccessibilityElement::FindElementsByCondition(napi_env env, napi_cal
     }
     OHOS::AccessibilityNapi::ParseString(env, callbackInfo->condition_, argv[PARAM0]);
     OHOS::AccessibilityNapi::ParseString(env, callbackInfo->direction_, argv[PARAM1]);
+    
+    // Parse optional type parameter (PARAM2)
+    if (argc >= ARGS_SIZE_THREE && argv[PARAM2] != nullptr) {
+        napi_valuetype valueType = napi_undefined;
+        napi_typeof(env, argv[PARAM2], &valueType);
+        if (valueType == napi_number) {
+            int32_t typeValue = 0;
+            napi_get_value_int32(env, argv[PARAM2], &typeValue);
+            callbackInfo->focusRuleType_ = static_cast<OHOS::Accessibility::FocusRuleType>(typeValue);
+        }
+    }
  
     napi_value resource = nullptr;
     napi_create_string_utf8(callbackInfo->env_, "FindElementsByCondition", NAPI_AUTO_LENGTH, &resource);
@@ -2520,6 +2531,7 @@ void NAccessibilityElement::FindElementsByConditionExecute(napi_env env, void* d
     FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->direction_);
     DetailCondition condition = ConvertStringToDetailCondition(callbackInfo->condition_);
     AccessibilityFocusMoveParam param { direction, condition };
+    param.type = callbackInfo->focusRuleType_;
 
     callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
         *callbackInfo->accessibilityElement_.elementInfo_, param, callbackInfo->nodeInfos_,
@@ -2672,16 +2684,58 @@ napi_value NAccessibilityElement::FindElementByContent(napi_env env, napi_callba
 
 napi_value NAccessibilityElement::FindElementByFocusDirection(napi_env env, napi_callback_info info)
 {
-    return QueryCommon(env,
-        info,
-        {ParseAccessibilityElement,
-            std::bind(ParseConditionString,
-                std::placeholders::_1,
-                std::placeholders::_2,
-                PARAM0,
-                FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_DIRECTION),
-            std::bind(ParseCallback, std::placeholders::_1, std::placeholders::_2, PARAM1, std::placeholders::_3),
-            RunFindElementAsync});
+    napi_value thisVar = nullptr;
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value argv[ARGS_SIZE_TWO] = {0};
+    napi_status status = napi_get_cb_info(env, info, &argc, argv, &thisVar, nullptr);
+
+    AccessibilityElement* accessibilityElement = nullptr;
+    status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
+    if (!accessibilityElement || status != napi_ok) {
+        HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
+        return nullptr;
+    }
+    if (!accessibilityElement->isElementInfo_) {
+        HILOG_ERROR("Type of AccessibilityElement is not right");
+        return nullptr;
+    }
+    
+    napi_value promise = nullptr;
+    NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
+    callbackInfo->env_ = env;
+    callbackInfo->accessibilityElement_ = *accessibilityElement;
+    callbackInfo->conditionId_ = FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_DIRECTION;
+    callbackInfo->systemApi = true;
+    napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    
+    OHOS::AccessibilityNapi::ParseString(env, callbackInfo->condition_, argv[PARAM0]);
+    
+    // Parse optional type parameter (PARAM1)
+    if (argc >= ARGS_SIZE_TWO && argv[PARAM1] != nullptr) {
+        napi_valuetype valueType = napi_undefined;
+        napi_typeof(env, argv[PARAM1], &valueType);
+        if (valueType == napi_number) {
+            int32_t typeValue = 0;
+            napi_get_value_int32(env, argv[PARAM1], &typeValue);
+            callbackInfo->focusRuleType_ = static_cast<OHOS::Accessibility::FocusRuleType>(typeValue);
+        }
+    }
+
+    napi_value resource = nullptr;
+    napi_create_string_utf8(callbackInfo->env_, "FindElementByFocusDirection", NAPI_AUTO_LENGTH, &resource);
+    auto ret = napi_create_async_work(callbackInfo->env_, nullptr, resource, FindElementExecute,
+        FindElementComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+    if (ret != napi_ok) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return nullptr;
+    }
+    napi_queue_async_work_with_qos(callbackInfo->env_, callbackInfo->work_, napi_qos_user_initiated);
+    return promise;
 }
 
 napi_value NAccessibilityElement::FindElementsByAccessibilityHintText(napi_env env, napi_callback_info info)
@@ -3057,9 +3111,15 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
             {
                 FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->condition_);
                 HILOG_DEBUG("direction is %{public}d", direction);
-                callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetNext(
-                    *(callbackInfo->accessibilityElement_.elementInfo_), direction,
-                    callbackInfo->nodeInfo_, systemApi);
+                AccessibilityFocusMoveParam param;
+                param.direction = direction;
+                param.type = callbackInfo->focusRuleType_;
+                callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
+                    *(callbackInfo->accessibilityElement_.elementInfo_), param, callbackInfo->nodeInfos_,
+                    callbackInfo->moveSearchResult_);
+                if (callbackInfo->ret_ == RET_OK && !callbackInfo->nodeInfos_.empty()) {
+                    callbackInfo->nodeInfo_ = callbackInfo->nodeInfos_[0];
+                }
             }
             break;
         case FindElementCondition::FIND_ELEMENT_CONDITION_ELEMENT_ID:

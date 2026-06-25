@@ -60,6 +60,7 @@ struct FindElementParams {
     std::string actionName_ = "";
     std::string rule_ = "";
     int32_t moveSearchResult_ = -1;
+    OHOS::Accessibility::FocusRuleType focusRuleType_ = OHOS::Accessibility::FocusRuleType::DEFAULT;
 };
 
 // AccessibilityElement initialization and creation
@@ -72,6 +73,8 @@ void EnableScreenCurtain(ani_env *env, ani_object thisObj, ani_boolean isEnable)
 ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_long condition);
 ani_object FindElements(ani_env *env, ani_object thisObj, ani_string type, ani_string condition);
 ani_object FindElementsByCondition(ani_env *env, ani_object thisObj, ani_string rule, ani_string condition);
+ani_object FindElementsByConditionWithType(
+    ani_env *env, ani_object thisObj, ani_string rule, ani_string condition, ani_enum_item type);
 void FindElementExecute(FindElementParams* data);
 void AttributeValueExecute(FindElementParams* data);
 ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<AccessibilityWindowInfo>& windowInfos);
@@ -81,6 +84,8 @@ ani_object GetChildren(ani_env *env, ani_object thisObj);
 ani_object GetParent(ani_env *env, ani_object thisObj);
 ani_object FindElementByContent(ani_env *env, ani_object thisObj, ani_string content);
 ani_object FindElementByFocusDirection(ani_env *env, ani_object thisObj, ani_string direction);
+ani_object FindElementByFocusDirectionWithType(
+    ani_env *env, ani_object thisObj, ani_string direction, ani_enum_item type);
 ani_object FindElementsByAccessibilityHintText(ani_env *env, ani_object thisObj, ani_string hintText);
 ani_object FindElementById(ani_env *env, ani_object thisObj, ani_long elementId);
 void FindElementByText(FindElementParams *data);
