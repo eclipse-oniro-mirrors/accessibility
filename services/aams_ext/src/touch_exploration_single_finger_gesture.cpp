@@ -465,8 +465,8 @@ void TouchExploration::HandleOneFingerDownStateMove(MMI::PointerEvent &event)
     MMI::PointerEvent::PointerItem startPointerItem;
     startPointerEvent.GetPointerItem(startPointerEvent.GetPointerId(), startPointerItem);
 
-    float offsetX = startPointerItem.GetDisplayX() - pointerItem.GetDisplayX();
-    float offsetY = startPointerItem.GetDisplayY() - pointerItem.GetDisplayY();
+    float offsetX = startPointerItem.GetRawDisplayX() - pointerItem.GetRawDisplayX();
+    float offsetY = startPointerItem.GetRawDisplayY() - pointerItem.GetRawDisplayY();
     double duration = hypot(offsetX, offsetY);
     if (duration > moveThreshold_) {
         CancelPostEvent(TouchExplorationMsg::SEND_HOVER_MSG);
@@ -476,8 +476,8 @@ void TouchExploration::HandleOneFingerDownStateMove(MMI::PointerEvent &event)
         receivedPointerEvents_.push_back(event);
         oneFingerSwipePrePointer_ = startPointerItem;
         Pointer mp;
-        mp.px_ = static_cast<float>(startPointerItem.GetDisplayX());
-        mp.py_ = static_cast<float>(startPointerItem.GetDisplayY());
+        mp.px_ = static_cast<float>(startPointerItem.GetRawDisplayX());
+        mp.py_ = static_cast<float>(startPointerItem.GetRawDisplayY());
         oneFingerSwipeRoute_.clear();
         oneFingerSwipeRoute_.push_back(mp);
         handler_->SendEvent(static_cast<uint32_t>(TouchExplorationMsg::SWIPE_COMPLETE_TIMEOUT_MSG), 0,
@@ -527,8 +527,8 @@ void TouchExploration::AddOneFingerSwipeEvent(MMI::PointerEvent &event)
     MMI::PointerEvent preMoveEvent = receivedPointerEvents_.back();
     MMI::PointerEvent::PointerItem preMovePointerItem {};
     preMoveEvent.GetPointerItem(preMoveEvent.GetPointerId(), preMovePointerItem);
-    float offsetX = preMovePointerItem.GetDisplayX() - pointerItem.GetDisplayX();
-    float offsetY = preMovePointerItem.GetDisplayY() - pointerItem.GetDisplayY();
+    float offsetX = preMovePointerItem.GetRawDisplayX() - pointerItem.GetRawDisplayX();
+    float offsetY = preMovePointerItem.GetRawDisplayY() - pointerItem.GetRawDisplayY();
     double duration = hypot(offsetX, offsetY);
     if (duration > moveThreshold_) {
         receivedPointerEvents_.push_back(event);
@@ -537,12 +537,12 @@ void TouchExploration::AddOneFingerSwipeEvent(MMI::PointerEvent &event)
             static_cast<int32_t>(TimeoutDuration::SWIPE_COMPLETE_TIMEOUT));
     }
 
-    if ((abs(pointerItem.GetDisplayX() - oneFingerSwipePrePointer_.GetDisplayX())) >= xMinPixels_ ||
-        (abs(pointerItem.GetDisplayY() - oneFingerSwipePrePointer_.GetDisplayY())) >= yMinPixels_) {
+    if ((abs(pointerItem.GetRawDisplayX() - oneFingerSwipePrePointer_.GetRawDisplayX())) >= xMinPixels_ ||
+        (abs(pointerItem.GetRawDisplayY() - oneFingerSwipePrePointer_.GetRawDisplayY())) >= yMinPixels_) {
         Pointer mp;
         oneFingerSwipePrePointer_ = pointerItem;
-        mp.px_ = pointerItem.GetDisplayX();
-        mp.py_ = pointerItem.GetDisplayY();
+        mp.px_ = pointerItem.GetRawDisplayX();
+        mp.py_ = pointerItem.GetRawDisplayY();
         oneFingerSwipeRoute_.push_back(mp);
     }
 }
