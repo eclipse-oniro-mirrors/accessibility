@@ -2050,7 +2050,7 @@ protected:
     bool accessibilityScrollable_ = true;
     int64_t uniqueId_ = -1;
     std::string originalText_ = "";
-    AccessibilitySourceType sourceType_ = DEFAULT;
+    AccessibilitySourceType sourceType_ = DEFAULT_NODE;
 };
 
 /**

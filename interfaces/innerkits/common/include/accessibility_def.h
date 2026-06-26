@@ -218,7 +218,7 @@ enum TextMoveUnit : int32_t {
 };
 
 enum AccessibilitySourceType : int32_t {
-    DEFAULT = 1,
+    DEFAULT_NODE = 1,
     ADDED_FROM_ACCESSIBILITY_VIRTUAL_NODE = 2,
     UPDATED_FROM_ACCESSIBILITY_VIRTUAL_NODE = 3
 };
