@@ -190,7 +190,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelFourthPart(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityScrollable_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, uniqueId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, originalText_);
-    int32_t sourceType = AccessibilitySourceType::DEFAULT;
+    int32_t sourceType = AccessibilitySourceType::DEFAULT_NODE;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, sourceType);
     sourceType_ = static_cast<AccessibilitySourceType>(sourceType);
     return true;
