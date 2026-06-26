@@ -112,6 +112,51 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
         });
     }
 
+    updateAccessibilityElementProperty(elementId: long, windowId: int, node: AccessibilityVirtualNode):
+        Promise<OperateVirtualNodeResult> {
+        
+        return new Promise<OperateVirtualNodeResult> ((resolve: (v: OperateVirtualNodeResult) => void,
+            reject: (error: BusinessError) => void): void => {
+            taskpool.execute(this.updateAccessibilityElementPropertyNative, elementId, windowId, node)
+            .then((ret: Any): void => {
+                resolve(ret as OperateVirtualNodeResult);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
+    addAccessibilityVirtualNodes(elementId: long, windowId: int, nodes: Array<AccessibilityVirtualNode>):
+        Promise<OperateVirtualNodeResult> {
+        
+        return new Promise<OperateVirtualNodeResult> ((resolve: (v: OperateVirtualNodeResult) => void,
+            reject: (error: BusinessError) => void): void => {
+            taskpool.execute(this.addAccessibilityVirtualNodesNative, elementId, windowId, nodes)
+            .then((ret: Any): void => {
+                resolve(ret as OperateVirtualNodeResult);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
+    removeAccessibilityVirtualNodes(elementId: long, windowId: int):
+        Promise<OperateVirtualNodeResult> {
+        
+        return new Promise<OperateVirtualNodeResult> ((resolve: (v: OperateVirtualNodeResult) => void,
+            reject: (error: BusinessError) => void): void => {
+            taskpool.execute(this.removeAccessibilityVirtualNodesNative, elementId, windowId)
+            .then((ret: Any): void => {
+                resolve(ret as OperateVirtualNodeResult);
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
     native startAbilityNative(want: Want): void;
     native getElementsNative(windowId: int, elementId?: long): Array<AccessibilityElement>;
     native getDefaultFocusedElementIdsNative(windowId: int): Array<long>;
@@ -123,6 +168,11 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
     native getAccessibilityFocusedElementNative(): AccessibilityElement;
     native getRootInActiveWindowNative(windowId?: int): AccessibilityElement;
     native getAccessibilityWindowsSync(displayId?: long): Array<AccessibilityElement>;
+    native updateAccessibilityElementPropertyNative(elementId: long, windowId: int,
+        node: AccessibilityVirtualNode): int;
+    native addAccessibilityVirtualNodesNative(elementId: long, windowId: int,
+        nodes: Array<AccessibilityVirtualNode>): int;
+    native removeAccessibilityVirtualNodesNative(elementId: long, windowId: int): int;
 }
 
 class AccessibilityElementCleaner {
@@ -588,4 +638,62 @@ export class RectImpl implements Rect {
     top: int = 0;
     width: int = 0;
     height: int = 0;
+}
+
+export class TouchPosition {
+  x:int = 0;
+  y:int = 0;
+}
+
+export interface AccessibilityVirtualNode {
+    virtualNodeId: long;
+    text?: string;
+    accessibilityText?: string;
+    accessibilityGroup?: boolean;
+    accessibilityLevel?: string;
+    rect?: Rect;
+    checkable?: boolean;
+    checked?: boolean;
+    clickable?: boolean;
+    enabled?: boolean;
+    selected?: boolean;
+    customComponentType?: string;
+    touchPosition?: TouchPosition;
+    accessibilityFocused?: boolean;
+    parentId?: long;
+    childNodeIds?: Array<long>;
+    elementId?: long;
+    supportedActionNames?: Array<string>;
+}
+
+export class AccessibilityVirtualNodeImpl implements AccessibilityVirtualNode{
+  virtualNodeId: long = 0;
+  text?: string = "";
+  accessibilityText?: string = "";
+  accessibilityGroup?: boolean = false;
+  accessibilityLevel?: string = "";
+  rect?: Rect = new RectImpl();
+  checkable?: boolean = false;
+  checked?: boolean = false;
+  clickable?: boolean = false;
+  enabled?: boolean = false;
+  selected?: boolean = false;
+  customComponentType?: string = "";
+  touchPosition?: TouchPosition = new TouchPosition();
+  accessibilityFocused?: boolean = false;
+  parentId?: long = 0;
+  childNodeIds?: Array<long> = [];
+  elementId?: long = 0;
+  supportedActionNames?: Array<string> = [];
+}
+
+export enum OperateVirtualNodeResult {
+  SUCCESS = 0,
+  ACCESSIBILITY_ELEMENT_NOT_EXIST = 1,
+  CANNOT_MODIFY_ROOT_NODE = 2,
+  ACCESSIBILITY_PROPERTY_EMPTY = 3,
+  ALLOCATE_ID_FAILED = 4,
+  ADD_NODE_IS_EMPTY = 5,
+  INTERNAL_ERROR = 6,
+  VIRTUAL_NODE_NOT_SUPPORT = 7,
 }

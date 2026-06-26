@@ -188,6 +188,289 @@ static bool CheckStartAbilityInputParam(napi_env env, NapiCallbackInfo& info,
     return true;
 }
 
+static bool ParseVirtualNodeRect(napi_env env, napi_value object, AccessibilityVirtualNode &virtualNode)
+{
+    HILOG_DEBUG();
+    napi_value propertyNameValue = nullptr;
+    napi_value rectValue = nullptr;
+    napi_create_string_utf8(env, "rect", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_get_named_property(env, object, "rect", &rectValue);
+    
+    bool isRectNull = false;
+    bool isRectUndefined = false;
+    napi_is_null(env, rectValue, &isRectNull);
+    napi_is_undefined(env, rectValue, &isRectUndefined);
+    
+    if (isRectNull || isRectUndefined) {
+        return true;
+    }
+    
+    bool hasProperty = false;
+    int32_t left = 0;
+    int32_t top = 0;
+    int32_t width = 0;
+    int32_t height = 0;
+    
+    napi_create_string_utf8(env, "left", NAPI_AUTO_LENGTH, &propertyNameValue);
+    left = ConvertIntJSToNAPI(env, rectValue, propertyNameValue, hasProperty);
+    
+    napi_create_string_utf8(env, "top", NAPI_AUTO_LENGTH, &propertyNameValue);
+    top = ConvertIntJSToNAPI(env, rectValue, propertyNameValue, hasProperty);
+    
+    napi_create_string_utf8(env, "width", NAPI_AUTO_LENGTH, &propertyNameValue);
+    width = ConvertIntJSToNAPI(env, rectValue, propertyNameValue, hasProperty);
+    
+    napi_create_string_utf8(env, "height", NAPI_AUTO_LENGTH, &propertyNameValue);
+    height = ConvertIntJSToNAPI(env, rectValue, propertyNameValue, hasProperty);
+    
+    Rect rect(left, top, left + width, top + height);
+    virtualNode.SetRect(rect);
+    return true;
+}
+
+static bool ParseVirtualNodeTouchPosition(napi_env env, napi_value object, AccessibilityVirtualNode &virtualNode)
+{
+    HILOG_DEBUG();
+    napi_value propertyNameValue = nullptr;
+    napi_value pointValue = nullptr;
+    napi_create_string_utf8(env, "touchPosition", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_get_named_property(env, object, "touchPosition", &pointValue);
+    
+    bool isPointNull = false;
+    bool isPointUndefined = false;
+    napi_is_null(env, pointValue, &isPointNull);
+    napi_is_undefined(env, pointValue, &isPointUndefined);
+    
+    if (isPointNull || isPointUndefined) {
+        return true;
+    }
+    
+    bool hasProperty = false;
+    int32_t pointX = 0;
+    int32_t pointY = 0;
+    
+    napi_create_string_utf8(env, "x", NAPI_AUTO_LENGTH, &propertyNameValue);
+    pointX = ConvertIntJSToNAPI(env, pointValue, propertyNameValue, hasProperty);
+    
+    napi_create_string_utf8(env, "y", NAPI_AUTO_LENGTH, &propertyNameValue);
+    pointY = ConvertIntJSToNAPI(env, pointValue, propertyNameValue, hasProperty);
+    
+    AccessibilityVirtualPoint point(pointX, pointY);
+    virtualNode.SetPoint(point);
+    return true;
+}
+
+static bool ParseVirtualNodeChildNodeIds(napi_env env, napi_value object, AccessibilityVirtualNode &virtualNode)
+{
+    HILOG_DEBUG();
+    napi_value propertyNameValue = nullptr;
+    napi_value childNodeIdsValue = nullptr;
+    napi_create_string_utf8(env, "childNodeIds", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_get_named_property(env, object, "childNodeIds", &childNodeIdsValue);
+    
+    bool isArray = false;
+    napi_is_array(env, childNodeIdsValue, &isArray);
+    if (!isArray) {
+        return true;
+    }
+    
+    uint32_t arrayLength = 0;
+    napi_get_array_length(env, childNodeIdsValue, &arrayLength);
+    std::vector<int64_t> childNodeIds;
+    
+    for (uint32_t i = 0; i < arrayLength; i++) {
+        napi_value element = nullptr;
+        napi_get_element(env, childNodeIdsValue, i, &element);
+        int64_t childId = 0;
+        if (OHOS::AccessibilityNapi::ParseInt64(env, childId, element)) {
+            childNodeIds.push_back(childId);
+        }
+    }
+    
+    if (!childNodeIds.empty()) {
+        virtualNode.SetChildNodeIds(childNodeIds);
+    }
+    return true;
+}
+
+static bool ParseVirtualNodeBasicProperties(napi_env env, napi_value object, AccessibilityVirtualNode &virtualNode)
+{
+    HILOG_DEBUG();
+    bool hasProperty = false;
+    int32_t dataValue = 0;
+    std::string str = "";
+    napi_value propertyNameValue = nullptr;
+    
+    napi_create_string_utf8(env, "virtualNodeId", NAPI_AUTO_LENGTH, &propertyNameValue);
+    dataValue = ConvertIntJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetId(dataValue);
+    }
+    
+    napi_create_string_utf8(env, "text", NAPI_AUTO_LENGTH, &propertyNameValue);
+    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetText(str);
+    }
+    
+    napi_create_string_utf8(env, "accessibilityText", NAPI_AUTO_LENGTH, &propertyNameValue);
+    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetAccessibilityText(str);
+    }
+    
+    napi_create_string_utf8(env, "accessibilityLevel", NAPI_AUTO_LENGTH, &propertyNameValue);
+    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetAccessibilityLevel(str);
+    }
+    
+    napi_create_string_utf8(env, "customComponentType", NAPI_AUTO_LENGTH, &propertyNameValue);
+    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetCustomComponentType(str);
+    }
+    
+    return true;
+}
+
+static bool ParseVirtualNodeBoolProperties(napi_env env, napi_value object, AccessibilityVirtualNode &virtualNode)
+{
+    HILOG_DEBUG();
+    bool hasProperty = false;
+    bool boolValue = false;
+    napi_value propertyNameValue = nullptr;
+    
+    napi_create_string_utf8(env, "accessibilityGroup", NAPI_AUTO_LENGTH, &propertyNameValue);
+    boolValue = ConvertBoolJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetAccessibilityGroup(boolValue);
+    }
+    napi_create_string_utf8(env, "checkable", NAPI_AUTO_LENGTH, &propertyNameValue);
+    boolValue = ConvertBoolJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetCheckable(boolValue);
+    }
+    napi_create_string_utf8(env, "checked", NAPI_AUTO_LENGTH, &propertyNameValue);
+    boolValue = ConvertBoolJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetChecked(boolValue);
+    }
+    napi_create_string_utf8(env, "clickable", NAPI_AUTO_LENGTH, &propertyNameValue);
+    boolValue = ConvertBoolJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetClickable(boolValue);
+    }
+    napi_create_string_utf8(env, "enabled", NAPI_AUTO_LENGTH, &propertyNameValue);
+    boolValue = ConvertBoolJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetEnabled(boolValue);
+    }
+    napi_create_string_utf8(env, "selected", NAPI_AUTO_LENGTH, &propertyNameValue);
+    boolValue = ConvertBoolJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetSelected(boolValue);
+    }
+    napi_create_string_utf8(env, "accessibilityFocused", NAPI_AUTO_LENGTH, &propertyNameValue);
+    boolValue = ConvertBoolJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetAccessibilityFocused(boolValue);
+    }
+    return true;
+}
+
+static bool ParseVirtualNodeInt64Properties(napi_env env, napi_value object, AccessibilityVirtualNode &virtualNode)
+{
+    HILOG_DEBUG();
+    bool hasProperty = false;
+    int64_t int64Value = 0;
+    napi_value propertyNameValue = nullptr;
+    
+    napi_create_string_utf8(env, "parentId", NAPI_AUTO_LENGTH, &propertyNameValue);
+    int64Value = ConvertIntJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetParentId(int64Value);
+    }
+    
+    napi_create_string_utf8(env, "elementId", NAPI_AUTO_LENGTH, &propertyNameValue);
+    int64Value = ConvertIntJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        virtualNode.SetElementId(int64Value);
+    }
+    
+    return true;
+}
+
+static bool ParseVirtualNode(napi_env env, napi_value object, AccessibilityVirtualNode &virtualNode)
+{
+    HILOG_DEBUG();
+    
+    if (!ParseVirtualNodeBasicProperties(env, object, virtualNode)) {
+        HILOG_ERROR("Failed to parse basic properties");
+        return false;
+    }
+    
+    if (!ParseVirtualNodeBoolProperties(env, object, virtualNode)) {
+        HILOG_ERROR("Failed to parse bool properties");
+        return false;
+    }
+    
+    if (!ParseVirtualNodeInt64Properties(env, object, virtualNode)) {
+        HILOG_ERROR("Failed to parse int64 properties");
+        return false;
+    }
+    
+    if (!ParseVirtualNodeRect(env, object, virtualNode)) {
+        HILOG_ERROR("Failed to parse rect property");
+        return false;
+    }
+    
+    if (!ParseVirtualNodeTouchPosition(env, object, virtualNode)) {
+        HILOG_ERROR("Failed to parse touchPosition property");
+        return false;
+    }
+    
+    if (!ParseVirtualNodeChildNodeIds(env, object, virtualNode)) {
+        HILOG_ERROR("Failed to parse childNodeIds property");
+        return false;
+    }
+    
+    return true;
+}
+
+static bool ParseVirtualNodes(napi_env env, napi_value object,
+    std::vector<OHOS::Accessibility::AccessibilityVirtualNode>& virtualNodes)
+{
+    HILOG_DEBUG();
+    bool isArray = false;
+    napi_is_array(env, object, &isArray);
+    if (!isArray) {
+        HILOG_ERROR("Input is not an array");
+        return false;
+    }
+
+    uint32_t arrayLength = 0;
+    napi_get_array_length(env, object, &arrayLength);
+    if (arrayLength == 0) {
+        HILOG_ERROR("Array is empty");
+        return true;
+    }
+
+    for (uint32_t i = 0; i < arrayLength; i++) {
+        napi_value element = nullptr;
+        napi_get_element(env, object, i, &element);
+        OHOS::Accessibility::AccessibilityVirtualNode virtualNode;
+        if (ParseVirtualNode(env, element, virtualNode)) {
+            virtualNodes.push_back(virtualNode);
+        } else {
+            HILOG_ERROR("Failed to parse virtualNode at index %{public}u", i);
+            return false;
+        }
+    }
+
+    return true;
+}
+
 class NAccessibilityExtensionContext final {
 public:
     explicit NAccessibilityExtensionContext(
@@ -288,6 +571,21 @@ public:
     static napi_value NotifyDisconnect(napi_env env, napi_callback_info info)
     {
         GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnNotifyDisconnect);
+    }
+
+    static napi_value UpdateCustomProperty(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnUpdateCustomProperty);
+    }
+
+    static napi_value AddAccessibilityVirtualNodes(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnAddAccessibilityVirtualNodes);
+    }
+
+    static napi_value RemoveAccessibilityVirtualNodes(napi_env env, napi_callback_info info)
+    {
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnRemoveAccessibilityVirtualNodes);
     }
 
 private:
@@ -1237,6 +1535,241 @@ private:
         }
         return CreateJsUndefined(env);
     }
+
+    bool ValidateUpdateCustomPropertyParams(napi_env env, NapiCallbackInfo& info,
+        int64_t& elementId, int32_t& windowId,
+        OHOS::Accessibility::AccessibilityVirtualNode& virtualNode)
+    {
+        if (info.argc < ARGS_SIZE_THREE) {
+            HILOG_ERROR("Not enough params");
+            return false;
+        }
+
+        if (info.argv[PARAM0] == nullptr || !IsNapiNumber(env, info.argv[PARAM0])) {
+            HILOG_ERROR("Invalid elementId param");
+            return false;
+        }
+        ConvertFromJsValue(env, info.argv[PARAM0], elementId);
+
+        if (info.argv[PARAM1] == nullptr || !IsNapiNumber(env, info.argv[PARAM1])) {
+            HILOG_ERROR("Invalid windowId param");
+            return false;
+        }
+        ConvertFromJsValue(env, info.argv[PARAM1], windowId);
+
+        if (!ParseVirtualNode(env, info.argv[PARAM2], virtualNode)) {
+            HILOG_ERROR("Invalid virtualNode param");
+            return false;
+        }
+
+        return true;
+    }
+
+    bool ValidateAddAccessibilityVirtualNodesParams(napi_env env, NapiCallbackInfo& info,
+        int64_t& elementId, int32_t& windowId,
+        std::vector<OHOS::Accessibility::AccessibilityVirtualNode>& virtualNodes)
+    {
+        if (info.argc < ARGS_SIZE_THREE) {
+            HILOG_ERROR("Not enough params");
+            return false;
+        }
+
+        if (info.argv[PARAM0] == nullptr || !IsNapiNumber(env, info.argv[PARAM0])) {
+            HILOG_ERROR("Invalid elementId param");
+            return false;
+        }
+        ConvertFromJsValue(env, info.argv[PARAM0], elementId);
+
+        if (info.argv[PARAM1] == nullptr || !IsNapiNumber(env, info.argv[PARAM1])) {
+            HILOG_ERROR("Invalid windowId param");
+            return false;
+        }
+        ConvertFromJsValue(env, info.argv[PARAM1], windowId);
+
+        if (!ParseVirtualNodes(env, info.argv[PARAM2], virtualNodes)) {
+            HILOG_ERROR("Invalid virtualNodes param");
+            return false;
+        }
+
+        return true;
+    }
+
+    bool ValidateRemoveAccessibilityVirtualNodesParams(napi_env env, NapiCallbackInfo& info,
+        int64_t& elementId, int32_t& windowId)
+    {
+        if (info.argc < ARGS_SIZE_TWO) {
+            HILOG_ERROR("Not enough params");
+            return false;
+        }
+
+        if (info.argv[PARAM0] == nullptr || !IsNapiNumber(env, info.argv[PARAM0])) {
+            HILOG_ERROR("Invalid elementId param");
+            return false;
+        }
+        ConvertFromJsValue(env, info.argv[PARAM0], elementId);
+
+        if (info.argv[PARAM1] == nullptr || !IsNapiNumber(env, info.argv[PARAM1])) {
+            HILOG_ERROR("Invalid windowId param");
+            return false;
+        }
+        ConvertFromJsValue(env, info.argv[PARAM1], windowId);
+
+        return true;
+    }
+
+    napi_value OnUpdateCustomProperty(napi_env env, NapiCallbackInfo& info)
+    {
+        HILOG_DEBUG();
+        int64_t elementId = 0;
+        int32_t windowId = 0;
+        OHOS::Accessibility::AccessibilityVirtualNode virtualNode;
+
+        auto paramValid = std::make_shared<bool>(true);
+        auto retError = std::make_shared<RetError>(RET_OK);
+        auto operateResult = std::make_shared<OperateVirtualNodeResult>(
+            OperateVirtualNodeResult::SUCCESS);
+
+        *paramValid = ValidateUpdateCustomPropertyParams(env, info, elementId,
+            windowId, virtualNode);
+
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, elementId,
+            windowId, virtualNode, retError, operateResult, paramValid]() {
+            if (elementId <= 0 || windowId < 0 || *paramValid == false) {
+                HILOG_ERROR("invalid param: elementId=%{public}" PRId64", windowId=%{public}d", elementId, windowId);
+                *paramValid = false;
+                *retError = RET_ERR_INVALID_PARAM;
+                return;
+            }
+            auto context = weak.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                *retError = RET_ERR_FAILED;
+                return;
+            }
+            *retError = context->UpdateCustomProperty(elementId, windowId, virtualNode, *operateResult);
+        };
+
+        NapiAsyncTask::CompleteCallback complete = [retError, operateResult](napi_env env, NapiAsyncTask& task,
+            int32_t status) {
+            if (*retError == RET_OK) {
+                napi_value result = nullptr;
+                napi_create_int32(env, static_cast<int32_t>(*operateResult),
+                    &result);
+                task.Resolve(env, result);
+            } else {
+                HILOG_ERROR("UpdateCustomProperty failed. ret: %{public}d.", *retError);
+                NAccessibilityErrMsg errMsg = QueryRetMsg(*retError);
+                task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+            }
+        };
+
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnUpdateCustomProperty",
+            env, CreateAsyncTaskWithLastParam(env, nullptr, std::move(execute), std::move(complete), &result));
+        return result;
+    }
+
+    napi_value OnAddAccessibilityVirtualNodes(napi_env env, NapiCallbackInfo& info)
+    {
+        HILOG_DEBUG();
+        int64_t elementId = 0;
+        int32_t windowId = 0;
+        std::vector<OHOS::Accessibility::AccessibilityVirtualNode> virtualNodes;
+
+        auto paramValid = std::make_shared<bool>(true);
+        auto retError = std::make_shared<RetError>(RET_OK);
+        auto operateResult = std::make_shared<OperateVirtualNodeResult>(
+            OperateVirtualNodeResult::SUCCESS);
+
+        *paramValid = ValidateAddAccessibilityVirtualNodesParams(env, info, elementId,
+            windowId, virtualNodes);
+
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, elementId,
+            windowId, virtualNodes, retError, operateResult, paramValid]() {
+            if (elementId <= 0 || windowId < 0 || *paramValid == false) {
+                HILOG_ERROR("invalid param: elementId=%{public}" PRId64", windowId=%{public}d", elementId, windowId);
+                *paramValid = false;
+                *retError = RET_ERR_INVALID_PARAM;
+                return;
+            }
+            auto context = weak.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                *retError = RET_ERR_FAILED;
+                return;
+            }
+            *retError = context->AddAccessibilityVirtualNodes(elementId, windowId, virtualNodes, *operateResult);
+        };
+
+        NapiAsyncTask::CompleteCallback complete = [retError, operateResult](napi_env env, NapiAsyncTask& task,
+            int32_t status) {
+            if (*retError == RET_OK) {
+                napi_value result = nullptr;
+                napi_create_int32(env, static_cast<int32_t>(*operateResult),
+                    &result);
+                task.Resolve(env, result);
+            } else {
+                HILOG_ERROR("AddAccessibilityVirtualNodes failed. ret: %{public}d.", *retError);
+                NAccessibilityErrMsg errMsg = QueryRetMsg(*retError);
+                task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+            }
+        };
+
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnAddAccessibilityVirtualNodes",
+            env, CreateAsyncTaskWithLastParam(env, nullptr, std::move(execute), std::move(complete), &result));
+        return result;
+    }
+
+    napi_value OnRemoveAccessibilityVirtualNodes(napi_env env, NapiCallbackInfo& info)
+    {
+        HILOG_DEBUG();
+        int64_t elementId = 0;
+        int32_t windowId = 0;
+
+        auto paramValid = std::make_shared<bool>(true);
+        auto retError = std::make_shared<RetError>(RET_OK);
+        auto operateResult = std::make_shared<OperateVirtualNodeResult>(
+            OperateVirtualNodeResult::SUCCESS);
+
+        *paramValid = ValidateRemoveAccessibilityVirtualNodesParams(env, info, elementId, windowId);
+
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, elementId,
+            windowId, retError, operateResult, paramValid]() {
+            if (elementId <= 0 || windowId < 0 || *paramValid == false) {
+                HILOG_ERROR("invalid param: elementId=%{public}" PRId64", windowId=%{public}d", elementId, windowId);
+                *paramValid = false;
+                *retError = RET_ERR_INVALID_PARAM;
+                return;
+            }
+            auto context = weak.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                *retError = RET_ERR_FAILED;
+                return;
+            }
+            *retError = context->RemoveAccessibilityVirtualNodes(elementId, windowId, *operateResult);
+        };
+
+        NapiAsyncTask::CompleteCallback complete = [retError, operateResult](napi_env env, NapiAsyncTask& task,
+            int32_t status) {
+            if (*retError == RET_OK) {
+                napi_value result = nullptr;
+                napi_create_int32(env, static_cast<int32_t>(*operateResult),
+                    &result);
+                task.Resolve(env, result);
+            } else {
+                HILOG_ERROR("RemoveAccessibilityVirtualNodes failed. ret: %{public}d.", *retError);
+                NAccessibilityErrMsg errMsg = QueryRetMsg(*retError);
+                task.Reject(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
+            }
+        };
+
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnRemoveAccessibilityVirtualNodes",
+            env, CreateAsyncTaskWithLastParam(env, nullptr, std::move(execute), std::move(complete), &result));
+        return result;
+    }
 };
 } // namespace
 
@@ -1284,6 +1817,12 @@ napi_value CreateJsAccessibilityExtensionContext(
         NAccessibilityExtensionContext::GetWindowRootElementSys);
     BindNativeFunction(env, object, "getAccessibilityWindowsSync", moduleName,
         NAccessibilityExtensionContext::GetAccessibilityWindowsSync);
+    BindNativeFunction(env, object, "updateAccessibilityElementProperty", moduleName,
+        NAccessibilityExtensionContext::UpdateCustomProperty);
+    BindNativeFunction(env, object, "addAccessibilityVirtualNodes", moduleName,
+        NAccessibilityExtensionContext::AddAccessibilityVirtualNodes);
+    BindNativeFunction(env, object, "removeAccessibilityVirtualNodes", moduleName,
+        NAccessibilityExtensionContext::RemoveAccessibilityVirtualNodes);
     return object;
 }
 } // namespace Accessibility

@@ -306,5 +306,41 @@ RetError AccessibilityExtensionContext::FindElementsByCondition(const Accessibil
     }
     return aaClient->FocusMoveSearchWithCondition(info, param, infos, windowId);
 }
+
+RetError AccessibilityExtensionContext::UpdateCustomProperty(const int64_t elementId, const int32_t windowId,
+    const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result)
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->UpdateCustomAccessibilityProperty(elementId, windowId, accessibilityVirtualNode, result);
+}
+
+RetError AccessibilityExtensionContext::AddAccessibilityVirtualNodes(const int64_t elementId, const int32_t windowId,
+    const std::vector<AccessibilityVirtualNode>& nodes, OperateVirtualNodeResult &result)
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->AddAccessibilityVirtualNode(elementId, windowId, nodes, result);
+}
+
+RetError AccessibilityExtensionContext::RemoveAccessibilityVirtualNodes(const int64_t elementId, const int32_t windowId,
+    OperateVirtualNodeResult &result)
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (aaClient == nullptr) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->RemoveAccessibilityVirtualNode(elementId, windowId, result);
+}
 } // namespace Accessibility
 } // namespace OHOS

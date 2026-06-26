@@ -413,6 +413,166 @@ static void UnholdRunningLockSync(ani_env *env, ani_object thisObj)
     }
 }
 
+static bool ParseVirtualNodeFromAni(ani_env *env, ani_object object, AccessibilityVirtualNode &virtualNode)
+{
+    HILOG_INFO();
+    if (object == nullptr) {
+        HILOG_ERROR("VirtualNode object is nullptr");
+        return false;
+    }
+
+    int32_t intValue = 0;
+    int64_t int64Value = 0;
+    std::string strValue = "";
+    bool boolValue = false;
+
+    if (ANIUtils::GetLongProperty(env, "virtualNodeId", object, int64Value)) {
+        virtualNode.SetId(int64Value);
+    }
+
+    if (ANIUtils::GetStringField(env, "text", object, strValue)) {
+        virtualNode.SetText(strValue);
+    }
+
+    if (ANIUtils::GetStringField(env, "accessibilityText", object, strValue)) {
+        virtualNode.SetAccessibilityText(strValue);
+    }
+
+    if (ANIUtils::GetStringField(env, "accessibilityLevel", object, strValue)) {
+        virtualNode.SetAccessibilityLevel(strValue);
+    }
+
+    if (ANIUtils::GetStringField(env, "customComponentType", object, strValue)) {
+        virtualNode.SetCustomComponentType(strValue);
+    }
+
+    if (ANIUtils::GetBoolField(env, "accessibilityGroup", object, boolValue)) {
+        virtualNode.SetAccessibilityGroup(boolValue);
+    }
+
+    if (ANIUtils::GetBoolField(env, "checkable", object, boolValue)) {
+        virtualNode.SetCheckable(boolValue);
+    }
+
+    if (ANIUtils::GetBoolField(env, "checked", object, boolValue)) {
+        virtualNode.SetChecked(boolValue);
+    }
+
+    if (ANIUtils::GetBoolField(env, "clickable", object, boolValue)) {
+        virtualNode.SetClickable(boolValue);
+    }
+
+    if (ANIUtils::GetBoolField(env, "enabled", object, boolValue)) {
+        virtualNode.SetEnabled(boolValue);
+    }
+
+    if (ANIUtils::GetBoolField(env, "selected", object, boolValue)) {
+        virtualNode.SetSelected(boolValue);
+    }
+
+    if (ANIUtils::GetBoolField(env, "accessibilityFocused", object, boolValue)) {
+        virtualNode.SetAccessibilityFocused(boolValue);
+    }
+
+    return true;
+}
+
+static ani_int UpdateAccessibilityElementProperty(ani_env *env, ani_object thisObj, ani_long elementId,
+    ani_int windowId, ani_object accessibilityVirtualNode)
+{
+    HILOG_DEBUG();
+    OperateVirtualNodeResult result = OperateVirtualNodeResult::INTERNAL_ERROR;
+    AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
+    if (context == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return static_cast<ani_int>(result);
+    }
+    int32_t windowIdValue = static_cast<int32_t>(windowId);
+    int64_t elementIdValue = static_cast<int64_t>(elementId);
+    AccessibilityVirtualNode virtualNode;
+    if (!ParseVirtualNodeFromAni(env, accessibilityVirtualNode, virtualNode)) {
+        HILOG_ERROR("Failed to parse accessibilityVirtualNode");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+        return static_cast<ani_int>(result);
+    }
+
+    RetError ret = context->UpdateCustomProperty(elementIdValue, windowIdValue, virtualNode, result);
+    HILOG_DEBUG("UpdateCustomProperty ret: %{public}d, result: %{public}d", ret, result);
+    if (ret != RET_OK) {
+        HILOG_ERROR("Failed to update custom property: %{public}d", ret);
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+    }
+    return static_cast<ani_int>(result);
+}
+
+static ani_int AddAccessibilityVirtualNodes(ani_env *env, ani_object thisObj, ani_long elementId,
+    ani_int windowId, ani_array accessibilityVirtualNodes)
+{
+    HILOG_DEBUG();
+    OperateVirtualNodeResult result = OperateVirtualNodeResult::INTERNAL_ERROR;
+    AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
+    if (context == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return static_cast<ani_int>(result);
+    }
+    int32_t windowIdValue = static_cast<int32_t>(windowId);
+    int64_t elementIdValue = static_cast<int64_t>(elementId);
+    ani_size arrayLength = 0;
+    if (env->Array_GetLength(static_cast<ani_array>(accessibilityVirtualNodes), &arrayLength) != ANI_OK) {
+        HILOG_ERROR("get array length failed.");
+        return static_cast<ani_int>(result);
+    }
+    std::vector<AccessibilityVirtualNode> infos;
+    for (ani_size i = 0; i < arrayLength; i++) {
+        ani_ref elementRef;
+        if (env->Array_Get(accessibilityVirtualNodes, i, &elementRef) != ANI_OK) {
+            HILOG_ERROR("Object_CallMethodByName_Ref Failed");
+            return static_cast<ani_int>(result);
+        }
+        ani_object element = reinterpret_cast<ani_object>(elementRef);
+        AccessibilityVirtualNode virtualNode;
+        if (!ParseVirtualNodeFromAni(env, element, virtualNode)) {
+            HILOG_ERROR("Failed to parse accessibilityVirtualNode");
+            ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
+            return static_cast<ani_int>(result);
+        }
+        infos.push_back(virtualNode);
+    }
+
+    RetError ret = context->AddAccessibilityVirtualNodes(elementIdValue, windowIdValue, infos, result);
+    HILOG_DEBUG("UpdateCustomProperty ret: %{public}d, result: %{public}d", ret, result);
+    if (ret != RET_OK) {
+        HILOG_ERROR("Failed to update custom property: %{public}d", ret);
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+    }
+    return static_cast<ani_int>(result);
+}
+
+static ani_int RemoveAccessibilityVirtualNodes(ani_env *env, ani_object thisObj, ani_long elementId,
+    ani_int windowId)
+{
+    HILOG_DEBUG();
+    OperateVirtualNodeResult result = OperateVirtualNodeResult::INTERNAL_ERROR;
+    AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
+    if (context == nullptr) {
+        HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
+        return static_cast<ani_int>(result);
+    }
+    int32_t windowIdValue = static_cast<int32_t>(windowId);
+    int64_t elementIdValue = static_cast<int64_t>(elementId);
+
+    RetError ret = context->RemoveAccessibilityVirtualNodes(elementIdValue, windowIdValue, result);
+    HILOG_DEBUG("RemoveAccessibilityVirtualNodes ret: %{public}d, result: %{public}d", ret, result);
+    if (ret != RET_OK) {
+        HILOG_ERROR("Failed to update custom property: %{public}d", ret);
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+    }
+    return static_cast<ani_int>(result);
+}
+
 ani_object CreateAniAccessibilityExtensionContext(ani_env *env, std::shared_ptr<AccessibilityExtensionContext> context,
     const std::shared_ptr<AbilityRuntime::OHOSApplication> &application)
 {
@@ -442,6 +602,12 @@ ani_object CreateAniAccessibilityExtensionContext(ani_env *env, std::shared_ptr<
         ani_native_function {"offNative", nullptr, reinterpret_cast<void *>(Off)},
         ani_native_function {"holdRunningLockSync", nullptr, reinterpret_cast<void *>(HoldRunningLockSync)},
         ani_native_function {"unholdRunningLockSync", nullptr, reinterpret_cast<void *>(UnholdRunningLockSync)},
+        ani_native_function {"updateAccessibilityElementPropertyNative", nullptr,
+            reinterpret_cast<void *>(UpdateAccessibilityElementProperty)},
+        ani_native_function {"addAccessibilityVirtualNodesNative", nullptr,
+            reinterpret_cast<void *>(AddAccessibilityVirtualNodes)},
+        ani_native_function {"removeAccessibilityVirtualNodesNative", nullptr,
+            reinterpret_cast<void *>(RemoveAccessibilityVirtualNodes)},
     };
     HILOG_DEBUG("CreateAniAccessibilityExtensionContext bind context methods");
     if (ANI_OK != env->Class_BindNativeMethods(cls, methods.data(), methods.size())) {
