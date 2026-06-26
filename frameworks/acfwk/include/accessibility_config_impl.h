@@ -16,6 +16,7 @@
 #ifndef ACCESSIBILITY_CONFIG_IMPL_H
 #define ACCESSIBILITY_CONFIG_IMPL_H
 
+#include <atomic>
 #include "accessibility_config.h"
 #include "accessibility_enable_ability_lists_observer_stub.h"
 #include "accessibility_enable_ability_callback_observer_stub.h"
@@ -124,10 +125,6 @@ public:
     void OnAccessibilityEnableAbilityListsChanged();
     void OnAccessibilityInstallAbilityListsChanged();
     void OnEnableAbilityRemoteDied(const std::string& name);
-    void SetInitializeFlag(bool flag)
-    {
-        isInitialized_ = flag;
-    }
 private:
     class AccessibilityEnableAbilityListsObserverImpl :
         public Accessibility::AccessibilityEnableAbilityListsObserverStub {
@@ -407,7 +404,7 @@ private:
     sptr<AccessibilityEnableAbilityListsObserverImpl> enableAbilityListsObserver_ = nullptr;
     sptr<AccessibilityEnableAbilityCallbackObserverImpl> enableAbilityCallbackObserver_ = nullptr;
 
-    bool isInitialized_ = false;
+    std::atomic<bool> isInitialized_ {false};
     bool shortkey_ = false;
     bool highContrastText_ = false;
     bool screenMagnifier_ = false;

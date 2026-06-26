@@ -34,7 +34,7 @@ namespace {
     constexpr uint32_t DISPLAY_DALTONIZER_GREEN = 12;
     constexpr uint32_t DISPLAY_DALTONIZER_RED = 11;
     constexpr uint32_t DISPLAY_DALTONIZER_BLUE = 13;
-    bool isParameterWatcherRegistered = false;
+    std::atomic<bool> isParameterWatcherRegistered {false};
     constexpr int32_t DESTRUCTOR_DELAY_TIME = 200 * 1000; // 200ms
     constexpr int32_t DESTRUCTOR_DELAY_COUNT = 5;
 }
@@ -110,7 +110,7 @@ AccessibilityConfig::Impl::~Impl()
     }
     
     HILOG_INFO("AccessibilityConfig destroy");
-    if (isParameterWatcherRegistered) {
+    if (isParameterWatcherRegistered.load()) {
         RemoveParameterWatcher(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
     }
 }
@@ -118,13 +118,11 @@ AccessibilityConfig::Impl::~Impl()
 bool AccessibilityConfig::Impl::InitializeContext()
 {
     HILOG_DEBUG();
-    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
-    if (isInitialized_) {
+    if (isInitialized_.load()) {
         HILOG_DEBUG("Context has initialized");
         return true;
     }
-    isInitialized_ = ConnectToService();
-    return isInitialized_;
+    return ConnectToService();
 }
 
 void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *value, void *context)
@@ -151,7 +149,11 @@ bool AccessibilityConfig::Impl::ConnectToService()
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     if (retSysParam >= 0 && !std::strcmp(value, "true")) {
-        // Accessibility service is ready
+        std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
+        if (isInitialized_.load()) {
+            HILOG_DEBUG("Context has initialized in lock");
+            return true;
+        }
         if (!InitAccessibilityServiceProxy()) {
             return false;
         }
@@ -161,15 +163,17 @@ bool AccessibilityConfig::Impl::ConnectToService()
         }
 
         InitConfigValues();
+        isInitialized_.store(true);
+    }
+    if (isParameterWatcherRegistered.load()) {
+        return true;
     }
     HILOG_DEBUG("Start watching accessibility service.");
     retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
     if (retSysParam) {
-        HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
-        isParameterWatcherRegistered = false;
-        return false;
+        HILOG_WARN("Watch parameter failed, error = %{public}d", retSysParam);
     }
-    isParameterWatcherRegistered = true;
+    isParameterWatcherRegistered.store(true);
     return true;
 }
 
@@ -180,7 +184,7 @@ bool AccessibilityConfig::Impl::ConnectToServiceAsync()
     if (InitAccessibilityServiceProxy()) {
         (void)RegisterToService();
         InitConfigValues();
-        isInitialized_ = true;
+        isInitialized_.store(true);
         return true;
     } else {
         HILOG_ERROR("ConnectToServiceAsync fail");
@@ -391,7 +395,7 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
             enableAbilityCallbackObserver_ = nullptr;
             configObserver_ = nullptr;
             seniorModeStateObserver_ = nullptr;
-            isInitialized_ = false;
+            isInitialized_.store(false);
             HILOG_INFO("ResetService ok");
         }
     }
