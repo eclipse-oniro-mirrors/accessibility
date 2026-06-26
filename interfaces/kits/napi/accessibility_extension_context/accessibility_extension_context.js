@@ -109,6 +109,18 @@ class AccessibilityExtensionContext extends ExtensionContext {
     console.log('getAccessibilityWindowsSync');
     return this.__context_impl__.getAccessibilityWindowsSync(displayId);
   }
+
+  updateAccessibilityElementProperty(elementId, windowId, accessibilityVirtualNode) {
+    return this.__context_impl__.updateAccessibilityElementProperty(elementId, windowId, accessibilityVirtualNode);
+  }
+
+  addAccessibilityVirtualNodes(elementId, windowId, nodes) {
+    return this.__context_impl__.addAccessibilityVirtualNodes(elementId, windowId, nodes);
+  }
+
+  removeAccessibilityVirtualNodes(elementId, windowId) {
+    return this.__context_impl__.removeAccessibilityVirtualNodes(elementId, windowId);
+  }
 }
 
 export default AccessibilityExtensionContext;

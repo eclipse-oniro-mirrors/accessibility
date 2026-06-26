@@ -217,6 +217,38 @@ public:
 
     RetError FindElementsByCondition(const AccessibilityElementInfo &info, AccessibilityFocusMoveParam &param,
         std::vector<AccessibilityElementInfo> &infos, int32_t windowId);
+
+    /**
+     * @brief Update accessibility elementInfo.
+     * @param elementId The element id.
+     * @param windowId The window id.
+     * @param accessibilityVirtualNode update property.
+     * @param result The operation result.
+     * @return Return RET_OK if add virtual nodes successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError UpdateCustomProperty(const int64_t elementId, const int32_t windowId,
+        const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result);
+
+    /**
+     * @brief Add accessibility virtual nodes.
+     * @param elementId The element id.
+     * @param windowId The window id.
+     * @param nodes The virtual nodes to add.
+     * @param result The operation result.
+     * @return Return RET_OK if add virtual nodes successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError AddAccessibilityVirtualNodes(const int64_t elementId, const int32_t windowId,
+        const std::vector<AccessibilityVirtualNode>& nodes, OperateVirtualNodeResult &result);
+
+    /**
+     * @brief Remove accessibility virtual nodes.
+     * @param elementId The root element id to remove.
+     * @param windowId The window id.
+     * @param result The operation result.
+     * @return Return RET_OK if remove virtual nodes successfully, otherwise refer to the RetError for the failure.
+     */
+    RetError RemoveAccessibilityVirtualNodes(const int64_t elementId, const int32_t windowId,
+        OperateVirtualNodeResult &result);
 private:
     static int illegalRequestCode_;
 };

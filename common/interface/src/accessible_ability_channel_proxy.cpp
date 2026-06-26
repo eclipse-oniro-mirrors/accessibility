@@ -205,6 +205,12 @@ bool AccessibleAbilityChannelProxy::WriteVirtualNodeRelationProperties(MessagePa
         return false;
     }
     int32_t childNodeCount = accessibilityVirtualNode.GetChildNodeIds().size();
+
+    if (childNodeCount > MAX_ALLOW_SIZE) {
+        HILOG_ERROR("childNodeCount exceeds MAX_ALLOW_SIZE");
+        return false;
+    }
+
     if (!data.WriteInt32(childNodeCount)) {
         HILOG_ERROR("childNodeCount write error");
         return false;
@@ -1101,6 +1107,12 @@ RetError AccessibleAbilityChannelProxy::AddAccessibilityVirtualNode(const int64_
         return RET_ERR_IPC_FAILED;
     }
     int32_t nodeCount = nodes.size();
+
+    if (nodeCount > MAX_ALLOW_SIZE) {
+        HILOG_ERROR("nodes.size() exceeds MAX_ALLOW_SIZE");
+        return RET_ERR_INVALID_PARAM;
+    }
+
     if (!data.WriteInt32(nodeCount)) {
         HILOG_ERROR("nodeCount write error");
         return RET_ERR_IPC_FAILED;

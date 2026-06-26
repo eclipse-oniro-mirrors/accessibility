@@ -652,15 +652,13 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearchWithCondition(const Acce
 RetError AccessibleAbilityChannelClient::UpdateCustomAccessibilityProperty(const int64_t elementId,
     const int32_t windowId, const AccessibilityVirtualNode& accessibilityVirtualNode, OperateVirtualNodeResult &result)
 {
-    HILOG_INFO("elementId[%{public}" PRId64 "], windowId[%{public}d]", elementId, windowId);
     if (proxy_ == nullptr) {
-        HILOG_ERROR("UpdateCustomAccessibilityProperty Failed to connect to aams [channelId:%{public}d]",
-            channelId_);
+        HILOG_ERROR("UpdateCustomAccessibilityProperty Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
     }
 
     int32_t requestId = GenerateRequestId();
-    HILOG_INFO("channelId:%{public}d, elementId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
+    HILOG_DEBUG("channelId:%{public}d, elementId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
         channelId_, elementId, windowId, requestId);
 
     sptr<AccessibilityElementOperatorCallbackImpl> callback =
@@ -684,14 +682,13 @@ RetError AccessibleAbilityChannelClient::UpdateCustomAccessibilityProperty(const
     }
 
     result = static_cast<OperateVirtualNodeResult>(callback->operateVirtualNodeResult_);
-    HILOG_INFO("UpdateCustomAccessibilityProperty result: %{public}d", static_cast<int32_t>(result));
+    HILOG_DEBUG("UpdateCustomAccessibilityProperty result: %{public}d", static_cast<int32_t>(result));
     return RET_OK;
 }
 
 RetError AccessibleAbilityChannelClient::AddAccessibilityVirtualNode(const int64_t rootId,
     const int32_t windowId, const std::vector<AccessibilityVirtualNode> &nodes, OperateVirtualNodeResult &result)
 {
-    HILOG_INFO("rootId[%{public}" PRId64 "], windowId[%{public}d]", rootId, windowId);
     if (proxy_ == nullptr) {
         HILOG_ERROR("AddAccessibilityVirtualNode Failed to connect to aams [channelId:%{public}d]",
             channelId_);
@@ -699,7 +696,7 @@ RetError AccessibleAbilityChannelClient::AddAccessibilityVirtualNode(const int64
     }
 
     int32_t requestId = GenerateRequestId();
-    HILOG_INFO("channelId:%{public}d, rootId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
+    HILOG_DEBUG("channelId:%{public}d, rootId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
         channelId_, rootId, windowId, requestId);
 
     sptr<AccessibilityElementOperatorCallbackImpl> callback =
@@ -721,15 +718,14 @@ RetError AccessibleAbilityChannelClient::AddAccessibilityVirtualNode(const int64
         return RET_ERR_TIME_OUT;
     }
 
-    result = static_cast<OperateVirtualNodeResult>(callback->executeActionResult_);
-    HILOG_INFO("AddAccessibilityVirtualNode result: %{public}d", static_cast<int32_t>(result));
+    result = static_cast<OperateVirtualNodeResult>(callback->operateVirtualNodeResult_);
+    HILOG_DEBUG("AddAccessibilityVirtualNode result: %{public}d", static_cast<int32_t>(result));
     return RET_OK;
 }
 
 RetError AccessibleAbilityChannelClient::RemoveAccessibilityVirtualNode(const int64_t id,
     const int32_t windowId, OperateVirtualNodeResult &result)
 {
-    HILOG_INFO("id[%{public}" PRId64 "], windowId[%{public}d]", id, windowId);
     if (proxy_ == nullptr) {
         HILOG_ERROR("RemoveAccessibilityVirtualNode Failed to connect to aams [channelId:%{public}d]",
             channelId_);
@@ -737,7 +733,7 @@ RetError AccessibleAbilityChannelClient::RemoveAccessibilityVirtualNode(const in
     }
 
     int32_t requestId = GenerateRequestId();
-    HILOG_INFO("channelId:%{public}d, id:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
+    HILOG_DEBUG("channelId:%{public}d, id:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
         channelId_, id, windowId, requestId);
 
     sptr<AccessibilityElementOperatorCallbackImpl> callback =
@@ -759,8 +755,8 @@ RetError AccessibleAbilityChannelClient::RemoveAccessibilityVirtualNode(const in
         return RET_ERR_TIME_OUT;
     }
 
-    result = static_cast<OperateVirtualNodeResult>(callback->executeActionResult_);
-    HILOG_INFO("RemoveAccessibilityVirtualNode result: %{public}d", static_cast<int32_t>(result));
+    result = static_cast<OperateVirtualNodeResult>(callback->operateVirtualNodeResult_);
+    HILOG_DEBUG("RemoveAccessibilityVirtualNode result: %{public}d", static_cast<int32_t>(result));
     return RET_OK;
 }
 } // namespace Accessibility

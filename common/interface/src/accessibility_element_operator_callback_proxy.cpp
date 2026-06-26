@@ -471,7 +471,7 @@ bool AccessibilityElementOperatorCallbackProxy::WriteElementInfosToRawData(
 void AccessibilityElementOperatorCallbackProxy::SetUpdateCustomAccessibilityPropertyResult(
     const OperateVirtualNodeResult result, const int32_t requestId)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -501,7 +501,7 @@ void AccessibilityElementOperatorCallbackProxy::SetUpdateCustomAccessibilityProp
 void AccessibilityElementOperatorCallbackProxy::SetAddAccessibilityVirtualNodeResult(
     const OperateVirtualNodeResult result, const int32_t requestId)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -531,7 +531,7 @@ void AccessibilityElementOperatorCallbackProxy::SetAddAccessibilityVirtualNodeRe
 void AccessibilityElementOperatorCallbackProxy::SetRemoveAccessibilityVirtualNodeResult(
     const OperateVirtualNodeResult result, const int32_t requestId)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);

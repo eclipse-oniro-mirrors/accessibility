@@ -691,6 +691,9 @@ bool AccessibleAbilityChannelStub::ReadAccessibilityVirtualNode(MessageParcel &d
     accessibilityVirtualNode.SetAccessibilityFocused(data.ReadBool());
     accessibilityVirtualNode.SetParentId(data.ReadInt64());
     int32_t childNodeCount = data.ReadInt32();
+    if (childNodeCount > MAX_ALLOW_SIZE) {
+        return false;
+    }
     std::vector<int64_t> childNodeIds;
     for (int32_t i = 0; i < childNodeCount; i++) {
         childNodeIds.push_back(data.ReadInt64());
