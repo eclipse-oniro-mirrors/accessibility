@@ -104,6 +104,7 @@ namespace {
     constexpr char IS_ESSENTIAL[] = "isEssential";
     constexpr char CHILDREN_TREE_ID[] = "childrenTreeId";
     constexpr char BELONG_TREE_ID[] = "belongTreeId";
+    constexpr char SOURCE_TYPE[] = "sourceType";
 
     const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "inspectorKey",
         "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
@@ -116,7 +117,7 @@ namespace {
         "row", "column", "listItemIndex", "sideBarContainerStates", "span", "isActive", "accessibilityVisible",
         "allAttribute", "clip", "customComponentType", "extraInfo", "parentId", "childrenIds",
         "accessibilityNextFocusId", "accessibilityPreviousFocusId", "accessibilityScrollable", "isEssential",
-        "childrenTreeId", "belongTreeId", "accessibilityStateDescription", "customActions"};
+        "childrenTreeId", "belongTreeId", "accessibilityStateDescription", "customActions", "sourceType"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
         "rootElement", "isFocused", "windowId", "mainWindowId"};
 
@@ -195,6 +196,7 @@ namespace {
         {"isEssential", &NAccessibilityElement::GetElementInfoIsEssential},
         {"childrenTreeId", &NAccessibilityElement::GetElementInfoChildrenTreeId},
         {"belongTreeId", &NAccessibilityElement::GetElementInfoBelongTreeId},
+        {"sourceType", &NAccessibilityElement::GetElementInfoSourceType},
     };
     std::map<std::string, AttributeNamesFunc> windowInfoCompleteMap = {
         {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
@@ -298,6 +300,7 @@ namespace {
         DECLARE_NAPI_GETTER(CHILDREN_IDS, GetElementProperty<ElementProperty<CHILDREN_IDS>>),
         DECLARE_NAPI_GETTER(CHILDREN_TREE_ID, GetElementProperty<ElementProperty<CHILDREN_TREE_ID>>),
         DECLARE_NAPI_GETTER(BELONG_TREE_ID, GetElementProperty<ElementProperty<BELONG_TREE_ID>>),
+        DECLARE_NAPI_GETTER(SOURCE_TYPE, GetElementProperty<ElementProperty<SOURCE_TYPE>>),
     };
 } // namespace
 
@@ -1560,6 +1563,15 @@ void NAccessibilityElement::GetElementInfoBelongTreeId(NAccessibilityElementData
         callbackInfo->accessibilityElement_.elementInfo_->GetBelongTreeId(), &value));
 }
 
+void NAccessibilityElement::GetElementInfoSourceType(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
+        static_cast<int32_t>(callbackInfo->accessibilityElement_.elementInfo_->GetSourceType()), &value));
+}
+
 void NAccessibilityElement::GetElementInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_object(callbackInfo->env_, &value));
@@ -1887,6 +1899,10 @@ void NAccessibilityElement::GetElementInfoAllAttribute6(NAccessibilityElementDat
     napi_value belongTreeId = nullptr;
     GetElementInfoBelongTreeId(callbackInfo, belongTreeId);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "belongTreeId", belongTreeId));
+
+    napi_value sourceType = nullptr;
+    GetElementInfoSourceType(callbackInfo, sourceType);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "sourceType", sourceType));
 }
 
 void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData *callbackInfo, napi_value &value)

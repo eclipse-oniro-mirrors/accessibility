@@ -183,6 +183,7 @@ public:
     static void GetElementInfoIsEssential(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoChildrenTreeId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoBelongTreeId(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoSourceType(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);
