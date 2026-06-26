@@ -190,6 +190,9 @@ bool AccessibilityElementInfoParcel::ReadFromParcelFourthPart(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityScrollable_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, uniqueId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, originalText_);
+    int32_t sourceType = AccessibilitySourceType::DEFAULT_NODE;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, sourceType);
+    sourceType_ = static_cast<AccessibilitySourceType>(sourceType);
     return true;
 }
 
@@ -322,6 +325,7 @@ bool AccessibilityElementInfoParcel::MarshallingThirdPart(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityScrollable_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, uniqueId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, originalText_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(sourceType_));
     return true;
 }
 

@@ -217,6 +217,12 @@ enum TextMoveUnit : int32_t {
     STEP_PARAGRAPH = 0x00000010,
 };
 
+enum AccessibilitySourceType : int32_t {
+    DEFAULT_NODE = 1,
+    ADDED_FROM_ACCESSIBILITY_VIRTUAL_NODE = 2,
+    UPDATED_FROM_ACCESSIBILITY_VIRTUAL_NODE = 3
+};
+
 enum FocusMoveDirection : int32_t {
     DIRECTION_INVALID = 0,
     UP = 0x00000001,

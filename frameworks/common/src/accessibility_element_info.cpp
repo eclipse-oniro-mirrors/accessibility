@@ -1235,5 +1235,15 @@ void AccessibilityElementInfo::SetOriginalText(const std::string &originalText)
 {
     originalText_ = originalText;
 }
+
+const AccessibilitySourceType &AccessibilityElementInfo::GetSourceType() const
+{
+    return sourceType_;
+}
+
+void AccessibilityElementInfo::SetSourceType(const AccessibilitySourceType &sourceType)
+{
+    sourceType_ = sourceType;
+}
 } // namespace Accessibility
 } // namespace OHOS

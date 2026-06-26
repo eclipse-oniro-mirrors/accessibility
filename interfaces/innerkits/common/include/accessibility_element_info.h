@@ -1946,6 +1946,20 @@ public:
       */
     void SetOriginalText(const std::string &originalText);
 
+    /*
+     * @brief Get the accessibilitySourceType to the element info.
+     * @return accessibilitySourceType.
+     * @sysCap Accessibility
+     */
+    const AccessibilitySourceType &GetSourceType() const;
+
+    /**
+    * @brief Set the accessibilitySourceType to the element info.
+    * @param sourceType The accessibilitySourceType of node.
+    * @sysCap Accessibility
+    */
+    void SetSourceType(const AccessibilitySourceType &sourceType);
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -2036,6 +2050,7 @@ protected:
     bool accessibilityScrollable_ = true;
     int64_t uniqueId_ = -1;
     std::string originalText_ = "";
+    AccessibilitySourceType sourceType_ = DEFAULT_NODE;
 };
 
 /**
