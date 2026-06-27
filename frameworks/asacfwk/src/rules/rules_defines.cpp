@@ -42,7 +42,7 @@ bool RulesDefines::ParseTypesFromJson(const nlohmann::json& defines, const std::
         HILOG_ERROR("json is not object.");
         return false;
     }
-    
+
     std::vector<std::string> types;
     auto it = defines.find(key);
     if (it != defines.end() && it->is_array()) {
@@ -69,22 +69,23 @@ bool RulesDefines::ParseRootTypes(const nlohmann::json& defines)
 {
     auto result = ParseTypesFromJson(defines, "root_types", rootTypes_);
     if (result) {
-        PrintRootTypes();
+        PrintTypes(rootTypes_, "rootTypes");
     }
     return result;
 }
 
-void RulesDefines::PrintRootTypes()
+void RulesDefines::PrintTypes(const std::set<std::string>& typeSet, const std::string& label)
 {
-    std::string rootTypes;
+    std::string types;
     bool isFirst = true;
-    for (const auto& rootType : rootTypes_) {
+    for (const auto& type : typeSet) {
         if (!isFirst) {
-            rootTypes.append(", ");
+            types.append(", ");
         }
         isFirst = false;
-        rootTypes.append(rootType);
+        types.append(type);
     }
+    HILOG_DEBUG("%{public}s: %{public}s", label.c_str(), types.c_str());
 }
 
 bool RulesDefines::IsRootType(const std::string& type)
@@ -114,21 +115,31 @@ bool RulesDefines::IsScrollableTypes(const std::string& type)
 
 bool RulesDefines::ParseTitleTypes(const nlohmann::json& defines)
 {
-    return ParseTypesFromJson(defines, "title_types", titleTypes_);
+    auto result = ParseTypesFromJson(defines, "title_types", titleTypes_);
+    if (result) {
+        PrintTypes(titleTypes_, "titleTypes");
+    }
+    return result;
 }
 
 bool RulesDefines::IsTitleTypes(const std::string& type)
 {
+    HILOG_DEBUG("type %{public}s", type.c_str());
     return titleTypes_.find(type) != titleTypes_.end();
 }
 
 bool RulesDefines::ParseLinkTypes(const nlohmann::json& defines)
 {
-    return ParseTypesFromJson(defines, "link_types", linkTypes_);
+    auto result = ParseTypesFromJson(defines, "link_types", linkTypes_);
+    if (result) {
+        PrintTypes(linkTypes_, "linkTypes");
+    }
+    return result;
 }
 
 bool RulesDefines::IsLinkTypes(const std::string& type)
 {
+    HILOG_DEBUG("type %{public}s", type.c_str());
     return linkTypes_.find(type) != linkTypes_.end();
 }
 } // namespace OHOS::Accessibility
