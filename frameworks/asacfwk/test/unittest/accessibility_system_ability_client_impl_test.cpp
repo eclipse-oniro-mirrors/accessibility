@@ -1547,15 +1547,11 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckNodeIsFocusType_002, Tes
 {
     GTEST_LOG_(INFO) << "CheckNodeIsFocusType_002 start";
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-    } else {
-        bool isHit = false;
-        EXPECT_EQ(RET_ERR_NOT_ENABLED,
-            impl_->CheckNodeIsFocusType(nullptr, FocusRuleType::DEFAULT, isHit));
-        // DEFAULT类型逻辑：即使未初始化也返回RET_ERR_NOT_ENABLED
-        EXPECT_FALSE(isHit);
-    }
+    ASSERT_TRUE(impl_);
+    bool isHit = false;
+    EXPECT_EQ(RET_ERR_NOT_ENABLED,
+        impl_->CheckNodeIsFocusType(nullptr, FocusRuleType::DEFAULT, isHit));
+    EXPECT_FALSE(isHit);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "CheckNodeIsFocusType_002 end";
 }
@@ -1569,14 +1565,11 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckNodeIsFocusType_003, Tes
 {
     GTEST_LOG_(INFO) << "CheckNodeIsFocusType_003 start";
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-    } else {
-        bool isHit = false;
-        EXPECT_EQ(RET_ERR_NOT_ENABLED,
-            impl_->CheckNodeIsFocusType(nullptr, FocusRuleType::FOCUS_BY_TITLE, isHit));
-        EXPECT_FALSE(isHit);
-    }
+    ASSERT_TRUE(impl_);
+    bool isHit = false;
+    EXPECT_EQ(RET_ERR_NOT_ENABLED,
+        impl_->CheckNodeIsFocusType(nullptr, FocusRuleType::FOCUS_BY_TITLE, isHit));
+    EXPECT_FALSE(isHit);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "CheckNodeIsFocusType_003 end";
 }
@@ -1590,14 +1583,11 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckNodeIsFocusType_004, Tes
 {
     GTEST_LOG_(INFO) << "CheckNodeIsFocusType_004 start";
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-    } else {
-        bool isHit = false;
-        EXPECT_EQ(RET_ERR_NOT_ENABLED,
-            impl_->CheckNodeIsFocusType(nullptr, FocusRuleType::FOCUS_BY_LINK, isHit));
-        EXPECT_FALSE(isHit);
-    }
+    ASSERT_TRUE(impl_);
+    bool isHit = false;
+    EXPECT_EQ(RET_ERR_NOT_ENABLED,
+        impl_->CheckNodeIsFocusType(nullptr, FocusRuleType::FOCUS_BY_LINK, isHit));
+    EXPECT_FALSE(isHit);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "CheckNodeIsFocusType_004 end";
 }
@@ -1611,14 +1601,11 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, CheckNodeIsFocusType_005, Tes
 {
     GTEST_LOG_(INFO) << "CheckNodeIsFocusType_005 start";
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-    } else {
-        bool isHit = false;
-        FocusRuleType invalidType = static_cast<FocusRuleType>(999);
-        EXPECT_EQ(RET_ERR_NOT_ENABLED, impl_->CheckNodeIsFocusType(nullptr, invalidType, isHit));
-        EXPECT_FALSE(isHit);
-    }
+    ASSERT_TRUE(impl_);
+    bool isHit = false;
+    FocusRuleType invalidType = static_cast<FocusRuleType>(999);
+    EXPECT_EQ(RET_ERR_NOT_ENABLED, impl_->CheckNodeIsFocusType(nullptr, invalidType, isHit));
+    EXPECT_FALSE(isHit);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "CheckNodeIsFocusType_005 end";
 }

@@ -45,7 +45,7 @@ private:
     bool ParseTypesFromJson(const nlohmann::json& defines, const std::string& key,
         std::set<std::string>& typeSet);
     bool ParseRootTypes(const nlohmann::json& defines);
-    void PrintRootTypes();
+    void PrintTypes(const std::set<std::string>& typeSet, const std::string& label);
     bool ParseScrollIgnoreTypes(const nlohmann::json& defines);
     bool ParseScrollableTypes(const nlohmann::json& defines);
     bool ParseTitleTypes(const nlohmann::json& defines);
