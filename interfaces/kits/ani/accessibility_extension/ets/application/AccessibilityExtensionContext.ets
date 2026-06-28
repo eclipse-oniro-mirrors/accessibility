@@ -17,7 +17,8 @@ import ExtensionContext from 'application.ExtensionContext';
 import Want from '@ohos.app.ability.Want';
 import { AsyncCallback, BusinessError, Callback } from '@ohos.base';
 import accessibility from '@ohos.accessibility';
-import { AccessibilityAction, FocusMoveResultCode, InjectActionType, AccessibilityFocusScene, FocusRuleType } from '@ohos.accessibility';
+import { AccessibilityAction, FocusMoveResultCode, InjectActionType, AccessibilityFocusScene,
+    FocusRuleType, OperateVirtualNodeResult } from '@ohos.accessibility';
 
 export interface FocusMoveResult {
   target: Array<AccessibilityElement>;
@@ -685,15 +686,4 @@ export class AccessibilityVirtualNodeImpl implements AccessibilityVirtualNode{
   childNodeIds?: Array<long> = [];
   elementId?: long = 0;
   supportedActionNames?: Array<string> = [];
-}
-
-export enum OperateVirtualNodeResult {
-  SUCCESS = 0,
-  ACCESSIBILITY_ELEMENT_NOT_EXIST = 1,
-  CANNOT_MODIFY_ROOT_NODE = 2,
-  ACCESSIBILITY_PROPERTY_EMPTY = 3,
-  ALLOCATE_ID_FAILED = 4,
-  ADD_NODE_IS_EMPTY = 5,
-  INTERNAL_ERROR = 6,
-  VIRTUAL_NODE_NOT_SUPPORT = 7,
 }
