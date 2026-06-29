@@ -1472,7 +1472,11 @@ void AccessibilityZoomGesture::HandleHoldStateMove(MMI::PointerEvent &event)
     HILOG_DEBUG();
     ZOOM_FOCUS_COORDINATE coordinate = {0.0f, 0.0f};
     CalcFocusCoordinate(event, coordinate);
-    RecognizeScroll(coordinate, true);
+    if (magnificationMode_ == FULL_SCREEN_MAGNIFICATION) {
+        RecognizeScroll(coordinate, true);
+    } else {
+        RecognizeScroll(coordinate);
+    }
 }
 
 void AccessibilityZoomGesture::HandleTDZoomInitStateDown(MMI::PointerEvent &event)

@@ -80,7 +80,7 @@ void MagnificationMenuManager::OnMenuTap()
     HILOG_DEBUG();
     MagnificationMenu::GetInstance().DisableMenuWindow();
     uint32_t mode = MagnificationMenu::GetInstance().ChangeMode();
-    Singleton<MagnificationManager>::GetInstance().OnModeChanged(mode);
+    MagnificationManager::GetInstance()->OnModeChanged(mode);
     ShowMenuWindow(mode);
 }
 
