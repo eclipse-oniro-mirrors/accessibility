@@ -170,10 +170,10 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
     native getRootInActiveWindowNative(windowId?: int): AccessibilityElement;
     native getAccessibilityWindowsSync(displayId?: long): Array<AccessibilityElement>;
     native updateAccessibilityElementPropertyNative(elementId: long, windowId: int,
-        node: AccessibilityVirtualNode): int;
+        node: AccessibilityVirtualNode): OperateVirtualNodeResult;
     native addAccessibilityVirtualNodesNative(elementId: long, windowId: int,
-        nodes: Array<AccessibilityVirtualNode>): int;
-    native removeAccessibilityVirtualNodesNative(elementId: long, windowId: int): int;
+        nodes: Array<AccessibilityVirtualNode>): OperateVirtualNodeResult;
+    native removeAccessibilityVirtualNodesNative(elementId: long, windowId: int): OperateVirtualNodeResult;
 }
 
 class AccessibilityElementCleaner {

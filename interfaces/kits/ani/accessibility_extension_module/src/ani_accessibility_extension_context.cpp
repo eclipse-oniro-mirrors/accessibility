@@ -477,16 +477,19 @@ static bool ParseVirtualNodeFromAni(ani_env *env, ani_object object, Accessibili
     return true;
 }
 
-static ani_int UpdateAccessibilityElementProperty(ani_env *env, ani_object thisObj, ani_long elementId,
+static ani_enum_item UpdateAccessibilityElementProperty(ani_env *env, ani_object thisObj, ani_long elementId,
     ani_int windowId, ani_object accessibilityVirtualNode)
 {
     HILOG_DEBUG();
+    constexpr const char* operatorVirtualNodeCls = "@ohos.accessibility.OperateVirtualNodeResult";
     OperateVirtualNodeResult result = OperateVirtualNodeResult::INTERNAL_ERROR;
+    ani_enum_item ani_result;
+    ANIUtils::EnumConvert_NativeToEts(env, operatorVirtualNodeCls, result, ani_result);
     AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
     if (context == nullptr) {
         HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
-        return static_cast<ani_int>(result);
+        return ani_result;
     }
     int32_t windowIdValue = static_cast<int32_t>(windowId);
     int64_t elementIdValue = static_cast<int64_t>(elementId);
@@ -494,7 +497,7 @@ static ani_int UpdateAccessibilityElementProperty(ani_env *env, ani_object thisO
     if (!ParseVirtualNodeFromAni(env, accessibilityVirtualNode, virtualNode)) {
         HILOG_ERROR("Failed to parse accessibilityVirtualNode");
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
-        return static_cast<ani_int>(result);
+        return ani_result;
     }
 
     RetError ret = context->UpdateCustomProperty(elementIdValue, windowIdValue, virtualNode, result);
@@ -503,40 +506,44 @@ static ani_int UpdateAccessibilityElementProperty(ani_env *env, ani_object thisO
         HILOG_ERROR("Failed to update custom property: %{public}d", ret);
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
-    return static_cast<ani_int>(result);
+    ANIUtils::EnumConvert_NativeToEts(env, operatorVirtualNodeCls, result, ani_result);
+    return ani_result;
 }
 
-static ani_int AddAccessibilityVirtualNodes(ani_env *env, ani_object thisObj, ani_long elementId,
+static ani_enum_item AddAccessibilityVirtualNodes(ani_env *env, ani_object thisObj, ani_long elementId,
     ani_int windowId, ani_array accessibilityVirtualNodes)
 {
     HILOG_DEBUG();
+    constexpr const char* operatorVirtualNodeCls = "@ohos.accessibility.OperateVirtualNodeResult";
     OperateVirtualNodeResult result = OperateVirtualNodeResult::INTERNAL_ERROR;
+    ani_enum_item ani_result;
+    ANIUtils::EnumConvert_NativeToEts(env, operatorVirtualNodeCls, result, ani_result);
     AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
     if (context == nullptr) {
         HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
-        return static_cast<ani_int>(result);
+        return ani_result;
     }
     int32_t windowIdValue = static_cast<int32_t>(windowId);
     int64_t elementIdValue = static_cast<int64_t>(elementId);
     ani_size arrayLength = 0;
     if (env->Array_GetLength(static_cast<ani_array>(accessibilityVirtualNodes), &arrayLength) != ANI_OK) {
         HILOG_ERROR("get array length failed.");
-        return static_cast<ani_int>(result);
+        return ani_result;
     }
     std::vector<AccessibilityVirtualNode> infos;
     for (ani_size i = 0; i < arrayLength; i++) {
         ani_ref elementRef;
         if (env->Array_Get(accessibilityVirtualNodes, i, &elementRef) != ANI_OK) {
             HILOG_ERROR("Object_CallMethodByName_Ref Failed");
-            return static_cast<ani_int>(result);
+            return ani_result;
         }
         ani_object element = reinterpret_cast<ani_object>(elementRef);
         AccessibilityVirtualNode virtualNode;
         if (!ParseVirtualNodeFromAni(env, element, virtualNode)) {
             HILOG_ERROR("Failed to parse accessibilityVirtualNode");
             ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
-            return static_cast<ani_int>(result);
+            return ani_result;
         }
         infos.push_back(virtualNode);
     }
@@ -547,19 +554,23 @@ static ani_int AddAccessibilityVirtualNodes(ani_env *env, ani_object thisObj, an
         HILOG_ERROR("Failed to update custom property: %{public}d", ret);
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
-    return static_cast<ani_int>(result);
+    ANIUtils::EnumConvert_NativeToEts(env, operatorVirtualNodeCls, result, ani_result);
+    return ani_result;
 }
 
-static ani_int RemoveAccessibilityVirtualNodes(ani_env *env, ani_object thisObj, ani_long elementId,
+static ani_enum_item RemoveAccessibilityVirtualNodes(ani_env *env, ani_object thisObj, ani_long elementId,
     ani_int windowId)
 {
     HILOG_DEBUG();
+    constexpr const char* operatorVirtualNodeCls = "@ohos.accessibility.OperateVirtualNodeResult";
     OperateVirtualNodeResult result = OperateVirtualNodeResult::INTERNAL_ERROR;
+    ani_enum_item ani_result;
+    ANIUtils::EnumConvert_NativeToEts(env, operatorVirtualNodeCls, result, ani_result);
     AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
     if (context == nullptr) {
         HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
-        return static_cast<ani_int>(result);
+        return ani_result;
     }
     int32_t windowIdValue = static_cast<int32_t>(windowId);
     int64_t elementIdValue = static_cast<int64_t>(elementId);
@@ -570,7 +581,8 @@ static ani_int RemoveAccessibilityVirtualNodes(ani_env *env, ani_object thisObj,
         HILOG_ERROR("Failed to update custom property: %{public}d", ret);
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
-    return static_cast<ani_int>(result);
+    ANIUtils::EnumConvert_NativeToEts(env, operatorVirtualNodeCls, result, ani_result);
+    return ani_result;
 }
 
 ani_object CreateAniAccessibilityExtensionContext(ani_env *env, std::shared_ptr<AccessibilityExtensionContext> context,
