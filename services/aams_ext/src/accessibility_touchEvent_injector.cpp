@@ -223,7 +223,9 @@ void TouchEventInjector::ParseTapsEvents(int64_t startTime,
         int32_t px = static_cast<int32_t>(positions[i].positionX_);
         int32_t py = static_cast<int32_t>(positions[i].positionY_);
         pointer.SetDisplayX(px);
+        pointer.SetRawDisplayX(px);
         pointer.SetDisplayY(py);
+        pointer.SetRawDisplayY(py);
         pointer.SetDownTime(downTime);
         event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, pointer, downTime);
         if (event == nullptr) {
@@ -278,7 +280,9 @@ void TouchEventInjector::ParseMovesEvents(int64_t startTime,
         int32_t py = static_cast<int32_t>(positions[i].positionY_);
         pointer.SetPointerId(0);
         pointer.SetDisplayX(px);
+        pointer.SetRawDisplayX(px);
         pointer.SetDisplayY(py);
+        pointer.SetRawDisplayY(py);
         pointer.SetDownTime(downTime);
         if (i == 0) { // Append down event
             HILOG_DEBUG("append down event");
