@@ -64,7 +64,7 @@ enum class MagnificationGestureMsg : uint32_t {
 
 // ms
 enum class MagnificationTimeout : uint32_t {
-    TAP_TIMEOUT = 100,
+    TAP_TIMEOUT = 195,
     DOUBLE_TAP_TIMEOUT = 250,
     LONG_PRESS_TIMEOUT = 200,
 };
