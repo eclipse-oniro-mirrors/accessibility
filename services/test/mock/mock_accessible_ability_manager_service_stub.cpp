@@ -192,12 +192,12 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetActiveWindow(int32_t& window
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::GetActiveWindow(int32_t& windowId, bool systemApi)
+ErrCode MockAccessibleAbilityManagerServiceStub::GetActiveWindowEx(int32_t& windowId)
 {
     (void)windowId;
-    (void)systemApi;
     return RET_OK;
 }
+
 
 ErrCode MockAccessibleAbilityManagerServiceStub::CheckExtensionAbilityPermission(std::string& processName)
 {
@@ -518,7 +518,7 @@ ErrCode MockAccessibleAbilityManagerServiceStub::RemoveRequestId(int32_t request
     return RET_OK;
 }
 
-ErrCode MockAccessibleAbilityManagerServiceStub::GetRootParentId(int32_t windowId, int32_t treeId,
+ErrCode MockAccessibleAbilityManagerServiceStub::InnerGetRootParentId(int32_t windowId, int32_t treeId,
     int64_t& parentId)
 {
     (void)windowId;
@@ -528,12 +528,20 @@ ErrCode MockAccessibleAbilityManagerServiceStub::GetRootParentId(int32_t windowI
 }
 
 ErrCode MockAccessibleAbilityManagerServiceStub::GetRootParentId(int32_t windowId, int32_t treeId,
-    int64_t& parentId, bool systemApi)
+    int64_t& parentId)
 {
     (void)windowId;
     (void)treeId;
     (void)parentId;
-    (void)systemApi;
+    return RET_OK;
+}
+
+ErrCode MockAccessibleAbilityManagerServiceStub::GetRootParentIdEx(int32_t windowId, int32_t treeId,
+    int64_t& parentId)
+{
+    (void)windowId;
+    (void)treeId;
+    (void)parentId;
     return RET_OK;
 }
 
@@ -583,6 +591,24 @@ ErrCode MockAccessibleAbilityManagerServiceStub::DeRegisterConfigObserver(
 
 ErrCode MockAccessibleAbilityManagerServiceStub::IsInnerWindowRootElement(int64_t elementId, bool &state)
 {
+    return RET_OK;
+}
+
+ErrCode MockAccessibleAbilityManagerServiceStub::GetAnimationOffStateWithPermission(bool &state)
+{
+    state = animationOff_;
+    return RET_OK;
+}
+
+ErrCode MockAccessibleAbilityManagerServiceStub::GetAudioMonoStateWithPermission(bool &state)
+{
+    state = audioMono_;
+    return RET_OK;
+}
+
+ErrCode MockAccessibleAbilityManagerServiceStub::GetAccessibilityState(uint32_t &state)
+{
+    (void)state;
     return RET_OK;
 }
 

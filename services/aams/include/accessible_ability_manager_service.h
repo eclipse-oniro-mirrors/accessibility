@@ -148,7 +148,7 @@ public:
     ErrCode DisableUITestAbility(int userId) override;
     ErrCode SetMagnificationState(const bool state) override;
     ErrCode GetActiveWindow(int32_t &windowId) override;
-    ErrCode GetActiveWindow(int32_t &windowId, bool systemApi) override;
+    ErrCode GetActiveWindowEx(int32_t &windowId) override;
     ErrCode InnerGetActiveWindow(int32_t &windowId, int32_t userId);
     bool FindFocusedElement(AccessibilityElementInfo &elementInfo, uint32_t timeout, int32_t userId);
     bool ExecuteActionOnAccessibilityFocused(const ActionType &action, int32_t userId);
@@ -156,12 +156,13 @@ public:
     ErrCode InnerGetFocusedWindowId(int32_t &focusedWindowId, int32_t userId);
     ErrCode GetAccessibilityFocusedWindowId(int32_t &windowId, int32_t accountId);
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId) override;
-    ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId, bool systemApi) override;
+    ErrCode GetRootParentIdEx(int32_t windowId, int32_t treeId, int64_t &parentId) override;
     bool GetElementOperator(const int32_t windowId,
         const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
     ErrCode GetScreenReaderState(bool &state) override;
     ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
     ErrCode GetReadableRules(std::string &readableRules) override;
+    ErrCode GetAccessibilityState(uint32_t &state) override;
     ErrCode IsInnerWindowRootElement(int64_t elementId, bool &state) override;
     std::vector<AccessibilityWindowInfo> GetAccessibilityWindows(int32_t userId);
     bool InnerGetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window, int32_t userId);
@@ -175,6 +176,7 @@ public:
     bool DisableShortKeyTargetAbility();
     void OnShortKeyProcess();
     void UpdateShortKeyRegister();
+    ErrCode InnerGetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId);
 
     /* For DisplayResize */
     void NotifyDisplayResizeStateChanged(int32_t displayId, Rect& rect, float scale, float centerX, float centerY);
@@ -260,6 +262,8 @@ public:
     ErrCode GetIgnoreRepeatClickState(bool &state) override;
     ErrCode GetIgnoreRepeatClickTime(uint32_t &time) override;
     ErrCode GetFlashReminderSwitch(bool &state) override;
+    ErrCode GetAnimationOffStateWithPermission(bool &state) override;
+    ErrCode GetAudioMonoStateWithPermission(bool &state) override;
     ErrCode GetAllConfigs(AccessibilityConfigData& configData, CaptionPropertyParcel& caption) override;
     ErrCode GetSeniorModeState(bool &state) override;
     ErrCode GetSeniorModeStateForApp(bool &state) override; // asac

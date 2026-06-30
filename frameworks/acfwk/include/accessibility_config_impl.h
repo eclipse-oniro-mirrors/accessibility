@@ -30,7 +30,6 @@
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
-#include "app_image_observer_manager.h"
 
 namespace OHOS {
 namespace AccessibilityConfig {
@@ -298,37 +297,6 @@ private:
         Impl &config_;
     };
 
-    class ApplicationUpdateCallbackImpl : public AbilityRuntime::AppImageLifeCycleCallback {
-    public:
-        explicit ApplicationUpdateCallbackImpl(Impl &config) : config_(config) {}
-        ~ApplicationUpdateCallbackImpl() = default;
-
-        /**
-        * Called back when the application update.
-        */
-        void NotifyApplicationUpdate() override
-        {
-            if (callbackDeleted_ == false) {
-                config_.OnApplicationUpdate();
-            }
-        }
-
-        void NotifyApplicationPreAbilityCreate() override
-        {
-            if (callbackDeleted_ == false) {
-                config_.OnApplicationPreAbilityCreate();
-            }
-        }
-
-        void OnClientDeleted()
-        {
-            callbackDeleted_ = true;
-        }
-    private:
-        Impl &config_;
-        std::atomic<bool> callbackDeleted_ = false;
-    };
-
     class AccessibilityAppSeniorModeStateObserverImpl
         : public Accessibility::AccessibilityAppSeniorModeStateObserverStub {
     public:
@@ -430,7 +398,6 @@ private:
 
     void OnIgnoreRepeatClickStateChanged(const uint32_t stateType);
     bool CheckSaStatus();
-    void RegisterToAMS();
 
     sptr<AccessibilityAppSeniorModeStateObserverImpl> seniorModeStateObserver_ = nullptr;
     sptr<Accessibility::IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
@@ -438,7 +405,6 @@ private:
     sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver_ = nullptr;
     sptr<AccessibilityEnableAbilityListsObserverImpl> enableAbilityListsObserver_ = nullptr;
     sptr<AccessibilityEnableAbilityCallbackObserverImpl> enableAbilityCallbackObserver_ = nullptr;
-    std::shared_ptr<ApplicationUpdateCallbackImpl> updateCallback_ = nullptr;
 
     std::atomic<bool> isInitialized_ {false};
     bool isConfigInit_ = false;

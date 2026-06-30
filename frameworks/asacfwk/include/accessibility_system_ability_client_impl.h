@@ -27,7 +27,6 @@
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
 #include "common_event_subscriber.h"
-#include "app_image_observer_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -422,30 +421,6 @@ private:
         std::atomic<bool> clientDeleted_ = false;
     };
 
-    class ApplicationUpdateCallbackImpl : public AbilityRuntime::AppImageLifeCycleCallback {
-    public:
-        explicit ApplicationUpdateCallbackImpl(AccessibilitySystemAbilityClientImpl &client)
-            : client_(client) {}
-        ~ApplicationUpdateCallbackImpl() = default;
- 
-        /**
-        * Called back when the application update.
-        */
-        void NotifyApplicationUpdate() override
-        {
-            if (clientDeleted_ == false) {
-                client_.OnApplicationUpdate();
-            }
-        }
-        void OnClientDeleted()
-        {
-            clientDeleted_ = true;
-        }
-    private:
-        AccessibilitySystemAbilityClientImpl &client_;
-        std::atomic<bool> clientDeleted_ = false;
-    };
-
     /**
      * @brief Connect to AAMS Service.
      * @return success : true, failed : false.
@@ -453,8 +428,6 @@ private:
     bool ConnectToService();
 
     void Init();
-
-    void RegisterToAMS();
 
     /**
      * @brief Notify the state is changed.
@@ -492,7 +465,6 @@ private:
     ffrt::mutex conVarMutex_; // mutex for proxyConVar
 
     std::shared_ptr<A11yPublishEventSubscriber> subscriber_ = nullptr;
-    std::shared_ptr<ApplicationUpdateCallbackImpl> updateCallback_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

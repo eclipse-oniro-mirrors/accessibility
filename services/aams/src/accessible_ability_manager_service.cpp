@@ -1217,6 +1217,17 @@ bool AccessibleAbilityManagerService::SetTargetAbility(const int32_t targetAbili
     }
 }
 
+ErrCode AccessibleAbilityManagerService::GetAccessibilityState(uint32_t &state)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return ERR_INVALID_DATA;
+    }
+    state = accountData->GetAccessibilityState();
+    return ERR_OK;
+}
+
 ErrCode AccessibleAbilityManagerService::GetScreenReaderState(bool &state)
 {
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1537,9 +1548,9 @@ ErrCode AccessibleAbilityManagerService::InnerGetActiveWindow(int32_t &windowId,
     windowId = accountData->GetWindowManager().GetActiveWindowId();
     return ERR_OK;
 }
-ErrCode AccessibleAbilityManagerService::GetActiveWindow(int32_t &windowId, bool systemApi)
+ErrCode AccessibleAbilityManagerService::GetActiveWindowEx(int32_t &windowId)
 {
-    if (systemApi && !CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+    if (!CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
         HILOG_WARN("GetActiveWindow permission denied.");
         return RET_ERR_NO_PERMISSION;
     }
@@ -2390,6 +2401,26 @@ ErrCode AccessibleAbilityManagerService::GetAnimationOffState(bool &state)
 ErrCode AccessibleAbilityManagerService::GetAudioMonoState(bool &state)
 {
     PostDelayUnloadTask();
+    return accessibilitySettings_->GetAudioMonoState(state);
+}
+
+ErrCode AccessibleAbilityManagerService::GetAnimationOffStateWithPermission(bool &state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return accessibilitySettings_->GetAnimationOffState(state);
+}
+
+ErrCode AccessibleAbilityManagerService::GetAudioMonoStateWithPermission(bool &state)
+{
+    PostDelayUnloadTask();
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     return accessibilitySettings_->GetAudioMonoState(state);
 }
 
@@ -3427,6 +3458,15 @@ ErrCode AccessibleAbilityManagerService::RemoveRequestId(int32_t requestId)
 
 ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId)
 {
+    if (!Permission::IsSystemApp()) {
+        HILOG_ERROR("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    return InnerGetRootParentId(windowId, treeId, parentId);
+}
+
+ErrCode AccessibleAbilityManagerService::InnerGetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId)
+{
     HILOG_INFO("aa search treeParent from aams,  windowId: %{public}d, treeId: %{public}d", windowId, treeId);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -3436,14 +3476,18 @@ ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32
     return accountData->GetElementOperatorManager().GetRootParentId(windowId, treeId, parentId);
 }
 
-ErrCode AccessibleAbilityManagerService::GetRootParentId(
-    int32_t windowId, int32_t treeId, int64_t& parentId, bool systemApi)
+ErrCode AccessibleAbilityManagerService::GetRootParentIdEx(
+    int32_t windowId, int32_t treeId, int64_t& parentId)
 {
-    if (systemApi && !CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+    if (!Permission::IsSystemApp()) {
+        HILOG_ERROR("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
         HILOG_WARN("GetRootParentId permission denied.");
         return RET_ERR_NO_PERMISSION;
     }
-    return GetRootParentId(windowId, treeId, parentId);
+    return InnerGetRootParentId(windowId, treeId, parentId);
 }
 
 void AccessibleAbilityManagerService::OnDataClone()

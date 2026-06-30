@@ -137,11 +137,15 @@ public:
     {
         return RET_OK;
     }
+    ErrCode InnerGetActiveWindow(int32_t &windowId)
+    {
+        return RET_OK;
+    }
     ErrCode GetActiveWindow(int32_t &windowId) override
     {
         return RET_OK;
     }
-    ErrCode GetActiveWindow(int32_t &windowId, bool systemApi) override
+    ErrCode GetActiveWindowEx(int32_t &windowId) override
     {
         return RET_OK;
     }
@@ -332,11 +336,11 @@ public:
     }
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId) override
     {
-        return 0;
-    }
-    ErrCode GetRootParentId(int32_t windowsId, int32_t treeId, int64_t &parentId, bool systemApi) override
-    {
         return RET_OK;
+    }
+    ErrCode GetRootParentIdEx(int32_t windowsId, int32_t treeId, int64_t &parentId) override
+    {
+        return 0;
     }
     int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override
     {
@@ -378,6 +382,19 @@ public:
     }
 
     ErrCode IsInnerWindowRootElement(int64_t elementId, bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetAnimationOffStateWithPermission(bool &state) override
+    {
+        return RET_OK;
+    }
+    ErrCode GetAudioMonoStateWithPermission(bool &state) override
+    {
+        return RET_OK;
+    }
+    
+    ErrCode GetAccessibilityState(uint32_t &state) override
     {
         return RET_OK;
     }

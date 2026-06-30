@@ -60,11 +60,6 @@ AccessibilityConfig::Impl::~Impl()
         seniorModeStateObserver_->OnclientDeleted();
     }
 
-    if (updateCallback_ != nullptr) {
-        updateCallback_->OnClientDeleted();
-    }
-
-
     if (serviceProxy_ != nullptr) {
         ErrCode ret = Accessibility::RET_OK;
         ret = serviceProxy_->DeRegisterCaptionObserver(captionObserver_->AsObject());
@@ -127,7 +122,6 @@ bool AccessibilityConfig::Impl::InitializeContext()
         HILOG_DEBUG("Context has initialized");
         return true;
     }
-    RegisterToAMS();
     return ConnectToService();
 }
 
@@ -175,7 +169,7 @@ bool AccessibilityConfig::Impl::ConnectToService()
         return true;
     }
     HILOG_DEBUG("Start watching accessibility service.");
-    retSysParam = WatchParameterInImage(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+    retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
     if (retSysParam) {
         HILOG_WARN("Watch parameter failed, error = %{public}d", retSysParam);
     }
@@ -329,23 +323,14 @@ bool AccessibilityConfig::Impl::RegisterToService()
         serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserver_);
     }
 
-
-    auto& appImageMgr = AppExecFwk::AppImageObserverManager::GetInstance();
-    if (appImageMgr.GetImageProcessType() == static_cast<int32_t>(ImageProcessType::TEMPLATE) &&
-        !appImageMgr.IsAbilityCreated()) {
-        if (!updateCallback_) {
-            RegisterToAMS();
+    if (!enableAbilityCallbackObserver_) {
+        enableAbilityCallbackObserver_ =
+            new(std::nothrow) AccessibilityEnableAbilityCallbackObserverImpl(*this);
+        if (enableAbilityCallbackObserver_ == nullptr) {
+            HILOG_ERROR("Create enableAbilityCallbackObserver_ failed.");
+            return false;
         }
-    } else {
-        if (!enableAbilityCallbackObserver_) {
-            enableAbilityCallbackObserver_ =
-                new(std::nothrow) AccessibilityEnableAbilityCallbackObserverImpl(*this);
-            if (enableAbilityCallbackObserver_ == nullptr) {
-                HILOG_ERROR("Create enableAbilityCallbackObserver_ failed.");
-                return false;
-            }
-            serviceProxy_->RegisterEnableAbilityCallbackObserver(enableAbilityCallbackObserver_);
-        }
+        serviceProxy_->RegisterEnableAbilityCallbackObserver(enableAbilityCallbackObserver_);
     }
 
     if (!configObserver_) {
@@ -432,31 +417,6 @@ bool AccessibilityConfig::Impl::CheckSaStatus()
         return false;
     }
     return true;
-}
-
-void AccessibilityConfig::Impl::RegisterToAMS()
-{
-    std::lock_guard<ffrt::mutex> lock(imgShotMutex_);
-    auto& appImageMgr = AppExecFwk::AppImageObserverManager::GetInstance();
-    if (appImageMgr.GetImageProcessType() != static_cast<int32_t>(ImageProcessType::TEMPLATE) ||
-        appImageMgr.IsAbilityCreated()) {
-        HILOG_DEBUG("Feature not enable.");
-        return;
-    }
-
-    if (updateCallback_) {
-        HILOG_ERROR("updateCallback_ is already registered.");
-        return;
-    }
-
-    updateCallback_ = std::make_shared<ApplicationUpdateCallbackImpl>(*this);
-    if (!updateCallback_) {
-        HILOG_ERROR("Failed to create updateCallback_.");
-        return;
-    }
-
-    HILOG_INFO("Register to AppImageObserverManager.");
-    appImageMgr.RegisterImageLifecycleCallback(updateCallback_);
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(

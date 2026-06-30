@@ -74,7 +74,6 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
     HILOG_DEBUG();
 
     stateHandler_.Reset();
-    RegisterToAMS();
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     if (retSysParam >= 0 && !std::strcmp(value, "true")) {
@@ -108,9 +107,6 @@ AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
     }
     if (stateObserver_ != nullptr) {
         stateObserver_->OnClientDeleted();
-    }
-    if (updateCallback_ != nullptr) {
-        updateCallback_->OnClientDeleted();
     }
 }
 
@@ -370,30 +366,6 @@ void AccessibilitySystemAbilityClientImpl::Init()
     if (stateType & STATE_ELDER_CARE_ENABLED) {
         stateHandler_.SetState(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED, true);
     }
-}
-
-void AccessibilitySystemAbilityClientImpl::RegisterToAMS()
-{
-    auto& appImageMgr = AppExecFwk::AppImageObserverManager::GetInstance();
-    if (appImageMgr.GetImageProcessType() != static_cast<int32_t>(ImageProcessType::TEMPLATE) ||
-        appImageMgr.IsAbilityCreated()) {
-        HILOG_DEBUG("Feature not enable.");
-        return;
-    }
-
-    if (updateCallback_) {
-        HILOG_ERROR("updateCallback_ is already registered.");
-        return;
-    }
-
-    updateCallback_ = std::make_shared<ApplicationUpdateCallbackImpl>(*this);
-    if (!updateCallback_) {
-        HILOG_ERROR("Failed to create updateCallback_.");
-        return;
-    }
-
-    HILOG_INFO("Register to AppImageObserverManager.");
-    appImageMgr.RegisterImageLifecycleCallback(updateCallback_);
 }
 
 void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject> &remote)
@@ -739,7 +711,7 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
 
     stateHandler_.SetState(static_cast<AccessibilityStateEventType>(eventType), value);
     StateObserverVector &observers = stateObserversArray_[eventType];
-    HILOG_INFO("observers size is %{public}lu", observers.size());
+    HILOG_INFO("observers size is %{public}u", observers.size());
     for (auto &observer : observers) {
         if (observer) {
             observer->OnStateChanged(value);
