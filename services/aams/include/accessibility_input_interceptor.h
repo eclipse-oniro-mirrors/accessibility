@@ -110,6 +110,11 @@ public:
         return inputManagerRunner_;
     }
 
+    inline bool IsZoomGestureEnabled()
+    {
+        return availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION;
+    }
+
 private:
     AccessibilityInputInterceptor();
     static sptr<AccessibilityInputInterceptor> instance_;
