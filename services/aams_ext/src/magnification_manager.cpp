@@ -43,10 +43,21 @@ MagnificationManager::MagnificationManager()
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscriber_ = std::make_shared<SystemEventSubscriber>(
         subscribeInfo, std::bind(&MagnificationManager::OnReceiveEvent, this, std::placeholders::_1));
-    if (subscriber_ == nullptr) {
-        HILOG_ERROR("subscriber_ is nullptr");
-    } else {
+}
+
+void MagnificationManager::SubscribeCommonEvent()
+{
+    if (subscriber_ != nullptr) {
+        HILOG_INFO("subscribe screen off event");
         EventFwk::CommonEventManager::SubscribeCommonEvent(subscriber_);
+    }
+}
+ 
+void MagnificationManager::UnSubscribeCommonEvent()
+{
+    if (subscriber_ != nullptr) {
+        bool unSubscribeResult = EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriber_);
+        HILOG_INFO("unSubscribeResult = %{public}d", unSubscribeResult);
     }
 }
 

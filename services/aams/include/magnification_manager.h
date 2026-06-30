@@ -74,6 +74,8 @@ public:
     bool GetMagnificationState();
     void RefreshWindowParam(RotationType type);
     void FollowFocuseElement(int32_t centerX, int32_t centerY);
+    void SubscribeCommonEvent();
+    void UnSubscribeCommonEvent();
     inline void ResetCurrentMode()
     {
         currentMode_ = 0;
