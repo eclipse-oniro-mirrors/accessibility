@@ -30,6 +30,7 @@
 #include "refbase.h"
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
+#include "app_image_observer_manager.h"
 
 namespace OHOS {
 namespace AccessibilityConfig {
@@ -297,6 +298,37 @@ private:
         Impl &config_;
     };
 
+    class ApplicationUpdateCallbackImpl : public AbilityRuntime::AppImageLifeCycleCallback {
+    public:
+        explicit ApplicationUpdateCallbackImpl(Impl &config) : config_(config) {}
+        ~ApplicationUpdateCallbackImpl() = default;
+
+        /**
+        * Called back when the application update.
+        */
+        void NotifyApplicationUpdate() override
+        {
+            if (callbackDeleted_ == false) {
+                config_.OnApplicationUpdate();
+            }
+        }
+
+        void NotifyApplicationPreAbilityCreate() override
+        {
+            if (callbackDeleted_ == false) {
+                config_.OnApplicationPreAbilityCreate();
+            }
+        }
+
+        void OnClientDeleted()
+        {
+            callbackDeleted_ = true;
+        }
+    private:
+        Impl &config_;
+        std::atomic<bool> callbackDeleted_ = false;
+    };
+
     class AccessibilityAppSeniorModeStateObserverImpl
         : public Accessibility::AccessibilityAppSeniorModeStateObserverStub {
     public:
@@ -389,13 +421,16 @@ private:
     void NotifyDefaultShortKeyConfigs();
     void NotifyDefaultShortKeyMultiConfigs();
     void NotifyImmediately(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
-    void InitConfigValues();
+    void InitConfigValues(bool reInit = false);
+    void OnApplicationUpdate();
+    void OnApplicationPreAbilityCreate();
     uint32_t InvertDaltonizationColorInAtoHos(uint32_t filter);
     static void OnParameterChanged(const char *key, const char *value, void *context);
     void OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, bool state);
 
     void OnIgnoreRepeatClickStateChanged(const uint32_t stateType);
     bool CheckSaStatus();
+    void RegisterToAMS();
 
     sptr<AccessibilityAppSeniorModeStateObserverImpl> seniorModeStateObserver_ = nullptr;
     sptr<Accessibility::IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
@@ -403,8 +438,10 @@ private:
     sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver_ = nullptr;
     sptr<AccessibilityEnableAbilityListsObserverImpl> enableAbilityListsObserver_ = nullptr;
     sptr<AccessibilityEnableAbilityCallbackObserverImpl> enableAbilityCallbackObserver_ = nullptr;
+    std::shared_ptr<ApplicationUpdateCallbackImpl> updateCallback_ = nullptr;
 
     std::atomic<bool> isInitialized_ {false};
+    bool isConfigInit_ = false;
     bool shortkey_ = false;
     bool highContrastText_ = false;
     bool screenMagnifier_ = false;
@@ -445,6 +482,8 @@ private:
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AppExecFwk::EventHandler> handler_;
+
+    ffrt::mutex imgShotMutex_;
 };
 } // namespace AccessibilityConfig
 } // namespace OHOS

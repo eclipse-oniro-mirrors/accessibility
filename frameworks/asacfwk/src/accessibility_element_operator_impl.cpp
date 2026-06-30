@@ -65,7 +65,7 @@ void AccessibilityElementOperatorImpl::SearchDefaultFocusedByWindowId(const int3
     }
     int32_t pageId = -1;
     int32_t mRequestId = AddRequest(requestId, callback);
-    HILOG_DEBUG("search element add requestId[%{public}d], requestId[%{public}d], windowId is [%{public}d]",
+    HILOG_DEBUG("search default focus add requestId[%{public}d], requestId[%{public}d], windowId is [%{public}d]",
         mRequestId, requestId, windowId);
     callback->SetIsFilter(isFilter);
     if (operator_) {

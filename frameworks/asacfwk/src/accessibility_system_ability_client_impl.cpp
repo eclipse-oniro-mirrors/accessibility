@@ -74,11 +74,12 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
     HILOG_DEBUG();
 
     stateHandler_.Reset();
+    RegisterToAMS();
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
     int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     if (retSysParam >= 0 && !std::strcmp(value, "true")) {
         if (!ConnectToService()) {
-            HILOG_ERROR("accessibility service is ready.");
+            HILOG_ERROR("Failed to connect to aams service");
             return;
         }
         Init();
@@ -107,6 +108,9 @@ AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
     }
     if (stateObserver_ != nullptr) {
         stateObserver_->OnClientDeleted();
+    }
+    if (updateCallback_ != nullptr) {
+        updateCallback_->OnClientDeleted();
     }
 }
 
@@ -366,6 +370,30 @@ void AccessibilitySystemAbilityClientImpl::Init()
     if (stateType & STATE_ELDER_CARE_ENABLED) {
         stateHandler_.SetState(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED, true);
     }
+}
+
+void AccessibilitySystemAbilityClientImpl::RegisterToAMS()
+{
+    auto& appImageMgr = AppExecFwk::AppImageObserverManager::GetInstance();
+    if (appImageMgr.GetImageProcessType() != static_cast<int32_t>(ImageProcessType::TEMPLATE) ||
+        appImageMgr.IsAbilityCreated()) {
+        HILOG_DEBUG("Feature not enable.");
+        return;
+    }
+
+    if (updateCallback_) {
+        HILOG_ERROR("updateCallback_ is already registered.");
+        return;
+    }
+
+    updateCallback_ = std::make_shared<ApplicationUpdateCallbackImpl>(*this);
+    if (!updateCallback_) {
+        HILOG_ERROR("Failed to create updateCallback_.");
+        return;
+    }
+
+    HILOG_INFO("Register to AppImageObserverManager.");
+    appImageMgr.RegisterImageLifecycleCallback(updateCallback_);
 }
 
 void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject> &remote)
@@ -642,7 +670,7 @@ RetError AccessibilitySystemAbilityClientImpl::SubscribeStateObserver(
     const std::shared_ptr<AccessibilityStateObserver> &observer, const uint32_t eventType)
 {
     HILOG_DEBUG();
-    std::lock_guard<ffrt::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(observersArrayMutex_);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.SubscribeStateObserver");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -669,7 +697,7 @@ RetError AccessibilitySystemAbilityClientImpl::UnsubscribeStateObserver(
     const std::shared_ptr<AccessibilityStateObserver> &observer, const uint32_t eventType)
 {
     HILOG_DEBUG("eventType is [%{public}d]", eventType);
-    std::lock_guard<ffrt::mutex> lock(mutex_);
+    std::lock_guard<ffrt::mutex> lock(observersArrayMutex_);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.UnsubscribeStateObserver");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -696,6 +724,7 @@ RetError AccessibilitySystemAbilityClientImpl::UnsubscribeStateObserver(
 void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType, bool value)
 {
     HILOG_DEBUG("EventType is %{public}d, value is %{public}d", eventType, value);
+    std::lock_guard<ffrt::mutex> lock(observersArrayMutex_);
     if (eventType >= AccessibilityStateEventType::EVENT_TYPE_MAX) {
         HILOG_ERROR("EventType is invalid");
         return;
@@ -710,7 +739,7 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
 
     stateHandler_.SetState(static_cast<AccessibilityStateEventType>(eventType), value);
     StateObserverVector &observers = stateObserversArray_[eventType];
-    HILOG_INFO("observers size is %{public}zu", observers.size());
+    HILOG_INFO("observers size is %{public}lu", observers.size());
     for (auto &observer : observers) {
         if (observer) {
             observer->OnStateChanged(value);
@@ -725,7 +754,7 @@ void AccessibilitySystemAbilityClientImpl::NotifyTouchModeChanged(bool touchExpl
 {
     HILOG_DEBUG("touchExplorationState = %{public}d, isSingleTouchMode = %{public}d", touchExplorationState,
         isSingleTouchMode);
-    
+    std::lock_guard<ffrt::mutex> lock(observersArrayMutex_);
     bool originalTouchMode = stateHandler_.GetState(EVENT_TOUCH_MODE_CHANGED);
     stateHandler_.SetState(EVENT_TOUCH_MODE_CHANGED, isSingleTouchMode);
 
@@ -809,6 +838,40 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_SELF_SENIOR_MODE_STATE_CHANGE,
         !!(stateType & STATE_SELF_SENIOR_MODE_STATE_ENABLED));
+
+    if (stateType & STATE_SELF_SENIOR_MODE_STATE_DISABLED) {
+        NotifyStateChanged(AccessibilityStateEventType::EVENT_SELF_SENIOR_MODE_STATE_CHANGE, false);
+    }
+    if (stateType & STATE_SELF_SENIOR_MODE_STATE_ENABLED) {
+        NotifyStateChanged(AccessibilityStateEventType::EVENT_SELF_SENIOR_MODE_STATE_CHANGE, true);
+    }
+}
+
+void AccessibilitySystemAbilityClientImpl::OnApplicationUpdate()
+{
+    HILOG_INFO();
+    uint32_t stateType = 0;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        if (serviceProxy_ == nullptr) {
+            char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
+            GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
+            if (std::strcmp(value, "true")) {
+                HILOG_ERROR("accessibility service not ready.");
+                return;
+            }
+            HILOG_INFO("accessibility service is ready.");
+            if (!ConnectToService()) {
+                HILOG_ERROR("Failed to connect to aams service");
+                return;
+            }
+            Init();
+        }
+        if (serviceProxy_ != nullptr) {
+            serviceProxy_->GetAccessibilityState(stateType);
+        }
+    }
+    OnAccessibleAbilityManagerStateChanged(stateType);
 }
 
 void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityIdResult(
