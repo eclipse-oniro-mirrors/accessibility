@@ -356,7 +356,7 @@ export class AccessibilityElementImpl implements AccessibilityElement {
     clip?: boolean = false;
     parentId?: long = 0;
     childrenIds?: Array<long> = [];
-    accessibilityStateDescription?: string = '';
+    accessibilityStateDescription?: string;
     isEssential?: boolean = false;
     belongTreeId?: int = 0;
     childrenTreeId?: int = 0;

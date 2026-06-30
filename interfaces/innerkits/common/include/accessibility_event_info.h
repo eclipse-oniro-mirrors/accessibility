@@ -308,7 +308,7 @@ class AccessibilityEventInfo : public AccessibilityMemo {
 public:
     /**
      * @brief Construct
-     * @since 16
+     * @since 3
      * @sysCap Accessibility
      */
     AccessibilityEventInfo() {}
@@ -316,7 +316,7 @@ public:
     /**
      * @brief Construct
      * @param eventType the type of event info
-     * @since 16
+     * @since 3
      * @sysCap Accessibility
      */
     AccessibilityEventInfo(EventType eventType);
@@ -325,7 +325,7 @@ public:
      * @brief Construct
      * @param windowId The id of window
      * @param windowChangeTypes the window change type
-     * @since 16
+     * @since 3
      * @sysCap Accessibility
      */
     AccessibilityEventInfo(int32_t windowId, WindowUpdateType windowChangeTypes);
@@ -333,7 +333,7 @@ public:
     /**
      * @brief Get the type of the accessibility event.
      * @return The type of the accessibility event.
-     * @since 16
+     * @since 3
      * @sysCap Accessibility
      */
     EventType GetEventType() const;
@@ -341,7 +341,7 @@ public:
     /**
      * @brief Get the window content changed types
      * @return The window content changed types. Refer to "WindowsContentChangeTypes"
-     * @since 16
+     * @since 3
      * * @sysCap Accessibility
      */
     WindowsContentChangeTypes GetWindowContentChangeTypes() const;
@@ -349,7 +349,7 @@ public:
     /**
      * @brief Set the window content changed types
      * @param changeTypes The window content changed types. Refer to "WindowsContentChangeTypes"
-     * @since 16
+     * @since 3
      * @sysCap Accessibility
      */
     void SetWindowContentChangeTypes(const WindowsContentChangeTypes changeTypes);
@@ -357,7 +357,7 @@ public:
     /**
      * @brief Get the window changed types
      * @return The window changed types.refer to WindowUpdateType
-     * @since 16
+     * @since 3
      * @sysCap Accessibility
      */
     WindowUpdateType GetWindowChangeTypes() const;
@@ -365,7 +365,7 @@ public:
     /**
      * @brief Set the window changed types
      * @param changeTypes The window changed types.refer to WindowUpdateType
-     * @since 16
+     * @since 3
      * @sysCap Accessibility
      */
     void SetWindowChangeTypes(const WindowUpdateType changeTypes);
@@ -398,7 +398,7 @@ public:
     /**
      * @brief AA get the resourceId of event is sent from ASAC.
      * @return The resourceId of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     uint32_t GetResourceId() const;
@@ -406,7 +406,7 @@ public:
     /**
      * @brief ASAC set the resourceId of is sent to AA
      * @param resourceId The resourceId of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     void SetResourceId(const uint32_t &resourceId);
@@ -414,7 +414,7 @@ public:
      /**
      * @brief AA get the moduleName of event is sent from ASAC.
      * @return The moduleName of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     const std::string &GetResourceModuleName() const;
@@ -422,7 +422,7 @@ public:
     /**
      * @brief ASAC set the moduleName of is sent to AA
      * @param moduleName The moduleName of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     void SetResourceModuleName(const std::string &moduleName);
@@ -430,7 +430,7 @@ public:
      /**
      * @brief AA get the bundleName of event is sent from ASAC.
      * @return The bundleName of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     const std::string &GetResourceBundleName() const;
@@ -438,7 +438,7 @@ public:
     /**
      * @brief ASAC set the bundleName of is sent to AA
      * @param bundleName The bundleName of event is sent from ASAC
-     * @since 3
+     * @since 16
      * @sysCap Accessibility
      */
     void SetResourceBundleName(const std::string &bundleName);
@@ -450,7 +450,7 @@ public:
      * @sysCap Accessibility
      */
     const std::vector<std::tuple<int32_t, std::string>> &GetResourceParams() const;
-
+ 
     /**
      * @brief ASAC set the resourceParams of is sent to AA
      * @param resourceParams The resourceParams of event is sent from ASAC

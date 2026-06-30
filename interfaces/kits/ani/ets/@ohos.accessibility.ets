@@ -384,7 +384,7 @@ namespace accessibility {
 
     export native function offSeniorModeStateChangeForSelfSync(callback?: Callback<boolean>): void;
 
-    export function offSeniorModeStateChangeForSelf(callback: Callback<boolean>): void {
+    export function offSeniorModeStateChangeForSelf(callback?: Callback<boolean>): void {
         offSeniorModeStateChangeForSelfSync(callback);
     }
 
@@ -441,10 +441,10 @@ namespace accessibility {
             return this.getStyle();
         }
         set enabled(value: boolean) {
-            return this.setEnabled(value);
+            this.setEnabled(value);
         }
         set style(value: CaptionsStyle) {
-            return this.setStyle(value);
+            this.setStyle(value);
         }
 
         native onEnableChange(callback: Callback<boolean>): void;

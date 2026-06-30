@@ -501,7 +501,7 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_PAGE_CLOSE, "pageClose"},
         {EventType::TYPE_ELEMENT_INFO_CHANGE, "elementInfoChange"},
         {EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT, "announceForAccessibilityNotInterrupt"},
-        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT,
+        {EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP,
             "requestFocusForAccessibilityNotInterrupt"},
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
         {EventType::TYPE_PAGE_ACTIVE, "pageActive"},
@@ -571,7 +571,7 @@ std::shared_ptr<AccessibilityElement> GetElement(const AccessibilityEventInfo& e
             }
             accessibilityElementInfo.SetAccessibilityId(VIRTUAL_COMPONENT_ID);
         } else if ((eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY ||
-            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT ||
+            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP ||
             eventInfo.GetEventType() == TYPE_PAGE_ACTIVE) && inspectorKey != "") {
             ret = aaClient->SearchElementInfoByInspectorKey(inspectorKey, accessibilityElementInfo);
         }

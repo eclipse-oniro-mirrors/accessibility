@@ -2465,7 +2465,7 @@ napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info i
         return nullptr;
     }
     callbackInfo->env_ = env;
-    FindElementConstructCallbackInfo(env, argc, argv, callbackInfo, accessibilityElement);
+    FindElementConstructCallbackInfo(env, argc, argv, callbackInfo);
     if (callbackInfo == nullptr) {
         return nullptr;
     }
@@ -3002,8 +3002,8 @@ napi_value NAccessibilityElement::FindElementAsync(napi_env env, size_t argc, na
     return promise;
 }
 
-void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_t argc, napi_value* argv,
-    NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement)
+NAccessibilityErrorCode NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_t argc,
+    napi_value* argv, NAccessibilityElementData* callbackInfo)
 {
     NAccessibilityErrorCode errCode = NAccessibilityErrorCode::ACCESSIBILITY_OK;
     if (argc < ARGS_SIZE_THREE - 1) {
@@ -3045,15 +3045,7 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
         }
     }
 
-    if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM) {
-        delete callbackInfo;
-        callbackInfo = nullptr;
-        delete accessibilityElement;
-        accessibilityElement = nullptr;
-        napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
-        HILOG_ERROR("invalid param");
-        napi_throw(env, err);
-    }
+    return errCode;
 }
 
 void NAccessibilityElement::FindElementByText(NAccessibilityElementData *callbackInfo)

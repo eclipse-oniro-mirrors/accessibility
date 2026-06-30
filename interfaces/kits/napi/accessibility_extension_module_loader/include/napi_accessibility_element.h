@@ -232,8 +232,8 @@ private:
     static void ActionNamesComplete(napi_env env, napi_status status, void* data);
     static void PerformActionExecute(napi_env env, void* data);
     static void PerformActionComplete(napi_env env, napi_status status, void* data);
-    static void FindElementConstructCallbackInfo(napi_env env, size_t argc, napi_value* argv,
-        NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement);
+    static NAccessibilityErrorCode FindElementConstructCallbackInfo(napi_env env, size_t argc, napi_value* argv,
+        NAccessibilityElementData* callbackInfo);
     static void FindElementExecute(napi_env env, void* data);
     static void FindElementComplete(napi_env env, napi_status status, void* data);
     static void FindElementByText(NAccessibilityElementData *callbackInfo);

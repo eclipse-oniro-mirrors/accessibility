@@ -34,8 +34,7 @@ export class AccessibilityExtensionAbility {
         console.log('onAccessibilityEventInfo');
     }
 
-    onAccessibilityKeyEvent(keyEvent: KeyEvent): boolean
-    {
+    onAccessibilityKeyEvent(keyEvent: KeyEvent): boolean {
         return false;
     }
 }

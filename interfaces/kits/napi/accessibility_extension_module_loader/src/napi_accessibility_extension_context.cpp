@@ -1045,10 +1045,7 @@ private:
         auto context = context_.lock();
         if (!context) {
             HILOG_ERROR("context is released");
-            napi_throw(env, CreateJsError(env,
-                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-            return CreateJsUndefined(env);
+            return nullptr;
         }
         RetError ret = context->InjectGesture(gesturePath);
         if (ret != RET_OK) {
@@ -1196,10 +1193,7 @@ private:
         auto context = context_.lock();
         if (!context) {
             HILOG_ERROR("context is released");
-            napi_throw(env, CreateJsError(env,
-                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-            return CreateJsUndefined(env);
+            return nullptr;
         }
         RetError ret = context->EnableScreenCurtain(isEnable);
         if (ret != RET_OK) {
@@ -1373,10 +1367,7 @@ private:
         auto context = context_.lock();
         if (!context) {
             HILOG_ERROR("context is released");
-            napi_throw(env, CreateJsError(env,
-                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-            return CreateJsUndefined(env);
+            return nullptr;
         }
         RetError ret = context->HoldRunningLock();
         if (ret != RET_OK) {
@@ -1404,10 +1395,7 @@ private:
         auto context = context_.lock();
         if (!context) {
             HILOG_ERROR("context is released");
-            napi_throw(env, CreateJsError(env,
-                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-            return CreateJsUndefined(env);
+            return nullptr;
         }
         RetError ret = context->UnholdRunningLock();
         if (ret != RET_OK) {
@@ -1442,22 +1430,18 @@ private:
             HILOG_ERROR("Not enough params");
             ret = RET_ERR_INVALID_PARAM;
         }
-
         if (ret != RET_OK) {
             NAccessibilityErrMsg errMsg = QueryRetMsg(ret);
             napi_throw(env, CreateJsError(env, static_cast<int32_t>(errMsg.errCode), errMsg.message));
             return CreateJsUndefined(env);
         }
-
+        
         if (type == "preDisconnect" && ref != nullptr) {
             std::shared_ptr<DisconnectCallback> callback = std::make_shared<NapiDisconnectCallback>(env, ref);
             auto context = context_.lock();
             if (!context) {
                 HILOG_ERROR("context is released");
-                napi_throw(env, CreateJsError(env,
-                    static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                    ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-                return CreateJsUndefined(env);
+                return nullptr;
             }
             ret = context->RegisterDisconnectCallback(callback);
         }
@@ -1501,10 +1485,7 @@ private:
             auto context = context_.lock();
             if (!context) {
                 HILOG_ERROR("context is released");
-                napi_throw(env, CreateJsError(env,
-                    static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                    ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-                return CreateJsUndefined(env);
+                return nullptr;
             }
             ret = context->UnRegisterDisconnectCallback(callback);
         }
@@ -1522,10 +1503,7 @@ private:
         auto context = context_.lock();
         if (!context) {
             HILOG_ERROR("context is released");
-            napi_throw(env, CreateJsError(env,
-                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-            return CreateJsUndefined(env);
+            return nullptr;
         }
         RetError ret = context->NotifyDisconnect();
         if (ret != RET_OK) {

@@ -84,6 +84,7 @@ enum RetError : int32_t {
     RET_ERR_ACTION_NOT_SUPPORT,
     RET_ERR_ENABLE_MAGNIFICATION,
     RET_ERR_MAGNIFICATION_NOT_SUPPORT,
+    RET_ERR_INVILID_APPINDEX,
 };
 
 enum SET_AA_CALLBACK_RESULT : int32_t {
@@ -196,8 +197,8 @@ enum ActionType : int32_t {
     ACCESSIBILITY_ACTION_RECENTTASK = 0x00040000,
     ACCESSIBILITY_ACTION_NOTIFICATIONCENTER = 0x00080000,
     ACCESSIBILITY_ACTION_CONTROLCENTER = 0x00008000,
-    ACCESSIBILITY_ACTION_CUSTOM = 0x20000000,
     ACCESSIBILITY_ACTION_INJECT_ACTION = 0x40000000,
+    ACCESSIBILITY_ACTION_CUSTOM = 0x20000000,
     ACCESSIBILITY_ACTION_TYPE_MASK = 0x1FFFFFFF,
 };
 
@@ -296,7 +297,7 @@ enum EventType : uint32_t {
     TYPE_PAGE_OPEN = 0x20000000,
     TYPE_ELEMENT_INFO_CHANGE = 0x40000000,
     TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT = 0x40000001,
-    TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT = 0x40000002,
+    TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP = 0x40000002,
     TYPE_VIEW_SCROLLING_EVENT = 0x40000003,
     TYPE_PAGE_ACTIVE = 0x40000004,
     TYPE_FOCUS_INVISIBLE = 0x40000005,
@@ -430,7 +431,7 @@ const std::map<std::string, EventType> EvtTypeTable = {
     {"requestFocusForAccessibility", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY},
     {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY},
     {"announceForAccessibilityNotInterrupt", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT},
-    {"requestFocusForAccessibilityNotInterrupt", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
+    {"requestFocusForAccessibilityNotInterrupt", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP},
     {"pageContentUpdate", EventType::TYPE_PAGE_CONTENT_UPDATE},
     {"pageStateUpdate", EventType::TYPE_PAGE_STATE_UPDATE},
     {"pageOpen", EventType::TYPE_PAGE_OPEN},
@@ -544,6 +545,8 @@ inline constexpr const char* ERROR_MESSAGE_TARGET_ABILITY_ALREADY_ENABLED = "Tar
 inline constexpr const char* ERROR_MESSAGE_ENABLE_MAGNIFICATION = "Failed to trigger magnification.";
 inline constexpr const char* ERROR_MESSAGE_CAPABILITY_NOT_SUPPORT = "Capability not supported."
     "Failed to call the API due to limited device capabilities.";
+inline constexpr const char* ERROR_MESSAGE_INVILID_APPINDEX = "The appIndex is invalid. Possible causes:"
+    "1.The appIndex is out of the valid range. 2.The application corresponding to the appIndex does not exist.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_FAILED = "System abnormality. "
     "Internal operation failed.";
 inline constexpr const char* ERROR_MESSAGE_SYSTEM_ABNORMALITY_NULLPTR = "System abnormality. "
@@ -589,6 +592,7 @@ enum class NAccessibilityErrorCode : int32_t {
     ACCESSIBILITY_ERROR_ACTION_NOT_SUPPORT = 9300005,
     ACCESSIBILITY_ERROR_TARGET_WINDOW_CONNECTION_FAILED = 9300006,
     ACCESSIBILITY_ERROR_ENABLE_MAGNIFICATION = 9300007,
+    ACCESSIBILITY_ERROR_INVILID_APPINDEX = 9300008,
 };
 
 struct NAccessibilityErrMsg {
@@ -729,8 +733,8 @@ const std::vector<std::string> ACTION_NAMES = {
     "notificationCenter",      //AccessibilityAction.NOTIFICATION_CENTER=18
     "controlCenter",           //AccessibilityAction.CONTROL_CENTER=19
     "spanClick",               //AccessibilityAction.SPAN_CLICK=20
-    "injectAction",            //AccessibilityAction.INJECT_ACTION=21
-    "executeCustomAction"            //AccessibilityAction.EXECUTE_CUSTOM_ACTION=22
+    "injectAction",             //AccessibilityAction.INJECT_ACTION=21
+    "executeCustomAction"      //AccessibilityAction.EXECUTE_CUSTOM_ACTION=22
 };
 
 enum class AnnounceType : uint32_t {
@@ -738,6 +742,12 @@ enum class AnnounceType : uint32_t {
     ANNOUNCE_MAGNIFICATION_DISABLE,
     ANNOUNCE_SWITCH_FULL_SCREEN,
     ANNOUNCE_SWITCH_WINDOW
+};
+
+enum class ImageProcessType : int32_t {
+    UNSPECIFIED = 0,
+    TEMPLATE = 1,
+    WORK = 2
 };
 
 #define RETURN_FALSE_IF_NULL(sptr)                     \
