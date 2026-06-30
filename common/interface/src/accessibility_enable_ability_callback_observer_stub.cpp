@@ -24,6 +24,7 @@ AccessibilityEnableAbilityCallbackObserverStub::AccessibilityEnableAbilityCallba
     HILOG_DEBUG();
 }
 
+// LCOV_EXCL_START
 int AccessibilityEnableAbilityCallbackObserverStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
 {
@@ -50,5 +51,6 @@ ErrCode AccessibilityEnableAbilityCallbackObserverStub::HandleOnEnableAbilityLis
     OnEnableAbilityRemoteDied(name);
     return NO_ERROR;
 }
+// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

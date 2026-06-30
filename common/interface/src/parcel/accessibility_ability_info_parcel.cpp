@@ -47,6 +47,7 @@ bool AccessibilityAbilityInfoParcel::ReadFromParcel(Parcel &parcel)
     return true;
 }
 
+// LCOV_EXCL_START
 bool AccessibilityAbilityInfoParcel::Marshalling(Parcel &parcel) const
 {
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
@@ -68,6 +69,7 @@ bool AccessibilityAbilityInfoParcel::Marshalling(Parcel &parcel) const
 
     return true;
 }
+// LCOV_EXCL_STOP
 
 AccessibilityAbilityInfoParcel *AccessibilityAbilityInfoParcel::Unmarshalling(Parcel &parcel)
 {
