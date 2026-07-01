@@ -99,6 +99,7 @@ public:
  
     // callback
     bool SetSendAccessibilityEventToAACallback();
+    bool SetSendTouchGuideGestureToAACallback();
     bool SetFindFocusedElementCallback();
     bool SetExecuteActionOnAccessibilityFocusedCallback();
     bool SetGetFocusedWindowIdCallback();

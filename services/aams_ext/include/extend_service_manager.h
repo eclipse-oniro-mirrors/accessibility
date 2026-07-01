@@ -33,6 +33,7 @@ namespace OHOS {
 namespace Accessibility {
 class TouchEventInjector;
 using SendAccessibilityEventToAACallback = void (*)(EventType eventType, GestureType gestureId, uint64_t displayId);
+using SendTouchGuideGestureToAACallback = void (*)(uint64_t displayId, const std::string gestureType);
 using FindFocusedElementCallback = bool (*)(
     AccessibilityElementInfo &elementInfo, uint32_t timeout, uint64_t displayId);
 using ExecuteActionOnAccessibilityFocusedCallback = bool (*)(const ActionType &action, uint64_t displayId);
@@ -63,6 +64,7 @@ class ExtendServiceManager {
 public:
     // callback to SA
     SendAccessibilityEventToAACallback sendAccessibilityEventToAACallback = nullptr;
+    SendTouchGuideGestureToAACallback sendTouchGuideGestureToAACallback = nullptr;
     FindFocusedElementCallback findFocusedElementCallback = nullptr;
     ExecuteActionOnAccessibilityFocusedCallback executeActionOnAccessibilityFocusedCallback = nullptr;
     GetFocusedWindowIdCallback getFocusedWindowIdCallback = nullptr;

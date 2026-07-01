@@ -82,6 +82,7 @@ public:
 public:
     // for ext so
     void SendAccessibilityEventToAA(EventType eventType, GestureType gestureId, uint64_t displayId);
+    void SendTouchGuideGestureToAA(uint64_t displayId, const std::string gestureType);
 
     /* For AccessibleAbilityManagerServiceStub */
     ErrCode SendEvent(const AccessibilityEventInfoParcel& eventInfoParcel, int32_t flag) override;

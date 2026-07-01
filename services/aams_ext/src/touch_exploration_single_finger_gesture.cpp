@@ -775,6 +775,8 @@ void TouchExploration::HandleOneFingerSingleTapThenDownStateUp(MMI::PointerEvent
 
         Singleton<ExtendServiceManager>::GetInstance().executeActionOnAccessibilityFocusedCallback(
             ActionType::ACCESSIBILITY_ACTION_CLICK, displayId);
+        Singleton<ExtendServiceManager>::GetInstance().sendTouchGuideGestureToAACallback(
+            displayId, ONE_FINGER_DOUBLE_TAP_BEGIN);
         }, "TASK_CLICK_ON_FOCUS");
 }
 
@@ -850,6 +852,9 @@ bool TouchExploration::SendDoubleTapAndLongPressDownEvent()
     }
     OffsetEvent(receivedPointerEvents_.front(), true);
     SendEventToMultimodal(receivedPointerEvents_.front(), ChangeAction::NO_CHANGE);
+    uint64_t displayId = static_cast<uint64_t>(receivedPointerEvents_.front().GetTargetDisplayId());
+    Singleton<ExtendServiceManager>::GetInstance().sendTouchGuideGestureToAACallback(
+        displayId, ONE_FINGER_DOUBLE_TAP_HOLD_BEGIN);
     return true;
 }
 
@@ -864,6 +869,9 @@ void TouchExploration::HandleOneFingerDoubleTapAndLongPressState(MMI::PointerEve
         (!pointer.IsPressed())) {
         Clear();
         SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        uint64_t displayId = static_cast<uint64_t>(event.GetTargetDisplayId());
+        Singleton<ExtendServiceManager>::GetInstance().sendTouchGuideGestureToAACallback(
+            displayId, ONE_FINGER_DOUBLE_TAP_HOLD_END);
     }
 }
 // LCOV_EXCL_STOP

@@ -18,6 +18,7 @@
 #include "hilog_wrapper.h"
 #include "securec.h"
 #include "ext_utils.h"
+#include "extend_service_manager.h"
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 #include "accessibility_display_manager.h"
 #endif
@@ -401,6 +402,9 @@ void TouchExploration::HandleTwoFingersDownStateMove(MMI::PointerEvent &event)
             SendDragDownEventToMultimodal(event);
             SendEventToMultimodal(event, ChangeAction::NO_CHANGE);
             SetCurrentState(TouchExplorationState::TWO_FINGERS_DRAG);
+            uint64_t displayId = static_cast<uint64_t>(event.GetTargetDisplayId());
+            Singleton<ExtendServiceManager>::GetInstance().sendTouchGuideGestureToAACallback(
+                displayId, TWO_FINGER_SWIPE_BEGIN);
         } else {
             for (auto &receivedEvent : receivedPointerEvents_) {
                 SendEventToMultimodal(receivedEvent, ChangeAction::NO_CHANGE);
@@ -446,6 +450,9 @@ void TouchExploration::HandleTwoFingersDragStateDown(MMI::PointerEvent &event)
         SendUpForDragDownEvent();
         Clear();
         SetCurrentState(TouchExplorationState::INVALID);
+        uint64_t displayId = static_cast<uint64_t>(event.GetTargetDisplayId());
+        Singleton<ExtendServiceManager>::GetInstance().sendTouchGuideGestureToAACallback(
+            displayId, TWO_FINGER_SWIPE_END);
     }
 }
 
@@ -455,6 +462,9 @@ void TouchExploration::HandleTwoFingersDragStateUp(MMI::PointerEvent &event)
         SendUpForDragDownEvent();
         Clear();
         SetCurrentState(TouchExplorationState::TOUCH_INIT);
+        uint64_t displayId = static_cast<uint64_t>(event.GetTargetDisplayId());
+        Singleton<ExtendServiceManager>::GetInstance().sendTouchGuideGestureToAACallback(
+            displayId, TWO_FINGER_SWIPE_END);
     }
 }
 
@@ -793,6 +803,9 @@ void TouchExploration::HandleTwoFingersUnknownStateMove(MMI::PointerEvent &event
         SendEventToMultimodal(event, ChangeAction::POINTER_DOWN);
         draggingDownEvent_ = std::make_shared<MMI::PointerEvent>(event);
         SetCurrentState(TouchExplorationState::TWO_FINGERS_DRAG);
+        uint64_t displayId = static_cast<uint64_t>(event.GetTargetDisplayId());
+        Singleton<ExtendServiceManager>::GetInstance().sendTouchGuideGestureToAACallback(
+            displayId, TWO_FINGER_SWIPE_BEGIN);
         return;
     }
 }

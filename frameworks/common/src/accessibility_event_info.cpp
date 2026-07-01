@@ -33,7 +33,8 @@ namespace {
         "addedCount",
         "removedCount",
         "currentIndex",
-        "speakText"
+        "speakText",
+        "touchGuideGestureType"
     };
 }
 

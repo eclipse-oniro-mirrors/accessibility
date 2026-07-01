@@ -157,6 +157,12 @@ private:
 
 class TouchExploration : public EventTransmission {
 public:
+    const char* TWO_FINGER_SWIPE_BEGIN = "twoFingerSwipeBegin";
+    const char* TWO_FINGER_SWIPE_END = "twoFingerSwipeEnd";
+    const char* ONE_FINGER_DOUBLE_TAP_BEGIN = "oneFingerDoubleTapBegin";
+    const char* ONE_FINGER_DOUBLE_TAP_HOLD_BEGIN = "oneFingerDoubleTapHoldBegin";
+    const char* ONE_FINGER_DOUBLE_TAP_HOLD_END = "oneFingerDoubleTapHoldEnd";
+    
     static constexpr GestureType GESTURE_DIRECTION[DIRECTION_NUM] = {
         GestureType::GESTURE_SWIPE_UP,
         GestureType::GESTURE_SWIPE_DOWN,

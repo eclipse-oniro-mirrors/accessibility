@@ -30,6 +30,11 @@ API_EXPORT void SetSendAccessibilityEventToAACallback(
 {
     serviceManagerInstance.sendAccessibilityEventToAACallback = cb;
 }
+API_EXPORT void SetSendTouchGuideGestureToAACallback(
+    OHOS::Accessibility::SendTouchGuideGestureToAACallback cb)
+{
+    serviceManagerInstance.sendTouchGuideGestureToAACallback = cb;
+}
 API_EXPORT void SetGetDelayTimeCallback(OHOS::Accessibility::GetDelayTime cb)
 {
     serviceManagerInstance.getDelayTime = cb;

@@ -36,6 +36,11 @@ static void MockAnnouncedForMagnificationCallback(AnnounceType announceType)
 {
     (void) announceType;
 }
+static void MockSendTouchGuideGestureToAACallback(uint64_t displayId, const std::string gestureType)
+{
+    (void) displayId;
+    (void) gestureType;
+}
 static void MockSendAccessibilityEventToAACallback(EventType eventType, GestureType gestureId, uint64_t displayId)
 {
     (void) eventType;
@@ -123,6 +128,7 @@ ExtendServiceManager::ExtendServiceManager()
     InitInputManagerHandler();
     InitGestureHandler();
     sendAccessibilityEventToAACallback = MockSendAccessibilityEventToAACallback;
+    sendTouchGuideGestureToAACallback = MockSendTouchGuideGestureToAACallback
     findFocusedElementCallback = MockFindFocusedElementCallback;
     executeActionOnAccessibilityFocusedCallback = MockExecuteActionOnAccessibilityFocusedCallback;
     getFocusedWindowIdCallback = MockGetFocusedWindowIdCallback;
