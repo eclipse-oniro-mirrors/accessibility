@@ -19,14 +19,51 @@
 #include "window_magnification_manager.h"
 #include "full_screen_magnification_manager.h"
 #include "magnification_menu_manager.h"
+#include "common_event_subscriber.h"
 
 namespace OHOS {
 namespace Accessibility {
+class SystemEventSubscriber : public EventFwk::CommonEventSubscriber {
+public:
+    /**
+     * @brief The constructor.
+     *
+     * @param subscribeInfo Indicates the EventFwk::CommonEventSubscribeInfo object.
+     * @param callback Indicates the callback.
+     */
+    SystemEventSubscriber(const EventFwk::CommonEventSubscribeInfo &subscribeInfo,
+        const std::function<void(const EventFwk::CommonEventData &)> &callback)
+        : EventFwk::CommonEventSubscriber(subscribeInfo), callback_(callback)
+    {}
+
+    /**
+     * @brief The deconstructor.
+     */
+    ~SystemEventSubscriber()
+    {}
+
+    /**
+     * @brief Obtains the death event. Inherited from EventFwk::CommonEventSubscriber.
+     *
+     * @param data Indicates the EventFwk::CommonEventData object.
+     */
+    void OnReceiveEvent(const EventFwk::CommonEventData &data) override
+    {
+        if (callback_ != nullptr) {
+            callback_(data);
+        }
+    }
+
+private:
+    std::function<void(const EventFwk::CommonEventData &)> callback_;
+};
+
 class MagnificationManager {
 public:
     MagnificationManager();
     ~MagnificationManager() = default;
 
+    static std::shared_ptr<MagnificationManager> GetInstance();
     std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
     std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
     std::shared_ptr<MagnificationMenuManager> GetMenuManager();
@@ -37,15 +74,21 @@ public:
     bool GetMagnificationState();
     void RefreshWindowParam(RotationType type);
     void FollowFocuseElement(int32_t centerX, int32_t centerY);
+    void SubscribeCommonEvent();
+    void UnSubscribeCommonEvent();
     inline void ResetCurrentMode()
     {
         currentMode_ = 0;
     }
+    void OnReceiveEvent(const EventFwk::CommonEventData &data);
 private:
+    static std::shared_ptr<MagnificationManager> instance_;
+    static ffrt::mutex instanceMutex_;
     std::shared_ptr<WindowMagnificationManager> windowMagnificationManager_ = nullptr;
     std::shared_ptr<FullScreenMagnificationManager> fullScreenMagnificationManager_ = nullptr;
     std::shared_ptr<MagnificationMenuManager> menuManager_ = nullptr;
     uint32_t currentMode_ = 0;
+    std::shared_ptr<SystemEventSubscriber> subscriber_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

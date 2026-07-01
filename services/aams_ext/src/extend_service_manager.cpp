@@ -208,7 +208,7 @@ void ExtendServiceManager::InitMagnification()
 {
     HILOG_INFO();
     if (magnificationManager_ == nullptr) {
-        magnificationManager_ = std::make_shared<MagnificationManager>();
+        magnificationManager_ = MagnificationManager::GetInstance();
     }
 
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER

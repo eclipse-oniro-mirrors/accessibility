@@ -251,7 +251,7 @@ API_EXPORT void ExtendGetAccessibilityWindowsCallback(OHOS::Accessibility::GetAc
 API_EXPORT void FollowFocuseElement(const int32_t centerX, const int32_t centerY)
 {
     HILOG_INFO();
-    OHOS::Singleton<OHOS::Accessibility::MagnificationManager>::GetInstance().FollowFocuseElement(centerX, centerY);
+    OHOS::Accessibility::MagnificationManager::GetInstance()->FollowFocuseElement(centerX, centerY);
 }
 API_EXPORT void OffZoomGesture()
 {
