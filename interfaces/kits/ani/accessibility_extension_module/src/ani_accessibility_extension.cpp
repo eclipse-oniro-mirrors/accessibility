@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP
+
 #include "ani_accessibility_extension.h"
 #include "ani_accessibility_extension_context.h"
 #include "ets_native_reference.h"
