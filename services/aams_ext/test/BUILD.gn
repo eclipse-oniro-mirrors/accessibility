@@ -458,7 +458,6 @@ ohos_unittest("accessibility_touch_exploration_test") {
     "../src/accessibility_input_interceptor.cpp",
     "../src/ext_utils.cpp",
     "../src/magnification_manager.cpp",
-    "../src/magnification_manager",
     "../src/touch_exploration_multi_finger_gesture.cpp",
     "../src/touch_exploration_single_finger_gesture.cpp",
     "mock/src/mock_accessibility_display_manager.cpp",
