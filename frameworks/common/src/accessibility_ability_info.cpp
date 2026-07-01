@@ -153,7 +153,7 @@ void AccessibilityAbilityInfo::GetEventConfigure(std::vector<uint32_t> &needEven
         {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY},
         {"announceForAccessibilityNotInterrupt", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
         {"requestFocusForAccessibilityNotInterrupt",
-            EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP},
+            EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
         {"pageContentUpdate", EventType::TYPE_PAGE_CONTENT_UPDATE},
         {"pageStateUpdate", EventType::TYPE_PAGE_STATE_UPDATE},
         {"pageOpen", EventType::TYPE_PAGE_OPEN},

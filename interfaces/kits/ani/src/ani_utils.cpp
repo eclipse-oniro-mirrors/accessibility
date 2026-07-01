@@ -293,7 +293,7 @@ EventType ANIUtils::ConvertStringToEventInfoTypes(const std::string &type)
         {"accessibilityFocusClear", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT},
         {"requestFocusForAccessibility", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY},
         {"requestFocusForAccessibilityNotInterrupt",
-            EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP},
+            EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
         {"announceForAccessibility", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY},
         {"announceForAccessibilityNotInterrupt", EventType::TYPE_VIEW_ANNOUNCE_FOR_ACCESSIBILITY_NOT_INTERRUPT},
         {"scrolling", EventType::TYPE_VIEW_SCROLLING_EVENT},
