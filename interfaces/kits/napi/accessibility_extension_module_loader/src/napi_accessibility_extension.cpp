@@ -322,7 +322,7 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
             }
             accessibilityElementInfo.SetAccessibilityId(VIRTUAL_COMPONENT_ID);
         } else if ((eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY ||
-            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUP ||
+            eventInfo.GetEventType() == TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT ||
             eventInfo.GetEventType() == TYPE_PAGE_ACTIVE) && inspectorKey != "") {
             ret = aaClient->SearchElementInfoByInspectorKey(inspectorKey, accessibilityElementInfo);
         }
