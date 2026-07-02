@@ -19,7 +19,6 @@
 #include <sstream>
 #include <vector>
 #include <charconv>
-
 #include "hilog_wrapper.h"
 #include "ani_utils.h"
 #include <ani_signature_builder.h>
@@ -453,6 +452,9 @@ NAccessibilityErrMsg ANIUtils::QueryRetMsg(RetError errorCode)
         case RetError::RET_ERR_NOT_SYSTEM_APP:
             return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_NOT_SYSTEM_APP,
                      ERROR_MESSAGE_NOT_SYSTEM_APP };
+        case OHOS::Accessibility::RetError::RET_ERR_INVILID_APPINDEX:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVILID_APPINDEX,
+                    ERROR_MESSAGE_INVILID_APPINDEX };
         default:
             return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
                      ERROR_MESSAGE_SYSTEM_ABNORMALITY };
@@ -1323,7 +1325,13 @@ void ANIUtils::SetSelectionParam(ani_env *env, ani_object obj, std::map<std::str
 void ANIUtils::SetAccessibilityFocusSceneParam(ani_env *env, ani_object obj, std::map<std::string, std::string>& args)
 {
     ani_ref fiedNameValue;
-    if (env->Object_GetFieldByName_Ref(obj, "accessibilityFocusScene", &fiedNameValue) == ANI_OK) {
+    ani_boolean isUndefined;
+    if (env->Object_GetFieldByName_Ref(obj, "accessibilityFocusScene", &fiedNameValue) == ANI_OK &&
+        env->Reference_IsUndefined(fiedNameValue, &isUndefined) == ANI_OK) {
+        if (isUndefined) {
+            HILOG_WARN("accessibilityFocusScene isUndefined");
+            return;
+        }
         ani_enum_item enumItem = static_cast<ani_enum_item>(fiedNameValue);
         ani_int intValue = 0;
         if (env->EnumItem_GetValue_Int(enumItem, &intValue) == ANI_OK) {
@@ -1380,15 +1388,6 @@ void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
                 args.insert(std::pair<std::string, std::string>("spanId", str.c_str()));
             }
             break;
-        case ActionType::ACCESSIBILITY_ACTION_CUSTOM:
-            if (env->Object_GetFieldByName_Ref(obj, "customAction", &fiedNameValue) == ANI_OK) {
-                str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
-                args.insert(std::pair<std::string, std::string>("customAction", str.c_str()));
-            } else {
-                HILOG_ERROR("customAction is required for CUSTOM action");
-                ThrowBusinessError(env, QueryRetMsg(RetError::RET_ERR_INVALID_PARAM));
-            }
-            break;
         case ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION: {
             if (env->Object_GetFieldByName_Ref(obj, "injectActionType", &fiedNameValue) == ANI_OK) {
                 int32_t injectActionType = 0;
@@ -1401,6 +1400,15 @@ void ANIUtils::ConvertActionArgsJSToANI(ani_env *env, ani_object obj,
             }
             break;
         }
+        case ActionType::ACCESSIBILITY_ACTION_CUSTOM:
+            if (env->Object_GetFieldByName_Ref(obj, "customAction", &fiedNameValue) == ANI_OK) {
+                str = ANIStringToStdString(env, static_cast<ani_string>(fiedNameValue));
+                args.insert(std::pair<std::string, std::string>("customAction", str.c_str()));
+            } else {
+                HILOG_ERROR("customAction is required for CUSTOM action");
+                ThrowBusinessError(env, QueryRetMsg(RetError::RET_ERR_INVALID_PARAM));
+            }
+            break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD:
             SetScrollTypeParam(env, obj, args);

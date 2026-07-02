@@ -16,9 +16,9 @@
 #include <array>
 #include <iostream>
 #include "ani_accessibility_config.h"
+#include "accessibility_def.h"
 #include "ani_utils.h"
 #include "ipc_skeleton.h"
-#include "tokenid_kit.h"
 #include "accesstoken_kit.h"
 #include "hilog_wrapper.h"
 #include <ani_signature_builder.h>
@@ -243,6 +243,7 @@ void EnableAbilityCallbackObserverImpl::OnEnableAbilityRemoteDied(const std::str
             iter->second->OnEnableAbilityRemoteDied(name);
         }
         enableAbilityCallbackObservers_.erase(iter);
+        return;
     }
 }
 
@@ -286,7 +287,6 @@ void EnableAbilityCallbackObserverImpl::UnsubscribeFromFramework()
 
 void ANIAccessibilityConfigObserver::OnConfigChangedExtra(const ConfigValue &value)
 {
-    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(configId_));
     if (configId_ == CONFIG_ID::CONFIG_CONTENT_TIMEOUT) {
         NotifyIntChangedToJs(static_cast<int32_t>(value.contentTimeout));
     } else if (configId_ == CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT) {
@@ -351,7 +351,7 @@ void ANIAccessibilityConfigObserver::OnDaltonizationColorFilterConfigChanged()
 
 void ANIAccessibilityConfigObserver::NotifyStateChangedToJs(bool enabled)
 {
-    HILOG_INFO(" enabled = [%{public}s]", enabled ? "true" : "false");
+    HILOG_INFO("id = [%{public}d] value = [%{public}s]", static_cast<int32_t>(configId_), enabled ? "true" : "false");
     std::shared_ptr<ANIStateCallbackInfo> callbackInfo = std::make_shared<ANIStateCallbackInfo>();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo");
@@ -397,7 +397,7 @@ void ANIAccessibilityConfigObserver::NotifyPropertyChangedToJs(
         if (callbackInfo == nullptr) {
             return;
         }
-        HILOG_INFO("notify state changed to ets");
+        HILOG_INFO("notify property changed to ets");
         ani_env *tmpEnv = callbackInfo->env_;
         ani_size nr_refs = ANI_SCOPE_SIZE;
         tmpEnv->CreateLocalScope(nr_refs);
@@ -420,7 +420,7 @@ void ANIAccessibilityConfigObserver::NotifyPropertyChangedToJs(
 
 void ANIAccessibilityConfigObserver::NotifyStringChangedToJs(const std::string& value)
 {
-    HILOG_INFO("ani value = [%{public}s]", value.c_str());
+    HILOG_INFO("id = [%{public}d] value = [%{public}s]", static_cast<int32_t>(configId_), value.c_str());
     std::shared_ptr<ANIStateCallbackInfo> callbackInfo = std::make_shared<ANIStateCallbackInfo>();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo");
@@ -430,7 +430,7 @@ void ANIAccessibilityConfigObserver::NotifyStringChangedToJs(const std::string& 
     callbackInfo->env_ = env_;
     callbackInfo->fnRef_ = handlerRef_;
     auto task = [callbackInfo]() {
-        HILOG_INFO("notify state changed to ets");
+        HILOG_INFO("notify string changed to ets");
         ani_env *tmpEnv = callbackInfo->env_;
         ani_size nr_refs = ANI_SCOPE_SIZE;
         tmpEnv->CreateLocalScope(nr_refs);
@@ -453,7 +453,7 @@ void ANIAccessibilityConfigObserver::NotifyStringChangedToJs(const std::string& 
 
 void ANIAccessibilityConfigObserver::NotifyStringVectorChangedToJs(std::vector<std::string> value)
 {
-    HILOG_INFO();
+    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(configId_));
     std::shared_ptr<ANIStateCallbackInfo> callbackInfo = std::make_shared<ANIStateCallbackInfo>();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo");
@@ -463,7 +463,7 @@ void ANIAccessibilityConfigObserver::NotifyStringVectorChangedToJs(std::vector<s
     callbackInfo->env_ = env_;
     callbackInfo->fnRef_ = handlerRef_;
     auto task = [callbackInfo]() {
-        HILOG_INFO("notify state changed to ets");
+        HILOG_INFO("notify string vector changed to ets");
         ani_env *tmpEnv = callbackInfo->env_;
         ani_size nr_refs = ANI_SCOPE_SIZE;
         tmpEnv->CreateLocalScope(nr_refs);
@@ -480,13 +480,13 @@ void ANIAccessibilityConfigObserver::NotifyStringVectorChangedToJs(std::vector<s
         tmpEnv->DestroyLocalScope();
     };
     if (!ANIUtils::SendEventToMainThread(task)) {
-        HILOG_ERROR(" failed to send event");
+        HILOG_ERROR("failed to send event");
     }
 }
 
 void ANIAccessibilityConfigObserver::NotifyIntChangedToJs(int32_t value)
 {
-    HILOG_INFO("value = [%{public}d]", value);
+    HILOG_INFO("id = [%{public}d] value = [%{public}d]", static_cast<int32_t>(configId_), value);
 
     std::shared_ptr<ANIStateCallbackInfo> callbackInfo = std::make_shared<ANIStateCallbackInfo>();
     if (callbackInfo == nullptr) {
@@ -497,7 +497,7 @@ void ANIAccessibilityConfigObserver::NotifyIntChangedToJs(int32_t value)
     callbackInfo->env_ = env_;
     callbackInfo->fnRef_ = handlerRef_;
     auto task = [callbackInfo]() {
-        HILOG_INFO("notify state changed to ets");
+        HILOG_INFO("notify int changed to ets");
         ani_env *tmpEnv = callbackInfo->env_;
         ani_size nr_refs = ANI_SCOPE_SIZE;
         tmpEnv->CreateLocalScope(nr_refs);
@@ -532,7 +532,7 @@ void ANIAccessibilityConfigObserver::NotifyFloatChangedToJs(float value)
     callbackInfo->env_ = env_;
     callbackInfo->fnRef_ = handlerRef_;
     auto task = [callbackInfo]() {
-        HILOG_INFO("notify state changed to ets");
+        HILOG_INFO("notify float changed to ets");
         ani_env *tmpEnv = callbackInfo->env_;
         ani_size nr_refs = ANI_SCOPE_SIZE;
         tmpEnv->CreateLocalScope(nr_refs);
@@ -562,7 +562,7 @@ void ANIAccessibilityConfigObserverImpl::SubscribeObserver(ani_env* env,
     for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
         if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->handlerRef_)) {
             env->GlobalReference_Delete(fnRef);
-            HILOG_INFO(" SubscribeObserver Observer exist");
+            HILOG_INFO("Config Observer SubscribeObserver Observer exist");
             return;
         }
     }
@@ -580,7 +580,7 @@ void ANIAccessibilityConfigObserverImpl::UnsubscribeObserver(ani_env* env,
     for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
         if ((*iter)->configId_ == id) {
             if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->handlerRef_)) {
-                HILOG_INFO(" UnsubscribeObserver, ID:%{public}d", id);
+                HILOG_INFO("Config Observer UnsubscribeObserver, ID:%{public}d", id);
                 env->GlobalReference_Delete((*iter)->handlerRef_);
                 observers_.erase(iter);
                 break;
@@ -588,13 +588,12 @@ void ANIAccessibilityConfigObserverImpl::UnsubscribeObserver(ani_env* env,
         }
     }
     env->GlobalReference_Delete(fnRef);
-    HILOG_INFO(" UnsubscribeObserver END");
 }
 
 
 void ANIAccessibilityConfigObserverImpl::SubscribeToFramework()
 {
-    HILOG_INFO(" ani SubscribeToFramework");
+    HILOG_INFO("Config Observer SubscribeToFramework");
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     for (int32_t index = 0; index < static_cast<int32_t>(CONFIG_ID::CONFIG_ID_MAX); index ++) {
         instance.SubscribeConfigObserver(static_cast<CONFIG_ID>(index), shared_from_this(), false);
@@ -603,7 +602,7 @@ void ANIAccessibilityConfigObserverImpl::SubscribeToFramework()
 
 void ANIAccessibilityConfigObserverImpl::UnsubscribeFromFramework()
 {
-    HILOG_INFO(" ani UnsubscribeFromFramework");
+    HILOG_INFO("Config Observer UnsubscribeFromFramework");
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     for (int32_t index = 0; index < static_cast<int32_t>(CONFIG_ID::CONFIG_ID_MAX); index ++) {
         instance.UnsubscribeConfigObserver(static_cast<CONFIG_ID>(index), shared_from_this());
@@ -636,12 +635,11 @@ void ANIAccessibilityConfigObserverImpl::OnConfigChanged(
 void ANIAccessibilityConfig::SetSyncboolean(ani_env *env, ani_object object, ani_enum_item id, ani_boolean state)
 {
     ani_int itemEnum;
-    if (ANI_OK != env->EnumItem_GetValue_Int(id, &itemEnum)) {
-        HILOG_INFO("get value int ERROR");
+    if (env->EnumItem_GetValue_Int(id, &itemEnum) != ANI_OK) {
+        HILOG_ERROR("get value int ERROR");
         return;
     }
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
-    HILOG_DEBUG("configId= %{public}d", configId);
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     auto ret = RET_OK;
     if (configId == CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT) {
@@ -668,19 +666,18 @@ void ANIAccessibilityConfig::SetSyncboolean(ani_env *env, ani_object object, ani
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
-    HILOG_INFO("SetSyncboolean ret = %{public}d", static_cast<int32_t>(ret));
+    HILOG_INFO("SetSyncboolean configId = %{public}d, ret = %{public}d", configId, static_cast<int32_t>(ret));
     return;
 }
 
 ani_boolean ANIAccessibilityConfig::GetSyncboolean(ani_env *env, ani_object object, ani_enum_item id)
 {
     ani_int itemEnum;
-    if (ANI_OK != env->EnumItem_GetValue_Int(id, &itemEnum)) {
-        HILOG_INFO("get value int ERROR");
+    if (env->EnumItem_GetValue_Int(id, &itemEnum) != ANI_OK) {
+        HILOG_ERROR("get value int ERROR");
         return false;
     }
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
-    HILOG_DEBUG("configId= %{public}d", configId);
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     bool state = false;
     RetError ret = RET_ERR_FAILED;
@@ -710,15 +707,15 @@ ani_boolean ANIAccessibilityConfig::GetSyncboolean(ani_env *env, ani_object obje
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
-    HILOG_INFO("GetSyncboolean ret = %{public}d", static_cast<int32_t>(ret));
+    HILOG_INFO("GetSyncboolean configId = %{public}d, ret = %{public}d", configId, static_cast<int32_t>(ret));
     return static_cast<ani_boolean>(state);
 }
 
 void ANIAccessibilityConfig::SetSyncDouble(ani_env *env, ani_object object, ani_enum_item id, ani_double value)
 {
     ani_int itemEnum;
-    if (ANI_OK != env->EnumItem_GetValue_Int(id, &itemEnum)) {
-        HILOG_INFO("get value int ERROR");
+    if (env->EnumItem_GetValue_Int(id, &itemEnum) != ANI_OK) {
+        HILOG_ERROR("get value int ERROR");
         return;
     }
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
@@ -733,7 +730,7 @@ void ANIAccessibilityConfig::SetSyncDouble(ani_env *env, ani_object object, ani_
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
-    HILOG_INFO("SetSyncDouble ret = %{public}d", static_cast<int32_t>(ret));
+    HILOG_INFO("SetSyncDouble configId = %{public}d, ret = %{public}d", configId, static_cast<int32_t>(ret));
     return;
 }
 
@@ -742,8 +739,8 @@ ani_double ANIAccessibilityConfig::GetSyncDouble(ani_env *env, ani_object object
     float floatData = 0;
     RetError ret = RET_ERR_FAILED;
     ani_int itemEnum;
-    if (ANI_OK != env->EnumItem_GetValue_Int(id, &itemEnum)) {
-        HILOG_INFO("get value int ERROR");
+    if (env->EnumItem_GetValue_Int(id, &itemEnum) != ANI_OK) {
+        HILOG_ERROR("get value int ERROR");
         return false;
     }
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
@@ -754,7 +751,7 @@ ani_double ANIAccessibilityConfig::GetSyncDouble(ani_env *env, ani_object object
         ret = instance.GetBrightnessDiscount(floatData);
     }
 
-    HILOG_INFO("getSyncNumber ret = %{public}d", static_cast<int32_t>(ret));
+    HILOG_INFO("getSyncNumber configId = %{public}d, ret = %{public}d", configId, static_cast<int32_t>(ret));
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
@@ -765,12 +762,11 @@ ani_double ANIAccessibilityConfig::GetSyncDouble(ani_env *env, ani_object object
 void ANIAccessibilityConfig::SetSyncInt(ani_env *env, ani_object object, ani_enum_item id, ani_int value)
 {
     ani_int itemEnum;
-    if (ANI_OK != env->EnumItem_GetValue_Int(id, &itemEnum)) {
-        HILOG_INFO("get value int ERROR");
+    if (env->EnumItem_GetValue_Int(id, &itemEnum) != ANI_OK) {
+        HILOG_ERROR("get value int ERROR");
         return;
     }
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
-    HILOG_DEBUG(" SetSyncInt configId= %{public}d, %{public}d", configId, static_cast<uint32_t>(value));
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     auto ret = RET_ERR_FAILED;
     if (configId == CONFIG_ID::CONFIG_CONTENT_TIMEOUT) {
@@ -781,7 +777,7 @@ void ANIAccessibilityConfig::SetSyncInt(ani_env *env, ani_object object, ani_enu
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
-    HILOG_INFO("SetSyncInt ret = %{public}d", static_cast<int32_t>(ret));
+    HILOG_INFO("SetSyncInt configId = %{public}d, ret = %{public}d", configId, static_cast<int32_t>(ret));
     return;
 }
 
@@ -791,8 +787,8 @@ ani_int ANIAccessibilityConfig::GetSyncInt(ani_env *env, ani_object object, ani_
     int32_t int32Data = 0;
     RetError ret = RET_ERR_FAILED;
     ani_int itemEnum;
-    if (ANI_OK != env->EnumItem_GetValue_Int(id, &itemEnum)) {
-        HILOG_INFO("get value int ERROR");
+    if (env->EnumItem_GetValue_Int(id, &itemEnum) != ANI_OK) {
+        HILOG_ERROR("get value int ERROR");
         return -1;
     }
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
@@ -805,7 +801,7 @@ ani_int ANIAccessibilityConfig::GetSyncInt(ani_env *env, ani_object object, ani_
         ret = instance.GetMouseAutoClick(int32Data);
     }
 
-    HILOG_INFO("getSyncNumber ret = %{public}d", static_cast<int32_t>(ret));
+    HILOG_INFO("getSyncNumber configId = %{public}d, ret = %{public}d", configId, static_cast<int32_t>(ret));
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
@@ -822,7 +818,7 @@ void ANIAccessibilityConfig::SetSyncString(ani_env *env, ani_object object, ani_
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
-    HILOG_INFO(" SetSyncString ret = %{public}d", static_cast<int32_t>(ret));
+    HILOG_INFO("Set shortkey target ret = %{public}d", static_cast<int32_t>(ret));
     return;
 }
 
@@ -834,6 +830,7 @@ ani_string ANIAccessibilityConfig::GetSyncString(ani_env *env, ani_object object
     std::string result = "";
     auto ret = instance.GetShortkeyTarget(result);
     if (ret != RET_OK) {
+        HILOG_ERROR("GetSyncString failed! ret = %{public}d", static_cast<int32_t>(ret));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
     env->String_NewUTF8(result.c_str(), result.size(), &retResult);
@@ -845,7 +842,7 @@ void ANIAccessibilityConfig::SetSyncVectorString(ani_env *env, ani_object object
     (void)id;
     std::vector<std::string> valueList;
     if (!ANIUtils::ParseStringArray(env, value, valueList)) {
-        HILOG_INFO(" ParseStringArray fail");
+        HILOG_ERROR("ParseStringArray fail");
         return;
     }
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
@@ -853,7 +850,7 @@ void ANIAccessibilityConfig::SetSyncVectorString(ani_env *env, ani_object object
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
-    HILOG_INFO("SetSyncVectorString ret = %{public}d", static_cast<int32_t>(ret));
+    HILOG_INFO("Set shortkey multi-target ret = %{public}d", static_cast<int32_t>(ret));
     return;
 }
 
@@ -865,6 +862,7 @@ ani_object ANIAccessibilityConfig::GetSyncVectorString(ani_env *env, ani_object 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     auto ret = instance.GetShortkeyMultiTarget(multiList);
     if (ret != RET_OK) {
+        HILOG_ERROR("GetSyncVecotorString failed! ret = %{public}d", static_cast<int32_t>(ret));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
 
@@ -894,6 +892,7 @@ ani_string ANIAccessibilityConfig::GetSyncDaltonizationColorFilter(ani_env *env,
     OHOS::AccessibilityConfig::DALTONIZATION_TYPE type;
     auto ret = instance.GetDaltonizationColorFilter(type);
     if (ret != RET_OK) {
+        HILOG_ERROR("GetSyncDaltonizationColorFilter failed! ret = %{public}d", static_cast<int32_t>(ret));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
     std::string result = ConvertDaltonizationTypeToString(type);
@@ -925,6 +924,7 @@ ani_string ANIAccessibilityConfig::GetSyncClickResponseTime(ani_env *env, ani_ob
     OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME time;
     auto ret = instance.GetClickResponseTime(time);
     if (ret != RET_OK) {
+        HILOG_ERROR("GetSyncClickResponseTimer failed! ret = %{public}d", static_cast<int32_t>(ret));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
     std::string result = ConvertClickResponseTimeTypeToString(time);
@@ -956,6 +956,7 @@ ani_string ANIAccessibilityConfig::GetSyncRepeatClickInterval(ani_env *env, ani_
     OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME time;
     auto ret = instance.GetIgnoreRepeatClickTime(time);
     if (ret != RET_OK) {
+        HILOG_ERROR("GetSyncRepeatClickInterval failed! ret = %{public}d", static_cast<int32_t>(ret));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
     std::string result = ConvertIgnoreRepeatClickTimeTypeToString(time);
@@ -966,8 +967,8 @@ ani_string ANIAccessibilityConfig::GetSyncRepeatClickInterval(ani_env *env, ani_
 void ANIAccessibilityConfig::SetSyncCaptionsStyle(ani_env *env, ani_object object, ani_enum_item id, ani_object value)
 {
     ani_int itemEnum;
-    if (ANI_OK != env->EnumItem_GetValue_Int(id, &itemEnum)) {
-        HILOG_INFO("get value int ERROR");
+    if (env->EnumItem_GetValue_Int(id, &itemEnum) != ANI_OK) {
+        HILOG_ERROR("get value int ERROR");
         return;
     }
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
@@ -980,20 +981,21 @@ void ANIAccessibilityConfig::SetSyncCaptionsStyle(ani_env *env, ani_object objec
     uint32_t backgroundColor = DEFAULT_COLOR;
     uint32_t windowColor = DEFAULT_COLOR;
     ani_boolean isUndefined = true;
-    if (ANI_OK != env->Reference_IsUndefined(value, &isUndefined)) {
-        HILOG_ERROR(" SetSyncCaptionsStyle Reference_IsUndefined");
+    if (env->Reference_IsUndefined(value, &isUndefined) != ANI_OK) {
+        HILOG_ERROR("SetSyncCaptionsStyle Reference_IsUndefined");
         return;
     }
 
     if (!isUndefined) {
-        ANIUtils::GetStringMember(env, value, "fontFamily", fontFamily);
-        ANIUtils::GetColorMember(env, value, "fontColor", fontColor);
-        ANIUtils::GetStringMember(env, value, "fontEdgeType", fontEdgeType);
-        ANIUtils::GetColorMember(env, value, "backgroundColor", backgroundColor);
-        ANIUtils::GetColorMember(env, value, "windowColor", windowColor);
-        int value1;
-        if (ANI_OK != env->Object_GetPropertyByName_Int(value, "fontScale", &value1)) {
-            HILOG_ERROR(" Get property value1  failed");
+        RETURN_IF_FALSE(ANIUtils::GetStringMember(env, value, "fontFamily", fontFamily));
+        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, value, "fontColor", fontColor));
+        RETURN_IF_FALSE(ANIUtils::GetStringMember(env, value, "fontEdgeType", fontEdgeType));
+        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, value, "backgroundColor", backgroundColor));
+        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, value, "windowColor", windowColor));
+        int value1 = 0;
+        if ((env->Object_GetPropertyByName_Int(value, "fontScale", &value1) != ANI_OK) || (value1 < 0)) {
+            HILOG_ERROR("Get property value1  failed");
+            return;
         }
         fontScale = static_cast<uint32_t>(value1);
     }
@@ -1020,30 +1022,35 @@ ani_object ANIAccessibilityConfig::CreateJsCaptionPropertyInfoInner(ani_env *env
     ani_object &object, OHOS::AccessibilityConfig::CaptionProperty &captionProperty)
 {
     if (env == nullptr || cls == nullptr || object == nullptr) {
-        HILOG_ERROR(" invalid args");
+        HILOG_ERROR("invalid args");
         return nullptr;
     }
+
     if (!ANIUtils::SetStringProperty(env, object, "fontFamily", captionProperty.GetFontFamily())) {
-        HILOG_ERROR(" set fontFamily failed");
+        HILOG_ERROR("set fontFamily failed");
     }
     if (!ANIUtils::SetStringProperty(env, object, "fontEdgeType", captionProperty.GetFontEdgeType())) {
-        HILOG_ERROR(" set fontEdgeType failed");
+        HILOG_ERROR("set fontEdgeType failed");
     }
-    if (ANI_OK != env->Object_SetPropertyByName_Int(object, "fontScale", captionProperty.GetFontScale())) {
-        HILOG_ERROR(" Set property fontScale failed");
+    if (env->Object_SetPropertyByName_Int(object, "fontScale", captionProperty.GetFontScale()) != ANI_OK) {
+        HILOG_ERROR("Set property fontScale failed");
     }
+
     if (!ANIUtils::SetStringProperty(env, object, "fontColor",
         ConvertColorToString(captionProperty.GetFontColor()))) {
-        HILOG_ERROR(" Set property fontColor failed");
+        HILOG_ERROR("Set property fontColor failed");
     }
+
     if (!ANIUtils::SetStringProperty(env, object, "backgroundColor",
         ConvertColorToString(captionProperty.GetBackgroundColor()))) {
-        HILOG_ERROR(" Set property backgroundColor failed");
+        HILOG_ERROR("Set property backgroundColor failed");
     }
+
     if (!ANIUtils::SetStringProperty(env, object, "windowColor",
         ConvertColorToString(captionProperty.GetWindowColor()))) {
-        HILOG_ERROR(" Set property windowColor failed");
+        HILOG_ERROR("Set property windowColor failed");
     }
+
     return object;
 }
 
@@ -1054,19 +1061,19 @@ ani_object ANIAccessibilityConfig::CreateJsAccessibilityCaptionProperty(ani_env 
     arkts::ani_signature::Type className =
         arkts::ani_signature::Builder::BuildClass("@ohos.accessibility.accessibility.CaptionsStyleImpl");
     ani_class cls;
-    if (ANI_OK != env->FindClass(className.Descriptor().c_str(), &cls)) {
-        HILOG_ERROR(" not found class");
+    if (env->FindClass(className.Descriptor().c_str(), &cls) != ANI_OK) {
+        HILOG_ERROR("Class CaptionsStyle not found");
         return nullptr;
     }
     ani_method ctor;
-    if (ANI_OK != env->Class_FindMethod(cls, "<ctor>", nullptr, &ctor)) {
-        HILOG_ERROR(" Find method '<ctor>' failed");
+    if (env->Class_FindMethod(cls, "<ctor>", nullptr, &ctor) != ANI_OK) {
+        HILOG_ERROR("Find method '<ctor>' failed");
         return nullptr;
     }
 
     ani_object object;
-    if (ANI_OK != env->Object_New(cls, ctor, &object)) {
-        HILOG_ERROR(" New object fail");
+    if (env->Object_New(cls, ctor, &object) != ANI_OK) {
+        HILOG_ERROR("New object fail");
         return nullptr;
     }
 
@@ -1080,6 +1087,7 @@ ani_object ANIAccessibilityConfig::GetSyncCaptionsStyle(ani_env *env, ani_object
     OHOS::AccessibilityConfig::CaptionProperty captionProperty;
     auto ret = instance.GetCaptionsProperty(captionProperty, true);
     if (ret != RET_OK) {
+        HILOG_ERROR("GetSyncCaptionsStyle failed! ret = %{public}d", static_cast<int32_t>(ret));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
 
@@ -1092,13 +1100,13 @@ void ANIAccessibilityConfig::EnableAbilitySync(ani_env *env, ani_string name, an
     std::string nameStr = ANIUtils::ANIStringToStdString(env, name);
 
     if (capability == nullptr) {
-        HILOG_INFO("capability is null");
+        HILOG_ERROR("capability is null");
         return;
     }
     ani_size length;
     ani_status status = env->Array_GetLength(capability, &length);
     if (status != ANI_OK) {
-        HILOG_INFO(" Object_GetPropertyByName_Double faild. status : %{public}d", status);
+        HILOG_ERROR("Object_GetPropertyByName_Double faild. status : %{public}d", status);
         return;
     }
 
@@ -1107,14 +1115,14 @@ void ANIAccessibilityConfig::EnableAbilitySync(ani_env *env, ani_string name, an
         ani_ref stringRef;
         auto signature = arkts::ani_signature::SignatureBuilder().AddInt().SetReturnUndefined()
             .BuildSignatureDescriptor();
-        if (ANI_OK != env->Array_Get(capability, i, &stringRef)) {
+        if (env->Array_Get(capability, i, &stringRef) != ANI_OK) {
             HILOG_ERROR("Object_CallMethodByName_Ref Failed");
             return;
         }
         strings.emplace_back(ANIUtils::ANIStringToStdString(env, static_cast<ani_string>(stringRef)));
     }
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    auto ret = instance.EnableAbility(nameStr, ParseCapabilitiesFromVec(strings));
+    auto ret = instance.EnableAbility(nameStr, ParseCapabilitiesFromVec(strings), false);
     if (ret != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
@@ -1155,7 +1163,7 @@ void ANIAccessibilityConfig::EnableAbilityWithCallbackSync(
         strings.emplace_back(ANIUtils::ANIStringToStdString(env, static_cast<ani_string>(stringRef)));
     }
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    auto ret = instance.EnableAbility(nameStr, ParseCapabilitiesFromVec(strings));
+    auto ret = instance.EnableAbility(nameStr, ParseCapabilitiesFromVec(strings), true);
     if (ret != RET_OK) {
         HILOG_ERROR("EnableAbilityWithCallbackSync ret = %{public}d", static_cast<int32_t>(ret));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
@@ -1204,15 +1212,15 @@ bool ANIAccessibilityConfig::CheckReadPermission(const std::string &permission)
 bool ANIAccessibilityConfig::IsAvailable(ani_env *env)
 {
     HILOG_DEBUG();
-    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
+    if (!AccessTokenKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NOT_SYSTEM_APP));
-        HILOG_ERROR("is not system app");
+        HILOG_ERROR("Not system app");
         return false;
     }
 
     if (!CheckReadPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NO_PERMISSION));
-        HILOG_ERROR("have no read permission");
+        HILOG_ERROR("No read permission");
         return false;
     }
 
@@ -1242,7 +1250,7 @@ void ANIAccessibilityConfig::UnsubscribeState(ani_env *env, ani_string type, ani
         return;
     }
     std::string typeStr = ANIUtils::ANIStringToStdString(env, type);
-    HILOG_INFO("OffObserver:%{public}s", typeStr.c_str());
+    HILOG_INFO("OffObserver: %{public}s", typeStr.c_str());
     if (enableAbilityListsObservers_ == nullptr) {
         HILOG_ERROR("enableAbilityListsObservers_ is null");
         return;
@@ -1260,7 +1268,7 @@ void ANIAccessibilityConfig::UnsubscribeStates(ani_env *env, ani_string type)
         return;
     }
     std::string typeStr = ANIUtils::ANIStringToStdString(env, type);
-    HILOG_INFO("OffObservers:%{public}s", typeStr.c_str());
+    HILOG_INFO("OffObservers: %{public}s", typeStr.c_str());
     if (enableAbilityListsObservers_ == nullptr) {
         HILOG_ERROR("enableAbilityListsObservers_ is null");
         return;
@@ -1293,8 +1301,8 @@ void ANIAccessibilityConfig::SubscribeConfigObserver(ani_env *env, ani_object ob
         return;
     }
     ani_int itemEnum;
-    if (ANI_OK != env->EnumItem_GetValue_Int(id, &itemEnum)) {
-        HILOG_INFO("get value int ERROR");
+    if (env->EnumItem_GetValue_Int(id, &itemEnum) != ANI_OK) {
+        HILOG_ERROR("get value int ERROR");
         return;
     }
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
@@ -1307,8 +1315,8 @@ void ANIAccessibilityConfig::UnSubscribeConfigObservers(ani_env *env, ani_object
         return;
     }
     ani_int itemEnum;
-    if (ANI_OK != env->EnumItem_GetValue_Int(id, &itemEnum)) {
-        HILOG_INFO("get value int ERROR");
+    if (env->EnumItem_GetValue_Int(id, &itemEnum) != ANI_OK) {
+        HILOG_ERROR("get value int ERROR");
         return;
     }
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
@@ -1322,8 +1330,8 @@ void ANIAccessibilityConfig::UnSubscribeConfigObserver(ani_env *env, ani_object 
         return;
     }
     ani_int itemEnum;
-    if (ANI_OK != env->EnumItem_GetValue_Int(id, &itemEnum)) {
-        HILOG_INFO("get value int ERROR");
+    if (env->EnumItem_GetValue_Int(id, &itemEnum) != ANI_OK) {
+        HILOG_ERROR("get value int ERROR");
         return;
     }
     CONFIG_ID configId = static_cast<CONFIG_ID>(itemEnum);
@@ -1503,8 +1511,14 @@ void ANIAccessibilityConfig::SetSeniorModeStateForApp(ani_env *env, ani_array se
 
         int32_t appIndex;
         if (!ANIUtils::GetIntField(env, "appIndex", element, appIndex)) {
-            HILOG_ERROR("get appIndex int value failed.");
+            HILOG_DEBUG("use defalut appIndex 0.");
             appIndex = 0;
+        }
+
+        if (appIndex < 0) {
+            HILOG_ERROR("appIndex is invilid.");
+            ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVILID_APPINDEX));
+            return;
         }
 
         ani_boolean state;

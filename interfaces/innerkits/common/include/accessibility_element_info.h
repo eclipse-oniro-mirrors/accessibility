@@ -1812,7 +1812,7 @@ public:
      * @sysCap Accessibility
      */
     bool GetClip() const;
-
+ 
     /**
      * @brief Set the clip to the element info.
      * @param clip The clip of node.
@@ -1939,11 +1939,11 @@ public:
      */
     const std::string &GetOriginalText() const;
 
-     /**
-      * @brief Set the accessibilityOriginalText to the element info.
-      * @param accessibilityScrollable The accessibilityOriginalText of node.
-      * @sysCap Accessibility
-      */
+    /**
+    * @brief Set the accessibilityOriginalText to the element info.
+    * @param accessibilityScrollable The accessibilityOriginalText of node.
+    * @sysCap Accessibility
+    */
     void SetOriginalText(const std::string &originalText);
 
     /*

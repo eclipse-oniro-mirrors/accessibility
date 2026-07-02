@@ -41,7 +41,7 @@ struct StateListener {
     static void NotifyJS(napi_env env, std::string mode, napi_ref handlerRef);
     void OnStateChanged(const bool state);
     void OnStateChanged(const std::string mode);
-
+ 
     napi_ref handlerRef_ = nullptr;
     napi_env env_ = nullptr;
     bool isBoolObserver_ = true;

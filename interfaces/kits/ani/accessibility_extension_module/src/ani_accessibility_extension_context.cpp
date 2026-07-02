@@ -19,7 +19,6 @@
 #include "ani_accessibility_element.h"
 #include "ani_utils.h"
 #include "hilog_wrapper.h"
-#include "tokenid_kit.h"
 #include "accesstoken_kit.h"
 #include <ani_signature_builder.h>
 
@@ -35,7 +34,7 @@ constexpr const char *WANT_CLS = "@ohos.app.ability.Want.Want";
 
 static void StartAbility([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_object object, ani_object wantObj)
 {
-    HILOG_INFO("StartAbility begin");
+    HILOG_DEBUG();
     AccessibilityExtensionContext *extensionContext = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, object);
     if (extensionContext == nullptr) {
         HILOG_ERROR("extensionContext is nullptr");
@@ -50,8 +49,7 @@ static void StartAbility([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_obj
         return;
     }
     ani_boolean isWant;
-    if (ANI_OK != env->Object_InstanceOf(static_cast<ani_object>(object), static_cast<ani_type>(cls),
-        &isWant)) {
+    if (env->Object_InstanceOf(static_cast<ani_object>(object), static_cast<ani_type>(cls), &isWant) != ANI_OK) {
         HILOG_ERROR("call object instance of Want failed");
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_INVALID_PARAM));
         return;
@@ -68,13 +66,12 @@ static void StartAbility([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_obj
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(innerErrorCode));
         return;
     }
-    HILOG_DEBUG("StartAbility end");
 }
 
 static ani_object GetDefaultFocusedElementIdsNative([[maybe_unused]] ani_env *env, [[maybe_unused]] ani_object object,
     ani_int windowId)
 {
-    HILOG_DEBUG("getDefaultFocusedElementIdsNative begin");
+    HILOG_DEBUG();
     AccessibilityExtensionContext *extensionContext = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, object);
     if (extensionContext == nullptr) {
         HILOG_ERROR("extensionContext is nullptr");
@@ -93,7 +90,7 @@ static ani_object GetDefaultFocusedElementIdsNative([[maybe_unused]] ani_env *en
     }
 
     ani_ref undefinedRef = nullptr;
-    if (ANI_OK != env->GetUndefined(&undefinedRef)) {
+    if (env->GetUndefined(&undefinedRef) != ANI_OK) {
         HILOG_ERROR("GetUndefined Failed.");
     }
     ani_array resultArray;
@@ -111,14 +108,14 @@ static ani_object GetDefaultFocusedElementIdsNative([[maybe_unused]] ani_env *en
             HILOG_ERROR("CreateAniLong failed");
             return nullptr;
         }
-        if (ANI_OK != env->Array_Set(resultArray, static_cast<ani_size>(i), idObj)) {
+        if (env->Array_Set(resultArray, static_cast<ani_size>(i), idObj) != ANI_OK) {
             HILOG_ERROR("Failed to set array element at index %{public}zu", i);
             ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
             return nullptr;
         }
     }
 
-    HILOG_DEBUG("getDefaultFocusedElementIdsNative end, returned %{public}zu elements", accessibilityElements->size());
+    HILOG_INFO("getDefaultFocusedElementIdsNative returned %{public}zu elements", accessibilityElements->size());
     return resultArray;
 }
 
@@ -150,7 +147,7 @@ static ani_object GetElementsNative(ani_env *env, ani_object thisObj, ani_int wi
         return nullptr;
     }
     ani_ref undefinedRef = nullptr;
-    if (ANI_OK != env->GetUndefined(&undefinedRef)) {
+    if (env->GetUndefined(&undefinedRef) != ANI_OK) {
         HILOG_ERROR("GetUndefined Failed.");
     }
     ani_array resultArray;
@@ -167,7 +164,7 @@ static ani_object GetElementsNative(ani_env *env, ani_object thisObj, ani_int wi
             HILOG_ERROR("Failed to create AccessibilityElement at index %{public}zu", i);
             continue;
         }
-        if (ANI_OK != (status = env->Array_Set(resultArray, static_cast<ani_size>(i), elementObj))) {
+        if ((status = env->Array_Set(resultArray, static_cast<ani_size>(i), elementObj)) != ANI_OK) {
             HILOG_ERROR("Failed to set array element at index %{public}zu, status: %{public}d", i, status);
         }
     }
@@ -176,7 +173,6 @@ static ani_object GetElementsNative(ani_env *env, ani_object thisObj, ani_int wi
 
 static ani_object GetRootInActiveWindow(ani_env *env, ani_object thisObj, ani_object windowId)
 {
-    HILOG_INFO("GetRootInActiveWindow begin");
     AccessibilityExtensionContext* context = ANIUtils::Unwrap<AccessibilityExtensionContext>(env, thisObj);
     if (context == nullptr) {
         HILOG_ERROR("Failed to unwrap AccessibilityExtensionContext");
@@ -200,9 +196,8 @@ static ani_object GetRootInActiveWindow(ani_env *env, ani_object thisObj, ani_ob
         windowInfo.SetMainWindowId(static_cast<int32_t>(id));
         ret = context->GetRootByWindow(windowInfo, *elementInfo, true);
     }
-    HILOG_INFO("GetRootInActiveWindow end, ret: %{public}d", ret);
-    HILOG_INFO("GetRoot end, mainWindowId: %{public}d, bundleName: %{public}s",
-        elementInfo->GetMainWindowId(), elementInfo->GetBundleName().c_str());
+    HILOG_INFO("GetRootInActiveWindow mainWindowId: %{public}d, bundleName: %{public}s, ret: %{public}d",
+        elementInfo->GetMainWindowId(), elementInfo->GetBundleName().c_str(), ret);
     if (RET_OK != ret) {
         HILOG_ERROR("Failed to get elementInfo");
         if (ret == RET_ERR_NO_WINDOW_CONNECTION) {
@@ -576,14 +571,13 @@ static ani_int RemoveAccessibilityVirtualNodes(ani_env *env, ani_object thisObj,
 ani_object CreateAniAccessibilityExtensionContext(ani_env *env, std::shared_ptr<AccessibilityExtensionContext> context,
     const std::shared_ptr<AbilityRuntime::OHOSApplication> &application)
 {
-    HILOG_DEBUG("CreateAniAccessibilityExtensionContext begin");
     if (!InitializeAccessibilityElementClass(env)) {
         HILOG_ERROR("Failed to initialize AccessibilityElement class");
         return nullptr;
     }
     ani_class cls;
     arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(ANI_EXTENSION_CONTEXT_CLS);
-    if (ANI_OK != env->FindClass(className.Descriptor().c_str(), &cls)) {
+    if (env->FindClass(className.Descriptor().c_str(), &cls) != ANI_OK) {
         HILOG_ERROR("Ani FindClass err: extention context");
         return nullptr;
     }
@@ -609,19 +603,18 @@ ani_object CreateAniAccessibilityExtensionContext(ani_env *env, std::shared_ptr<
         ani_native_function {"removeAccessibilityVirtualNodesNative", nullptr,
             reinterpret_cast<void *>(RemoveAccessibilityVirtualNodes)},
     };
-    HILOG_DEBUG("CreateAniAccessibilityExtensionContext bind context methods");
-    if (ANI_OK != env->Class_BindNativeMethods(cls, methods.data(), methods.size())) {
+
+    if (env->Class_BindNativeMethods(cls, methods.data(), methods.size()) != ANI_OK) {
         HILOG_ERROR("Cannot bind native methods to extension context");
         return nullptr;
     }
     ani_object contextObj = ANIUtils::CreateObject(env, cls);
-    if (ANI_OK != ANIUtils::Wrap(env, contextObj, context.get())) {
+    if (ANIUtils::Wrap(env, contextObj, context.get()) != ANI_OK) {
         HILOG_ERROR("Cannot wrap native object");
         return nullptr;
     }
 
     OHOS::AbilityRuntime::CreateEtsExtensionContext(env, cls, contextObj, context, context->GetAbilityInfo());
-    HILOG_INFO("CreateAniAccessibilityExtensionContext end");
     return contextObj;
 }
 }

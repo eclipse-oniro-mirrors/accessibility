@@ -32,7 +32,6 @@ using StringGetter = std::string &(AccessibilityElementInfo::*)() const;
 using Getter = std::pair<const char*, std::variant<BoolGetter, IntGetter, DoubleGetter, LongGetter, StringGetter>>;
 
 static ani_class g_accessibilityElementClass = nullptr;
-static ani_class g_focusMoveResultClass = nullptr;
 
 constexpr const char *ANI_ACCESSIBILITY_ELEMENT_CLS =
     "application.AccessibilityExtensionContext.AccessibilityElementImpl";
@@ -106,13 +105,13 @@ static const std::vector<Getter> FIELD_MAP = {
 
 bool InitializeAccessibilityElementClass(ani_env *env)
 {
-    if (g_accessibilityElementClass != nullptr && g_focusMoveResultClass != nullptr) {
+    if (g_accessibilityElementClass != nullptr) {
         return true;
     }
 
     arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(ANI_ACCESSIBILITY_ELEMENT_CLS);
-    if (ANI_OK != env->FindClass(className.Descriptor().c_str(), &g_accessibilityElementClass)) {
-        HILOG_ERROR(" not found class AccessibilityElement");
+    if (env->FindClass(className.Descriptor().c_str(), &g_accessibilityElementClass) != ANI_OK) {
+        HILOG_ERROR("Class AccessibilityElement not found");
         return false;
     }
 
@@ -139,28 +138,21 @@ bool InitializeAccessibilityElementClass(ani_env *env)
         ani_native_function {"executeActionNative", nullptr, reinterpret_cast<void *>(ExecuteAction)}
     };
 
-    if (ANI_OK != env->Class_BindNativeMethods(g_accessibilityElementClass, methods.data(), methods.size())) {
+    if (env->Class_BindNativeMethods(g_accessibilityElementClass, methods.data(), methods.size()) != ANI_OK) {
         HILOG_ERROR("Cannot bind native methods to element");
         g_accessibilityElementClass = nullptr;
-        return false;
-    }
-
-    arkts::ani_signature::Type moveResultName = arkts::ani_signature::Builder::BuildClass(
-        ANI_ACCESSIBILITY_FOCUS_MOVE_RESULT_CLS);
-    if (ANI_OK != env->FindClass(moveResultName.Descriptor().c_str(), &g_focusMoveResultClass)) {
-        HILOG_ERROR(" not found class focusMoveResult");
         return false;
     }
 
     ani_class cleanerCls;
     arkts::ani_signature::Type cleanerName = arkts::ani_signature::Builder::BuildClass(
         ANI_ACCESSIBILITY_ELEMENT_CLEANER_CLS);
-    if (ANI_OK != env->FindClass(cleanerName.Descriptor().c_str(), &cleanerCls)) {
-        HILOG_ERROR(" not found class AccessibilityElement");
+    if (env->FindClass(cleanerName.Descriptor().c_str(), &cleanerCls) != ANI_OK) {
+        HILOG_ERROR("AccessibilityElement not found");
         return false;
     }
     std::array cleanMethod = { ani_native_function {"cleanNative", ":", reinterpret_cast<void *>(Clean)} };
-    if (ANI_OK != env->Class_BindNativeMethods(cleanerCls, cleanMethod.data(), cleanMethod.size())) {
+    if (env->Class_BindNativeMethods(cleanerCls, cleanMethod.data(), cleanMethod.size()) != ANI_OK) {
         HILOG_ERROR("Cannot bind native methods to AccessibilityElementCleaner");
         return false;
     }
@@ -174,7 +166,7 @@ ani_class GetAniAccessibilityElementClass()
 
 void Clean(ani_env *env, ani_object thisObj)
 {
-    HILOG_DEBUG("Clean begin");
+    HILOG_DEBUG();
     AccessibilityElement* element = ANIUtils::Unwrap<AccessibilityElement>(env, thisObj);
     if (element == nullptr) {
         HILOG_ERROR("Failed to unwrap AccessibilityElementInfo");
@@ -183,7 +175,6 @@ void Clean(ani_env *env, ani_object thisObj)
     }
     delete element;
     element = nullptr;
-    HILOG_DEBUG("Clean end");
 }
 
 void ExecuteAction(ani_env *env, ani_object thisObj, ani_enum_item action, ani_object obj)
@@ -219,7 +210,7 @@ void ExecuteAction(ani_env *env, ani_object thisObj, ani_enum_item action, ani_o
     };
     param.ret_ = AccessibleAbilityClient::GetInstance()->ExecuteAction(
         *param.accessibilityElement_.elementInfo_, type, param.actionArguments_);
-    HILOG_DEBUG("ExecuteAction result [%{public}d]", param.ret_);
+    HILOG_INFO("ExecuteAction result [%{public}d]", param.ret_);
     if (param.ret_ != RET_OK) {
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
     }
@@ -236,7 +227,7 @@ bool CreateJsRect(ani_env *env, const Rect& rect, ani_object& rectObj)
     ani_class cls;
     arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(ANI_ACCESSIBILITY_RECT_CLS);
     if (env->FindClass(className.Descriptor().c_str(), &cls) != ANI_OK) {
-        HILOG_ERROR(" not found class AccessibilityElement");
+        HILOG_ERROR("Class AccessibilityElement not found");
         return false;
     }
     rectObj = ANIUtils::CreateObject(env, cls);
@@ -335,7 +326,7 @@ bool SetElementCurrentItemField(ani_env *env, ani_object& elementObj, const Grid
     ani_class cls;
     arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(ANI_ACCESSIBILITY_GRID_CLS);
     if (env->FindClass(className.Descriptor().c_str(), &cls) != ANI_OK) {
-        HILOG_ERROR(" not found class AccessibilityElement");
+        HILOG_ERROR("Class AccessibilityElement not found");
         return false;
     }
 
@@ -667,14 +658,15 @@ void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const Ac
         "hotArea");
 }
 
-void SetFocusMoveResultField(ani_env *env, ani_object& elementObj, ani_object resultArray, int32_t ret)
+void SetFocusMoveResultField(ani_env *env, ani_object& focusMoveResultObj, ani_object resultArray, int32_t ret)
 {
-    ani_status status = env->Object_SetPropertyByName_Ref(elementObj, "target", resultArray);
+    ani_status status = env->Object_SetPropertyByName_Ref(focusMoveResultObj, "target", resultArray);
     if (status != ANI_OK) {
         HILOG_ERROR("Failed to set target, status : %{public}d", status);
         return;
     }
-    if (!ANIUtils::SetIntField(env, elementObj, "result", ret, true)) {
+    constexpr const char* focusMoveCls = "@ohos.accessibility.FocusMoveResultCode";
+    if (!ANIUtils::SetEnumProperty(env, focusMoveResultObj, focusMoveCls, "result", ret)) {
         HILOG_ERROR("Failed to set result code");
     }
     HILOG_INFO("SetFocusMoveResultField end, ret: %{public}d", ret);
@@ -682,7 +674,7 @@ void SetFocusMoveResultField(ani_env *env, ani_object& elementObj, ani_object re
 
 ani_object CreateAniAccessibilityElement(ani_env *env, const AccessibilityWindowInfo& windowInfo)
 {
-    HILOG_DEBUG("CreateAniAccessibilityWindowElement begin");
+    HILOG_DEBUG();
 
     if (!InitializeAccessibilityElementClass(env)) {
         HILOG_ERROR("Failed to initialize AccessibilityElement class");
@@ -703,20 +695,19 @@ ani_object CreateAniAccessibilityElement(ani_env *env, const AccessibilityWindow
         return nullptr;
     }
 
-    if (ANI_OK != ANIUtils::Wrap(env, elementObj, element)) {
+    if (ANIUtils::Wrap(env, elementObj, element) != ANI_OK) {
         HILOG_ERROR("Cannot wrap AccessibilityElementInfo");
         delete element;
         element = nullptr;
         return nullptr;
     }
     SetAccessibilityElementField(env, elementObj, windowInfo);
-    HILOG_DEBUG("CreateAniAccessibilityWindowElement end");
     return elementObj;
 }
 
 ani_object CreateAniAccessibilityElement(ani_env *env, const AccessibilityElementInfo& elementInfo)
 {
-    HILOG_DEBUG("CreateAniAccessibilityElement begin");
+    HILOG_DEBUG();
 
     if (!InitializeAccessibilityElementClass(env)) {
         HILOG_ERROR("Failed to initialize AccessibilityElement class");
@@ -739,7 +730,7 @@ ani_object CreateAniAccessibilityElement(ani_env *env, const AccessibilityElemen
         return nullptr;
     }
 
-    if (ANI_OK != ANIUtils::Wrap(env, elementObj, element)) {
+    if (ANIUtils::Wrap(env, elementObj, element) != ANI_OK) {
         HILOG_ERROR("Cannot wrap AccessibilityElementInfo");
         delete element;
         element = nullptr;
@@ -748,30 +739,32 @@ ani_object CreateAniAccessibilityElement(ani_env *env, const AccessibilityElemen
 
     SetAccessibilityElementField(env, elementObj, elementInfo);
 
-    HILOG_INFO("CreateAniAccessibilityElement end");
     return elementObj;
 }
 
 ani_object CreateAniAccessibilityRuleResult(ani_env *env, std::vector<AccessibilityElementInfo> &infos, int32_t ret)
 {
-    HILOG_DEBUG("CreateAniAccessibilityRuleResult begin");
+    HILOG_DEBUG();
  
-    if (!InitializeAccessibilityElementClass(env)) {
-        HILOG_ERROR("Failed to initialize AccessibilityElement class");
+    ani_class cls;
+    arkts::ani_signature::Type className = arkts::ani_signature::Builder::BuildClass(
+        ANI_ACCESSIBILITY_FOCUS_MOVE_RESULT_CLS);
+    if (env->FindClass(className.Descriptor().c_str(), &cls) != ANI_OK) {
+        HILOG_ERROR("Class FocusMoveResult not found");
         return nullptr;
     }
-    ani_object elementObj = ANIUtils::CreateObject(env, g_focusMoveResultClass);
+
+    ani_object focusMoveResultObj = ANIUtils::CreateObject(env, cls);
     ani_object resultArray = ConvertElementInfosToJs(env, infos);
-    SetFocusMoveResultField(env, elementObj, resultArray, ret);
-    HILOG_INFO("CreateAniAccessibilityElement end");
-    return elementObj;
+    SetFocusMoveResultField(env, focusMoveResultObj, resultArray, ret);
+    return focusMoveResultObj;
 }
 
 ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<AccessibilityWindowInfo>& windowInfos)
 {
     HILOG_DEBUG("ConvertElementInfosToAni elementInfo size(%{public}zu)", windowInfos.size());
     ani_ref undefinedRef = nullptr;
-    if (ANI_OK != env->GetUndefined(&undefinedRef)) {
+    if (env->GetUndefined(&undefinedRef) != ANI_OK) {
         HILOG_ERROR("GetUndefined Failed.");
     }
     ani_array resultArray;
@@ -791,7 +784,7 @@ ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<Accessibility
             continue;
         }
 
-        if (ANI_OK != env->Array_Set(resultArray, static_cast<ani_size>(i), windowObj)) {
+        if (env->Array_Set(resultArray, static_cast<ani_size>(i), windowObj) != ANI_OK) {
             HILOG_ERROR("Failed to set array element at index %{public}zu", i);
         }
     }
@@ -836,6 +829,7 @@ void EnableScreenCurtain(ani_env *env, ani_object thisObj, ani_boolean isEnable)
     HILOG_INFO("Screen curtain %{public}s", isEnable ? "enabled" : "disabled");
     auto ret = AccessibleAbilityClient::GetInstance()->EnableScreenCurtain(static_cast<bool>(isEnable));
     if (RET_OK != ret) {
+        HILOG_ERROR("EnableScreenCurtain failed, ret = %{public}d", static_cast<int32_t>(ret));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
 }
@@ -853,6 +847,7 @@ ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_lo
 
     std::string typeStr = ANIUtils::ANIStringToStdString(env, type);
     if (std::strcmp(typeStr.c_str(), "elementId") != 0) {
+        HILOG_ERROR("findElement type is wrong!");
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_FAILED));
         return nullptr;
     }
@@ -864,6 +859,7 @@ ani_object FindElement(ani_env *env, ani_object thisObj, ani_string type, ani_lo
 
     FindElementExecute(&param);
     if (RET_OK != param.ret_) {
+        HILOG_ERROR("FindElement failed! ret = %{public}d", static_cast<int32_t>(param.ret_));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
         return nullptr;
     }
@@ -981,6 +977,7 @@ ani_object FindElementByContent(ani_env *env, ani_object thisObj, ani_string con
 
     FindElementExecute(&param);
     if (param.ret_ != RET_OK) {
+        HILOG_ERROR("FindElementByContent failed! ret = %{public}d", static_cast<int32_t>(param.ret_));
         if (param.ret_ == RET_ERR_NO_WINDOW_CONNECTION) {
             ANIUtils::ThrowBusinessError(
                 env,
@@ -1088,6 +1085,7 @@ ani_object FindElementsByAccessibilityHintText(ani_env *env, ani_object thisObj,
 
     FindElementExecute(&param);
     if (param.ret_ != RET_OK) {
+        HILOG_ERROR("FindElementsByAccessibilityHintText failed! ret = %{public}d", static_cast<int32_t>(param.ret_));
         if (param.ret_ == RET_ERR_NO_WINDOW_CONNECTION) {
             ANIUtils::ThrowBusinessError(
                 env,
@@ -1122,6 +1120,7 @@ ani_object FindElementById(ani_env *env, ani_object thisObj, ani_long elementId)
 
     FindElementExecute(&param);
     if (param.ret_ != RET_OK) {
+        HILOG_ERROR("FindElementById failed! ret = %{public}d", static_cast<int32_t>(param.ret_));
         if (param.ret_ == RET_ERR_NO_WINDOW_CONNECTION) {
             ANIUtils::ThrowBusinessError(
                 env,
@@ -1158,6 +1157,7 @@ ani_object FindElements(ani_env *env, ani_object thisObj, ani_string type, ani_s
     FindElementParams param = {FIND_ELEMENT_CONDITION_TEXT_TYPE, conditionStr, *element};
     FindElementExecute(&param);
     if (RET_OK != param.ret_) {
+        HILOG_ERROR("FindElements failed! ret = %{public}d", static_cast<int32_t>(param.ret_));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
         return nullptr;
     }
@@ -1248,7 +1248,7 @@ ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<Accessibility
     HILOG_DEBUG("ConvertElementInfosToAni elementInfo size(%{public}zu)", elementInfos.size());
 
     ani_ref undefinedRef = nullptr;
-    if (ANI_OK != env->GetUndefined(&undefinedRef)) {
+    if (env->GetUndefined(&undefinedRef) != ANI_OK) {
         HILOG_ERROR("GetUndefined Failed.");
     }
     ani_array resultArray;
@@ -1267,7 +1267,7 @@ ani_object ConvertElementInfosToJs(ani_env *env, const std::vector<Accessibility
             HILOG_ERROR("Failed to create AccessibilityElement at index %{public}zu", i);
             continue;
         }
-        if (ANI_OK != env->Array_Set(resultArray, static_cast<ani_size>(i), elementObj)) {
+        if (env->Array_Set(resultArray, static_cast<ani_size>(i), elementObj) != ANI_OK) {
             HILOG_ERROR("Failed to set array element at index %{public}zu", i);
         }
     }
@@ -1295,6 +1295,7 @@ ani_object GetChildren(ani_env *env, ani_object thisObj)
 
     AttributeValueExecute(&param);
     if (param.ret_ != RET_OK) {
+        HILOG_ERROR("GetChildren failed! ret = %{public}d", static_cast<int32_t>(param.ret_));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
         return nullptr;
     }
@@ -1321,6 +1322,7 @@ ani_object GetParent(ani_env *env, ani_object thisObj)
 
     AttributeValueExecute(&param);
     if (param.ret_ != RET_OK) {
+        HILOG_ERROR("GetParent failed! ret = %{public}d", static_cast<int32_t>(param.ret_));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
         return nullptr;
     }
@@ -1346,6 +1348,7 @@ ani_object GetRootElement(ani_env *env, ani_object thisObj)
 
     AttributeValueExecute(&param);
     if (param.ret_ != RET_OK) {
+        HILOG_ERROR("GetRootElement failed! ret = %{public}d", static_cast<int32_t>(param.ret_));
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(param.ret_));
         return nullptr;
     }

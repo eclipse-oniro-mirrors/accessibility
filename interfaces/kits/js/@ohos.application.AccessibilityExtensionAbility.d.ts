@@ -166,6 +166,7 @@ declare interface AccessibilityEvent {
   timeStamp?: number;
   elementId?: number;
   textAnnouncedForAccessibility?: string;
+  extraInfo?: string;
 }
 
 /**

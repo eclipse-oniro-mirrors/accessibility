@@ -520,23 +520,23 @@ declare interface AccessibilityElement {
    */
   performAction(actionName: string, callback: AsyncCallback<void>): void;
 
-  /**
+   /**
    * Get the position of cursor in TextInput.
    *
-   * @param { AsyncCallback<void> } callback Indicates the listener.
+   * @param { AsyncCallback<number> } callback Indicates the listener.
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 12
    */
-  getCursorPosition(callback: AsyncCallback<number>): void;
+   getCursorPosition(callback: AsyncCallback<number>): void;
 
-  /**
-   * Get the position of cursor in TextInput.
-   *
-   * @returns { Promise<number> }
-   * @syscap SystemCapability.BarrierFree.Accessibility.Core
-   * @since 12
-   */
-  getCursorPosition(): Promise<number>;
+   /**
+    * Get the position of cursor in TextInput.
+    *
+    * @returns { Promise<number> }
+    * @syscap SystemCapability.BarrierFree.Accessibility.Core
+    * @since 12
+    */
+   getCursorPosition(): Promise<number>;
 
   /**
    * Set the screen curtain enable or disable.
@@ -736,7 +736,7 @@ type ElementAttributeValues = {
    * The action info list.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
-   * @since 23
+   * @since 26.0.0
    */
   'customActions': Array<string>;
   /**

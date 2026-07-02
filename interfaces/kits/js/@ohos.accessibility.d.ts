@@ -60,7 +60,8 @@ declare namespace accessibility {
   type EventType = 'accessibilityFocus' | 'accessibilityFocusClear' |
     'click' | 'longClick' | 'focus' | 'select' | 'hoverEnter' | 'hoverExit' |
     'textUpdate' | 'textSelectionUpdate' | 'scroll' | 'requestFocusForAccessibility' | 'announceForAccessibility' |
-    'pageActive' | 'notificationUpdate' | 'focusInvisible' ;
+    'requestFocusForAccessibilityNotInterrupt' | 'announceForAccessibilityNotInterrupt' |
+    'pageActive' | 'notificationUpdate' | 'focusInvisible';
 
   /**
    * The change type of the windowsChange event.
@@ -170,7 +171,7 @@ declare namespace accessibility {
    * @syscap SystemCapability.BarrierFree.Accessibility.Vision
    * @since 16
    */
-    function isScreenReaderOpenSync(): boolean;
+  function isScreenReaderOpenSync(): boolean;
 
   /**
    * Queries the list of accessibility abilities.
@@ -375,7 +376,7 @@ declare namespace accessibility {
    */
   function off(type: 'touchGuideStateChange', callback?: Callback<boolean>): void;
 
-    /**
+  /**
    * Deregister the observe of the screen reader state changed.
    *
    * @param { 'screenReaderStateChange' } type state event type
@@ -387,7 +388,7 @@ declare namespace accessibility {
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 16
    */
-    function off(type: 'screenReaderStateChange', callback?: Callback<boolean>): void;
+  function off(type: 'screenReaderStateChange', callback?: Callback<boolean>): void;
 
   /**
    * Get the captions manager.
