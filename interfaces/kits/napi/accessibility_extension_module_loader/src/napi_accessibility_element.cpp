@@ -3127,14 +3127,20 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
             {
                 FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->condition_);
                 HILOG_DEBUG("direction is %{public}d", direction);
-                AccessibilityFocusMoveParam param;
-                param.direction = direction;
-                param.type = callbackInfo->focusRuleType_;
-                callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
-                    *(callbackInfo->accessibilityElement_.elementInfo_), param, callbackInfo->nodeInfos_,
-                    callbackInfo->moveSearchResult_);
-                if (callbackInfo->ret_ == RET_OK && !callbackInfo->nodeInfos_.empty()) {
-                    callbackInfo->nodeInfo_ = callbackInfo->nodeInfos_[0];
+                if (systemApi) {
+                    AccessibilityFocusMoveParam param;
+                    param.direction = direction;
+                    param.type = callbackInfo->focusRuleType_;
+                    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
+                        *(callbackInfo->accessibilityElement_.elementInfo_), param, callbackInfo->nodeInfos_,
+                        callbackInfo->moveSearchResult_);
+                    if (callbackInfo->ret_ == RET_OK && !callbackInfo->nodeInfos_.empty()) {
+                        callbackInfo->nodeInfo_ = callbackInfo->nodeInfos_[0];
+                    }
+                } else {
+                    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetNext(
+                        *(callbackInfo->accessibilityElement_.elementInfo_), direction,
+                        callbackInfo->nodeInfo_, systemApi);
                 }
             }
             break;
