@@ -1819,7 +1819,7 @@ void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName)
 void AccessibleAbilityManagerService::PackageChanged(const std::string &bundleName)
 {
     sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
-    if (!packageAccount) {
+    if (!packageAccount || !packageAccount->GetConfig()) {
         HILOG_ERROR("packageAccount is nullptr");
         return;
     }
