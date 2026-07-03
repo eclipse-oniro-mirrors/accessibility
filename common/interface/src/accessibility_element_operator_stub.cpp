@@ -408,6 +408,7 @@ bool AccessibilityElementOperatorStub::ReadAccessibilityVirtualNode(MessageParce
     accessibilityVirtualNode.SetChildNodeIds(childNodeIds);
     accessibilityVirtualNode.SetElementId(data.ReadInt64());
     accessibilityVirtualNode.SetWindowId(data.ReadInt32());
+    accessibilityVirtualNode.SetSupportAction(data.ReadUint64());
     return true;
 }
 
