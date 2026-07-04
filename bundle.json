@@ -37,6 +37,7 @@
         "graphic_2d",
         "samgr",
         "napi",
+        "node",
         "window_manager",
         "eventhandler",
         "input",
