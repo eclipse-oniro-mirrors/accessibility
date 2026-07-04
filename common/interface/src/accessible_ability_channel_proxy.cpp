@@ -227,6 +227,10 @@ bool AccessibleAbilityChannelProxy::WriteVirtualNodeRelationProperties(MessagePa
         HILOG_ERROR("windowId write error: %{public}d", accessibilityVirtualNode.GetWindowId());
         return false;
     }
+    if (!data.WriteUint64(accessibilityVirtualNode.GetSupportAction())) {
+        HILOG_ERROR("supportAction write error");
+        return false;
+    }
     return true;
 }
 

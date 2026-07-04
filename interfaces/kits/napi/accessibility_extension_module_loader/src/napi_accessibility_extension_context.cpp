@@ -306,6 +306,10 @@ static bool ParseVirtualNodeBasicProperties(napi_env env, napi_value object, Acc
     if (hasProperty) {
         virtualNode.SetId(dataValue);
     }
+    if (dataValue < 0) {
+        HILOG_ERROR("virtualNodeId < 0");
+        return false;
+    }
     
     napi_create_string_utf8(env, "text", NAPI_AUTO_LENGTH, &propertyNameValue);
     str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
@@ -1612,10 +1616,14 @@ private:
 
         NapiAsyncTask::ExecuteCallback execute = [weak = context_, elementId,
             windowId, virtualNode, retError, operateResult, paramValid]() {
-            if (elementId <= 0 || windowId < 0 || *paramValid == false) {
+            if (elementId < 0 || windowId <= 0 || *paramValid == false) {
                 HILOG_ERROR("invalid param: elementId=%{public}" PRId64", windowId=%{public}d", elementId, windowId);
                 *paramValid = false;
                 *retError = RET_ERR_INVALID_PARAM;
+                return;
+            }
+            if (elementId == 0) {
+                *operateResult = OperateVirtualNodeResult::CANNOT_MODIFY_ROOT_NODE;
                 return;
             }
             auto context = weak.lock();
@@ -1664,7 +1672,7 @@ private:
 
         NapiAsyncTask::ExecuteCallback execute = [weak = context_, elementId,
             windowId, virtualNodes, retError, operateResult, paramValid]() {
-            if (elementId <= 0 || windowId < 0 || *paramValid == false) {
+            if (elementId < 0 || windowId <= 0 || *paramValid == false) {
                 HILOG_ERROR("invalid param: elementId=%{public}" PRId64", windowId=%{public}d", elementId, windowId);
                 *paramValid = false;
                 *retError = RET_ERR_INVALID_PARAM;
@@ -1714,7 +1722,7 @@ private:
 
         NapiAsyncTask::ExecuteCallback execute = [weak = context_, elementId,
             windowId, retError, operateResult, paramValid]() {
-            if (elementId <= 0 || windowId < 0 || *paramValid == false) {
+            if (elementId < 0 || windowId <= 0 || *paramValid == false) {
                 HILOG_ERROR("invalid param: elementId=%{public}" PRId64", windowId=%{public}d", elementId, windowId);
                 *paramValid = false;
                 *retError = RET_ERR_INVALID_PARAM;

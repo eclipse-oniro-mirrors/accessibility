@@ -17,7 +17,8 @@ import ExtensionContext from 'application.ExtensionContext';
 import Want from '@ohos.app.ability.Want';
 import { AsyncCallback, BusinessError, Callback } from '@ohos.base';
 import accessibility from '@ohos.accessibility';
-import { AccessibilityAction, FocusMoveResultCode, InjectActionType, AccessibilityFocusScene, FocusRuleType } from '@ohos.accessibility';
+import { AccessibilityAction, FocusMoveResultCode, InjectActionType, AccessibilityFocusScene,
+    FocusRuleType, OperateVirtualNodeResult } from '@ohos.accessibility';
 
 export interface FocusMoveResult {
   target: Array<AccessibilityElement>;
@@ -169,10 +170,10 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
     native getRootInActiveWindowNative(windowId?: int): AccessibilityElement;
     native getAccessibilityWindowsSync(displayId?: long): Array<AccessibilityElement>;
     native updateAccessibilityElementPropertyNative(elementId: long, windowId: int,
-        node: AccessibilityVirtualNode): int;
+        node: AccessibilityVirtualNode): OperateVirtualNodeResult;
     native addAccessibilityVirtualNodesNative(elementId: long, windowId: int,
-        nodes: Array<AccessibilityVirtualNode>): int;
-    native removeAccessibilityVirtualNodesNative(elementId: long, windowId: int): int;
+        nodes: Array<AccessibilityVirtualNode>): OperateVirtualNodeResult;
+    native removeAccessibilityVirtualNodesNative(elementId: long, windowId: int): OperateVirtualNodeResult;
 }
 
 class AccessibilityElementCleaner {
@@ -685,15 +686,4 @@ export class AccessibilityVirtualNodeImpl implements AccessibilityVirtualNode{
   childNodeIds?: Array<long> = [];
   elementId?: long = 0;
   supportedActionNames?: Array<string> = [];
-}
-
-export enum OperateVirtualNodeResult {
-  SUCCESS = 0,
-  ACCESSIBILITY_ELEMENT_NOT_EXIST = 1,
-  CANNOT_MODIFY_ROOT_NODE = 2,
-  ACCESSIBILITY_PROPERTY_EMPTY = 3,
-  ALLOCATE_ID_FAILED = 4,
-  ADD_NODE_IS_EMPTY = 5,
-  INTERNAL_ERROR = 6,
-  VIRTUAL_NODE_NOT_SUPPORT = 7,
 }

@@ -1245,5 +1245,15 @@ void AccessibilityElementInfo::SetSourceType(const AccessibilitySourceType &sour
 {
     sourceType_ = sourceType;
 }
+
+uint64_t AccessibilityElementInfo::GetVirtualSupportAction() const
+{
+    return virtualSupportAction_;
+}
+
+void AccessibilityElementInfo::SetVirtualSupportAction(const uint64_t virtualSupportAction)
+{
+    virtualSupportAction_ = virtualSupportAction;
+}
 } // namespace Accessibility
 } // namespace OHOS
