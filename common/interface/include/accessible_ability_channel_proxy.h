@@ -158,14 +158,12 @@ public:
 
     /**
      * @brief Hold running lock to prevent screen turning off automatically.
-     * @param null.
      * @return Return RET_OK if hold running lock successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError HoldRunningLock() override;
  
     /**
      * @brief Unhold running lock to prevent screen turning off automatically
-     * @param null.
      * @return Return RET_OK if Unhold running lock successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError UnholdRunningLock() override;
@@ -214,12 +212,6 @@ public:
     virtual RetError NotifyDisconnect() override;
 
     /**
-     * @brief Configure events.
-     * @return Return RET_OK if ConfigureEvents successfully, otherwise refer to the RetError for the failure.
-     */
-    virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override;
-
-    /**
      * @brief Search element infos by specific property.
      * @param elementBasicInfo The basic info of the element.
      * @param param The specific property parameters.
@@ -230,6 +222,12 @@ public:
     virtual void SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
         const SpecificPropertyParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
+    /**
+     * @brief Configure events.
+     * @return Return RET_OK if ConfigureEvents successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override;
 
     virtual RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam& param,

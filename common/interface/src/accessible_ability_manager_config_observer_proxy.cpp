@@ -85,7 +85,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnAudioBalanceChanged(const fl
     }
 
     if (!data.WriteFloat(audioBalance)) {
-        HILOG_ERROR("fail, connection write audioBalance error");
+        HILOG_ERROR("fail, connection write stateType error");
         return;
     }
 

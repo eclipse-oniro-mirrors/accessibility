@@ -65,8 +65,30 @@ bool Permission::IsSystemApp()
         return true;
     }
     uint64_t accessTokenId = IPCSkeleton::GetCallingFullTokenID();
-    bool isSystemApplication = Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(accessTokenId);
+    bool isSystemApplication = Security::AccessToken::AccessTokenKit::IsSystemAppByFullTokenID(accessTokenId);
     return isSystemApplication;
+}
+
+bool Permission::CheckPermission(const std::string &permission)
+{
+    HILOG_DEBUG();
+    uint32_t callerToken = IPCSkeleton::GetCallingTokenID();
+    int result = Security::AccessToken::TypePermissionState::PERMISSION_GRANTED;
+    Security::AccessToken::ATokenTypeEnum tokenType =
+        Security::AccessToken::AccessTokenKit::GetTokenTypeFlag(callerToken);
+    if (tokenType == Security::AccessToken::TOKEN_INVALID) {
+        HILOG_WARN("AccessToken type invalid!");
+        return false;
+    } else {
+        result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permission);
+    }
+    if (result == Security::AccessToken::TypePermissionState::PERMISSION_DENIED) {
+        HILOG_WARN("AccessTokenID denied!");
+        return false;
+    }
+    HILOG_DEBUG("tokenType %{private}d dAccessTokenID:%{private}u, permission:%{private}s matched!",
+        tokenType, callerToken, permission.c_str());
+    return true;
 }
 // LCOV_EXCL_STOP
 } // namespace Accessibility

@@ -17,7 +17,6 @@
 #define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_IMPL_H
 
 #include "accessibility_element_operator_callback_stub.h"
-#include "accessibility_def.h"
 #include "ffrt_inner.h"
 
 namespace OHOS {

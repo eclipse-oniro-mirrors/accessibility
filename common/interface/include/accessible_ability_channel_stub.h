@@ -206,6 +206,8 @@ private:
 
     ErrCode HandleFocusMoveSearchWithCondition(MessageParcel &data, MessageParcel &reply);
 
+    ErrCode HandleExecuteActionWithPermission(MessageParcel &data, MessageParcel &reply);
+
     /**
      * @brief Read AccessibilityVirtualNode from MessageParcel
      * @param data The data of process communication

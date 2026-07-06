@@ -288,10 +288,9 @@ ErrCode AccessibleAbilityManagerService::GetActiveWindow(int32_t &windowId)
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::GetActiveWindow(int32_t &windowId, bool systemApi)
+ErrCode AccessibleAbilityManagerService::GetActiveWindowEx(int32_t &windowId)
 {
     (void)windowId;
-    (void)systemApi;
     return RET_OK;
 }
 
@@ -667,13 +666,21 @@ ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32
     return RET_OK;
 }
 
-ErrCode AccessibleAbilityManagerService::GetRootParentId(int32_t windowId, int32_t treeId,
-    int64_t &parentId, bool systemApi)
+ErrCode AccessibleAbilityManagerService::InnerGetRootParentId(int32_t windowId, int32_t treeId,
+    int64_t &parentId)
 {
     (void)windowId;
     (void)treeId;
     (void)parentId;
-    (void)systemApi;
+    return RET_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::GetRootParentIdEx(int32_t windowId, int32_t treeId,
+    int64_t &parentId)
+{
+    (void)windowId;
+    (void)treeId;
+    (void)parentId;
     return RET_OK;
 }
 
@@ -801,6 +808,18 @@ void AccessibleAbilityManagerService::SubscribeOsAccount()
 {
 }
 
+ErrCode AccessibleAbilityManagerService::GetAnimationOffStateWithPermission(bool &state)
+{
+    state = true;
+    return RET_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::GetAudioMonoStateWithPermission(bool &state)
+{
+    state = true;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityManagerService::VerifyingToKenId(
     const int32_t windowId, const int64_t elementId, int32_t userId, uint32_t tokenId)
 {
@@ -811,6 +830,12 @@ std::vector<int32_t> AccessibleAbilityManagerService::GetAllAccountIds()
 {
     HILOG_DEBUG();
     return a11yAccountsData_.GetAllAccountIds();
+}
+
+ErrCode AccessibleAbilityManagerService::GetAccessibilityState(uint32_t &state)
+{
+    (void)state;
+    return RET_OK;
 }
 
 int32_t AccessibleAbilityManagerService::GetUserIdByDisplayId(uint64_t displayId)

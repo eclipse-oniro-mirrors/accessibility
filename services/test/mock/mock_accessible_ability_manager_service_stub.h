@@ -83,7 +83,7 @@ public:
     ErrCode DisableAbility(const std::string& name) override;
     ErrCode SetMagnificationState(const bool state) override;
     ErrCode GetActiveWindow(int32_t& windowId) override;
-    ErrCode GetActiveWindow(int32_t& windowId, bool systemApi) override;
+    ErrCode GetActiveWindowEx(int32_t& windowId) override;
 
     ErrCode CheckExtensionAbilityPermission(std::string& processName) override;
     ErrCode EnableUITestAbility(const sptr<IRemoteObject> &obj, int32_t userId, int32_t &actualUserId) override;
@@ -132,13 +132,17 @@ public:
     ErrCode RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver>& observer) override;
     ErrCode GetFocusedWindowId(int32_t &focusedWindowId) override;
     ErrCode RemoveRequestId(int32_t requestId) override;
+    ErrCode InnerGetRootParentId(int32_t windowId, int32_t treeId, int64_t& parentId);
     ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t& parentId) override;
-    ErrCode GetRootParentId(int32_t windowId, int32_t treeId, int64_t& parentId, bool systemApi) override;
+    ErrCode GetRootParentIdEx(int32_t windowId, int32_t treeId, int64_t& parentId) override;
     int32_t SetEnhanceConfig(const AccessibilitySecCompRawdata& rawData) override;
     ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
     RetError ConfigureEvents(std::vector<uint32_t> needEvents);
     ErrCode GetReadableRules(std::string &name) override;
     ErrCode IsInnerWindowRootElement(int64_t elementId, bool &state) override;
+    ErrCode GetAnimationOffStateWithPermission(bool &state) override;
+    ErrCode GetAudioMonoStateWithPermission(bool &state) override;
+    ErrCode GetAccessibilityState(uint32_t &state) override;
     ErrCode RegisterSeniorModeStateObserver(
         const sptr<IAccessibilityAppSeniorModeStateObserver> &observer) override;
     ErrCode DeRegisterSeniorModeStateObserver(const sptr<IRemoteObject>& obj) override;

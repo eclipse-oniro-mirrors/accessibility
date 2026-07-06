@@ -300,11 +300,6 @@ bool AccessibilityConfig::Impl::RegisterToService()
         return false;
     }
 
-    if (captionObserver_ && enableAbilityListsObserver_ && configObserver_ && seniorModeStateObserver_) {
-        HILOG_DEBUG("Observers is registered");
-        return true;
-    }
-
     if (captionObserver_ == nullptr) {
         captionObserver_ = new(std::nothrow) AccessibleAbilityManagerCaptionObserverImpl(*this);
         if (captionObserver_ == nullptr) {
@@ -1477,7 +1472,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetAnimationOffState(bool &st
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetAnimationOffState(state));
+    Accessibility::RetError ret =
+        static_cast<Accessibility::RetError>(proxy->GetAnimationOffStateWithPermission(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
 }
@@ -1504,7 +1500,8 @@ Accessibility::RetError AccessibilityConfig::Impl::GetAudioMonoState(bool &state
         return Accessibility::RET_ERR_SAMGR;
     }
 
-    Accessibility::RetError ret = static_cast<Accessibility::RetError>(proxy->GetAudioMonoState(state));
+    Accessibility::RetError ret =
+        static_cast<Accessibility::RetError>(proxy->GetAudioMonoStateWithPermission(state));
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
 }
@@ -1993,12 +1990,16 @@ uint32_t AccessibilityConfig::Impl::InvertDaltonizationColorInAtoHos(uint32_t fi
     return filter;
 }
 
-void AccessibilityConfig::Impl::InitConfigValues()
+void AccessibilityConfig::Impl::InitConfigValues(bool reInit)
 {
     Accessibility::AccessibilityConfigData configData;
     CaptionProperty caption = {};
     CaptionPropertyParcel captionParcel(caption);
     if (serviceProxy_ == nullptr) {
+        return;
+    }
+    if (!reInit && isConfigInit_) {
+        HILOG_INFO("no need reInit config");
         return;
     }
     serviceProxy_->GetAllConfigs(configData, captionParcel);
@@ -2026,6 +2027,38 @@ void AccessibilityConfig::Impl::InitConfigValues()
     captionProperty_ = static_cast<CaptionProperty>(captionParcel);
     NotifyDefaultConfigs();
     HILOG_DEBUG("ConnectToService Success");
+}
+
+void AccessibilityConfig::Impl::OnApplicationUpdate()
+{
+    HILOG_INFO();
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
+    if (serviceProxy_ == nullptr) {
+        LoadAccessibilityService();
+    } else {
+        InitConfigValues(true);
+    }
+}
+
+void AccessibilityConfig::Impl::OnApplicationPreAbilityCreate()
+{
+    HILOG_INFO();
+    std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
+    if (enableAbilityCallbackObserver_) {
+        HILOG_DEBUG("enableAbilityCallbackObserver_ has registered");
+        return;
+    }
+
+    if (serviceProxy_ == nullptr) {
+        LoadAccessibilityService();
+    } else {
+        enableAbilityCallbackObserver_ = new(std::nothrow) AccessibilityEnableAbilityCallbackObserverImpl(*this);
+        if (enableAbilityCallbackObserver_ == nullptr) {
+            HILOG_ERROR("Create enableAbilityCallbackObserver_ failed.");
+            return;
+        }
+        serviceProxy_->RegisterEnableAbilityCallbackObserver(enableAbilityCallbackObserver_);
+    }
 }
 
 void AccessibilityConfig::Impl::NotifyDefaultDaltonizationConfigs()
@@ -2240,7 +2273,7 @@ Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeAppSeniorModeState
     const std::shared_ptr<AccessibilityAppSeniorModeStateObserver> &observer)
 {
     HILOG_INFO();
-    std::lock_guard<ffrt::mutex> lock(enableAbilityCallbackObserversMutex_);
+    std::lock_guard<ffrt::mutex> lock(seniorModeStateObserversMutex_);
     auto iter = seniorModeStateObservers_.begin();
     for (;iter != seniorModeStateObservers_.end(); iter++) {
         if (*iter == observer) {

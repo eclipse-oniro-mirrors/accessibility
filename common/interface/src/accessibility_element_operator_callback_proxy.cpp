@@ -180,11 +180,6 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult
         return;
     }
 
-    if (infos.size() > static_cast<size_t>(INT32_MAX)) {
-        HILOG_ERROR("infos size exceeds INT32_MAX");
-        return;
-    }
-
     if (!data.WriteInt32(infos.size())) {
         HILOG_ERROR("write infos's size failed");
         return;

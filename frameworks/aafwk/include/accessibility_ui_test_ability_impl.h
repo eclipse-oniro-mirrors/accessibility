@@ -18,7 +18,6 @@
 
 #include "accessibility_ui_test_ability.h"
 #include "iaccessible_ability_manager_service.h"
-#include "accessibility_def.h"
 
 namespace OHOS {
 namespace Accessibility {

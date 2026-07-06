@@ -35,6 +35,7 @@ static std::set<std::string> EXTRA_ELEMENTINFO_SET = {
     "isModal",
     "isAnco",
     "isScreenReaderFocusable",
+    "ancoAccessibilityWindowId",
     "childText",
     "beginSelected",
     "endSelected"
@@ -1057,12 +1058,13 @@ int64_t AccessibilityElementInfo::GetNavDestinationId() const
 void AccessibilityElementInfo::AddSpan(const SpanInfo &span)
 {
     spanList_.push_back(span);
-    HILOG_DEBUG("AddSpanListsize:spanId: %{public}d, spanText: %{public}s, accessibilityText: %{public}s,"
-        "accessibilityDescription: %{public}s, accessibilityLevel: %{public}s, spanList_.size: %{public}zu",
-        span.GetSpanId(), span.GetSpanText().c_str(), span.GetAccessibilityText().c_str(),
-        span.GetAccessibilityDescription().c_str(), span.GetAccessibilityLevel().c_str(), spanList_.size());
+    for (auto array: spanList_) {
+        HILOG_DEBUG("AddSpanListsize:spanId: %{public}d, spanText: %{public}s, accessibilityText: %{public}s,"
+            "accessibilityDescription: %{public}s, accessibilityLevel: %{public}s", span.GetSpanId(),
+            span.GetSpanText().c_str(), span.GetAccessibilityText().c_str(), span.GetAccessibilityDescription().c_str(),
+            span.GetAccessibilityLevel().c_str());
+    }
 }
-
 void AccessibilityElementInfo::SetSpanList(const std::vector<SpanInfo> &spanList)
 {
     spanList_.clear();

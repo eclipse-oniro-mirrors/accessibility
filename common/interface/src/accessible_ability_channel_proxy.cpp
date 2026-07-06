@@ -598,10 +598,22 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
         HILOG_ERROR("rect write error");
         return RET_ERR_IPC_FAILED;
     }
-    if (!SendTransactCmd(AccessibilityInterfaceCode::PERFORM_ACTION,
-        data, reply, option)) {
-        HILOG_ERROR("fail to perform accessibility action");
-        return RET_ERR_IPC_FAILED;
+    bool permissionFlag = false;
+    if (actionArguments.find("sysapi_check_perm") != actionArguments.end()) {
+        permissionFlag = true;
+    }
+    if (permissionFlag) {
+        if (!SendTransactCmd(AccessibilityInterfaceCode::PERFORM_ACTION_WITH_PERMISSION,
+            data, reply, option)) {
+            HILOG_ERROR("fail to perform accessibility action");
+            return RET_ERR_IPC_FAILED;
+        }
+    } else {
+        if (!SendTransactCmd(AccessibilityInterfaceCode::PERFORM_ACTION,
+            data, reply, option)) {
+            HILOG_ERROR("fail to perform accessibility action");
+            return RET_ERR_IPC_FAILED;
+        }
     }
     return static_cast<RetError>(reply.ReadInt32());
 }
@@ -1016,10 +1028,6 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearchWithCondition(const Acces
     }
     if (!data.WriteInt32(param.condition)) {
         HILOG_ERROR("connection write condition failed");
-        return RET_ERR_IPC_FAILED;
-    }
-    if (!data.WriteInt32(param.type)) {
-        HILOG_ERROR("connection write type failed");
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt64(param.parentId)) {

@@ -286,7 +286,11 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearch(MessageParcel &data,
 ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!Permission::IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
     int32_t accessibilityWindowId = data.ReadInt32();
     int64_t elementId = data.ReadInt64();
     int32_t action = data.ReadInt32();
@@ -337,6 +341,16 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
     HILOG_DEBUG("ExecuteAction ret = %{public}d", result);
     reply.WriteInt32(result);
     return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleExecuteActionWithPermission(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    if (!Permission::CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return RET_ERR_NO_PERMISSION;
+    }
+    return HandleExecuteAction(data, reply);
 }
 
 ErrCode AccessibleAbilityChannelStub::HandleEnableScreenCurtain(MessageParcel &data, MessageParcel &reply)

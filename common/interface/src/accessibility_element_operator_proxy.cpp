@@ -566,10 +566,6 @@ void AccessibilityElementOperatorProxy::FocusMoveSearchWithCondition(const Acces
         return;
     }
 
-    if (!data.WriteInt32(param.type)) {
-        return;
-    }
-
     if (!data.WriteInt64(param.parentId)) {
         return;
     }
