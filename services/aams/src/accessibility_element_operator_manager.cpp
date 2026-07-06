@@ -941,11 +941,6 @@ bool ElementOperatorManager::ExecuteActionOnAccessibilityFocused(ActionType acti
         return true;
     };
 
-    if (action == ActionType::ACCESSIBILITY_ACTION_CLICK && !focusedElementInfo.IsClickable()) {
-        HILOG_DEBUG("ExecuteActionOnAccessibilityFocused, action is click, but element is not clickable");
-        return injectClickGesture();
-    }
- 
     sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl(accountId_);
     if (actionCallback == nullptr) {
         HILOG_ERROR("Failed to create actionCallback.");
