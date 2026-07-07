@@ -608,17 +608,17 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     HILOG_DEBUG();
     AccessibilityAbilityHelper::GetInstance().SetCurrentUserId(accountId);
 }
-void AccessibleAbilityManagerService::PackageChanged(const std::string &bundleName)
+void AccessibleAbilityManagerService::PackageChanged(const std::string &bundleName, int32_t userId)
 {
     HILOG_DEBUG();
     AccessibilityAbilityHelper::GetInstance().ChangePackage(true);
 }
-void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
+void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName, int32_t userId)
 {
     HILOG_DEBUG();
     AccessibilityAbilityHelper::GetInstance().RemovePackage(bundleName);
 }
-void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName)
+void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName, int32_t userId)
 {
     HILOG_DEBUG();
     AccessibilityAbilityHelper::GetInstance().AddPackage(bundleName);

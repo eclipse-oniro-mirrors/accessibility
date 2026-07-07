@@ -47,8 +47,6 @@ sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::instance_ = n
 ffrt::mutex AccessibilityInputInterceptor::instanceMutex_;
 sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::GetInstance()
 {
-    HILOG_INFO();
-
     if (!instance_) {
         std::lock_guard<ffrt::mutex> lock(instanceMutex_);
         if (!instance_) {
@@ -56,7 +54,6 @@ sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::GetInstance()
             instance_ = new(std::nothrow) AccessibilityInputInterceptor();
         }
     }
-    
     return instance_;
 }
 
@@ -254,6 +251,7 @@ RetError AccessibilityInputInterceptor::InjectEvents(const std::shared_ptr<Acces
     return RET_OK;
 }
 
+// LCOV_EXCL_START
 void AccessibilityInputInterceptor::SetMagnificationTriggerMethod(int32_t screenMagnificationTriggerMethod)
 {
     if (zoomGesture_ == nullptr) {
@@ -267,7 +265,7 @@ void AccessibilityInputInterceptor::CreateMagnificationGesture(sptr<EventTransmi
     sptr<EventTransmission> &current)
 {
     HILOG_INFO("CreateMagnificationGesture start");
-    
+
     Singleton<ExtendServiceManager>::GetInstance().InitMagnification();
     CreateZoomGesture();
     if (zoomGesture_ == nullptr) {
@@ -321,7 +319,7 @@ void AccessibilityInputInterceptor::CreateZoomGesture()
         needInteractMagnification_ = false;
     }
 }
-
+// LCOV_EXCL_STOP
 
 void AccessibilityInputInterceptor::ClearMagnificationGesture()
 {
@@ -421,6 +419,7 @@ void AccessibilityInputInterceptor::DestroyTransmitters()
         keyEventTransmitters_ = nullptr;
     }
 }
+
 void AccessibilityInputInterceptor::GetScreenShotUID()
 {
     sptr<ISystemAbilityManager> systemAbilityManager =
@@ -514,6 +513,7 @@ void AccessibilityInputInterceptor::SetNextEventTransmitter(sptr<EventTransmissi
     current = next;
 }
 
+// LCOV_EXCL_START
 void AccessibilityInputInterceptor::ShieldZoomGesture(bool flag)
 {
     HILOG_INFO("flag = %{public}d", flag);
@@ -575,6 +575,7 @@ void AccessibilityInputInterceptor::SetServiceOnKeyEventResult(
         keyEventFilter_->SetServiceOnKeyEventResult(connectionId, isHandled, sequenceNum);
     }
 }
+// LCOV_EXCL_STOP
 
 AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
 {

@@ -23,7 +23,7 @@
 #include "event_handler.h"
 #include "ffrt.h"
 #include "singleton.h"
-#include "window_manager.h"
+#include "window_manager_lite.h"
 #include "safe_map.h"
 
 namespace OHOS {
@@ -97,6 +97,7 @@ public:
     bool CheckWindowRegister(int32_t windowId);
 
     std::map<int32_t, AccessibilityWindowInfo> a11yWindows_ {};
+    int32_t previousActiveWindowId_ = INVALID_WINDOW_ID;
     int32_t activeWindowId_ = INVALID_WINDOW_ID;
     int32_t a11yFocusedWindowId_ = INVALID_WINDOW_ID;
     std::set<std::pair<int32_t, uint64_t>> subWindows_ {}; // used for windowId 1, windowId-displayId
@@ -158,7 +159,7 @@ private:
     void WindowUpdateActive(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateFocused(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
-    void WindowUpdateTypeEvent(const int32_t realWindowId, std::map<int32_t,
+    void WindowUpdateTypeEvent(const int32_t realWidId, std::map<int32_t,
         AccessibilityWindowInfo> &oldA11yWindows, Accessibility::WindowUpdateType type);
     void WindowUpdateTypeEventAdded(const int32_t realWindowId,
         std::map<int32_t, AccessibilityWindowInfo> &oldA11yWindows);

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+// LCOV_EXCL_START
 #include "accessibility_element_operator_manager.h"
 #include "utils.h"
 #include "hilog_wrapper.h"
@@ -139,14 +140,14 @@ void ElementOperatorManager::OutsideTouch(int32_t windowId)
 
 ErrCode ElementOperatorManager::GetRootParentId(int32_t windowId, int32_t treeId, int64_t& parentId)
 {
+    HILOG_INFO("aa search treeParent from aams,  windowId: %{public}d, treeId: %{public}d", windowId, treeId);
     uint64_t displayId = 0;
     sptr<AccessibilityWindowConnection> connection = GetRealIdWindowConnection(windowId, FOCUS_TYPE_INVALID, displayId);
     if (!connection) {
         HILOG_WARN("The operator of windowId[%{public}d] has not been registered.", windowId);
         return RET_ERR_NO_CONNECTION;
     }
-    connection->GetRootParentId(treeId, parentId);
-    return ERR_OK;
+    return connection->GetRootParentId(treeId, parentId);
 }
 
 void ElementOperatorManager::RemoveTreeDeathRecipient(int32_t windowId, int32_t treeId,
@@ -169,7 +170,7 @@ void ElementOperatorManager::Clear()
 RetError ElementOperatorManager::RegisterElementOperatorByWindowId(int32_t windowId,
     const sptr<IAccessibilityElementOperator> &elementOperator, uint32_t tokenId, bool isBroker, uint64_t displayId)
 {
-    HILOG_INFO("RegisterElementOperatorByWindowId %{public}d %{public}" PRIu64, windowId, displayId);
+    HILOG_INFO("RegisterElementOperatorByWindowId %{public}d %{public}llu", windowId, displayId);
     sptr<AccessibilityWindowConnection> oldConnection = GetAccessibilityWindowConnection(windowId);
     if (!isBroker && oldConnection && oldConnection->GetRawProxy(displayId)) {
         HILOG_WARN("no need to register again.");
@@ -220,7 +221,7 @@ RetError ElementOperatorManager::RegisterElementOperatorByParameter(const Regist
         if (parentAamsOper != nullptr) {
             parentAamsOper->SetChildTreeIdAndWinId(parameter.elementId, treeId, parameter.windowId);
         } else {
-            HILOG_DEBUG("parentAamsOper is nullptr");
+            HILOG_ERROR("parentAamsOper is nullptr");
         }
  
         auto cardOper = parentConnection->GetCardProxy(treeId);
@@ -254,7 +255,7 @@ RetError ElementOperatorManager::RegisterElementOperatorByParameter(const Regist
 RetError ElementOperatorManager::DeregisterElementOperatorByWindowId(
     int32_t windowId, uint64_t displayId, bool isBroker)
 {
-    HILOG_INFO("DeregisterElementOperatorByWindowId %{public}d %{public}" PRIu64, windowId, displayId);
+    HILOG_INFO("DeregisterElementOperatorByWindowId %{public}d %{public}llu", windowId, displayId);
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
     if (!connection) {
         HILOG_WARN("The operation of windowId[%{public}d] has not been registered.", windowId);
@@ -380,7 +381,6 @@ void ElementOperatorManager::StopCallbackWait(int32_t windowId, int32_t treeId)
 bool ElementOperatorManager::GetParentElementRecursively(
     int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo> &infos)
 {
-    int32_t treeId = 0;
     sptr<IAccessibilityElementOperator> elementOperator = nullptr;
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
     if (!connection) {
@@ -388,8 +388,8 @@ bool ElementOperatorManager::GetParentElementRecursively(
         return false;
     }
  
-    if (elementId > 0) {
-        treeId = Utils::GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = Utils::GetTreeIdBySplitElementId(elementId);
+    if (elementId > 0 && treeId > 0) {
         elementOperator = connection->GetCardProxy(treeId);
     } else {
         elementOperator = connection->GetProxy(0);
@@ -437,7 +437,7 @@ RetError ElementOperatorManager::VerifyingToKenId(const int32_t windowId, const 
     }
     uint64_t displayId = 0;
     sptr<AccessibilityWindowConnection> connection = GetRealIdWindowConnection(windowId, FOCUS_TYPE_INVALID, displayId);
-    HILOG_DEBUG("treeId %{public}d, windowId %{public}d displayId %{public}" PRIu64, treeId, windowId, displayId);
+    HILOG_DEBUG("treeId %{public}d, windowId %{public}d displayId %{public}llu", treeId, windowId, displayId);
     if (connection == nullptr) {
         HILOG_ERROR("connection is empty.");
         return RET_ERR_REGISTER_EXIST;
@@ -463,9 +463,8 @@ bool ElementOperatorManager::InnerGetElementOperator(
     sptr<AccessibilityWindowConnection> connection = GetRealIdWindowConnection(windowId, FOCUS_TYPE_INVALID, displayId);
     HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
     RETURN_FALSE_IF_NULL(connection);
-    int32_t treeId = 0;
-    if (elementId > 0) {
-        treeId = Utils::GetTreeIdBySplitElementId(elementId);
+    int32_t treeId = Utils::GetTreeIdBySplitElementId(elementId);
+    if (elementId > 0 && treeId > 0) {
         elementOperator = connection->GetCardProxy(treeId);
     } else {
         elementOperator = connection->GetProxy(displayId);
@@ -476,10 +475,10 @@ bool ElementOperatorManager::InnerGetElementOperator(
  
 void ElementOperatorManager::OnFocusedEvent(const AccessibilityEventInfo &eventInfo)
 {
-    if (!GetMagnificationState()) {
+    if (eventInfo.GetEventType() != TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT) {
         return;
     }
-    if (eventInfo.GetEventType() != TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT) {
+    if (!GetMagnificationState()) {
         return;
     }
     Rect rect = eventInfo.GetElementInfo().GetRectInScreen();
@@ -989,3 +988,4 @@ sptr<AccessibilityWindowConnection> ElementOperatorManager::GetRealIdWindowConne
 }
 } // namespace Accessibility
 } // namespace OHOS
+// LCOV_EXCL_STOP

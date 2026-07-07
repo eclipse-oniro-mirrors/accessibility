@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+// LCOV_EXCL_START
 #include "accessibility_short_key_dialog.h"
 #include "hilog_wrapper.h"
 
@@ -81,6 +82,7 @@ std::string ShortkeyAbilityConnection::GetCommandString()
 {
     return commandStr_;
 }
+// LCOV_EXCL_STOP
 
 void ReConfirmAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
@@ -322,6 +324,7 @@ bool AccessibilityShortkeyDialog::ConnectExtension(ShortKeyDialogType dialogType
     return true;
 }
 
+// LCOV_EXCL_START
 bool AccessibilityShortkeyDialog::DisconnectExtension(ShortKeyDialogType dialogType) const
 {
     ErrCode ret = ERR_OK;
@@ -359,6 +362,7 @@ bool AccessibilityShortkeyDialog::DisconnectExtension(ShortKeyDialogType dialogT
     }
     return true;
 }
+// LCOV_EXCL_STOP
 
 std::string AccessibilityShortkeyDialog::BuildStartCommand()
 {

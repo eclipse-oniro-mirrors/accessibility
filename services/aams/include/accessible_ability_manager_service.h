@@ -35,7 +35,7 @@
 #include "input_manager.h"
 #include "singleton.h"
 #include "system_ability.h"
-#include "window_manager.h"
+#include "window_manager_lite.h"
 #include "accessibility_short_key.h"
 #include "accessibility_resource_bundle_manager.h"
 #include "refbase.h"
@@ -54,6 +54,7 @@ enum CallBackID {
     CAPTION_PROPERTY_CALLBACK,
     ENABLE_ABILITY_LISTS_CALLBACK,
     CONFIG_CALLBACK,
+    ENABLE_ABILITY_CALLBACK,
     SENIOR_MODE_STATE_CALLBACK
 };
 
@@ -78,6 +79,7 @@ public:
     void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
     int Dump(int fd, const std::vector<std::u16string>& args) override;
     void PostDelayUnloadTask();
+    void PostUpdateCriticalTask();
 
 public:
     // for ext so
@@ -160,9 +162,9 @@ public:
     bool GetElementOperator(const int32_t windowId,
         const int64_t elementId, sptr<IAccessibilityElementOperator> &elementOperator);
     ErrCode GetScreenReaderState(bool &state) override;
+    ErrCode GetAccessibilityState(uint32_t &state) override;
     ErrCode SearchNeedEvents(std::vector<uint32_t> &needEvents) override;
     ErrCode GetReadableRules(std::string &readableRules) override;
-    ErrCode GetAccessibilityState(uint32_t &state) override;
     ErrCode IsInnerWindowRootElement(int64_t elementId, bool &state) override;
     std::vector<AccessibilityWindowInfo> GetAccessibilityWindows(int32_t userId);
     bool InnerGetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window, int32_t userId);
@@ -214,9 +216,9 @@ public:
     void AddedUser(int32_t accountId);
     void RemovedUser(int32_t accountId);
     void SwitchedUser(int32_t accountId);
-    void PackageChanged(const std::string &bundleName);
-    void PackageRemoved(const std::string &bundleName);
-    void PackageAdd(const std::string &bundleName);
+    void PackageChanged(const std::string &bundleName, int32_t userId);
+    void PackageRemoved(const std::string &bundleName, int32_t userId);
+    void PackageAdd(const std::string &bundleName, int32_t userId);
 
     void UpdateAccessibilityManagerService();
     bool CheckWindowIdEventExist(int32_t windowId);
@@ -339,6 +341,15 @@ private:
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
 
+    class EnableAbilityCallbackObserverDeathRecipient final : public IRemoteObject::DeathRecipient {
+    public:
+        EnableAbilityCallbackObserverDeathRecipient() = default;
+        ~EnableAbilityCallbackObserverDeathRecipient() final = default;
+        DISALLOW_COPY_AND_MOVE(EnableAbilityCallbackObserverDeathRecipient);
+
+        void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
+    };
+
     bool Init();
     void InitInnerResource();
 
@@ -370,8 +381,8 @@ private:
     };
 
     RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities,
-        const std::string callerBundleName = "");
-    RetError InnerDisableAbility(const std::string &name);
+        const std::string callerBundleName, int32_t userId);
+    RetError InnerDisableAbility(const std::string &name, int32_t userId);
 
     void ClearFocus(int32_t windowId);
     void OutsideTouch(int32_t windowId);

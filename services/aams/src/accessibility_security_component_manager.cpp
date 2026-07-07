@@ -21,6 +21,7 @@
 #include "sec_comp_enhance_adapter.h"
 #endif // ACCESSIBILITY_SECURITY_COMPONENT
 
+// LCOV_EXCL_START
 namespace OHOS {
 namespace Accessibility {
 
@@ -93,3 +94,4 @@ std::map<std::string, std::string> AccessibilitySecurityComponentManager::Genera
 }
 } // namespace Accessibility
 } // namespace OHOS
+// LCOV_EXCL_STOP

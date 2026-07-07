@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -57,7 +57,6 @@ struct ConfigValueAtoHosUpdate {
     int displayDaltonizer = 0;
     bool shortcutEnabled = false;
     bool shortcutEnabledOnLockScreen = false;
-    int shortcutOnLockScreen = 0;
     int shortcutTimeout = 0;
     bool screenMagnificationState = false;
 };
@@ -271,6 +270,21 @@ public:
         return isGesturesSimulation_;
     }
     bool GetInstalledAbilitiesFromBMS();
+    inline bool GetForeGroundOsAccountFlag() {
+        return isForegroundOsAccount_;
+    }
+
+    inline void SetForeGroundOsAccountFlag(bool flag) {
+        isForegroundOsAccount_ = flag;
+    }
+
+    inline void SetDisplayId(int32_t displayId) {
+        displayId_ = displayId;
+    }
+
+    inline int32_t GetDisplayId() {
+        return displayId_;
+    }
 
     std::shared_ptr<AccessibilitySettingsConfig> GetConfig();
 
@@ -323,8 +337,9 @@ public:
     ElementOperatorManager& GetElementOperatorManager();
     AccessibleAbilityManager& GetAccessibleAbilityManager();
     AccessibilityWindowManager& GetWindowManager();
-    RetError RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver, uint32_t &state);
+    RetError RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver);
     uint32_t UpdateAccessibilityState();
+    void UpdateAccessibilityState(uint32_t state);
     void RemoveStateObserver(const wptr<IRemoteObject> &remote);
     RetError ConfigureEvents(std::vector<uint32_t> needEvents);
 
@@ -370,8 +385,7 @@ private:
     public:
         StateObservers() = default;
         ~StateObservers() = default;
-        void AddStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver,
-            const std::string &bundleName);
+        void AddStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver);
         void OnStateObservers(uint32_t state);
         void OnSeniorModeStateObservers(const std::string &bundleName, int32_t appIndex, bool state);
         void RemoveStateObserver(const wptr<IRemoteObject>& remote);
@@ -401,6 +415,8 @@ private:
     ElementOperatorManager elementOperatorManager_;
     AccessibilityWindowManager windowManager_;
     StateObservers stateObservers_;
+    bool isForegroundOsAccount_ = false;
+    int32_t displayId_ = 0;
     std::vector<sptr<IAccessibilityAppSeniorModeStateObserver>> seniorModeStateObservers_;
     ffrt::mutex seniorModeStateObserversMutex_;
 };

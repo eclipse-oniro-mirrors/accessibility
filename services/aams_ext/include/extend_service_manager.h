@@ -52,7 +52,7 @@ using MagnificationTypeCallback = uint32_t(*)();
 using AnnouncedForMagnificationCallback = void(*)(AnnounceType announceType);
 using DispatchKeyEventCallback =  std::vector<int32_t> (*) (MMI::KeyEvent &event, uint32_t sequenceNum);
 using MagnificationScaleCallback = void(*)(float scale);   // set
-using GetAccessibilityWindowsCallback = std::vector<AccessibilityWindowInfo>(*)(uint64_t displayId);   // get
+using GetAccessibilityWindowsCallback = std::vector<AccessibilityWindowInfo>(*)(uint64_t displayId);    // get
 using SubscribeOsAccountCallback = void(*)();
 using CheckDisplayIdCallback = bool(*)(uint64_t displayId);
 using NotifyZoomGesutureConflictDialogCallback = bool(*)();
@@ -101,6 +101,7 @@ public:
     void UnregisterDisplayListener();
     void InitMagnification();
     void OffZoomGesture();
+    bool IsMagnificationWindowActivate();
     std::shared_ptr<WindowMagnificationManager> GetWindowMagnificationManager();
     std::shared_ptr<FullScreenMagnificationManager> GetFullScreenMagnificationManager();
     std::shared_ptr<MagnificationMenuManager> GetMenuManager();
@@ -159,7 +160,7 @@ public:
         currentAccountId_.store(accountId);
         auto interceptor = AccessibilityInputInterceptor::GetInstance();
         if (interceptor) {
-            interceptor->ReSetScreenShotUid();
+            interceptor->ResetScreenShotUid();
         }
     }
 
