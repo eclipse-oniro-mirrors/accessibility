@@ -72,9 +72,9 @@ const std::string TRANSITION_ANIMATIONS_NOTIFICATION_CONTENT = "off_transition_a
 const std::string TRANSITION_ANIMATIONS_ENABLE = "off_transition_animations_notification_confirm";
 constexpr int ACCESSIBILITY_SA_UID = 1103;
 constexpr int ACCESSIBILITY_NOTIFICATION_UID = 1103801;
+constexpr int ACCESSIBILITY_TRANSITION_ANIMATIONS_NOTIFICATION_UID = 110380101;
 constexpr uint32_t NOTIFICATION_FLAG = 1 << 9;
 constexpr float ICON_SIZE = 0.3;
-constexpr int ACCESSIBILITY_TRANSITION_ANIMATIONS_NOTIFICATION_UID = 110380101;
 
 std::map<std::string, std::string> notificationMap_ = {{IGNORE_REPEAT_CLICK_NOTIFICATION_TITLE, ""},
     {IGNORE_REPEAT_CLICK_NOTIFICATION_CONTENT, ""},
@@ -101,7 +101,7 @@ static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetWantAgent(
     std::vector<OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags> flags;
     flags.push_back(OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags::UPDATE_PRESENT_FLAG);
     OHOS::AbilityRuntime::WantAgent::WantAgentInfo wantAgentInfo(REQUEST_CODE,
-        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_ABILITY,
+        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_SERVICE,
         flags,
         wants,
         nullptr);
@@ -119,7 +119,7 @@ static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetCancelutto
     std::vector<OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags> flags;
     flags.push_back(OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags::UPDATE_PRESENT_FLAG);
     OHOS::AbilityRuntime::WantAgent::WantAgentInfo wantAgentInfo(REQUEST_CODE,
-        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_ABILITY,
+        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_SERVICE,
         flags,
         wants,
         nullptr);
@@ -136,7 +136,7 @@ static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetSettingsWa
     std::vector<OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags> flags;
     flags.push_back(OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags::UPDATE_PRESENT_FLAG);
     OHOS::AbilityRuntime::WantAgent::WantAgentInfo wantAgentInfo(REQUEST_CODE,
-        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_ABILITY,
+        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_SERVICE,
         flags,
         wants,
         nullptr);
@@ -354,7 +354,7 @@ static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetReopenTran
     std::vector<OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags> flags;
     flags.push_back(OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags::UPDATE_PRESENT_FLAG);
     OHOS::AbilityRuntime::WantAgent::WantAgentInfo wantAgentInfo(REQUEST_CODE,
-        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_ABILITY,
+        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_SERVICE,
         flags,
         wants,
         nullptr);
@@ -372,7 +372,7 @@ static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetTANotifica
     std::vector<OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags> flags;
     flags.push_back(OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags::UPDATE_PRESENT_FLAG);
     OHOS::AbilityRuntime::WantAgent::WantAgentInfo wantAgentInfo(REQUEST_CODE,
-        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_ABILITY,
+        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_SERVICE,
         flags,
         wants,
         nullptr);
@@ -389,7 +389,7 @@ static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetSettingsTr
     std::vector<OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags> flags;
     flags.push_back(OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags::UPDATE_PRESENT_FLAG);
     OHOS::AbilityRuntime::WantAgent::WantAgentInfo wantAgentInfo(REQUEST_CODE,
-        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_ABILITY,
+        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_SERVICE,
         flags,
         wants,
         nullptr);

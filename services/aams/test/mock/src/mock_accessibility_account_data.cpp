@@ -573,7 +573,7 @@ RetError AccessibilityAccountData::ConfigureEvents(std::vector<uint32_t> needEve
 }
  
 RetError AccessibilityAccountData::RegisterStateObserver(
-    const sptr<IAccessibleAbilityManagerStateObserver> &stateObserver, uint32_t &state)
+    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver)
 {
     return RET_OK;
 }
@@ -581,6 +581,11 @@ RetError AccessibilityAccountData::RegisterStateObserver(
 uint32_t AccessibilityAccountData::UpdateAccessibilityState()
 {
     return 0;
+}
+
+void AccessibilityAccountData::UpdateAccessibilityState(uint32_t state)
+{
+    (void)state;
 }
  
 void AccessibilityAccountData::RemoveStateObserver(const wptr<IRemoteObject> &remote)

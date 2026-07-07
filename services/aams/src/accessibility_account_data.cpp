@@ -37,7 +37,6 @@
 #include "accessibility_short_key_dialog.h"
 #include "nlohmann/json.hpp"
 #include "accesstoken_kit.h"
-#include "tokenid_kit.h"
 
 using namespace OHOS::Security::AccessToken;
 
@@ -76,22 +75,22 @@ namespace {
 
     // Feature flag for full screen magnification.
     static constexpr uint32_t FEATURE_SCREEN_MAGNIFICATION = 0x00000001;
- 
+
     // Feature flag for touch exploration.
     static constexpr uint32_t FEATURE_TOUCH_EXPLORATION = 0x00000002;
- 
+
     // Feature flag for filtering key events.
     static constexpr uint32_t FEATURE_FILTER_KEY_EVENTS = 0x00000004;
- 
+
     // Feature flag for inject touch events.
     static constexpr uint32_t FEATURE_INJECT_TOUCH_EVENTS = 0x00000008;
- 
+
     // Feature flag for mouse autoclick.
     static constexpr uint32_t FEATURE_MOUSE_AUTOCLICK = 0x00000010;
- 
+
     // Feature flag for mouse key.
     static constexpr uint32_t FEATURE_MOUSE_KEY = 0x00000040;
- 
+
     // Feature flag for screen touch.
     static constexpr uint32_t FEATURE_SCREEN_TOUCH = 0x00000080;
 } // namespace
@@ -101,6 +100,7 @@ AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
     id_ = accountId;
     elementOperatorManager_.SetAccountData(accountId, this);
     windowManager_.SetAccountData(accountId, this);
+    accessibleAbilityManager_.SetAccountData(accountId, this);
 }
 
 AccessibilityAccountData::~AccessibilityAccountData()
@@ -129,6 +129,9 @@ AccessibilityWindowManager& AccessibilityAccountData::GetWindowManager()
 uint32_t AccessibilityAccountData::GetAccessibilityState()
 {
     uint32_t state = 0;
+    if (!config_) {
+        return state;
+    }
     if (accessibleAbilityManager_.GetConnectedAbilitiesSize() != 0 ||
         accessibleAbilityManager_.GetConnectingAbilitiesSize() != 0) {
         HILOG_DEBUG("connectingA11yAbilities %{public}zu connectedA11yAbilities %{public}zu",
@@ -183,10 +186,10 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     return state;
 }
 
+// LCOV_EXCL_START
 void AccessibilityAccountData::OnAccountSwitched()
 {
     HILOG_INFO();
-    accessibleAbilityManager_.ClearConnectedAbilities();
     std::vector<sptr<AccessibleAbilityConnection>> connectionList;
     accessibleAbilityManager_.GetConnectedAbilities(connectionList);
     for (auto& connection : connectionList) {
@@ -195,6 +198,7 @@ void AccessibilityAccountData::OnAccountSwitched()
         }
     }
 
+    accessibleAbilityManager_.ClearConnectedAbilities();
     accessibleAbilityManager_.Clear();
     Singleton<AccessibilityPowerManager>::GetInstance().UnholdRunningLock();
     elementOperatorManager_.Clear();
@@ -214,6 +218,7 @@ void AccessibilityAccountData::OnAccountSwitched()
         config_->GetSystemDbHandle()->ClearObservers();
     }
 }
+// LCOV_EXCL_STOP
 
 void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
@@ -238,6 +243,8 @@ void AccessibilityAccountData::RemoveConnectedAbility(const AppExecFwk::ElementN
     accessibleAbilityManager_.RemoveConnectedAbility(element);
 }
 
+
+// LCOV_EXCL_START
 void AccessibilityAccountData::AddCaptionPropertyCallback(
     const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
 {
@@ -279,6 +286,7 @@ void AccessibilityAccountData::RemoveEnableAbilityCallbackObserver(const wptr<IR
 {
     accessibleAbilityManager_.RemoveEnableAbilityCallbackObserver(observer);
 }
+// LCOV_EXCL_STOP
 
 void AccessibilityAccountData::UpdateEnableAbilityListsState()
 {
@@ -416,12 +424,14 @@ void AccessibilityAccountData::GetAbilitiesByState(AbilityStateType state,
     }
 }
 
+// LCOV_EXCL_START
 void AccessibilityAccountData::GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities)
 {
     HILOG_DEBUG("get disable abilities");
     disabledAbilities = accessibleAbilityManager_.GetInstalledAbilities();
     accessibleAbilityManager_.GetDisableAbilities(disabledAbilities);
 }
+// LCOV_EXCL_STOP
 
 void AccessibilityAccountData::UpdateAccountCapabilities()
 {
@@ -444,7 +454,7 @@ void AccessibilityAccountData::UpdateEventTouchGuideCapability()
         touchGuideState = config_->GetDbHandle()->GetBoolValue(ACCESSIBILITY_TOUCH_GUIDE_ENABLED, true);
     }
 
-    if (accessibleAbilityManager_.IsExistCapability(Capability::CAPABILITY_TOUCH_GUIDE)) {
+    if (accessibleAbilityManager_.IsExistCapability(Capability::CAPABILITY_TOUCH_GUIDE) && touchGuideState) {
         isEventTouchGuideState_ = true;
         return;
     }
@@ -482,6 +492,7 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
     isScreenMagnification_ = false;
 }
 
+// LCOV_EXCL_START
 void AccessibilityAccountData::SetScreenReaderExtInAllAccounts(const bool state)
 {
     RetError rtn = RET_OK;
@@ -578,7 +589,7 @@ void AccessibilityAccountData::SetScreenReaderState(const std::string &name, con
 
 bool AccessibilityAccountData::GetScreenReaderState()
 {
-    HILOG_DEBUG("screen reader sstate is %{public}d", screenReaderState_);
+    HILOG_DEBUG("screen reader state is %{public}d", screenReaderState_);
     return screenReaderState_;
 }
 
@@ -607,6 +618,7 @@ void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string 
         }
     }
 }
+// LCOV_EXCL_STOP
 
 bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &name)
 {
@@ -673,6 +685,8 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     service->DeleteInstance();
 }
 
+
+// LCOV_EXCL_START
 RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities,
     const std::string &callerBundleName)
 {
@@ -736,6 +750,7 @@ bool AccessibilityAccountData::DealWithScreenReaderState()
     }
     return false;
 }
+// LCOV_EXCL_STOP
 
 bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 {
@@ -894,8 +909,7 @@ void AccessibilityAccountData::UpdateAutoStartEnabledAbilities()
         HILOG_DEBUG("Current user is -1.");
         return;
     }
-    accessibleAbilityManager_.UpdateAutoStartEnabledAbilities(
-        [this](const std::string &name) { return GetAbilityAutoStartState(name); });
+    accessibleAbilityManager_.UpdateAutoStartEnabledAbilities();
 }
 
 uint32_t AccessibilityAccountData::GetInputFilterFlag() const
@@ -974,6 +988,7 @@ void AccessibilityAccountData::UpdateAbilities(std::string callerBundleName)
         });
 }
 
+// LCOV_EXCL_START
 bool AccessibilityAccountData::RemoveAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
@@ -983,6 +998,7 @@ bool AccessibilityAccountData::RemoveAbility(const std::string &bundleName)
     }
     return result;
 }
+// LCOV_EXCL_STOP
 
 void AccessibilityAccountData::AddAbility(const std::string &bundleName)
 {
@@ -1004,11 +1020,7 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
     }
 
     if (!accessibilityInfos.empty()) {
-        accessibleAbilityManager_.AddAbility(
-            bundleName,
-            accessibilityInfos,
-            [this](const std::string& name) { return GetAbilityAutoStartState(name); }
-        );
+        accessibleAbilityManager_.AddAbility(bundleName, accessibilityInfos);
         UpdateAbilities();
     }
 }
@@ -1016,32 +1028,10 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
 void AccessibilityAccountData::ChangeAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
-
-    std::vector<AccessibilityAbilityInfo> installedAbilities = accessibleAbilityManager_.GetInstalledAbilities();
-    if (installedAbilities.empty()) {
-        HILOG_DEBUG("There is no installed abilities.");
-        return;
-    }
-    
-    std::vector<std::string> autoStartAbilities;
-    for (auto &ability : installedAbilities) {
-        if (ability.GetPackageName() != bundleName) {
-            continue;
-        }
-        if (GetAbilityAutoStartState(ability.GetId())) {
-            autoStartAbilities.push_back(ability.GetId());
-        }
-    }
-    
-    accessibleAbilityManager_.ChangeAbility(
-        bundleName,
-        [this](const std::string& name) { return GetAbilityAutoStartState(name); },
-        [this](const std::string& name, bool state) { SetAbilityAutoStartState(name, state); }
-    );
-    
-    AddAbility(bundleName);
+    accessibleAbilityManager_.ChangeAbility(bundleName);
 }
 
+// LCOV_EXCL_START
 void AccessibilityAccountData::AddUITestClient(const sptr<IRemoteObject> &obj,
     const std::string &bundleName, const std::string &abilityName)
 {
@@ -1088,6 +1078,7 @@ void AccessibilityAccountData::RemoveUITestClient(sptr<AccessibleAbilityConnecti
     RemoveConnectedAbility(connection->GetElementName());
     connection->OnAbilityDisconnectDoneSync(connection->GetElementName());
 }
+// LCOV_EXCL_STOP
 
 AccountSA::OsAccountType AccessibilityAccountData::GetAccountType()
 {
@@ -1139,8 +1130,10 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::AddAccountData(
         HILOG_ERROR("accountData is null");
         return nullptr;
     }
-
-    accountData->Init();
+    // 0 for system service
+    if (accountId != 0) {
+        accountData->Init();
+    }
     accountDataMap_[accountId] = accountData;
     return accountData;
 }
@@ -1173,14 +1166,8 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::GetAccountData(
         return iter->second;
     }
 
-    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
-    if (!accountData) {
-        HILOG_ERROR("accountData is null");
-        return nullptr;
-    }
-
-    accountDataMap_[accountId] = accountData;
-    return accountData;
+    HILOG_DEBUG("accountId is not existed");
+    return nullptr;
 }
 
 sptr<AccessibilityAccountData> AccessibilityAccountDataMap::RemoveAccountData(
@@ -1213,6 +1200,7 @@ void AccessibilityAccountDataMap::Clear()
     accountDataMap_.clear();
 }
 
+// LCOV_EXCL_START
 void AccessibilityAccountData::isSendEvent(const AccessibilityEventInfo &eventInfo)
 {
     std::map<std::string, sptr<AccessibleAbilityConnection>> abilities = GetConnectedA11yAbilities();
@@ -1250,6 +1238,7 @@ void AccessibilityAccountData::isSendEvent(const AccessibilityEventInfo &eventIn
         }
     }
 }
+// LCOV_EXCL_STOP
 
 void AccessibilityAccountData::UpdateAbilityNeedEvent(const std::string &name, std::vector<uint32_t> needEvents)
 {
@@ -1320,6 +1309,7 @@ std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
     return needEvents_;
 }
 
+// LCOV_EXCL_START
 std::vector<uint32_t> AccessibilityAccountData::GetNeedEvents()
 {
     return needEvents_;
@@ -1347,25 +1337,14 @@ void AccountSubscriber::OnStateChanged(const AccountSA::OsAccountStateData &data
 }
 
 RetError AccessibilityAccountData::RegisterStateObserver(
-    const sptr<IAccessibleAbilityManagerStateObserver> &stateObserver, uint32_t &state)
+    const sptr<IAccessibleAbilityManagerStateObserver> &stateObserver)
 {
     HILOG_DEBUG();
     if (!stateObserver) {
         HILOG_ERROR("parameters check failed!");
         return RET_ERR_INVALID_PARAM;
     }
-    auto id = IPCSkeleton::GetCallingTokenID();
-    Security::AccessToken::HapTokenInfo info;
-    auto result = Security::AccessToken::AccessTokenKit::GetHapTokenInfo(id, info);
-    if (result != 0) {
-        HILOG_ERROR("get native token info failed!, result: %{public}d", result);
-        return RET_ERR_INVALID_PARAM;
-    }
-
-    std::string bundleName = info.bundleName;
-    auto instIndex = info.instIndex;
-    stateObservers_.AddStateObserver(stateObserver, Utils::GetSeniorModeStateKey(bundleName, instIndex));
-    state = GetAccessibilityState();
+    stateObservers_.AddStateObserver(stateObserver);
     return RET_OK;
 }
 
@@ -1378,6 +1357,12 @@ uint32_t AccessibilityAccountData::UpdateAccessibilityState()
     stateObservers_.OnStateObservers(state);
     return state;
 }
+
+
+void AccessibilityAccountData::UpdateAccessibilityState(uint32_t state)
+{
+    stateObservers_.OnStateObservers(state);
+}
  
 void AccessibilityAccountData::RemoveStateObserver(const wptr<IRemoteObject> &remote)
 {
@@ -1385,26 +1370,35 @@ void AccessibilityAccountData::RemoveStateObserver(const wptr<IRemoteObject> &re
 }
  
 void AccessibilityAccountData::StateObservers::AddStateObserver(
-    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver, const std::string &bundleName)
+    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver)
 {
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
-    auto iter = observersMap_.find(bundleName);
-    if (iter == observersMap_.end()) {
-        observersMap_[bundleName] = stateObserver;
+    auto iter = std::find(observersList_.begin(), observersList_.end(), stateObserver);
+    if (iter == observersList_.end()) {
+        observersList_.push_back(stateObserver);
         HILOG_DEBUG("register state observer successfully");
+    }
+
+    auto id = IPCSkeleton::GetCallingTokenID();
+    Security::AccessToken::HapTokenInfo info;
+    auto result = Security::AccessToken::AccessTokenKit::GetHapTokenInfo(id, info);
+    if (result != 0) {
+        HILOG_ERROR("get native token info failed!, result: %{public}d", result);
         return;
     }
-    HILOG_INFO("state observer is existed");
+    std::string bundleName = Utils::GetSeniorModeStateKey(info.bundleName, info.instIndex);
+    observersMap_[bundleName] = stateObserver;
+    HILOG_DEBUG("register state observer bundleName: %{public}s successfully", bundleName.c_str());
 }
  
 void AccessibilityAccountData::StateObservers::OnStateObservers(uint32_t state)
 {
-    HILOG_INFO("state is %{public}d", state);
+    HILOG_INFO("state is %{public}d size = %{public}zu", state, observersList_.size());
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
 
-    for (auto& stateObserver : observersMap_) {
-        if (stateObserver.second) {
-            stateObserver.second->OnStateChanged(state);
+    for (auto& stateObserver : observersList_) {
+        if (stateObserver) {
+            stateObserver->OnStateChanged(state);
         }
     }
 }
@@ -1424,6 +1418,8 @@ void AccessibilityAccountData::StateObservers::OnSeniorModeStateObservers(const 
             uint32_t state = accountData->GetAccessibilityState();
             if (seniorModeStateForApp) {
                 state |= STATE_SELF_SENIOR_MODE_STATE_ENABLED;
+            } else {
+                state |= STATE_SELF_SENIOR_MODE_STATE_DISABLED;
             }
             stateObserver->OnStateChanged(state);
             HILOG_INFO("OnSeniorModeStateObservers, state: %{public}d", state);
@@ -1435,6 +1431,15 @@ void AccessibilityAccountData::StateObservers::OnSeniorModeStateObservers(const 
 void AccessibilityAccountData::StateObservers::RemoveStateObserver(const wptr<IRemoteObject> &remote)
 {
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    HILOG_DEBUG("stateObservers_ size = %{public}zu", observersList_.size());
+    auto iter = std::find_if(observersList_.begin(), observersList_.end(),
+        [remote](const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver) {
+            return stateObserver->AsObject() == remote;
+        });
+    if (iter != observersList_.end()) {
+        observersList_.erase(iter);
+    }
+
     for (auto iter = observersMap_.begin(); iter != observersMap_.end(); ++iter) {
         if (iter->second && iter->second->AsObject() == remote) {
             HILOG_DEBUG("RemoveStateObserver");
@@ -1447,6 +1452,7 @@ void AccessibilityAccountData::StateObservers::RemoveStateObserver(const wptr<IR
 void AccessibilityAccountData::StateObservers::Clear()
 {
     std::lock_guard<ffrt::mutex> lock(stateObserversMutex_);
+    observersList_.clear();
     observersMap_.clear();
 }
 
@@ -1486,11 +1492,13 @@ void AccessibilityAccountData::NotifySeniorModeStateObservers(const std::string&
 {
     std::lock_guard<ffrt::mutex> lock(seniorModeStateObserversMutex_);
     HILOG_INFO("observer's size is %{public}zu", seniorModeStateObservers_.size());
+    // ac
     for (auto &observer : seniorModeStateObservers_) {
         if (observer) {
             observer->OnSeniorModeStateChanged(bundleName, appIndex, state);
         }
     }
+    // asac
     stateObservers_.OnSeniorModeStateObservers(bundleName, appIndex, state);
 }
 

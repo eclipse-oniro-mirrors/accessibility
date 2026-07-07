@@ -20,6 +20,7 @@
 #include "hilog_wrapper.h"
 #include "ffrt.h"
 #include "safe_map.h"
+#include <unordered_set>
 
 #include <atomic>
 #include <unordered_set>

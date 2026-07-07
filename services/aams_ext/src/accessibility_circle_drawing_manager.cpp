@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2023-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -141,6 +141,8 @@ void AccessibilityCircleDrawingManager::CreatePointerWindow(int32_t physicalX, i
     Rosen::RSSurfaceNodeConfig surfaceNodeConfig;
     surfaceNodeConfig.SurfaceNodeName = "screen touch progress";
     Rosen::RSSurfaceNodeType surfaceNodeType = Rosen::RSSurfaceNodeType::SELF_DRAWING_WINDOW_NODE;
+
+
     auto connectToRenderObj = Rosen::RSInterfaces::GetInstance().GetConnectToRenderToken(screenId);
     rsUiDirector_ = Rosen::RSUIDirector::Create(connectToRenderObj);
     if (!rsUiDirector_) {
@@ -417,6 +419,7 @@ std::vector<int32_t> AccessibilityCircleDrawingManager::ParseColorString(const s
 
 void AccessibilityCircleDrawingManager::FlushImplicitTransaction()
 {
+    
     if (rsUiDirector_ && rsUiDirector_->GetRSUIContext()) {
         auto rsUIContext = rsUiDirector_->GetRSUIContext();
         if (rsUIContext && rsUIContext->GetRSTransaction()) {

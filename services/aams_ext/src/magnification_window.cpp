@@ -802,6 +802,7 @@ PointerPos MagnificationWindow::TransferCenter(RotationType type, PointerPos cen
 
 void MagnificationWindow::EnableMagnification(uint32_t magnificationType, int32_t posX, int32_t posY)
 {
+    isMagnificationWindowActivate_ = true;
     if (magnificationType == FULL_SCREEN_MAGNIFICATION) {
         EnableMagnificationFull(posX, posY);
         return;
@@ -815,6 +816,7 @@ void MagnificationWindow::EnableMagnification(uint32_t magnificationType, int32_
 
 void MagnificationWindow::DisableMagnification(uint32_t magnificationType, bool needClear)
 {
+    isMagnificationWindowActivate_ = false;
     if (magnificationType == FULL_SCREEN_MAGNIFICATION) {
         DisableMagnificationFull(needClear);
         return;

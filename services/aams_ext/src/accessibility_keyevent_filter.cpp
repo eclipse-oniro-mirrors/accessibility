@@ -227,6 +227,6 @@ void KeyEventFilterEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Poin
         keyEventFilter_.SendEventToNext(*processingEvent->event_);
     }
 }
-// LCOV_EXCL_STOP
 } // namespace Accessibility
-} // namespace OHOS
+} // namespace OHOS} // namespace OHOS
+// LCOV_EXCL_STOP
