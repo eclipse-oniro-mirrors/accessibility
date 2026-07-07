@@ -462,7 +462,7 @@ bool CheckObserverEqual(napi_env env, napi_value observer, napi_env iterEnv, nap
     return false;
 }
 
-static int32_t safe_subtract(int32_t minuend, int32_t subtrahend)
+static int32_t SafeSubtract(int32_t minuend, int32_t subtrahend)
 {
     if (subtrahend > 0 && minuend < INT32_MIN + subtrahend) {
         return 0;
@@ -487,12 +487,12 @@ void ConvertRectToJS(napi_env env, napi_value result, const Accessibility::Rect&
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "top", nLeftTopY));
 
     napi_value nWidth = nullptr;
-    int32_t width = safe_subtract(rect.GetRightBottomXScreenPostion(), rect.GetLeftTopXScreenPostion());
+    int32_t width = SafeSubtract(rect.GetRightBottomXScreenPostion(), rect.GetLeftTopXScreenPostion());
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, width, &nWidth));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "width", nWidth));
 
     napi_value nHeight = nullptr;
-    int32_t height = safe_subtract(rect.GetRightBottomYScreenPostion(), rect.GetLeftTopYScreenPostion());
+    int32_t height = SafeSubtract(rect.GetRightBottomYScreenPostion(), rect.GetLeftTopYScreenPostion());
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, height, &nHeight));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "height", nHeight));
 }
