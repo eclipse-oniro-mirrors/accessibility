@@ -12,10 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #ifndef ACCESSIBLE_EXTEND_MANAGER_SERVICE_PROXY_H
 #define ACCESSIBLE_EXTEND_MANAGER_SERVICE_PROXY_H
-
+ 
 #include "hilog_wrapper.h"
 #include "singleton.h"
 #include "accessibility_gesture_inject_path.h"
@@ -23,10 +23,10 @@
 #include "key_event.h"
 #include "ffrt.h"
 #include <set>
-
+ 
 namespace OHOS {
 namespace Accessibility {
-
+ 
 enum class ExtMethod : int32_t {
     INJECT_EVENTS = 1,
     SET_SERVICE_ON_KEY_EVENT_RESULT,
@@ -39,7 +39,7 @@ enum class ExtMethod : int32_t {
     SET_CURTAIN_SCREEN_USING_STATUS,
     GET_DEFAULT_DISPLAY_ID,
     PUBLISH_IGNORE_REPEAT_CLICK_REMINDER,
-    CANCEl_NOTIFICATION,
+    CANCEL_NOTIFICATION,
     REGISTER_TIMERS,
     DESTORY_TIMERS,
     GET_WALL_TIME_MS,
@@ -57,7 +57,6 @@ enum class ExtMethod : int32_t {
     ON_SCREEN_MAGNIFICATION_STATE_CHANGED,
     OFF_ZOOM_GESTURE,
     SET_MAGNIFICATION_STATE,
-    IS_MAGNIFICATION_WINDOW_ACTIVATE,
     SET_CURRENT_ACCOUNT_ID
 };
 class ExtendManagerServiceProxy {
@@ -96,7 +95,6 @@ public:
     void GetClickPosition(int32_t &xPos, int32_t &yPos);
     void OffZoomGesture();
     void SetMagnificationState(const bool state, const uint32_t type, const uint32_t mode);
-    bool IsMagnificationWindowActivate();
     void SetCurrentAccountId(int32_t accountId);
  
     // callback
@@ -123,6 +121,7 @@ public:
     bool SetCheckDisplayIdCallback();
     bool SetNotifyZoomGesutureConflictDialogCallback();
     bool SetGetNotifyZoomGestureConflictCallback();
+ 
 private:
     void* GetFunc(const std::string& funcName);
     void* handle_ = nullptr;

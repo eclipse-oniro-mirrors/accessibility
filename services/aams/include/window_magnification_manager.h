@@ -34,7 +34,6 @@ public:
     ~WindowMagnificationManager() = default;
 
     bool IsMagnificationWindowShow();
-    bool IsMagnificationWindowActivate();
     float GetScale();
     void EnableWindowMagnification(int32_t centerX, int32_t centerY);
     void ShowWindowMagnification();

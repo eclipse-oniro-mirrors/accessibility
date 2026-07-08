@@ -382,21 +382,6 @@ void Utils::RecordDatashareInteraction(A11yDatashareValueType type, const std::s
 #endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
-void Utils::RecordSetSeniorModeState(const std::string &bundleName, int32_t appIndex,
-    const bool state, const bool isSystem)
-{
-    HILOG_INFO();
-    int32_t retsult = HiSysEventWrite(
-        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
-        "SET_SENIOR_MODE_STATE",
-        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
-        "BUNDLENAME", bundleName, "APPINDEX", appIndex, "SENIORMODESTATE", static_cast<int32_t>(state),
-        "SYSTEMUPDATE", static_cast<int32_t>(isSystem));
-    if (retsult != 0) {
-        HILOG_ERROR("Write RecordDatashareInteraction error, ret:%{public}d", retsult);
-    }
-}
-
 std::string Utils::TransferUnavailableEventToString(A11yUnavailableEvent type)
 {
     std::string event;

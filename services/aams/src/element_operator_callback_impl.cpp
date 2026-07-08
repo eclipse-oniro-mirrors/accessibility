@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-// LCOV_EXCL_START
 #include "element_operator_callback_impl.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
@@ -205,4 +204,3 @@ void ElementOperatorCallbackImpl::SetRemoveAccessibilityVirtualNodeResult(
 }
 } // namespace Accessibility
 } // namespace OHOS
-// LCOV_EXCL_STOP

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2026 Huawei Device Co., Ltd.
+ * Copyright (C) 2026-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -121,11 +121,6 @@ bool WindowMagnificationManager::IsMagnificationWindowShow()
 float WindowMagnificationManager::GetScale()
 {
     return MagnificationWindow::GetInstance().GetScale();
-}
-
-bool WindowMagnificationManager::IsMagnificationWindowActivate()
-{
-    return MagnificationWindow::GetInstance().IsMagnificationWindowActivate();
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -27,7 +27,6 @@
 #include "parameter.h"
 #include "accessibility_notification_helper.h"
 #include "accessible_extend_manager_service_proxy.h"
-#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -82,7 +81,6 @@ void AccessibilitySettings::RegisterParamWatcher()
     WatchParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), &OnParameterChanged, this);
 }
 
-// LCOV_EXCL_START
 RetError AccessibilitySettings::SetScreenMagnificationState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
@@ -657,7 +655,6 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickTime(const uint32_t time)
     return syncFuture.get();
 }
 
-// LCOV_EXCL_STOP
 void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpdate &atoHosValue)
 {
     sptr<AccessibilityAccountData> accountData =
@@ -758,7 +755,6 @@ void AccessibilitySettings::UpdateSettingsInAtoHos()
     accountData->GetConfig()->SetStartToHosState(false);
 }
 
-// LCOV_EXCL_START
 RetError AccessibilitySettings::GetScreenMagnificationState(bool &state)
 {
     HILOG_DEBUG();
@@ -1461,7 +1457,6 @@ RetError AccessibilitySettings::GetSeniorModeState(bool &state)
     return syncFuture.get();
 }
 
-// LCOV_EXCL_STOP
 void AccessibilitySettings::UpdateConfigState()
 {
     handler_->PostTask([this]() {
@@ -1662,7 +1657,6 @@ void AccessibilitySettings::UpdateIgnoreRepeatClickTime()
         }, "UpdateIgnoreRepeatClickTime");
 }
 
-// LCOV_EXCL_START
 RetError AccessibilitySettings::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
 {
     HILOG_DEBUG();
@@ -1813,7 +1807,6 @@ void AccessibilitySettings::UpdateCaptionProperty()
         }
         }, "UpdateCaptionProperty");
 }
-// LCOV_EXCL_STOP
 
 void AccessibilitySettings::UpdateAllSetting()
 {
@@ -1872,8 +1865,8 @@ RetError AccessibilitySettings::GetSeniorModeStateForApp(const std::string &bund
     return syncFuture.get();
 }
 
-RetError AccessibilitySettings::SetAppSeniorModeState(const std::string &bundleName, int32_t appIndex,
-    const bool state, bool isSystem)
+RetError AccessibilitySettings::SetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,
+    const bool state)
 {
     HILOG_INFO();
     if (!handler_) {
@@ -1906,33 +1899,7 @@ RetError AccessibilitySettings::SetAppSeniorModeState(const std::string &bundleN
         HILOG_ERROR("SetCaptionProperty Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
-    auto ret = syncFuture.get();
-    handler_->PostTask([bundleName, appIndex, state, isSystem, ret]() {
-        HILOG_INFO("RecordSetSeniorModeState");
-        Utils::RecordSetSeniorModeState(bundleName, appIndex, state, isSystem);
-        }, "TASK_RECORD_SET_SENIOR_MODE_FOR_APP");
-    return ret;
-}
-
-RetError AccessibilitySettings::SetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,
-    const bool state)
-{
-    HILOG_INFO();
-    return SetAppSeniorModeState(bundleName, appIndex, state, false);
-}
-
-RetError AccessibilitySettings::SetSeniorModeStateForApps(
-    const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos)
-{
-    HILOG_INFO();
-    auto ret = RET_OK;
-    for (auto &info : infos) {
-        auto tmpRet = SetAppSeniorModeState(info.bundleName_, info.appIndex_, info.seniorModeState_, true);
-        if (tmpRet != RET_OK) {
-            ret = tmpRet;
-        }
-    }
-    return ret;
+    return syncFuture.get();
 }
 } // namespace Accessibility
 } // namespace OHOS

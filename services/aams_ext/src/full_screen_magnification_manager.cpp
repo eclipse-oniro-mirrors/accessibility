@@ -116,11 +116,6 @@ float FullScreenMagnificationManager::GetScale()
 {
     return MagnificationWindow::GetInstance().GetScale();
 }
-
-bool FullScreenMagnificationManager::IsMagnificationWindowActivate()
-{
-    return MagnificationWindow::GetInstance().IsMagnificationWindowActivate();
-}
 } // namespace Accessibility
 } // namespace OHOS
 // LCOV_EXCL_STOP

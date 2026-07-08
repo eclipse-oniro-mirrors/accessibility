@@ -293,30 +293,12 @@ void ExtendServiceManager::SetMagnificationState(bool state, uint32_t type, uint
         HILOG_ERROR("no need change state.");
         return;
     }
-#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
-    if (ExtUtils::IsWideFold() || ExtUtils::IsSmallFold()) {
-        AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-        if (displayMgr.GetFoldStatus() == Rosen::FoldStatus::FOLDED) {
-            return;
-        }
-    }
-#endif
+
     if (state) {
         magnificationManager_->TriggerMagnification(type, mode);
-        announcedForMagnificationCallback(AnnounceType::ANNOUNCE_MAGNIFICATION_SCALE);
     } else {
         magnificationManager_->DisableMagnification();
     }
-}
-
-bool ExtendServiceManager::IsMagnificationWindowActivate()
-{
-    HILOG_DEBUG();
-    if (magnificationManager_ == nullptr) {
-        HILOG_ERROR("magnificationManager_ is nullptr.");
-        return false;
-    }
-    return magnificationManager_->GetWindowMagnificationManager()->IsMagnificationWindowActivate();
 }
 }
 }

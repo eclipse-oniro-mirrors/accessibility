@@ -400,7 +400,6 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "samgr:dynamic_cache",
     "window_manager:libdm",
     "window_manager:libwm",
-    "window_manager:libwm_lite",
   ]
 
   if (security_component_enable) {
@@ -512,7 +511,6 @@ ohos_moduletest("aams_server_test") {
     "samgr:dynamic_cache",
     "window_manager:libdm",
     "window_manager:libwm",
-    "window_manager:libwm_lite",
   ]
 
   if (security_component_enable) {
@@ -741,7 +739,6 @@ ohos_moduletest("aams_common_event_registry_test") {
     "samgr:dynamic_cache",
     "window_manager:libdm",
     "window_manager:libwm",
-    "window_manager:libwm_lite",
   ]
 
   if (accessibility_feature_display_manager) {

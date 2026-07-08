@@ -37,7 +37,7 @@ namespace {
     MMI::InputManager* inputManager_ = MMI::InputManager::GetInstance();
     std::map<int32_t, std::pair<bool, std::pair<int32_t, int32_t>>> accessibleKeyCodeTable = {
         {ActionType::ACCESSIBILITY_ACTION_HOME,
-            {true, {MMI::KeyEvent::KEYCODE_HOME, MMI::KeyEvent::KEYCODE_HOME}}},
+            {false, {MMI::KeyEvent::KEYCODE_META_LEFT, MMI::KeyEvent::KEYCODE_D}}},
         {ActionType::ACCESSIBILITY_ACTION_RECENTTASK,
             {false, {MMI::KeyEvent::KEYCODE_META_LEFT, MMI::KeyEvent::KEYCODE_TAB}}},
         {ActionType::ACCESSIBILITY_ACTION_BACK,
@@ -74,7 +74,6 @@ AccessibleAbilityChannel::AccessibleAbilityChannel(
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetChannelRunner());
 }
 
-// LCOV_EXCL_START
 RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const ElementBasicInfo elementBasicInfo,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int32_t mode, bool isFilter, bool systemApi)
@@ -111,6 +110,10 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const Elem
             std::vector<AccessibilityElementInfo> infos = {};
             callback->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
             syncPromise->set_value(ret);
+            if (elementOperator != nullptr) {
+                HILOG_INFO("before elementOperator release, refCount is [%{public}d]",
+                    elementOperator->GetSptrRefCount());
+            }
             return;
         }
 
@@ -406,12 +409,6 @@ RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
         HILOG_ERROR("inputManager_ is nullptr");
         return RET_ERR_NULLPTR;
     }
-
-    sptr<AccessibilityAccountData> accountData = accountData_.promote();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr");
-        return RET_ERR_FAILED;
-    }
     
     HILOG_INFO("Transmit keycode to MMI");
 
@@ -428,11 +425,8 @@ RetError AccessibleAbilityChannel::TransmitActionToMmi(const int32_t action)
         SetKeyCodeToMmi(keyEventUp, false, accessibleKeyCodeTable.at(action).second.first);
         SetKeyCodeToMmi(keyEventDown, true, accessibleKeyCodeTable.at(action).second.second);
     }
-    int32_t displayId = accountData->GetDisplayId();
     keyEventDown->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
-    keyEventDown->SetTargetDisplayId(displayId);
     keyEventUp->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
-    keyEventUp->SetTargetDisplayId(displayId);
     inputManager_->SimulateInputEvent(keyEventDown);
     inputManager_->SimulateInputEvent(keyEventUp);
 
@@ -496,6 +490,14 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
 {
     HILOG_DEBUG("ExecuteAction elementId:%{public}" PRId64 " winId:%{public}d, action:%{public}d, requestId:%{public}d",
         elementId, accessibilityWindowId, action, requestId);
+    if (actionArguments.find("sysapi_check_perm") != actionArguments.end()) {
+        if (!Singleton<AccessibleAbilityManagerService>::GetInstance().CheckPermission(
+            OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+            HILOG_WARN("system api permission denied.");
+            return RET_ERR_NO_PERMISSION;
+        }
+    }
+
     Singleton<AccessibleAbilityManagerService>::GetInstance().PostDelayUnloadTask();
     if (eventHandler_ == nullptr || callback == nullptr) {
         HILOG_ERROR("eventHandler_ exist: %{public}d, callback exist: %{public}d.", eventHandler_ != nullptr,
@@ -632,7 +634,7 @@ RetError AccessibleAbilityChannel::ExecuteActionAsync(const int32_t accessibilit
             syncPromise->set_value(RET_ERR_FAILED);
             return;
         }
-        int64_t realElementId =
+        int32_t realElementId =
             accountData->GetWindowManager().GetSceneBoardElementId(accessibilityWindowId, elementId);
         accountData->GetElementOperatorManager().AddRequestId(accessibilityWindowId, treeId, requestId, callback);
         elementOperator->ExecuteAction(realElementId, action, actionArguments, requestId, callback);
@@ -663,7 +665,6 @@ void AccessibleAbilityChannel::SetFocusWindowIdAndElementId(const int32_t access
         accountData->GetElementOperatorManager().SetFocusElementId(ELEMENT_ID_INVALID);
     }
 }
-// LCOV_EXCL_STOP
 
 RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
@@ -951,7 +952,6 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(
     return accountData->GetAccessibleAbilityConnection(clientName);
 }
 
-// LCOV_EXCL_START
 RetError AccessibleAbilityChannel::GetElementOperator(
     int32_t accountId, int32_t windowId, int32_t focusType, const std::string &clientName,
     sptr<IAccessibilityElementOperator> &elementOperator, const int32_t treeId)
@@ -982,15 +982,16 @@ RetError AccessibleAbilityChannel::GetElementOperator(
 
     bool isAnco = connection->IsAnco();
     bool useBroker = connection->GetUseBrokerFlag();
-    bool hasMultipleProxies = (connection->GetCardProxySize() > 0);
+    bool hasMultipleProxies = (connection->GetCardProxySize() > 1);
     
     if (!useBroker && treeId > 0) {
         elementOperator = connection->GetCardProxy(treeId);
     } else if (isAnco && useBroker && treeId > 0
         && connection->GetCardProxy(treeId)) {
         elementOperator = connection->GetCardProxy(treeId);
-    } else if (isAnco && useBroker && treeId == 0 && hasMultipleProxies) {
-        elementOperator = connection->GetRawProxy(displayId);
+    } else if (isAnco && useBroker && treeId == 0
+        && hasMultipleProxies && connection->GetCardProxy(treeId)) {
+        elementOperator = connection->GetCardProxy(treeId);
     } else {
         elementOperator = connection->GetProxy(displayId);
     }
@@ -1342,4 +1343,3 @@ RetError AccessibleAbilityChannel::RemoveAccessibilityVirtualNode(const int64_t 
 }
 } // namespace Accessibility
 } // namespace OHOS
-// LCOV_EXCL_STOP

@@ -42,7 +42,6 @@ public:
     void FollowFocuseElement(int32_t centerX, int32_t centerY);
     PointerPos GetSourceCenter();
     bool IsMagnificationWindowShow();
-    bool IsMagnificationWindowActivate();
     float GetScale();
 private:
     ffrt::mutex mutex_;

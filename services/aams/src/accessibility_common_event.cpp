@@ -170,28 +170,41 @@ void AccessibilityCommonEvent::HandlePackageRemoved(const EventFwk::CommonEventD
 {
     std::string bundleName = data.GetWant().GetBundle();
     int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
+    int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
     HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName, userId);
+    if (userId != accountId) {
+        HILOG_ERROR("not same user.");
+        return;
+    }
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
 }
 
 void AccessibilityCommonEvent::HandlePackageAdd(const EventFwk::CommonEventData &data) const
 {
     std::string bundleName = data.GetWant().GetBundle();
     int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
+    int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
     HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName, userId);
+    if (userId != accountId) {
+        HILOG_ERROR("not same user.");
+        return;
+    }
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
 }
 
 void AccessibilityCommonEvent::HandlePackageChanged(const EventFwk::CommonEventData &data) const
 {
     std::string bundleName = data.GetWant().GetBundle();
     int userId = data.GetWant().GetIntParam(KEY_USER_ID, 0);
+    int32_t accountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
     HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName, userId);
+    if (userId != accountId) {
+        HILOG_ERROR("not same user.");
+        return;
+    }
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
 }
 
-
-// LCOV_EXCL_START
 void AccessibilityCommonEvent::HandleDataShareReady(const EventFwk::CommonEventData &data) const
 {
     sptr<AccessibilityAccountData> accountData =
@@ -228,6 +241,5 @@ void AccessibilityCommonEvent::HandleLocalChangedEvent(const EventFwk::CommonEve
     HILOG_DEBUG("reInit Resource.");
     Singleton<AccessibleAbilityManagerService>::GetInstance().InitResource(true);
 }
-// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

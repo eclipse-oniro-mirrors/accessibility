@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-// LCOV_EXCL_START
 #include "accessibility_window_connection.h"
 #include "utils.h"
 #include "accessibility_account_data.h"
@@ -149,6 +148,7 @@ void AccessibilityWindowConnection::SetBrokerProxy(sptr<IAccessibilityElementOpe
 {
     AddDeathRecipient(proxy, true, 0);
 }
+
 void AccessibilityWindowConnection::AddDeathRecipient(
     sptr<IAccessibilityElementOperator> elementOperator, bool isBroker, uint64_t displayId)
 {
@@ -173,7 +173,7 @@ void AccessibilityWindowConnection::AddDeathRecipient(
         }
     }
 }
-
+ 
 void AccessibilityWindowConnection::ResetProxy()
 {
     std::lock_guard<ffrt::mutex> lock(proxyMutex_);
@@ -183,7 +183,7 @@ void AccessibilityWindowConnection::ResetProxy()
         }
     }
 }
-
+ 
 void AccessibilityWindowConnection::ResetBrokerProxy()
 {
     std::lock_guard<ffrt::mutex> lock(proxyMutex_);
@@ -260,6 +260,5 @@ void AccessibilityWindowConnection::OutsideTouch()
         }
     }
 }
-// LCOV_EXCL_STOP
 } // namespace Accessibility
 } // namespace OHOS

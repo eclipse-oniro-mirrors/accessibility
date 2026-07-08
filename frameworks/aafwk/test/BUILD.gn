@@ -221,7 +221,6 @@ ohos_unittest("accessible_ability_test") {
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
-    "window_manager:libwm_lite",
   ]
 
   if (product_name != "qemu-arm-linux-min") {

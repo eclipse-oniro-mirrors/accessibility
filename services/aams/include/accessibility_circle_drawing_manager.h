@@ -53,7 +53,7 @@ public:
     void DrawingProgressByRosenDrawing(int32_t physicalX, int32_t physicalY, int32_t angle);
 #endif
 private:
-    void FlushImplicitTransaction();
+        void FlushImplicitTransaction();
 private:
     std::shared_ptr<Rosen::RSSurfaceNode> surfaceNode_;
     std::shared_ptr<Rosen::RSCanvasNode> canvasNode_;

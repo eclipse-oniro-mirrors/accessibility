@@ -110,8 +110,7 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEvent_ModuleTe
     EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));
     // PackageChanged
     std::string bundleName = "bundleName";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(
-        bundleName, accountData_->GetAccountId());
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
     EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));
 
     AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);

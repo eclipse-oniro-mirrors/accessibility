@@ -96,7 +96,7 @@ public:
     void SetMagnificationTriggerMethod(int32_t screenMagnificationTriggerMethod);
     void InitInputManagerHandler();
     void SetServiceOnKeyEventResult(int32_t connectionId, bool isHandled, uint32_t sequenceNum);
-    inline void ResetScreenShotUid()
+    inline void ReSetScreenShotUid()
     {
         screenShotUid_ = INVALID_UID;
     }
@@ -147,7 +147,7 @@ private:
     sptr<AccessibilityZoomGesture> zoomGesture_ = nullptr;
     bool needInteractMagnification_ = false;
     sptr<KeyEventFilter> keyEventFilter_ = nullptr;
-    int32_t screenShotUid_ = INVALID_UID;
+    int32_t screenShotUid_ = -2;
     sptr<AccessibilityScreenTouch> screenTouch_ = nullptr;
 };
 } // namespace Accessibility

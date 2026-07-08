@@ -12,8 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// LCOV_EXCL_START
+ 
 #include "accessibility_notification_helper.h"
 #include "accessible_ability_manager_service.h"
 #include "accessible_extend_manager_service_proxy.h"
@@ -134,4 +133,3 @@ bool TransitionAnimationsNotification::IsSendTransitionAnimationsNotification()
 }
 }  // namespace Accessibility
 }  // namespace OHOS
-// LCOV_EXCL_STOP

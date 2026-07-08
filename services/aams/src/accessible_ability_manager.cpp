@@ -13,9 +13,7 @@
  * limitations under the License.
  */
 
-// LCOV_EXCL_START
 #include "accessible_ability_manager.h"
-#include "accessibility_account_data.h"
 #include "hilog_wrapper.h"
 #include "utils.h"
 
@@ -23,8 +21,6 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.hmos.screenreader";
-    const std::string SCREEN_READER_KEY = "accessibility_screenreader_enabled";
-    const std::string SCREEN_READER_ABILITY_NAME = "com.ohos.hmos.screenreader/AccessibilityExtAbility";
 }
 AccessibleAbilityManager::~AccessibleAbilityManager()
 {
@@ -32,12 +28,6 @@ AccessibleAbilityManager::~AccessibleAbilityManager()
     connectingA11yAbilities_.Clear();
     waitDisconnectA11yAbilities_.Clear();
     appStateObserverAbilities_.Clear();
-}
-
-void AccessibleAbilityManager::SetAccountData(int32_t accountId, const wptr<AccessibilityAccountData>& accountData)
-{
-    accountId_ = accountId;
-    accountData_ = accountData;
 }
 
 void AccessibleAbilityManager::Clear()
@@ -190,10 +180,6 @@ void AccessibleAbilityManager::AddEnabledAbility(const std::string &name)
         return;
     }
     enabledAbilities_.push_back(name);
-    sptr<AccessibilityAccountData> accountData = accountData_.promote();
-    if (name == SCREEN_READER_ABILITY_NAME && accountData) {
-        accountData->SetScreenReaderState(SCREEN_READER_KEY, "1");
-    }
     UpdateEnableAbilityListsState();
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
@@ -201,14 +187,10 @@ void AccessibleAbilityManager::AddEnabledAbility(const std::string &name)
 RetError AccessibleAbilityManager::RemoveEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG("RemoveEnabledAbility start");
-    sptr<AccessibilityAccountData> accountData = accountData_.promote();
     for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
         if (*it == name) {
             HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", name.c_str());
             enabledAbilities_.erase(it);
-            if (name == SCREEN_READER_ABILITY_NAME && accountData) {
-                accountData->SetScreenReaderState(SCREEN_READER_KEY, "0");
-            }
             UpdateEnableAbilityListsState();
             HILOG_DEBUG("EnabledAbility size %{public}zu", enabledAbilities_.size());
             return RET_OK;
@@ -428,19 +410,17 @@ bool AccessibleAbilityManager::RemoveAbility(const std::string &bundleName)
     return result;
 }
 
-void AccessibleAbilityManager::AddAbility(
-    const std::string &bundleName, const std::vector<AccessibilityAbilityInfo> &abilityInfos)
+void AccessibleAbilityManager::AddAbility(const std::string &bundleName,
+    const std::vector<AccessibilityAbilityInfo>& abilityInfos,
+    std::function<bool(const std::string&)> autoStartChecker)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
-    sptr<AccessibilityAccountData> accountData = accountData_.promote();
-    if (!accountData) {
-        return;
-    }
     for (auto &newAbility : abilityInfos) {
         if (newAbility.GetPackageName() == bundleName) {
             HILOG_DEBUG("The package%{public}s added", (bundleName + "/" + newAbility.GetName()).c_str());
             AccessibilityAbilityInfo info = newAbility;
-            if (accountData->GetAbilityAutoStartState(info.GetId())) {
+            std::string abilityId = info.GetId();
+            if (autoStartChecker && autoStartChecker(abilityId)) {
                 HILOG_DEBUG("auto start packageName is %{public}s.", bundleName.c_str());
                 uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
                     CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
@@ -457,13 +437,11 @@ void AccessibleAbilityManager::AddAbility(
     }
 }
 
-void AccessibleAbilityManager::ChangeAbility(const std::string &bundleName)
+void AccessibleAbilityManager::ChangeAbility(const std::string &bundleName,
+    std::function<bool(const std::string&)> autoStartChecker,
+    std::function<void(const std::string&, bool)> autoStartSetter)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
-    sptr<AccessibilityAccountData> accountData = accountData_.promote();
-    if (!accountData) {
-        return;
-    }
     if (installedAbilities_.empty()) {
         HILOG_DEBUG("There is no installed abilities.");
         return;
@@ -474,13 +452,12 @@ void AccessibleAbilityManager::ChangeAbility(const std::string &bundleName)
         if (ability.GetPackageName() != bundleName) {
             continue;
         }
-        if (accountData->GetAbilityAutoStartState(ability.GetId())) {
+        if (autoStartChecker && autoStartChecker(ability.GetId())) {
             autoStartAbilities.push_back(ability.GetId());
         }
     }
     
     RemoveInstalledAbility(bundleName);
-    accountData->AddAbility(bundleName);
     
     for (auto &name : autoStartAbilities) {
         auto iter = std::find_if(installedAbilities_.begin(), installedAbilities_.end(),
@@ -488,9 +465,11 @@ void AccessibleAbilityManager::ChangeAbility(const std::string &bundleName)
                 return info.GetId() == name;
             });
         if (iter == installedAbilities_.end()) {
-            accountData->SetAbilityAutoStartState(name, false);
+            if (autoStartSetter) {
+                autoStartSetter(name, false);
+            }
         }
-    }
+        }
 }
 
 void AccessibleAbilityManager::GetImportantEnabledAbilities(
@@ -552,11 +531,11 @@ void AccessibleAbilityManager::UpdateImportantEnabledAbilities(
     }
 }
 
-void AccessibleAbilityManager::UpdateAutoStartEnabledAbilities()
+void AccessibleAbilityManager::UpdateAutoStartEnabledAbilities(std::function<bool(const std::string&)> autoStartChecker)
 {
     HILOG_DEBUG();
-    sptr<AccessibilityAccountData> accountData = accountData_.promote();
-    if (!accountData) {
+    if (installedAbilities_.empty()) {
+        HILOG_DEBUG("Current user has no installedAbilities.");
         return;
     }
     HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
@@ -564,7 +543,7 @@ void AccessibleAbilityManager::UpdateAutoStartEnabledAbilities()
         std::string bundleName = installAbility.GetPackageName();
         std::string abilityName = installAbility.GetName();
         std::string abilityId = bundleName + "/" + abilityName;
-        if (accountData->GetAbilityAutoStartState(abilityId)) {
+        if (autoStartChecker && autoStartChecker(abilityId)) {
             HILOG_DEBUG("auto start packageName is %{public}s.", bundleName.c_str());
             uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
                 CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
@@ -824,4 +803,3 @@ size_t AccessibleAbilityManager::AccessibilityAbility::GetSize()
 
 } // namespace Accessibility
 } // namespace OHOS
-// LCOV_EXCL_STOP

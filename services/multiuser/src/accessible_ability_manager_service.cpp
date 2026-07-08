@@ -74,7 +74,7 @@ namespace {
     const std::string AAMS_HOVER_ENTER_RUNNER_NAME = "AamsHoverEnterRunner";
     const std::string AAMS_REGISTER_RUNNER_NAME = "AamsRegisterRunner";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
-    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.hmos.screenreader/AccessibilityExtAbility";
+    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     const std::string DEVICE_PROVISIONED = "device_provisioned";
     const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
     const std::string SCREEN_MAGNIFICATION_TYPE = "accessibility_magnification_capability";

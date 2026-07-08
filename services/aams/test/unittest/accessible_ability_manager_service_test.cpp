@@ -515,8 +515,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.L
     EXPECT_EQ(0, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "PackageChanged start";
     std::string bundleName = "bundleName1";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(
-        bundleName, AccessibilityAbilityHelper::accountId_);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
     GTEST_LOG_(INFO) << "PackageChanged end";
     EXPECT_EQ(0, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "GetInstalledAbilities end";
@@ -526,8 +525,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.L
     sleep(SLEEP_TIME_1);
     EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
     bundleName = "bundleName2";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(
-        bundleName, AccessibilityAbilityHelper::accountId_);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
     sleep(SLEEP_TIME_1);
     EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageChanged_001 end";
@@ -962,8 +960,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageAdd_001, TestSize.Level
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageAdd_001 start";
 
     std::string bundleName = "bundleName1";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(
-        bundleName, AccessibilityAbilityHelper::accountId_);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
     EXPECT_NE(stub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageAdd_001 end";
 }
@@ -977,8 +974,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageRemoved_001, TestSize.L
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageRemoved_001 start";
     std::string bundleName = "bundleName1";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(
-        bundleName, AccessibilityAbilityHelper::accountId_);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
     EXPECT_NE(stub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageRemoved_001 end";
 }
@@ -994,8 +990,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageAdd_002, TestSize.Level
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     std::string bundleName = "bundleName1";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(
-        bundleName, AccessibilityAbilityHelper::accountId_);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
     EXPECT_NE(stub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageAdd_002 end";
 }
@@ -1012,8 +1007,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageRemoved_002, TestSize.L
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     std::string bundleName = "bundleName1";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(
-        bundleName, AccessibilityAbilityHelper::accountId_);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
     EXPECT_NE(stub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageRemoved_002 end";
 }

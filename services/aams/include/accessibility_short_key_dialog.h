@@ -128,22 +128,23 @@ public:
         AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
             settingsExtServiceAbilityConnection, nullptr, -1);
     }
-    void OnAbilityConnectDone(
-        const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject, int32_t resultCode) override
-    {
-        HILOG_INFO("on ability connected");
-        MessageParcel data;
-        MessageParcel reply;
-        MessageOption option;
-        if (enable_) {
-            data.WriteString16(Str8ToStr16(GetEnableCommandStr()));
-        } else {
-            data.WriteString16(Str8ToStr16(GetDisableCommandStr()));
+    void OnAbilityConnectDone(const AppExecFwk::ElementName &element,
+        const sptr<IRemoteObject> &remoteObject, int32_t resultCode) override
+        {
+            HILOG_INFO("on ability connected");
+            MessageParcel data;
+            MessageParcel reply;
+            MessageOption option;
+            if (enable_) {
+                data.WriteString16(Str8ToStr16(GetEnableCommandStr()));
+            } else {
+                data.WriteString16(Str8ToStr16(GetDisableCommandStr()));
+            }
+            
+            int32_t enbaleSearch = 2;
+            remoteObject->SendRequest(enbaleSearch, data, reply, option);
+            AAFwk::ExtensionManagerClient::GetInstance().DisconnectAbility(this);
         }
-        int32_t enbaleSearch = 2;
-        remoteObject->SendRequest(enbaleSearch, data, reply, option);
-        AAFwk::ExtensionManagerClient::GetInstance().DisconnectAbility(this);
-    }
     void OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int32_t resultCode) override
     {
         HILOG_INFO("on ability disconnected");
