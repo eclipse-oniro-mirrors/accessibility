@@ -141,6 +141,7 @@ namespace {
     constexpr int QUANTITY = 2; // plural string
     constexpr int32_t BROKER_UID = 5557;
     constexpr int32_t SECURITY_COMPONENT_UID = 3050;
+    const int64_t REPORT_DELAY_TIME = 24 * 60 * 60 * 1000; // ms
     static std::map<std::string, std::string> ResourceMap = {
         {MAGNIFICATION_SCALE, ""},
         {MAGNIFICATION_DISABLE, ""},
@@ -4188,7 +4189,42 @@ ErrCode AccessibleAbilityManagerService::SetSeniorModeStateForApp(const bool sta
     std::string bundleName = info.bundleName;
     auto instIndex = info.instIndex;
     HILOG_INFO("processName: %{public}s, instIndex: %{public}d", bundleName.c_str(), instIndex);
-    return accessibilitySettings_->SetSeniorModeStateForApp(bundleName, instIndex, state);
+    auto ret = accessibilitySettings_->SetSeniorModeStateForApp(bundleName, instIndex, state);
+    RecordSeniorModeForApp(bundleName, instIndex);
+    return ret;
+}
+
+void AccessibleAbilityManagerService::RecordSeniorModeForApp(const std::string &bundleName, int32_t appIndex)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(recordSeniorModeMutex_);
+    std::string key = Utils::GetSeniorModeStateKey(bundleName, appIndex);
+    auto it = seniorModeReportInfo_.find(key);
+    if (it != seniorModeReportInfo_.end()) {
+        it->second += 1;
+    } else {
+        seniorModeReportInfo_[key] = 1;
+    }
+    if (isRecordingSeniorMode_) {
+        return;
+    }
+    isRecordingSeniorMode_ = true;
+    if (!handler_) {
+        HILOG_ERROR("AccessibleAbilityManagerService::RecordSeniorModeForApp failed!");
+        isRecordingSeniorMode_ = false;
+        return;
+    }
+
+    handler_->PostTask([this]() {
+        std::map<std::string, int32_t> reportInfo;
+        {
+            std::lock_guard<ffrt::mutex> lock(recordSeniorModeMutex_);
+            reportInfo = seniorModeReportInfo_;
+            isRecordingSeniorMode_ = false;
+            seniorModeReportInfo_.clear();
+        }
+        Utils::RecordSetSeniorModeState(reportInfo);
+        }, "RecordSeniorModeForApp", REPORT_DELAY_TIME);
 }
 
 ErrCode AccessibleAbilityManagerService::GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,
