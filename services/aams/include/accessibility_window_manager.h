@@ -23,7 +23,7 @@
 #include "event_handler.h"
 #include "ffrt.h"
 #include "singleton.h"
-#include "window_manager_lite.h"
+#include "window_manager.h"
 #include "safe_map.h"
 
 namespace OHOS {
