@@ -170,7 +170,7 @@ void ElementOperatorManager::Clear()
 RetError ElementOperatorManager::RegisterElementOperatorByWindowId(int32_t windowId,
     const sptr<IAccessibilityElementOperator> &elementOperator, uint32_t tokenId, bool isBroker, uint64_t displayId)
 {
-    HILOG_INFO("RegisterElementOperatorByWindowId %{public}d %{public}llu", windowId, displayId);
+    HILOG_INFO("RegisterElementOperatorByWindowId %{public}d %{public}" PRIu64, windowId, displayId);
     sptr<AccessibilityWindowConnection> oldConnection = GetAccessibilityWindowConnection(windowId);
     if (!isBroker && oldConnection && oldConnection->GetRawProxy(displayId)) {
         HILOG_WARN("no need to register again.");
@@ -255,7 +255,7 @@ RetError ElementOperatorManager::RegisterElementOperatorByParameter(const Regist
 RetError ElementOperatorManager::DeregisterElementOperatorByWindowId(
     int32_t windowId, uint64_t displayId, bool isBroker)
 {
-    HILOG_INFO("DeregisterElementOperatorByWindowId %{public}d %{public}llu", windowId, displayId);
+    HILOG_INFO("DeregisterElementOperatorByWindowId %{public}d %{public}" PRIu64, windowId, displayId);
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
     if (!connection) {
         HILOG_WARN("The operation of windowId[%{public}d] has not been registered.", windowId);
@@ -437,7 +437,7 @@ RetError ElementOperatorManager::VerifyingToKenId(const int32_t windowId, const 
     }
     uint64_t displayId = 0;
     sptr<AccessibilityWindowConnection> connection = GetRealIdWindowConnection(windowId, FOCUS_TYPE_INVALID, displayId);
-    HILOG_DEBUG("treeId %{public}d, windowId %{public}d displayId %{public}llu", treeId, windowId, displayId);
+    HILOG_DEBUG("treeId %{public}d, windowId %{public}d displayId %{public}" PRIu64, treeId, windowId, displayId);
     if (connection == nullptr) {
         HILOG_ERROR("connection is empty.");
         return RET_ERR_REGISTER_EXIST;
