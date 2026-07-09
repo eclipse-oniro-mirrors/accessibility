@@ -4215,7 +4215,6 @@ void AccessibleAbilityManagerService::RecordSeniorModeForApp(const std::string &
         }
         isRecordingSeniorMode_ = true;
     }
-
     wptr<AccessibleAbilityManagerService> weakPtr(this);
     bool postResult = handler_->PostTask([weakPtr]() {
         auto self = weakPtr.promote();
@@ -4231,7 +4230,6 @@ void AccessibleAbilityManagerService::RecordSeniorModeForApp(const std::string &
         }
         Utils::RecordSetSeniorModeState(reportInfo);
     }, "RecordSeniorModeForApp", REPORT_DELAY_TIME);
-
     if (!postResult) {
         HILOG_ERROR("PostTask RecordSeniorModeForApp failed!");
         std::lock_guard<ffrt::mutex> lock(recordSeniorModeMutex_);
