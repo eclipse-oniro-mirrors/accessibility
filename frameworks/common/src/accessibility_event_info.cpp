@@ -33,7 +33,9 @@ namespace {
         "addedCount",
         "removedCount",
         "currentIndex",
-        "speakText"
+        "candidateIds",
+        "touchGuideGestureType",
+        "scrollSource"
     };
 }
 
