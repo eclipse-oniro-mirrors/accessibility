@@ -141,6 +141,7 @@ namespace {
     constexpr int QUANTITY = 2; // plural string
     constexpr int32_t BROKER_UID = 5557;
     constexpr int32_t SECURITY_COMPONENT_UID = 3050;
+    const int64_t REPORT_DELAY_TIME = 24 * 60 * 60 * 1000; // ms
     static std::map<std::string, std::string> ResourceMap = {
         {MAGNIFICATION_SCALE, ""},
         {MAGNIFICATION_DISABLE, ""},
@@ -4178,17 +4179,63 @@ ErrCode AccessibleAbilityManagerService::SetSeniorModeStateForApp(const bool sta
 {
     PostDelayUnloadTask();
     auto id = IPCSkeleton::GetCallingTokenID();
-    HILOG_INFO("id :%{public}d", id);
     Security::AccessToken::HapTokenInfo info;
     auto result = Security::AccessToken::AccessTokenKit::GetHapTokenInfo(id, info);
     if (result != 0) {
         HILOG_ERROR("get native token info failed!, result: %{public}d", result);
+        return RET_ERR_NULLPTR;
     }
 
     std::string bundleName = info.bundleName;
     auto instIndex = info.instIndex;
     HILOG_INFO("processName: %{public}s, instIndex: %{public}d", bundleName.c_str(), instIndex);
-    return accessibilitySettings_->SetSeniorModeStateForApp(bundleName, instIndex, state);
+    auto ret = accessibilitySettings_->SetSeniorModeStateForApp(bundleName, instIndex, state);
+    RecordSeniorModeForApp(bundleName, instIndex);
+    return ret;
+}
+
+void AccessibleAbilityManagerService::RecordSeniorModeForApp(const std::string &bundleName, int32_t appIndex)
+{
+    HILOG_DEBUG();
+    {
+        std::lock_guard<ffrt::mutex> lock(recordSeniorModeMutex_);
+        if (!handler_) {
+            HILOG_ERROR("RecordSeniorModeForApp handler is null!");
+            return;
+        }
+        std::string key = Utils::GetSeniorModeStateKey(bundleName, appIndex);
+        auto it = seniorModeReportInfo_.find(key);
+        if (it != seniorModeReportInfo_.end()) {
+            it->second += 1;
+        } else {
+            seniorModeReportInfo_[key] = 1;
+        }
+        if (isRecordingSeniorMode_) {
+            return;
+        }
+        isRecordingSeniorMode_ = true;
+    }
+    wptr<AccessibleAbilityManagerService> weakPtr(this);
+    bool postResult = handler_->PostTask([weakPtr]() {
+        auto self = weakPtr.promote();
+        if (!self) {
+            return;
+        }
+        std::map<std::string, int32_t> reportInfo;
+        {
+            std::lock_guard<ffrt::mutex> lock(self->recordSeniorModeMutex_);
+            reportInfo = self->seniorModeReportInfo_;
+            self->isRecordingSeniorMode_ = false;
+            self->seniorModeReportInfo_.clear();
+        }
+        Utils::RecordSetSeniorModeState(reportInfo);
+    }, "RecordSeniorModeForApp", REPORT_DELAY_TIME);
+    if (!postResult) {
+        HILOG_ERROR("PostTask RecordSeniorModeForApp failed!");
+        std::lock_guard<ffrt::mutex> lock(recordSeniorModeMutex_);
+        isRecordingSeniorMode_ = false;
+        seniorModeReportInfo_.clear();
+    }
 }
 
 ErrCode AccessibleAbilityManagerService::GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,

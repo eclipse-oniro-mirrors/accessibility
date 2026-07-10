@@ -423,6 +423,7 @@ private:
     void RegisterNotificationState();
     void OnSeniorModeStateForAppChanged();
     void RegisterSeniorModeStateForAppObserver();
+    void RecordSeniorModeForApp(const std::string &bundleName, int32_t appIndex);
 
     void RecycleEventHandler();
     std::shared_ptr<AccessibilityDatashareHelper> GetCurrentAcountDatashareHelper();
@@ -473,6 +474,9 @@ private:
     bool isResourceInit_ = false;
     std::shared_ptr<AccountSubscriber> accountSubscriber_ = nullptr;
     ffrt::mutex resourceMapMutex_;
+    ffrt::mutex recordSeniorModeMutex_;
+    bool isRecordingSeniorMode_ = false;
+    std::map<std::string, int32_t> seniorModeReportInfo_;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -1906,12 +1906,7 @@ RetError AccessibilitySettings::SetAppSeniorModeState(const std::string &bundleN
         HILOG_ERROR("SetCaptionProperty Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
-    auto ret = syncFuture.get();
-    handler_->PostTask([bundleName, appIndex, state, isSystem, ret]() {
-        HILOG_INFO("RecordSetSeniorModeState");
-        Utils::RecordSetSeniorModeState(bundleName, appIndex, state, isSystem);
-        }, "TASK_RECORD_SET_SENIOR_MODE_FOR_APP");
-    return ret;
+    return syncFuture.get();
 }
 
 RetError AccessibilitySettings::SetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex,

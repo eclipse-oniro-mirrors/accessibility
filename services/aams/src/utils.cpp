@@ -382,18 +382,29 @@ void Utils::RecordDatashareInteraction(A11yDatashareValueType type, const std::s
 #endif //OHOS_BUILD_ENABLE_HISYSEVENT
 }
 
-void Utils::RecordSetSeniorModeState(const std::string &bundleName, int32_t appIndex,
-    const bool state, const bool isSystem)
+void Utils::RecordSetSeniorModeState(const std::map<std::string, int32_t> &seniorModeInfo)
 {
     HILOG_INFO();
+    std::vector<std::string> bundleNames;
+    std::vector<int32_t> appIndexs;
+    std::vector<int32_t> times;
+    for (const auto &item : seniorModeInfo) {
+        std::string bundleName;
+        int32_t appIndex = 0;
+        if (ParseSeniorModeStateKey(item.first, bundleName, appIndex)) {
+            bundleNames.push_back(bundleName);
+            appIndexs.push_back(appIndex);
+            times.push_back(item.second);
+        }
+    }
     int32_t retsult = HiSysEventWrite(
-        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY_UE,
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
         "SET_SENIOR_MODE_STATE",
-        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
-        "BUNDLENAME", bundleName, "APPINDEX", appIndex, "SENIORMODESTATE", static_cast<int32_t>(state),
-        "SYSTEMUPDATE", static_cast<int32_t>(isSystem));
+        OHOS::HiviewDFX::HiSysEvent::EventType::STATISTIC,
+        "BUNDLENAME", bundleNames, "APPINDEX", appIndexs,
+        "TIMES", times);
     if (retsult != 0) {
-        HILOG_ERROR("Write RecordDatashareInteraction error, ret:%{public}d", retsult);
+        HILOG_ERROR("Write RecordSetSeniorModeState error, ret:%{public}d", retsult);
     }
 }
 
