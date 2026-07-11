@@ -25,7 +25,8 @@ namespace Accessibility {
 namespace {
 const std::string FOLD_SCREEN_TYPE = system::GetParameter("const.window.foldscreen.type", "0,0,0,0");
 const bool IS_WIDE_FOLD = (FOLD_SCREEN_TYPE == "4,2,0,0");
-const bool IS_BIG_FOLD = (FOLD_SCREEN_TYPE == "1,2,0,0") || (FOLD_SCREEN_TYPE == "6,1,0,0");
+const bool IS_BIG_FOLD = (FOLD_SCREEN_TYPE == "1,2,0,0") ||
+    (FOLD_SCREEN_TYPE == "6,1,0,0") || (FOLD_SCREEN_TYPE == "8,2,0,0");
 const bool IS_SMALL_FOLD = (FOLD_SCREEN_TYPE == "2,2,0,0");
 }  // namespace
 
