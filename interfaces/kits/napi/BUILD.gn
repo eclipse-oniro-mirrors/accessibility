@@ -65,7 +65,9 @@ ohos_shared_library("accessibility_napi") {
     "ffrt:libffrt",
     "hilog:libhilog",
     "input:libmmi-client",
+    "libuv:uv",
     "napi:ace_napi",
+    "node:node_header_notice",
   ]
 
   if (product_name != "qemu-arm-linux-min") {

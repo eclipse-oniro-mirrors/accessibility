@@ -87,7 +87,9 @@ ohos_shared_library("accessibility_extension_module") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "ipc:ipc_napi",
+    "libuv:uv",
     "napi:ace_napi",
+    "node:node_header_notice",
     "eventhandler:libeventhandler",
   ]
 

@@ -74,7 +74,9 @@
         "time_service",
         "json",
         "ets_frontend",
-        "image_framework"
+        "image_framework",
+        "node",
+        "libuv"
       ],
       "third_party": []
     },

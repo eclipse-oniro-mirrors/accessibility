@@ -67,7 +67,9 @@ ohos_shared_library("config_napi") {
     "hilog:libhilog",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "libuv:uv",
     "napi:ace_napi",
+    "node:node_header_notice",
   ]
 
   if (product_name != "qemu-arm-linux-min") {
