@@ -570,7 +570,7 @@ ErrCode AccessibleAbilityManagerService::RegisterStateObserver(
     const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver, uint32_t &state)
 {
     HILOG_DEBUG();
-    int32_t userId =  Utils::GetUserIdByCallingUid();
+    int32_t userId = InnerGetCallingUid();
     sptr<AccessibilityAccountData> accountData = GetAccountData(userId);
     if (accountData == nullptr) {
         return ERR_INVALID_DATA;
@@ -1577,6 +1577,7 @@ bool AccessibleAbilityManagerService::Init()
             HILOG_ERROR("Query account information failed!!!");
             break;
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
         ret = AccountSA::OsAccountManager::GetForegroundOsAccounts(accountIds);
         retry--;
     }
