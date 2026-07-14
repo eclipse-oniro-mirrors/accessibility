@@ -129,7 +129,7 @@ ohos_shared_library("aams_ext") {
   }
  
   if (accessibility_watch_feature) {
-    external_deps += [ "resource_schedule_service:ressched_client"]
+    external_deps += [ "resource_schedule_service:ressched_client" ]
   }
 
   install_enable = true
