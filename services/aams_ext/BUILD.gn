@@ -122,11 +122,14 @@ ohos_shared_library("aams_ext") {
   }
 
   if (accessibility_feature_display_manager) {
-    external_deps += [ "display_manager:displaymgr" ]
+    external_deps += [
+      "json:nlohmann_json_static",
+      "resource_schedule_service:ressched_client",
+    ]
   }
  
   if (accessibility_watch_feature) {
-    external_deps += [ "resource_schedule_service:ressched_client" ]
+    external_deps += [ "resource_schedule_service:ressched_client"]
   }
 
   install_enable = true

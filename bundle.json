@@ -65,6 +65,7 @@
         "hiappevent",
         "e2fsprogs",
         "resource_schedule_service",
+        "json",
         "cJSON",
         "selinux_adapter",
         "runtime_core",
