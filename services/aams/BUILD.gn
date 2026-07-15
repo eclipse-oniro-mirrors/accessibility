@@ -145,13 +145,6 @@ ohos_shared_library("accessibleabilityms") {
     external_deps += [ "hisysevent:libhisysevent" ]
   }
 
-  if (accessibility_watch_feature) {
-    external_deps += [
-    "json:nlohmann_json_static",
-    "resource_schedule_service:ressched_client",
-  ]
-  }
-
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
   }
