@@ -149,7 +149,7 @@ ohos_shared_library("accessibleabilityms") {
     external_deps += [
       "json:nlohmann_json_static",
       "resource_schedule_service:ressched_client",
-    ]
+  ]
   }
 
   if (security_component_enable) {
