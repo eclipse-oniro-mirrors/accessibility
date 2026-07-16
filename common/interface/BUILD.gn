@@ -81,6 +81,7 @@ accessibility_data_parcel_src = [
   "src/parcel/accessibility_event_info_parcel.cpp",
   "src/parcel/accessibility_gesture_inject_path_parcel.cpp",
   "src/parcel/accessibility_window_info_parcel.cpp",
+  "src/parcel/accessibility_virtual_node_parcel.cpp",
 ]
 
 ohos_shared_library("accessibility_interface") {

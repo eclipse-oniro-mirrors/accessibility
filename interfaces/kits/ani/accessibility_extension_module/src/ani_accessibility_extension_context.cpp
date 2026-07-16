@@ -408,67 +408,217 @@ static void UnholdRunningLockSync(ani_env *env, ani_object thisObj)
     }
 }
 
+static void ParseVirtualNodeBasicProperties(ani_env *env, ani_object object, AccessibilityVirtualNode &virtualNode)
+{
+    int64_t int64Value = 0;
+    std::string strValue = "";
+    if (ANIUtils::GetLongProperty(env, "virtualNodeId", object, int64Value)) {
+        virtualNode.SetId(int64Value);
+    }
+    if (ANIUtils::GetStringField(env, "text", object, strValue)) {
+        virtualNode.SetText(strValue);
+    }
+    if (ANIUtils::GetStringField(env, "accessibilityText", object, strValue)) {
+        virtualNode.SetAccessibilityText(strValue);
+    }
+    if (ANIUtils::GetStringField(env, "accessibilityLevel", object, strValue)) {
+        virtualNode.SetAccessibilityLevel(strValue);
+    }
+    if (ANIUtils::GetStringField(env, "customComponentType", object, strValue)) {
+        virtualNode.SetCustomComponentType(strValue);
+    }
+}
+
+static void ParseVirtualNodeBoolProperties(ani_env *env, ani_object object, AccessibilityVirtualNode &virtualNode)
+{
+    bool boolValue = false;
+    if (ANIUtils::GetBoolField(env, "accessibilityGroup", object, boolValue)) {
+        virtualNode.SetAccessibilityGroup(boolValue);
+    }
+    if (ANIUtils::GetBoolField(env, "checkable", object, boolValue)) {
+        virtualNode.SetCheckable(boolValue);
+    }
+    if (ANIUtils::GetBoolField(env, "checked", object, boolValue)) {
+        virtualNode.SetChecked(boolValue);
+    }
+    if (ANIUtils::GetBoolField(env, "clickable", object, boolValue)) {
+        virtualNode.SetClickable(boolValue);
+    }
+    if (ANIUtils::GetBoolField(env, "enabled", object, boolValue)) {
+        virtualNode.SetEnabled(boolValue);
+    }
+    if (ANIUtils::GetBoolField(env, "selected", object, boolValue)) {
+        virtualNode.SetSelected(boolValue);
+    }
+    if (ANIUtils::GetBoolField(env, "accessibilityFocused", object, boolValue)) {
+        virtualNode.SetAccessibilityFocused(boolValue);
+    }
+}
+
+static void ParseVirtualNodeInt64Properties(ani_env *env, ani_object object, AccessibilityVirtualNode &virtualNode)
+{
+    int64_t int64Value = 0;
+    if (ANIUtils::GetLongProperty(env, "parentId", object, int64Value)) {
+        virtualNode.SetParentId(int64Value);
+    }
+    if (ANIUtils::GetLongProperty(env, "elementId", object, int64Value)) {
+        virtualNode.SetElementId(int64Value);
+    }
+}
+
+static void ParseVirtualNodeRect(ani_env *env, ani_object object, AccessibilityVirtualNode &virtualNode)
+{
+    ani_ref rectRef;
+    if (env->Object_GetPropertyByName_Ref(object, "rect", &rectRef) != ANI_OK) {
+        return;
+    }
+    ani_boolean isUndefined;
+    env->Reference_IsUndefined(rectRef, &isUndefined);
+    if (isUndefined) {
+        return;
+    }
+    ani_object rectObj = static_cast<ani_object>(rectRef);
+    ani_int intValue = 0;
+    int32_t left = 0;
+    int32_t top = 0;
+    int32_t width = 0;
+    int32_t height = 0;
+    if (env->Object_GetFieldByName_Int(rectObj, "left", &intValue) == ANI_OK) {
+        left = static_cast<int32_t>(intValue);
+    }
+    if (env->Object_GetFieldByName_Int(rectObj, "top", &intValue) == ANI_OK) {
+        top = static_cast<int32_t>(intValue);
+    }
+    if (env->Object_GetFieldByName_Int(rectObj, "width", &intValue) == ANI_OK) {
+        width = static_cast<int32_t>(intValue);
+    }
+    if (env->Object_GetFieldByName_Int(rectObj, "height", &intValue) == ANI_OK) {
+        height = static_cast<int32_t>(intValue);
+    }
+    Rect rect(left, top, left + width, top + height);
+    virtualNode.SetRect(rect);
+}
+
+static void ParseVirtualNodeTouchPosition(ani_env *env, ani_object object, AccessibilityVirtualNode &virtualNode)
+{
+    ani_ref pointRef;
+    if (env->Object_GetFieldByName_Ref(object, "touchPosition", &pointRef) != ANI_OK) {
+        return;
+    }
+    ani_boolean isUndefined;
+    env->Reference_IsUndefined(pointRef, &isUndefined);
+    if (isUndefined) {
+        return;
+    }
+    int32_t pointX = 0;
+    int32_t pointY = 0;
+    ani_object pointObj = static_cast<ani_object>(pointRef);
+    ANIUtils::GetIntField(env, "x", pointObj, pointX);
+    ANIUtils::GetIntField(env, "y", pointObj, pointY);
+    AccessibilityVirtualPoint point(pointX, pointY);
+    virtualNode.SetPoint(point);
+}
+
+static void ParseVirtualNodeChildNodeIds(ani_env *env, ani_object object, AccessibilityVirtualNode &virtualNode)
+{
+    ani_ref childIdsRef;
+    if (env->Object_GetFieldByName_Ref(object, "childNodeIds", &childIdsRef) != ANI_OK) {
+        return;
+    }
+    ani_boolean isUndefined;
+    env->Reference_IsUndefined(childIdsRef, &isUndefined);
+    if (isUndefined) {
+        return;
+    }
+    ani_object childIdsObj = static_cast<ani_object>(childIdsRef);
+    ani_size arrayLength = 0;
+    if (env->Array_GetLength(static_cast<ani_array>(childIdsObj), &arrayLength) != ANI_OK) {
+        return;
+    }
+    std::vector<int64_t> childNodeIds;
+    for (ani_size i = 0; i < arrayLength; i++) {
+        ani_ref elementRef;
+        if (env->Array_Get(static_cast<ani_array>(childIdsObj), i, &elementRef) != ANI_OK) {
+            continue;
+        }
+        ani_long childId = 0;
+        ani_object elementObj = static_cast<ani_object>(elementRef);
+        if (env->Object_CallMethodByName_Long(elementObj, "toLong", nullptr, &childId) == ANI_OK) {
+            childNodeIds.push_back(static_cast<int64_t>(childId));
+        }
+    }
+    if (!childNodeIds.empty()) {
+        virtualNode.SetChildNodeIds(childNodeIds);
+    }
+}
+
+static const std::vector<ActionType> VIRTUAL_NODE_ACTION_TYPES = {
+    ActionType::ACCESSIBILITY_ACTION_FOCUS,
+    ActionType::ACCESSIBILITY_ACTION_CLEAR_FOCUS,
+    ActionType::ACCESSIBILITY_ACTION_SELECT,
+    ActionType::ACCESSIBILITY_ACTION_CLEAR_SELECTION,
+    ActionType::ACCESSIBILITY_ACTION_CLICK,
+    ActionType::ACCESSIBILITY_ACTION_LONG_CLICK,
+    ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS,
+    ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS,
+    ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD,
+    ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD,
+    ActionType::ACCESSIBILITY_ACTION_COPY,
+    ActionType::ACCESSIBILITY_ACTION_PASTE,
+    ActionType::ACCESSIBILITY_ACTION_CUT,
+    ActionType::ACCESSIBILITY_ACTION_SET_SELECTION,
+    ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION,
+    ActionType::ACCESSIBILITY_ACTION_COMMON,
+    ActionType::ACCESSIBILITY_ACTION_SET_TEXT,
+    ActionType::ACCESSIBILITY_ACTION_DELETED,
+    ActionType::ACCESSIBILITY_ACTION_HOME,
+    ActionType::ACCESSIBILITY_ACTION_BACK,
+    ActionType::ACCESSIBILITY_ACTION_RECENTTASK,
+    ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER,
+    ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER,
+    ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK,
+    ActionType::ACCESSIBILITY_ACTION_CUSTOM,
+    ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM,
+    ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM,
+    ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION
+};
+
+static void ParseVirtualNodeSupportedActionNames(ani_env *env, ani_object object,
+    AccessibilityVirtualNode &virtualNode)
+{
+    std::vector<std::string> actionNames;
+    if (!ANIUtils::GetArrayStringField(env, "supportedActionNames", object, actionNames)) {
+        return;
+    }
+    uint64_t supportAction = virtualNode.GetSupportAction();
+    for (const auto &actionName : actionNames) {
+        ActionType actionType = ANIUtils::ConvertStringToAccessibleOperationType(actionName);
+        if (actionType == ACCESSIBILITY_ACTION_INVALID) {
+            continue;
+        }
+        for (size_t j = 0; j < VIRTUAL_NODE_ACTION_TYPES.size(); j++) {
+            if (VIRTUAL_NODE_ACTION_TYPES[j] == actionType) {
+                supportAction |= (1ULL << j);
+                break;
+            }
+        }
+    }
+    virtualNode.SetSupportAction(supportAction);
+}
+
 static bool ParseVirtualNodeFromAni(ani_env *env, ani_object object, AccessibilityVirtualNode &virtualNode)
 {
-    HILOG_INFO();
     if (object == nullptr) {
         HILOG_ERROR("VirtualNode object is nullptr");
         return false;
     }
-
-    int32_t intValue = 0;
-    int64_t int64Value = 0;
-    std::string strValue = "";
-    bool boolValue = false;
-
-    if (ANIUtils::GetLongProperty(env, "virtualNodeId", object, int64Value)) {
-        virtualNode.SetId(int64Value);
-    }
-
-    if (ANIUtils::GetStringField(env, "text", object, strValue)) {
-        virtualNode.SetText(strValue);
-    }
-
-    if (ANIUtils::GetStringField(env, "accessibilityText", object, strValue)) {
-        virtualNode.SetAccessibilityText(strValue);
-    }
-
-    if (ANIUtils::GetStringField(env, "accessibilityLevel", object, strValue)) {
-        virtualNode.SetAccessibilityLevel(strValue);
-    }
-
-    if (ANIUtils::GetStringField(env, "customComponentType", object, strValue)) {
-        virtualNode.SetCustomComponentType(strValue);
-    }
-
-    if (ANIUtils::GetBoolField(env, "accessibilityGroup", object, boolValue)) {
-        virtualNode.SetAccessibilityGroup(boolValue);
-    }
-
-    if (ANIUtils::GetBoolField(env, "checkable", object, boolValue)) {
-        virtualNode.SetCheckable(boolValue);
-    }
-
-    if (ANIUtils::GetBoolField(env, "checked", object, boolValue)) {
-        virtualNode.SetChecked(boolValue);
-    }
-
-    if (ANIUtils::GetBoolField(env, "clickable", object, boolValue)) {
-        virtualNode.SetClickable(boolValue);
-    }
-
-    if (ANIUtils::GetBoolField(env, "enabled", object, boolValue)) {
-        virtualNode.SetEnabled(boolValue);
-    }
-
-    if (ANIUtils::GetBoolField(env, "selected", object, boolValue)) {
-        virtualNode.SetSelected(boolValue);
-    }
-
-    if (ANIUtils::GetBoolField(env, "accessibilityFocused", object, boolValue)) {
-        virtualNode.SetAccessibilityFocused(boolValue);
-    }
-
+    ParseVirtualNodeBasicProperties(env, object, virtualNode);
+    ParseVirtualNodeBoolProperties(env, object, virtualNode);
+    ParseVirtualNodeInt64Properties(env, object, virtualNode);
+    ParseVirtualNodeRect(env, object, virtualNode);
+    ParseVirtualNodeTouchPosition(env, object, virtualNode);
+    ParseVirtualNodeChildNodeIds(env, object, virtualNode);
+    ParseVirtualNodeSupportedActionNames(env, object, virtualNode);
     return true;
 }
 

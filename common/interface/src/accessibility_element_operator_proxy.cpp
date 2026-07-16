@@ -15,11 +15,15 @@
 
 #include "accessibility_element_operator_proxy.h"
 #include "accessibility_element_info_parcel.h"
+#include "accessibility_virtual_node_parcel.h"
 #include "hilog_wrapper.h"
 #include <cinttypes>
 
 namespace OHOS {
 namespace Accessibility {
+
+constexpr int32_t MAX_RAWDATA_SIZE = 128 * 1024 * 1024; // RawData limit is 128M, limited by IPC
+
 AccessibilityElementOperatorProxy::AccessibilityElementOperatorProxy(
     const sptr<IRemoteObject> &impl) : IRemoteProxy<IAccessibilityElementOperator>(impl)
 {}
@@ -613,7 +617,9 @@ void AccessibilityElementOperatorProxy::UpdateCustomAccessibilityProperty(const 
         HILOG_ERROR("elementId write error: %{public}" PRId64 "", elementId);
         return;
     }
-    if (!WriteAccessibilityVirtualNode(data, accessibilityVirtualNode)) {
+    AccessibilityVirtualNodeParcel nodeParcel(accessibilityVirtualNode);
+    if (!data.WriteParcelable(&nodeParcel)) {
+        HILOG_ERROR("WriteParcelable failed");
         return;
     }
     if (!data.WriteInt32(requestId)) {
@@ -641,6 +647,7 @@ void AccessibilityElementOperatorProxy::AddAccessibilityVirtualNode(const int64_
 {
     HILOG_DEBUG();
     MessageParcel data;
+    data.SetMaxCapacity(MAX_RAWDATA_SIZE);
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
 
@@ -652,14 +659,15 @@ void AccessibilityElementOperatorProxy::AddAccessibilityVirtualNode(const int64_
         HILOG_ERROR("rootId write error: %{public}" PRId64 "", rootId);
         return;
     }
-    int32_t nodeCount = nodes.size();
+    int32_t nodeCount = static_cast<int32_t>(nodes.size());
     if (!data.WriteInt32(nodeCount)) {
         HILOG_ERROR("nodeCount write error");
         return;
     }
     for (int32_t i = 0; i < nodeCount; i++) {
-        if (!WriteAccessibilityVirtualNode(data, nodes[i])) {
-            HILOG_ERROR("node[%{public}d] write error", i);
+        AccessibilityVirtualNodeParcel nodeParcel(nodes[i]);
+        if (!data.WriteParcelable(&nodeParcel)) {
+            HILOG_ERROR("WriteParcelable failed at node[%{public}d]", i);
             return;
         }
     }

@@ -84,12 +84,24 @@ bool ANIUtils::GetStringField(ani_env *env, std::string fieldName, ani_object ob
 
 bool ANIUtils::GetBoolField(ani_env *env, std::string fieldName, ani_object object, bool &fieldValue)
 {
-    ani_boolean booleanValue;
-    if (env->Object_GetPropertyByName_Boolean(object, fieldName.c_str(), &booleanValue) != ANI_OK) {
-        HILOG_ERROR("get field %{public}s failed", fieldName.c_str());
+    ani_ref ref;
+    if (env->Object_GetPropertyByName_Ref(object, fieldName.c_str(), &ref) != ANI_OK) {
+        HILOG_ERROR("get field %{public}s undefined failed", fieldName.c_str());
         return false;
     }
-    fieldValue = static_cast<bool>(booleanValue);
+    ani_boolean isBoolUndefined = true;
+    if (env->Reference_IsUndefined(ref, &isBoolUndefined) != ANI_OK) {
+        HILOG_ERROR("get field %{public}s undefined failed", fieldName.c_str());
+        return false;
+    }
+    if (!isBoolUndefined) {
+        ani_boolean booleanValue = false;
+        if (ANI_OK == env->Object_CallMethodByName_Boolean(static_cast<ani_object>(ref),
+            "toBoolean", ":z", &booleanValue)) {
+            fieldValue = static_cast<bool>(booleanValue);
+            return true;
+        }
+    }
     return false;
 }
 

@@ -1622,10 +1622,6 @@ private:
                 *retError = RET_ERR_INVALID_PARAM;
                 return;
             }
-            if (elementId == 0) {
-                *operateResult = OperateVirtualNodeResult::CANNOT_MODIFY_ROOT_NODE;
-                return;
-            }
             auto context = weak.lock();
             if (!context) {
                 HILOG_ERROR("context is released");

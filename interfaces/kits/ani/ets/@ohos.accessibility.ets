@@ -621,3 +621,9 @@ export enum OperateVirtualNodeResult {
   INTERNAL_ERROR = 6,
   VIRTUAL_NODE_NOT_SUPPORT = 7,
 }
+
+export enum AccessibilitySourceType {
+  DEFAULT = 1,
+  ADDED_FROM_ACCESSIBILITY_VIRTUAL_NODE = 2,
+  UPDATED_FROM_ACCESSIBILITY_VIRTUAL_NODE = 3
+}
