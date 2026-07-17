@@ -209,14 +209,6 @@ private:
     ErrCode HandleExecuteActionWithPermission(MessageParcel &data, MessageParcel &reply);
 
     /**
-     * @brief Read AccessibilityVirtualNode from MessageParcel
-     * @param data The data of process communication
-     * @param accessibilityVirtualNode The output AccessibilityVirtualNode object
-     * @return true: successful; false: failed.
-     */
-    bool ReadAccessibilityVirtualNode(MessageParcel &data, AccessibilityVirtualNode &accessibilityVirtualNode);
-
-    /**
      * @brief Handle IPC request for function:HandleUpdateCustomAccessibilityProperty.
      * @param data The data of process communication
      * @param reply The response of IPC request

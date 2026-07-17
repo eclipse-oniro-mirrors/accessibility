@@ -19,6 +19,7 @@
 #include "accessibility_ipc_interface_code.h"
 #include "accessibility_permission.h"
 #include "accessibility_window_info_parcel.h"
+#include "accessibility_virtual_node_parcel.h"
 #include "hilog_wrapper.h"
 #include "parcel_util.h"
 
@@ -674,62 +675,17 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithCondition(Message
     return NO_ERROR;
 }
 
-bool AccessibleAbilityChannelStub::ReadAccessibilityVirtualNode(MessageParcel &data,
-    AccessibilityVirtualNode &accessibilityVirtualNode)
-{
-    accessibilityVirtualNode.SetId(data.ReadInt64());
-    accessibilityVirtualNode.SetText(data.ReadString());
-    accessibilityVirtualNode.SetAccessibilityText(data.ReadString());
-    accessibilityVirtualNode.SetAccessibilityGroup(data.ReadBool());
-    accessibilityVirtualNode.SetAccessibilityLevel(data.ReadString());
-
-    Rect rect;
-    int32_t leftTopX = data.ReadInt32();
-    int32_t leftTopY = data.ReadInt32();
-    int32_t rightBottomX = data.ReadInt32();
-    int32_t rightBottomY = data.ReadInt32();
-    rect.SetLeftTopScreenPostion(leftTopX, leftTopY);
-    rect.SetRightBottomScreenPostion(rightBottomX, rightBottomY);
-    accessibilityVirtualNode.SetRect(rect);
-
-    accessibilityVirtualNode.SetCheckable(data.ReadBool());
-    accessibilityVirtualNode.SetChecked(data.ReadBool());
-    accessibilityVirtualNode.SetClickable(data.ReadBool());
-    accessibilityVirtualNode.SetEnabled(data.ReadBool());
-    accessibilityVirtualNode.SetSelected(data.ReadBool());
-    accessibilityVirtualNode.SetCustomComponentType(data.ReadString());
-
-    Accessibility::AccessibilityVirtualPoint point;
-    point.SetX(data.ReadInt32());
-    point.SetY(data.ReadInt32());
-    accessibilityVirtualNode.SetPoint(point);
-    accessibilityVirtualNode.SetAccessibilityFocused(data.ReadBool());
-    accessibilityVirtualNode.SetParentId(data.ReadInt64());
-    int32_t childNodeCount = data.ReadInt32();
-    if (childNodeCount > MAX_ALLOW_SIZE) {
-        return false;
-    }
-    std::vector<int64_t> childNodeIds;
-    for (int32_t i = 0; i < childNodeCount; i++) {
-        childNodeIds.push_back(data.ReadInt64());
-    }
-    accessibilityVirtualNode.SetChildNodeIds(childNodeIds);
-    accessibilityVirtualNode.SetElementId(data.ReadInt64());
-    accessibilityVirtualNode.SetWindowId(data.ReadInt32());
-    accessibilityVirtualNode.SetSupportAction(data.ReadUint64());
-    return true;
-}
-
 ErrCode AccessibleAbilityChannelStub::HandleUpdateCustomAccessibilityProperty(MessageParcel &data,
     MessageParcel &reply)
 {
     HILOG_DEBUG();
     int64_t elementId = data.ReadInt64();
     int32_t windowId = data.ReadInt32();
-    AccessibilityVirtualNode accessibilityVirtualNode;
-    if (!ReadAccessibilityVirtualNode(data, accessibilityVirtualNode)) {
-        HILOG_ERROR("ReadAccessibilityVirtualNode failed");
-        return ERR_INVALID_VALUE;
+    sptr<AccessibilityVirtualNodeParcel> nodeParcel = data.ReadStrongParcelable<AccessibilityVirtualNodeParcel>();
+    if (nodeParcel == nullptr) {
+        HILOG_ERROR("ReadStrongParcelable<AccessibilityVirtualNodeParcel> failed");
+        reply.WriteInt32(RET_ERR_FAILED);
+        return TRANSACTION_ERR;
     }
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
@@ -743,13 +699,13 @@ ErrCode AccessibleAbilityChannelStub::HandleUpdateCustomAccessibilityProperty(Me
         HILOG_ERROR("callback is nullptr.");
         return ERR_INVALID_VALUE;
     }
-    RetError result = UpdateCustomAccessibilityProperty(elementId, windowId, accessibilityVirtualNode,
+    RetError result = UpdateCustomAccessibilityProperty(elementId, windowId, *nodeParcel,
         requestId, callback);
     HILOG_DEBUG("UpdateCustomAccessibilityProperty ret = %{public}d", result);
     reply.WriteInt32(result);
     return NO_ERROR;
 }
- 
+
 ErrCode AccessibleAbilityChannelStub::HandleAddAccessibilityVirtualNode(MessageParcel &data,
     MessageParcel &reply)
 {
@@ -757,14 +713,20 @@ ErrCode AccessibleAbilityChannelStub::HandleAddAccessibilityVirtualNode(MessageP
     int64_t rootId = data.ReadInt64();
     int32_t windowId = data.ReadInt32();
     int32_t nodeCount = data.ReadInt32();
+    if (nodeCount < 0 || nodeCount > MAX_ALLOW_SIZE) {
+        HILOG_ERROR("nodeCount is invalid: %{public}d", nodeCount);
+        return ERR_INVALID_VALUE;
+    }
     std::vector<AccessibilityVirtualNode> nodes;
     for (int32_t i = 0; i < nodeCount; i++) {
-        AccessibilityVirtualNode node;
-        if (!ReadAccessibilityVirtualNode(data, node)) {
-            HILOG_ERROR("ReadAccessibilityVirtualNode failed");
-            return ERR_INVALID_VALUE;
+        sptr<AccessibilityVirtualNodeParcel> nodeParcel =
+            data.ReadStrongParcelable<AccessibilityVirtualNodeParcel>();
+        if (nodeParcel == nullptr) {
+            HILOG_ERROR("ReadStrongParcelable<AccessibilityVirtualNodeParcel> failed at index %{public}d", i);
+            reply.WriteInt32(RET_ERR_FAILED);
+            return TRANSACTION_ERR;
         }
-        nodes.push_back(node);
+        nodes.push_back(*nodeParcel);
     }
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();

@@ -16,6 +16,7 @@
 #include "accessibility_element_operator_stub.h"
 #include "accessibility_element_operator_callback_proxy.h"
 #include "accessibility_element_info_parcel.h"
+#include "accessibility_virtual_node_parcel.h"
 #include "hilog_wrapper.h"
 #include <cinttypes>
 
@@ -417,10 +418,9 @@ ErrCode AccessibilityElementOperatorStub::HandleUpdateCustomAccessibilityPropert
 {
     HILOG_INFO();
     int64_t elementId = data.ReadInt64();
-    AccessibilityVirtualNode accessibilityVirtualNode;
-    
-    if (!ReadAccessibilityVirtualNode(data, accessibilityVirtualNode)) {
-        HILOG_ERROR("ReadAccessibilityVirtualNode failed");
+    sptr<AccessibilityVirtualNodeParcel> nodeParcel = data.ReadStrongParcelable<AccessibilityVirtualNodeParcel>();
+    if (nodeParcel == nullptr) {
+        HILOG_ERROR("ReadStrongParcelable failed");
         return ERR_INVALID_VALUE;
     }
 
@@ -437,10 +437,10 @@ ErrCode AccessibilityElementOperatorStub::HandleUpdateCustomAccessibilityPropert
         HILOG_ERROR("callback is nullptr.");
         return ERR_INVALID_VALUE;
     }
-    UpdateCustomAccessibilityProperty(elementId, accessibilityVirtualNode, requestId, callback);
+    UpdateCustomAccessibilityProperty(elementId, *nodeParcel, requestId, callback);
     return NO_ERROR;
 }
- 
+
 ErrCode AccessibilityElementOperatorStub::HandleAddAccessibilityVirtualNode(MessageParcel &data,
     MessageParcel &reply)
 {
@@ -449,12 +449,12 @@ ErrCode AccessibilityElementOperatorStub::HandleAddAccessibilityVirtualNode(Mess
     int32_t nodeCount = data.ReadInt32();
     std::vector<AccessibilityVirtualNode> nodes;
     for (int32_t i = 0; i < nodeCount; i++) {
-        AccessibilityVirtualNode node;
-        if (!ReadAccessibilityVirtualNode(data, node)) {
-            HILOG_ERROR("ReadAccessibilityVirtualNode failed for node[%{public}d]", i);
+        sptr<AccessibilityVirtualNodeParcel> nodeParcel = data.ReadStrongParcelable<AccessibilityVirtualNodeParcel>();
+        if (nodeParcel == nullptr) {
+            HILOG_ERROR("ReadStrongParcelable failed for node[%{public}d]", i);
             return ERR_INVALID_VALUE;
         }
-        nodes.push_back(node);
+        nodes.push_back(*nodeParcel);
     }
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();

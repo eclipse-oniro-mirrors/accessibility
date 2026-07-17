@@ -47,6 +47,8 @@ constexpr const char *ANI_ACCESSIBILITY_SPANS_CLS =
     "application.AccessibilityExtensionContext.AccessibilitySpanImpl";
 constexpr const char *ANI_ACCESSIBILITY_ACTION_CLS =
     "@ohos.accessibility.AccessibilityAction";
+constexpr const char *ANI_ACCESSIBILITY_SOURCE_TYPE_CLS =
+    "@ohos.accessibility.AccessibilitySourceType";
 
 static const std::vector<Getter> FIELD_MAP = {
     {"accessibilityFocused", BoolGetter(&AccessibilityElementInfo::HasAccessibilityFocus)},
@@ -467,7 +469,12 @@ std::string ConvertActionTypeToString(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_CUSTOM, "executeCustomAction"},
         {ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM, "nextHtmlItem"},
         {ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM, "previousHtmlItem"},
-        {ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, "injectAction"}
+        {ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, "injectAction"},
+        {ActionType::ACCESSIBILITY_ACTION_HOME, "home"},
+        {ActionType::ACCESSIBILITY_ACTION_BACK, "back"},
+        {ActionType::ACCESSIBILITY_ACTION_RECENTTASK, "recentTask"},
+        {ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER, "notificationCenter"},
+        {ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER, "controlCenter"}
     };
 
     if (triggerActionTable.find(type) == triggerActionTable.end()) {
@@ -477,15 +484,65 @@ std::string ConvertActionTypeToString(ActionType type)
     return triggerActionTable.at(type);
 }
 
-void SetElementActionListProperty(ani_env *env, ani_object& elementObj, const std::vector<AccessibleAction>& actionList)
+void SetElementVirtualSupportedActionNames(ani_env *env, ani_object& elementObj,
+    const AccessibilityElementInfo& elementInfo)
 {
-    HILOG_DEBUG();
+    uint64_t virtualSupportAction = elementInfo.GetVirtualSupportAction();
+    static const std::vector<ActionType> actionTypes = {
+        ActionType::ACCESSIBILITY_ACTION_FOCUS,
+        ActionType::ACCESSIBILITY_ACTION_CLEAR_FOCUS,
+        ActionType::ACCESSIBILITY_ACTION_SELECT,
+        ActionType::ACCESSIBILITY_ACTION_CLEAR_SELECTION,
+        ActionType::ACCESSIBILITY_ACTION_CLICK,
+        ActionType::ACCESSIBILITY_ACTION_LONG_CLICK,
+        ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS,
+        ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS,
+        ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD,
+        ActionType::ACCESSIBILITY_ACTION_SCROLL_BACKWARD,
+        ActionType::ACCESSIBILITY_ACTION_COPY,
+        ActionType::ACCESSIBILITY_ACTION_PASTE,
+        ActionType::ACCESSIBILITY_ACTION_CUT,
+        ActionType::ACCESSIBILITY_ACTION_SET_SELECTION,
+        ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION,
+        ActionType::ACCESSIBILITY_ACTION_COMMON,
+        ActionType::ACCESSIBILITY_ACTION_SET_TEXT,
+        ActionType::ACCESSIBILITY_ACTION_DELETED,
+        ActionType::ACCESSIBILITY_ACTION_HOME,
+        ActionType::ACCESSIBILITY_ACTION_BACK,
+        ActionType::ACCESSIBILITY_ACTION_RECENTTASK,
+        ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER,
+        ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER,
+        ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK,
+        ActionType::ACCESSIBILITY_ACTION_CUSTOM,
+        ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM,
+        ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM,
+        ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION
+    };
+    std::vector<std::string> actionNames;
+    for (size_t i = 0; i < actionTypes.size(); i++) {
+        if ((virtualSupportAction & (1ULL << i)) != 0) {
+            std::string actionName = ConvertActionTypeToString(actionTypes[i]);
+            if (!actionName.empty()) {
+                actionNames.push_back(actionName);
+            }
+        }
+    }
+    ANIUtils::SetArrayStringField(env, elementObj, "supportedActionNames", actionNames);
+}
+
+void SetElementActionListProperty(ani_env *env, ani_object& elementObj,
+    const AccessibilityElementInfo& elementInfo)
+{
     if (env == nullptr) {
         HILOG_ERROR("setElementActionListProperty null env");
         return;
     }
+    if (elementInfo.GetSourceType() == AccessibilitySourceType::ADDED_FROM_ACCESSIBILITY_VIRTUAL_NODE) {
+        SetElementVirtualSupportedActionNames(env, elementObj, elementInfo);
+        return;
+    }
     std::vector<std::string> stringArray;
-    for (const auto &action : actionList) {
+    for (const auto &action : elementInfo.GetActionList()) {
         std::string actionString = ConvertActionTypeToString(action.GetActionType());
         stringArray.push_back(actionString);
     }
@@ -529,7 +586,12 @@ int32_t ConvertOperationTypeToTarget(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_SET_TEXT, AccessibilityAction::SET_TEXT},
         {ActionType::ACCESSIBILITY_ACTION_SPAN_CLICK, AccessibilityAction::SPAN_CLICK},
         {ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION, AccessibilityAction::INJECT_ACTION},
-        {ActionType::ACCESSIBILITY_ACTION_CUSTOM, AccessibilityAction::EXECUTE_CUSTOM_ACTION}
+        {ActionType::ACCESSIBILITY_ACTION_CUSTOM, AccessibilityAction::EXECUTE_CUSTOM_ACTION},
+        {ActionType::ACCESSIBILITY_ACTION_HOME, AccessibilityAction::HOME},
+        {ActionType::ACCESSIBILITY_ACTION_BACK, AccessibilityAction::BACK},
+        {ActionType::ACCESSIBILITY_ACTION_RECENTTASK, AccessibilityAction::RECENT_TASK},
+        {ActionType::ACCESSIBILITY_ACTION_NOTIFICATIONCENTER, AccessibilityAction::NOTIFICATION_CENTER},
+        {ActionType::ACCESSIBILITY_ACTION_CONTROLCENTER, AccessibilityAction::CONTROL_CENTER}
     };
 
     if (actionTable.find(type) == actionTable.end()) {
@@ -603,7 +665,7 @@ void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const Ac
     if (!ANIUtils::SetDoubleField(env, elementObj, "valueNow", elementInfo.GetRange().GetCurrent())) {
         HILOG_ERROR("Failed to set valueNow");
     }
-    SetElementActionListProperty(env, elementObj, elementInfo.GetActionList());
+    SetElementActionListProperty(env, elementObj, elementInfo);
     SetElementCurrentItemField(env, elementObj, elementInfo.GetGridItem());
     SetElementSpansField(env, elementObj, elementInfo.GetSpanList());
     if (elementInfo.GetParentNodeId() >= 0) {
@@ -613,6 +675,10 @@ void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const Ac
     }
     if (!SetElementChildrenProperty(env, elementObj, elementInfo.GetChildIds())) {
         HILOG_ERROR("Failed to set childrenIds");
+    }
+    if (!ANIUtils::SetEnumProperty(env, elementObj, ANI_ACCESSIBILITY_SOURCE_TYPE_CLS, "sourceType",
+        static_cast<int32_t>(elementInfo.GetSourceType()))) {
+        HILOG_ERROR("Failed to set sourceType");
     }
 }
 
