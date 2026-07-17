@@ -179,7 +179,7 @@ void AccessibilityDisplayManager::SetDisplayScale(const uint64_t screenId,
 void AccessibilityDisplayManager::RegisterDisplayListener(
     const std::shared_ptr<MagnificationManager> &manager)
 {
-    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(listenerMutex_);
     if (listener_) {
         HILOG_DEBUG("Display listener is already registed!");
         return;
@@ -194,7 +194,7 @@ void AccessibilityDisplayManager::RegisterDisplayListener(
 
 void AccessibilityDisplayManager::UnregisterDisplayListener()
 {
-    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(listenerMutex_);
     if (listener_) {
         Rosen::DisplayManager::GetInstance().UnregisterDisplayListener(listener_);
         listener_ = nullptr;
@@ -204,7 +204,7 @@ void AccessibilityDisplayManager::UnregisterDisplayListener()
 // LCOV_EXCL_START
 void AccessibilityDisplayManager::RegisterFoldStatusListener()
 {
-    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(listenerMutex_);
     if (foldListener_) {
         HILOG_DEBUG("Fold status listener is already registed!");
         return;
@@ -219,7 +219,7 @@ void AccessibilityDisplayManager::RegisterFoldStatusListener()
 
 void AccessibilityDisplayManager::UnregisterFoldStatusListener()
 {
-    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(listenerMutex_);
     if (foldListener_) {
         Rosen::DisplayManager::GetInstance().UnregisterFoldStatusListener(foldListener_);
         foldListener_ = nullptr;

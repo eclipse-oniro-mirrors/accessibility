@@ -653,8 +653,6 @@ float AccessibilityZoomGesture::CalcSeparationDistance(MMI::PointerEvent &event)
 float AccessibilityZoomGesture::CalcSeparationDistance(MMI::PointerEvent &firstEvent,
     MMI::PointerEvent &secondEvent)
 {
-    HILOG_DEBUG();
-
     MMI::PointerEvent::PointerItem firstItem;
     MMI::PointerEvent::PointerItem secondItem;
     firstEvent.GetPointerItem(firstEvent.GetPointerId(), firstItem);

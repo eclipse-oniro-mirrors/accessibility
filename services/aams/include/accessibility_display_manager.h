@@ -83,6 +83,7 @@ private:
     sptr<DisplayListener> listener_ = nullptr;
     sptr<FoldStatusListener> foldListener_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> handler_ = nullptr;
+    ffrt::mutex listenerMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
