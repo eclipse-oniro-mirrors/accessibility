@@ -512,6 +512,34 @@ struct FocusMoveResult {
     bool changeToNewInfo;
     bool needTerminate;
 };
+
+enum BlinkingMode : int32_t {
+    SINGLE_BLINK = 1,
+    CONTINUOUS_BLINK = 2,
+};
+
+enum BlinkingScenario : int32_t {
+    ALARM = 1,
+    NOTIFICATION = 2,
+    CALL = 3,
+    TESTING = 4,
+};
+
+enum FlashReminderMode : int32_t {
+    NONE = 0,
+    DISPLAY = 1,
+    FLASHLIGHT = 2,
+    BOTH = 3,
+};
+
+enum BlinkResultCode : int32_t {
+    BLINK_SUCCESS = 0,
+    ALREADY_FLASHING = 1,
+    DEVICE_IN_USE = 2,
+    FLASH_BLINKING_UNSUPPORTED = 3,
+    SCREEN_BLINKING_UNSUPPORTED = 4,
+    FEATURE_DISABLE = 5,
+};
 } // namespace Accessibility
 } // namespace OHOS
 

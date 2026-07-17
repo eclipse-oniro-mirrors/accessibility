@@ -2284,5 +2284,45 @@ Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeAppSeniorModeState
     }
     return Accessibility::RET_OK;
 }
+
+Accessibility::RetError AccessibilityConfig::Impl::StartBlinking(int32_t mode, int32_t scenario,
+    Accessibility::BlinkResultCode &blinkResult)
+{
+    HILOG_INFO("mode = [%{public}d], scenario = [%{public}d]", mode, scenario);
+    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
+    if (proxy == nullptr) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+    int32_t funcResult = 0;
+    Accessibility::RetError ret =
+        static_cast<Accessibility::RetError>(proxy->StartBlinking(mode, scenario, funcResult));
+    if (ret != Accessibility::RET_OK) {
+        HILOG_ERROR("StartBlinking failed, ret=%{public}d", ret);
+        return ret;
+    }
+    blinkResult = static_cast<Accessibility::BlinkResultCode>(funcResult);
+    return Accessibility::RET_OK;
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::StopBlinking(int32_t mode, int32_t scenario,
+    Accessibility::BlinkResultCode &blinkResult)
+{
+    HILOG_INFO("mode = [%{public}d], scenario = [%{public}d]", mode, scenario);
+    sptr<Accessibility::IAccessibleAbilityManagerService> proxy = GetServiceProxy();
+    if (proxy == nullptr) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+    int32_t funcResult = 0;
+    Accessibility::RetError ret =
+        static_cast<Accessibility::RetError>(proxy->StopBlinking(mode, scenario, funcResult));
+    if (ret != Accessibility::RET_OK) {
+        HILOG_ERROR("StopBlinking failed, ret=%{public}d", ret);
+        return ret;
+    }
+    blinkResult = static_cast<Accessibility::BlinkResultCode>(funcResult);
+    return Accessibility::RET_OK;
+}
 } // namespace AccessibilityConfig
 } // namespace OHOS

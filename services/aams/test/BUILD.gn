@@ -102,6 +102,18 @@ if (security_component_enable) {
       [ "security_component_manager:libsecurity_component_sdk" ]
 }
 
+if (accessibility_camera_support) {
+  test_external_deps += [ "camera_framework:camera_framework" ]
+}
+
+if (accessibility_screenlock_manager) {
+  test_external_deps += [ "screenlock_mgr:screenlock_client" ]
+}
+
+if (accessibility_sensor_support) {
+  test_external_deps += [ "sensor:sensor_interface_native" ]
+}
+
 ################################################################################
 ohos_unittest("accessibility_account_data_test") {
   module_out_path = module_output_path
@@ -129,6 +141,7 @@ ohos_unittest("accessibility_account_data_test") {
     "../src/accessible_ability_manager.cpp",
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
+    "../src/accessibility_blinking_reminder_proxy.cpp",
     "mock/src/mock_accessibility_setting_provider.cpp",
     "mock/src/mock_accessibility_settings_config.cpp",
     "mock/src/mock_accessible_ability_client_stub_impl.cpp",
@@ -198,6 +211,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "../src/accessible_ability_manager.cpp",
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
+    "../src/accessibility_blinking_reminder_proxy.cpp",
     "mock/src/aafwk/mock_bundle_manager.cpp",
     "mock/src/mock_accessibility_element_operator_callback_stub.cpp",
     "mock/src/mock_accessibility_short_key_dialog.cpp",
@@ -263,6 +277,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
     "../src/accessibility_security_component_manager.cpp",
+    "../src/accessibility_blinking_reminder_proxy.cpp",
     "mock/src/mock_accessibility_account_data.cpp",
     "mock/src/mock_accessible_ability_manager_service.cpp",
     "mock/src/mock_magnification_manager.cpp",
@@ -315,6 +330,7 @@ ohos_unittest("accessibility_window_manager_test") {
     "../src/accessible_ability_manager.cpp",
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
+    "../src/accessibility_blinking_reminder_proxy.cpp",
     "../src/accessibility_security_component_manager.cpp",
     "mock/src/aafwk/mock_bundle_manager.cpp",
     "mock/src/mock_accessibility_account_data.cpp",
@@ -378,6 +394,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "../src/accessible_ability_manager.cpp",
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
+    "../src/accessibility_blinking_reminder_proxy.cpp",
     "mock/src/aafwk/mock_bundle_manager.cpp",
     "mock/src/mock_accessibility_element_operator_callback_stub.cpp",
     "mock/src/mock_accessibility_element_operator_stub.cpp",
@@ -429,6 +446,7 @@ ohos_unittest("accessibility_dumper_test") {
     "../src/accessible_ability_manager.cpp",
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
+    "../src/accessibility_blinking_reminder_proxy.cpp",
     "../src/accessibility_security_component_manager.cpp",
     "mock/src/mock_accessibility_account_data.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
@@ -494,6 +512,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "../src/accessible_ability_manager.cpp",
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
+    "../src/accessibility_blinking_reminder_proxy.cpp",
     "../src/accessibility_security_component_manager.cpp",
     "mock/src/mock_accessibility_element_operator_proxy.cpp",
     "mock/src/mock_accessibility_element_operator_stub.cpp",
@@ -558,6 +577,7 @@ ohos_unittest("accessibility_short_key_test") {
     "../src/accessible_ability_manager.cpp",
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
+    "../src/accessibility_blinking_reminder_proxy.cpp",
     "../src/accessibility_security_component_manager.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
@@ -614,6 +634,7 @@ ohos_unittest("accessibility_short_key_dialog_test") {
     "../src/accessible_ability_manager.cpp",
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
+    "../src/accessibility_blinking_reminder_proxy.cpp",
     "../src/accessibility_security_component_manager.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
@@ -683,6 +704,7 @@ ohos_unittest("accessible_ability_manager_test") {
     "../src/accessible_ability_manager.cpp",
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
+    "../src/accessibility_blinking_reminder_proxy.cpp",
     "mock/src/aafwk/mock_bundle_manager.cpp",
     "mock/src/mock_accessibility_element_operator_callback_stub.cpp",
     "mock/src/mock_accessibility_short_key_dialog.cpp",
@@ -749,6 +771,7 @@ ohos_unittest("accessibility_settings_config_test") {
     "../src/accessible_ability_manager.cpp",
     "../src/accessibility_element_operator_manager.cpp",
     "../src/element_operator_callback_impl.cpp",
+    "../src/accessibility_blinking_reminder_proxy.cpp",
     "mock/src/mock_magnification_manager.cpp",
     "mock/src/mock_permission.cpp",
     "unittest/accessibility_settings_config_test.cpp",

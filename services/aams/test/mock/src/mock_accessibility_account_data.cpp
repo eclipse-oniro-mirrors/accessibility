@@ -606,5 +606,6 @@ void AccessibilityAccountData::RemoveSeniorModeStateObserver(const wptr<IRemoteO
 
 void AccessibilityAccountData::AddSeniorModeStateObserver(
     const sptr<IAccessibilityAppSeniorModeStateObserver>& observer) {}
+
 } // namespace Accessibility
 } // namespace OHOS

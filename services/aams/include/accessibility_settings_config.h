@@ -76,6 +76,9 @@ public:
     RetError SetZoomGestureEnabledReconfirm(const bool state);
     RetError SetColorModeState(const A11yDarkModeType &type);
     RetError SetFlashReminderSwitch(const bool state);
+    RetError SetFlashReminderMode(const int32_t mode);
+    RetError SetFlashReminderFunctionEnabled(const std::string &enabled);
+    RetError SetFlashReminderUnlock(const bool state);
     RetError SetSeniorModeState(const bool state);
     RetError SetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, const bool state);
 
@@ -110,6 +113,9 @@ public:
     float GetScreenMagnificationScale() const;
     int32_t GetScreenMagnificationTriggerMethod() const;
     bool GetFlashReminderSwitch() const;
+    int32_t GetFlashReminderMode() const;
+    const std::string &GetFlashReminderFunctionEnabled() const;
+    bool GetFlashReminderUnlock() const;
     bool GetSeniorModeState() const;
     bool GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex);
     void SetSeniorModeStateForAppMap(const std::map<std::string, bool>& map);
@@ -178,6 +184,9 @@ private:
     std::atomic<bool> animationOffState_ = false;
     std::atomic<bool> audioMonoState_ = false;
     std::atomic<bool> flashReminderSwitch_ = false;
+    std::atomic<int32_t> flashReminderMode_ = 0;
+    std::string flashReminderFunctionEnabled_ = "";
+    std::atomic<bool> flashReminderUnlock_ = false;
     std::atomic<bool> daltonizationState_ = false;
     std::atomic<bool> seniorModeState_ = false;
     std::atomic<uint32_t> daltonizationColorFilter_ = 0;

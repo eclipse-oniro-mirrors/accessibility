@@ -197,6 +197,9 @@ public:
     static ani_boolean GetSeniorModeStateForApp(ani_env *env, ani_string bundleName, ani_int appIndex);
     static void SetSeniorModeStateForApp(ani_env *env, ani_array seniorModeInfoArray);
 
+    static ani_enum_item StartBlinking(ani_env *env, ani_enum_item mode, ani_enum_item scenario);
+    static ani_enum_item StopBlinking(ani_env *env, ani_enum_item mode, ani_enum_item scenario);
+
     static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers_;
     static std::shared_ptr<ANIAccessibilityConfigObserverImpl> configObservers_;
     static std::shared_ptr<EnableAbilityCallbackObserverImpl> enableAbilityCallbackObservers_;

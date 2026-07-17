@@ -397,5 +397,21 @@ Accessibility::RetError AccessibilityConfig::UnsubscribeAppSeniorModeStateObserv
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
     return pImpl_->UnsubscribeAppSeniorModeStateObserver(observer);
 }
+
+Accessibility::RetError AccessibilityConfig::StartBlinking(int32_t mode, int32_t scenario,
+    Accessibility::BlinkResultCode &blinkResult)
+{
+    HILOG_INFO();
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->StartBlinking(mode, scenario, blinkResult);
+}
+
+Accessibility::RetError AccessibilityConfig::StopBlinking(int32_t mode, int32_t scenario,
+    Accessibility::BlinkResultCode &blinkResult)
+{
+    HILOG_INFO();
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->StopBlinking(mode, scenario, blinkResult);
+}
 } // Accessibility
 } // OHOS

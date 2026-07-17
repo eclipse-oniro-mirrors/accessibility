@@ -87,6 +87,8 @@ namespace {
     const char* ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const char* FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
     const char* FLASH_REMINDER_ENABLED = "accessibility_reminder_function_enabled";
+    const char* FLASH_REMINDER_MODE_KEY = "accessibility_flash_reminder_mode";
+    const char* FLASH_REMINDER_UNLOCK_KEY = "accessibility_flash_reminder_unlock";
     const char* VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
     const char* VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
     const char* IGNORE_REPEAT_CLICK_TIMESTAMP = "accessibility_ignore_repeat_click_timestamp";
@@ -230,6 +232,27 @@ RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t 
 {
     HILOG_DEBUG("screenMagnificationType = [%{public}u]", type);
     screenMagnificationType_.store(type);
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetFlashReminderMode(const int32_t mode)
+{
+    HILOG_DEBUG("mode = [%{public}d]", mode);
+    flashReminderMode_.store(mode);
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetFlashReminderFunctionEnabled(const std::string &enabled)
+{
+    HILOG_DEBUG("enabled = [%{public}s]", enabled.c_str());
+    flashReminderFunctionEnabled_ = enabled;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetFlashReminderUnlock(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    flashReminderUnlock_.store(state);
     return RET_OK;
 }
 
@@ -884,6 +907,21 @@ bool AccessibilitySettingsConfig::GetFlashReminderSwitch() const
     return flashReminderSwitch_.load();
 }
 
+int32_t AccessibilitySettingsConfig::GetFlashReminderMode() const
+{
+    return flashReminderMode_.load();
+}
+
+const std::string &AccessibilitySettingsConfig::GetFlashReminderFunctionEnabled() const
+{
+    return flashReminderFunctionEnabled_;
+}
+
+bool AccessibilitySettingsConfig::GetFlashReminderUnlock() const
+{
+    return flashReminderUnlock_.load();
+}
+
 bool AccessibilitySettingsConfig::GetSeniorModeState() const
 {
     return seniorModeState_.load();
@@ -1302,6 +1340,9 @@ void AccessibilitySettingsConfig::InitSetting()
     datashare_->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
     HandleIgnoreRepeatClickState();
     flashReminderSwitch_.store(datashare_->GetBoolValue(FLASH_REMINDER_SWITCH_KEY, false));
+    flashReminderMode_.store(datashare_->GetIntValue(FLASH_REMINDER_MODE_KEY, 0));
+    flashReminderFunctionEnabled_ = datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "");
+    flashReminderUnlock_.store(datashare_->GetBoolValue(FLASH_REMINDER_UNLOCK_KEY, false));
     seniorModeState_.store(datashare_->GetBoolValue(ELDER_CARE_ENABLED_KEY, false));
 }
 

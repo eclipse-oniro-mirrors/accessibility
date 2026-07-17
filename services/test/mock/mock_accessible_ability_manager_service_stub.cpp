@@ -641,5 +641,23 @@ ErrCode MockAccessibleAbilityManagerServiceStub::SetSeniorModeStateForApp(
 {
     return RET_OK;
 }
+
+ErrCode MockAccessibleAbilityManagerServiceStub::StartBlinking(int32_t mode, int32_t scenario,
+    int32_t &funcResult)
+{
+    (void)mode;
+    (void)scenario;
+    funcResult = 0;
+    return RET_OK;
+}
+
+ErrCode MockAccessibleAbilityManagerServiceStub::StopBlinking(int32_t mode, int32_t scenario,
+    int32_t &funcResult)
+{
+    (void)mode;
+    (void)scenario;
+    funcResult = 0;
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

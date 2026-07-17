@@ -919,5 +919,19 @@ ErrCode AccessibleAbilityManagerService::SetSeniorModeStateForApp(
 {
     return RET_OK;
 }
+
+ErrCode AccessibleAbilityManagerService::StartBlinking(int32_t mode, int32_t scenario, int32_t &funcResult)
+{
+    HILOG_DEBUG("StartBlinking start.");
+    funcResult = RET_OK;
+    return RET_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::StopBlinking(int32_t mode, int32_t scenario, int32_t &funcResult)
+{
+    HILOG_DEBUG("StopBlinking start.");
+    funcResult = RET_OK;
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

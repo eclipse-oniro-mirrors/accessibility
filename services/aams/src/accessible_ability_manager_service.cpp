@@ -57,6 +57,10 @@
 #include "mem_mgr_proxy.h"
 #include "common_event_manager.h"
 #include "accessibility_notification_helper.h"
+#ifdef OHOS_BUILD_ENABLE_SCREENLOCK_MANAGER
+#include "screenlock_manager.h"
+#endif
+#include "accessibility_blinking_reminder_proxy.h"
 
 #undef LOG_DOMAIN
 #undef LOG_TAG
@@ -91,6 +95,9 @@ namespace {
     const char* VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
     const char* VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
     const char* FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
+    const char* FLASH_REMINDER_MODE_KEY = "accessibility_flash_reminder_mode";
+    const char* FLASH_REMINDER_ENABLED_KEY = "accessibility_reminder_function_enabled";
+    const char* FLASH_REMINDER_UNLOCK_KEY = "accessibility_flash_reminder_unlock";
 #ifdef ACCESSIBILITY_WATCH_FEATURE
     const char* DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
     constexpr int32_t UNLOAD_TASK_INTERNAL = 3 * 60 * 1000; // ms
@@ -403,8 +410,12 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         RegisterScreenMagnificationType();
         RegisterVoiceRecognitionState();
         RegisterFlashReminderSwitch();
+        RegisterFlashReminderMode();
+        RegisterFlashReminderFunctionEnabled();
+        RegisterFlashReminderUnlock();
         RegisterSeniorModeState();
         RegisterSeniorModeStateForAppObserver();
+
         if (accessibilitySettings_) {
             accessibilitySettings_->RegisterParamWatcher();
             UpdateAccessibilityState();
@@ -1140,6 +1151,60 @@ ErrCode AccessibleAbilityManagerService::EnableAbility(const std::string &name, 
     return syncFuture.get();
 }
 
+ErrCode AccessibleAbilityManagerService::StartBlinking(int32_t mode, int32_t scenario, int32_t& funcResult)
+{
+    HILOG_INFO("mode=%{public}d, scenario=%{public}d", mode, scenario);
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("StartBlinking permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    if (mode < BlinkingMode::SINGLE_BLINK ||
+        mode > BlinkingMode::CONTINUOUS_BLINK) {
+        HILOG_ERROR("invalid mode %{public}d", mode);
+        return RET_ERR_INVALID_PARAM;
+    }
+    if (scenario < BlinkingScenario::ALARM ||
+        scenario > BlinkingScenario::TESTING) {
+        HILOG_ERROR("invalid scenario %{public}d", scenario);
+        return RET_ERR_INVALID_PARAM;
+    }
+
+    BlinkResultCode result = Singleton<AccessibilityBlinkingReminderProxy>::GetInstance().StartBlinking(mode, scenario);
+    funcResult = static_cast<int32_t>(result);
+    return ERR_OK;
+}
+
+ErrCode AccessibleAbilityManagerService::StopBlinking(int32_t mode, int32_t scenario, int32_t& funcResult)
+{
+    HILOG_INFO("mode=%{public}d, scenario=%{public}d", mode, scenario);
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("StopBlinking permission denied.");
+        return RET_ERR_NO_PERMISSION;
+    }
+    if (mode < BlinkingMode::SINGLE_BLINK ||
+        mode > BlinkingMode::CONTINUOUS_BLINK) {
+        HILOG_ERROR("invalid mode %{public}d", mode);
+        return RET_ERR_INVALID_PARAM;
+    }
+    if (scenario < BlinkingScenario::ALARM ||
+        scenario > BlinkingScenario::TESTING) {
+        HILOG_ERROR("invalid scenario %{public}d", scenario);
+        return RET_ERR_INVALID_PARAM;
+    }
+
+    BlinkResultCode result = Singleton<AccessibilityBlinkingReminderProxy>::GetInstance().StopBlinking(mode, scenario);
+    funcResult = static_cast<int32_t>(result);
+    return ERR_OK;
+}
+
 bool AccessibleAbilityManagerService::SetHighContrastTextAbility(bool state)
 {
     HILOG_DEBUG();
@@ -1816,6 +1881,9 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     RegisterNotificationState();
     RegisterSeniorModeState();
     RegisterSeniorModeStateForAppObserver();
+    RegisterFlashReminderMode();
+    RegisterFlashReminderFunctionEnabled();
+    RegisterFlashReminderUnlock();
 }
 
 // LCOV_EXCL_START
@@ -3311,6 +3379,8 @@ void AccessibleAbilityManagerService::OnFlashReminderSwitchChanged()
     bool flashReminderSwitch = config->GetDbHandle()->GetBoolValue(FLASH_REMINDER_SWITCH_KEY, false);
     config->SetFlashReminderSwitch(flashReminderSwitch);
     UpdateAccessibilityState();
+
+    Singleton<AccessibilityBlinkingReminderProxy>::GetInstance().SetFlashReminderSwitch(flashReminderSwitch);
 }
 
 void AccessibleAbilityManagerService::RegisterFlashReminderSwitch()
@@ -3333,7 +3403,160 @@ void AccessibleAbilityManagerService::RegisterFlashReminderSwitch()
         if (accountData->GetConfig()->GetDbHandle()) {
             accountData->GetConfig()->GetDbHandle()->RegisterObserver(FLASH_REMINDER_SWITCH_KEY, func);
         }
+        OnFlashReminderSwitchChanged();
         }, "FLASH_REMINDER_SWITCH_KEY_OBSERVER");
+}
+
+void AccessibleAbilityManagerService::OnFlashReminderModeChanged()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    int32_t flashReminderMode = config->GetDbHandle()->GetIntValue(FLASH_REMINDER_MODE_KEY, 0);
+    config->SetFlashReminderMode(flashReminderMode);
+
+    Singleton<AccessibilityBlinkingReminderProxy>::GetInstance().SetFlashReminderMode(flashReminderMode);
+}
+
+void AccessibleAbilityManagerService::RegisterFlashReminderMode()
+{
+    HILOG_DEBUG();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().OnFlashReminderModeChanged();
+        };
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(FLASH_REMINDER_MODE_KEY, func);
+        }
+        OnFlashReminderModeChanged();
+        }, "FLASH_REMINDER_MODE_KEY_OBSERVER");
+}
+
+void AccessibleAbilityManagerService::OnFlashReminderFunctionEnabledChanged()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    std::string flashReminderEnabled = config->GetDbHandle()->GetStringValue(FLASH_REMINDER_ENABLED_KEY, "");
+    config->SetFlashReminderFunctionEnabled(flashReminderEnabled);
+
+    Singleton<AccessibilityBlinkingReminderProxy>::GetInstance().SetFlashReminderFunctionEnabled(flashReminderEnabled);
+}
+
+void AccessibleAbilityManagerService::RegisterFlashReminderFunctionEnabled()
+{
+    HILOG_DEBUG();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().OnFlashReminderFunctionEnabledChanged();
+        };
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(FLASH_REMINDER_ENABLED_KEY, func);
+        }
+        OnFlashReminderFunctionEnabledChanged();
+        }, "FLASH_REMINDER_ENABLED_KEY_OBSERVER");
+}
+
+void AccessibleAbilityManagerService::OnFlashReminderUnlockChanged()
+{
+    HILOG_DEBUG();
+#ifdef OHOS_BUILD_ENABLE_SCREENLOCK_MANAGER
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = accountData->GetConfig();
+    if (config == nullptr) {
+        HILOG_ERROR("config is nullptr");
+        return;
+    }
+
+    if (config->GetDbHandle() == nullptr) {
+        HILOG_ERROR("datashareHelper is nullptr");
+        return;
+    }
+
+    bool flashReminderUnlock = config->GetDbHandle()->GetBoolValue(FLASH_REMINDER_UNLOCK_KEY, false);
+    config->SetFlashReminderUnlock(flashReminderUnlock);
+
+    Singleton<AccessibilityBlinkingReminderProxy>::GetInstance().SetFlashReminderUnlock(flashReminderUnlock);
+#endif
+}
+
+void AccessibleAbilityManagerService::RegisterFlashReminderUnlock()
+{
+    HILOG_DEBUG();
+    if (handler_ == nullptr) {
+        HILOG_ERROR("handler_ is nullptr");
+        return;
+    }
+    handler_->PostTask([=]() {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (accountData == nullptr) {
+            HILOG_ERROR("accountData is nullptr");
+            return;
+        }
+
+        AccessibilitySettingObserver::UpdateFunc func = [ = ](const std::string &state) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance().OnFlashReminderUnlockChanged();
+        };
+        if (accountData->GetConfig()->GetDbHandle()) {
+            accountData->GetConfig()->GetDbHandle()->RegisterObserver(FLASH_REMINDER_UNLOCK_KEY, func);
+        }
+        OnFlashReminderUnlockChanged();
+        }, "FLASH_REMINDER_UNLOCK_KEY_OBSERVER");
 }
 
 void AccessibleAbilityManagerService::OnSeniorModeStateChanged()

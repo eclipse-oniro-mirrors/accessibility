@@ -75,9 +75,13 @@
         "time_service",
         "json",
         "ets_frontend",
+        "sensor",
+        "camera_framework",
+        "screenlock_mgr",
         "image_framework",
         "node",
-        "libuv"
+        "libuv",
+        "call_manager"
       ],
       "third_party": []
     },
@@ -101,6 +105,7 @@
           "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
           "//foundation/barrierfree/accessibility/services/etc:ohos.para.dac",
           "//foundation/barrierfree/accessibility/services/aams_ext:aams_ext",
+          "//foundation/barrierfree/accessibility/services/blinking_reminder:accessibleBlinking",
           "//foundation/barrierfree/accessibility/tools/ohos-accessibilityManager:ohos-a11yManager"
         ]
       },
