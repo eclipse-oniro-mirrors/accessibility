@@ -128,7 +128,7 @@ ExtendServiceManager::ExtendServiceManager()
     InitInputManagerHandler();
     InitGestureHandler();
     sendAccessibilityEventToAACallback = MockSendAccessibilityEventToAACallback;
-    sendTouchGuideGestureToAACallback = MockSendTouchGuideGestureToAACallback
+    sendTouchGuideGestureToAACallback = MockSendTouchGuideGestureToAACallback;
     findFocusedElementCallback = MockFindFocusedElementCallback;
     executeActionOnAccessibilityFocusedCallback = MockExecuteActionOnAccessibilityFocusedCallback;
     getFocusedWindowIdCallback = MockGetFocusedWindowIdCallback;
